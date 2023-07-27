@@ -11,5 +11,9 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
   }
+  
+  logout(){
+    console.log('logout clicked!');
+  }
 
 }
