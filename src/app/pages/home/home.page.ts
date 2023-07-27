@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class HomePage implements OnInit {
 
   segment = "chats";
+  open_new_chat = false;
 
   constructor() { }
 
@@ -23,6 +24,15 @@ export class HomePage implements OnInit {
   }
 
   newChat(){
-    console.log('newChat clicked!')
+    this.open_new_chat = true;
+    //console.log('newChat clicked!', this.open_new_chat)
   }
+
+  onWillDismiss(event: any) {}
+
+  cancel(){
+    this.open_new_chat = false;
+    //console.log('cancel clicked!', this.open_new_chat)
+  }
+
 }
