@@ -81,7 +81,7 @@
     </ion-fab-button>
   </ion-fab>
 
-  <ion-modal [isOpen]="open_new_chat" (willDismiss)="onWillDismiss($event)">
+  <ion-modal #new_chat [isOpen]="open_new_chat" (willDismiss)="onWillDismiss($event)">
     <ng-template>
       <ion-header>
         <ion-toolbar color="primary">
@@ -90,8 +90,14 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding">
-        <app-user-list></app-user-list>
+      <ion-content class="ion-padding" *ngIf="users as user$">
+        <ion-list class="ion-top-margin" lines="none">
+          <app-user-list
+            *ngFor="let item of user$"
+            [item]="item"
+            (onClick)="startChat($event)">
+          </app-user-list>
+        </ion-list>
       </ion-content>
     </ng-template>
   </ion-modal>
