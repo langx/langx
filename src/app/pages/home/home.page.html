@@ -16,6 +16,19 @@
       </ng-template>
     </ion-popover>
   </ion-toolbar>
+
+  <ion-segment [value]="segment" (ionChange)="onSegmentChanged($event)">
+    <ion-segment-button value="chats">
+      <ion-label>Chats</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="community">
+      <ion-label>Community</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="profile">
+      <ion-label>Profile</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
 </ion-header>
 
 <ion-content [fullscreen]="true">

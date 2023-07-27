@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomePage implements OnInit {
 
+  segment = "community";
+
   constructor() { }
 
   ngOnInit() {
@@ -16,4 +18,7 @@ export class HomePage implements OnInit {
     console.log('logout clicked!');
   }
 
+  onSegmentChanged(event: any) {
+    console.log("SEGMENT:", event.detail.value);
+  }
 }
