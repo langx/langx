@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomePage implements OnInit {
 
-  segment = "community";
+  segment = "chats";
 
   constructor() { }
 
@@ -20,5 +20,9 @@ export class HomePage implements OnInit {
 
   onSegmentChanged(event: any) {
     console.log("SEGMENT:", event.detail.value);
+  }
+
+  newChat(){
+    console.log('newChat clicked!')
   }
 }
