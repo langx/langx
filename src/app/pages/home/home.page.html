@@ -34,42 +34,20 @@
 
 <ion-content [fullscreen]="true">
 
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">home</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-list *ngIf="segment=='chats'">
+  <ion-list *ngIf="segment=='chats' && (chatRooms) as rooms">
     <ion-list-header class="ion-padding-bottom">
       Recent Chats
     </ion-list-header>
-    <ion-item detail>
+    <ion-item 
+    *ngFor="let item of rooms"
+    (click)="getChat(item)"
+    detail>
       <ion-avatar slot="start">
-        <img [src]="'https://i.pravatar.cc/385'" alt="">
+        <img [src]="item.photo" alt="">
       </ion-avatar>
       <ion-label>
-        <h2>H2 Heading</h2>
-        <p>Paragraph</p>
-      </ion-label>
-      <ion-text slot="end" color="medium">10:10</ion-text>
-    </ion-item>
-     <ion-item detail>
-      <ion-avatar slot="start">
-        <img [src]="'https://i.pravatar.cc/345'" alt="">
-      </ion-avatar>
-      <ion-label>
-        <h2>H2 Heading</h2>
-        <p>Paragraph</p>
-      </ion-label>
-      <ion-text slot="end" color="medium">10:10</ion-text>
-    </ion-item>
-    <ion-item detail>
-      <ion-avatar slot="start">
-        <img [src]="'https://i.pravatar.cc/335'" alt="">
-      </ion-avatar>
-      <ion-label>
-        <h2>H2 Heading</h2>
-        <p>Paragraph</p>
+        <h2>{{item.name}}</h2>
+        <p>Paragraph {{item.id}}</p>
       </ion-label>
       <ion-text slot="end" color="medium">10:10</ion-text>
     </ion-item>

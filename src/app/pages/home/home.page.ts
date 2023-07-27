@@ -1,4 +1,5 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
 
 @Component({
@@ -19,8 +20,17 @@ export class HomePage implements OnInit {
     {id:2, name:"Test2", photo:"https://i.pravatar.cc/375"},
     {id:3, name:"Test3", photo:"https://i.pravatar.cc/365"},
   ];
+  
+  chatRooms = [
+    {id:1, name:"Chat Room Test", photo:"https://i.pravatar.cc/385"},
+    {id:2, name:"Chat Room 2", photo:"https://i.pravatar.cc/375"},
+    {id:3, name:"CHat 3", photo:"https://i.pravatar.cc/365"},
+  ];
 
-  constructor() { }
+
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
@@ -54,4 +64,8 @@ export class HomePage implements OnInit {
     console.log(item.id, item.name)
   }
 
+  getChat(item) {
+    this.router.navigate(['/', 'home', 'chats', item.id])
+  }
+    
 }
