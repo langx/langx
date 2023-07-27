@@ -1,4 +1,5 @@
 <ion-header [translucent]="true">
+
   <ion-toolbar color="primary">
     <ion-title>Fire Chat</ion-title>
     <ion-buttons slot="end">
@@ -32,9 +33,52 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">home</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-list *ngIf="segment=='chats'">
+    <ion-list-header class="ion-padding-bottom">
+      Recent Chats
+    </ion-list-header>
+    <ion-item detail>
+      <ion-avatar slot="start">
+        <img [src]="'https://i.pravatar.cc/385'" alt="">
+      </ion-avatar>
+      <ion-label>
+        <h2>H2 Heading</h2>
+        <p>Paragraph</p>
+      </ion-label>
+      <ion-text slot="end" color="medium">10:10</ion-text>
+    </ion-item>
+     <ion-item detail>
+      <ion-avatar slot="start">
+        <img [src]="'https://i.pravatar.cc/345'" alt="">
+      </ion-avatar>
+      <ion-label>
+        <h2>H2 Heading</h2>
+        <p>Paragraph</p>
+      </ion-label>
+      <ion-text slot="end" color="medium">10:10</ion-text>
+    </ion-item>
+    <ion-item detail>
+      <ion-avatar slot="start">
+        <img [src]="'https://i.pravatar.cc/335'" alt="">
+      </ion-avatar>
+      <ion-label>
+        <h2>H2 Heading</h2>
+        <p>Paragraph</p>
+      </ion-label>
+      <ion-text slot="end" color="medium">10:10</ion-text>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab slot="fixed" horizontal="end" vertical="bottom">
+    <ion-fab-button (click)="newChat()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>
