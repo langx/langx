@@ -8,10 +8,14 @@ import { Component, OnInit } from '@angular/core';
 export class ChatPage implements OnInit {
 
   title = "sender name";
+  message: string;
+  isLoading = false;
 
   constructor() { }
 
   ngOnInit() {
   }
+
+  sendMessage(){}
 
 }

@@ -15,3 +15,22 @@
   </ion-header>
 </ion-content>
 
+<ion-footer>
+  <ion-toolbar>
+    <ion-textarea
+    autoGrow
+    rows="1"
+    placeholder="Send message"
+    class="ion-text-center"
+    [(ngModel)]="message">
+    </ion-textarea>
+    <ion-buttons slot="end">
+      <ion-fab-button *ngIf="!isLoading" size="small" color="primary" click="sendMessage()">
+        <ion-icon name="send"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="isLoading" size="small" color="medium">
+        <ion-icon name="send"></ion-icon>
+      </ion-fab-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
