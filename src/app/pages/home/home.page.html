@@ -46,8 +46,8 @@
         <img [src]="item.photo" alt="">
       </ion-avatar>
       <ion-label>
-        <h2>{{item.name}}</h2>
-        <p>Paragraph {{item.id}}</p>
+        <h2>{{item?.name}}</h2>
+        <p>Paragraph {{item?.id}}</p>
       </ion-label>
       <ion-text slot="end" color="medium">10:10</ion-text>
     </ion-item>
