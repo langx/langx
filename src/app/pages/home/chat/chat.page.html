@@ -28,8 +28,8 @@
       <ion-fab-button *ngIf="!isLoading" size="small" color="primary" click="sendMessage()">
         <ion-icon name="send"></ion-icon>
       </ion-fab-button>
-      <ion-fab-button *ngIf="isLoading" size="small" color="medium">
-        <ion-icon name="send"></ion-icon>
+      <ion-fab-button *ngIf="isLoading" size="small" color="primary">
+        <ion-spinner name="crescent" color="dark"></ion-spinner>
       </ion-fab-button>
     </ion-buttons>
   </ion-toolbar>
