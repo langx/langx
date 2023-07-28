@@ -7,12 +7,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{title}}</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-list
+  lines="none"
+  *ngIf="(chats) as chat$">
+    <ion-item-group class="chats-group" *ngFor="let chat of chat$">
+      <app-chat-box [chat]="chat" [current_user_id]="currentUserId"></app-chat-box>
+    </ion-item-group>
+  </ion-list>
 </ion-content>
 
 <ion-footer>
