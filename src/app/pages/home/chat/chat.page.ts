@@ -10,7 +10,7 @@ export class ChatPage implements OnInit {
   title = "sender name";
   message: string;
   isLoading = false;
-  currentUserId: Number;
+  currentUserId: Number = 1;
 
   chats = [
     {id: 1, sender: 1, message: 'hi'},
