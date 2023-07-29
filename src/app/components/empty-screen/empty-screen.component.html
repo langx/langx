@@ -1,3 +1,19 @@
-<p>
-  empty-screen works!
-</p>
+<ion-grid>
+  <ion-row>
+    <ion-col class="ion-text-center">
+      <ion-icon
+        [name]="model?.icon"
+        [color]="model?.color"></ion-icon>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="ion-text-center">
+      <ion-label>
+      {{model?.title}}
+      </ion-label>
+      <ion-text *ngIf="model?.subTitle">
+        <p>{{model?.subTitle}}</p>
+      </ion-text>
+    </ion-col>
+  </ion-row>
+</ion-grid>
