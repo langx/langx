@@ -40,7 +40,7 @@ export class HomePage implements OnInit {
   }
 
   onSegmentChanged(event: any) {
-    console.log("SEGMENT:", event.detail.value);
+    this.segment = event.detail.value;
   }
 
   newChat(){
