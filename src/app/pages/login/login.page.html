@@ -20,7 +20,19 @@
     <ion-row>
       <ion-col>
         <ion-button type="submit" color="primary" expand="block">Sign In</ion-button>
-        <a [routerLink]="['/forgot-password']" class="small-text">Forgot Password?</a>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-margin-vertical">
+      <ion-col size="6" class="alignItems">
+        <div align=left>
+          <ion-checkbox></ion-checkbox>
+          <ion-note>Remember me</ion-note>
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div align=right>
+          <ion-note>Forgot password?</ion-note>
+        </div>
       </ion-col>
     </ion-row>
     <p class="signup">
