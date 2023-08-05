@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import {
   Auth,
@@ -18,19 +18,25 @@ import {
 export class SignupPage implements OnInit {
 
   formData: FormGroup;
-  
-  //name: string = "";
-  //email: string = "behicsakar@gmail.com";
-  //password: string = "aaa123";
 
   constructor(public navCntrl: NavController, private auth: Auth) { }
 
   ngOnInit() {
+    this.initForm();
+  }
+
+  initForm() {
     this.formData = new FormGroup({
-      name: new FormControl(),
-      email: new FormControl(),
-      password: new FormControl(),
-    })
+      name: new FormControl('', 
+        {validators: [Validators.required, Validators.minLength(5)]}
+      ),
+      email: new FormControl('', 
+        {validators: [Validators.required, Validators.email]}
+      ),
+      password: new FormControl('', 
+        {validators: [Validators.required, Validators.minLength(8)]}
+      ),
+    });
   }
 
   async onSubmit(){
