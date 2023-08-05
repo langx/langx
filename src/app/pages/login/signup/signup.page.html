@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <form [formGroup]="formData" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
       <ion-label position="floating">Full Name</ion-label>
       <ion-input formControlName="name" type="text" required></ion-input>

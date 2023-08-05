@@ -8,7 +8,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginPage implements OnInit {
 
-  formData: FormGroup;  
+  form: FormGroup;  
 
   constructor() { }
 
@@ -17,7 +17,7 @@ export class LoginPage implements OnInit {
   }
 
   initForm() {
-    this.formData = new FormGroup({
+    this.form= new FormGroup({
       email: new FormControl('', 
         {validators: [Validators.required, Validators.email]}
       ),
@@ -28,7 +28,7 @@ export class LoginPage implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.formData.value);
+    console.log(this.form.value);
   }
 
 }
