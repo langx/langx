@@ -21,7 +21,8 @@ import { Capacitor } from '@capacitor/core';
     //mode: 'md'
   }), AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase )),
-    //provideAuth(() => getAuth()),
+    provideAuth(() => getAuth()),
+    /* FOR IOS ONLY
     provideAuth(() => {
       if (Capacitor.isNativePlatform()) {
         return initializeAuth(getApp(), {
@@ -31,6 +32,7 @@ import { Capacitor } from '@capacitor/core';
         return getAuth()
       }
     }),
+    */
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage())
 ],
