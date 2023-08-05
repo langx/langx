@@ -17,7 +17,7 @@ import {
 
 export class SignupPage implements OnInit {
 
-  formData: FormGroup;
+  form: FormGroup;
 
   constructor(public navCntrl: NavController, private auth: Auth) { }
 
@@ -26,7 +26,7 @@ export class SignupPage implements OnInit {
   }
 
   initForm() {
-    this.formData = new FormGroup({
+    this.form= new FormGroup({
       name: new FormControl('', 
         {validators: [Validators.required, Validators.minLength(5)]}
       ),
@@ -40,11 +40,11 @@ export class SignupPage implements OnInit {
   }
 
   async onSubmit(){
-    console.log(this.formData.value);
+    console.log(this.form.value);
       const user = await createUserWithEmailAndPassword(
         this.auth,
-        this.formData.value.email,
-        this.formData.value.password
+        this.form.value.email,
+        this.form.value.password
       );
       console.log(user)
       return user;
