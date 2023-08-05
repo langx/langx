@@ -7,22 +7,18 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <form>
+  <form [formGroup]="formData" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
-      <ion-label position="floating">First name</ion-label>
-      <ion-input type="text" required></ion-input>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-label position="floating">Last name</ion-label>
-      <ion-input type="text" required></ion-input>
+      <ion-label position="floating">Full Name</ion-label>
+      <ion-input formControlName="name" type="text" required></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Email</ion-label>
-      <ion-input type="text" required></ion-input>
+      <ion-input formControlName="email" type="text" required></ion-input>
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Password</ion-label>
-      <ion-input type="password" required></ion-input>
+      <ion-input formControlName="password" type="password" required></ion-input>
     </ion-item>
     <ion-row>
       <ion-col>
