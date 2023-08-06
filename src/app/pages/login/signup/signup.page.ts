@@ -63,10 +63,10 @@ export class SignupPage implements OnInit {
       let msg: string; 
       switch (e.code) {
         case "auth/email-already-in-use": {
-          msg = "email already in use"; break;
+          msg = "Email already in use"; break;
         }
         case "auth/invalid-email": {
-          msg = "invalid email"; break;
+          msg = "Invalid email"; break;
         }
         default: {
           msg = 'Could not sign you up, please try again.'
