@@ -7,6 +7,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
       <ion-label position="floating">Full Name</ion-label>

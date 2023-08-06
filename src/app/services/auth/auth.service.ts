@@ -43,6 +43,8 @@ export class AuthService {
     this._uid.next(uid);
   }
 
+  randomIntFromInterval = (min: number,max: number) => { return Math.floor(Math.random() * (max-min+1) +min) }
+
   async register(formValue) {
     try {
       const registeredUser = await createUserWithEmailAndPassword(
@@ -53,11 +55,11 @@ export class AuthService {
       console.log('registredUser:', registeredUser);
       const data = {
         email: formValue?.email,
-        name: formValue?.username,
+        name: formValue?.name,
         uid: registeredUser.user.uid,
         photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200,400)
       }
-      await this.apiService.setDocument('users/${registeredUser.user.uid', data);
+      await this.apiService.setDocument(`users/${registeredUser.user.uid}`, data);
       const userData = {
         id: registeredUser.user.uid
       };
@@ -96,7 +98,7 @@ export class AuthService {
   }
 
   async getUserData(id) {
-    const docSnap: any = await this.apiService.getDocById('users/${id}');
+    const docSnap: any = await this.apiService.getDocById(`users/${id}`);
     if(docSnap?.exists()) {
       return docSnap.data();
     } else {
@@ -104,5 +106,4 @@ export class AuthService {
     }
   }
 
-  randomIntFromInterval = (min: number,max: number) => { Math.floor(Math.random() * (max-min+1) +min) }
 }
