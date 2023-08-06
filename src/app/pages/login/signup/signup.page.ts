@@ -1,13 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { AlertController} from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import {
-  Auth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut
-} from '@angular/fire/auth';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -18,8 +14,13 @@ import {
 export class SignupPage implements OnInit {
 
   form: FormGroup;
+  isLoading: boolean = false;
 
-  constructor(public navCntrl: NavController, private auth: Auth) { }
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private alertController: AlertController
+    ) { }
 
   ngOnInit() {
     this.initForm();
@@ -40,18 +41,42 @@ export class SignupPage implements OnInit {
   }
 
   async onSubmit(){
-    console.log(this.form.value);
-      const user = await createUserWithEmailAndPassword(
-        this.auth,
-        this.form.value.email,
-        this.form.value.password
-      );
-      console.log(user)
-      return user;
+    if(!this.form.valid) return;
+    this.register(this.form);
   }
 
-  gotoLogin() {
-    this.navCntrl.navigateBack('login');
+  register(form: FormGroup) {
+    //showLoader();
+    this.isLoading = true;
+    console.log('form.value:', form.value);
+    this.authService.register(form.value).then((data: any) => {
+      console.log(data);
+      this.router.navigateByUrl('/home');
+      //hideLoader();
+      this.isLoading = false;
+      form.reset();
+    })
+    .catch(e => {
+      console.log("error:", e);
+      //hideLoader();
+      this.isLoading = false;
+      let msg: string = 'Could not sign you up, please try again.';
+      if (e.code == 'auth/email-already-in-use') {
+        msg = e.message;
+      }
+      this.showAlert(msg);
+    });
+  }
+
+  async showAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: 'Important message',
+      message: msg,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
   }
 
 }
