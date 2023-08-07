@@ -37,13 +37,18 @@ export class HomePage implements OnInit {
   ngOnInit() {
   }
   
-  logout(){
-    //TODO: showLoader();
-    this.chatService.auth.logout();
-    this.router.navigateByUrl('/login');
-    //TODO: hideLoader();
-    this.popover.dismiss();
+  async logout(){
+    try {
+      //TODO: showLoader();
+      this.popover.dismiss();
+      await this.chatService.auth.logout();
+      this.router.navigateByUrl('/login', {replaceUrl: true});
+      //TODO: hideLoader();
+    } catch(e) {
+      console.log(e);
+    }
   }
+
 
   onSegmentChanged(event: any) {
     this.segment = event.detail.value;
