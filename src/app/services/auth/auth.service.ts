@@ -35,7 +35,7 @@ export class AuthService {
   getId() {
     const auth = getAuth();
     this.currentUser = auth.currentUser;
-    console.log('getId() in auth.service ', this.currentUser, this.currentUser.uid, typeof(this.currentUser.uid));
+    // console.log('getId() in auth.service ', this.currentUser, this.currentUser.uid);
     return this.currentUser?.uid;
   }
 
@@ -92,7 +92,7 @@ export class AuthService {
   checkAuth(): Promise<any> {
     return new Promise((resolve, reject) => {
       onAuthStateChanged(this.fireAuth, user => {
-        console.log('auth user:', user);
+        // console.log('auth user:', user);
         resolve(user);
         return true;
       })
