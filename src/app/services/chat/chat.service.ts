@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { Observable } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -68,4 +68,26 @@ export class ChatService {
       throw(e);
     }
   }
+
+  getChatRooms() {
+    this.chatRooms = this.api.collectionDataQuery(
+      'chatRooms',
+      this.api.whereQuery('members', 'array-contains', this.currentUserId)
+    ).pipe(
+      map((data: any[]) => {
+        console.log('room data: ', data);
+        data.map((el) => {
+          const user_data = el.members.filter(x => x != this.currentUserId);
+          //console.log(user_data);
+          const user = this.api.docDataQuery(`users/${user_data[0]}`, true);
+          el.user = user;
+          console.log(user);
+        });
+        return data;
+      }), switchMap(data => {
+        return of(data);
+      })
+    );
+  }
+
 }
