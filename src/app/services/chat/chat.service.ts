@@ -103,4 +103,20 @@ export class ChatService {
     );
   }
 
+  async sendMessage(chatId, msg) {
+    console.log(chatId, msg);
+    try {
+      const new_msg = {
+        message: msg,
+        sender: this.currentUserId,
+        createdAt: new Date()
+      };
+      if(chatId) {
+        await this.api.addDocument(`chats/${chatId}/messages`, new_msg);
+      }
+    } catch(e) {
+      throw(e);
+    }
+  }
+
 }
