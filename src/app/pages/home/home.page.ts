@@ -46,7 +46,6 @@ export class HomePage implements OnInit {
   getRooms() {
     this.chatService.getChatRooms();
     this.chatRooms = this.chatService.chatRooms;
-    console.log('chatrooms: ', this.chatRooms);
   }
 
   async logout(){
@@ -70,7 +69,7 @@ export class HomePage implements OnInit {
     if(!this.users) this.getUsers();
   }
 
-  getUsers(): void {
+  getUsers() {
     this.chatService.getUsers();
     this.users = this.chatService.users;    
   }
