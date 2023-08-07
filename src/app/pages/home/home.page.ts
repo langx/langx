@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
+import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
   selector: 'app-home',
@@ -29,13 +30,18 @@ export class HomePage implements OnInit {
 
 
   constructor(
-    private router: Router
+    private router: Router,
+    private chatService: ChatService
   ) { }
 
   ngOnInit() {
   }
   
   logout(){
+    //TODO: showLoader();
+    this.chatService.auth.logout();
+    this.router.navigateByUrl('/login');
+    //TODO: hideLoader();
     this.popover.dismiss();
   }
 
