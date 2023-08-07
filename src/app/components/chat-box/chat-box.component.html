@@ -6,8 +6,7 @@
     class="ion-text-wrap">
     <ion-text>{{chat?.message}}</ion-text>
     <ion-note>
-      <!--<small>{{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}</small>-->
-      <small>10:22</small>
+      <small>{{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}</small>
       <ion-icon 
         [color]="chat?.sender != current_user_id ? 'light' : 'primary'"
         name="checkmark-done-outline">
