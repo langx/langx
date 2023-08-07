@@ -16,7 +16,7 @@ export class ChatService {
     public auth: AuthService,
     public api: ApiService
   ) { 
-    this.getId();
+    //this.getId();
   }
 
   getId() {
@@ -70,6 +70,10 @@ export class ChatService {
   }
 
   getChatRooms() {
+    // get the userId here 
+    // TODO: because its the first line of calling from home.page.ts
+    this.getId();
+
     this.chatRooms = this.api.collectionDataQuery(
       'chatRooms',
       this.api.whereQuery('members', 'array-contains', this.currentUserId)
@@ -81,7 +85,6 @@ export class ChatService {
           //console.log(user_data);
           const user = this.api.docDataQuery(`users/${user_data[0]}`, true);
           el.user = user;
-          console.log(user);
         });
         return data;
       }), switchMap(data => {
