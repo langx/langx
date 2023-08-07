@@ -56,7 +56,7 @@ export class ChatPage implements OnInit {
   }
 
   async sendMessage(){
-    console.log(this.message);
+    // console.log(this.message);
     if(!this.message || this.message?.trim() == '') return;
     try {
       this.isLoading = true;
