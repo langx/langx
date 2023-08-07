@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { IonContent, NavController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
   selector: 'app-chat',
@@ -7,19 +11,48 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatPage implements OnInit {
 
-  title = "sender name";
+  @ViewChild(IonContent, { static: false }) content: IonContent;
+  
+  chatRoomId: string;
+  name: string;
+  chats: Observable<any[]>;
   message: string;
-  isLoading = false;
-  currentUserId: Number = 1;
+  isLoading: boolean;
+  model = {
+    icon: 'chatbubbles-outline',
+    title: 'No conversation',
+    color: 'warning'
+  }
 
-  chats = [
-    {id: 1, sender: 1, message: 'hi'},
-    {id: 1, sender: 2, message: 'hi there!'}
-  ];
-
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private navCtrl: NavController,
+    public chatService: ChatService,
+  ) {}
 
   ngOnInit() {
+    const data: any = this.route.snapshot.queryParams;
+    console.log('route snapshot data: ', data);
+    if(data?.name) this.name = data.name;
+    const chatRoomId: string = this.route.snapshot.paramMap.get('id');
+    console.log('check chatId: ', chatRoomId);
+    if(!chatRoomId) {
+      this.navCtrl.back();
+      return;
+    }
+    this.chatRoomId = chatRoomId;
+    this.chatService.getChatRoomMessages(this.chatRoomId);
+    this.chats = this.chatService.selectedChatRoomMessages;
+    console.log('chat messages ', this.chats);
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom() {
+    console.log('scroll bottom');
+    if(this.chats) this.content.scrollToBottom(500);
   }
 
   sendMessage(){}

@@ -3,16 +3,22 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{title}}</ion-title>
+    <ion-title>{{name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+
+  <app-empty-screen
+    *ngIf="(chats | async)?.length == 0"
+    [model]="model">
+  </app-empty-screen>
+
   <ion-list
   lines="none"
-  *ngIf="(chats) as chat$">
+  *ngIf="(chats | async ) as chat$">
     <ion-item-group class="chats-group" *ngFor="let chat of chat$">
-      <app-chat-box [chat]="chat" [current_user_id]="currentUserId"></app-chat-box>
+      <app-chat-box [chat]="chat" [current_user_id]="chatService.currentUserId"></app-chat-box>
     </ion-item-group>
   </ion-list>
 </ion-content>
