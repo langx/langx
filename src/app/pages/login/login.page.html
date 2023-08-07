@@ -8,7 +8,6 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
       <ion-label position="floating">Email</ion-label>
@@ -20,7 +19,10 @@
     </ion-item>
     <ion-row>
       <ion-col>
-        <ion-button type="submit" color="primary" expand="block">Sign In</ion-button>
+        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Sign In</ion-button>
+        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
       </ion-col>
     </ion-row>
     <ion-row class="ion-margin-vertical">
