@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ModalController, PopoverController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
@@ -13,14 +14,14 @@ export class HomePage implements OnInit {
   @ViewChild('new_chat') modal: ModalController;
   @ViewChild('popover') popover: PopoverController;
 
-  segment = "chats";
+  segment = "community";
   open_new_chat = false;
-  //users: Observable<any>;
-  users = [
-    {id:1, name:"Test", photo:"https://i.pravatar.cc/385"},
-    {id:2, name:"Test2", photo:"https://i.pravatar.cc/375"},
-    {id:3, name:"Test3", photo:"https://i.pravatar.cc/365"},
-  ];
+  users: Observable<any>;
+  //users = [
+  //  {id:1, name:"Test", photo:"https://i.pravatar.cc/385"},
+  //  {id:2, name:"Test2", photo:"https://i.pravatar.cc/375"},
+  //  {id:3, name:"Test3", photo:"https://i.pravatar.cc/365"},
+  //];
   
   chatRooms = [
     {id:1, name:"Chat Room Test", photo:"https://i.pravatar.cc/385"},
@@ -55,7 +56,13 @@ export class HomePage implements OnInit {
 
   newChat(){
     this.open_new_chat = true;
+    if(!this.users) this.getUser();
     //console.log('newChat clicked!', this.open_new_chat)
+  }
+
+  async getUser() {
+    this.chatService.getUsers();
+    this.users = this.chatService.users;    
   }
 
   onWillDismiss(event: any) {}
@@ -65,13 +72,14 @@ export class HomePage implements OnInit {
     this.open_new_chat = false;
   }
   // cancel when the escape button pressed
+  // TODO: it could be the upper side of this file
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     this.modal.dismiss()
     this.open_new_chat = false;
   }
 
   startChat(item: any) {
-    console.log(item.id, item.name)
+    console.log('startChat() in home.page.ts', item);
   }
 
   getChat(item) {
