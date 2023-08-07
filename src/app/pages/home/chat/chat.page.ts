@@ -17,7 +17,7 @@ export class ChatPage implements OnInit {
   name: string;
   chats: Observable<any[]>;
   message: string;
-  isLoading: boolean;
+  isLoading: boolean = false;
   model = {
     icon: 'chatbubbles-outline',
     title: 'No conversation',
@@ -55,6 +55,20 @@ export class ChatPage implements OnInit {
     if(this.chats) this.content.scrollToBottom(500);
   }
 
-  sendMessage(){}
+  async sendMessage(){
+    console.log(this.message);
+    if(!this.message || this.message?.trim() == '') return;
+    try {
+      this.isLoading = true;
+      await this.chatService.sendMessage(this.chatRoomId, this.message);
+      this.message = '';
+      this.isLoading = false;
+      this.scrollToBottom();
+    } catch(e) {
+      this.isLoading = false;
+      console.log(e);
+      throw(e);
+    }
+  }
 
 }

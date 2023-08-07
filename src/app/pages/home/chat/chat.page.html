@@ -33,7 +33,7 @@
     [(ngModel)]="message">
     </ion-textarea>
     <ion-buttons slot="end">
-      <ion-fab-button *ngIf="!isLoading" size="small" color="primary" click="sendMessage()">
+      <ion-fab-button *ngIf="!isLoading" size="small" color="primary" (click)="sendMessage()">
         <ion-icon name="send"></ion-icon>
       </ion-fab-button>
       <ion-fab-button *ngIf="isLoading" size="small" color="primary">
