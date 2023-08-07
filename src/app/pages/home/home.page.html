@@ -58,7 +58,7 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding" *ngIf="users as user$">
+      <ion-content class="ion-padding" *ngIf="(users | async) as user$">
         <ion-list class="ion-top-margin" lines="none">
           <app-user-list
             *ngFor="let item of user$"
