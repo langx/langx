@@ -35,7 +35,7 @@ export class AuthService {
   getId() {
     const auth = getAuth();
     this.currentUser = auth.currentUser;
-    console.log(this.currentUser, this.currentUser.uid, typeof(this.currentUser.uid));
+    console.log('getId() in auth.service ', this.currentUser, this.currentUser.uid, typeof(this.currentUser.uid));
     return this.currentUser?.uid;
   }
 
