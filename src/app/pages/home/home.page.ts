@@ -20,17 +20,18 @@ export class HomePage implements OnInit {
   segment = "community";
   open_new_chat = false;
   users: Observable<any>;
+  chatRooms: Observable<any>;
+
   //users = [
   //  {id:1, name:"Test", photo:"https://i.pravatar.cc/385"},
   //  {id:2, name:"Test2", photo:"https://i.pravatar.cc/375"},
   //  {id:3, name:"Test3", photo:"https://i.pravatar.cc/365"},
   //];
-  
-  chatRooms = [
-    {id:1, name:"Chat Room Test", photo:"https://i.pravatar.cc/385"},
-    {id:2, name:"Chat Room 2", photo:"https://i.pravatar.cc/375"},
-    {id:3, name:"CHat 3", photo:"https://i.pravatar.cc/365"},
-  ];
+  //chatRooms = [
+  //  {id:1, name:"Chat Room Test", photo:"https://i.pravatar.cc/385"},
+  //  {id:2, name:"Chat Room 2", photo:"https://i.pravatar.cc/375"},
+  //  {id:3, name:"CHat 3", photo:"https://i.pravatar.cc/365"},
+  //];
 
 
   constructor(
@@ -39,8 +40,15 @@ export class HomePage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.getRooms();
   }
   
+  getRooms() {
+    this.chatService.getChatRooms();
+    this.chatRooms = this.chatService.chatRooms;
+    console.log('chatrooms: ', this.chatRooms);
+  }
+
   async logout(){
     try {
       //TODO: showLoader();
@@ -59,10 +67,10 @@ export class HomePage implements OnInit {
 
   newChat(){
     this.open_new_chat = true;
-    if(!this.users) this.getUser();
+    if(!this.users) this.getUsers();
   }
 
-  getUser() {
+  getUsers(): void {
     this.chatService.getUsers();
     this.users = this.chatService.users;    
   }
@@ -96,6 +104,10 @@ export class HomePage implements OnInit {
 
   getChat(item) {
     this.router.navigate(['/', 'home', 'chats', item.id])
+  }
+
+  getUser(user: any) {
+    return user;
   }
     
 }
