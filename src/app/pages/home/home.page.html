@@ -18,8 +18,6 @@
     </ion-popover>
   </ion-toolbar>
 
-
-
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -28,6 +26,11 @@
     <ion-list-header class="ion-padding-bottom">
       Recent Chats
     </ion-list-header>
+
+    <app-empty-screen
+      *ngIf="(chatRooms | async)?.length == 0"
+      [model]="model">
+    </app-empty-screen>
 
     <ion-item 
       *ngFor="let item of rooms"
