@@ -11,6 +11,7 @@ export class ChatService {
   currentUserId: string;
   public users: Observable<any>;
   public chatRooms: Observable<any>;
+  selectedChatRoomMessages: Observable<any[]>;
 
   constructor(
     public auth: AuthService,
@@ -90,6 +91,15 @@ export class ChatService {
       }), switchMap(data => {
         return of(data);
       })
+    );
+  }
+
+  getChatRoomMessages(chatRoomId: string) {
+    this.selectedChatRoomMessages = this.api.collectionDataQuery(
+      `chats/${chatRoomId}/messages`,
+      this.api.orderByQuery('createdAt', 'desc') 
+    ).pipe(
+      map((arr: any) => arr.reverse())
     );
   }
 
