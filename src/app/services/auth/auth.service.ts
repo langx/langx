@@ -63,6 +63,8 @@ export class AuthService {
       const userData = {
         id: registeredUser.user.uid
       };
+      // set user data while registering
+      this.setUserData(registeredUser.user.uid);
       return userData;
     } catch(e) {
       throw(e);
@@ -80,7 +82,7 @@ export class AuthService {
   async logout() {
     try {
       await this.fireAuth.signOut();
-      this._uid.next(null);
+      this.setUserData(null);
       return true;
     } catch(e) {
       throw(e);
