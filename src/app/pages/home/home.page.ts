@@ -60,7 +60,7 @@ export class HomePage implements OnInit {
     //console.log('newChat clicked!', this.open_new_chat)
   }
 
-  async getUser() {
+  getUser() {
     this.chatService.getUsers();
     this.users = this.chatService.users;    
   }
