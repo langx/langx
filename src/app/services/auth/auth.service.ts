@@ -83,6 +83,7 @@ export class AuthService {
     try {
       await this.fireAuth.signOut();
       this.setUserData(null);
+      this.currentUser = null;
       return true;
     } catch(e) {
       throw(e);
