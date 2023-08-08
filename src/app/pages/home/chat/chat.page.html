@@ -30,11 +30,11 @@
 <ion-footer>
   <ion-toolbar>
     <ion-textarea
-    autoGrow
-    rows="1"
-    placeholder="Send message"
-    class="ion-text-center"
-    [(ngModel)]="message">
+      autoGrow
+      rows="1"
+      placeholder="Send message"
+      class="ion-text-center"
+      [(ngModel)]="message">
     </ion-textarea>
     <ion-buttons slot="end">
       <ion-fab-button *ngIf="!isLoading" size="small" color="primary" (click)="sendMessage()">
