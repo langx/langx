@@ -45,10 +45,10 @@ export class LoginPage implements OnInit {
     this.isLoading = true;
     console.log('form.value:', form.value);
     this.authService.login(form.value.email, form.value.password).then((data: any) => {
-      this.router.navigateByUrl('/home');
       //hideLoader();
       this.isLoading = false;
       form.reset();
+      this.router.navigateByUrl('/home');
     })
     .catch(e => {
       console.log("error:", e);
@@ -77,7 +77,6 @@ export class LoginPage implements OnInit {
       message: msg,
       buttons: ['OK'],
     });
-
     await alert.present();
   }
 
