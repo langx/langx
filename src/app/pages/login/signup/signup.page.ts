@@ -27,7 +27,7 @@ export class SignupPage implements OnInit {
   }
 
   initForm() {
-    this.form= new FormGroup({
+    this.form = new FormGroup({
       name: new FormControl('', 
         {validators: [Validators.required, Validators.minLength(5)]}
       ),
