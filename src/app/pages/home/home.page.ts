@@ -33,7 +33,8 @@ export class HomePage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getRooms();
+    this.getRooms(); // get all chat Rooms
+    this.getUsers(); // get all Community Users
   }
   
   getRooms() {
