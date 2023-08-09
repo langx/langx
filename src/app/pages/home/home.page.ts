@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { ModalController, PopoverController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
 import { Observable, take } from 'rxjs';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
@@ -11,7 +11,6 @@ import { ChatService } from 'src/app/services/chat/chat.service';
 })
 export class HomePage implements OnInit {
 
-  @ViewChild('new_chat') modal: ModalController;
   @ViewChild('popover') popover: PopoverController;
   @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     this.cancel();
@@ -71,7 +70,6 @@ export class HomePage implements OnInit {
   onWillDismiss(event: any) {}
 
   cancel(){
-    this.modal.dismiss();
     this.open_new_chat = false;
   }
 
