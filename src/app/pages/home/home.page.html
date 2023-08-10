@@ -22,7 +22,9 @@
 
 <ion-content [fullscreen]="true">
 
-  <ng-container *ngIf="segment=='chats' && (chatRooms | async) as rooms">
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
+  <ng-container *ngIf="segment=='chats' && !isLoading && (chatRooms | async) as rooms">
   
     <app-empty-screen
       *ngIf="(chatRooms | async)?.length == 0"
@@ -53,7 +55,7 @@
 
   </ng-container>
 
-  <ng-container *ngIf="segment=='community'">
+  <ng-container *ngIf="segment=='community' && !isLoading">
 
     <ion-list-header class="ion-padding-bottom">
       Community 
@@ -71,7 +73,7 @@
 
   </ng-container>
 
-  <ng-container *ngIf="segment=='profile'">
+  <ng-container *ngIf="segment=='profile' && !isLoading">
 
     <ion-list-header class="ion-padding-bottom">
       Profile
