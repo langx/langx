@@ -17,11 +17,12 @@ export class HomePage implements OnInit {
     this.cancel();
   }
 
-  segment: string = "profile";
+  segment: string = "community";
   open_new_chat = false;
   users: Observable<any>;
   chatRooms: Observable<any>;
   currentUser: any;
+  isLoading: boolean = false;
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
@@ -42,26 +43,34 @@ export class HomePage implements OnInit {
 
   getProfileInfo() {
       //TODO: showLoader();
+      this.isLoading = true;
       let id = this.auth.getId();
       this.auth.getUserData(id).then(user => {
         this.currentUser = user;
         console.log(this.currentUser);
         //TODO: hideLoader();
+        this.isLoading = false;
       })
   }
 
   getRooms() {
+    //TODO: showLoader();
+    this.isLoading = true;
     this.chatService.getChatRooms();
     this.chatRooms = this.chatService.chatRooms;
+    //TODO: hideLoader();
+    this.isLoading = false;
   }
 
   async logout(){
     try {
       //TODO: showLoader();
+      this.isLoading = true;
       this.popover.dismiss();
       await this.chatService.auth.logout();
       this.router.navigateByUrl('/login', {replaceUrl: true});
       //TODO: hideLoader();
+      this.isLoading = false;
     } catch(e) {
       console.log(e);
     }
@@ -77,8 +86,12 @@ export class HomePage implements OnInit {
   }
 
   getUsers() {
+    //TODO: showLoader();
+    this.isLoading = true;
     this.chatService.getUsers();
     this.users = this.chatService.users;    
+    //TODO: hideLoader();
+    this.isLoading = false;
   }
 
   onWillDismiss(event: any) {}
@@ -89,7 +102,8 @@ export class HomePage implements OnInit {
 
   async startChat(item) {
     try {
-      // show.loader();
+      // showLoader();
+      this.isLoading = true;
       // create chatroom
       const room = await this.chatService.createChatRoom(item?.uid);
       console.log('room: ', room);
@@ -100,10 +114,12 @@ export class HomePage implements OnInit {
         }
       };
       this.router.navigate(['/', 'home', 'chats', room?.id], navData);
-      // hide.loader();
+      // hideLoader();
+      this.isLoading = false;
     } catch(e) {
       console.log(e);
-      // hide.loader();
+      // hideLoader();
+      this.isLoading = false;
     }
   }  
 
