@@ -55,6 +55,10 @@
 
   <ng-container *ngIf="segment=='community'">
 
+    <ion-list-header class="ion-padding-bottom">
+      Community 
+    </ion-list-header>
+
     <ion-content class="ion-padding" *ngIf="(users | async) as user$">
       <ion-list class="ion-top-margin" lines="none">
         <app-user-list
@@ -62,6 +66,22 @@
           [item]="item"
           (onClick)="startChat($event)">
         </app-user-list>
+      </ion-list>
+    </ion-content>
+
+  </ng-container>
+
+  <ng-container *ngIf="segment=='profile'">
+
+    <ion-list-header class="ion-padding-bottom">
+      Profile
+    </ion-list-header>
+    <ion-content class="ion-padding" *ngIf="currentUser">
+      <ion-list class="ion-top-margin" lines="none">
+        <p>{{currentUser.uid}}</p>
+        <p>{{currentUser.name}}</p>
+        <p>{{currentUser.email}}</p>
+        <p>{{currentUser.photo}}</p>
       </ion-list>
     </ion-content>
 

@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { Observable, take } from 'rxjs';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
@@ -16,10 +17,11 @@ export class HomePage implements OnInit {
     this.cancel();
   }
 
-  segment = "community";
+  segment: string = "profile";
   open_new_chat = false;
   users: Observable<any>;
   chatRooms: Observable<any>;
+  currentUser: any;
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
@@ -28,14 +30,26 @@ export class HomePage implements OnInit {
 
   constructor(
     private router: Router,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private auth: AuthService
   ) { }
 
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
     this.getUsers(); // get all Community Users
+    this.getProfileInfo(); // get currentUser for profile info
   }
-  
+
+  getProfileInfo() {
+      //TODO: showLoader();
+      let id = this.auth.getId();
+      this.auth.getUserData(id).then(user => {
+        this.currentUser = user;
+        console.log(this.currentUser);
+        //TODO: hideLoader();
+      })
+  }
+
   getRooms() {
     this.chatService.getChatRooms();
     this.chatRooms = this.chatService.chatRooms;
