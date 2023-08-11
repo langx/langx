@@ -1,20 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Messages</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" id="popover">
-        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-popover #popover trigger="popover" triggerAction="click">
-      <ng-template>
-        <ion-content class="ion-padding" (click)="logout()">
-          <ion-label color="danger">
-            Logout
-          </ion-label>
-        </ion-content>
-      </ng-template>
-    </ion-popover>
   </ion-toolbar>
 </ion-header>
 
