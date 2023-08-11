@@ -26,6 +26,7 @@ export class AuthService {
       console.log(response);
       if(response?.user) {
         this.setUserData(response.user.uid);
+        await this.apiService.setDocument(`users/${response.user.uid}`, {lastLogin: new Date()}, {merge: true});
       }
     } catch(e) {
       throw(e);
@@ -57,7 +58,8 @@ export class AuthService {
         email: formValue?.email,
         name: formValue?.name,
         uid: registeredUser.user.uid,
-        photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200,400)
+        photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200,400),
+        lastLogin: new Date(),
       }
       await this.apiService.setDocument(`users/${registeredUser.user.uid}`, data);
       const userData = {
