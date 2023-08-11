@@ -13,15 +13,15 @@ import { ChatService } from 'src/app/services/chat/chat.service';
 export class HomePage implements OnInit {
 
   @ViewChild('popover') popover: PopoverController;
-  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-    this.cancel();
-  }
+//  @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+//    this.cancel();
+//  }
 
   segment: string = "community";
   open_new_chat = false;
   users: Observable<any>;
   chatRooms: Observable<any>;
-  currentUser: any;
+  //currentUser: any;
   isLoading: boolean = false;
   model = {
     icon: 'chatbubbles-outline',
@@ -96,32 +96,32 @@ export class HomePage implements OnInit {
 
   onWillDismiss(event: any) {}
 
-  cancel(){
-    this.open_new_chat = false;
-  }
+//  cancel(){
+//    this.open_new_chat = false;
+//  }
 
-  async startChat(item) {
-    try {
-      // showLoader();
-      this.isLoading = true;
-      // create chatroom
-      const room = await this.chatService.createChatRoom(item?.uid);
-      console.log('room: ', room);
-      this.cancel();
-      const navData: NavigationExtras = {
-        queryParams: {
-          name: item?.name
-        }
-      };
-      this.router.navigate(['/', 'home', 'chats', room?.id], navData);
-      // hideLoader();
-      this.isLoading = false;
-    } catch(e) {
-      console.log(e);
-      // hideLoader();
-      this.isLoading = false;
-    }
-  }  
+//  async startChat(item) {
+//    try {
+//      // showLoader();
+//      this.isLoading = true;
+//      // create chatroom
+//      const room = await this.chatService.createChatRoom(item?.uid);
+//      console.log('room: ', room);
+//      this.cancel();
+//      const navData: NavigationExtras = {
+//        queryParams: {
+//          name: item?.name
+//        }
+//      };
+//      this.router.navigate(['/', 'home', 'chats', room?.id], navData);
+//      // hideLoader();
+//      this.isLoading = false;
+//    } catch(e) {
+//      console.log(e);
+//      // hideLoader();
+//      this.isLoading = false;
+//    }
+//  }  
 
   getChat(item) {
     (item?.user).pipe(
