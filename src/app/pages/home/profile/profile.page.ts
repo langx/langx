@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { PopoverController } from '@ionic/angular';
+import { ChatService } from 'src/app/services/chat/chat.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -8,11 +11,15 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class ProfilePage implements OnInit {
 
+  @ViewChild('popover') popover: PopoverController;
+
   currentUser: any;
   isLoading: boolean = false;
 
   constructor(
+    private router: Router,
     private auth: AuthService,
+    private chatService: ChatService,
   ) { }
 
   ngOnInit() {
@@ -30,4 +37,19 @@ export class ProfilePage implements OnInit {
       this.isLoading = false;
     })
   } 
+
+  async logout(){
+    try {
+      //TODO: showLoader();
+      this.isLoading = true;
+      this.popover.dismiss();
+      await this.chatService.auth.logout();
+      this.router.navigateByUrl('/login', {replaceUrl: true});
+      //TODO: hideLoader();
+      this.isLoading = false;
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
 }

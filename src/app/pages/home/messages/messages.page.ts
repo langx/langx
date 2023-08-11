@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
 import { Observable, take } from 'rxjs';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
@@ -10,8 +9,6 @@ import { ChatService } from 'src/app/services/chat/chat.service';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-
-  @ViewChild('popover') popover: PopoverController;
   
   chatRooms: Observable<any>;
   isLoading: boolean = false;
@@ -58,17 +55,4 @@ export class MessagesPage implements OnInit {
     return user;
   }
 
-  async logout(){
-    try {
-      //TODO: showLoader();
-      this.isLoading = true;
-      this.popover.dismiss();
-      await this.chatService.auth.logout();
-      this.router.navigateByUrl('/login', {replaceUrl: true});
-      //TODO: hideLoader();
-      this.isLoading = false;
-    } catch(e) {
-      console.log(e);
-    }
-  }
 }
