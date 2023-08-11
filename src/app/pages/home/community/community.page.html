@@ -5,6 +5,7 @@
 </ion-header>
 <ion-content [fullscreen]="true">
 
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <ng-container *ngIf="!isLoading">
 
     <ion-content class="ion-padding" *ngIf="(users | async) as user$">
