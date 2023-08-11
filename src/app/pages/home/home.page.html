@@ -1,132 +1,16 @@
-<!--
-<ion-header [translucent]="true">
-
-  <ion-toolbar color="primary">
-    <ion-title>Fire Chat</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" id="popover">
-        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-popover #popover trigger="popover" triggerAction="click">
-      <ng-template>
-        <ion-content class="ion-padding" (click)="logout()">
-          <ion-label color="danger">
-            Logout
-          </ion-label>
-        </ion-content>
-      </ng-template>
-    </ion-popover>
-  </ion-toolbar>
-
-</ion-header>
-
-<ion-content [fullscreen]="true">
-
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-
-  <ng-container *ngIf="segment=='chats' && !isLoading && (chatRooms | async) as rooms">
-  
-    <app-empty-screen
-      *ngIf="(chatRooms | async)?.length == 0"
-      [model]="model">
-    </app-empty-screen>
-
-    <ion-list *ngIf="rooms?.length > 0">
-      <ion-list-header class="ion-padding-bottom">
-        Recent Chats
-      </ion-list-header>
-
-      <ion-item 
-        *ngFor="let item of rooms"
-        (click)="getChat(item)"
-        detail>
-        <ng-container *ngIf="(item?.user | async) as user">
-          <ion-avatar slot="start">
-            <img [src]="getUser(user)?.photo" alt="">
-          </ion-avatar>
-          <ion-label>
-            <h2>{{getUser(user)?.name}}</h2>
-            <p>{{getUser(user)?.id}}</p>
-          </ion-label>
-          <small>{{(item?.updatedAt)?.toDate() | date: 'HH:mm'}}</small>
-        </ng-container>
-      </ion-item>
-    </ion-list>
-
-  </ng-container>
-
-  <ng-container *ngIf="segment=='community' && !isLoading">
-
-    <ion-list-header class="ion-padding-bottom">
-      Community 
-    </ion-list-header>
-
-    <ion-content class="ion-padding" *ngIf="(users | async) as user$">
-      <ion-list class="ion-top-margin" lines="none">
-        <app-user-list
-          *ngFor="let item of user$"
-          [item]="item"
-          (onClick)="startChat($event)">
-        </app-user-list>
-      </ion-list>
-    </ion-content>
-
-  </ng-container>
-
-  <ng-container *ngIf="segment=='profile' && !isLoading">
-
-    <ion-list-header class="ion-padding-bottom">
-      Profile
-    </ion-list-header>
-    <ion-content class="ion-padding" *ngIf="currentUser">
-      <ion-list class="ion-top-margin" lines="none">
-        <p>{{currentUser.uid}}</p>
-        <p>{{currentUser.name}}</p>
-        <p>{{currentUser.email}}</p>
-        <img [src]="currentUser.photo" style="width: 20%;">
-
-      </ion-list>
-    </ion-content>
-
-  </ng-container>
-
-</ion-content>
-
-<ion-footer>
-
-  <ion-segment [value]="segment" *ngIf="false" (ionChange)="onSegmentChanged($event)">
-    <ion-segment-button value="chats">
-      <ion-label>Chats</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="community">
-      <ion-label>Community</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="profile">
-      <ion-label>Profile</ion-label>
-    </ion-segment-button>
-  </ion-segment>
-
-</ion-footer>
--->
-
 <ion-tabs>
-
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="messages">
       <ion-icon aria-hidden="true" name="triangle"></ion-icon>
       <ion-label>Messages</ion-label>
     </ion-tab-button>
-
     <ion-tab-button tab="community">
       <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
       <ion-label>Community</ion-label>
     </ion-tab-button>
-
     <ion-tab-button tab="profile">
       <ion-icon aria-hidden="true" name="square"></ion-icon>
       <ion-label>Profile</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
-
 </ion-tabs>
