@@ -8,9 +8,6 @@
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <ng-container *ngIf="!isLoading">
-    <ion-list-header class="ion-padding-bottom">
-      Profile
-    </ion-list-header>
     <ion-content class="ion-padding" *ngIf="currentUser">
       <ion-list class="ion-top-margin" lines="none">
         <p>{{currentUser.uid}}</p>
