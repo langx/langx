@@ -5,9 +5,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="example-content">Profile component</div>
-  <ng-container *ngIf="!isLoading">
 
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+  <ng-container *ngIf="!isLoading">
     <ion-list-header class="ion-padding-bottom">
       Profile
     </ion-list-header>
@@ -17,10 +17,8 @@
         <p>{{currentUser.name}}</p>
         <p>{{currentUser.email}}</p>
         <img [src]="currentUser.photo" style="width: 20%;">
-
       </ion-list>
     </ion-content>
-
   </ng-container>
 
 </ion-content>
