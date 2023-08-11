@@ -16,15 +16,16 @@ export class ChatService {
   constructor(
     public auth: AuthService,
     public api: ApiService
-  ) { 
-    //this.getId();
-  }
+  ) { }
 
   getId() {
     this.currentUserId = this.auth.getId()
   }
 
   getUsers() {
+    // get the userId here 
+    this.getId();
+
     this.users = this.api.collectionDataQuery(
       'users',
       this.api.whereQuery('uid', '!=', this.currentUserId)
@@ -72,7 +73,6 @@ export class ChatService {
 
   getChatRooms() {
     // get the userId here 
-    // TODO: because its the first line of calling from home.page.ts
     this.getId();
 
     this.chatRooms = this.api.collectionDataQuery(

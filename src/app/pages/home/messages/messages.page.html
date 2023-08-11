@@ -1,9 +1,54 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Messages</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Fire Chat</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" id="popover">
+        <ion-icon slot="icon-only" name="ellipsis-vertical-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-popover #popover trigger="popover" triggerAction="click">
+      <ng-template>
+        <ion-content class="ion-padding" (click)="logout()">
+          <ion-label color="danger">
+            Logout
+          </ion-label>
+        </ion-content>
+      </ng-template>
+    </ion-popover>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="example-content">Messages component</div>
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+  <ng-container *ngIf="!isLoading && (chatRooms | async) as rooms">
+
+    <app-empty-screen
+      *ngIf="(chatRooms | async)?.length == 0"
+      [model]="model">
+    </app-empty-screen>
+
+    <ion-list *ngIf="rooms?.length > 0">
+      <ion-list-header class="ion-padding-bottom">
+        Recent Chats
+      </ion-list-header>
+
+      <ion-item 
+        *ngFor="let item of rooms"
+        (click)="getChat(item)"
+        detail>
+        <ng-container *ngIf="(item?.user | async) as user">
+          <ion-avatar slot="start">
+            <img [src]="getUser(user)?.photo" alt="">
+          </ion-avatar>
+          <ion-label>
+            <h2>{{getUser(user)?.name}}</h2>
+            <p>{{getUser(user)?.id}}</p>
+          </ion-label>
+          <small>{{(item?.updatedAt)?.toDate() | date: 'HH:mm'}}</small>
+        </ng-container>
+      </ion-item>
+    </ion-list>
+
+  </ng-container>
+
 </ion-content>
