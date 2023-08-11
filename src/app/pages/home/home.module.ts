@@ -18,6 +18,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     HomePageRoutingModule,
     ComponentsModule
   ],
-  declarations: [HomePage, UserListComponent]
+  //declarations: [HomePage, UserListComponent]
+  declarations: [HomePage]
 })
 export class HomePageModule {}

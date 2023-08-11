@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { CommunityPageRoutingModule } from './community-routing.module';
 
 import { CommunityPage } from './community.page';
+import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { CommunityPage } from './community.page';
     IonicModule,
     CommunityPageRoutingModule
   ],
-  declarations: [CommunityPage]
+  declarations: [CommunityPage, UserListComponent]
 })
 export class CommunityPageModule {}

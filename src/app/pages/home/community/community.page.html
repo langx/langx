@@ -4,5 +4,19 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <div class="example-content">Community component</div>
+
+  <ng-container *ngIf="!isLoading">
+
+    <ion-content class="ion-padding" *ngIf="(users | async) as user$">
+      <ion-list class="ion-top-margin" lines="none">
+        <app-user-list
+          *ngFor="let item of user$"
+          [item]="item"
+          (onClick)="startChat($event)">
+        </app-user-list>
+      </ion-list>
+    </ion-content>
+
+  </ng-container>
+
 </ion-content>
