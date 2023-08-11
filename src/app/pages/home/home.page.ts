@@ -38,20 +38,20 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
     this.getUsers(); // get all Community Users
-    this.getProfileInfo(); // get currentUser for profile info
+    //this.getProfileInfo(); // get currentUser for profile info
   }
 
-  getProfileInfo() {
-      //TODO: showLoader();
-      this.isLoading = true;
-      let id = this.auth.getId();
-      this.auth.getUserData(id).then(user => {
-        this.currentUser = user;
-        console.log(this.currentUser);
-        //TODO: hideLoader();
-        this.isLoading = false;
-      })
-  }
+//  getProfileInfo() {
+//      //TODO: showLoader();
+//      this.isLoading = true;
+//      let id = this.auth.getId();
+//      this.auth.getUserData(id).then(user => {
+//        this.currentUser = user;
+//        console.log(this.currentUser);
+//        //TODO: hideLoader();
+//        this.isLoading = false;
+//      })
+//  }
 
   getRooms() {
     //TODO: showLoader();
