@@ -18,9 +18,9 @@ export class ApiService {
     return collection(this.firestore, path);
   }
 
-  setDocument(path, data) {
+  setDocument(path, data, options?) {
     const dataRef = this.docRef(path);
-    return setDoc<any>(dataRef, data); //set()
+    return setDoc<any>(dataRef, data, options); //set()
   }
 
   addDocument(path, data) {
