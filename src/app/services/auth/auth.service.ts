@@ -27,7 +27,7 @@ export class AuthService {
       if (snap.val() === true) {
         const con = push(myConnectionsRef)
         onDisconnect(con).remove();
-        set(con, true);
+        set(con, true).then(() => {console.log('user connected to realtime db')});
         onDisconnect(lastOnlineRef).set(serverTimestamp());
       }
     });
