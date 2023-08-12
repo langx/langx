@@ -18,30 +18,19 @@ export class AuthService {
     private apiService: ApiService
   ) { }
 
-  // TODO: it may move to api.service.ts
+  // TODO: it may move to presence.service.ts
   updatePresence(id: string) {
-
-    // any time that connectionsRef's value is null (i.e. has no children) I am offline
     const myConnectionsRef = ref(this.db, 'users/' + id + '/connections');
-    // stores the timestamp of my last disconnect (the last time I was seen online)
     const lastOnlineRef = ref(this.db, 'users/' + id + '/lastOnline');
-
     const connectedRef = ref(this. db, '.info/connected');
     onValue(connectedRef, (snap) => {
       if (snap.val() === true) {
-        // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
         const con = push(myConnectionsRef)
-        con.then((con) => {console.log('con:', con)});
-        // When I disconnect, remove this device
-        onDisconnect(con).remove().then(() => {console.log('done removed')}).catch((error) => {console.log(error)});
-        // Add this device to my connections list
-        // this value could contain info about the device or a timestamp too
-        set(con, true).then(() => {console.log('done set')}).catch((error) => {console.log(error)});
-        // When I disconnect, update the last time I was seen online
-        onDisconnect(lastOnlineRef).set(serverTimestamp()).then(() => {console.log('done lastOnlineRef')}).catch((error) => {console.log(error)});
+        onDisconnect(con).remove();
+        set(con, true);
+        onDisconnect(lastOnlineRef).set(serverTimestamp());
       }
     });
-
   }
 
   async login(email: string, password: string): Promise<any> {
