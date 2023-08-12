@@ -10,7 +10,7 @@ export const environment = {
     storageBucket: "firechat-3b654.appspot.com",
     messagingSenderId: "273644625627",
     appId: "1:273644625627:web:e1ae7d00a3e70bd937f6fe",
-    databaseURL: 'https://firechat-3b654.firebaseio.com'
+    databaseURL: 'https://firechat-3b654-default-rtdb.europe-west1.firebasedatabase.app/'
   },
   production: false
 };
