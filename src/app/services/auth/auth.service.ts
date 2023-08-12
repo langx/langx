@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../api/api.service';
+import { Database, onDisconnect, onValue, push, ref, serverTimestamp, set} from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,36 @@ export class AuthService {
   currentUser: any;
 
   constructor(
+    private db: Database,
     private fireAuth: Auth,
     private apiService: ApiService
   ) { }
+
+  // TODO: it may move to api.service.ts
+  updatePresence(id: string) {
+
+    // any time that connectionsRef's value is null (i.e. has no children) I am offline
+    const myConnectionsRef = ref(this.db, 'users/' + id + '/connections');
+    // stores the timestamp of my last disconnect (the last time I was seen online)
+    const lastOnlineRef = ref(this.db, 'users/' + id + '/lastOnline');
+
+    const connectedRef = ref(this. db, '.info/connected');
+    onValue(connectedRef, (snap) => {
+      if (snap.val() === true) {
+        // We're connected (or reconnected)! Do anything here that should happen only if online (or on reconnect)
+        const con = push(myConnectionsRef)
+        con.then((con) => {console.log('con:', con)});
+        // When I disconnect, remove this device
+        onDisconnect(con).remove().then(() => {console.log('done removed')}).catch((error) => {console.log(error)});
+        // Add this device to my connections list
+        // this value could contain info about the device or a timestamp too
+        set(con, true).then(() => {console.log('done set')}).catch((error) => {console.log(error)});
+        // When I disconnect, update the last time I was seen online
+        onDisconnect(lastOnlineRef).set(serverTimestamp()).then(() => {console.log('done lastOnlineRef')}).catch((error) => {console.log(error)});
+      }
+    });
+
+  }
 
   async login(email: string, password: string): Promise<any> {
     try {
