@@ -21,7 +21,7 @@ export class AuthService {
   // TODO: it may move to presence.service.ts
   updatePresence(id: string) {
     const myConnectionsRef = ref(this.db, 'users/' + id + '/connections');
-    const lastOnlineRef = ref(this.db, 'users/' + id + '/lastOnline');
+    const lastOnlineRef = ref(this.db, 'users/' + id + '/lastSeen');
     const connectedRef = ref(this. db, '.info/connected');
     onValue(connectedRef, (snap) => {
       if (snap.val() === true) {
