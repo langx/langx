@@ -77,6 +77,8 @@ export class AuthService {
         uid: registeredUser.user.uid,
         photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200,400),
         lastLogin: new Date(),
+        lastSeen: new Date(),
+        online: true,
       }
       await this.apiService.setDocument(`users/${registeredUser.user.uid}`, data);
       const userData = {
