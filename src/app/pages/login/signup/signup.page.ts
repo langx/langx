@@ -52,7 +52,7 @@ export class SignupPage implements OnInit {
     console.log('form.value:', form.value);
     this.authService.register(form.value).then((data: any) => {
       console.log(data);
-      this.router.navigateByUrl('/home');
+      this.router.navigateByUrl('/login/signup/extra');
       //hideLoader();
       this.isLoading = false;
       form.reset();
