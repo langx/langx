@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from '../data'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-complete',
@@ -14,7 +15,9 @@ export class CompletePage implements OnInit {
   form: FormGroup;
   isLoading: boolean = false;
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.initForm();
@@ -40,6 +43,8 @@ export class CompletePage implements OnInit {
   async onSubmit(){
     if(!this.form.valid) return;
     console.log('form.value:', this.form.value);
+    
+    this.router.navigateByUrl('/login/signup/language');
   }
 
   public birthdatePickerColumns = [
