@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ExtraPageRoutingModule } from './extra-routing.module';
+import { LanguagePageRoutingModule } from './language-routing.module';
 
-import { ExtraPage } from './extra.page';
+import { LanguagePage } from './language.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ExtraPageRoutingModule
+    LanguagePageRoutingModule
   ],
-  declarations: [ExtraPage]
+  declarations: [LanguagePage]
 })
-export class ExtraPageModule {}
+export class LanguagePageModule {}

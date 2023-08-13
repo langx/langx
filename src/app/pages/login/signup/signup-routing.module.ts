@@ -9,8 +9,12 @@ const routes: Routes = [
     component: SignupPage
   },
   {
-    path: 'extra',
-    loadChildren: () => import('./extra/extra.module').then( m => m.ExtraPageModule)
+    path: 'complete',
+    loadChildren: () => import('./complete/complete.module').then( m => m.CompletePageModule)
+  },
+  {
+    path: 'language',
+    loadChildren: () => import('./language/language.module').then( m => m.LanguagePageModule)
   }
 ];
 

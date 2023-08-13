@@ -15,7 +15,7 @@ export class SignupPage implements OnInit {
 
   form: FormGroup;
   isLoading: boolean = false;
-  public progress: number = 0.1;
+  public progress: number = 0.2;
 
   constructor(
     private router: Router,
@@ -52,7 +52,7 @@ export class SignupPage implements OnInit {
     console.log('form.value:', form.value);
     this.authService.register(form.value).then((data: any) => {
       console.log(data);
-      this.router.navigateByUrl('/login/signup/extra');
+      this.router.navigateByUrl('/login/signup/complete');
       //hideLoader();
       this.isLoading = false;
       form.reset();
