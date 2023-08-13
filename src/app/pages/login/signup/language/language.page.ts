@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./language.page.scss'],
 })
 export class LanguagePage implements OnInit {
+  public progress: number = 0.93;
 
   constructor() { }
 
