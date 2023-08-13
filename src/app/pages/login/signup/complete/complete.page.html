@@ -1,14 +1,74 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
     <ion-title>Complete Your Profile</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">complete</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <ion-item lines="full">
+      <ion-input
+        id="picker-birthdate"
+        formControlName="birthdate"
+        label="Date of Birth"
+        labelPlacement="floating"
+        type="text"
+        [readonly]="true"
+        required>
+      </ion-input>
+      <ion-picker
+        trigger="picker-birthdate"
+        [columns]="birthdatePickerColumns"
+        [buttons]="birthdatePickerButtons">
+      </ion-picker>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-input
+        id="picker-gender"
+        formControlName="gender"
+        label="Gender"
+        labelPlacement="floating"
+        type="text"
+        [readonly]="true"
+        required>
+      </ion-input>
+      <ion-picker
+        trigger="picker-gender"
+        [columns]="genderPickerColumns"
+        [buttons]="genderPickerButtons">
+      </ion-picker>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-input
+        id="picker-country"
+        formControlName="country"
+        label="Country of Residence"
+        labelPlacement="floating"
+        type="text"
+        [readonly]="true"
+        required>
+      </ion-input>
+      <ion-picker
+        trigger="picker-country"
+        [columns]="countryPickerColumns"
+        [buttons]="countryPickerButtons">
+      </ion-picker>
+    </ion-item>
+
+    <ion-row>
+      <ion-col>
+        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Continue</ion-button>
+        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
 </ion-content>
