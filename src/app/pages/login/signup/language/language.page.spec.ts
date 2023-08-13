@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ExtraPage } from './extra.page';
+import { LanguagePage } from './language.page';
 
-describe('ExtraPage', () => {
-  let component: ExtraPage;
-  let fixture: ComponentFixture<ExtraPage>;
+describe('LanguagePage', () => {
+  let component: LanguagePage;
+  let fixture: ComponentFixture<LanguagePage>;
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(ExtraPage);
+    fixture = TestBed.createComponent(LanguagePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
