@@ -1,7 +1,6 @@
 import { Component, OnInit} from '@angular/core';
-import { firebaseApp$ } from '@angular/fire/app';
-import { Database, getDatabase, onValue, ref, set } from '@angular/fire/database';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { PresenceService } from 'src/app/services/presence/presence.service';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +10,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class HomePage implements OnInit {
 
   constructor(
-    private auth: AuthService
+    private auth: AuthService,
+    private presence: PresenceService,
   ) {}
 
   ngOnInit() {
@@ -20,6 +20,6 @@ export class HomePage implements OnInit {
 
   updatePresence() {
     let id = this.auth.getId();
-    this.auth.updatePresence(id);
+    this.presence.updatePresence(id);
   }
 }
