@@ -15,6 +15,7 @@ export class SignupPage implements OnInit {
 
   form: FormGroup;
   isLoading: boolean = false;
+  public progress: number = 0.1;
 
   constructor(
     private router: Router,
@@ -29,7 +30,7 @@ export class SignupPage implements OnInit {
   initForm() {
     this.form = new FormGroup({
       name: new FormControl('', 
-        {validators: [Validators.required, Validators.minLength(5)]}
+        {validators: [Validators.required, Validators.minLength(5), Validators.maxLength(20)]}
       ),
       email: new FormControl('', 
         {validators: [Validators.required, Validators.email]}
