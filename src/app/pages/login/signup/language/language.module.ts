@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { LanguagePageRoutingModule } from './language-routing.module';
 
 import { LanguagePage } from './language.page';
+import { CustomFilterPipe } from 'src/app/extras/custom-filter.pipe';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { LanguagePage } from './language.page';
     IonicModule,
     LanguagePageRoutingModule
   ],
-  declarations: [LanguagePage]
+  declarations: [LanguagePage, CustomFilterPipe]
 })
 export class LanguagePageModule {}
