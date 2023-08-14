@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-step2',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class Step2Page implements OnInit {
 
-  constructor() { }
+  motherLanguage: string;
+
+  constructor(
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit() {
+    const data: any = this.route.snapshot.queryParams;
+    this.motherLanguage = data.motherLanguage; 
+    console.log('motherLanguage',this.motherLanguage);
   }
 
 }
