@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { languagesData } from '../../data';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-step1',
   templateUrl: './step1.page.html',
@@ -12,13 +13,23 @@ export class Step1Page implements OnInit {
   isLoading: boolean = false;
   public languages = languagesData;
   term: string;
+  
+  chosenLanguage: string = 'en';
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
 
   radioChecked(event){
-      console.log(event.detail.value);
+      this.chosenLanguage = event.detail.value;
+  }
+
+  step1Completed(){
+    console.log('step1 completed');
+    console.log(this.chosenLanguage);
+    this.router.navigateByUrl('/login/signup/language/step2');
   }
 }
