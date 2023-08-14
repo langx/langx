@@ -16,7 +16,7 @@ export class Step2Page implements OnInit {
   term: string;
   
   motherLanguage: string;
-  studyLanguage: Array<string> = [];
+  studyLanguages: Array<string> = [];
 
   constructor(
     private router: Router,
@@ -30,13 +30,13 @@ export class Step2Page implements OnInit {
   }
 
   checkboxChecked(event){
-    if(this.studyLanguage.includes(event.detail.value)){
-      this.studyLanguage = this.studyLanguage.filter(item => item !== event.detail.value);
-      console.log(this.studyLanguage);
+    if(this.studyLanguages.includes(event.detail.value)){
+      this.studyLanguages = this.studyLanguages.filter(item => item !== event.detail.value);
+      console.log(this.studyLanguages);
       return;
     } else {
-      this.studyLanguage.push(event.detail.value);
-      console.log(this.studyLanguage);
+      this.studyLanguages.push(event.detail.value);
+      console.log(this.studyLanguages);
       return;
     }
   }
@@ -46,7 +46,7 @@ export class Step2Page implements OnInit {
     const navData: NavigationExtras = {
       queryParams: {
         motherLanguage: this.motherLanguage,
-        studyLanguage: this.studyLanguage
+        studyLanguages: this.studyLanguages
       }
     };
     this.isLoading = false; //hideLoader();
