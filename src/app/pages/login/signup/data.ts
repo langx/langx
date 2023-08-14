@@ -606,7 +606,7 @@ const countryData = [
     value: 'ZW', map: '🇿🇼', phoneCode: 26, text: 'Zimbabwe',
   }];
 
-const languages =
+const languagesData =
   [
     {"code":"ab","name":"Abkhaz","nativeName":"аҧсуа"},
     {"code":"aa","name":"Afar","nativeName":"Afaraf"},
@@ -811,4 +811,4 @@ const languageLevels = [
   { text: 'Fluent', value: 'fluent'}, { text: 'Intermediate', value: 'intermediate'}, {text: 'Beginner', value: 'beginner'}
 ];
 
-export { countryData, birthdateData, genderData, languages, languageLevels};
+export { countryData, birthdateData, genderData, languagesData, languageLevels};
