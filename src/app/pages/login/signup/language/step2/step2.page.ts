@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class Step2Page implements OnInit {
 
-  motherLanguage: string;
+  completeData: Object = {};
 
   constructor(
     private route: ActivatedRoute
@@ -16,8 +16,7 @@ export class Step2Page implements OnInit {
 
   ngOnInit() {
     const data: any = this.route.snapshot.queryParams;
-    this.motherLanguage = data.motherLanguage; 
-    console.log('motherLanguage',this.motherLanguage);
+    console.log('navData coming from step1', data);
   }
 
 }

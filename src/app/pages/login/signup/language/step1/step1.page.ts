@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { languagesData } from '../../data';
 import { NavigationExtras, Router } from '@angular/router';
+
 @Component({
   selector: 'app-step1',
   templateUrl: './step1.page.html',
@@ -9,12 +10,11 @@ import { NavigationExtras, Router } from '@angular/router';
 export class Step1Page implements OnInit {
 
   public progress: number = 0.33;
-
   isLoading: boolean = false;
   public languages = languagesData;
   term: string;
   
-  chosenLanguage: string = 'en';
+  motherLanguage: string;
 
   constructor(
     private router: Router
@@ -24,20 +24,19 @@ export class Step1Page implements OnInit {
   }
 
   radioChecked(event){
-      this.chosenLanguage = event.detail.value;
+    this.motherLanguage = event.detail.value;
   }
 
   step1Completed(){
-    // showLoader();
-    this.isLoading = true;
-    console.log('step1 completed');
-    const navData: NavigationExtras = {
+    this.isLoading = true; //showLoader();
+        const navData: NavigationExtras = {
       queryParams: {
-        motherLanguage: this.chosenLanguage 
+        motherLanguage: this.motherLanguage
       }
     };
-    // hideLoader();
-    this.isLoading = false;
+    this.isLoading = false; //hideLoader();
     this.router.navigate(['/','login','signup','language','step2'], navData);
+    console.log('step1 completed');
   }
+
 }
