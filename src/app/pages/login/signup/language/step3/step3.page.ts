@@ -28,7 +28,6 @@ export class Step3Page implements OnInit {
     let studyLanguages: Array<string> = [];
     this.motherLanguage = data.motherLanguage;
     studyLanguages = data.studyLanguages;
-    console.log('motherLanguage', this.motherLanguage, 'studyLanguage', studyLanguages);
     studyLanguages.forEach((language) => {
       this.studyLanguages.push({
         name: languagesData.find((lang) => lang.code === language).name,
@@ -37,7 +36,7 @@ export class Step3Page implements OnInit {
         level: 0,
       })
     })
-    console.log(this.studyLanguages);
+    // console.log(this.studyLanguages);
   }
 
   radioChecked(event, item) {
@@ -48,7 +47,6 @@ export class Step3Page implements OnInit {
   async completeLanguages() {
     if(this.studyLanguages.find((lang) => lang.level === 0)) {
       let msg = "Please select your level for all languages";
-
       const alert = await this.alertController.create({
         header: 'Alert',
         //subHeader: 'Important message',
