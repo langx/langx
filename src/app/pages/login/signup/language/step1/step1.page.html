@@ -1,13 +1,41 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>step1</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Choice Your Languages</ion-title>
+    <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">step1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+    <ion-list>
+      <ion-list-header>
+        <ion-title>Mother Language</ion-title>
+        <ion-note>the language you speak at home</ion-note>
+      </ion-list-header>
+      <ion-searchbar [(ngModel)]="term"></ion-searchbar>
+      <ion-radio-group value="start" (ionChange)="radioChecked($event)">
+        <ion-item *ngFor="let lang of languages | customFilter: term">
+          <ion-radio value="{{lang.code}}">{{lang.nativeName}}</ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </ion-list>
+
+    <ion-row>
+      <ion-col>
+        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Continue</ion-button>
+        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Footer</ion-title>
+  </ion-toolbar>
+</ion-footer>
