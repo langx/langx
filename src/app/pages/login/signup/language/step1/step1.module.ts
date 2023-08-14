@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { Step1PageRoutingModule } from './step1-routing.module';
 
 import { Step1Page } from './step1.page';
-import { CustomFilterPipe } from 'src/app/extras/custom-filter.pipe';
+import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
   imports: [
@@ -15,7 +15,8 @@ import { CustomFilterPipe } from 'src/app/extras/custom-filter.pipe';
     FormsModule,
     IonicModule,
     Step1PageRoutingModule,
+    AppExtrasModule
   ],
-  declarations: [Step1Page, CustomFilterPipe]
+  declarations: [Step1Page]
 })
 export class Step1PageModule {}

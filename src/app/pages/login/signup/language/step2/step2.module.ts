@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { Step2PageRoutingModule } from './step2-routing.module';
 
 import { Step2Page } from './step2.page';
+import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    Step2PageRoutingModule
+    Step2PageRoutingModule,
+    AppExtrasModule
   ],
   declarations: [Step2Page]
 })
