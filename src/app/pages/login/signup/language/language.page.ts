@@ -9,7 +9,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class LanguagePage implements OnInit {
   
-  public progress: number = 0.93;
+  public progress: number = 0.33;
+  isLoading: boolean = false;
   public languages = languagesData;
   term: string;
 
