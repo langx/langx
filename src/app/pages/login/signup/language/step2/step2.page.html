@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Choice Your Languages</ion-title>
+    <ion-title>Your Languages</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
@@ -19,7 +19,7 @@
       <ion-row>
         <ion-col value="start" (ionChange)="checkboxChecked($event)">
           <ion-item *ngFor="let lang of languages | customFilter: term">
-            <ion-checkbox value="{{lang.code}}" [checked]="studyLanguage.includes(lang.code)" labelPlacement="start">{{lang.name}}</ion-checkbox>
+            <ion-checkbox value="{{lang.code}}" [checked]="studyLanguages.includes(lang.code)" labelPlacement="start">{{lang.name}}</ion-checkbox>
           </ion-item>
         </ion-col>
       </ion-row>

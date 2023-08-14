@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { languagesData } from '../../data'
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-step3',
@@ -8,19 +10,60 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class Step3Page implements OnInit {
 
+  public progress: number = 1;
+  isLoading: boolean = false;
+  fill = 'clear';
+
   motherLanguage: string;
-  studyLanguage: Array<string> = [];
+  studyLanguages: Array<any> = [];
 
   constructor(
     private route: ActivatedRoute,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
     const data: any = this.route.snapshot.queryParams;
     console.log('navData coming from step2', data);
+    let studyLanguages: Array<string> = [];
     this.motherLanguage = data.motherLanguage;
-    this.studyLanguage = data.studyLanguage;
-    console.log('motherLanguage', this.motherLanguage, 'studyLanguage', this.studyLanguage);
+    studyLanguages = data.studyLanguages;
+    console.log('motherLanguage', this.motherLanguage, 'studyLanguage', studyLanguages);
+    studyLanguages.forEach((language) => {
+      this.studyLanguages.push({
+        name: languagesData.find((lang) => lang.code === language).name,
+        nativeName: languagesData.find((lang) => lang.code === language).nativeName,
+        code: language, 
+        level: 0,
+      })
+    })
+    console.log(this.studyLanguages);
+  }
+
+  radioChecked(event, item) {
+    console.log(event.detail.value, item.code);
+    this.studyLanguages.find((lang) => lang.code === item.code).level = event.detail.value;
+  }
+
+  async completeLanguages() {
+    if(this.studyLanguages.find((lang) => lang.level === 0)) {
+      let msg = "Please select your level for all languages";
+
+      const alert = await this.alertController.create({
+        header: 'Alert',
+        //subHeader: 'Important message',
+        message: msg,
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    } else {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+        alert('Languages saved successfully');
+      }, 2000)
+    }
   }
 
 }
