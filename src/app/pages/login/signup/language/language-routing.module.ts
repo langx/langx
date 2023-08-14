@@ -26,8 +26,7 @@ const routes: Routes = [
         loadChildren: () => import('./step3/step3.module').then( m => m.Step3PageModule)
       }
     ]
-  },
-  
+  }
 ];
 
 @NgModule({
