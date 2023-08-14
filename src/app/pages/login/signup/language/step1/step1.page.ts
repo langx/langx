@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { languagesData } from '../../data';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 @Component({
   selector: 'app-step1',
   templateUrl: './step1.page.html',
@@ -28,8 +28,16 @@ export class Step1Page implements OnInit {
   }
 
   step1Completed(){
+    // showLoader();
+    this.isLoading = true;
     console.log('step1 completed');
-    console.log(this.chosenLanguage);
-    this.router.navigateByUrl('/login/signup/language/step2');
+    const navData: NavigationExtras = {
+      queryParams: {
+        motherLanguage: this.chosenLanguage 
+      }
+    };
+    // hideLoader();
+    this.isLoading = false;
+    this.router.navigate(['/','login','signup','language','step2'], navData);
   }
 }
