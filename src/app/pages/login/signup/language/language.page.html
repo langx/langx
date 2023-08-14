@@ -9,9 +9,19 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">language</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <form>
+    <ion-radio-group value="start" (ionChange)="languageChange($event)">
+
+      <ion-list>
+        <ion-list-header>
+          <ion-title>Mother Language</ion-title>
+        </ion-list-header>
+        <ion-searchbar [(ngModel)]="term" name="searchbar"></ion-searchbar>
+        <ion-item *ngFor="let lang of languages | customFilter: term">
+          <ion-radio value="{{lang.code}}">{{lang.name}}</ion-radio>
+        </ion-item>
+      </ion-list>
+
+    </ion-radio-group>
+  </form>
 </ion-content>
