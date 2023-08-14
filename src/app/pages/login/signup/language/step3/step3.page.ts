@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { languagesData } from '../../data'
 import { AlertController } from '@ionic/angular';
 
@@ -18,6 +18,7 @@ export class Step3Page implements OnInit {
   studyLanguages: Array<any> = [];
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController
   ) { }
@@ -59,7 +60,7 @@ export class Step3Page implements OnInit {
       this.isLoading = true;
       setTimeout(() => {
         this.isLoading = false;
-        alert('Languages saved successfully');
+        this.router.navigateByUrl('/home');
       }, 2000)
     }
   }
