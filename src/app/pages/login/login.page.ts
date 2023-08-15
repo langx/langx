@@ -70,6 +70,10 @@ export class LoginPage implements OnInit {
     });
   }
 
+  signInWithGoogle() {
+    this.authService.signInWithGoogle().then((data: any) => {console.log('data:', data)})
+  }
+
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
