@@ -29,11 +29,11 @@ export class Step3Page implements OnInit {
     let studyLanguages: Array<string> = [];
     this.motherLanguage = data.motherLanguage;
     
-    // TODO: step1 sending empty data for motherLanguage !!!!!
-    // TODO: get studyLanguages check Array or not ! 
-    // when the page refresh data.studyLanguages is turn to string WHEN THE ARRAY CONTAINS ONLY ONE ITEM
-    console.log('studyLanguages', data.studyLanguages);
-    studyLanguages = data.studyLanguages;
+    if(typeof(data.studyLanguages) === 'string') {
+      studyLanguages.push(data.studyLanguages);
+    } else {
+      studyLanguages = data.studyLanguages;
+    }
 
     studyLanguages.forEach((language) => {
       this.studyLanguages.push({
