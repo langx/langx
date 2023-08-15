@@ -37,7 +37,6 @@ export class Step3Page implements OnInit {
         level: 0,
       })
     })
-    // console.log(this.studyLanguages);
   }
 
   radioChecked(event, item) {
@@ -57,11 +56,14 @@ export class Step3Page implements OnInit {
       await alert.present();
       return;
     } else {
+      console.log('languages', this.motherLanguage, this.studyLanguages);
+      /*
       this.isLoading = true;
       setTimeout(() => {
         this.isLoading = false;
         this.router.navigateByUrl('/home');
       }, 2000)
+      */
     }
   }
 
