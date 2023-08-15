@@ -42,7 +42,11 @@ export class SignupPage implements OnInit {
   }
 
   async onSubmit(){
-    if(!this.form.valid) return;
+    if(!this.form.valid){
+      this.showAlert("Please fill all required fields");
+      return;
+    }
+    
     this.register(this.form);
   }
 
