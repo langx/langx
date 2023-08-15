@@ -64,7 +64,7 @@ export class CompletePage implements OnInit {
     {
       text: 'Confirm',
       handler: (value) => {
-        let val = value.day.text + '.' + value.month.value + '.' + value.year.text;
+        let val = value.day.text + '/' + value.month.value + '/' + value.year.text;
         this.form.controls['birthdate'].setValue(val);
       },
     },
