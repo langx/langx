@@ -72,7 +72,19 @@ export class LoginPage implements OnInit {
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {
-      console.log('userId:', userId);
+
+      this.authService.getUserData(userId).then(user => {
+        if(user.completeProfile) {
+          if(user.completeLanguages) {
+            this.router.navigateByUrl('/home');
+          } else {
+            this.router.navigateByUrl('/login/signup/language');
+          }
+        } else {
+          this.router.navigateByUrl('/login/signup/complete');
+        }
+      });
+
     });
   }
 
