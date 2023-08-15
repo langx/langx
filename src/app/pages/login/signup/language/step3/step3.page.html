@@ -37,7 +37,7 @@
 
   <ion-row>
     <ion-col>
-      <ion-button *ngIf="!isLoading" (click)="completeLanguages()" color="primary" expand="block">Complete ✅</ion-button>
+      <ion-button *ngIf="!isLoading" (click)="onSubmit()" color="primary" expand="block">Complete ✅</ion-button>
       <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       </ion-button>

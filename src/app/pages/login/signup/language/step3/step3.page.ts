@@ -28,7 +28,13 @@ export class Step3Page implements OnInit {
     console.log('navData coming from step2', data);
     let studyLanguages: Array<string> = [];
     this.motherLanguage = data.motherLanguage;
+    
+    // TODO: step1 sending empty data for motherLanguage !!!!!
+    // TODO: get studyLanguages check Array or not ! 
+    // when the page refresh data.studyLanguages is turn to string WHEN THE ARRAY CONTAINS ONLY ONE ITEM
+    console.log('studyLanguages', data.studyLanguages);
     studyLanguages = data.studyLanguages;
+
     studyLanguages.forEach((language) => {
       this.studyLanguages.push({
         name: languagesData.find((lang) => lang.code === language).name,
@@ -44,19 +50,17 @@ export class Step3Page implements OnInit {
     this.studyLanguages.find((lang) => lang.code === item.code).level = event.detail.value;
   }
 
-  async completeLanguages() {
+  async onSubmit(){
     if(this.studyLanguages.find((lang) => lang.level === 0)) {
-      let msg = "Please select your level for all languages";
-      const alert = await this.alertController.create({
-        header: 'Alert',
-        //subHeader: 'Important message',
-        message: msg,
-        buttons: ['OK'],
-      });
-      await alert.present();
+      this.showAlert("Please select your level for all languages");
       return;
-    } else {
-      console.log('languages', this.motherLanguage, this.studyLanguages);
+    } 
+    this.completeLanguages(this.motherLanguage, this.studyLanguages);
+  }
+
+  completeLanguages(motherLanguage, studyLanguages) {
+
+      console.log('languages', motherLanguage, studyLanguages);
       /*
       this.isLoading = true;
       setTimeout(() => {
@@ -64,7 +68,16 @@ export class Step3Page implements OnInit {
         this.router.navigateByUrl('/home');
       }, 2000)
       */
-    }
+  }
+
+  async showAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      //subHeader: 'Important message',
+      message: msg,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
 }
