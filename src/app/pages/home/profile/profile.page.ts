@@ -18,7 +18,7 @@ export class ProfilePage implements OnInit {
 
   constructor(
     private router: Router,
-    private auth: AuthService,
+    private authService: AuthService,
     private chatService: ChatService,
   ) { }
 
@@ -29,8 +29,8 @@ export class ProfilePage implements OnInit {
   getProfileInfo() {
     //TODO: showLoader();
     this.isLoading = true;
-    let id = this.auth.getId();
-    this.auth.getUserData(id).then(user => {
+    let id = this.authService.getId();
+    this.authService.getUserData(id).then(user => {
       this.currentUser = user;
       console.log(this.currentUser);
       //TODO: hideLoader();
