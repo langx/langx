@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from '../data'
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-complete',
@@ -16,7 +17,8 @@ export class CompletePage implements OnInit {
   isLoading: boolean = false;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -102,10 +104,24 @@ export class CompletePage implements OnInit {
   ];
 
   async onSubmit(){
-    if(!this.form.valid) return;
     console.log('form.value:', this.form.value);
-    
-    this.router.navigateByUrl('/login/signup/language');
+    if(!this.form.valid) {
+      let msg = "Please fill all the required fields";
+      const alert = await this.alertController.create({
+        header: 'Alert',
+        //subHeader: 'Important message',
+        message: msg,
+        buttons: ['OK'],
+      });
+      await alert.present();
+      return;
+    } else {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+        this.router.navigateByUrl('/login/signup/language');
+      }, 2000)
+    }
   }
 
 }
