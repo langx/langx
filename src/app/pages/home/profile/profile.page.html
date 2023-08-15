@@ -24,11 +24,16 @@
   <ng-container *ngIf="!isLoading">
     <ion-content class="ion-padding" *ngIf="currentUser">
       <ion-list class="ion-top-margin" lines="none">
-        <p>{{currentUser.uid}}</p>
-        <p>{{currentUser.name}}</p>
-        <p>{{currentUser.email}}</p>
-        <p>{{currentUser.online}}</p>
-        <p>{{currentUser.lastSeen}}</p>
+        <p>id: {{currentUser.uid}}</p>
+        <p>name: {{currentUser.name}}</p>
+        <p>email: {{currentUser.email}}</p>
+        <p>status: {{currentUser.online}}</p>
+        <p>lastSeen: {{currentUser.lastSeen}}</p>
+        <p>birthdate: {{currentUser.birthdate}}</p>
+        <p>gender: {{currentUser.gender}}</p>
+        <p>country name:{{currentUser.country.name}}</p>
+        <p>countrycode: {{currentUser.country.code}}</p>
+        <p>photoURL: {{currentUser.photo}}</p>
         <img [src]="currentUser.photo" style="width: 20%;">
       </ion-list>
     </ion-content>
