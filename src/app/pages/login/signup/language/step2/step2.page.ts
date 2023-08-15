@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { languagesData } from '../../data';
 import { ActivatedRoute } from '@angular/router';
 import { NavigationExtras, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-step2',
@@ -20,7 +21,8 @@ export class Step2Page implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -41,6 +43,15 @@ export class Step2Page implements OnInit {
     }
   }
 
+  onSubmit(){
+    if(this.studyLanguages.length < 1){
+      this.showAlert('Please select at least one study language.'); return;
+    } else if(!this.motherLanguage){
+      this.showAlert('Please go back to select a mother language.'); return;
+    } 
+    this.step2Completed();
+  }
+
   step2Completed(){
     this.isLoading = true; //showLoader();
     const navData: NavigationExtras = {
@@ -52,6 +63,16 @@ export class Step2Page implements OnInit {
     this.isLoading = false; //hideLoader();
     this.router.navigate(['/','login','signup','language','step3'], navData);
     console.log('step2 completed');
+  }
+
+  async showAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      //subHeader: 'Important message',
+      message: msg,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
 }
