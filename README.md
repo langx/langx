@@ -2,14 +2,17 @@
 
 # BUGS
 
-- [ ]  Cloud Functions does not work well !
 - [ ]  mesajlardaki scroll problemini coz
 - [ ]  mesajlardaki son 20 mesaji yukle
 - [ ]  chatRooms createdAt ve updatedAt ayni
-- [ ]  when logout do presence false
-- [ ]  block user
+- [ ]  block user feature
 - [ ]  archived chat
 - [ ]  404 or redirect for all other domains
+- [ ]  Birthdate check it has to be more than 13 years old
+
+### Cloud Functions
+- [ ]  Cloud Functions does not work well !
+- [ ]  when logout do presence false
 
 ## Settings Page
 
