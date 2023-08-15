@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { languagesData } from '../../data'
 import { AlertController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-step3',
@@ -20,7 +21,8 @@ export class Step3Page implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -46,7 +48,6 @@ export class Step3Page implements OnInit {
   }
 
   radioChecked(event, item) {
-    console.log(event.detail.value, item.code);
     this.studyLanguages.find((lang) => lang.code === item.code).level = event.detail.value;
   }
 
@@ -59,15 +60,24 @@ export class Step3Page implements OnInit {
   }
 
   completeLanguages(motherLanguage, studyLanguages) {
-
-      console.log('languages', motherLanguage, studyLanguages);
-      /*
+      //showLoader();
       this.isLoading = true;
-      setTimeout(() => {
+
+      let form = { motherLanguage: motherLanguage, studyLanguages: studyLanguages };
+      console.log('languages', form);
+      
+      try {
+        this.authService.updateUserLanguageData(form).then(() => {
+          console.log('updateUserLanguageData setted in DB');
+          this.router.navigateByUrl('/home');
+          //hideLoader();
+          this.isLoading = false;
+        });
+      } catch (error) {
+        console.log('error:', error);
         this.isLoading = false;
-        this.router.navigateByUrl('/home');
-      }, 2000)
-      */
+        this.showAlert("Please try again later."); 
+      }
   }
 
   async showAlert(msg: string) {
