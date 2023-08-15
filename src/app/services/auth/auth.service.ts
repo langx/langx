@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword , signInWithPopup, GoogleAuthProvider} from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../api/api.service';
 
@@ -75,6 +75,20 @@ export class AuthService {
     }
   }
 
+  async signInWithGoogle() {
+    try {
+      const user = await signInWithPopup(this.fireAuth, new GoogleAuthProvider());
+      const userData = await this.getUserData(user.user.uid);
+      if(userData) {
+        console.log('user_data:', userData);
+      } else {
+        console.log('no user data');
+      }
+    } catch (error) {
+      
+    }
+  }
+
   async resetPassword(email: string) {
     try {
       await sendPasswordResetEmail(this.fireAuth, email);
@@ -109,7 +123,7 @@ export class AuthService {
     if(docSnap?.exists()) {
       return docSnap.data();
     } else {
-      throw('No such document');
+      return null;
     }
   }
   
