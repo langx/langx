@@ -71,7 +71,9 @@ export class LoginPage implements OnInit {
   }
 
   signInWithGoogle() {
-    this.authService.signInWithGoogle().then((data: any) => {console.log('data:', data)})
+    this.authService.signInWithGoogle().then((userId: any) => {
+      console.log('userId:', userId);
+    });
   }
 
   async showAlert(msg: string) {
