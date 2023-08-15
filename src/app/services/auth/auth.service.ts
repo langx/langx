@@ -132,4 +132,19 @@ export class AuthService {
       throw(e);
     }
   }
+
+  async updateUserLanguageData(formValue) {
+    let id = this.getId();
+    //console.log('id:', id, 'formValue:', formValue);
+    try {
+      const data = {
+        motherLanguage: formValue?.motherLanguage,
+        studyLanguages: formValue?.studyLanguages,
+        completeLanguages: true,
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+    } catch(e) {
+      throw(e);
+    }
+  }
 }
