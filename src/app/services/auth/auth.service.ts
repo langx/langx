@@ -112,5 +112,22 @@ export class AuthService {
       throw('No such document');
     }
   }
-
+  
+  async updateUserData(formValue) {
+    let id = this.getId();
+    //console.log('id:', id, 'formValue:', formValue);
+    try {
+      const data = {
+        birthdate: formValue?.birthdate,
+        gender: formValue?.gender,
+        country: {
+          name: formValue?.country,
+          code: formValue?.countryCode
+        }
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+    } catch(e) {
+      throw(e);
+    }
+  }
 }
