@@ -124,7 +124,8 @@ export class AuthService {
         country: {
           name: formValue?.country,
           code: formValue?.countryCode
-        }
+        },
+        completeProfile: true,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
     } catch(e) {
