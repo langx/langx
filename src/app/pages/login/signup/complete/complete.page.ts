@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from '../data'
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-complete',
@@ -18,7 +19,8 @@ export class CompletePage implements OnInit {
 
   constructor(
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
@@ -106,22 +108,39 @@ export class CompletePage implements OnInit {
   async onSubmit(){
     console.log('form.value:', this.form.value);
     if(!this.form.valid) {
-      let msg = "Please fill all the required fields";
-      const alert = await this.alertController.create({
-        header: 'Alert',
-        //subHeader: 'Important message',
-        message: msg,
-        buttons: ['OK'],
-      });
-      await alert.present();
+      this.showAlert("Please fill all the required fields");
       return;
     } else {
-      this.isLoading = true;
-      setTimeout(() => {
-        this.isLoading = false;
-        this.router.navigateByUrl('/login/signup/language');
-      }, 2000)
+      this.completeRegister(this.form);
     }
+  }
+
+  completeRegister(form: FormGroup) {
+    //showLoader();
+    this.isLoading = true;
+    try {
+      this.authService.updateUserData(form.value).then(() => {
+        console.log('updateUserData setted in DB');
+        this.router.navigateByUrl('/login/signup/language');
+        //hideLoader();
+        this.isLoading = false;
+        form.reset();
+      });
+    } catch (error) {
+      console.log('error:', error);
+      this.isLoading = false;
+      this.showAlert("Please try again later."); 
+    }
+  }
+
+  async showAlert(msg: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      //subHeader: 'Important message',
+      message: msg,
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
 }
