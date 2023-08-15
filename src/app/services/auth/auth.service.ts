@@ -62,6 +62,7 @@ export class AuthService {
         lastLogin: new Date(),
         lastSeen: new Date(),
         online: true,
+        emailVerified: false
       }
       await this.apiService.setDocument(`users/${registeredUser.user.uid}`, data);
       const userData = {
@@ -77,15 +78,38 @@ export class AuthService {
 
   async signInWithGoogle() {
     try {
-      const user = await signInWithPopup(this.fireAuth, new GoogleAuthProvider());
-      const userData = await this.getUserData(user.user.uid);
+      const res = await signInWithPopup(this.fireAuth, new GoogleAuthProvider());
+      const user = res.user;
+      console.log('user:', user);
+      const userData = await this.getUserData(user.uid);
       if(userData) {
         console.log('user_data:', userData);
+        this.setUserData(user.uid);
+        return user.uid; 
       } else {
-        console.log('no user data');
+        //TODO: create user data
+        const data = {
+          email: user.email,
+          name: user?.displayName,
+          uid: user.uid,
+          photo: user?.photoURL,
+          phoneNumber: user?.phoneNumber,
+          emailVerified: user?.emailVerified,
+          lastLogin: new Date(),
+          lastSeen: new Date(),
+          online: true, 
+        }
+        await this.apiService.setDocument(`users/${user.uid}`, data);
+        const userData = {
+          id: user.uid
+        };
+        // set user data while registering
+        this.setUserData(user.uid);
+        return user.uid; 
       }
     } catch (error) {
-      
+      console.log('error:', error);
+      throw(error); 
     }
   }
 
