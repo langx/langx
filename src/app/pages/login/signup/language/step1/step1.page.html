@@ -25,7 +25,7 @@
 
     <ion-row>
       <ion-col>
-        <ion-button *ngIf="!isLoading" (click)="step1Completed()" color="primary" expand="block">Continue</ion-button>
+        <ion-button *ngIf="!isLoading" (click)="onSubmit()" color="primary" expand="block">Continue</ion-button>
         <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
           <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
         </ion-button>
