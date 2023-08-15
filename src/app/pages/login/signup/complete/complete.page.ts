@@ -110,9 +110,8 @@ export class CompletePage implements OnInit {
     if(!this.form.valid) {
       this.showAlert("Please fill all the required fields");
       return;
-    } else {
-      this.completeRegister(this.form);
     }
+    this.completeRegister(this.form);
   }
 
   completeRegister(form: FormGroup) {
