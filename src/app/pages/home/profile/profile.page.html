@@ -1,9 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Profile</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="start">
       <ion-button fill="clear" id="popover">
-        <ion-icon slot="icon-only" name="cog-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-popover #popover trigger="popover" triggerAction="click">
@@ -15,6 +15,13 @@
         </ion-content>
       </ng-template>
     </ion-popover>
+          
+    <ion-buttons slot="end">
+      <ion-menu-button>
+        <ion-icon name="cog-outline"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
@@ -45,3 +52,17 @@
   </ng-container>
 
 </ion-content>
+
+<div class="ion-page" id="main-content"></div>
+<ion-menu side="end" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Settings</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-menu-toggle>
+      <ion-button>Click to close the menu</ion-button>
+    </ion-menu-toggle>
+  </ion-content>
+</ion-menu>
