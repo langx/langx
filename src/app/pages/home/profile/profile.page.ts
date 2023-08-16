@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { Router } from '@angular/router';
+import { IonModal } from '@ionic/angular';
 
 @Component({
   selector: 'app-profile',
@@ -9,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
+
+  @ViewChild(IonModal) modal: IonModal;
 
   public appPages = [
     { title: 'Account', url: 'account', icon: 'person-circle' },
@@ -56,4 +59,7 @@ export class ProfilePage implements OnInit {
     }
   }
 
+  dismissModal() {
+    this.modal.dismiss();
+  }
 }
