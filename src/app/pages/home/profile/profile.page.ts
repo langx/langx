@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { PopoverController } from '@ionic/angular';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { Router } from '@angular/router';
 
@@ -10,8 +9,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
-  @ViewChild('popover') popover: PopoverController;
 
   currentUser: any;
   isLoading: boolean = false;
@@ -42,7 +39,6 @@ export class ProfilePage implements OnInit {
     try {
       //TODO: showLoader();
       this.isLoading = true;
-      this.popover.dismiss();
       await this.chatService.auth.logout();
       this.router.navigateByUrl('/login', {replaceUrl: true});
       //TODO: hideLoader();
