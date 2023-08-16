@@ -2,11 +2,10 @@
   <ion-toolbar color="primary">
     <ion-title>Profile</ion-title>
     
-          
     <ion-buttons slot="end">
-      <ion-menu-button>
+      <ion-button id="open-modal" expand="block" size="large" slot="icon-only" shape="round">
         <ion-icon name="cog-outline"></ion-icon>
-      </ion-menu-button>
+      </ion-button>
     </ion-buttons>
 
   </ion-toolbar>
@@ -40,13 +39,13 @@
 
 </ion-content>
 
+
+<!--
 <div class="ion-page" id="menu-content"></div>
 <ion-menu side="end" contentId="menu-content">
   <ion-content class="ion-padding">
 
     <ion-list id="inbox-list">
-      <ion-list-header>{{ currentUser.name }}</ion-list-header>
-      <ion-note>{{ currentUser.email }}</ion-note>
 
       <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
         <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
@@ -64,3 +63,35 @@
     </ion-menu-toggle>
   </ion-content>
 </ion-menu>
+
+-->
+
+<ion-modal trigger="open-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <div class="block">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Settings</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-list auto-hide="false" *ngFor="let p of appPages; let i = index">
+        <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+          <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+          <ion-label>{{ p.title }}</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ion-list>
+        <ion-item>
+
+      <ion-button color="danger" fill="outline" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+        Logout 
+      </ion-button>
+
+        </ion-item>
+      </ion-list>
+    </ng-template>
+  </div>
+</ion-modal>
