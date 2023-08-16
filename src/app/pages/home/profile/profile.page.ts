@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
 export class ProfilePage implements OnInit {
 
   public appPages = [
-    { title: 'Account', url: '', icon: 'person-circle' },
-    { title: 'Notifications', url: '', icon: 'notifications' },
-    { title: 'Privacy', url: '', icon: 'shield-checkmark' },
-    { title: 'Appearance', url: '', icon: 'contrast' },
+    { title: 'Account', url: 'account', icon: 'person-circle' },
+    { title: 'Notifications', url: 'notifications', icon: 'notifications' },
+    { title: 'Privacy', url: 'privacy', icon: 'shield-checkmark' },
+    { title: 'Appearance', url: 'appearance', icon: 'contrast' },
     { title: 'Logout', url: '', icon: 'log-out' },
   ];
 
