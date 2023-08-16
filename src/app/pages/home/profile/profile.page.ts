@@ -11,14 +11,12 @@ import { Router } from '@angular/router';
 export class ProfilePage implements OnInit {
 
   public appPages = [
-    { title: 'Inbox', url: '/folder/inbox', icon: 'mail' },
-    { title: 'Outbox', url: '/folder/outbox', icon: 'paper-plane' },
-    { title: 'Favorites', url: '/folder/favorites', icon: 'heart' },
-    { title: 'Archived', url: '/folder/archived', icon: 'archive' },
-    { title: 'Trash', url: '/folder/trash', icon: 'trash' },
-    { title: 'Spam', url: '/folder/spam', icon: 'warning' },
+    { title: 'Account', url: '', icon: 'person-circle' },
+    { title: 'Notifications', url: '', icon: 'notifications' },
+    { title: 'Privacy', url: '', icon: 'shield-checkmark' },
+    { title: 'Appearance', url: '', icon: 'contrast' },
+    { title: 'Logout', url: '', icon: 'log-out' },
   ];
-  public labels = ['Family', 'Friends', 'Notes', 'Work', 'Travel', 'Reminders'];
 
   currentUser: any;
   isLoading: boolean = false;
