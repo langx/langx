@@ -176,7 +176,7 @@ export class AuthService {
     //console.log('id:', id, 'formValue:', formValue);
     try {
       const data = {
-        motherLanguage: formValue?.motherLanguage,
+        motherLanguages: formValue?.motherLanguages,
         studyLanguages: formValue?.studyLanguages,
         completeLanguages: true,
       }

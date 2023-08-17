@@ -15,7 +15,7 @@ export class Step3Page implements OnInit {
   isLoading: boolean = false;
   fill = 'clear';
 
-  motherLanguage: string;
+  motherLanguages: Array<any> = [];
   studyLanguages: Array<any> = [];
 
   constructor(
@@ -29,7 +29,7 @@ export class Step3Page implements OnInit {
     const data: any = this.route.snapshot.queryParams;
     console.log('navData coming from step2', data);
     let studyLanguages: Array<string> = [];
-    this.motherLanguage = data.motherLanguage;
+    let motherLanguage = data.motherLanguage;
     
     if(typeof(data.studyLanguages) === 'string') {
       studyLanguages.push(data.studyLanguages);
@@ -43,8 +43,16 @@ export class Step3Page implements OnInit {
         nativeName: languagesData.find((lang) => lang.code === language).nativeName,
         code: language, 
         level: 0,
-      })
+      });
     })
+
+    this.motherLanguages = [{
+      name: languagesData.find((lang) => lang.code === motherLanguage).name,
+      nativeName: languagesData.find((lang) => lang.code === motherLanguage).nativeName,
+      code: motherLanguage,
+      level: -1,
+    }];
+
   }
 
   radioChecked(event, item) {
@@ -56,14 +64,14 @@ export class Step3Page implements OnInit {
       this.showAlert("Please select your level for all languages");
       return;
     } 
-    this.completeLanguages(this.motherLanguage, this.studyLanguages);
+    this.completeLanguages(this.motherLanguages, this.studyLanguages);
   }
 
-  completeLanguages(motherLanguage, studyLanguages) {
+  completeLanguages(motherLanguages, studyLanguages) {
       //showLoader();
       this.isLoading = true;
 
-      let form = { motherLanguage: motherLanguage, studyLanguages: studyLanguages };
+      let form = { motherLanguages: motherLanguages, studyLanguages: studyLanguages };
       console.log('languages', form);
       
       try {
