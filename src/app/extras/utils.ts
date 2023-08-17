@@ -1,9 +1,6 @@
 export function lastSeen(date: Date) {
   let now = new Date();
-  //<small>{{(item?.updatedAt)?.toDate() | date: 'HH:mm'}}</small>
   let lastSeen = new Date(date);
-  //let ls = date.getDate();
-  console.log('lastSeen', date, now, lastSeen);
   let diff = now.getTime() - lastSeen.getTime();
   let minutes = Math.floor(diff / 60000);
   let hours = Math.floor(minutes / 60);
@@ -28,8 +25,6 @@ export function lastSeen(date: Date) {
 export function getAge(date: Date) {
   let now = new Date();
   let birthDate = new Date(date);
-  console.log('getAgeFromBirthdate', date, now, birthDate);
-  // console.log(typeof(birthDate), typeof(now), date, birthDate, now);
   let diff = now.getTime() - birthDate.getTime();
   let age = Math.floor(diff / 31557600000);
   return age;
