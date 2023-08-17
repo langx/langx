@@ -14,11 +14,11 @@ export class ProfilePage implements OnInit {
   @ViewChild(IonModal) modal: IonModal;
 
   public appPages = [
-    { title: 'Account', url: 'account', icon: 'person-circle' },
-    { title: 'Notifications', url: 'notifications', icon: 'notifications' },
-    { title: 'Privacy', url: 'privacy', icon: 'shield-checkmark' },
-    { title: 'Appearance', url: 'appearance', icon: 'contrast' },
-    { title: 'Logout', url: '', icon: 'log-out' },
+    { title: 'Account', url: 'account', icon: 'person-circle-outline' },
+    { title: 'Notifications', url: 'notifications', icon: 'notifications-outline' },
+    { title: 'Privacy', url: 'privacy', icon: 'shield-checkmark-outline' },
+    { title: 'Appearance', url: 'appearance', icon: 'contrast-outline' },
+    { title: 'Logout', url: '', icon: 'log-out-outline' },
   ];
 
   currentUser: any;
