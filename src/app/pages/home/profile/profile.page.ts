@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular';
+import { lastSeen, getAge } from 'src/app/extras/utils';
 
 @Component({
   selector: 'app-profile',
@@ -40,7 +41,7 @@ export class ProfilePage implements OnInit {
     let id = this.authService.getId();
     this.authService.getUserData(id).then(user => {
       this.currentUser = user;
-      console.log(this.currentUser);
+      //console.log(this.currentUser);
       //TODO: hideLoader();
       this.isLoading = false;
     })
@@ -71,6 +72,18 @@ export class ProfilePage implements OnInit {
   
   dismissModal() {
     this.modal.dismiss();
+  }
+
+  lastSeen(d: any) { 
+    if (!d) return null;
+    let a = new Date(d.seconds * 1000)
+    return lastSeen(a);
+   }
+
+  getAge(d: any) {
+    if (!d) return null;
+    let a = new Date(d.seconds * 1000)
+    return getAge(a);
   }
 
 }
