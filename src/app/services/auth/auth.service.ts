@@ -155,9 +155,8 @@ export class AuthService {
     let id = this.getId();
     //console.log('id:', id, 'formValue:', formValue);
     try {
-      let newDate = new Date(formValue?.birthdate);
       const data = {
-        birthdate: newDate,
+        birthdate: formValue?.birthdateWithDateFormat,
         gender: formValue?.gender,
         country: {
           name: formValue?.country,
