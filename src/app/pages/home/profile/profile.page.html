@@ -28,21 +28,41 @@
         <ion-card-subtitle>22 | {{currentUser?.gender}} | {{currentUser?.country.name}}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-list>
+        <ion-list id="langs">
+
           <ion-item>
-            <ion-thumbnail slot="start">
-              <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-            </ion-thumbnail>
-            <ion-label>Item</ion-label>
+            <ion-label>
+              <ion-card-title>Study Languages</ion-card-title>
+              <ion-card-subtitle></ion-card-subtitle>
+            </ion-label>
           </ion-item>
-    
+          
+          <ion-item *ngFor="let lang of currentUser?.studyLanguages">
+            <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
+            <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
+            <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
+            <ion-label>{{lang.name}}</ion-label>
+            <ion-note>{{lang.nativeName}}</ion-note>
+          </ion-item>
+
           <ion-item>
-            <ion-thumbnail slot="start">
-              <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-            </ion-thumbnail>
-            <ion-label>Item</ion-label>
+            <ion-label>
+              <ion-card-title>Mother Tongue</ion-card-title>
+              <ion-card-subtitle></ion-card-subtitle>
+            </ion-label>
           </ion-item>
-    
+           
+          <ion-item *ngIf="currentUser?.motherLanguage">
+            <ion-icon name="battery-charging-outline"></ion-icon>
+            <ion-label>{{currentUser?.motherLanguage}}</ion-label>
+          </ion-item>
+
+          <ion-item>
+            <ion-label>
+              <ion-card-title>New Title</ion-card-title>
+            </ion-label>
+          </ion-item>
+
           <ion-item>
             <ion-thumbnail slot="start">
               <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
