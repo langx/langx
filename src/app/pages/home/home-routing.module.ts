@@ -30,6 +30,25 @@ const routes: Routes = [
   {
     path: 'chats/:id',
     loadChildren: () => import('./chat/chat.module').then( m => m.ChatPageModule)
+  },
+  // ** //
+  // Outside of the Home Children Routing because of Tabs
+  // ** //
+  {
+    path: 'profile/account',
+    loadChildren: () => import('./profile/settings/account/account.module').then( m => m.AccountPageModule)
+  },
+  {
+    path: 'profile/notifications',
+    loadChildren: () => import('./profile/settings/notifications/notifications.module').then( m => m.NotificationsPageModule)
+  },
+  {
+    path: 'profile/privacy',
+    loadChildren: () => import('./profile/settings/privacy/privacy.module').then( m => m.PrivacyPageModule)
+  },
+  {
+    path: 'profile/appearance',
+    loadChildren: () => import('./profile/settings/appearance/appearance.module').then( m => m.AppearancePageModule)
   }
 ];
 
