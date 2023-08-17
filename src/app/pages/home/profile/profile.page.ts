@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular';
 
 @Component({
@@ -66,11 +66,6 @@ export class ProfilePage implements OnInit {
   getAccountPage(page) {
       console.log(page);
       this.dismissModal();
-      const navData: NavigationExtras = {
-        queryParams: {
-          title: page?.title,
-        }
-      };
-      this.router.navigate(['/', 'home', 'profile', page?.url], navData);
+      this.router.navigate(['/', 'home', 'profile', page?.url]);
   };
 }
