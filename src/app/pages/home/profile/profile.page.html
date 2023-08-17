@@ -26,15 +26,32 @@
         <!--TODO: Put here lastSeen -->
         <!--TODO: age has to be calculated and add next line-->
         <ion-card-subtitle>22 | {{currentUser?.gender}} | {{currentUser?.country.name}}</ion-card-subtitle>
+        <ion-card-subtitle>{{currentUser?.lastSeen}}</ion-card-subtitle>
       </ion-card-header>
     </ion-card>
 
     <ion-card>
       <ion-card-header>
         <ion-card-title>About Me</ion-card-title>
+        <ion-card-subtitle></ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        {{currentUser?.aboutMe}}
+        <ion-text *ngIf="!currentUser?.aboutMe">You can edit here your profile description.</ion-text>
+        <ion-text>{{currentUser?.aboutMe}}</ion-text>
+        <ion-list class="langs">
+          <ion-item>
+            <ion-icon name="flag-outline"></ion-icon>
+            <ion-label>{{currentUser?.country.name}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="male-female-outline"></ion-icon>
+            <ion-label>{{currentUser?.gender}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="calendar-number-outline"></ion-icon>
+            <ion-label>{{currentUser?.birthdate}}</ion-label>
+          </ion-item>
+        </ion-list>
       </ion-card-content>
     </ion-card>
 
