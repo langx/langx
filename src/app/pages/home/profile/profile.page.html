@@ -23,6 +23,7 @@
       <ion-card-header id="profile-pic">
         <img [src]="currentUser?.photo" alt="Profile Picture">
         <ion-card-title class=".ion-text-center">{{currentUser?.name}}</ion-card-title>
+        <!--TODO: Put here lastSeen -->
         <!--TODO: age has to be calculated and add next line-->
         <ion-card-subtitle>22 | {{currentUser?.gender}} | {{currentUser?.country.name}}</ion-card-subtitle>
       </ion-card-header>
@@ -74,30 +75,13 @@
 </ion-content>
 
 <!--
-<ion-content [fullscreen]="true">
-
-  <ng-container *ngIf="!isLoading">
-    <ion-content class="ion-padding" *ngIf="currentUser">
-      <ion-list class="ion-top-margin" lines="none">
-        <p>id: {{currentUser.uid}}</p>
-        <p>name: {{currentUser.name}}</p>
-        <p>email: {{currentUser.email}}</p>
-        <p>status: {{currentUser.online}}</p>
-        <p>lastLogin: {{currentUser.lastLogin}}</p>
-        <p>lastSeen: {{currentUser.lastSeen}}</p>
-        <p>birthdate: {{currentUser.birthdate}}</p>
-        <p>gender: {{currentUser.gender}}</p>
-        <p>country name:{{currentUser.country.name}}</p>
-        <p>countrycode: {{currentUser.country.code}}</p>
-        <p>motherLanguage: {{currentUser.motherLanguage}}</p>
-        <p>studyLanguages: {{currentUser.studyLanguages}}</p>
-        <p>completeProfile: {{currentUser.completeProfile}}</p>
-        <p>completeLanguages: {{currentUser.completeLanguages}}</p>
-      </ion-list>
-    </ion-content>
-  </ng-container>
-
-</ion-content>
+<p>id: {{currentUser.uid}}</p>
+<p>email: {{currentUser.email}}</p>
+<p>status: {{currentUser.online}}</p>
+<p>lastLogin: {{currentUser.lastLogin}}</p>
+<p>lastSeen: {{currentUser.lastSeen}}</p>
+<p>birthdate: {{currentUser.birthdate}}</p>
+<p>gender: {{currentUser.gender}}</p>
 -->
 
 <ion-modal trigger="open-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
