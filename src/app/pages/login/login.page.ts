@@ -44,11 +44,21 @@ export class LoginPage implements OnInit {
     //showLoader();
     this.isLoading = true;
     console.log('form.value:', form.value);
-    this.authService.login(form.value.email, form.value.password).then((data: any) => {
+    this.authService.login(form.value.email, form.value.password).then((userId: any) => {
+      this.authService.getUserData(userId).then(user => {
+        if(user.completeProfile) {
+          if(user.completeLanguages) {
+            this.router.navigateByUrl('/home');
+          } else {
+            this.router.navigateByUrl('/login/signup/language');
+          }
+        } else {
+          this.router.navigateByUrl('/login/signup/complete');
+        }
+      });
       //hideLoader();
-      this.isLoading = false;
       form.reset();
-      this.router.navigateByUrl('/home');
+      this.isLoading = false;
     })
     .catch(e => {
       console.log("error:", e);
@@ -72,7 +82,6 @@ export class LoginPage implements OnInit {
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {
-
       this.authService.getUserData(userId).then(user => {
         if(user.completeProfile) {
           if(user.completeLanguages) {
@@ -84,7 +93,6 @@ export class LoginPage implements OnInit {
           this.router.navigateByUrl('/login/signup/complete');
         }
       });
-
     });
   }
 
