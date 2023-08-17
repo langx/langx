@@ -96,23 +96,10 @@
           <ion-title>Settings</ion-title>
         </ion-toolbar>
       </ion-header>
-
       <ion-list auto-hide="false" *ngFor="let p of appPages; let i = index">
         <ion-item (click)="getAccountPage(p)" detail>
           <ion-icon aria-hidden="true" slot="start" [name]="p.icon"></ion-icon>
           <ion-label>{{ p.title }}</ion-label>
-        </ion-item>
-      </ion-list>
-
-      <ion-list>
-        <ion-item>
-
-          <!-- TODO: move this button to last item in list -->
-          <ion-button color="danger" fill="outline" (click)="logout()">
-            <ion-icon name="log-out-outline"></ion-icon>
-            Logout 
-          </ion-button>
-
         </ion-item>
       </ion-list>
     </ng-template>
