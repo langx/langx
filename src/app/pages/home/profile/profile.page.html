@@ -14,7 +14,6 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content class="ion-padding" [fullscreen]="true">
 
     <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
@@ -23,16 +22,15 @@
       <ion-card-header id="profile-pic">
         <img [src]="currentUser?.photo" alt="Profile Picture">
         <ion-card-title class=".ion-text-center">{{currentUser?.name}}</ion-card-title>
-        <!--TODO: Put here lastSeen -->
-        <ion-card-subtitle>22 | {{currentUser?.gender}} | {{currentUser?.country.name}}</ion-card-subtitle>
-        <ion-card-subtitle>{{currentUser?.lastSeen}}</ion-card-subtitle>
+        <ion-card-subtitle>{{getAge(currentUser?.birthdate)}} | {{currentUser?.gender}} | {{currentUser?.country.name}}</ion-card-subtitle>
+        <ion-card-subtitle *ngIf="!currentUser?.online">Active {{lastSeen(currentUser?.lastSeen)}}</ion-card-subtitle>
+        <ion-card-subtitle color="primary">Online</ion-card-subtitle>
       </ion-card-header>
     </ion-card>
 
     <ion-card>
       <ion-card-header>
         <ion-card-title>About Me</ion-card-title>
-        <ion-card-subtitle></ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <ion-text *ngIf="!currentUser?.aboutMe">You can edit here your profile description.</ion-text>
@@ -48,8 +46,7 @@
           </ion-item>
           <ion-item>
             <ion-icon name="calendar-number-outline"></ion-icon>
-            <!--TODO: age has to be calculated and add next line-->
-            <ion-label>{{currentUser?.birthdate}}</ion-label>
+            <ion-label>{{(currentUser?.birthdate)?.toDate() | date: 'dd/MM/YYYY'}}</ion-label>
           </ion-item>
         </ion-list>
       </ion-card-content>
@@ -91,16 +88,6 @@
 
 </ion-content>
 
-<!--
-<p>id: {{currentUser.uid}}</p>
-<p>email: {{currentUser.email}}</p>
-<p>status: {{currentUser.online}}</p>
-<p>lastLogin: {{currentUser.lastLogin}}</p>
-<p>lastSeen: {{currentUser.lastSeen}}</p>
-<p>birthdate: {{currentUser.birthdate}}</p>
-<p>gender: {{currentUser.gender}}</p>
--->
-
 <ion-modal trigger="open-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
   <div class="block">
     <ng-template>
@@ -111,7 +98,6 @@
       </ion-header>
 
       <ion-list auto-hide="false" *ngFor="let p of appPages; let i = index">
-        <!-- <ion-item (click)="dismissModal()" routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">-->
         <ion-item (click)="getAccountPage(p)" detail>
           <ion-icon aria-hidden="true" slot="start" [name]="p.icon"></ion-icon>
           <ion-label>{{ p.title }}</ion-label>

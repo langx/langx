@@ -25,7 +25,7 @@ export function lastSeen(date: Date) {
   }
 }
 
-export function getAgeFromBirthdate(date: Date) {
+export function getAge(date: Date) {
   let now = new Date();
   let birthDate = new Date(date);
   console.log('getAgeFromBirthdate', date, now, birthDate);
