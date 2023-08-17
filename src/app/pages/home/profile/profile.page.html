@@ -24,7 +24,6 @@
         <img [src]="currentUser?.photo" alt="Profile Picture">
         <ion-card-title class=".ion-text-center">{{currentUser?.name}}</ion-card-title>
         <!--TODO: Put here lastSeen -->
-        <!--TODO: age has to be calculated and add next line-->
         <ion-card-subtitle>22 | {{currentUser?.gender}} | {{currentUser?.country.name}}</ion-card-subtitle>
         <ion-card-subtitle>{{currentUser?.lastSeen}}</ion-card-subtitle>
       </ion-card-header>
@@ -49,6 +48,7 @@
           </ion-item>
           <ion-item>
             <ion-icon name="calendar-number-outline"></ion-icon>
+            <!--TODO: age has to be calculated and add next line-->
             <ion-label>{{currentUser?.birthdate}}</ion-label>
           </ion-item>
         </ion-list>
