@@ -27,6 +27,7 @@ export class AuthService {
       if(response?.user) {
         this.setUserData(response.user.uid);
         await this.apiService.setDocument(`users/${response.user.uid}`, {lastLogin: new Date()}, {merge: true});
+        return response.user.uid;
       }
     } catch(e) {
       throw(e);
