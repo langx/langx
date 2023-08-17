@@ -29,7 +29,7 @@ const routes: Routes = [
   },
   {
     path: 'chats/:id',
-    loadChildren: () => import('./chat/chat.module').then( m => m.ChatPageModule)
+    loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
   },
   // ** //
   // Outside of the Home Children Routing because of Tabs
