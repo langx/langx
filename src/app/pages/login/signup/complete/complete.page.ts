@@ -4,6 +4,7 @@ import { countryData, birthdateData, genderData } from '../data'
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { getAge } from 'src/app/extras/utils';
 
 @Component({
   selector: 'app-complete',
@@ -30,6 +31,9 @@ export class CompletePage implements OnInit {
   initForm() {
     this.form = new FormGroup({
       birthdate: new FormControl('', 
+        {validators: [Validators.required]}
+      ),
+      birthdateWithDateFormat: new FormControl('', 
         {validators: [Validators.required]}
       ),
       gender: new FormControl('', 
@@ -65,7 +69,13 @@ export class CompletePage implements OnInit {
       text: 'Confirm',
       handler: (value) => {
         let val = value.day.text + '/' + value.month.value + '/' + value.year.text;
-        this.form.controls['birthdate'].setValue(val);
+        let newDate = new Date(val);
+        if(getAge(newDate) < 13) {
+          this.showAlert("You must be at least 13 years old to use this app");
+        } else {
+          this.form.controls['birthdate'].setValue(val);
+          this.form.controls['birthdateWithDateFormat'].setValue(newDate);
+        }
       },
     },
   ];
