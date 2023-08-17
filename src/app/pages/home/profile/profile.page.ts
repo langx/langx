@@ -59,13 +59,18 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  dismissModal() {
-    this.modal.dismiss();
-  }
-
   getAccountPage(page) {
       console.log(page);
       this.dismissModal();
       this.router.navigate(['/', 'home', 'profile', page?.url]);
   };
+
+  editProfile() {
+    console.log('edit profile clicked!');
+  }
+  
+  dismissModal() {
+    this.modal.dismiss();
+  }
+
 }
