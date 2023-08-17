@@ -19,7 +19,7 @@ export class ProfilePage implements OnInit {
     { title: 'Notifications', url: 'notifications', icon: 'notifications-outline', detail: true },
     { title: 'Privacy', url: 'privacy', icon: 'shield-checkmark-outline', detail: true },
     { title: 'Appearance', url: 'appearance', icon: 'contrast-outline', detail: true },
-    { title: 'Logout', url: '', icon: 'log-out-outline', detail: false },
+    { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
   currentUser: any;
@@ -61,7 +61,11 @@ export class ProfilePage implements OnInit {
   }
 
   getAccountPage(page) {
-      console.log(page);
+      if (page?.url == 'logout') {
+        this.logout();
+        this.dismissModal();
+        return;
+      }
       this.dismissModal();
       this.router.navigate(['/', 'home', 'profile', page?.url]);
   };
