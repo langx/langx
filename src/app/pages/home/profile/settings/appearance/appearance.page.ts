@@ -41,6 +41,7 @@ export class AppearancePage implements OnInit {
       document.body.classList.toggle('dark', shouldAdd);
   }
 
+  // This is for the radio buttons
   modeChange = (event) => {  
     let val = event.detail.value;
     console.log(val);
