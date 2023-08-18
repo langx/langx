@@ -14,10 +14,12 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideAuth, getAuth, initializeAuth, indexedDBLocalPersistence } from '@angular/fire/auth';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { provideStorage, getStorage } from '@angular/fire/storage';
+import { IonicStorageModule } from '@ionic/storage-angular';
+
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot({
+  imports: [BrowserModule, IonicStorageModule.forRoot(), IonicModule.forRoot({
     //mode: 'md'
   }), AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment.firebase )),
