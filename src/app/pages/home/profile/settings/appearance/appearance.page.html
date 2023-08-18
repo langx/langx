@@ -3,14 +3,38 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>appearance</ion-title>
+    <ion-title>Appearance</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">appearance</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+          <ion-radio-group value="mode" (ionChange)="modeChange($event)">
+          <ion-item>
+            <ion-icon name="sunny-outline"></ion-icon>
+            <ion-radio value="day">Day Mode</ion-radio><br />
+          </ion-item>
+          <ion-item>
+            <ion-icon name="moon-outline"></ion-icon>
+            <ion-radio value="night">Night Mode</ion-radio><br />
+          </ion-item>
+          <ion-item>
+            <ion-icon name="contrast-outline"></ion-icon>
+            <ion-radio value="auto">Automatic</ion-radio><br />
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+      <ion-list [inset]="true">
+        <ion-item>
+          <ion-toggle [(ngModel)]="themeToggle" (ionChange)="toggleChange($event)" justify="space-between">
+            Dark Mode
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
