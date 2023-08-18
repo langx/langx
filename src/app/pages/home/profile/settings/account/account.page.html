@@ -8,6 +8,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
   <ion-card>
     <ion-card-header>
       <ion-card-title>Email</ion-card-title>
@@ -16,12 +19,14 @@
       <ion-list>
         <ion-item>
           <ion-icon name="mail-outline"></ion-icon>
-          <ion-label>behicsakar@gmail.com</ion-label>
+          <ion-label>{{ currentUser?.email }}</ion-label>
+          <!--
           <ion-buttons slot="end">
             <ion-button size="small" disabled>
               Change
             </ion-button>
           </ion-buttons>
+          -->
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -49,7 +54,7 @@
       <ion-list>
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
-          <ion-label>16 August 2023, 18:44:12</ion-label>
+          <ion-label>{{ (currentUser?.lastLogin).toDate() | date: 'dd/MM/yyyy, hh:mm:ss' }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -63,7 +68,7 @@
       <ion-list>
         <ion-item>
           <ion-icon name="id-card-outline"></ion-icon>
-          <ion-label>behicsakar@gmail.com</ion-label>
+          <ion-label>{{ currentUser?.uid }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
