@@ -99,6 +99,7 @@ export class AuthService {
           lastLogin: new Date(),
           lastSeen: new Date(),
           online: true, 
+          googleVerified: true
         }
         await this.apiService.setDocument(`users/${user.uid}`, data);
         const userData = {
