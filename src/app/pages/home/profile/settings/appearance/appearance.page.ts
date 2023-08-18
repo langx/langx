@@ -12,4 +12,10 @@ export class AppearancePage implements OnInit {
   ngOnInit() {
   }
 
+  modeChange = (event) => {  
+    let val = event.detail.value;
+    console.log(val);
+    //document.body.classList.toggle('dark');
+  }
+
 }

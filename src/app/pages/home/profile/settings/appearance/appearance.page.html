@@ -12,7 +12,7 @@
   <ion-card>
     <ion-card-content>
       <ion-list>
-          <ion-radio-group value="mode">
+          <ion-radio-group value="mode" (ionChange)="modeChange($event)">
           <ion-item>
             <ion-icon name="sunny-outline"></ion-icon>
             <ion-radio value="light">Day Mode</ion-radio><br />
