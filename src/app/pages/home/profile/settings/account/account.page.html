@@ -38,7 +38,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item>
+        <ion-item *ngIf="currentUser?.googleVerified">
           <ion-icon name="logo-google"></ion-icon>
           <ion-label>behicsakar@gmail.com</ion-label>
         </ion-item>
