@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-login',
@@ -14,14 +15,34 @@ export class LoginPage implements OnInit {
   form: FormGroup;  
   isLoading: boolean = false;
 
+  value: any = '';
+
   constructor(
     private router: Router,
     private authService: AuthService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private storageService: StorageService,
   ) { }
 
   ngOnInit() {
     this.initForm();
+
+  }
+
+  async setValue() {
+    await this.storageService.set("name", "behic");
+  }
+
+  async getValue() {
+    this.value = await this.storageService.get("name");
+  }
+
+  async removeValue() {
+    await this.storageService.remove("name");
+  }
+
+  async clearStorage() {
+    await this.storageService.clear();
   }
 
   initForm() {
