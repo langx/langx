@@ -8,17 +8,26 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-radio-group value="strawberries">
-      <ion-item>
-        <ion-radio value="dark">Dark Mode</ion-radio>
-      </ion-item>
-      <ion-item>
-        <ion-radio value="light">Light Mode</ion-radio><br />
-      </ion-item>
-      <ion-item>
-        <ion-radio value="automatic">Automatic</ion-radio><br />
-      </ion-item>
-    </ion-radio-group>
-  </ion-list>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+          <ion-radio-group value="mode">
+          <ion-item>
+            <ion-icon name="sunny-outline"></ion-icon>
+            <ion-radio value="light">Day Mode</ion-radio><br />
+          </ion-item>
+          <ion-item>
+            <ion-icon name="moon-outline"></ion-icon>
+            <ion-radio value="night">Night Mode</ion-radio><br />
+          </ion-item>
+          <ion-item>
+            <ion-icon name="contrast-outline"></ion-icon>
+            <ion-radio value="auto">Automatic</ion-radio><br />
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
