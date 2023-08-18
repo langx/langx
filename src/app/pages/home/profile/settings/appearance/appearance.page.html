@@ -27,6 +27,13 @@
           </ion-item>
         </ion-radio-group>
       </ion-list>
+      <ion-list [inset]="true">
+        <ion-item>
+          <ion-toggle [(ngModel)]="themeToggle" (ionChange)="toggleChange($event)" justify="space-between">
+            Dark Mode
+          </ion-toggle>
+        </ion-item>
+      </ion-list>
     </ion-card-content>
   </ion-card>
 
