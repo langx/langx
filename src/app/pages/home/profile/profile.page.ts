@@ -36,24 +36,25 @@ export class ProfilePage implements OnInit {
   }
 
   getProfileInfo() {
-    //TODO: showLoader();
+    //showLoader();
     this.isLoading = true;
     let id = this.authService.getId();
+    //TODO: Dont use chatService.auth.logout() here
     this.authService.getUserData(id).then(user => {
       this.currentUser = user;
       //console.log(this.currentUser);
-      //TODO: hideLoader();
+      //hideLoader();
       this.isLoading = false;
     })
   } 
 
   async logout(){
     try {
-      //TODO: showLoader();
+      //showLoader();
       this.isLoading = true;
       await this.chatService.auth.logout();
       this.router.navigateByUrl('/login', {replaceUrl: true});
-      //TODO: hideLoader();
+      //hideLoader();
       this.isLoading = false;
     } catch(e) {
       console.log(e);
