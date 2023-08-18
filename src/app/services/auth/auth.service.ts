@@ -77,6 +77,7 @@ export class AuthService {
     }
   }
 
+  //TODO: If user first registered with email than GoogleAuthProvider will not work #36
   async signInWithGoogle() {
     try {
       const res = await signInWithPopup(this.fireAuth, new GoogleAuthProvider());
