@@ -87,6 +87,7 @@ export class AuthService {
       if(userData) {
         console.log('user_data:', userData);
         this.setUserData(user.uid);
+        await this.apiService.setDocument(`users/${userData.uid}`, {lastLogin: new Date()}, {merge: true});
         return user.uid; 
       } else {
         //TODO: create user data
