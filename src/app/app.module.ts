@@ -36,8 +36,8 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     }),
     */
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()),
     provideDatabase(() => getDatabase()),
+    provideStorage(() => getStorage()),
 ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
