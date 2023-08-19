@@ -55,4 +55,8 @@ export class MessagesPage implements OnInit {
     return user;
   }
 
+  openArchiveMessages(){
+    console.log('openArchiveMessages clicked');
+  }
+
 }
