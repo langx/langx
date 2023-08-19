@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-appearance',
@@ -7,45 +8,69 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppearancePage implements OnInit {
 
-  themeToggle = false;
+  defaultValue: string;
+  darkMode: boolean;
+  prefersDark: boolean;
 
-  constructor() { }
+  constructor(
+    private storageService: StorageService,
+  ) { }
 
-  ngOnInit() {
-    // Use matchMedia to check the user preference
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    console.log('prefersDark: ', prefersDark);
-
-    // Initialize the dark theme based on the initial
-    // value of the prefers-color-scheme media query
-    this.initializeDarkTheme(prefersDark.matches);
-
-    // Listen for changes to the prefers-color-scheme media query
-    prefersDark.addEventListener('change', (mediaQuery) => this.initializeDarkTheme(mediaQuery.matches));
+  async ngOnInit() {
+    await this.checkStorageForDarkMode();
   }
 
-  // Check/uncheck the toggle and update the theme based on isDark
-  initializeDarkTheme(isDark) {
-    this.themeToggle = isDark;
-    this.toggleDarkTheme(isDark);
-  }
+  async checkStorageForDarkMode() {
+    await this.storageService.initStorage();
+    let darkMode = await this.getValue('darkMode')
 
-  // Listen for the toggle check/uncheck to toggle the dark theme
-  toggleChange(ev) {
-    console.log('toggleChange: ', ev.detail.checked);
-    this.toggleDarkTheme(ev.detail.checked);
-  }
+    console.log('darkMode in storage: ', darkMode);
 
-  // Add or remove the "dark" class on the document body
-  toggleDarkTheme(shouldAdd) {
-      document.body.classList.toggle('dark', shouldAdd);
+    if(darkMode == null) {
+       this.defaultValue = "auto";
+    } else if(darkMode) {
+       this.defaultValue = "dark";
+    } else {
+       this.defaultValue = "light";
+    }
+
   }
 
   // This is for the radio buttons
   modeChange = (event) => {  
     let val = event.detail.value;
     console.log(val);
-    //document.body.classList.toggle('dark');
+    if(val == 'auto') {
+      this.removeValue("darkMode");
+      this.initAutoMode();
+    } else if(val == 'dark') {
+      this.toggleDarkTheme(true);
+      this.setValue(true);
+    } else if(val == 'light') {
+      this.toggleDarkTheme(false);
+      this.setValue(false);
+    }
+  }
+
+  initAutoMode() {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    this.toggleDarkTheme(prefersDark.matches);
+  }
+
+  toggleDarkTheme(shouldAdd) {
+      document.body.classList.toggle('dark', shouldAdd);
+  }
+
+  async setValue(isDark: boolean) {
+    await this.storageService.set("darkMode", isDark);
+  }
+
+  async getValue(key: string) {
+    return this.storageService.get(key);
+  }
+
+  async removeValue(key: string) {
+    await this.storageService.remove(key);
   }
 
 }
