@@ -1,6 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Messages</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openArchiveMessages()" expand="block" size="large" slot="icon-only" shape="round">
+        <ion-icon name="archive-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
