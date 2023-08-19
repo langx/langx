@@ -59,4 +59,8 @@ export class CommunityPage implements OnInit {
     this.open_new_chat = false;
   }
 
+  openFilterModal(){
+    console.log('openFilterModal clicked');
+  }
+
 }

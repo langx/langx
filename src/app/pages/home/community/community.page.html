@@ -1,8 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Community</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openFilterModal()" expand="block" size="large" slot="icon-only" shape="round">
+        <ion-icon name="filter-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 <ion-content [fullscreen]="true">
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
