@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { Observable, from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,19 +19,15 @@ export class StorageService {
     this._storage = storage;
   }
 
-  // Create and expose methods that users of this service can
-  // call, for example:
   public async set(key: string, value: any) {
-    let result = await this._storage?.set(key, value);
-    console.log("result:", result);
+    await this._storage?.set(key, value);
   }
 
-  public async get(key: string){
+  public async get(key: string): Promise<string> {
     let value = await this._storage?.get(key);
-    console.log("value:", value);
     return value;
   }
-
+  
   public async remove(key: string){
     await this._storage?.remove(key);
   }
@@ -39,12 +36,12 @@ export class StorageService {
     await this._storage?.clear();
   }
 
-  public async keys(key: string){
+  public async keys(key: string): Promise<any> {
     let value = await this._storage?.keys();
     return value;
   }
 
-  public async length(key: string){
+  public async length(key: string): Promise<number>{
     let value = await this._storage?.length();
     return value;
   }
