@@ -42,6 +42,10 @@
           <ion-icon name="logo-google"></ion-icon>
           <ion-label>behicsakar@gmail.com</ion-label>
         </ion-item>
+        <ion-item *ngIf="!currentUser?.googleVerified">
+          <ion-icon name="unlink-outline"></ion-icon>
+          <ion-label>None</ion-label>
+        </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
