@@ -12,27 +12,20 @@
   <ion-card>
     <ion-card-content>
       <ion-list>
-          <ion-radio-group value="mode" (ionChange)="modeChange($event)">
+          <ion-radio-group [value]="defaultValue" (ionChange)="modeChange($event)">
           <ion-item>
             <ion-icon name="sunny-outline"></ion-icon>
-            <ion-radio value="day">Day Mode</ion-radio><br />
+            <ion-radio value="light">Day Mode</ion-radio><br />
           </ion-item>
           <ion-item>
-            <ion-icon name="moon-outline"></ion-icon>
-            <ion-radio value="night">Night Mode</ion-radio><br />
+            <ion-icon name="moon"></ion-icon>
+            <ion-radio value="dark">Night Mode</ion-radio><br />
           </ion-item>
           <ion-item>
             <ion-icon name="contrast-outline"></ion-icon>
             <ion-radio value="auto">Automatic</ion-radio><br />
           </ion-item>
         </ion-radio-group>
-      </ion-list>
-      <ion-list [inset]="true">
-        <ion-item>
-          <ion-toggle [(ngModel)]="themeToggle" (ionChange)="toggleChange($event)" justify="space-between">
-            Dark Mode
-          </ion-toggle>
-        </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
