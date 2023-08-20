@@ -41,7 +41,7 @@
         detail>
         <ng-container *ngIf="(item?.user | async) as user">
           <ion-avatar slot="start">
-            <img [src]="getUser(user)?.photo" alt="">
+            <img [src]="getUser(user)?.photo" alt="" referrerpolicy="no-referrer">
           </ion-avatar>
           <ion-label>
             <h2>{{getUser(user)?.name}}</h2>
