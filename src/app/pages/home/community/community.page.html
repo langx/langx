@@ -2,7 +2,7 @@
   <ion-toolbar color="primary">
     <ion-title>Community</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="openFilterModal()" expand="block" size="large" slot="icon-only" shape="round">
+      <ion-button id="filters-modal" expand="block" size="large" slot="icon-only" shape="round">
         <ion-icon name="filter-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -27,3 +27,33 @@
   </ng-container>
 
 </ion-content>
+
+<ion-modal trigger="filters-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <div class="block">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Filters</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-list auto-hide="false">
+        <ion-item>
+          <ion-icon aria-hidden="true" slot="start" name="archive"></ion-icon>
+          <ion-label>Test</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon aria-hidden="true" slot="start" name="archive"></ion-icon>
+          <ion-label>Test</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon aria-hidden="true" slot="start" name="archive"></ion-icon>
+          <ion-label>Test</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon aria-hidden="true" slot="start" name="archive"></ion-icon>
+          <ion-label>Test</ion-label>
+        </ion-item>
+      </ion-list>
+    </ng-template>
+  </div>
+</ion-modal>
