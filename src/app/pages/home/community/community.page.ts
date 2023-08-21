@@ -45,7 +45,7 @@ export class CommunityPage implements OnInit {
           name: item?.name
         }
       };
-      this.router.navigate(['/', 'home', 'chats', room?.id], navData);
+      this.router.navigate(['/', 'home', 'chat', room?.id], navData);
       // hideLoader();
       this.isLoading = false;
     } catch(e) {
