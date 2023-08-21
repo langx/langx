@@ -44,7 +44,8 @@ export class MessagesPage implements OnInit {
       console.log('user_data', user_data);
       const navData: NavigationExtras = {
         queryParams: {
-          name: user_data?.name
+          name: user_data?.name,
+          uid: user_data?.uid,
         }
       };
       this.router.navigate(['/', 'home', 'chat', item.id], navData);
