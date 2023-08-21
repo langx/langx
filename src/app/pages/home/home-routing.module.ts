@@ -49,7 +49,11 @@ const routes: Routes = [
   {
     path: 'profile/appearance',
     loadChildren: () => import('./profile/settings/appearance/appearance.module').then( m => m.AppearancePageModule)
-  }
+  },
+  {
+    path: 'user/:id',
+    loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
+  },
 ];
 
 @NgModule({
