@@ -42,7 +42,8 @@ export class CommunityPage implements OnInit {
       this.cancel();
       const navData: NavigationExtras = {
         queryParams: {
-          name: item?.name
+          name: item?.name,
+          uid: item?.uid,
         }
       };
       this.router.navigate(['/', 'home', 'chat', room?.id], navData);

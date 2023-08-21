@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, NavController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { ChatService } from 'src/app/services/chat/chat.service';
@@ -15,6 +15,7 @@ export class ChatPage implements OnInit {
   
   chatRoomId: string;
   name: string;
+  uid: string;
   chats: Observable<any[]>;
   message: string;
   isLoading: boolean = false;
@@ -25,6 +26,7 @@ export class ChatPage implements OnInit {
   }
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private navCtrl: NavController,
     public chatService: ChatService,
@@ -34,6 +36,7 @@ export class ChatPage implements OnInit {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
     if(data?.name) this.name = data.name;
+    if(data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     console.log('check chatId: ', chatRoomId);
     if(!chatRoomId) {
@@ -70,5 +73,11 @@ export class ChatPage implements OnInit {
       throw(e);
     }
   }
+
+  goProfile(uid : string) {
+    console.log('goProfile clicked');
+    console.log('uid: ', uid);
+    this.router.navigateByUrl(`/home/user/${uid}`);
+  } 
 
 }
