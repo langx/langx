@@ -1,13 +1,82 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>user</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ user?.name }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">user</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding" [fullscreen]="true">
+
+    <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
+    <ion-card>
+      <ion-card-header id="profile-pic">
+        <img [src]="user?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
+        <ion-card-title class=".ion-text-center">{{user?.name}}</ion-card-title>
+        <ion-card-subtitle>{{getAge(user?.birthdate)}} | {{user?.gender}} | {{user?.country.name}}</ion-card-subtitle>
+        <ion-card-subtitle *ngIf="!user?.online">Active {{lastSeen(user?.lastSeen)}}</ion-card-subtitle>
+        <ion-card-subtitle *ngIf="user?.online" color="primary">Online</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>About Me</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-text *ngIf="!user?.aboutMe">There is no biography text.</ion-text>
+        <ion-text>{{user?.aboutMe}}</ion-text>
+        <ion-list class="langs">
+          <ion-item>
+            <ion-icon name="flag-outline"></ion-icon>
+            <ion-label>{{user?.country.name}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="male-female-outline"></ion-icon>
+            <ion-label>{{user?.gender}}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="calendar-number-outline"></ion-icon>
+            <ion-label>{{(user?.birthdate)?.toDate() | date: 'dd/MM/YYYY'}}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Mother Tongue</ion-card-title>
+        <ion-card-subtitle></ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list class="langs">
+          <ion-item *ngFor="let lang of user?.motherLanguages">
+            <ion-icon name="battery-charging-outline"></ion-icon>
+            <ion-label>{{lang.name}}</ion-label>
+            <ion-note>{{lang.nativeName}}</ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Study Languages</ion-card-title>
+        <ion-card-subtitle></ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list class="langs">
+          <ion-item *ngFor="let lang of user?.studyLanguages">
+            <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
+            <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
+            <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
+            <ion-label>{{lang.name}}</ion-label>
+            <ion-note>{{lang.nativeName}}</ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
 </ion-content>
