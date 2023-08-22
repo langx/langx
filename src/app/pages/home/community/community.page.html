@@ -12,19 +12,26 @@
 <ion-content [fullscreen]="true">
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-  <ng-container *ngIf="!isLoading">
 
-    <ion-content class="ion-padding" *ngIf="(users | async) as user$">
-      <ion-list class="ion-top-margin" lines="none">
+  <ion-card class="apps-card" *ngIf="!isLoading">
+    <ion-card-header>
+      <ion-card-subtitle>Your Daily List</ion-card-subtitle>
+      <ion-card-title>
+        Mother Tounge in [studyLanguage[0]]
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content *ngIf="(users | async) as user$">
+      <ion-list>
+
         <app-user-list
           *ngFor="let item of user$"
           [item]="item"
           (onClick)="startChat($event)">
         </app-user-list>
-      </ion-list>
-    </ion-content>
 
-  </ng-container>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
 

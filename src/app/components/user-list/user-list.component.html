@@ -1,9 +1,9 @@
-<ion-item lines="full" (click)="redirect()" detail>
-  <ion-avatar slot="start">
-    <img [src]="item?.photo" alt="" referrerpolicy="no-referrer">
-  </ion-avatar>
+<ion-item (click)="redirect()">
+  <ion-thumbnail slot="start">
+    <img [src]="item?.photo"  alt="" referrerpolicy="no-referrer"/>
+  </ion-thumbnail>
   <ion-label>
-    <h2>{{item?.name}}</h2>
-    <p>{{item?.online}}</p>
+    <h2>{{ item?.name }}</h2>
+    <p>{{ item?.online }}, {{ item?.uid }}</p>
   </ion-label>
 </ion-item>
