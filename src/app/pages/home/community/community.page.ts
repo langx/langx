@@ -60,4 +60,8 @@ export class CommunityPage implements OnInit {
     this.open_new_chat = false;
   }
 
+  getFiltersPage() {
+    console.log('getFiltersPage clicked');
+    //this.router.navigate(['/', 'home', 'profile', page?.url]);
+};
 }
