@@ -61,7 +61,6 @@ export class CommunityPage implements OnInit {
   }
 
   getFiltersPage() {
-    console.log('getFiltersPage clicked');
-    //this.router.navigate(['/', 'home', 'profile', page?.url]);
-};
+    this.router.navigateByUrl('/home/community/filters');
+  }
 }
