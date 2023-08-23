@@ -58,7 +58,7 @@
       </ion-card-header>
     
       <ion-card-content class="langs">
-        <ion-item detail="true">
+        <ion-item id="gender-modal" detail="true">
           <ion-icon name="male-female-outline"></ion-icon>
           <ion-label>
             <p>No Filter</p>
@@ -101,3 +101,32 @@
     </ion-row>
   </form>
 </ion-content>
+
+<!------------------>
+<!-- MODALS start -->
+<!------------------>
+
+<ion-modal trigger="gender-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <div class="block">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Gender</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-radio-group>
+        <ion-list>
+          <ion-item>
+            <ion-radio value="male">Male</ion-radio><br />
+          </ion-item>          
+          <ion-item>
+            <ion-radio value="female">Female</ion-radio><br />
+          </ion-item>          
+          <ion-item>
+            <ion-radio value="other">Other</ion-radio>
+          </ion-item>          
+        </ion-list>
+      </ion-radio-group>
+    </ng-template>
+  </div>
+</ion-modal>
