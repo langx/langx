@@ -22,8 +22,7 @@ export class AccountPage implements OnInit {
   getProfileInfo() {
     //TODO: showLoader();
     this.isLoading = true;
-    let id = this.authService.getId();
-    this.authService.getUserData(id).then(user => {
+    this.authService.getUserData().then(user => {
       this.currentUser = user;
       //TODO: hideLoader();
       this.isLoading = false;
