@@ -16,16 +16,10 @@
       </ion-card-header>
     
       <ion-card-content>
-        <ion-item detail="true">
+        <ion-item *ngFor="let lang of currentUserData?.studyLanguages" detail="true">
           <ion-label>
-            <h3>Russian</h3>
-            <p>No Filter</p>
-          </ion-label>
-        </ion-item>
-        <ion-item detail="true">
-          <ion-label>
-            <h3>Chinese</h3>
-            <p>No Filter</p>
+            <h3>{{ lang?.name }}</h3>
+            <p>Minimum Level</p>
           </ion-label>
         </ion-item>
       </ion-card-content>
