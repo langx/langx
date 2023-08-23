@@ -47,7 +47,7 @@ export class LoginPage implements OnInit {
     this.isLoading = true;
     console.log('form.value:', form.value);
     this.authService.login(form.value.email, form.value.password).then((userId: any) => {
-      this.authService.getUserData(userId).then(user => {
+      this.authService.getUserData().then(user => {
         if(user.completeProfile) {
           if(user.completeLanguages) {
             this.router.navigateByUrl('/home');
@@ -84,7 +84,7 @@ export class LoginPage implements OnInit {
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {
-      this.authService.getUserData(userId).then(user => {
+      this.authService.getUserData().then(user => {
         if(user.completeProfile) {
           if(user.completeLanguages) {
             this.router.navigateByUrl('/home');

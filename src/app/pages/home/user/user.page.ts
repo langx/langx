@@ -21,6 +21,7 @@ export class UserPage implements OnInit {
   ) { }
 
   async ngOnInit() {
+    //TODO: this.userID may be used in nowhere
     const id: string = this.route.snapshot.paramMap.get('id');
     if(id) this.userId = id;
     this.getUserData();
@@ -28,7 +29,7 @@ export class UserPage implements OnInit {
 
   async getUserData() {
     // getting user data from the database while using getUserData() method in auth.service.ts
-    this.user = await this.authService.getUserData(this.userId);
+    this.user = await this.authService.getUserData();
     console.log('userData: ', this.user);
   }
 

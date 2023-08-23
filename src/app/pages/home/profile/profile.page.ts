@@ -38,9 +38,7 @@ export class ProfilePage implements OnInit {
   getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    let id = this.authService.getId();
-    //TODO: Dont use chatService.auth.logout() here
-    this.authService.getUserData(id).then(user => {
+    this.authService.getUserData().then(user => {
       this.currentUser = user;
       //console.log(this.currentUser);
       //hideLoader();
