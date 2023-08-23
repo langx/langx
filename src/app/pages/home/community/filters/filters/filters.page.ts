@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-filters',
@@ -10,11 +11,15 @@ export class FiltersPage implements OnInit {
 
   isLoading: boolean = false;
   form: FormGroup;
+  currentUserData: any;
 
-  constructor() { }
+  constructor(
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     this.initForm();
+    this.getUserData();
   }
 
   initForm() {
@@ -36,6 +41,16 @@ export class FiltersPage implements OnInit {
       return;
     }
     console.log(this.form.value);
+  }
+
+  getUserData() {
+    this.authService.getUserData().then((currentUserData) => {
+      this.currentUserData = currentUserData;
+      console.log('currentUserData: ', currentUserData);
+    }).catch((error) => {
+      console.log('error: ', error);
+    });
+    
   }
 
 }
