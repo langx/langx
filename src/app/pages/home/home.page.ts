@@ -14,7 +14,7 @@ export class HomePage implements OnInit {
     private presence: PresenceService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.updatePresence();
   }
 
