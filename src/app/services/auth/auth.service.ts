@@ -10,6 +10,7 @@ export class AuthService {
 
   public _uid = new BehaviorSubject<any>(null);
   currentUser: any;
+  currentUserData: any;
 
   constructor(
     private fireAuth: Auth,
@@ -37,7 +38,7 @@ export class AuthService {
   getId() {
     const auth = getAuth();
     this.currentUser = auth.currentUser;
-    // console.log('getId() in auth.service ', this.currentUser, this.currentUser.uid);
+    console.log('getId() in auth.service ', this.currentUser, this.currentUser.uid);
     return this.currentUser?.uid;
   }
 
@@ -83,7 +84,7 @@ export class AuthService {
       const res = await signInWithPopup(this.fireAuth, new GoogleAuthProvider());
       const user = res.user;
       console.log('user:', user);
-      const userData = await this.getUserData(user.uid);
+      const userData = await this.getUserData();
       if(userData) {
         console.log('user_data:', userData);
         this.setUserData(user.uid);
@@ -148,12 +149,18 @@ export class AuthService {
     })
   }
 
-  async getUserData(id) {
-    const docSnap: any = await this.apiService.getDocById(`users/${id}`);
-    if(docSnap?.exists()) {
-      return docSnap.data();
+  async getUserData() {
+    if (!this.currentUserData) {
+      let uid = this.getId();
+      const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
+      if(docSnap?.exists()) {
+        return docSnap.data();
+      } else {
+        return null;
+      }
     } else {
-      return null;
+      // return this.currentUserData;
+      return Promise.resolve(this.currentUserData);
     }
   }
   
