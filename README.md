@@ -1,6 +1,6 @@
 # languageXchange
 
-This project is designed to help users learn different languages by connecting them with native speakers.
+This project is designed to help users to exchange different languages by connecting them with native speakers.
 
 ## Table of Contents
 
