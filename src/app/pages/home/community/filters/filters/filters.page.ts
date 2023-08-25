@@ -70,6 +70,10 @@ export class FiltersPage implements OnInit {
   message = 'This modal example uses the modalController to present and dismiss modals.';
   async openLangModal(lang) {
     const modal = await this.modalCtrl.create({
+      // TODO: it should be a style with --auto-height
+      initialBreakpoint: 0.25,
+      breakpoints: [0,1],
+      cssClass: 'modalClass',
       component: LanguageLevelModalComponent,
     });
     modal.present();
