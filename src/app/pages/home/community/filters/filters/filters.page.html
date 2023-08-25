@@ -17,11 +17,6 @@
 
 <ion-content [fullscreen]="true">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
-
-    <ion-button expand="block" (click)="openModal()">Open</ion-button>
-    <p>{{ message }}</p>
-
     
     <ion-card>
       <ion-card-header>
@@ -29,7 +24,7 @@
       </ion-card-header>
     
       <ion-card-content class="langs">
-        <ion-item *ngFor="let lang of currentUserData?.studyLanguages" detail="true">
+        <ion-item *ngFor="let lang of currentUserData?.studyLanguages" (click)="openLangModal(lang)" detail="true">
           <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
