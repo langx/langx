@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, OrderByDirection, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, orderBy, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, OrderByDirection, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, limit, orderBy, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -47,12 +47,18 @@ export class ApiService {
     return getDocs<any>(dataRef); //get()
   }
 
-  collectionDataQuery(path, queryFn?) {
+  collectionDataQuery(path, queryFn?, queryFn2?) {
     let dataRef: any = this.collectionRef(path);
-    if(queryFn) {
+    
+    // TODO: Here has to make logic better
+    if(queryFn && queryFn2) {
+      const q = query(dataRef, queryFn, queryFn2);
+      dataRef = q;
+    } else if(queryFn) {
       const q = query(dataRef, queryFn);
       dataRef = q;
     }
+
     const collection_data = collectionData<any>(dataRef, {idField: 'id'});
     return collection_data;
   }
@@ -75,6 +81,10 @@ export class ApiService {
 
   orderByQuery(fieldPath, directionStr: OrderByDirection = 'asc') {
     return orderBy(fieldPath, directionStr);
+  }
+
+  limitQuery(number) {
+    return limit(number);
   }
 
 }
