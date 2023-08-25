@@ -42,7 +42,7 @@
       </ion-card-header>
     
       <ion-card-content class="langs">
-        <ion-item detail="true">
+        <ion-item id="country-modal" detail="true">
           <ion-icon name="flag-outline"></ion-icon>
           <ion-label>
             <p>No Filter</p>
@@ -133,3 +133,54 @@
     </ng-template>
   </div>
 </ion-modal>
+
+<ion-modal
+      #countryModal
+      trigger="country-modal"
+      [initialBreakpoint]="0.25"
+      [breakpoints]="[0.25, 0.5, 0.75]"
+    >
+      <ng-template>
+        <ion-content class="ion-padding">
+          <ion-searchbar placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
+          <ion-list>
+            <ion-item>
+              <ion-avatar slot="start">
+                <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>Connor Smith</h2>
+                <p>Sales Rep</p>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <ion-img src="https://i.pravatar.cc/300?u=a"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>Daniel Smith</h2>
+                <p>Product Designer</p>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <ion-img src="https://i.pravatar.cc/300?u=d"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>Greg Smith</h2>
+                <p>Director of Operations</p>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-avatar slot="start">
+                <ion-img src="https://i.pravatar.cc/300?u=e"></ion-img>
+              </ion-avatar>
+              <ion-label>
+                <h2>Zoey Smith</h2>
+                <p>CEO</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
