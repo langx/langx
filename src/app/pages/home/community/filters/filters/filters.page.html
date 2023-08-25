@@ -45,7 +45,7 @@
         <ion-item id="country-modal" detail="true">
           <ion-icon name="flag-outline"></ion-icon>
           <ion-label>
-            <p>No Filter</p>
+            <p>{{ showCountry() || "No Filter"}}</p>
           </ion-label>
         </ion-item>
       </ion-card-content>
@@ -137,25 +137,26 @@
 <ion-modal
       #countryModal
       trigger="country-modal"
-      [initialBreakpoint]="0.25"
+      [initialBreakpoint]="0.5"
       [breakpoints]="[0.25, 0.5, 0.75]"
     >
       <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Gender</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="countryModal.dismiss()" color="primary">Confirm</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
         <ion-content class="ion-padding">
-          <ion-searchbar placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
-          <ion-list *ngFor="let country of countyData">
-            <ion-item>
-              <!-- TODO: It may be added flag with country code. There are npm packages for it. -->
-              <!-- e.g. https://www.npmjs.com/package/country-flag-icons -->
-              <!--
-              <ion-avatar slot="start">
-                <ion-img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg"></ion-img>
-              </ion-avatar>
-              -->
-              <ion-label>
-                <h2>{{ country?.map }} {{ country?.text }}</h2>
-              </ion-label>
-            </ion-item>
+          <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
+          <ion-list>
+            <ion-radio-group value="start" (ionChange)="countryChange($event)">
+              <ion-item *ngFor="let country of countryData | customFilter: searchTerm">
+                <ion-radio value="{{ country?.value }}" labelPlacement="start">{{ country?.text }}</ion-radio>
+              </ion-item>
+            </ion-radio-group>
           </ion-list>
         </ion-content>
       </ng-template>
