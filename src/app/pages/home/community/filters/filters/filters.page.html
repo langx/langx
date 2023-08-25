@@ -17,6 +17,11 @@
 
 <ion-content [fullscreen]="true">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+
+    <ion-button expand="block" (click)="openModal()">Open</ion-button>
+    <p>{{ message }}</p>
+
     
     <ion-card>
       <ion-card-header>

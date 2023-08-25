@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ModalController } from '@ionic/angular';
+import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -18,6 +20,7 @@ export class FiltersPage implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
@@ -61,6 +64,21 @@ export class FiltersPage implements OnInit {
     console.log(lang);
     console.log('openLanguageModal: ', this.selectedLanguage);
 
+  }
+
+
+  message = 'This modal example uses the modalController to present and dismiss modals.';
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: LanguageLevelModalComponent,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      this.message = `Hello, ${data}!`;
+    }
   }
 
 }
