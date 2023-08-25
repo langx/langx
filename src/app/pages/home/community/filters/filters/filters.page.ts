@@ -47,7 +47,7 @@ export class FiltersPage implements OnInit {
   }
 
   //
-  // LANGUAGE methods
+  // LANGUAGE Methods
   //
 
   async openLangModal(lang) {
@@ -79,7 +79,7 @@ export class FiltersPage implements OnInit {
   }
   
   //
-  // COUNTRY methods
+  // COUNTRY Methods
   //
 
   countryChange(event) {
@@ -92,7 +92,7 @@ export class FiltersPage implements OnInit {
   }
 
   //
-  // GENDER methods
+  // GENDER Methods
   //
   
   genderChange(event) {
@@ -108,7 +108,7 @@ export class FiltersPage implements OnInit {
   }
 
   //
-  // AGE methods
+  // AGE Methods
   //
 
   ageChange(event) {
@@ -125,13 +125,15 @@ export class FiltersPage implements OnInit {
     }
   }
 
-  // Reset all filters
+  //
+  // RESET All Filters
+  //
+
   resetFilter(){
     this.filterData = {};
     this.filterLanguage = [];
     this.filterGender = '';
     this.filterCountry = '';
-    this.filterAge = {};
   }
 
 }
