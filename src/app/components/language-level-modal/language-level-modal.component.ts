@@ -17,10 +17,6 @@ export class LanguageLevelModalComponent  implements OnInit {
 
   ngOnInit() {}
 
-  cancel() {
-    return this.modalCtrl.dismiss(null, 'cancel');
-  }
-
   confirm() {
     return this.modalCtrl.dismiss(this.name, 'confirm');
   }
