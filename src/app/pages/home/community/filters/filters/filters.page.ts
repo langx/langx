@@ -16,7 +16,6 @@ export class FiltersPage implements OnInit {
   searchTerm: string;
 
   isLoading: boolean = false;
-  filterData: any;
   currentUserData: any;
   
   filterLanguage: Array<any> = [];
@@ -33,10 +32,6 @@ export class FiltersPage implements OnInit {
     this.getUserData();
   }
 
-  onSubmit() { 
-    console.log(this.filterData);
-  }
-
   getUserData() {
     this.authService.getUserData().then((currentUserData) => {
       this.currentUserData = currentUserData;
@@ -44,6 +39,16 @@ export class FiltersPage implements OnInit {
     }).catch((error) => {
       console.log('error: ', error);
     });
+  }
+
+  onSubmit() { 
+    let filterData = { 
+      language: this.filterLanguage,
+      gender: this.filterGender,
+      country: this.filterCountry,
+      age: this.filterAge
+    };
+    console.log(filterData);
   }
 
   //
@@ -130,10 +135,10 @@ export class FiltersPage implements OnInit {
   //
 
   resetFilter(){
-    this.filterData = {};
     this.filterLanguage = [];
     this.filterGender = '';
     this.filterCountry = '';
+    this.filterAge = {};
   }
 
 }
