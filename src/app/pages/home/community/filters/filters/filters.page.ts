@@ -10,6 +10,7 @@ import { countryData } from 'src/app/extras/data';
   templateUrl: './filters.page.html',
   styleUrls: ['./filters.page.scss'],
 })
+
 export class FiltersPage implements OnInit {
 
   countryData = countryData;
