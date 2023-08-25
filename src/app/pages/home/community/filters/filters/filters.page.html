@@ -91,6 +91,7 @@
       <ion-input formControlName="password" type="password" required></ion-input>
     </ion-item>
     -->
+
     <ion-row>
       <ion-col>
         <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Apply</ion-button>
@@ -106,12 +107,15 @@
 <!-- MODALS start -->
 <!------------------>
 
-<ion-modal trigger="gender-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+<ion-modal #genderModal trigger="gender-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
   <div class="block">
     <ng-template>
       <ion-header>
         <ion-toolbar>
           <ion-title>Gender</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="genderModal.dismiss()" color="primary">Apply</ion-button>
+          </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-radio-group>
@@ -130,3 +134,33 @@
     </ng-template>
   </div>
 </ion-modal>
+
+<!--
+<ion-modal #languageModal trigger="English-modal"  [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+  <div class="block">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Minumum Level of {{ selectedLanguage }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="languageModal.dismiss()" color="primary">Apply</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-radio-group class="langs">
+        <ion-list>
+          <ion-item>
+            <ion-radio value="1"><ion-icon name="battery-dead-outline"></ion-icon> Beginner</ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-radio value="2"><ion-icon name="battery-half-outline"></ion-icon> Intermediate</ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-radio value="3"><ion-icon name="battery-full-outline"></ion-icon> Fluent</ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-radio-group>
+    </ng-template>
+  </div>
+</ion-modal>
+-->

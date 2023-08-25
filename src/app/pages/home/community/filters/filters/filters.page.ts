@@ -11,10 +11,13 @@ export class FiltersPage implements OnInit {
 
   isLoading: boolean = false;
   form: FormGroup;
+  model: any = {};
   currentUserData: any;
+  
+  selectedLanguage: string;
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
@@ -40,7 +43,8 @@ export class FiltersPage implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    console.log(this.form.value);
+    this.model = this.form.value;
+    console.log(this.model);
   }
 
   getUserData() {
@@ -50,7 +54,13 @@ export class FiltersPage implements OnInit {
     }).catch((error) => {
       console.log('error: ', error);
     });
-    
+  }
+
+  async openLanguageModal(lang) {
+    this.selectedLanguage = lang;
+    console.log(lang);
+    console.log('openLanguageModal: ', this.selectedLanguage);
+
   }
 
 }
