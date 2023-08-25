@@ -68,4 +68,9 @@ export class FiltersPage implements OnInit {
     else { return false; }
   }
 
+  resetFilter(){
+    this.filterData = {};
+    this.filterLanguage = [];
+  }
+
 }
