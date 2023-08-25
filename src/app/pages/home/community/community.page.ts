@@ -63,4 +63,10 @@ export class CommunityPage implements OnInit {
   getFiltersPage() {
     this.router.navigateByUrl('/home/community/filters');
   }
+
+  handleRefresh(event) {
+    this.getUsers();
+    event.target.complete();
+    console.log('Async operation refresh has ended');
+  }
 }

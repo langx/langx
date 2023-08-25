@@ -16,6 +16,10 @@
 
 <ion-content [fullscreen]="true">
 
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
 
   <ion-card class="apps-card" *ngIf="!isLoading">

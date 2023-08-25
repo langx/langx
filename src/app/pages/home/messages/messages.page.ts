@@ -60,4 +60,9 @@ export class MessagesPage implements OnInit {
     console.log('openArchiveMessages clicked');
   }
 
+  handleRefresh(event) {
+    this.getRooms();
+    event.target.complete();
+    console.log('Async operation refresh has ended');
+  }
 }

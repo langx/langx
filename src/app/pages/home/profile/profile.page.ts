@@ -89,4 +89,9 @@ export class ProfilePage implements OnInit {
     return getAge(a);
   }
 
+  handleRefresh(event) {
+    this.getProfileInfo();
+    event.target.complete();
+    console.log('Async operation refresh has ended');
+  }
 }
