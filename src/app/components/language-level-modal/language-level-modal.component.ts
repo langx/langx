@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
 export class LanguageLevelModalComponent  implements OnInit {
 
   @Input() langName: string;
-  name: string;
+  value: string;
 
   constructor(
     private modalCtrl: ModalController
@@ -18,6 +18,11 @@ export class LanguageLevelModalComponent  implements OnInit {
   ngOnInit() {}
 
   confirm() {
-    return this.modalCtrl.dismiss(this.name, 'confirm');
+    return this.modalCtrl.dismiss(this.value, 'confirm');
   }
+
+  radioChange(event) {
+    this.value = event.detail.value;
+  }
+
 }
