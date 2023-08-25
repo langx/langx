@@ -106,6 +106,7 @@ export class FiltersPage implements OnInit {
     this.filterData = {};
     this.filterLanguage = [];
     this.filterGender = '';
+    this.filterCountry = '';
   }
 
 }
