@@ -7,7 +7,7 @@
       <ion-button (click)="resetFilter()" expand="block" size="large" slot="icon-only" shape="round">
         <ion-icon name="refresh-outline"></ion-icon>
       </ion-button>
-      <ion-button id="settings-modal" expand="block" size="large" slot="icon-only" shape="round" color="primary">
+      <ion-button (click)="onSubmit()" expand="block" size="large" slot="icon-only" shape="round" color="primary">
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -95,7 +95,7 @@
 
     <ion-row>
       <ion-col>
-        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Apply</ion-button>
+        <ion-button *ngIf="!isLoading" type="submit" color="primary" (click)="onSubmit()" expand="block">Apply</ion-button>
         <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
           <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
         </ion-button>
