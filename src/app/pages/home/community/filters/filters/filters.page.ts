@@ -71,7 +71,7 @@ export class FiltersPage implements OnInit {
   async openLangModal(lang) {
     const modal = await this.modalCtrl.create({
       // TODO: it should be a style with --auto-height
-      initialBreakpoint: 0.25,
+      initialBreakpoint: 0.5,
       breakpoints: [0,1],
       cssClass: 'modalClass',
       component: LanguageLevelModalComponent,
