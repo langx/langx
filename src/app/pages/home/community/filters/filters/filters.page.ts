@@ -12,11 +12,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class FiltersPage implements OnInit {
 
   isLoading: boolean = false;
-  form: FormGroup;
-  model: any = {};
+  filterData: any;
   currentUserData: any;
   
-  selectedLanguage: string;
+  filterLanguage: Array<any> = [];
 
   constructor(
     private authService: AuthService,
@@ -24,30 +23,11 @@ export class FiltersPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.initForm();
     this.getUserData();
   }
 
-  initForm() {
-    this.form = new FormGroup({
-      name: new FormControl('', 
-        {validators: [Validators.required, Validators.minLength(5), Validators.maxLength(20)]}
-      ),
-      email: new FormControl('', 
-        {validators: [Validators.required, Validators.email]}
-      ),
-      password: new FormControl('', 
-        {validators: [Validators.required, Validators.minLength(8)]}
-      ),
-    });
-  }
-
   onSubmit() { 
-    if (!this.form.valid) {
-      return;
-    }
-    this.model = this.form.value;
-    console.log(this.model);
+    console.log(this.filterData);
   }
 
   getUserData() {
@@ -58,14 +38,6 @@ export class FiltersPage implements OnInit {
       console.log('error: ', error);
     });
   }
-
-  async openLanguageModal(lang) {
-    this.selectedLanguage = lang;
-    console.log(lang);
-    console.log('openLanguageModal: ', this.selectedLanguage);
-
-  }
-
 
   message = 'This modal example uses the modalController to present and dismiss modals.';
   async openLangModal(lang) {
@@ -82,8 +54,18 @@ export class FiltersPage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      this.message = `Hello, ${data}!`;
+      let item = { lang: lang?.code, level: data };
+      this.filterLanguage.push(item);
+      console.log(this.filterLanguage);
     }
+  }
+
+  showLangLevel(lang) {
+    let l = this.filterLanguage.find(item => item.lang === lang?.code)?.level;
+    if (l==1) { return 'Beginner'; }
+    else if (l==2) { return 'Intermediate'; }
+    else if (l==3) { return 'Advanced'; }
+    else { return false; }
   }
 
 }
