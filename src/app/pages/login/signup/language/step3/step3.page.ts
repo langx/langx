@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { languagesData } from '../../data'
+import { languagesData } from 'src/app/extras/data';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { languagesData } from '../../data';
+import { languagesData } from '../../../../../extras/data';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 
