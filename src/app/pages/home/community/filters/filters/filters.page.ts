@@ -45,6 +45,10 @@ export class FiltersPage implements OnInit {
     });
   }
 
+  //
+  // LANGUAGE methods
+  //
+
   async openLangModal(lang) {
     const modal = await this.modalCtrl.create({
       // TODO: it should be a style with --auto-height
@@ -86,6 +90,10 @@ export class FiltersPage implements OnInit {
     return countryData.find(item => item.value === c)?.text;
   }
 
+  //
+  // GENDER methods
+  //
+  
   genderChange(event) {
     this.filterGender = event.detail.value;
   }
