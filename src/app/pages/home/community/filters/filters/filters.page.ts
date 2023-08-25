@@ -75,6 +75,7 @@ export class FiltersPage implements OnInit {
       breakpoints: [0,1],
       cssClass: 'modalClass',
       component: LanguageLevelModalComponent,
+      componentProps: { langName: lang?.name }
     });
     modal.present();
 
