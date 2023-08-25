@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { languagesData } from '../data';
-import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-language',
