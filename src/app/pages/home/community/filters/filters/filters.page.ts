@@ -22,6 +22,7 @@ export class FiltersPage implements OnInit {
   filterLanguage: Array<any> = [];
   filterGender: string = '';
   filterCountry: string = '';
+  filterAge: Object = {};
 
   constructor(
     private authService: AuthService,
@@ -110,6 +111,21 @@ export class FiltersPage implements OnInit {
   // AGE methods
   //
 
+  ageChange(event) {
+    this.filterAge = event.detail.value;
+    console.log(this.filterAge);
+  }
+
+  showAge() {
+    let a = this.filterAge;
+    if (a['lower'] && a['upper']) {
+      return 'between ' + a['lower'] + ' and ' + a['upper'];
+    } else {
+      return false;
+    }
+  }
+
+  // Reset all filters
   resetFilter(){
     this.filterData = {};
     this.filterLanguage = [];
