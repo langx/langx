@@ -28,7 +28,8 @@ export class ChatService {
 
     this.users = this.api.collectionDataQuery(
       'users',
-      this.api.whereQuery('uid', '!=', this.currentUserId)
+      this.api.whereQuery('uid', '!=', this.currentUserId),
+      this.api.limitQuery(10)
     )
   }
 
@@ -77,7 +78,8 @@ export class ChatService {
 
     this.chatRooms = this.api.collectionDataQuery(
       'chatRooms',
-      this.api.whereQuery('members', 'array-contains', this.currentUserId)
+      this.api.whereQuery('members', 'array-contains', this.currentUserId),
+      this.api.orderByQuery('updatedAt', 'desc')
     ).pipe(
       map((data: any[]) => {
         console.log('room data: ', data);
