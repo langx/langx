@@ -60,7 +60,7 @@
         <ion-item id="gender-modal" detail="true">
           <ion-icon name="male-female-outline"></ion-icon>
           <ion-label>
-            <p>No Filter</p>
+            <p>{{ showGender() || "No Filter"}}</p>
           </ion-label>
         </ion-item>
       </ion-card-content>
@@ -117,7 +117,7 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-radio-group>
+      <ion-radio-group (ionChange)="genderChange($event)" [value]="filterGender">
         <ion-list>
           <ion-item>
             <ion-radio value="male">Male</ion-radio><br />

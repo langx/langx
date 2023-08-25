@@ -16,6 +16,7 @@ export class FiltersPage implements OnInit {
   currentUserData: any;
   
   filterLanguage: Array<any> = [];
+  filterGender: string = '';
 
   constructor(
     private authService: AuthService,
@@ -39,7 +40,6 @@ export class FiltersPage implements OnInit {
     });
   }
 
-  message = 'This modal example uses the modalController to present and dismiss modals.';
   async openLangModal(lang) {
     const modal = await this.modalCtrl.create({
       // TODO: it should be a style with --auto-height
@@ -68,9 +68,22 @@ export class FiltersPage implements OnInit {
     else { return false; }
   }
 
+  genderChange(event) {
+    this.filterGender = event.detail.value;
+  }
+
+  showGender() {
+    let g = this.filterGender;
+    if (g=='male') { return "Male" }
+    else if (g=='female') { return "Female" }
+    else if (g=='other') { return "Other" }
+    else { return false; }
+  }
+
   resetFilter(){
     this.filterData = {};
     this.filterLanguage = [];
+    this.filterGender = '';
   }
 
 }
