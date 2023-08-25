@@ -44,7 +44,7 @@ export class FiltersPage implements OnInit {
     const modal = await this.modalCtrl.create({
       // TODO: it should be a style with --auto-height
       initialBreakpoint: 0.5,
-      breakpoints: [0,1],
+      breakpoints: [0, 0.5, 1],
       cssClass: 'modalClass',
       component: LanguageLevelModalComponent,
       componentProps: { langName: lang?.name }
@@ -67,6 +67,10 @@ export class FiltersPage implements OnInit {
     else if (l==3) { return 'Advanced'; }
     else { return false; }
   }
+  
+  //
+  // COUNTRY methods
+  //
 
   genderChange(event) {
     this.filterGender = event.detail.value;
@@ -79,6 +83,10 @@ export class FiltersPage implements OnInit {
     else if (g=='other') { return "Other" }
     else { return false; }
   }
+
+  //
+  // AGE methods
+  //
 
   resetFilter(){
     this.filterData = {};
