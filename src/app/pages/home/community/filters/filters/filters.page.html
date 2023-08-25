@@ -143,41 +143,15 @@
       <ng-template>
         <ion-content class="ion-padding">
           <ion-searchbar placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
-          <ion-list>
+          <ion-list *ngFor="let country of countyData">
             <ion-item>
+              <!--
               <ion-avatar slot="start">
-                <ion-img src="https://i.pravatar.cc/300?u=b"></ion-img>
+                <ion-img src="http://purecatamphetamine.github.io/country-flag-icons/3x2/TR.svg"></ion-img>
               </ion-avatar>
+              -->
               <ion-label>
-                <h2>Connor Smith</h2>
-                <p>Sales Rep</p>
-              </ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-avatar slot="start">
-                <ion-img src="https://i.pravatar.cc/300?u=a"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <h2>Daniel Smith</h2>
-                <p>Product Designer</p>
-              </ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-avatar slot="start">
-                <ion-img src="https://i.pravatar.cc/300?u=d"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <h2>Greg Smith</h2>
-                <p>Director of Operations</p>
-              </ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-avatar slot="start">
-                <ion-img src="https://i.pravatar.cc/300?u=e"></ion-img>
-              </ion-avatar>
-              <ion-label>
-                <h2>Zoey Smith</h2>
-                <p>CEO</p>
+                <h2>{{ country?.map }} {{ country?.text }}</h2>
               </ion-label>
             </ion-item>
           </ion-list>
