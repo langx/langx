@@ -16,7 +16,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     
     <ion-card>
       <ion-card-header>
@@ -30,7 +29,7 @@
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
           <ion-label>
             <h3>{{ lang?.name }}</h3>
-            <p>Minimum Level</p>
+            <p *ngIf="showLangLevel(lang)">{{showLangLevel(lang)}}</p>
           </ion-label>
         </ion-item>
       </ion-card-content>
@@ -100,7 +99,7 @@
         </ion-button>
       </ion-col>
     </ion-row>
-  </form>
+
 </ion-content>
 
 <!------------------>
