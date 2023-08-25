@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { countryData } from 'src/app/extras/data';
 
 @Component({
   selector: 'app-filters',
@@ -10,6 +11,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./filters.page.scss'],
 })
 export class FiltersPage implements OnInit {
+
+  countyData = countryData;
 
   isLoading: boolean = false;
   filterData: any;
