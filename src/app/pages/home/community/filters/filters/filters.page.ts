@@ -12,7 +12,8 @@ import { countryData } from 'src/app/extras/data';
 })
 export class FiltersPage implements OnInit {
 
-  countyData = countryData;
+  countryData = countryData;
+  searchTerm: string;
 
   isLoading: boolean = false;
   filterData: any;
@@ -20,6 +21,7 @@ export class FiltersPage implements OnInit {
   
   filterLanguage: Array<any> = [];
   filterGender: string = '';
+  filterCountry: string = '';
 
   constructor(
     private authService: AuthService,
@@ -74,6 +76,15 @@ export class FiltersPage implements OnInit {
   //
   // COUNTRY methods
   //
+
+  countryChange(event) {
+    this.filterCountry = event.detail.value;
+  }
+
+  showCountry() {
+    let c = this.filterCountry;
+    return countryData.find(item => item.value === c)?.text;
+  }
 
   genderChange(event) {
     this.filterGender = event.detail.value;
