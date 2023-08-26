@@ -163,6 +163,15 @@ export class AuthService {
       return Promise.resolve(this.currentUserData);
     }
   }
+
+  async getUserDataById(uid: string) {
+    const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
+    if(docSnap?.exists()) {
+      return docSnap.data();
+    } else {
+      return null;
+    }
+  }
   
   async updateUserData(formValue) {
     let id = this.getId();
