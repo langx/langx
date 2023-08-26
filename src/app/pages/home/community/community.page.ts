@@ -69,4 +69,22 @@ export class CommunityPage implements OnInit {
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
+
+  //
+  //Infinit Scroll
+  //
+
+  onIonInfinite(event) {
+    console.log('Begin async operation');
+    this.generateItems();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 500);
+  }
+
+  private generateItems() {
+    console.log('generateItems');
+  }
+
 }
