@@ -27,12 +27,15 @@ export class ChatService {
     this.getId();
 
     this.users = this.api.collectionDataQuery(
+    //this.api.collectionDataQuery(
       'users',
-      this.api.whereQuery('uid', '!=', this.currentUserId)
+      this.api.whereQuery('uid', '!=', this.currentUserId),
+      //this.api.orderByQuery('uid', 'desc')
+      //this.api.orderByQuery('lastSeen', 'desc')
       //this.api.limitQuery(10)
     )
   }
-
+  
   async createChatRoom(user_id) {
     try {
       // check for existing chatroom
