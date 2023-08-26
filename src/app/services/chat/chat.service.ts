@@ -29,10 +29,10 @@ export class ChatService {
     this.users = this.api.collectionDataQuery(
     //this.api.collectionDataQuery(
       'users',
-      this.api.whereQuery('uid', '!=', this.currentUserId),
-      //this.api.orderByQuery('uid', 'desc')
-      //this.api.orderByQuery('lastSeen', 'desc')
-      //this.api.limitQuery(10)
+      //this.api.whereQuery('uid', '!=', this.currentUserId),
+      //this.api.orderByQuery('uid', 'desc'),
+      this.api.orderByQuery('lastSeen', 'desc'),
+      this.api.limitQuery(5)
     )
   }
   
