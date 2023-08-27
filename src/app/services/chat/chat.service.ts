@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { Observable, map, of, switchMap } from 'rxjs';
+import { Observable, combineLatest, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -34,6 +34,19 @@ export class ChatService {
       this.api.orderByQuery('lastSeen', 'desc'),
       this.api.limitQuery(5)
     )
+  }
+
+  getMoreUsers(lastItem) {
+
+    let x = this.api.collectionDataQuery(
+      'users',
+      this.api.orderByQuery('lastSeen', 'desc'),
+      this.api.startAfterQuery(lastItem),
+      this.api.limitQuery(5)
+    )
+    x.subscribe((data) => {
+      console.log(data);
+    });
   }
   
   async createChatRoom(user_id) {
