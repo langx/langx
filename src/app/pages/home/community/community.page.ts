@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { Firestore, collection, query, orderBy, startAfter, limit, getDocs, where } from '@angular/fire/firestore';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
@@ -19,7 +18,6 @@ export class CommunityPage implements OnInit {
   constructor(
     private router: Router,
     private chatService: ChatService,
-    private firestore: Firestore
   ) { }
 
   ngOnInit() {
@@ -63,11 +61,6 @@ export class CommunityPage implements OnInit {
     }
 
   }
-
-  collectionRef(path) {
-    return collection(this.firestore, path);
-  }
-
 
   async startChat(item) {
     try {
