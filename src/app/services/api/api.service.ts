@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, OrderByDirection, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, limit, orderBy, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, OrderByDirection, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, limit, orderBy, query, setDoc, startAfter, updateDoc, where } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -85,6 +85,10 @@ export class ApiService {
 
   limitQuery(number) {
     return limit(number);
+  }
+
+  startAfterQuery(doc) {
+    return startAfter(doc);
   }
 
 }
