@@ -47,6 +47,7 @@ export class InfinitePage implements OnInit {
   async loadFromFirestore() {
     // Query the first page of docs
     const first = query(this.collectionRef("users"), orderBy("lastSeen", 'desc'), limit(5));
+    // TODO: Convert getDocs to collectionData
     const documentSnapshots = await getDocs(first);
     
     // Get the last visible document
