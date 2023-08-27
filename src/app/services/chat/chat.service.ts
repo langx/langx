@@ -50,6 +50,9 @@ export class ChatService {
   }
   
   async createChatRoom(user_id) {
+    // get the userId here 
+    this.getId();
+
     try {
       // check for existing chatroom
       let room: any;
