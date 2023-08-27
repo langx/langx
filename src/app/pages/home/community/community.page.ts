@@ -87,7 +87,7 @@ export class CommunityPage implements OnInit {
     this.users.pipe().subscribe((users) => {
       let lastItem = users[users.length - 1];
       console.log('lastItem: ', lastItem);
-      
+      this.chatService.getMoreUsers(lastItem);
       // get next 5 users
       //this.chatService.getUsers(lastItem);
       //this.users = this.chatService.users;
