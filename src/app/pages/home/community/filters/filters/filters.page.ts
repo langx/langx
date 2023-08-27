@@ -4,6 +4,8 @@ import { ModalController } from '@ionic/angular';
 import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-filters',
@@ -25,8 +27,10 @@ export class FiltersPage implements OnInit {
   filterAge: Object = {};
 
   constructor(
+    private storageService: StorageService,
     private authService: AuthService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private route: Router
   ) { }
 
   ngOnInit() {
@@ -49,7 +53,9 @@ export class FiltersPage implements OnInit {
       country: this.filterCountry,
       age: this.filterAge
     };
+    this.storageService.set('filterData', filterData);
     console.log(filterData);
+    this.route.navigateByUrl('/home/community');
   }
 
   //
