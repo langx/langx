@@ -1,6 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Firestore, collection, query, orderBy, startAfter, limit, getDocs, doc } from '@angular/fire/firestore';
+import { Firestore, collection, query, orderBy, startAfter, limit, getDocs } from '@angular/fire/firestore';
 import { NavController } from '@ionic/angular';
 
 @Component({
@@ -11,32 +10,52 @@ import { NavController } from '@ionic/angular';
 export class InfinitePage implements OnInit {
 
   users = [];
-  page = 0;
+  lastVisible: any;
 
   constructor(
     public navCtrl: NavController,
-    private httpClient: HttpClient,
     private firestore: Firestore
   ) { }
 
   ngOnInit() {
     this.loadUsers();
-    this.loadFromFirestore();
   }
 
-  loadUsers(infiniteScroll?) {
-    this.httpClient.get(`https://randomuser.me/api/?results=20&page=${this.page}`)
-    .subscribe(res => {
-      this.users = this.users.concat(res['results']);
-      if (infiniteScroll) {
-        infiniteScroll.target.complete();
+  async loadUsers(infiniteScroll?) {
+    if (!infiniteScroll) {
+      // Query the first page of docs
+      const first = query(this.collectionRef("users"),
+      orderBy("lastSeen", "desc"), 
+      limit(5));
+      const documentSnapshots = await getDocs(first);
+      this.users = documentSnapshots.docs.map(doc => doc.data());
+
+      // Get the last visible document
+      this.lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+      if (documentSnapshots.docs.length < 5) {
+        infiniteScroll.target.disabled = true;
       }
-    })
+    } else {
+      const next = query(this.collectionRef("users"),
+          orderBy("lastSeen", "desc"),
+          startAfter(this.lastVisible),
+          limit(5));
+      // Use the query for pagination
+      const nextDocumentSnapshots = await getDocs(next);
+      this.users.push(...nextDocumentSnapshots.docs.map(doc => doc.data()));
+
+      // Get the last visible document
+      const l = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length-1];
+      this.lastVisible = l;
+      if (nextDocumentSnapshots.docs.length < 5) {
+        infiniteScroll.target.disabled = true;
+      }
+      infiniteScroll.target.complete();
+    }
+
   }
 
   loadMore(infiniteScroll) {
-    console.log('Begin async operation', this.page)
-    this.page++;
     this.loadUsers(infiniteScroll);
   }
 
@@ -44,26 +63,4 @@ export class InfinitePage implements OnInit {
     return collection(this.firestore, path);
   }
   
-  async loadFromFirestore() {
-    // Query the first page of docs
-    const first = query(this.collectionRef("users"), orderBy("lastSeen", 'desc'), limit(5));
-    // TODO: Convert getDocs to collectionData
-    const documentSnapshots = await getDocs(first);
-    
-    // Get the last visible document
-    const lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-    console.log("last", lastVisible.get("name"));
-    
-    // Construct a new query starting at this document,
-    // get the next 25 cities.
-    const next = query(this.collectionRef("users"),
-        orderBy("lastSeen", 'desc'),
-        startAfter(lastVisible),
-        limit(5));
-    // Use the query for pagination
-    const nextDocumentSnapshots = await getDocs(next);
-    const l = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length-1];
-    console.log("next", l.get("name"));
-  }
-
 }

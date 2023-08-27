@@ -9,9 +9,9 @@
   <ion-card *ngFor="let user of users">
     <ion-item>
       <ion-avatar item-start>
-        <img [src]="user.picture.medium">
+        <img [src]="user.photo">
       </ion-avatar>
-      <h2 text-capitalize>{{ user.name?.first }} {{ user.name?.last }}</h2>
+      <h2 text-capitalize>{{ user.name }}</h2>
     </ion-item>
     <ion-card-content>
       {{ user.email }}
