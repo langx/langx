@@ -92,7 +92,7 @@ export class CompletePage implements OnInit {
     {
       text: 'Confirm',
       handler: (value) => {
-        this.form.controls['gender'].setValue(value.gender.text);
+        this.form.controls['gender'].setValue(value.gender.value);
       },
     },
   ];
