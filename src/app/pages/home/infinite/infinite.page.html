@@ -5,9 +5,21 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">infinite</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  
+  <ion-card *ngFor="let user of users">
+    <ion-item>
+      <ion-avatar item-start>
+        <img [src]="user.picture.medium">
+      </ion-avatar>
+      <h2 text-capitalize>{{ user.name?.first }} {{ user.name?.last }}</h2>
+    </ion-item>
+    <ion-card-content>
+      {{ user.email }}
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)" loadingSpinner="bubbles" loadingText="Loading Users...">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  
 </ion-content>
