@@ -24,11 +24,11 @@
         Mother Tounge<!-- in [studyLanguage[0]]-->
       </ion-card-title>
     </ion-card-header>
-    <ion-card-content *ngIf="(users | async) as user$">
+    <ion-card-content *ngIf="!isLoading">
       <ion-list>
 
         <app-user-list
-          *ngFor="let item of user$"
+          *ngFor="let item of users"
           [item]="item"
           (onClick)="startChat($event)">
         </app-user-list>
@@ -37,7 +37,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 

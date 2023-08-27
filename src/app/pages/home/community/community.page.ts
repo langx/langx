@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Firestore, collection, query, orderBy, startAfter, limit, getDocs, where } from '@angular/fire/firestore';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
@@ -10,13 +10,16 @@ import { ChatService } from 'src/app/services/chat/chat.service';
 })
 export class CommunityPage implements OnInit {
 
-  users: Observable<any>;
+  users = [];
+  lastVisible: any;
+
   isLoading: boolean = false;
   open_new_chat:boolean = false;
 
   constructor(
     private router: Router,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private firestore: Firestore
   ) { }
 
   ngOnInit() {
@@ -26,11 +29,45 @@ export class CommunityPage implements OnInit {
   getUsers() {
     //TODO: showLoader();
     this.isLoading = true;
-    this.chatService.getUsers();
-    this.users = this.chatService.users;    
+    this.loadUsers();
     //TODO: hideLoader();
     this.isLoading = false;
   }
+
+  //
+  //Infinite Scroll
+  //
+
+  loadMore(event) {
+    this.loadUsers(event);
+  }
+
+  async loadUsers(infiniteScroll?) {
+    if (!infiniteScroll) {
+      const docSnap = await this.chatService.getUsers();
+      this.users = docSnap.docs.map(doc => doc.data());
+
+      // Get the last visible document
+      let l = docSnap.docs[docSnap.docs.length-1];
+      this.lastVisible = l || null;
+
+    } else {
+      // Use the query for pagination
+      const nextDocSnap = await this.chatService.getMoreUsers(this.lastVisible);
+      this.users.push(...nextDocSnap.docs.map(doc => doc.data()));
+
+      // Get the last visible document
+      let l = nextDocSnap.docs[nextDocSnap.docs.length-1];
+      this.lastVisible = l || null;
+      infiniteScroll.target.complete();
+    }
+
+  }
+
+  collectionRef(path) {
+    return collection(this.firestore, path);
+  }
+
 
   async startChat(item) {
     try {
@@ -68,30 +105,6 @@ export class CommunityPage implements OnInit {
     this.getUsers();
     event.target.complete();
     console.log('Async operation refresh has ended');
-  }
-
-  //
-  //Infinit Scroll
-  //
-
-  onIonInfinite(event) {
-    console.log('Begin async operation');
-    this.loadMore();
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 500);
-  }
-
-  private loadMore() {
-    this.users.pipe().subscribe((users) => {
-      let lastItem = users[users.length - 1];
-      console.log('lastItem: ', lastItem);
-      this.chatService.getMoreUsers(lastItem);
-      // get next 5 users
-      //this.chatService.getUsers(lastItem);
-      //this.users = this.chatService.users;
-    });
   }
 
 }
