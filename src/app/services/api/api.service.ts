@@ -47,11 +47,14 @@ export class ApiService {
     return getDocs<any>(dataRef); //get()
   }
 
-  collectionDataQuery(path, queryFn?, queryFn2?) {
+  collectionDataQuery(path, queryFn?, queryFn2?, queryFn3?) {
     let dataRef: any = this.collectionRef(path);
     
     // TODO: Here has to make logic better
-    if(queryFn && queryFn2) {
+    if(queryFn && queryFn2 && queryFn3) {
+      const q = query(dataRef, queryFn, queryFn2, queryFn3);
+      dataRef = q;
+    } else if(queryFn && queryFn2) {
       const q = query(dataRef, queryFn, queryFn2);
       dataRef = q;
     } else if(queryFn) {
