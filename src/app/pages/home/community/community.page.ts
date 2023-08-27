@@ -16,7 +16,6 @@ export class CommunityPage implements OnInit {
   filterData: any;
 
   isLoading: boolean = false;
-  open_new_chat:boolean = false;
 
   constructor(
     private router: Router,
@@ -87,7 +86,6 @@ export class CommunityPage implements OnInit {
       // create chatroom
       const room = await this.chatService.createChatRoom(item?.uid);
       console.log('room: ', room);
-      this.cancel();
       const navData: NavigationExtras = {
         queryParams: {
           name: item?.name,
@@ -103,10 +101,6 @@ export class CommunityPage implements OnInit {
       this.isLoading = false;
     }
   }  
-
-  cancel(){
-    this.open_new_chat = false;
-  }
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
