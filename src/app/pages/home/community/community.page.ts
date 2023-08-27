@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { FiltersPage } from './filters/filters.page';
 
 @Component({
   selector: 'app-community',
@@ -12,6 +13,7 @@ export class CommunityPage implements OnInit {
 
   users = [];
   lastVisible: any;
+  filterData: any;
 
   isLoading: boolean = false;
   open_new_chat:boolean = false;
@@ -22,25 +24,26 @@ export class CommunityPage implements OnInit {
     private storageService: StorageService
   ) { }
 
-  ngOnInit() {
-    this.getUsers(); 
-    this.checkFilters();
+  async ngOnInit() {
+    await this.checkFilter();
+    await this.getUsers(); 
   }
 
-  checkFilters() {
-    this.storageService.get('filterData').then((filterData) => {
-      console.log('filterData: ', filterData);
-    }).catch((error) => {
-      console.log('error: ', error);
-    });
-  }
-
-  getUsers() {
+  async getUsers() {
     //TODO: showLoader();
     this.isLoading = true;
     this.loadUsers();
     //TODO: hideLoader();
     this.isLoading = false;
+  }
+
+  async checkFilter() {
+    // Check if there is any filter
+    await this.storageService.get('filterData').then((filterData) => {
+      this.filterData = filterData;
+    }).catch((error) => {
+      console.log('error: ', error);
+    });
   }
 
   //
@@ -52,8 +55,12 @@ export class CommunityPage implements OnInit {
   }
 
   async loadUsers(infiniteScroll?) {
+
+    console.log(this.filterData);
+
     if (!infiniteScroll) {
       const docSnap = await this.chatService.getUsers();
+      // console.log('docSnap: ', docSnap.docs);
       this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
       // Get the last visible document
