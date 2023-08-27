@@ -39,6 +39,9 @@ export class CompletePage implements OnInit {
       gender: new FormControl('', 
         {validators: [Validators.required]}
       ),
+      genderValue: new FormControl('', 
+        {validators: [Validators.required]}
+      ),
       country: new FormControl('', 
         {validators: [Validators.required]}
       ),
@@ -92,7 +95,8 @@ export class CompletePage implements OnInit {
     {
       text: 'Confirm',
       handler: (value) => {
-        this.form.controls['gender'].setValue(value.gender.value);
+        this.form.controls['genderValue'].setValue(value.gender.value);
+        this.form.controls['gender'].setValue(value.gender.text);
       },
     },
   ];
