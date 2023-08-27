@@ -21,7 +21,7 @@ export class CommunityPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getUsers(); // get all Community Users
+    this.getUsers(); 
   }
 
   getUsers() {
@@ -43,7 +43,7 @@ export class CommunityPage implements OnInit {
   async loadUsers(infiniteScroll?) {
     if (!infiniteScroll) {
       const docSnap = await this.chatService.getUsers();
-      this.users = docSnap.docs.map(doc => doc.data());
+      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
       // Get the last visible document
       let l = docSnap.docs[docSnap.docs.length-1];
@@ -52,7 +52,7 @@ export class CommunityPage implements OnInit {
     } else {
       // Use the query for pagination
       const nextDocSnap = await this.chatService.getMoreUsers(this.lastVisible);
-      this.users.push(...nextDocSnap.docs.map(doc => doc.data()));
+      this.users.push(...nextDocSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId));
 
       // Get the last visible document
       let l = nextDocSnap.docs[nextDocSnap.docs.length-1];

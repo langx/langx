@@ -15,7 +15,9 @@ export class ChatService {
   constructor(
     public auth: AuthService,
     public api: ApiService
-  ) { }
+  ) {
+      this.getId();
+    }
 
   getId() {
     this.currentUserId = this.auth.getId()
