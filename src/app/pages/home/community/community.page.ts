@@ -45,33 +45,26 @@ export class CommunityPage implements OnInit {
 
   async loadUsers(infiniteScroll?) {
     if (!infiniteScroll) {
-      // Query the first page of docs
-      const first = query(this.collectionRef("users"),
-      orderBy("lastSeen", "desc"), 
-      limit(5));
-      const documentSnapshots = await getDocs(first);
-      this.users = documentSnapshots.docs.map(doc => doc.data());
+      const docSnap = await this.chatService.getUsers();
+      this.users = docSnap.docs.map(doc => doc.data());
 
       // Get the last visible document
-      this.lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
-      if (documentSnapshots.docs.length < 5) {
+      this.lastVisible = docSnap.docs[docSnap.docs.length-1];
+      if (docSnap.docs.length < 5) {
         infiniteScroll.target.disabled = true;
       }
     } else {
-      const next = query(this.collectionRef("users"),
-          orderBy("lastSeen", "desc"),
-          startAfter(this.lastVisible),
-          limit(5));
       // Use the query for pagination
-      const nextDocumentSnapshots = await getDocs(next);
-      this.users.push(...nextDocumentSnapshots.docs.map(doc => doc.data()));
+      const nextDocSnap = await this.chatService.getMoreUsers(this.lastVisible);
+      this.users.push(...nextDocSnap.docs.map(doc => doc.data()));
 
       // Get the last visible document
-      const l = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length-1];
+      const l = nextDocSnap.docs[nextDocSnap.docs.length-1];
       this.lastVisible = l;
-      if (nextDocumentSnapshots.docs.length < 5) {
+      if (nextDocSnap.docs.length < 5) {
         infiniteScroll.target.disabled = true;
       }
+
       infiniteScroll.target.complete();
     }
 
