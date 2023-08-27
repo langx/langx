@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { Observable, combineLatest, map, of, switchMap } from 'rxjs';
+import { Observable, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -9,7 +9,6 @@ import { ApiService } from '../api/api.service';
 export class ChatService {
 
   currentUserId: string;
-  public users: Observable<any>;
   public chatRooms: Observable<any>;
   selectedChatRoomMessages: Observable<any[]>;
 
@@ -22,31 +21,21 @@ export class ChatService {
     this.currentUserId = this.auth.getId()
   }
 
-  getUsers() {
-    // get the userId here 
-    this.getId();
-
-    this.users = this.api.collectionDataQuery(
-    //this.api.collectionDataQuery(
-      'users',
-      //this.api.whereQuery('uid', '!=', this.currentUserId),
-      //this.api.orderByQuery('uid', 'desc'),
-      this.api.orderByQuery('lastSeen', 'desc'),
+  async getUsers() {
+    return await this.api.getDocs(
+      "users",
+      this.api.orderByQuery("lastSeen", "desc"),
       this.api.limitQuery(5)
     )
   }
 
-  getMoreUsers(lastItem) {
-
-    let x = this.api.collectionDataQuery(
-      'users',
-      this.api.orderByQuery('lastSeen', 'desc'),
+  async getMoreUsers(lastItem) {
+    return await this.api.getDocs(
+      "users",
+      this.api.orderByQuery("lastSeen", "desc"),
       this.api.startAfterQuery(lastItem),
       this.api.limitQuery(5)
     )
-    x.subscribe((data) => {
-      console.log(data);
-    });
   }
   
   async createChatRoom(user_id) {
