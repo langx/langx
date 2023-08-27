@@ -17,6 +17,7 @@ import { provideStorage, getStorage } from '@angular/fire/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
 //import { Drivers } from '@ionic/storage';
 
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,6 +46,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
     provideStorage(() => getStorage()),
+    HttpClientModule
 ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
