@@ -102,7 +102,7 @@ export class CommunityPage implements OnInit {
   }
 
   getFiltersPage() {
-    this.router.navigateByUrl('/home/community/filters');
+    this.router.navigateByUrl('/home/filters');
   }
 
   handleRefresh(event) {
