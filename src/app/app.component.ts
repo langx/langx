@@ -34,9 +34,9 @@ export class AppComponent {
   }
 
   initDarkMode() {
-    console.log('initDarkMode');
+    //console.log('initDarkMode');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    console.log('prefersDark: ', prefersDark);
+    //console.log('prefersDark: ', prefersDark);
     this.toggleDarkTheme(prefersDark.matches);
 
     // Listen for changes to the prefers-color-scheme media query
