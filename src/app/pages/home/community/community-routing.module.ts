@@ -7,10 +7,6 @@ const routes: Routes = [
   {
     path: '',
     component: CommunityPage
-  },
-  {
-    path: 'filters',
-    loadChildren: () => import('./filters/filters/filters.module').then( m => m.FiltersPageModule)
   }
 ];
 

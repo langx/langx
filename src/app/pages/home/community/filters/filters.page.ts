@@ -5,7 +5,7 @@ import { LanguageLevelModalComponent } from 'src/app/components/language-level-m
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-filters',
@@ -30,7 +30,7 @@ export class FiltersPage implements OnInit {
     private storageService: StorageService,
     private authService: AuthService,
     private modalCtrl: ModalController,
-    private route: Router
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -55,7 +55,15 @@ export class FiltersPage implements OnInit {
     };
     this.storageService.set('filterData', filterData);
     console.log(filterData);
-    this.route.navigateByUrl('/home/community');
+    const navData: NavigationExtras = {
+        queryParams: {
+        language: this.filterLanguage,
+        gender: this.filterGender,
+        country: this.filterCountry,
+        age: this.filterAge
+      }
+    };
+    this.router.navigate(['/', 'home', 'community', navData]);
   }
 
   //
