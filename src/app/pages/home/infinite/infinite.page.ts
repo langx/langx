@@ -11,7 +11,6 @@ export class InfinitePage implements OnInit {
 
   users = [];
   page = 0;
-  maximumPages = 30;
 
   constructor(
     public navCtrl: NavController,
@@ -33,12 +32,9 @@ export class InfinitePage implements OnInit {
   }
 
   loadMore(infiniteScroll) {
+    console.log('Begin async operation', this.page)
     this.page++;
     this.loadUsers(infiniteScroll);
-
-    if (this.page === this.maximumPages) {
-      infiniteScroll.target.disabled = true;
-    }
   }
 
 }
