@@ -179,7 +179,7 @@ export class AuthService {
     try {
       const data = {
         birthdate: formValue?.birthdateWithDateFormat,
-        gender: formValue?.gender,
+        gender: formValue?.genderValue,
         country: {
           name: formValue?.country,
           code: formValue?.countryCode
