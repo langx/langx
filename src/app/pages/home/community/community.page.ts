@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-community',
@@ -18,10 +19,20 @@ export class CommunityPage implements OnInit {
   constructor(
     private router: Router,
     private chatService: ChatService,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
     this.getUsers(); 
+    this.checkFilters();
+  }
+
+  checkFilters() {
+    this.storageService.get('filterData').then((filterData) => {
+      console.log('filterData: ', filterData);
+    }).catch((error) => {
+      console.log('error: ', error);
+    });
   }
 
   getUsers() {
