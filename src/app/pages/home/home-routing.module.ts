@@ -54,10 +54,6 @@ const routes: Routes = [
     path: 'user/:id',
     loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
   },
-  {
-    path: 'infinite',
-    loadChildren: () => import('./infinite/infinite.module').then( m => m.InfinitePageModule)
-  },
 ];
 
 @NgModule({
