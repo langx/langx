@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Firestore, collection, query, orderBy, startAfter, limit, getDocs, where } from '@angular/fire/firestore';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-community',
@@ -20,7 +19,6 @@ export class CommunityPage implements OnInit {
   constructor(
     private router: Router,
     private chatService: ChatService,
-    private authService: AuthService,
     private firestore: Firestore
   ) { }
 
