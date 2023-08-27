@@ -40,7 +40,6 @@ export class CommunityPage implements OnInit {
 
   loadMore(event) {
     this.loadUsers(event);
-    console.log('Done');
   }
 
   async loadUsers(infiniteScroll?) {
@@ -49,22 +48,17 @@ export class CommunityPage implements OnInit {
       this.users = docSnap.docs.map(doc => doc.data());
 
       // Get the last visible document
-      this.lastVisible = docSnap.docs[docSnap.docs.length-1];
-      if (docSnap.docs.length < 5) {
-        infiniteScroll.target.disabled = true;
-      }
+      let l = docSnap.docs[docSnap.docs.length-1];
+      this.lastVisible = l || null;
+
     } else {
       // Use the query for pagination
       const nextDocSnap = await this.chatService.getMoreUsers(this.lastVisible);
       this.users.push(...nextDocSnap.docs.map(doc => doc.data()));
 
       // Get the last visible document
-      const l = nextDocSnap.docs[nextDocSnap.docs.length-1];
-      this.lastVisible = l;
-      if (nextDocSnap.docs.length < 5) {
-        infiniteScroll.target.disabled = true;
-      }
-
+      let l = nextDocSnap.docs[nextDocSnap.docs.length-1];
+      this.lastVisible = l || null;
       infiniteScroll.target.complete();
     }
 
@@ -112,6 +106,5 @@ export class CommunityPage implements OnInit {
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
-
 
 }
