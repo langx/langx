@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Firestore, collection, query, orderBy, startAfter, limit, getDocs, where } from '@angular/fire/firestore';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-community',
@@ -10,13 +11,17 @@ import { ChatService } from 'src/app/services/chat/chat.service';
 })
 export class CommunityPage implements OnInit {
 
-  users: Observable<any>;
+  users = [];
+  lastVisible: any;
+
   isLoading: boolean = false;
   open_new_chat:boolean = false;
 
   constructor(
     private router: Router,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private authService: AuthService,
+    private firestore: Firestore
   ) { }
 
   ngOnInit() {
@@ -26,11 +31,58 @@ export class CommunityPage implements OnInit {
   getUsers() {
     //TODO: showLoader();
     this.isLoading = true;
-    this.chatService.getUsers();
-    this.users = this.chatService.users;    
+    this.loadUsers();
     //TODO: hideLoader();
     this.isLoading = false;
   }
+
+  //
+  //Infinite Scroll
+  //
+
+  loadMore(event) {
+    this.loadUsers(event);
+    console.log('Done');
+  }
+
+  async loadUsers(infiniteScroll?) {
+    if (!infiniteScroll) {
+      // Query the first page of docs
+      const first = query(this.collectionRef("users"),
+      orderBy("lastSeen", "desc"), 
+      limit(5));
+      const documentSnapshots = await getDocs(first);
+      this.users = documentSnapshots.docs.map(doc => doc.data());
+
+      // Get the last visible document
+      this.lastVisible = documentSnapshots.docs[documentSnapshots.docs.length-1];
+      if (documentSnapshots.docs.length < 5) {
+        infiniteScroll.target.disabled = true;
+      }
+    } else {
+      const next = query(this.collectionRef("users"),
+          orderBy("lastSeen", "desc"),
+          startAfter(this.lastVisible),
+          limit(5));
+      // Use the query for pagination
+      const nextDocumentSnapshots = await getDocs(next);
+      this.users.push(...nextDocumentSnapshots.docs.map(doc => doc.data()));
+
+      // Get the last visible document
+      const l = nextDocumentSnapshots.docs[nextDocumentSnapshots.docs.length-1];
+      this.lastVisible = l;
+      if (nextDocumentSnapshots.docs.length < 5) {
+        infiniteScroll.target.disabled = true;
+      }
+      infiniteScroll.target.complete();
+    }
+
+  }
+
+  collectionRef(path) {
+    return collection(this.firestore, path);
+  }
+
 
   async startChat(item) {
     try {
@@ -70,28 +122,5 @@ export class CommunityPage implements OnInit {
     console.log('Async operation refresh has ended');
   }
 
-  //
-  //Infinit Scroll
-  //
-
-  onIonInfinite(event) {
-    console.log('Begin async operation');
-    this.loadMore();
-    setTimeout(() => {
-      console.log('Async operation has ended');
-      event.target.complete();
-    }, 500);
-  }
-
-  private loadMore() {
-    this.users.pipe().subscribe((users) => {
-      let lastItem = users[users.length - 1];
-      console.log('lastItem: ', lastItem);
-      this.chatService.getMoreUsers(lastItem);
-      // get next 5 users
-      //this.chatService.getUsers(lastItem);
-      //this.users = this.chatService.users;
-    });
-  }
 
 }
