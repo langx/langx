@@ -132,7 +132,7 @@ export class CompletePage implements OnInit {
     //showLoader();
     this.isLoading = true;
     try {
-      this.authService.updateUserData(form.value).then(() => {
+      this.authService.updateUserProfileData(form.value).then(() => {
         console.log('updateUserData setted in DB');
         this.router.navigateByUrl('/login/signup/language');
         //hideLoader();
