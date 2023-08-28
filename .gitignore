@@ -12,7 +12,6 @@ $RECYCLE.BIN/
 *.log
 log.txt
 
-
 /.sourcemaps
 /.versions
 /coverage
@@ -22,6 +21,9 @@ log.txt
 /www
 /platforms
 /plugins
+
+# Firebase
+/src/environments/environment.ts
 
 # Compiled output
 /dist
@@ -51,7 +53,6 @@ yarn-error.log
 !.vscode/launch.json
 !.vscode/extensions.json
 .history/*
-
 
 # Miscellaneous
 /.angular
