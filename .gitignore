@@ -24,6 +24,7 @@ log.txt
 
 # Firebase
 /src/environments/environment.ts
+.firebaserc
 
 # Compiled output
 /dist
