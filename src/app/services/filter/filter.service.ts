@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+export interface isFilter {
+  isLanguage: boolean;
+  isGender: boolean;
+  isCountry: boolean;
+  isAge: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class FilterService {
 
-  private filterTracker = new BehaviorSubject<any>(undefined);
+  private isFilterTracker = new BehaviorSubject<isFilter>(null);
 
   constructor() { }
 
-  getEvent(): BehaviorSubject<any> {
-      return this.filterTracker;
+  getEvent(): BehaviorSubject<isFilter> {
+      return this.isFilterTracker;
   }
 
-  setEvent(param: any): void {
-      this.filterTracker.next(param);
+  setEvent(param: isFilter): void {
+      this.isFilterTracker.next(param);
   }
 }
