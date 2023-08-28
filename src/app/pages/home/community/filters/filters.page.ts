@@ -51,7 +51,7 @@ export class FiltersPage implements OnInit {
   }
 
   onSubmit() { 
-    // here set filterData to filterService
+    // here set filterData for filterService
     let isFilterData: isFilter = {
       isFilterLanguage: this.isFilterLanguage,
       isFilterGender: this.isFilterGender,
