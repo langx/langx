@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
+import { FilterService } from 'src/app/services/filter/filter.service';
 
 @Component({
   selector: 'app-community',
@@ -10,21 +10,48 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 })
 export class CommunityPage implements OnInit {
 
+  filterSubscription: any;
+
   users = [];
   lastVisible: any;
-  filterData: any;
 
   isLoading: boolean = false;
 
   constructor(
     private router: Router,
     private chatService: ChatService,
-    private storageService: StorageService
+    private filterService: FilterService,
   ) { }
 
-  async ngOnInit() {
-    await this.checkFilter();
-    await this.getUsers();
+  ngOnInit() {
+    this.checkFilter();
+    this.getUsers();
+  }
+
+  //
+  // Check Filter
+  //
+
+  checkFilter() {
+    this.filterSubscription = this.filterService.getEvent()
+    .subscribe(
+      (param: any) => {
+        this.doSomething(param);
+      }
+    );
+  }
+
+  doSomething(param) {
+    console.log('param: ', param);
+  }
+  
+  //
+  // On Destroy
+  // Unsubscribe Filter
+  //
+
+  ngOnDestroy(): void {
+      this.filterSubscription.unsubscribe();
   }
 
   //
@@ -32,15 +59,7 @@ export class CommunityPage implements OnInit {
   //
 
   async getUsers() {
-    this.loadUsers();
-  }
-
-  //
-  // Check Filter
-  //
-
-  async checkFilter() {
-
+    await this.loadUsers();
   }
 
   //
@@ -52,8 +71,6 @@ export class CommunityPage implements OnInit {
   }
 
   async loadUsers(infiniteScroll?) {
-
-    // console.log(this.filterData);
 
     if (!infiniteScroll) {
       const docSnap = await this.chatService.getUsers();
