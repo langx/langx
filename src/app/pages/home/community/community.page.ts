@@ -49,10 +49,10 @@ export class CommunityPage implements OnInit {
   // On Destroy
   // Unsubscribe Filter
   //
-
-  ngOnDestroy(): void {
-      this.filterSubscription.unsubscribe();
-  }
+  // NOTE: Not destroy to keep filter activated
+  // ngOnDestroy(): void {
+  //     this.filterSubscription.unsubscribe();
+  // }
 
   //
   // Get Users on Init
