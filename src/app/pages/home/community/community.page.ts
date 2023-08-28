@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { FilterService } from 'src/app/services/filter/filter.service';
+import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
 
 @Component({
   selector: 'app-community',
@@ -35,13 +35,13 @@ export class CommunityPage implements OnInit {
   checkFilter() {
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
-      (param: any) => {
+      (param: isFilter) => {
         this.doSomething(param);
       }
     );
   }
 
-  doSomething(param) {
+  doSomething(param: isFilter) {
     console.log('param: ', param);
   }
   

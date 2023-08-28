@@ -5,7 +5,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { Router } from '@angular/router';
-import { FilterService } from 'src/app/services/filter/filter.service';
+import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
 
 @Component({
   selector: 'app-filters',
@@ -69,13 +69,19 @@ export class FiltersPage implements OnInit {
     console.log(filterData);
 
     // here set filterData to filterService
-    this.doSomething(this.isFilterGender);
+    let isFilterData: isFilter = {
+      isLanguage: this.isFilterLanguage,
+      isGender: this.isFilterGender,
+      isCountry: this.isFilterCountry,
+      isAge: this.isFilterAge,
+    }
+    this.doSomething(isFilterData);
     
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
   }
 
-  doSomething(param: boolean): void {
+  doSomething(param: isFilter): void {
       this.filterService.setEvent(param);
   }
 
