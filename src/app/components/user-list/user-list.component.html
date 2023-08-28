@@ -1,8 +1,8 @@
-<ion-item (click)="redirect()">
-  <ion-thumbnail slot="start">
+<ion-item>
+  <ion-thumbnail slot="start" (click)="goProfile()">
     <img [src]="item?.photo"  alt="" referrerpolicy="no-referrer"/>
   </ion-thumbnail>
-  <ion-label>
+  <ion-label (click)="redirect()">
     <h2>{{ item?.name }}</h2>
     <p>{{ item?.online }}, {{ item?.uid }}</p>
   </ion-label>
