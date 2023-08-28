@@ -70,6 +70,7 @@ export class FiltersPage implements OnInit {
 
   doSomething(filterData: isFilter): void {
       this.filterService.setEvent(filterData);
+      this.filterService.saveFilter(filterData);
   }
 
   //
