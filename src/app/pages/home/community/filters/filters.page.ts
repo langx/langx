@@ -3,7 +3,6 @@ import { ModalController, NavController } from '@ionic/angular';
 import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
-import { StorageService } from 'src/app/services/storage/storage.service';
 import { Router } from '@angular/router';
 import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
 
@@ -34,7 +33,6 @@ export class FiltersPage implements OnInit {
   isFilterAge: boolean = false;
 
   constructor(
-    private storageService: StorageService,
     private authService: AuthService,
     private modalCtrl: ModalController,
     private navCtrl: NavController,
@@ -55,19 +53,6 @@ export class FiltersPage implements OnInit {
   }
 
   onSubmit() { 
-    // let filterData = { 
-    //   isFilterLanguage: this.isFilterLanguage,
-    //   isFilterGender: this.isFilterGender,
-    //   isFilterCountry: this.isFilterCountry,
-    //   isFilterAge: this.isFilterAge,
-    //   filterLanguage: this.filterLanguage,
-    //   filterGender: this.filterGender,
-    //   filterCountry: this.filterCountry,
-    //   filterAge: this.filterAge,
-    // };
-    // this.storageService.set('filterData', filterData);
-    // console.log(filterData);
-
     // here set filterData to filterService
     let isFilterData: isFilter = {
       isFilterLanguage: this.isFilterLanguage,
