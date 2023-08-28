@@ -167,7 +167,6 @@ export class FiltersPage implements OnInit {
     this.isFilterGender = false;
     this.isFilterCountry = false;
     this.isFilterAge = false;
-    //this.storageService.remove('filterData');
   }
 
 }
