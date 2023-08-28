@@ -55,25 +55,29 @@ export class FiltersPage implements OnInit {
   }
 
   onSubmit() { 
-    let filterData = { 
-      language: this.filterLanguage,
-      gender: this.filterGender,
-      country: this.filterCountry,
-      age: this.filterAge,
-      isLanguage: this.isFilterLanguage,
-      isGender: this.isFilterGender,
-      isCountry: this.isFilterCountry,
-      isAge: this.isFilterAge,
-    };
-    this.storageService.set('filterData', filterData);
-    console.log(filterData);
+    // let filterData = { 
+    //   isFilterLanguage: this.isFilterLanguage,
+    //   isFilterGender: this.isFilterGender,
+    //   isFilterCountry: this.isFilterCountry,
+    //   isFilterAge: this.isFilterAge,
+    //   filterLanguage: this.filterLanguage,
+    //   filterGender: this.filterGender,
+    //   filterCountry: this.filterCountry,
+    //   filterAge: this.filterAge,
+    // };
+    // this.storageService.set('filterData', filterData);
+    // console.log(filterData);
 
     // here set filterData to filterService
     let isFilterData: isFilter = {
-      isLanguage: this.isFilterLanguage,
-      isGender: this.isFilterGender,
-      isCountry: this.isFilterCountry,
-      isAge: this.isFilterAge,
+      isFilterLanguage: this.isFilterLanguage,
+      isFilterGender: this.isFilterGender,
+      isFilterCountry: this.isFilterCountry,
+      isFilterAge: this.isFilterAge,
+      filterLanguage: this.filterLanguage,
+      filterGender: this.filterGender,
+      filterCountry: this.filterCountry,
+      filterAge: this.filterAge,
     }
     this.doSomething(isFilterData);
     

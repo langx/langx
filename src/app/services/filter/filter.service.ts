@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, filter } from 'rxjs';
+import { StorageService } from '../storage/storage.service';
 
 export interface isFilter {
-  isLanguage: boolean;
-  isGender: boolean;
-  isCountry: boolean;
-  isAge: boolean;
+  isFilterLanguage: boolean;
+  isFilterGender: boolean;
+  isFilterCountry: boolean;
+  isFilterAge: boolean;
+  filterLanguage: Array<any>;
+  filterGender: string;
+  filterCountry: string;
+  filterAge: Object;
 }
 
 @Injectable({
@@ -24,4 +29,5 @@ export class FilterService {
   setEvent(param: isFilter): void {
       this.isFilterTracker.next(param);
   }
+
 }
