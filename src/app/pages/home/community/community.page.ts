@@ -42,6 +42,7 @@ export class CommunityPage implements OnInit {
   }
 
   doSomething(param: isFilter) {
+    if (!param) return;
     console.log('filter: ', param);
   }
   
