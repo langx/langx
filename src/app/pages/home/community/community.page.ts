@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
+import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
 
 @Component({
   selector: 'app-community',
@@ -10,61 +10,56 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 })
 export class CommunityPage implements OnInit {
 
+  filterSubscription: any;
+
   users = [];
   lastVisible: any;
-  filterData: any;
 
   isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private chatService: ChatService,
-    private storageService: StorageService
+    private filterService: FilterService,
   ) { }
 
-  async ngOnInit() {
-    // resolver test
-    const resolverData = this.route.snapshot.data;
-    console.log('resolverData: ', resolverData);
-
-    // let filterData = this.storageService.get('filterData');
-    // console.log('(ionViewWillEnter) filterData: ', filterData);
-
-    // ngOnInit
-    await this.checkFilter();
-    await this.getUsers();
-  }
-
-  //
-  // Get Users on Init
-  //
-
-  async getUsers() {
-    //TODO: showLoader();
-    this.isLoading = true;
-    this.loadUsers();
-    //TODO: hideLoader();
-    this.isLoading = false;
+  ngOnInit() {
+    this.checkFilter();
+    this.getUsers();
   }
 
   //
   // Check Filter
   //
 
-  async checkFilter() {
-    // Check if there is any filter
-    // await this.storageService.get('filterData').then((filterData) => {
-    //   this.filterData = filterData;
-    // }).catch((error) => {
-    //   console.log('error: ', error);
-    // });
+  checkFilter() {
+    this.filterSubscription = this.filterService.getEvent()
+    .subscribe(
+      (param: isFilter) => {
+        this.doSomething(param);
+      }
+    );
+  }
 
-    //check navData Filters
+  doSomething(param: isFilter) {
+    console.log('param: ', param);
+  }
+  
+  //
+  // On Destroy
+  // Unsubscribe Filter
+  //
+  // NOTE: Not destroy to keep filter activated
+  // ngOnDestroy(): void {
+  //     this.filterSubscription.unsubscribe();
+  // }
 
-    const navData: any = this.route.snapshot.queryParams;
-    console.log('navData coming from filters.page.ts', navData);
+  //
+  // Get Users on Init
+  //
 
+  async getUsers() {
+    await this.loadUsers();
   }
 
   //
@@ -76,8 +71,6 @@ export class CommunityPage implements OnInit {
   }
 
   async loadUsers(infiniteScroll?) {
-
-    // console.log(this.filterData);
 
     if (!infiniteScroll) {
       const docSnap = await this.chatService.getUsers();
