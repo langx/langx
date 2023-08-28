@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
 
@@ -20,6 +21,7 @@ export class CommunityPage implements OnInit {
   constructor(
     private router: Router,
     private chatService: ChatService,
+    private authService: AuthService,
     private filterService: FilterService,
   ) { }
 
@@ -33,6 +35,15 @@ export class CommunityPage implements OnInit {
   //
 
   checkFilter() {
+
+    this.authService.getUserData().then((currentUserData) => {
+      if(currentUserData?.isFilterData) {
+        this.filterService.setEvent(currentUserData?.filterData);
+      }
+    }).catch((error) => {
+      console.log('error: ', error);
+    });
+
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
       (filterData: isFilter) => {
