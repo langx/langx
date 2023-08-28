@@ -52,7 +52,7 @@ export class FiltersPage implements OnInit {
 
   onSubmit() { 
     // here set filterData for filterService
-    let isFilterData: isFilter = {
+    let filterData: isFilter = {
       isFilterLanguage: this.isFilterLanguage,
       isFilterGender: this.isFilterGender,
       isFilterCountry: this.isFilterCountry,
@@ -62,14 +62,14 @@ export class FiltersPage implements OnInit {
       filterCountry: this.filterCountry,
       filterAge: this.filterAge,
     }
-    this.doSomething(isFilterData);
+    this.doSomething(filterData);
     
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
   }
 
-  doSomething(param: isFilter): void {
-      this.filterService.setEvent(param);
+  doSomething(filterData: isFilter): void {
+      this.filterService.setEvent(filterData);
   }
 
   //
