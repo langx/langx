@@ -28,6 +28,10 @@ export class CommunityPage implements OnInit {
     await this.getUsers(); 
   }
 
+  //
+  // Get Users on Init
+  //
+
   async getUsers() {
     //TODO: showLoader();
     this.isLoading = true;
@@ -35,6 +39,10 @@ export class CommunityPage implements OnInit {
     //TODO: hideLoader();
     this.isLoading = false;
   }
+
+  //
+  // Check Filter
+  //
 
   async checkFilter() {
     // Check if there is any filter
@@ -46,7 +54,7 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  //Infinite Scroll
+  // Infinite Scroll
   //
 
   loadMore(event) {
@@ -79,6 +87,10 @@ export class CommunityPage implements OnInit {
 
   }
 
+  //
+  // Start Chat
+  //
+
   async startChat(item) {
     try {
       // showLoader();
@@ -100,11 +112,19 @@ export class CommunityPage implements OnInit {
       // hideLoader();
       this.isLoading = false;
     }
-  }  
+  }
+
+  //
+  // Filters
+  //
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
   }
+
+  //
+  // Pull to refresh
+  //
 
   handleRefresh(event) {
     this.getUsers();
