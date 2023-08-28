@@ -27,7 +27,7 @@ export class ChatService {
     return await this.api.getDocs(
       "users",
       this.api.orderByQuery("lastSeen", "desc"),
-      this.api.limitQuery(5)
+      this.api.limitQuery(10)
     )
   }
 
@@ -39,7 +39,7 @@ export class ChatService {
       this.api.limitQuery(5)
     )
   }
-  
+
   async createChatRoom(user_id) {
     // get the userId here 
     this.getId();
