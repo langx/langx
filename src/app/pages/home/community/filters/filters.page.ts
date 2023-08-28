@@ -21,10 +21,17 @@ export class FiltersPage implements OnInit {
   isLoading: boolean = false;
   currentUserData: any;
   
+  // filters
   filterLanguage: Array<any> = [];
   filterGender: string = '';
   filterCountry: string = '';
   filterAge: Object = {};
+
+  // flags
+  isFilterLanguage: boolean = false;
+  isFilterGender: boolean = false;
+  isFilterCountry: boolean = false;
+  isFilterAge: boolean = false;
 
   constructor(
     private storageService: StorageService,
@@ -49,18 +56,26 @@ export class FiltersPage implements OnInit {
   onSubmit() { 
     let filterData = { 
       language: this.filterLanguage,
+      isLanguage: this.isFilterLanguage,
       gender: this.filterGender,
+      isGender: this.isFilterGender,
       country: this.filterCountry,
-      age: this.filterAge
+      isCountry: this.isFilterCountry,
+      age: this.filterAge,
+      isAge: this.isFilterAge
     };
     this.storageService.set('filterData', filterData);
     console.log(filterData);
     const navData: NavigationExtras = {
         queryParams: {
-        language: this.filterLanguage,
-        gender: this.filterGender,
-        country: this.filterCountry,
-        age: this.filterAge
+          language: this.filterLanguage,
+          isLanguage: this.isFilterLanguage,
+          gender: this.filterGender,
+          isGender: this.isFilterGender,
+          country: this.filterCountry,
+          isCountry: this.isFilterCountry,
+          age: this.filterAge,
+          isAge: this.isFilterAge
       }
     };
     this.router.navigate(['/', 'home', 'community', navData]);
@@ -86,6 +101,7 @@ export class FiltersPage implements OnInit {
     if (role === 'confirm') {
       let item = { lang: lang?.code, level: data };
       this.filterLanguage.push(item);
+      this.isFilterLanguage = true;
       console.log(this.filterLanguage);
     }
   }
@@ -104,6 +120,7 @@ export class FiltersPage implements OnInit {
 
   countryChange(event) {
     this.filterCountry = event.detail.value;
+    this.isFilterCountry = true;
   }
 
   showCountry() {
@@ -117,6 +134,7 @@ export class FiltersPage implements OnInit {
   
   genderChange(event) {
     this.filterGender = event.detail.value;
+    this.isFilterGender = true;
   }
 
   showGender() {
@@ -133,7 +151,7 @@ export class FiltersPage implements OnInit {
 
   ageChange(event) {
     this.filterAge = event.detail.value;
-    console.log(this.filterAge);
+    this.isFilterAge = true;
   }
 
   showAge() {
@@ -154,6 +172,11 @@ export class FiltersPage implements OnInit {
     this.filterGender = '';
     this.filterCountry = '';
     this.filterAge = {};
+    this.isFilterLanguage = false;
+    this.isFilterGender = false;
+    this.isFilterCountry = false;
+    this.isFilterAge = false;
+    //this.storageService.remove('filterData');
   }
 
 }
