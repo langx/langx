@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -28,6 +29,12 @@ export class AccountPage implements OnInit {
       this.isLoading = false;
     })
   } 
+
+  lastSeen(d: any) { 
+    if (!d) return null;
+    let a = new Date(d.seconds * 1000)
+    return lastSeen(a);
+   }
 
   // TODO: implement these methods
   disableAccount() {

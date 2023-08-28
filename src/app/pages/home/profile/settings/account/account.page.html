@@ -58,7 +58,8 @@
       <ion-list>
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
-          <ion-label>{{ (currentUser?.lastLogin).toDate() | date: 'dd/MM/yyyy, hh:mm:ss' }}</ion-label>
+          <ion-label>{{ (currentUser?.lastLogin).toDate() | date: 'dd/MM/yyyy, HH:mm:ss' }}</ion-label>
+          <ion-note>{{ lastSeen(currentUser?.lastLogin) }}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
