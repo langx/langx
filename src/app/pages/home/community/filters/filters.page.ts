@@ -20,13 +20,11 @@ export class FiltersPage implements OnInit {
   isLoading: boolean = false;
   currentUserData: any;
   
-  // filters
+  // filters data
   filterLanguage: Array<any> = [];
   filterGender: string = '';
   filterCountry: string = '';
   filterAge: Object = {};
-
-  // flags
   isFilterLanguage: boolean = false;
   isFilterGender: boolean = false;
   isFilterCountry: boolean = false;
