@@ -19,7 +19,7 @@ export class FiltersPage implements OnInit {
 
   isLoading: boolean = false;
   currentUserData: any;
-  
+
   // filters data
   filterLanguage: Array<any> = [];
   filterGender: string = '';
@@ -63,7 +63,7 @@ export class FiltersPage implements OnInit {
       filterAge: this.filterAge,
     }
     this.doSomething(filterData);
-    
+
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
   }
@@ -105,7 +105,7 @@ export class FiltersPage implements OnInit {
     else if (l==3) { return 'Advanced'; }
     else { return false; }
   }
-  
+
   //
   // COUNTRY Methods
   //
@@ -123,7 +123,7 @@ export class FiltersPage implements OnInit {
   //
   // GENDER Methods
   //
-  
+
   genderChange(event) {
     this.filterGender = event.detail.value;
     this.isFilterGender = true;
