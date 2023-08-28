@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
@@ -37,6 +37,7 @@ export class FiltersPage implements OnInit {
     private storageService: StorageService,
     private authService: AuthService,
     private modalCtrl: ModalController,
+    private navCtrl: NavController,
     private router: Router
   ) { }
 
@@ -47,7 +48,7 @@ export class FiltersPage implements OnInit {
   getUserData() {
     this.authService.getUserData().then((currentUserData) => {
       this.currentUserData = currentUserData;
-      console.log('currentUserData: ', currentUserData);
+      //console.log('currentUserData: ', currentUserData);
     }).catch((error) => {
       console.log('error: ', error);
     });
@@ -66,7 +67,12 @@ export class FiltersPage implements OnInit {
     };
     this.storageService.set('filterData', filterData);
     console.log(filterData);
+    this.navCtrl.setDirection('back');
+    this.router.navigateByUrl('/home/community');
+
+    /*
     const navData: NavigationExtras = {
+        onSameUrlNavigation: 'reload',
         queryParams: {
           language: this.filterLanguage,
           isLanguage: this.isFilterLanguage,
@@ -79,6 +85,7 @@ export class FiltersPage implements OnInit {
       }
     };
     this.router.navigate(['/', 'home', 'community', navData]);
+    */
   }
 
   //
