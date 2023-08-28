@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomePage } from './home.page';
-import { FilterResolverService } from 'src/app/services/resolver/filter-resolver.service';
 
 const routes: Routes = [
   {
@@ -20,10 +19,7 @@ const routes: Routes = [
       },
       {
         path: 'community',
-        loadChildren: () => import('./community/community.module').then(m => m.CommunityPageModule),
-        resolve: { 
-          filterData: FilterResolverService
-        }
+        loadChildren: () => import('./community/community.module').then(m => m.CommunityPageModule)
       },
       {
         path: 'profile',
