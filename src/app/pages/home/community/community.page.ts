@@ -35,15 +35,15 @@ export class CommunityPage implements OnInit {
   checkFilter() {
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
-      (param: isFilter) => {
-        this.doSomething(param);
+      (filterData: isFilter) => {
+        this.doSomething(filterData);
       }
     );
   }
 
-  doSomething(param: isFilter) {
-    if (!param) return;
-    console.log('filter: ', param);
+  doSomething(filterData: isFilter) {
+    if (!filterData) return;
+    console.log('filter: ', filterData);
   }
   
   //
