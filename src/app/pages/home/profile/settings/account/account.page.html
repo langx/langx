@@ -78,6 +78,24 @@
     </ion-card-content>
   </ion-card>
 
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Other</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="snow-outline"></ion-icon>
+          <ion-label (click)="disableAccount()">Froze Account</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="trash-outline" color="medium"></ion-icon>
+          <ion-label color="medium" (click)="disableAccount()">Delete Account</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
 
 <ion-footer>
