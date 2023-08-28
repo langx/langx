@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, NavController } from '@ionic/angular';
 import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
-import { StorageService } from 'src/app/services/storage/storage.service';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
 
 @Component({
   selector: 'app-filters',
@@ -21,24 +20,22 @@ export class FiltersPage implements OnInit {
   isLoading: boolean = false;
   currentUserData: any;
   
-  // filters
+  // filters data
   filterLanguage: Array<any> = [];
   filterGender: string = '';
   filterCountry: string = '';
   filterAge: Object = {};
-
-  // flags
   isFilterLanguage: boolean = false;
   isFilterGender: boolean = false;
   isFilterCountry: boolean = false;
   isFilterAge: boolean = false;
 
   constructor(
-    private storageService: StorageService,
     private authService: AuthService,
     private modalCtrl: ModalController,
     private navCtrl: NavController,
-    private router: Router
+    private router: Router,
+    private filterService: FilterService,
   ) { }
 
   ngOnInit() {
@@ -48,44 +45,31 @@ export class FiltersPage implements OnInit {
   getUserData() {
     this.authService.getUserData().then((currentUserData) => {
       this.currentUserData = currentUserData;
-      //console.log('currentUserData: ', currentUserData);
     }).catch((error) => {
       console.log('error: ', error);
     });
   }
 
   onSubmit() { 
-    let filterData = { 
-      language: this.filterLanguage,
-      isLanguage: this.isFilterLanguage,
-      gender: this.filterGender,
-      isGender: this.isFilterGender,
-      country: this.filterCountry,
-      isCountry: this.isFilterCountry,
-      age: this.filterAge,
-      isAge: this.isFilterAge
-    };
-    this.storageService.set('filterData', filterData);
-    console.log(filterData);
+    // here set filterData to filterService
+    let isFilterData: isFilter = {
+      isFilterLanguage: this.isFilterLanguage,
+      isFilterGender: this.isFilterGender,
+      isFilterCountry: this.isFilterCountry,
+      isFilterAge: this.isFilterAge,
+      filterLanguage: this.filterLanguage,
+      filterGender: this.filterGender,
+      filterCountry: this.filterCountry,
+      filterAge: this.filterAge,
+    }
+    this.doSomething(isFilterData);
+    
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
+  }
 
-    /*
-    const navData: NavigationExtras = {
-        onSameUrlNavigation: 'reload',
-        queryParams: {
-          language: this.filterLanguage,
-          isLanguage: this.isFilterLanguage,
-          gender: this.filterGender,
-          isGender: this.isFilterGender,
-          country: this.filterCountry,
-          isCountry: this.isFilterCountry,
-          age: this.filterAge,
-          isAge: this.isFilterAge
-      }
-    };
-    this.router.navigate(['/', 'home', 'community', navData]);
-    */
+  doSomething(param: isFilter): void {
+      this.filterService.setEvent(param);
   }
 
   //
@@ -183,7 +167,6 @@ export class FiltersPage implements OnInit {
     this.isFilterGender = false;
     this.isFilterCountry = false;
     this.isFilterAge = false;
-    //this.storageService.remove('filterData');
   }
 
 }
