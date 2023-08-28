@@ -25,17 +25,15 @@ export class FilterService {
   ) { }
 
   getEvent(): BehaviorSubject<isFilter> {
-    this.authService.getUserData().then((currentUserData) => {
-      this.isFilterTracker.next(currentUserData?.filter);
-    }).catch((error) => {
-      console.log('error: ', error);
-    });
     return this.isFilterTracker;
   }
 
   setEvent(filterData: isFilter): void {
     this.isFilterTracker.next(filterData);
 
+  }
+
+  saveFilter(filterData: isFilter): void {
     //Set User Filter to Firestore
     if(filterData.isFilterAge || filterData.isFilterCountry || filterData.isFilterGender || filterData.isFilterLanguage ) {
         this.authService.updateUserFilter(true, filterData);
