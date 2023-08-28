@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 
@@ -18,20 +18,11 @@ export class CommunityPage implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private chatService: ChatService,
     private storageService: StorageService
   ) { }
 
   async ngOnInit() {
-    // resolver test
-    const resolverData = this.route.snapshot.data;
-    console.log('resolverData: ', resolverData);
-
-    // let filterData = this.storageService.get('filterData');
-    // console.log('(ionViewWillEnter) filterData: ', filterData);
-
-    // ngOnInit
     await this.checkFilter();
     await this.getUsers();
   }
@@ -41,11 +32,7 @@ export class CommunityPage implements OnInit {
   //
 
   async getUsers() {
-    //TODO: showLoader();
-    this.isLoading = true;
     this.loadUsers();
-    //TODO: hideLoader();
-    this.isLoading = false;
   }
 
   //
@@ -53,17 +40,6 @@ export class CommunityPage implements OnInit {
   //
 
   async checkFilter() {
-    // Check if there is any filter
-    // await this.storageService.get('filterData').then((filterData) => {
-    //   this.filterData = filterData;
-    // }).catch((error) => {
-    //   console.log('error: ', error);
-    // });
-
-    //check navData Filters
-
-    const navData: any = this.route.snapshot.queryParams;
-    console.log('navData coming from filters.page.ts', navData);
 
   }
 
