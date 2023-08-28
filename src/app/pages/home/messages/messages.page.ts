@@ -1,6 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
+import { lastSeen } from 'src/app/extras/utils';
 import { ChatService } from 'src/app/services/chat/chat.service';
 
 @Component({
@@ -69,5 +70,11 @@ export class MessagesPage implements OnInit {
   archiveChat(room) {
     console.log('archiveChat clicked', room);
   }
+
+  lastSeen(d: any) { 
+    if (!d) return null;
+    let a = new Date(d.seconds * 1000)
+    return lastSeen(a);
+   }
 
 }
