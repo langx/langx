@@ -23,38 +23,30 @@
       [model]="model">
     </app-empty-screen>
 
-
-    <!-- Sample <ion-list> for sliding buttons works fine as an example block here -->
-    <ion-list>
-      <ion-item-sliding>
-        <ion-item>
-          <ion-label>Sliding Item with End Options</ion-label>
-        </ion-item>
-    
-        <ion-item-options>
-          <ion-item-option>Favorite</ion-item-option>
-          <ion-item-option color="danger">Delete</ion-item-option>
-        </ion-item-options>
-      </ion-item-sliding>
-    </ion-list>
-
-
     <ion-list *ngIf="rooms?.length > 0">
-      <ion-item 
+      <div
         *ngFor="let item of rooms"
-        (click)="getChat(item)"
         detail>
-        <ng-container *ngIf="(item?.user | async) as user">
-          <ion-avatar slot="start">
-            <img [src]="getUser(user)?.photo" alt="" referrerpolicy="no-referrer">
-          </ion-avatar>
-          <ion-label>
-            <h2>{{getUser(user)?.name}}</h2>
-            <p>{{getUser(user)?.id}}</p>
-          </ion-label>
-          <small>{{(item?.updatedAt)?.toDate() | date: 'HH:mm'}}</small>
-        </ng-container>
-      </ion-item>
+        <ion-item-sliding>
+          <ion-item (click)="getChat(item)">
+            <ng-container *ngIf="(item?.user | async) as user">
+              <ion-avatar slot="start">
+                <img [src]="getUser(user)?.photo" alt="" referrerpolicy="no-referrer">
+              </ion-avatar>
+              <ion-label>
+                <h2>{{getUser(user)?.name}}</h2>
+                <p>{{getUser(user)?.id}}</p>
+              </ion-label>
+              <small>{{(item?.updatedAt)?.toDate() | date: 'HH:mm'}}</small>
+            </ng-container>
+          </ion-item>
+          <ion-item-options side="end" (ionSwipe)="archiveChat(item)">
+            <ion-item-option color="danger" expandable (click)="archiveChat(item)">
+              <ion-icon slot="icon-only" name="archive-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      </div>
     </ion-list>
 
   </ng-container>

@@ -65,4 +65,9 @@ export class MessagesPage implements OnInit {
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
+
+  archiveChat(room) {
+    console.log('archiveChat clicked', room);
+  }
+
 }
