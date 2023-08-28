@@ -56,15 +56,6 @@ export class CommunityPage implements OnInit {
     if (!filterData) return;
     console.log('filter: ', filterData);
   }
-  
-  //
-  // On Destroy
-  // Unsubscribe Filter
-  //
-  // NOTE: Not destroy to keep filter activated
-  // ngOnDestroy(): void {
-  //     this.filterSubscription.unsubscribe();
-  // }
 
   //
   // Get Users on Init
