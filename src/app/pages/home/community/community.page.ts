@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { FiltersPage } from './filters/filters.page';
 
 @Component({
   selector: 'app-community',
@@ -19,13 +18,22 @@ export class CommunityPage implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private chatService: ChatService,
     private storageService: StorageService
   ) { }
 
   async ngOnInit() {
+    // resolver test
+    const resolverData = this.route.snapshot.data;
+    console.log('resolverData: ', resolverData);
+
+    // let filterData = this.storageService.get('filterData');
+    // console.log('(ionViewWillEnter) filterData: ', filterData);
+
+    // ngOnInit
     await this.checkFilter();
-    await this.getUsers(); 
+    await this.getUsers();
   }
 
   //
@@ -46,11 +54,17 @@ export class CommunityPage implements OnInit {
 
   async checkFilter() {
     // Check if there is any filter
-    await this.storageService.get('filterData').then((filterData) => {
-      this.filterData = filterData;
-    }).catch((error) => {
-      console.log('error: ', error);
-    });
+    // await this.storageService.get('filterData').then((filterData) => {
+    //   this.filterData = filterData;
+    // }).catch((error) => {
+    //   console.log('error: ', error);
+    // });
+
+    //check navData Filters
+
+    const navData: any = this.route.snapshot.queryParams;
+    console.log('navData coming from filters.page.ts', navData);
+
   }
 
   //
@@ -63,7 +77,7 @@ export class CommunityPage implements OnInit {
 
   async loadUsers(infiniteScroll?) {
 
-    console.log(this.filterData);
+    // console.log(this.filterData);
 
     if (!infiniteScroll) {
       const docSnap = await this.chatService.getUsers();
@@ -127,6 +141,7 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event) {
+    this.users = [];
     this.getUsers();
     event.target.complete();
     console.log('Async operation refresh has ended');
