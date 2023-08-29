@@ -68,7 +68,19 @@ That's it! You should now be able to use the project to practice your language s
 
 ## Contributing
 
-Guidelines for contributing to the project.
+We welcome contributions to the project! To contribute, follow these steps:
+
+Fork the project repository to your own GitHub account.
+
+1. Clone the forked repository to your local machine using the command ``git clone https://github.com/behicsakar/languageXchange``
+2. Create a new branch for your changes using the command ``git checkout -b my-new-branch``
+3. Make your changes to the codebase and commit them using the command ``git commit -am "Add some feature"``
+4. Push your changes to your forked repository using the command ``git push origin my-new-branch``
+5. Create a pull request from your forked repository to the original repository.
+6. Wait for the project maintainers to review your pull request and provide feedback.
+7. Once your pull request has been approved, it will be merged into the main branch of the project.
+
+That's it! You should now be able to contribute to the project and help make it better. If you encounter any issues during the contribution process, please refer to the project's documentation or open an issue on the project's GitHub repository.
 
 ## License
 
