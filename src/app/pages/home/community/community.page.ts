@@ -54,18 +54,17 @@ export class CommunityPage implements OnInit {
   doSomething(filterData: isFilter) {
     if (!filterData) return;
     console.log('filter: ', filterData);
+
+    if (filterData?.isFilterGender) {
+      console.log('gender filter if true');
+      //this.getUsers(filterData?.filterGender);
+      //return;
+    }
     
-
+    console.log('get users block')
     //after check filter, then get users
+    // TODO: it may marge with the first line of this function !filterData block
     this.getUsers();
-  }
-
-  //
-  // Get Users on Init
-  //
-
-  async getUsers() {
-    await this.loadUsers();
   }
 
   //
@@ -73,21 +72,23 @@ export class CommunityPage implements OnInit {
   //
 
   loadMore(event) {
-    this.loadUsers(event);
+    this.getMoreUsers(event);
   }
 
-  async loadUsers(infiniteScroll?) {
+  async getUsers() {
+    
+    const docSnap = await this.chatService.getUsers();
+    // console.log('docSnap: ', docSnap.docs);
+    this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
-    if (!infiniteScroll) {
-      const docSnap = await this.chatService.getUsers();
-      // console.log('docSnap: ', docSnap.docs);
-      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
+    // Get the last visible document
+    let l = docSnap.docs[docSnap.docs.length-1];
+    this.lastVisible = l || null;
 
-      // Get the last visible document
-      let l = docSnap.docs[docSnap.docs.length-1];
-      this.lastVisible = l || null;
+  }
 
-    } else {
+  async getMoreUsers(infiniteScroll?) {
+
       console.log('lastVisible: ', this.lastVisible.get('name'));
       // Use the query for pagination
       const nextDocSnap = await this.chatService.getMoreUsers(this.lastVisible);
@@ -103,8 +104,7 @@ export class CommunityPage implements OnInit {
       if (!this.lastVisible) {
         infiniteScroll.target.disabled = true;
       }
-    }
-
+    
   }
 
   //
