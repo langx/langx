@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { QueryFieldFilterConstraint } from '@angular/fire/firestore';
 import { NavigationExtras, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -13,7 +14,6 @@ import { FilterService, isFilter } from 'src/app/services/filter/filter.service'
 export class CommunityPage implements OnInit {
 
   filterSubscription: any;
-  filterArray = [];
 
   users = [];
   lastVisible: any;
@@ -57,17 +57,19 @@ export class CommunityPage implements OnInit {
   doSomething(filterData: isFilter) {
     console.log('filter: ', filterData);
 
+    let queryFn: QueryFieldFilterConstraint = null;
+
     if (!filterData) {
       this.getUsers();
       return;
     }
 
     if (filterData?.isFilterGender) {
-      const genderQuery = this.apiService.whereQuery("gender", "==", filterData?.filterGender);
-      this.filterArray.push(genderQuery);
+      queryFn = this.apiService.whereQuery("gender", "==", filterData?.filterGender);
     }
 
-    this.getUsers(this.filterArray);
+    console.log('queryFn: ', queryFn);
+    this.getUsers(queryFn);
   }
 
   //
@@ -78,12 +80,15 @@ export class CommunityPage implements OnInit {
     this.getMoreUsers(event);
   }
 
-  async getUsers(filterArray?) {
-    if(filterArray) {
-      console.log('filterArray: ', this.filterArray);
+  async getUsers(queryFn?) {
+    if(queryFn) {
 
+      const docSnap = await this.chatService.getUsersWithFilterArray(queryFn);
+      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
-
+      // Get the last visible document
+      let l = docSnap.docs[docSnap.docs.length-1];
+      this.lastVisible = l || null;
 
     } else {
       const docSnap = await this.chatService.getUsers();
