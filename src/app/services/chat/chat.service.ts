@@ -31,7 +31,7 @@ export class ChatService {
     return await this.api.getDocs(
       "users",
       this.api.orderByQuery("lastSeen", "desc"),
-      this.api.limitQuery(10)
+      this.api.limitQuery(3)
     )
   }
 
@@ -53,7 +53,7 @@ export class ChatService {
       "users",
       queryFn,
       this.api.orderByQuery("lastSeen", "desc"),
-      this.api.limitQuery(10)
+      this.api.limitQuery(3)
     )
   }
 
