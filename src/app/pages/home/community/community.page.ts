@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
@@ -12,6 +13,7 @@ import { FilterService, isFilter } from 'src/app/services/filter/filter.service'
 export class CommunityPage implements OnInit {
 
   filterSubscription: any;
+  filterArray = [];
 
   users = [];
   lastVisible: any;
@@ -22,6 +24,7 @@ export class CommunityPage implements OnInit {
     private router: Router,
     private chatService: ChatService,
     private authService: AuthService,
+    private apiService: ApiService,
     private filterService: FilterService,
   ) { }
 
@@ -52,19 +55,19 @@ export class CommunityPage implements OnInit {
   }
 
   doSomething(filterData: isFilter) {
-    if (!filterData) return;
     console.log('filter: ', filterData);
 
-    if (filterData?.isFilterGender) {
-      console.log('gender filter if true');
-      //this.getUsers(filterData?.filterGender);
-      //return;
+    if (!filterData) {
+      this.getUsers();
+      return;
     }
-    
-    console.log('get users block')
-    //after check filter, then get users
-    // TODO: it may marge with the first line of this function !filterData block
-    this.getUsers();
+
+    if (filterData?.isFilterGender) {
+      const genderQuery = this.apiService.whereQuery("gender", "==", filterData?.filterGender);
+      this.filterArray.push(genderQuery);
+    }
+
+    this.getUsers(this.filterArray);
   }
 
   //
@@ -75,15 +78,22 @@ export class CommunityPage implements OnInit {
     this.getMoreUsers(event);
   }
 
-  async getUsers() {
-    
-    const docSnap = await this.chatService.getUsers();
-    // console.log('docSnap: ', docSnap.docs);
-    this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
+  async getUsers(filterArray?) {
+    if(filterArray) {
+      console.log('filterArray: ', this.filterArray);
 
-    // Get the last visible document
-    let l = docSnap.docs[docSnap.docs.length-1];
-    this.lastVisible = l || null;
+
+
+
+    } else {
+      const docSnap = await this.chatService.getUsers();
+      // console.log('docSnap: ', docSnap.docs);
+      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
+
+      // Get the last visible document
+      let l = docSnap.docs[docSnap.docs.length-1];
+      this.lastVisible = l || null;
+    }
 
   }
 
