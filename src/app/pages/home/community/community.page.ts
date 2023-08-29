@@ -27,7 +27,6 @@ export class CommunityPage implements OnInit {
 
   ngOnInit() {
     this.checkFilter();
-    this.getUsers();
   }
 
   //
@@ -55,6 +54,10 @@ export class CommunityPage implements OnInit {
   doSomething(filterData: isFilter) {
     if (!filterData) return;
     console.log('filter: ', filterData);
+    
+
+    //after check filter, then get users
+    this.getUsers();
   }
 
   //
