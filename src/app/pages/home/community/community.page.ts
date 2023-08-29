@@ -83,7 +83,7 @@ export class CommunityPage implements OnInit {
   async getUsers(queryFn?) {
     if(queryFn) {
 
-      const docSnap = await this.chatService.getUsersWithFilterArray(queryFn);
+      const docSnap = await this.chatService.getUsersWithFilter(queryFn);
       this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
       // Get the last visible document
