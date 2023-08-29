@@ -23,6 +23,10 @@ export class ChatService {
     this.currentUserId = this.auth.getId()
   }
 
+  //
+  // Get User Methods
+  //
+
   async getUsers() {
     return await this.api.getDocs(
       "users",
@@ -39,6 +43,10 @@ export class ChatService {
       this.api.limitQuery(5)
     )
   }
+
+  //
+  // Get User With Filter Methods
+  //
 
   async getUsersWithFilter(queryFn) {
     return await this.api.getDocs(
@@ -58,6 +66,10 @@ export class ChatService {
       this.api.limitQuery(10)
     )
   }
+
+  //
+  // Chat Room Methods
+  //
 
   async createChatRoom(user_id) {
     // get the userId here 
