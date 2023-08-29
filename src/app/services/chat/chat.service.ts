@@ -49,15 +49,15 @@ export class ChatService {
     )
   }
 
-//  async getMoreUsersWithFilter(lastItem, queryFn) {
-//    return await this.api.getDocs(
-//      "users",
-//      this.api.startAfterQuery(lastItem),
-//      queryFn,
-//      this.api.orderByQuery("lastSeen", "desc"),
-//      this.api.limitQuery(10)
-//    )
-//  }
+  async getMoreUsersWithFilter(lastItem, queryFn) {
+    return await this.api.getDocs(
+      "users",
+      queryFn,
+      this.api.orderByQuery("lastSeen", "desc"),
+      this.api.startAfterQuery(lastItem),
+      this.api.limitQuery(10)
+    )
+  }
 
   async createChatRoom(user_id) {
     // get the userId here 
