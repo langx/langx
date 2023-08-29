@@ -38,11 +38,14 @@ export class ApiService {
     return getDoc(dataRef);
   }
 
-  getDocs(path, queryFn?, queryFn2?, queryFn3?) {
+  getDocs(path, queryFn?, queryFn2?, queryFn3?, queryFn4?) {
     let dataRef: any = this.collectionRef(path);
 
     // TODO: Here has to make logic better
-    if(queryFn && queryFn2 && queryFn3) {
+    if(queryFn && queryFn2 && queryFn3 && queryFn4) {
+      const q = query(dataRef, queryFn, queryFn2, queryFn3, queryFn4);
+      dataRef = q;
+    } else if(queryFn && queryFn2 && queryFn3) {
       const q = query(dataRef, queryFn, queryFn2, queryFn3);
       dataRef = q;
     } else if(queryFn && queryFn2) {
@@ -52,6 +55,7 @@ export class ApiService {
       const q = query(dataRef, queryFn);
       dataRef = q;
     }
+    
     return getDocs<any>(dataRef); //get()
   }
 
