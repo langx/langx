@@ -57,6 +57,7 @@ export class ChatService {
     )
   }
 
+  // TODO: its still not used in community page
   async getMoreUsersWithFilter(lastItem, queryFn) {
     return await this.api.getDocs(
       "users",
