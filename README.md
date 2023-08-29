@@ -1,6 +1,6 @@
 # languageXchange
 
-This project is designed to help users to exchange different languages by connecting them with native speakers.
+languageXchange is a web application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app uses Firebase for the back-end and includes Firebase Cloud Functions for additional functionality.
 
 ## Table of Contents
 
