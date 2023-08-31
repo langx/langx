@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-test',
@@ -7,9 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TestPage implements OnInit {
 
-  constructor() { }
+  constructor(private userService: UserService) {
+    this.fetchFilteredUsers();
+  }
 
-  ngOnInit() {
+  ngOnInit() { }
+
+  filteredUsers: any[] = [];
+
+  async fetchFilteredUsers() {
+    const gender = 'male';
+    const country = 'Turkey';
+    const minAge = 13;
+    const maxAge = 55;
+
+    this.filteredUsers = await this.userService.getUsersWithFilters(gender, country, minAge, maxAge);
   }
 
 }
