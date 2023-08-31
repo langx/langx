@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, query, where, getDocs, QuerySnapshot, Query } from '@angular/fire/firestore';
+import { Firestore, collection, query, where, getDocs, QuerySnapshot, Query, orderBy } from '@angular/fire/firestore';
 import { getBirthdate } from 'src/app/extras/utils';
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class UserService {
   ) {}
 
 
-  async getUsersWithFilters(gender: string, country: string, minAge: number, maxAge: number): Promise<any[]> {
+  async getUsersWithFilters(gender: string, country: string, languages: string[], minAge: number, maxAge: number): Promise<any[]> {
     const usersCollectionRef = collection(this.firestore, 'users');
 
     let usersQuery: Query = query(usersCollectionRef);
@@ -24,17 +24,23 @@ export class UserService {
       usersQuery = query(usersQuery, where('country.code', '==', country));
     }
 
+    if (languages) {
+      usersQuery = query(usersQuery, where('languagesArray', 'array-contains-any', languages));
+    }
+
     if (minAge) {
       const birthdate = getBirthdate(minAge);
       console.log('birthdate: ', birthdate);
-      usersQuery = query(usersQuery, where('birthdate', '<=', birthdate));
+      //usersQuery = query(usersQuery, where('birthdate', '<=', birthdate));
     }
 
     if (maxAge) {
       const birthdate = getBirthdate(maxAge);
       console.log('birthdate: ', birthdate);
-      usersQuery = query(usersQuery, where('birthdate', '>=', birthdate));
+      //usersQuery = query(usersQuery, where('birthdate', '>=', birthdate));
     }
+    usersQuery = query(usersQuery, orderBy('birthdate', 'desc'));
+    usersQuery = query(usersQuery, orderBy('lastSeen', 'desc'));
 
     const querySnapshot: QuerySnapshot<any> = await getDocs(usersQuery);
     const users: any[] = [];
