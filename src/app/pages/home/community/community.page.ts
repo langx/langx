@@ -5,6 +5,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-community',
@@ -27,6 +28,7 @@ export class CommunityPage implements OnInit {
     private chatService: ChatService,
     private authService: AuthService,
     private apiService: ApiService,
+    private userService: UserService,
     private filterService: FilterService,
   ) { }
 
@@ -89,7 +91,7 @@ export class CommunityPage implements OnInit {
   async getUsers(queryFn?) {
     if(queryFn) {
 
-      const docSnap = await this.chatService.getUsersWithFilter(queryFn);
+      const docSnap = await this.userService.getUsersWithFilter(queryFn);
       this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
       // Get the last visible document
@@ -97,7 +99,7 @@ export class CommunityPage implements OnInit {
       this.lastVisible = l || null;
 
     } else {
-      const docSnap = await this.chatService.getUsers();
+      const docSnap = await this.userService.getUsers();
       // console.log('docSnap: ', docSnap.docs);
       this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
 
