@@ -10,4 +10,12 @@
       <ion-title size="large">test</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <ion-list>
+    <ion-item *ngFor="let user of filteredUsers">
+      <ion-icon name="battery-charging-outline"></ion-icon>
+      <ion-label>{{user.name}}</ion-label>
+      <ion-note>{{user.email}}</ion-note>
+    </ion-item>
+  </ion-list>
 </ion-content>
