@@ -28,6 +28,7 @@ export class UserService {
       usersQuery = query(usersQuery, where('languagesArray', 'array-contains-any', languages));
     }
 
+    // TODO: Make a birthdate filtering locally
     if (minAge) {
       const birthdate = getBirthdate(minAge);
       console.log('birthdate: ', birthdate);
@@ -39,7 +40,7 @@ export class UserService {
       console.log('birthdate: ', birthdate);
       //usersQuery = query(usersQuery, where('birthdate', '>=', birthdate));
     }
-    usersQuery = query(usersQuery, orderBy('birthdate', 'desc'));
+    //usersQuery = query(usersQuery, orderBy('birthdate', 'desc'));
     usersQuery = query(usersQuery, orderBy('lastSeen', 'desc'));
 
     const querySnapshot: QuerySnapshot<any> = await getDocs(usersQuery);
