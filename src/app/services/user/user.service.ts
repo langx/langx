@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, query, where, getDocs, QuerySnapshot, Query, orderBy } from '@angular/fire/firestore';
-import { getBirthdate } from 'src/app/extras/utils';
+import { getAge } from 'src/app/extras/utils';
 @Injectable({
   providedIn: 'root'
 })
@@ -28,30 +28,20 @@ export class UserService {
       usersQuery = query(usersQuery, where('languagesArray', 'array-contains-any', languages));
     }
 
-    // TODO: Make a birthdate filtering locally
-    if (minAge) {
-      const birthdate = getBirthdate(minAge);
-      console.log('birthdate: ', birthdate);
-      //usersQuery = query(usersQuery, where('birthdate', '<=', birthdate));
-    }
-
-    if (maxAge) {
-      const birthdate = getBirthdate(maxAge);
-      console.log('birthdate: ', birthdate);
-      //usersQuery = query(usersQuery, where('birthdate', '>=', birthdate));
-    }
-    //usersQuery = query(usersQuery, orderBy('birthdate', 'desc'));
     usersQuery = query(usersQuery, orderBy('lastSeen', 'desc'));
 
     const querySnapshot: QuerySnapshot<any> = await getDocs(usersQuery);
     const users: any[] = [];
 
     querySnapshot.forEach(doc => {
-      users.push(doc.data());
+        const age = getAge(doc.get("birthdate").toDate());
+        console.log('minAge: ', minAge, 'age: ', age, 'maxAge: ', maxAge);
+        if (age >= minAge && age <= maxAge) {
+          users.push(doc.data());
+        }
     });
     
     console.log('users: ', users);
-
     return users;
   }
 }
