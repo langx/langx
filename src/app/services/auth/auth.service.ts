@@ -200,6 +200,7 @@ export class AuthService {
       const data = {
         motherLanguages: formValue?.motherLanguages,
         studyLanguages: formValue?.studyLanguages,
+        languagesArray: formValue?.languagesArray,
         completeLanguages: true,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
