@@ -17,12 +17,13 @@ export class TestPage implements OnInit {
   filteredUsers: any[] = [];
 
   async fetchFilteredUsers() {
+    const languages = ['en', 'es', 'zh']
     const gender = 'male';
     const country = 'AF';
     const minAge = 13;
     const maxAge = 100;
 
-    this.filteredUsers = await this.userService.getUsersWithFilters(gender, country, minAge, maxAge);
+    this.filteredUsers = await this.userService.getUsersWithFilters(gender, country, languages, minAge, maxAge);
   }
 
 }
