@@ -24,7 +24,7 @@ export class UserService {
       usersQuery = query(usersQuery, where('country.code', '==', country));
     }
 
-    if (languages) {
+    if (languages.length > 0) {
       usersQuery = query(usersQuery, where('languagesArray', 'array-contains-any', languages));
     }
 
