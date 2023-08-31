@@ -70,8 +70,11 @@ export class Step3Page implements OnInit {
   completeLanguages(motherLanguages, studyLanguages) {
       //showLoader();
       this.isLoading = true;
+      const languagesArray = [];
+      motherLanguages.forEach((lang) => { languagesArray.push(lang.code) });
+      studyLanguages.forEach((lang) => { languagesArray.push(lang.code) });
 
-      let form = { motherLanguages: motherLanguages, studyLanguages: studyLanguages };
+      let form = { motherLanguages: motherLanguages, studyLanguages: studyLanguages, languagesArray: languagesArray };
       console.log('languages', form);
       
       try {
