@@ -18,9 +18,9 @@ export class TestPage implements OnInit {
 
   async fetchFilteredUsers() {
     const gender = 'male';
-    const country = 'TR';
+    const country = 'AF';
     const minAge = 13;
-    const maxAge = 75;
+    const maxAge = 100;
 
     this.filteredUsers = await this.userService.getUsersWithFilters(gender, country, minAge, maxAge);
   }
