@@ -35,14 +35,14 @@ export class ChatService {
     )
   }
 
-  async getMoreUsers(lastItem) {
-    return await this.api.getDocs(
-      "users",
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.startAfterQuery(lastItem),
-      this.api.limitQuery(5)
-    )
-  }
+  // async getMoreUsers(lastItem) {
+  //   return await this.api.getDocs(
+  //     "users",
+  //     this.api.orderByQuery("lastSeen", "desc"),
+  //     this.api.startAfterQuery(lastItem),
+  //     this.api.limitQuery(5)
+  //   )
+  // }
 
   //
   // Get User With Filter Methods
@@ -58,15 +58,15 @@ export class ChatService {
   }
 
   // TODO: its still not used in community page
-  async getMoreUsersWithFilter(lastItem, queryFn) {
-    return await this.api.getDocs(
-      "users",
-      queryFn,
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.startAfterQuery(lastItem),
-      this.api.limitQuery(10)
-    )
-  }
+  // async getMoreUsersWithFilter(lastItem, queryFn) {
+  //   return await this.api.getDocs(
+  //     "users",
+  //     queryFn,
+  //     this.api.orderByQuery("lastSeen", "desc"),
+  //     this.api.startAfterQuery(lastItem),
+  //     this.api.limitQuery(10)
+  //   )
+  // }
 
   //
   // Chat Room Methods
