@@ -10,7 +10,6 @@ export class UserService {
     private firestore: Firestore
   ) {}
 
-
   async getUsersWithFilters(gender: string, country: string, languages: string[], minAge: number, maxAge: number): Promise<any[]> {
     const usersCollectionRef = collection(this.firestore, 'users');
 
