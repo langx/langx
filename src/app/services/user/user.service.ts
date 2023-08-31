@@ -21,7 +21,7 @@ export class UserService {
     }
 
     if (country) {
-      //usersQuery = query(usersQuery, where('country', '==', country));
+      usersQuery = query(usersQuery, where('country.code', '==', country));
     }
 
     if (minAge) {
