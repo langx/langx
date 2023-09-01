@@ -92,30 +92,21 @@ export class FiltersPage implements OnInit {
     console.log(this.languages)
   }
 
-  /*
-  showLangLevel(lang) {
-    let l = this.filterLanguage.find(item => item.lang === lang?.code)?.level;
-    if (l==1) { return 'Beginner'; }
-    else if (l==2) { return 'Intermediate'; }
-    else if (l==3) { return 'Advanced'; }
-    else { return false; }
-  }
-  */
-
   //
   // COUNTRY Methods
   //
 
-  /*
   countryChange(event) {
-    this.filterCountry = event.detail.value;
-    this.isFilterCountry = true;
+    if(event.detail.value) {
+      this.country = event.detail.value;
+    }
   }
 
   showCountry() {
-    let c = this.filterCountry;
-    return countryData.find(item => item.value === c)?.text;
+    return countryData.find(item => item.value === this.country)?.text;
   }
+
+  /*
 
   //
   // GENDER Methods
