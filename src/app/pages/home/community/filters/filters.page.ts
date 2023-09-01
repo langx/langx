@@ -92,6 +92,11 @@ export class FiltersPage implements OnInit {
     console.log(this.languages)
   }
 
+  showLanguage(langCode) {
+    if(this.languages.includes(langCode)) return true;
+    else return false;
+  }
+
   //
   // COUNTRY Methods
   //
