@@ -8,6 +8,8 @@ import { ChatService } from '../chat/chat.service';
 })
 export class UserService {
 
+  NUMBER_OF_USERS_PER_PAGE = 4;
+
   users = [];
   lastVisible: any;
 
@@ -65,7 +67,7 @@ export class UserService {
       usersQuery = query(usersQuery, this.api.startAfterQuery(this.lastVisible));
     }
     
-    usersQuery = query(usersQuery, this.api.limitQuery(4));
+    usersQuery = query(usersQuery, this.api.limitQuery(this.NUMBER_OF_USERS_PER_PAGE));
     const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
 
     querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
