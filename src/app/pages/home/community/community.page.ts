@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { QueryFieldFilterConstraint } from '@angular/fire/firestore';
 import { NavigationExtras, Router } from '@angular/router';
-import { ApiService } from 'src/app/services/api/api.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -25,8 +22,6 @@ export class CommunityPage implements OnInit {
   constructor(
     private router: Router,
     private chatService: ChatService,
-    private authService: AuthService,
-    private apiService: ApiService,
     private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService
