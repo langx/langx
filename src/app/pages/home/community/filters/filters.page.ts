@@ -23,11 +23,7 @@ export class FiltersPage implements OnInit {
   ionRangeDefault = { lower: 20, upper: 75 };
 
   // filters data
-  languages = []
-  gender: string = null;
-  country: string = null;
-  minAge: number = null;
-  maxAge: number = null;
+  filterData: FilterData = {} as FilterData;
 
   constructor(
     private authService: AuthService,
@@ -37,16 +33,48 @@ export class FiltersPage implements OnInit {
     private storageService: StorageService
   ) { }
 
-  ngOnInit() {
-    this.getUserData();
+  async ngOnInit() {
+    await this.getUserData();
+    await this.checkStorage();
   }
 
-  getUserData() {
+  async getUserData() {
     this.authService.getUserData().then((currentUserData) => {
       this.currentUserData = currentUserData;
     }).catch((error) => {
       console.log('error: ', error);
     });
+  }
+
+  async checkStorage() {
+
+    // TODO: check localStorage
+    /*
+    const languagesString = await this.storageService.get("languages") ;
+    const gender = await this.storageService.get("gender") || null;
+    const country = await this.storageService.get("country") || null;
+    const minAgeString = await this.storageService.get("minAge");
+    const maxAgeString = await this.storageService.get("maxAge");
+    
+    let minAge = Number(minAgeString) || null;
+    let maxAge = Number(maxAgeString) || null;
+
+    let languages : Array<any> = [];
+    if(languagesString) {
+      languages = languagesString.toLocaleString().split(",");
+    }
+
+    let filterData: FilterData = {
+      languages: languages,
+      gender: gender,
+      country: country,
+      minAge: minAge,
+      maxAge: maxAge
+    }
+
+    console.log('checkLocalStorage', filterData);
+    this.filterService.setEvent(filterData);
+    */
   }
 
   async fetchFilteredUsers() {
@@ -59,14 +87,14 @@ export class FiltersPage implements OnInit {
 
   onSubmit() { 
     // here set filterData for filterService
-    let filterData: FilterData = {
-      languages: this.languages,
-      gender: this.gender,
-      country: this.country,
-      minAge: this.minAge,
-      maxAge: this.maxAge
-    }
-    this.doSomething(filterData);
+    //let filterData: FilterData = {
+      //languages: this.languages,
+      //gender: this.gender,
+      //country: this.country,
+      //minAge: this.minAge,
+      //maxAge: this.maxAge
+    //}
+    this.doSomething(this.filterData);
 
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
@@ -75,10 +103,10 @@ export class FiltersPage implements OnInit {
   doSomething(filterData: FilterData): void {
     this.setLocalStorage(filterData);
     this.filterService.setEvent(filterData);
-    // this.filterService.saveFilter(filterData);
   }
 
   setLocalStorage(filterData: FilterData) {
+    if (!filterData.languages) filterData.languages = [];
     if (filterData.languages.length > 0) {
       this.storageService.set('languages', filterData.languages);
     }
@@ -108,15 +136,18 @@ export class FiltersPage implements OnInit {
 
   languageChecked(event, langCode) {
     if(event.detail.checked) {
-      this.languages.push(langCode);
+      if(!this.filterData.languages) this.filterData.languages = [];
+      this.filterData.languages.push(langCode);
     } else {
-      this.languages = this.languages.filter(item => item !== langCode);
+      this.filterData.languages = this.filterData.languages.filter(item => item !== langCode);
     }
-    console.log(this.languages)
+    console.log(this.filterData);
   }
 
   isCheckedLanguage(langCode) {
-    if(this.languages.includes(langCode)) return true;
+    if(!this.filterData.languages) return false;
+    else if (this.filterData.languages.length == 0) return false;
+    else if (this.filterData.languages.length > 0 && this.filterData.languages.includes(langCode)) return true;
     else return false;
   }
 
@@ -126,12 +157,13 @@ export class FiltersPage implements OnInit {
 
   countryChange(event) {
     if(event.detail.value) {
-      this.country = event.detail.value;
+      this.filterData.country = event.detail.value;
     }
+    console.log(this.filterData);
   }
 
   showCountry() {
-    return countryData.find(item => item.value === this.country)?.text;
+    return countryData.find(item => item.value === this.filterData.country)?.text;
   }
 
   //
@@ -140,14 +172,15 @@ export class FiltersPage implements OnInit {
 
   genderChange(event) {
     if(event.detail.value) {
-      this.gender = event.detail.value;
+      this.filterData.gender = event.detail.value;
     }
+    console.log(this.filterData);
   }
 
   showGender() {
-    if (this.gender=='male') { return "Male" }
-    else if (this.gender=='female') { return "Female" }
-    else if (this.gender=='other') { return "Other" }
+    if (this.filterData.gender=='male') { return "Male" }
+    else if (this.filterData.gender=='female') { return "Female" }
+    else if (this.filterData.gender=='other') { return "Other" }
     else return false;
   }
 
@@ -157,14 +190,15 @@ export class FiltersPage implements OnInit {
 
   ageChange(event) {
     if (event.detail.value) {
-      this.minAge = event.detail.value.lower;
-      this.maxAge = event.detail.value.upper;
+      this.filterData.minAge = event.detail.value.lower;
+      this.filterData.maxAge = event.detail.value.upper;
     }
+    console.log(this.filterData);
   }
 
   showAge() {
-    if (this.minAge && this.maxAge) {
-      return 'between ' + this.minAge + ' and ' + this.maxAge;
+    if (this.filterData.minAge && this.filterData.maxAge) {
+      return 'between ' + this.filterData.minAge + ' and ' + this.filterData.maxAge;
     } else return false;
   }
 
@@ -173,11 +207,8 @@ export class FiltersPage implements OnInit {
   //
 
   resetFilter(){
-    this.languages = [];
-    this.gender = null;
-    this.country = null;
-    this.minAge = null;
-    this.maxAge = null;
+    this.filterData = {} as FilterData;
+    console.log(this.filterData)
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();
   }
