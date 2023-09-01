@@ -209,18 +209,4 @@ export class AuthService {
     }
   }
 
-  /*
-  async updateUserFilter(filterData?) {
-    let id = this.getId();
-    try {
-      const data = {
-        filterData: filterData
-      }
-      await this.apiService.updateDocument(`users/${id}`, data);
-    } catch(e) {
-      throw(e);
-    }
-  }
-  */
-
 }
