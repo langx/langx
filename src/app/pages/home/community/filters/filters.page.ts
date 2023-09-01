@@ -141,21 +141,16 @@ export class FiltersPage implements OnInit {
     } else return false;
   }
 
-  /*
   //
   // RESET All Filters
   //
 
   resetFilter(){
-    this.filterLanguage = [];
-    this.filterGender = '';
-    this.filterCountry = '';
-    this.filterAge = {};
-    this.isFilterLanguage = false;
-    this.isFilterGender = false;
-    this.isFilterCountry = false;
-    this.isFilterAge = false;
+    this.languages = [];
+    this.gender = null;
+    this.country = null;
+    this.minAge = null;
+    this.maxAge = null;
   }
 
-  */
 }
