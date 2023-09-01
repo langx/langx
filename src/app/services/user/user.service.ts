@@ -19,6 +19,8 @@ export class UserService {
     private api: ApiService
   ) {}
 
+  // TODO: delete here it was just test
+  // TODO: check age filter as well as other filters
   async getUsersWithFilters(gender: string, country: string, languages: string[], minAge: number, maxAge: number): Promise<any[]> {
     const usersCollectionRef = collection(this.firestore, 'users');
 
@@ -98,42 +100,5 @@ export class UserService {
   refreshUsers() {
     this.lastVisible = null;
   }
-
-  // async getUsersWithFilter(queryFn) {
-  //   return await this.api.getDocs(
-  //     "users",
-  //     queryFn,
-  //     this.api.orderByQuery("lastSeen", "desc"),
-  //     this.api.limitQuery(3)
-  //   )
-  // }
-
-  // async getMoreUsers(lastItem) {
-  //   return await this.api.getDocs(
-  //     "users",
-  //     this.api.orderByQuery("lastSeen", "desc"),
-  //     this.api.startAfterQuery(lastItem),
-  //     this.api.limitQuery(5)
-  //   )
-  // }
-
-  //
-  // Get User With Filter Methods
-  //
-
-  // TODO: its still not used in community page
-  // async getMoreUsersWithFilter(lastItem, queryFn) {
-  //   return await this.api.getDocs(
-  //     "users",
-  //     queryFn,
-  //     this.api.orderByQuery("lastSeen", "desc"),
-  //     this.api.startAfterQuery(lastItem),
-  //     this.api.limitQuery(10)
-  //   )
-  // }
-
-  //
-  // Chat Room Methods
-  //
 
 }
