@@ -4,7 +4,7 @@ import { LanguageLevelModalComponent } from 'src/app/components/language-level-m
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
-import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
+import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
 
 @Component({
   selector: 'app-filters',
@@ -21,14 +21,11 @@ export class FiltersPage implements OnInit {
   currentUserData: any;
 
   // filters data
-  filterLanguage: Array<any> = [];
-  filterGender: string = '';
-  filterCountry: string = '';
-  filterAge: Object = {};
-  isFilterLanguage: boolean = false;
-  isFilterGender: boolean = false;
-  isFilterCountry: boolean = false;
-  isFilterAge: boolean = false;
+  languages = []
+  gender: string;
+  country: string;
+  minAge: Number;
+  maxAge: Number;
 
   constructor(
     private authService: AuthService,
@@ -50,7 +47,16 @@ export class FiltersPage implements OnInit {
     });
   }
 
+  async fetchFilteredUsers() {
+    const languages = ['en', 'es', 'zh']
+    const gender = 'male';
+    const country = 'AF';
+    const minAge = 13;
+    const maxAge = 100;
+  }
+
   onSubmit() { 
+    /*
     // here set filterData for filterService
     let filterData: isFilter = {
       isFilterLanguage: this.isFilterLanguage,
@@ -63,20 +69,32 @@ export class FiltersPage implements OnInit {
       filterAge: this.filterAge,
     }
     this.doSomething(filterData);
+    */
 
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
   }
 
-  doSomething(filterData: isFilter): void {
+  doSomething(filterData: FilterData): void {
       this.filterService.setEvent(filterData);
-      this.filterService.saveFilter(filterData);
+      //this.filterService.saveFilter(filterData);
   }
 
   //
   // LANGUAGE Methods
   //
 
+  languageChecked(event, langCode) {
+    if(event.detail.checked) {
+      this.languages.push(langCode);
+    } else {
+      this.languages = this.languages.filter(item => item !== langCode);
+    }
+    console.log(this.languages)
+  }
+
+  // TODO: This following component should be deleted !!
+  /*
   async openLangModal(lang) {
     const modal = await this.modalCtrl.create({
       // TODO: it should be a style with --auto-height
@@ -91,13 +109,12 @@ export class FiltersPage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      let item = { lang: lang?.code, level: data };
-      this.filterLanguage.push(item);
-      this.isFilterLanguage = true;
-      console.log(this.filterLanguage);
+      this.languages.push(lang?.code);
     }
   }
+  */
 
+  /*
   showLangLevel(lang) {
     let l = this.filterLanguage.find(item => item.lang === lang?.code)?.level;
     if (l==1) { return 'Beginner'; }
@@ -105,11 +122,13 @@ export class FiltersPage implements OnInit {
     else if (l==3) { return 'Advanced'; }
     else { return false; }
   }
+  */
 
   //
   // COUNTRY Methods
   //
 
+  /*
   countryChange(event) {
     this.filterCountry = event.detail.value;
     this.isFilterCountry = true;
@@ -170,4 +189,5 @@ export class FiltersPage implements OnInit {
     this.isFilterAge = false;
   }
 
+  */
 }
