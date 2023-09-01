@@ -58,7 +58,7 @@
         <ion-item id="gender-modal" detail="true">
           <ion-icon name="male-female-outline"></ion-icon>
           <ion-label>
-            <!--<h3 *ngIf="showGender();else noFilter">{{showGender()}}</h3>-->
+            <h3 *ngIf="showGender();else noFilter">{{showGender()}}</h3>
             <ng-template #noFilter><p>No Filter</p></ng-template> 
           </ion-label>
         </ion-item>
@@ -115,8 +115,7 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <!--
-      <ion-radio-group (ionChange)="genderChange($event)" [value]="filterGender">
+      <ion-radio-group (ionChange)="genderChange($event)" [value]="gender">
         <ion-list>
           <ion-item>
             <ion-radio value="male">Male</ion-radio><br />
@@ -129,7 +128,6 @@
           </ion-item>          
         </ion-list>
       </ion-radio-group>
-      -->
     </ng-template>
   </div>
 </ion-modal>

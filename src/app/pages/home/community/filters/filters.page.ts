@@ -106,24 +106,24 @@ export class FiltersPage implements OnInit {
     return countryData.find(item => item.value === this.country)?.text;
   }
 
-  /*
-
   //
   // GENDER Methods
   //
 
   genderChange(event) {
-    this.filterGender = event.detail.value;
-    this.isFilterGender = true;
+    if(event.detail.value) {
+      this.gender = event.detail.value;
+    }
   }
 
   showGender() {
-    let g = this.filterGender;
-    if (g=='male') { return "Male" }
-    else if (g=='female') { return "Female" }
-    else if (g=='other') { return "Other" }
+    if (this.gender=='male') { return "Male" }
+    else if (this.gender=='female') { return "Female" }
+    else if (this.gender=='other') { return "Other" }
     else { return false; }
   }
+
+  /*
 
   //
   // AGE Methods
