@@ -17,6 +17,7 @@ export class CommunityPage implements OnInit {
 
   users = [];
 
+  isAllUsersLoaded: boolean = false;
   isLoading: boolean = false;
 
   constructor(
@@ -49,10 +50,7 @@ export class CommunityPage implements OnInit {
       (filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-        console.log('Global filter: ', this.filterData);
-        this.users = [];
-        this.userService.refreshUsers();
-        this.getUsers(filterData);
+        this.handleRefresh(filterData);
       }
     );
 
@@ -92,6 +90,10 @@ export class CommunityPage implements OnInit {
   //
 
   loadMore(event) {
+    if (this.isAllUsersLoaded) {
+      event.target.complete();
+      return;
+    }
     this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation loadMore has ended');
@@ -99,7 +101,12 @@ export class CommunityPage implements OnInit {
 
   async getUsers(filterData?: FilterData) {
     let users = await this.userService.getUsers(filterData);
-    this.users.push(...users);
+    if (users.length > 0) {
+      this.users.push(...users);
+    } else {
+      this.isAllUsersLoaded = true;
+      console.log('No more users');
+    }
   }
 
   async getUsersWithFilters() {
@@ -138,12 +145,12 @@ export class CommunityPage implements OnInit {
   // Pull to refresh
   //
 
-  handleRefresh(event) {
+  handleRefresh(filterData: FilterData, event?) {
     this.users = [];
+    this.isAllUsersLoaded = false;
     this.userService.refreshUsers();
-    this.getUsers(this.filterData);
-    event.target.complete();
-    console.log('Async operation handleRefresh has ended');
+    this.getUsers(filterData);
+    if(event) event.target.complete();
   }
 
   //
