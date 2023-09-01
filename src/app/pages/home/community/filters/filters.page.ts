@@ -80,12 +80,19 @@ export class FiltersPage implements OnInit {
   }
 
   setLocalStorage(filterData: FilterData) {
-    console.log('filterData: ', filterData.languages);
-    this.storageService.set('languages', filterData.languages);
-    this.storageService.set('gender', filterData.gender);
-    this.storageService.set('country', filterData.country);
-    this.storageService.set('minAge', filterData.minAge);
-    this.storageService.set('maxAge', filterData.maxAge);
+    if (filterData.languages.length > 0) {
+      this.storageService.set('languages', filterData.languages);
+    }
+    if (filterData.gender) {
+      this.storageService.set('gender', filterData.gender);
+    }
+    if (filterData.country) {
+      this.storageService.set('country', filterData.country);
+    }
+    if (filterData.minAge && filterData.maxAge) {
+      this.storageService.set('minAge', filterData.minAge);
+      this.storageService.set('maxAge', filterData.maxAge);
+    }
   }
 
   removeLocalStorage() {
