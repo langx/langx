@@ -19,6 +19,8 @@ export class FiltersPage implements OnInit {
   isLoading: boolean = false;
   currentUserData: any;
 
+  ionRangeDefault = { lower: 20, upper: 75 };
+
   // filters data
   languages = []
   gender: string;
@@ -156,6 +158,7 @@ export class FiltersPage implements OnInit {
     this.country = null;
     this.minAge = null;
     this.maxAge = null;
+    this.ionRangeDefault = { lower: 20, upper: 75 };
   }
 
 }
