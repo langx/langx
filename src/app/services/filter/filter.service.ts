@@ -6,8 +6,8 @@ export interface FilterData {
   languages: Array<string>;
   gender: string;
   country: string;
-  minAge: Number;
-  maxAge: Number;
+  minAge: number;
+  maxAge: number;
 }
 
 @Injectable({
