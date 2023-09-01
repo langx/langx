@@ -30,10 +30,4 @@ export class FilterService {
 
   }
 
-  // TODO: No need to save DB with following line, try to do in in localStorage
-  // Set User Filter to Firestore
-  // saveFilter(filterData: FilterData): void {
-  //   this.authService.updateUserFilter(filterData);
-  // }
-
 }
