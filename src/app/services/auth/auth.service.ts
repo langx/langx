@@ -173,7 +173,6 @@ export class AuthService {
     }
   }
   
-  // TODO: Change name of this method to updateUserProfileData*
   async updateUserProfileData(formValue) {
     let id = this.getId();
     //console.log('id:', id, 'formValue:', formValue);
