@@ -86,23 +86,11 @@ export class FiltersPage implements OnInit {
   }
 
   onSubmit() { 
-    // here set filterData for filterService
-    //let filterData: FilterData = {
-      //languages: this.languages,
-      //gender: this.gender,
-      //country: this.country,
-      //minAge: this.minAge,
-      //maxAge: this.maxAge
-    //}
-    this.doSomething(this.filterData);
+    this.setLocalStorage(this.filterData);
+    this.filterService.setEvent(this.filterData);
 
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
-  }
-
-  doSomething(filterData: FilterData): void {
-    this.setLocalStorage(filterData);
-    this.filterService.setEvent(filterData);
   }
 
   setLocalStorage(filterData: FilterData) {
