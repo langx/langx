@@ -28,11 +28,6 @@
           <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
           <ion-checkbox labelPlacement="start" color="primary" (ionChange)="languageChecked($event, lang?.code)">{{ lang?.name }}</ion-checkbox>
-          <ion-label>
-            <h3></h3>
-            <!--<h3 *ngIf="showLangLevel(lang);else noFilter">{{showLangLevel(lang)}}</h3>-->
-            <ng-template #noFilter><p>No Filter</p></ng-template> 
-          </ion-label>
         </ion-item>
       </ion-card-content>
     </ion-card>
@@ -47,7 +42,7 @@
         <ion-item id="country-modal" detail="true">
           <ion-icon name="flag-outline"></ion-icon>
           <ion-label>
-            <!--<h3 *ngIf="showCountry();else noFilter">{{showCountry()}}</h3>-->
+            <h3 *ngIf="showCountry();else noFilter">{{showCountry()}}</h3>
             <ng-template #noFilter><p>No Filter</p></ng-template> 
           </ion-label>
         </ion-item>
@@ -137,4 +132,32 @@
       -->
     </ng-template>
   </div>
+</ion-modal>
+
+<ion-modal
+  #countryModal
+  trigger="country-modal"
+  [initialBreakpoint]="0.5"
+  [breakpoints]="[0.25, 0.5, 0.75]"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Country</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="countryModal.dismiss()" color="primary">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
+      <ion-list>
+        <ion-radio-group value="start" (ionChange)="countryChange($event)">
+          <ion-item *ngFor="let country of countryData | customFilter: searchTerm">
+            <ion-radio value="{{ country?.value }}" labelPlacement="start">{{ country?.text }}</ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </ion-content>
+  </ng-template>
 </ion-modal>
