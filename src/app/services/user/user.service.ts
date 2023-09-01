@@ -3,6 +3,7 @@ import { Firestore, collection, query, where, getDocs, QuerySnapshot, Query, ord
 import { getAge } from 'src/app/extras/utils';
 import { ApiService } from '../api/api.service';
 import { ChatService } from '../chat/chat.service';
+import { FilterData } from '../filter/filter.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -10,7 +11,6 @@ export class UserService {
 
   NUMBER_OF_USERS_PER_PAGE = 4;
 
-  users = [];
   lastVisible: any;
 
   constructor(
@@ -57,8 +57,22 @@ export class UserService {
   // Get User Methods
   //
 
-  async getUsers() {
+  async getUsers(filterData?: FilterData) {
+    const users: any[] = [];
+
     let usersQuery: Query = query(this.api.collectionRef('users'));
+
+    if(filterData?.country) {
+      usersQuery = query(usersQuery, this.api.whereQuery('country.code', '==', filterData.country));
+    }
+
+    if(filterData?.gender) {
+      usersQuery = query(usersQuery, this.api.whereQuery('gender', '==', filterData.gender));
+    }
+
+    if(filterData?.languages.length > 0) {
+      usersQuery = query(usersQuery, this.api.whereQuery('languagesArray', 'array-contains-any', filterData.languages));
+    }
 
     usersQuery = query(usersQuery, this.api.orderByQuery('lastSeen', 'desc'));
 
@@ -70,20 +84,18 @@ export class UserService {
     const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
 
     querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
-      .map( user => { this.users.push(user); });
+      .map( user => { users.push(user); });
 
     // TODO: Its working infinitely but it has to be fixed
     // Sometimes it returns null and it breaks the one of loadMore() event
     // It also may stay in infinite loop if it returns null
     let last = querySnapshot.docs[querySnapshot.docs.length-1];
     this.lastVisible = last || null;
-
-    console.log('lastVisible: ', this.lastVisible, 'users.length: ', this.users.length, 'users: ', this.users);
-    return this.users;
+    console.log('lastVisible: ', this.lastVisible, 'users.length: ', users.length, 'users: ', users);
+    return users;
   }
 
   refreshUsers() {
-    this.users = [];
     this.lastVisible = null;
   }
 
