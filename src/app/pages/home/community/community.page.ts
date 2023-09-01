@@ -81,7 +81,6 @@ export class CommunityPage implements OnInit {
     }
 
     console.log('checkLocalStorage', filterData);
-
     this.filterService.setEvent(filterData);
   }
 
@@ -107,11 +106,6 @@ export class CommunityPage implements OnInit {
       this.isAllUsersLoaded = true;
       console.log('No more users');
     }
-  }
-
-  async getUsersWithFilters() {
-    console.log('getUsersWithFilters');
-    //this.users = await this.userService.getUsersWithFilters(this.filterData);
   }
 
   //
