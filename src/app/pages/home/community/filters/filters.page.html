@@ -27,7 +27,7 @@
           <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
-          <ion-checkbox labelPlacement="start" color="primary" [checked]="showLanguage(lang?.code)" (ionChange)="languageChecked($event, lang?.code)">{{ lang?.name }}</ion-checkbox>
+          <ion-checkbox labelPlacement="start" color="primary" [checked]="isCheckedLanguage(lang?.code)" (ionChange)="languageChecked($event, lang?.code)">{{ lang?.name }}</ion-checkbox>
         </ion-item>
       </ion-card-content>
     </ion-card>
