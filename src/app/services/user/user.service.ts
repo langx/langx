@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, query, where, getDocs, QuerySnapshot, Query, orderBy } from '@angular/fire/firestore';
+import { query, QuerySnapshot, Query } from '@angular/fire/firestore';
 import { getAge } from 'src/app/extras/utils';
 import { ApiService } from '../api/api.service';
 import { ChatService } from '../chat/chat.service';
@@ -14,46 +14,9 @@ export class UserService {
   lastVisible: any;
 
   constructor(
-    private firestore: Firestore,
     private chatService: ChatService,
     private api: ApiService
   ) {}
-
-  // TODO: delete here it was just test
-  // TODO: check age filter as well as other filters
-  async getUsersWithFilters(gender: string, country: string, languages: string[], minAge: number, maxAge: number): Promise<any[]> {
-    const usersCollectionRef = collection(this.firestore, 'users');
-
-    let usersQuery: Query = query(usersCollectionRef);
-
-    if (gender) {
-      usersQuery = query(usersQuery, where('gender', '==', gender));
-    }
-
-    if (country) {
-      usersQuery = query(usersQuery, where('country.code', '==', country));
-    }
-
-    if (languages.length > 0) {
-      usersQuery = query(usersQuery, where('languagesArray', 'array-contains-any', languages));
-    }
-
-    usersQuery = query(usersQuery, orderBy('lastSeen', 'desc'));
-
-    const querySnapshot: QuerySnapshot<any> = await getDocs(usersQuery);
-    const users: any[] = [];
-
-    querySnapshot.forEach(doc => {
-        const age = getAge(doc.get("birthdate").toDate());
-        console.log('minAge: ', minAge, 'age: ', age, 'maxAge: ', maxAge);
-        if (age >= minAge && age <= maxAge) {
-          users.push(doc.data());
-        }
-    });
-    
-    console.log('users: ', users);
-    return users;
-  }
 
   //
   // Get User Methods
