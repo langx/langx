@@ -63,8 +63,6 @@ export class CommunityPage implements OnInit {
     );
   }
 
-
-
   //
   // Infinite Scroll
   //
