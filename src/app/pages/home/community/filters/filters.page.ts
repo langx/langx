@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavController } from '@ionic/angular';
-import { LanguageLevelModalComponent } from 'src/app/components/language-level-modal/language-level-modal.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
@@ -92,27 +91,6 @@ export class FiltersPage implements OnInit {
     }
     console.log(this.languages)
   }
-
-  // TODO: This following component should be deleted !!
-  /*
-  async openLangModal(lang) {
-    const modal = await this.modalCtrl.create({
-      // TODO: it should be a style with --auto-height
-      initialBreakpoint: 0.5,
-      breakpoints: [0, 0.5, 1],
-      cssClass: 'modalClass',
-      component: LanguageLevelModalComponent,
-      componentProps: { langName: lang?.name }
-    });
-    modal.present();
-
-    const { data, role } = await modal.onWillDismiss();
-
-    if (role === 'confirm') {
-      this.languages.push(lang?.code);
-    }
-  }
-  */
 
   /*
   showLangLevel(lang) {
