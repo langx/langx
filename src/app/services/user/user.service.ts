@@ -45,7 +45,6 @@ export class UserService {
     usersQuery = query(usersQuery, this.api.limitQuery(this.NUMBER_OF_USERS_PER_PAGE));
     const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
 
-    // querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
     querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.authService.getId())
       .map( user => { users.push(user); });
 
