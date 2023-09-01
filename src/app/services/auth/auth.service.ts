@@ -209,39 +209,18 @@ export class AuthService {
     }
   }
 
-  async updateUserFilter(isFilterData: boolean, formValue?) {
+  /*
+  async updateUserFilter(filterData?) {
     let id = this.getId();
-    //console.log('id:', id, 'formValue:', formValue);
-    if(!isFilterData) {
-      try {
-        const data = {
-          isFilterData: isFilterData,
-          filterData: {}
-        }
-        await this.apiService.updateDocument(`users/${id}`, data);
-      } catch(e) {
-        throw(e);
+    try {
+      const data = {
+        filterData: filterData
       }
-    } else {
-      try {
-        const data = { 
-          isFilterData: isFilterData,
-          filterData: {
-            isFilterLanguage: formValue?.isFilterLanguage,
-            isFilterGender: formValue?.isFilterGender,
-            isFilterCountry: formValue?.isFilterCountry,
-            isFilterAge: formValue?.isFilterAge,
-            filterLanguage: formValue?.filterLanguage,
-            filterGender: formValue?.filterGender,
-            filterCountry: formValue?.filterCountry,
-            filterAge: formValue?.filterAge,
-          }
-        }
-        await this.apiService.updateDocument(`users/${id}`, data);
-      } catch(e) {
-        throw(e);
-      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+    } catch(e) {
+      throw(e);
     }
   }
+  */
 
 }

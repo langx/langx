@@ -35,11 +35,18 @@ export class CommunityPage implements OnInit {
     this.checkFilter();
   }
 
+  ngOnDestroy() {
+    this.filterSubscription.unsubscribe();
+    console.log('unsubscribed');
+  }
+
   //
   // Check Filter
   //
 
   checkFilter() {
+    // Getting the filter data from DB
+    /*
     this.authService.getUserData().then((currentUserData) => {
       if(currentUserData?.isFilterData) {
         this.filterService.setEvent(currentUserData?.filterData);
@@ -47,6 +54,8 @@ export class CommunityPage implements OnInit {
     }).catch((error) => {
       console.log('error: ', error);
     });
+    */
+    // TODO: Getting the filter data from localStorage
 
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
@@ -78,8 +87,8 @@ export class CommunityPage implements OnInit {
   }
 
   async getUsersWithFilters() {
-    console.log('queryFn: ', this.filterData);
-    //this.getUsers(this.queryFn);
+    console.log('getUsersWithFilters');
+    //this.users = await this.userService.getUsersWithFilters(this.filterData);
   }
 
   // async getMoreUsers(infiniteScroll, queryFn?) {

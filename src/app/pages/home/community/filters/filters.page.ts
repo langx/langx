@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-filters',
@@ -34,6 +35,7 @@ export class FiltersPage implements OnInit {
     private navCtrl: NavController,
     private router: Router,
     private filterService: FilterService,
+    private storageService: StorageService
   ) { }
 
   ngOnInit() {
@@ -72,8 +74,26 @@ export class FiltersPage implements OnInit {
   }
 
   doSomething(filterData: FilterData): void {
+    this.setLocalStorage(filterData);
     this.filterService.setEvent(filterData);
     // this.filterService.saveFilter(filterData);
+  }
+
+  setLocalStorage(filterData: FilterData) {
+    console.log('filterData: ', filterData.languages);
+    this.storageService.set('languages', filterData.languages);
+    this.storageService.set('gender', filterData.gender);
+    this.storageService.set('country', filterData.country);
+    this.storageService.set('minAge', filterData.minAge);
+    this.storageService.set('maxAge', filterData.maxAge);
+  }
+
+  removeLocalStorage() {
+    this.storageService.remove('languages');
+    this.storageService.remove('gender');
+    this.storageService.remove('country');
+    this.storageService.remove('minAge');
+    this.storageService.remove('maxAge');
   }
 
   //
@@ -125,7 +145,6 @@ export class FiltersPage implements OnInit {
     else return false;
   }
 
-
   //
   // AGE Methods
   //
@@ -154,6 +173,7 @@ export class FiltersPage implements OnInit {
     this.minAge = null;
     this.maxAge = null;
     this.ionRangeDefault = { lower: 20, upper: 75 };
+    this.removeLocalStorage();
   }
 
 }
