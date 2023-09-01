@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
@@ -31,7 +31,6 @@ export class FiltersPage implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private modalCtrl: ModalController,
     private navCtrl: NavController,
     private router: Router,
     private filterService: FilterService,
