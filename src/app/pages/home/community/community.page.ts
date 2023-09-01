@@ -17,7 +17,6 @@ export class CommunityPage implements OnInit {
 
   filterSubscription: any;
   filterData: FilterData;
-  queryFn: QueryFieldFilterConstraint = null;
 
   users = [];
 
@@ -63,14 +62,12 @@ export class CommunityPage implements OnInit {
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
       (filterData: FilterData) => {
+        this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-        if (!filterData) {
-          this.filterData = null;
-          this.getUsers();
-        } else {
-          this.filterData = filterData;
-          this.getUsersWithFilters();
-        }
+        console.log('Global filter: ', this.filterData);
+        this.users = [];
+        this.userService.refreshUsers();
+        this.getUsers(filterData);
       }
     );
   }
@@ -109,13 +106,14 @@ export class CommunityPage implements OnInit {
   //
 
   loadMore(event) {
-    this.getUsers();
+    this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation loadMore has ended');
   }
 
-  async getUsers() {
-    this.users = await this.userService.getUsers();
+  async getUsers(filterData?: FilterData) {
+    let users = await this.userService.getUsers(filterData);
+    this.users.push(...users);
   }
 
   async getUsersWithFilters() {
@@ -194,7 +192,7 @@ export class CommunityPage implements OnInit {
   handleRefresh(event) {
     this.users = [];
     this.userService.refreshUsers();
-    this.getUsers();
+    this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation handleRefresh has ended');
   }
