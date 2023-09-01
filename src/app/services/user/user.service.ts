@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, query, where, getDocs, QuerySnapshot, Query, orderBy } from '@angular/fire/firestore';
 import { getAge } from 'src/app/extras/utils';
 import { ApiService } from '../api/api.service';
+import { ChatService } from '../chat/chat.service';
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
+  lastVisible: any;
+
   constructor(
     private firestore: Firestore,
+    private chatService: ChatService,
     private api: ApiService
   ) {}
 
@@ -51,11 +55,20 @@ export class UserService {
   //
 
   async getUsers() {
-    return await this.api.getDocs(
-      "users",
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.limitQuery(3)
-    )
+    let usersQuery: Query = query(this.api.collectionRef('users'));
+    usersQuery = query(usersQuery, this.api.orderByQuery('lastSeen', 'desc'));
+    if (this.lastVisible) {
+      usersQuery = query(usersQuery, this.api.startAfterQuery(this.lastVisible));
+    }
+    usersQuery = query(usersQuery, this.api.limitQuery(5));
+    const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
+
+    const users = querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
+    let last = users[users.length-1];
+    this.lastVisible = last || null;
+    console.log(this.lastVisible.name);
+
+    return users;
   }
 
   // async getMoreUsers(lastItem) {
