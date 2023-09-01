@@ -85,7 +85,7 @@ export class CommunityPage implements OnInit {
   //     this.getMoreUsers(event);
   //   } else {
   //     this.getMoreUsers(event, this.queryFn);
-  //   }
+  //  this.getUsers();
   // }
 
   async getUsers(queryFn?) {
@@ -99,13 +99,11 @@ export class CommunityPage implements OnInit {
     //   this.lastVisible = l || null;
 
     // } else {
-      const docSnap = await this.userService.getUsers();
-      // console.log('docSnap: ', docSnap.docs);
-      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
+      this.users = await this.userService.getUsers();
 
       // Get the last visible document
-      let l = docSnap.docs[docSnap.docs.length-1];
-      this.lastVisible = l || null;
+      // let l = docSnap.docs[docSnap.docs.length-1];
+      // this.lastVisible = l || null;
     // }
 
   }
