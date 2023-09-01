@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { QueryFieldFilterConstraint } from '@angular/fire/firestore';
 import { NavigationExtras, Router } from '@angular/router';
-import { ApiService } from 'src/app/services/api/api.service';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
+import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-community',
@@ -14,64 +13,75 @@ import { FilterService, isFilter } from 'src/app/services/filter/filter.service'
 export class CommunityPage implements OnInit {
 
   filterSubscription: any;
-  filterData: isFilter;
-  queryFn: QueryFieldFilterConstraint = null;
+  filterData: FilterData;
 
   users = [];
-  lastVisible: any;
 
+  isAllUsersLoaded: boolean = false;
   isLoading: boolean = false;
 
   constructor(
     private router: Router,
     private chatService: ChatService,
-    private authService: AuthService,
-    private apiService: ApiService,
+    private userService: UserService,
     private filterService: FilterService,
+    private storageService: StorageService
   ) { }
 
-  ngOnInit() {
-    this.checkFilter();
+  async ngOnInit() {
+    await this.checkFilter();
+  }
+
+  ngOnDestroy() {
+    this.filterSubscription.unsubscribe();
+    console.log('unsubscribed');
   }
 
   //
   // Check Filter
   //
 
-  checkFilter() {
-    this.authService.getUserData().then((currentUserData) => {
-      if(currentUserData?.isFilterData) {
-        this.filterService.setEvent(currentUserData?.filterData);
-      }
-    }).catch((error) => {
-      console.log('error: ', error);
-    });
+  async checkFilter() {
+
+    await this.checkLocalStorage();
 
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
-      (filterData: isFilter) => {
-        console.log('filter: ', filterData);
-        if (!filterData) {
-          this.filterData = null;
-          this.getUsers();
-        } else {
-          this.filterData = filterData;
-          this.getUsersWithFilter();
-        }
+      (filterData: FilterData) => {
+        this.filterData = filterData;
+        console.log('Subscribed filter: ', filterData);
+        this.handleRefresh(filterData);
       }
     );
+
   }
 
-  getUsersWithFilter() {
+  async checkLocalStorage() {
+    // Getting the filter data from localStorage
+    const languagesString = await this.storageService.get("languages") ;
+    const gender = await this.storageService.get("gender") || null;
+    const country = await this.storageService.get("country") || null;
+    const minAgeString = await this.storageService.get("minAge");
+    const maxAgeString = await this.storageService.get("maxAge");
+    
+    let minAge = Number(minAgeString) || null;
+    let maxAge = Number(maxAgeString) || null;
 
-    if (this.filterData?.isFilterGender) {
-      this.queryFn = this.apiService.whereQuery("gender", "==", this.filterData?.filterGender);
-    } else {
-      this.queryFn = null;
+    let languages : Array<any> = [];
+    if(languagesString) {
+      languages = languagesString.toLocaleString().split(",");
     }
 
-    console.log('queryFn: ', this.queryFn);
-    this.getUsers(this.queryFn);
+    let filterData: FilterData = {
+      languages: languages,
+      gender: gender,
+      country: country,
+      minAge: minAge,
+      maxAge: maxAge
+    }
+
+    console.log('checkLocalStorage', filterData);
+    this.filterService.setEvent(filterData);
   }
 
   //
@@ -79,70 +89,23 @@ export class CommunityPage implements OnInit {
   //
 
   loadMore(event) {
-    if (!this.filterData) {
-      this.getMoreUsers(event);
-    } else {
-      this.getMoreUsers(event, this.queryFn);
+    if (this.isAllUsersLoaded) {
+      event.target.complete();
+      return;
     }
+    this.getUsers(this.filterData);
+    event.target.complete();
+    console.log('Async operation loadMore has ended');
   }
 
-  async getUsers(queryFn?) {
-    if(queryFn) {
-
-      const docSnap = await this.chatService.getUsersWithFilter(queryFn);
-      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
-
-      // Get the last visible document
-      let l = docSnap.docs[docSnap.docs.length-1];
-      this.lastVisible = l || null;
-
+  async getUsers(filterData?: FilterData) {
+    let users = await this.userService.getUsers(filterData);
+    if (users.length > 0) {
+      this.users.push(...users);
     } else {
-      const docSnap = await this.chatService.getUsers();
-      // console.log('docSnap: ', docSnap.docs);
-      this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
-
-      // Get the last visible document
-      let l = docSnap.docs[docSnap.docs.length-1];
-      this.lastVisible = l || null;
+      this.isAllUsersLoaded = true;
+      console.log('No more users');
     }
-
-  }
-
-  async getMoreUsers(infiniteScroll, queryFn?) {
-
-    if(queryFn) {
-      console.log('lastVisible: ', this.lastVisible.get('name'));
-      // Use the query for pagination
-      const nextDocSnap = await this.chatService.getMoreUsersWithFilter(this.lastVisible, queryFn);
-      this.users.push(...nextDocSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId));
-
-      // Get the last visible document
-      let l = nextDocSnap.docs[nextDocSnap.docs.length-1];
-      this.lastVisible = l || null;
-
-      // TODO: check double, go another page and back, test with filters
-      // Because if i disable the infiniteScroll, it will not work anymore until i refresh the page
-      infiniteScroll.target.complete();
-      if (!this.lastVisible) {
-        infiniteScroll.target.disabled = true;
-      }
-    } else {
-      console.log('lastVisible: ', this.lastVisible.get('name'));
-      // Use the query for pagination
-      const nextDocSnap = await this.chatService.getMoreUsers(this.lastVisible);
-      this.users.push(...nextDocSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId));
-
-      // Get the last visible document
-      let l = nextDocSnap.docs[nextDocSnap.docs.length-1];
-      this.lastVisible = l || null;
-
-      // TODO: check double, go another page and back, test with filters
-      // Because if i disable the infiniteScroll, it will not work anymore until i refresh the page
-      infiniteScroll.target.complete();
-      if (!this.lastVisible) {
-        infiniteScroll.target.disabled = true;
-      }
-    }    
   }
 
   //
@@ -173,22 +136,23 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Pull to refresh
+  //
+
+  handleRefresh(filterData: FilterData, event?) {
+    this.users = [];
+    this.isAllUsersLoaded = false;
+    this.userService.refreshUsers();
+    this.getUsers(filterData);
+    if(event) event.target.complete();
+  }
+
+  //
   // Filters
   //
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
-  }
-
-  //
-  // Pull to refresh
-  //
-
-  handleRefresh(event) {
-    this.users = [];
-    this.getUsers();
-    event.target.complete();
-    console.log('Async operation refresh has ended');
   }
 
 }

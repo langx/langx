@@ -29,3 +29,10 @@ export function getAge(date: Date) {
   let age = Math.floor(diff / 31557600000);
   return age;
 }
+
+export function getBirthdate(age: number) {
+  let now = new Date();
+  let birthYear = now.getFullYear() - age;
+  let birthDate = new Date(birthYear, now.getMonth(), now.getDate());
+  return birthDate;
+}

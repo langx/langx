@@ -19,23 +19,18 @@
     
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Language</ion-card-title>
+        <ion-card-title>Languages</ion-card-title>
       </ion-card-header>
     
       <ion-card-content class="hasIcon">
-        <ion-item *ngFor="let lang of currentUserData?.studyLanguages" (click)="openLangModal(lang)" detail="true">
+        <ion-item *ngFor="let lang of currentUserData?.studyLanguages" >
           <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
-          <ion-label>
-            <h3>{{ lang?.name }}</h3>
-            <h3 *ngIf="showLangLevel(lang);else noFilter">{{showLangLevel(lang)}}</h3>
-            <ng-template #noFilter><p>No Filter</p></ng-template> 
-          </ion-label>
+          <ion-checkbox labelPlacement="start" color="primary" [checked]="isCheckedLanguage(lang?.code)" (ionChange)="languageChecked($event, lang?.code)">{{ lang?.name }}</ion-checkbox>
         </ion-item>
       </ion-card-content>
     </ion-card>
-
 
     <ion-card>
       <ion-card-header>
@@ -75,7 +70,7 @@
       </ion-card-header>
     
       <ion-card-content class="hasIcon">
-        <ion-item detail="true">
+        <ion-item>
           <ion-icon name="calendar-number-outline"></ion-icon>
           <ion-label>
             <h3 *ngIf="showAge();else noFilter">{{showAge()}}</h3>
@@ -87,8 +82,8 @@
           [dualKnobs]="true"
           [pin]="true"
           [min]="13"
-          [max]="55"
-          [value]="{ lower: 20, upper: 45 }">
+          [max]="85"
+          [value]="ionRangeDefault">
         </ion-range>
       </ion-card-content>
     </ion-card>
@@ -108,6 +103,36 @@
 <!-- MODALS start -->
 <!------------------>
 
+<!-- Country Modal -->
+<ion-modal
+  #countryModal
+  trigger="country-modal"
+  [initialBreakpoint]="0.5"
+  [breakpoints]="[0.25, 0.5, 0.75]"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Country</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="countryModal.dismiss()" color="primary">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
+      <ion-list>
+        <ion-radio-group value="start" (ionChange)="countryChange($event)">
+          <ion-item *ngFor="let country of countryData | customFilter: searchTerm">
+            <ion-radio value="{{ country?.value }}" labelPlacement="start">{{ country?.text }}</ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- Gender Modal -->
 <ion-modal #genderModal class="modalClass" trigger="gender-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
   <div class="block">
     <ng-template>
@@ -119,7 +144,7 @@
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-radio-group (ionChange)="genderChange($event)" [value]="filterGender">
+      <ion-radio-group (ionChange)="genderChange($event)" [value]="filterData.gender">
         <ion-list>
           <ion-item>
             <ion-radio value="male">Male</ion-radio><br />
@@ -135,31 +160,3 @@
     </ng-template>
   </div>
 </ion-modal>
-
-<ion-modal
-      #countryModal
-      trigger="country-modal"
-      [initialBreakpoint]="0.5"
-      [breakpoints]="[0.25, 0.5, 0.75]"
-    >
-      <ng-template>
-        <ion-header>
-          <ion-toolbar>
-            <ion-title>Country</ion-title>
-            <ion-buttons slot="end">
-              <ion-button (click)="countryModal.dismiss()" color="primary">Confirm</ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding">
-          <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
-          <ion-list>
-            <ion-radio-group value="start" (ionChange)="countryChange($event)">
-              <ion-item *ngFor="let country of countryData | customFilter: searchTerm">
-                <ion-radio value="{{ country?.value }}" labelPlacement="start">{{ country?.text }}</ion-radio>
-              </ion-item>
-            </ion-radio-group>
-          </ion-list>
-        </ion-content>
-      </ng-template>
-    </ion-modal>

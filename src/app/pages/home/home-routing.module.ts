@@ -57,7 +57,7 @@ const routes: Routes = [
   {
     path: 'user/:id',
     loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
-  },
+  }
 ];
 
 @NgModule({

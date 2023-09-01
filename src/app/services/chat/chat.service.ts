@@ -23,55 +23,6 @@ export class ChatService {
     this.currentUserId = this.auth.getId()
   }
 
-  //
-  // Get User Methods
-  //
-
-  async getUsers() {
-    return await this.api.getDocs(
-      "users",
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.limitQuery(3)
-    )
-  }
-
-  async getMoreUsers(lastItem) {
-    return await this.api.getDocs(
-      "users",
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.startAfterQuery(lastItem),
-      this.api.limitQuery(5)
-    )
-  }
-
-  //
-  // Get User With Filter Methods
-  //
-
-  async getUsersWithFilter(queryFn) {
-    return await this.api.getDocs(
-      "users",
-      queryFn,
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.limitQuery(3)
-    )
-  }
-
-  // TODO: its still not used in community page
-  async getMoreUsersWithFilter(lastItem, queryFn) {
-    return await this.api.getDocs(
-      "users",
-      queryFn,
-      this.api.orderByQuery("lastSeen", "desc"),
-      this.api.startAfterQuery(lastItem),
-      this.api.limitQuery(10)
-    )
-  }
-
-  //
-  // Chat Room Methods
-  //
-
   async createChatRoom(user_id) {
     // get the userId here 
     this.getId();
