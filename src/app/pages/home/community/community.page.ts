@@ -19,7 +19,6 @@ export class CommunityPage implements OnInit {
   queryFn: QueryFieldFilterConstraint = null;
 
   users = [];
-  lastVisible: any;
 
   isLoading: boolean = false;
 
@@ -58,25 +57,13 @@ export class CommunityPage implements OnInit {
           this.getUsers();
         } else {
           this.filterData = filterData;
-          //this.getUsersWithFilter();
+          this.getUsersWithFilters();
         }
       }
     );
   }
 
-  /*
-  getUsersWithFilter() {
 
-    if (this.filterData?.isFilterGender) {
-      this.queryFn = this.apiService.whereQuery("gender", "==", this.filterData?.filterGender);
-    } else {
-      this.queryFn = null;
-    }
-
-    console.log('queryFn: ', this.queryFn);
-    this.getUsers(this.queryFn);
-  }
-  */
 
   //
   // Infinite Scroll
@@ -89,23 +76,12 @@ export class CommunityPage implements OnInit {
   }
 
   async getUsers() {
-    // if(queryFn) {
+    this.users = await this.userService.getUsers();
+  }
 
-    //   const docSnap = await this.userService.getUsersWithFilter(queryFn);
-    //   this.users = docSnap.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
-
-    //   // Get the last visible document
-    //   let l = docSnap.docs[docSnap.docs.length-1];
-    //   this.lastVisible = l || null;
-
-    // } else {
-      this.users = await this.userService.getUsers();
-
-      // Get the last visible document
-      // let l = docSnap.docs[docSnap.docs.length-1];
-      // this.lastVisible = l || null;
-    // }
-
+  async getUsersWithFilters() {
+    console.log('queryFn: ', this.filterData);
+    //this.getUsers(this.queryFn);
   }
 
   // async getMoreUsers(infiniteScroll, queryFn?) {
@@ -186,6 +162,7 @@ export class CommunityPage implements OnInit {
 
   handleRefresh(event) {
     this.users = [];
+    this.userService.refreshUsers();
     this.getUsers();
     event.target.complete();
     console.log('Async operation handleRefresh has ended');
