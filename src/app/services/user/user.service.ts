@@ -8,6 +8,7 @@ import { ChatService } from '../chat/chat.service';
 })
 export class UserService {
 
+  users = [];
   lastVisible: any;
 
   constructor(
@@ -55,20 +56,27 @@ export class UserService {
   //
 
   async getUsers() {
+    console.log('lastVisible: ', this.lastVisible, 'users.length: ', this.users.length, 'users: ', this.users);
     let usersQuery: Query = query(this.api.collectionRef('users'));
+
     usersQuery = query(usersQuery, this.api.orderByQuery('lastSeen', 'desc'));
+
     if (this.lastVisible) {
       usersQuery = query(usersQuery, this.api.startAfterQuery(this.lastVisible));
     }
-    usersQuery = query(usersQuery, this.api.limitQuery(5));
+    
+    usersQuery = query(usersQuery, this.api.limitQuery(4));
     const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
 
-    const users = querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId);
-    let last = users[users.length-1];
-    this.lastVisible = last || null;
-    console.log(this.lastVisible.name);
+    querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
+      .map( user => { this.users.push(user); });
 
-    return users;
+    // Get the last visible document
+    let last = querySnapshot.docs[querySnapshot.docs.length-1];
+    this.lastVisible = last || null;
+    //console.log('last: ', this.lastVisible.data());
+
+    return this.users;
   }
 
   // async getMoreUsers(lastItem) {

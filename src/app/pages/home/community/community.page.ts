@@ -58,12 +58,13 @@ export class CommunityPage implements OnInit {
           this.getUsers();
         } else {
           this.filterData = filterData;
-          this.getUsersWithFilter();
+          //this.getUsersWithFilter();
         }
       }
     );
   }
 
+  /*
   getUsersWithFilter() {
 
     if (this.filterData?.isFilterGender) {
@@ -75,20 +76,19 @@ export class CommunityPage implements OnInit {
     console.log('queryFn: ', this.queryFn);
     this.getUsers(this.queryFn);
   }
+  */
 
   //
   // Infinite Scroll
   //
 
-  // loadMore(event) {
-  //   if (!this.filterData) {
-  //     this.getMoreUsers(event);
-  //   } else {
-  //     this.getMoreUsers(event, this.queryFn);
-  //  this.getUsers();
-  // }
+  loadMore(event) {
+    this.getUsers();
+    event.target.complete();
+    console.log('Async operation loadMore has ended');
+  }
 
-  async getUsers(queryFn?) {
+  async getUsers() {
     // if(queryFn) {
 
     //   const docSnap = await this.userService.getUsersWithFilter(queryFn);
@@ -188,7 +188,7 @@ export class CommunityPage implements OnInit {
     this.users = [];
     this.getUsers();
     event.target.complete();
-    console.log('Async operation refresh has ended');
+    console.log('Async operation handleRefresh has ended');
   }
 
 }
