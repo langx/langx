@@ -58,7 +58,6 @@ export class UserService {
   //
 
   async getUsers() {
-    console.log('lastVisible: ', this.lastVisible, 'users.length: ', this.users.length, 'users: ', this.users);
     let usersQuery: Query = query(this.api.collectionRef('users'));
 
     usersQuery = query(usersQuery, this.api.orderByQuery('lastSeen', 'desc'));
@@ -75,11 +74,11 @@ export class UserService {
 
     // TODO: Its working infinitely but it has to be fixed
     // Sometimes it returns null and it breaks the one of loadMore() event
-    // Get the last visible document
+    // It also may stay in infinite loop if it returns null
     let last = querySnapshot.docs[querySnapshot.docs.length-1];
     this.lastVisible = last || null;
-    //console.log('last: ', this.lastVisible.data());
 
+    console.log('lastVisible: ', this.lastVisible, 'users.length: ', this.users.length, 'users: ', this.users);
     return this.users;
   }
 
