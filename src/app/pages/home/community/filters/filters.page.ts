@@ -48,8 +48,7 @@ export class FiltersPage implements OnInit {
 
   async checkStorage() {
 
-    // TODO: check localStorage
-    /*
+    // check localStorage
     const languagesString = await this.storageService.get("languages") ;
     const gender = await this.storageService.get("gender") || null;
     const country = await this.storageService.get("country") || null;
@@ -63,18 +62,14 @@ export class FiltersPage implements OnInit {
     if(languagesString) {
       languages = languagesString.toLocaleString().split(",");
     }
+  
+    this.filterData.languages = languages;
+    this.filterData.gender = gender;
+    this.filterData.country = country;
+    this.filterData.minAge = minAge;
+    this.filterData.maxAge = maxAge;
 
-    let filterData: FilterData = {
-      languages: languages,
-      gender: gender,
-      country: country,
-      minAge: minAge,
-      maxAge: maxAge
-    }
-
-    console.log('checkLocalStorage', filterData);
-    this.filterService.setEvent(filterData);
-    */
+    console.log('checkLocalStorage', this.filterData);
   }
 
   async fetchFilteredUsers() {
