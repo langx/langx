@@ -71,6 +71,8 @@ export class UserService {
     querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
       .map( user => { this.users.push(user); });
 
+    // TODO: Its working infinitely but it has to be fixed
+    // Sometimes it returns null and it breaks the one of loadMore() event
     // Get the last visible document
     let last = querySnapshot.docs[querySnapshot.docs.length-1];
     this.lastVisible = last || null;
