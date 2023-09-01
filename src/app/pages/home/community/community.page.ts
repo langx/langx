@@ -57,7 +57,7 @@ export class CommunityPage implements OnInit {
   }
 
   async checkLocalStorage() {
-    // TODO: Getting the filter data from localStorage
+    // Getting the filter data from localStorage
     const languagesString = await this.storageService.get("languages") ;
     const gender = await this.storageService.get("gender") || null;
     const country = await this.storageService.get("country") || null;
