@@ -82,6 +82,20 @@ export class UserService {
     return this.users;
   }
 
+  refreshUsers() {
+    this.users = [];
+    this.lastVisible = null;
+  }
+
+  // async getUsersWithFilter(queryFn) {
+  //   return await this.api.getDocs(
+  //     "users",
+  //     queryFn,
+  //     this.api.orderByQuery("lastSeen", "desc"),
+  //     this.api.limitQuery(3)
+  //   )
+  // }
+
   // async getMoreUsers(lastItem) {
   //   return await this.api.getDocs(
   //     "users",
@@ -94,15 +108,6 @@ export class UserService {
   //
   // Get User With Filter Methods
   //
-
-  // async getUsersWithFilter(queryFn) {
-  //   return await this.api.getDocs(
-  //     "users",
-  //     queryFn,
-  //     this.api.orderByQuery("lastSeen", "desc"),
-  //     this.api.limitQuery(3)
-  //   )
-  // }
 
   // TODO: its still not used in community page
   // async getMoreUsersWithFilter(lastItem, queryFn) {
