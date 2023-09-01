@@ -10,7 +10,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class UserService {
 
-  NUMBER_OF_USERS_PER_PAGE = 5;
+  NUMBER_OF_USERS_PER_PAGE = 10;
 
   lastVisible: any;
 
