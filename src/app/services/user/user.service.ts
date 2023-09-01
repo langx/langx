@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { query, QuerySnapshot, Query } from '@angular/fire/firestore';
 import { getAge } from 'src/app/extras/utils';
 import { ApiService } from '../api/api.service';
-import { ChatService } from '../chat/chat.service';
 import { FilterData } from '../filter/filter.service';
+import { AuthService } from '../auth/auth.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +15,7 @@ export class UserService {
   lastVisible: any;
 
   constructor(
-    private chatService: ChatService, // TODO: to get only currentUserId #Optimization #Performance
+    private authService: AuthService,
     private api: ApiService
   ) {}
 
@@ -45,7 +45,8 @@ export class UserService {
     usersQuery = query(usersQuery, this.api.limitQuery(this.NUMBER_OF_USERS_PER_PAGE));
     const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
 
-    querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
+    // querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.chatService.currentUserId)
+    querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.authService.getId())
       .map( user => { users.push(user); });
 
     let last = querySnapshot.docs[querySnapshot.docs.length-1];
