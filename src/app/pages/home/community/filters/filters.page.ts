@@ -120,29 +120,28 @@ export class FiltersPage implements OnInit {
     if (this.gender=='male') { return "Male" }
     else if (this.gender=='female') { return "Female" }
     else if (this.gender=='other') { return "Other" }
-    else { return false; }
+    else return false;
   }
 
-  /*
 
   //
   // AGE Methods
   //
 
   ageChange(event) {
-    this.filterAge = event.detail.value;
-    this.isFilterAge = true;
-  }
-
-  showAge() {
-    let a = this.filterAge;
-    if (a['lower'] && a['upper']) {
-      return 'between ' + a['lower'] + ' and ' + a['upper'];
-    } else {
-      return false;
+    if (event.detail.value) {
+      this.minAge = event.detail.value.lower;
+      this.maxAge = event.detail.value.upper;
     }
   }
 
+  showAge() {
+    if (this.minAge && this.maxAge) {
+      return 'between ' + this.minAge + ' and ' + this.maxAge;
+    } else return false;
+  }
+
+  /*
   //
   // RESET All Filters
   //

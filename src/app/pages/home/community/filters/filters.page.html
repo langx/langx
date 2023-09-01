@@ -71,21 +71,21 @@
       </ion-card-header>
     
       <ion-card-content class="hasIcon">
-        <ion-item detail="true">
+        <ion-item>
           <ion-icon name="calendar-number-outline"></ion-icon>
           <ion-label>
-            <!--<h3 *ngIf="showAge();else noFilter">{{showAge()}}</h3>-->
+            <h3 *ngIf="showAge();else noFilter">{{showAge()}}</h3>
             <ng-template #noFilter><p>No Filter</p></ng-template>
           </ion-label>
         </ion-item>
-        <!-- <ion-range
+        <ion-range
           (ionChange)="ageChange($event)"
           [dualKnobs]="true"
           [pin]="true"
           [min]="13"
-          [max]="55"
-          [value]="{ lower: 20, upper: 45 }">
-        </ion-range> -->
+          [max]="85"
+          [value]="{ lower: 20, upper: 75 }">
+        </ion-range>
       </ion-card-content>
     </ion-card>
 
