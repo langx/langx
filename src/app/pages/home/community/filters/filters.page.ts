@@ -23,10 +23,10 @@ export class FiltersPage implements OnInit {
 
   // filters data
   languages = []
-  gender: string;
-  country: string;
-  minAge: Number;
-  maxAge: Number;
+  gender: string = null;
+  country: string = null;
+  minAge: Number = null;
+  maxAge: Number = null;
 
   constructor(
     private authService: AuthService,
@@ -57,28 +57,23 @@ export class FiltersPage implements OnInit {
   }
 
   onSubmit() { 
-    /*
     // here set filterData for filterService
-    let filterData: isFilter = {
-      isFilterLanguage: this.isFilterLanguage,
-      isFilterGender: this.isFilterGender,
-      isFilterCountry: this.isFilterCountry,
-      isFilterAge: this.isFilterAge,
-      filterLanguage: this.filterLanguage,
-      filterGender: this.filterGender,
-      filterCountry: this.filterCountry,
-      filterAge: this.filterAge,
+    let filterData: FilterData = {
+      languages: this.languages,
+      gender: this.gender,
+      country: this.country,
+      minAge: this.minAge,
+      maxAge: this.maxAge
     }
     this.doSomething(filterData);
-    */
 
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
   }
 
   doSomething(filterData: FilterData): void {
-      this.filterService.setEvent(filterData);
-      //this.filterService.saveFilter(filterData);
+    this.filterService.setEvent(filterData);
+    // this.filterService.saveFilter(filterData);
   }
 
   //
