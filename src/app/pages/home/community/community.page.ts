@@ -5,6 +5,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -29,10 +30,11 @@ export class CommunityPage implements OnInit {
     private apiService: ApiService,
     private userService: UserService,
     private filterService: FilterService,
+    private storageService: StorageService
   ) { }
 
-  ngOnInit() {
-    this.checkFilter();
+  async ngOnInit() {
+    await this.checkFilter();
   }
 
   ngOnDestroy() {
@@ -44,7 +46,7 @@ export class CommunityPage implements OnInit {
   // Check Filter
   //
 
-  checkFilter() {
+  async checkFilter() {
     // Getting the filter data from DB
     /*
     this.authService.getUserData().then((currentUserData) => {
@@ -55,12 +57,13 @@ export class CommunityPage implements OnInit {
       console.log('error: ', error);
     });
     */
-    // TODO: Getting the filter data from localStorage
+
+    await this.checkLocalStorage();
 
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
       (filterData: FilterData) => {
-        console.log('filter: ', filterData);
+        console.log('Subscribed filter: ', filterData);
         if (!filterData) {
           this.filterData = null;
           this.getUsers();
@@ -70,6 +73,35 @@ export class CommunityPage implements OnInit {
         }
       }
     );
+  }
+
+  async checkLocalStorage() {
+    // TODO: Getting the filter data from localStorage
+    const languagesString = await this.storageService.get("languages") ;
+    const gender = await this.storageService.get("gender") || null;
+    const country = await this.storageService.get("country") || null;
+    const minAgeString = await this.storageService.get("minAge");
+    const maxAgeString = await this.storageService.get("maxAge");
+    
+    let minAge = Number(minAgeString) || null;
+    let maxAge = Number(maxAgeString) || null;
+
+    let languages : Array<any> = [];
+    if(languagesString) {
+      languages = languagesString.toLocaleString().split(",");
+    }
+
+    let filterData: FilterData = {
+      languages: languages,
+      gender: gender,
+      country: country,
+      minAge: minAge,
+      maxAge: maxAge
+    }
+
+    console.log('checkLocalStorage', filterData);
+
+    this.filterService.setEvent(filterData);
   }
 
   //
