@@ -149,14 +149,6 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  // Filters
-  //
-
-  getFiltersPage() {
-    this.router.navigateByUrl('/home/filters');
-  }
-
-  //
   // Pull to refresh
   //
 
@@ -166,6 +158,14 @@ export class CommunityPage implements OnInit {
     this.getUsers();
     event.target.complete();
     console.log('Async operation handleRefresh has ended');
+  }
+
+  //
+  // Filters
+  //
+
+  getFiltersPage() {
+    this.router.navigateByUrl('/home/filters');
   }
 
 }
