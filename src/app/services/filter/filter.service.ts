@@ -2,15 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
-export interface isFilter {
-  isFilterLanguage: boolean;
-  isFilterGender: boolean;
-  isFilterCountry: boolean;
-  isFilterAge: boolean;
-  filterLanguage: Array<any>;
-  filterGender: string;
-  filterCountry: string;
-  filterAge: Object;
+export interface FilterData {
+  languages: Array<string>;
+  gender: string;
+  country: string;
+  minAge: Number;
+  maxAge: Number;
 }
 
 @Injectable({
@@ -18,21 +15,22 @@ export interface isFilter {
 })
 export class FilterService {
 
-  private isFilterTracker = new BehaviorSubject<isFilter>(null);
+  private isFilterTracker = new BehaviorSubject<FilterData>(null);
 
   constructor(
     private authService: AuthService
   ) { }
 
-  getEvent(): BehaviorSubject<isFilter> {
+  getEvent(): BehaviorSubject<FilterData> {
     return this.isFilterTracker;
   }
 
-  setEvent(filterData: isFilter): void {
+  setEvent(filterData: FilterData): void {
     this.isFilterTracker.next(filterData);
 
   }
 
+  /*
   saveFilter(filterData: isFilter): void {
     //Set User Filter to Firestore
     if(filterData.isFilterAge || filterData.isFilterCountry || filterData.isFilterGender || filterData.isFilterLanguage ) {
@@ -41,5 +39,6 @@ export class FilterService {
       this.authService.updateUserFilter(false);
     }
   }
+  */
 
 }

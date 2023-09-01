@@ -4,7 +4,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { FilterService, isFilter } from 'src/app/services/filter/filter.service';
+import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { UserService } from 'src/app/services/user/user.service';
 export class CommunityPage implements OnInit {
 
   filterSubscription: any;
-  filterData: isFilter;
+  filterData: FilterData;
   queryFn: QueryFieldFilterConstraint = null;
 
   users = [];
@@ -50,7 +50,7 @@ export class CommunityPage implements OnInit {
 
     this.filterSubscription = this.filterService.getEvent()
     .subscribe(
-      (filterData: isFilter) => {
+      (filterData: FilterData) => {
         console.log('filter: ', filterData);
         if (!filterData) {
           this.filterData = null;
