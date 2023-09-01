@@ -26,8 +26,8 @@ export class FiltersPage implements OnInit {
   languages = []
   gender: string = null;
   country: string = null;
-  minAge: Number = null;
-  maxAge: Number = null;
+  minAge: number = null;
+  maxAge: number = null;
 
   constructor(
     private authService: AuthService,
