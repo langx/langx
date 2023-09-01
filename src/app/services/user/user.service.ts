@@ -9,7 +9,7 @@ import { FilterData } from '../filter/filter.service';
 })
 export class UserService {
 
-  NUMBER_OF_USERS_PER_PAGE = 4;
+  NUMBER_OF_USERS_PER_PAGE = 5;
 
   lastVisible: any;
 
@@ -93,8 +93,20 @@ export class UserService {
     // It also may stay in infinite loop if it returns null
     let last = querySnapshot.docs[querySnapshot.docs.length-1];
     this.lastVisible = last || null;
+
+    if(filterData?.minAge && filterData?.maxAge) {
+      return this.filterUsersByAge(users, filterData.minAge, filterData.maxAge);
+    }
+
     console.log('lastVisible: ', this.lastVisible, 'users.length: ', users.length, 'users: ', users);
     return users;
+  }
+
+  filterUsersByAge(users: any[], minAge: number, maxAge: number) {
+    return users.filter(user => {
+      const age = getAge(user.birthdate.toDate());
+      return age >= minAge && age <= maxAge;
+    });
   }
 
   refreshUsers() {
