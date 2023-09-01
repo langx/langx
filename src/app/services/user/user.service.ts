@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+// TODO: Next line may be moved to api.service.ts
 import { query, QuerySnapshot, Query } from '@angular/fire/firestore';
 import { getAge } from 'src/app/extras/utils';
 import { ApiService } from '../api/api.service';
