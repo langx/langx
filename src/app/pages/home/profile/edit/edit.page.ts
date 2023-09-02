@@ -16,6 +16,8 @@ export class EditPage implements OnInit {
   textAreaValue: string = '';
   textAreaDisabled: boolean = true;
 
+  studyLanguages$: any;
+
   constructor(
     private authService: AuthService,
     private toastController: ToastController,
@@ -36,7 +38,7 @@ export class EditPage implements OnInit {
       }
       //hideLoader();
       this.isLoading = false;
-      this.authService.studyLanguages.subscribe(studyLanguages => {
+      this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
         if(studyLanguages) {
           this.currentUser.studyLanguages = studyLanguages;
         }
@@ -45,7 +47,7 @@ export class EditPage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.authService.studyLanguages.unsubscribe();
+    this.studyLanguages$.unsubscribe();
   }
 
   //

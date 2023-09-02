@@ -25,6 +25,9 @@ export class ProfilePage implements OnInit {
   currentUser: any;
   isLoading: boolean = false;
 
+  studyLanguages$: any;
+  aboutMe$: any;
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -41,12 +44,12 @@ export class ProfilePage implements OnInit {
     this.authService.getUserData().then(user => {
       this.currentUser = user;
       //console.log(this.currentUser);
-      this.authService.aboutMe.subscribe(aboutMe => {
+      this.aboutMe$ = this.authService.aboutMe.subscribe(aboutMe => {
         if(aboutMe) {
           this.currentUser.aboutMe = aboutMe;
         }
       });
-      this.authService.studyLanguages.subscribe(studyLanguages => {
+      this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
         if(studyLanguages) {
           this.currentUser.studyLanguages = studyLanguages;
         }
@@ -58,8 +61,8 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.authService.aboutMe.unsubscribe();
-    this.authService.studyLanguages.unsubscribe();
+    this.aboutMe$.unsubscribe();
+    this.studyLanguages$.unsubscribe();
   }
 
   async logout(){
