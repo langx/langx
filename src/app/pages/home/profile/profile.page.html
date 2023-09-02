@@ -39,7 +39,7 @@
       <ion-card-content>
         <ion-text *ngIf="!currentUser?.aboutMe">You can edit here your profile description.</ion-text>
         <ion-text>{{currentUser?.aboutMe}}</ion-text>
-        <ion-list class="langs">
+        <ion-list class="hasIcon">
           <ion-item>
             <ion-icon name="flag-outline"></ion-icon>
             <ion-label>{{currentUser?.country?.name}}</ion-label>
@@ -62,7 +62,7 @@
         <ion-card-subtitle></ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-list class="langs">
+        <ion-list class="hasIcon">
           <ion-item *ngFor="let lang of currentUser?.studyLanguages">
             <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
             <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
@@ -80,7 +80,7 @@
         <ion-card-subtitle></ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-list class="langs">
+        <ion-list class="hasIcon">
           <ion-item *ngFor="let lang of currentUser?.motherLanguages">
             <ion-icon name="battery-charging-outline"></ion-icon>
             <ion-label>{{lang.name}}</ion-label>
