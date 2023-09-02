@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class EditPage implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -42,9 +44,19 @@ export class EditPage implements OnInit {
   saveAboutMe() {
     this.isLoading = true;
     this.authService.updateUserAboutData(this.currentUser).then(() => {
-      console.log('About me saved');
+      this.presentToast('About me saved.');
       this.isLoading = false;
     })
+  }
+
+  async presentToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
 }
