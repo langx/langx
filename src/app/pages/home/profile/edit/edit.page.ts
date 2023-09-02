@@ -38,6 +38,18 @@ export class EditPage implements OnInit {
     })
   }
 
+  //
+  // Edit PP
+  //
+
+  deletePP() {
+    this.presentToast('At least one profile picture required.');
+  }
+
+  //
+  // Edit About Me
+  //
+
   ionInputAboutMe(event) {
     if(event.target.value != this.currentUser.aboutMe) {
       this.textAreaDisabled = false;
@@ -53,8 +65,12 @@ export class EditPage implements OnInit {
     })
   }
 
-  deletePP() {
-    this.presentToast('At least one profile picture required.');
+  //
+  // Edit Languages
+  //
+
+  editLanguages() {
+    this.presentToast('Coming soon.');
   }
 
   //
