@@ -12,7 +12,7 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class CommunityPage implements OnInit {
 
-  filterSubscription: any;
+  filter$: any;
   filterData: FilterData;
 
   users = [];
@@ -33,7 +33,7 @@ export class CommunityPage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.filterSubscription.unsubscribe();
+    this.filter$.unsubscribe();
     console.log('unsubscribed');
   }
 
@@ -45,7 +45,7 @@ export class CommunityPage implements OnInit {
 
     await this.checkLocalStorage();
 
-    this.filterSubscription = this.filterService.getEvent()
+    this.filter$ = this.filterService.getEvent()
     .subscribe(
       (filterData: FilterData) => {
         this.filterData = filterData;
