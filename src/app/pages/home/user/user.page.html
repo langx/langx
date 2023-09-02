@@ -26,8 +26,14 @@
         <ion-card-title>About Me</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-text *ngIf="!user?.aboutMe">There is no biography text.</ion-text>
-        <ion-text>{{user?.aboutMe}}</ion-text>
+        <ion-item lines="none">
+          <ion-textarea
+            [autoGrow]="true"
+            readonly="true"
+            rows="3"
+            placeholder="There is no biography yet that user updated."
+            [value]="user?.aboutMe"></ion-textarea>
+        </ion-item>
         <ion-list class="langs">
           <ion-item>
             <ion-icon name="flag-outline"></ion-icon>
