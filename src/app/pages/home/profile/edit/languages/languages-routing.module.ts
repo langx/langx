@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { EditPage } from './edit.page';
+import { LanguagesPage } from './languages.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: EditPage
+    component: LanguagesPage
   },
   {
-    path: 'languages',
-    loadChildren: () => import('./languages/languages.module').then( m => m.LanguagesPageModule)
+    path: 'new',
+    loadChildren: () => import('./new/new.module').then( m => m.NewPageModule)
   }
 ];
 
@@ -18,4 +18,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class EditPageRoutingModule {}
+export class LanguagesPageRoutingModule {}

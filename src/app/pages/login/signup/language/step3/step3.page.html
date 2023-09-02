@@ -20,15 +20,18 @@
     </ion-card-content>
      <ion-grid>
       <ion-radio-group [allowEmptySelection]="true" (ionChange)="radioChecked($event, item)">
-        <ion-list>
+        <ion-list class="hasIcon">
           <ion-item>
-            <ion-radio value="1"><ion-icon name="battery-dead-outline"></ion-icon> Beginner</ion-radio>
+            <ion-icon name="battery-dead-outline"></ion-icon>
+            <ion-radio value="1">Beginner</ion-radio>
           </ion-item>
           <ion-item>
-            <ion-radio value="2"><ion-icon name="battery-half-outline"></ion-icon> Intermediate</ion-radio>
+            <ion-icon name="battery-half-outline"></ion-icon>
+            <ion-radio value="2">Intermediate</ion-radio>
           </ion-item>
           <ion-item>
-            <ion-radio value="3"><ion-icon name="battery-full-outline"></ion-icon> Fluent</ion-radio>
+            <ion-icon name="battery-full-outline"></ion-icon>
+            <ion-radio value="3">Fluent</ion-radio>
           </ion-item>
         </ion-list>
       </ion-radio-group>
