@@ -10,7 +10,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class LanguagesPage implements OnInit {
 
   currentUser: any;
-  studyLanguages: any;
+
+  isLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -22,14 +23,30 @@ export class LanguagesPage implements OnInit {
   }
 
   getProfileInfo() {
+    this.isLoading = true;
     this.authService.getUserData().then(user => {
       this.currentUser = user;
-      this.studyLanguages = this.currentUser.studyLanguages;
+      this.isLoading = false;
     });
   }
 
   newLangBtn() {
     // console.log(this.currentUser.languagesArray);
     this.router.navigate(['/home/profile/edit/languages/new'], { state: this.currentUser.languagesArray });
+  }
+
+  radioChecked(event, selectedLanguage) {
+    selectedLanguage.level = event.detail.value;
+    this.currentUser.studyLanguages.forEach(lang => {
+
+      if(lang.code === selectedLanguage.code) {
+        lang.level = selectedLanguage.level;
+      }
+    });
+  }
+
+  save(){
+    this.authService.updateUserStudyLanguagesData(this.currentUser);
+    this.router.navigate(['/home/profile/edit']);
   }
 }

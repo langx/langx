@@ -14,7 +14,9 @@
 
 <ion-content [fullscreen]="true">
 
-  <ion-card *ngFor="let item of studyLanguages">
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
+  <ion-card *ngFor="let item of currentUser?.studyLanguages">
     <ion-card-header>
       <ion-card-title>{{item?.name}}</ion-card-title>
       <ion-card-subtitle>{{item?.nativeName}}</ion-card-subtitle>
@@ -23,8 +25,7 @@
       Choice your level of your {{item?.name}}.
     </ion-card-content>
      <ion-grid>
-      <!--<ion-radio-group [allowEmptySelection]="true" (ionChange)="radioChecked($event, item)">-->
-      <ion-radio-group [allowEmptySelection]="true" [value]="item.level">
+      <ion-radio-group [value]="item.level" (ionChange)="radioChecked($event, item)">
         <ion-list class="">
           <ion-item>
             <ion-icon name="battery-dead-outline" slot="start" color="primary"></ion-icon>
@@ -42,5 +43,14 @@
       </ion-radio-group>
     </ion-grid>
   </ion-card>
+
+  <ion-row>
+    <ion-col>
+      <ion-button *ngIf="!isLoading" (click)="save()" color="primary" expand="block">Save</ion-button>
+      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      </ion-button>
+    </ion-col>
+  </ion-row>
 
 </ion-content>
