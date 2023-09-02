@@ -72,7 +72,6 @@ export class EditPage implements OnInit {
   //
 
   editLanguages() {
-    this.presentToast('Coming soon.');
     this.router.navigate(['/home/profile/edit/languages']);
   }
 
