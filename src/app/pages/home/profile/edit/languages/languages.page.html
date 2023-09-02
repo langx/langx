@@ -5,7 +5,7 @@
       <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button id="add-lang-modal" color="primary" expand="block" size="large" slot="icon-only" shape="round">
+      <ion-button (click)="newLangBtn()" color="primary" expand="block" size="large" slot="icon-only" shape="round">
         <ion-icon name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -49,7 +49,7 @@
 <!-- MODALS start -->
 <!------------------>
 
-<!-- Country Modal -->
+<!-- Country Modal 
 <ion-modal
   #countryModal
   trigger="add-lang-modal"
@@ -68,8 +68,7 @@
     <ion-content class="ion-padding">
       <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search" (click)="countryModal.setCurrentBreakpoint(0.75)"></ion-searchbar>
       <ion-list>
-        <!--<ion-radio-group value="start" (ionChange)="countryChange($event)">-->
-        <ion-radio-group value="start">
+        <ion-radio-group value="start" (ionChange)="countryChange($event)">
           <ion-item *ngFor="let lang of languageData | customFilter: searchTerm">
             <ion-radio value="{{ lang?.code }}" labelPlacement="start">{{ lang?.name }}</ion-radio>
           </ion-item>
@@ -78,3 +77,4 @@
     </ion-content>
   </ng-template>
 </ion-modal>
+-->

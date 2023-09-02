@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { LanguagesPageRoutingModule } from './languages-routing.module';
 
 import { LanguagesPage } from './languages.page';
-import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
   imports: [
@@ -15,7 +14,6 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     FormsModule,
     IonicModule,
     LanguagesPageRoutingModule,
-    AppExtrasModule
   ],
   declarations: [LanguagesPage]
 })

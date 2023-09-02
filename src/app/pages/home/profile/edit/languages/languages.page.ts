@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { countryData, languagesData } from 'src/app/extras/data';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -9,15 +9,12 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class LanguagesPage implements OnInit {
 
-  searchTerm: string;
-  countryData = countryData;
-  languageData = languagesData;
-
   currentUser: any;
   studyLanguages: any;
 
   constructor(
     private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -29,5 +26,10 @@ export class LanguagesPage implements OnInit {
       this.currentUser = user;
       this.studyLanguages = this.currentUser.studyLanguages;
     });
+  }
+
+  newLangBtn() {
+    // console.log(this.currentUser.languagesArray);
+    this.router.navigate(['/home/profile/edit/languages/new'], { state: this.currentUser.languagesArray });
   }
 }
