@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { NewPageRoutingModule } from './new-routing.module';
 
 import { NewPage } from './new.page';
+import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NewPageRoutingModule
+    NewPageRoutingModule,
+    AppExtrasModule
   ],
   declarations: [NewPage]
 })
