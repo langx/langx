@@ -83,6 +83,16 @@ export class EditPage implements OnInit {
     this.router.navigate(['/home/profile/edit/languages']);
   }
 
+  deleteLanguage(language) {
+    this.isLoading = true;
+    this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(item => item !== language);
+    this.currentUser.languagesArray = this.currentUser.languagesArray.filter(item => item !== language);
+    this.authService.updateUserLanguageData(this.currentUser).then(() => {
+      this.presentToast('`language` Language deleted.');
+      this.isLoading = false;
+    });
+  }
+
   //
   // Present Toast
   //

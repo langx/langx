@@ -93,7 +93,7 @@
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline" slot="start" color="primary"></ion-icon>
           <ion-label>{{lang.name}}</ion-label>
           <ion-note>{{lang.nativeName}}</ion-note>
-          <ion-icon name="close-circle-outline" slot="end" color="danger" size="small" (click)="deletePP()"></ion-icon>
+          <ion-icon name="close-circle-outline" slot="end" color="danger" size="small" (click)="deleteLanguage(lang)"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
