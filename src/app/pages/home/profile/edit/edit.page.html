@@ -32,7 +32,7 @@
             <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
           </ion-thumbnail>
           <ion-label></ion-label>
-          <ion-icon name="close-circle-outline" slot="end" color="danger" (click)="deletePP()"></ion-icon>
+          <ion-icon name="close-circle-outline" slot="end" size="small" color="danger" (click)="deletePP()"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -86,13 +86,14 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list class="hasIcon">
+      <ion-list>
         <ion-item *ngFor="let lang of currentUser?.studyLanguages">
-          <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
-          <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
-          <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
+          <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline" slot="start" color="primary"></ion-icon>
+          <ion-icon *ngIf="lang.level == 2" name="battery-half-outline" slot="start" color="primary"></ion-icon>
+          <ion-icon *ngIf="lang.level == 3" name="battery-full-outline" slot="start" color="primary"></ion-icon>
           <ion-label>{{lang.name}}</ion-label>
           <ion-note>{{lang.nativeName}}</ion-note>
+          <ion-icon name="close-circle-outline" slot="end" color="danger" size="small" (click)="deletePP()"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -120,7 +121,7 @@
             <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
           </ion-thumbnail>
           <ion-label></ion-label>
-          <ion-icon name="close-circle-outline" slot="end" color="danger"></ion-icon>
+          <ion-icon name="close-circle-outline" slot="end" size="small" color="danger"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
