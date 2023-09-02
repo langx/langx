@@ -9,6 +9,8 @@ import { ApiService } from '../api/api.service';
 export class AuthService {
 
   public _uid = new BehaviorSubject<any>(null);
+
+  // TODO: not only aboutMe, but also other user data or all currentuserData
   public aboutMe = new BehaviorSubject<any>(null);
   currentUser: any;
   currentUserData: any;
