@@ -11,6 +11,7 @@ export class NewPage implements OnInit {
 
   searchTerm: string;
   languageData: any;
+  selectedLanguage: any;
 
   isLoading: boolean = false;
 
@@ -27,6 +28,7 @@ export class NewPage implements OnInit {
 
   onSubmit() {
     console.log('submit');
+    this.router.navigate(['/home/profile/edit/languages/new/next'], { state: this.selectedLanguage });
   }
 
 }
