@@ -37,8 +37,14 @@
         <ion-card-title>About Me</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-text *ngIf="!currentUser?.aboutMe">You can edit here your profile description.</ion-text>
-        <ion-text>{{currentUser?.aboutMe}}</ion-text>
+        <ion-item lines="none">
+          <ion-textarea
+            [autoGrow]="true"
+            readonly="true"
+            rows="3"
+            placeholder="You can edit here your profile description."
+            [value]="currentUser?.aboutMe"></ion-textarea>
+        </ion-item>
         <ion-list class="hasIcon">
           <ion-item>
             <ion-icon name="flag-outline"></ion-icon>

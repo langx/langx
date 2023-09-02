@@ -4,6 +4,7 @@ import { ChatService } from 'src/app/services/chat/chat.service';
 import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -25,8 +26,8 @@ export class ProfilePage implements OnInit {
   currentUser: any;
   isLoading: boolean = false;
 
-  studyLanguages$: any;
-  aboutMe$: any;
+  studyLanguages$: Subscription;
+  aboutMe$: Subscription;
 
   constructor(
     private router: Router,
@@ -44,19 +45,21 @@ export class ProfilePage implements OnInit {
     this.authService.getUserData().then(user => {
       this.currentUser = user;
       //console.log(this.currentUser);
-      this.aboutMe$ = this.authService.aboutMe.subscribe(aboutMe => {
-        if(aboutMe) {
-          this.currentUser.aboutMe = aboutMe;
-        }
-      });
-      this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
-        if(studyLanguages) {
-          this.currentUser.studyLanguages = studyLanguages;
-        }
-      });
-      //hideLoader();
-      this.isLoading = false;
     });
+
+    this.aboutMe$ = this.authService.aboutMe.subscribe(aboutMe => {
+      if(aboutMe) {
+        this.currentUser.aboutMe = aboutMe;
+      }
+    });
+    this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
+      if(studyLanguages) {
+        this.currentUser.studyLanguages = studyLanguages;
+      }
+    });
+
+    //hideLoader();
+    this.isLoading = false;
 
   }
 
