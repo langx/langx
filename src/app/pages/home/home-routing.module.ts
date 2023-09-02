@@ -51,6 +51,10 @@ const routes: Routes = [
     loadChildren: () => import('./profile/settings/appearance/appearance.module').then( m => m.AppearancePageModule)
   },
   {
+    path: 'profile/edit',
+    loadChildren: () => import('./profile/edit/edit.module').then( m => m.EditPageModule)
+  },
+  {
     path: 'filters',
     loadChildren: () => import('./community/filters/filters.module').then( m => m.FiltersPageModule)
   },

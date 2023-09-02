@@ -70,7 +70,7 @@ export class ProfilePage implements OnInit {
   };
 
   editProfile() {
-    console.log('edit profile clicked!');
+    this.router.navigate(['/', 'home', 'profile', 'edit']);
   }
   
   dismissModal() {
