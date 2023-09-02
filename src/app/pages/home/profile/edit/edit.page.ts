@@ -90,7 +90,7 @@ export class EditPage implements OnInit {
     this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(item => item !== language);
     this.currentUser.languagesArray = this.currentUser.languagesArray.filter(item => item !== language);
     this.authService.updateUserLanguageData(this.currentUser).then(() => {
-      this.presentToast('`language` Language deleted.');
+      this.presentToast('Language deleted.');
       this.isLoading = false;
     });
   }
