@@ -32,7 +32,7 @@
             <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
           </ion-thumbnail>
           <ion-label></ion-label>
-          <ion-icon name="close-circle-outline" slot="end" color="danger"></ion-icon>
+          <ion-icon name="close-circle-outline" slot="end" color="danger" (click)="deletePP()"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
