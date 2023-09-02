@@ -34,10 +34,18 @@ export class EditPage implements OnInit {
       if(this.currentUser.aboutMe) {
         this.textAreaValue = this.currentUser.aboutMe;
       }
-      //console.log(this.currentUser);
       //hideLoader();
       this.isLoading = false;
+      this.authService.studyLanguages.subscribe(studyLanguages => {
+        if(studyLanguages) {
+          this.currentUser.studyLanguages = studyLanguages;
+        }
+      });
     })
+  }
+
+  ngOnDestroy() {
+    this.authService.studyLanguages.unsubscribe();
   }
 
   //
