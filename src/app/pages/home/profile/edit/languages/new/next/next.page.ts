@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-next',
@@ -7,9 +8,27 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NextPage implements OnInit {
 
-  constructor() { }
+  isLoading: boolean = false;
+  selectedLanguage: any;
+
+  constructor(
+    private router: Router,
+  ) { }
 
   ngOnInit() {
+    const selectedLanguage: any = this.router.getCurrentNavigation().extras.state;
+    this.selectedLanguage = selectedLanguage;
+    console.log('selectedLanguage:' + selectedLanguage.code);
+  }
+
+  radioChecked(event, selectedLanguage) {
+    this.selectedLanguage.level = event.detail.value;
+    console.log('radioChecked:' + selectedLanguage);
+
+  }
+  
+  onSubmit() {
+
   }
 
 }
