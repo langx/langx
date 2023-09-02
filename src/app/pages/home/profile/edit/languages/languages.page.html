@@ -1,13 +1,45 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>languages</ion-title>
+    <ion-title>Edit Languages</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid">Add
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">languages</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <ion-card *ngFor="let item of studyLanguages">
+    <ion-card-header>
+      <ion-card-title>{{item?.name}}</ion-card-title>
+      <ion-card-subtitle>{{item?.nativeName}}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      Choice your level of your {{item?.name}}.
+    </ion-card-content>
+     <ion-grid>
+      <!--<ion-radio-group [allowEmptySelection]="true" (ionChange)="radioChecked($event, item)">-->
+      <ion-radio-group [allowEmptySelection]="true" [value]="item.level">
+        <ion-list class="hasIcon">
+          <ion-item>
+            <ion-icon name="battery-dead-outline"></ion-icon>
+            <ion-radio value="1"> Beginner</ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="battery-half-outline"></ion-icon> 
+            <ion-radio value="2">Intermediate</ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-icon name="battery-full-outline"></ion-icon>
+            <ion-radio value="3">Fluent</ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-radio-group>
+    </ion-grid>
+  </ion-card>
+
 </ion-content>
