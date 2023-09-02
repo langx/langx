@@ -35,8 +35,6 @@ export class NextPage implements OnInit {
     });
   }
 
-
-
   radioChecked(event, selectedLanguage) {
     this.selectedLanguage.level = event.detail.value;
     console.log('radioChecked:' + selectedLanguage);
