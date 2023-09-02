@@ -225,4 +225,18 @@ export class AuthService {
     }
   }
 
+  async updateUserStudyLanguagesData(currentUser) {
+    let id = this.getId();
+    //console.log('id:', id, 'formValue:', formValue);
+    try {
+      const data = {
+        studyLanguages: currentUser?.studyLanguages,
+        languagesArray: currentUser?.languagesArray,
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
 }
