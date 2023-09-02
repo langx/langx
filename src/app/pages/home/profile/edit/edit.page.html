@@ -47,7 +47,7 @@
           </ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button size="small">Save</ion-button>
+              <ion-button (click)="saveAboutMe()" [disabled]="" size="small">Save</ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>
@@ -57,11 +57,14 @@
       <ion-list>
         <ion-item lines="none">
           <ion-textarea
+            (ionBlur)="onBlurAboutMe($event)"
             [autoGrow]="true"
             [counter]="true"
             maxlength="700"
+            rows="5"
             helperText="hobbies, interests, etc."
-            placeholder="You can edit here your profile description."></ion-textarea>
+            placeholder="You can edit here your profile description."
+            [value]="textAreaValue"></ion-textarea>
         </ion-item>
       </ion-list>
     </ion-card-content>
