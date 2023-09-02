@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -17,7 +18,8 @@ export class EditPage implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -71,6 +73,7 @@ export class EditPage implements OnInit {
 
   editLanguages() {
     this.presentToast('Coming soon.');
+    this.router.navigate(['/home/profile/edit/languages']);
   }
 
   //
