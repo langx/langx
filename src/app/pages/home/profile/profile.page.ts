@@ -43,8 +43,17 @@ export class ProfilePage implements OnInit {
       //console.log(this.currentUser);
       //hideLoader();
       this.isLoading = false;
-    })
-  } 
+    });
+    this.authService.aboutMe.subscribe(aboutMe => {
+      if(aboutMe) {
+        this.currentUser.aboutMe = aboutMe;
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.authService.aboutMe.unsubscribe();
+  }
 
   async logout(){
     try {

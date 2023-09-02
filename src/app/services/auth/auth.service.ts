@@ -9,6 +9,7 @@ import { ApiService } from '../api/api.service';
 export class AuthService {
 
   public _uid = new BehaviorSubject<any>(null);
+  public aboutMe = new BehaviorSubject<any>(null);
   currentUser: any;
   currentUserData: any;
 
@@ -216,6 +217,7 @@ export class AuthService {
         aboutMe: currentUser?.aboutMe,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
+      this.aboutMe.next(currentUser?.aboutMe);
     } catch(e) {
       throw(e);
     }
