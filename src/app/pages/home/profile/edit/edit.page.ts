@@ -17,6 +17,7 @@ export class EditPage implements OnInit {
   textAreaDisabled: boolean = true;
 
   studyLanguages$: any;
+  aboutMe$: any;
 
   constructor(
     private authService: AuthService,
@@ -33,16 +34,21 @@ export class EditPage implements OnInit {
     this.isLoading = true;
     this.authService.getUserData().then(user => {
       this.currentUser = user;
-      if(this.currentUser.aboutMe) {
-        this.textAreaValue = this.currentUser.aboutMe;
-      }
-      //hideLoader();
-      this.isLoading = false;
+      this.textAreaValue = this.currentUser.aboutMe;
+      this.aboutMe$ = this.authService.aboutMe.subscribe(aboutMe => {
+        if(aboutMe) {
+          this.currentUser.aboutMe = aboutMe;
+          this.textAreaValue = aboutMe;
+          this.textAreaDisabled = true;
+        }
+      });
       this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
         if(studyLanguages) {
           this.currentUser.studyLanguages = studyLanguages;
         }
       });
+    //hideLoader();
+    this.isLoading = false;
     })
   }
 
