@@ -14,8 +14,8 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 
 export class FiltersPage implements OnInit {
 
-  countryData = countryData;
   searchTerm: string;
+  countryData = countryData;
 
   isLoading: boolean = false;
   currentUserData: any;
