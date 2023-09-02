@@ -41,18 +41,25 @@ export class ProfilePage implements OnInit {
     this.authService.getUserData().then(user => {
       this.currentUser = user;
       //console.log(this.currentUser);
+      this.authService.aboutMe.subscribe(aboutMe => {
+        if(aboutMe) {
+          this.currentUser.aboutMe = aboutMe;
+        }
+      });
+      this.authService.studyLanguages.subscribe(studyLanguages => {
+        if(studyLanguages) {
+          this.currentUser.studyLanguages = studyLanguages;
+        }
+      });
       //hideLoader();
       this.isLoading = false;
     });
-    this.authService.aboutMe.subscribe(aboutMe => {
-      if(aboutMe) {
-        this.currentUser.aboutMe = aboutMe;
-      }
-    });
+
   }
 
   ngOnDestroy() {
     this.authService.aboutMe.unsubscribe();
+    this.authService.studyLanguages.unsubscribe();
   }
 
   async logout(){

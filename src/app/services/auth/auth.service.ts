@@ -12,6 +12,7 @@ export class AuthService {
 
   // TODO: not only aboutMe, but also other user data or all currentuserData
   public aboutMe = new BehaviorSubject<any>(null);
+  public studyLanguages= new BehaviorSubject<any>(null);
   currentUser: any;
   currentUserData: any;
 
@@ -234,6 +235,7 @@ export class AuthService {
         languagesArray: currentUser?.languagesArray,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
+      this.studyLanguages.next(currentUser?.studyLanguages);
     } catch(e) {
       throw(e);
     }
