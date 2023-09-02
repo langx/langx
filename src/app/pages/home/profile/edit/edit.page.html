@@ -12,15 +12,25 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Profile Picture</ion-card-title>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>
+            Profile Picture
+          </ion-col>
+          <ion-col>
+            <ion-card-subtitle style="text-align: end;"><ion-button size="small">Edit</ion-button></ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item detail="true">
+        <ion-item lines="none">
           <ion-thumbnail slot="start">
             <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
           </ion-thumbnail>
-          <ion-label>Edit</ion-label>
+          <ion-label></ion-label>
+          <ion-icon name="close-circle-outline" slot="end" color="danger"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -28,11 +38,20 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>About Me</ion-card-title>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>
+            About Me
+          </ion-col>
+          <ion-col>
+            <ion-card-subtitle style="text-align: end;"><ion-button size="small">Save</ion-button></ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item>
+        <ion-item lines="none">
           <ion-textarea
             [autoGrow]="true"
             [counter]="true"
@@ -65,6 +84,32 @@
           <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
           <ion-label>{{lang.name}}</ion-label>
           <ion-note>{{lang.nativeName}}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>
+            Other Pictures
+          </ion-col>
+          <ion-col>
+            <ion-card-subtitle style="text-align: end;"><ion-button size="small">Add</ion-button></ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-thumbnail slot="start">
+            <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
+          </ion-thumbnail>
+          <ion-label></ion-label>
+          <ion-icon name="close-circle-outline" slot="end" color="danger"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
