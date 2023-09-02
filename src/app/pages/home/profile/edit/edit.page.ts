@@ -13,6 +13,7 @@ export class EditPage implements OnInit {
   currentUser: any;
 
   textAreaValue: string = '';
+  textAreaDisabled: boolean = true;
 
   constructor(
     private authService: AuthService,
@@ -37,7 +38,10 @@ export class EditPage implements OnInit {
     })
   }
 
-  onBlurAboutMe(event) {
+  ionInputAboutMe(event) {
+    if(event.target.value != this.currentUser.aboutMe) {
+      this.textAreaDisabled = false;
+    } else { this.textAreaDisabled = true; }
     this.currentUser.aboutMe = event.target.value;
   }
 
