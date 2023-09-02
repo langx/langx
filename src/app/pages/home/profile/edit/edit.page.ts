@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -16,8 +17,8 @@ export class EditPage implements OnInit {
   textAreaValue: string = '';
   textAreaDisabled: boolean = true;
 
-  studyLanguages$: any;
-  aboutMe$: any;
+  studyLanguages$: Subscription;
+  aboutMe$: Subscription;
 
   constructor(
     private authService: AuthService,
