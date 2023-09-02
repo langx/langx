@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { languagesData } from 'src/app/extras/data';
 
 @Component({
@@ -16,7 +17,8 @@ export class NewPage implements OnInit {
   isLoading: boolean = false;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -28,7 +30,29 @@ export class NewPage implements OnInit {
 
   onSubmit() {
     console.log('submit');
+    if(!this.selectedLanguage) {
+      this.presentToast('Please select a language.');
+      return;
+    }
     this.router.navigate(['/home/profile/edit/languages/new/next'], { state: this.selectedLanguage });
+  }
+
+  changeLang(event) {
+    this.selectedLanguage = event.target.value;
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
 }

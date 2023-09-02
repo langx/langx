@@ -10,8 +10,7 @@
 <ion-content [fullscreen]="true" class="ion-padding">
   <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search"></ion-searchbar>
   <ion-list>
-    <!--<ion-radio-group value="start" (ionChange)="countryChange($event)">-->
-    <ion-radio-group value="start">
+    <ion-radio-group value="start" (ionChange)="changeLang($event)">
       <ion-item *ngFor="let lang of languageData | customFilter: searchTerm">
         <ion-radio value="{{ lang?.code }}" labelPlacement="start">{{ lang?.name }}</ion-radio>
       </ion-item>
