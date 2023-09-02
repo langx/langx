@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>New Language</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search"></ion-searchbar>
+  <ion-list>
+    <ion-radio-group value="start" (ionChange)="changeLang($event)">
+      <ion-item *ngFor="let lang of languageData | customFilter: searchTerm">
+        <ion-radio value="{{ lang?.code }}" labelPlacement="start">{{ lang?.name }}</ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
+  <ion-row>
+    <ion-col>
+      <ion-button *ngIf="!isLoading" (click)="onSubmit()" color="primary" expand="block">Next</ion-button>
+      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -9,6 +9,10 @@ import { ApiService } from '../api/api.service';
 export class AuthService {
 
   public _uid = new BehaviorSubject<any>(null);
+
+  // TODO: not only aboutMe, but also other user data or all currentuserData
+  public aboutMe = new BehaviorSubject<any>(null);
+  public studyLanguages= new BehaviorSubject<any>(null);
   currentUser: any;
   currentUserData: any;
 
@@ -203,6 +207,35 @@ export class AuthService {
         completeLanguages: true,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
+  async updateUserAboutData(currentUser) {
+    let id = this.getId();
+    //console.log('id:', id, 'formValue:', formValue);
+    try {
+      const data = {
+        aboutMe: currentUser?.aboutMe,
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+      this.aboutMe.next(currentUser?.aboutMe);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
+  async updateUserStudyLanguagesData(currentUser) {
+    let id = this.getId();
+    //console.log('id:', id, 'formValue:', formValue);
+    try {
+      const data = {
+        studyLanguages: currentUser?.studyLanguages,
+        languagesArray: currentUser?.languagesArray,
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+      this.studyLanguages.next(currentUser?.studyLanguages);
     } catch(e) {
       throw(e);
     }
