@@ -49,6 +49,14 @@ export class EditPage implements OnInit {
     })
   }
 
+  deletePP() {
+    this.presentToast('At least one profile picture required.');
+  }
+
+  //
+  // Present Toast
+  //
+
   async presentToast(msg: string) {
     const toast = await this.toastController.create({
       message: msg,
