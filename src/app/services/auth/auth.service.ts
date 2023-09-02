@@ -208,4 +208,17 @@ export class AuthService {
     }
   }
 
+  async updateUserAboutData(currentUser) {
+    let id = this.getId();
+    //console.log('id:', id, 'formValue:', formValue);
+    try {
+      const data = {
+        aboutMe: currentUser?.aboutMe,
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
 }
