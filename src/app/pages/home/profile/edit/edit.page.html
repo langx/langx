@@ -1,13 +1,47 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>edit</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Profile</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">edit</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Profile Picture</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item detail="true">
+          <ion-thumbnail slot="start">
+            <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
+          </ion-thumbnail>
+          <ion-label>Edit</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>About Me</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-textarea
+            [autoGrow]="true"
+            [counter]="true"
+            maxlength="700"
+            helperText="hobbies, interests, etc."
+            placeholder="You can edit here your profile description."></ion-textarea>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
