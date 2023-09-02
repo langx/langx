@@ -29,7 +29,7 @@ export class NewPage implements OnInit {
   }
 
   onSubmit() {
-    console.log('submit');
+    console.log('submit:' + this.selectedLanguage);
     if(!this.selectedLanguage) {
       this.presentToast('Please select a language.');
       return;
@@ -38,7 +38,12 @@ export class NewPage implements OnInit {
   }
 
   changeLang(event) {
-    this.selectedLanguage = event.target.value;
+    const val = event.target.value;
+    languagesData.find((language) => {
+      if(language.code === val) {
+        this.selectedLanguage = language;
+      }
+    });
   }
 
   //
