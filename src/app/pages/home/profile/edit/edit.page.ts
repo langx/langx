@@ -22,6 +22,8 @@ export class EditPage implements OnInit {
 
   cUser : Subscription;
 
+  uploadedImageURL: string = '';
+
   constructor(
     private authService: AuthService,
     private toastController: ToastController,
@@ -60,6 +62,10 @@ export class EditPage implements OnInit {
   async changePP() {
     this.isLoading = true;
     await this.takePictureOrUploadImage();
+    if(this.uploadedImageURL != '') {
+      this.currentUser.photo = this.uploadedImageURL;
+      this.uploadedImageURL = '';
+    }
     await this.authService.updateUserProfilePictureURL(this.currentUser);
     this.presentToast('Profile Picture Updated.');
     this.isLoading = false;
@@ -68,6 +74,25 @@ export class EditPage implements OnInit {
   deletePP() {
     this.presentToast('At least one profile picture required.');
   }
+
+  /*
+  async addOtherPhotos() {
+    this.isLoading = true;
+    await this.takePictureOrUploadImage();
+    await this.authService.updateUserOtherImages(this.currentUser);
+    this.presentToast('Other Image Added.');
+    this.isLoading = false;
+  }
+
+  deleteOtherPhotos(image) {
+    this.isLoading = true;
+    this.currentUser.otherImages = this.currentUser.otherImages.filter(item => item !== image);
+    this.authService.updateUserOtherImages(this.currentUser).then(() => {
+      this.presentToast('Other Image Deleted.');
+      this.isLoading = false;
+    });
+  }
+  */
 
   async takePictureOrUploadImage() {
     try {
@@ -83,15 +108,14 @@ export class EditPage implements OnInit {
         const blob = this.dataURLtoBlob(image.dataUrl);
         const url = await this.uploadImage(blob, image);
         console.log('url: ', url);
-        this.currentUser.photo = url;
+        this.uploadedImageURL = url;
       }).catch((error) => {
         console.log(error);
       })
-      
+
     } catch (e) {
       console.log(e); 
     }
-      
   }
 
   dataURLtoBlob(dataurl: any) {
