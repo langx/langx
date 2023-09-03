@@ -248,4 +248,17 @@ export class AuthService {
     }
   }
 
+  async updateUserProfilePictureURL(currentUser) {
+    let id = this.getId();
+    try {
+      const data = {
+        photo: currentUser?.photo
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+      this._cUser.next(currentUser);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
 }
