@@ -32,19 +32,17 @@ export class EditPage implements OnInit {
   getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    this.authService.getUserData().then(user => {
-      this.currentUser = user;
-      this.textAreaValue = this.currentUser.aboutMe;
-      this.cUser = this.authService._cUser.subscribe(cUser => {
-        if(cUser) {
-          this.currentUser = cUser;
-          this.textAreaValue = cUser.aboutMe;
-          this.textAreaDisabled = true;
-        }
-      });
+    this.authService.getUserData();
+    
+    this.cUser = this.authService._cUser.subscribe(cUser => {
+      if(cUser) {
+        this.currentUser = cUser;
+        this.textAreaValue = cUser.aboutMe;
+        this.textAreaDisabled = true;
+      }
+    });
     //hideLoader();
     this.isLoading = false;
-    })
   }
 
   ngOnDestroy() {
