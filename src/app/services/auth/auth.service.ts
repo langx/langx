@@ -165,7 +165,6 @@ export class AuthService {
       const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
       if(docSnap?.exists()) {
         this._cUser.next(docSnap.data());
-        console.log('docSnap.data():', docSnap.data());
         return docSnap.data();
       } else {
         return null;
