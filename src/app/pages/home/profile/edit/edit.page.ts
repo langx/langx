@@ -67,6 +67,7 @@ export class EditPage implements OnInit {
     try {
       if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
+      this.isLoading = true;
       const image = await Camera.getPhoto({
         quality: 100,
         allowEditing: true,
@@ -80,6 +81,7 @@ export class EditPage implements OnInit {
         console.log('url: ', url);
         this.currentUser.photo = url;
         await this.authService.updateUserProfilePictureURL(this.currentUser);
+        this.isLoading = false;
       }).catch((error) => {
         console.log(error);
       })
