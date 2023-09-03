@@ -57,6 +57,14 @@ export class EditPage implements OnInit {
   // To Upload Profile and Other Images
   //
 
+  async changePP() {
+    this.isLoading = true;
+    await this.takePictureOrUploadImage();
+    await this.authService.updateUserProfilePictureURL(this.currentUser);
+    this.presentToast('Profile Picture Updated.');
+    this.isLoading = false;
+  }
+
   deletePP() {
     this.presentToast('At least one profile picture required.');
   }
@@ -65,7 +73,6 @@ export class EditPage implements OnInit {
     try {
       if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
-      this.isLoading = true;
       const image = await Camera.getPhoto({
         quality: 100,
         allowEditing: true,
@@ -77,9 +84,6 @@ export class EditPage implements OnInit {
         const url = await this.uploadImage(blob, image);
         console.log('url: ', url);
         this.currentUser.photo = url;
-        await this.authService.updateUserProfilePictureURL(this.currentUser);
-        this.presentToast('Profile Picture Updated.');
-        this.isLoading = false;
       }).catch((error) => {
         console.log(error);
       })
