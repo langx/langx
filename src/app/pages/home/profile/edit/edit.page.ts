@@ -17,8 +17,6 @@ export class EditPage implements OnInit {
   isLoading: boolean = false;
   currentUser: any;
 
-  profileImageURL: string = null;
-
   textAreaValue: string = '';
   textAreaDisabled: boolean = true;
 
@@ -75,7 +73,6 @@ export class EditPage implements OnInit {
         resultType: CameraResultType.DataUrl
       }).then(async (image) => {
         console.log('image:', image);
-        this.profileImageURL = image.dataUrl;
         const blob = this.dataURLtoBlob(image.dataUrl);
         const url = await this.uploadImage(blob, image);
         console.log('url: ', url);
