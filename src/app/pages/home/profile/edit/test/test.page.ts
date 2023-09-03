@@ -20,7 +20,7 @@ export class TestPage implements OnInit {
   ngOnInit() {
   }
 
-  async takePicture() {
+  async takePictureOrUploadImage() {
     try {
       if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
