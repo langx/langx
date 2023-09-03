@@ -19,7 +19,7 @@
           </ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button size="small">Edit</ion-button>
+              <ion-button (click)="takePictureOrUploadImage()" size="small">Edit</ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>
@@ -27,6 +27,13 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
+        <ion-item lines="none">
+          <ion-thumbnail slot="start">
+            <img [src]="profileImageURL" alt="Profile Picture" referrerpolicy="no-referrer">
+          </ion-thumbnail>
+          <ion-label></ion-label>
+          <ion-icon name="close-circle-outline" slot="end" size="small" color="danger" (click)="deletePP()"></ion-icon>
+        </ion-item>
         <ion-item lines="none">
           <ion-thumbnail slot="start">
             <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
