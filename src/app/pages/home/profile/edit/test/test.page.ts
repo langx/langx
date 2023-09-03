@@ -26,7 +26,7 @@ export class TestPage implements OnInit {
 
       const image = await Camera.getPhoto({
         quality: 100,
-        // allowEditing: false,
+        allowEditing: true,
         source: CameraSource.Prompt,
         resultType: CameraResultType.DataUrl
       }).then(async (image) => {
