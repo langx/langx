@@ -9,10 +9,9 @@ import { ApiService } from '../api/api.service';
 export class AuthService {
 
   public _uid = new BehaviorSubject<any>(null);
+  public _cUser = new BehaviorSubject<any>(null);
 
   // TODO: not only aboutMe, but also other user data or all currentuserData
-  public aboutMe = new BehaviorSubject<any>(null);
-  public studyLanguages= new BehaviorSubject<any>(null);
   currentUser: any;
   currentUserData: any;
 
@@ -50,6 +49,10 @@ export class AuthService {
     this._uid.next(uid);
   }
 
+  setCurrentUserData(cUser) {
+    this._cUser.next(cUser);
+  }
+
   randomIntFromInterval = (min: number,max: number) => { return Math.floor(Math.random() * (max-min+1) +min) }
 
   async register(formValue) {
@@ -76,6 +79,7 @@ export class AuthService {
       };
       // set user data while registering
       this.setUserData(registeredUser.user.uid);
+      this.setCurrentUserData(registeredUser);
       return userData;
     } catch(e) {
       throw(e);
@@ -116,6 +120,7 @@ export class AuthService {
         };
         // set user data while registering
         this.setUserData(user.uid);
+        this.setCurrentUserData(user);
         return user.uid; 
       }
     } catch (error) {
@@ -136,6 +141,7 @@ export class AuthService {
     try {
       await this.fireAuth.signOut();
       this.setUserData(null);
+      this.setCurrentUserData(null);
       this.currentUser = null;
       return true;
     } catch(e) {
@@ -158,12 +164,13 @@ export class AuthService {
       let uid = this.getId();
       const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
       if(docSnap?.exists()) {
+        this._cUser.next(docSnap.data());
         return docSnap.data();
       } else {
         return null;
       }
     } else {
-      // return this.currentUserData;
+      this._cUser.next(this.currentUserData);
       return Promise.resolve(this.currentUserData);
     }
   }
@@ -220,7 +227,7 @@ export class AuthService {
         aboutMe: currentUser?.aboutMe,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
-      this.aboutMe.next(currentUser?.aboutMe);
+      this._cUser.next(currentUser);
     } catch(e) {
       throw(e);
     }
@@ -235,7 +242,7 @@ export class AuthService {
         languagesArray: currentUser?.languagesArray,
       }
       await this.apiService.updateDocument(`users/${id}`, data);
-      this.studyLanguages.next(currentUser?.studyLanguages);
+      this._cUser.next(currentUser);
     } catch(e) {
       throw(e);
     }

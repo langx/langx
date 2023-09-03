@@ -17,8 +17,7 @@ export class EditPage implements OnInit {
   textAreaValue: string = '';
   textAreaDisabled: boolean = true;
 
-  studyLanguages$: Subscription;
-  aboutMe$: Subscription;
+  cUser : Subscription;
 
   constructor(
     private authService: AuthService,
@@ -33,28 +32,21 @@ export class EditPage implements OnInit {
   getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    this.authService.getUserData().then(user => {
-      this.currentUser = user;
-      this.textAreaValue = this.currentUser.aboutMe;
-      this.aboutMe$ = this.authService.aboutMe.subscribe(aboutMe => {
-        if(aboutMe) {
-          this.currentUser.aboutMe = aboutMe;
-          this.textAreaValue = aboutMe;
-          this.textAreaDisabled = true;
-        }
-      });
-      this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
-        if(studyLanguages) {
-          this.currentUser.studyLanguages = studyLanguages;
-        }
-      });
+    this.authService.getUserData();
+    
+    this.cUser = this.authService._cUser.subscribe(cUser => {
+      if(cUser) {
+        this.currentUser = cUser;
+        this.textAreaValue = cUser.aboutMe;
+        this.textAreaDisabled = true;
+      }
+    });
     //hideLoader();
     this.isLoading = false;
-    })
   }
 
   ngOnDestroy() {
-    this.studyLanguages$.unsubscribe();
+    this.cUser.unsubscribe();
   }
 
   //
@@ -96,7 +88,7 @@ export class EditPage implements OnInit {
     this.isLoading = true;
     this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(item => item !== language);
     this.currentUser.languagesArray = this.currentUser.languagesArray.filter(item => item !== language.code);
-    this.authService.updateUserLanguageData(this.currentUser).then(() => {
+    this.authService.updateUserStudyLanguagesData(this.currentUser).then(() => {
       this.presentToast('Language deleted.');
       this.isLoading = false;
     });
