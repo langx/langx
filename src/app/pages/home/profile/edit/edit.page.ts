@@ -17,8 +17,7 @@ export class EditPage implements OnInit {
   textAreaValue: string = '';
   textAreaDisabled: boolean = true;
 
-  studyLanguages$: Subscription;
-  aboutMe$: Subscription;
+  cUser : Subscription;
 
   constructor(
     private authService: AuthService,
@@ -36,16 +35,11 @@ export class EditPage implements OnInit {
     this.authService.getUserData().then(user => {
       this.currentUser = user;
       this.textAreaValue = this.currentUser.aboutMe;
-      this.aboutMe$ = this.authService.aboutMe.subscribe(aboutMe => {
-        if(aboutMe) {
-          this.currentUser.aboutMe = aboutMe;
-          this.textAreaValue = aboutMe;
+      this.cUser = this.authService._cUser.subscribe(cUser => {
+        if(cUser) {
+          this.currentUser = cUser;
+          this.textAreaValue = cUser.aboutMe;
           this.textAreaDisabled = true;
-        }
-      });
-      this.studyLanguages$ = this.authService.studyLanguages.subscribe(studyLanguages => {
-        if(studyLanguages) {
-          this.currentUser.studyLanguages = studyLanguages;
         }
       });
     //hideLoader();
@@ -54,7 +48,7 @@ export class EditPage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.studyLanguages$.unsubscribe();
+    this.cUser.unsubscribe();
   }
 
   //
