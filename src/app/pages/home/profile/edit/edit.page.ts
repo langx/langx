@@ -78,6 +78,8 @@ export class EditPage implements OnInit {
         const blob = this.dataURLtoBlob(image.dataUrl);
         const url = await this.uploadImage(blob, image);
         console.log('url: ', url);
+        this.currentUser.photo = url;
+        await this.authService.updateUserProfilePictureURL(this.currentUser);
       }).catch((error) => {
         console.log(error);
       })
