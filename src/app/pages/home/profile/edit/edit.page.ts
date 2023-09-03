@@ -78,6 +78,7 @@ export class EditPage implements OnInit {
         console.log('url: ', url);
         this.currentUser.photo = url;
         await this.authService.updateUserProfilePictureURL(this.currentUser);
+        this.presentToast('Profile Picture Updated.');
         this.isLoading = false;
       }).catch((error) => {
         console.log(error);
