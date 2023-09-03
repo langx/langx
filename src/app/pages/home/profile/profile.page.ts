@@ -38,16 +38,14 @@ export class ProfilePage implements OnInit {
     this.getProfileInfo();
   }
 
-  getProfileInfo() {
+  async getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    this.authService.getUserData().then(user => {
-      this.currentUser = user;
-      //console.log(this.currentUser);
-    });
+    await this.authService.getUserData();
 
     this.cUser = this.authService._cUser.subscribe(cUser => {
       if(cUser) {
+        console.log(cUser.uid)
         this.currentUser = cUser;
       }
     });

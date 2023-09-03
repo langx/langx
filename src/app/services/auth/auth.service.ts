@@ -164,12 +164,14 @@ export class AuthService {
       let uid = this.getId();
       const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
       if(docSnap?.exists()) {
+        this._cUser.next(docSnap.data());
+        console.log('docSnap.data():', docSnap.data());
         return docSnap.data();
       } else {
         return null;
       }
     } else {
-      // return this.currentUserData;
+      this._cUser.next(this.currentUserData);
       return Promise.resolve(this.currentUserData);
     }
   }
