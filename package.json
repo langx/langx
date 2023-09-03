@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@capacitor/app": "5.0.6",
+    "@capacitor/camera": "^5.0.7",
     "@capacitor/core": "5.2.2",
     "@capacitor/haptics": "5.0.6",
     "@capacitor/keyboard": "5.0.6",
