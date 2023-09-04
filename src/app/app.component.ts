@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { StorageService } from './services/storage/storage.service';
+import { register } from 'swiper/element/bundle';
+
+register();
 
 @Component({
   selector: 'app-root',
