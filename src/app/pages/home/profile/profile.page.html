@@ -102,21 +102,25 @@
         <ion-card-subtitle></ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-grid>
-          <ion-row>
-            <ion-col *ngFor="let photo of currentUser?.otherPhotos">
-              <img src="{{photo}}" alt="Profile Picture" referrerpolicy="no-referrer">
-            </ion-col>
-          </ion-row>
-        </ion-grid>
+
+        <swiper-container
+        [loop]="false"
+        [slidesPerView]="1.4"
+        [spaceBetween]="15"
+        [centeredSlides]="true"
+        [initialSlide]="1"
+        [pagination]="true"
+        [zoom]="true">
+          <swiper-slide *ngFor="let photo of currentUser?.otherPhotos">
+            <div class="swiper-zoom-container">
+              <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
+            </div>
+          </swiper-slide>
+        </swiper-container>
+
       </ion-card-content>
     </ion-card>
 
-    <swiper-container>
-      <swiper-slide>Slide 1</swiper-slide>
-      <swiper-slide>Slide 2</swiper-slide>
-      <swiper-slide>Slide 3</swiper-slide>
-    </swiper-container>
 
 </ion-content>
 
