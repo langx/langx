@@ -33,6 +33,7 @@
     "@ionic/storage-angular": "^4.0.0",
     "ionicons": "^7.1.2",
     "rxjs": "~7.8.0",
+    "swiper": "^10.2.0",
     "tslib": "^2.6.2",
     "zone.js": "^0.13.1"
   },
