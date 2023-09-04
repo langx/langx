@@ -93,14 +93,9 @@
       <ion-card-content>
         <ion-grid>
           <ion-row>
-            <ion-col><img src="https://i.pravatar.cc/330" alt="Profile Picture" referrerpolicy="no-referrer"></ion-col>
-            <ion-col><img src="https://i.pravatar.cc/331" alt="Profile Picture" referrerpolicy="no-referrer"></ion-col>
-            <ion-col><img src="https://i.pravatar.cc/332" alt="Profile Picture" referrerpolicy="no-referrer"></ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col><img src="https://i.pravatar.cc/333" alt="Profile Picture" referrerpolicy="no-referrer"></ion-col>
-            <ion-col><img src="https://i.pravatar.cc/334" alt="Profile Picture" referrerpolicy="no-referrer"></ion-col>
-            <ion-col><img src="https://i.pravatar.cc/335" alt="Profile Picture" referrerpolicy="no-referrer"></ion-col>
+            <ion-col *ngFor="let photo of user?.otherPhotos">
+              <img src="{{photo}}" alt="Profile Picture" referrerpolicy="no-referrer">
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-card-content>
