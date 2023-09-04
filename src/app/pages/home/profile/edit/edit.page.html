@@ -19,7 +19,7 @@
           </ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button size="small">Edit</ion-button>
+              <ion-button (click)="changePP()" [disabled]="isLoading" size="small">Change</ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>
@@ -108,7 +108,7 @@
           </ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button size="small">Add</ion-button>
+              <ion-button (click)="addOtherPhotos()" [disabled]="isLoading" size="small">Add</ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>
@@ -116,12 +116,12 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item>
+        <ion-item *ngFor="let photo of currentUser?.otherPhotos">
           <ion-thumbnail slot="start">
-            <img [src]="currentUser?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
+            <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
           </ion-thumbnail>
           <ion-label></ion-label>
-          <ion-icon name="close-circle-outline" slot="end" size="small" color="danger"></ion-icon>
+          <ion-icon (click)="deleteOtherPhotos(photo)" name="close-circle-outline" slot="end" size="small" color="danger"></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>

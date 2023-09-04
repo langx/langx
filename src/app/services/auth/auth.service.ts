@@ -71,7 +71,13 @@ export class AuthService {
         lastLogin: new Date(),
         lastSeen: new Date(),
         online: true,
-        emailVerified: false
+        emailVerified: false,
+        completeLanguages: false,
+        completeProfile: false,
+        googleVerified: true,
+        languagesArray: [],
+        otherPhotos: [],
+
       }
       await this.apiService.setDocument(`users/${registeredUser.user.uid}`, data);
       const userData = {
@@ -113,6 +119,8 @@ export class AuthService {
           completeLanguages: false,
           completeProfile: false,
           googleVerified: true,
+          languagesArray: [],
+          otherPhotos: [],
         }
         await this.apiService.setDocument(`users/${user.uid}`, data);
         const userData = {
@@ -240,6 +248,32 @@ export class AuthService {
       const data = {
         studyLanguages: currentUser?.studyLanguages,
         languagesArray: currentUser?.languagesArray,
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+      this._cUser.next(currentUser);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
+  async updateUserProfilePictureURL(currentUser) {
+    let id = this.getId();
+    try {
+      const data = {
+        photo: currentUser?.photo
+      }
+      await this.apiService.updateDocument(`users/${id}`, data);
+      this._cUser.next(currentUser);
+    } catch(e) {
+      throw(e);
+    }
+  }
+
+  async updateUserOtherPhotos(currentUser) {
+    let id = this.getId();
+    try {
+      const data = {
+        otherPhotos: currentUser.otherPhotos
       }
       await this.apiService.updateDocument(`users/${id}`, data);
       this._cUser.next(currentUser);

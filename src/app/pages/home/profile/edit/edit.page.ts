@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
 import { Router } from '@angular/router';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
 import { ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -19,10 +22,13 @@ export class EditPage implements OnInit {
 
   cUser : Subscription;
 
+  uploadedImageURL: string = '';
+
   constructor(
     private authService: AuthService,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
+    private storage: Storage
   ) { }
 
   ngOnInit() {
@@ -50,11 +56,93 @@ export class EditPage implements OnInit {
   }
 
   //
-  // Edit PP
+  // To Upload Profile and Other Images
   //
+
+  async changePP() {
+    this.isLoading = true;
+    await this.takePictureOrUploadImage();
+    if(this.uploadedImageURL != '') {
+      this.currentUser.photo = this.uploadedImageURL;
+      this.uploadedImageURL = '';
+    }
+    await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
+      this.presentToast('Profile Picture Updated.');
+      this.isLoading = false;
+    });
+  }
 
   deletePP() {
     this.presentToast('At least one profile picture required.');
+  }
+
+  async addOtherPhotos() {
+    this.isLoading = true;
+    await this.takePictureOrUploadImage();
+    if(this.uploadedImageURL != '') {
+      this.currentUser.otherPhotos.push(this.uploadedImageURL);
+      this.uploadedImageURL = '';
+    }
+    await this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
+      this.presentToast('Other Image Added.');
+      this.isLoading = false;
+    });
+  }
+
+  deleteOtherPhotos(image) {
+    this.isLoading = true;
+    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(item => item !== image);
+    this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
+      this.presentToast('Other Image Deleted.');
+      this.isLoading = false;
+    });
+  }
+
+  async takePictureOrUploadImage() {
+    try {
+      if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+
+      const image = await Camera.getPhoto({
+        quality: 100,
+        allowEditing: true,
+        source: CameraSource.Prompt,
+        resultType: CameraResultType.DataUrl
+      }).then(async (image) => {
+        console.log('image:', image);
+        const blob = this.dataURLtoBlob(image.dataUrl);
+        const url = await this.uploadImage(blob, image);
+        console.log('url: ', url);
+        this.uploadedImageURL = url;
+      }).catch((error) => {
+        console.log(error);
+      })
+
+    } catch (e) {
+      console.log(e); 
+    }
+  }
+
+  dataURLtoBlob(dataurl: any) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+  }
+
+  async uploadImage(blob: any, imageData: any) {
+    try {
+      const currentDate = Date.now();
+      const filePath = `users/${this.currentUser.uid}/${currentDate}.${imageData.format}`;
+      const fileRef = ref(this.storage, filePath);
+      const task = await uploadBytes(fileRef, blob);
+      console.log('task: ', task);
+      const url = getDownloadURL(fileRef);
+      return url;
+    } catch(e) {
+      throw(e);
+    }    
   }
 
   //
