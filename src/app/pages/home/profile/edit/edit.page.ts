@@ -75,24 +75,27 @@ export class EditPage implements OnInit {
     this.presentToast('At least one profile picture required.');
   }
 
-  /*
   async addOtherPhotos() {
     this.isLoading = true;
     await this.takePictureOrUploadImage();
-    await this.authService.updateUserOtherImages(this.currentUser);
-    this.presentToast('Other Image Added.');
-    this.isLoading = false;
+    if(this.uploadedImageURL != '') {
+      this.currentUser.otherPhotos.push(this.uploadedImageURL);
+      this.uploadedImageURL = '';
+    }
+    await this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
+      this.presentToast('Other Image Added.');
+      this.isLoading = false;
+    });
   }
 
   deleteOtherPhotos(image) {
     this.isLoading = true;
-    this.currentUser.otherImages = this.currentUser.otherImages.filter(item => item !== image);
-    this.authService.updateUserOtherImages(this.currentUser).then(() => {
+    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(item => item !== image);
+    this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
       this.presentToast('Other Image Deleted.');
       this.isLoading = false;
     });
   }
-  */
 
   async takePictureOrUploadImage() {
     try {
