@@ -276,7 +276,7 @@ export class AuthService {
         otherPhotos: currentUser.otherPhotos
       }
       await this.apiService.updateDocument(`users/${id}`, data);
-      this.getUserData();
+      this._cUser.next(currentUser);
     } catch(e) {
       throw(e);
     }
