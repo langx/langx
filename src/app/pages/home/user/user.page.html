@@ -13,7 +13,7 @@
 
     <ion-card>
       <ion-card-header id="profile-pic">
-        <img [src]="user?.photo" alt="Profile Picture" referrerpolicy="no-referrer">
+        <img [src]="user?.photo" (click)="openPreview([user?.photo])" alt="Profile Picture" referrerpolicy="no-referrer">
         <ion-card-title class=".ion-text-center">{{user?.name}}</ion-card-title>
         <ion-card-subtitle>{{getAge(user?.birthdate)}} | {{user?.gender}} | {{user?.country?.name}}</ion-card-subtitle>
         <ion-card-subtitle *ngIf="!user?.online">Active {{lastSeen(user?.lastSeen)}}</ion-card-subtitle>
