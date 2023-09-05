@@ -16,6 +16,7 @@ export class PreviewPhotoPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    // TODO: Index does not work
     console.log(this.index);
   }
 
