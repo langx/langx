@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Preview Photo</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="close()" expand="block" size="large" slot="icon-only" shape="round">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <swiper-container
+  [loop]="false"
+  [slidesPerView]="1.5"
+  [spaceBetween]="15"
+  [centeredSlides]="true"
+  [initialSlide]="1"
+  [pagination]="true"
+  [zoom]="true">
+  <swiper-slide *ngFor="let photo of photos">
+    <!-- TODO: Test this following zoom feature on mobile-->
+    <div class="swiper-zoom-container">
+      <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
+    </div>
+  </swiper-slide>
+</swiper-container>
+</ion-content>

@@ -114,10 +114,11 @@
           <swiper-slide *ngFor="let photo of currentUser?.otherPhotos">
             <!-- TODO: Test this following zoom feature on mobile-->
             <div class="swiper-zoom-container">
-              <img [src]="photo" alt="Profile Picture" tappable (click)="openPreview(photo)" referrerpolicy="no-referrer">
+              <img [src]="photo" alt="Profile Picture" tappable (click)="openPreview(currentUser?.otherPhotos)" referrerpolicy="no-referrer">
             </div>
           </swiper-slide>
         </swiper-container>
+
       </ion-card-content>
     </ion-card>
 

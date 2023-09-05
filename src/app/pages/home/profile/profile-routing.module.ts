@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: ProfilePage
+  },
+  {
+    path: 'preview-photo',
+    loadChildren: () => import('./preview-photo/preview-photo.module').then( m => m.PreviewPhotoPageModule)
   }
 ];
 
