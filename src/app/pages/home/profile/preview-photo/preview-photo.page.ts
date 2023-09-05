@@ -15,7 +15,6 @@ export class PreviewPhotoPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.photos);
   }
 
   close() {
