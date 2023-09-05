@@ -9,15 +9,12 @@ import { ModalController } from '@ionic/angular';
 export class PreviewPhotoPage implements OnInit {
 
   @Input() photos: any;
-  @Input() index: any;
 
   constructor(
     private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
-    // TODO: Index does not work
-    console.log(this.index);
   }
 
   close() {
