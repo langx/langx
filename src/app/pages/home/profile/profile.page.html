@@ -112,6 +112,7 @@
         [pagination]="true"
         [zoom]="true">
           <swiper-slide *ngFor="let photo of currentUser?.otherPhotos">
+            <!-- TODO: Test this following zoom feature on mobile-->
             <div class="swiper-zoom-container">
               <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
             </div>
