@@ -2,9 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
 import { Router } from '@angular/router';
-import { IonModal } from '@ionic/angular';
+import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { Subscription } from 'rxjs';
+import { PreviewPhotoPage } from './preview-photo/preview-photo.page';
 
 @Component({
   selector: 'app-profile',
@@ -32,6 +33,7 @@ export class ProfilePage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private chatService: ChatService,
+    private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
@@ -57,6 +59,18 @@ export class ProfilePage implements OnInit {
 
   ngOnDestroy() {
     this.cUser.unsubscribe();
+  }
+
+  async openPreview(photos) {
+    console.log(photos);
+    const modal = await this.modalCtrl.create({
+      component: PreviewPhotoPage,
+      // cssClass: 'photo-preview-modal',
+      componentProps: {
+        photos: photos
+      }
+    });
+    modal.present(); 
   }
 
   async logout(){
