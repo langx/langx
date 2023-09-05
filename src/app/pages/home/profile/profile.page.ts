@@ -59,6 +59,10 @@ export class ProfilePage implements OnInit {
     this.cUser.unsubscribe();
   }
 
+  openPreview(photo) {
+    console.log(photo);
+  }
+
   async logout(){
     try {
       //showLoader();

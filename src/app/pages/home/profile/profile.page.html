@@ -104,21 +104,20 @@
       <ion-card-content>
 
         <swiper-container
-        [loop]="false"
-        [slidesPerView]="1.4"
-        [spaceBetween]="15"
-        [centeredSlides]="true"
-        [initialSlide]="1"
-        [pagination]="true"
-        [zoom]="true">
+          [loop]="false"
+          [slidesPerView]="1.5"
+          [spaceBetween]="15"
+          [centeredSlides]="true"
+          [initialSlide]="1"
+          [pagination]="true"
+          [zoom]="true">
           <swiper-slide *ngFor="let photo of currentUser?.otherPhotos">
             <!-- TODO: Test this following zoom feature on mobile-->
             <div class="swiper-zoom-container">
-              <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
+              <img [src]="photo" alt="Profile Picture" tappable (click)="openPreview(photo)" referrerpolicy="no-referrer">
             </div>
           </swiper-slide>
         </swiper-container>
-
       </ion-card-content>
     </ion-card>
 
