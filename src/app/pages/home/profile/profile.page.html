@@ -111,10 +111,10 @@
           [initialSlide]="1"
           [pagination]="true"
           [zoom]="true">
-          <swiper-slide *ngFor="let photo of currentUser?.otherPhotos">
+          <swiper-slide *ngFor="let photo of currentUser?.otherPhotos; let i = index">
             <!-- TODO: Test this following zoom feature on mobile-->
             <div class="swiper-zoom-container">
-              <img [src]="photo" alt="Profile Picture" tappable (click)="openPreview(currentUser?.otherPhotos)" referrerpolicy="no-referrer">
+              <img [src]="photo" alt="Profile Picture" tappable (click)="openPreview(i, currentUser?.otherPhotos)" referrerpolicy="no-referrer">
             </div>
           </swiper-slide>
         </swiper-container>

@@ -61,12 +61,13 @@ export class ProfilePage implements OnInit {
     this.cUser.unsubscribe();
   }
 
-  async openPreview(photos) {
+  async openPreview(index, photos) {
     console.log(photos);
     const modal = await this.modalCtrl.create({
       component: PreviewPhotoPage,
       // cssClass: 'photo-preview-modal',
       componentProps: {
+        index: index,
         photos: photos
       }
     });
