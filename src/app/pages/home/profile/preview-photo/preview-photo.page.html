@@ -1,30 +1,24 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Preview Photo</ion-title>
-
-    <ion-buttons slot="end">
-      <ion-button (click)="close()" expand="block" size="large" slot="icon-only" shape="round">
-        <ion-icon name="close-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
+
+  <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
+    <ion-fab-button (click)="close()" size="small" color="medium">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
   <swiper-container
-  [loop]="true"
-  [spaceBetween]="15"
-  [initialSlide]="index"
-  [centeredSlides]="true"
-  [pagination]="true"
-  [navigation]="true"
-  [zoom]="true">
-  <swiper-slide *ngFor="let photo of photos">
-    <!-- TODO: Test this following zoom feature on mobile-->
-    <div class="swiper-zoom-container">
-      <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
-    </div>
-  </swiper-slide>
+    [spaceBetween]="15"
+    [initialSlide]="index"
+    [centeredSlides]="true"
+    [pagination]="true"
+    [navigation]="true"
+    [zoom]="true">
+    <swiper-slide *ngFor="let photo of photos">
+      <!-- TODO: Test this following zoom feature on mobile-->
+      <div class="swiper-zoom-container">
+        <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
+      </div>
+    </swiper-slide>
 </swiper-container>
+
 </ion-content>
