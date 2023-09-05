@@ -104,12 +104,14 @@
       <ion-card-content>
 
         <swiper-container
-          [loop]="false"
-          [slidesPerView]="1.5"
+          [slidesPerView]="3"
           [spaceBetween]="15"
-          [centeredSlides]="true"
-          [initialSlide]="1"
+          [centeredSlides]="false"
+          initialSlide="0"
           [pagination]="true"
+          pagination-dynamic-bullets="true"
+          keyboard="true"
+          mousewheel="true"
           [zoom]="true">
           <swiper-slide *ngFor="let photo of currentUser?.otherPhotos; let i = index">
             <!-- TODO: Test this following zoom feature on mobile-->
