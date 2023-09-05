@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { getAge, lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { PreviewPhotoPage } from '../profile/preview-photo/preview-photo.page';
 
 @Component({
   selector: 'app-user',
@@ -18,6 +20,7 @@ export class UserPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
+    private modalCtrl: ModalController
   ) { }
 
   async ngOnInit() {
@@ -25,6 +28,18 @@ export class UserPage implements OnInit {
     const id: string = this.route.snapshot.paramMap.get('id');
     if(id) this.userId = id;
     this.getUserData();
+  }
+
+  async openPreview(photos) {
+    console.log(photos);
+    const modal = await this.modalCtrl.create({
+      component: PreviewPhotoPage,
+      // cssClass: 'photo-preview-modal',
+      componentProps: {
+        photos: photos
+      }
+    });
+    modal.present(); 
   }
 
   async getUserData() {
