@@ -13,12 +13,12 @@
 
 <ion-content [fullscreen]="true">
   <swiper-container
-  [loop]="false"
-  [slidesPerView]="1.5"
+  [loop]="true"
   [spaceBetween]="15"
+  [initialSlide]="index"
   [centeredSlides]="true"
-  [initialSlide]="1"
   [pagination]="true"
+  [navigation]="true"
   [zoom]="true">
   <swiper-slide *ngFor="let photo of photos">
     <!-- TODO: Test this following zoom feature on mobile-->
