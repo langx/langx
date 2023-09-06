@@ -112,7 +112,7 @@ export class EditPage implements OnInit {
         quality: 100,
         allowEditing: true,
         source: CameraSource.Prompt,
-        resultType: CameraResultType.DataUrl
+        resultType: CameraResultType.Base64
       }).then(async (image) => {
         console.log('image:', image);
 
