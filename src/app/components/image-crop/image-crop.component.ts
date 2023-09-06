@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-image-crop',
@@ -7,8 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImageCropComponent  implements OnInit {
 
-  constructor() { }
+  @Input() image: any;
 
-  ngOnInit() {}
+  constructor(
+    private modalCtrl: ModalController
+  ) { }
+
+  ngOnInit() {
+    console.log(this.image); 
+  }
+
+  close() {
+    this.modalCtrl.dismiss();
+  }
 
 }
