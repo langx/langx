@@ -1,7 +1,23 @@
+<ion-content [fullscreen]="true">
   <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
     <ion-fab-button (click)="close()" size="small" color="medium">
       <ion-icon name="close-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
-  <ion-img [src]="image?.dataUrl"></ion-img>
+  <input type="file" (change)="fileChangeEvent($event)" />
+
+  <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [aspectRatio]="1 / 1"
+      format="png"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded()"
+      (cropperReady)="cropperReady()"
+      (loadImageFailed)="loadImageFailed()"
+  ></image-cropper>
+  <img [src]="croppedImage" />
+
+  <!--<img [src]="image?.dataUrl" />-->
+</ion-content>
