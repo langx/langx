@@ -3,7 +3,7 @@ import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { ModalController, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
@@ -31,6 +31,7 @@ export class EditPage implements OnInit {
     private router: Router,
     private storage: Storage,
     private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController
   ) { }
 
   ngOnInit() {
@@ -63,7 +64,7 @@ export class EditPage implements OnInit {
 
   async changePP() {
     //this.isLoading = true;
-    await this.takePictureOrUploadImage();
+    await this.selectImage();
     if(this.uploadedImageURL != '') {
       this.currentUser.photo = this.uploadedImageURL;
       this.uploadedImageURL = '';
@@ -84,7 +85,7 @@ export class EditPage implements OnInit {
 
   async addOtherPhotos() {
     this.isLoading = true;
-    await this.takePictureOrUploadImage();
+    await this.selectImage();
     if(this.uploadedImageURL != '') {
       this.currentUser.otherPhotos.push(this.uploadedImageURL);
       this.uploadedImageURL = '';
@@ -104,7 +105,7 @@ export class EditPage implements OnInit {
     });
   }
 
-  async takePictureOrUploadImage() {
+  async selectImage() {
     try {
       if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
@@ -134,14 +135,25 @@ export class EditPage implements OnInit {
         //this.uploadedImageURL = url;
       }).catch((error) => {
         console.log(error);
+        this.imageLoadedFailed();
       });
 
+      const loading =  await this.loadingCtrl.create();
+      await loading.present();
 
 
 
     } catch (e) {
       console.log(e); 
     }
+  }
+
+  imageLoaded() {
+    this.loadingCtrl.dismiss();
+  }
+
+  imageLoadedFailed() {
+    this.loadingCtrl.dismiss();
   }
 
   dataURLtoBlob(dataurl: any) {
