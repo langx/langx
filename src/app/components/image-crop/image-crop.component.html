@@ -5,9 +5,17 @@
     </ion-fab-button>
   </ion-fab>
 
-  <input type="file" (change)="fileChangeEvent($event)" />
-
   <image-cropper
+      [imageBase64]="image?.dataUrl"
+      [maintainAspectRatio]="true"
+      [aspectRatio]="1 / 1"
+      format="png"
+      (imageLoaded)="imageLoaded()"
+      (loadImageFailed)="loadImageFailed()"
+  ></image-cropper>
+  
+  <!-- 
+    <image-cropper
       [imageChangedEvent]="imageChangedEvent"
       [maintainAspectRatio]="true"
       [aspectRatio]="1 / 1"
@@ -17,7 +25,8 @@
       (cropperReady)="cropperReady()"
       (loadImageFailed)="loadImageFailed()"
   ></image-cropper>
-  <img [src]="croppedImage" />
+  -->
+  <img [src]="croppedImage" *ngIf="croppedImage"/>
 
   <!--<img [src]="image?.dataUrl" />-->
 </ion-content>

@@ -113,23 +113,7 @@ export class EditPage implements OnInit {
         quality: 100,
         allowEditing: true,
         source: CameraSource.Prompt,
-        resultType: CameraResultType.Base64
-      }).then(async (image) => {
-        console.log('image:', image);
-
-        const modal = await this.modalCtrl.create({
-          component: ImageCropComponent,
-          componentProps: {
-            image : image
-          }
-        });
-  
-        modal.present();
-
-        //const blob = this.dataURLtoBlob(image.dataUrl);
-        //const url = await this.uploadImage(blob, image);
-        //console.log('url: ', url);
-        //this.uploadedImageURL = url;
+        resultType: CameraResultType.DataUrl
       }).catch((error) => {
         console.log(error);
         this.imageLoadedFailed();
@@ -138,8 +122,19 @@ export class EditPage implements OnInit {
       const loading =  await this.loadingCtrl.create();
       await loading.present();
 
+      const modal = await this.modalCtrl.create({
+        component: ImageCropComponent,
+        componentProps: {
+          image : image
+        }
+      });
+
+      modal.present();
+      this.imageLoaded();
+
     } catch (e) {
       console.log(e); 
+      this.imageLoadedFailed();
     }
   }
 
