@@ -4,10 +4,11 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 @Component({
   selector: 'app-edit',
@@ -34,6 +35,7 @@ export class EditPage implements OnInit {
     private toastController: ToastController,
     private router: Router,
     private storage: Storage,
+    private modalCtrl: ModalController,
     private sanitizer: DomSanitizer
   ) { }
 
@@ -94,6 +96,7 @@ export class EditPage implements OnInit {
       this.uploadedImageURL = '';
     }
 
+
     /*
     await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
       this.presentToast('Profile Picture Updated.');
@@ -139,13 +142,29 @@ export class EditPage implements OnInit {
         resultType: CameraResultType.DataUrl
       }).then(async (image) => {
         console.log('image:', image);
-        const blob = this.dataURLtoBlob(image.dataUrl);
-        const url = await this.uploadImage(blob, image);
-        console.log('url: ', url);
-        this.uploadedImageURL = url;
+
+
+        const modal = await this.modalCtrl.create({
+          component: ImageCropComponent,
+          componentProps: {
+            image : image
+          }
+        });
+  
+        modal.present();
+
+
+
+        //const blob = this.dataURLtoBlob(image.dataUrl);
+        //const url = await this.uploadImage(blob, image);
+        //console.log('url: ', url);
+        //this.uploadedImageURL = url;
       }).catch((error) => {
         console.log(error);
-      })
+      });
+
+
+
 
     } catch (e) {
       console.log(e); 

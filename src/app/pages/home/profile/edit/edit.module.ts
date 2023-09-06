@@ -9,6 +9,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 
 import { EditPage } from './edit.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 @NgModule({
   imports: [
@@ -19,6 +20,6 @@ import { ComponentsModule } from 'src/app/components/components.module';
     ComponentsModule,
     ImageCropperModule
   ],
-  declarations: [EditPage]
+  declarations: [EditPage, ImageCropComponent],
 })
 export class EditPageModule {}
