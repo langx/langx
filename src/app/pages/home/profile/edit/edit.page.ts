@@ -65,13 +65,13 @@ export class EditPage implements OnInit {
   async changePP() {
     //this.isLoading = true;
     await this.selectImage();
+    /*
     if(this.uploadedImageURL != '') {
       this.currentUser.photo = this.uploadedImageURL;
       this.uploadedImageURL = '';
     }
 
 
-    /*
     await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
       this.presentToast('Profile Picture Updated.');
       this.isLoading = false;
@@ -117,7 +117,6 @@ export class EditPage implements OnInit {
       }).then(async (image) => {
         console.log('image:', image);
 
-
         const modal = await this.modalCtrl.create({
           component: ImageCropComponent,
           componentProps: {
@@ -126,8 +125,6 @@ export class EditPage implements OnInit {
         });
   
         modal.present();
-
-
 
         //const blob = this.dataURLtoBlob(image.dataUrl);
         //const url = await this.uploadImage(blob, image);
@@ -140,8 +137,6 @@ export class EditPage implements OnInit {
 
       const loading =  await this.loadingCtrl.create();
       await loading.present();
-
-
 
     } catch (e) {
       console.log(e); 
