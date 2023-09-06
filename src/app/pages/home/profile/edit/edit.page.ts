@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-edit',
@@ -24,11 +26,15 @@ export class EditPage implements OnInit {
 
   uploadedImageURL: string = '';
 
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+
   constructor(
     private authService: AuthService,
     private toastController: ToastController,
     private router: Router,
-    private storage: Storage
+    private storage: Storage,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -53,6 +59,27 @@ export class EditPage implements OnInit {
 
   ngOnDestroy() {
     this.cUser.unsubscribe();
+  }
+
+  //
+  // Image Cropper Test
+  //
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+    // event.blob can be used to upload the cropped image
+  }
+  imageLoaded(image?: LoadedImage) {
+      // show cropper
+  }
+  cropperReady() {
+      // cropper ready
+  }
+  loadImageFailed() {
+      // show message
   }
 
   //
