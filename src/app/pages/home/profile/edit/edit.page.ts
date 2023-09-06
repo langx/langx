@@ -87,16 +87,19 @@ export class EditPage implements OnInit {
   //
 
   async changePP() {
-    this.isLoading = true;
+    //this.isLoading = true;
     await this.takePictureOrUploadImage();
     if(this.uploadedImageURL != '') {
       this.currentUser.photo = this.uploadedImageURL;
       this.uploadedImageURL = '';
     }
+
+    /*
     await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
       this.presentToast('Profile Picture Updated.');
       this.isLoading = false;
     });
+    */
   }
 
   deletePP() {
