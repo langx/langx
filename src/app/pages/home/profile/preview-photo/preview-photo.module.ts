@@ -16,6 +16,7 @@ import { PreviewPhotoPage } from './preview-photo.page';
     PreviewPhotoPageRoutingModule
   ],
   declarations: [PreviewPhotoPage],
+  // TODO: Try to add declearation for preview-photo as a component not a page
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PreviewPhotoPageModule {}
