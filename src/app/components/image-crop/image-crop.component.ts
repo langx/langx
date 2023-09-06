@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ModalController } from '@ionic/angular';
+import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-image-crop',
@@ -10,12 +12,37 @@ export class ImageCropComponent  implements OnInit {
 
   @Input() image: any;
 
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+
   constructor(
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
     console.log(this.image); 
+  }
+
+  //
+  // Image Cropper Test
+  //
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+  imageCropped(event: ImageCroppedEvent) {
+    this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+    // event.blob can be used to upload the cropped image
+  }
+  imageLoaded(image?: LoadedImage) {
+      // show cropper
+  }
+  cropperReady() {
+      // cropper ready
+  }
+  loadImageFailed() {
+      // show message
   }
 
   close() {

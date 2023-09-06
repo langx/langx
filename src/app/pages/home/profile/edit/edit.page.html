@@ -10,20 +10,6 @@
 <ion-content [fullscreen]="true">
   <!--<ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>-->
 
-  <input type="file" (change)="fileChangeEvent($event)" />
-
-  <image-cropper
-      [imageChangedEvent]="imageChangedEvent"
-      [maintainAspectRatio]="true"
-      [aspectRatio]="1 / 1"
-      format="png"
-      (imageCropped)="imageCropped($event)"
-      (imageLoaded)="imageLoaded()"
-      (cropperReady)="cropperReady()"
-      (loadImageFailed)="loadImageFailed()"
-  ></image-cropper>
-  <img [src]="croppedImage" />
-
   <ion-card>
     <ion-card-header>
       <ion-card-title>
