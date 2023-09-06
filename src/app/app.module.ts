@@ -48,4 +48,5 @@ import { IonicStorageModule } from '@ionic/storage-angular';
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
+
 export class AppModule {}
