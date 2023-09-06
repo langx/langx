@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ModalController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
 import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
@@ -17,11 +17,12 @@ export class ImageCropComponent  implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController,
     private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
-    console.log(this.image); 
+    this.loadingCtrl.create();
   }
 
   //
@@ -34,11 +35,13 @@ export class ImageCropComponent  implements OnInit {
   }
 
   imageLoaded(image?: LoadedImage) {
-      // show cropper
+    this.loadingCtrl.dismiss();
   }
 
   loadImageFailed() {
-      // show message
+    this.loadingCtrl.dismiss();
+    // TODO: here trigger a toast message and exit the modal
+    console.log('Image Load Failed');
   }
 
   close() {
