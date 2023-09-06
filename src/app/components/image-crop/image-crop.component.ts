@@ -31,6 +31,10 @@ export class ImageCropComponent  implements OnInit {
   // Image Cropper Test
   //
 
+  cropImage() {
+    this.modalCtrl.dismiss(this.croppedImage);
+  }
+
   imageCropped(event: ImageCroppedEvent) {
     this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
     // event.blob can be used to upload the cropped image
