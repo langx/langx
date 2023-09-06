@@ -130,7 +130,10 @@ export class EditPage implements OnInit {
       });
 
       modal.present();
-      this.imageLoaded();
+
+      await modal.onDidDismiss().then((data) => {
+        console.log(data.data);
+      });
 
     } catch (e) {
       console.log(e); 

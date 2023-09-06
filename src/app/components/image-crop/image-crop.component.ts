@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Capacitor } from '@capacitor/core';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
+import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-image-crop',
@@ -12,8 +12,11 @@ import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
 export class ImageCropComponent  implements OnInit {
 
   @Input() image: any;
+  
+  @ViewChild('imageCropper') imageCropper: ImageCropperComponent;
 
   croppedImage: any = null;
+
   // TODO: should be tested in mobile
   isMobile = Capacitor.getPlatform() !== 'web';
 
@@ -32,6 +35,8 @@ export class ImageCropComponent  implements OnInit {
   //
 
   cropImage() {
+    this.croppedImage = this.imageCropper.crop('base64')?.base64;
+    this.image = null;
     this.modalCtrl.dismiss(this.croppedImage);
   }
 

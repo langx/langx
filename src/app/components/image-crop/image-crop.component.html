@@ -19,13 +19,14 @@
 <ion-content [fullscreen]="true">
 
   <image-cropper
-      [imageBase64]="image?.dataUrl"
-      [maintainAspectRatio]="true"
-      [aspectRatio]="1 / 1"
-      format="png"
-      (imageLoaded)="imageLoaded()"
-      (loadImageFailed)="loadImageFailed()"
-      [hideResizeSquares]="isMobile"
+    #imageCropper
+    [imageBase64]="image?.dataUrl"
+    [maintainAspectRatio]="true"
+    [aspectRatio]="1 / 1"
+    format="png"
+    (imageLoaded)="imageLoaded()"
+    (loadImageFailed)="loadImageFailed()"
+    [hideResizeSquares]="isMobile"
   ></image-cropper>
   
   <!-- 
