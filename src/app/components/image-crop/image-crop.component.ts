@@ -30,9 +30,9 @@ export class ImageCropComponent  implements OnInit {
     this.loadingCtrl.create();
   }
 
-  //
-  // Image Cropper Test
-  //
+  rotate() {
+    // this.imageCropper.transform.rotate(90);
+  }
 
   cropImage() {
     this.croppedImage = this.imageCropper.crop('base64')?.base64;
