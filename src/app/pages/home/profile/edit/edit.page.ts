@@ -63,20 +63,18 @@ export class EditPage implements OnInit {
   //
 
   async changePP() {
-    //this.isLoading = true;
-    await this.selectImage();
-    /*
+    this.isLoading = true;
+
+    // await this.selectImage();
     if(this.uploadedImageURL != '') {
       this.currentUser.photo = this.uploadedImageURL;
       this.uploadedImageURL = '';
     }
 
-
     await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
       this.presentToast('Profile Picture Updated.');
       this.isLoading = false;
     });
-    */
   }
 
   deletePP() {
@@ -85,7 +83,7 @@ export class EditPage implements OnInit {
 
   async addOtherPhotos() {
     this.isLoading = true;
-    await this.selectImage();
+    //await this.selectImage();
     if(this.uploadedImageURL != '') {
       this.currentUser.otherPhotos.push(this.uploadedImageURL);
       this.uploadedImageURL = '';
@@ -105,7 +103,7 @@ export class EditPage implements OnInit {
     });
   }
 
-  async selectImage() {
+  async selectImage(which: string) {
     try {
       if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
@@ -133,6 +131,13 @@ export class EditPage implements OnInit {
 
       await modal.onDidDismiss().then((data) => {
         console.log(data.data);
+        let blob = this.dataURLtoBlob(data.data);
+        this.uploadImage(blob, image).then((url) => {
+          this.uploadedImageURL = url;
+          console.log(this.uploadedImageURL);
+          if (which == 'pp') this.changePP();
+          if (which == 'other') this.addOtherPhotos();
+        });
       });
 
     } catch (e) {
