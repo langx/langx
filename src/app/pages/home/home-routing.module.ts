@@ -31,29 +31,6 @@ const routes: Routes = [
     path: 'chat/:id',
     loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
   },
-  // ** //
-  // Outside of the Home Children Routing because of Tabs
-  // ** //
-  {
-    path: 'profile/account',
-    loadChildren: () => import('./profile/settings/account/account.module').then( m => m.AccountPageModule)
-  },
-  {
-    path: 'profile/notifications',
-    loadChildren: () => import('./profile/settings/notifications/notifications.module').then( m => m.NotificationsPageModule)
-  },
-  {
-    path: 'profile/privacy',
-    loadChildren: () => import('./profile/settings/privacy/privacy.module').then( m => m.PrivacyPageModule)
-  },
-  {
-    path: 'profile/appearance',
-    loadChildren: () => import('./profile/settings/appearance/appearance.module').then( m => m.AppearancePageModule)
-  },
-  {
-    path: 'profile/edit',
-    loadChildren: () => import('./profile/edit/edit.module').then( m => m.EditPageModule)
-  },
   {
     path: 'filters',
     loadChildren: () => import('./community/filters/filters.module').then( m => m.FiltersPageModule)
@@ -61,6 +38,26 @@ const routes: Routes = [
   {
     path: 'user/:id',
     loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
+  },
+  {
+    path: 'edit',
+    loadChildren: () => import('./profile/edit/edit.module').then( m => m.EditPageModule)
+  },
+  {
+    path: 'account',
+    loadChildren: () => import('./profile/settings/account/account.module').then( m => m.AccountPageModule)
+  },
+  {
+    path: 'appearance',
+    loadChildren: () => import('./profile/settings/appearance/appearance.module').then( m => m.AppearancePageModule)
+  },
+  {
+    path: 'notifications',
+    loadChildren: () => import('./profile/settings/notifications/notifications.module').then( m => m.NotificationsPageModule)
+  },
+  {
+    path: 'privacy',
+    loadChildren: () => import('./profile/settings/privacy/privacy.module').then( m => m.PrivacyPageModule)
   }
 ];
 
