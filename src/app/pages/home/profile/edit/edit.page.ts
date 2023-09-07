@@ -3,9 +3,10 @@ import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 @Component({
   selector: 'app-edit',
@@ -28,7 +29,9 @@ export class EditPage implements OnInit {
     private authService: AuthService,
     private toastController: ToastController,
     private router: Router,
-    private storage: Storage
+    private storage: Storage,
+    private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController
   ) { }
 
   ngOnInit() {
@@ -59,46 +62,7 @@ export class EditPage implements OnInit {
   // To Upload Profile and Other Images
   //
 
-  async changePP() {
-    this.isLoading = true;
-    await this.takePictureOrUploadImage();
-    if(this.uploadedImageURL != '') {
-      this.currentUser.photo = this.uploadedImageURL;
-      this.uploadedImageURL = '';
-    }
-    await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
-      this.presentToast('Profile Picture Updated.');
-      this.isLoading = false;
-    });
-  }
-
-  deletePP() {
-    this.presentToast('At least one profile picture required.');
-  }
-
-  async addOtherPhotos() {
-    this.isLoading = true;
-    await this.takePictureOrUploadImage();
-    if(this.uploadedImageURL != '') {
-      this.currentUser.otherPhotos.push(this.uploadedImageURL);
-      this.uploadedImageURL = '';
-    }
-    await this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
-      this.presentToast('Other Image Added.');
-      this.isLoading = false;
-    });
-  }
-
-  deleteOtherPhotos(image) {
-    this.isLoading = true;
-    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(item => item !== image);
-    this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
-      this.presentToast('Other Image Deleted.');
-      this.isLoading = false;
-    });
-  }
-
-  async takePictureOrUploadImage() {
+  async selectImage(which: string) {
     try {
       if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
@@ -107,18 +71,40 @@ export class EditPage implements OnInit {
         allowEditing: true,
         source: CameraSource.Prompt,
         resultType: CameraResultType.DataUrl
-      }).then(async (image) => {
-        console.log('image:', image);
-        const blob = this.dataURLtoBlob(image.dataUrl);
-        const url = await this.uploadImage(blob, image);
-        console.log('url: ', url);
-        this.uploadedImageURL = url;
       }).catch((error) => {
         console.log(error);
-      })
+        this.loadingCtrl.dismiss();
+      });
+
+      const loading =  await this.loadingCtrl.create();
+      await loading.present();
+
+      const modal = await this.modalCtrl.create({
+        component: ImageCropComponent,
+        componentProps: {
+          image : image
+        }
+      });
+
+      this.loadingCtrl.dismiss();
+
+      modal.present();
+
+      await modal.onDidDismiss().then((data) => {
+        if(!data.data) return;
+        console.log(data.data);
+        let blob = this.dataURLtoBlob(data.data);
+        this.uploadImage(blob, image).then((url) => {
+          this.uploadedImageURL = url;
+          // console.log(this.uploadedImageURL);
+          if (which == 'pp') this.changePP();
+          if (which == 'other') this.addOtherPhotos();
+        });
+      });
 
     } catch (e) {
       console.log(e); 
+      this.loadingCtrl.dismiss();
     }
   }
 
@@ -143,6 +129,46 @@ export class EditPage implements OnInit {
     } catch(e) {
       throw(e);
     }    
+  }
+
+  async changePP() {
+    this.isLoading = true;
+
+    if(this.uploadedImageURL != '') {
+      this.currentUser.photo = this.uploadedImageURL;
+      this.uploadedImageURL = '';
+    }
+
+    await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
+      this.presentToast('Profile Picture Updated.');
+      this.isLoading = false;
+    });
+  }
+
+  deletePP() {
+    this.presentToast('At least one profile picture required.');
+  }
+
+  async addOtherPhotos() {
+    this.isLoading = true;
+
+    if(this.uploadedImageURL != '') {
+      this.currentUser.otherPhotos.push(this.uploadedImageURL);
+      this.uploadedImageURL = '';
+    }
+    await this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
+      this.presentToast('Other Image Added.');
+      this.isLoading = false;
+    });
+  }
+
+  deleteOtherPhotos(image) {
+    this.isLoading = true;
+    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(item => item !== image);
+    this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
+      this.presentToast('Other Image Deleted.');
+      this.isLoading = false;
+    });
   }
 
   //

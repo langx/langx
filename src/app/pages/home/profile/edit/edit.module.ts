@@ -5,16 +5,21 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { EditPageRoutingModule } from './edit-routing.module';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 import { EditPage } from './edit.page';
+import { ComponentsModule } from 'src/app/components/components.module';
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EditPageRoutingModule
+    EditPageRoutingModule,
+    ComponentsModule,
+    ImageCropperModule
   ],
-  declarations: [EditPage]
+  declarations: [EditPage, ImageCropComponent],
 })
 export class EditPageModule {}

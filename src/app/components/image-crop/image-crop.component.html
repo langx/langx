@@ -1,0 +1,36 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-button (click)="close()" size="large">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="cropImage()" expand="block" size="large" slot="icon-only" shape="round" color="primary">
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Crop Image</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+  <image-cropper
+    #imageCropper
+    [imageBase64]="image?.dataUrl"
+    [maintainAspectRatio]="true"
+    [aspectRatio]="1 / 1"
+    format="png"
+    (imageLoaded)="imageLoaded()"
+    (loadImageFailed)="loadImageFailed()"
+    [hideResizeSquares]="isMobile"
+  ></image-cropper>
+  
+  <!--
+  <img [src]="croppedImage" *ngIf="croppedImage"/>
+  -->
+
+</ion-content>
