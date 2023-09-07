@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Capacitor } from '@capacitor/core';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
+import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-image-crop',
@@ -16,6 +16,7 @@ export class ImageCropComponent  implements OnInit {
   @ViewChild('imageCropper') imageCropper: ImageCropperComponent;
 
   croppedImage: any = null;
+  transform: ImageTransform = {};
 
   // TODO: should be tested in mobile
   isMobile = Capacitor.getPlatform() !== 'web';
@@ -31,7 +32,10 @@ export class ImageCropComponent  implements OnInit {
   }
 
   rotate() {
-    // this.imageCropper.transform.rotate(90);
+    this.transform = {
+      ...this.transform, // keep the previous transformation
+      rotate: ((this.transform.rotate ?? 0) + 90) % 360
+    }
   }
 
   cropImage() {
