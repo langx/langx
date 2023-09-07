@@ -33,6 +33,10 @@ export class ChatPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initChatPage();
+  }
+
+  initChatPage() {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
     if(data?.name) this.name = data.name;
