@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-preview-photo',
@@ -7,8 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PreviewPhotoComponent  implements OnInit {
 
-  constructor() { }
+  @Input() photos: any;
 
-  ngOnInit() {}
+  constructor(
+    private modalCtrl: ModalController
+  ) { }
+
+  ngOnInit() {
+  }
+
+  close() {
+    this.modalCtrl.dismiss();
+  }
 
 }
