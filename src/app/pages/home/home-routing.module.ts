@@ -32,6 +32,14 @@ const routes: Routes = [
     loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
   },
   {
+    path: 'filters',
+    loadChildren: () => import('./community/filters/filters.module').then( m => m.FiltersPageModule)
+  },
+  {
+    path: 'user/:id',
+    loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
+  },
+  {
     path: 'edit',
     loadChildren: () => import('./profile/edit/edit.module').then( m => m.EditPageModule)
   },
@@ -50,14 +58,6 @@ const routes: Routes = [
   {
     path: 'privacy',
     loadChildren: () => import('./profile/settings/privacy/privacy.module').then( m => m.PrivacyPageModule)
-  },
-  {
-    path: 'filters',
-    loadChildren: () => import('./community/filters/filters.module').then( m => m.FiltersPageModule)
-  },
-  {
-    path: 'user/:id',
-    loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
   }
 ];
 
