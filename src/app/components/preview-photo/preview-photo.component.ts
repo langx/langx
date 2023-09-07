@@ -3,10 +3,10 @@ import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-preview-photo',
-  templateUrl: './preview-photo.page.html',
-  styleUrls: ['./preview-photo.page.scss'],
+  templateUrl: './preview-photo.component.html',
+  styleUrls: ['./preview-photo.component.scss'],
 })
-export class PreviewPhotoPage implements OnInit {
+export class PreviewPhotoComponent  implements OnInit {
 
   @Input() photos: any;
 

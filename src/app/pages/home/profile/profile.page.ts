@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { Subscription } from 'rxjs';
-import { PreviewPhotoPage } from './preview-photo/preview-photo.page';
+import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 @Component({
   selector: 'app-profile',
@@ -64,8 +64,7 @@ export class ProfilePage implements OnInit {
   async openPreview(photos) {
     console.log(photos);
     const modal = await this.modalCtrl.create({
-      component: PreviewPhotoPage,
-      // cssClass: 'photo-preview-modal',
+      component: PreviewPhotoComponent,
       componentProps: {
         photos: photos
       }
