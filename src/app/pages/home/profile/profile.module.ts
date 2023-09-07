@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ProfilePageRoutingModule } from './profile-routing.module';
 
 import { ProfilePage } from './profile.page';
+import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import { ProfilePage } from './profile.page';
     IonicModule,
     ProfilePageRoutingModule
   ],
-  declarations: [ProfilePage],
+  declarations: [ProfilePage, PreviewPhotoComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ProfilePageModule {}
