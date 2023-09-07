@@ -86,9 +86,8 @@ export class EditPage implements OnInit {
         }
       });
 
-      this.loadingCtrl.dismiss();
-
       modal.present();
+      this.loadingCtrl.dismiss();
 
       await modal.onDidDismiss().then((data) => {
         if(!data.data) return;
