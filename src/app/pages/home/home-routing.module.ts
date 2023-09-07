@@ -32,23 +32,23 @@ const routes: Routes = [
     loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
   },
   {
-    path: 'profile/edit',
+    path: 'edit',
     loadChildren: () => import('./profile/edit/edit.module').then( m => m.EditPageModule)
   },
   {
-    path: 'profile/account',
+    path: 'account',
     loadChildren: () => import('./profile/settings/account/account.module').then( m => m.AccountPageModule)
   },
   {
-    path: 'profile/appearance',
+    path: 'appearance',
     loadChildren: () => import('./profile/settings/appearance/appearance.module').then( m => m.AppearancePageModule)
   },
   {
-    path: 'profile/notifications',
+    path: 'notifications',
     loadChildren: () => import('./profile/settings/notifications/notifications.module').then( m => m.NotificationsPageModule)
   },
   {
-    path: 'profile/privacy',
+    path: 'privacy',
     loadChildren: () => import('./profile/settings/privacy/privacy.module').then( m => m.PrivacyPageModule)
   },
   {

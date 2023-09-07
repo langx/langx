@@ -92,7 +92,7 @@ export class ProfilePage implements OnInit {
         return;
       }
       this.dismissModal();
-      this.router.navigate(['/', 'home', 'profile', page?.url]);
+      this.router.navigate(['/', 'home', page?.url]);
   };
 
   editProfile() {
