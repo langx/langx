@@ -28,7 +28,7 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     IonicModule.forRoot({
     // mode: 'md'
   }), AppRoutingModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase )),
+    provideFirebaseApp(() => initializeApp(environment?.firebase)),
     provideAuth(() => getAuth()),
     /* FOR IOS ONLY
     provideAuth(() => {
