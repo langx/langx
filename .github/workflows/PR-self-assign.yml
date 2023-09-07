@@ -13,6 +13,7 @@ jobs:
             - name: 'Auto-assign PR'
               uses: pozil/auto-assign-issue@v1.12.0
               with:
+                  repo-token: ${{ secrets.MY_PERSONAL_ACCESS_TOKEN }}
                   assignees: behicsakar
                   numOfAssignee: 1
                   allowSelfAssign: true
