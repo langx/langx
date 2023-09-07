@@ -58,8 +58,7 @@ export class ChatPage implements OnInit {
   }
 
   scrollToBottom() {
-    console.log('scroll bottom');
-    if(this.chats) this.content.scrollToBottom(500);
+    if(this.chats) this.content.scrollToBottom();
   }
 
   async sendMessage(){
