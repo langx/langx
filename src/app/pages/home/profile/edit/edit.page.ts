@@ -73,7 +73,7 @@ export class EditPage implements OnInit {
         resultType: CameraResultType.DataUrl
       }).catch((error) => {
         console.log(error);
-        this.imageLoadedFailed();
+        this.loadingCtrl.dismiss();
       });
 
       const loading =  await this.loadingCtrl.create();
@@ -86,9 +86,12 @@ export class EditPage implements OnInit {
         }
       });
 
+      this.loadingCtrl.dismiss();
+
       modal.present();
 
       await modal.onDidDismiss().then((data) => {
+        if(!data.data) return;
         console.log(data.data);
         let blob = this.dataURLtoBlob(data.data);
         this.uploadImage(blob, image).then((url) => {
@@ -101,16 +104,8 @@ export class EditPage implements OnInit {
 
     } catch (e) {
       console.log(e); 
-      this.imageLoadedFailed();
+      this.loadingCtrl.dismiss();
     }
-  }
-
-  imageLoaded() {
-    this.loadingCtrl.dismiss();
-  }
-
-  imageLoadedFailed() {
-    this.loadingCtrl.dismiss();
   }
 
   dataURLtoBlob(dataurl: any) {
