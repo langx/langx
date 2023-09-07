@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { getAge, lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { PreviewPhotoPage } from '../profile/preview-photo/preview-photo.page';
+import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 @Component({
   selector: 'app-user',
@@ -33,8 +33,7 @@ export class UserPage implements OnInit {
   async openPreview(photos) {
     console.log(photos);
     const modal = await this.modalCtrl.create({
-      component: PreviewPhotoPage,
-      // cssClass: 'photo-preview-modal',
+      component: PreviewPhotoComponent,
       componentProps: {
         photos: photos
       }
