@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { Observable, map, of, switchMap } from 'rxjs';
+import { Observable, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../api/api.service';
+import { Query, query } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -98,6 +99,48 @@ export class ChatService {
       map((arr: any) => arr.reverse())
     );
   }
+  
+  /*
+  async getUsers() {
+    const users: any[] = [];
+
+    let usersQuery: Query = query(this.api.collectionRef('users'));
+
+    if(filterData?.country) {
+      usersQuery = query(usersQuery, this.api.whereQuery('country.code', '==', filterData.country));
+    }
+
+    if(filterData?.gender) {
+      usersQuery = query(usersQuery, this.api.whereQuery('gender', '==', filterData.gender));
+    }
+
+    if(filterData?.languages.length > 0) {
+      usersQuery = query(usersQuery, this.api.whereQuery('languagesArray', 'array-contains-any', filterData.languages));
+    }
+
+    usersQuery = query(usersQuery, this.api.orderByQuery('lastSeen', 'desc'));
+
+    if (this.lastVisible) {
+      usersQuery = query(usersQuery, this.api.startAfterQuery(this.lastVisible));
+    }
+    
+    usersQuery = query(usersQuery, this.api.limitQuery(this.NUMBER_OF_USERS_PER_PAGE));
+    const querySnapshot: QuerySnapshot<any> = await this.api.getDocs2(usersQuery);
+
+    querySnapshot.docs.map(doc => doc.data()).filter(user => user.uid !== this.authService.getId())
+      .map( user => { users.push(user); });
+
+    let last = querySnapshot.docs[querySnapshot.docs.length-1];
+    this.lastVisible = last || null;
+
+    if(filterData?.minAge && filterData?.maxAge) {
+      return this.filterUsersByAge(users, filterData.minAge, filterData.maxAge);
+    }
+
+    console.log('lastVisible: ', this.lastVisible, 'users.length: ', users.length, 'users: ', users);
+    return users;
+  }
+  */
 
   async sendMessage(chatId, msg) {
     console.log(chatId, msg);
