@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content>
-  
   <ng-container *ngIf="(chats | async ) as chat$">
  
     <app-empty-screen
@@ -19,12 +18,12 @@
     <ion-list
       lines="none"
       *ngIf="chat$?.length > 0">
+      <!--<ion-item-group class="chats-group" *ngFor="let chat of chat$">-->
       <ion-item-group class="chats-group" *ngFor="let chat of chat$">
-        <app-chat-box [chat]="chat" [current_user_id]="chatService.currentUserId"></app-chat-box>
+        <app-chat-box [chat]="chat$" [current_user_id]="chatService.currentUserId"></app-chat-box>
       </ion-item-group>
     </ion-list>
   </ng-container>
- 
 </ion-content>
 
 <ion-footer>
