@@ -8,7 +8,7 @@
     <ion-note>
       <small>{{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}</small>
       <ion-icon 
-        [color]="chat?.sender != current_user_id ? 'light' : 'primary'"
+        *ngIf="chat?.sender == current_user_id" color="primary"
         name="checkmark-done-outline">
       </ion-icon>
     </ion-note>
