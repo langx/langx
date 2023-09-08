@@ -14,14 +14,19 @@
       *ngIf="(chats | async)?.length == 0"
       [model]="model">
     </app-empty-screen>
-
-    <ion-infinite-scroll position="top" (ionInfinite)="loadMore($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+  
 
     <ion-list
       lines="none"
       *ngIf="chat$?.length > 0">
+
+    <!--TODO: TODO: There is a bug after i added ion-infinite-scroll.
+      When i refresh the page manually, scroll to bottom is not working-->
+    <ion-infinite-scroll position="top" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+
       <ion-item-group class="chats-group" *ngFor="let chat of chat$">
         <app-chat-box [chat]="chat" [current_user_id]="chatService.currentUserId"></app-chat-box>
       </ion-item-group>
