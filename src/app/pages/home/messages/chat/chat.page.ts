@@ -56,7 +56,12 @@ export class ChatPage implements OnInit {
   loadMore(event) {
     console.log('load more clicked');
     // this.chatService.loadMoreMessages(this.chatRoomId);
-    event.target.complete();
+    // event.target.complete();
+
+    //add new data to the front of main array
+    // let sampleData = [1,2,3]
+    // this.chats.unshift.apply(...sampleData);
+
   }
 
   ngAfterViewChecked() {
