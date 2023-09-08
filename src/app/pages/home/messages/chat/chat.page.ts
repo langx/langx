@@ -53,6 +53,12 @@ export class ChatPage implements OnInit {
     console.log('chat messages ', this.chats);
   }
 
+  loadMore(event) {
+    console.log('load more clicked');
+    // this.chatService.loadMoreMessages(this.chatRoomId);
+    event.target.complete();
+  }
+
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
