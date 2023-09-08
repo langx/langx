@@ -15,6 +15,10 @@
       [model]="model">
     </app-empty-screen>
 
+    <ion-infinite-scroll position="top" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
     <ion-list
       lines="none"
       *ngIf="chat$?.length > 0">
