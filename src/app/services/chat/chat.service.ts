@@ -96,7 +96,9 @@ export class ChatService {
       this.api.orderByQuery('createdAt', 'desc'),
       this.api.limitQuery(20)
     ).pipe(
-      map((arr: any) => arr.reverse())
+      map((arr: any) => arr.reverse()),
+      // only emit when the current value is different than the last
+      distinctUntilChanged()
     );
   }
   
