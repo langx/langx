@@ -3,7 +3,11 @@
     <img [src]="item?.photo"  alt="" referrerpolicy="no-referrer"/>
   </ion-thumbnail>
   <ion-label (click)="redirect()">
-    <h2>{{ item?.name }}</h2>
-    <p>{{ item?.online }}, {{ item?.uid }}</p>
+    <h2><small *ngIf="item?.online">🟢 </small>{{ item?.name }}</h2>
+    <p>
+      <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
+      <ion-text *ngIf="!item?.aboutMe" style="font-style: italic;">
+        Learning: <span *ngFor="let lang of item?.studyLanguages">{{ lang?.name }}</span></ion-text>
+    </p>
   </ion-label>
 </ion-item>
