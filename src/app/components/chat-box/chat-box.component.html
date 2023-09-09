@@ -13,4 +13,7 @@
       </ion-icon>
     </ion-note>
   </ion-chip>
+  <ion-avatar>
+    <img [src]="chat?.sender == current_user_id ? current_user_photo : current_user_photo">
+  </ion-avatar>
 </ion-item>
