@@ -1,7 +1,7 @@
 <ion-item 
   lines="none"
   [class]="chat?.sender != current_user_id ? 'sender' : 'user'">
-  <ion-label
+  <ion-chip
     [slot]="chat?.sender == current_user_id ? 'end' : 'start'"
     class="ion-text-wrap">
     <ion-text>{{chat?.message}}</ion-text>
@@ -12,5 +12,5 @@
         name="checkmark-done-outline">
       </ion-icon>
     </ion-note>
-  </ion-label>
+  </ion-chip>
 </ion-item>
