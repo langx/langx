@@ -25,7 +25,7 @@
     </ion-infinite-scroll>
 
       <ion-item-group class="chats-group" *ngFor="let chat of chat$">
-        <app-chat-box [chat]="chat" [current_user_id]="chatService.currentUserId"></app-chat-box>
+        <app-chat-box [chat]="chat" [current_user_id]="chatService.currentUserId" current_user_photo="https://i.pravatar.cc/300"></app-chat-box>
       </ion-item-group>
     </ion-list>
   </ng-container>
@@ -34,10 +34,9 @@
 <ion-footer>
   <ion-toolbar>
     <ion-textarea
-      autoGrow
+      autoGrow="true"
       rows="1"
       placeholder="Send message"
-      class="ion-text-center"
       [(ngModel)]="message">
     </ion-textarea>
     <ion-buttons slot="end">

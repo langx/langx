@@ -9,6 +9,7 @@ export class ChatBoxComponent  implements OnInit {
 
   @Input() chat: any;
   @Input() current_user_id: any;
+  @Input() current_user_photo: any;
 
   constructor() { }
 
