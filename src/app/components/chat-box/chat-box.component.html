@@ -24,28 +24,43 @@
 </ion-card>
 -->
 
-    <ion-item>
+    <ion-item *ngIf="chat?.sender != current_user_id">
 
-
-      <ion-avatar>
-        <img src="https://i.pravatar.cc/300">
-      </ion-avatar>
       <div class="message-body">
         <div class="message-main-receiver">
           <div class="receiver">
             <div class="message-text">
-             Hi, what are you doing?!
+              {{chat?.message}}
             </div>
             <span class="message-time float-right">
-              45m ago
+              {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
             </span>
           </div>
         </div>
       </div>
 
+    </ion-item>
+    
+    <ion-item *ngIf="chat?.sender == current_user_id">
 
-      </ion-item>
-      <ion-item>
+      <div class="message-body">
+        <div class="message-main-sender">
+          <div class="sender">
+            <div class="message-text">
+              {{chat?.message}}
+            </div>
+            <span class="message-time float-right">
+              {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </ion-item>
+
+
+    <!--
+    <ion-item>
       
 
         <div class="message-body">
@@ -99,4 +114,4 @@
         </div>
   
   
-        </ion-item>
+        </ion-item>-->
