@@ -16,6 +16,7 @@ export class ChatPage implements OnInit {
   chatRoomId: string;
   name: string;
   uid: string;
+  photo: string;
   chats: Observable<any[]>;
   message: string;
   isLoading: boolean = false;
@@ -34,6 +35,7 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
     this.initChatPage();
+    this.getProfileImage();
   }
 
   initChatPage() {
@@ -62,6 +64,11 @@ export class ChatPage implements OnInit {
     // let sampleData = [1,2,3]
     // this.chats.unshift.apply(...sampleData);
 
+  }
+
+  async getProfileImage() {
+    let user = await this.chatService.auth.getUserDataById(this.uid);
+    this.photo = user?.photo;
   }
 
   ngAfterViewChecked() {
