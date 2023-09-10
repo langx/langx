@@ -3,7 +3,7 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
-      <ion-avatar style="width: 40px; height: 40px;;">
+      <ion-avatar (click)="goProfile(uid)" style="width: 40px; height: 40px;;">
         <ion-img src="https://i.pravatar.cc/301"></ion-img>
       </ion-avatar>
     </ion-buttons>
