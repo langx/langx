@@ -1,10 +1,20 @@
 <ion-header [translucent]="true">
+
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-avatar style="width: 40px; height: 40px;;">
+        <ion-img src="https://i.pravatar.cc/301"></ion-img>
+      </ion-avatar>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title (click)="goProfile(uid)">{{name}}</ion-title>
   </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
