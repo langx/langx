@@ -1,0 +1,87 @@
+ion-avatar {
+	img {
+		width: 36.5px;
+		height: 36.5px;
+		padding: auto;
+	}
+}
+
+.message {
+  padding: 0 !important;
+  margin: 0 !important;
+  // background: url("w.jpg") no-repeat fixed center;
+  background-size: cover;
+  overflow-y: auto;
+  border: 1px solid #bd1212;
+  height: calc(100% - 120px);
+}
+
+.message-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: auto;
+}
+
+.message-main-receiver {
+  // padding: 10px 20px;
+  // padding: 3px 10px !important;
+  padding: 5px !important;
+  max-width: 80%;
+}
+
+.message-main-sender {
+  padding: 5px !important;
+  // margin-left: 100% !important;
+	float: right;
+  max-width: 80%;
+}
+
+.message-text {
+  margin: 0 !important;
+  padding: 5px !important;
+  word-wrap:break-word;
+  font-weight: 300;
+  font-size: 14px;
+  padding-bottom: 0 !important;
+}
+
+.message-time {
+  margin: 0 !important;
+  margin-left: 50px !important;
+  font-size: 10px;
+	font-weight: 200;
+  text-align: right;
+  //color: #9a9a9a;
+
+}
+
+.receiver {
+  width: auto !important;
+  padding: 4px 10px 7px !important;
+  border-radius: 10px;
+  background: var(--ion-color-light) !important;
+	color: var(--ion-color-light-contrast) !important;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.sender {
+  float: right;
+  width: auto !important;
+  background: var(--ion-color-primary) !important;
+	color: var(--ion-color-primary-contrast);
+  border-radius: 10px;
+  padding: 4px 10px 7px !important;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+.float-right {
+	float: right;
+	padding: 5px !important;
+}
