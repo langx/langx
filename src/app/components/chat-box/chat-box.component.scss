@@ -1,13 +1,3 @@
-.message {
-  padding: 0 !important;
-  margin: 0 !important;
-  // background: url("w.jpg") no-repeat fixed center;
-  background-size: cover;
-  overflow-y: auto;
-  border: 1px solid #bd1212;
-  height: calc(100% - 120px);
-}
-
 .message-body {
   margin: 0 !important;
   padding: 0 !important;
@@ -44,6 +34,8 @@
   font-size: 9px;
 	font-weight: 200;
   text-align: right;
+  float: right;
+	padding: 5px !important;
 }
 
 .receiver {
@@ -68,10 +60,4 @@
   font-size: 12px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
   word-wrap: break-word;
-}
-
-.float-right {
-  //position: relative;
-	float: right;
-	padding: 5px !important;
 }
