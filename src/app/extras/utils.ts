@@ -8,15 +8,15 @@ export function lastSeen(date: Date) {
   let months = Math.floor(days / 30);
   let years = Math.floor(months / 12);
   if (years > 0) {
-    return years + ' years ago';
+    return years + 'Y';
   } else if (months > 0) {
-    return months + ' months ago';
+    return months + 'M';
   } else if (days > 0) {
-    return days + ' days ago';
+    return days + 'd';
   } else if (hours > 0) {
-    return hours + ' hours ago';
+    return hours + 'h';
   } else if (minutes > 0) {
-    return minutes + ' minutes ago';
+    return minutes + 'm';
   } else {
     return 'just now';
   }

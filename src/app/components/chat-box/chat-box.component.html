@@ -6,7 +6,7 @@
           {{chat?.message}}
         </div>
         <span class="message-time">
-          {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+          {{lastSeen(chat?.createdAt)}}
         </span>
       </div>
     </div>
@@ -20,7 +20,7 @@
         <div class="message-text">
           {{chat?.message}}
           <span class="message-time">
-            {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+            {{lastSeen(chat?.createdAt)}}
           </span>
         </div>
       </div>
