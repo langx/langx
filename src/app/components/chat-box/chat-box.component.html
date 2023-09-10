@@ -1,19 +1,23 @@
-<ion-item 
-  lines="none"
-  [class]="chat?.sender != current_user_id ? 'sender' : 'user'">
-  <ion-chip
-    [slot]="chat?.sender == current_user_id ? 'end' : 'start'"
-    class="ion-text-wrap">
-    <ion-text>{{chat?.message}}</ion-text>
-    <ion-note>
-      <small>{{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}</small>
-      <ion-icon 
-        *ngIf="chat?.sender == current_user_id" color="primary"
-        name="checkmark-done-outline">
-      </ion-icon>
-    </ion-note>
-  </ion-chip>
-  <ion-avatar>
-    <img [src]="chat?.sender == current_user_id ? current_user_photo : current_user_photo">
-  </ion-avatar>
-</ion-item>
+<ion-card
+  [slot]="chat?.sender == current_user_id ? 'end' : 'start'"
+  [color]="chat?.sender == current_user_id ? 'primary' : ''">
+  <ion-card-content>
+    <ion-list lines="none">
+      <ion-item>
+        <ion-avatar
+          [slot]="chat?.sender == current_user_id ? 'end' : 'start'">
+          <img [src]="current_user_photo" style="height: 30px; width: 30px;">
+        </ion-avatar>
+        <ion-label class="ion-text-wrap">
+          <h2>{{chat?.message}}</h2>
+          <p>{{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+          <ion-icon 
+            *ngIf="chat?.sender == current_user_id" color="primary"
+            name="checkmark-done-outline">
+          </ion-icon>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
