@@ -66,6 +66,7 @@ export class ChatPage implements OnInit {
 
   }
 
+  // TODO: Optimize this function, we are getting all users data here
   async getProfileImage() {
     let user = await this.chatService.auth.getUserDataById(this.uid);
     this.photo = user?.photo;
