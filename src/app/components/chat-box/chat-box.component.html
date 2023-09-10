@@ -48,10 +48,10 @@
           <div class="sender">
             <div class="message-text">
               {{chat?.message}}
+              <span class="message-time float-right">
+                {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+              </span>
             </div>
-            <span class="message-time float-right">
-              {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
-            </span>
           </div>
         </div>
       </div>

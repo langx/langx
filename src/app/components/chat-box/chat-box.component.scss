@@ -1,11 +1,3 @@
-ion-avatar {
-	img {
-		width: 36.5px;
-		height: 36.5px;
-		padding: auto;
-	}
-}
-
 .message {
   padding: 0 !important;
   margin: 0 !important;
@@ -24,8 +16,6 @@ ion-avatar {
 }
 
 .message-main-receiver {
-  // padding: 10px 20px;
-  // padding: 3px 10px !important;
   padding: 5px !important;
   float: inline-start;
   max-width: 80%;
@@ -33,7 +23,6 @@ ion-avatar {
 
 .message-main-sender {
   padding: 5px !important;
-  // margin-left: 100% !important;
 	float: inline-end;
   max-width: 80%;
 }
@@ -42,15 +31,16 @@ ion-avatar {
   display: contents;
   margin: 0 !important;
   padding: 5px !important;
-  font-weight: 300;
-  font-size: 14px;
+  //font-weight: 300;
+  font-size: 15px;
   padding-bottom: 0 !important;
   word-wrap: break-word;
 }
 
 .message-time {
-  position: relative;
-  margin: 0 !important;
+  position: absolute;
+  bottom: 0;
+  right: 1px;
   font-size: 9px;
 	font-weight: 200;
   text-align: right;
@@ -59,7 +49,7 @@ ion-avatar {
 .receiver {
   position: relative;
   width: auto !important;
-  padding: 10px !important;
+  padding: 10px 30px 15px 10px !important;
   border-radius: 10px 10px 10px 0;
   background: var(--ion-color-light) !important;
 	color: var(--ion-color-light-contrast) !important;
@@ -74,13 +64,14 @@ ion-avatar {
   background: var(--ion-color-primary) !important;
 	color: var(--ion-color-primary-contrast);
   border-radius: 10px 10px 0 10px;
-  padding: 10px !important;
+  padding: 10px 30px 15px 10px !important;
   font-size: 12px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
   word-wrap: break-word;
 }
 
 .float-right {
+  //position: relative;
 	float: right;
 	padding: 5px !important;
 }
