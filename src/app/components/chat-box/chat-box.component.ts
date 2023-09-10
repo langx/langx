@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { lastSeen } from 'src/app/extras/utils';
 
 @Component({
   selector: 'app-chat-box',
@@ -14,5 +15,11 @@ export class ChatBoxComponent  implements OnInit {
   constructor() { }
 
   ngOnInit() {}
+
+  lastSeen(d: any) { 
+    if (!d) return null;
+    let a = new Date(d.seconds * 1000)
+    return lastSeen(a);
+   }
 
 }
