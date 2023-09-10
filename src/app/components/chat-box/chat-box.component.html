@@ -1,117 +1,29 @@
-<!--
-<ion-card
-  [slot]="chat?.sender == current_user_id ? 'end' : 'start'"
-  [color]="chat?.sender == current_user_id ? 'primary' : ''">
-  <ion-card-content>
-    <ion-list lines="none">
-      <ion-item>
-        <ion-avatar
-          [slot]="chat?.sender == current_user_id ? 'end' : 'start'">
-          <img [src]="current_user_photo" style="height: 30px; width: 30px;">
-        </ion-avatar>
-        <ion-label class="ion-text-wrap">
-          <h2>{{chat?.message}}</h2>
-          <p>{{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
-          <ion-icon 
-            *ngIf="chat?.sender == current_user_id" color="primary"
-            name="checkmark-done-outline">
-          </ion-icon>
-          </p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-  </ion-card-content>
-</ion-card>
--->
+<ion-item *ngIf="chat?.sender != current_user_id">
+  <div class="message-body">
+    <div class="message-main-receiver">
+      <div class="receiver">
+        <div class="message-text">
+          {{chat?.message}}
+        </div>
+        <span class="message-time">
+          {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+        </span>
+      </div>
+    </div>
+  </div>
+</ion-item>
 
-    <ion-item *ngIf="chat?.sender != current_user_id">
-
-      <div class="message-body">
-        <div class="message-main-receiver">
-          <div class="receiver">
-            <div class="message-text">
-              {{chat?.message}}
-            </div>
-            <span class="message-time float-right">
-              {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
-            </span>
-          </div>
+<ion-item *ngIf="chat?.sender == current_user_id">
+  <div class="message-body">
+    <div class="message-main-sender">
+      <div class="sender">
+        <div class="message-text">
+          {{chat?.message}}
+          <span class="message-time">
+            {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
+          </span>
         </div>
       </div>
-
-    </ion-item>
-    
-    <ion-item *ngIf="chat?.sender == current_user_id">
-
-      <div class="message-body">
-        <div class="message-main-sender">
-          <div class="sender">
-            <div class="message-text">
-              {{chat?.message}}
-              <span class="message-time float-right">
-                {{(chat?.createdAt)?.toDate() | date: 'HH:mm'}}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </ion-item>
-
-
-    <!--
-    <ion-item>
-      
-
-        <div class="message-body">
-            <div class="message-main-sender">
-              <div class="sender">
-                <div class="message-text">
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                  I am doing nothing man!
-                </div>
-                <span class="message-time float-right">
-                  2m ago
-                </span>
-              </div>
-            </div>
-          </div>
-          <ion-avatar>
-            <img src="https://i.pravatar.cc/300">
-          </ion-avatar>
-
-
-      </ion-item>
-
-
-      <ion-item>
-
-
-        <ion-avatar>
-          <img src="https://i.pravatar.cc/300">
-        </ion-avatar>
-        <div class="message-body">
-          <div class="message-main-receiver">
-            <div class="receiver">
-              <div class="message-text">
-               Hi, what are you dyyoing?!
-               Hi, what are you dyyoing?!
-               Hi, what are you dyyoing?!
-               Hi, what are you dyyoing?!
-              </div>
-              <span class="message-time float-right">
-                45m ago
-              </span>
-            </div>
-          </div>
-        </div>
-  
-  
-        </ion-item>-->
+    </div>
+  </div>
+</ion-item>
