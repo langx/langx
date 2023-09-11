@@ -15,7 +15,7 @@ This project developed by New Chapter Team.
 
 To install the project locally, follow these steps:
 
-1. Clone the repository to your local machine using the command `git clone https://github.com/behicsakar/languageXchange.git`
+1. Clone the repository to your local machine using the command `git clone https://github.com/newchaptertech/languageXchange.git`
    - Navigate to the project directory using the command `cd languageXchange`
    - Install the Ionic CLI globally using the command `npm install -g @ionic/cli`
    - Install the project dependencies using the command `npm install`
