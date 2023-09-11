@@ -1,10 +1,9 @@
 <ion-header [translucent]="true">
-
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
-      <ion-avatar (click)="goProfile(uid)" style="width: 40px; height: 40px;;">
-        <img [src]="photo"/>
+      <ion-avatar (click)="goProfile(uid)" style="width: 40px; height: 40px">
+        <img [src]="photo" />
       </ion-avatar>
     </ion-buttons>
     <ion-buttons slot="end">
@@ -14,27 +13,28 @@
     </ion-buttons>
     <ion-title (click)="goProfile(uid)">{{name}}</ion-title>
   </ion-toolbar>
-
 </ion-header>
 
-<ion-content>
+<ion-content id="content">
   <ng-container *ngIf="(chats | async ) as chat$">
- 
-    <app-empty-screen
-      *ngIf="(chats | async)?.length == 0"
-      [model]="model">
+    <app-empty-screen *ngIf="(chats | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
     <ion-list lines="none" *ngIf="chat$?.length > 0">
-
-    <!--TODO: TODO: There is a bug after i added ion-infinite-scroll.
+      <!--TODO: TODO: There is a bug after i added ion-infinite-scroll.
     When i refresh the page manually, scroll to bottom is not working-->
+
+      <!--
     <ion-infinite-scroll position="top" (ionInfinite)="loadMore($event)">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
+    -->
 
       <ion-item-group class="chats-group" *ngFor="let chat of chat$">
-        <app-chat-box [chat]="chat" [current_user_id]="chatService.currentUserId"></app-chat-box>
+        <app-chat-box
+          [chat]="chat"
+          [current_user_id]="chatService.currentUserId"
+        ></app-chat-box>
       </ion-item-group>
     </ion-list>
   </ng-container>
@@ -42,17 +42,41 @@
 
 <ion-footer>
   <ion-toolbar>
-  <ion-item>
-    <ion-textarea
-      placeholder="Type your message here..."
-      type="text"
-      [(ngModel)]="message"
-      autoGrow="true">
-    </ion-textarea>
-    <ion-icon color="medium" expand="icon-only" name="mic" slot="end"></ion-icon>
-    <ion-icon color="primary" expand="icon-only" name="send" slot="end" (click)="sendMessage()" *ngIf="!isLoading"></ion-icon>
-    <ion-icon color="medium" expand="icon-only" name="send" slot="end" *ngIf="isLoading"></ion-icon>
-    <ion-icon color="medium" expand="icon-only" name="link" slot="start"></ion-icon>
-  </ion-item>
-</ion-toolbar>
+    <ion-item>
+      <ion-textarea
+        placeholder="Type your message here..."
+        type="text"
+        [(ngModel)]="message"
+        autoGrow="true"
+      >
+      </ion-textarea>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="mic"
+        slot="end"
+      ></ion-icon>
+      <ion-icon
+        color="primary"
+        expand="icon-only"
+        name="send"
+        slot="end"
+        (click)="sendMessage()"
+        *ngIf="!isLoading"
+      ></ion-icon>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="send"
+        slot="end"
+        *ngIf="isLoading"
+      ></ion-icon>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="link"
+        slot="start"
+      ></ion-icon>
+    </ion-item>
+  </ion-toolbar>
 </ion-footer>
