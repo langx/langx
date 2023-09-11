@@ -1,5 +1,4 @@
 <ion-content [fullscreen]="true">
-
   <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
     <ion-fab-button (click)="close()" size="small" color="medium">
       <ion-icon name="close-outline"></ion-icon>
@@ -15,13 +14,13 @@
     [navigation]="true"
     pagination-dynamic-bullets="true"
     keyboard="true"
-    mousewheel="true">
+    mousewheel="true"
+  >
     <swiper-slide *ngFor="let photo of photos">
       <!-- TODO: Test this following zoom feature on mobile-->
       <div class="swiper-zoom-container">
-        <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer">
+        <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer" />
       </div>
     </swiper-slide>
-</swiper-container>
-
+  </swiper-container>
 </ion-content>

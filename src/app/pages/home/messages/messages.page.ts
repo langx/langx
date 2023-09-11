@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
@@ -10,20 +10,16 @@ import { ChatService } from 'src/app/services/chat/chat.service';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  
   chatRooms: Observable<any>;
   isLoading: boolean = false;
 
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
-    color: 'warning'
-  }
+    color: 'warning',
+  };
 
-  constructor(
-    private router: Router,
-    private chatService: ChatService,
-  ) { }
+  constructor(private router: Router, private chatService: ChatService) {}
 
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
@@ -39,15 +35,13 @@ export class MessagesPage implements OnInit {
   }
 
   getChat(item) {
-    (item?.user).pipe(
-      take(1)
-    ).subscribe(user_data => {
+    (item?.user).pipe(take(1)).subscribe((user_data) => {
       console.log('user_data', user_data);
       const navData: NavigationExtras = {
         queryParams: {
           name: user_data?.name,
           uid: user_data?.uid,
-        }
+        },
       };
       this.router.navigate(['/', 'home', 'chat', item.id], navData);
     });
@@ -57,7 +51,7 @@ export class MessagesPage implements OnInit {
     return user;
   }
 
-  openArchiveMessages(){
+  openArchiveMessages() {
     console.log('openArchiveMessages clicked');
   }
 
@@ -71,10 +65,9 @@ export class MessagesPage implements OnInit {
     console.log('archiveChat clicked', room);
   }
 
-  lastSeen(d: any) { 
+  lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return lastSeen(a);
-   }
-
+  }
 }

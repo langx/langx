@@ -6,12 +6,13 @@ import { EditPage } from './edit.page';
 const routes: Routes = [
   {
     path: '',
-    component: EditPage
+    component: EditPage,
   },
   {
     path: 'languages',
-    loadChildren: () => import('./languages/languages.module').then( m => m.LanguagesPageModule)
-  }
+    loadChildren: () =>
+      import('./languages/languages.module').then((m) => m.LanguagesPageModule),
+  },
 ];
 
 @NgModule({

@@ -14,11 +14,21 @@
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Password</ion-label>
-      <ion-input formControlName="password" type="password" required></ion-input>
+      <ion-input
+        formControlName="password"
+        type="password"
+        required
+      ></ion-input>
     </ion-item>
     <ion-row>
       <ion-col>
-        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Sign In</ion-button>
+        <ion-button
+          *ngIf="!isLoading"
+          type="submit"
+          color="primary"
+          expand="block"
+          >Sign In</ion-button
+        >
         <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
           <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
         </ion-button>
@@ -32,7 +42,11 @@
             <ion-card-title>Login with</ion-card-title>
           </ion-card-header>
           <ion-card-content align="center">
-            <ion-icon (click)="signInWithGoogle()" size="large" name="logo-google"></ion-icon>
+            <ion-icon
+              (click)="signInWithGoogle()"
+              size="large"
+              name="logo-google"
+            ></ion-icon>
             <!--<ion-icon size="large" name="logo-facebook"></ion-icon>
             <ion-icon size="large" name="logo-apple"></ion-icon>-->
           </ion-card-content>
@@ -41,25 +55,30 @@
     </ion-row>
     <ion-row class="ion-margin-vertical">
       <ion-col size="6" class="alignItems">
-        <div align=left>
+        <div align="left">
           <ion-checkbox></ion-checkbox>
           <ion-note>Remember me</ion-note>
         </div>
       </ion-col>
       <ion-col size="6">
-        <div align=right>
-          <ion-note><ion-text routerLink="reset-password" color="primary">Forgot password?</ion-text></ion-note>
+        <div align="right">
+          <ion-note
+            ><ion-text routerLink="reset-password" color="primary"
+              >Forgot password?</ion-text
+            ></ion-note
+          >
         </div>
       </ion-col>
     </ion-row>
     <p class="signup">
       <ion-note>
-        Not a member yet? <ion-text routerLink="signup" color="primary">Sign Up</ion-text>
+        Not a member yet?
+        <ion-text routerLink="signup" color="primary">Sign Up</ion-text>
       </ion-note>
     </p>
   </form>
 
-<!--
+  <!--
   <ion-button (click)="setValue()">Set Value</ion-button>
   <ion-button (click)="getValue()">Get Value</ion-button>
   <ion-button (click)="removeValue()">Remove Value</ion-button>
@@ -67,5 +86,4 @@
 
   <p>{{ value }}</p>
 -->
-
 </ion-content>

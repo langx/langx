@@ -2,7 +2,13 @@
   <ion-toolbar color="primary">
     <ion-title>Messages</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="openArchiveMessages()" expand="block" size="large" slot="icon-only" shape="round">
+      <ion-button
+        (click)="openArchiveMessages()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+      >
         <ion-icon name="archive-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -10,28 +16,26 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <ng-container *ngIf="!isLoading && (chatRooms | async) as rooms">
-
-    <app-empty-screen
-      *ngIf="(chatRooms | async)?.length == 0"
-      [model]="model">
+    <app-empty-screen *ngIf="(chatRooms | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
     <ion-list *ngIf="rooms?.length > 0">
-      <div
-        *ngFor="let item of rooms"
-        detail>
+      <div *ngFor="let item of rooms" detail>
         <ion-item-sliding>
           <ion-item (click)="getChat(item)">
             <ng-container *ngIf="(item?.user | async) as user">
               <ion-avatar slot="start">
-                <img [src]="getUser(user)?.photo" alt="" referrerpolicy="no-referrer">
+                <img
+                  [src]="getUser(user)?.photo"
+                  alt=""
+                  referrerpolicy="no-referrer"
+                />
               </ion-avatar>
               <ion-label>
                 <h2>{{getUser(user)?.name}}</h2>
@@ -41,14 +45,16 @@
             </ng-container>
           </ion-item>
           <ion-item-options side="end" (ionSwipe)="archiveChat(item)">
-            <ion-item-option color="danger" expandable (click)="archiveChat(item)">
+            <ion-item-option
+              color="danger"
+              expandable
+              (click)="archiveChat(item)"
+            >
               <ion-icon slot="icon-only" name="archive-outline"></ion-icon>
             </ion-item-option>
           </ion-item-options>
         </ion-item-sliding>
       </div>
     </ion-list>
-
   </ng-container>
-
 </ion-content>

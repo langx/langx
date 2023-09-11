@@ -19,11 +19,15 @@
     </ion-item>
     <ion-item lines="full">
       <ion-label position="floating">Password</ion-label>
-      <ion-input formControlName="password" type="password" required></ion-input>
+      <ion-input
+        formControlName="password"
+        type="password"
+        required
+      ></ion-input>
     </ion-item>
     <ion-row class="ion-margin-vertical">
       <ion-col size="12" class="alignItems">
-        <div align=left>
+        <div align="left">
           <ion-checkbox></ion-checkbox>
           <ion-note>I accept the policy and terms</ion-note>
         </div>
@@ -31,7 +35,13 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Sign Up</ion-button>
+        <ion-button
+          *ngIf="!isLoading"
+          type="submit"
+          color="primary"
+          expand="block"
+          >Sign Up</ion-button
+        >
         <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
           <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
         </ion-button>

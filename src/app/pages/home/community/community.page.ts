@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
-import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
+import {
+  FilterService,
+  FilterData,
+} from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -11,7 +14,6 @@ import { UserService } from 'src/app/services/user/user.service';
   styleUrls: ['./community.page.scss'],
 })
 export class CommunityPage implements OnInit {
-
   filter$: any;
   filterData: FilterData;
 
@@ -26,7 +28,7 @@ export class CommunityPage implements OnInit {
     private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService
-  ) { }
+  ) {}
 
   async ngOnInit() {
     await this.checkFilter();
@@ -42,34 +44,31 @@ export class CommunityPage implements OnInit {
   //
 
   async checkFilter() {
-
     await this.checkLocalStorage();
 
-    this.filter$ = this.filterService.getEvent()
-    .subscribe(
-      (filterData: FilterData) => {
+    this.filter$ = this.filterService
+      .getEvent()
+      .subscribe((filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
         this.handleRefresh(filterData);
-      }
-    );
-
+      });
   }
 
   async checkLocalStorage() {
     // Getting the filter data from localStorage
-    const languagesString = await this.storageService.get("languages") ;
-    const gender = await this.storageService.get("gender") || null;
-    const country = await this.storageService.get("country") || null;
-    const minAgeString = await this.storageService.get("minAge");
-    const maxAgeString = await this.storageService.get("maxAge");
-    
+    const languagesString = await this.storageService.get('languages');
+    const gender = (await this.storageService.get('gender')) || null;
+    const country = (await this.storageService.get('country')) || null;
+    const minAgeString = await this.storageService.get('minAge');
+    const maxAgeString = await this.storageService.get('maxAge');
+
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
 
-    let languages : Array<any> = [];
-    if(languagesString) {
-      languages = languagesString.toLocaleString().split(",");
+    let languages: Array<any> = [];
+    if (languagesString) {
+      languages = languagesString.toLocaleString().split(',');
     }
 
     let filterData: FilterData = {
@@ -77,8 +76,8 @@ export class CommunityPage implements OnInit {
       gender: gender,
       country: country,
       minAge: minAge,
-      maxAge: maxAge
-    }
+      maxAge: maxAge,
+    };
 
     console.log('checkLocalStorage', filterData);
     this.filterService.setEvent(filterData);
@@ -123,12 +122,12 @@ export class CommunityPage implements OnInit {
         queryParams: {
           name: item?.name,
           uid: item?.uid,
-        }
+        },
       };
       this.router.navigate(['/', 'home', 'chat', room?.id], navData);
       // hideLoader();
       this.isLoading = false;
-    } catch(e) {
+    } catch (e) {
       console.log(e);
       // hideLoader();
       this.isLoading = false;
@@ -144,7 +143,7 @@ export class CommunityPage implements OnInit {
     this.isAllUsersLoaded = false;
     this.userService.refreshUsers();
     this.getUsers(filterData);
-    if(event) event.target.complete();
+    if (event) event.target.complete();
   }
 
   //
@@ -154,5 +153,4 @@ export class CommunityPage implements OnInit {
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
   }
-
 }

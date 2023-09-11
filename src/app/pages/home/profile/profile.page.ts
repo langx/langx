@@ -13,14 +13,33 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-
   @ViewChild(IonModal) modal: IonModal;
 
   public appPages = [
-    { title: 'Account', url: 'account', icon: 'person-circle-outline',detail: true },
-    { title: 'Notifications', url: 'notifications', icon: 'notifications-outline', detail: true },
-    { title: 'Privacy', url: 'privacy', icon: 'shield-checkmark-outline', detail: true },
-    { title: 'Appearance', url: 'appearance', icon: 'contrast-outline', detail: true },
+    {
+      title: 'Account',
+      url: 'account',
+      icon: 'person-circle-outline',
+      detail: true,
+    },
+    {
+      title: 'Notifications',
+      url: 'notifications',
+      icon: 'notifications-outline',
+      detail: true,
+    },
+    {
+      title: 'Privacy',
+      url: 'privacy',
+      icon: 'shield-checkmark-outline',
+      detail: true,
+    },
+    {
+      title: 'Appearance',
+      url: 'appearance',
+      icon: 'contrast-outline',
+      detail: true,
+    },
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
@@ -34,7 +53,7 @@ export class ProfilePage implements OnInit {
     private authService: AuthService,
     private chatService: ChatService,
     private modalCtrl: ModalController
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getProfileInfo();
@@ -45,16 +64,15 @@ export class ProfilePage implements OnInit {
     this.isLoading = true;
     await this.authService.getUserData();
 
-    this.cUser = this.authService._cUser.subscribe(cUser => {
-      if(cUser) {
-        console.log(cUser.uid)
+    this.cUser = this.authService._cUser.subscribe((cUser) => {
+      if (cUser) {
+        console.log(cUser.uid);
         this.currentUser = cUser;
       }
     });
 
     //hideLoader();
     this.isLoading = false;
-
   }
 
   ngOnDestroy() {
@@ -66,52 +84,52 @@ export class ProfilePage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: PreviewPhotoComponent,
       componentProps: {
-        photos: photos
-      }
+        photos: photos,
+      },
     });
-    modal.present(); 
+    modal.present();
   }
 
-  async logout(){
+  async logout() {
     try {
       //showLoader();
       this.isLoading = true;
       await this.chatService.auth.logout();
-      this.router.navigateByUrl('/login', {replaceUrl: true});
+      this.router.navigateByUrl('/login', { replaceUrl: true });
       //hideLoader();
       this.isLoading = false;
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
 
   getAccountPage(page) {
-      if (page?.url == 'logout') {
-        this.logout();
-        this.dismissModal();
-        return;
-      }
+    if (page?.url == 'logout') {
+      this.logout();
       this.dismissModal();
-      this.router.navigate(['/', 'home', page?.url]);
-  };
+      return;
+    }
+    this.dismissModal();
+    this.router.navigate(['/', 'home', page?.url]);
+  }
 
   editProfile() {
     this.router.navigate(['/', 'home', 'profile', 'edit']);
   }
-  
+
   dismissModal() {
     this.modal.dismiss();
   }
 
-  lastSeen(d: any) { 
+  lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return lastSeen(a);
-   }
+  }
 
   getAge(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return getAge(a);
   }
 

@@ -6,19 +6,14 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './preview-photo.component.html',
   styleUrls: ['./preview-photo.component.scss'],
 })
-export class PreviewPhotoComponent  implements OnInit {
-
+export class PreviewPhotoComponent implements OnInit {
   @Input() photos: any;
 
-  constructor(
-    private modalCtrl: ModalController
-  ) { }
+  constructor(private modalCtrl: ModalController) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   close() {
     this.modalCtrl.dismiss();
   }
-
 }

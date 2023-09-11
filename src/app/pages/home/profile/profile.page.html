@@ -1,132 +1,178 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
     <ion-title>Profile</ion-title>
-    
+
     <ion-buttons slot="end">
-      <ion-button (click)="editProfile()" expand="block" size="large" slot="icon-only" shape="round">
+      <ion-button
+        (click)="editProfile()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+      >
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button id="settings-modal" expand="block" size="large" slot="icon-only" shape="round">
+      <ion-button
+        id="settings-modal"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+      >
         <ion-icon name="cog-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding" [fullscreen]="true">
-
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-    <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
 
-    <ion-card>
-      <ion-card-header id="profile-pic">
-        <img [src]="currentUser?.photo" (click)="openPreview([currentUser?.photo])" alt="Profile Picture" referrerpolicy="no-referrer">
-        <ion-card-title class=".ion-text-center">{{currentUser?.name}}</ion-card-title>
-        <ion-card-subtitle>{{getAge(currentUser?.birthdate)}} | {{currentUser?.gender}} | {{currentUser?.country?.name}}</ion-card-subtitle>
-        <ion-card-subtitle *ngIf="!currentUser?.online">Active {{lastSeen(currentUser?.lastSeen)}}</ion-card-subtitle>
-        <ion-card-subtitle *ngIf="currentUser?.online" color="primary">Online</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
+  <ion-card>
+    <ion-card-header id="profile-pic">
+      <img
+        [src]="currentUser?.photo"
+        (click)="openPreview([currentUser?.photo])"
+        alt="Profile Picture"
+        referrerpolicy="no-referrer"
+      />
+      <ion-card-title class=".ion-text-center"
+        >{{currentUser?.name}}</ion-card-title
+      >
+      <ion-card-subtitle
+        >{{getAge(currentUser?.birthdate)}} | {{currentUser?.gender}} |
+        {{currentUser?.country?.name}}</ion-card-subtitle
+      >
+      <ion-card-subtitle *ngIf="!currentUser?.online"
+        >Active {{lastSeen(currentUser?.lastSeen)}}</ion-card-subtitle
+      >
+      <ion-card-subtitle *ngIf="currentUser?.online" color="primary"
+        >Online</ion-card-subtitle
+      >
+    </ion-card-header>
+  </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>About Me</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item lines="none">
-          <ion-textarea
-            [autoGrow]="true"
-            readonly="true"
-            rows="3"
-            placeholder="You can edit here your profile description."
-            [value]="currentUser?.aboutMe"></ion-textarea>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>About Me</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-textarea
+          [autoGrow]="true"
+          readonly="true"
+          rows="3"
+          placeholder="You can edit here your profile description."
+          [value]="currentUser?.aboutMe"
+        ></ion-textarea>
+      </ion-item>
+      <ion-list class="hasIcon">
+        <ion-item>
+          <ion-icon name="flag-outline"></ion-icon>
+          <ion-label>{{currentUser?.country?.name}}</ion-label>
         </ion-item>
-        <ion-list class="hasIcon">
-          <ion-item>
-            <ion-icon name="flag-outline"></ion-icon>
-            <ion-label>{{currentUser?.country?.name}}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="male-female-outline"></ion-icon>
-            <ion-label>{{currentUser?.gender}}</ion-label>
-          </ion-item>
-          <ion-item>
-            <ion-icon name="calendar-number-outline"></ion-icon>
-            <ion-label>{{(currentUser?.birthdate)?.toDate() | date: 'dd/MM/YYYY'}}</ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+        <ion-item>
+          <ion-icon name="male-female-outline"></ion-icon>
+          <ion-label>{{currentUser?.gender}}</ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-icon name="calendar-number-outline"></ion-icon>
+          <ion-label
+            >{{(currentUser?.birthdate)?.toDate() | date:
+            'dd/MM/YYYY'}}</ion-label
+          >
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Study Languages</ion-card-title>
-        <ion-card-subtitle></ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list class="hasIcon">
-          <ion-item *ngFor="let lang of currentUser?.studyLanguages">
-            <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline"></ion-icon>
-            <ion-icon *ngIf="lang.level == 2" name="battery-half-outline"></ion-icon>
-            <ion-icon *ngIf="lang.level == 3" name="battery-full-outline"></ion-icon>
-            <ion-label>{{lang.name}}</ion-label>
-            <ion-note>{{lang.nativeName}}</ion-note>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Study Languages</ion-card-title>
+      <ion-card-subtitle></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list class="hasIcon">
+        <ion-item *ngFor="let lang of currentUser?.studyLanguages">
+          <ion-icon
+            *ngIf="lang.level == 1"
+            name="battery-dead-outline"
+          ></ion-icon>
+          <ion-icon
+            *ngIf="lang.level == 2"
+            name="battery-half-outline"
+          ></ion-icon>
+          <ion-icon
+            *ngIf="lang.level == 3"
+            name="battery-full-outline"
+          ></ion-icon>
+          <ion-label>{{lang.name}}</ion-label>
+          <ion-note>{{lang.nativeName}}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Mother Tongue</ion-card-title>
-        <ion-card-subtitle></ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-list class="hasIcon">
-          <ion-item *ngFor="let lang of currentUser?.motherLanguages">
-            <ion-icon name="battery-charging-outline"></ion-icon>
-            <ion-label>{{lang.name}}</ion-label>
-            <ion-note>{{lang.nativeName}}</ion-note>
-          </ion-item>
-        </ion-list>
-      </ion-card-content>
-    </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Mother Tongue</ion-card-title>
+      <ion-card-subtitle></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list class="hasIcon">
+        <ion-item *ngFor="let lang of currentUser?.motherLanguages">
+          <ion-icon name="battery-charging-outline"></ion-icon>
+          <ion-label>{{lang.name}}</ion-label>
+          <ion-note>{{lang.nativeName}}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Photos</ion-card-title>
-        <ion-card-subtitle></ion-card-subtitle>
-      </ion-card-header>
-      <ion-card-content>
-
-        <swiper-container
-          [slidesPerView]="3.5"
-          [spaceBetween]="15"
-          [centeredSlides]="false"
-          initialSlide="0"
-          [pagination]="true"
-          pagination-dynamic-bullets="true"
-          keyboard="true"
-          mousewheel="true">
-          <swiper-slide *ngFor="let photo of currentUser?.otherPhotos; let i = index">
-            <!-- TODO: Test this following zoom feature on mobile-->
-            <div class="swiper-zoom-container">
-              <img [src]="photo" alt="Profile Picture" tappable (click)="openPreview(currentUser?.otherPhotos)" referrerpolicy="no-referrer">
-            </div>
-          </swiper-slide>
-        </swiper-container>
-
-      </ion-card-content>
-    </ion-card>
-
-
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Photos</ion-card-title>
+      <ion-card-subtitle></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <swiper-container
+        [slidesPerView]="3.5"
+        [spaceBetween]="15"
+        [centeredSlides]="false"
+        initialSlide="0"
+        [pagination]="true"
+        pagination-dynamic-bullets="true"
+        keyboard="true"
+        mousewheel="true"
+      >
+        <swiper-slide
+          *ngFor="let photo of currentUser?.otherPhotos; let i = index"
+        >
+          <!-- TODO: Test this following zoom feature on mobile-->
+          <div class="swiper-zoom-container">
+            <img
+              [src]="photo"
+              alt="Profile Picture"
+              tappable
+              (click)="openPreview(currentUser?.otherPhotos)"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 
-<ion-modal trigger="settings-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+<ion-modal
+  trigger="settings-modal"
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+>
   <div class="block">
     <ng-template>
       <ion-header>

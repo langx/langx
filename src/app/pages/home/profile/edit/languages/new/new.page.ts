@@ -9,7 +9,6 @@ import { languagesData } from 'src/app/extras/data';
   styleUrls: ['./new.page.scss'],
 })
 export class NewPage implements OnInit {
-
   searchTerm: string;
   languageData: any;
   selectedLanguage: any;
@@ -19,28 +18,32 @@ export class NewPage implements OnInit {
   constructor(
     private router: Router,
     private toastController: ToastController
-  ) { }
+  ) {}
 
   ngOnInit() {
     const languagesArray: any = this.router.getCurrentNavigation().extras.state;
 
     // remove languages already selected
-    this.languageData = languagesData.filter((language) => !languagesArray.includes(language.code));
+    this.languageData = languagesData.filter(
+      (language) => !languagesArray.includes(language.code)
+    );
   }
 
   onSubmit() {
     console.log('submit:' + this.selectedLanguage);
-    if(!this.selectedLanguage) {
+    if (!this.selectedLanguage) {
       this.presentToast('Please select a language.');
       return;
     }
-    this.router.navigate(['/home/profile/edit/languages/new/next'], { state: this.selectedLanguage });
+    this.router.navigate(['/home/profile/edit/languages/new/next'], {
+      state: this.selectedLanguage,
+    });
   }
 
   changeLang(event) {
     const val = event.target.value;
     languagesData.find((language) => {
-      if(language.code === val) {
+      if (language.code === val) {
         this.selectedLanguage = language;
       }
     });
@@ -59,5 +62,4 @@ export class NewPage implements OnInit {
 
     await toast.present();
   }
-
 }

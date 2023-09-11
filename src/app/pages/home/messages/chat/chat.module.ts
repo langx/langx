@@ -16,8 +16,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     ChatPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
   ],
-  declarations: [ChatPage, ChatBoxComponent]
+  declarations: [ChatPage, ChatBoxComponent],
 })
 export class ChatPageModule {}

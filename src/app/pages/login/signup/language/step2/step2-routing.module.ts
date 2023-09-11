@@ -6,8 +6,8 @@ import { Step2Page } from './step2.page';
 const routes: Routes = [
   {
     path: '',
-    component: Step2Page
-  }
+    component: Step2Page,
+  },
 ];
 
 @NgModule({

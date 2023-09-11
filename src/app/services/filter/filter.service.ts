@@ -10,13 +10,12 @@ export interface FilterData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilterService {
-
   private isFilterTracker = new BehaviorSubject<FilterData>(null);
 
-  constructor() { }
+  constructor() {}
 
   getEvent(): BehaviorSubject<FilterData> {
     return this.isFilterTracker;
@@ -24,7 +23,5 @@ export class FilterService {
 
   setEvent(filterData: FilterData): void {
     this.isFilterTracker.next(filterData);
-
   }
-
 }

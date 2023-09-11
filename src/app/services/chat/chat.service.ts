@@ -5,27 +5,23 @@ import { ApiService } from '../api/api.service';
 import { Query, query } from '@angular/fire/firestore';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
-
   currentUserId: string;
   public chatRooms: Observable<any>;
   selectedChatRoomMessages: Observable<any[]>;
 
-  constructor(
-    public auth: AuthService,
-    public api: ApiService
-  ) {
-      this.getId();
-    }
+  constructor(public auth: AuthService, public api: ApiService) {
+    this.getId();
+  }
 
   getId() {
-    this.currentUserId = this.auth.getId()
+    this.currentUserId = this.auth.getId();
   }
 
   async createChatRoom(user_id) {
-    // get the userId here 
+    // get the userId here
     this.getId();
 
     try {
@@ -33,11 +29,10 @@ export class ChatService {
       let room: any;
       const querySnapshot = await this.api.getDocs(
         'chatRooms',
-        this.api.whereQuery(
-          'members',
-          'in',
-          [[user_id, this.currentUserId], [this.currentUserId, user_id]]
-        )
+        this.api.whereQuery('members', 'in', [
+          [user_id, this.currentUserId],
+          [this.currentUserId, user_id],
+        ])
       );
 
       room = await querySnapshot.docs.map((doc: any) => {
@@ -50,58 +45,59 @@ export class ChatService {
 
       // if no existing room, create new one
       const data = {
-        members: [
-          this.currentUserId,
-          user_id
-        ],
+        members: [this.currentUserId, user_id],
         type: 'private',
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
       room = await this.api.addDocument('chatRooms', data);
       return room;
-
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
   getChatRooms() {
-    // get the userId here 
+    // get the userId here
     this.getId();
 
-    this.chatRooms = this.api.collectionDataQuery(
-      'chatRooms',
-      this.api.whereQuery('members', 'array-contains', this.currentUserId),
-      this.api.orderByQuery('updatedAt', 'desc')
-    ).pipe(
-      map((data: any[]) => {
-        console.log('room data: ', data);
-        data.map((el) => {
-          const user_data = el.members.filter(x => x != this.currentUserId);
-          //console.log(user_data);
-          const user = this.api.docDataQuery(`users/${user_data[0]}`, true);
-          el.user = user;
-        });
-        return data;
-      }), switchMap(data => {
-        return of(data);
-      })
-    );
+    this.chatRooms = this.api
+      .collectionDataQuery(
+        'chatRooms',
+        this.api.whereQuery('members', 'array-contains', this.currentUserId),
+        this.api.orderByQuery('updatedAt', 'desc')
+      )
+      .pipe(
+        map((data: any[]) => {
+          console.log('room data: ', data);
+          data.map((el) => {
+            const user_data = el.members.filter((x) => x != this.currentUserId);
+            //console.log(user_data);
+            const user = this.api.docDataQuery(`users/${user_data[0]}`, true);
+            el.user = user;
+          });
+          return data;
+        }),
+        switchMap((data) => {
+          return of(data);
+        })
+      );
   }
 
   getChatRoomMessages(chatRoomId: string) {
-    this.selectedChatRoomMessages = this.api.collectionDataQuery(
-      `chats/${chatRoomId}/messages`,
-      this.api.orderByQuery('createdAt', 'desc'),
-      this.api.limitQuery(20)
-    ).pipe(
-      map((arr: any) => arr.reverse()),
-      // only emit when the current value is different than the last
-      distinctUntilChanged()
-    );
+    this.selectedChatRoomMessages = this.api
+      .collectionDataQuery(
+        `chats/${chatRoomId}/messages`,
+        this.api.orderByQuery('createdAt', 'desc'),
+        this.api.limitQuery(20)
+      )
+      .pipe(
+        map((arr: any) => arr.reverse()),
+        // only emit when the current value is different than the last
+        distinctUntilChanged()
+      );
   }
-  
+
   /*
   async getUsers() {
     const users: any[] = [];
@@ -150,14 +146,13 @@ export class ChatService {
       const new_msg = {
         message: msg,
         sender: this.currentUserId,
-        createdAt: new Date()
+        createdAt: new Date(),
       };
-      if(chatId) {
+      if (chatId) {
         await this.api.addDocument(`chats/${chatId}/messages`, new_msg);
       }
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
-
 }

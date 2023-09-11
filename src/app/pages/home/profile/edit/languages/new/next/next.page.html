@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <ion-card>
     <ion-card-header>
       <ion-card-title>{{selectedLanguage?.name}}</ion-card-title>
@@ -17,19 +16,31 @@
     <ion-card-content>
       Choice your level of your {{selectedLanguage?.name}}.
     </ion-card-content>
-     <ion-grid>
+    <ion-grid>
       <ion-radio-group (ionChange)="radioChecked($event, selectedLanguage)">
         <ion-list class="hasIcon">
           <ion-item>
-            <ion-icon name="battery-dead-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon
+              name="battery-dead-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
             <ion-radio value="1"> Beginner</ion-radio>
           </ion-item>
           <ion-item>
-            <ion-icon name="battery-half-outline" slot="start" color="primary"></ion-icon> 
+            <ion-icon
+              name="battery-half-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
             <ion-radio value="2">Intermediate</ion-radio>
           </ion-item>
           <ion-item>
-            <ion-icon name="battery-full-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon
+              name="battery-full-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
             <ion-radio value="3">Fluent</ion-radio>
           </ion-item>
         </ion-list>
@@ -39,11 +50,16 @@
 
   <ion-row>
     <ion-col>
-      <ion-button *ngIf="!isLoading" (click)="onSubmit()" color="primary" expand="block">Done</ion-button>
+      <ion-button
+        *ngIf="!isLoading"
+        (click)="onSubmit()"
+        color="primary"
+        expand="block"
+        >Done</ion-button
+      >
       <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>
-
 </ion-content>

@@ -10,12 +10,7 @@ import { CommunityPage } from './community.page';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    CommunityPageRoutingModule
-  ],
-  declarations: [CommunityPage, UserListComponent]
+  imports: [CommonModule, FormsModule, IonicModule, CommunityPageRoutingModule],
+  declarations: [CommunityPage, UserListComponent],
 })
 export class CommunityPageModule {}

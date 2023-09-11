@@ -10,7 +10,6 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./step3.page.scss'],
 })
 export class Step3Page implements OnInit {
-
   public progress: number = 1;
   isLoading: boolean = false;
   fill = 'clear';
@@ -23,15 +22,15 @@ export class Step3Page implements OnInit {
     private route: ActivatedRoute,
     private alertController: AlertController,
     private authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
     const data: any = this.route.snapshot.queryParams;
     console.log('navData coming from step2', data);
     let studyLanguages: Array<string> = [];
     let motherLanguage = data.motherLanguage;
-    
-    if(typeof(data.studyLanguages) === 'string') {
+
+    if (typeof data.studyLanguages === 'string') {
       studyLanguages.push(data.studyLanguages);
     } else {
       studyLanguages = data.studyLanguages;
@@ -40,55 +39,67 @@ export class Step3Page implements OnInit {
     studyLanguages.forEach((language) => {
       this.studyLanguages.push({
         name: languagesData.find((lang) => lang.code === language).name,
-        nativeName: languagesData.find((lang) => lang.code === language).nativeName,
-        code: language, 
+        nativeName: languagesData.find((lang) => lang.code === language)
+          .nativeName,
+        code: language,
         level: 0,
       });
-    })
+    });
 
-    this.motherLanguages = [{
-      name: languagesData.find((lang) => lang.code === motherLanguage).name,
-      nativeName: languagesData.find((lang) => lang.code === motherLanguage).nativeName,
-      code: motherLanguage,
-      level: -1,
-    }];
-
+    this.motherLanguages = [
+      {
+        name: languagesData.find((lang) => lang.code === motherLanguage).name,
+        nativeName: languagesData.find((lang) => lang.code === motherLanguage)
+          .nativeName,
+        code: motherLanguage,
+        level: -1,
+      },
+    ];
   }
 
   radioChecked(event, item) {
-    this.studyLanguages.find((lang) => lang.code === item.code).level = event.detail.value;
+    this.studyLanguages.find((lang) => lang.code === item.code).level =
+      event.detail.value;
   }
 
-  async onSubmit(){
-    if(this.studyLanguages.find((lang) => lang.level === 0)) {
-      this.showAlert("Please select your level for all languages");
+  async onSubmit() {
+    if (this.studyLanguages.find((lang) => lang.level === 0)) {
+      this.showAlert('Please select your level for all languages');
       return;
-    } 
+    }
     this.completeLanguages(this.motherLanguages, this.studyLanguages);
   }
 
   completeLanguages(motherLanguages, studyLanguages) {
-      //showLoader();
-      this.isLoading = true;
-      const languagesArray = [];
-      motherLanguages.forEach((lang) => { languagesArray.push(lang.code) });
-      studyLanguages.forEach((lang) => { languagesArray.push(lang.code) });
+    //showLoader();
+    this.isLoading = true;
+    const languagesArray = [];
+    motherLanguages.forEach((lang) => {
+      languagesArray.push(lang.code);
+    });
+    studyLanguages.forEach((lang) => {
+      languagesArray.push(lang.code);
+    });
 
-      let form = { motherLanguages: motherLanguages, studyLanguages: studyLanguages, languagesArray: languagesArray };
-      console.log('languages', form);
-      
-      try {
-        this.authService.updateUserLanguageData(form).then(() => {
-          console.log('updateUserLanguageData setted in DB');
-          this.router.navigateByUrl('/home');
-          //hideLoader();
-          this.isLoading = false;
-        });
-      } catch (error) {
-        console.log('error:', error);
+    let form = {
+      motherLanguages: motherLanguages,
+      studyLanguages: studyLanguages,
+      languagesArray: languagesArray,
+    };
+    console.log('languages', form);
+
+    try {
+      this.authService.updateUserLanguageData(form).then(() => {
+        console.log('updateUserLanguageData setted in DB');
+        this.router.navigateByUrl('/home');
+        //hideLoader();
         this.isLoading = false;
-        this.showAlert("Please try again later."); 
-      }
+      });
+    } catch (error) {
+      console.log('error:', error);
+      this.isLoading = false;
+      this.showAlert('Please try again later.');
+    }
   }
 
   async showAlert(msg: string) {
@@ -100,5 +111,4 @@ export class Step3Page implements OnInit {
     });
     await alert.present();
   }
-
 }

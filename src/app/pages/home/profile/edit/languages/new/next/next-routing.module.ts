@@ -6,8 +6,8 @@ import { NextPage } from './next.page';
 const routes: Routes = [
   {
     path: '',
-    component: NextPage
-  }
+    component: NextPage,
+  },
 ];
 
 @NgModule({

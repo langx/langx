@@ -5,10 +5,7 @@ import { EmptyScreenComponent } from './empty-screen/empty-screen.component';
 
 @NgModule({
   declarations: [EmptyScreenComponent],
-  imports: [
-    CommonModule,
-    IonicModule
-  ],
-  exports: [EmptyScreenComponent]
+  imports: [CommonModule, IonicModule],
+  exports: [EmptyScreenComponent],
 })
-export class ComponentsModule { }
+export class ComponentsModule {}

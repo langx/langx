@@ -6,8 +6,8 @@ import { CommunityPage } from './community.page';
 const routes: Routes = [
   {
     path: '',
-    component: CommunityPage
-  }
+    component: CommunityPage,
+  },
 ];
 
 @NgModule({

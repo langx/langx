@@ -5,7 +5,14 @@
       <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button (click)="newLangBtn()" color="primary" expand="block" size="large" slot="icon-only" shape="round">
+      <ion-button
+        (click)="newLangBtn()"
+        color="primary"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+      >
         <ion-icon name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,7 +20,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
 
   <ion-card *ngFor="let item of currentUser?.studyLanguages">
@@ -24,19 +30,34 @@
     <ion-card-content>
       Choice your level of your {{item?.name}}.
     </ion-card-content>
-     <ion-grid>
-      <ion-radio-group [value]="item.level" (ionChange)="radioChecked($event, item)">
+    <ion-grid>
+      <ion-radio-group
+        [value]="item.level"
+        (ionChange)="radioChecked($event, item)"
+      >
         <ion-list class="">
           <ion-item>
-            <ion-icon name="battery-dead-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon
+              name="battery-dead-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
             <ion-radio value="1"> Beginner</ion-radio>
           </ion-item>
           <ion-item>
-            <ion-icon name="battery-half-outline" slot="start" color="primary"></ion-icon> 
+            <ion-icon
+              name="battery-half-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
             <ion-radio value="2">Intermediate</ion-radio>
           </ion-item>
           <ion-item>
-            <ion-icon name="battery-full-outline" slot="start" color="primary"></ion-icon>
+            <ion-icon
+              name="battery-full-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
             <ion-radio value="3">Fluent</ion-radio>
           </ion-item>
         </ion-list>
@@ -46,11 +67,16 @@
 
   <ion-row>
     <ion-col>
-      <ion-button *ngIf="!isLoading" (click)="save()" color="primary" expand="block">Save</ion-button>
+      <ion-button
+        *ngIf="!isLoading"
+        (click)="save()"
+        color="primary"
+        expand="block"
+        >Save</ion-button
+      >
       <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>
-
 </ion-content>

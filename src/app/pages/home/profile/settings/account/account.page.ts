@@ -8,13 +8,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
-
   currentUser: any;
   isLoading: boolean = false;
 
-  constructor(
-    private authService: AuthService
-  ) { }
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.getProfileInfo();
@@ -23,22 +20,21 @@ export class AccountPage implements OnInit {
   getProfileInfo() {
     //TODO: showLoader();
     this.isLoading = true;
-    this.authService.getUserData().then(user => {
+    this.authService.getUserData().then((user) => {
       this.currentUser = user;
       //TODO: hideLoader();
       this.isLoading = false;
-    })
-  } 
+    });
+  }
 
-  lastSeen(d: any) { 
+  lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return lastSeen(a);
-   }
+  }
 
   // TODO: implement these methods
   disableAccount() {
     console.warn('disableAccount clicked');
   }
-
 }

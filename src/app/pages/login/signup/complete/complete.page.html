@@ -10,7 +10,6 @@
 
 <ion-content [fullscreen]="true">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
     <ion-item lines="full">
       <ion-input
         id="picker-birthdate"
@@ -19,12 +18,14 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
-        required>
+        required
+      >
       </ion-input>
       <ion-picker
         trigger="picker-birthdate"
         [columns]="birthdatePickerColumns"
-        [buttons]="birthdatePickerButtons">
+        [buttons]="birthdatePickerButtons"
+      >
       </ion-picker>
     </ion-item>
 
@@ -36,12 +37,14 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
-        required>
+        required
+      >
       </ion-input>
       <ion-picker
         trigger="picker-gender"
         [columns]="genderPickerColumns"
-        [buttons]="genderPickerButtons">
+        [buttons]="genderPickerButtons"
+      >
       </ion-picker>
     </ion-item>
 
@@ -53,12 +56,14 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
-        required>
+        required
+      >
       </ion-input>
       <ion-picker
         trigger="picker-country"
         [columns]="countryPickerColumns"
-        [buttons]="countryPickerButtons">
+        [buttons]="countryPickerButtons"
+      >
       </ion-picker>
     </ion-item>
 
@@ -66,7 +71,13 @@
 
     <ion-row>
       <ion-col>
-        <ion-button *ngIf="!isLoading" type="submit" color="primary" expand="block">Continue</ion-button>
+        <ion-button
+          *ngIf="!isLoading"
+          type="submit"
+          color="primary"
+          expand="block"
+          >Continue</ion-button
+        >
         <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
           <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
         </ion-button>

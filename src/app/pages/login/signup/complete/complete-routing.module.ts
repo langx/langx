@@ -6,8 +6,8 @@ import { CompletePage } from './complete.page';
 const routes: Routes = [
   {
     path: '',
-    component: CompletePage
-  }
+    component: CompletePage,
+  },
 ];
 
 @NgModule({

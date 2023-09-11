@@ -10,7 +10,6 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./reset-password.page.scss'],
 })
 export class ResetPasswordPage implements OnInit {
-
   form: FormGroup;
   isLoading: boolean = false;
 
@@ -18,7 +17,7 @@ export class ResetPasswordPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private alertController: AlertController
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -26,14 +25,14 @@ export class ResetPasswordPage implements OnInit {
 
   initForm() {
     this.form = new FormGroup({
-      email: new FormControl('',
-      {validators: [Validators.required, Validators.email]}
-      )
-    })
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+      }),
+    });
   }
 
   onSubmit() {
-    if(!this.form.valid) return;
+    if (!this.form.valid) return;
     this.resetPassword(this.form);
   }
 
@@ -41,30 +40,31 @@ export class ResetPasswordPage implements OnInit {
     // showLoader();
     this.isLoading = true;
     console.log(form.value);
-    this.authService.resetPassword(form.value.email).then((data:any) => {
-      // hideLoader();
-      this.isLoading = false;
-      form.reset();
-      let msg: string = 'Please check your email'
-      this.showAlert(msg);
-      this.router.navigateByUrl('/home');
-    })
-    .catch(e => {
-      console.log('error:',e);
-      // hideLoader();
-      this.isLoading = false;
-      let msg: string = 'Could not send reset email, please try again.'
-      this.showAlert(msg);
-    });
+    this.authService
+      .resetPassword(form.value.email)
+      .then((data: any) => {
+        // hideLoader();
+        this.isLoading = false;
+        form.reset();
+        let msg: string = 'Please check your email';
+        this.showAlert(msg);
+        this.router.navigateByUrl('/home');
+      })
+      .catch((e) => {
+        console.log('error:', e);
+        // hideLoader();
+        this.isLoading = false;
+        let msg: string = 'Could not send reset email, please try again.';
+        this.showAlert(msg);
+      });
   }
-    
-  async showAlert(msg: string){
+
+  async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
       message: msg,
-      buttons: ['OK']
+      buttons: ['OK'],
     });
     await alert.present();
   }
-
 }

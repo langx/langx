@@ -2,17 +2,21 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Capacitor } from '@capacitor/core';
 import { LoadingController, ModalController } from '@ionic/angular';
-import { ImageCroppedEvent, ImageCropperComponent, ImageTransform, LoadedImage } from 'ngx-image-cropper';
+import {
+  ImageCroppedEvent,
+  ImageCropperComponent,
+  ImageTransform,
+  LoadedImage,
+} from 'ngx-image-cropper';
 
 @Component({
   selector: 'app-image-crop',
   templateUrl: './image-crop.component.html',
   styleUrls: ['./image-crop.component.scss'],
 })
-export class ImageCropComponent  implements OnInit {
-
+export class ImageCropComponent implements OnInit {
   @Input() image: any;
-  
+
   @ViewChild('imageCropper') imageCropper: ImageCropperComponent;
 
   croppedImage: any = null;
@@ -25,7 +29,7 @@ export class ImageCropComponent  implements OnInit {
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController,
     private sanitizer: DomSanitizer
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadingCtrl.create();
@@ -34,8 +38,8 @@ export class ImageCropComponent  implements OnInit {
   rotate() {
     this.transform = {
       ...this.transform, // keep the previous transformation
-      rotate: ((this.transform.rotate ?? 0) + 90) % 360
-    }
+      rotate: ((this.transform.rotate ?? 0) + 90) % 360,
+    };
   }
 
   cropImage() {
@@ -62,5 +66,4 @@ export class ImageCropComponent  implements OnInit {
   close() {
     this.modalCtrl.dismiss();
   }
-
 }

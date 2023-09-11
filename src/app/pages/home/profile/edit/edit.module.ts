@@ -18,7 +18,7 @@ import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.com
     IonicModule,
     EditPageRoutingModule,
     ComponentsModule,
-    ImageCropperModule
+    ImageCropperModule,
   ],
   declarations: [EditPage, ImageCropComponent],
 })

@@ -7,18 +7,20 @@ import { AuthGuard } from 'src/app/guards/auth/auth.guard';
 const routes: Routes = [
   {
     path: '',
-    component: SignupPage
+    component: SignupPage,
   },
   {
     path: 'complete',
-    loadChildren: () => import('./complete/complete.module').then( m => m.CompletePageModule),
-    canLoad: [AuthGuard]
+    loadChildren: () =>
+      import('./complete/complete.module').then((m) => m.CompletePageModule),
+    canLoad: [AuthGuard],
   },
   {
     path: 'language',
-    loadChildren: () => import('./language/language.module').then( m => m.LanguagePageModule),
-    canLoad: [AuthGuard]
-  }
+    loadChildren: () =>
+      import('./language/language.module').then((m) => m.LanguagePageModule),
+    canLoad: [AuthGuard],
+  },
 ];
 
 @NgModule({

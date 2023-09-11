@@ -11,7 +11,6 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
-
   userId: string;
   user: any;
 
@@ -21,12 +20,12 @@ export class UserPage implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService,
     private modalCtrl: ModalController
-  ) { }
+  ) {}
 
   async ngOnInit() {
     //TODO: this.userID may be used in nowhere
     const id: string = this.route.snapshot.paramMap.get('id');
-    if(id) this.userId = id;
+    if (id) this.userId = id;
     this.getUserData();
   }
 
@@ -35,10 +34,10 @@ export class UserPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: PreviewPhotoComponent,
       componentProps: {
-        photos: photos
-      }
+        photos: photos,
+      },
     });
-    modal.present(); 
+    modal.present();
   }
 
   async getUserData() {
@@ -47,16 +46,15 @@ export class UserPage implements OnInit {
     console.log('userData: ', this.user);
   }
 
-  lastSeen(d: any) { 
+  lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return lastSeen(a);
-   }
+  }
 
   getAge(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return getAge(a);
   }
-
 }

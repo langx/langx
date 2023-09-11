@@ -15,8 +15,8 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     IonicModule,
     FiltersPageRoutingModule,
-    AppExtrasModule
+    AppExtrasModule,
   ],
-  declarations: [FiltersPage]
+  declarations: [FiltersPage],
 })
 export class FiltersPageModule {}

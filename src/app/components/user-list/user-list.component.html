@@ -1,13 +1,17 @@
 <ion-item>
   <ion-thumbnail slot="start" (click)="goProfile()">
-    <img [src]="item?.photo"  alt="" referrerpolicy="no-referrer"/>
+    <img [src]="item?.photo" alt="" referrerpolicy="no-referrer" />
   </ion-thumbnail>
   <ion-label (click)="redirect()">
     <h2><small *ngIf="item?.online">🟢 </small>{{ item?.name }}</h2>
     <p>
       <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
-      <ion-text *ngIf="!item?.aboutMe" style="font-style: italic;">
-        Learning: <span *ngFor="let lang of item?.studyLanguages">{{ lang?.name }}</span></ion-text>
+      <ion-text *ngIf="!item?.aboutMe" style="font-style: italic">
+        Learning:
+        <span *ngFor="let lang of item?.studyLanguages">{{
+          lang?.name
+        }}</span></ion-text
+      >
     </p>
   </ion-label>
 </ion-item>

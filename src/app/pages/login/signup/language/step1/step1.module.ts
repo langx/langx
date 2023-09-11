@@ -15,8 +15,8 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     FormsModule,
     IonicModule,
     Step1PageRoutingModule,
-    AppExtrasModule
+    AppExtrasModule,
   ],
-  declarations: [Step1Page]
+  declarations: [Step1Page],
 })
 export class Step1PageModule {}

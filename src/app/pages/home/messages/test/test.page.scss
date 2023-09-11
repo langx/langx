@@ -1,9 +1,9 @@
 ion-avatar {
-	img {
-		width: 36.5px;
-		height: 36.5px;
-		padding: auto;
-	}
+  img {
+    width: 36.5px;
+    height: 36.5px;
+    padding: auto;
+  }
 }
 
 .message {
@@ -33,14 +33,14 @@ ion-avatar {
 .message-main-sender {
   padding: 5px !important;
   // margin-left: 100% !important;
-	float: right;
+  float: right;
   max-width: 80%;
 }
 
 .message-text {
   margin: 0 !important;
   padding: 5px !important;
-  word-wrap:break-word;
+  word-wrap: break-word;
   font-weight: 300;
   font-size: 14px;
   padding-bottom: 0 !important;
@@ -50,10 +50,9 @@ ion-avatar {
   margin: 0 !important;
   margin-left: 50px !important;
   font-size: 10px;
-	font-weight: 200;
+  font-weight: 200;
   text-align: right;
   //color: #9a9a9a;
-
 }
 
 .receiver {
@@ -61,9 +60,9 @@ ion-avatar {
   padding: 4px 10px 7px !important;
   border-radius: 10px;
   background: var(--ion-color-light) !important;
-	color: var(--ion-color-light-contrast) !important;
+  color: var(--ion-color-light-contrast) !important;
   font-size: 12px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   word-wrap: break-word;
   display: inline-block;
 }
@@ -72,16 +71,16 @@ ion-avatar {
   float: right;
   width: auto !important;
   background: var(--ion-color-primary) !important;
-	color: var(--ion-color-primary-contrast);
+  color: var(--ion-color-primary-contrast);
   border-radius: 10px;
   padding: 4px 10px 7px !important;
   font-size: 12px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   display: inline-block;
   word-wrap: break-word;
 }
 
 .float-right {
-	float: right;
-	padding: 5px !important;
+  float: right;
+  padding: 5px !important;
 }

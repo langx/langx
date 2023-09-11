@@ -9,13 +9,8 @@ import { UserPageRoutingModule } from './user-routing.module';
 import { UserPage } from './user.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    UserPageRoutingModule
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, UserPageRoutingModule],
   declarations: [UserPage],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class UserPageModule {}

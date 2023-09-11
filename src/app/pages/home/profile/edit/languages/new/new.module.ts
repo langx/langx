@@ -15,8 +15,8 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     FormsModule,
     IonicModule,
     NewPageRoutingModule,
-    AppExtrasModule
+    AppExtrasModule,
   ],
-  declarations: [NewPage]
+  declarations: [NewPage],
 })
 export class NewPageModule {}
