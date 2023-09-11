@@ -10,8 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-
-  form: FormGroup;  
+  form: FormGroup;
   isLoading: boolean = false;
 
   value: any = '';
@@ -19,26 +18,26 @@ export class LoginPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private alertController: AlertController,
-  ) { }
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
     this.initForm();
   }
 
   initForm() {
-    this.form= new FormGroup({
-      email: new FormControl('', 
-        {validators: [Validators.required, Validators.email]}
-      ),
-      password: new FormControl('', 
-        {validators: [Validators.required, Validators.minLength(6)]}
-      ),
+    this.form = new FormGroup({
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+      }),
+      password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(6)],
+      }),
     });
   }
 
   onSubmit() {
-    if(!this.form.valid) return;
+    if (!this.form.valid) return;
     this.login(this.form);
   }
 
@@ -46,47 +45,51 @@ export class LoginPage implements OnInit {
     //showLoader();
     this.isLoading = true;
     console.log('form.value:', form.value);
-    this.authService.login(form.value.email, form.value.password).then((userId: any) => {
-      this.authService.getUserData().then(user => {
-        if(user.completeProfile) {
-          if(user.completeLanguages) {
-            this.router.navigateByUrl('/home');
+    this.authService
+      .login(form.value.email, form.value.password)
+      .then((userId: any) => {
+        this.authService.getUserData().then((user) => {
+          if (user.completeProfile) {
+            if (user.completeLanguages) {
+              this.router.navigateByUrl('/home');
+            } else {
+              this.router.navigateByUrl('/login/signup/language');
+            }
           } else {
-            this.router.navigateByUrl('/login/signup/language');
+            this.router.navigateByUrl('/login/signup/complete');
           }
-        } else {
-          this.router.navigateByUrl('/login/signup/complete');
+        });
+        //hideLoader();
+        form.reset();
+        this.isLoading = false;
+      })
+      .catch((e) => {
+        console.log('error:', e);
+        //hideLoader();
+        this.isLoading = false;
+        let msg: string;
+        switch (e.code) {
+          case 'auth/user-not-found': {
+            msg = 'Email address could not be found';
+            break;
+          }
+          case 'auth/wrong-password': {
+            msg = 'Please enter a correct password';
+            break;
+          }
+          default: {
+            msg = 'Could not sign you up, please try again.';
+          }
         }
+        this.showAlert(msg);
       });
-      //hideLoader();
-      form.reset();
-      this.isLoading = false;
-    })
-    .catch(e => {
-      console.log("error:", e);
-      //hideLoader();
-      this.isLoading = false;
-      let msg: string; 
-      switch (e.code) {
-        case "auth/user-not-found": {
-          msg = "Email address could not be found"; break;
-        }
-        case "auth/wrong-password": {
-          msg = "Please enter a correct password"; break;
-        }
-        default: {
-          msg = 'Could not sign you up, please try again.'
-        }
-      }
-      this.showAlert(msg);
-    });
   }
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {
-      this.authService.getUserData().then(user => {
-        if(user.completeProfile) {
-          if(user.completeLanguages) {
+      this.authService.getUserData().then((user) => {
+        if (user.completeProfile) {
+          if (user.completeLanguages) {
             this.router.navigateByUrl('/home');
           } else {
             this.router.navigateByUrl('/login/signup/language');
@@ -107,5 +110,4 @@ export class LoginPage implements OnInit {
     });
     await alert.present();
   }
-
 }

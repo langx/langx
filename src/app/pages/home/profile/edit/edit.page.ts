@@ -1,9 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Storage, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
+import {
+  Storage,
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { LoadingController, ModalController, ToastController } from '@ionic/angular';
+import {
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
@@ -14,14 +23,13 @@ import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.com
   styleUrls: ['./edit.page.scss'],
 })
 export class EditPage implements OnInit {
-
   isLoading: boolean = false;
   currentUser: any;
 
   textAreaValue: string = '';
   textAreaDisabled: boolean = true;
 
-  cUser : Subscription;
+  cUser: Subscription;
 
   uploadedImageURL: string = '';
 
@@ -32,7 +40,7 @@ export class EditPage implements OnInit {
     private storage: Storage,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getProfileInfo();
@@ -42,9 +50,9 @@ export class EditPage implements OnInit {
     //showLoader();
     this.isLoading = true;
     this.authService.getUserData();
-    
-    this.cUser = this.authService._cUser.subscribe(cUser => {
-      if(cUser) {
+
+    this.cUser = this.authService._cUser.subscribe((cUser) => {
+      if (cUser) {
         this.currentUser = cUser;
         this.textAreaValue = cUser.aboutMe;
         this.textAreaDisabled = true;
@@ -64,33 +72,33 @@ export class EditPage implements OnInit {
 
   async selectImage(which: string) {
     try {
-      if(Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+      if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
       const image = await Camera.getPhoto({
         quality: 100,
         allowEditing: true,
         source: CameraSource.Prompt,
-        resultType: CameraResultType.DataUrl
+        resultType: CameraResultType.DataUrl,
       }).catch((error) => {
         console.log(error);
         this.loadingCtrl.dismiss();
       });
 
-      const loading =  await this.loadingCtrl.create();
+      const loading = await this.loadingCtrl.create();
       await loading.present();
 
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
         componentProps: {
-          image : image
-        }
+          image: image,
+        },
       });
 
       modal.present();
       this.loadingCtrl.dismiss();
 
       await modal.onDidDismiss().then((data) => {
-        if(!data.data) return;
+        if (!data.data) return;
         console.log(data.data);
         let blob = this.dataURLtoBlob(data.data);
         this.uploadImage(blob, image).then((url) => {
@@ -100,20 +108,22 @@ export class EditPage implements OnInit {
           if (which == 'other') this.addOtherPhotos();
         });
       });
-
     } catch (e) {
-      console.log(e); 
+      console.log(e);
       this.loadingCtrl.dismiss();
     }
   }
 
   dataURLtoBlob(dataurl: any) {
-    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){
-        u8arr[n] = bstr.charCodeAt(n);
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
     }
-    return new Blob([u8arr], {type:mime});
+    return new Blob([u8arr], { type: mime });
   }
 
   async uploadImage(blob: any, imageData: any) {
@@ -125,23 +135,25 @@ export class EditPage implements OnInit {
       console.log('task: ', task);
       const url = getDownloadURL(fileRef);
       return url;
-    } catch(e) {
-      throw(e);
-    }    
+    } catch (e) {
+      throw e;
+    }
   }
 
   async changePP() {
     this.isLoading = true;
 
-    if(this.uploadedImageURL != '') {
+    if (this.uploadedImageURL != '') {
       this.currentUser.photo = this.uploadedImageURL;
       this.uploadedImageURL = '';
     }
 
-    await this.authService.updateUserProfilePictureURL(this.currentUser).then(() => {
-      this.presentToast('Profile Picture Updated.');
-      this.isLoading = false;
-    });
+    await this.authService
+      .updateUserProfilePictureURL(this.currentUser)
+      .then(() => {
+        this.presentToast('Profile Picture Updated.');
+        this.isLoading = false;
+      });
   }
 
   deletePP() {
@@ -151,7 +163,7 @@ export class EditPage implements OnInit {
   async addOtherPhotos() {
     this.isLoading = true;
 
-    if(this.uploadedImageURL != '') {
+    if (this.uploadedImageURL != '') {
       this.currentUser.otherPhotos.push(this.uploadedImageURL);
       this.uploadedImageURL = '';
     }
@@ -163,7 +175,9 @@ export class EditPage implements OnInit {
 
   deleteOtherPhotos(image) {
     this.isLoading = true;
-    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(item => item !== image);
+    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(
+      (item) => item !== image
+    );
     this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
       this.presentToast('Other Image Deleted.');
       this.isLoading = false;
@@ -175,9 +189,11 @@ export class EditPage implements OnInit {
   //
 
   ionInputAboutMe(event) {
-    if(event.target.value != this.currentUser.aboutMe) {
+    if (event.target.value != this.currentUser.aboutMe) {
       this.textAreaDisabled = false;
-    } else { this.textAreaDisabled = true; }
+    } else {
+      this.textAreaDisabled = true;
+    }
     this.currentUser.aboutMe = event.target.value;
   }
 
@@ -186,7 +202,7 @@ export class EditPage implements OnInit {
     this.authService.updateUserAboutData(this.currentUser).then(() => {
       this.presentToast('About me saved.');
       this.isLoading = false;
-    })
+    });
   }
 
   //
@@ -199,8 +215,12 @@ export class EditPage implements OnInit {
 
   deleteLanguage(language) {
     this.isLoading = true;
-    this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(item => item !== language);
-    this.currentUser.languagesArray = this.currentUser.languagesArray.filter(item => item !== language.code);
+    this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(
+      (item) => item !== language
+    );
+    this.currentUser.languagesArray = this.currentUser.languagesArray.filter(
+      (item) => item !== language.code
+    );
     this.authService.updateUserStudyLanguagesData(this.currentUser).then(() => {
       this.presentToast('Language deleted.');
       this.isLoading = false;
@@ -220,5 +240,4 @@ export class EditPage implements OnInit {
 
     await toast.present();
   }
-
 }

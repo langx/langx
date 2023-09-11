@@ -9,7 +9,6 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./next.page.scss'],
 })
 export class NextPage implements OnInit {
-
   currentUser: any;
 
   isLoading: boolean = false;
@@ -19,10 +18,11 @@ export class NextPage implements OnInit {
     private router: Router,
     private toastController: ToastController,
     private authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    const selectedLanguage: any = this.router.getCurrentNavigation().extras.state;
+    const selectedLanguage: any =
+      this.router.getCurrentNavigation().extras.state;
     this.selectedLanguage = selectedLanguage;
     console.log('selectedLanguage:' + selectedLanguage.code);
 
@@ -30,7 +30,7 @@ export class NextPage implements OnInit {
   }
 
   getProfileInfo() {
-    this.authService.getUserData().then(user => {
+    this.authService.getUserData().then((user) => {
       this.currentUser = user;
     });
   }
@@ -38,12 +38,11 @@ export class NextPage implements OnInit {
   radioChecked(event, selectedLanguage) {
     this.selectedLanguage.level = event.detail.value;
     console.log('radioChecked:' + selectedLanguage);
-
   }
-  
+
   onSubmit() {
     console.log('submit:' + this.selectedLanguage);
-    if(!this.selectedLanguage.level) {
+    if (!this.selectedLanguage.level) {
       this.presentToast('Please select a level.');
       return;
     }
@@ -71,5 +70,4 @@ export class NextPage implements OnInit {
 
     await toast.present();
   }
-
 }

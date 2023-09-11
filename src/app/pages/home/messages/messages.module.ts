@@ -15,8 +15,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     MessagesPageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
   ],
-  declarations: [MessagesPage]
+  declarations: [MessagesPage],
 })
 export class MessagesPageModule {}

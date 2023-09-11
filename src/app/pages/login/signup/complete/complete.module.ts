@@ -14,8 +14,8 @@ import { CompletePage } from './complete.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    CompletePageRoutingModule
+    CompletePageRoutingModule,
   ],
-  declarations: [CompletePage]
+  declarations: [CompletePage],
 })
 export class CompletePageModule {}

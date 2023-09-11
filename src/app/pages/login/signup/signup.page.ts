@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController} from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -10,9 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
 })
-
 export class SignupPage implements OnInit {
-
   form: FormGroup;
   isLoading: boolean = false;
   public progress: number = 0.2;
@@ -21,7 +19,7 @@ export class SignupPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private alertController: AlertController
-    ) { }
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -29,24 +27,28 @@ export class SignupPage implements OnInit {
 
   initForm() {
     this.form = new FormGroup({
-      name: new FormControl('', 
-        {validators: [Validators.required, Validators.minLength(5), Validators.maxLength(20)]}
-      ),
-      email: new FormControl('', 
-        {validators: [Validators.required, Validators.email]}
-      ),
-      password: new FormControl('', 
-        {validators: [Validators.required, Validators.minLength(8)]}
-      ),
+      name: new FormControl('', {
+        validators: [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(20),
+        ],
+      }),
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+      }),
+      password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
     });
   }
 
-  async onSubmit(){
-    if(!this.form.valid){
-      this.showAlert("Please fill all required fields");
+  async onSubmit() {
+    if (!this.form.valid) {
+      this.showAlert('Please fill all required fields');
       return;
     }
-    
+
     this.register(this.form);
   }
 
@@ -54,31 +56,35 @@ export class SignupPage implements OnInit {
     //showLoader();
     this.isLoading = true;
     console.log('form.value:', form.value);
-    this.authService.register(form.value).then((data: any) => {
-      console.log(data);
-      this.router.navigateByUrl('/login/signup/complete');
-      //hideLoader();
-      this.isLoading = false;
-      form.reset();
-    })
-    .catch(e => {
-      console.log("error:", e);
-      //hideLoader();
-      this.isLoading = false;
-      let msg: string; 
-      switch (e.code) {
-        case "auth/email-already-in-use": {
-          msg = "Email already in use"; break;
+    this.authService
+      .register(form.value)
+      .then((data: any) => {
+        console.log(data);
+        this.router.navigateByUrl('/login/signup/complete');
+        //hideLoader();
+        this.isLoading = false;
+        form.reset();
+      })
+      .catch((e) => {
+        console.log('error:', e);
+        //hideLoader();
+        this.isLoading = false;
+        let msg: string;
+        switch (e.code) {
+          case 'auth/email-already-in-use': {
+            msg = 'Email already in use';
+            break;
+          }
+          case 'auth/invalid-email': {
+            msg = 'Invalid email';
+            break;
+          }
+          default: {
+            msg = 'Could not sign you up, please try again.';
+          }
         }
-        case "auth/invalid-email": {
-          msg = "Invalid email"; break;
-        }
-        default: {
-          msg = 'Could not sign you up, please try again.'
-        }
-      }
-      this.showAlert(msg);
-    });
+        this.showAlert(msg);
+      });
   }
 
   async showAlert(msg: string) {
@@ -91,5 +97,4 @@ export class SignupPage implements OnInit {
 
     await alert.present();
   }
-
 }

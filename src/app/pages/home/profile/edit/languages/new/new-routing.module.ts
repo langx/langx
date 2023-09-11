@@ -6,12 +6,13 @@ import { NewPage } from './new.page';
 const routes: Routes = [
   {
     path: '',
-    component: NewPage
+    component: NewPage,
   },
   {
     path: 'next',
-    loadChildren: () => import('./next/next.module').then( m => m.NextPageModule)
-  }
+    loadChildren: () =>
+      import('./next/next.module').then((m) => m.NextPageModule),
+  },
 ];
 
 @NgModule({

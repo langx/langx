@@ -9,8 +9,8 @@ describe('UserListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserListComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [UserListComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserListComponent);

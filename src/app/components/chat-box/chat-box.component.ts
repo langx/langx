@@ -6,19 +6,17 @@ import { lastSeen } from 'src/app/extras/utils';
   templateUrl: './chat-box.component.html',
   styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent  implements OnInit {
-
+export class ChatBoxComponent implements OnInit {
   @Input() chat: any;
   @Input() current_user_id: any;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {}
 
-  lastSeen(d: any) { 
+  lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000)
+    let a = new Date(d.seconds * 1000);
     return lastSeen(a);
-   }
-
+  }
 }

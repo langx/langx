@@ -6,12 +6,13 @@ import { MessagesPage } from './messages.page';
 const routes: Routes = [
   {
     path: '',
-    component: MessagesPage
+    component: MessagesPage,
   },
   {
     path: 'test',
-    loadChildren: () => import('./test/test.module').then( m => m.TestPageModule)
-  }
+    loadChildren: () =>
+      import('./test/test.module').then((m) => m.TestPageModule),
+  },
 ];
 
 @NgModule({

@@ -10,13 +10,8 @@ import { ProfilePage } from './profile.page';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ProfilePageRoutingModule
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, ProfilePageRoutingModule],
   declarations: [ProfilePage, PreviewPhotoComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ProfilePageModule {}

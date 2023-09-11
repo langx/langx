@@ -6,12 +6,12 @@ import { LanguagesPage } from './languages.page';
 const routes: Routes = [
   {
     path: '',
-    component: LanguagesPage
+    component: LanguagesPage,
   },
   {
     path: 'new',
-    loadChildren: () => import('./new/new.module').then( m => m.NewPageModule)
-  }
+    loadChildren: () => import('./new/new.module').then((m) => m.NewPageModule),
+  },
 ];
 
 @NgModule({

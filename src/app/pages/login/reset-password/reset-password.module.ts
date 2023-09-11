@@ -14,8 +14,8 @@ import { ResetPasswordPage } from './reset-password.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    ResetPasswordPageRoutingModule
+    ResetPasswordPageRoutingModule,
   ],
-  declarations: [ResetPasswordPage]
+  declarations: [ResetPasswordPage],
 })
 export class ResetPasswordPageModule {}

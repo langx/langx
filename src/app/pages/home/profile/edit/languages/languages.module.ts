@@ -9,12 +9,7 @@ import { LanguagesPageRoutingModule } from './languages-routing.module';
 import { LanguagesPage } from './languages.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    LanguagesPageRoutingModule,
-  ],
-  declarations: [LanguagesPage]
+  imports: [CommonModule, FormsModule, IonicModule, LanguagesPageRoutingModule],
+  declarations: [LanguagesPage],
 })
 export class LanguagesPageModule {}

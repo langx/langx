@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
 
   <ion-card>
@@ -58,7 +57,10 @@
       <ion-list>
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
-          <ion-label>{{ (currentUser?.lastLogin).toDate() | date: 'dd/MM/yyyy, HH:mm:ss' }}</ion-label>
+          <ion-label
+            >{{ (currentUser?.lastLogin).toDate() | date: 'dd/MM/yyyy, HH:mm:ss'
+            }}</ion-label
+          >
           <ion-note>{{ lastSeen(currentUser?.lastLogin) }}</ion-note>
         </ion-item>
       </ion-list>
@@ -91,13 +93,13 @@
         </ion-item>
         <ion-item>
           <ion-icon name="trash-outline" color="medium"></ion-icon>
-          <ion-label color="medium" (click)="disableAccount()">Delete Account</ion-label>
+          <ion-label color="medium" (click)="disableAccount()"
+            >Delete Account</ion-label
+          >
         </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
-
 </ion-content>
 
-<ion-footer>
-</ion-footer>
+<ion-footer> </ion-footer>

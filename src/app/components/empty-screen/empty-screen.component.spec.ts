@@ -9,8 +9,8 @@ describe('EmptyScreenComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EmptyScreenComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [EmptyScreenComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EmptyScreenComponent);

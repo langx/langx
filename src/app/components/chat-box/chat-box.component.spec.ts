@@ -9,8 +9,8 @@ describe('ChatBoxComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ChatBoxComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ChatBoxComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ChatBoxComponent);

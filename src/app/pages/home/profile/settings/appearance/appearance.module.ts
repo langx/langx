@@ -13,8 +13,8 @@ import { AppearancePage } from './appearance.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    AppearancePageRoutingModule
+    AppearancePageRoutingModule,
   ],
-  declarations: [AppearancePage]
+  declarations: [AppearancePage],
 })
 export class AppearancePageModule {}

@@ -1,13 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword , signInWithPopup, GoogleAuthProvider} from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   public _uid = new BehaviorSubject<any>(null);
   public _cUser = new BehaviorSubject<any>(null);
 
@@ -15,10 +23,7 @@ export class AuthService {
   currentUser: any;
   currentUserData: any;
 
-  constructor(
-    private fireAuth: Auth,
-    private apiService: ApiService
-  ) { }
+  constructor(private fireAuth: Auth, private apiService: ApiService) {}
 
   async login(email: string, password: string): Promise<any> {
     try {
@@ -28,13 +33,17 @@ export class AuthService {
         password
       );
       console.log(response);
-      if(response?.user) {
+      if (response?.user) {
         this.setUserData(response.user.uid);
-        await this.apiService.setDocument(`users/${response.user.uid}`, {lastLogin: new Date(), lastSeen: new Date()}, {merge: true});
+        await this.apiService.setDocument(
+          `users/${response.user.uid}`,
+          { lastLogin: new Date(), lastSeen: new Date() },
+          { merge: true }
+        );
         return response.user.uid;
       }
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -53,7 +62,9 @@ export class AuthService {
     this._cUser.next(cUser);
   }
 
-  randomIntFromInterval = (min: number,max: number) => { return Math.floor(Math.random() * (max-min+1) +min) }
+  randomIntFromInterval = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
 
   async register(formValue) {
     try {
@@ -67,7 +78,7 @@ export class AuthService {
         email: formValue?.email,
         name: formValue?.name,
         uid: registeredUser.user.uid,
-        photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200,400),
+        photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200, 400),
         lastLogin: new Date(),
         lastSeen: new Date(),
         online: true,
@@ -77,33 +88,42 @@ export class AuthService {
         googleVerified: true,
         languagesArray: [],
         otherPhotos: [],
-
-      }
-      await this.apiService.setDocument(`users/${registeredUser.user.uid}`, data);
+      };
+      await this.apiService.setDocument(
+        `users/${registeredUser.user.uid}`,
+        data
+      );
       const userData = {
-        id: registeredUser.user.uid
+        id: registeredUser.user.uid,
       };
       // set user data while registering
       this.setUserData(registeredUser.user.uid);
       this.setCurrentUserData(registeredUser);
       return userData;
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
   //TODO: If user first registered with email than GoogleAuthProvider will not work #36
   async signInWithGoogle() {
     try {
-      const res = await signInWithPopup(this.fireAuth, new GoogleAuthProvider());
+      const res = await signInWithPopup(
+        this.fireAuth,
+        new GoogleAuthProvider()
+      );
       const user = res.user;
       console.log('user:', user);
       const userData = await this.getUserData();
-      if(userData) {
+      if (userData) {
         console.log('user_data:', userData);
         this.setUserData(user.uid);
-        await this.apiService.setDocument(`users/${userData.uid}`, {lastLogin: new Date(), lastSeen: new Date()}, {merge: true});
-        return user.uid; 
+        await this.apiService.setDocument(
+          `users/${userData.uid}`,
+          { lastLogin: new Date(), lastSeen: new Date() },
+          { merge: true }
+        );
+        return user.uid;
       } else {
         //TODO: create user data
         const data = {
@@ -115,33 +135,33 @@ export class AuthService {
           emailVerified: user?.emailVerified,
           lastLogin: new Date(),
           lastSeen: new Date(),
-          online: true, 
+          online: true,
           completeLanguages: false,
           completeProfile: false,
           googleVerified: true,
           languagesArray: [],
           otherPhotos: [],
-        }
+        };
         await this.apiService.setDocument(`users/${user.uid}`, data);
         const userData = {
-          id: user.uid
+          id: user.uid,
         };
         // set user data while registering
         this.setUserData(user.uid);
         this.setCurrentUserData(user);
-        return user.uid; 
+        return user.uid;
       }
     } catch (error) {
       console.log('error:', error);
-      throw(error); 
+      throw error;
     }
   }
 
   async resetPassword(email: string) {
     try {
       await sendPasswordResetEmail(this.fireAuth, email);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -152,26 +172,26 @@ export class AuthService {
       this.setCurrentUserData(null);
       this.currentUser = null;
       return true;
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
   checkAuth(): Promise<any> {
     return new Promise((resolve, reject) => {
-      onAuthStateChanged(this.fireAuth, user => {
+      onAuthStateChanged(this.fireAuth, (user) => {
         // console.log('auth user:', user);
         resolve(user);
         return true;
-      })
-    })
+      });
+    });
   }
 
   async getUserData() {
     if (!this.currentUserData) {
       let uid = this.getId();
       const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
-      if(docSnap?.exists()) {
+      if (docSnap?.exists()) {
         this._cUser.next(docSnap.data());
         return docSnap.data();
       } else {
@@ -185,13 +205,13 @@ export class AuthService {
 
   async getUserDataById(uid: string) {
     const docSnap: any = await this.apiService.getDocById(`users/${uid}`);
-    if(docSnap?.exists()) {
+    if (docSnap?.exists()) {
       return docSnap.data();
     } else {
       return null;
     }
   }
-  
+
   async updateUserProfileData(formValue) {
     let id = this.getId();
     //console.log('id:', id, 'formValue:', formValue);
@@ -201,13 +221,13 @@ export class AuthService {
         gender: formValue?.genderValue,
         country: {
           name: formValue?.country,
-          code: formValue?.countryCode
+          code: formValue?.countryCode,
         },
         completeProfile: true,
-      }
+      };
       await this.apiService.updateDocument(`users/${id}`, data);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -220,10 +240,10 @@ export class AuthService {
         studyLanguages: formValue?.studyLanguages,
         languagesArray: formValue?.languagesArray,
         completeLanguages: true,
-      }
+      };
       await this.apiService.updateDocument(`users/${id}`, data);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -233,11 +253,11 @@ export class AuthService {
     try {
       const data = {
         aboutMe: currentUser?.aboutMe,
-      }
+      };
       await this.apiService.updateDocument(`users/${id}`, data);
       this._cUser.next(currentUser);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -248,11 +268,11 @@ export class AuthService {
       const data = {
         studyLanguages: currentUser?.studyLanguages,
         languagesArray: currentUser?.languagesArray,
-      }
+      };
       await this.apiService.updateDocument(`users/${id}`, data);
       this._cUser.next(currentUser);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -260,12 +280,12 @@ export class AuthService {
     let id = this.getId();
     try {
       const data = {
-        photo: currentUser?.photo
-      }
+        photo: currentUser?.photo,
+      };
       await this.apiService.updateDocument(`users/${id}`, data);
       this._cUser.next(currentUser);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -273,13 +293,12 @@ export class AuthService {
     let id = this.getId();
     try {
       const data = {
-        otherPhotos: currentUser.otherPhotos
-      }
+        otherPhotos: currentUser.otherPhotos,
+      };
       await this.apiService.updateDocument(`users/${id}`, data);
       this._cUser.next(currentUser);
-    } catch(e) {
-      throw(e);
+    } catch (e) {
+      throw e;
     }
   }
-
 }

@@ -3,7 +3,10 @@ import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
-import { FilterService, FilterData } from 'src/app/services/filter/filter.service';
+import {
+  FilterService,
+  FilterData,
+} from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
@@ -11,9 +14,7 @@ import { StorageService } from 'src/app/services/storage/storage.service';
   templateUrl: './filters.page.html',
   styleUrls: ['./filters.page.scss'],
 })
-
 export class FiltersPage implements OnInit {
-
   searchTerm: string;
   countryData = countryData;
 
@@ -31,7 +32,7 @@ export class FiltersPage implements OnInit {
     private router: Router,
     private filterService: FilterService,
     private storageService: StorageService
-  ) { }
+  ) {}
 
   async ngOnInit() {
     await this.getUserData();
@@ -39,30 +40,32 @@ export class FiltersPage implements OnInit {
   }
 
   async getUserData() {
-    this.authService.getUserData().then((currentUserData) => {
-      this.currentUserData = currentUserData;
-    }).catch((error) => {
-      console.log('error: ', error);
-    });
+    this.authService
+      .getUserData()
+      .then((currentUserData) => {
+        this.currentUserData = currentUserData;
+      })
+      .catch((error) => {
+        console.log('error: ', error);
+      });
   }
 
   async checkStorage() {
-
     // check localStorage
-    const languagesString = await this.storageService.get("languages") ;
-    const gender = await this.storageService.get("gender") || null;
-    const country = await this.storageService.get("country") || null;
-    const minAgeString = await this.storageService.get("minAge");
-    const maxAgeString = await this.storageService.get("maxAge");
-    
+    const languagesString = await this.storageService.get('languages');
+    const gender = (await this.storageService.get('gender')) || null;
+    const country = (await this.storageService.get('country')) || null;
+    const minAgeString = await this.storageService.get('minAge');
+    const maxAgeString = await this.storageService.get('maxAge');
+
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
 
-    let languages : Array<any> = [];
-    if(languagesString) {
-      languages = languagesString.toLocaleString().split(",");
+    let languages: Array<any> = [];
+    if (languagesString) {
+      languages = languagesString.toLocaleString().split(',');
     }
-  
+
     this.filterData.languages = languages;
     this.filterData.gender = gender;
     this.filterData.country = country;
@@ -73,14 +76,14 @@ export class FiltersPage implements OnInit {
   }
 
   async fetchFilteredUsers() {
-    const languages = ['en', 'es', 'zh']
+    const languages = ['en', 'es', 'zh'];
     const gender = 'male';
     const country = 'AF';
     const minAge = 13;
     const maxAge = 100;
   }
 
-  onSubmit() { 
+  onSubmit() {
     this.setLocalStorage(this.filterData);
     this.filterService.setEvent(this.filterData);
 
@@ -118,19 +121,25 @@ export class FiltersPage implements OnInit {
   //
 
   languageChecked(event, langCode) {
-    if(event.detail.checked) {
-      if(!this.filterData.languages) this.filterData.languages = [];
+    if (event.detail.checked) {
+      if (!this.filterData.languages) this.filterData.languages = [];
       this.filterData.languages.push(langCode);
     } else {
-      this.filterData.languages = this.filterData.languages.filter(item => item !== langCode);
+      this.filterData.languages = this.filterData.languages.filter(
+        (item) => item !== langCode
+      );
     }
     console.log(this.filterData);
   }
 
   isCheckedLanguage(langCode) {
-    if(!this.filterData.languages) return false;
+    if (!this.filterData.languages) return false;
     else if (this.filterData.languages.length == 0) return false;
-    else if (this.filterData.languages.length > 0 && this.filterData.languages.includes(langCode)) return true;
+    else if (
+      this.filterData.languages.length > 0 &&
+      this.filterData.languages.includes(langCode)
+    )
+      return true;
     else return false;
   }
 
@@ -139,14 +148,15 @@ export class FiltersPage implements OnInit {
   //
 
   countryChange(event) {
-    if(event.detail.value) {
+    if (event.detail.value) {
       this.filterData.country = event.detail.value;
     }
     console.log(this.filterData);
   }
 
   showCountry() {
-    return countryData.find(item => item.value === this.filterData.country)?.text;
+    return countryData.find((item) => item.value === this.filterData.country)
+      ?.text;
   }
 
   //
@@ -154,17 +164,20 @@ export class FiltersPage implements OnInit {
   //
 
   genderChange(event) {
-    if(event.detail.value) {
+    if (event.detail.value) {
       this.filterData.gender = event.detail.value;
     }
     console.log(this.filterData);
   }
 
   showGender() {
-    if (this.filterData.gender=='male') { return "Male" }
-    else if (this.filterData.gender=='female') { return "Female" }
-    else if (this.filterData.gender=='other') { return "Other" }
-    else return false;
+    if (this.filterData.gender == 'male') {
+      return 'Male';
+    } else if (this.filterData.gender == 'female') {
+      return 'Female';
+    } else if (this.filterData.gender == 'other') {
+      return 'Other';
+    } else return false;
   }
 
   //
@@ -181,7 +194,9 @@ export class FiltersPage implements OnInit {
 
   showAge() {
     if (this.filterData.minAge && this.filterData.maxAge) {
-      return 'between ' + this.filterData.minAge + ' and ' + this.filterData.maxAge;
+      return (
+        'between ' + this.filterData.minAge + ' and ' + this.filterData.maxAge
+      );
     } else return false;
   }
 
@@ -189,11 +204,10 @@ export class FiltersPage implements OnInit {
   // RESET All Filters
   //
 
-  resetFilter(){
+  resetFilter() {
     this.filterData = {} as FilterData;
-    console.log(this.filterData)
+    console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();
   }
-
 }

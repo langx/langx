@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { countryData, birthdateData, genderData } from 'src/app/extras/data'
+import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -12,7 +12,6 @@ import { getAge } from 'src/app/extras/utils';
   styleUrls: ['./complete.page.scss'],
 })
 export class CompletePage implements OnInit {
-
   public progress: number = 0.7;
 
   form: FormGroup;
@@ -22,7 +21,7 @@ export class CompletePage implements OnInit {
     private router: Router,
     private alertController: AlertController,
     private authService: AuthService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -30,24 +29,14 @@ export class CompletePage implements OnInit {
 
   initForm() {
     this.form = new FormGroup({
-      birthdate: new FormControl('', 
-        {validators: [Validators.required]}
-      ),
-      birthdateWithDateFormat: new FormControl('', 
-        {validators: [Validators.required]}
-      ),
-      gender: new FormControl('', 
-        {validators: [Validators.required]}
-      ),
-      genderValue: new FormControl('', 
-        {validators: [Validators.required]}
-      ),
-      country: new FormControl('', 
-        {validators: [Validators.required]}
-      ),
-      countryCode: new FormControl('',
-        {validators: [Validators.required]}
-      ),
+      birthdate: new FormControl('', { validators: [Validators.required] }),
+      birthdateWithDateFormat: new FormControl('', {
+        validators: [Validators.required],
+      }),
+      gender: new FormControl('', { validators: [Validators.required] }),
+      genderValue: new FormControl('', { validators: [Validators.required] }),
+      country: new FormControl('', { validators: [Validators.required] }),
+      countryCode: new FormControl('', { validators: [Validators.required] }),
     });
   }
 
@@ -71,10 +60,11 @@ export class CompletePage implements OnInit {
     {
       text: 'Confirm',
       handler: (value) => {
-        let val = value.day.text + '/' + value.month.value + '/' + value.year.text;
+        let val =
+          value.day.text + '/' + value.month.value + '/' + value.year.text;
         let newDate = new Date(val);
-        if(getAge(newDate) < 13) {
-          this.showAlert("You must be at least 13 years old to use this app");
+        if (getAge(newDate) < 13) {
+          this.showAlert('You must be at least 13 years old to use this app');
         } else {
           this.form.controls['birthdate'].setValue(val);
           this.form.controls['birthdateWithDateFormat'].setValue(newDate);
@@ -87,7 +77,7 @@ export class CompletePage implements OnInit {
     {
       name: 'gender',
       options: genderData,
-    }
+    },
   ];
 
   public genderPickerButtons = [
@@ -105,7 +95,7 @@ export class CompletePage implements OnInit {
     {
       name: 'country',
       options: countryData,
-    }
+    },
   ];
 
   public countryPickerButtons = [
@@ -119,10 +109,10 @@ export class CompletePage implements OnInit {
     },
   ];
 
-  async onSubmit(){
+  async onSubmit() {
     console.log('form.value:', this.form.value);
-    if(!this.form.valid) {
-      this.showAlert("Please fill all the required fields");
+    if (!this.form.valid) {
+      this.showAlert('Please fill all the required fields');
       return;
     }
     this.completeRegister(this.form);
@@ -142,7 +132,7 @@ export class CompletePage implements OnInit {
     } catch (error) {
       console.log('error:', error);
       this.isLoading = false;
-      this.showAlert("Please try again later."); 
+      this.showAlert('Please try again later.');
     }
   }
 
@@ -155,5 +145,4 @@ export class CompletePage implements OnInit {
     });
     await alert.present();
   }
-
 }

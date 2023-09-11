@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -6,14 +6,11 @@ import { Router } from '@angular/router';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
-export class UserListComponent  implements OnInit {
-
+export class UserListComponent implements OnInit {
   @Input() item: any;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    private route: Router,
-  ) { }
+  constructor(private route: Router) {}
 
   ngOnInit() {}
 
@@ -22,6 +19,6 @@ export class UserListComponent  implements OnInit {
   }
 
   goProfile() {
-    this.route.navigateByUrl("/home/user/"+this.item.uid);
+    this.route.navigateByUrl('/home/user/' + this.item.uid);
   }
 }

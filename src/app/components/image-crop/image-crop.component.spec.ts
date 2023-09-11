@@ -9,8 +9,8 @@ describe('ImageCropComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ImageCropComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [ImageCropComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ImageCropComponent);

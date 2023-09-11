@@ -9,43 +9,44 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./step1.page.scss'],
 })
 export class Step1Page implements OnInit {
-
   public progress: number = 0.33;
   isLoading: boolean = false;
   public languages = languagesData;
   term: string;
-  
+
   motherLanguage: string;
 
   constructor(
     private router: Router,
     private alertController: AlertController
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  radioChecked(event){
+  radioChecked(event) {
     this.motherLanguage = event.detail.value;
   }
 
-  onSubmit(){
-    if(!this.motherLanguage){
+  onSubmit() {
+    if (!this.motherLanguage) {
       this.showAlert('Please select your mother language');
       return;
     }
     this.step1Completed();
   }
 
-  step1Completed(){
+  step1Completed() {
     this.isLoading = true; //showLoader();
-        const navData: NavigationExtras = {
+    const navData: NavigationExtras = {
       queryParams: {
-        motherLanguage: this.motherLanguage
-      }
+        motherLanguage: this.motherLanguage,
+      },
     };
     this.isLoading = false; //hideLoader();
-    this.router.navigate(['/','login','signup','language','step2'], navData);
+    this.router.navigate(
+      ['/', 'login', 'signup', 'language', 'step2'],
+      navData
+    );
     console.log('step1 completed');
   }
 
@@ -58,5 +59,4 @@ export class Step1Page implements OnInit {
     });
     await alert.present();
   }
-
 }

@@ -8,15 +8,11 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./languages.page.scss'],
 })
 export class LanguagesPage implements OnInit {
-
   currentUser: any;
 
   isLoading: boolean = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.getProfileInfo();
@@ -24,7 +20,7 @@ export class LanguagesPage implements OnInit {
 
   getProfileInfo() {
     this.isLoading = true;
-    this.authService.getUserData().then(user => {
+    this.authService.getUserData().then((user) => {
       this.currentUser = user;
       this.isLoading = false;
     });
@@ -32,20 +28,21 @@ export class LanguagesPage implements OnInit {
 
   newLangBtn() {
     // console.log(this.currentUser.languagesArray);
-    this.router.navigate(['/home/profile/edit/languages/new'], { state: this.currentUser.languagesArray });
+    this.router.navigate(['/home/profile/edit/languages/new'], {
+      state: this.currentUser.languagesArray,
+    });
   }
 
   radioChecked(event, selectedLanguage) {
     selectedLanguage.level = event.detail.value;
-    this.currentUser.studyLanguages.forEach(lang => {
-
-      if(lang.code === selectedLanguage.code) {
+    this.currentUser.studyLanguages.forEach((lang) => {
+      if (lang.code === selectedLanguage.code) {
         lang.level = selectedLanguage.level;
       }
     });
   }
 
-  save(){
+  save() {
     this.authService.updateUserStudyLanguagesData(this.currentUser);
     this.router.navigate(['/home/profile/edit']);
   }

@@ -9,12 +9,7 @@ import { NextPageRoutingModule } from './next-routing.module';
 import { NextPage } from './next.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    NextPageRoutingModule
-  ],
-  declarations: [NextPage]
+  imports: [CommonModule, FormsModule, IonicModule, NextPageRoutingModule],
+  declarations: [NextPage],
 })
 export class NextPageModule {}

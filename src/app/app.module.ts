@@ -11,7 +11,12 @@ import { environment } from 'src/environments/environment';
 
 import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { provideAuth, getAuth, initializeAuth, indexedDBLocalPersistence } from '@angular/fire/auth';
+import {
+  provideAuth,
+  getAuth,
+  initializeAuth,
+  indexedDBLocalPersistence,
+} from '@angular/fire/auth';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
@@ -26,8 +31,9 @@ import { IonicStorageModule } from '@ionic/storage-angular';
       // driverOrder: [Drivers.LocalStorage, Drivers.IndexedDB]
     }),
     IonicModule.forRoot({
-    // mode: 'md'
-  }), AppRoutingModule,
+      // mode: 'md'
+    }),
+    AppRoutingModule,
     provideFirebaseApp(() => initializeApp(environment?.firebase)),
     provideAuth(() => getAuth()),
     /* FOR IOS ONLY
@@ -44,9 +50,8 @@ import { IonicStorageModule } from '@ionic/storage-angular';
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
     provideStorage(() => getStorage()),
-],
+  ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
-
 export class AppModule {}

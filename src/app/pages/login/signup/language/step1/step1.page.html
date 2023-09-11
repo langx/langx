@@ -9,27 +9,33 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-list-header>
+      <ion-title>Mother Language</ion-title>
+      <ion-note>the language you speak at home</ion-note>
+    </ion-list-header>
+    <ion-searchbar [(ngModel)]="term"></ion-searchbar>
+    <ion-radio-group value="start" (ionChange)="radioChecked($event)">
+      <ion-item *ngFor="let lang of languages | customFilter: term">
+        <ion-radio value="{{lang.code}}" labelPlacement="start"
+          >{{lang.nativeName}}</ion-radio
+        >
+      </ion-item>
+    </ion-radio-group>
+  </ion-list>
 
-    <ion-list>
-      <ion-list-header>
-        <ion-title>Mother Language</ion-title>
-        <ion-note>the language you speak at home</ion-note>
-      </ion-list-header>
-      <ion-searchbar [(ngModel)]="term"></ion-searchbar>
-      <ion-radio-group value="start" (ionChange)="radioChecked($event)">
-        <ion-item *ngFor="let lang of languages | customFilter: term">
-          <ion-radio value="{{lang.code}}" labelPlacement="start">{{lang.nativeName}}</ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </ion-list>
-
-    <ion-row>
-      <ion-col>
-        <ion-button *ngIf="!isLoading" (click)="onSubmit()" color="primary" expand="block">Continue</ion-button>
-        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-
+  <ion-row>
+    <ion-col>
+      <ion-button
+        *ngIf="!isLoading"
+        (click)="onSubmit()"
+        color="primary"
+        expand="block"
+        >Continue</ion-button
+      >
+      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      </ion-button>
+    </ion-col>
+  </ion-row>
 </ion-content>
