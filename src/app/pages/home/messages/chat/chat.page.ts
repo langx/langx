@@ -10,9 +10,8 @@ import { ChatService } from 'src/app/services/chat/chat.service';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-
   @ViewChild(IonContent, { static: false }) content: IonContent;
-  
+
   chatRoomId: string;
   name: string;
   uid: string;
@@ -23,14 +22,14 @@ export class ChatPage implements OnInit {
   model = {
     icon: 'chatbubbles-outline',
     title: 'No conversation',
-    color: 'warning'
-  }
+    color: 'warning',
+  };
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private navCtrl: NavController,
-    public chatService: ChatService,
+    public chatService: ChatService
   ) {}
 
   ngOnInit() {
@@ -41,11 +40,11 @@ export class ChatPage implements OnInit {
   initChatPage() {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
-    if(data?.name) this.name = data.name;
-    if(data?.uid) this.uid = data.uid;
+    if (data?.name) this.name = data.name;
+    if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     console.log('check chatId: ', chatRoomId);
-    if(!chatRoomId) {
+    if (!chatRoomId) {
       this.navCtrl.back();
       return;
     }
@@ -63,7 +62,6 @@ export class ChatPage implements OnInit {
     //add new data to the front of main array
     // let sampleData = [1,2,3]
     // this.chats.unshift.apply(...sampleData);
-
   }
 
   // TODO: Optimize this function, we are getting all users data here
@@ -77,29 +75,31 @@ export class ChatPage implements OnInit {
   }
 
   scrollToBottom() {
-    if(this.chats) this.content.scrollToBottom();
+    if (this.chats) {
+      this.content.scrollToBottom(0);
+      console.log('scroll to bottom');
+    }
   }
 
-  async sendMessage(){
+  async sendMessage() {
     // console.log(this.message);
-    if(!this.message || this.message?.trim() == '') return;
+    if (!this.message || this.message?.trim() == '') return;
     try {
       this.isLoading = true;
       await this.chatService.sendMessage(this.chatRoomId, this.message);
       this.message = '';
       this.isLoading = false;
       this.scrollToBottom();
-    } catch(e) {
+    } catch (e) {
       this.isLoading = false;
       console.log(e);
-      throw(e);
+      throw e;
     }
   }
 
-  goProfile(uid : string) {
+  goProfile(uid: string) {
     console.log('goProfile clicked');
     console.log('uid: ', uid);
     this.router.navigateByUrl(`/home/user/${uid}`);
-  } 
-
+  }
 }
