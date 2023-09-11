@@ -1,8 +1,12 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+@import url(https://fonts.googleapis.com/css?family=Comfortaa);
+
 /** Ionic CSS Variables **/
 :root {
+  --ion-font-family: "Comfortaa" !important;
+
   /** primary **/
   //--ion-color-primary: #fdd835;
   //--ion-color-primary-rgb: 253, 216, 53;
