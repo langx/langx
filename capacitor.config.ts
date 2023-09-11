@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'firestore-chat-app',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
-  }
+    androidScheme: 'https',
+  },
 };
 
 export default config;

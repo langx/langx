@@ -1,10 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'customFilter'
+  name: 'customFilter',
 })
 export class CustomFilterPipe implements PipeTransform {
-
   transform(items: any, term: string, excludes: any = []): any {
     if (!term || !items) return items;
     return CustomFilterPipe.filter(items, term, excludes);
@@ -19,11 +18,8 @@ export class CustomFilterPipe implements PipeTransform {
 
     function checkInside(item: any, term: string) {
       if (
-        typeof item === "string" &&
-        item
-          .toString()
-          .toLowerCase()
-          .includes(toCompare)
+        typeof item === 'string' &&
+        item.toString().toLowerCase().includes(toCompare)
       ) {
         return true;
       }
@@ -37,15 +33,12 @@ export class CustomFilterPipe implements PipeTransform {
           continue;
         }
 
-        if (typeof item[property] === "object") {
+        if (typeof item[property] === 'object') {
           if (checkInside(item[property], term)) {
             return true;
           }
         } else if (
-          item[property]
-            .toString()
-            .toLowerCase()
-            .includes(toCompare)
+          item[property].toString().toLowerCase().includes(toCompare)
         ) {
           return true;
         }

@@ -8,7 +8,7 @@
  */
 
 const functions = require("firebase-functions");
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 admin.initializeApp();
 
 const db = admin.firestore();
@@ -18,18 +18,18 @@ exports.onUserStatusChanged = functions.database
   .ref("/users/{userId}")
   .onUpdate((event, context) => {
     const uid = context.params.userId;
-    const usersRef = db.collection('users').doc(uid);
+    const usersRef = db.collection("users").doc(uid);
 
-    rtdb.ref(`/users/${uid}`).on('value', function(snapshot) {
+    rtdb.ref(`/users/${uid}`).on("value", function (snapshot) {
       if (snapshot.val().connections) {
         usersRef.update({
-          online: true
+          online: true,
         });
         return;
       } else {
         usersRef.update({
           online: false,
-          lastSeen: admin.firestore.FieldValue.serverTimestamp()
+          lastSeen: admin.firestore.FieldValue.serverTimestamp(),
         });
         return;
       }
