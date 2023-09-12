@@ -1,4 +1,4 @@
-<ion-item *ngIf="chat?.sender != current_user_id">
+<ion-item *ngIf="chat?.sender != current_user_id" lines="none">
   <div class="message-body">
     <div class="message-main-receiver">
       <div class="receiver">
@@ -13,7 +13,7 @@
   </div>
 </ion-item>
 
-<ion-item *ngIf="chat?.sender == current_user_id">
+<ion-item *ngIf="chat?.sender == current_user_id" lines="none">
   <div class="message-body">
     <div class="message-main-sender">
       <div class="sender">
