@@ -89,7 +89,7 @@ export class ChatPage implements OnInit {
 
   scrollToBottom() {
     this.content.scrollToBottom();
-    /*
+    /* TODO: Test following code before uncommenting
     if (this.chats) {
       this.content.scrollToBottom(0);
       console.log('scroll to bottom');
