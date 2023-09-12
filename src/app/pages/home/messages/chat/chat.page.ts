@@ -10,7 +10,9 @@ import { ChatService } from 'src/app/services/chat/chat.service';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-  @ViewChild(IonContent, { static: false }) content: IonContent;
+  // @ViewChild("content", { static: false }) content: IonContent;
+  // @ViewChild("content") content: IonContent;
+  @ViewChild(IonContent) content: IonContent;
 
   chatRoomId: string;
   name: string;
@@ -70,15 +72,29 @@ export class ChatPage implements OnInit {
     this.photo = user?.photo;
   }
 
+  test() {
+    console.log('test clicked', this.content);
+    this.content.scrollToBottom(1500).then(() => {
+      console.log('scrolled to bottom');
+    });
+  }
+
+  handleScrollStart() {
+    console.log('start scrolling');
+  }
+
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
 
   scrollToBottom() {
+    this.content.scrollToBottom();
+    /*
     if (this.chats) {
       this.content.scrollToBottom(0);
       console.log('scroll to bottom');
     }
+    */
   }
 
   async sendMessage() {
