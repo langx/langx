@@ -75,7 +75,7 @@ export class ChatPage implements OnInit {
   test() {
     console.log('test clicked', this.content);
     this.content.scrollToBottom(1500).then(() => {
-      console.log('scroll to bottom');
+      console.log('scrolled to bottom');
     });
   }
 
@@ -83,23 +83,18 @@ export class ChatPage implements OnInit {
     console.log('start scrolling');
   }
 
-  logScrolling(event) {
-    console.log('log scrolling');
-  }
-
-  endScrolling(event) {
-    console.log('end scrolling');
-  }
-
   ngAfterViewChecked() {
-    // this.scrollToBottom();
+    this.scrollToBottom();
   }
 
   scrollToBottom() {
+    this.content.scrollToBottom();
+    /*
     if (this.chats) {
       this.content.scrollToBottom(0);
-      console.log('scroll to bottom', this.content);
+      console.log('scroll to bottom');
     }
+    */
   }
 
   async sendMessage() {
