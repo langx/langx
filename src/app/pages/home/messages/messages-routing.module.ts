@@ -7,12 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: MessagesPage,
-  },
-  {
-    path: 'test',
-    loadChildren: () =>
-      import('./test/test.module').then((m) => m.TestPageModule),
-  },
+  }
 ];
 
 @NgModule({
