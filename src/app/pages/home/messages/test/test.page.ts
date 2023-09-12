@@ -8,7 +8,8 @@ import { IonContent } from '@ionic/angular';
 })
 export class TestPage implements OnInit {
   
-  @ViewChild("content") content: IonContent;
+  //@ViewChild("content") content: IonContent;
+  @ViewChild(IonContent) content: IonContent;
 
   constructor() {}
 
@@ -21,5 +22,9 @@ export class TestPage implements OnInit {
 
   scrollToBottom() {
     this.content.scrollToBottom(1500);
+  }
+
+  handleScrollStart() {
+    console.log("startScrolling");
   }
 }

@@ -5,7 +5,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content #content>
+<ion-content class="ion-padding"
+[scrollEvents]="true"
+(ionScrollStart)="handleScrollStart()"
+>
   <ion-list lines="none">
     <ion-item>
       <ion-avatar>
@@ -94,9 +97,3 @@
     </ion-item>
   </ion-list>
 </ion-content>
-
-<ion-footer [translucent]="true">
-  <ion-toolbar>
-  asda
-  </ion-toolbar>
-</ion-footer>
