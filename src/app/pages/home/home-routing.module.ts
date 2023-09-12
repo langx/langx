@@ -40,11 +40,6 @@ const routes: Routes = [
       import('./messages/chat/chat.module').then((m) => m.ChatPageModule),
   },
   {
-    path: 'test',
-    loadChildren: () =>
-      import('./messages/test/test.module').then((m) => m.TestPageModule),
-  },
-  {
     path: 'filters',
     loadChildren: () =>
       import('./community/filters/filters.module').then(
