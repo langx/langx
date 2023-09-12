@@ -15,12 +15,8 @@
   </ion-toolbar>
 </ion-header>
 
-
-
 <ion-content>
-
   <ng-container *ngIf="(chats | async ) as chat$">
-
     <app-empty-screen *ngIf="(chats | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
@@ -32,15 +28,13 @@
     </ion-infinite-scroll>
     -->
 
-      <ion-item-group lines="none" class="chats-group" *ngFor="let chat of chat$">
-        <app-chat-box
-          [chat]="chat"
-          [current_user_id]="chatService.currentUserId"
-        ></app-chat-box>
-      </ion-item-group>
-
+    <ion-item-group lines="none" class="chats-group" *ngFor="let chat of chat$">
+      <app-chat-box
+        [chat]="chat"
+        [current_user_id]="chatService.currentUserId"
+      ></app-chat-box>
+    </ion-item-group>
   </ng-container>
-
 </ion-content>
 
 <ion-footer>
