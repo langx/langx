@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
+import { Chat2Service } from 'src/app/services/chat/chat2.service';
 
 interface Message {
   message: string;
@@ -20,7 +21,10 @@ export class Chat2Page implements OnInit {
 
   messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private chatService: Chat2Service
+    ) {}
 
   ngOnInit() {
     this.createmessages();
@@ -28,6 +32,14 @@ export class Chat2Page implements OnInit {
 
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     console.log(chatRoomId);
+
+    this.getChatRoomMessages(chatRoomId);
+  }
+
+  getChatRoomMessages(chatRoomId: string) {
+    this.chatService.getChatRoomMessages(chatRoomId).subscribe((messages) => {
+      console.log(messages);
+    });
   }
 
   scrollToBottom() {
