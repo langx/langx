@@ -35,7 +35,10 @@ export class Chat2Page implements OnInit {
   }
 
   async pushMessage(message: Message) {
-    this.messages.next([...this.messages.getValue(), message]);
+    const currentMessages = this.messages.getValue();
+    const newMessages = [...currentMessages, message];
+    const last20Messages = newMessages.slice(-20);
+    this.messages.next(last20Messages);
 
     const scrollElement = await this.content.getScrollElement();
 
@@ -89,6 +92,7 @@ export class Chat2Page implements OnInit {
       };
       newMessages.push(newMessage);
     }
-    this.messages.next(newMessages);
+    const last20Messages = newMessages.slice(-20);
+    this.messages.next(last20Messages);
   }
 }
