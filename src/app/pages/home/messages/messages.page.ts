@@ -43,7 +43,8 @@ export class MessagesPage implements OnInit {
           uid: user_data?.uid,
         },
       };
-      this.router.navigate(['/', 'home', 'chat', item.id], navData);
+      // this.router.navigate(['/', 'home', 'chat', item.id], navData);
+      this.router.navigate(['/', 'home', 'chat2', item.id], navData);
     });
   }
 
