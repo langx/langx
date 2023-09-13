@@ -3,6 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { BehaviorSubject, of } from 'rxjs';
 
+interface Message {
+  message: string;
+  lastSeen: {
+    date: Date;
+    user: string;
+  };
+}
+
 @Component({
   selector: 'app-chat2',
   templateUrl: './chat2.page.html',
@@ -11,7 +19,9 @@ import { BehaviorSubject, of } from 'rxjs';
 export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
-  messages: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
+  messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
+
+  newMessage: string = '';
 
   constructor(private route: ActivatedRoute) {}
 
@@ -24,11 +34,18 @@ export class Chat2Page implements OnInit {
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom(300);
+    this.content.scrollToBottom(500);
   }
 
-  async pushMessage(msg: string) {
-    this.messages.next([...this.messages.getValue(), msg]);
+  async pushMessage(newMessage: string, user: string) {
+    const message: Message = {
+      message: newMessage,
+      lastSeen: {
+        date: new Date(),
+        user: user,
+      },
+    };
+    this.messages.next([...this.messages.getValue(), message]);
 
     const scrollElement = await this.content.getScrollElement();
 
@@ -43,76 +60,30 @@ export class Chat2Page implements OnInit {
 
   newMsgComingFromServer() {
     setInterval(() => {
-      this.pushMessage('Hello');
+      const users = ['Alice', 'Bob', 'Charlie'];
+      const messages = ['Hello', 'How are you?', 'I am good, thanks!', 'What about you?'];
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      this.pushMessage(randomMessage, randomUser);
     }, 5000);
   }
 
   createmessages() {
-    this.messages.next([
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Helloaaaaaa',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Helloaaaaaa',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Helloaaaaaa',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Helloaaaaaa',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Helloaaaaaa',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Helloaaaaaa',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-    ]);
+    const users = ['Alice', 'Bob', 'Charlie'];
+    const messages = ['Hello', 'How are you?', 'I am good, thanks!', 'What about you?'];
+    const newMessages: Message[] = [];
+    for (let i = 0; i < 50; i++) {
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      const newMessage: Message = {
+        message: randomMessage,
+        lastSeen: {
+          date: new Date(),
+          user: randomUser,
+        },
+      };
+      newMessages.push(newMessage);
+    }
+    this.messages.next(newMessages);
   }
 }
