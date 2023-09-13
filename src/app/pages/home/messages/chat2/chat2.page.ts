@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { IonContent } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -8,8 +9,8 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./chat2.page.scss'],
 })
 export class Chat2Page implements OnInit {
-  @ViewChild('chatContainer') chatContainer: ElementRef;
-  @ViewChild('chatMessages') chatMessages: ElementRef;
+  @ViewChild(IonContent) content: IonContent;
+
   messages: Observable<string[]>;
 
   constructor(private route: ActivatedRoute) {}
@@ -22,12 +23,46 @@ export class Chat2Page implements OnInit {
   }
 
   scrollToBottom() {
-    this.chatContainer.nativeElement.scrollTop =
-      this.chatMessages.nativeElement.scrollHeight;
+    //this.chatContainer.nativeElement.scrollTop =
+    //  this.chatMessages.nativeElement.scrollHeight;
+    this.content.scrollToBottom(300);
+    // console.log(this.chatMessages.nativeElement.scrollHeight);
   }
 
   createmessages() {
     this.messages = of([
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Helloaaaaaa',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Helloaaaaaa',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Helloaaaaaa',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
       'Hello',
       'How are you?',
       'I am good, thanks!',
