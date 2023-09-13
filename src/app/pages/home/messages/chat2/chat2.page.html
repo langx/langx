@@ -11,7 +11,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <button (click)="scrollToBottom()">Scroll to Bottom</button>
+  <ion-button (click)="scrollToBottom()">Scroll to Bottom</ion-button>
 
   <div class="message" *ngFor="let message of messages | async">
     {{ message }}
