@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 @Component({
   selector: 'app-chat2',
@@ -11,7 +11,7 @@ import { Observable, of } from 'rxjs';
 export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
-  messages: Observable<string[]>;
+  messages: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   constructor(private route: ActivatedRoute) {}
 
@@ -26,8 +26,16 @@ export class Chat2Page implements OnInit {
     this.content.scrollToBottom(300);
   }
 
+  pushMessage() {
+    this.messages.next([
+      ...this.messages.getValue(),
+      'Another message'
+    ]);
+    this.content.scrollToBottom();
+  }
+
   createmessages() {
-    this.messages = of([
+    this.messages.next([
       'Hello',
       'How are you?',
       'I am good, thanks!',

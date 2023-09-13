@@ -18,8 +18,9 @@
   </ion-header>
 
   <ion-button (click)="scrollToBottom()">Scroll to Bottom</ion-button>
-
   <div class="message" *ngFor="let message of messages | async">
     {{ message }}
   </div>
+  <ion-button (click)="pushMessage()">Push a new msg</ion-button>
+
 </ion-content>
