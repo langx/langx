@@ -21,6 +21,6 @@
   <div class="message" *ngFor="let message of messages | async">
     {{ message }}
   </div>
-  <ion-button (click)="pushMessage()">Push a new msg</ion-button>
+  <ion-button (click)="pushMessage('test')">Push a new msg</ion-button>
 
 </ion-content>

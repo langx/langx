@@ -17,6 +17,7 @@ export class Chat2Page implements OnInit {
 
   ngOnInit() {
     this.createmessages();
+    this.newMsgComingFromServer();
 
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     console.log(chatRoomId);
@@ -26,12 +27,24 @@ export class Chat2Page implements OnInit {
     this.content.scrollToBottom(300);
   }
 
-  pushMessage() {
-    this.messages.next([
-      ...this.messages.getValue(),
-      'Another message'
-    ]);
-    this.content.scrollToBottom();
+  async pushMessage(msg: string) {
+    this.messages.next([...this.messages.getValue(), msg]);
+
+    const scrollElement = await this.content.getScrollElement();
+
+    // Check if current scroll position is at 80% of page height
+    const scrollHeight = scrollElement.scrollHeight;
+    const scrollTop = scrollElement.scrollTop;
+    const clientHeight = scrollElement.clientHeight;
+    if (scrollTop + clientHeight >= 0.8 * scrollHeight) {
+      this.content.scrollToBottom();
+    }
+  }
+
+  newMsgComingFromServer() {
+    setInterval(() => {
+      this.pushMessage('Hello');
+    }, 5000);
   }
 
   createmessages() {
