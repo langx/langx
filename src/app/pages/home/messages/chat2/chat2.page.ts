@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 
 @Component({
@@ -7,22 +8,25 @@ import { Observable, of } from 'rxjs';
   styleUrls: ['./chat2.page.scss'],
 })
 export class Chat2Page implements OnInit {
-
   @ViewChild('chatContainer') chatContainer: ElementRef;
   @ViewChild('chatMessages') chatMessages: ElementRef;
   messages: Observable<string[]>;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.createmessages();
+
+    const chatRoomId: string = this.route.snapshot.paramMap.get('id');
+    console.log(chatRoomId);
   }
 
   scrollToBottom() {
-    this.chatContainer.nativeElement.scrollTop = this.chatMessages.nativeElement.scrollHeight;
+    this.chatContainer.nativeElement.scrollTop =
+      this.chatMessages.nativeElement.scrollHeight;
   }
 
-  createmessages()  {
+  createmessages() {
     this.messages = of([
       'Hello',
       'How are you?',
@@ -31,21 +35,8 @@ export class Chat2Page implements OnInit {
       'Hello',
       'How are you?',
       'I am good, thanks!',
-      'What about you?',    'Hello',
-      'How are you?',
-      'I am good, thanks!',
       'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',    'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',
-      'Hello',
-      'How are you?',
-      'I am good, thanks!',
-      'What about you?',    'Hello',
+      'Helloaaaaaa',
       'How are you?',
       'I am good, thanks!',
       'What about you?',
@@ -53,6 +44,22 @@ export class Chat2Page implements OnInit {
       'How are you?',
       'I am good, thanks!',
       'What about you?',
-    ])
+      'Helloaaaaaa',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Helloaaaaaa',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+    ]);
   }
 }

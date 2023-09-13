@@ -40,7 +40,7 @@ const routes: Routes = [
       import('./messages/chat/chat.module').then((m) => m.ChatPageModule),
   },
   {
-    path: 'chat2',
+    path: 'chat2/:id',
     loadChildren: () => import('./messages/chat2/chat2.module').then( m => m.Chat2PageModule)
   },
   {
