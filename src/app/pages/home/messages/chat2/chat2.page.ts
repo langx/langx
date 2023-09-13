@@ -5,10 +5,9 @@ import { BehaviorSubject, of } from 'rxjs';
 
 interface Message {
   message: string;
-  lastSeen: {
-    date: Date;
-    user: string;
-  };
+  createdAt: Date;
+  sender: string;
+  seen: boolean;
 }
 
 @Component({
@@ -20,8 +19,6 @@ export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
   messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
-
-  newMessage: string = '';
 
   constructor(private route: ActivatedRoute) {}
 
@@ -37,14 +34,7 @@ export class Chat2Page implements OnInit {
     this.content.scrollToBottom(500);
   }
 
-  async pushMessage(newMessage: string, user: string) {
-    const message: Message = {
-      message: newMessage,
-      lastSeen: {
-        date: new Date(),
-        user: user,
-      },
-    };
+  async pushMessage(message: Message) {
     this.messages.next([...this.messages.getValue(), message]);
 
     const scrollElement = await this.content.getScrollElement();
@@ -58,13 +48,29 @@ export class Chat2Page implements OnInit {
     }
   }
 
+  addUserMessage() {
+    const newMessage: Message = {
+      message: "from me",
+      createdAt: new Date(),
+      sender: 'Me',
+      seen: false,
+    };
+    this.pushMessage(newMessage);
+  }
+
   newMsgComingFromServer() {
     setInterval(() => {
       const users = ['Alice', 'Bob', 'Charlie'];
       const messages = ['Hello', 'How are you?', 'I am good, thanks!', 'What about you?'];
       const randomUser = users[Math.floor(Math.random() * users.length)];
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-      this.pushMessage(randomMessage, randomUser);
+      const newMessage: Message = {
+        message: randomMessage,
+        createdAt: new Date(),
+        sender: randomUser,
+        seen: false,
+      };
+      this.pushMessage(newMessage);
     }, 5000);
   }
 
@@ -77,10 +83,9 @@ export class Chat2Page implements OnInit {
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
       const newMessage: Message = {
         message: randomMessage,
-        lastSeen: {
-          date: new Date(),
-          user: randomUser,
-        },
+        createdAt: new Date(),
+        sender: randomUser,
+        seen: false,
       };
       newMessages.push(newMessage);
     }

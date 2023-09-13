@@ -21,13 +21,14 @@
 
   <div class="message" *ngFor="let message of messages | async">
     <div>{{ message.message }}</div>
-    <div class="last-seen">{{ message.lastSeen.date | date:'shortTime' }} - {{ message.lastSeen.user }}</div>
+    <div class="time">{{ message.createdAt | date:'shortTime' }} - {{ message.sender }}</div>
+    <div class="seen" *ngIf="message.seen">Seen</div>
+    <div class="not-seen" *ngIf="!message.seen">Not seen</div>
     <p></p>
   </div>
 
   <ion-item>
-    <ion-input [(ngModel)]="newMessage" placeholder="Type a message"></ion-input>
-    <ion-button (click)="pushMessage(newMessage, 'You')">Send</ion-button>
+    <ion-button (click)="addUserMessage()">Send</ion-button>
   </ion-item>
 
 </ion-content>
