@@ -10,4 +10,14 @@
       <ion-title size="large">chat2</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <button (click)="scrollToBottom()">Scroll to Bottom</button>
+  <div class="chat-container" #chatContainer>
+    <div class="chat-messages" #chatMessages>
+      <div class="message" *ngFor="let message of messages | async">
+        {{ message }}
+      </div>
+    </div>
+  </div>
+
 </ion-content>
