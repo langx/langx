@@ -23,10 +23,7 @@ export class Chat2Page implements OnInit {
   }
 
   scrollToBottom() {
-    //this.chatContainer.nativeElement.scrollTop =
-    //  this.chatMessages.nativeElement.scrollHeight;
     this.content.scrollToBottom(300);
-    // console.log(this.chatMessages.nativeElement.scrollHeight);
   }
 
   createmessages() {
