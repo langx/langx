@@ -25,7 +25,7 @@ export class Chat2Page implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private chatService: Chat2Service
-    ) {}
+  ) {}
 
   ngOnInit() {
     this.createmessages();
@@ -36,6 +36,10 @@ export class Chat2Page implements OnInit {
 
     this.getChatRoomData(chatRoomId);
     this.getChatMessages(chatRoomId);
+  }
+
+  ngAfterViewInit() {
+    this.scrollToBottom();
   }
 
   getChatRoomData(chatRoomId: string) {
@@ -73,7 +77,7 @@ export class Chat2Page implements OnInit {
 
   addUserMessage() {
     const newMessage: Message = {
-      message: "from me",
+      message: 'from me',
       createdAt: new Date(),
       sender: 'Me',
       seen: false,
@@ -84,9 +88,15 @@ export class Chat2Page implements OnInit {
   newMsgComingFromServer() {
     setInterval(() => {
       const users = ['Alice', 'Bob', 'Charlie'];
-      const messages = ['Hello', 'How are you?', 'I am good, thanks!', 'What about you?'];
+      const messages = [
+        'Hello',
+        'How are you?',
+        'I am good, thanks!',
+        'What about you?',
+      ];
       const randomUser = users[Math.floor(Math.random() * users.length)];
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      const randomMessage =
+        messages[Math.floor(Math.random() * messages.length)];
       const newMessage: Message = {
         message: randomMessage,
         createdAt: new Date(),
@@ -99,11 +109,17 @@ export class Chat2Page implements OnInit {
 
   createmessages() {
     const users = ['Alice', 'Bob', 'Charlie'];
-    const messages = ['Hello', 'How are you?', 'I am good, thanks!', 'What about you?'];
+    const messages = [
+      'Hello',
+      'How are you?',
+      'I am good, thanks!',
+      'What about you?',
+    ];
     const newMessages: Message[] = [];
     for (let i = 0; i < 50; i++) {
       const randomUser = users[Math.floor(Math.random() * users.length)];
-      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      const randomMessage =
+        messages[Math.floor(Math.random() * messages.length)];
       const newMessage: Message = {
         message: randomMessage,
         createdAt: new Date(),
