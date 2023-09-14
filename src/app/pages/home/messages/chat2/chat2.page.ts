@@ -63,7 +63,7 @@ export class Chat2Page implements OnInit {
     const scrollTop = scrollElement.scrollTop;
     const clientHeight = scrollElement.clientHeight;
     if (scrollTop + clientHeight >= 0.8 * scrollHeight) {
-      this.content.scrollToBottom(0);
+      this.content.scrollToBottom();
     }
   }
 
