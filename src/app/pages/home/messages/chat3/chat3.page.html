@@ -11,3 +11,38 @@
     </ion-toolbar>
   </ion-header>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-textarea
+        placeholder="Type your message here..."
+        type="text"
+        [(ngModel)]="message"
+        (ionFocus)="typingFocus()"
+        (ionBlur)="typingBlur()"
+        autoGrow="true"
+      >
+      </ion-textarea>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="mic"
+        slot="end"
+      ></ion-icon>
+      <ion-icon
+        color="primary"
+        expand="icon-only"
+        name="send"
+        slot="end"
+        (click)="sendMessage()"
+      ></ion-icon>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="link"
+        slot="start"
+      ></ion-icon>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
