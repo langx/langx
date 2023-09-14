@@ -21,12 +21,13 @@
 
   <div class="message" *ngFor="let message of messages | async">
     <div>{{ message.message }}</div>
-    <div class="time">{{ message.createdAt | date:'shortTime' }} - {{ message.sender }}</div>
+    <div class="time">
+      {{ message.createdAt | date:'shortTime' }} - {{ message.sender }}
+    </div>
     <div class="seen" *ngIf="message.seen">Seen</div>
     <div class="not-seen" *ngIf="!message.seen">Not seen</div>
     <p></p>
   </div>
-
 </ion-content>
 
 <ion-footer>
