@@ -11,7 +11,7 @@ export class Chat2Service {
   getChatRoomMessages(chatRoomId: string) {
     return this.api
       .collectionDataQuery(
-        `chats2/${chatRoomId}/messages`,
+        `chats/${chatRoomId}/messages`,
         this.api.orderByQuery('createdAt', 'desc')
       )
       .pipe(map((arr: any) => arr.reverse()));
