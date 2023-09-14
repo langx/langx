@@ -77,12 +77,13 @@ export class Chat2Page implements OnInit {
 
   addUserMessage() {
     const newMessage: Message = {
-      message: 'from me',
+      message: this.message,
       createdAt: new Date(),
       sender: 'Me',
       seen: false,
     };
     this.pushMessage(newMessage);
+    this.message = '';
   }
 
   newMsgComingFromServer() {
