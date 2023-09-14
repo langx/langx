@@ -40,7 +40,7 @@ export class Chat2Page implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.scrollToBottom();
+    this.content.scrollToBottom();
   }
 
   getChatRoomData(chatRoomId: string) {
@@ -55,16 +55,7 @@ export class Chat2Page implements OnInit {
     });
   }
 
-  scrollToBottom() {
-    this.content.scrollToBottom(0);
-  }
-
-  async pushMessage(message: Message) {
-    const currentMessages = this.messages.getValue();
-    const newMessages = [...currentMessages, message];
-    const last20Messages = newMessages.slice(-20);
-    this.messages.next(last20Messages);
-
+  async scrollToBottom() {
     const scrollElement = await this.content.getScrollElement();
 
     // Check if current scroll position is at 80% of page height
@@ -72,8 +63,16 @@ export class Chat2Page implements OnInit {
     const scrollTop = scrollElement.scrollTop;
     const clientHeight = scrollElement.clientHeight;
     if (scrollTop + clientHeight >= 0.8 * scrollHeight) {
-      this.scrollToBottom();
+      this.content.scrollToBottom(0);
     }
+  }
+
+  pushMessage(message: Message) {
+    const currentMessages = this.messages.getValue();
+    const newMessages = [...currentMessages, message];
+    const last20Messages = newMessages.slice(-20);
+    this.messages.next(last20Messages);
+    this.scrollToBottom();
   }
 
   addUserMessage() {
