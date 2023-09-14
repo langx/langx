@@ -33,7 +33,14 @@ export class Chat2Page implements OnInit {
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     console.log(chatRoomId);
 
+    this.getChatRoomData(chatRoomId);
     this.getChatRoomMessages(chatRoomId);
+  }
+
+  getChatRoomData(chatRoomId: string) {
+    this.chatService.getChatRoomData(chatRoomId).then((data) => {
+      console.log(data);
+    });
   }
 
   getChatRoomMessages(chatRoomId: string) {

@@ -8,6 +8,15 @@ import { map } from 'rxjs';
 export class Chat2Service {
   constructor(private api: ApiService) {}
 
+  async getChatRoomData(chatRoomId: string) {
+    const docSnap: any = await this.api.getDocById(`chatRooms/${chatRoomId}`);
+    if (docSnap?.exists()) {
+      return docSnap.data();
+    } else {
+      return null;
+    }
+  }
+
   getChatRoomMessages(chatRoomId: string) {
     return this.api
       .collectionDataQuery(
@@ -16,4 +25,5 @@ export class Chat2Service {
       )
       .pipe(map((arr: any) => arr.reverse()));
   }
+
 }
