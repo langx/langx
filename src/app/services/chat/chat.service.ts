@@ -64,6 +64,7 @@ export class ChatService {
     // get the userId here
     this.getId();
 
+    // TODO: Optimize this query
     this.chatRooms = this.api
       .collectionDataQuery(
         'chatRooms',
