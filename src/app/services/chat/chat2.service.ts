@@ -8,6 +8,12 @@ import { map } from 'rxjs';
 export class Chat2Service {
   constructor(private api: ApiService) {}
 
+  updateTypingStatus(chatRoomId: string, userId: string, isTyping: boolean) {
+    const data = {};
+    data[`typingStatus.${userId}`] = isTyping;
+    return this.api.updateDocument(`chatRooms/${chatRoomId}`, data);
+  }
+
   addMessage(chatRoomId: string, message: string, sender: string) {
     const data = {
       message,
@@ -35,5 +41,4 @@ export class Chat2Service {
       )
       .pipe(map((arr: any) => arr.reverse()));
   }
-
 }

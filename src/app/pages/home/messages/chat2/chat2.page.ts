@@ -20,13 +20,14 @@ interface Message {
 export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
+  chatRoomId: string = '';
   currentUserId: string = '';
   uid: string = '';
   uname: string = '';
 
   messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
   message: string = '';
-  typing: boolean = false;
+  isTyping: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +44,7 @@ export class Chat2Page implements OnInit {
     if (data?.name) this.uname = data.name;
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
-    console.log(chatRoomId);
+    this.chatRoomId = chatRoomId;
     this.currentUserId = this.auth.getId();
 
     this.getChatRoomData(chatRoomId);
@@ -88,10 +89,20 @@ export class Chat2Page implements OnInit {
   }
 
   typingFocus() {
-    this.typing = true;
+    this.isTyping = true;
+    this.onTypingStatusChange();
   }
+
   typingBlur() {
-    this.typing = false;
+    this.isTyping = false;
+    this.onTypingStatusChange();
+  }
+
+  onTypingStatusChange() {
+    this.chatService
+      .updateTypingStatus(this.chatRoomId, this.currentUserId, this.isTyping)
+      .then(() => console.log('Typing status updated successfully'))
+      .catch((error) => console.error('Error updating typing status:', error));
   }
 
   addUserMessage() {
