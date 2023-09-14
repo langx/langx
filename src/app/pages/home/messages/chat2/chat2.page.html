@@ -27,8 +27,43 @@
     <p></p>
   </div>
 
-  <ion-item>
-    <ion-button (click)="addUserMessage()">Send</ion-button>
-  </ion-item>
-
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>
+      <ion-textarea
+        placeholder="Type your message here..."
+        type="text"
+        [(ngModel)]="message"
+        autoGrow="true"
+      >
+      </ion-textarea>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="mic"
+        slot="end"
+      ></ion-icon>
+      <ion-icon
+        color="primary"
+        expand="icon-only"
+        name="send"
+        slot="end"
+        (click)="addUserMessage()"
+      ></ion-icon>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="send"
+        slot="end"
+      ></ion-icon>
+      <ion-icon
+        color="medium"
+        expand="icon-only"
+        name="link"
+        slot="start"
+      ></ion-icon>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

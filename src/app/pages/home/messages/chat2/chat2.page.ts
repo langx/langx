@@ -19,6 +19,7 @@ interface Message {
 export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
+  message: string;
   messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
 
   constructor(
