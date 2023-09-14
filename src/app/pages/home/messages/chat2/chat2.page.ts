@@ -21,6 +21,7 @@ export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
   chatRoomId: string = '';
+  chatRoomData: any = {};
   currentUserId: string = '';
   uid: string = '';
   uname: string = '';
@@ -28,6 +29,7 @@ export class Chat2Page implements OnInit {
   messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
   message: string = '';
   isTyping: boolean = false;
+  isUserTyping: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,7 +59,10 @@ export class Chat2Page implements OnInit {
 
   getChatRoomData(chatRoomId: string) {
     this.chatService.getChatRoomData(chatRoomId).then((data) => {
-      console.log(data);
+      // TODO: not updating the typing status when it changes
+      this.chatRoomData = data;
+      console.log('chatRoomData: ', this.chatRoomData);
+      this.isUserTyping = this.chatRoomData.typingStatus[this.uid];
     });
   }
 
