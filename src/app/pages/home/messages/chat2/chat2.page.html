@@ -37,6 +37,8 @@
         placeholder="Type your message here..."
         type="text"
         [(ngModel)]="message"
+        (ionFocus)="typingFocus()"
+        (ionBlur)="typingBlur()"
         autoGrow="true"
       >
       </ion-textarea>
