@@ -8,10 +8,6 @@ const routes: Routes = [
     path: '',
     component: MessagesPage,
   },
-  {
-    path: 'chat3',
-    loadChildren: () => import('./chat3/chat3.module').then( m => m.Chat3PageModule)
-  }
 ];
 
 @NgModule({
