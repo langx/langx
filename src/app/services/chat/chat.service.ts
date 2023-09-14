@@ -46,7 +46,10 @@ export class ChatService {
       // if no existing room, create new one
       const data = {
         members: [this.currentUserId, user_id],
-        type: 'private',
+        typingStatus: {
+          [this.currentUserId]: false,
+          [user_id]: false,
+        },
         createdAt: new Date(),
         updatedAt: new Date(),
       };
