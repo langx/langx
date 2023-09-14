@@ -50,7 +50,7 @@ export class Chat2Page implements OnInit {
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom(500);
+    this.content.scrollToBottom(0);
   }
 
   async pushMessage(message: Message) {
