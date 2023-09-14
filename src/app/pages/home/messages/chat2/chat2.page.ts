@@ -76,6 +76,13 @@ export class Chat2Page implements OnInit {
     this.scrollToBottom();
   }
 
+  typingFocus() {
+    this.typing = true;
+  }
+  typingBlur() {
+    this.typing = false;
+  }
+
   addUserMessage() {
     const newMessage: Message = {
       message: this.message,
