@@ -44,7 +44,7 @@ export class MessagesPage implements OnInit {
         },
       };
       // this.router.navigate(['/', 'home', 'chat', item.id], navData);
-      this.router.navigate(['/', 'home', 'chat2', item.id], navData);
+      this.router.navigate(['/', 'home', 'chat3', item.id], navData);
     });
   }
 
