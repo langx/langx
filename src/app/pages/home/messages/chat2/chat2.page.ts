@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { Chat2Service } from 'src/app/services/chat/chat2.service';
 
 interface Message {
@@ -19,21 +20,31 @@ interface Message {
 export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
+  currentUserId: string = '';
+  uid: string = '';
+  uname: string = '';
+
   messages: BehaviorSubject<Message[]> = new BehaviorSubject<Message[]>([]);
   message: string = '';
   typing: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private chatService: Chat2Service
+    private chatService: Chat2Service,
+    private auth: AuthService
   ) {}
 
   ngOnInit() {
     this.createmessages();
     this.newMsgComingFromServer();
 
+    const data: any = this.route.snapshot.queryParams;
+    console.log('route snapshot data: ', data);
+    if (data?.name) this.uname = data.name;
+    if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     console.log(chatRoomId);
+    this.currentUserId = this.auth.getId();
 
     this.getChatRoomData(chatRoomId);
     this.getChatMessages(chatRoomId);

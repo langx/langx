@@ -6,7 +6,7 @@
         <img src="https://i.pravatar.cc/300" />
       </ion-avatar>
     </ion-buttons>
-    <ion-title>chat2</ion-title>
+    <ion-title>{{ uname }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -62,5 +62,7 @@
         slot="start"
       ></ion-icon>
     </ion-item>
+    <p>uid: {{ uid }}</p>
+    <p>currentUserId: {{ currentUserId }}</p>
   </ion-toolbar>
 </ion-footer>
