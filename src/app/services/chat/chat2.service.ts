@@ -8,6 +8,16 @@ import { map } from 'rxjs';
 export class Chat2Service {
   constructor(private api: ApiService) {}
 
+  addMessage(chatRoomId: string, message: string, sender: string) {
+    const data = {
+      message,
+      sender,
+      createdAt: new Date(),
+      seen: false,
+    };
+    return this.api.addDocument(`chats/${chatRoomId}/messages`, data);
+  }
+
   async getChatRoomData(chatRoomId: string) {
     const docSnap: any = await this.api.getDocById(`chatRooms/${chatRoomId}`);
     if (docSnap?.exists()) {
