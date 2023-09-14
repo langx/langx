@@ -17,7 +17,7 @@ export class Chat2Service {
     }
   }
 
-  getChatRoomMessages(chatRoomId: string) {
+  getChatMessages(chatRoomId: string) {
     return this.api
       .collectionDataQuery(
         `chats/${chatRoomId}/messages`,

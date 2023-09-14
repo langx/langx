@@ -34,7 +34,7 @@ export class Chat2Page implements OnInit {
     console.log(chatRoomId);
 
     this.getChatRoomData(chatRoomId);
-    this.getChatRoomMessages(chatRoomId);
+    this.getChatMessages(chatRoomId);
   }
 
   getChatRoomData(chatRoomId: string) {
@@ -43,8 +43,8 @@ export class Chat2Page implements OnInit {
     });
   }
 
-  getChatRoomMessages(chatRoomId: string) {
-    this.chatService.getChatRoomMessages(chatRoomId).subscribe((messages) => {
+  getChatMessages(chatRoomId: string) {
+    this.chatService.getChatMessages(chatRoomId).subscribe((messages) => {
       console.log(messages);
     });
   }
