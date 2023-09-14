@@ -83,6 +83,7 @@ export class Chat2Page implements OnInit {
       sender: 'Me',
       seen: false,
     };
+    // TODO: Before pushing the message to the server, check if the user is typing
     this.pushMessage(newMessage);
     this.message = '';
   }
