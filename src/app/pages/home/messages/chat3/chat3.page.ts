@@ -16,7 +16,7 @@ export class Chat3Page implements OnInit {
   ngOnInit() {}
 
   sendMessage() {
-    this.chatService.writeUserData('1', 'name', 'email', 'imageUrl');
+    this.chatService.writeChatData('1', 'name', 'email', 'imageUrl');
   }
 
   typingFocus() {

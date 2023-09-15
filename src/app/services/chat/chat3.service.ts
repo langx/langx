@@ -9,7 +9,7 @@ export class Chat3Service {
 
   constructor(private db: Database) {}
 
-  writeUserData(userId, name, email, imageUrl) {
+  writeChatData(userId, name, email, imageUrl) {
     set(ref(this.db, 'chats/' + userId), {
       username: name,
       email: email,
