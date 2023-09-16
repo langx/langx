@@ -14,6 +14,11 @@ export const environment = {
     appId: '1:273644625627:web:e1ae7d00a3e70bd937f6fe',
     measurementId: 'G-DJGSVHN3CW',
   },
+  appwrite: {
+    production: false,
+    APP_ENDPOINT: "https://db.languagexchange.net/v1",
+    APP_PROJECT: "650597e5ea37b7ba0a59"
+  },
   production: false,
 };
 
