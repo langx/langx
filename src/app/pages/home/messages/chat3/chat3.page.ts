@@ -45,6 +45,33 @@ export class Chat3Page implements OnInit {
     );
   }
 
+  getMessages() {
+    const client = new Client();
+
+    const databases = new Databases(client);
+
+    client
+      .setEndpoint(environment.appwrite.APP_ENDPOINT) // Your API Endpoint
+      .setProject(environment.appwrite.APP_PROJECT); // Your project ID
+
+    const promise = databases.listDocuments(
+      environment.appwrite.APP_DATABASE,
+      '65075108a4025a4f5bd7'
+    );
+
+    promise.then(
+      function (response) {
+        console.log(response); // Success
+        response.documents.forEach((element) => {
+          console.log(element);
+        });
+      },
+      function (error) {
+        console.log(error); // Failure
+      }
+    );
+  }    
+
   sendMessage() {
     // this.chatService.writeChatData('1', 'name', 'email', 'imageUrl');
     this.connect();
