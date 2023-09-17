@@ -13,12 +13,13 @@ export class Chat3Service {
     set(ref(this.db, 'chats/' + userId), {
       username: name,
       email: email,
-      profile_picture : imageUrl
-    }).then(() => {
-      console.log('Synchronization succeeded');
-    }).catch((error) => {
-      console.log('Synchronization failed');
-    });
+      profile_picture: imageUrl,
+    })
+      .then(() => {
+        console.log('Synchronization succeeded');
+      })
+      .catch((error) => {
+        console.log('Synchronization failed');
+      });
   }
-
 }
