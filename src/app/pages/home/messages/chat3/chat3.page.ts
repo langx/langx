@@ -62,14 +62,18 @@ export class Chat3Page implements OnInit {
     promise.then(
       function (response) {
         console.log(response); // Success
-        response.documents.forEach((element) => {
-          console.log(element);
-        });
       },
       function (error) {
         console.log(error); // Failure
       }
     );
+
+    client.subscribe('documents', response => {
+      if(response.events.includes('databases.*.collections.*.documents.*.update')) {
+          // Log when a new file is uploaded
+          console.log(response.payload);
+      }
+    });
   }
 
   sendMessage() {
