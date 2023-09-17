@@ -68,10 +68,12 @@ export class Chat3Page implements OnInit {
       }
     );
 
-    client.subscribe('documents', response => {
-      if(response.events.includes('databases.*.collections.*.documents.*.update')) {
-          // Log when a new file is uploaded
-          console.log(response.payload);
+    client.subscribe('documents', (response) => {
+      if (
+        response.events.includes('databases.default.collections.*.documents.*.update')
+      ) {
+        // Log when a new file is uploaded
+        console.log(response.payload);
       }
     });
   }
