@@ -16,9 +16,9 @@ export const environment = {
   },
   appwrite: {
     production: false,
-    APP_ENDPOINT: "https://db.languagexchange.net/v1",
-    APP_PROJECT: "650750d21e4a6a589be3",
-    APP_DATABASE: "650750f16cd0c482bb83",
+    APP_ENDPOINT: 'https://db.languagexchange.net/v1',
+    APP_PROJECT: '650750d21e4a6a589be3',
+    APP_DATABASE: '650750f16cd0c482bb83',
   },
   production: false,
 };
