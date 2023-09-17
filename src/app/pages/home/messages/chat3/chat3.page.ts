@@ -70,7 +70,7 @@ export class Chat3Page implements OnInit {
         console.log(error); // Failure
       }
     );
-  }    
+  }
 
   sendMessage() {
     // this.chatService.writeChatData('1', 'name', 'email', 'imageUrl');
