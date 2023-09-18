@@ -1,19 +1,54 @@
 import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
+import { Query } from 'appwrite';
+import { AuthService } from '../auth/auth.service';
+import { createReadStream } from 'fs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Chat3Service {
-  constructor(private appwrite: AppwriteService) {}
+  constructor(private appwrite: AppwriteService, private auth: AuthService) {}
 
   //
   // Rooms
   //
 
-  listRooms(): Promise<any> {
-    return this.appwrite.listDocuments(environment.appwrite.ROOMS_COLLECTION);
+  checkRoom(userId: string): Promise<any> {
+    this.auth.getId();
+    let cUserId = this.auth.currentUser.uid;
+    let t1 = `${cUserId}_${userId}`;
+    let t2 = `${userId}_${cUserId}`;
+
+    console.log('t1: ', t1);
+    console.log('t2: ', t2);
+
+    const res1 = this.appwrite.listDocuments(
+      environment.appwrite.ROOMS_COLLECTION,
+      [Query.equal('members', t1)]
+    );
+    const res2 = this.appwrite.listDocuments(
+      environment.appwrite.ROOMS_COLLECTION,
+      [Query.equal('members', t2)]
+    );
+
+    const promise = Promise.all([res1, res2]).then((values) => {
+      return [...values[0].documents, ...values[1].documents];
+    });
+
+    return promise.then((values) => {
+      if (values.length > 0) {
+        console.log('values: ', values);
+        return values[0];
+      } else {
+        console.log('no values');
+        return this.createRoom({
+          members: t1,
+          typing: [false, false],
+        });
+      }
+    });
   }
 
   getRoom(roomId: string): Promise<any> {
