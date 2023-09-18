@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Chat3Service } from 'src/app/services/chat/chat3.service';
-import { Client, Databases, ID } from 'appwrite';
-import { environment } from 'src/environments/environment';
+import { ID } from 'appwrite';
 
 @Component({
   selector: 'app-chat3',
