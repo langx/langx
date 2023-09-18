@@ -136,8 +136,10 @@ export class CommunityPage implements OnInit {
     }
   }
 
-  start3Chat(item) {
-    const promise = this.chat3Service.getRoom('6508618b87b2f67fba17');
+  async start3Chat(item) {
+    console.log(item);
+
+    const promise = this.chat3Service.checkRoom(item.uid);
     promise.then(
       function (response) {
         console.log(response); // Success
@@ -146,6 +148,7 @@ export class CommunityPage implements OnInit {
         console.log(error); // Failure
       }
     );
+
     //this.router.navigateByUrl('/home/messages/chat3');
   }
 
