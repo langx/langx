@@ -23,7 +23,7 @@ export class Chat3Page implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  connect() {
+  addMessage() {
     const client = new Client();
 
     const databases = new Databases(client);
@@ -78,11 +78,6 @@ export class Chat3Page implements OnInit {
       }
     });
     */
-  }
-
-  sendMessage() {
-    // this.chatService.writeChatData('1', 'name', 'email', 'imageUrl');
-    this.connect();
   }
 
   typingFocus() {
