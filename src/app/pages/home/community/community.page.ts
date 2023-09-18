@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { Chat3Service } from 'src/app/services/chat/chat3.service';
 import {
   FilterService,
   FilterData,
@@ -25,6 +26,7 @@ export class CommunityPage implements OnInit {
   constructor(
     private router: Router,
     private chatService: ChatService,
+    private chat3Service: Chat3Service,
     private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService
@@ -132,6 +134,19 @@ export class CommunityPage implements OnInit {
       // hideLoader();
       this.isLoading = false;
     }
+  }
+
+  start3Chat(item) {
+    const promise = this.chat3Service.getRoom('6508618b87b2f67fba17');
+    promise.then(
+      function (response) {
+        console.log(response); // Success
+      },
+      function (error) {
+        console.log(error); // Failure
+      }
+    );
+    //this.router.navigateByUrl('/home/messages/chat3');
   }
 
   //
