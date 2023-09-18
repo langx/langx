@@ -14,6 +14,17 @@ export class Chat3Service {
     );
   }
 
+  listenDocuments() {
+    const client = this.appwrite.client$();
+    return client.subscribe('documents', (response) => {
+      if (
+        response.events.includes('databases.*.collections.*.documents.*.update')
+      ) {
+        console.log(response.payload);
+      }
+    });
+  }
+
   /*
   writeChatData(userId, name, email, imageUrl) {
     set(ref(this.db, 'chats/' + userId), {
