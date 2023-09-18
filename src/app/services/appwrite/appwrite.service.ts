@@ -24,11 +24,19 @@ export class AppwriteService {
     return this.client;
   }
 
-  listDocuments(collectionId: string): Promise<any> {
-    return this.databases.listDocuments(
-      environment.appwrite.APP_DATABASE,
-      collectionId
-    );
+  listDocuments(collectionId: string, queries?: string[]): Promise<any> {
+    if (queries) {
+      return this.databases.listDocuments(
+        environment.appwrite.APP_DATABASE,
+        collectionId,
+        queries
+      );
+    } else {
+      return this.databases.listDocuments(
+        environment.appwrite.APP_DATABASE,
+        collectionId
+      );
+    }
   }
 
   getDocument(collectionId: string, documentId: string): Promise<any> {
