@@ -31,6 +31,14 @@ export class AppwriteService {
     );
   }
 
+  getDocument(collectionId: string, documentId: string): Promise<any> {
+    return this.databases.getDocument(
+      environment.appwrite.APP_DATABASE,
+      collectionId,
+      documentId
+    );
+  }
+
   createDocument(collectionId: string, data: any): Promise<any> {
     return this.databases.createDocument(
       environment.appwrite.APP_DATABASE,
