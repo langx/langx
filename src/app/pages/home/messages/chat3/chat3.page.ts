@@ -24,24 +24,10 @@ export class Chat3Page implements OnInit {
   }
 
   addMessage() {
-    const client = new Client();
-
-    const databases = new Databases(client);
-
-    client
-      .setEndpoint(environment.appwrite.APP_ENDPOINT) // Your API Endpoint
-      .setProject(environment.appwrite.APP_PROJECT); // Your project ID
-
-    const promise = databases.createDocument(
-      environment.appwrite.APP_DATABASE,
-      '65075108a4025a4f5bd7',
-      ID.unique(),
-      {
-        message: 'Hello World',
-        sender: ID.unique(),
-      }
-    );
-
+    const promise = this.chatService.createDocument({
+      message: '!!! Hello World !!!',
+      sender: ID.unique(),
+    });
     promise.then(
       function (response) {
         console.log(response); // Success
@@ -62,22 +48,6 @@ export class Chat3Page implements OnInit {
         console.log(error); // Failure
       }
     );
-    /*
-    const client = new Client();
-    const databases = new Databases(client);
-    client
-      .setEndpoint(environment.appwrite.APP_ENDPOINT) // Your API Endpoint
-      .setProject(environment.appwrite.APP_PROJECT); // Your project ID
-
-    client.subscribe('documents', (response) => {
-      if (
-        response.events.includes('databases.default.collections.*.documents.*.update')
-      ) {
-        // Log when a new file is uploaded
-        console.log(response.payload);
-      }
-    });
-    */
   }
 
   typingFocus() {
