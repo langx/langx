@@ -147,6 +147,7 @@ export class CommunityPage implements OnInit {
       },
       function (error) {
         console.log(error); // Failure
+        // TODO: Test this
         return;
       }
     );
