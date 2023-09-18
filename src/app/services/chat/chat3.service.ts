@@ -1,14 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Database, ref, set } from '@angular/fire/database';
+import { AppwriteService } from '../appwrite/appwrite.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Chat3Service {
-  chatsRef = ref(this.db, 'chats/');
+  constructor(private appwrite: AppwriteService) {}
 
-  constructor(private db: Database) {}
+  listDocuments(): Promise<any> {
+    return this.appwrite.listDocuments(
+      environment.appwrite.MESSAGES_COLLECTION
+    );
+  }
 
+  /*
   writeChatData(userId, name, email, imageUrl) {
     set(ref(this.db, 'chats/' + userId), {
       username: name,
@@ -22,4 +28,5 @@ export class Chat3Service {
         console.log('Synchronization failed');
       });
   }
+  */
 }

@@ -46,10 +46,18 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
+    const promise = this.chatService.listDocuments();
+    promise.then(
+      function (response) {
+        console.log(response); // Success
+      },
+      function (error) {
+        console.log(error); // Failure
+      }
+    );
+    /*
     const client = new Client();
-
     const databases = new Databases(client);
-
     client
       .setEndpoint(environment.appwrite.APP_ENDPOINT) // Your API Endpoint
       .setProject(environment.appwrite.APP_PROJECT); // Your project ID
@@ -59,14 +67,6 @@ export class Chat3Page implements OnInit {
       '65075108a4025a4f5bd7'
     );
 
-    promise.then(
-      function (response) {
-        console.log(response); // Success
-      },
-      function (error) {
-        console.log(error); // Failure
-      }
-    );
 
     client.subscribe('documents', (response) => {
       if (
@@ -76,6 +76,7 @@ export class Chat3Page implements OnInit {
         console.log(response.payload);
       }
     });
+    */
   }
 
   sendMessage() {
