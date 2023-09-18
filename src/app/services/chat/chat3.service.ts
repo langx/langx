@@ -14,6 +14,13 @@ export class Chat3Service {
     );
   }
 
+  createDocument(data: any): Promise<any> {
+    return this.appwrite.createDocument(
+      environment.appwrite.MESSAGES_COLLECTION,
+      data
+    );
+  }
+
   listenDocuments() {
     const client = this.appwrite.client$();
     return client.subscribe('documents', (response) => {
@@ -23,12 +30,5 @@ export class Chat3Service {
         console.log(response.payload);
       }
     });
-  }
-
-  createDocument(data: any): Promise<any> {
-    return this.appwrite.createDocument(
-      environment.appwrite.MESSAGES_COLLECTION,
-      data
-    );
   }
 }
