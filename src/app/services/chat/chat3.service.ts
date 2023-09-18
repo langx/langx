@@ -25,6 +25,13 @@ export class Chat3Service {
     });
   }
 
+  createDocument(data: any): Promise<any> {
+    return this.appwrite.createDocument(
+      environment.appwrite.MESSAGES_COLLECTION,
+      data
+    );
+  }
+
   /*
   writeChatData(userId, name, email, imageUrl) {
     set(ref(this.db, 'chats/' + userId), {
