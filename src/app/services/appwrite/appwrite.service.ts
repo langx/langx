@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, Account, ID, Databases } from 'appwrite';
+import { Client, ID, Databases } from 'appwrite';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
