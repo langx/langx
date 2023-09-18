@@ -47,7 +47,7 @@ export class Chat3Page implements OnInit {
   addMessage() {
     const promise = this.chatService.createDocument({
       message: '!!! Hello World !!!',
-      sender: ID.unique(),
+      sender: this.currentUserId,
     });
     promise.then(
       function (response) {
