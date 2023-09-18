@@ -21,8 +21,8 @@ export class Chat3Service {
     let t1 = `${cUserId}_${userId}`;
     let t2 = `${userId}_${cUserId}`;
 
-    console.log('t1: ', t1);
-    console.log('t2: ', t2);
+    // console.log('t1: ', t1);
+    // console.log('t2: ', t2);
 
     const res1 = this.appwrite.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
@@ -39,10 +39,10 @@ export class Chat3Service {
 
     return promise.then((values) => {
       if (values.length > 0) {
-        console.log('values: ', values);
+        console.log(' room found: ', values);
         return values[0];
       } else {
-        console.log('no values');
+        console.log('no room find, create new one');
         return this.createRoom({
           members: t1,
           typing: [false, false],
