@@ -31,7 +31,7 @@ export class Chat3Page implements OnInit {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription(); // to unsubscribe
   }
 
   initChatPage() {
