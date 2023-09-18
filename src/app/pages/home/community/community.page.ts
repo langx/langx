@@ -137,19 +137,27 @@ export class CommunityPage implements OnInit {
   }
 
   async start3Chat(item) {
-    console.log(item);
 
+    let roomId: string = '';
     const promise = this.chat3Service.checkRoom(item.uid);
-    promise.then(
+    await promise.then(
       function (response) {
+        roomId = response.$id;
         console.log(response); // Success
       },
       function (error) {
         console.log(error); // Failure
+        return;
       }
     );
+    const navData: NavigationExtras = {
+      queryParams: {
+        name: item?.name,
+        uid: item?.uid,
+      },
+    };
+    this.router.navigate(['/', 'home', 'chat3', roomId], navData);
 
-    //this.router.navigateByUrl('/home/messages/chat3');
   }
 
   //
