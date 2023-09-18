@@ -11,10 +11,17 @@ import { environment } from 'src/environments/environment';
 export class Chat3Page implements OnInit {
   message: string = '';
   isTyping: boolean = false;
+  subscription: any;
 
   constructor(private chatService: Chat3Service) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.subscription = this.chatService.listenDocuments();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 
   connect() {
     const client = new Client();
@@ -61,12 +68,6 @@ export class Chat3Page implements OnInit {
     client
       .setEndpoint(environment.appwrite.APP_ENDPOINT) // Your API Endpoint
       .setProject(environment.appwrite.APP_PROJECT); // Your project ID
-
-    const promise = databases.listDocuments(
-      environment.appwrite.APP_DATABASE,
-      '65075108a4025a4f5bd7'
-    );
-
 
     client.subscribe('documents', (response) => {
       if (

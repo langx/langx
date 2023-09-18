@@ -20,12 +20,17 @@ export class AppwriteService {
       .setProject(environment.appwrite.APP_PROJECT); // Your project ID
   }
 
+  client$(): Client {
+    return this.client;
+  }
+
   listDocuments(collectionId: string): Promise<any> {
     return this.databases.listDocuments(
       environment.appwrite.APP_DATABASE,
       collectionId
     );
   }
+
   /*
   createDocument(collectionId: string, data: any): Promise<any> {
     return this.databases.createDocument(
