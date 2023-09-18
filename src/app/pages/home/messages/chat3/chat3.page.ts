@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Chat3Service } from 'src/app/services/chat/chat3.service';
 import { ID } from 'appwrite';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-chat3',
@@ -12,14 +14,34 @@ export class Chat3Page implements OnInit {
   isTyping: boolean = false;
   subscription: any;
 
-  constructor(private chatService: Chat3Service) {}
+  name: string;
+  uid: string;
+  chatID: string;
+  currentUserId: string;
+
+  constructor(
+    private chatService: Chat3Service,
+    private auth: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    this.initChatPage();
     this.subscription = this.chatService.listenDocuments();
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  initChatPage() {
+    const data: any = this.route.snapshot.queryParams;
+    console.log('route snapshot data: ', data);
+    if (data?.name) this.name = data.name;
+    if (data?.uid) this.uid = data.uid;
+    const chatRoomId: string = this.route.snapshot.paramMap.get('id');
+    this.chatID = chatRoomId;
+    this.currentUserId = this.auth.getId();
   }
 
   addMessage() {
