@@ -51,6 +51,22 @@ export class Chat3Service {
     });
   }
 
+  getRooms(currentUserId: string): Promise<any> {
+    return this.appwrite
+      .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
+        Query.search('members', currentUserId),
+      ])
+      .then((values) => {
+        values.documents.forEach((element) => {
+          let members = element.members.split('_');
+          members[0] == currentUserId
+            ? (element.user = members[1])
+            : (element.user = members[0]);
+        });
+        return values;
+      });
+  }
+
   getRoom(roomId: string): Promise<any> {
     return this.appwrite.getDocument(
       environment.appwrite.ROOMS_COLLECTION,
