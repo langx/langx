@@ -27,7 +27,7 @@
 
     <ion-list *ngIf="chat3Rooms?.length > 0">
       <div *ngFor="let item of chat3Rooms" detail>
-        <ion-item>
+        <ion-item (click)="get3Chat(item)">
           <ng-container *ngIf="item">
             <ion-avatar slot="start">
               <img

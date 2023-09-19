@@ -33,6 +33,30 @@ export class MessagesPage implements OnInit {
     this.get3Rooms(); // get all chat Rooms
   }
 
+  async get3Rooms() {
+    let cUserId = this.auth.getId();
+    console.log('cUserId: ', cUserId);
+    const promise = this.chat3Service.getRooms(cUserId);
+    promise.then((data) => {
+      this.chat3Rooms = data.documents;
+      console.log('chat3Rooms: ', this.chat3Rooms);
+    });
+  }
+
+  get3Chat(item) {
+    (item?.user).pipe(take(1)).subscribe((user_data) => {
+      console.log('user_data', user_data);
+      const navData: NavigationExtras = {
+        queryParams: {
+          name: user_data?.name,
+          uid: user_data?.uid,
+        },
+      };
+      this.router.navigate(['/', 'home', 'chat3', item.$id], navData);
+    });
+  }
+
+/*
   getRooms() {
     //TODO: showLoader();
     this.isLoading = true;
@@ -40,15 +64,6 @@ export class MessagesPage implements OnInit {
     this.chatRooms = this.chatService.chatRooms;
     //TODO: hideLoader();
     this.isLoading = false;
-  }
-
-  async get3Rooms() {
-    let cUserId = this.auth.getId();
-    console.log('cUserId: ', cUserId);
-    const promise = this.chat3Service.getRooms(cUserId);
-    promise.then((data) => {
-      this.chat3Rooms = data.documents;
-    });
   }
 
   getChat(item) {
@@ -64,6 +79,7 @@ export class MessagesPage implements OnInit {
       this.router.navigate(['/', 'home', 'chat3', item.id], navData);
     });
   }
+*/
 
   getUser(user: any) {
     return user;
@@ -74,7 +90,7 @@ export class MessagesPage implements OnInit {
   }
 
   handleRefresh(event) {
-    this.getRooms();
+    this.get3Rooms();
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
