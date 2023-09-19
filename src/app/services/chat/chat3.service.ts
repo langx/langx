@@ -88,6 +88,7 @@ export class Chat3Service {
     );
   }
 
+  // TODO: listen to room changes for messages.page.ts
   listenRooms() {
     const client = this.appwrite.client$();
     return client.subscribe('documents', (response) => {
