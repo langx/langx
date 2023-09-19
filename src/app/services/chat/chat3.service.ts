@@ -4,12 +4,17 @@ import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { createReadStream } from 'fs';
+import { ApiService } from '../api/api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Chat3Service {
-  constructor(private appwrite: AppwriteService, private auth: AuthService) {}
+  constructor(
+    private appwrite: AppwriteService,
+    private auth: AuthService,
+    private api: ApiService
+  ) {}
 
   //
   // Rooms
@@ -62,6 +67,8 @@ export class Chat3Service {
           members[0] == currentUserId
             ? (element.user = members[1])
             : (element.user = members[0]);
+          // TODO: FIRESTORE USER
+          element.user = this.api.docDataQuery(`users/${element.user}`, true)
         });
         return values;
       });
