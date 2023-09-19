@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { ChatService } from 'src/app/services/chat/chat.service';
+import { Chat3Service } from 'src/app/services/chat/chat3.service';
 
 @Component({
   selector: 'app-messages',
@@ -11,6 +13,7 @@ import { ChatService } from 'src/app/services/chat/chat.service';
 })
 export class MessagesPage implements OnInit {
   chatRooms: Observable<any>;
+  chat3Rooms: any;
   isLoading: boolean = false;
 
   model = {
@@ -19,10 +22,15 @@ export class MessagesPage implements OnInit {
     color: 'warning',
   };
 
-  constructor(private router: Router, private chatService: ChatService) {}
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private chatService: ChatService,
+    private chat3Service: Chat3Service
+  ) {}
 
   ngOnInit() {
-    this.getRooms(); // get all chat Rooms
+    this.get3Rooms(); // get all chat Rooms
   }
 
   getRooms() {
@@ -32,6 +40,15 @@ export class MessagesPage implements OnInit {
     this.chatRooms = this.chatService.chatRooms;
     //TODO: hideLoader();
     this.isLoading = false;
+  }
+
+  async get3Rooms() {
+    let cUserId = this.auth.getId();
+    console.log('cUserId: ', cUserId);
+    const promise = this.chat3Service.getRooms(cUserId);
+    promise.then((data) => {
+      this.chat3Rooms = data.documents;
+    });
   }
 
   getChat(item) {

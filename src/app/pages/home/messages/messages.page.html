@@ -21,6 +21,35 @@
   </ion-refresher>
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+  <ng-container *ngIf="!isLoading">
+    <app-empty-screen *ngIf="chat3Rooms?.length == 0" [model]="model">
+    </app-empty-screen>
+
+    <ion-list *ngIf="chat3Rooms?.length > 0">
+      <div *ngFor="let item of chat3Rooms" detail>
+        <ion-item>
+          <ng-container *ngIf="item">
+            <ion-avatar slot="start">
+              <img
+                [src]="getUser(item.user)?.photo"
+                alt=""
+                referrerpolicy="no-referrer"
+              />
+            </ion-avatar>
+            <ion-label>
+              <h2>{{getUser(item.user)?.name}}</h2>
+              <p>{{getUser(item.user)?.id}}</p>
+              <p>{{getUser(item.user)}}</p>
+            </ion-label>
+            <ion-note>{{ lastSeen(item?.updatedAt) }}</ion-note>
+          </ng-container>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ng-container>
+
+  <!--
+  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <ng-container *ngIf="!isLoading && (chatRooms | async) as rooms">
     <app-empty-screen *ngIf="(chatRooms | async)?.length == 0" [model]="model">
     </app-empty-screen>
@@ -57,4 +86,5 @@
       </div>
     </ion-list>
   </ng-container>
+  -->
 </ion-content>
