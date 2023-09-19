@@ -113,6 +113,7 @@ export class CommunityPage implements OnInit {
   // Start Chat
   //
 
+  /*
   async startChat(item) {
     try {
       // showLoader();
@@ -135,6 +136,7 @@ export class CommunityPage implements OnInit {
       this.isLoading = false;
     }
   }
+  */
 
   async start3Chat(item) {
 
