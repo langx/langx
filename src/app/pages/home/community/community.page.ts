@@ -139,15 +139,14 @@ export class CommunityPage implements OnInit {
   */
 
   async start3Chat(item) {
-
     let roomId: string = '';
     const promise = this.chat3Service.checkRoom(item.uid);
     await promise.then(
-      function (response) {
+      (response) => {
         roomId = response.$id;
         console.log(response); // Success
       },
-      function (error) {
+      (error) => {
         console.log(error); // Failure
         // TODO: Test this
         return;
@@ -160,7 +159,6 @@ export class CommunityPage implements OnInit {
       },
     };
     this.router.navigate(['/', 'home', 'chat3', roomId], navData);
-
   }
 
   //
