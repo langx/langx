@@ -81,7 +81,8 @@ export class Chat3Service {
     );
   }
 
-  // TODO: listen to room changes for messages.page.ts
+  // TODO: listen to room changes for messages.page.ts.
+  // IDEA: use items collection, it will be relational one to many attribute which is named with the room id array
   listenRooms() {
     const client = this.appwrite.client$();
     return client.subscribe('documents', (response) => {
