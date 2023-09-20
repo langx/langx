@@ -114,14 +114,15 @@ export class Chat3Service {
     );
   }
 
-  listenDocuments() {
+  listenMessages(roomId: string) {
     const client = this.appwrite.client$();
     return client.subscribe('documents', (response) => {
       if (
         response.events.includes(
           'databases.*.collections.' +
-            environment.appwrite.MESSAGES_COLLECTION +
-            '.documents.*.update'
+            environment.appwrite.ROOMS_COLLECTION +
+            '.documents.' +
+            roomId
         )
       ) {
         console.log(response.payload);
