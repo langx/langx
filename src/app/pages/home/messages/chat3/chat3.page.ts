@@ -16,7 +16,7 @@ export class Chat3Page implements OnInit {
 
   name: string;
   uid: string;
-  chatID: string;
+  roomId: string;
   currentUserId: string;
 
   constructor(
@@ -40,7 +40,7 @@ export class Chat3Page implements OnInit {
     if (data?.name) this.name = data.name;
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
-    this.chatID = chatRoomId;
+    this.roomId = chatRoomId;
     this.currentUserId = this.auth.getId();
   }
 
