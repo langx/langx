@@ -33,7 +33,7 @@ export class MessagesPage implements OnInit {
     this.get3Rooms(); // get all chat Rooms
   }
 
-  async get3Rooms() {
+  get3Rooms() {
     let cUserId = this.auth.getId();
     console.log('cUserId: ', cUserId);
     const promise = this.chat3Service.getRooms(cUserId);
