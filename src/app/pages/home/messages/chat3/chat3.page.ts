@@ -27,7 +27,7 @@ export class Chat3Page implements OnInit {
 
   ngOnInit() {
     this.initChatPage();
-    this.subscription = this.chat3Service.listenDocuments();
+    this.subscription = this.chat3Service.listenMessages(this.roomId);
   }
 
   ngOnDestroy() {
