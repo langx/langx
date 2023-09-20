@@ -44,7 +44,7 @@ export class MessagesPage implements OnInit {
   }
 
   get3Chat(item) {
-    // TODO: It uses the Firestore use as an Observable
+    // TODO: #117 It uses the Firestore use as an Observable
     (item?.userData).pipe(take(1)).subscribe((user_data) => {
       console.log('user_data', user_data);
       const navData: NavigationExtras = {
