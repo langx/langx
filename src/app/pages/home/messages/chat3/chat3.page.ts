@@ -45,7 +45,6 @@ export class Chat3Page implements OnInit {
     this.currentUserId = this.auth.getId();
   }
 
-  // TODO: It should be added in rooms collections as a relation by using room id
   addMessage() {
     const data = {
       message: '!!! 2nd message !!!',
