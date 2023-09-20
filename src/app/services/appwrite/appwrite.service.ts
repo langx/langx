@@ -55,4 +55,17 @@ export class AppwriteService {
       data
     );
   }
+
+  updateDocument(
+    collectionId: string,
+    documentId: string,
+    data: any
+  ): Promise<any> {
+    return this.databases.updateDocument(
+      environment.appwrite.APP_DATABASE,
+      collectionId,
+      documentId,
+      data
+    );
+  }
 }
