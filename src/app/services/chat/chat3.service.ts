@@ -90,7 +90,7 @@ export class Chat3Service {
         response.events.includes(
           'databases.*.collections.' +
             environment.appwrite.ROOMS_COLLECTION +
-            '.documents.*.update'
+            '.documents.*'
         )
       ) {
         console.log(response.payload);
