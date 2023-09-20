@@ -44,7 +44,7 @@ export class MessagesPage implements OnInit {
   }
 
   get3Chat(item) {
-    (item?.user).pipe(take(1)).subscribe((user_data) => {
+    (item?.userData).pipe(take(1)).subscribe((user_data) => {
       console.log('user_data', user_data);
       const navData: NavigationExtras = {
         queryParams: {
