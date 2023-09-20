@@ -20,14 +20,14 @@ export class Chat3Page implements OnInit {
   currentUserId: string;
 
   constructor(
-    private chatService: Chat3Service,
+    private chat3Service: Chat3Service,
     private auth: AuthService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
     this.initChatPage();
-    this.subscription = this.chatService.listenDocuments();
+    this.subscription = this.chat3Service.listenDocuments();
   }
 
   ngOnDestroy() {
@@ -45,7 +45,7 @@ export class Chat3Page implements OnInit {
   }
 
   addMessage() {
-    const promise = this.chatService.createDocument({
+    const promise = this.chat3Service.createDocument({
       message: '!!! Hello World !!!',
       sender: this.currentUserId,
     });
@@ -60,7 +60,7 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
-    const promise = this.chatService.listDocuments();
+    const promise = this.chat3Service.listDocuments();
     promise.then(
       function (response) {
         console.log(response); // Success
