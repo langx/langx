@@ -109,15 +109,15 @@ export class Chat3Service {
   // Messages
   //
 
-  listMessages(): Promise<any> {
-    return this.appwrite.listDocuments(
-      environment.appwrite.MESSAGES_COLLECTION
-    );
+  listMessages(roomId: string): Promise<any> {
+    return this.appwrite.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
+      Query.equal('$id', roomId),
+    ]);
   }
 
   createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
-      environment.appwrite.MESSAGES_COLLECTION,
+      environment.appwrite.ROOMS_COLLECTION,
       data
     );
   }
