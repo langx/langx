@@ -23,33 +23,21 @@ export class Chat3Service {
   checkRoom(userId: string): Promise<any> {
     this.auth.getId();
     let cUserId = this.auth.currentUser.uid;
-    let t1 = `${cUserId}_${userId}`;
-    let t2 = `${userId}_${cUserId}`;
 
-    // console.log('t1: ', t1);
-    // console.log('t2: ', t2);
-
-    const res1 = this.appwrite.listDocuments(
+    const promise = this.appwrite.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
-      [Query.equal('members', t1)]
+      [Query.search('users', cUserId), Query.search('users', userId)]
     );
-    const res2 = this.appwrite.listDocuments(
-      environment.appwrite.ROOMS_COLLECTION,
-      [Query.equal('members', t2)]
-    );
-
-    const promise = Promise.all([res1, res2]).then((values) => {
-      return [...values[0].documents, ...values[1].documents];
-    });
 
     return promise.then((values) => {
-      if (values.length > 0) {
+      console.log('result checkROOM: ', values);
+      if (values.total > 0) {
         console.log(' room found: ', values);
-        return values[0];
+        return values.documents[0];
       } else {
-        console.log('no room find, create new one');
+        console.log('no room find, creating new one');
         return this.createRoom({
-          members: t1,
+          users: [cUserId, userId],
           typing: [false, false],
         });
       }
@@ -59,16 +47,21 @@ export class Chat3Service {
   getRooms(currentUserId: string): Promise<any> {
     return this.appwrite
       .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-        Query.search('members', currentUserId),
+        // Query.search('members', currentUserId),
+        Query.search('users', currentUserId),
       ])
       .then((values) => {
         values.documents.forEach((element) => {
-          let members = element.members.split('_');
-          members[0] == currentUserId
-            ? (element.user = members[1])
-            : (element.user = members[0]);
+          element.users.forEach((user) => {
+            if (user != currentUserId) {
+              element.user = user;
+            }
+          });
           // TODO: FIRESTORE USER
-          element.user = this.api.docDataQuery(`users/${element.user}`, true)
+          element.userData = this.api.docDataQuery(
+            `users/${element.user}`,
+            true
+          );
         });
         return values;
       });
