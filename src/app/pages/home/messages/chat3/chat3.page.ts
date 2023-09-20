@@ -45,7 +45,7 @@ export class Chat3Page implements OnInit {
   }
 
   addMessage() {
-    const promise = this.chat3Service.createDocument({
+    const promise = this.chat3Service.createMessage({
       message: '!!! Hello World !!!',
       sender: this.currentUserId,
     });
@@ -60,7 +60,7 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
-    const promise = this.chat3Service.listDocuments();
+    const promise = this.chat3Service.listMessages();
     promise.then(
       function (response) {
         console.log(response); // Success
