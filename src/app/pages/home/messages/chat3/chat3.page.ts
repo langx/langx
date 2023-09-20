@@ -47,12 +47,12 @@ export class Chat3Page implements OnInit {
 
   addMessage() {
     const data = {
-      message: '!!! 2nd message !!!',
+      message: '!!! 3nd message !!!',
       sender: this.currentUserId,
     };
     console.log('roomId: ', this.roomId);
     const promise = this.chat3Service.updateRoom(this.roomId, {
-      messages: [data],
+      messages: [...this.messages, data],
     });
     promise.then(
       (response) => {
