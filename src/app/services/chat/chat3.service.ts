@@ -3,7 +3,6 @@ import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
-import { createReadStream } from 'fs';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
