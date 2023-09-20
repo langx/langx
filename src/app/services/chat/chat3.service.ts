@@ -25,16 +25,16 @@ export class Chat3Service {
 
     const promise = this.appwrite.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', cUserId), Query.search('users', userId)]
+      [Query.search('users', `${cUserId} ${userId}`)]
     );
 
     return promise.then((values) => {
       console.log('result checkROOM: ', values);
       if (values.total > 0) {
-        console.log(' room found: ', values);
+        console.log('Room found: ', values);
         return values.documents[0];
       } else {
-        console.log('no room find, creating new one');
+        console.log('No room find, creating new one');
         return this.createRoom({
           users: [cUserId, userId],
           typing: [false, false],
@@ -76,6 +76,14 @@ export class Chat3Service {
   createRoom(data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
+      data
+    );
+  }
+
+  updateRoom(roomId: string, data: any): Promise<any> {
+    return this.appwrite.updateDocument(
+      environment.appwrite.ROOMS_COLLECTION,
+      roomId,
       data
     );
   }
