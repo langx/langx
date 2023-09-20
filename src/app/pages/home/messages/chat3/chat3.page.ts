@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class Chat3Page implements OnInit {
   message: string = '';
+  messages: any[] = [];
   isTyping: boolean = false;
   subscription: any;
 
@@ -46,27 +47,32 @@ export class Chat3Page implements OnInit {
 
   // TODO: It should be added in rooms collections as a relation by using room id
   addMessage() {
-    const promise = this.chat3Service.createMessage({
-      message: '!!! Hello World !!!',
+    const data = {
+      message: '!!! 2nd message !!!',
       sender: this.currentUserId,
+    };
+    console.log('roomId: ', this.roomId);
+    const promise = this.chat3Service.updateRoom(this.roomId, {
+      messages: [data],
     });
     promise.then(
-      function (response) {
+      (response) => {
         console.log(response); // Success
       },
-      function (error) {
+      (error) => {
         console.log(error); // Failure
       }
     );
   }
 
   getMessages() {
-    const promise = this.chat3Service.listMessages();
+    const promise = this.chat3Service.listMessages(this.roomId);
     promise.then(
-      function (response) {
-        console.log(response); // Success
+      (response) => {
+        console.log(response.documents[0].messages); // Success
+        this.messages = response.documents[0].messages;
       },
-      function (error) {
+      (error) => {
         console.log(error); // Failure
       }
     );

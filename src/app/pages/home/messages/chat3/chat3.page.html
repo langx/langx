@@ -18,8 +18,8 @@
   </ion-header>
 
   <ion-list>
-    <ion-item *ngFor="let msg of [1,2,3]">
-      <p>{{msg}}</p>
+    <ion-item *ngFor="let msg of messages">
+      <p>{{msg?.message}}</p>
     </ion-item>
   </ion-list>
 </ion-content>
