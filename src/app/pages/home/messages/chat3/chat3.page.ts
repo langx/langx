@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Chat3Service } from 'src/app/services/chat/chat3.service';
-import { ID } from 'appwrite';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
