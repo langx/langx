@@ -101,13 +101,13 @@ export class Chat3Service {
   // Messages
   //
 
-  listDocuments(): Promise<any> {
+  listMessages(): Promise<any> {
     return this.appwrite.listDocuments(
       environment.appwrite.MESSAGES_COLLECTION
     );
   }
 
-  createDocument(data: any): Promise<any> {
+  createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.MESSAGES_COLLECTION,
       data
