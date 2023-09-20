@@ -114,6 +114,7 @@ export class Chat3Service {
     );
   }
 
+  // TODO: Test it works or not
   listenMessages(roomId: string) {
     const client = this.appwrite.client$();
     return client.subscribe('documents', (response) => {
