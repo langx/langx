@@ -31,9 +31,9 @@ export class Chat3Page implements OnInit {
     this.initMessages();
     // TODO: It may be better to use a service to listen all messages
     // with one subscription, and then check the messages by roomId
-    this.listenWSS= this.messageService.listenMessages(this.roomId);
+    this.listenWSS = this.messageService.listenMessages(this.roomId);
     this.subscription = this.messageService.messages.subscribe((messages) => {
-      console.log('messages: ', messages);
+      // console.log('messages: ', messages);
       this.messages.push(messages);
     });
   }
@@ -62,15 +62,17 @@ export class Chat3Page implements OnInit {
   addMessage() {
     console.log('roomID: ', this.roomId);
     const promise = this.messageService.createMessage({
-      message: '!!! message !!!',
+      message: this.message,
       sender: this.currentUserId,
       roomId: this.roomId,
     });
     promise.then(
       (response) => {
         console.log(response); // Success
+        this.message = '';
       },
       (error) => {
+        // TODO: Add toast message here
         console.log(error); // Failure
       }
     );
