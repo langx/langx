@@ -15,10 +15,6 @@ export class Chat3Service {
     private api: ApiService
   ) {}
 
-  //
-  // Rooms
-  //
-
   checkRoom(userId: string): Promise<any> {
     this.auth.getId();
     let cUserId = this.auth.currentUser.uid;
@@ -98,40 +94,6 @@ export class Chat3Service {
           'databases.*.collections.' +
             environment.appwrite.ROOMS_COLLECTION +
             '.documents.*'
-        )
-      ) {
-        console.log(response.payload);
-      }
-    });
-  }
-
-  //
-  // Messages
-  //
-
-  listMessages(roomId: string): Promise<any> {
-    return this.appwrite.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-      Query.equal('$id', roomId),
-    ]);
-  }
-
-  createMessage(data: any): Promise<any> {
-    return this.appwrite.createDocument(
-      environment.appwrite.ROOMS_COLLECTION,
-      data
-    );
-  }
-
-  // TODO: Test it works or not
-  listenMessages(roomId: string) {
-    const client = this.appwrite.client$();
-    return client.subscribe('documents', (response) => {
-      if (
-        response.events.includes(
-          'databases.*.collections.' +
-            environment.appwrite.ROOMS_COLLECTION +
-            '.documents.' +
-            roomId
         )
       ) {
         console.log(response.payload);
