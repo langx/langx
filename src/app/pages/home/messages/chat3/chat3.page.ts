@@ -31,6 +31,8 @@ export class Chat3Page implements OnInit {
   ngOnInit() {
     this.initChatPage();
     this.initMessages();
+    // TODO: It may be better to use a service to listen all messages
+    // with one subscription, and then check the messages by roomId
     this.subscription = this.messageService.listenMessages(this.roomId);
     this.subscription2 = this.messageService.messages.subscribe((messages) => {
       console.log('messages: ', messages);
