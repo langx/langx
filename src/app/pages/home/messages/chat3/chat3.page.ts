@@ -37,6 +37,8 @@ export class Chat3Page implements OnInit {
     this.subscription(); // to unsubscribe
   }
 
+  // Client side params are set, such as name, uid, roomID
+  // TODO: Check if the room exists or not
   initChatPage() {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
