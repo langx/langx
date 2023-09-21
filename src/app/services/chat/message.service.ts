@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
-  messages: any[] = [];
+  messages = new BehaviorSubject<any>(null);
 
   constructor(private appwrite: AppwriteService) {}
 
@@ -21,7 +22,7 @@ export class MessageService {
         environment.appwrite.MESSAGES_COLLECTION +
         '.documents',
       (response) => {
-        console.log(response.payload);
+        this.messages.next(response.payload);
       }
     );
   }
