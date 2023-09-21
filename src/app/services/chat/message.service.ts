@@ -13,7 +13,7 @@ export class MessageService {
   constructor(private appwrite: AppwriteService) {}
 
   // TODO: Test it works or not
-  listenMessages(roomId: string) {
+  listenMessages(roomID: string) {
     const client = this.appwrite.client$();
     //let channel = `databases.${environment.appwrite.APP_DATABASE}.collections.${environment.appwrite.MESSAGES_COLLECTION}.document`;
     let channel =
