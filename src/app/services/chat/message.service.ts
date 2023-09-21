@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
-  messages = new BehaviorSubject<any>(null);
+  messages: Subject<Object> = new Subject<Object>;
 
   constructor(private appwrite: AppwriteService) {}
 
@@ -27,10 +27,22 @@ export class MessageService {
     );
   }
 
-  listMessages(roomId: string): Promise<any> {
-    return this.appwrite.listDocuments(
+  listMessages(roomId: string) {
+    // return this.appwrite.listDocuments(
+    const promise = this.appwrite.listDocuments(
       environment.appwrite.MESSAGES_COLLECTION,
       [Query.equal('roomId', roomId)]
+    );
+    promise.then(
+      (response) => {
+        //console.log(response.documents); // Success
+        response.documents.forEach((doc) => {
+          this.messages.next(doc);
+        });
+      },
+      (error) => {
+        console.log(error); // Failure
+      }
     );
   }
 
