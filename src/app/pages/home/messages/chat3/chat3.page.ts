@@ -27,6 +27,7 @@ export class Chat3Page implements OnInit {
 
   ngOnInit() {
     this.initChatPage();
+    this.initMessages();
     this.subscription = this.chat3Service.listenMessages(this.roomId);
   }
 
@@ -42,6 +43,10 @@ export class Chat3Page implements OnInit {
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     this.roomId = chatRoomId;
     this.currentUserId = this.auth.getId();
+  }
+
+  initMessages() {
+    this.getMessages();
   }
 
   addMessage() {
