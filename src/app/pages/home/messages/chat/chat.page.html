@@ -15,6 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
+<!-- TODO #118 : Pull all content to down like chat2.page-->
 <ion-content>
   <ng-container *ngIf="(chats | async ) as chat$">
     <app-empty-screen *ngIf="(chats | async)?.length == 0" [model]="model">
