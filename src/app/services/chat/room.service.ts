@@ -15,7 +15,7 @@ export class RoomService {
     private api: ApiService
   ) {}
 
-  checkRoom(userId: string): Promise<any> {
+  async checkRoom(userId: string): Promise<any> {
     this.auth.getId();
     let cUserId = this.auth.currentUser.uid;
 
@@ -39,7 +39,7 @@ export class RoomService {
     });
   }
 
-  getRooms(currentUserId: string): Promise<any> {
+  async getRooms(currentUserId: string): Promise<any> {
     return this.appwrite
       .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         // Query.search('members', currentUserId),
