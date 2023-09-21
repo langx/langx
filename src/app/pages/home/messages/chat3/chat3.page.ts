@@ -17,7 +17,7 @@ export class Chat3Page implements OnInit {
 
   name: string;
   uid: string;
-  roomID: string;
+  roomId: string;
   currentUserId: string;
 
   constructor(
@@ -30,14 +30,14 @@ export class Chat3Page implements OnInit {
   ngOnInit() {
     this.initChatPage();
     this.initMessages();
-    this.subscription = this.messageService.listenMessages(this.roomID);
+    this.subscription = this.messageService.listenMessages(this.roomId);
   }
 
   ngOnDestroy() {
     this.subscription(); // to unsubscribe
   }
 
-  // Client side params are set, such as name, uid, roomID
+  // Client side params are set, such as name, uid, roomId
   // TODO: Check if the room exists or not
   initChatPage() {
     const data: any = this.route.snapshot.queryParams;
@@ -45,7 +45,7 @@ export class Chat3Page implements OnInit {
     if (data?.name) this.name = data.name;
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
-    this.roomID = chatRoomId;
+    this.roomId = chatRoomId;
     this.currentUserId = this.auth.getId();
   }
 
@@ -54,11 +54,11 @@ export class Chat3Page implements OnInit {
   }
 
   addMessage() {
-    console.log('roomID: ', this.roomID);
+    console.log('roomID: ', this.roomId);
     const promise = this.messageService.createMessage({
       message: '!!! 3nd message !!!',
       sender: this.currentUserId,
-      roomID: this.roomID,
+      roomId: this.roomId,
     });
     promise.then(
       (response) => {
@@ -71,8 +71,16 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
-    this.messageService.listMessages(this.roomID);
-    this.messages = this.messageService.messages;
+    const promise = this.messageService.listMessages(this.roomId);
+    promise.then(
+      (response) => {
+        console.log(response); // Success
+        //this.messages = response.documents;
+      },
+      (error) => {
+        console.log(error); // Failure
+      }
+    );
   }
 
   typingFocus() {
