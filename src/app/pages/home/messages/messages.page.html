@@ -22,12 +22,12 @@
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
   <ng-container *ngIf="!isLoading">
-    <app-empty-screen *ngIf="chat3Rooms?.length == 0" [model]="model">
+    <app-empty-screen *ngIf="chatRooms?.length == 0" [model]="model">
     </app-empty-screen>
 
-    <ion-list *ngIf="chat3Rooms?.length > 0">
-      <div *ngFor="let item of chat3Rooms" detail>
-        <ion-item (click)="get3Chat(item)">
+    <ion-list *ngIf="chatRooms?.length > 0">
+      <div *ngFor="let item of chatRooms" detail>
+        <ion-item (click)="getChat(item)">
           <ng-container *ngIf="item">
             <ion-avatar slot="start">
               <img

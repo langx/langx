@@ -11,8 +11,8 @@ import { RoomService } from 'src/app/services/chat/room.service';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  chatRooms: Observable<any>;
-  chat3Rooms: any;
+  // chatRooms: Observable<any>;
+  chatRooms: any;
   isLoading: boolean = false;
 
   model = {
@@ -28,20 +28,20 @@ export class MessagesPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.get3Rooms(); // get all chat Rooms
+    this.getRooms(); // get all chat Rooms
   }
 
-  get3Rooms() {
+  getRooms() {
     let cUserId = this.auth.getId();
     console.log('cUserId: ', cUserId);
     const promise = this.roomService.getRooms(cUserId);
     promise.then((data) => {
-      this.chat3Rooms = data.documents;
-      console.log('chat3Rooms: ', this.chat3Rooms);
+      this.chatRooms = data.documents;
+      console.log('chat3Rooms: ', this.chatRooms);
     });
   }
 
-  get3Chat(item) {
+  getChat(item) {
     // TODO: #117 It uses the Firestore use as an Observable
     (item?.userData).pipe(take(1)).subscribe((user_data) => {
       console.log('user_data', user_data);
@@ -89,7 +89,7 @@ export class MessagesPage implements OnInit {
   }
 
   handleRefresh(event) {
-    this.get3Rooms();
+    this.getRooms();
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
