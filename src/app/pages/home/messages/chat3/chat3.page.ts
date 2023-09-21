@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { RoomService } from 'src/app/services/chat/room.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -22,7 +21,6 @@ export class Chat3Page implements OnInit {
   currentUserId: string;
 
   constructor(
-    private roomService: RoomService,
     private messageService: MessageService,
     private auth: AuthService,
     private route: ActivatedRoute
