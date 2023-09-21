@@ -12,8 +12,8 @@ export class Chat3Page implements OnInit {
   message: string = '';
   messages: any[] = [];
   isTyping: boolean = false;
+  listenWSS: any;
   subscription: any;
-  subscription2: any;
 
   name: string;
   uid: string;
@@ -31,16 +31,16 @@ export class Chat3Page implements OnInit {
     this.initMessages();
     // TODO: It may be better to use a service to listen all messages
     // with one subscription, and then check the messages by roomId
-    this.subscription = this.messageService.listenMessages(this.roomId);
-    this.subscription2 = this.messageService.messages.subscribe((messages) => {
+    this.listenWSS= this.messageService.listenMessages(this.roomId);
+    this.subscription = this.messageService.messages.subscribe((messages) => {
       console.log('messages: ', messages);
       this.messages.push(messages);
     });
   }
 
   ngOnDestroy() {
-    this.subscription(); // to unsubscribe
-    this.subscription2(); // to unsubscribe
+    this.listenWSS(); // to unsubscribe
+    this.subscription.unsubscribe(); // to unsubscribe
   }
 
   // Client side params are set, such as name, uid, roomId
@@ -62,7 +62,7 @@ export class Chat3Page implements OnInit {
   addMessage() {
     console.log('roomID: ', this.roomId);
     const promise = this.messageService.createMessage({
-      message: '!!! test message !!!',
+      message: '!!! message !!!',
       sender: this.currentUserId,
       roomId: this.roomId,
     });
@@ -77,16 +77,7 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
-    const promise = this.messageService.listMessages(this.roomId);
-    promise.then(
-      (response) => {
-        console.log(response); // Success
-        this.messages = response.documents;
-      },
-      (error) => {
-        console.log(error); // Failure
-      }
-    );
+    this.messageService.listMessages(this.roomId);
   }
 
   typingFocus() {
