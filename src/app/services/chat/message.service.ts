@@ -28,9 +28,9 @@ export class MessageService {
     });
   }
 
-  listMessages(roomId: string): Promise<any> {
+  listMessages(roomID: string): Promise<any> {
     return this.appwrite.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-      Query.equal('$id', roomId),
+      Query.equal('$id', roomID),
     ]);
   }
 
