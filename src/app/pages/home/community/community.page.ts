@@ -136,7 +136,7 @@ export class CommunityPage implements OnInit {
   }
   */
 
-  async start3Chat(item) {
+  async startChat(item) {
     let roomId: string = '';
     const promise = this.roomService.checkRoom(item.uid);
     await promise.then(
