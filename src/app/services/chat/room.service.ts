@@ -21,7 +21,7 @@ export class RoomService {
 
     const promise = this.appwrite.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', `${cUserId} ${userId}`)]
+      [Query.search('users', cUserId), Query.search('users', userId)]
     );
 
     return promise.then((values) => {
