@@ -14,6 +14,7 @@ export class Chat3Page implements OnInit {
   messages: any[] = [];
   isTyping: boolean = false;
   subscription: any;
+  subscription2: any;
 
   name: string;
   uid: string;
@@ -31,10 +32,15 @@ export class Chat3Page implements OnInit {
     this.initChatPage();
     this.initMessages();
     this.subscription = this.messageService.listenMessages(this.roomId);
+    this.subscription2 = this.messageService.messages.subscribe((messages) => {
+      console.log('messages: ', messages);
+      this.messages.push(messages);
+    });
   }
 
   ngOnDestroy() {
     this.subscription(); // to unsubscribe
+    this.subscription2(); // to unsubscribe
   }
 
   // Client side params are set, such as name, uid, roomId
