@@ -17,7 +17,7 @@ export class Chat3Page implements OnInit {
 
   name: string;
   uid: string;
-  roomId: string;
+  roomID: string;
   currentUserId: string;
 
   constructor(
@@ -30,7 +30,7 @@ export class Chat3Page implements OnInit {
   ngOnInit() {
     this.initChatPage();
     this.initMessages();
-    this.subscription = this.messageService.listenMessages(this.roomId);
+    this.subscription = this.messageService.listenMessages(this.roomID);
   }
 
   ngOnDestroy() {
@@ -43,7 +43,7 @@ export class Chat3Page implements OnInit {
     if (data?.name) this.name = data.name;
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
-    this.roomId = chatRoomId;
+    this.roomID = chatRoomId;
     this.currentUserId = this.auth.getId();
   }
 
@@ -52,13 +52,12 @@ export class Chat3Page implements OnInit {
   }
 
   addMessage() {
-    const data = {
+    const data = ;
+    console.log('roomID: ', this.roomID);
+    const promise = this.messageService.createMessage({
       message: '!!! 3nd message !!!',
       sender: this.currentUserId,
-    };
-    console.log('roomId: ', this.roomId);
-    const promise = this.roomService.updateRoom(this.roomId, {
-      messages: [...this.messages, data],
+      roomID: this.roomID,
     });
     promise.then(
       (response) => {
@@ -71,16 +70,8 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
-    const promise = this.messageService.listMessages(this.roomId);
-    promise.then(
-      (response) => {
-        console.log(response.documents[0].messages); // Success
-        this.messages = response.documents[0].messages;
-      },
-      (error) => {
-        console.log(error); // Failure
-      }
-    );
+    this.messageService.listMessages(this.roomID);
+    this.messages = this.messageService.messages;
   }
 
   typingFocus() {
