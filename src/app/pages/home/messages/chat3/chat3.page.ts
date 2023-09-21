@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Chat3Service } from 'src/app/services/chat/chat3.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { MessageService } from 'src/app/services/chat/message.service';
 
 @Component({
   selector: 'app-chat3',
@@ -21,6 +22,7 @@ export class Chat3Page implements OnInit {
 
   constructor(
     private chat3Service: Chat3Service,
+    private messageService: MessageService,
     private auth: AuthService,
     private route: ActivatedRoute
   ) {}
@@ -28,7 +30,7 @@ export class Chat3Page implements OnInit {
   ngOnInit() {
     this.initChatPage();
     this.initMessages();
-    this.subscription = this.chat3Service.listenMessages(this.roomId);
+    this.subscription = this.messageService.listenMessages(this.roomId);
   }
 
   ngOnDestroy() {
@@ -69,7 +71,7 @@ export class Chat3Page implements OnInit {
   }
 
   getMessages() {
-    const promise = this.chat3Service.listMessages(this.roomId);
+    const promise = this.messageService.listMessages(this.roomId);
     promise.then(
       (response) => {
         console.log(response.documents[0].messages); // Success
