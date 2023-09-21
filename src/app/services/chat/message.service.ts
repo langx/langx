@@ -36,7 +36,7 @@ export class MessageService {
 
   createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
-      environment.appwrite.ROOMS_COLLECTION,
+      environment.appwrite.MESSAGES_COLLECTION,
       data
     );
   }
