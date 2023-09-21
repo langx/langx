@@ -75,7 +75,7 @@ export class Chat3Page implements OnInit {
     promise.then(
       (response) => {
         console.log(response); // Success
-        //this.messages = response.documents;
+        this.messages = response.documents;
       },
       (error) => {
         console.log(error); // Failure

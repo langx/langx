@@ -30,7 +30,7 @@ export class MessageService {
 
   listMessages(roomId: string): Promise<any> {
     return this.appwrite.listDocuments(environment.appwrite.MESSAGES_COLLECTION, [
-      Query.equal('$id', roomId),
+      Query.equal('roomId', roomId),
     ]);
   }
 
