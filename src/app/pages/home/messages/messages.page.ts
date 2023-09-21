@@ -3,8 +3,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { ChatService } from 'src/app/services/chat/chat.service';
-import { Chat3Service } from 'src/app/services/chat/chat3.service';
+import { RoomService } from 'src/app/services/chat/room.service';
 
 @Component({
   selector: 'app-messages',
@@ -25,8 +24,7 @@ export class MessagesPage implements OnInit {
   constructor(
     private router: Router,
     private auth: AuthService,
-    private chatService: ChatService,
-    private chat3Service: Chat3Service
+    private roomService: RoomService
   ) {}
 
   ngOnInit() {
@@ -36,7 +34,7 @@ export class MessagesPage implements OnInit {
   get3Rooms() {
     let cUserId = this.auth.getId();
     console.log('cUserId: ', cUserId);
-    const promise = this.chat3Service.getRooms(cUserId);
+    const promise = this.roomService.getRooms(cUserId);
     promise.then((data) => {
       this.chat3Rooms = data.documents;
       console.log('chat3Rooms: ', this.chat3Rooms);
@@ -57,7 +55,7 @@ export class MessagesPage implements OnInit {
     });
   }
 
-/*
+  /*
   getRooms() {
     //TODO: showLoader();
     this.isLoading = true;
