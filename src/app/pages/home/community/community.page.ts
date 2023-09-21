@@ -111,31 +111,6 @@ export class CommunityPage implements OnInit {
   // Start Chat
   //
 
-  /*
-  async startChat(item) {
-    try {
-      // showLoader();
-      this.isLoading = true;
-      // create chatroom
-      const room = await this.chatService.createChatRoom(item?.uid);
-      console.log('room: ', room);
-      const navData: NavigationExtras = {
-        queryParams: {
-          name: item?.name,
-          uid: item?.uid,
-        },
-      };
-      this.router.navigate(['/', 'home', 'chat', room?.id], navData);
-      // hideLoader();
-      this.isLoading = false;
-    } catch (e) {
-      console.log(e);
-      // hideLoader();
-      this.isLoading = false;
-    }
-  }
-  */
-
   async startChat(item) {
     let roomId: string = '';
     const promise = this.roomService.checkRoom(item.uid);
