@@ -8,7 +8,7 @@ import { ApiService } from '../api/api.service';
 @Injectable({
   providedIn: 'root',
 })
-export class Chat3Service {
+export class RoomService {
   constructor(
     private appwrite: AppwriteService,
     private auth: AuthService,

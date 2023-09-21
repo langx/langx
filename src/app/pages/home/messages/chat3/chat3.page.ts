@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Chat3Service } from 'src/app/services/chat/chat3.service';
+import { RoomService } from 'src/app/services/chat/room.service';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -21,7 +21,7 @@ export class Chat3Page implements OnInit {
   currentUserId: string;
 
   constructor(
-    private chat3Service: Chat3Service,
+    private roomService: RoomService,
     private messageService: MessageService,
     private auth: AuthService,
     private route: ActivatedRoute
@@ -57,7 +57,7 @@ export class Chat3Page implements OnInit {
       sender: this.currentUserId,
     };
     console.log('roomId: ', this.roomId);
-    const promise = this.chat3Service.updateRoom(this.roomId, {
+    const promise = this.roomService.updateRoom(this.roomId, {
       messages: [...this.messages, data],
     });
     promise.then(

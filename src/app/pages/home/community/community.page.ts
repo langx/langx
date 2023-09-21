@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { ChatService } from 'src/app/services/chat/chat.service';
-import { Chat3Service } from 'src/app/services/chat/chat3.service';
+import { RoomService } from 'src/app/services/chat/room.service';
 import {
   FilterService,
   FilterData,
@@ -25,8 +24,7 @@ export class CommunityPage implements OnInit {
 
   constructor(
     private router: Router,
-    private chatService: ChatService,
-    private chat3Service: Chat3Service,
+    private roomService: RoomService,
     private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService
@@ -140,7 +138,7 @@ export class CommunityPage implements OnInit {
 
   async start3Chat(item) {
     let roomId: string = '';
-    const promise = this.chat3Service.checkRoom(item.uid);
+    const promise = this.roomService.checkRoom(item.uid);
     await promise.then(
       (response) => {
         roomId = response.$id;
