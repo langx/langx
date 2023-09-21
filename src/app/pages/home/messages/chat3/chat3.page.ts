@@ -52,7 +52,6 @@ export class Chat3Page implements OnInit {
   }
 
   addMessage() {
-    const data = ;
     console.log('roomID: ', this.roomID);
     const promise = this.messageService.createMessage({
       message: '!!! 3nd message !!!',
