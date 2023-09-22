@@ -33,7 +33,7 @@ export class Chat3Page implements OnInit {
     // with one subscription, and then check the messages by roomId
     this.listenWSS = this.messageService.listenMessages(this.roomId);
     this.subscription = this.messageService.messages.subscribe((messages) => {
-      // console.log('messages: ', messages);
+      console.log('messages: ', messages);
       this.messages.push(messages);
     });
   }
@@ -62,7 +62,7 @@ export class Chat3Page implements OnInit {
   addMessage() {
     console.log('roomID: ', this.roomId);
     const promise = this.messageService.createMessage({
-      message: this.message,
+      body: this.message,
       sender: this.currentUserId,
       roomId: this.roomId,
     });
