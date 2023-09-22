@@ -13,6 +13,15 @@ export class Auth2Service {
 
   constructor(private appwrite: AppwriteService) {}
 
+  login(email: string, password: string) {
+    const authReq = this.appwrite.account.createEmailSession(email, password);
+
+    return from(authReq).pipe(
+      concatMap(() => this.appwrite.account.get()),
+      tap((user) => this._user.next(user))
+    );
+  }
+
   anonLogin(name: string) {
     const authReq = this.appwrite.account.createAnonymousSession();
 
