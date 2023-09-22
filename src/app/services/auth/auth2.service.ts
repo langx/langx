@@ -22,6 +22,7 @@ export class Auth2Service {
     );
   }
 
+  // TODO: Test needed to work or not
   anonLogin(name: string) {
     const authReq = this.appwrite.account.createAnonymousSession();
 
@@ -32,6 +33,7 @@ export class Auth2Service {
     );
   }
 
+  // TODO: Test needed to work or not
   async isLoggedIn() {
     try {
       const user = await this.appwrite.account.get();
@@ -42,6 +44,7 @@ export class Auth2Service {
     }
   }
 
+  // TODO: Test needed to work or not
   async logout() {
     try {
       await this.appwrite.account.deleteSession('current');
