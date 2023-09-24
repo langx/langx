@@ -121,6 +121,31 @@ export class CompletePage implements OnInit {
   }
 
   completeRegisterWithAuth2(form: FormGroup) {
+    console.log('form.value:', form.value);
+    const data = {
+      birthdate: form.value.birthdateWithDateFormat,
+      country: form.value.country,
+      countryCode: form.value.countryCode,
+      gender: form.value.genderValue,
+    };
+    console.log('data:', data);
+
+    let user: any;;
+    this.auth2Service.getUser().subscribe((u) => {user =  u;}).unsubscribe();
+    console.log('user:', user);
+    
+    this.auth2Service.createUserDoc(user.$id, data).then((userDoc: any) => {
+      console.log('userDoc:', userDoc);
+      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+        if (isLoggedIn) {
+          this.router.navigateByUrl('/login/signup/language');
+        } else {
+          // TODO: show error toasts message
+          console.log('error:', 'Could not sign you up, please try again.');
+        }
+      }); 
+    });
+    /*
     this.auth2Service.updatePrefs(form.value).subscribe((user: any) => {
       console.log('user:', user);
       this.auth2Service.isLoggedIn().then((isLoggedIn) => {
@@ -132,6 +157,7 @@ export class CompletePage implements OnInit {
         }
       });
     });
+    */
   }
 
   /*
