@@ -48,8 +48,8 @@ export class LoginPage implements OnInit {
 
     this.auth2Service
       .login(form.value.email, form.value.password)
-      .subscribe((userId: any) => {
-        console.log('userId:', userId);
+      .subscribe((user: any) => {
+        console.log('user:', user);
         this.auth2Service.isLoggedIn().then((isLoggedIn) => {
           if (isLoggedIn) {
             this.router.navigateByUrl('/home');
