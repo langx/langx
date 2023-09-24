@@ -18,6 +18,7 @@ export const environment = {
     APP_ENDPOINT: 'https://db.languagexchange.net/v1',
     APP_PROJECT: '650750d21e4a6a589be3',
     APP_DATABASE: '650750f16cd0c482bb83',
+    USER_COLLECTION: '65103e2d3a6b4d9494c8',
     ROOMS_COLLECTION: '6507510fc71f989d5d1c',
     MESSAGES_COLLECTION: '65075108a4025a4f5bd7',
   },
