@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { ChatService } from 'src/app/services/chat/chat.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
@@ -51,7 +51,7 @@ export class ProfilePage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private chatService: ChatService,
+    private auth2Service: Auth2Service,
     private modalCtrl: ModalController
   ) {}
 
@@ -94,7 +94,7 @@ export class ProfilePage implements OnInit {
     try {
       //showLoader();
       this.isLoading = true;
-      await this.chatService.auth.logout();
+      await this.auth2Service.logout();
       this.router.navigateByUrl('/login', { replaceUrl: true });
       //hideLoader();
       this.isLoading = false;
