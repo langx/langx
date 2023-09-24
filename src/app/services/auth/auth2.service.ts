@@ -16,14 +16,6 @@ export class Auth2Service {
   login(email: string, password: string) {
     const authReq = this.appwrite.account.createEmailSession(email, password);
     // TODO: Add error handling with yy message
-    authReq.then(
-      (response) => {
-        console.log('login response:', response); // Success
-      },
-      (error) => {
-        console.log(error.message);
-      }
-    );
     return from(authReq).pipe(
       catchError((error) => of(error)),
       concatMap(() => this.appwrite.account.get()),
@@ -39,14 +31,6 @@ export class Auth2Service {
       name
     );
     // TODO: Add error handling with yy message
-    authReq.then(
-      (response) => {
-        console.log('register response:', response); // Success
-      },
-      (error) => {
-        console.log(error.message);
-      }
-    );
     return from(authReq).pipe(
       concatMap(() =>
         this.appwrite.account.createEmailSession(email, password)
