@@ -19,7 +19,7 @@ export class Auth2Service {
     // TODO: Add error handling with toast message
     authReq.then(
       (response) => {
-        console.log(response); // Success
+        console.log('login response:', response); // Success
       },
       (error) => {
         console.log(error.message);
