@@ -22,7 +22,8 @@ export class Auth2Service {
     );
   }
 
-  // TODO: Test needed to work or not
+  // Not needed to login anonymously
+  /*
   anonLogin(name: string) {
     const authReq = this.appwrite.account.createAnonymousSession();
 
@@ -32,6 +33,7 @@ export class Auth2Service {
       tap((user) => this._user.next(user))
     );
   }
+  */
 
   // TODO: Test needed to work or not
   async isLoggedIn() {
