@@ -63,6 +63,12 @@ export class Auth2Service {
       tap((user) => this._user.next(user))
     );
   }
+
+  getPrefs() {
+    const authReq = this.appwrite.account.getPrefs();
+    return from(authReq);
+  }
+
   /*
   async register(formValue) {
     try {
