@@ -15,7 +15,7 @@ export class Auth2Service {
 
   login(email: string, password: string) {
     const authReq = this.appwrite.account.createEmailSession(email, password);
-    // TODO: Add error handling with yy message
+    // TODO: Add error handling with toast message
     return from(authReq).pipe(
       catchError((error) => of(error)),
       concatMap(() => this.appwrite.account.get()),
@@ -30,7 +30,7 @@ export class Auth2Service {
       password,
       name
     );
-    // TODO: Add error handling with yy message
+    // TODO: Add error handling with toast message
     return from(authReq).pipe(
       concatMap(() =>
         this.appwrite.account.createEmailSession(email, password)
