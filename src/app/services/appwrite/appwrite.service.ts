@@ -54,7 +54,7 @@ export class AppwriteService {
     return this.database.createDocument(
       environment.appwrite.APP_DATABASE,
       collectionId,
-      ID.unique(),
+      data.uid,
       data
     );
   }
