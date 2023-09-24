@@ -63,7 +63,7 @@ export class SignupPage implements OnInit {
         console.log('user:', user);
         this.auth2Service.isLoggedIn().then((isLoggedIn) => {
           if (isLoggedIn) {
-            this.router.navigateByUrl('/home');
+            this.router.navigateByUrl('/login/signup/complete');
           } else {
             // TODO: show error toasts message
             console.log('error:', 'Could not sign you up, please try again.');
