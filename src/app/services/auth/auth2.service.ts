@@ -43,7 +43,6 @@ export class Auth2Service {
       ),
       concatMap(() => this.appwrite.account.get()),
       tap((user) => {
-        this.createUserDoc({uid: user.$id});
         return this._user.next(user);
       })
     );
