@@ -36,12 +36,16 @@ export class Auth2Service {
       name
     );
     // TODO: Add error handling with toast message
+
     return from(authReq).pipe(
       concatMap(() =>
         this.appwrite.account.createEmailSession(email, password)
       ),
       concatMap(() => this.appwrite.account.get()),
-      tap((user) => this._user.next(user))
+      tap((user) => {
+        this.createUserDoc({uid: user.$id});
+        return this._user.next(user);
+      })
     );
   }
 
