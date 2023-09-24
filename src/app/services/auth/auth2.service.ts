@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
-import { Models } from 'appwrite';
+import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
-import { error } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +15,7 @@ export class Auth2Service {
 
   login(email: string, password: string) {
     const authReq = this.appwrite.account.createEmailSession(email, password);
-    // TODO: Add error handling with toast message
+    // TODO: Add error handling with yy message
     authReq.then(
       (response) => {
         console.log('login response:', response); // Success
@@ -26,11 +25,76 @@ export class Auth2Service {
       }
     );
     return from(authReq).pipe(
-      catchError(error => of(error)),
+      catchError((error) => of(error)),
       concatMap(() => this.appwrite.account.get()),
       tap((user) => this._user.next(user))
     );
   }
+
+  register(email: string, password: string, name: string) {
+    const authReq = this.appwrite.account.create(
+      ID.unique(),
+      email,
+      password,
+      name
+    );
+    // TODO: Add error handling with yy message
+    authReq.then(
+      (response) => {
+        console.log('register response:', response); // Success
+      },
+      (error) => {
+        console.log(error.message);
+      }
+    );
+    return from(authReq).pipe(
+      concatMap(() =>
+        this.appwrite.account.createEmailSession(email, password)
+      ),
+      concatMap(() => this.appwrite.account.get()),
+      tap((user) => this._user.next(user))
+    );
+  }
+  /*
+  async register(formValue) {
+    try {
+      const registeredUser = await createUserWithEmailAndPassword(
+        this.fireAuth,
+        formValue?.email,
+        formValue?.password
+      );
+      console.log('registredUser:', registeredUser);
+      const data = {
+        email: formValue?.email,
+        name: formValue?.name,
+        uid: registeredUser.user.uid,
+        photo: 'https://i.pravatar.cc/' + this.randomIntFromInterval(200, 400),
+        lastLogin: new Date(),
+        lastSeen: new Date(),
+        online: true,
+        emailVerified: false,
+        completeLanguages: false,
+        completeProfile: false,
+        googleVerified: true,
+        languagesArray: [],
+        otherPhotos: [],
+      };
+      await this.apiService.setDocument(
+        `users/${registeredUser.user.uid}`,
+        data
+      );
+      const userData = {
+        id: registeredUser.user.uid,
+      };
+      // set user data while registering
+      this.setUserData(registeredUser.user.uid);
+      this.setCurrentUserData(registeredUser);
+      return userData;
+    } catch (e) {
+      throw e;
+    }
+  }
+  */
 
   // Not needed to login anonymously
   /*
