@@ -68,16 +68,14 @@ export class SignupPage implements OnInit {
             // TODO: show error toasts message
             console.log('error:', 'Could not sign you up, please try again.');
           }
-        }
-        );
+        });
         //hideLoader();
         form.reset();
         this.isLoading = false;
-      }
-      );
+      });
   }
-  
 
+  /*
   register(form: FormGroup) {
     //showLoader();
     this.isLoading = true;
@@ -112,6 +110,7 @@ export class SignupPage implements OnInit {
         this.showAlert(msg);
       });
   }
+  */
 
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
