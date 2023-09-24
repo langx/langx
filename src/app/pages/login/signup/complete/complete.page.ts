@@ -117,9 +117,24 @@ export class CompletePage implements OnInit {
       this.showAlert('Please fill all the required fields');
       return;
     }
-    this.completeRegister(this.form);
+    this.completeRegisterWithAuth2(this.form);
   }
 
+  completeRegisterWithAuth2(form: FormGroup) {
+    this.auth2Service.updatePrefs(form.value).subscribe((user: any) => {
+      console.log('user:', user);
+      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+        if (isLoggedIn) {
+          this.router.navigateByUrl('/login/signup/language');
+        } else {
+          // TODO: show error toasts message
+          console.log('error:', 'Could not sign you up, please try again.');
+        }
+      });
+    });
+  }
+
+  /*
   completeRegister(form: FormGroup) {
     //showLoader();
     this.isLoading = true;
@@ -137,6 +152,7 @@ export class CompletePage implements OnInit {
       this.showAlert('Please try again later.');
     }
   }
+  */
 
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
