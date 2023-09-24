@@ -62,18 +62,18 @@ export class Auth2Service {
   // DATABASE API
   //
 
-  getUser(uid: string): Promise<any> {
+  getUserDoc(uid: string): Promise<any> {
     return this.appwrite.getDocument(environment.appwrite.USER_COLLECTION, uid);
   }
 
-  createUser(data: any): Promise<any> {
+  createUserDoc(data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.USER_COLLECTION,
       data
     );
   }
 
-  updateUser(uid: string, data: any): Promise<any> {
+  updateUserDoc(uid: string, data: any): Promise<any> {
     return this.appwrite.updateDocument(
       environment.appwrite.USER_COLLECTION,
       uid,
