@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { getAge } from 'src/app/extras/utils';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-complete',
@@ -20,7 +21,8 @@ export class CompletePage implements OnInit {
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private authService: AuthService
+    private authService: AuthService,
+    private auth2Service: Auth2Service
   ) {}
 
   ngOnInit() {
