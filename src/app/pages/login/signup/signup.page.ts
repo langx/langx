@@ -61,14 +61,20 @@ export class SignupPage implements OnInit {
       .register(form.value.email, form.value.password, form.value.name)
       .subscribe((user: any) => {
         console.log('user:', user);
-        this.auth2Service.isLoggedIn().then((isLoggedIn) => {
-          if (isLoggedIn) {
-            this.router.navigateByUrl('/login/signup/complete');
-          } else {
+        this.auth2Service
+          .isLoggedIn()
+          .then((isLoggedIn) => {
+            if (isLoggedIn) {
+              this.router.navigateByUrl('/login/signup/complete');
+            } else {
+              // TODO: show error toasts message
+              console.log('error:', 'Could not sign you up, please try again.');
+            }
+          })
+          .catch((e) => {
             // TODO: show error toasts message
-            console.log('error:', 'Could not sign you up, please try again.');
-          }
-        });
+            console.log('error:', e);
+          });
         //hideLoader();
         form.reset();
         this.isLoading = false;
