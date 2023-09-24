@@ -19,7 +19,7 @@ export class MessageService {
       'databases.' +
         environment.appwrite.APP_DATABASE +
         '.collections.' +
-        environment.appwrite.MESSAGES_COLLECTION +
+        environment.appwrite.MESSAGE_COLLECTION +
         '.documents',
       (response) => {
         this.messages.next(response.payload);
@@ -30,7 +30,7 @@ export class MessageService {
   listMessages(roomId: string) {
     // return this.appwrite.listDocuments(
     const promise = this.appwrite.listDocuments(
-      environment.appwrite.MESSAGES_COLLECTION,
+      environment.appwrite.MESSAGE_COLLECTION,
       [Query.equal('roomId', roomId)]
     );
     promise.then(
@@ -48,7 +48,7 @@ export class MessageService {
 
   createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
-      environment.appwrite.MESSAGES_COLLECTION,
+      environment.appwrite.MESSAGE_COLLECTION,
       data
     );
   }
