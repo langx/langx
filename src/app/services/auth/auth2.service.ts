@@ -55,6 +55,14 @@ export class Auth2Service {
       tap((user) => this._user.next(user))
     );
   }
+
+  updatePrefs(prefs: Models.Preferences) {
+    const authReq = this.appwrite.account.updatePrefs(prefs);
+    return from(authReq).pipe(
+      concatMap(() => this.appwrite.account.get()),
+      tap((user) => this._user.next(user))
+    );
+  }
   /*
   async register(formValue) {
     try {
