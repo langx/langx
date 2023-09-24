@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, mergeMap, tap } from 'rxjs';
+import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +16,17 @@ export class Auth2Service {
 
   login(email: string, password: string) {
     const authReq = this.appwrite.account.createEmailSession(email, password);
-
+    // TODO: Add error handling with toast message
+    authReq.then(
+      (response) => {
+        console.log(response); // Success
+      },
+      (error) => {
+        console.log(error.message);
+      }
+    );
     return from(authReq).pipe(
+      catchError(error => of(error)),
       concatMap(() => this.appwrite.account.get()),
       tap((user) => this._user.next(user))
     );
@@ -42,6 +52,7 @@ export class Auth2Service {
       this._user.next(user);
       return true;
     } catch (e) {
+      console.error('Error while checking if user is logged in:', e);
       return false;
     }
   }
