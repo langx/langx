@@ -5,6 +5,7 @@ import { Auth2Service } from 'src/app/services/auth/auth2.service';
 @Injectable({
   providedIn: 'root',
 })
+// TODO: 'CanLoad' is deprecated.ts(6385)
 export class AuthGuard implements CanLoad {
   constructor(private auth2Service: Auth2Service, private router: Router) {}
 
