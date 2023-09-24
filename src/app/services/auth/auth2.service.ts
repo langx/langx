@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,25 @@ export class Auth2Service {
   getPrefs() {
     const authReq = this.appwrite.account.getPrefs();
     return from(authReq);
+  }
+
+  getUser(uid: string): Promise<any> {
+    return this.appwrite.getDocument(environment.appwrite.USER_COLLECTION, uid);
+  }
+
+  createUser(data: any): Promise<any> {
+    return this.appwrite.createDocument(
+      environment.appwrite.USER_COLLECTION,
+      data
+    );
+  }
+
+  updateUser(uid: string, data: any): Promise<any> {
+    return this.appwrite.updateDocument(
+      environment.appwrite.USER_COLLECTION,
+      uid,
+      data
+    );
   }
 
   /*
