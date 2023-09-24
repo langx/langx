@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
-import { Query } from 'appwrite';
+import { ID, Query } from 'appwrite';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -49,6 +49,7 @@ export class MessageService {
   createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.MESSAGE_COLLECTION,
+      ID.unique(),
       data
     );
   }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
-import { Query } from 'appwrite';
+import { ID, Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { ApiService } from '../api/api.service';
 
@@ -72,6 +72,7 @@ export class RoomService {
   createRoom(data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.ROOM_COLLECTION,
+      ID.unique(),
       data
     );
   }

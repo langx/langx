@@ -15,6 +15,14 @@ export class Auth2Service {
   constructor(private appwrite: AppwriteService) {}
 
   //
+  // USER DATA
+  //
+
+  getUser() {
+    return this._user.asObservable();
+  }
+
+  //
   // ACCOUNT API
   //
 
@@ -61,6 +69,28 @@ export class Auth2Service {
     return from(authReq);
   }
 
+  async isLoggedIn() {
+    try {
+      const user = await this.appwrite.account.get();
+      this._user.next(user);
+      return true;
+    } catch (e) {
+      console.error('Error while checking if user is logged in:', e);
+      return false;
+    }
+  }
+
+  async logout() {
+    try {
+      await this.appwrite.account.deleteSession('current');
+    } catch (e) {
+      console.log(`${e}`);
+    } finally {
+      // this.router.navigate(['/']);
+      this._user.next(null);
+    }
+  }
+
   //
   // DATABASE API
   //
@@ -69,9 +99,10 @@ export class Auth2Service {
     return this.appwrite.getDocument(environment.appwrite.USER_COLLECTION, uid);
   }
 
-  createUserDoc(data: any): Promise<any> {
+  createUserDoc(uid: string, data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.USER_COLLECTION,
+      uid,
       data
     );
   }
@@ -137,28 +168,4 @@ export class Auth2Service {
     );
   }
   */
-
-  // TODO: Test needed to work or not
-  async isLoggedIn() {
-    try {
-      const user = await this.appwrite.account.get();
-      this._user.next(user);
-      return true;
-    } catch (e) {
-      console.error('Error while checking if user is logged in:', e);
-      return false;
-    }
-  }
-
-  // TODO: Test needed to work or not
-  async logout() {
-    try {
-      await this.appwrite.account.deleteSession('current');
-    } catch (e) {
-      console.log(`${e}`);
-    } finally {
-      // this.router.navigate(['/']);
-      this._user.next(null);
-    }
-  }
 }

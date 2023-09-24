@@ -50,11 +50,11 @@ export class AppwriteService {
     );
   }
 
-  createDocument(collectionId: string, data: any): Promise<any> {
+  createDocument(collectionId: string, documentId: string, data: any): Promise<any> {
     return this.database.createDocument(
       environment.appwrite.APP_DATABASE,
       collectionId,
-      data.$id,
+      documentId,
       data
     );
   }
