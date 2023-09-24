@@ -14,6 +14,10 @@ export class Auth2Service {
 
   constructor(private appwrite: AppwriteService) {}
 
+  //
+  // ACCOUNT API
+  //
+
   login(email: string, password: string) {
     const authReq = this.appwrite.account.createEmailSession(email, password);
     // TODO: Add error handling with toast message
@@ -53,6 +57,10 @@ export class Auth2Service {
     const authReq = this.appwrite.account.getPrefs();
     return from(authReq);
   }
+
+  //
+  // DATABASE API
+  //
 
   getUser(uid: string): Promise<any> {
     return this.appwrite.getDocument(environment.appwrite.USER_COLLECTION, uid);
