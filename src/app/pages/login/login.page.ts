@@ -64,6 +64,7 @@ export class LoginPage implements OnInit {
       });
   }
 
+  /*
   login(form: FormGroup) {
     //showLoader();
     this.isLoading = true;
@@ -107,6 +108,7 @@ export class LoginPage implements OnInit {
         this.showAlert(msg);
       });
   }
+  */
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {
