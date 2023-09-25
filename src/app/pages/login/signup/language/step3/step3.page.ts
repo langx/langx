@@ -86,6 +86,7 @@ export class Step3Page implements OnInit {
     console.log('motherLanguages:', motherLanguages);
     console.log('studyLanguages:', studyLanguages);
 
+    // TODO: Error handling
     motherLanguages.forEach((motherlang) => {
       motherlang.userId = user.$id;
       this.languageService
@@ -98,6 +99,7 @@ export class Step3Page implements OnInit {
         });
     });
 
+    // TODO: Error handling
     studyLanguages.forEach((studyLang) => {
       studyLang.userId = user.$id;
       this.languageService
