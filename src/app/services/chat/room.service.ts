@@ -20,7 +20,7 @@ export class RoomService {
     let cUserId = this.auth.currentUser.uid;
 
     const promise = this.appwrite.listDocuments(
-      environment.appwrite.ROOM_COLLECTION,
+      environment.appwrite.ROOMS_COLLECTION,
       [Query.search('users', cUserId), Query.search('users', userId)]
     );
 
@@ -41,7 +41,7 @@ export class RoomService {
 
   async getRooms(currentUserId: string): Promise<any> {
     return this.appwrite
-      .listDocuments(environment.appwrite.ROOM_COLLECTION, [
+      .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         // Query.search('members', currentUserId),
         Query.search('users', currentUserId),
       ])
@@ -64,14 +64,14 @@ export class RoomService {
 
   getRoom(roomId: string): Promise<any> {
     return this.appwrite.getDocument(
-      environment.appwrite.ROOM_COLLECTION,
+      environment.appwrite.ROOMS_COLLECTION,
       roomId
     );
   }
 
   createRoom(data: any): Promise<any> {
     return this.appwrite.createDocument(
-      environment.appwrite.ROOM_COLLECTION,
+      environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
       data
     );
@@ -79,7 +79,7 @@ export class RoomService {
 
   updateRoom(roomId: string, data: any): Promise<any> {
     return this.appwrite.updateDocument(
-      environment.appwrite.ROOM_COLLECTION,
+      environment.appwrite.ROOMS_COLLECTION,
       roomId,
       data
     );
@@ -93,7 +93,7 @@ export class RoomService {
       if (
         response.events.includes(
           'databases.*.collections.' +
-            environment.appwrite.ROOM_COLLECTION +
+            environment.appwrite.ROOMS_COLLECTION +
             '.documents.*'
         )
       ) {

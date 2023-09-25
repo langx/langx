@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class MessageService {
-  messages: Subject<Object> = new Subject<Object>;
+  messages: Subject<Object> = new Subject<Object>();
 
   constructor(private appwrite: AppwriteService) {}
 
@@ -19,7 +19,7 @@ export class MessageService {
       'databases.' +
         environment.appwrite.APP_DATABASE +
         '.collections.' +
-        environment.appwrite.MESSAGE_COLLECTION +
+        environment.appwrite.MESSAGES_COLLECTION +
         '.documents',
       (response) => {
         this.messages.next(response.payload);
@@ -30,7 +30,7 @@ export class MessageService {
   listMessages(roomId: string) {
     // return this.appwrite.listDocuments(
     const promise = this.appwrite.listDocuments(
-      environment.appwrite.MESSAGE_COLLECTION,
+      environment.appwrite.MESSAGES_COLLECTION,
       [Query.equal('roomId', roomId)]
     );
     promise.then(
@@ -48,7 +48,7 @@ export class MessageService {
 
   createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
-      environment.appwrite.MESSAGE_COLLECTION,
+      environment.appwrite.MESSAGES_COLLECTION,
       ID.unique(),
       data
     );
