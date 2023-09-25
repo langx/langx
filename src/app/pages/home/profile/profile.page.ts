@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
-import { Subscription } from 'rxjs';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -43,15 +42,15 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
-  currentUser: any;
-  isLoading: boolean = false;
+  cUserSession: any;
+  cUserDoc: any;
 
-  cUser: Subscription;
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private authService: AuthService,
     private auth2Service: Auth2Service,
+    private userService: UserService,
     private modalCtrl: ModalController
   ) {}
 
@@ -62,13 +61,20 @@ export class ProfilePage implements OnInit {
   async getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    await this.authService.getUserData();
 
-    this.cUser = this.authService._cUser.subscribe((cUser) => {
-      if (cUser) {
-        console.log(cUser.uid);
-        this.currentUser = cUser;
-      }
+    this.auth2Service
+      .getUser()
+      .subscribe((cUser) => {
+        if (cUser) {
+          console.log(cUser);
+          this.cUserSession = cUser;
+        }
+      })
+      .unsubscribe();
+
+    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+      this.cUserDoc = user;
+      console.log(user);
     });
 
     //hideLoader();
@@ -76,7 +82,15 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.cUser.unsubscribe();
+    // this.cUser.unsubscribe();
+  }
+
+  getStudyLanguages() {
+    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
+  getMotherLanguage() {
+    return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
   }
 
   async openPreview(photos) {
