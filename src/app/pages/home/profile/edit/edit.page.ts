@@ -15,6 +15,8 @@ import {
 } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 @Component({
@@ -26,15 +28,16 @@ export class EditPage implements OnInit {
   isLoading: boolean = false;
   currentUser: any;
 
-  textAreaValue: string = '';
-  textAreaDisabled: boolean = true;
-
   cUser: Subscription;
+  cUserDoc: any;
+  cUserSession: any;
 
   uploadedImageURL: string = '';
 
   constructor(
     private authService: AuthService,
+    private auth2Service: Auth2Service,
+    private userService: UserService,
     private toastController: ToastController,
     private router: Router,
     private storage: Storage,
@@ -55,9 +58,25 @@ export class EditPage implements OnInit {
       if (cUser) {
         this.currentUser = cUser;
         this.textAreaValue = cUser.aboutMe;
-        this.textAreaDisabled = true;
       }
     });
+
+    this.auth2Service
+      .getUser()
+      .subscribe((cUser) => {
+        if (cUser) {
+          console.log(cUser);
+          this.cUserSession = cUser;
+        }
+      })
+      .unsubscribe();
+    // TODO: Unsubscribe may not be necessary to update the user info
+
+    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+      this.cUserDoc = user;
+      console.log(user);
+    });
+
     //hideLoader();
     this.isLoading = false;
   }
@@ -188,19 +207,29 @@ export class EditPage implements OnInit {
   // Edit About Me
   //
 
-  ionInputAboutMe(event) {
-    if (event.target.value != this.currentUser.aboutMe) {
-      this.textAreaDisabled = false;
-    } else {
-      this.textAreaDisabled = true;
-    }
-    this.currentUser.aboutMe = event.target.value;
+  textAreaValue() {
+    return this.cUserDoc?.aboutMe;
   }
 
+  ionInputAboutMe(event) {
+    this.cUserDoc.aboutMe = event.target.value;
+  }
+
+  // TODO: There is a bug while saving aboutMe.
+  // Response: 	
+  // {
+  //   message	"Server Error"
+  //   code	500
+  //   type	"general_unknown"
+  //   version	"1.4.2"
+  // }
   saveAboutMe() {
     this.isLoading = true;
-    this.authService.updateUserAboutData(this.currentUser).then(() => {
+    this.userService.updateUserDoc(this.cUserSession.$id, this.cUserDoc).then(() => {
       this.presentToast('About me saved.');
+      this.isLoading = false;
+    }).catch((error) => {
+      console.log(error);
       this.isLoading = false;
     });
   }

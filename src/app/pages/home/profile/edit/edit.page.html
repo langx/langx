@@ -60,7 +60,6 @@
             <ion-card-subtitle>
               <ion-button
                 (click)="saveAboutMe()"
-                [disabled]="textAreaDisabled"
                 size="small"
                 >Save</ion-button
               >
@@ -80,7 +79,7 @@
             rows="5"
             helperText="hobbies, interests, etc."
             placeholder="You can edit here your profile description."
-            [value]="textAreaValue"
+            [value]="textAreaValue()"
           ></ion-textarea>
         </ion-item>
       </ion-list>
