@@ -71,6 +71,7 @@ export class ProfilePage implements OnInit {
         }
       })
       .unsubscribe();
+      // TODO: Unsubscribe may not be necessary to update the user info
 
     this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
       this.cUserDoc = user;
