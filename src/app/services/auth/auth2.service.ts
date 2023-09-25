@@ -96,12 +96,15 @@ export class Auth2Service {
   //
 
   getUserDoc(uid: string): Promise<any> {
-    return this.appwrite.getDocument(environment.appwrite.USER_COLLECTION, uid);
+    return this.appwrite.getDocument(
+      environment.appwrite.USERS_COLLECTION,
+      uid
+    );
   }
 
   createUserDoc(uid: string, data: any): Promise<any> {
     return this.appwrite.createDocument(
-      environment.appwrite.USER_COLLECTION,
+      environment.appwrite.USERS_COLLECTION,
       uid,
       data
     );
@@ -109,7 +112,7 @@ export class Auth2Service {
 
   updateUserDoc(uid: string, data: any): Promise<any> {
     return this.appwrite.updateDocument(
-      environment.appwrite.USER_COLLECTION,
+      environment.appwrite.USERS_COLLECTION,
       uid,
       data
     );
