@@ -215,23 +215,18 @@ export class EditPage implements OnInit {
     this.cUserDoc.aboutMe = event.target.value;
   }
 
-  // TODO: There is a bug while saving aboutMe.
-  // Response: 	
-  // {
-  //   message	"Server Error"
-  //   code	500
-  //   type	"general_unknown"
-  //   version	"1.4.2"
-  // }
   saveAboutMe() {
     this.isLoading = true;
-    this.userService.updateUserDoc(this.cUserSession.$id, this.cUserDoc).then(() => {
-      this.presentToast('About me saved.');
-      this.isLoading = false;
-    }).catch((error) => {
-      console.log(error);
-      this.isLoading = false;
-    });
+    this.userService
+      .updateUserDoc(this.cUserSession.$id, { aboutMe: this.cUserDoc.aboutMe })
+      .then(() => {
+        this.presentToast('About me saved.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.isLoading = false;
+      });
   }
 
   //
