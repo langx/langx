@@ -13,7 +13,7 @@ export class Step2Page implements OnInit {
   public progress: number = 0.66;
   isLoading: boolean = false;
   public languages = languagesData;
-  term: string;
+  search: string;
 
   motherLanguage: string;
   studyLanguages: Array<string> = [];
@@ -35,13 +35,10 @@ export class Step2Page implements OnInit {
       this.studyLanguages = this.studyLanguages.filter(
         (item) => item !== event.detail.value
       );
-      console.log(this.studyLanguages);
-      return;
-    } else {
+    } else if (this.studyLanguages.length < 5) {
       this.studyLanguages.push(event.detail.value);
-      console.log(this.studyLanguages);
-      return;
     }
+    console.log(this.studyLanguages);
   }
 
   onSubmit() {
