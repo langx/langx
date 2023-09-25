@@ -71,7 +71,7 @@ export class ProfilePage implements OnInit {
         }
       })
       .unsubscribe();
-      // TODO: Unsubscribe may not be necessary to update the user info
+    // TODO: Unsubscribe may not be necessary to update the user info
 
     this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
       this.cUserDoc = user;
@@ -144,7 +144,7 @@ export class ProfilePage implements OnInit {
 
   getAge(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
+    let a = new Date(d);
     return getAge(a);
   }
 
