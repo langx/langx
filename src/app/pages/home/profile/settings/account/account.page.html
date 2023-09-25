@@ -18,7 +18,7 @@
       <ion-list>
         <ion-item>
           <ion-icon name="mail-outline"></ion-icon>
-          <ion-label>{{ currentUser?.email }}</ion-label>
+          <ion-label>{{ cUserSession?.email }}</ion-label>
           <!--
           <ion-buttons slot="end">
             <ion-button size="small" disabled>
@@ -37,11 +37,11 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngIf="currentUser?.googleVerified">
+        <ion-item *ngIf="cUserSession?.googleVerified">
           <ion-icon name="logo-google"></ion-icon>
           <ion-label>behicsakar@gmail.com</ion-label>
         </ion-item>
-        <ion-item *ngIf="!currentUser?.googleVerified">
+        <ion-item *ngIf="!cUserSession?.googleVerified">
           <ion-icon name="unlink-outline"></ion-icon>
           <ion-label>None</ion-label>
         </ion-item>
@@ -58,10 +58,10 @@
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
           <ion-label
-            >{{ (currentUser?.lastLogin).toDate() | date: 'dd/MM/yyyy, HH:mm:ss'
+            >{{ cUserSession?.lastLogin | date: 'dd/MM/yyyy, HH:mm:ss'
             }}</ion-label
           >
-          <ion-note>{{ lastSeen(currentUser?.lastLogin) }}</ion-note>
+          <ion-note>{{ lastSeen(cUserSession?.lastLogin) }}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -75,7 +75,7 @@
       <ion-list>
         <ion-item>
           <ion-icon name="id-card-outline"></ion-icon>
-          <ion-label>{{ currentUser?.uid }}</ion-label>
+          <ion-label>{{ cUserSession?.$id }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
