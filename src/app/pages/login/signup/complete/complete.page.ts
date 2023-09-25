@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { getAge } from 'src/app/extras/utils';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-complete',
@@ -20,7 +21,8 @@ export class CompletePage implements OnInit {
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private auth2Service: Auth2Service
+    private auth2Service: Auth2Service,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -137,7 +139,7 @@ export class CompletePage implements OnInit {
       .unsubscribe();
     // console.log('user:', user);
 
-    this.auth2Service.createUserDoc(user.$id, data).then((userDoc: any) => {
+    this.userService.createUserDoc(user.$id, data).then((userDoc: any) => {
       console.log('userDoc:', userDoc);
       this.auth2Service.isLoggedIn().then((isLoggedIn) => {
         if (isLoggedIn) {
@@ -148,40 +150,7 @@ export class CompletePage implements OnInit {
         }
       });
     });
-    /*
-    this.auth2Service.updatePrefs(form.value).subscribe((user: any) => {
-      console.log('user:', user);
-      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
-        if (isLoggedIn) {
-          this.router.navigateByUrl('/login/signup/language');
-        } else {
-          // TODO: show error toasts message
-          console.log('error:', 'Could not sign you up, please try again.');
-        }
-      });
-    });
-    */
   }
-
-  /*
-  completeRegister(form: FormGroup) {
-    //showLoader();
-    this.isLoading = true;
-    try {
-      this.authService.updateUserProfileData(form.value).then(() => {
-        console.log('updateUserData setted in DB');
-        this.router.navigateByUrl('/login/signup/language');
-        //hideLoader();
-        this.isLoading = false;
-        form.reset();
-      });
-    } catch (error) {
-      console.log('error:', error);
-      this.isLoading = false;
-      this.showAlert('Please try again later.');
-    }
-  }
-  */
 
   async showAlert(msg: string) {
     const alert = await this.alertController.create({

@@ -5,6 +5,8 @@ import { getAge } from 'src/app/extras/utils';
 import { ApiService } from '../api/api.service';
 import { FilterData } from '../filter/filter.service';
 import { AuthService } from '../auth/auth.service';
+import { AppwriteService } from '../appwrite/appwrite.service';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
@@ -13,7 +15,34 @@ export class UserService {
 
   lastVisible: any;
 
-  constructor(private authService: AuthService, private api: ApiService) {}
+  constructor(
+    private authService: AuthService,
+    private api: ApiService,
+    private appwrite: AppwriteService
+  ) {}
+
+  getUserDoc(uid: string): Promise<any> {
+    return this.appwrite.getDocument(
+      environment.appwrite.USERS_COLLECTION,
+      uid
+    );
+  }
+
+  createUserDoc(uid: string, data: any): Promise<any> {
+    return this.appwrite.createDocument(
+      environment.appwrite.USERS_COLLECTION,
+      uid,
+      data
+    );
+  }
+
+  updateUserDoc(uid: string, data: any): Promise<any> {
+    return this.appwrite.updateDocument(
+      environment.appwrite.USERS_COLLECTION,
+      uid,
+      data
+    );
+  }
 
   async getUsers(filterData?: FilterData) {
     const users: any[] = [];
