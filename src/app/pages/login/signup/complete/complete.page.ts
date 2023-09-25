@@ -135,7 +135,7 @@ export class CompletePage implements OnInit {
         user = u;
       })
       .unsubscribe();
-    console.log('user:', user);
+    // console.log('user:', user);
 
     this.auth2Service.createUserDoc(user.$id, data).then((userDoc: any) => {
       console.log('userDoc:', userDoc);
