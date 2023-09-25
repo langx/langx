@@ -14,10 +14,11 @@
       <ion-title>Study Languages</ion-title>
       <ion-note>the languages you want to learn</ion-note>
     </ion-list-header>
-    <ion-searchbar [(ngModel)]="term"></ion-searchbar>
+    <ion-searchbar [(ngModel)]="search"></ion-searchbar>
     <ion-row>
       <ion-col value="start" (ionChange)="checkboxChecked($event)">
-        <ion-item *ngFor="let lang of languages | customFilter: term">
+        <!--TODO: You can check max 5 items -->
+        <ion-item *ngFor="let lang of languages | customFilter: search">
           <ion-checkbox
             value="{{lang.code}}"
             [checked]="studyLanguages.includes(lang.code)"
