@@ -33,7 +33,7 @@
         <ion-item lines="none">
           <ion-thumbnail slot="start">
             <img
-              [src]="currentUser?.photo"
+              [src]="cUserDoc?.profilePhoto"
               alt="Profile Picture"
               referrerpolicy="no-referrer"
             />
@@ -58,11 +58,7 @@
           <ion-col>About Me</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button
-                (click)="saveAboutMe()"
-                size="small"
-                >Save</ion-button
-              >
+              <ion-button (click)="saveAboutMe()" size="small">Save</ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>
@@ -156,7 +152,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let photo of currentUser?.otherPhotos">
+        <ion-item *ngFor="let photo of cUserDoc?.otherPhotos">
           <ion-thumbnail slot="start">
             <img
               [src]="photo"
