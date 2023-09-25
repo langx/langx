@@ -94,6 +94,13 @@ export class ProfilePage implements OnInit {
     return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
   }
 
+  getGender(): string {
+    return (
+      this.cUserDoc?.gender.charAt(0).toUpperCase() +
+      this.cUserDoc?.gender.slice(1)
+    );
+  }
+
   async openPreview(photos) {
     console.log(photos);
     const modal = await this.modalCtrl.create({
