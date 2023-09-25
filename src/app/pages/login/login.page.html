@@ -9,12 +9,18 @@
 <ion-content>
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
-      <ion-label position="floating">Email</ion-label>
-      <ion-input formControlName="email" type="text" required></ion-input>
+      <ion-input
+        label="Email"
+        labelPlacement="floating"
+        formControlName="email"
+        type="text"
+        required
+      ></ion-input>
     </ion-item>
     <ion-item lines="full">
-      <ion-label position="floating">Password</ion-label>
       <ion-input
+        label="Password"
+        labelPlacement="floating"
         formControlName="password"
         type="password"
         required

@@ -4,6 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-signup',
@@ -18,6 +19,7 @@ export class SignupPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private auth2Service: Auth2Service,
     private alertController: AlertController
   ) {}
 
@@ -49,9 +51,37 @@ export class SignupPage implements OnInit {
       return;
     }
 
-    this.register(this.form);
+    this.registerWithAuth2(this.form);
   }
 
+  registerWithAuth2(form: FormGroup) {
+    this.isLoading = true;
+
+    this.auth2Service
+      .register(form.value.email, form.value.password, form.value.name)
+      .subscribe((user: any) => {
+        console.log('user:', user);
+        this.auth2Service
+          .isLoggedIn()
+          .then((isLoggedIn) => {
+            if (isLoggedIn) {
+              this.router.navigateByUrl('/login/signup/complete');
+            } else {
+              // TODO: show error toasts message
+              console.log('error:', 'Could not sign you up, please try again.');
+            }
+          })
+          .catch((e) => {
+            // TODO: show error toasts message
+            console.log('error:', e);
+          });
+        //hideLoader();
+        form.reset();
+        this.isLoading = false;
+      });
+  }
+
+  /*
   register(form: FormGroup) {
     //showLoader();
     this.isLoading = true;
@@ -86,6 +116,7 @@ export class SignupPage implements OnInit {
         this.showAlert(msg);
       });
   }
+  */
 
   async showAlert(msg: string) {
     const alert = await this.alertController.create({

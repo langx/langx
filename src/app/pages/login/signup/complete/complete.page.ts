@@ -3,8 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { getAge } from 'src/app/extras/utils';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-complete',
@@ -20,7 +21,8 @@ export class CompletePage implements OnInit {
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private authService: AuthService
+    private auth2Service: Auth2Service,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -115,25 +117,39 @@ export class CompletePage implements OnInit {
       this.showAlert('Please fill all the required fields');
       return;
     }
-    this.completeRegister(this.form);
+    this.completeRegisterWithAuth2(this.form);
   }
 
-  completeRegister(form: FormGroup) {
-    //showLoader();
-    this.isLoading = true;
-    try {
-      this.authService.updateUserProfileData(form.value).then(() => {
-        console.log('updateUserData setted in DB');
-        this.router.navigateByUrl('/login/signup/language');
-        //hideLoader();
-        this.isLoading = false;
-        form.reset();
+  completeRegisterWithAuth2(form: FormGroup) {
+    console.log('form.value:', form.value);
+    const data = {
+      birthdate: form.value.birthdateWithDateFormat,
+      country: form.value.country,
+      countryCode: form.value.countryCode,
+      gender: form.value.genderValue,
+    };
+    console.log('data:', data);
+
+    let user: any;
+    this.auth2Service
+      .getUser()
+      .subscribe((u) => {
+        user = u;
+      })
+      .unsubscribe();
+    // console.log('user:', user);
+
+    this.userService.createUserDoc(user.$id, data).then((userDoc: any) => {
+      console.log('userDoc:', userDoc);
+      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+        if (isLoggedIn) {
+          this.router.navigateByUrl('/login/signup/language');
+        } else {
+          // TODO: show error toasts message
+          console.log('error:', 'Could not sign you up, please try again.');
+        }
       });
-    } catch (error) {
-      console.log('error:', error);
-      this.isLoading = false;
-      this.showAlert('Please try again later.');
-    }
+    });
   }
 
   async showAlert(msg: string) {
