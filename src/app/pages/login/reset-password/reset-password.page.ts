@@ -36,6 +36,7 @@ export class ResetPasswordPage implements OnInit {
     this.resetPassword(this.form);
   }
 
+  // TODO: Convert to Appwrite with SMTP setup
   resetPassword(form: FormGroup) {
     // showLoader();
     this.isLoading = true;
