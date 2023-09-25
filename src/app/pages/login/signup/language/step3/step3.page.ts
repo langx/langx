@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { languagesData } from 'src/app/extras/data';
 import { AlertController } from '@ionic/angular';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
@@ -19,6 +19,7 @@ export class Step3Page implements OnInit {
   studyLanguages: Array<any> = [];
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
     private auth2Service: Auth2Service,
@@ -86,31 +87,45 @@ export class Step3Page implements OnInit {
     console.log('motherLanguages:', motherLanguages);
     console.log('studyLanguages:', studyLanguages);
 
-    // TODO: Error handling
-    motherLanguages.forEach((motherlang) => {
-      motherlang.userId = user.$id;
-      this.languageService
-        .createLanguageDoc(motherlang)
-        .then((res) => {
-          console.log('result:', res);
-        })
-        .catch((err) => {
-          console.log('err:', err);
-        });
-    });
+    try {
+      this.isLoading = true; //showLoader
 
-    // TODO: Error handling
-    studyLanguages.forEach((studyLang) => {
-      studyLang.userId = user.$id;
-      this.languageService
-        .createLanguageDoc(studyLang)
-        .then((res) => {
-          console.log('result:', res);
-        })
-        .catch((err) => {
-          console.log('err:', err);
-        });
-    });
+      // TODO: Error handling if any of the following fails
+      // SCOPE: It may saved some languages and not others
+      motherLanguages.forEach((motherlang) => {
+        motherlang.userId = user.$id;
+        this.languageService
+          .createLanguageDoc(motherlang)
+          .then((res) => {
+            console.log('result:', res);
+          })
+          .catch((err) => {
+            console.log('err:', err);
+          });
+      });
+
+      // TODO: Error handling if any of the following fails
+      // SCOPE: It may saved some languages and not others
+      studyLanguages.forEach((studyLang) => {
+        studyLang.userId = user.$id;
+        this.languageService
+          .createLanguageDoc(studyLang)
+          .then((res) => {
+            console.log('result:', res);
+          })
+          .catch((err) => {
+            console.log('err:', err);
+          });
+      });
+      console.log('updateUserLanguageData setted in DB');
+      this.router.navigateByUrl('/home');
+
+      this.isLoading = false; //hideLoader
+    } catch (error) {
+      console.log('error:', error);
+      this.isLoading = false; //hideLoader
+      this.showAlert('Please try again later.');
+    }
   }
 
   async showAlert(msg: string) {
