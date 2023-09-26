@@ -56,6 +56,11 @@ export class UserService {
       queries.push(Query.equal("gender", filterData?.gender));
     }
 
+    // Query for users with the selected country filter
+    if (filterData?.country) {
+      queries.push(Query.equal("countryCode", filterData?.country));
+    }
+
     return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, queries);
   }
 
