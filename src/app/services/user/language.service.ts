@@ -31,4 +31,11 @@ export class LanguageService {
       data
     );
   }
+
+  deleteLanguageDoc(uid: string): Promise<any> {
+    return this.appwrite.deleteDocument(
+      environment.appwrite.LANGUAGES_COLLECTION,
+      uid
+    );
+  }
 }
