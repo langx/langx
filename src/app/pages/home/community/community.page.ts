@@ -33,11 +33,31 @@ export class CommunityPage implements OnInit {
   async ngOnInit() {
     await this.checkLocalStorage();
     await this.checkFilter();
+    await this.getUsers(this.filterData);
   }
 
   ngOnDestroy() {
     this.filter$.unsubscribe();
     console.log('unsubscribed');
+  }
+
+  //
+  // Get Users
+  //
+
+  getUsers(filterData?: FilterData) {
+    this.isLoading = true;
+    this.userService.listUsers(filterData).then(
+      (response) => {
+        this.isLoading = false;
+        console.log(response);
+        this.users = response.documents;
+      },
+      (error) => {
+        this.isLoading = false;
+        console.log(error);
+      }
+    );
   }
 
   //
