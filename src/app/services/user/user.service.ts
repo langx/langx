@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
-// TODO: Next line may be moved to api.service.ts
-import { query, QuerySnapshot, Query } from '@angular/fire/firestore';
 import { getAge } from 'src/app/extras/utils';
-import { ApiService } from '../api/api.service';
 import { FilterData } from '../filter/filter.service';
-import { AuthService } from '../auth/auth.service';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -16,8 +12,6 @@ export class UserService {
   lastVisible: any;
 
   constructor(
-    private authService: AuthService,
-    private api: ApiService,
     private appwrite: AppwriteService
   ) {}
 
