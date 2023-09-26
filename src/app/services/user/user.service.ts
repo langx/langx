@@ -44,6 +44,12 @@ export class UserService {
     );
   }
 
+  listUsers(filterData?: FilterData): Promise<any> {
+    // TODO: Use filter data
+    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION);
+  }
+
+  /* // ORIGINAL CODE
   async getUsers(filterData?: FilterData) {
     const users: any[] = [];
 
@@ -115,6 +121,7 @@ export class UserService {
     );
     return users;
   }
+  */
 
   filterUsersByAge(users: any[], minAge: number, maxAge: number) {
     return users.filter((user) => {
