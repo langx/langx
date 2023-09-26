@@ -155,6 +155,8 @@ export class CompletePage implements OnInit {
       this.auth2Service.isLoggedIn().then((isLoggedIn) => {
         if (isLoggedIn) {
           this.router.navigateByUrl('/login/signup/language');
+          // TODO: to make form empty, it has to be tested
+          this.initForm();
         } else {
           // TODO: show error toasts message
           console.log('error:', 'Could not sign you up, please try again.');
