@@ -38,8 +38,7 @@ export class AccountPage implements OnInit {
 
   lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
-    return lastSeen(a);
+    return lastSeen(d);
   }
 
   // TODO: implement these methods
