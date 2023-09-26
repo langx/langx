@@ -28,7 +28,7 @@
       <ion-card-subtitle>{{item?.nativeName}}</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      Choice your level of your {{item?.name}}.{{item?.level}}
+      Choice your level of your {{item?.name}}.
     </ion-card-content>
     <ion-grid>
       <ion-radio-group
@@ -64,19 +64,4 @@
       </ion-radio-group>
     </ion-grid>
   </ion-card>
-
-  <ion-row>
-    <ion-col>
-      <ion-button
-        *ngIf="!isLoading"
-        (click)="save()"
-        color="primary"
-        expand="block"
-        >Save</ion-button
-      >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-      </ion-button>
-    </ion-col>
-  </ion-row>
 </ion-content>

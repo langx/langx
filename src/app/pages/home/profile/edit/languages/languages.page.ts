@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -17,6 +19,8 @@ export class LanguagesPage implements OnInit {
   constructor(
     private auth2Service: Auth2Service,
     private userService: UserService,
+    private languageService: LanguageService,
+    private toastController: ToastController,
     private router: Router
   ) {}
 
@@ -52,24 +56,47 @@ export class LanguagesPage implements OnInit {
     return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
   }
 
+  // TODO: Update directly the user document, inform user with toast message
   radioChecked(event, selectedLanguage) {
-    selectedLanguage.level = event.detail.value;
-    this.cUserDoc.studyLanguages.forEach((lang) => {
-      if (lang.code === selectedLanguage.code) {
-        lang.level = selectedLanguage.level;
-      }
-    });
-  }
+    selectedLanguage.level = parseInt(event.detail.value);
 
-  save() {
-    this.cUserDoc.updateUserStudyLanguagesData(this.cUserDoc);
-    this.router.navigate(['/home/profile/edit']);
+    this.languageService
+      .updateLanguageDoc(selectedLanguage.$id, {
+        level: selectedLanguage.level,
+      })
+      .then(() => {
+        console.log('Language updated');
+        this.cUserDoc.languages.forEach((lang) => {
+          if (lang.code === selectedLanguage.code) {
+            lang.level = selectedLanguage.level;
+          }
+        });
+        this.presentToast(`${selectedLanguage?.name} updated`);
+      })
+      .catch((error) => {
+        this.presentToast('Please try again later', 'danger');
+        console.log(error);
+      });
   }
 
   newLangBtn() {
-    // console.log(this.currentUser.languagesArray);
     this.router.navigate(['/home/profile/edit/languages/new'], {
       state: this.cUserDoc.languagesArray,
     });
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
