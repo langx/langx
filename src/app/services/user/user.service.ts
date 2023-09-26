@@ -51,6 +51,11 @@ export class UserService {
     // TODO: Add a filter for this after presence is implemented
     queries.push(Query.orderDesc('$updatedAt'));
 
+    // Query for users with the selected gender filter
+    if(filterData?.gender) {
+      queries.push(Query.equal("gender", filterData?.gender));
+    }
+
     return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, queries);
   }
 
