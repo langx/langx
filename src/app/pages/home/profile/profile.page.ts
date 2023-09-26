@@ -145,14 +145,12 @@ export class ProfilePage implements OnInit {
 
   lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
-    return lastSeen(a);
+    return lastSeen(d);
   }
 
   getAge(d: any) {
     if (!d) return null;
-    let a = new Date(d);
-    return getAge(a);
+    return getAge(d);
   }
 
   handleRefresh(event) {
