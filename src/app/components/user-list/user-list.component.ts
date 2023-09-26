@@ -21,4 +21,11 @@ export class UserListComponent implements OnInit {
   goProfile() {
     this.route.navigateByUrl('/home/user/' + this.item.uid);
   }
+
+  getStudyLanguages() {
+    let studyLanguages = this.item?.languages
+      .filter((language) => !language?.motherLanguage)
+      .map((language) => language?.name);
+    return studyLanguages.join(', ');
+  }
 }
