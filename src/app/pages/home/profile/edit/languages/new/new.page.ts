@@ -32,7 +32,7 @@ export class NewPage implements OnInit {
   onSubmit() {
     console.log('submit:' + this.selectedLanguage);
     if (!this.selectedLanguage) {
-      this.presentToast('Please select a language.');
+      this.presentToast('Please select a language.', 'danger');
       return;
     }
     this.router.navigate(['/home/profile/edit/languages/new/next'], {
@@ -53,9 +53,10 @@ export class NewPage implements OnInit {
   // Present Toast
   //
 
-  async presentToast(msg: string) {
+  async presentToast(msg: string, color?: string) {
     const toast = await this.toastController.create({
       message: msg,
+      color: color || 'primary',
       duration: 1500,
       position: 'bottom',
     });
