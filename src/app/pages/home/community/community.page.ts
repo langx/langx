@@ -92,20 +92,20 @@ export class CommunityPage implements OnInit {
       event.target.complete();
       return;
     }
-    this.getUsers(this.filterData);
+    // this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation loadMore has ended');
   }
 
-  async getUsers(filterData?: FilterData) {
-    let users = await this.userService.getUsers(filterData);
-    if (users.length > 0) {
-      this.users.push(...users);
-    } else {
-      this.isAllUsersLoaded = true;
-      console.log('No more users');
-    }
-  }
+  // async getUsers(filterData?: FilterData) {
+  //   let users = await this.userService.getUsers(filterData);
+  //   if (users.length > 0) {
+  //     this.users.push(...users);
+  //   } else {
+  //     this.isAllUsersLoaded = true;
+  //     console.log('No more users');
+  //   }
+  // }
 
   //
   // Start Chat
@@ -141,9 +141,9 @@ export class CommunityPage implements OnInit {
   handleRefresh(filterData: FilterData, event?) {
     this.users = [];
     this.isAllUsersLoaded = false;
-    this.userService.refreshUsers();
-    this.getUsers(filterData);
-    if (event) event.target.complete();
+    // this.userService.refreshUsers();
+    // this.getUsers(filterData);
+    // if (event) event.target.complete();
   }
 
   //
