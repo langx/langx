@@ -14,10 +14,12 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
+
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
+import { LanguageService } from 'src/app/services/user/language.service';
 
 @Component({
   selector: 'app-edit',
@@ -38,6 +40,7 @@ export class EditPage implements OnInit {
     private authService: AuthService,
     private auth2Service: Auth2Service,
     private userService: UserService,
+    private languageService: LanguageService,
     private toastController: ToastController,
     private router: Router,
     private storage: Storage,
@@ -243,19 +246,21 @@ export class EditPage implements OnInit {
 
   deleteLanguage(language) {
     this.isLoading = true;
-    /*
-    // TODO: Update DB first then markup later
-    this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(
-      (item) => item !== language
-    );
-    this.currentUser.languagesArray = this.currentUser.languagesArray.filter(
-      (item) => item !== language.code
-    );
-    this.authService.updateUserStudyLanguagesData(this.currentUser).then(() => {
-      this.presentToast('Language deleted.');
-      this.isLoading = false;
-    });
-    */
+    console.log(language);
+
+    this.languageService
+      .deleteLanguageDoc(language.$id)
+      .then((res) => {
+        this.presentToast(`${language.name} language deleted.`);
+        this.cUserDoc.languages = this.cUserDoc.languages.filter(
+          (lang) => lang.$id !== language.$id
+        );
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.presentToast('Please try again later.', 'danger');
+      });
   }
 
   //
