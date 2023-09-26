@@ -123,6 +123,7 @@ export class CompletePage implements OnInit {
   completeRegisterWithAuth2(form: FormGroup) {
     console.log('form.value:', form.value);
     const data = {
+      name: '',
       birthdate: form.value.birthdateWithDateFormat,
       country: form.value.country,
       countryCode: form.value.countryCode,
@@ -135,6 +136,16 @@ export class CompletePage implements OnInit {
       .getUser()
       .subscribe((u) => {
         user = u;
+        const nameParts = user.name.split(' ');
+        if (nameParts.length > 1) {
+          data.name =
+            nameParts[0] +
+            ' ' +
+            nameParts[nameParts.length - 1].charAt(0) +
+            '.';
+        } else {
+          data.name = user.name;
+        }
       })
       .unsubscribe();
     // console.log('user:', user);
@@ -144,6 +155,8 @@ export class CompletePage implements OnInit {
       this.auth2Service.isLoggedIn().then((isLoggedIn) => {
         if (isLoggedIn) {
           this.router.navigateByUrl('/login/signup/language');
+          // TODO: to make form empty, it has to be tested
+          this.initForm();
         } else {
           // TODO: show error toasts message
           console.log('error:', 'Could not sign you up, please try again.');

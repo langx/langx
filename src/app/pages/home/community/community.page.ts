@@ -31,7 +31,9 @@ export class CommunityPage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    await this.checkLocalStorage();
     await this.checkFilter();
+    await this.getUsers(this.filterData);
   }
 
   ngOnDestroy() {
@@ -40,12 +42,29 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Get Users
+  //
+
+  getUsers(filterData?: FilterData) {
+    this.isLoading = true;
+    this.userService.listUsers(filterData).then(
+      (response) => {
+        this.isLoading = false;
+        console.log(response);
+        this.users = response.documents;
+      },
+      (error) => {
+        this.isLoading = false;
+        console.log(error);
+      }
+    );
+  }
+
+  //
   // Check Filter
   //
 
   async checkFilter() {
-    await this.checkLocalStorage();
-
     this.filter$ = this.filterService
       .getEvent()
       .subscribe((filterData: FilterData) => {
@@ -55,6 +74,7 @@ export class CommunityPage implements OnInit {
       });
   }
 
+  // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
     // Getting the filter data from localStorage
     const languagesString = await this.storageService.get('languages');
@@ -92,20 +112,20 @@ export class CommunityPage implements OnInit {
       event.target.complete();
       return;
     }
-    this.getUsers(this.filterData);
+    // this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation loadMore has ended');
   }
 
-  async getUsers(filterData?: FilterData) {
-    let users = await this.userService.getUsers(filterData);
-    if (users.length > 0) {
-      this.users.push(...users);
-    } else {
-      this.isAllUsersLoaded = true;
-      console.log('No more users');
-    }
-  }
+  // async getUsers(filterData?: FilterData) {
+  //   let users = await this.userService.getUsers(filterData);
+  //   if (users.length > 0) {
+  //     this.users.push(...users);
+  //   } else {
+  //     this.isAllUsersLoaded = true;
+  //     console.log('No more users');
+  //   }
+  // }
 
   //
   // Start Chat
@@ -141,9 +161,9 @@ export class CommunityPage implements OnInit {
   handleRefresh(filterData: FilterData, event?) {
     this.users = [];
     this.isAllUsersLoaded = false;
-    this.userService.refreshUsers();
-    this.getUsers(filterData);
-    if (event) event.target.complete();
+    // this.userService.refreshUsers();
+    // this.getUsers(filterData);
+    // if (event) event.target.complete();
   }
 
   //
