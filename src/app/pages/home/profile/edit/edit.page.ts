@@ -233,6 +233,10 @@ export class EditPage implements OnInit {
   // Edit Languages
   //
 
+  getStudyLanguages() {
+    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
   editLanguages() {
     this.router.navigate(['/home/profile/edit/languages']);
   }
