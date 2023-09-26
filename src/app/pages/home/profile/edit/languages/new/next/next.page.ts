@@ -43,7 +43,7 @@ export class NextPage implements OnInit {
   onSubmit() {
     console.log('submit:' + this.selectedLanguage);
     if (!this.selectedLanguage.level) {
-      this.presentToast('Please select a level.');
+      this.presentToast('Please select a level.', 'danger');
       return;
     }
 
@@ -61,9 +61,10 @@ export class NextPage implements OnInit {
   // Present Toast
   //
 
-  async presentToast(msg: string) {
+  async presentToast(msg: string, color?: string) {
     const toast = await this.toastController.create({
       message: msg,
+      color: color || 'primary',
       duration: 1500,
       position: 'bottom',
     });
