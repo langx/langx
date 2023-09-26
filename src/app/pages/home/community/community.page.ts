@@ -54,6 +54,7 @@ export class CommunityPage implements OnInit {
       });
   }
 
+  // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
     // Getting the filter data from localStorage
     const languagesString = await this.storageService.get('languages');
