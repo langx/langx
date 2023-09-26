@@ -3,6 +3,8 @@ import { getAge } from 'src/app/extras/utils';
 import { FilterData } from '../filter/filter.service';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
+import { Query } from 'appwrite';
+import { Auth2Service } from '../auth/auth2.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,7 +14,8 @@ export class UserService {
   lastVisible: any;
 
   constructor(
-    private appwrite: AppwriteService
+    private appwrite: AppwriteService,
+    private auth2Service: Auth2Service
   ) {}
 
   getUserDoc(uid: string): Promise<any> {
@@ -40,7 +43,9 @@ export class UserService {
 
   listUsers(filterData?: FilterData): Promise<any> {
     // TODO: Use filter data
-    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION);
+    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, [
+      Query.notEqual('$id', this.auth2Service.getUserId()),
+    ]);
   }
 
   /* // ORIGINAL CODE
