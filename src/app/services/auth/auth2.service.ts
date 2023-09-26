@@ -22,6 +22,10 @@ export class Auth2Service {
     return this._user.asObservable();
   }
 
+  getUserId() {
+    return this._user.value?.$id;
+  }
+
   //
   // ACCOUNT API
   //
