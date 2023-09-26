@@ -176,7 +176,7 @@ export class EditPage implements OnInit {
   }
 
   deletePP() {
-    this.presentToast('At least one profile picture required.');
+    this.presentToast('At least one profile picture required.', 'danger');
   }
 
   async addOtherPhotos() {
@@ -262,9 +262,10 @@ export class EditPage implements OnInit {
   // Present Toast
   //
 
-  async presentToast(msg: string) {
+  async presentToast(msg: string, color?: string) {
     const toast = await this.toastController.create({
       message: msg,
+      color: color || 'primary',
       duration: 1500,
       position: 'bottom',
     });
