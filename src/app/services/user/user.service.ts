@@ -42,10 +42,16 @@ export class UserService {
   }
 
   listUsers(filterData?: FilterData): Promise<any> {
-    // TODO: Use filter data
-    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, [
-      Query.notEqual('$id', this.auth2Service.getUserId()),
-    ]);
+    const queries: any[] = [];
+    
+    // Query for users that are not the current user
+    queries.push(Query.notEqual('$id', this.auth2Service.getUserId()));
+    
+    // Query for users descending by last seen
+    // TODO: Add a filter for this after presence is implemented
+    queries.push(Query.orderDesc('$updatedAt'));
+
+    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, queries);
   }
 
   /* // ORIGINAL CODE
