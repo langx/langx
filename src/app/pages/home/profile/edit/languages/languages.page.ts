@@ -81,7 +81,7 @@ export class LanguagesPage implements OnInit {
 
   newLangBtn() {
     this.router.navigate(['/home/profile/edit/languages/new'], {
-      state: this.cUserDoc.languages,
+      state: this.cUserDoc.languages.map((lang) => lang.code),
     });
   }
 
