@@ -243,6 +243,8 @@ export class EditPage implements OnInit {
 
   deleteLanguage(language) {
     this.isLoading = true;
+    /*
+    // TODO: Update DB first then markup later
     this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(
       (item) => item !== language
     );
@@ -253,6 +255,7 @@ export class EditPage implements OnInit {
       this.presentToast('Language deleted.');
       this.isLoading = false;
     });
+    */
   }
 
   //
