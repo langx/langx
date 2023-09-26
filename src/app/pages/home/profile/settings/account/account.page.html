@@ -58,10 +58,28 @@
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
           <ion-label
-            >{{ cUserSession?.lastLogin | date: 'dd/MM/yyyy, HH:mm:ss'
+            >{{ cUserSession?.accessedAt| date: 'dd/MM/yyyy, HH:mm:ss'
             }}</ion-label
           >
-          <ion-note>{{ lastSeen(cUserSession?.lastLogin) }}</ion-note>
+          <ion-note>{{ lastSeen(cUserSession?.accessedAt) }}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Last Password Update</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="key-outline"></ion-icon>
+          <ion-label
+            >{{ cUserSession?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
+            }}</ion-label
+          >
+          <ion-note>{{ lastSeen(cUserSession?.passwordUpdate) }}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
