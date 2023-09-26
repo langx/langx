@@ -31,6 +31,7 @@ export class CommunityPage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    await this.checkLocalStorage();
     await this.checkFilter();
   }
 
@@ -44,8 +45,6 @@ export class CommunityPage implements OnInit {
   //
 
   async checkFilter() {
-    await this.checkLocalStorage();
-
     this.filter$ = this.filterService
       .getEvent()
       .subscribe((filterData: FilterData) => {
