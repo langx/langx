@@ -12,6 +12,20 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>User Id</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="id-card-outline"></ion-icon>
+          <ion-label>{{ cUserSession?.$id }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Email</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -80,20 +94,6 @@
             }}</ion-label
           >
           <ion-note>{{ lastSeen(cUserSession?.passwordUpdate) }}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>User Id</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-icon name="id-card-outline"></ion-icon>
-          <ion-label>{{ cUserSession?.$id }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
