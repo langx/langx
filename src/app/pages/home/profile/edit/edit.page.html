@@ -99,7 +99,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let lang of currentUser?.studyLanguages">
+        <ion-item *ngFor="let lang of getStudyLanguages()">
           <ion-icon
             *ngIf="lang.level == 1"
             name="battery-dead-outline"
