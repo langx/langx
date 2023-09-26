@@ -50,7 +50,11 @@ export class AppwriteService {
     );
   }
 
-  createDocument(collectionId: string, documentId: string, data: any): Promise<any> {
+  createDocument(
+    collectionId: string,
+    documentId: string,
+    data: any
+  ): Promise<any> {
     return this.database.createDocument(
       environment.appwrite.APP_DATABASE,
       collectionId,
@@ -69,6 +73,14 @@ export class AppwriteService {
       collectionId,
       documentId,
       data
+    );
+  }
+
+  deleteDocument(collectionId: string, documentId: string): Promise<any> {
+    return this.database.deleteDocument(
+      environment.appwrite.APP_DATABASE,
+      collectionId,
+      documentId
     );
   }
 }
