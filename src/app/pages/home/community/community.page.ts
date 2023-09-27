@@ -70,6 +70,7 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
+        this.handleRefresh(null);
       });
   }
 
@@ -157,11 +158,11 @@ export class CommunityPage implements OnInit {
   // Pull to refresh
   //
 
-  handleRefresh(event) {
+  handleRefresh(event?) {
     this.users = [];
     this.isAllUsersLoaded = false;
     this.getUsers(this.filterData);
-    event.target.complete();
+    if (event) event.target.complete();
   }
 
   //
