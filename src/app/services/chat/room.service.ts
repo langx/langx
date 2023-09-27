@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
-import { AuthService } from '../auth/auth.service';
+import { Auth2Service } from '../auth/auth2.service';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -11,13 +11,13 @@ import { ApiService } from '../api/api.service';
 export class RoomService {
   constructor(
     private appwrite: AppwriteService,
-    private auth: AuthService,
+    private auth2Service: Auth2Service,
     private api: ApiService
   ) {}
 
   async checkRoom(userId: string): Promise<any> {
-    this.auth.getId();
-    let cUserId = this.auth.currentUser.uid;
+    let cUserId = this.auth2Service.getUserId();
+    console.log('checkRoom: ', cUserId, userId);
 
     const promise = this.appwrite.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
