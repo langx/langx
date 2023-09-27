@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { getAge } from 'src/app/extras/utils';
 import { FilterData } from '../filter/filter.service';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';

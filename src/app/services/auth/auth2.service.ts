@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
