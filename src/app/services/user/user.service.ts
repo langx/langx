@@ -48,7 +48,7 @@ export class UserService {
     queries.push(Query.notEqual('$id', this.auth2Service.getUserId()));
 
     // Query for users descending by last seen
-    // TODO: Add a filter for this after presence is implemented
+    // TODO: Update this filter for this after presence is implemented
     queries.push(Query.orderDesc('$updatedAt'));
 
     // Query for users with the selected gender filter
