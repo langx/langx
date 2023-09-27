@@ -131,24 +131,24 @@ export class CommunityPage implements OnInit {
   // Start Chat
   //
 
-  async startChat(item) {
-    let roomId: string = '';
-    const promise = this.roomService.checkRoom(item.uid);
-    await promise.then(
+  async startChat(user: any) {
+    let roomId: string;
+
+    await this.roomService.checkRoom(user.$id).then(
       (response) => {
         roomId = response.$id;
         console.log(response); // Success
       },
       (error) => {
         console.log(error); // Failure
-        // TODO: Test this
+        // TODO: Test this, add toast message
         return;
       }
     );
     const navData: NavigationExtras = {
       queryParams: {
-        name: item?.name,
-        uid: item?.uid,
+        name: user?.name,
+        uid: user?.$id,
       },
     };
     this.router.navigate(['/', 'home', 'chat3', roomId], navData);
