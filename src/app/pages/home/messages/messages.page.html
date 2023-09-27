@@ -26,22 +26,22 @@
     </app-empty-screen>
 
     <ion-list *ngIf="chatRooms?.length > 0">
-      <div *ngFor="let item of chatRooms" detail>
-        <ion-item (click)="getChat(item)">
-          <ng-container *ngIf="item">
+      <div *ngFor="let room of chatRooms" detail>
+        <ion-item (click)="getChat(room)">
+          <ng-container *ngIf="room">
             <ion-avatar slot="start">
               <img
-                [src]="getUser(item.user)?.photo"
+                [src]="room?.userData?.profilePhoto"
                 alt=""
                 referrerpolicy="no-referrer"
               />
             </ion-avatar>
             <ion-label>
-              <h2>{{getUser(item.user)?.name}}</h2>
-              <p>{{getUser(item.user)?.id}}</p>
-              <p>{{getUser(item.user)}}</p>
+              <h2>{{room?.userData?.name}}</h2>
+              <p>{{room?.userData?.country}}</p>
+              <ion-note>{{room?.userData?.$id}}</ion-note>
             </ion-label>
-            <ion-note>{{ lastSeen(item?.updatedAt) }}</ion-note>
+            <ion-note>{{ lastSeen(room?.$updatedAt) }}</ion-note>
           </ng-container>
         </ion-item>
       </div>

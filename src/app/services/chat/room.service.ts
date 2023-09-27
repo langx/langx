@@ -3,7 +3,7 @@ import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { Auth2Service } from '../auth/auth2.service';
-import { ApiService } from '../api/api.service';
+import { UserService } from '../user/user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +12,7 @@ export class RoomService {
   constructor(
     private appwrite: AppwriteService,
     private auth2Service: Auth2Service,
-    private api: ApiService
+    private userService: UserService
   ) {}
 
   async checkRoom(userId: string): Promise<any> {
@@ -42,21 +42,24 @@ export class RoomService {
   async getRooms(currentUserId: string): Promise<any> {
     return this.appwrite
       .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-        // Query.search('members', currentUserId),
         Query.search('users', currentUserId),
       ])
       .then((values) => {
         values.documents.forEach((element) => {
-          element.users.forEach((user) => {
-            if (user != currentUserId) {
-              element.user = user;
+          // Check if the user is not the current user
+          element.users.forEach((userId) => {
+            if (userId != currentUserId) {
+              // Get the user data and add it to the element as userData
+              element.userData = this.userService.getUserDoc(userId).then(
+                (data) => {
+                  element.userData = data;
+                },
+                (error) => {
+                  console.log('error: ', error);
+                }
+              );
             }
           });
-          // TODO: FIRESTORE USER
-          element.userData = this.api.docDataQuery(
-            `users/${element.user}`,
-            true
-          );
         });
         return values;
       });
