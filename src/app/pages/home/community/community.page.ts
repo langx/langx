@@ -19,7 +19,7 @@ export class CommunityPage implements OnInit {
 
   users = [];
 
-  isAllUsersLoaded: boolean = false;
+  isAllUsersLoaded: boolean = false; // Pagination variable
   isLoading: boolean = false;
 
   constructor(
@@ -70,7 +70,6 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-        this.handleRefresh(filterData);
       });
   }
 
@@ -158,12 +157,11 @@ export class CommunityPage implements OnInit {
   // Pull to refresh
   //
 
-  handleRefresh(filterData: FilterData, event?) {
+  handleRefresh(event) {
     this.users = [];
     this.isAllUsersLoaded = false;
-    // this.userService.refreshUsers();
-    // this.getUsers(filterData);
-    // if (event) event.target.complete();
+    this.getUsers(this.filterData);
+    event.target.complete();
   }
 
   //
