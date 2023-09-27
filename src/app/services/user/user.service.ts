@@ -43,25 +43,38 @@ export class UserService {
 
   listUsers(filterData?: FilterData): Promise<any> {
     const queries: any[] = [];
-    
+
     // Query for users that are not the current user
     queries.push(Query.notEqual('$id', this.auth2Service.getUserId()));
-    
+
     // Query for users descending by last seen
     // TODO: Add a filter for this after presence is implemented
     queries.push(Query.orderDesc('$updatedAt'));
 
     // Query for users with the selected gender filter
-    if(filterData?.gender) {
-      queries.push(Query.equal("gender", filterData?.gender));
+    if (filterData?.gender) {
+      queries.push(Query.equal('gender', filterData?.gender));
     }
 
     // Query for users with the selected country filter
     if (filterData?.country) {
-      queries.push(Query.equal("countryCode", filterData?.country));
+      queries.push(Query.equal('countryCode', filterData?.country));
     }
 
-    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, queries);
+    // Query for users with birthdates between the selected min and max ages
+    if (filterData?.minAge && filterData?.maxAge) {
+      const minDate = new Date();
+      minDate.setFullYear(minDate.getFullYear() - filterData?.maxAge);
+      const maxDate = new Date();
+      maxDate.setFullYear(maxDate.getFullYear() - filterData?.minAge);
+
+      queries.push(Query.greaterThanEqual('birthdate', minDate.toISOString()));
+      queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
+    }
+    return this.appwrite.listDocuments(
+      environment.appwrite.USERS_COLLECTION,
+      queries
+    );
   }
 
   /* // ORIGINAL CODE
