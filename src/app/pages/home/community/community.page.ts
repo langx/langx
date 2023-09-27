@@ -117,15 +117,6 @@ export class CommunityPage implements OnInit {
     console.log('Async operation loadMore has ended');
   }
 
-  // async getUsers(filterData?: FilterData) {
-  //   let users = await this.userService.getUsers(filterData);
-  //   if (users.length > 0) {
-  //     this.users.push(...users);
-  //   } else {
-  //     this.isAllUsersLoaded = true;
-  //     console.log('No more users');
-  //   }
-  // }
 
   //
   // Start Chat
