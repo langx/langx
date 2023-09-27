@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class Chat3Page implements OnInit {
 
   constructor(
     private messageService: MessageService,
-    private auth: AuthService,
+    private auth2Service: Auth2Service,
     private route: ActivatedRoute
   ) {}
 
@@ -52,7 +52,7 @@ export class Chat3Page implements OnInit {
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     this.roomId = chatRoomId;
-    this.currentUserId = this.auth.getId();
+    this.currentUserId = this.auth2Service.getUserId();
   }
 
   initMessages() {
