@@ -73,14 +73,6 @@ export class FiltersPage implements OnInit {
     console.log('checkLocalStorage', this.filterData);
   }
 
-  async fetchFilteredUsers() {
-    const languages = ['en', 'es', 'zh'];
-    const gender = 'male';
-    const country = 'AF';
-    const minAge = 13;
-    const maxAge = 100;
-  }
-
   onSubmit() {
     this.setLocalStorage(this.filterData);
     this.filterService.setEvent(this.filterData);
@@ -122,24 +114,24 @@ export class FiltersPage implements OnInit {
     return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
   }
 
-  languageChecked(event, langCode) {
+  languageChecked(event, langName) {
     if (event.detail.checked) {
       if (!this.filterData.languages) this.filterData.languages = [];
-      this.filterData.languages.push(langCode);
+      this.filterData.languages.push(langName);
     } else {
       this.filterData.languages = this.filterData.languages.filter(
-        (item) => item !== langCode
+        (item) => item !== langName
       );
     }
     console.log(this.filterData);
   }
 
-  isCheckedLanguage(langCode) {
+  isCheckedLanguage(langName) {
     if (!this.filterData.languages) return false;
     else if (this.filterData.languages.length == 0) return false;
     else if (
       this.filterData.languages.length > 0 &&
-      this.filterData.languages.includes(langCode)
+      this.filterData.languages.includes(langName)
     )
       return true;
     else return false;
