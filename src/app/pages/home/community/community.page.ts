@@ -33,7 +33,6 @@ export class CommunityPage implements OnInit {
   async ngOnInit() {
     await this.checkLocalStorage();
     await this.checkFilter();
-    await this.getUsers(this.filterData);
   }
 
   ngOnDestroy() {
@@ -70,6 +69,7 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
+        // Handle Refresh fetch users by using filterData in getUsers()
         this.handleRefresh(null);
       });
   }
