@@ -41,6 +41,7 @@ export class UserService {
     );
   }
 
+  // TODO: Pagination
   listUsers(filterData?: FilterData): Promise<any> {
     const queries: any[] = [];
 
@@ -157,7 +158,6 @@ export class UserService {
     );
     return users;
   }
-  */
 
   filterUsersByAge(users: any[], minAge: number, maxAge: number) {
     return users.filter((user) => {
@@ -169,4 +169,5 @@ export class UserService {
   refreshUsers() {
     this.lastVisible = null;
   }
+  */
 }
