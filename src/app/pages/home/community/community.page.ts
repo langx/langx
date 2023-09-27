@@ -117,7 +117,6 @@ export class CommunityPage implements OnInit {
     console.log('Async operation loadMore has ended');
   }
 
-
   //
   // Start Chat
   //
