@@ -47,8 +47,8 @@
         <ion-checkbox
           labelPlacement="start"
           color="primary"
-          [checked]="isCheckedLanguage(lang?.code)"
-          (ionChange)="languageChecked($event, lang?.code)"
+          [checked]="isCheckedLanguage(lang?.name)"
+          (ionChange)="languageChecked($event, lang?.name)"
         >
           {{ lang?.name }}
         </ion-checkbox>
