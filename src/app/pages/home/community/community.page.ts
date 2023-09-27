@@ -33,7 +33,6 @@ export class CommunityPage implements OnInit {
   async ngOnInit() {
     await this.checkLocalStorage();
     await this.checkFilter();
-    await this.getUsers(this.filterData);
   }
 
   ngOnDestroy() {
@@ -45,9 +44,9 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  getUsers(filterData?: FilterData) {
+  async getUsers(filterData?: FilterData) {
     this.isLoading = true;
-    this.userService.listUsers(filterData).then(
+    await this.userService.listUsers(filterData).then(
       (response) => {
         this.isLoading = false;
         console.log(response);
@@ -70,6 +69,7 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
+        // Handle Refresh fetch users by using filterData in getUsers()
         this.handleRefresh(null);
       });
   }
@@ -117,38 +117,28 @@ export class CommunityPage implements OnInit {
     console.log('Async operation loadMore has ended');
   }
 
-  // async getUsers(filterData?: FilterData) {
-  //   let users = await this.userService.getUsers(filterData);
-  //   if (users.length > 0) {
-  //     this.users.push(...users);
-  //   } else {
-  //     this.isAllUsersLoaded = true;
-  //     console.log('No more users');
-  //   }
-  // }
-
   //
   // Start Chat
   //
 
-  async startChat(item) {
-    let roomId: string = '';
-    const promise = this.roomService.checkRoom(item.uid);
-    await promise.then(
+  async startChat(user: any) {
+    let roomId: string;
+
+    await this.roomService.checkRoom(user.$id).then(
       (response) => {
         roomId = response.$id;
         console.log(response); // Success
       },
       (error) => {
         console.log(error); // Failure
-        // TODO: Test this
+        // TODO: Test this, add toast message
         return;
       }
     );
     const navData: NavigationExtras = {
       queryParams: {
-        name: item?.name,
-        uid: item?.uid,
+        name: user?.name,
+        uid: user?.$id,
       },
     };
     this.router.navigate(['/', 'home', 'chat3', roomId], navData);
