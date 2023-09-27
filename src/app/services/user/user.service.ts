@@ -71,6 +71,14 @@ export class UserService {
       queries.push(Query.greaterThanEqual('birthdate', minDate.toISOString()));
       queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
     }
+
+    // Query for users with the selected languages filter
+    if (filterData?.languages.length > 0) {
+      const keywords = filterData.languages.join(' ');
+      // OR Query for users with any of the selected languages
+      queries.push(Query.search('languageArray', keywords));
+    }
+
     return this.appwrite.listDocuments(
       environment.appwrite.USERS_COLLECTION,
       queries
