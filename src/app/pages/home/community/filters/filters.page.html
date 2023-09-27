@@ -35,15 +35,11 @@
     </ion-card-header>
 
     <ion-card-content class="hasIcon">
-      <ion-item *ngFor="let lang of currentUserData?.studyLanguages">
-        <ion-icon
-          *ngIf="lang.level == 1"
-          name="battery-dead-outline"
-        ></ion-icon>
-        <ion-icon
-          *ngIf="lang.level == 2"
-          name="battery-half-outline"
-        ></ion-icon>
+      <ion-item *ngFor="let lang of getStudyLanguages()">
+        <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline">
+        </ion-icon>
+        <ion-icon *ngIf="lang.level == 2" name="battery-half-outline">
+        </ion-icon>
         <ion-icon
           *ngIf="lang.level == 3"
           name="battery-full-outline"
@@ -51,10 +47,11 @@
         <ion-checkbox
           labelPlacement="start"
           color="primary"
-          [checked]="isCheckedLanguage(lang?.code)"
-          (ionChange)="languageChecked($event, lang?.code)"
-          >{{ lang?.name }}</ion-checkbox
+          [checked]="isCheckedLanguage(lang?.name)"
+          (ionChange)="languageChecked($event, lang?.name)"
         >
+          {{ lang?.name }}
+        </ion-checkbox>
       </ion-item>
     </ion-card-content>
   </ion-card>

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { getAge } from 'src/app/extras/utils';
 import { FilterData } from '../filter/filter.service';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
@@ -41,11 +40,49 @@ export class UserService {
     );
   }
 
+  // TODO: Pagination
   listUsers(filterData?: FilterData): Promise<any> {
-    // TODO: Use filter data
-    return this.appwrite.listDocuments(environment.appwrite.USERS_COLLECTION, [
-      Query.notEqual('$id', this.auth2Service.getUserId()),
-    ]);
+    const queries: any[] = [];
+
+    // Query for users that are not the current user
+    queries.push(Query.notEqual('$id', this.auth2Service.getUserId()));
+
+    // Query for users descending by last seen
+    // TODO: Update this filter for this after presence is implemented
+    queries.push(Query.orderDesc('$updatedAt'));
+
+    // Query for users with the selected gender filter
+    if (filterData?.gender) {
+      queries.push(Query.equal('gender', filterData?.gender));
+    }
+
+    // Query for users with the selected country filter
+    if (filterData?.country) {
+      queries.push(Query.equal('countryCode', filterData?.country));
+    }
+
+    // Query for users with birthdates between the selected min and max ages
+    if (filterData?.minAge && filterData?.maxAge) {
+      const minDate = new Date();
+      minDate.setFullYear(minDate.getFullYear() - filterData?.maxAge);
+      const maxDate = new Date();
+      maxDate.setFullYear(maxDate.getFullYear() - filterData?.minAge);
+
+      queries.push(Query.greaterThanEqual('birthdate', minDate.toISOString()));
+      queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
+    }
+
+    // Query for users with the selected languages filter
+    if (filterData?.languages.length > 0) {
+      const keywords = filterData.languages.join(' ');
+      // OR Query for users with any of the selected languages
+      queries.push(Query.search('languageArray', keywords));
+    }
+
+    return this.appwrite.listDocuments(
+      environment.appwrite.USERS_COLLECTION,
+      queries
+    );
   }
 
   /* // ORIGINAL CODE
@@ -120,7 +157,6 @@ export class UserService {
     );
     return users;
   }
-  */
 
   filterUsersByAge(users: any[], minAge: number, maxAge: number) {
     return users.filter((user) => {
@@ -132,4 +168,5 @@ export class UserService {
   refreshUsers() {
     this.lastVisible = null;
   }
+  */
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import {
@@ -8,6 +8,7 @@ import {
   FilterData,
 } from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-filters',
@@ -19,7 +20,7 @@ export class FiltersPage implements OnInit {
   countryData = countryData;
 
   isLoading: boolean = false;
-  currentUserData: any;
+  cUserDoc: any;
 
   ionRangeDefault = { lower: 20, upper: 75 };
 
@@ -27,11 +28,12 @@ export class FiltersPage implements OnInit {
   filterData: FilterData = {} as FilterData;
 
   constructor(
-    private authService: AuthService,
+    private auth2Service: Auth2Service,
     private navCtrl: NavController,
     private router: Router,
     private filterService: FilterService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
@@ -40,14 +42,10 @@ export class FiltersPage implements OnInit {
   }
 
   async getUserData() {
-    this.authService
-      .getUserData()
-      .then((currentUserData) => {
-        this.currentUserData = currentUserData;
-      })
-      .catch((error) => {
-        console.log('error: ', error);
-      });
+    this.userService.getUserDoc(this.auth2Service.getUserId()).then((user) => {
+      this.cUserDoc = user;
+      console.log(user);
+    });
   }
 
   async checkStorage() {
@@ -73,14 +71,6 @@ export class FiltersPage implements OnInit {
     this.filterData.maxAge = maxAge;
 
     console.log('checkLocalStorage', this.filterData);
-  }
-
-  async fetchFilteredUsers() {
-    const languages = ['en', 'es', 'zh'];
-    const gender = 'male';
-    const country = 'AF';
-    const minAge = 13;
-    const maxAge = 100;
   }
 
   onSubmit() {
@@ -120,24 +110,28 @@ export class FiltersPage implements OnInit {
   // LANGUAGE Methods
   //
 
-  languageChecked(event, langCode) {
+  getStudyLanguages() {
+    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
+  languageChecked(event, langName) {
     if (event.detail.checked) {
       if (!this.filterData.languages) this.filterData.languages = [];
-      this.filterData.languages.push(langCode);
+      this.filterData.languages.push(langName);
     } else {
       this.filterData.languages = this.filterData.languages.filter(
-        (item) => item !== langCode
+        (item) => item !== langName
       );
     }
     console.log(this.filterData);
   }
 
-  isCheckedLanguage(langCode) {
+  isCheckedLanguage(langName) {
     if (!this.filterData.languages) return false;
     else if (this.filterData.languages.length == 0) return false;
     else if (
       this.filterData.languages.length > 0 &&
-      this.filterData.languages.includes(langCode)
+      this.filterData.languages.includes(langName)
     )
       return true;
     else return false;
