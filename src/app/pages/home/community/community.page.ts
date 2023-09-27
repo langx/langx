@@ -45,9 +45,9 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  getUsers(filterData?: FilterData) {
+  async getUsers(filterData?: FilterData) {
     this.isLoading = true;
-    this.userService.listUsers(filterData).then(
+    await this.userService.listUsers(filterData).then(
       (response) => {
         this.isLoading = false;
         console.log(response);
