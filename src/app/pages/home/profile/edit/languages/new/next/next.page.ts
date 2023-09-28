@@ -75,6 +75,26 @@ export class NextPage implements OnInit {
     this.languageService
       .createLanguageDoc(data)
       .then((res) => {
+        // Push the language data to the array
+        this.cUserDoc.languages.push(data);
+
+        // Update languageArray
+        if (!this.cUserDoc.languageArray.includes(data.name)) {
+          this.cUserDoc.languageArray.push(data.name);
+        }
+
+        // Update user doc with new languageArray
+        this.userService
+          .updateUserDoc(this.cUserSession.$id, {
+            languageArray: this.cUserDoc.languageArray,
+          })
+          .then(() => {
+            console.log('Language Array Updated');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
         this.presentToast('Language added.');
         this.router.navigate(['/home/profile/edit']);
       })
