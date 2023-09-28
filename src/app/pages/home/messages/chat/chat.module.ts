@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { Chat3PageRoutingModule } from './chat3-routing.module';
+import { ChatPageRoutingModule } from './chat-routing.module';
 
-import { Chat3Page } from './chat3.page';
+import { ChatPage } from './chat.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component';
 
@@ -15,9 +15,9 @@ import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component
     CommonModule,
     FormsModule,
     IonicModule,
-    Chat3PageRoutingModule,
+    ChatPageRoutingModule,
     ComponentsModule
   ],
-  declarations: [Chat3Page, ChatBoxComponent]
+  declarations: [ChatPage, ChatBoxComponent]
 })
-export class Chat3PageModule {}
+export class ChatPageModule {}
