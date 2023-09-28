@@ -14,8 +14,12 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
+
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { LanguageService } from 'src/app/services/user/language.service';
 
 @Component({
   selector: 'app-edit',
@@ -26,15 +30,17 @@ export class EditPage implements OnInit {
   isLoading: boolean = false;
   currentUser: any;
 
-  textAreaValue: string = '';
-  textAreaDisabled: boolean = true;
-
   cUser: Subscription;
+  cUserDoc: any;
+  cUserSession: any;
 
   uploadedImageURL: string = '';
 
   constructor(
     private authService: AuthService,
+    private auth2Service: Auth2Service,
+    private userService: UserService,
+    private languageService: LanguageService,
     private toastController: ToastController,
     private router: Router,
     private storage: Storage,
@@ -55,9 +61,25 @@ export class EditPage implements OnInit {
       if (cUser) {
         this.currentUser = cUser;
         this.textAreaValue = cUser.aboutMe;
-        this.textAreaDisabled = true;
       }
     });
+
+    this.auth2Service
+      .getUser()
+      .subscribe((cUser) => {
+        if (cUser) {
+          console.log(cUser);
+          this.cUserSession = cUser;
+        }
+      })
+      .unsubscribe();
+    // TODO: Unsubscribe may not be necessary to update the user info
+
+    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+      this.cUserDoc = user;
+      console.log(user);
+    });
+
     //hideLoader();
     this.isLoading = false;
   }
@@ -157,7 +179,7 @@ export class EditPage implements OnInit {
   }
 
   deletePP() {
-    this.presentToast('At least one profile picture required.');
+    this.presentToast('At least one profile picture required.', 'danger');
   }
 
   async addOtherPhotos() {
@@ -188,26 +210,35 @@ export class EditPage implements OnInit {
   // Edit About Me
   //
 
+  textAreaValue() {
+    return this.cUserDoc?.aboutMe;
+  }
+
   ionInputAboutMe(event) {
-    if (event.target.value != this.currentUser.aboutMe) {
-      this.textAreaDisabled = false;
-    } else {
-      this.textAreaDisabled = true;
-    }
-    this.currentUser.aboutMe = event.target.value;
+    this.cUserDoc.aboutMe = event.target.value;
   }
 
   saveAboutMe() {
     this.isLoading = true;
-    this.authService.updateUserAboutData(this.currentUser).then(() => {
-      this.presentToast('About me saved.');
-      this.isLoading = false;
-    });
+    this.userService
+      .updateUserDoc(this.cUserSession.$id, { aboutMe: this.cUserDoc.aboutMe })
+      .then(() => {
+        this.presentToast('About me saved.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.isLoading = false;
+      });
   }
 
   //
   // Edit Languages
   //
+
+  getStudyLanguages() {
+    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
 
   editLanguages() {
     this.router.navigate(['/home/profile/edit/languages']);
@@ -215,25 +246,31 @@ export class EditPage implements OnInit {
 
   deleteLanguage(language) {
     this.isLoading = true;
-    this.currentUser.studyLanguages = this.currentUser.studyLanguages.filter(
-      (item) => item !== language
-    );
-    this.currentUser.languagesArray = this.currentUser.languagesArray.filter(
-      (item) => item !== language.code
-    );
-    this.authService.updateUserStudyLanguagesData(this.currentUser).then(() => {
-      this.presentToast('Language deleted.');
-      this.isLoading = false;
-    });
+    console.log(language);
+
+    this.languageService
+      .deleteLanguageDoc(language.$id)
+      .then((res) => {
+        this.presentToast(`${language.name} language deleted.`);
+        this.cUserDoc.languages = this.cUserDoc.languages.filter(
+          (lang) => lang.$id !== language.$id
+        );
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.presentToast('Please try again later.', 'danger');
+      });
   }
 
   //
   // Present Toast
   //
 
-  async presentToast(msg: string) {
+  async presentToast(msg: string, color?: string) {
     const toast = await this.toastController.create({
       message: msg,
+      color: color || 'primary',
       duration: 1500,
       position: 'bottom',
     });

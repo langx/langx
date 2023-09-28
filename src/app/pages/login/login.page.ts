@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,7 @@ export class LoginPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private auth2Service: Auth2Service,
     private alertController: AlertController
   ) {}
 
@@ -38,9 +40,31 @@ export class LoginPage implements OnInit {
 
   onSubmit() {
     if (!this.form.valid) return;
-    this.login(this.form);
+    this.loginWithAuth2(this.form);
   }
 
+  loginWithAuth2(form: FormGroup) {
+    this.isLoading = true;
+
+    this.auth2Service
+      .login(form.value.email, form.value.password)
+      .subscribe((user: any) => {
+        console.log('user:', user);
+        this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+          if (isLoggedIn) {
+            this.router.navigateByUrl('/home');
+          } else {
+            // TODO: show error toasts message
+            console.log('error:', 'Could not sign you up, please try again.');
+          }
+        });
+        //hideLoader();
+        form.reset();
+        this.isLoading = false;
+      });
+  }
+
+  /*
   login(form: FormGroup) {
     //showLoader();
     this.isLoading = true;
@@ -84,6 +108,7 @@ export class LoginPage implements OnInit {
         this.showAlert(msg);
       });
   }
+  */
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {

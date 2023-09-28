@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-back-button defaultHref="/home/messages"></ion-back-button>
       <ion-avatar (click)="goProfile(uid)" style="width: 40px; height: 40px">
-        <img [src]="photo" />
+        <img src="https://i.pravatar.cc/300" />
       </ion-avatar>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button (click)="test()">
+      <ion-button (click)="search()">
         <ion-icon slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -16,25 +16,16 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="(chats | async ) as chat$">
-    <app-empty-screen *ngIf="(chats | async)?.length == 0" [model]="model">
-    </app-empty-screen>
+  <app-empty-screen *ngIf="(messages | async)?.length == 0" [model]="model">
+  </app-empty-screen>
 
-    <!--TODO: There is a bug after i added ion-infinite-scroll.
-    When i refresh the page manually, scroll to bottom is not working-->
-    <!--
-    <ion-infinite-scroll position="top" (ionInfinite)="loadMore($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-    -->
-
-    <ion-item-group lines="none" class="chats-group" *ngFor="let chat of chat$">
-      <app-chat-box
-        [chat]="chat"
-        [current_user_id]="chatService.currentUserId"
-      ></app-chat-box>
-    </ion-item-group>
-  </ng-container>
+  <ion-item-group
+    lines="none"
+    class="chats-group"
+    *ngFor="let msg of messages | async"
+  >
+    <app-chat-box [chat]="msg" [current_user_id]="currentUserId"></app-chat-box>
+  </ion-item-group>
 </ion-content>
 
 <ion-footer>
@@ -44,6 +35,8 @@
         placeholder="Type your message here..."
         type="text"
         [(ngModel)]="message"
+        (ionFocus)="typingFocus()"
+        (ionBlur)="typingBlur()"
         autoGrow="true"
       >
       </ion-textarea>
@@ -58,15 +51,7 @@
         expand="icon-only"
         name="send"
         slot="end"
-        (click)="sendMessage()"
-        *ngIf="!isLoading"
-      ></ion-icon>
-      <ion-icon
-        color="medium"
-        expand="icon-only"
-        name="send"
-        slot="end"
-        *ngIf="isLoading"
+        (click)="addMessage()"
       ></ion-icon>
       <ion-icon
         color="medium"
@@ -75,5 +60,12 @@
         slot="start"
       ></ion-icon>
     </ion-item>
+    <!-- TODO: This has to be isTyping from room subscribtion -->
+    <!--
+    <small>uID: {{ uid }}</small>
+    <small> typing: {{ isTyping }}</small><br />
+    <small>cID: {{ currentUserId }}</small>
+    <small> typing: {{ isTyping }}</small><br />
+    <small>roomId: {{ roomId }}</small><br />-->
   </ion-toolbar>
 </ion-footer>

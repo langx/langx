@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { lastSeen } from 'src/app/extras/utils';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-account',
@@ -8,10 +8,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
-  currentUser: any;
+  cUserSession: any;
   isLoading: boolean = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(private auth2Service: Auth2Service) {}
 
   ngOnInit() {
     this.getProfileInfo();
@@ -20,17 +20,25 @@ export class AccountPage implements OnInit {
   getProfileInfo() {
     //TODO: showLoader();
     this.isLoading = true;
-    this.authService.getUserData().then((user) => {
-      this.currentUser = user;
-      //TODO: hideLoader();
-      this.isLoading = false;
-    });
+
+    this.auth2Service
+      .getUser()
+      .subscribe((cUser) => {
+        if (cUser) {
+          console.log(cUser);
+          this.cUserSession = cUser;
+        }
+      })
+      .unsubscribe();
+    // TODO: Unsubscribe may not be necessary to update the user info
+
+    //TODO: hideLoader();
+    this.isLoading = false;
   }
 
   lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
-    return lastSeen(a);
+    return lastSeen(d);
   }
 
   // TODO: implement these methods

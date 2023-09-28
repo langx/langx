@@ -1,18 +1,13 @@
-//
-// TODO:
-// THIS IS NOT USED ANYMORE
-//
-
 import { TestBed } from '@angular/core/testing';
 
-import { AuthService } from './auth.service';
+import { RoomService } from './room.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('ChatService', () => {
+  let service: RoomService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
+    service = TestBed.inject(RoomService);
   });
 
   it('should be created', () => {

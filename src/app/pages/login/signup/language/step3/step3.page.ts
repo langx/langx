@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { languagesData } from 'src/app/extras/data';
 import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { LanguageService } from 'src/app/services/user/language.service';
 
 @Component({
   selector: 'app-step3',
@@ -21,7 +22,8 @@ export class Step3Page implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
-    private authService: AuthService
+    private auth2Service: Auth2Service,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit() {
@@ -43,6 +45,7 @@ export class Step3Page implements OnInit {
           .nativeName,
         code: language,
         level: 0,
+        motherLanguage: false,
       });
     });
 
@@ -53,6 +56,7 @@ export class Step3Page implements OnInit {
           .nativeName,
         code: motherLanguage,
         level: -1,
+        motherLanguage: true,
       },
     ];
   }
@@ -71,33 +75,55 @@ export class Step3Page implements OnInit {
   }
 
   completeLanguages(motherLanguages, studyLanguages) {
-    //showLoader();
-    this.isLoading = true;
-    const languagesArray = [];
-    motherLanguages.forEach((lang) => {
-      languagesArray.push(lang.code);
-    });
-    studyLanguages.forEach((lang) => {
-      languagesArray.push(lang.code);
-    });
+    let user: any;
+    this.auth2Service
+      .getUser()
+      .subscribe((u) => {
+        user = u;
+      })
+      .unsubscribe();
+    // console.log('user:', user);
 
-    let form = {
-      motherLanguages: motherLanguages,
-      studyLanguages: studyLanguages,
-      languagesArray: languagesArray,
-    };
-    console.log('languages', form);
+    console.log('motherLanguages:', motherLanguages);
+    console.log('studyLanguages:', studyLanguages);
 
     try {
-      this.authService.updateUserLanguageData(form).then(() => {
-        console.log('updateUserLanguageData setted in DB');
-        this.router.navigateByUrl('/home');
-        //hideLoader();
-        this.isLoading = false;
+      this.isLoading = true; //showLoader
+
+      // TODO: Error handling if any of the following fails
+      // SCOPE: It may saved some languages and not others
+      motherLanguages.forEach((motherlang) => {
+        motherlang.userId = user.$id;
+        this.languageService
+          .createLanguageDoc(motherlang)
+          .then((res) => {
+            console.log('result:', res);
+          })
+          .catch((err) => {
+            console.log('err:', err);
+          });
       });
+
+      // TODO: Error handling if any of the following fails
+      // SCOPE: It may saved some languages and not others
+      studyLanguages.forEach((studyLang) => {
+        studyLang.userId = user.$id;
+        this.languageService
+          .createLanguageDoc(studyLang)
+          .then((res) => {
+            console.log('result:', res);
+          })
+          .catch((err) => {
+            console.log('err:', err);
+          });
+      });
+      console.log('updateUserLanguageData setted in DB');
+      this.router.navigateByUrl('/home');
+
+      this.isLoading = false; //hideLoader
     } catch (error) {
       console.log('error:', error);
-      this.isLoading = false;
+      this.isLoading = false; //hideLoader
       this.showAlert('Please try again later.');
     }
   }

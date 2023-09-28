@@ -14,7 +14,7 @@
     <ion-card-header>
       <ion-card-title>
         <ion-row>
-          <ion-col> Profile Picture </ion-col>
+          <ion-col>Profile Picture</ion-col>
           <ion-col>
             <ion-card-subtitle>
               <ion-button
@@ -33,7 +33,7 @@
         <ion-item lines="none">
           <ion-thumbnail slot="start">
             <img
-              [src]="currentUser?.photo"
+              [src]="cUserDoc?.profilePhoto"
               alt="Profile Picture"
               referrerpolicy="no-referrer"
             />
@@ -55,15 +55,10 @@
     <ion-card-header>
       <ion-card-title>
         <ion-row>
-          <ion-col> About Me </ion-col>
+          <ion-col>About Me</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button
-                (click)="saveAboutMe()"
-                [disabled]="textAreaDisabled"
-                size="small"
-                >Save</ion-button
-              >
+              <ion-button (click)="saveAboutMe()" size="small">Save</ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>
@@ -80,7 +75,7 @@
             rows="5"
             helperText="hobbies, interests, etc."
             placeholder="You can edit here your profile description."
-            [value]="textAreaValue"
+            [value]="textAreaValue()"
           ></ion-textarea>
         </ion-item>
       </ion-list>
@@ -91,7 +86,7 @@
     <ion-card-header>
       <ion-card-title>
         <ion-row>
-          <ion-col> Study Languages </ion-col>
+          <ion-col>Study Languages</ion-col>
           <ion-col>
             <ion-card-subtitle>
               <ion-button (click)="editLanguages()" size="small"
@@ -104,7 +99,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let lang of currentUser?.studyLanguages">
+        <ion-item *ngFor="let lang of getStudyLanguages()">
           <ion-icon
             *ngIf="lang.level == 1"
             name="battery-dead-outline"
@@ -141,7 +136,7 @@
     <ion-card-header>
       <ion-card-title>
         <ion-row>
-          <ion-col> Other Pictures </ion-col>
+          <ion-col>Other Pictures</ion-col>
           <ion-col>
             <ion-card-subtitle>
               <ion-button
@@ -156,8 +151,9 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
+      <!-- TODO: Better design needed here-->
       <ion-list>
-        <ion-item *ngFor="let photo of currentUser?.otherPhotos">
+        <ion-item *ngFor="let photo of cUserDoc?.otherPhotos">
           <ion-thumbnail slot="start">
             <img
               [src]="photo"

@@ -9,18 +9,22 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { environment } from 'src/environments/environment';
 
-import { provideFirebaseApp, initializeApp, getApp } from '@angular/fire/app';
+import {
+  provideFirebaseApp,
+  initializeApp,
+  // getApp
+} from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import {
   provideAuth,
   getAuth,
-  initializeAuth,
-  indexedDBLocalPersistence,
+  // initializeAuth,
+  // indexedDBLocalPersistence,
 } from '@angular/fire/auth';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { IonicStorageModule } from '@ionic/storage-angular';
-//import { Drivers } from '@ionic/storage';
+// import { Drivers } from '@ionic/storage';
 
 @NgModule({
   declarations: [AppComponent],

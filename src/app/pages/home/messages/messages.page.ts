@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { Observable, take } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
-import { ChatService } from 'src/app/services/chat/chat.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { RoomService } from 'src/app/services/chat/room.service';
 
 @Component({
   selector: 'app-messages',
@@ -10,7 +10,7 @@ import { ChatService } from 'src/app/services/chat/chat.service';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  chatRooms: Observable<any>;
+  chatRooms: any;
   isLoading: boolean = false;
 
   model = {
@@ -19,33 +19,37 @@ export class MessagesPage implements OnInit {
     color: 'warning',
   };
 
-  constructor(private router: Router, private chatService: ChatService) {}
+  constructor(
+    private router: Router,
+    private auth2Service: Auth2Service,
+    private roomService: RoomService
+  ) {}
 
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
   }
 
   getRooms() {
-    //TODO: showLoader();
-    this.isLoading = true;
-    this.chatService.getChatRooms();
-    this.chatRooms = this.chatService.chatRooms;
-    //TODO: hideLoader();
-    this.isLoading = false;
+    const cUserId = this.auth2Service.getUserId();
+    this.roomService.getRooms(cUserId).then((data) => {
+      // Last message of every room
+      data.documents.forEach((room) => {
+        const lastMessage = room.messages[room.messages.length - 1];
+        room.lastMessage = lastMessage;
+      });
+      this.chatRooms = data.documents;
+      console.log('chatRooms: ', this.chatRooms);
+    });
   }
 
-  getChat(item) {
-    (item?.user).pipe(take(1)).subscribe((user_data) => {
-      console.log('user_data', user_data);
-      const navData: NavigationExtras = {
-        queryParams: {
-          name: user_data?.name,
-          uid: user_data?.uid,
-        },
-      };
-      // this.router.navigate(['/', 'home', 'chat', item.id], navData);
-      this.router.navigate(['/', 'home', 'chat3', item.id], navData);
-    });
+  getChat(room) {
+    const navData: NavigationExtras = {
+      queryParams: {
+        name: room?.userData?.name,
+        uid: room?.userData?.$id,
+      },
+    };
+    this.router.navigate(['/', 'home', 'chat', room.$id], navData);
   }
 
   getUser(user: any) {
@@ -68,7 +72,6 @@ export class MessagesPage implements OnInit {
 
   lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
-    return lastSeen(a);
+    return lastSeen(d);
   }
 }

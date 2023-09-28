@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { LanguageService } from 'src/app/services/user/language.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-next',
@@ -9,7 +11,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./next.page.scss'],
 })
 export class NextPage implements OnInit {
-  currentUser: any;
+  cUserSession: any;
+  cUserDoc: any;
 
   isLoading: boolean = false;
   selectedLanguage: any;
@@ -17,7 +20,9 @@ export class NextPage implements OnInit {
   constructor(
     private router: Router,
     private toastController: ToastController,
-    private authService: AuthService
+    private auth2Service: Auth2Service,
+    private userService: UserService,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit() {
@@ -30,40 +35,63 @@ export class NextPage implements OnInit {
   }
 
   getProfileInfo() {
-    this.authService.getUserData().then((user) => {
-      this.currentUser = user;
+    this.auth2Service
+      .getUser()
+      .subscribe((cUser) => {
+        if (cUser) {
+          console.log(cUser);
+          this.cUserSession = cUser;
+        }
+      })
+      .unsubscribe();
+    // TODO: Unsubscribe may not be necessary to update the user info
+
+    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+      this.cUserDoc = user;
+      console.log(user);
     });
   }
 
-  radioChecked(event, selectedLanguage) {
-    this.selectedLanguage.level = event.detail.value;
-    console.log('radioChecked:' + selectedLanguage);
+  radioChecked(event) {
+    this.selectedLanguage.level = parseInt(event.detail.value);
+    console.log('radioChecked:' + this.selectedLanguage.level);
   }
 
   onSubmit() {
-    console.log('submit:' + this.selectedLanguage);
     if (!this.selectedLanguage.level) {
-      this.presentToast('Please select a level.');
+      this.presentToast('Please select a level.', 'danger');
       return;
     }
 
-    this.currentUser.studyLanguages.push(this.selectedLanguage);
-    this.currentUser.languagesArray.push(this.selectedLanguage.code);
-    // SAVE TO DB
+    let data = {
+      userId: this.cUserSession.$id,
+      name: this.selectedLanguage.name,
+      nativeName: this.selectedLanguage.nativeName,
+      code: this.selectedLanguage.code,
+      level: this.selectedLanguage.level,
+      motherLanguage: false,
+    };
 
-    this.authService.updateUserStudyLanguagesData(this.currentUser);
-
-    this.presentToast('Language added.');
-    this.router.navigate(['/home/profile/edit']);
+    this.languageService
+      .createLanguageDoc(data)
+      .then((res) => {
+        this.presentToast('Language added.');
+        this.router.navigate(['/home/profile/edit']);
+      })
+      .catch((error) => {
+        console.log(error);
+        this.presentToast('Please try again later.', 'danger');
+      });
   }
 
   //
   // Present Toast
   //
 
-  async presentToast(msg: string) {
+  async presentToast(msg: string, color?: string) {
     const toast = await this.toastController.create({
       message: msg,
+      color: color || 'primary',
       duration: 1500,
       position: 'bottom',
     });
