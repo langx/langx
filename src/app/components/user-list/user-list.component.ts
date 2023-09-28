@@ -19,7 +19,7 @@ export class UserListComponent implements OnInit {
   }
 
   goProfile() {
-    this.route.navigateByUrl('/home/user/' + this.item.uid);
+    this.route.navigateByUrl('/home/user/' + this.item.$id);
   }
 
   getStudyLanguages() {
