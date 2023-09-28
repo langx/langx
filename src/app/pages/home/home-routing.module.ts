@@ -36,16 +36,7 @@ const routes: Routes = [
   },
   {
     path: 'chat/:id',
-    loadChildren: () =>
-      import('./messages/chat/chat.module').then((m) => m.ChatPageModule),
-  },
-  {
-    path: 'chat2/:id',
-    loadChildren: () => import('./messages/chat2/chat2.module').then( m => m.Chat2PageModule)
-  },
-  {
-    path: 'chat3/:id',
-    loadChildren: () => import('./messages/chat3/chat3.module').then( m => m.Chat3PageModule)
+    loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
   },
   {
     path: 'filters',

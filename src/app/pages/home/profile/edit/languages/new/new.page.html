@@ -4,6 +4,18 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="onSubmit()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        color="primary"
+      >
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

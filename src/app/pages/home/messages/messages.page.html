@@ -21,39 +21,34 @@
   </ion-refresher>
 
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-  <ng-container *ngIf="!isLoading && (chatRooms | async) as rooms">
-    <app-empty-screen *ngIf="(chatRooms | async)?.length == 0" [model]="model">
+  <ng-container *ngIf="!isLoading">
+    <app-empty-screen *ngIf="chatRooms?.length == 0" [model]="model">
     </app-empty-screen>
 
-    <ion-list *ngIf="rooms?.length > 0">
-      <div *ngFor="let item of rooms" detail>
-        <ion-item-sliding>
-          <ion-item (click)="getChat(item)">
-            <ng-container *ngIf="(item?.user | async) as user">
-              <ion-avatar slot="start">
-                <img
-                  [src]="getUser(user)?.photo"
-                  alt=""
-                  referrerpolicy="no-referrer"
-                />
-              </ion-avatar>
-              <ion-label>
-                <h2>{{getUser(user)?.name}}</h2>
-                <p>{{getUser(user)?.id}}</p>
-              </ion-label>
-              <ion-note>{{ lastSeen(item?.updatedAt) }}</ion-note>
-            </ng-container>
-          </ion-item>
-          <ion-item-options side="end" (ionSwipe)="archiveChat(item)">
-            <ion-item-option
-              color="danger"
-              expandable
-              (click)="archiveChat(item)"
-            >
-              <ion-icon slot="icon-only" name="archive-outline"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
+    <ion-list *ngIf="chatRooms?.length > 0">
+      <div *ngFor="let room of chatRooms" detail>
+        <ion-item (click)="getChat(room)">
+          <ng-container *ngIf="room">
+            <ion-avatar slot="start">
+              <img
+                [src]="room?.userData?.profilePhoto"
+                alt=""
+                referrerpolicy="no-referrer"
+              />
+            </ion-avatar>
+            <ion-label>
+              <h2>{{room?.userData?.name}}</h2>
+              <p *ngIf="room?.lastMessage?.body">{{room?.lastMessage?.body}}</p>
+              <p *ngIf="!room?.lastMessage?.body">Say Hi 👋</p>
+            </ion-label>
+            <ion-note *ngIf="room?.lastMessage">
+              {{ lastSeen(room?.lastMessage?.$updatedAt) }}
+            </ion-note>
+            <ion-note *ngIf="!room?.lastMessage">
+              {{ lastSeen(room?.$updatedAt) }}
+            </ion-note>
+          </ng-container>
+        </ion-item>
       </div>
     </ion-list>
   </ng-container>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { ChatService } from 'src/app/services/chat/chat.service';
+import { RoomService } from 'src/app/services/chat/room.service';
 import {
   FilterService,
   FilterData,
@@ -19,18 +19,19 @@ export class CommunityPage implements OnInit {
 
   users = [];
 
-  isAllUsersLoaded: boolean = false;
+  isAllUsersLoaded: boolean = false; // Pagination variable
   isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private chatService: ChatService,
+    private roomService: RoomService,
     private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService
   ) {}
 
   async ngOnInit() {
+    await this.checkLocalStorage();
     await this.checkFilter();
   }
 
@@ -40,21 +41,40 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Get Users
+  //
+
+  async getUsers(filterData?: FilterData) {
+    this.isLoading = true;
+    await this.userService.listUsers(filterData).then(
+      (response) => {
+        this.isLoading = false;
+        console.log(response);
+        this.users = response.documents;
+      },
+      (error) => {
+        this.isLoading = false;
+        console.log(error);
+      }
+    );
+  }
+
+  //
   // Check Filter
   //
 
   async checkFilter() {
-    await this.checkLocalStorage();
-
     this.filter$ = this.filterService
       .getEvent()
       .subscribe((filterData: FilterData) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-        this.handleRefresh(filterData);
+        // Handle Refresh fetch users by using filterData in getUsers()
+        this.handleRefresh(null);
       });
   }
 
+  // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
     // Getting the filter data from localStorage
     const languagesString = await this.storageService.get('languages');
@@ -92,57 +112,46 @@ export class CommunityPage implements OnInit {
       event.target.complete();
       return;
     }
-    this.getUsers(this.filterData);
+    // this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation loadMore has ended');
-  }
-
-  async getUsers(filterData?: FilterData) {
-    let users = await this.userService.getUsers(filterData);
-    if (users.length > 0) {
-      this.users.push(...users);
-    } else {
-      this.isAllUsersLoaded = true;
-      console.log('No more users');
-    }
   }
 
   //
   // Start Chat
   //
 
-  async startChat(item) {
-    try {
-      // showLoader();
-      this.isLoading = true;
-      // create chatroom
-      const room = await this.chatService.createChatRoom(item?.uid);
-      console.log('room: ', room);
-      const navData: NavigationExtras = {
-        queryParams: {
-          name: item?.name,
-          uid: item?.uid,
-        },
-      };
-      this.router.navigate(['/', 'home', 'chat', room?.id], navData);
-      // hideLoader();
-      this.isLoading = false;
-    } catch (e) {
-      console.log(e);
-      // hideLoader();
-      this.isLoading = false;
-    }
+  async startChat(user: any) {
+    let roomId: string;
+
+    await this.roomService.checkRoom(user.$id).then(
+      (response) => {
+        roomId = response.$id;
+        console.log(response); // Success
+      },
+      (error) => {
+        console.log(error); // Failure
+        // TODO: Test this, add toast message
+        return;
+      }
+    );
+    const navData: NavigationExtras = {
+      queryParams: {
+        name: user?.name,
+        uid: user?.$id,
+      },
+    };
+    this.router.navigate(['/', 'home', 'chat', roomId], navData);
   }
 
   //
   // Pull to refresh
   //
 
-  handleRefresh(filterData: FilterData, event?) {
+  handleRefresh(event?) {
     this.users = [];
     this.isAllUsersLoaded = false;
-    this.userService.refreshUsers();
-    this.getUsers(filterData);
+    this.getUsers(this.filterData);
     if (event) event.target.complete();
   }
 

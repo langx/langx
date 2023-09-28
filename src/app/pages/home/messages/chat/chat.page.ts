@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, NavController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { ChatService } from 'src/app/services/chat/chat.service';
+import { IonContent } from '@ionic/angular';
+import { BehaviorSubject } from 'rxjs';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { MessageService } from 'src/app/services/chat/message.service';
 
 @Component({
   selector: 'app-chat',
@@ -10,17 +11,19 @@ import { ChatService } from 'src/app/services/chat/chat.service';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-  // @ViewChild("content", { static: false }) content: IonContent;
-  // @ViewChild("content") content: IonContent;
   @ViewChild(IonContent) content: IonContent;
 
-  chatRoomId: string;
+  messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  message: string = '';
+
+  isTyping: boolean = false;
+  listenWSS: any;
+
   name: string;
   uid: string;
-  photo: string;
-  chats: Observable<any[]>;
-  message: string;
-  isLoading: boolean = false;
+  roomId: string;
+  currentUserId: string;
+
   model = {
     icon: 'chatbubbles-outline',
     title: 'No conversation',
@@ -28,94 +31,90 @@ export class ChatPage implements OnInit {
   };
 
   constructor(
-    private router: Router,
+    private messageService: MessageService,
+    private auth2Service: Auth2Service,
     private route: ActivatedRoute,
-    private navCtrl: NavController,
-    public chatService: ChatService
+    private router: Router
   ) {}
 
   ngOnInit() {
     this.initChatPage();
-    this.getProfileImage();
+
+    this.messageService.listMessages(this.roomId);
+    this.messages = this.messageService.messages;
   }
 
+  ngAfterViewInit() {
+    this.scrollToBottom();
+  }
+
+  // TODO: Check if the room exists or not
+  // Client side params are set, such as name, uid, roomId
   initChatPage() {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
     if (data?.name) this.name = data.name;
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
-    console.log('check chatId: ', chatRoomId);
-    if (!chatRoomId) {
-      this.navCtrl.back();
-      return;
-    }
-    this.chatRoomId = chatRoomId;
-    this.chatService.getChatRoomMessages(this.chatRoomId);
-    this.chats = this.chatService.selectedChatRoomMessages;
-    console.log('chat messages ', this.chats);
+    this.roomId = chatRoomId;
+    this.currentUserId = this.auth2Service.getUserId();
   }
 
-  loadMore(event) {
-    console.log('load more clicked');
-    // this.chatService.loadMoreMessages(this.chatRoomId);
-    // event.target.complete();
-
-    //add new data to the front of main array
-    // let sampleData = [1,2,3]
-    // this.chats.unshift.apply(...sampleData);
+  addMessage() {
+    console.log('roomID: ', this.roomId);
+    const data = {
+      body: this.message,
+      sender: this.currentUserId,
+      roomId: this.roomId,
+    };
+    // Add loading indicator
+    this.messageService.pushMessage(data);
+    const promise = this.messageService.createMessage(data);
+    promise.then(
+      (response) => {
+        console.log(response); // Success
+        this.message = '';
+        // It pulls down
+        this.scrollToBottom();
+      },
+      (error) => {
+        // TODO: Add toast message here
+        console.log(error); // Failure
+      }
+    );
   }
 
-  // TODO: Optimize this function, we are getting all users data here
-  async getProfileImage() {
-    let user = await this.chatService.auth.getUserDataById(this.uid);
-    this.photo = user?.photo;
+  typingFocus() {
+    this.isTyping = true;
+    this.onTypingStatusChange();
   }
 
-  test() {
-    console.log('test clicked', this.content);
-    this.content.scrollToBottom(1500).then(() => {
-      console.log('scrolled to bottom');
-    });
+  typingBlur() {
+    this.isTyping = false;
+    this.onTypingStatusChange();
   }
 
-  handleScrollStart() {
-    console.log('start scrolling');
-  }
-
-  ngAfterViewChecked() {
-    this.scrollToBottom();
+  onTypingStatusChange() {
+    console.log('onTypingStatusChange', this.isTyping);
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom();
-    /* TODO: Test following code before uncommenting
-    if (this.chats) {
-      this.content.scrollToBottom(0);
-      console.log('scroll to bottom');
-    }
-    */
+    this.content.scrollToBottom(100);
   }
-
-  async sendMessage() {
-    // console.log(this.message);
-    if (!this.message || this.message?.trim() == '') return;
-    try {
-      this.isLoading = true;
-      await this.chatService.sendMessage(this.chatRoomId, this.message);
-      this.message = '';
-      this.isLoading = false;
-      this.scrollToBottom();
-    } catch (e) {
-      this.isLoading = false;
-      console.log(e);
-      throw e;
-    }
-  }
-
+  
+  // Navigate to user profile page
   goProfile(uid: string) {
     console.log('goProfile clicked');
     console.log('uid: ', uid);
     this.router.navigateByUrl(`/home/user/${uid}`);
+  }
+
+  // TODO: Do we need this function?
+  search() {
+    console.log('test clicked', this.content);
+    // TODO: We already have global scroll to bottom function
+    this.content.scrollToBottom(1500).then(() => {
+      console.log('scrolled to bottom');
+    });
   }
 }

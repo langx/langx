@@ -1,11 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { ChatService } from 'src/app/services/chat/chat.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
-import { Subscription } from 'rxjs';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -43,15 +42,15 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
-  currentUser: any;
-  isLoading: boolean = false;
+  cUserSession: any;
+  cUserDoc: any;
 
-  cUser: Subscription;
+  isLoading: boolean = false;
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    private chatService: ChatService,
+    private auth2Service: Auth2Service,
+    private userService: UserService,
     private modalCtrl: ModalController
   ) {}
 
@@ -62,13 +61,21 @@ export class ProfilePage implements OnInit {
   async getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    await this.authService.getUserData();
 
-    this.cUser = this.authService._cUser.subscribe((cUser) => {
-      if (cUser) {
-        console.log(cUser.uid);
-        this.currentUser = cUser;
-      }
+    this.auth2Service
+      .getUser()
+      .subscribe((cUser) => {
+        if (cUser) {
+          console.log(cUser);
+          this.cUserSession = cUser;
+        }
+      })
+      .unsubscribe();
+    // TODO: Unsubscribe may not be necessary to update the user info
+
+    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+      this.cUserDoc = user;
+      console.log(user);
     });
 
     //hideLoader();
@@ -76,7 +83,22 @@ export class ProfilePage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.cUser.unsubscribe();
+    // this.cUser.unsubscribe();
+  }
+
+  getStudyLanguages() {
+    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
+  getMotherLanguage() {
+    return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
+  }
+
+  getGender(): string {
+    return (
+      this.cUserDoc?.gender.charAt(0).toUpperCase() +
+      this.cUserDoc?.gender.slice(1)
+    );
   }
 
   async openPreview(photos) {
@@ -94,7 +116,7 @@ export class ProfilePage implements OnInit {
     try {
       //showLoader();
       this.isLoading = true;
-      await this.chatService.auth.logout();
+      await this.auth2Service.logout();
       this.router.navigateByUrl('/login', { replaceUrl: true });
       //hideLoader();
       this.isLoading = false;
@@ -123,14 +145,12 @@ export class ProfilePage implements OnInit {
 
   lastSeen(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
-    return lastSeen(a);
+    return lastSeen(d);
   }
 
   getAge(d: any) {
     if (!d) return null;
-    let a = new Date(d.seconds * 1000);
-    return getAge(a);
+    return getAge(d);
   }
 
   handleRefresh(event) {

@@ -1,3 +1,8 @@
+//
+// TODO:
+// THIS IS NOT USED ANYMORE
+//
+
 import { Injectable } from '@angular/core';
 import {
   Firestore,

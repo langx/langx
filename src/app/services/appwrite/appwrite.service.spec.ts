@@ -1,18 +1,13 @@
-//
-// TODO:
-// THIS IS NOT USED ANYMORE
-//
-
 import { TestBed } from '@angular/core/testing';
 
-import { AuthService } from './auth.service';
+import { AppwriteService } from './appwrite.service';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('AppwriteService', () => {
+  let service: AppwriteService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthService);
+    service = TestBed.inject(AppwriteService);
   });
 
   it('should be created', () => {
