@@ -1,8 +1,12 @@
+//
+// TODO:
+// THIS IS NOT USED ANYMORE
+//
+
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Observable, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { ApiService } from '../api/api.service';
-import { Query, query } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
