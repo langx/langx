@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 
 @Component({
-  selector: 'app-chat3',
-  templateUrl: './chat3.page.html',
-  styleUrls: ['./chat3.page.scss'],
+  selector: 'app-chat',
+  templateUrl: './chat.page.html',
+  styleUrls: ['./chat.page.scss'],
 })
-export class Chat3Page implements OnInit {
+export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
   messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);

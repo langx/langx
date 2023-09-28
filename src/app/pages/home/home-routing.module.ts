@@ -35,8 +35,8 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'chat3/:id',
-    loadChildren: () => import('./messages/chat3/chat3.module').then( m => m.Chat3PageModule)
+    path: 'chat/:id',
+    loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
   },
   {
     path: 'filters',

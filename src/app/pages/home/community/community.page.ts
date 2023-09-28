@@ -141,7 +141,7 @@ export class CommunityPage implements OnInit {
         uid: user?.$id,
       },
     };
-    this.router.navigate(['/', 'home', 'chat3', roomId], navData);
+    this.router.navigate(['/', 'home', 'chat', roomId], navData);
   }
 
   //

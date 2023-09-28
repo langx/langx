@@ -38,7 +38,7 @@ export class MessagesPage implements OnInit {
         room.lastMessage = lastMessage;
       });
       this.chatRooms = data.documents;
-      console.log('chat3Rooms: ', this.chatRooms);
+      console.log('chatRooms: ', this.chatRooms);
     });
   }
 
@@ -49,7 +49,7 @@ export class MessagesPage implements OnInit {
         uid: room?.userData?.$id,
       },
     };
-    this.router.navigate(['/', 'home', 'chat3', room.$id], navData);
+    this.router.navigate(['/', 'home', 'chat', room.$id], navData);
   }
 
   getUser(user: any) {
