@@ -2,21 +2,29 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/messages"></ion-back-button>
-      <ion-avatar style="width: 40px; height: 40px">
+      <ion-avatar (click)="goProfile(uid)" style="width: 40px; height: 40px">
         <img src="https://i.pravatar.cc/300" />
       </ion-avatar>
     </ion-buttons>
-    <ion-title>{{ name }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="search()">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title (click)="goProfile(uid)">{{name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <app-empty-screen *ngIf="(messages | async)?.length == 0" [model]="model">
+  </app-empty-screen>
 
-  <ion-item-group lines="none" class="chats-group" *ngFor="let msg of messages | async">
-    <app-chat-box
-      [chat]="msg"
-      [current_user_id]="currentUserId"
-    ></app-chat-box>
+  <ion-item-group
+    lines="none"
+    class="chats-group"
+    *ngFor="let msg of messages | async"
+  >
+    <app-chat-box [chat]="msg" [current_user_id]="currentUserId"></app-chat-box>
   </ion-item-group>
 </ion-content>
 
