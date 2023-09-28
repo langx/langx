@@ -22,6 +22,7 @@ export const environment = {
     ROOMS_COLLECTION: '6507510fc71f989d5d1c',
     MESSAGES_COLLECTION: '65075108a4025a4f5bd7',
     LANGUAGES_COLLECTION: '6511599e2bf0bb1b4d2c',
+    USER_BUCKET: '6515f94d20becd47cb40',
   },
   production: false,
 };
