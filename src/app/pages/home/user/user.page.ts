@@ -52,6 +52,21 @@ export class UserPage implements OnInit {
     modal.present();
   }
 
+  getStudyLanguages() {
+    return this.user?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
+  getMotherLanguage() {
+    return this.user?.languages.filter((lang) => lang.motherLanguage);
+  }
+
+  getGender(): string {
+    return (
+      this.user?.gender.charAt(0).toUpperCase() +
+      this.user?.gender.slice(1)
+    );
+  }
+
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
