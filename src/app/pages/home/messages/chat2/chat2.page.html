@@ -17,8 +17,6 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-button (click)="scrollToBottom()">Scroll to Bottom</ion-button>
-
   <div class="message" *ngFor="let message of messages | async">
     <div>{{ message.message }}</div>
     <div class="time">
@@ -37,8 +35,6 @@
         placeholder="Type your message here..."
         type="text"
         [(ngModel)]="message"
-        (ionFocus)="typingFocus()"
-        (ionBlur)="typingBlur()"
         autoGrow="true"
       >
       </ion-textarea>
@@ -62,9 +58,5 @@
         slot="start"
       ></ion-icon>
     </ion-item>
-    <small>uid: {{ uid }}</small><br>
-    <small>user typing: {{ isUserTyping }}</small><br>
-    <small>me: {{ currentUserId }}</small><br>
-    <small>me typing: {{ isTyping }}</small><br>
   </ion-toolbar>
 </ion-footer>

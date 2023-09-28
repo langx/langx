@@ -1,0 +1,11 @@
+ion-content {
+  position: relative;
+}
+
+ion-list {
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+  max-height: 100%;
+  overflow-y: auto;
+}

@@ -3,10 +3,10 @@
     <div class="message-main-receiver">
       <div class="receiver">
         <div class="message-text">
-          {{ chat?.message }}
+          {{ chat?.body }}
         </div>
         <span class="message-time">
-          {{ lastSeen(chat?.createdAt) }}
+          {{ lastSeen(chat?.$createdAt) }}
         </span>
       </div>
     </div>
@@ -18,9 +18,12 @@
     <div class="message-main-sender">
       <div class="sender">
         <div class="message-text">
-          {{ chat?.message }}
-          <span class="message-time">
-            {{ lastSeen(chat?.createdAt) }}
+          {{ chat?.body }}
+          <span class="message-time" *ngIf="chat?.$createdAt">
+            {{ lastSeen(chat?.$createdAt) }}
+          </span>
+          <span class="message-time" *ngIf="!chat?.$createdAt">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
           </span>
         </div>
       </div>
