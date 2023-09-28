@@ -244,6 +244,7 @@ export class EditPage implements OnInit {
     this.router.navigate(['/home/profile/edit/languages']);
   }
 
+  // TODO: If it length is 2, then don't let the user to delete last study language.
   deleteLanguage(language) {
     this.isLoading = true;
     console.log(language);
