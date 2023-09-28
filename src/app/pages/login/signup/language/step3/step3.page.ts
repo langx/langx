@@ -4,6 +4,7 @@ import { languagesData } from 'src/app/extras/data';
 import { AlertController } from '@ionic/angular';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { LanguageService } from 'src/app/services/user/language.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-step3',
@@ -23,7 +24,8 @@ export class Step3Page implements OnInit {
     private route: ActivatedRoute,
     private alertController: AlertController,
     private auth2Service: Auth2Service,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -76,6 +78,8 @@ export class Step3Page implements OnInit {
 
   completeLanguages(motherLanguages, studyLanguages) {
     let user: any;
+    let languageArray: Array<string> = [];
+
     this.auth2Service
       .getUser()
       .subscribe((u) => {
@@ -93,6 +97,9 @@ export class Step3Page implements OnInit {
       // TODO: Error handling if any of the following fails
       // SCOPE: It may saved some languages and not others
       motherLanguages.forEach((motherlang) => {
+        // Add the language name to the languageArray
+        languageArray.push(motherlang.name);
+
         motherlang.userId = user.$id;
         this.languageService
           .createLanguageDoc(motherlang)
@@ -107,6 +114,9 @@ export class Step3Page implements OnInit {
       // TODO: Error handling if any of the following fails
       // SCOPE: It may saved some languages and not others
       studyLanguages.forEach((studyLang) => {
+        // Add the language name to the languageArray
+        languageArray.push(studyLang.name);
+
         studyLang.userId = user.$id;
         this.languageService
           .createLanguageDoc(studyLang)
@@ -117,9 +127,21 @@ export class Step3Page implements OnInit {
             console.log('err:', err);
           });
       });
-      console.log('updateUserLanguageData setted in DB');
-      this.router.navigateByUrl('/home');
 
+      // TODO: Error handling if any of the following fails
+      // Add the languages to the languageArray in the user doc
+      this.userService
+        .updateUserDoc(user.$id, {
+          languageArray: languageArray,
+        })
+        .then(() => {
+          console.log('Language Array Updated');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      this.router.navigateByUrl('/home');
       this.isLoading = false; //hideLoader
     } catch (error) {
       console.log('error:', error);
