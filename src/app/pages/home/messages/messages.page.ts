@@ -32,6 +32,11 @@ export class MessagesPage implements OnInit {
   getRooms() {
     const cUserId = this.auth2Service.getUserId();
     this.roomService.getRooms(cUserId).then((data) => {
+      // Last message of every room
+      data.documents.forEach((room) => {
+        const lastMessage = room.messages[room.messages.length - 1];
+        room.lastMessage = lastMessage;
+      });
       this.chatRooms = data.documents;
       console.log('chat3Rooms: ', this.chatRooms);
     });
