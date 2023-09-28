@@ -30,6 +30,8 @@ export class Step2Page implements OnInit {
     this.motherLanguage = data.motherLanguage;
   }
 
+  // TODO: #142 [BUG] : The checkboxChecked() function is working properly
+  // But the html displays much higher than 5 checkboxes as checked even if it's not in the array
   checkboxChecked(event) {
     if (this.studyLanguages.includes(event.detail.value)) {
       this.studyLanguages = this.studyLanguages.filter(
