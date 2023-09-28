@@ -72,9 +72,39 @@ export class NextPage implements OnInit {
       motherLanguage: false,
     };
 
+    // If it length is 6, then don't let the user to add one more study language.
+    if (this.cUserDoc.languages.length >= 6) {
+      this.presentToast(
+        'You can add max 5 Study Languages. Please remove at least one and try again.',
+        'danger'
+      );
+      this.isLoading = false;
+      return;
+    }
+
     this.languageService
       .createLanguageDoc(data)
       .then((res) => {
+        // Push the language data to the array
+        this.cUserDoc.languages.push(data);
+
+        // Update languageArray
+        if (!this.cUserDoc.languageArray.includes(data.name)) {
+          this.cUserDoc.languageArray.push(data.name);
+        }
+
+        // Update user doc with new languageArray
+        this.userService
+          .updateUserDoc(this.cUserSession.$id, {
+            languageArray: this.cUserDoc.languageArray,
+          })
+          .then(() => {
+            console.log('Language Array Updated');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
         this.presentToast('Language added.');
         this.router.navigate(['/home/profile/edit']);
       })
