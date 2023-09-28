@@ -21,7 +21,6 @@ export class Chat2Page implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
   chatRoomId: string = '';
-  chatRoomData: any = {};
   currentUserId: string = '';
   uid: string = '';
   uname: string = '';
@@ -49,21 +48,11 @@ export class Chat2Page implements OnInit {
     this.chatRoomId = chatRoomId;
     this.currentUserId = this.auth.getId();
 
-    this.getChatRoomData(chatRoomId);
     this.getChatMessages(chatRoomId);
   }
 
   ngAfterViewInit() {
     this.content.scrollToBottom();
-  }
-
-  getChatRoomData(chatRoomId: string) {
-    this.chatService.getChatRoomData(chatRoomId).then((data) => {
-      // TODO: not updating the typing status when it changes
-      this.chatRoomData = data;
-      console.log('chatRoomData: ', this.chatRoomData);
-      this.isUserTyping = this.chatRoomData.typingStatus[this.uid];
-    });
   }
 
   getChatMessages(chatRoomId: string) {
@@ -72,42 +61,13 @@ export class Chat2Page implements OnInit {
     });
   }
 
-  async scrollToBottom() {
-    const scrollElement = await this.content.getScrollElement();
-
-    // Check if current scroll position is at 80% of page height
-    const scrollHeight = scrollElement.scrollHeight;
-    const scrollTop = scrollElement.scrollTop;
-    const clientHeight = scrollElement.clientHeight;
-    if (scrollTop + clientHeight >= 0.8 * scrollHeight) {
-      this.content.scrollToBottom();
-    }
-  }
-
   pushMessage(message: Message) {
     const currentMessages = this.messages.getValue();
     const newMessages = [...currentMessages, message];
     this.messages.next(newMessages);
     // const last20Messages = newMessages.slice(-20);
     // this.messages.next(last20Messages);
-    this.scrollToBottom();
-  }
-
-  typingFocus() {
-    this.isTyping = true;
-    this.onTypingStatusChange();
-  }
-
-  typingBlur() {
-    this.isTyping = false;
-    this.onTypingStatusChange();
-  }
-
-  onTypingStatusChange() {
-    this.chatService
-      .updateTypingStatus(this.chatRoomId, this.currentUserId, this.isTyping)
-      .then(() => console.log('Typing status updated successfully'))
-      .catch((error) => console.error('Error updating typing status:', error));
+    this.content.scrollToBottom();
   }
 
   addUserMessage() {
@@ -141,7 +101,7 @@ export class Chat2Page implements OnInit {
         seen: false,
       };
       this.pushMessage(newMessage);
-    }, 5000);
+    }, 1000);
   }
 
   createmessages() {
@@ -153,7 +113,7 @@ export class Chat2Page implements OnInit {
       'What about you?',
     ];
     const newMessages: Message[] = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 20; i++) {
       const randomUser = users[Math.floor(Math.random() * users.length)];
       const randomMessage =
         messages[Math.floor(Math.random() * messages.length)];
@@ -166,7 +126,5 @@ export class Chat2Page implements OnInit {
       newMessages.push(newMessage);
     }
     this.messages.next(newMessages);
-    // const last20Messages = newMessages.slice(-20);
-    // this.messages.next(last20Messages);
   }
 }

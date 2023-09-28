@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
-  messages: Subject<Object> = new Subject<Object>();
+  messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   constructor(private appwrite: AppwriteService) {}
 
-  // TODO: Test it works or not
+  // Listen to messages in a room
   listenMessages(roomID: string) {
     const client = this.appwrite.client$();
     return client.subscribe(
@@ -22,30 +22,58 @@ export class MessageService {
         environment.appwrite.MESSAGES_COLLECTION +
         '.documents',
       (response) => {
-        this.messages.next(response.payload);
+        console.log(response);
+        this.pushMessage(response.payload);
       }
     );
   }
 
+  // Push a message to the messages behavior subject
+  pushMessage(message) {
+    const currentMessages = this.messages.getValue();
+
+    const existingMessage = currentMessages.find(
+      (msg) =>
+        msg.sender === message.sender &&
+        msg.body === message.body &&
+        !msg.$createdAt
+    );
+
+    if (existingMessage) {
+      // Update the existing message item in the array
+      const updatedMessages = currentMessages.map((msg) => {
+        if (msg === existingMessage) {
+          return { ...msg, $createdAt: message.$createdAt };
+        }
+        return msg;
+      });
+      this.messages.next(updatedMessages);
+    } else {
+      // Add the new message item to the array
+      const newMessages = [...currentMessages, message];
+      this.messages.next(newMessages);
+    }
+  }
+
+  // Get messages from a room to initialize the chat
   listMessages(roomId: string) {
-    // return this.appwrite.listDocuments(
     const promise = this.appwrite.listDocuments(
       environment.appwrite.MESSAGES_COLLECTION,
-      [Query.equal('roomId', roomId)]
+      [Query.equal('roomId', roomId), Query.orderDesc('$createdAt')]
     );
     promise.then(
       (response) => {
-        //console.log(response.documents); // Success
-        response.documents.forEach((doc) => {
-          this.messages.next(doc);
-        });
+        this.messages.next(response.documents.reverse());
       },
       (error) => {
         console.log(error); // Failure
       }
     );
+    // Listen for new messages
+    this.listenMessages(roomId);
   }
 
+  // Create a message
   createMessage(data: any): Promise<any> {
     return this.appwrite.createDocument(
       environment.appwrite.MESSAGES_COLLECTION,

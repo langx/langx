@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { IonContent } from '@ionic/angular';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 
@@ -9,11 +11,13 @@ import { MessageService } from 'src/app/services/chat/message.service';
   styleUrls: ['./chat3.page.scss'],
 })
 export class Chat3Page implements OnInit {
+  @ViewChild(IonContent) content: IonContent;
+
+  messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   message: string = '';
-  messages: any[] = [];
+
   isTyping: boolean = false;
   listenWSS: any;
-  subscription: any;
 
   name: string;
   uid: string;
@@ -28,23 +32,17 @@ export class Chat3Page implements OnInit {
 
   ngOnInit() {
     this.initChatPage();
-    this.initMessages();
-    // TODO: It may be better to use a service to listen all messages
-    // with one subscription, and then check the messages by roomId
-    this.listenWSS = this.messageService.listenMessages(this.roomId);
-    this.subscription = this.messageService.messages.subscribe((messages) => {
-      console.log('messages: ', messages);
-      this.messages.push(messages);
-    });
+
+    this.messageService.listMessages(this.roomId);
+    this.messages = this.messageService.messages;
   }
 
-  ngOnDestroy() {
-    this.listenWSS(); // to unsubscribe
-    this.subscription.unsubscribe(); // to unsubscribe
+  ngAfterViewInit() {
+    this.scrollToBottom();
   }
 
-  // Client side params are set, such as name, uid, roomId
   // TODO: Check if the room exists or not
+  // Client side params are set, such as name, uid, roomId
   initChatPage() {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
@@ -55,31 +53,28 @@ export class Chat3Page implements OnInit {
     this.currentUserId = this.auth2Service.getUserId();
   }
 
-  initMessages() {
-    this.getMessages();
-  }
-
   addMessage() {
     console.log('roomID: ', this.roomId);
-    const promise = this.messageService.createMessage({
+    const data = {
       body: this.message,
       sender: this.currentUserId,
       roomId: this.roomId,
-    });
+    };
+    // Add loading indicator
+    this.messageService.pushMessage(data);
+    const promise = this.messageService.createMessage(data);
     promise.then(
       (response) => {
         console.log(response); // Success
         this.message = '';
+        // It pulls down
+        this.scrollToBottom();
       },
       (error) => {
         // TODO: Add toast message here
         console.log(error); // Failure
       }
     );
-  }
-
-  getMessages() {
-    this.messageService.listMessages(this.roomId);
   }
 
   typingFocus() {
@@ -94,5 +89,9 @@ export class Chat3Page implements OnInit {
 
   onTypingStatusChange() {
     console.log('onTypingStatusChange', this.isTyping);
+  }
+
+  scrollToBottom() {
+    this.content.scrollToBottom(100);
   }
 }
