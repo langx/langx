@@ -244,12 +244,17 @@ export class EditPage implements OnInit {
     this.router.navigate(['/home/profile/edit/languages']);
   }
 
-  // TODO: If it length is 2, then don't let the user to delete last study language.
   deleteLanguage(language) {
     // Show Loading
     this.isLoading = true;
     console.log(language);
-
+    // TODO: If it length is 2, then don't let the user to delete last study language.
+    // TODO: Test needed
+    if (this.cUserDoc.languages.length <= 2) {
+      this.presentToast('At least one study language required.', 'danger');
+      this.isLoading = false;
+      return;
+    }
     this.languageService
       .deleteLanguageDoc(language.$id)
       .then((res) => {
