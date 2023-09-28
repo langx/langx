@@ -22,6 +22,7 @@ export class AppwriteService {
       .setProject(environment.appwrite.APP_PROJECT); // Your project ID
   }
 
+  // TODO: check if this is needed, or if we can use directly the this.client
   // to subscribe to any channel
   client$(): Client {
     return this.client;
