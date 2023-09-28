@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
@@ -24,10 +24,17 @@ export class Chat3Page implements OnInit {
   roomId: string;
   currentUserId: string;
 
+  model = {
+    icon: 'chatbubbles-outline',
+    title: 'No conversation',
+    color: 'warning',
+  };
+
   constructor(
     private messageService: MessageService,
     private auth2Service: Auth2Service,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -93,5 +100,21 @@ export class Chat3Page implements OnInit {
 
   scrollToBottom() {
     this.content.scrollToBottom(100);
+  }
+  
+  // Navigate to user profile page
+  goProfile(uid: string) {
+    console.log('goProfile clicked');
+    console.log('uid: ', uid);
+    this.router.navigateByUrl(`/home/user/${uid}`);
+  }
+
+  // TODO: Do we need this function?
+  search() {
+    console.log('test clicked', this.content);
+    // TODO: We already have global scroll to bottom function
+    this.content.scrollToBottom(1500).then(() => {
+      console.log('scrolled to bottom');
+    });
   }
 }
