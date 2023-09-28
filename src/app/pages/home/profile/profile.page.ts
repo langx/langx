@@ -86,30 +86,14 @@ export class ProfilePage implements OnInit {
     // this.cUser.unsubscribe();
   }
 
-  getStudyLanguages() {
-    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
-  }
-
-  getMotherLanguage() {
-    return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
-  }
-
-  getGender(): string {
-    return (
-      this.cUserDoc?.gender.charAt(0).toUpperCase() +
-      this.cUserDoc?.gender.slice(1)
-    );
-  }
-
-  async openPreview(photos) {
-    console.log(photos);
-    const modal = await this.modalCtrl.create({
-      component: PreviewPhotoComponent,
-      componentProps: {
-        photos: photos,
-      },
-    });
-    modal.present();
+  getAccountPage(page) {
+    if (page?.url == 'logout') {
+      this.logout();
+      this.dismissModal();
+      return;
+    }
+    this.dismissModal();
+    this.router.navigate(['/', 'home', page?.url]);
   }
 
   async logout() {
@@ -125,22 +109,38 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  getAccountPage(page) {
-    if (page?.url == 'logout') {
-      this.logout();
-      this.dismissModal();
-      return;
-    }
-    this.dismissModal();
-    this.router.navigate(['/', 'home', page?.url]);
-  }
-
   editProfile() {
     this.router.navigate(['/', 'home', 'profile', 'edit']);
   }
 
+  async openPreview(photos) {
+    console.log(photos);
+    const modal = await this.modalCtrl.create({
+      component: PreviewPhotoComponent,
+      componentProps: {
+        photos: photos,
+      },
+    });
+    modal.present();
+  }
+
   dismissModal() {
     this.modal.dismiss();
+  }
+
+  getStudyLanguages() {
+    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
+  getMotherLanguage() {
+    return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
+  }
+
+  getGender(): string {
+    return (
+      this.cUserDoc?.gender.charAt(0).toUpperCase() +
+      this.cUserDoc?.gender.slice(1)
+    );
   }
 
   lastSeen(d: any) {
