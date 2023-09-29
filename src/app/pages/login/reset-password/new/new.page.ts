@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-new',
@@ -10,12 +11,44 @@ export class NewPage implements OnInit {
   id: string;
   secret: string;
   expire: Date;
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
-    this.id = this.route.snapshot.queryParamMap.get('userId');
-    this.secret = this.route.snapshot.queryParamMap.get('secret');
-    this.expire = new Date(this.route.snapshot.queryParamMap.get('expire'));
+    this.initVariables();
+  }
+
+  initVariables() {
+    const id = this.route.snapshot.queryParamMap.get('userId');
+    const secret = this.route.snapshot.queryParamMap.get('secret');
+    const expire = this.route.snapshot.queryParamMap.get('expire');
+    if (!id || !secret || !expire) {
+      this.presentToast('Invalid URL', 'danger');
+      this.router.navigateByUrl('/login');
+      return;
+    } else {
+      this.id = id;
+      this.secret = secret;
+      this.expire = new Date(expire);
+    }
     console.log(this.id, this.secret, this.expire);
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
