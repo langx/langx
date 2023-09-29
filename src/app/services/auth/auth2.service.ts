@@ -79,6 +79,7 @@ export class Auth2Service {
       this._user.next(user);
       return true;
     } catch (e) {
+      this._user.next(null);
       console.error('Error while checking if user is logged in:', e);
       return false;
     }
