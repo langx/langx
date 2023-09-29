@@ -67,6 +67,13 @@ export class NewPage implements OnInit {
 
   onSubmit() {
     console.log(this.form.value);
+    if (this.form.invalid) {
+      this.presentToast('Invalid Form', 'danger');
+      return;
+    } else if (this.form.value.password !== this.form.value.password2) {
+      this.presentToast('Passwords do not match', 'danger');
+      return;
+    }
   }
 
   //
