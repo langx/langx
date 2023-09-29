@@ -35,16 +35,22 @@ export class NewPage implements OnInit {
     const id = this.route.snapshot.queryParamMap.get('userId');
     const secret = this.route.snapshot.queryParamMap.get('secret');
     const expire = this.route.snapshot.queryParamMap.get('expire');
+
     if (!id || !secret || !expire) {
       this.presentToast('Invalid URL', 'danger');
+      this.router.navigateByUrl('/login');
+      return;
+    } else if (Date.now() > new Date(expire).getTime()) {
+      // The verification link sent to the user's email address is valid for 1 hour.
+      this.presentToast('Link Expired', 'danger');
       this.router.navigateByUrl('/login');
       return;
     } else {
       this.id = id;
       this.secret = secret;
       this.expire = new Date(expire);
+      console.log(this.id, this.secret, this.expire);
     }
-    console.log(this.id, this.secret, this.expire);
   }
 
   initForm() {
