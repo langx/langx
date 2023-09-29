@@ -18,10 +18,10 @@ export class NewPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initVariables();
+    this.initValidation();
   }
 
-  initVariables() {
+  initValidation() {
     const id = this.route.snapshot.queryParamMap.get('userId');
     const secret = this.route.snapshot.queryParamMap.get('secret');
     const expire = this.route.snapshot.queryParamMap.get('expire');
