@@ -1,10 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  Storage,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
@@ -43,7 +37,6 @@ export class EditPage implements OnInit {
     private languageService: LanguageService,
     private toastController: ToastController,
     private router: Router,
-    private storage: Storage,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController
   ) {}
