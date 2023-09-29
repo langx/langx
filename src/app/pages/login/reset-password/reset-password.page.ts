@@ -32,7 +32,10 @@ export class ResetPasswordPage implements OnInit {
   }
 
   onSubmit() {
-    if (!this.form.valid) return;
+    if (!this.form.valid) {
+      this.presentToast('Please fill the form with valid email', 'danger');
+      return;
+    }
     this.resetPassword(this.form);
   }
 
