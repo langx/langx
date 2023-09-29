@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -15,7 +15,7 @@ export class ResetPasswordPage implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    private auth2Service: Auth2Service,
     private alertController: AlertController
   ) {}
 
@@ -41,7 +41,7 @@ export class ResetPasswordPage implements OnInit {
     // showLoader();
     this.isLoading = true;
     console.log(form.value);
-    this.authService
+    this.auth2Service
       .resetPassword(form.value.email)
       .then((data: any) => {
         // hideLoader();
@@ -49,7 +49,7 @@ export class ResetPasswordPage implements OnInit {
         form.reset();
         let msg: string = 'Please check your email';
         this.showAlert(msg);
-        this.router.navigateByUrl('/home');
+        this.router.navigateByUrl('/login');
       })
       .catch((e) => {
         console.log('error:', e);
@@ -60,6 +60,7 @@ export class ResetPasswordPage implements OnInit {
       });
   }
 
+  // TODO: Better use here toast messages
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
