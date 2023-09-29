@@ -123,7 +123,7 @@ export class EditPage implements OnInit {
     let url = '';
     try {
       const currentDate = Date.now();
-      var file = new File([blob], this.cUserDoc.$id, { type: blob.type });
+      var file = new File([blob], this.cUserId, { type: blob.type });
 
       await this.userService.uploadFile(file).then(
         (response) => {
@@ -189,17 +189,25 @@ export class EditPage implements OnInit {
       });
   }
 
-  deleteOtherPhotos(image) {
-    /*
+  async deleteOtherPhotos(image) {
     this.isLoading = true;
-    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(
+
+    this.cUserDoc.otherPhotos = this.cUserDoc.otherPhotos.filter(
       (item) => item !== image
     );
-    this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
-      this.presentToast('Other Image Deleted.');
-      this.isLoading = false;
-    });
-    */
+
+    await this.userService
+      .updateUserDoc(this.cUserId, {
+        otherPhotos: this.cUserDoc.otherPhotos,
+      })
+      .then(() => {
+        this.presentToast('Picture removed from Other Photos.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.isLoading = false;
+      });
   }
 
   //
