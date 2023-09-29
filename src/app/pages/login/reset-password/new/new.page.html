@@ -11,18 +11,38 @@
         label="New Password"
         labelPlacement="floating"
         formControlName="password"
-        type="password"
+        [type]="password_type"
         required
       ></ion-input>
+      <ion-icon
+        *ngIf="password_type==='password'"
+        name="eye-outline"
+        (click)="showPassword()"
+      ></ion-icon>
+      <ion-icon
+        *ngIf="password_type==='text'"
+        name="eye-off-outline"
+        (click)="showPassword()"
+      ></ion-icon>
     </ion-item>
     <ion-item lines="full">
       <ion-input
         label="Password Again"
         labelPlacement="floating"
         formControlName="password2"
-        type="password"
+        [type]="password2_type"
         required
       ></ion-input>
+      <ion-icon
+        *ngIf="password2_type==='password'"
+        name="eye-outline"
+        (click)="showPassword2()"
+      ></ion-icon>
+      <ion-icon
+        *ngIf="password2_type==='text'"
+        name="eye-off-outline"
+        (click)="showPassword2()"
+      ></ion-icon>
     </ion-item>
     <ion-row>
       <ion-col>
