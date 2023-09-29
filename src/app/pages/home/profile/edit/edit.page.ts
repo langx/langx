@@ -160,11 +160,6 @@ export class EditPage implements OnInit {
           console.log(error); // Failure
         }
       );
-      //const filePath = `users/${this.currentUser.uid}/${currentDate}.${imageData.format}`;
-      //const fileRef = ref(this.storage, filePath);
-      //const task = await uploadBytes(fileRef, blob);
-      //console.log('task: ', task);
-      //const url = getDownloadURL(fileRef);
       return url;
     } catch (e) {
       throw e;
