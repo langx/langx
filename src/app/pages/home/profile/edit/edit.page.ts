@@ -118,9 +118,7 @@ export class EditPage implements OnInit {
         // console.log(data.data);
         let blob = this.dataURLtoBlob(data.data);
         this.uploadImage(blob, image).then((url) => {
-          console.log(url);
           this.uploadedImageURL = url;
-          console.log(this.uploadedImageURL);
           if (which == 'pp') this.changePP();
           //  if (which == 'other') this.addOtherPhotos();
         });
@@ -175,7 +173,9 @@ export class EditPage implements OnInit {
     }
 
     await this.userService
-      .updateUserDoc(this.cUserDoc.$id, { profilePhoto: this.uploadedImageURL })
+      .updateUserDoc(this.cUserDoc.$id, {
+        profilePhoto: this.cUserDoc.profilePhoto,
+      })
       .then(() => {
         this.presentToast('Profile Picture Updated.');
         this.isLoading = false;
