@@ -93,7 +93,7 @@ export class EditPage implements OnInit {
           this.uploadImage(blob, image).then((url) => {
             this.uploadedImageURL = url;
             if (which == 'pp') this.changePP();
-            //  if (which == 'other') this.addOtherPhotos();
+            if (which == 'other') this.addOtherPhotos();
 
             this.loadingController(false);
           });
@@ -168,17 +168,25 @@ export class EditPage implements OnInit {
   }
 
   async addOtherPhotos() {
-    /*
     this.isLoading = true;
+
     if (this.uploadedImageURL != '') {
-      this.currentUser.otherPhotos.push(this.uploadedImageURL);
+      this.cUserDoc.otherPhotos.push(this.uploadedImageURL);
       this.uploadedImageURL = '';
     }
-    await this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
-      this.presentToast('Other Image Added.');
-      this.isLoading = false;
-    });
-    */
+
+    await this.userService
+      .updateUserDoc(this.cUserId, {
+        otherPhotos: this.cUserDoc.otherPhotos,
+      })
+      .then(() => {
+        this.presentToast('Picture added to Other Photos.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.isLoading = false;
+      });
   }
 
   deleteOtherPhotos(image) {
