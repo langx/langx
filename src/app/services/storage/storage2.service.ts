@@ -19,4 +19,8 @@ export class Storage2Service {
   createFile(bucketId: string, fileId: string, file: any): Promise<any> {
     return this.storage.createFile(bucketId, fileId, file);
   }
+
+  getFileView(bucketId: string, fileId: string): URL {
+    return this.storage.getFileView(bucketId, fileId);
+  }
 }
