@@ -45,6 +45,10 @@ export class EditPage implements OnInit {
     this.getProfileInfo();
   }
 
+  ngOnDestroy() {
+    this.cUser.unsubscribe();
+  }
+
   getProfileInfo() {
     //showLoader();
     this.isLoading = true;
@@ -75,10 +79,6 @@ export class EditPage implements OnInit {
 
     //hideLoader();
     this.isLoading = false;
-  }
-
-  ngOnDestroy() {
-    this.cUser.unsubscribe();
   }
 
   //
