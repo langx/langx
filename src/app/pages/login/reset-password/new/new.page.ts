@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new',
@@ -11,6 +12,11 @@ export class NewPage implements OnInit {
   id: string;
   secret: string;
   expire: Date;
+
+  form: FormGroup;
+
+  isLoading: boolean = false;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -19,6 +25,7 @@ export class NewPage implements OnInit {
 
   ngOnInit() {
     this.initValidation();
+    this.initForm();
   }
 
   initValidation() {
@@ -35,6 +42,21 @@ export class NewPage implements OnInit {
       this.expire = new Date(expire);
     }
     console.log(this.id, this.secret, this.expire);
+  }
+
+  initForm() {
+    this.form = new FormGroup({
+      password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
+      password2: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
+    });
+  }
+
+  onSubmit() {
+    console.log(this.form.value);
   }
 
   //
