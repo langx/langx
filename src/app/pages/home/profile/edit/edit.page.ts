@@ -1,10 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  Storage,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-} from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
@@ -13,10 +7,8 @@ import {
   ModalController,
   ToastController,
 } from '@ionic/angular';
-import { Subscription } from 'rxjs';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
@@ -28,22 +20,18 @@ import { LanguageService } from 'src/app/services/user/language.service';
 })
 export class EditPage implements OnInit {
   isLoading: boolean = false;
-  currentUser: any;
 
-  cUser: Subscription;
   cUserDoc: any;
-  cUserSession: any;
+  cUserId: string;
 
   uploadedImageURL: string = '';
 
   constructor(
-    private authService: AuthService,
     private auth2Service: Auth2Service,
     private userService: UserService,
     private languageService: LanguageService,
     private toastController: ToastController,
     private router: Router,
-    private storage: Storage,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController
   ) {}
@@ -55,37 +43,15 @@ export class EditPage implements OnInit {
   getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    this.authService.getUserData();
 
-    this.cUser = this.authService._cUser.subscribe((cUser) => {
-      if (cUser) {
-        this.currentUser = cUser;
-        this.textAreaValue = cUser.aboutMe;
-      }
-    });
-
-    this.auth2Service
-      .getUser()
-      .subscribe((cUser) => {
-        if (cUser) {
-          console.log(cUser);
-          this.cUserSession = cUser;
-        }
-      })
-      .unsubscribe();
-    // TODO: Unsubscribe may not be necessary to update the user info
-
-    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+    this.cUserId = this.auth2Service.getUserId();
+    this.userService.getUserDoc(this.cUserId).then((user) => {
       this.cUserDoc = user;
       console.log(user);
     });
 
     //hideLoader();
     this.isLoading = false;
-  }
-
-  ngOnDestroy() {
-    this.cUser.unsubscribe();
   }
 
   //
@@ -96,6 +62,7 @@ export class EditPage implements OnInit {
     try {
       if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
 
+      // TODO: Capacitor pop up style is not good. It should be changed.
       const image = await Camera.getPhoto({
         quality: 100,
         allowEditing: true,
@@ -103,11 +70,10 @@ export class EditPage implements OnInit {
         resultType: CameraResultType.DataUrl,
       }).catch((error) => {
         console.log(error);
-        this.loadingCtrl.dismiss();
+        this.loadingController(false);
       });
 
-      const loading = await this.loadingCtrl.create();
-      await loading.present();
+      await this.loadingController(true);
 
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
@@ -116,23 +82,28 @@ export class EditPage implements OnInit {
         },
       });
 
+      this.loadingController(false);
       modal.present();
-      this.loadingCtrl.dismiss();
 
       await modal.onDidDismiss().then((data) => {
-        if (!data.data) return;
-        console.log(data.data);
-        let blob = this.dataURLtoBlob(data.data);
-        this.uploadImage(blob, image).then((url) => {
-          this.uploadedImageURL = url;
-          // console.log(this.uploadedImageURL);
-          if (which == 'pp') this.changePP();
-          if (which == 'other') this.addOtherPhotos();
-        });
+        if (data?.data) {
+          this.loadingController(true);
+
+          let blob = this.dataURLtoBlob(data.data);
+          this.uploadImage(blob, image).then((url) => {
+            this.uploadedImageURL = url;
+            if (which == 'pp') this.changePP();
+            if (which == 'other') this.addOtherPhotos();
+
+            this.loadingController(false);
+          });
+        } else {
+          console.log('No image data');
+        }
       });
     } catch (e) {
       console.log(e);
-      this.loadingCtrl.dismiss();
+      this.loadingController(false);
     }
   }
 
@@ -149,13 +120,21 @@ export class EditPage implements OnInit {
   }
 
   async uploadImage(blob: any, imageData: any) {
+    let url = '';
     try {
       const currentDate = Date.now();
-      const filePath = `users/${this.currentUser.uid}/${currentDate}.${imageData.format}`;
-      const fileRef = ref(this.storage, filePath);
-      const task = await uploadBytes(fileRef, blob);
-      console.log('task: ', task);
-      const url = getDownloadURL(fileRef);
+      var file = new File([blob], this.cUserId, { type: blob.type });
+
+      await this.userService.uploadFile(file).then(
+        (response) => {
+          console.log(response); // Success
+          url = this.userService.getFileView(response.$id).href;
+          console.log(url); // Resource URL
+        },
+        function (error) {
+          console.log(error); // Failure
+        }
+      );
       return url;
     } catch (e) {
       throw e;
@@ -166,14 +145,20 @@ export class EditPage implements OnInit {
     this.isLoading = true;
 
     if (this.uploadedImageURL != '') {
-      this.currentUser.photo = this.uploadedImageURL;
+      this.cUserDoc.profilePhoto = this.uploadedImageURL;
       this.uploadedImageURL = '';
     }
 
-    await this.authService
-      .updateUserProfilePictureURL(this.currentUser)
+    await this.userService
+      .updateUserDoc(this.cUserId, {
+        profilePhoto: this.cUserDoc.profilePhoto,
+      })
       .then(() => {
         this.presentToast('Profile Picture Updated.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
         this.isLoading = false;
       });
   }
@@ -186,24 +171,43 @@ export class EditPage implements OnInit {
     this.isLoading = true;
 
     if (this.uploadedImageURL != '') {
-      this.currentUser.otherPhotos.push(this.uploadedImageURL);
+      this.cUserDoc.otherPhotos.push(this.uploadedImageURL);
       this.uploadedImageURL = '';
     }
-    await this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
-      this.presentToast('Other Image Added.');
-      this.isLoading = false;
-    });
+
+    await this.userService
+      .updateUserDoc(this.cUserId, {
+        otherPhotos: this.cUserDoc.otherPhotos,
+      })
+      .then(() => {
+        this.presentToast('Picture added to Other Photos.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.isLoading = false;
+      });
   }
 
-  deleteOtherPhotos(image) {
+  async deleteOtherPhotos(image) {
     this.isLoading = true;
-    this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(
+
+    this.cUserDoc.otherPhotos = this.cUserDoc.otherPhotos.filter(
       (item) => item !== image
     );
-    this.authService.updateUserOtherPhotos(this.currentUser).then(() => {
-      this.presentToast('Other Image Deleted.');
-      this.isLoading = false;
-    });
+
+    await this.userService
+      .updateUserDoc(this.cUserId, {
+        otherPhotos: this.cUserDoc.otherPhotos,
+      })
+      .then(() => {
+        this.presentToast('Picture removed from Other Photos.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        this.isLoading = false;
+      });
   }
 
   //
@@ -221,7 +225,7 @@ export class EditPage implements OnInit {
   saveAboutMe() {
     this.isLoading = true;
     this.userService
-      .updateUserDoc(this.cUserSession.$id, { aboutMe: this.cUserDoc.aboutMe })
+      .updateUserDoc(this.cUserId, { aboutMe: this.cUserDoc.aboutMe })
       .then(() => {
         this.presentToast('About me saved.');
         this.isLoading = false;
@@ -273,7 +277,7 @@ export class EditPage implements OnInit {
         }
         // Update user doc with new languageArray
         this.userService
-          .updateUserDoc(this.cUserSession.$id, {
+          .updateUserDoc(this.cUserId, {
             languageArray: this.cUserDoc.languageArray,
           })
           .then(() => {
@@ -289,6 +293,24 @@ export class EditPage implements OnInit {
         console.log(error);
         this.presentToast('Please try again later.', 'danger');
       });
+  }
+
+  //
+  // Loading Controller
+  //
+
+  async loadingController(isShow: boolean) {
+    if (isShow) {
+      await this.loadingCtrl
+        .create({
+          message: 'Please wait...',
+        })
+        .then((loadingEl) => {
+          loadingEl.present();
+        });
+    } else {
+      this.loadingCtrl.dismiss();
+    }
   }
 
   //

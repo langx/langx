@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, ID, Databases, Account } from 'appwrite';
+import { Client, Databases, Account } from 'appwrite';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -22,6 +22,7 @@ export class AppwriteService {
       .setProject(environment.appwrite.APP_PROJECT); // Your project ID
   }
 
+  // TODO: check if this is needed, or if we can use directly the this.client
   // to subscribe to any channel
   client$(): Client {
     return this.client;
