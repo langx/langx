@@ -103,7 +103,6 @@ export class EditPage implements OnInit {
       const loading = await this.loadingCtrl.create();
       await loading.present();
 
-      console.log(image);
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
         componentProps: {
@@ -116,12 +115,13 @@ export class EditPage implements OnInit {
 
       await modal.onDidDismiss().then((data) => {
         if (!data.data) return;
-        console.log(data.data);
+        // console.log(data.data);
         let blob = this.dataURLtoBlob(data.data);
         this.uploadImage(blob, image).then((url) => {
+          console.log(url);
           this.uploadedImageURL = url;
           console.log(this.uploadedImageURL);
-          //  if (which == 'pp') this.changePP();
+          if (which == 'pp') this.changePP();
           //  if (which == 'other') this.addOtherPhotos();
         });
       });
@@ -150,9 +150,11 @@ export class EditPage implements OnInit {
       const currentDate = Date.now();
       var file = new File([blob], this.cUserDoc.$id, { type: blob.type });
 
-      this.userService.uploadFile(file).then(
+      await this.userService.uploadFile(file).then(
         (response) => {
           console.log(response); // Success
+          url = this.userService.getFileView(response.$id).href;
+          console.log(url); // Resource URL
         },
         function (error) {
           console.log(error); // Failure
@@ -173,14 +175,18 @@ export class EditPage implements OnInit {
     this.isLoading = true;
 
     if (this.uploadedImageURL != '') {
-      this.currentUser.photo = this.uploadedImageURL;
+      this.cUserDoc.profilePhoto = this.uploadedImageURL;
       this.uploadedImageURL = '';
     }
 
-    await this.authService
-      .updateUserProfilePictureURL(this.currentUser)
+    await this.userService
+      .updateUserDoc(this.cUserDoc.$id, { profilePhoto: this.uploadedImageURL })
       .then(() => {
         this.presentToast('Profile Picture Updated.');
+        this.isLoading = false;
+      })
+      .catch((error) => {
+        console.log(error);
         this.isLoading = false;
       });
   }
