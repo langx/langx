@@ -4,7 +4,7 @@ import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { Auth2Service } from '../auth/auth2.service';
-import { Storage2Service } from '../storage/storage2.service';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class UserService {
   constructor(
     private appwrite: AppwriteService,
     private auth2Service: Auth2Service,
-    private storage: Storage2Service
+    private storage: StorageService
   ) {}
 
   getUserDoc(uid: string): Promise<any> {
