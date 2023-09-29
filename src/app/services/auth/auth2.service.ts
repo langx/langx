@@ -98,11 +98,13 @@ export class Auth2Service {
 
   // TODO: #149 Login with Google (signInWithGoogle)
 
-  // TODO: #150 Reset Password
   resetPassword(email: string) {
     console.log('resetPassword:', email);
     return this.appwrite.account
-      .createRecovery(email, `${environment.url.HOMEPAGE_URL}login/reset-password`)
+      .createRecovery(
+        email,
+        `${environment.url.HOMEPAGE_URL}login/reset-password/new`
+      )
       .then((response) => {
         console.log('Recovery email sent', response);
       })
