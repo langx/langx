@@ -97,11 +97,10 @@ export class EditPage implements OnInit {
         resultType: CameraResultType.DataUrl,
       }).catch((error) => {
         console.log(error);
-        this.loadingCtrl.dismiss();
+        this.loadingController(false);
       });
 
-      const loading = await this.loadingCtrl.create();
-      await loading.present();
+      await this.loadingController(true);
 
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
@@ -110,22 +109,28 @@ export class EditPage implements OnInit {
         },
       });
 
+      this.loadingController(false);
       modal.present();
-      this.loadingCtrl.dismiss();
 
       await modal.onDidDismiss().then((data) => {
-        if (!data.data) return;
-        // console.log(data.data);
-        let blob = this.dataURLtoBlob(data.data);
-        this.uploadImage(blob, image).then((url) => {
-          this.uploadedImageURL = url;
-          if (which == 'pp') this.changePP();
-          //  if (which == 'other') this.addOtherPhotos();
-        });
+        if (data?.data) {
+          this.loadingController(true);
+
+          let blob = this.dataURLtoBlob(data.data);
+          this.uploadImage(blob, image).then((url) => {
+            this.uploadedImageURL = url;
+            if (which == 'pp') this.changePP();
+            //  if (which == 'other') this.addOtherPhotos();
+
+            this.loadingController(false);
+          });
+        } else {
+          console.log('No image data');
+        }
       });
     } catch (e) {
       console.log(e);
-      this.loadingCtrl.dismiss();
+      this.loadingController(false);
     }
   }
 
@@ -297,6 +302,24 @@ export class EditPage implements OnInit {
         console.log(error);
         this.presentToast('Please try again later.', 'danger');
       });
+  }
+
+  //
+  // Loading Controller
+  //
+
+  async loadingController(isShow: boolean) {
+    if (isShow) {
+      await this.loadingCtrl
+        .create({
+          message: 'Please wait...',
+        })
+        .then((loadingEl) => {
+          loadingEl.present();
+        });
+    } else {
+      this.loadingCtrl.dismiss();
+    }
   }
 
   //
