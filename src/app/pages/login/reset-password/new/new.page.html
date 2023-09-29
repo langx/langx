@@ -1,13 +1,42 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>new</ion-title>
+    <ion-title>New Password</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">new</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ion-item lines="full">
+      <ion-input
+        label="New Password"
+        labelPlacement="floating"
+        formControlName="password"
+        type="password"
+        required
+      ></ion-input>
+    </ion-item>
+    <ion-item lines="full">
+      <ion-input
+        label="Password Again"
+        labelPlacement="floating"
+        formControlName="password2"
+        type="password"
+        required
+      ></ion-input>
+    </ion-item>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          *ngIf="!isLoading"
+          type="submit"
+          color="primary"
+          expand="block"
+          >Reset Password</ion-button
+        >
+        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
 </ion-content>
