@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-new',
@@ -23,6 +24,7 @@ export class NewPage implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private auth2Service: Auth2Service,
     private toastController: ToastController
   ) {}
 
@@ -40,7 +42,7 @@ export class NewPage implements OnInit {
       this.presentToast('Invalid URL', 'danger');
       this.router.navigateByUrl('/login');
       return;
-    } else if (Date.now() > new Date(expire).getTime()) {
+    } else if (Date.now() < new Date(expire).getTime()) {
       // The verification link sent to the user's email address is valid for 1 hour.
       this.presentToast('Link Expired', 'danger');
       this.router.navigateByUrl('/login');
@@ -72,7 +74,6 @@ export class NewPage implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
     if (this.form.invalid) {
       this.presentToast('Invalid Form', 'danger');
       return;
