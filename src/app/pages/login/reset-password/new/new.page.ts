@@ -17,6 +17,9 @@ export class NewPage implements OnInit {
 
   isLoading: boolean = false;
 
+  password_type: string = 'password';
+  password2_type: string = 'password';
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -53,6 +56,13 @@ export class NewPage implements OnInit {
         validators: [Validators.required, Validators.minLength(8)],
       }),
     });
+  }
+
+  showPassword() {
+    this.password_type = this.password_type === 'text' ? 'password' : 'text';
+  }
+  showPassword2() {
+    this.password2_type = this.password2_type === 'text' ? 'password' : 'text';
   }
 
   onSubmit() {
