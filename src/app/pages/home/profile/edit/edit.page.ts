@@ -7,10 +7,8 @@ import {
   ModalController,
   ToastController,
 } from '@ionic/angular';
-import { Subscription } from 'rxjs';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
@@ -22,16 +20,13 @@ import { LanguageService } from 'src/app/services/user/language.service';
 })
 export class EditPage implements OnInit {
   isLoading: boolean = false;
-  currentUser: any;
 
-  cUser: Subscription;
   cUserDoc: any;
-  cUserSession: any;
+  cUserId: string;
 
   uploadedImageURL: string = '';
 
   constructor(
-    private authService: AuthService,
     private auth2Service: Auth2Service,
     private userService: UserService,
     private languageService: LanguageService,
@@ -45,34 +40,12 @@ export class EditPage implements OnInit {
     this.getProfileInfo();
   }
 
-  ngOnDestroy() {
-    this.cUser.unsubscribe();
-  }
-
   getProfileInfo() {
     //showLoader();
     this.isLoading = true;
-    this.authService.getUserData();
 
-    this.cUser = this.authService._cUser.subscribe((cUser) => {
-      if (cUser) {
-        this.currentUser = cUser;
-        this.textAreaValue = cUser.aboutMe;
-      }
-    });
-
-    this.auth2Service
-      .getUser()
-      .subscribe((cUser) => {
-        if (cUser) {
-          console.log(cUser);
-          this.cUserSession = cUser;
-        }
-      })
-      .unsubscribe();
-    // TODO: Unsubscribe may not be necessary to update the user info
-
-    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+    this.cUserId = this.auth2Service.getUserId();
+    this.userService.getUserDoc(this.cUserId).then((user) => {
       this.cUserDoc = user;
       console.log(user);
     });
@@ -177,7 +150,7 @@ export class EditPage implements OnInit {
     }
 
     await this.userService
-      .updateUserDoc(this.cUserDoc.$id, {
+      .updateUserDoc(this.cUserId, {
         profilePhoto: this.cUserDoc.profilePhoto,
       })
       .then(() => {
@@ -195,8 +168,8 @@ export class EditPage implements OnInit {
   }
 
   async addOtherPhotos() {
+    /*
     this.isLoading = true;
-
     if (this.uploadedImageURL != '') {
       this.currentUser.otherPhotos.push(this.uploadedImageURL);
       this.uploadedImageURL = '';
@@ -205,9 +178,11 @@ export class EditPage implements OnInit {
       this.presentToast('Other Image Added.');
       this.isLoading = false;
     });
+    */
   }
 
   deleteOtherPhotos(image) {
+    /*
     this.isLoading = true;
     this.currentUser.otherPhotos = this.currentUser.otherPhotos.filter(
       (item) => item !== image
@@ -216,6 +191,7 @@ export class EditPage implements OnInit {
       this.presentToast('Other Image Deleted.');
       this.isLoading = false;
     });
+    */
   }
 
   //
@@ -233,7 +209,7 @@ export class EditPage implements OnInit {
   saveAboutMe() {
     this.isLoading = true;
     this.userService
-      .updateUserDoc(this.cUserSession.$id, { aboutMe: this.cUserDoc.aboutMe })
+      .updateUserDoc(this.cUserId, { aboutMe: this.cUserDoc.aboutMe })
       .then(() => {
         this.presentToast('About me saved.');
         this.isLoading = false;
@@ -285,7 +261,7 @@ export class EditPage implements OnInit {
         }
         // Update user doc with new languageArray
         this.userService
-          .updateUserDoc(this.cUserSession.$id, {
+          .updateUserDoc(this.cUserId, {
             languageArray: this.cUserDoc.languageArray,
           })
           .then(() => {
