@@ -81,43 +81,6 @@ export class SignupPage implements OnInit {
       });
   }
 
-  /*
-  register(form: FormGroup) {
-    //showLoader();
-    this.isLoading = true;
-    console.log('form.value:', form.value);
-    this.authService
-      .register(form.value)
-      .then((data: any) => {
-        console.log(data);
-        this.router.navigateByUrl('/login/signup/complete');
-        //hideLoader();
-        this.isLoading = false;
-        form.reset();
-      })
-      .catch((e) => {
-        console.log('error:', e);
-        //hideLoader();
-        this.isLoading = false;
-        let msg: string;
-        switch (e.code) {
-          case 'auth/email-already-in-use': {
-            msg = 'Email already in use';
-            break;
-          }
-          case 'auth/invalid-email': {
-            msg = 'Invalid email';
-            break;
-          }
-          default: {
-            msg = 'Could not sign you up, please try again.';
-          }
-        }
-        this.showAlert(msg);
-      });
-  }
-  */
-
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
