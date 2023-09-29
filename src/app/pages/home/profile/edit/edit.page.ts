@@ -109,6 +109,7 @@ export class EditPage implements OnInit {
       const loading = await this.loadingCtrl.create();
       await loading.present();
 
+      console.log(image);
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
         componentProps: {
@@ -125,9 +126,9 @@ export class EditPage implements OnInit {
         let blob = this.dataURLtoBlob(data.data);
         this.uploadImage(blob, image).then((url) => {
           this.uploadedImageURL = url;
-          // console.log(this.uploadedImageURL);
-          if (which == 'pp') this.changePP();
-          if (which == 'other') this.addOtherPhotos();
+          console.log(this.uploadedImageURL);
+          //  if (which == 'pp') this.changePP();
+          //  if (which == 'other') this.addOtherPhotos();
         });
       });
     } catch (e) {
@@ -149,13 +150,25 @@ export class EditPage implements OnInit {
   }
 
   async uploadImage(blob: any, imageData: any) {
+    let url = '';
     try {
+      // TODO: UserID should be added to the file name
       const currentDate = Date.now();
-      const filePath = `users/${this.currentUser.uid}/${currentDate}.${imageData.format}`;
-      const fileRef = ref(this.storage, filePath);
-      const task = await uploadBytes(fileRef, blob);
-      console.log('task: ', task);
-      const url = getDownloadURL(fileRef);
+      var file = new File([blob], this.cUserDoc.$id, { type: blob.type });
+
+      this.userService.uploadFile(file).then(
+        (response) => {
+          console.log(response); // Success
+        },
+        function (error) {
+          console.log(error); // Failure
+        }
+      );
+      //const filePath = `users/${this.currentUser.uid}/${currentDate}.${imageData.format}`;
+      //const fileRef = ref(this.storage, filePath);
+      //const task = await uploadBytes(fileRef, blob);
+      //console.log('task: ', task);
+      //const url = getDownloadURL(fileRef);
       return url;
     } catch (e) {
       throw e;
