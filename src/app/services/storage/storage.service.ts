@@ -36,6 +36,7 @@ export class StorageService {
 
   //
   // Local Storage
+  // TODO: Seperate this into a seperate service
   //
 
   async initLocalStorage() {
