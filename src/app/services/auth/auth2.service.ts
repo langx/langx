@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -78,6 +79,7 @@ export class Auth2Service {
       this._user.next(user);
       return true;
     } catch (e) {
+      this._user.next(null);
       console.error('Error while checking if user is logged in:', e);
       return false;
     }
@@ -96,7 +98,32 @@ export class Auth2Service {
 
   // TODO: #149 Login with Google (signInWithGoogle)
 
-  // TODO: #150 Reset Password
+  resetPassword(email: string) {
+    console.log('resetPassword:', email);
+    return this.appwrite.account
+      .createRecovery(
+        email,
+        `${environment.url.HOMEPAGE_URL}login/reset-password/new`
+      )
+      .then((response) => {
+        console.log('Recovery email sent', response);
+      })
+      .catch((error) => {
+        console.log('Error sending recovery email', error);
+      });
+  }
+
+  updateRecovery(userId: string, secret: string, password: string) {
+    return this.appwrite.account
+      .updateRecovery(userId, secret, password, password)
+      .then((response) => {
+        console.log('Recovery successfully updated', response);
+      })
+      .catch((error) => {
+        console.log('Error updating recovery', error);
+        return error;
+      });
+  }
 
   // TODO: #144 Replace Auth2.Service with Auth.Service
   // TODO: #144 Remove Api.Service After above replacement
