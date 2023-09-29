@@ -25,6 +25,9 @@ export const environment = {
     USER_BUCKET: '6515f94d20becd47cb40',
   },
   production: false,
+  url: {
+    HOMEPAGE_URL: 'http://localhost:8100/',
+  },
 };
 
 /*
