@@ -94,6 +94,15 @@ export class Auth2Service {
     }
   }
 
+  // TODO: #149 Login with Google (signInWithGoogle)
+
+  // TODO: #150 Reset Password
+
+  // TODO: #144 Replace Auth2.Service with Auth.Service
+  // TODO: #144 Remove Api.Service After above replacement
+
+  // OPTIONAL: Login with Magic Link (createMagicSession)
+
   // Not needed to login anonymously
   /*
   anonLogin(name: string) {
