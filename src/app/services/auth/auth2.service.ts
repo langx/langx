@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -99,7 +100,14 @@ export class Auth2Service {
   // TODO: #150 Reset Password
   resetPassword(email: string) {
     console.log('resetPassword:', email);
-    // return this.appwrite.account.createRecovery(email);
+    return this.appwrite.account
+      .createRecovery(email, `${environment.url.HOMEPAGE_URL}login/reset-password`)
+      .then((response) => {
+        console.log('Recovery email sent', response);
+      })
+      .catch((error) => {
+        console.log('Error sending recovery email', error);
+      });
   }
 
   // TODO: #144 Replace Auth2.Service with Auth.Service
