@@ -113,6 +113,18 @@ export class Auth2Service {
       });
   }
 
+  updateRecovery(userId: string, secret: string, password: string) {
+    return this.appwrite.account
+      .updateRecovery(userId, secret, password, password)
+      .then((response) => {
+        console.log('Recovery successfully updated', response);
+      })
+      .catch((error) => {
+        console.log('Error updating recovery', error);
+        return error;
+      });
+  }
+
   // TODO: #144 Replace Auth2.Service with Auth.Service
   // TODO: #144 Remove Api.Service After above replacement
 
