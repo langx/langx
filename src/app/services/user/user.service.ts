@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { FilterData } from '../filter/filter.service';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { environment } from 'src/environments/environment';
-import { Query } from 'appwrite';
+import { ID, Query } from 'appwrite';
 import { Auth2Service } from '../auth/auth2.service';
+import { Storage2Service } from '../storage/storage2.service';
 @Injectable({
   providedIn: 'root',
 })
@@ -14,7 +15,8 @@ export class UserService {
 
   constructor(
     private appwrite: AppwriteService,
-    private auth2Service: Auth2Service
+    private auth2Service: Auth2Service,
+    private storage: Storage2Service
   ) {}
 
   getUserDoc(uid: string): Promise<any> {
@@ -82,6 +84,18 @@ export class UserService {
     return this.appwrite.listDocuments(
       environment.appwrite.USERS_COLLECTION,
       queries
+    );
+  }
+
+  //
+  // Upload Bucket
+  //
+
+  uploadFile(file: any): Promise<any> {
+    return this.storage.createFile(
+      environment.appwrite.USER_BUCKET,
+      ID.unique(),
+      file
     );
   }
 }
