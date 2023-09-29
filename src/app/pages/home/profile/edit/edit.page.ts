@@ -149,7 +149,6 @@ export class EditPage implements OnInit {
   async uploadImage(blob: any, imageData: any) {
     let url = '';
     try {
-      // TODO: UserID should be added to the file name
       const currentDate = Date.now();
       var file = new File([blob], this.cUserDoc.$id, { type: blob.type });
 
