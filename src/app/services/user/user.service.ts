@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { Auth2Service } from '../auth/auth2.service';
 import { Storage2Service } from '../storage/storage2.service';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -97,5 +98,9 @@ export class UserService {
       ID.unique(),
       file
     );
+  }
+
+  getFileView(fileId: string): URL {
+    return this.storage.getFileView(environment.appwrite.USER_BUCKET, fileId);
   }
 }
