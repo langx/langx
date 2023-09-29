@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class ResetPasswordPage implements OnInit {
   constructor(
     private router: Router,
     private auth2Service: Auth2Service,
-    private alertController: AlertController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -47,7 +47,7 @@ export class ResetPasswordPage implements OnInit {
         this.isLoading = false;
         form.reset();
         let msg: string = 'Please check your email';
-        this.showAlert(msg);
+        this.presentToast(msg);
         this.router.navigateByUrl('/login');
       })
       .catch((e) => {
@@ -55,17 +55,22 @@ export class ResetPasswordPage implements OnInit {
         // hideLoader();
         this.isLoading = false;
         let msg: string = 'Could not send reset email, please try again.';
-        this.showAlert(msg);
+        this.presentToast(msg, 'danger');
       });
   }
 
-  // TODO: Better use here toast messages
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }
