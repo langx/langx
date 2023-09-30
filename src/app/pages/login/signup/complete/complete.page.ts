@@ -117,10 +117,10 @@ export class CompletePage implements OnInit {
       this.showAlert('Please fill all the required fields');
       return;
     }
-    this.completeRegisterWithAuth2(this.form);
+    this.complete(this.form);
   }
 
-  completeRegisterWithAuth2(form: FormGroup) {
+  complete(form: FormGroup) {
     console.log('form.value:', form.value);
     const data = {
       name: '',
