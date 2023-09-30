@@ -71,7 +71,7 @@ export class LoginPage implements OnInit {
     this.authService.signInWithGoogle().then((userId: any) => {
       console.log('userId:', userId);
       /*
-      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+      this.authService.isLoggedIn().then((isLoggedIn) => {
         if (isLoggedIn) {
           this.router.navigateByUrl('/home');
         } else {
