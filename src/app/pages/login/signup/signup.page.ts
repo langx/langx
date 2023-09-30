@@ -3,7 +3,6 @@ import { AlertController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
@@ -18,7 +17,6 @@ export class SignupPage implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
     private auth2Service: Auth2Service,
     private alertController: AlertController
   ) {}
