@@ -40,10 +40,10 @@ export class LoginPage implements OnInit {
 
   onSubmit() {
     if (!this.form.valid) return;
-    this.loginWithAuth2(this.form);
+    this.login(this.form);
   }
 
-  loginWithAuth2(form: FormGroup) {
+  login(form: FormGroup) {
     this.isLoading = true;
 
     this.auth2Service
@@ -63,68 +63,6 @@ export class LoginPage implements OnInit {
         this.isLoading = false;
       });
   }
-
-  /*
-  login(form: FormGroup) {
-    //showLoader();
-    this.isLoading = true;
-    console.log('form.value:', form.value);
-    this.authService
-      .login(form.value.email, form.value.password)
-      .then((userId: any) => {
-        this.authService.getUserData().then((user) => {
-          if (user.completeProfile) {
-            if (user.completeLanguages) {
-              this.router.navigateByUrl('/home');
-            } else {
-              this.router.navigateByUrl('/login/signup/language');
-            }
-          } else {
-            this.router.navigateByUrl('/login/signup/complete');
-          }
-        });
-        //hideLoader();
-        form.reset();
-        this.isLoading = false;
-      })
-      .catch((e) => {
-        console.log('error:', e);
-        //hideLoader();
-        this.isLoading = false;
-        let msg: string;
-        switch (e.code) {
-          case 'auth/user-not-found': {
-            msg = 'Email address could not be found';
-            break;
-          }
-          case 'auth/wrong-password': {
-            msg = 'Please enter a correct password';
-            break;
-          }
-          default: {
-            msg = 'Could not sign you up, please try again.';
-          }
-        }
-        this.showAlert(msg);
-      });
-  }
-
-  signInWithGoogle() {
-    this.authService.signInWithGoogle().then((userId: any) => {
-      this.authService.getUserData().then((user) => {
-        if (user.completeProfile) {
-          if (user.completeLanguages) {
-            this.router.navigateByUrl('/home');
-          } else {
-            this.router.navigateByUrl('/login/signup/language');
-          }
-        } else {
-          this.router.navigateByUrl('/login/signup/complete');
-        }
-      });
-    });
-  }
-  */
 
   // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
   // Some browsers like Firefox and Safari don't respect 3rd party cookies for privacy reasons.
@@ -146,6 +84,25 @@ export class LoginPage implements OnInit {
     });
   }
 
+  /*
+  signInWithGoogle() {
+    this.authService.signInWithGoogle().then((userId: any) => {
+      this.authService.getUserData().then((user) => {
+        if (user.completeProfile) {
+          if (user.completeLanguages) {
+            this.router.navigateByUrl('/home');
+          } else {
+            this.router.navigateByUrl('/login/signup/language');
+          }
+        } else {
+          this.router.navigateByUrl('/login/signup/complete');
+        }
+      });
+    });
+  }
+  */
+
+  // TODO: Replace with toast message
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
