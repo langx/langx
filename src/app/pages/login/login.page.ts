@@ -108,7 +108,6 @@ export class LoginPage implements OnInit {
         this.showAlert(msg);
       });
   }
-  */
 
   signInWithGoogle() {
     this.authService.signInWithGoogle().then((userId: any) => {
@@ -123,6 +122,27 @@ export class LoginPage implements OnInit {
           this.router.navigateByUrl('/login/signup/complete');
         }
       });
+    });
+  }
+  */
+
+  // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
+  // Some browsers like Firefox and Safari don't respect 3rd party cookies for privacy reasons.
+  // Appwrite -> appwrite.mydomain.com
+  // Website -> mydomain.com or myapp.mydomain.com
+  // More: https://github.com/appwrite/appwrite/issues/1203
+  signInWithGoogle() {
+    this.auth2Service.signInWithGoogle().then((userId: any) => {
+      console.log('userId:', userId);
+      /*
+      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+        if (isLoggedIn) {
+          this.router.navigateByUrl('/home');
+        } else {
+          console.log('error:', 'Could not sign you up, please try again.');
+        }
+      });
+      */
     });
   }
 
