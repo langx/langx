@@ -10,7 +10,7 @@ import { UserService } from '../user/user.service';
 })
 export class RoomService {
   constructor(
-    private appwrite: ApiService,
+    private api: ApiService,
     private auth2Service: Auth2Service,
     private userService: UserService
   ) {}
@@ -19,7 +19,7 @@ export class RoomService {
     let cUserId = this.auth2Service.getUserId();
     console.log('checkRoom: ', cUserId, userId);
 
-    const promise = this.appwrite.listDocuments(
+    const promise = this.api.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
       [Query.search('users', cUserId), Query.search('users', userId)]
     );
@@ -40,7 +40,7 @@ export class RoomService {
   }
 
   async getRooms(currentUserId: string): Promise<any> {
-    return this.appwrite
+    return this.api
       .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         Query.search('users', currentUserId),
       ])
@@ -66,14 +66,11 @@ export class RoomService {
   }
 
   getRoom(roomId: string): Promise<any> {
-    return this.appwrite.getDocument(
-      environment.appwrite.ROOMS_COLLECTION,
-      roomId
-    );
+    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
   createRoom(data: any): Promise<any> {
-    return this.appwrite.createDocument(
+    return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
       data
@@ -81,7 +78,7 @@ export class RoomService {
   }
 
   updateRoom(roomId: string, data: any): Promise<any> {
-    return this.appwrite.updateDocument(
+    return this.api.updateDocument(
       environment.appwrite.ROOMS_COLLECTION,
       roomId,
       data
@@ -91,7 +88,7 @@ export class RoomService {
   // TODO: listen to room changes for messages.page.ts.
   // IDEA: use items collection, it will be relational one to many attribute which is named with the room id array
   listenRooms() {
-    const client = this.appwrite.client$();
+    const client = this.api.client$();
     return client.subscribe('documents', (response) => {
       if (
         response.events.includes(

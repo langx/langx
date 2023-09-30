@@ -15,20 +15,17 @@ export class UserService {
   lastVisible: any;
 
   constructor(
-    private appwrite: ApiService,
+    private api: ApiService,
     private auth2Service: Auth2Service,
     private storage: StorageService
   ) {}
 
   getUserDoc(uid: string): Promise<any> {
-    return this.appwrite.getDocument(
-      environment.appwrite.USERS_COLLECTION,
-      uid
-    );
+    return this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid);
   }
 
   createUserDoc(uid: string, data: any): Promise<any> {
-    return this.appwrite.createDocument(
+    return this.api.createDocument(
       environment.appwrite.USERS_COLLECTION,
       uid,
       data
@@ -36,7 +33,7 @@ export class UserService {
   }
 
   updateUserDoc(uid: string, data: any): Promise<any> {
-    return this.appwrite.updateDocument(
+    return this.api.updateDocument(
       environment.appwrite.USERS_COLLECTION,
       uid,
       data
@@ -82,7 +79,7 @@ export class UserService {
       queries.push(Query.search('languageArray', keywords));
     }
 
-    return this.appwrite.listDocuments(
+    return this.api.listDocuments(
       environment.appwrite.USERS_COLLECTION,
       queries
     );

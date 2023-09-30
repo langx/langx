@@ -10,10 +10,7 @@ export class StorageService {
   private _storage: localStorage | null = null;
   storage: Storage;
 
-  constructor(
-    private appwrite: ApiService,
-    private localStorage: localStorage
-  ) {
+  constructor(private api: ApiService, private localStorage: localStorage) {
     this.initStorage();
     this.initLocalStorage();
   }
@@ -23,7 +20,7 @@ export class StorageService {
   //
 
   initStorage() {
-    this.storage = new Storage(this.appwrite.client);
+    this.storage = new Storage(this.api.client);
   }
 
   createFile(bucketId: string, fileId: string, file: any): Promise<any> {

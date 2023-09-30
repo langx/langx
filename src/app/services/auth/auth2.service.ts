@@ -12,7 +12,7 @@ export class Auth2Service {
     null
   );
 
-  constructor(private appwrite: ApiService) {}
+  constructor(private api: ApiService) {}
 
   //
   // USER DATA
@@ -31,29 +31,22 @@ export class Auth2Service {
   //
 
   login(email: string, password: string) {
-    const authReq = this.appwrite.account.createEmailSession(email, password);
+    const authReq = this.api.account.createEmailSession(email, password);
     // TODO: Add error handling with toast message
     return from(authReq).pipe(
       catchError((error) => of(error)),
-      concatMap(() => this.appwrite.account.get()),
+      concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
   }
 
   register(email: string, password: string, name: string) {
-    const authReq = this.appwrite.account.create(
-      ID.unique(),
-      email,
-      password,
-      name
-    );
+    const authReq = this.api.account.create(ID.unique(), email, password, name);
     // TODO: Add error handling with toast message
 
     return from(authReq).pipe(
-      concatMap(() =>
-        this.appwrite.account.createEmailSession(email, password)
-      ),
-      concatMap(() => this.appwrite.account.get()),
+      concatMap(() => this.api.account.createEmailSession(email, password)),
+      concatMap(() => this.api.account.get()),
       tap((user) => {
         return this._user.next(user);
       })
@@ -61,21 +54,21 @@ export class Auth2Service {
   }
 
   updatePrefs(prefs: Models.Preferences) {
-    const authReq = this.appwrite.account.updatePrefs(prefs);
+    const authReq = this.api.account.updatePrefs(prefs);
     return from(authReq).pipe(
-      concatMap(() => this.appwrite.account.get()),
+      concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
   }
 
   getPrefs() {
-    const authReq = this.appwrite.account.getPrefs();
+    const authReq = this.api.account.getPrefs();
     return from(authReq);
   }
 
   async isLoggedIn() {
     try {
-      const user = await this.appwrite.account.get();
+      const user = await this.api.account.get();
       this._user.next(user);
       return true;
     } catch (e) {
@@ -87,7 +80,7 @@ export class Auth2Service {
 
   async logout() {
     try {
-      await this.appwrite.account.deleteSession('current');
+      await this.api.account.deleteSession('current');
     } catch (e) {
       console.log(`${e}`);
     } finally {
@@ -99,13 +92,13 @@ export class Auth2Service {
   // TODO: #149 Login with Google (createOAuth2Session)
   async signInWithGoogle() {
     console.log('signInWithGoogle');
-    this.appwrite.account.createOAuth2Session(
+    this.api.account.createOAuth2Session(
       'google',
       //environment.url.SIGNUP_COMPLETE_URL,
       environment.url.LOGIN_URL,
       environment.url.LOGIN_URL
     );
-    const session = await this.appwrite.account.getSession('current');
+    const session = await this.api.account.getSession('current');
 
     // Provider information
     console.log(session.provider);
@@ -115,7 +108,7 @@ export class Auth2Service {
 
   resetPassword(email: string) {
     console.log('resetPassword:', email);
-    return this.appwrite.account
+    return this.api.account
       .createRecovery(email, environment.url.RESET_PASSWORD_URL)
       .then((response) => {
         console.log('Recovery email sent', response);
@@ -126,7 +119,7 @@ export class Auth2Service {
   }
 
   updateRecovery(userId: string, secret: string, password: string) {
-    return this.appwrite.account
+    return this.api.account
       .updateRecovery(userId, secret, password, password)
       .then((response) => {
         console.log('Recovery successfully updated', response);
@@ -138,18 +131,17 @@ export class Auth2Service {
   }
 
   // TODO: #144 Replace Auth2.Service with Auth.Service
-  // TODO: Replace appwrite.service with api.service
 
   // OPTIONAL: Login with Magic Link (createMagicSession)
 
   // Not needed to login anonymously
   /*
   anonLogin(name: string) {
-    const authReq = this.appwrite.account.createAnonymousSession();
+    const authReq = this.api.account.createAnonymousSession();
 
     return from(authReq).pipe(
-      mergeMap(() => this.appwrite.account.updateName(name)),
-      concatMap(() => this.appwrite.account.get()),
+      mergeMap(() => this.api.account.updateName(name)),
+      concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
   }
