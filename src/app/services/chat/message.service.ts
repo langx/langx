@@ -10,11 +10,11 @@ import { BehaviorSubject } from 'rxjs';
 export class MessageService {
   messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-  constructor(private appwrite: ApiService) {}
+  constructor(private api: ApiService) {}
 
   // Listen to messages in a room
   listenMessages(roomID: string) {
-    const client = this.appwrite.client$();
+    const client = this.api.client$();
     return client.subscribe(
       'databases.' +
         environment.appwrite.APP_DATABASE +
@@ -57,7 +57,7 @@ export class MessageService {
 
   // Get messages from a room to initialize the chat
   listMessages(roomId: string) {
-    const promise = this.appwrite.listDocuments(
+    const promise = this.api.listDocuments(
       environment.appwrite.MESSAGES_COLLECTION,
       [Query.equal('roomId', roomId), Query.orderDesc('$createdAt')]
     );
@@ -75,7 +75,7 @@ export class MessageService {
 
   // Create a message
   createMessage(data: any): Promise<any> {
-    return this.appwrite.createDocument(
+    return this.api.createDocument(
       environment.appwrite.MESSAGES_COLLECTION,
       ID.unique(),
       data

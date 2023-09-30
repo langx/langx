@@ -7,17 +7,14 @@ import { ID } from 'appwrite';
   providedIn: 'root',
 })
 export class LanguageService {
-  constructor(private appwrite: ApiService) {}
+  constructor(private api: ApiService) {}
 
   getLanguageDoc(uid: string): Promise<any> {
-    return this.appwrite.getDocument(
-      environment.appwrite.LANGUAGES_COLLECTION,
-      uid
-    );
+    return this.api.getDocument(environment.appwrite.LANGUAGES_COLLECTION, uid);
   }
 
   createLanguageDoc(data: any): Promise<any> {
-    return this.appwrite.createDocument(
+    return this.api.createDocument(
       environment.appwrite.LANGUAGES_COLLECTION,
       ID.unique(),
       data
@@ -25,7 +22,7 @@ export class LanguageService {
   }
 
   updateLanguageDoc(uid: string, data: any): Promise<any> {
-    return this.appwrite.updateDocument(
+    return this.api.updateDocument(
       environment.appwrite.LANGUAGES_COLLECTION,
       uid,
       data
@@ -33,7 +30,7 @@ export class LanguageService {
   }
 
   deleteLanguageDoc(uid: string): Promise<any> {
-    return this.appwrite.deleteDocument(
+    return this.api.deleteDocument(
       environment.appwrite.LANGUAGES_COLLECTION,
       uid
     );
