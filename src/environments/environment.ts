@@ -3,17 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  firebase: {
-    apiKey: 'AIzaSyAreigjnx4DTOkcZ4pV4ZoMf44kYzIIHdg',
-    authDomain: 'firechat-3b654.firebaseapp.com',
-    databaseURL:
-      'https://firechat-3b654-default-rtdb.europe-west1.firebasedatabase.app',
-    projectId: 'firechat-3b654',
-    storageBucket: 'firechat-3b654.appspot.com',
-    messagingSenderId: '273644625627',
-    appId: '1:273644625627:web:e1ae7d00a3e70bd937f6fe',
-    measurementId: 'G-DJGSVHN3CW',
-  },
+  production: false,
   appwrite: {
     APP_ENDPOINT: 'https://db.languagexchange.net/v1',
     APP_PROJECT: '650750d21e4a6a589be3',
@@ -24,7 +14,6 @@ export const environment = {
     LANGUAGES_COLLECTION: '6511599e2bf0bb1b4d2c',
     USER_BUCKET: '6515f94d20becd47cb40',
   },
-  production: false,
   url: {
     HOMEPAGE_URL: 'http://localhost:8100/',
     RESET_PASSWORD_URL: 'http://localhost:8100/login/reset-password/new',
