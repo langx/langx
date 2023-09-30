@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -17,7 +17,7 @@ export class LanguagesPage implements OnInit {
   isLoading: boolean = false;
 
   constructor(
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private userService: UserService,
     private languageService: LanguageService,
     private toastController: ToastController,
@@ -32,7 +32,7 @@ export class LanguagesPage implements OnInit {
     //showLoader();
     this.isLoading = true;
 
-    this.auth2Service
+    this.authService
       .getUser()
       .subscribe((cUser) => {
         if (cUser) {

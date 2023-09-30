@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-new',
@@ -24,7 +24,7 @@ export class NewPage implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private toastController: ToastController
   ) {}
 
@@ -82,7 +82,7 @@ export class NewPage implements OnInit {
       return;
     }
 
-    this.auth2Service
+    this.authService
       .updateRecovery(this.id, this.secret, this.form.value.password)
       .then((response) => {
         console.log(response);

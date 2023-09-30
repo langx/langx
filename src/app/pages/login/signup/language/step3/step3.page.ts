@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { languagesData } from 'src/app/extras/data';
 import { AlertController } from '@ionic/angular';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
 
@@ -23,7 +23,7 @@ export class Step3Page implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private alertController: AlertController,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private languageService: LanguageService,
     private userService: UserService
   ) {}
@@ -80,7 +80,7 @@ export class Step3Page implements OnInit {
     let user: any;
     let languageArray: Array<string> = [];
 
-    this.auth2Service
+    this.authService
       .getUser()
       .subscribe((u) => {
         user = u;

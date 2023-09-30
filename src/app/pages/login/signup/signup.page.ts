@@ -3,7 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-signup',
@@ -17,7 +17,7 @@ export class SignupPage implements OnInit {
 
   constructor(
     private router: Router,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private alertController: AlertController
   ) {}
 
@@ -55,11 +55,11 @@ export class SignupPage implements OnInit {
   registerWithAuth2(form: FormGroup) {
     this.isLoading = true;
 
-    this.auth2Service
+    this.authService
       .register(form.value.email, form.value.password, form.value.name)
       .subscribe((user: any) => {
         console.log('user:', user);
-        this.auth2Service
+        this.authService
           .isLoggedIn()
           .then((isLoggedIn) => {
             if (isLoggedIn) {

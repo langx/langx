@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import {
@@ -28,7 +28,7 @@ export class FiltersPage implements OnInit {
   filterData: FilterData = {} as FilterData;
 
   constructor(
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private navCtrl: NavController,
     private router: Router,
     private filterService: FilterService,
@@ -42,7 +42,7 @@ export class FiltersPage implements OnInit {
   }
 
   async getUserData() {
-    this.userService.getUserDoc(this.auth2Service.getUserId()).then((user) => {
+    this.userService.getUserDoc(this.authService.getUserId()).then((user) => {
       this.cUserDoc = user;
       console.log(user);
     });

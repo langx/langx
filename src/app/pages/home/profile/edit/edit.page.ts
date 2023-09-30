@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 
@@ -27,7 +27,7 @@ export class EditPage implements OnInit {
   uploadedImageURL: string = '';
 
   constructor(
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private userService: UserService,
     private languageService: LanguageService,
     private toastController: ToastController,
@@ -44,7 +44,7 @@ export class EditPage implements OnInit {
     //showLoader();
     this.isLoading = true;
 
-    this.cUserId = this.auth2Service.getUserId();
+    this.cUserId = this.authService.getUserId();
     this.userService.getUserDoc(this.cUserId).then((user) => {
       this.cUserDoc = user;
       console.log(user);
