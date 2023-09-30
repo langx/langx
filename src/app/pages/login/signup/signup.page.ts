@@ -49,10 +49,10 @@ export class SignupPage implements OnInit {
       return;
     }
 
-    this.registerWithAuth2(this.form);
+    this.register(this.form);
   }
 
-  registerWithAuth2(form: FormGroup) {
+  register(form: FormGroup) {
     this.isLoading = true;
 
     this.authService
