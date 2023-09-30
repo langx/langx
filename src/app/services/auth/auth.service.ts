@@ -130,10 +130,7 @@ export class AuthService {
       });
   }
 
-  // TODO: #144 Replace Auth2.Service with Auth.Service
-
   // OPTIONAL: Login with Magic Link (createMagicSession)
-
   // Not needed to login anonymously
   /*
   anonLogin(name: string) {
