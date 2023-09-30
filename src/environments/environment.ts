@@ -3,6 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  production: false,
   appwrite: {
     APP_ENDPOINT: 'https://db.languagexchange.net/v1',
     APP_PROJECT: '650750d21e4a6a589be3',
@@ -13,7 +14,6 @@ export const environment = {
     LANGUAGES_COLLECTION: '6511599e2bf0bb1b4d2c',
     USER_BUCKET: '6515f94d20becd47cb40',
   },
-  production: false,
   url: {
     HOMEPAGE_URL: 'http://localhost:8100/',
     RESET_PASSWORD_URL: 'http://localhost:8100/login/reset-password/new',
