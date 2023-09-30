@@ -138,7 +138,7 @@ export class Auth2Service {
   }
 
   // TODO: #144 Replace Auth2.Service with Auth.Service
-  // TODO: Remove Api.Service After above Google Auth replacement
+  // TODO: Replace appwrite.service with api.service
 
   // OPTIONAL: Login with Magic Link (createMagicSession)
 
