@@ -96,15 +96,27 @@ export class Auth2Service {
     }
   }
 
-  // TODO: #149 Login with Google (signInWithGoogle)
+  // TODO: #149 Login with Google (createOAuth2Session)
+  async signInWithGoogle() {
+    console.log('signInWithGoogle');
+    this.appwrite.account.createOAuth2Session(
+      'google',
+      //environment.url.SIGNUP_COMPLETE_URL,
+      environment.url.LOGIN_URL,
+      environment.url.LOGIN_URL
+    );
+    const session = await this.appwrite.account.getSession('current');
+
+    // Provider information
+    console.log(session.provider);
+    console.log(session.providerUid);
+    console.log(session.providerAccessToken);
+  }
 
   resetPassword(email: string) {
     console.log('resetPassword:', email);
     return this.appwrite.account
-      .createRecovery(
-        email,
-        `${environment.url.HOMEPAGE_URL}login/reset-password/new`
-      )
+      .createRecovery(email, environment.url.RESET_PASSWORD_URL)
       .then((response) => {
         console.log('Recovery email sent', response);
       })
@@ -126,7 +138,7 @@ export class Auth2Service {
   }
 
   // TODO: #144 Replace Auth2.Service with Auth.Service
-  // TODO: #144 Remove Api.Service After above replacement
+  // TODO: Remove Api.Service After above Google Auth replacement
 
   // OPTIONAL: Login with Magic Link (createMagicSession)
 
