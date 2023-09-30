@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FilterData } from '../filter/filter.service';
-import { AppwriteService } from '../appwrite/appwrite.service';
+import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { Auth2Service } from '../auth/auth2.service';
@@ -15,7 +15,7 @@ export class UserService {
   lastVisible: any;
 
   constructor(
-    private appwrite: AppwriteService,
+    private appwrite: ApiService,
     private auth2Service: Auth2Service,
     private storage: StorageService
   ) {}

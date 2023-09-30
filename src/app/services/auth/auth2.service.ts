@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppwriteService } from '../appwrite/appwrite.service';
+import { ApiService } from '../api/api.service';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -12,7 +12,7 @@ export class Auth2Service {
     null
   );
 
-  constructor(private appwrite: AppwriteService) {}
+  constructor(private appwrite: ApiService) {}
 
   //
   // USER DATA
