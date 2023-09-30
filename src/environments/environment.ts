@@ -27,6 +27,10 @@ export const environment = {
   production: false,
   url: {
     HOMEPAGE_URL: 'http://localhost:8100/',
+    RESET_PASSWORD_URL: 'http://localhost:8100/login/reset-password/new',
+    HOME_URL: 'http://localhost:8100/home',
+    LOGIN_URL: 'http://localhost:8100/login',
+    SIGNUP_COMPLETE_URL: 'http://localhost:8100/login/signup/complete',
   },
 };
 
