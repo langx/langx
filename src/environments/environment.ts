@@ -25,6 +25,13 @@ export const environment = {
     USER_BUCKET: '6515f94d20becd47cb40',
   },
   production: false,
+  url: {
+    HOMEPAGE_URL: 'http://localhost:8100/',
+    RESET_PASSWORD_URL: 'http://localhost:8100/login/reset-password/new',
+    HOME_URL: 'http://localhost:8100/home',
+    LOGIN_URL: 'http://localhost:8100/login',
+    SIGNUP_COMPLETE_URL: 'http://localhost:8100/login/signup/complete',
+  },
 };
 
 /*

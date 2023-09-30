@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AppwriteService } from '../appwrite/appwrite.service';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -78,6 +79,7 @@ export class Auth2Service {
       this._user.next(user);
       return true;
     } catch (e) {
+      this._user.next(null);
       console.error('Error while checking if user is logged in:', e);
       return false;
     }
@@ -94,12 +96,49 @@ export class Auth2Service {
     }
   }
 
-  // TODO: #149 Login with Google (signInWithGoogle)
+  // TODO: #149 Login with Google (createOAuth2Session)
+  async signInWithGoogle() {
+    console.log('signInWithGoogle');
+    this.appwrite.account.createOAuth2Session(
+      'google',
+      //environment.url.SIGNUP_COMPLETE_URL,
+      environment.url.LOGIN_URL,
+      environment.url.LOGIN_URL
+    );
+    const session = await this.appwrite.account.getSession('current');
 
-  // TODO: #150 Reset Password
+    // Provider information
+    console.log(session.provider);
+    console.log(session.providerUid);
+    console.log(session.providerAccessToken);
+  }
+
+  resetPassword(email: string) {
+    console.log('resetPassword:', email);
+    return this.appwrite.account
+      .createRecovery(email, environment.url.RESET_PASSWORD_URL)
+      .then((response) => {
+        console.log('Recovery email sent', response);
+      })
+      .catch((error) => {
+        console.log('Error sending recovery email', error);
+      });
+  }
+
+  updateRecovery(userId: string, secret: string, password: string) {
+    return this.appwrite.account
+      .updateRecovery(userId, secret, password, password)
+      .then((response) => {
+        console.log('Recovery successfully updated', response);
+      })
+      .catch((error) => {
+        console.log('Error updating recovery', error);
+        return error;
+      });
+  }
 
   // TODO: #144 Replace Auth2.Service with Auth.Service
-  // TODO: #144 Remove Api.Service After above replacement
+  // TODO: Remove Api.Service After above Google Auth replacement
 
   // OPTIONAL: Login with Magic Link (createMagicSession)
 

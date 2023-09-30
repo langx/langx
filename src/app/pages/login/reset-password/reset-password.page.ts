@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { ToastController } from '@ionic/angular';
+import { Auth2Service } from 'src/app/services/auth/auth2.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -15,8 +15,8 @@ export class ResetPasswordPage implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    private alertController: AlertController
+    private auth2Service: Auth2Service,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -32,40 +32,48 @@ export class ResetPasswordPage implements OnInit {
   }
 
   onSubmit() {
-    if (!this.form.valid) return;
+    if (!this.form.valid) {
+      this.presentToast('Please fill the form with valid email', 'danger');
+      return;
+    }
     this.resetPassword(this.form);
   }
 
-  // TODO: #129 Convert to Appwrite with SMTP setup
   resetPassword(form: FormGroup) {
     // showLoader();
     this.isLoading = true;
     console.log(form.value);
-    this.authService
+    this.auth2Service
       .resetPassword(form.value.email)
       .then((data: any) => {
         // hideLoader();
         this.isLoading = false;
         form.reset();
         let msg: string = 'Please check your email';
-        this.showAlert(msg);
-        this.router.navigateByUrl('/home');
+        this.presentToast(msg);
+        this.router.navigateByUrl('/login');
       })
       .catch((e) => {
         console.log('error:', e);
         // hideLoader();
         this.isLoading = false;
         let msg: string = 'Could not send reset email, please try again.';
-        this.showAlert(msg);
+        this.presentToast(msg, 'danger');
       });
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }
