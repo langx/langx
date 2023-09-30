@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppwriteService } from '../appwrite/appwrite.service';
+import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { BehaviorSubject } from 'rxjs';
@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 export class MessageService {
   messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-  constructor(private appwrite: AppwriteService) {}
+  constructor(private appwrite: ApiService) {}
 
   // Listen to messages in a room
   listenMessages(roomID: string) {

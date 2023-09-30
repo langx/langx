@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Storage } from 'appwrite';
-import { AppwriteService } from '../appwrite/appwrite.service';
+import { ApiService } from '../api/api.service';
 import { Storage as localStorage } from '@ionic/storage-angular';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class StorageService {
   storage: Storage;
 
   constructor(
-    private appwrite: AppwriteService,
+    private appwrite: ApiService,
     private localStorage: localStorage
   ) {
     this.initStorage();

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppwriteService } from '../appwrite/appwrite.service';
+import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { Auth2Service } from '../auth/auth2.service';
@@ -10,7 +10,7 @@ import { UserService } from '../user/user.service';
 })
 export class RoomService {
   constructor(
-    private appwrite: AppwriteService,
+    private appwrite: ApiService,
     private auth2Service: Auth2Service,
     private userService: UserService
   ) {}

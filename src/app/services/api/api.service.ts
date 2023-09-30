@@ -5,7 +5,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class AppwriteService {
+export class ApiService {
   client: Client = new Client();
   database: Databases;
   account: Account;

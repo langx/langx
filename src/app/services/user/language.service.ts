@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AppwriteService } from '../appwrite/appwrite.service';
+import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { ID } from 'appwrite';
 
@@ -7,7 +7,7 @@ import { ID } from 'appwrite';
   providedIn: 'root',
 })
 export class LanguageService {
-  constructor(private appwrite: AppwriteService) {}
+  constructor(private appwrite: ApiService) {}
 
   getLanguageDoc(uid: string): Promise<any> {
     return this.appwrite.getDocument(
