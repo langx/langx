@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -15,7 +15,7 @@ export class ResetPasswordPage implements OnInit {
 
   constructor(
     private router: Router,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private toastController: ToastController
   ) {}
 
@@ -43,7 +43,7 @@ export class ResetPasswordPage implements OnInit {
     // showLoader();
     this.isLoading = true;
     console.log(form.value);
-    this.auth2Service
+    this.authService
       .resetPassword(form.value.email)
       .then((data: any) => {
         // hideLoader();

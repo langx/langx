@@ -4,7 +4,7 @@ import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { getAge } from 'src/app/extras/utils';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class CompletePage implements OnInit {
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private userService: UserService
   ) {}
 
@@ -132,7 +132,7 @@ export class CompletePage implements OnInit {
     console.log('data:', data);
 
     let user: any;
-    this.auth2Service
+    this.authService
       .getUser()
       .subscribe((u) => {
         user = u;
@@ -152,7 +152,7 @@ export class CompletePage implements OnInit {
 
     this.userService.createUserDoc(user.$id, data).then((userDoc: any) => {
       console.log('userDoc:', userDoc);
-      this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+      this.authService.isLoggedIn().then((isLoggedIn) => {
         if (isLoggedIn) {
           this.router.navigateByUrl('/login/signup/language');
           // TODO: to make form empty, it has to be tested

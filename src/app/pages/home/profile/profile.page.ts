@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
@@ -49,7 +49,7 @@ export class ProfilePage implements OnInit {
 
   constructor(
     private router: Router,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private userService: UserService,
     private modalCtrl: ModalController
   ) {}
@@ -62,7 +62,7 @@ export class ProfilePage implements OnInit {
     //showLoader();
     this.isLoading = true;
 
-    this.auth2Service
+    this.authService
       .getUser()
       .subscribe((cUser) => {
         if (cUser) {
@@ -100,7 +100,7 @@ export class ProfilePage implements OnInit {
     try {
       //showLoader();
       this.isLoading = true;
-      await this.auth2Service.logout();
+      await this.authService.logout();
       this.router.navigateByUrl('/login', { replaceUrl: true });
       //hideLoader();
       this.isLoading = false;

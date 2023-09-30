@@ -3,7 +3,7 @@ import { FilterData } from '../filter/filter.service';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
-import { Auth2Service } from '../auth/auth2.service';
+import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class UserService {
 
   constructor(
     private api: ApiService,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private storage: StorageService
   ) {}
 
@@ -45,7 +45,7 @@ export class UserService {
     const queries: any[] = [];
 
     // Query for users that are not the current user
-    queries.push(Query.notEqual('$id', this.auth2Service.getUserId()));
+    queries.push(Query.notEqual('$id', this.authService.getUserId()));
 
     // Query for users descending by last seen
     // TODO: Update this filter for this after presence is implemented

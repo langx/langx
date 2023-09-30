@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +17,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     private router: Router,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private alertController: AlertController
   ) {}
 
@@ -44,11 +44,11 @@ export class LoginPage implements OnInit {
   login(form: FormGroup) {
     this.isLoading = true;
 
-    this.auth2Service
+    this.authService
       .login(form.value.email, form.value.password)
       .subscribe((user: any) => {
         console.log('user:', user);
-        this.auth2Service.isLoggedIn().then((isLoggedIn) => {
+        this.authService.isLoggedIn().then((isLoggedIn) => {
           if (isLoggedIn) {
             this.router.navigateByUrl('/home');
           } else {
@@ -68,7 +68,7 @@ export class LoginPage implements OnInit {
   // Website -> mydomain.com or myapp.mydomain.com
   // More: https://github.com/appwrite/appwrite/issues/1203
   signInWithGoogle() {
-    this.auth2Service.signInWithGoogle().then((userId: any) => {
+    this.authService.signInWithGoogle().then((userId: any) => {
       console.log('userId:', userId);
       /*
       this.auth2Service.isLoggedIn().then((isLoggedIn) => {

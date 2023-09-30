@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 
 @Component({
@@ -32,7 +32,7 @@ export class ChatPage implements OnInit {
 
   constructor(
     private messageService: MessageService,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -57,7 +57,7 @@ export class ChatPage implements OnInit {
     if (data?.uid) this.uid = data.uid;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     this.roomId = chatRoomId;
-    this.currentUserId = this.auth2Service.getUserId();
+    this.currentUserId = this.authService.getUserId();
   }
 
   addMessage() {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { lastSeen } from 'src/app/extras/utils';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
   selector: 'app-account',
@@ -11,7 +11,7 @@ export class AccountPage implements OnInit {
   cUserSession: any;
   isLoading: boolean = false;
 
-  constructor(private auth2Service: Auth2Service) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.getProfileInfo();
@@ -21,7 +21,7 @@ export class AccountPage implements OnInit {
     //TODO: showLoader();
     this.isLoading = true;
 
-    this.auth2Service
+    this.authService
       .getUser()
       .subscribe((cUser) => {
         if (cUser) {

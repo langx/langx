@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
-import { Auth2Service } from '../auth/auth2.service';
+import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
 
 @Injectable({
@@ -11,12 +11,12 @@ import { UserService } from '../user/user.service';
 export class RoomService {
   constructor(
     private api: ApiService,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private userService: UserService
   ) {}
 
   async checkRoom(userId: string): Promise<any> {
-    let cUserId = this.auth2Service.getUserId();
+    let cUserId = this.authService.getUserId();
     console.log('checkRoom: ', cUserId, userId);
 
     const promise = this.api.listDocuments(

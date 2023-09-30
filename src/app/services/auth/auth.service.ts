@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class Auth2Service {
+export class AuthService {
   private _user = new BehaviorSubject<Models.User<Models.Preferences> | null>(
     null
   );

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { lastSeen } from 'src/app/extras/utils';
-import { Auth2Service } from 'src/app/services/auth/auth2.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class MessagesPage implements OnInit {
 
   constructor(
     private router: Router,
-    private auth2Service: Auth2Service,
+    private authService: AuthService,
     private roomService: RoomService
   ) {}
 
@@ -30,7 +30,7 @@ export class MessagesPage implements OnInit {
   }
 
   getRooms() {
-    const cUserId = this.auth2Service.getUserId();
+    const cUserId = this.authService.getUserId();
     this.roomService.getRooms(cUserId).then((data) => {
       // Last message of every room
       data.documents.forEach((room) => {
