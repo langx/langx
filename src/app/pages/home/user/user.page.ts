@@ -30,7 +30,6 @@ export class UserPage implements OnInit {
   }
 
   async getUserData() {
-    // getting user data from the database while using getUserData() method in auth.service.ts
     await this.userService
       .getUserDoc(this.userId)
       .then((user) => {
