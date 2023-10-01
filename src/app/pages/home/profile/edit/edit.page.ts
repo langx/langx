@@ -192,15 +192,18 @@ export class EditPage implements OnInit {
   async deleteOtherPhotos(image) {
     this.isLoading = true;
 
-    this.cUserDoc.otherPhotos = this.cUserDoc.otherPhotos.filter(
+    const newOtherPhotos = this.cUserDoc.otherPhotos.filter(
       (item) => item !== image
     );
 
     await this.userService
       .updateUserDoc(this.cUserId, {
-        otherPhotos: this.cUserDoc.otherPhotos,
+        otherPhotos: newOtherPhotos,
       })
       .then(() => {
+        // Update Markup cUserDoc
+        this.updateOtherPhotos(newOtherPhotos);
+        // DONE: Delete the image from storage
         this.presentToast('Picture removed from Other Photos.');
         this.isLoading = false;
       })
@@ -208,6 +211,10 @@ export class EditPage implements OnInit {
         console.log(error);
         this.isLoading = false;
       });
+  }
+
+  async updateOtherPhotos(newOtherPhotos) {
+    this.cUserDoc.otherPhotos = newOtherPhotos;
   }
 
   //
