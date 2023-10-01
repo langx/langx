@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,13 +13,39 @@ import { StorageService } from '../storage/storage.service';
 export class UserService {
   NUMBER_OF_USERS_PER_PAGE = 10;
 
-  lastVisible: any;
+  //TODO : Add model for user here
+  private userDoc = new BehaviorSubject<any>(null);
 
   constructor(
     private api: ApiService,
     private authService: AuthService,
     private storage: StorageService
   ) {}
+
+  getEvent(): BehaviorSubject<any> {
+    return this.userDoc;
+  }
+
+  setEvent(user: any): void {
+    this.userDoc.next(user);
+  }
+
+  // Listen to user
+  listenUserDoc(userid: string) {
+    const client = this.api.client$();
+    return client.subscribe(
+      'databases.' +
+        environment.appwrite.APP_DATABASE +
+        '.collections.' +
+        environment.appwrite.USERS_COLLECTION +
+        '.documents.' +
+        userid,
+      (response) => {
+        console.log(response.payload);
+        this.setEvent(response.payload);
+      }
+    );
+  }
 
   getUserDoc(uid: string): Promise<any> {
     return this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid);
