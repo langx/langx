@@ -88,6 +88,7 @@ export class ProfilePage implements OnInit {
     });
 
     // Listen to user that is logged in
+    // Created 2 Subscriptions
     this.userServiceFn = this.userService.listenUserDoc(this.cUserSession.$id);
     this.listenUserDoc();
 
