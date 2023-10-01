@@ -268,13 +268,9 @@ export class EditPage implements OnInit {
     this.languageService
       .deleteLanguageDoc(language.$id)
       .then((res) => {
-        this.presentToast(`${language.name} language deleted.`);
-        this.cUserDoc.languages = this.cUserDoc.languages.filter(
-          (lang) => lang.$id !== language.$id
-        );
 
         // Filter out the language from the array
-        this.cUserDoc.languages = this.cUserDoc.languages.filter(
+        const newLanguages = this.cUserDoc.languages.filter(
           (lang) => lang.$id !== language.$id
         );
         // Update languageArray
@@ -288,9 +284,12 @@ export class EditPage implements OnInit {
             languageArray: this.cUserDoc.languageArray,
           })
           .then(() => {
+            this.updateLanguages(newLanguages);
+            this.presentToast(`${language.name} language deleted.`);
             console.log('Language Array Updated');
           })
           .catch((error) => {
+            this.presentToast('Please try again later.', 'danger');
             console.log(error);
           });
         // Hide Loading
@@ -300,6 +299,10 @@ export class EditPage implements OnInit {
         console.log(error);
         this.presentToast('Please try again later.', 'danger');
       });
+  }
+
+  async updateLanguages(newLanguages) {
+    this.cUserDoc.languages = newLanguages;
   }
 
   //
