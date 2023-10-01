@@ -11,7 +11,7 @@ import { UserService } from 'src/app/services/user/user.service';
   styleUrls: ['./next.page.scss'],
 })
 export class NextPage implements OnInit {
-  cUserSession: any;
+  cUserId: string;
   cUserDoc: any;
 
   isLoading: boolean = false;
@@ -35,18 +35,9 @@ export class NextPage implements OnInit {
   }
 
   getProfileInfo() {
-    this.authService
-      .getUser()
-      .subscribe((cUser) => {
-        if (cUser) {
-          console.log(cUser);
-          this.cUserSession = cUser;
-        }
-      })
-      .unsubscribe();
-    // TODO: Unsubscribe may not be necessary to update the user info
+    this.cUserId = this.authService.getUserId();
 
-    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
+    this.userService.getUserDoc(this.cUserId).then((user) => {
       this.cUserDoc = user;
       console.log(user);
     });
@@ -64,7 +55,7 @@ export class NextPage implements OnInit {
     }
 
     let data = {
-      userId: this.cUserSession.$id,
+      userId: this.cUserId,
       name: this.selectedLanguage.name,
       nativeName: this.selectedLanguage.nativeName,
       code: this.selectedLanguage.code,
@@ -95,7 +86,7 @@ export class NextPage implements OnInit {
 
         // Update user doc with new languageArray
         this.userService
-          .updateUserDoc(this.cUserSession.$id, {
+          .updateUserDoc(this.cUserId, {
             languageArray: this.cUserDoc.languageArray,
           })
           .then(() => {
