@@ -5,6 +5,7 @@ import { IonModal, ModalController } from '@ionic/angular';
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { UserService } from 'src/app/services/user/user.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -47,6 +48,9 @@ export class ProfilePage implements OnInit {
 
   isLoading: boolean = false;
 
+  userServiceFn: Function;
+  userDoc$: Subscription;
+
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -56,6 +60,11 @@ export class ProfilePage implements OnInit {
 
   ngOnInit() {
     this.getProfileInfo();
+  }
+
+  ngOnDestroy() {
+    this.userServiceFn(); // Unsubscribe to userService Listener
+    this.userDoc$.unsubscribe(); // Unsubscribe to userDoc
   }
 
   async getProfileInfo() {
@@ -78,12 +87,21 @@ export class ProfilePage implements OnInit {
       console.log(user);
     });
 
+    // Listen to user that is logged in
+    this.userServiceFn = this.userService.listenUserDoc(this.cUserSession.$id);
+    this.listenUserDoc();
+
     //hideLoader();
     this.isLoading = false;
   }
 
-  ngOnDestroy() {
-    // this.cUser.unsubscribe();
+  listenUserDoc() {
+    this.userDoc$ = this.userService.getEvent().subscribe((user) => {
+      if (user) {
+        this.cUserDoc = user;
+        console.log('Subscribed user: ', this.cUserDoc);
+      }
+    });
   }
 
   getAccountPage(page) {
