@@ -70,6 +70,7 @@ export class MessageService {
       }
     );
     // Listen for new messages
+    // #139 it is not closing the subscription
     this.listenMessages(roomId);
   }
 
