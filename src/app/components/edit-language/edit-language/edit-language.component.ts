@@ -24,6 +24,7 @@ export class EditLanguageComponent implements OnInit {
   }
 
   // TODO: Focus here #158
+  // Test issue link with PR to auto close
   newLangBtn() {
     this.router.navigate(['/home/profile/edit/languages/new'], {
       state: this.languages.map((lang) => lang.code),
