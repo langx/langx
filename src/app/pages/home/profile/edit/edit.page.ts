@@ -265,7 +265,7 @@ export class EditPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: AddLanguageComponent,
       componentProps: {
-        languages: this.getStudyLanguages(),
+        languageArray: this.cUserDoc.languageArray,
         onClick: eventEmitter,
       },
     });
