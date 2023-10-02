@@ -86,7 +86,6 @@ export class RoomService {
   }
 
   // TODO: #169 listen to room changes for messages.page.ts.
-  // IDEA: use items collection, it will be relational one to many attribute which is named with the room id array
   listenRooms() {
     const client = this.api.client$();
     return client.subscribe('documents', (response) => {
@@ -94,7 +93,7 @@ export class RoomService {
         response.events.includes(
           'databases.*.collections.' +
             environment.appwrite.ROOMS_COLLECTION +
-            '.documents.*'
+            '.documents'
         )
       ) {
         console.log(response.payload);
