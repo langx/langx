@@ -91,13 +91,18 @@ export class NextPage implements OnInit {
           })
           .then(() => {
             console.log('Language Array Updated');
+            this.presentToast('Language added.');
+            // TODO: This is for ngInit to work again in edit.page.ts
+            const min = 1; const max = 100000;
+            const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+            this.router.navigate([
+              '/home/profile/edit',
+              { randomNum: randomNum },
+            ]);
           })
           .catch((error) => {
             console.log(error);
           });
-
-        this.presentToast('Language added.');
-        this.router.navigate(['/home/profile/edit']);
       })
       .catch((error) => {
         console.log(error);
