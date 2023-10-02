@@ -8,11 +8,6 @@ const routes: Routes = [
     path: '',
     component: EditPage,
   },
-  {
-    path: 'languages',
-    loadChildren: () =>
-      import('./languages/languages.module').then((m) => m.LanguagesPageModule),
-  },
 ];
 
 @NgModule({
