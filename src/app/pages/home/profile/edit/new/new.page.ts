@@ -21,6 +21,10 @@ export class NewPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.filterLanuages();
+  }
+
+  filterLanuages() {
     const languagesArray: any = this.router.getCurrentNavigation().extras.state;
 
     // remove languages already selected
@@ -38,6 +42,7 @@ export class NewPage implements OnInit {
     this.router.navigate(['/home/profile/edit/new/next'], {
       state: this.selectedLanguage,
     });
+    this.resetForm();
   }
 
   changeLang(event) {
@@ -47,6 +52,13 @@ export class NewPage implements OnInit {
         this.selectedLanguage = language;
       }
     });
+  }
+
+  // TODO: It has bugs to oepn the modal again after closing it.
+  resetForm() {
+    this.searchTerm = null;
+    this.languageData = null;
+    this.selectedLanguage = null;
   }
 
   //
