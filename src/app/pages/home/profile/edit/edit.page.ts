@@ -7,11 +7,14 @@ import {
   ModalController,
   ToastController,
 } from '@ionic/angular';
-import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
+// Service Imports
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
+
+// Component Imports
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
