@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -14,7 +13,7 @@ export class EditLanguageComponent implements OnInit {
 
   isLoading: boolean = false;
 
-  constructor(private router: Router, private modalCtrl: ModalController) {}
+  constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {}
 
@@ -25,6 +24,7 @@ export class EditLanguageComponent implements OnInit {
 
   close() {
     // TODO: set modalDirection animate back, not backdown
+    // IDEA: OR otherwise with no backbutton, only cross button!
     this.modalCtrl.dismiss();
   }
 }
