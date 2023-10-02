@@ -7,12 +7,16 @@ import {
   ModalController,
   ToastController,
 } from '@ionic/angular';
-import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
+// Service Imports
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
+
+// Component Imports
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
+import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
 @Component({
   selector: 'app-edit',
@@ -250,6 +254,80 @@ export class EditPage implements OnInit {
 
   getStudyLanguages() {
     return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  }
+
+  async addLanguage() {
+    const eventEmitter = new EventEmitter();
+    eventEmitter.subscribe((selectedLanguage) => {
+      let data = {
+        userId: this.cUserId,
+        name: selectedLanguage.name,
+        nativeName: selectedLanguage.nativeName,
+        code: selectedLanguage.code,
+        level: selectedLanguage.level,
+        motherLanguage: false,
+      };
+
+      // If it length is 6, then don't let the user to add one more study language.
+      if (this.cUserDoc.languages.length >= 6) {
+        this.presentToast(
+          'You can add max 5 Study Languages. Please remove at least one and try again.',
+          'danger'
+        );
+        this.isLoading = false;
+        return;
+      }
+
+      // Check if the language is already added
+      if (this.cUserDoc.languageArray.includes(selectedLanguage.name)) {
+        this.presentToast('Language already added.', 'danger');
+        this.isLoading = false;
+        return;
+      }
+
+      this.languageService
+        .createLanguageDoc(data)
+        .then((res) => {
+          // Push the language data to the array
+          this.cUserDoc.languages.push(res);
+
+          // Update languageArray
+          const newLanguageArray = this.cUserDoc.languageArray;
+          if (!newLanguageArray.includes(data.name)) {
+            newLanguageArray.push(data.name);
+          }
+
+          // Update user doc with new languageArray
+          this.userService
+            .updateUserDoc(this.cUserId, {
+              languageArray: this.cUserDoc.languageArray,
+            })
+            .then(() => {
+              // Update languageArray
+              this.cUserDoc.languageArray = newLanguageArray;
+              console.log('Language Array Updated');
+              this.presentToast('Language added.');
+            })
+            .catch((error) => {
+              console.log(error);
+              this.presentToast('Please try again later.', 'danger');
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.presentToast('Please try again later.', 'danger');
+        });
+    });
+
+    const modal = await this.modalCtrl.create({
+      component: AddLanguageComponent,
+      componentProps: {
+        languageArray: this.cUserDoc.languageArray,
+        onClick: eventEmitter,
+      },
+    });
+
+    modal.present();
   }
 
   async editLanguages() {
