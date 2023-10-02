@@ -12,6 +12,7 @@ import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.com
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
+import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
 
 @Component({
   selector: 'app-edit',
@@ -251,8 +252,17 @@ export class EditPage implements OnInit {
     return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
   }
 
-  editLanguages() {
-    this.router.navigate(['/home/profile/edit/languages']);
+  async editLanguages() {
+    // this.router.navigate(['/home/profile/edit/languages']);
+
+    const modal = await this.modalCtrl.create({
+      component: EditLanguageComponent,
+      componentProps: {
+        languages: this.cUserDoc.languages,
+      },
+    });
+
+    modal.present();
   }
 
   deleteLanguage(language) {
@@ -268,7 +278,6 @@ export class EditPage implements OnInit {
     this.languageService
       .deleteLanguageDoc(language.$id)
       .then((res) => {
-
         // Filter out the language from the array
         const newLanguages = this.cUserDoc.languages.filter(
           (lang) => lang.$id !== language.$id
