@@ -289,7 +289,7 @@ export class EditPage implements OnInit {
         .createLanguageDoc(data)
         .then((res) => {
           // Push the language data to the array
-          this.cUserDoc.languages.push(data);
+          this.cUserDoc.languages.push(res);
 
           // Update languageArray
           const newLanguageArray = this.cUserDoc.languageArray;
