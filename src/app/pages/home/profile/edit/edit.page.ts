@@ -252,6 +252,12 @@ export class EditPage implements OnInit {
     return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
   }
 
+  addLanguage() {
+    this.router.navigate(['/home/profile/edit/languages/new'], {
+      state: this.cUserDoc.languages.map((lang) => lang.code),
+    });
+  }
+
   async editLanguages() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
