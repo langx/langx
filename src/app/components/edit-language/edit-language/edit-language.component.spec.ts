@@ -9,8 +9,8 @@ describe('EditLanguageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditLanguageComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [EditLanguageComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EditLanguageComponent);

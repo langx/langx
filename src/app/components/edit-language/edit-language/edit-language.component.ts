@@ -5,10 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './edit-language.component.html',
   styleUrls: ['./edit-language.component.scss'],
 })
-export class EditLanguageComponent  implements OnInit {
-
-  constructor() { }
+export class EditLanguageComponent implements OnInit {
+  constructor() {}
 
   ngOnInit() {}
-
 }
