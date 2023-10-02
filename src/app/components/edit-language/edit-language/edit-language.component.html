@@ -2,7 +2,10 @@
   <ion-toolbar>
     <ion-title>Edit Languages</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
+      <ion-back-button
+        (click)="close()"
+        defaultHref="/home/profile/edit"
+      ></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
@@ -22,7 +25,7 @@
 <ion-content [fullscreen]="true">
   <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
 
-  <ion-card *ngFor="let item of getStudyLanguages()">
+  <ion-card *ngFor="let item of languages">
     <ion-card-header>
       <ion-card-title>{{ item?.name }}</ion-card-title>
       <ion-card-subtitle>{{ item?.nativeName }}</ion-card-subtitle>
