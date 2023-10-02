@@ -13,6 +13,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
+import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
 @Component({
   selector: 'app-edit',
@@ -252,10 +253,27 @@ export class EditPage implements OnInit {
     return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
   }
 
-  addLanguage() {
+  async addLanguage() {
+    const eventEmitter = new EventEmitter();
+    eventEmitter.subscribe((selectedLanguage) => {
+      console.log(selectedLanguage);
+    });
+
+    const modal = await this.modalCtrl.create({
+      component: AddLanguageComponent,
+      componentProps: {
+        languages: this.getStudyLanguages(),
+        onClick: eventEmitter,
+      },
+    });
+
+    modal.present();
+
+    /*
     this.router.navigate(['/home/profile/edit/new'], {
       state: this.cUserDoc.languages.map((lang) => lang.code),
     });
+    */
   }
 
   async editLanguages() {
