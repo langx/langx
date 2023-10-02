@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
@@ -253,12 +253,32 @@ export class EditPage implements OnInit {
   }
 
   async editLanguages() {
-    // this.router.navigate(['/home/profile/edit/languages']);
+    const eventEmitter = new EventEmitter();
+    eventEmitter.subscribe((selectedLanguage) => {
+      console.log(selectedLanguage);
+      this.languageService
+        .updateLanguageDoc(selectedLanguage.$id, {
+          level: selectedLanguage.level,
+        })
+        .then(() => {
+          this.cUserDoc.languages.forEach((lang) => {
+            if (lang.code === selectedLanguage.code) {
+              lang.level = selectedLanguage.level;
+            }
+          });
+          this.presentToast(`${selectedLanguage?.name} updated`);
+        })
+        .catch((error) => {
+          this.presentToast('Please try again later', 'danger');
+          console.log(error);
+        });
+    });
 
     const modal = await this.modalCtrl.create({
       component: EditLanguageComponent,
       componentProps: {
-        languages: this.cUserDoc.languages,
+        languages: this.getStudyLanguages(),
+        onClick: eventEmitter,
       },
     });
 
