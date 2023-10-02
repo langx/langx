@@ -328,12 +328,6 @@ export class EditPage implements OnInit {
     });
 
     modal.present();
-
-    /*
-    this.router.navigate(['/home/profile/edit/new'], {
-      state: this.cUserDoc.languages.map((lang) => lang.code),
-    });
-    */
   }
 
   async editLanguages() {
