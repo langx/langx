@@ -253,7 +253,7 @@ export class EditPage implements OnInit {
   }
 
   addLanguage() {
-    this.router.navigate(['/home/profile/edit/languages/new'], {
+    this.router.navigate(['/home/profile/edit/new'], {
       state: this.cUserDoc.languages.map((lang) => lang.code),
     });
   }
