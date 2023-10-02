@@ -132,6 +132,7 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/', 'home', 'profile', 'edit']);
   }
 
+  // TODO: #168 Start slideshow from selected photo
   async openPreview(photos) {
     console.log(photos);
     const modal = await this.modalCtrl.create({
