@@ -9,9 +9,9 @@ const routes: Routes = [
     component: EditPage,
   },
   {
-    path: 'languages',
+    path: 'new',
     loadChildren: () =>
-      import('./languages/languages.module').then((m) => m.LanguagesPageModule),
+      import('./new/new.module').then((m) => m.NewPageModule),
   },
 ];
 

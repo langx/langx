@@ -35,7 +35,7 @@ export class NewPage implements OnInit {
       this.presentToast('Please select a language.', 'danger');
       return;
     }
-    this.router.navigate(['/home/profile/edit/languages/new/next'], {
+    this.router.navigate(['/home/profile/edit/new/next'], {
       state: this.selectedLanguage,
     });
   }
