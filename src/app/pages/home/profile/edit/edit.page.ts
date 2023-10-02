@@ -192,15 +192,18 @@ export class EditPage implements OnInit {
   async deleteOtherPhotos(image) {
     this.isLoading = true;
 
-    this.cUserDoc.otherPhotos = this.cUserDoc.otherPhotos.filter(
+    const newOtherPhotos = this.cUserDoc.otherPhotos.filter(
       (item) => item !== image
     );
 
     await this.userService
       .updateUserDoc(this.cUserId, {
-        otherPhotos: this.cUserDoc.otherPhotos,
+        otherPhotos: newOtherPhotos,
       })
       .then(() => {
+        // Update Markup cUserDoc
+        this.updateOtherPhotos(newOtherPhotos);
+        // DONE: Delete the image from storage
         this.presentToast('Picture removed from Other Photos.');
         this.isLoading = false;
       })
@@ -208,6 +211,10 @@ export class EditPage implements OnInit {
         console.log(error);
         this.isLoading = false;
       });
+  }
+
+  async updateOtherPhotos(newOtherPhotos) {
+    this.cUserDoc.otherPhotos = newOtherPhotos;
   }
 
   //
@@ -261,13 +268,9 @@ export class EditPage implements OnInit {
     this.languageService
       .deleteLanguageDoc(language.$id)
       .then((res) => {
-        this.presentToast(`${language.name} language deleted.`);
-        this.cUserDoc.languages = this.cUserDoc.languages.filter(
-          (lang) => lang.$id !== language.$id
-        );
 
         // Filter out the language from the array
-        this.cUserDoc.languages = this.cUserDoc.languages.filter(
+        const newLanguages = this.cUserDoc.languages.filter(
           (lang) => lang.$id !== language.$id
         );
         // Update languageArray
@@ -281,9 +284,12 @@ export class EditPage implements OnInit {
             languageArray: this.cUserDoc.languageArray,
           })
           .then(() => {
+            this.updateLanguages(newLanguages);
+            this.presentToast(`${language.name} language deleted.`);
             console.log('Language Array Updated');
           })
           .catch((error) => {
+            this.presentToast('Please try again later.', 'danger');
             console.log(error);
           });
         // Hide Loading
@@ -293,6 +299,10 @@ export class EditPage implements OnInit {
         console.log(error);
         this.presentToast('Please try again later.', 'danger');
       });
+  }
+
+  async updateLanguages(newLanguages) {
+    this.cUserDoc.languages = newLanguages;
   }
 
   //

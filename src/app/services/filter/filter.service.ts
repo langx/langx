@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+// TODO: Move interface to a models folder as a separate file
 export interface FilterData {
   languages: Array<string>;
   gender: string;
