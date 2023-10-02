@@ -2,10 +2,30 @@
   <ion-toolbar>
     <ion-title>New Language</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home/profile/edit"></ion-back-button>
+      <ion-button
+        (click)="close()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+      >
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
+        *ngIf="!isSubmit"
+        (click)="next()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        color="primary"
+      >
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        *ngIf="isSubmit"
         (click)="onSubmit()"
         expand="block"
         size="large"
@@ -19,14 +39,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content *ngIf="!isSubmit" class="ion-padding">
   <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search"></ion-searchbar>
   <ion-list>
     <ion-radio-group value="start" (ionChange)="changeLang($event)">
-      <ion-item *ngFor="let lang of languageData | customFilter: searchTerm">
-        <ion-radio value="{{ lang?.code }}" labelPlacement="start"
-          >{{ lang?.name }}</ion-radio
-        >
+      <ion-item *ngFor="let lang of languageData | customFilter : searchTerm">
+        <ion-radio value="{{ lang?.code }}" labelPlacement="start">{{
+          lang?.name
+        }}</ion-radio>
       </ion-item>
     </ion-radio-group>
   </ion-list>
@@ -34,10 +54,67 @@
     <ion-col>
       <ion-button
         *ngIf="!isLoading"
-        (click)="onSubmit()"
+        (click)="next()"
         color="primary"
         expand="block"
         >Next</ion-button
+      >
+      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-content *ngIf="isSubmit" class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>{{ selectedLanguage?.name }}</ion-card-title>
+      <ion-card-subtitle>{{ selectedLanguage?.nativeName }}</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      Choice your level of your {{ selectedLanguage?.name }}.
+    </ion-card-content>
+    <ion-grid>
+      <ion-radio-group (ionChange)="radioChecked($event)">
+        <ion-list class="hasIcon">
+          <ion-item>
+            <ion-icon
+              name="battery-dead-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
+            <ion-radio value="1"> Beginner</ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-icon
+              name="battery-half-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
+            <ion-radio value="2">Intermediate</ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-icon
+              name="battery-full-outline"
+              slot="start"
+              color="primary"
+            ></ion-icon>
+            <ion-radio value="3">Fluent</ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-radio-group>
+    </ion-grid>
+  </ion-card>
+
+  <ion-row>
+    <ion-col>
+      <ion-button
+        *ngIf="!isLoading"
+        (click)="onSubmit()"
+        color="primary"
+        expand="block"
+        >Done</ion-button
       >
       <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>

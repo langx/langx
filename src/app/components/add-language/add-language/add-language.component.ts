@@ -15,7 +15,8 @@ export class AddLanguageComponent implements OnInit {
   languageData: any;
   selectedLanguage: any;
 
-  isLoading: boolean = false;
+  isLoading: boolean = false; //TODO: Make it work
+  isSubmit: boolean = false;
 
   constructor(
     private toastController: ToastController,
@@ -35,22 +36,28 @@ export class AddLanguageComponent implements OnInit {
     console.log(this.languageData.length);
   }
 
-  onSubmit() {
+  next() {
     console.log('submit:' + this.selectedLanguage);
     if (!this.selectedLanguage) {
       this.presentToast('Please select a language.', 'danger');
       return;
     } else {
-      this.onClick.emit(this.selectedLanguage);
-      this.presentToast('Language added successfully.', 'success');
-      this.resetForm();
-      this.modalCtrl.dismiss();    }
-    /*
-    this.router.navigate(['/home/profile/edit/new/next'], {
-      state: this.selectedLanguage,
-    });
-    this.resetForm();
-    */
+      this.isSubmit = true;
+    }
+  }
+
+  onSubmit() {
+    if (!this.selectedLanguage.level) {
+      this.presentToast('Please select a level.', 'danger');
+      return;
+    }
+    this.onClick.emit(this.selectedLanguage);
+    this.close();
+  }
+
+  radioChecked(event) {
+    this.selectedLanguage.level = parseInt(event.detail.value);
+    console.log('radioChecked:' + this.selectedLanguage.level);
   }
 
   changeLang(event) {
@@ -62,11 +69,8 @@ export class AddLanguageComponent implements OnInit {
     });
   }
 
-  // TODO: It has bugs to oepn the modal again after closing it.
-  resetForm() {
-    this.searchTerm = null;
-    this.languageData = null;
-    this.selectedLanguage = null;
+  close() {
+    this.modalCtrl.dismiss();
   }
 
   //
