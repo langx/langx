@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { ID, Query } from 'appwrite';
+import { ID, Permission, Query, Role } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
 
@@ -69,11 +69,19 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
+  // TODO: Error: AppwriteException: Permissions must be one of: (any, users, user:6512ed1d95e48c227190, user:6512ed1d95e48c227190/unverified, users/unverified)
+  // Answer: Yes, you can use a team or an appwrite function
+  // https://discord.com/channels/564160730845151244/1158556321801588860
   createRoom(data: any): Promise<any> {
+    console.log(data);
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
-      data
+      data,
+      [
+        Permission.read(Role.user(data.users[0])),
+        Permission.read(Role.user(data.users[1])),
+      ]
     );
   }
 
@@ -88,16 +96,14 @@ export class RoomService {
   // TODO: #169 listen to room changes for messages.page.ts.
   listenRooms() {
     const client = this.api.client$();
-    return client.subscribe('documents', (response) => {
-      if (
-        response.events.includes(
-          'databases.*.collections.' +
-            environment.appwrite.ROOMS_COLLECTION +
-            '.documents'
-        )
-      ) {
+    return client.subscribe(
+      'databases.' +
+        environment.appwrite.APP_DATABASE +
+        '.collections.' +
+        environment.appwrite.ROOMS_COLLECTION,
+      (response) => {
         console.log(response.payload);
       }
-    });
+    );
   }
 }
