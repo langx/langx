@@ -54,13 +54,15 @@ export class ApiService {
   createDocument(
     collectionId: string,
     documentId: string,
-    data: any
+    data: any,
+    permissions?: string[],
   ): Promise<any> {
     return this.database.createDocument(
       environment.appwrite.APP_DATABASE,
       collectionId,
       documentId,
-      data
+      data,
+      permissions
     );
   }
 
