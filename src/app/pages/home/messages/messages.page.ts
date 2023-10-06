@@ -48,6 +48,9 @@ export class MessagesPage implements OnInit {
       this.chatRooms = data.documents;
       console.log('chatRooms: ', this.chatRooms);
     });
+    
+    // TODO: #169 listen rooms changes
+
   }
 
   getChat(room) {
