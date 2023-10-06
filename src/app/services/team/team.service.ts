@@ -20,7 +20,9 @@ export class TeamService {
     return this.api.teams.create(ID.unique(), name);
   }
 
-  updateMembership(teamId: string, user: string) {
-    return this.api.teams.updateMembership(teamId, user, []);
+  // TODO: There is an error when creating a membership
+  // You cannot create a membership for a team you are not a member of
+  createMembership(teamId: string, userId: string) {
+    return this.api.teams.createMembership(teamId, ['owner'], undefined, userId);
   }
 }
