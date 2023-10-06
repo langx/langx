@@ -13,6 +13,8 @@ export class MessagesPage implements OnInit {
   chatRooms: any;
   isLoading: boolean = false;
 
+  roomServiceFn: Function;
+
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
@@ -27,6 +29,12 @@ export class MessagesPage implements OnInit {
 
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
+    // Subscribe to roomService Listener
+    this.roomServiceFn = this.roomService.listenRooms();
+  }
+
+  ngOnDestroy() {
+    this.roomServiceFn(); // Unsubscribe to roomService Listener
   }
 
   getRooms() {

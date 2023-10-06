@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, Databases, Account } from 'appwrite';
+import { Client, Databases, Account, Teams } from 'appwrite';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,17 +9,20 @@ export class ApiService {
   client: Client = new Client();
   database: Databases;
   account: Account;
+  teams: Teams;
 
   constructor() {
     this.init();
-    this.database = new Databases(this.client);
-    this.account = new Account(this.client);
   }
 
   init(): void {
     this.client
       .setEndpoint(environment.appwrite.APP_ENDPOINT) // Your API Endpoint
       .setProject(environment.appwrite.APP_PROJECT); // Your project ID
+
+    this.database = new Databases(this.client);
+    this.account = new Account(this.client);
+    this.teams = new Teams(this.client);
   }
 
   // TODO: check if this is needed, or if we can use directly the this.client
@@ -54,13 +57,15 @@ export class ApiService {
   createDocument(
     collectionId: string,
     documentId: string,
-    data: any
+    data: any,
+    permissions?: string[]
   ): Promise<any> {
     return this.database.createDocument(
       environment.appwrite.APP_DATABASE,
       collectionId,
       documentId,
-      data
+      data,
+      permissions
     );
   }
 
