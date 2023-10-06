@@ -85,7 +85,6 @@ export class RoomService {
     );
   }
 
-  // TODO: #169 listen to room changes for messages.page.ts.
   listenRooms() {
     console.log('listenRooms started');
     const client = this.api.client$();

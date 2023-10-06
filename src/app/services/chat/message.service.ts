@@ -12,22 +12,6 @@ export class MessageService {
 
   constructor(private api: ApiService) {}
 
-  // Listen to messages in a room
-  listenMessages(roomID: string) {
-    const client = this.api.client$();
-    return client.subscribe(
-      'databases.' +
-        environment.appwrite.APP_DATABASE +
-        '.collections.' +
-        environment.appwrite.MESSAGES_COLLECTION +
-        '.documents',
-      (response) => {
-        console.log(response);
-        this.pushMessage(response.payload);
-      }
-    );
-  }
-
   // Push a message to the messages behavior subject
   pushMessage(message) {
     const currentMessages = this.messages.getValue();
@@ -69,9 +53,6 @@ export class MessageService {
         console.log(error); // Failure
       }
     );
-    // Listen for new messages
-    // #139 it is not closing the subscription
-    // this.listenMessages(roomId);
   }
 
   // Create a message
@@ -80,6 +61,23 @@ export class MessageService {
       environment.appwrite.MESSAGES_COLLECTION,
       ID.unique(),
       data
+    );
+  }
+
+  // Listen to messages in a room
+  listenMessages() {
+    console.log('listenMessages started');
+    const client = this.api.client$();
+    return client.subscribe(
+      'databases.' +
+        environment.appwrite.APP_DATABASE +
+        '.collections.' +
+        environment.appwrite.MESSAGES_COLLECTION +
+        '.documents',
+      (response) => {
+        console.log(response);
+        this.pushMessage(response.payload);
+      }
     );
   }
 }
