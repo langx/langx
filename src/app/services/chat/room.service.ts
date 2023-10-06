@@ -69,7 +69,7 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
-  async createRoom(data: any): Promise<any> {
+  createRoom(data: any): Promise<any> {
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
@@ -87,12 +87,14 @@ export class RoomService {
 
   // TODO: #169 listen to room changes for messages.page.ts.
   listenRooms() {
+    console.log('listenRooms started');
     const client = this.api.client$();
     return client.subscribe(
       'databases.' +
         environment.appwrite.APP_DATABASE +
         '.collections.' +
-        environment.appwrite.ROOMS_COLLECTION,
+        environment.appwrite.ROOMS_COLLECTION +
+        '.documents',
       (response) => {
         console.log(response.payload);
       }
