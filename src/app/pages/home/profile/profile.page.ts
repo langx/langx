@@ -60,6 +60,7 @@ export class ProfilePage implements OnInit {
 
   ngOnInit() {
     this.getProfileInfo();
+    // TODO: Subscribes may be here better. :92
   }
 
   ngOnDestroy() {

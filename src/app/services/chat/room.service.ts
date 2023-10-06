@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { ID, Query } from 'appwrite';
+import { ID, Permission, Query, Role } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
 
@@ -86,19 +86,18 @@ export class RoomService {
   }
 
   // TODO: #169 listen to room changes for messages.page.ts.
-  // IDEA: use items collection, it will be relational one to many attribute which is named with the room id array
   listenRooms() {
+    console.log('listenRooms started');
     const client = this.api.client$();
-    return client.subscribe('documents', (response) => {
-      if (
-        response.events.includes(
-          'databases.*.collections.' +
-            environment.appwrite.ROOMS_COLLECTION +
-            '.documents.*'
-        )
-      ) {
+    return client.subscribe(
+      'databases.' +
+        environment.appwrite.APP_DATABASE +
+        '.collections.' +
+        environment.appwrite.ROOMS_COLLECTION +
+        '.documents',
+      (response) => {
         console.log(response.payload);
       }
-    });
+    );
   }
 }
