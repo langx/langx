@@ -69,9 +69,6 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
-  // TODO: Error: AppwriteException: Permissions must be one of: (any, users, user:6512ed1d95e48c227190, user:6512ed1d95e48c227190/unverified, users/unverified)
-  // Answer: Yes, you can use a team or an appwrite function
-  // https://discord.com/channels/564160730845151244/1158556321801588860
   async createRoom(data: any): Promise<any> {
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
