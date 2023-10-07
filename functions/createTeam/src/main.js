@@ -1,14 +1,23 @@
-import { Client } from 'node-appwrite';
+import { Client, Databases, Teams, Users } from 'node-appwrite';
 
 // This is your Appwrite function
 // It's executed each time we get a request
 export default async ({ req, res, log, error }) => {
   // Why not try the Appwrite SDK?
   //
-  // const client = new Client()
-  //   .setEndpoint('https://cloud.appwrite.io/v1')
-  //   .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-  //   .setKey(process.env.APPWRITE_API_KEY);
+
+  const client = new Client()
+    .setEndpoint('https://db.languagexchange.net/v1')
+    .setProject('650750d21e4a6a589be3')
+    .setKey(
+      'e052b7a37cc5620a607b6c2ab701eb9c4456b029d1ff5c4346895877cb3a3a408a7e1fb02360c7091d20d73bfbe7fa4e607e155b37f4ba1ea982842618ad99e78e46cdef7bb7f0349ebf3a2ccca4d49dac9f3756283fd83e04aa46d1719a859f2c5dec2ab42efde53fa3c08ce207ecf9888b1005ba88ce5434cac3810ff1bacf'
+    );
+
+  const databases = new Databases(client);
+  const teams = new Teams(client);
+  const users = new Users(client);
+
+  log(req);
 
   // You can log messages to the console
   log('Hello, Logs!');
