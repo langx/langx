@@ -3,24 +3,6 @@
     "projectName": "languageXchange",
     "functions": [
         {
-            "$id": "testFunction",
-            "name": "testFunction",
-            "runtime": "node-16.0",
-            "execute": [],
-            "events": [],
-            "schedule": "",
-            "timeout": 15,
-            "enabled": true,
-            "logging": true,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "ignore": [
-                "node_modules",
-                ".npm"
-            ],
-            "path": "functions/testFunction"
-        },
-        {
             "$id": "createTeam",
             "name": "createTeam",
             "runtime": "node-16.0",
