@@ -17,14 +17,38 @@ export default async ({ req, res, log, error }) => {
   const teams = new Teams(client);
   const users = new Users(client);
 
-  log(req);
+  log(req.bodyRaw);
 
-  // You can log messages to the console
-  log('Hello, Logs!');
+  await teams
+    .create('teachers', 'Teachers', ['maths', 'sciences', 'arts', 'literature'])
+    .then((response) => {
+      log(response); // Success
 
-  // If something goes wrong, log an error
-  error('Hello, Errors!');
+      // Invalid `email` param: Value must be a valid email address
+      const promise = teams.createMembership(
+        'teachers',
+        ['maths'],
+        'ahmet@gmail.com',
+        '6512ecb2917a0cdb2be2',
+        undefined,
+        'localhost'
+      );
 
+      promise.then(
+        function (response) {
+          log(response); // Success
+        },
+        function (error) {
+          log(error); // Failure
+        }
+      );
+    })
+    .catch((e) => {
+      error(e); // Failure
+    });
+
+  const p = await teams.list();
+  log(p);
   // The `req` object contains the request data
   if (req.method === 'GET') {
     // Send a response with the res object helpers
