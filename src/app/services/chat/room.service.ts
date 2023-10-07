@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { ID, Permission, Query, Role } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
+import { TeamService } from '../team/team.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,8 @@ export class RoomService {
   constructor(
     private api: ApiService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private teamService: TeamService
   ) {}
 
   async checkRoom(userId: string): Promise<any> {
@@ -70,6 +72,12 @@ export class RoomService {
   }
 
   createRoom(data: any): Promise<any> {
+    // const teamName = data.users.join('-');
+    // this.teamService.createTeam(teamName).then((team) => {
+    //   console.log('team created: ', team);
+    //   this.teamService.createMembership(team.$id, data.users[1]);
+    // });
+
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
