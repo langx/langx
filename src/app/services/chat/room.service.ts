@@ -86,14 +86,14 @@ export class RoomService {
         `{"teamId": "${newTeam.$id}", "userId": "${data.users[1]}"}`
       )
       .then((result) => {
-        console.log(result);
+        console.log('execution:', result);
       });
 
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
       data,
-      [Permission.read(Role.team(newTeam.$id))]
+      [Permission.read(Role.team(newTeam.$id, "owner"))]
     );
   }
 
@@ -115,7 +115,7 @@ export class RoomService {
         environment.appwrite.ROOMS_COLLECTION +
         '.documents',
       (response) => {
-        console.log(response.payload);
+        console.log(response);
       }
     );
   }
