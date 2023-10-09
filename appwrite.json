@@ -3,9 +3,9 @@
     "projectName": "languageXchange",
     "functions": [
         {
-            "$id": "createMembership",
-            "name": "createMembership",
-            "runtime": "node-16.0",
+            "$id": "createRoom",
+            "name": "createRoom",
+            "runtime": "node-20.0",
             "execute": [],
             "events": [],
             "schedule": "",
@@ -18,7 +18,7 @@
                 "node_modules",
                 ".npm"
             ],
-            "path": "functions/createMembership"
+            "path": "functions/createRoom"
         }
     ]
 }

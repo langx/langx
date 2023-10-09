@@ -29,7 +29,6 @@ export default async ({ req, res, log, error }) => {
   const database = new Databases(client);
   // const teams = new Teams(client);
 
-  // TODO: check if user is owner of team
   // TODO: check req.user is session user
 
   // Get body
@@ -37,26 +36,6 @@ export default async ({ req, res, log, error }) => {
   log(body.user1);
   log(body.user2);
 
-  // Create team
-  // const teamName = body.user1 + '_' + body.user2;
-  // let newTeam = await teams.create(ID.unique(), teamName);
-  // log(newTeam);
-
-  // Add users to team
-  // let user1$ = await teams.createMembership(
-  //   newTeam.$id,
-  //   ['owner'],
-  //   undefined,
-  //   body.user1
-  // );
-  // let user2$ = await teams.createMembership(
-  //   newTeam.$id,
-  //   ['owner'],
-  //   undefined,
-  //   body.user2
-  // );
-  // log(user1$);
-  // log(user2$);
 
   // Create a common room
   let roomData = { users: [body.user1, body.user2], typing: [false, false] };
