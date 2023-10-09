@@ -71,17 +71,19 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
-  createRoom(data: any): Promise<any> {
+  async createRoom(data: any): Promise<any> {
     const teamName = data.users.join('-');
-    this.teamService.createTeam(teamName).then((team) => {
+    let newTeam = null;
+    await this.teamService.createTeam(teamName).then((team) => {
       console.log('team created: ', team);
-      // this.teamService.createMembership(team.$id, data.users[1]);
+      newTeam = team;
     });
 
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
-      data
+      data,
+      [Permission.read(Role.team(newTeam.$id))]
     );
   }
 
