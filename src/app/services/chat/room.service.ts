@@ -33,10 +33,7 @@ export class RoomService {
         return values.documents[0];
       } else {
         console.log('No room find, creating new one');
-        return this.createRoom({
-          users: [cUserId, userId],
-          typing: [false, false],
-        });
+        return this.createRoom([cUserId, userId]);
       }
     });
   }
@@ -71,18 +68,15 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
-  createRoom(data: any): Promise<any> {
-    // const teamName = data.users.join('-');
-    // this.teamService.createTeam(teamName).then((team) => {
-    //   console.log('team created: ', team);
-    //   this.teamService.createMembership(team.$id, data.users[1]);
-    // });
-
-    return this.api.createDocument(
-      environment.appwrite.ROOMS_COLLECTION,
-      ID.unique(),
-      data
-    );
+  async createRoom(users: string[]): Promise<any> {
+    // It triggers a function that creates a room
+    const body = JSON.stringify({ users: users });
+    return await this.api.functions
+      .createExecution('createRoom', body)
+      .then((result) => {
+        console.log('execution:', result);
+        return JSON.parse(result.responseBody);
+      });
   }
 
   updateRoom(roomId: string, data: any): Promise<any> {
@@ -103,7 +97,7 @@ export class RoomService {
         environment.appwrite.ROOMS_COLLECTION +
         '.documents',
       (response) => {
-        console.log(response.payload);
+        console.log(response);
       }
     );
   }
