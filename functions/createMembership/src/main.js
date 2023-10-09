@@ -1,4 +1,4 @@
-import { Client, Databases, Teams, Users } from 'node-appwrite';
+import { Client, Databases, Teams, Users, ID } from 'node-appwrite';
 
 // This is your Appwrite function
 // It's executed each time we get a request
@@ -17,40 +17,31 @@ export default async ({ req, res, log, error }) => {
   const teams = new Teams(client);
   const users = new Users(client);
 
-  log(req.bodyRaw);
+  log('req.bodyRaw', req.bodyRaw);
 
-  await teams
-    .create('teachers', 'Teachers', ['maths', 'sciences', 'arts', 'literature'])
-    .then((response) => {
-      log(response); // Success
-
-      // Invalid `email` param: Value must be a valid email address
-      const promise = teams.createMembership(
-        'teachers',
-        ['maths'],
-        'ahmet@gmail.com',
-        '6512ecb2917a0cdb2be2',
-        undefined,
-        'localhost'
+  async function createTeam() {
+    let id = ID.unique();
+    let a = await teams
+      .create(id, 'test', ['owner']).then(async (response) => {
+        await teams.createMembership(response.$id, ['owner'], undefined, '6513054829d5d285c22c')
+        await teams.createMembership(response.$id, ['owner'], undefined, '65158134f31d32dd29b8')
+      });
+        /*
+      await Promise.all(
+        userList.map(async (username) => {
+          await teams.createMembership(username + '@languagexchange.net', username, '123456');
+        })
       );
+      });
+      */
+  }
 
-      promise.then(
-        function (response) {
-          log(response); // Success
-        },
-        function (error) {
-          log(error); // Failure
-        }
-      );
-    })
-    .catch((e) => {
-      error(e); // Failure
-    });
-
-  const p = await teams.list();
-  log(p);
   // The `req` object contains the request data
   if (req.method === 'GET') {
+    await createTeam();
+
+    let a = await teams.list()
+    log('teams.list', a);
     // Send a response with the res object helpers
     // `res.send()` dispatches a string back to the client
     return res.send('Hello, World!');
