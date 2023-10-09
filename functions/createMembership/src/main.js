@@ -1,50 +1,70 @@
-import { Client, Databases, Teams, Users, ID } from 'node-appwrite';
+import { Client, Databases, Teams, ID } from 'node-appwrite';
 
 // This is your Appwrite function
 // It's executed each time we get a request
+const environment = {
+  APP_ENDPOINT: 'https://db.languagexchange.net/v1',
+  APP_PROJECT: '650750d21e4a6a589be3',
+  APP_DATABASE: '650750f16cd0c482bb83',
+  ROOMS_COLLECTION: '6507510fc71f989d5d1c',
+  API_KEY:
+    'e052b7a37cc5620a607b6c2ab701eb9c4456b029d1ff5c4346895877cb3a3a408a7e1fb02360c7091d20d73bfbe7fa4e607e155b37f4ba1ea982842618ad99e78e46cdef7bb7f0349ebf3a2ccca4d49dac9f3756283fd83e04aa46d1719a859f2c5dec2ab42efde53fa3c08ce207ecf9888b1005ba88ce5434cac3810ff1bacf',
+};
 
 // to TEST, execute with POST request
-// body raw = {"teamId": "6523f37acbd9c82b2c06", "userId":"6512ee4f03b70ce08f5c"}
-// curl -X POST -H "Content-Type: application/json" -d "{"teamId": "6523f37acbd9c82b2c06", "userId":"6512ee4f03b70ce08f5c"}" http://localhost:8080
+// {"user1": "6512ecb2917a0cdb2be2", "user2":"6512ece88600be61c83b"}
 export default async ({ req, res, log, error }) => {
   if (req.method === 'GET') {
     // Send a response with the res object helpers
     // `res.send()` dispatches a string back to the client
     return res.send('Hello, World!');
   }
-  
+
+  // The `req` object contains the request data
+  const client = new Client()
+    .setEndpoint(environment.APP_ENDPOINT)
+    .setProject(environment.APP_PROJECT)
+    .setKey(environment.API_KEY);
+
+  const database = new Databases(client);
+  const teams = new Teams(client);
+
   // TODO: check if user is owner of team
   // TODO: check req.user is session user
 
+  // Get body
   let body = JSON.parse(req.bodyRaw);
-  log('teamId:');
-  log(body.teamId);
-  log('userId:');
-  log(body.userId);
-  // The `req` object contains the request data
-  const client = new Client()
-    .setEndpoint('https://db.languagexchange.net/v1')
-    .setProject('650750d21e4a6a589be3')
-    .setKey(
-      'e052b7a37cc5620a607b6c2ab701eb9c4456b029d1ff5c4346895877cb3a3a408a7e1fb02360c7091d20d73bfbe7fa4e607e155b37f4ba1ea982842618ad99e78e46cdef7bb7f0349ebf3a2ccca4d49dac9f3756283fd83e04aa46d1719a859f2c5dec2ab42efde53fa3c08ce207ecf9888b1005ba88ce5434cac3810ff1bacf'
-    );
+  log(body.user1);
+  log(body.user2);
 
-  const databases = new Databases(client);
-  const teams = new Teams(client);
-  const users = new Users(client);
+  // Create team
+  const teamName = body.user1 + '_' + body.user2;
+  let newTeam = await teams.create(ID.unique(), teamName);
+  log(newTeam);
 
-  const bodyData = await req.bodyRaw;
+  // Add users to team
+  let user1$ = await teams.createMembership(
+    newTeam.$id,
+    ['owner'],
+    undefined,
+    body.user1
+  );
+  let user2$ = await teams.createMembership(
+    newTeam.$id,
+    ['owner'],
+    undefined,
+    body.user2
+  );
+  log(user1$);
+  log(user2$);
 
-  await createMembership(body.teamId, body.userId);
-
-  const a = await teams.list();
-  log('teams.list');
-  log(a);
-
-  async function createMembership(teamId, userId) {
-    let id = ID.unique();
-    await teams.createMembership(teamId, ['owner'], undefined, userId);
-  }
+  // await database.createDocument(
+  //   environment.APP_DATABASE,
+  //   environment.ROOMS_COLLECTION,
+  //   ID.unique(),
+  //   data,
+  //   [Permission.read(Role.team(newTeam.$id, 'owner'))]
+  // );
 
   return res.json({
     motto: 'Build Fast. Scale Big. All in One Place.',
