@@ -83,7 +83,7 @@ export class RoomService {
     this.api.functions
       .createExecution(
         'createMembership',
-        `{'teamId': ${newTeam.$id}, 'userId': ${data.users[1]}}`
+        `{"teamId": "${newTeam.$id}", "userId": "${data.users[1]}"}`
       )
       .then((result) => {
         console.log(result);
