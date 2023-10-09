@@ -1,17 +1,15 @@
 import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
 
-// This is your Appwrite function
-// It's executed each time we get a request
-const environment = {
-  APP_ENDPOINT: 'https://db.languagexchange.net/v1',
-  APP_PROJECT: '650750d21e4a6a589be3',
-  APP_DATABASE: '650750f16cd0c482bb83',
-  ROOMS_COLLECTION: '6507510fc71f989d5d1c',
-  API_KEY:
-    'e052b7a37cc5620a607b6c2ab701eb9c4456b029d1ff5c4346895877cb3a3a408a7e1fb02360c7091d20d73bfbe7fa4e607e155b37f4ba1ea982842618ad99e78e46cdef7bb7f0349ebf3a2ccca4d49dac9f3756283fd83e04aa46d1719a859f2c5dec2ab42efde53fa3c08ce207ecf9888b1005ba88ce5434cac3810ff1bacf',
-};
+// TODO: add error handling
+// TODO: check req.user is session user
+// TODO: check req.bodyRaw is valid JSON
+// TODO: check req.bodyRaw has users array
+// TODO: check req.bodyRaw has 2 users
+// TODO: check req.bodyRaw has valid users
+// TODO: check req.bodyRaw has users that are not the same
+// TODO: check req.bodyRaw has users that are not already in a same room
 
-// to TEST, execute with POST request
+// to TEST in console, execute with POST request
 // {"users": ["6512ecb2917a0cdb2be2","6512ece88600be61c83b"]}
 export default async ({ req, res, log, error }) => {
   if (req.method === 'GET') {
@@ -22,9 +20,9 @@ export default async ({ req, res, log, error }) => {
 
   // The `req` object contains the request data
   const client = new Client()
-    .setEndpoint(environment.APP_ENDPOINT)
-    .setProject(environment.APP_PROJECT)
-    .setKey(environment.API_KEY);
+    .setEndpoint(process.env.APP_ENDPOINT)
+    .setProject(process.env.APP_PROJECT)
+    .setKey(process.env.API_KEY);
 
   const database = new Databases(client);
   // const teams = new Teams(client);
@@ -40,8 +38,8 @@ export default async ({ req, res, log, error }) => {
   // Create a common room
   let roomData = { users: body.users, typing: [false, false] };
   let room = await database.createDocument(
-    environment.APP_DATABASE,
-    environment.ROOMS_COLLECTION,
+    process.env.APP_DATABASE,
+    process.env.ROOMS_COLLECTION,
     ID.unique(),
     roomData,
     [
