@@ -72,7 +72,5 @@ export default async ({ req, res, log, error }) => {
   );
   log(room);
 
-  return res.json({
-    room: room,
-  });
+  return res.json(room);
 };
