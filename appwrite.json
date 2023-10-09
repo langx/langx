@@ -3,8 +3,8 @@
     "projectName": "languageXchange",
     "functions": [
         {
-            "$id": "createTeam",
-            "name": "createTeam",
+            "$id": "createMembership",
+            "name": "createMembership",
             "runtime": "node-16.0",
             "execute": [],
             "events": [],
@@ -18,7 +18,7 @@
                 "node_modules",
                 ".npm"
             ],
-            "path": "functions/createTeam"
+            "path": "functions/createMembership"
         }
     ]
 }
