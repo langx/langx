@@ -80,6 +80,14 @@ export class RoomService {
     });
 
     // TODO: #FTF - Trigger function with another user to add the membership of this team
+    this.api.functions
+      .createExecution(
+        'createMembership',
+        `{'teamId': ${newTeam.$id}, 'userId': ${data.users[1]}}`
+      )
+      .then((result) => {
+        console.log(result);
+      });
 
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
