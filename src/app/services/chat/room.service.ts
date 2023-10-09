@@ -34,8 +34,7 @@ export class RoomService {
       } else {
         console.log('No room find, creating new one');
         return this.createRoom({
-          users: [cUserId, userId],
-          typing: [false, false],
+          users: [cUserId, userId]
         });
       }
     });
@@ -72,29 +71,16 @@ export class RoomService {
   }
 
   async createRoom(data: any): Promise<any> {
-    const teamName = data.users.join('-');
-    let newTeam = null;
-    await this.teamService.createTeam(teamName).then((team) => {
-      console.log('team created: ', team);
-      newTeam = team;
-    });
-
-    // TODO: #FTF - Trigger function with another user to add the membership of this team
-    await this.api.functions
+    // It triggers a function that creates a room
+    return await this.api.functions
       .createExecution(
-        'createMembership',
-        `{"teamId": "${newTeam.$id}", "userId": "${data.users[1]}"}`
+        'createRoom',
+        `{"user1": "${data.users[0]}", "user2": "${data.users[1]}"}`
       )
       .then((result) => {
         console.log('execution:', result);
+        return JSON.parse(result.responseBody);
       });
-
-    return this.api.createDocument(
-      environment.appwrite.ROOMS_COLLECTION,
-      ID.unique(),
-      data,
-      [Permission.read(Role.team(newTeam.$id, "owner"))]
-    );
   }
 
   updateRoom(roomId: string, data: any): Promise<any> {
