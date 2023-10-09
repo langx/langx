@@ -27,7 +27,7 @@ export class MessagesPage implements OnInit {
     private router: Router,
     private authService: AuthService,
     private roomService: RoomService,
-    private messageService: MessageService
+    // private messageService: MessageService
   ) {}
 
   ngOnInit() {
