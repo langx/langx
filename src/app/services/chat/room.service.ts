@@ -33,9 +33,7 @@ export class RoomService {
         return values.documents[0];
       } else {
         console.log('No room find, creating new one');
-        return this.createRoom({
-          users: [cUserId, userId]
-        });
+        return this.createRoom([cUserId, userId]);
       }
     });
   }
@@ -70,13 +68,11 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
-  async createRoom(data: any): Promise<any> {
+  async createRoom(users: string[]): Promise<any> {
     // It triggers a function that creates a room
+    const body = JSON.stringify({ users: users });
     return await this.api.functions
-      .createExecution(
-        'createRoom',
-        `{"user1": "${data.users[0]}", "user2": "${data.users[1]}"}`
-      )
+      .createExecution('createRoom', body)
       .then((result) => {
         console.log('execution:', result);
         return JSON.parse(result.responseBody);
