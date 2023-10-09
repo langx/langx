@@ -33,14 +33,14 @@ export class MessagesPage implements OnInit {
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
     // Subscribe to listeners
-    this.roomServiceFn = this.roomService.listenRooms();
-    this.messageServiceFn = this.messageService.listenMessages();
+    // this.roomServiceFn = this.roomService.listenRooms();
+    // this.messageServiceFn = this.messageService.listenMessages();
   }
 
   ngOnDestroy() {
     // Unsubscribe to listeners
-    this.roomServiceFn();
-    this.messageServiceFn();
+    // this.roomServiceFn();
+    // this.messageServiceFn();
   }
 
   getRooms() {
