@@ -1,4 +1,4 @@
-import { Client, Databases, Teams, ID } from 'node-appwrite';
+import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
 
 // This is your Appwrite function
 // It's executed each time we get a request
@@ -27,7 +27,7 @@ export default async ({ req, res, log, error }) => {
     .setKey(environment.API_KEY);
 
   const database = new Databases(client);
-  const teams = new Teams(client);
+  // const teams = new Teams(client);
 
   // TODO: check if user is owner of team
   // TODO: check req.user is session user
@@ -38,38 +38,41 @@ export default async ({ req, res, log, error }) => {
   log(body.user2);
 
   // Create team
-  const teamName = body.user1 + '_' + body.user2;
-  let newTeam = await teams.create(ID.unique(), teamName);
-  log(newTeam);
+  // const teamName = body.user1 + '_' + body.user2;
+  // let newTeam = await teams.create(ID.unique(), teamName);
+  // log(newTeam);
 
   // Add users to team
-  let user1$ = await teams.createMembership(
-    newTeam.$id,
-    ['owner'],
-    undefined,
-    body.user1
-  );
-  let user2$ = await teams.createMembership(
-    newTeam.$id,
-    ['owner'],
-    undefined,
-    body.user2
-  );
-  log(user1$);
-  log(user2$);
-
-  // await database.createDocument(
-  //   environment.APP_DATABASE,
-  //   environment.ROOMS_COLLECTION,
-  //   ID.unique(),
-  //   data,
-  //   [Permission.read(Role.team(newTeam.$id, 'owner'))]
+  // let user1$ = await teams.createMembership(
+  //   newTeam.$id,
+  //   ['owner'],
+  //   undefined,
+  //   body.user1
   // );
+  // let user2$ = await teams.createMembership(
+  //   newTeam.$id,
+  //   ['owner'],
+  //   undefined,
+  //   body.user2
+  // );
+  // log(user1$);
+  // log(user2$);
+
+  // Create a common room
+  let roomData = { users: [body.user1, body.user2], typing: [false, false] };
+  let room = await database.createDocument(
+    environment.APP_DATABASE,
+    environment.ROOMS_COLLECTION,
+    ID.unique(),
+    roomData,
+    [
+      Permission.read(Role.user(body.user1)),
+      Permission.read(Role.user(body.user2)),
+    ]
+  );
+  log(room);
 
   return res.json({
-    motto: 'Build Fast. Scale Big. All in One Place.',
-    learn: 'https://appwrite.io/docs',
-    connect: 'https://appwrite.io/discord',
-    getInspired: 'https://builtwith.appwrite.io',
+    room: room,
   });
 };
