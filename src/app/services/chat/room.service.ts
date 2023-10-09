@@ -72,11 +72,11 @@ export class RoomService {
   }
 
   createRoom(data: any): Promise<any> {
-    // const teamName = data.users.join('-');
-    // this.teamService.createTeam(teamName).then((team) => {
-    //   console.log('team created: ', team);
-    //   this.teamService.createMembership(team.$id, data.users[1]);
-    // });
+    const teamName = data.users.join('-');
+    this.teamService.createTeam(teamName).then((team) => {
+      console.log('team created: ', team);
+      // this.teamService.createMembership(team.$id, data.users[1]);
+    });
 
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
