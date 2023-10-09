@@ -79,6 +79,8 @@ export class RoomService {
       newTeam = team;
     });
 
+    // TODO: #FTF - Trigger function with another user to add the membership of this team
+
     return this.api.createDocument(
       environment.appwrite.ROOMS_COLLECTION,
       ID.unique(),
