@@ -12,7 +12,7 @@ const environment = {
 };
 
 // to TEST, execute with POST request
-// {"user1": "6512ecb2917a0cdb2be2", "user2":"6512ece88600be61c83b"}
+// {"users": ["6512ecb2917a0cdb2be2","6512ece88600be61c83b"]}
 export default async ({ req, res, log, error }) => {
   if (req.method === 'GET') {
     // Send a response with the res object helpers
@@ -33,20 +33,20 @@ export default async ({ req, res, log, error }) => {
 
   // Get body
   let body = JSON.parse(req.bodyRaw);
-  log(body.user1);
-  log(body.user2);
-
+  log(body);
+  log(body.users[0]);
+  log(body.users[1]);
 
   // Create a common room
-  let roomData = { users: [body.user1, body.user2], typing: [false, false] };
+  let roomData = { users: body.users, typing: [false, false] };
   let room = await database.createDocument(
     environment.APP_DATABASE,
     environment.ROOMS_COLLECTION,
     ID.unique(),
     roomData,
     [
-      Permission.read(Role.user(body.user1)),
-      Permission.read(Role.user(body.user2)),
+      Permission.read(Role.user(body.users[0])),
+      Permission.read(Role.user(body.users[1])),
     ]
   );
   log(room);
