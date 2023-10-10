@@ -27,13 +27,13 @@ export class MessagesPage implements OnInit {
     private roomService: RoomService
   ) {}
 
-  ngOnInit() {
-    this.listRooms(); // get all chat Rooms
+  async ngOnInit() {
+    await this.listRooms(); // get all chat Rooms
   }
 
-  listRooms() {
+  async listRooms() {
     const cUserId = this.authService.getUserId();
-    this.roomService.listRooms(cUserId);
+    await this.roomService.listRooms(cUserId);
     this.rooms = this.roomService.rooms;
   }
 
