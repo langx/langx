@@ -101,7 +101,7 @@ export class ChatPage implements OnInit {
   scrollToBottom() {
     this.content.scrollToBottom(100);
   }
-  
+
   // Navigate to user profile page
   goProfile(uid: string) {
     console.log('goProfile clicked');
