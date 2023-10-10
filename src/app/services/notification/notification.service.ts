@@ -13,14 +13,14 @@ export class NotificationService {
     let channels = [];
 
     // channel for rooms
-    const c1 =
+    const roomsCollection =
       'databases.' +
       environment.appwrite.APP_DATABASE +
       '.collections.' +
       environment.appwrite.ROOMS_COLLECTION +
       '.documents';
     // channel for messages
-    const c2 =
+    const messagesCollection =
       'databases.' +
       environment.appwrite.APP_DATABASE +
       '.collections.' +
@@ -28,12 +28,36 @@ export class NotificationService {
       '.documents';
 
     // add channels to array
-    channels.push(c1);
-    channels.push(c2);
+    channels.push(roomsCollection);
+    channels.push(messagesCollection);
 
     const client = this.api.client$();
     return client.subscribe(channels, (response) => {
-      console.log('listener response', response);
+      // check if the response is a new message
+      response.events.forEach((event) => {
+        switch (event) {
+          case `${messagesCollection}.*.create`:
+            console.log('new message created', response.payload);
+            break;
+          case `${messagesCollection}.*.update`:
+            console.log('new message updated', response.payload);
+            break;
+          case `${messagesCollection}.*.delete`:
+            console.log('new message deleted', response.payload);
+            break;
+          case `${roomsCollection}.*.create`:
+            console.log('new room created', response.payload);
+            break;
+          case `${roomsCollection}.*.update`:
+            console.log('new room updated', response.payload);
+            break;
+          case `${roomsCollection}.*.delete`:
+            console.log('new room deleted', response.payload);
+            break;
+          default:
+            break;
+        }
+      });
     });
   }
 }
