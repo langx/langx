@@ -17,7 +17,6 @@ export class ChatPage implements OnInit {
   message: string = '';
 
   isTyping: boolean = false;
-  listenWSS: any;
 
   name: string;
   uid: string;
