@@ -1,0 +1,55 @@
+import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
+
+// TODO: add error handling
+// TODO: check req.user is session user
+// TODO: check req.bodyRaw is valid JSON
+// TODO: check req.bodyRaw has users array
+// TODO: check req.bodyRaw has 2 users
+// TODO: check req.bodyRaw has valid users
+// TODO: check req.bodyRaw has users that are not the same
+// TODO: check req.bodyRaw has users that are not already in a same room
+
+// to TEST in console, execute with POST request
+// {"users": ["6524afa03cd93836a360","65247085558316be817c"], "sender":"65247085558316be817c", "roomId":"65255ccfa80ead294d12", "body":"test string"}
+export default async ({ req, res, log, error }) => {
+  if (req.method === 'GET') {
+    // Send a response with the res object helpers
+    // `res.send()` dispatches a string back to the client
+    return res.send('Hello, World!');
+  }
+
+  // The `req` object contains the request data
+  const client = new Client()
+    .setEndpoint(process.env.APP_ENDPOINT)
+    .setProject(process.env.APP_PROJECT)
+    .setKey(process.env.API_KEY);
+
+  const database = new Databases(client);
+  // const teams = new Teams(client);
+
+  // TODO: check req.user is session user
+
+  // Get body
+  let body = JSON.parse(req.bodyRaw);
+  log(body);
+  log(body.users[0]);
+  log(body.users[1]);
+
+  // Create a common room
+  let messageData = { sender: body.sender, roomId: body.roomId, body: body.body };
+  let message = await database.createDocument(
+    process.env.APP_DATABASE,
+    process.env.MESSAGES_COLLECTION,
+    ID.unique(),
+    messageData,
+    [
+      Permission.read(Role.user(body.users[0])),
+      Permission.read(Role.user(body.users[1])),
+      Permission.update(Role.user(body.sender)),
+      Permission.delete(Role.user(body.sender)),
+    ]
+  );
+  log(message);
+
+  return res.json(message);
+};
