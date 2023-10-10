@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
+import { ApiService } from '../api/api.service';
+import { RoomService } from '../chat/room.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private roomService: RoomService) {}
 
   listen() {
     console.log('listener started');
@@ -47,6 +48,8 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.create`:
             console.log('new room created', response.payload);
+            const rooms = this.roomService.rooms.getValue();
+            console.log('room: ', rooms);
             break;
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
