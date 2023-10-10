@@ -11,7 +11,6 @@ import { RoomService } from 'src/app/services/chat/room.service';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  chatRooms: any;
   rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   isLoading: boolean = false;
 
