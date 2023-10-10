@@ -9,6 +9,7 @@ export class NotificationService {
   constructor(private api: ApiService) {}
 
   listen() {
+    console.log('listener started');
     const client = this.api.client$();
     return client.subscribe(
       'databases.' + environment.appwrite.APP_DATABASE,
