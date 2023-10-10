@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { ID, Permission, Query, Role } from 'appwrite';
+import { Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
-import { TeamService } from '../team/team.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +12,7 @@ export class RoomService {
   constructor(
     private api: ApiService,
     private authService: AuthService,
-    private userService: UserService,
-    private teamService: TeamService
+    private userService: UserService
   ) {}
 
   async checkRoom(userId: string): Promise<any> {
