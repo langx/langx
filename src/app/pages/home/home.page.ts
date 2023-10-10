@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NotificationService } from 'src/app/services/notification/notification.service';
 
 @Component({
   selector: 'app-home',
@@ -6,7 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  constructor() {}
+  listenerFn: Function;
+  
+  constructor(private notification: NotificationService) {}
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    this.listenerFn = this.notification.listen();
+  }
+
+  async ngOnDestroy() {
+    this.listenerFn();
+    console.log('listener stopped');
+  }
 }
