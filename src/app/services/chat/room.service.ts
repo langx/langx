@@ -76,6 +76,9 @@ export class RoomService {
       .then((result) => {
         console.log('execution:', result);
         return JSON.parse(result.responseBody);
+      })
+      .catch((error) => {
+        console.log('error: ', error);
       });
   }
 
