@@ -68,7 +68,7 @@ export class ChatPage implements OnInit {
       roomId: this.roomId,
     };
     // Add loading indicator
-    this.messageService.pushMessage(data);
+    this.messageService.updateMessages(data);
     const promise = this.messageService.createMessage(data);
     promise.then(
       (response) => {
