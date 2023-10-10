@@ -13,9 +13,6 @@ export class MessagesPage implements OnInit {
   chatRooms: any;
   isLoading: boolean = false;
 
-  roomServiceFn: Function;
-  messageServiceFn: Function;
-
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
