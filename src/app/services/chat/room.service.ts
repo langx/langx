@@ -65,7 +65,24 @@ export class RoomService {
         const lastMessage = room.messages[room.messages.length - 1];
         room.lastMessage = lastMessage;
       });
-      this.rooms.next(values.documents.reverse());
+      // TODO: Order rooms by last message $createdAt
+      /*
+      values.documents.sort((a, b) => {
+        const aLastMessage = a.lastMessage;
+        const bLastMessage = b.lastMessage;
+        if (aLastMessage && bLastMessage) {
+          return bLastMessage.$createdAt - aLastMessage.$createdAt;
+        } else if (aLastMessage) {
+          return -1;
+        } else if (bLastMessage) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      */
+      console.log('listRooms: ', values.documents);
+      this.rooms.next(values.documents);
     });
   }
 
