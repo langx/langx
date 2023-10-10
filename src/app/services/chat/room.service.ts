@@ -4,11 +4,14 @@ import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoomService {
+  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+
   constructor(
     private api: ApiService,
     private authService: AuthService,
@@ -36,30 +39,34 @@ export class RoomService {
     });
   }
 
-  async listRooms(currentUserId: string): Promise<any> {
-    return this.api
-      .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-        Query.search('users', currentUserId),
-      ])
-      .then((values) => {
-        values.documents.forEach((element) => {
-          // Check if the user is not the current user
-          element.users.forEach((userId) => {
-            if (userId != currentUserId) {
-              // Get the user data and add it to the element as userData
-              element.userData = this.userService.getUserDoc(userId).then(
-                (data) => {
-                  element.userData = data;
-                },
-                (error) => {
-                  console.log('error: ', error);
-                }
-              );
-            }
-          });
+  // Get rooms from current session to initialize the message tab
+  async listRooms(currentUserId: string) {
+    const promise = this.api.listDocuments(
+      environment.appwrite.ROOMS_COLLECTION,
+      [Query.search('users', currentUserId)]
+    );
+    await promise.then((values) => {
+      values.documents.forEach((room) => {
+        // Check if the user is not the current user
+        room.users.forEach((userId) => {
+          if (userId != currentUserId) {
+            // Get the user data and add it to the element as userData
+            room.userData = this.userService.getUserDoc(userId).then(
+              (data) => {
+                room.userData = data;
+              },
+              (error) => {
+                console.log('error: ', error);
+              }
+            );
+          }
         });
-        return values;
+        // Set Last message of every room
+        const lastMessage = room.messages[room.messages.length - 1];
+        room.lastMessage = lastMessage;
       });
+      this.rooms.next(values.documents.reverse());
+    });
   }
 
   getRoom(roomId: string): Promise<any> {
@@ -81,6 +88,7 @@ export class RoomService {
       });
   }
 
+  // TODO: Delete this function
   updateRoom(roomId: string, data: any): Promise<any> {
     return this.api.updateDocument(
       environment.appwrite.ROOMS_COLLECTION,
