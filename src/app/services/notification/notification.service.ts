@@ -48,11 +48,11 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.create`:
             console.log('new room created', response.payload);
-            const rooms = this.roomService.rooms.getValue();
-            console.log('room: ', rooms);
+            this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
+            this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:
             console.log('new room deleted', response.payload);
