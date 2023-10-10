@@ -46,10 +46,6 @@ export class MessagesPage implements OnInit {
     this.router.navigate(['/', 'home', 'chat', room.$id], navData);
   }
 
-  getUser(user: any) {
-    return user;
-  }
-
   openArchiveMessages() {
     console.log('openArchiveMessages clicked');
   }
