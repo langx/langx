@@ -14,6 +14,7 @@ export class NotificationService {
     return client.subscribe(
       'databases.' + environment.appwrite.APP_DATABASE,
       (response) => {
+        console.log('listener response');
         console.log(response);
       }
     );
