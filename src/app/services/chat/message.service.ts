@@ -56,12 +56,18 @@ export class MessageService {
   }
 
   // Create a message
-  createMessage(data: any): Promise<any> {
-    return this.api.createDocument(
-      environment.appwrite.MESSAGES_COLLECTION,
-      ID.unique(),
-      data
-    );
+  async createMessage(data: any): Promise<any> {
+    // It triggers a function that creates a room
+    const body = JSON.stringify(data);
+    return await this.api.functions
+      .createExecution('createMessage', body)
+      .then((result) => {
+        console.log('createMessage execution:', result);
+        return JSON.parse(result.responseBody);
+      })
+      .catch((error) => {
+        console.log('error: ', error);
+      });
   }
 
   // Listen to messages in a room
