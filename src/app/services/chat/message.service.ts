@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { ID, Query } from 'appwrite';
+import { Query } from 'appwrite';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
