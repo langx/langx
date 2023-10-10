@@ -33,8 +33,7 @@ export class NotificationService {
 
     const client = this.api.client$();
     return client.subscribe(channels, (response) => {
-      console.log('listener response');
-      console.log(response);
+      console.log('listener response', response);
     });
   }
 }
