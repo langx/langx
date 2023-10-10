@@ -88,15 +88,6 @@ export class RoomService {
       });
   }
 
-  // TODO: Delete this function
-  updateRoom(roomId: string, data: any): Promise<any> {
-    return this.api.updateDocument(
-      environment.appwrite.ROOMS_COLLECTION,
-      roomId,
-      data
-    );
-  }
-
   listenRooms() {
     console.log('listenRooms started');
     const client = this.api.client$();
