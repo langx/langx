@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { RoomService } from 'src/app/services/chat/room.service';
@@ -11,6 +12,7 @@ import { RoomService } from 'src/app/services/chat/room.service';
 })
 export class MessagesPage implements OnInit {
   chatRooms: any;
+  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   isLoading: boolean = false;
 
   model = {
@@ -31,17 +33,8 @@ export class MessagesPage implements OnInit {
 
   listRooms() {
     const cUserId = this.authService.getUserId();
-    this.roomService.listRooms(cUserId).then((data) => {
-      // Last message of every room
-      data.documents.forEach((room) => {
-        const lastMessage = room.messages[room.messages.length - 1];
-        room.lastMessage = lastMessage;
-      });
-      this.chatRooms = data.documents;
-      console.log('chatRooms: ', this.chatRooms);
-    });
-
-    // TODO: #169 listen rooms changes
+    this.roomService.listRooms(cUserId);
+    this.rooms = this.roomService.rooms;
   }
 
   getChat(room) {
