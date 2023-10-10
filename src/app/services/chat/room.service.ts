@@ -36,7 +36,7 @@ export class RoomService {
     });
   }
 
-  async getRooms(currentUserId: string): Promise<any> {
+  async listRooms(currentUserId: string): Promise<any> {
     return this.api
       .listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         Query.search('users', currentUserId),

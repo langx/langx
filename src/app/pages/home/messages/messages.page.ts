@@ -29,12 +29,12 @@ export class MessagesPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getRooms(); // get all chat Rooms
+    this.listRooms(); // get all chat Rooms
   }
 
-  getRooms() {
+  listRooms() {
     const cUserId = this.authService.getUserId();
-    this.roomService.getRooms(cUserId).then((data) => {
+    this.roomService.listRooms(cUserId).then((data) => {
       // Last message of every room
       data.documents.forEach((room) => {
         const lastMessage = room.messages[room.messages.length - 1];
@@ -66,7 +66,7 @@ export class MessagesPage implements OnInit {
   }
 
   handleRefresh(event) {
-    this.getRooms();
+    this.listRooms();
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
