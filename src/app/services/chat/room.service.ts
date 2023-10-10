@@ -18,6 +18,26 @@ export class RoomService {
     private userService: UserService
   ) {}
 
+  // Update rooms behavior subject
+  updateRooms(room) {
+    const currentRooms = this.rooms.getValue();
+    const existingRoom = currentRooms.find((r) => r.$id === room.$id);
+    if (existingRoom) {
+      // Update the existing room item in the array
+      const updatedRooms = currentRooms.map((r) => {
+        if (r === existingRoom) {
+          return room;
+        }
+        return r;
+      });
+      this.rooms.next(updatedRooms);
+    } else {
+      // Add the new room item to the array
+      const newRooms = [...currentRooms, room];
+      this.rooms.next(newRooms);
+    }
+  }
+
   async checkRoom(userId: string): Promise<any> {
     let cUserId = this.authService.getUserId();
     console.log('checkRoom: ', cUserId, userId);
