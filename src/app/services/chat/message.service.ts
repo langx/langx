@@ -67,6 +67,7 @@ export class MessageService {
       })
       .catch((error) => {
         console.log('error: ', error);
+        return Promise.reject(error);
       });
   }
 
