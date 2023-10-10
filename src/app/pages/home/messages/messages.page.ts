@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { MessageService } from 'src/app/services/chat/message.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 
 @Component({
@@ -26,21 +25,11 @@ export class MessagesPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private roomService: RoomService,
-    // private messageService: MessageService
+    private roomService: RoomService
   ) {}
 
   ngOnInit() {
     this.getRooms(); // get all chat Rooms
-    // Subscribe to listeners
-    // this.roomServiceFn = this.roomService.listenRooms();
-    // this.messageServiceFn = this.messageService.listenMessages();
-  }
-
-  ngOnDestroy() {
-    // Unsubscribe to listeners
-    // this.roomServiceFn();
-    // this.messageServiceFn();
   }
 
   getRooms() {
@@ -54,9 +43,8 @@ export class MessagesPage implements OnInit {
       this.chatRooms = data.documents;
       console.log('chatRooms: ', this.chatRooms);
     });
-    
-    // TODO: #169 listen rooms changes
 
+    // TODO: #169 listen rooms changes
   }
 
   getChat(room) {
