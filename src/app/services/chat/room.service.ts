@@ -79,6 +79,7 @@ export class RoomService {
       })
       .catch((error) => {
         console.log('error: ', error);
+        return Promise.reject(error);
       });
   }
 
