@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { ID, Query } from 'appwrite';
+import { Query } from 'appwrite';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -12,8 +12,8 @@ export class MessageService {
 
   constructor(private api: ApiService) {}
 
-  // Push a message to the messages behavior subject
-  pushMessage(message) {
+  // Update messages behavior subject
+  updateMessages(message) {
     const currentMessages = this.messages.getValue();
 
     const existingMessage = currentMessages.find(
@@ -84,7 +84,7 @@ export class MessageService {
         '.documents',
       (response) => {
         console.log(response);
-        this.pushMessage(response.payload);
+        this.updateMessages(response.payload);
       }
     );
   }
