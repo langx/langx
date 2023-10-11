@@ -2,12 +2,17 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { ApiService } from '../api/api.service';
 import { RoomService } from '../chat/room.service';
+import { MessageService } from '../chat/message.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  constructor(private api: ApiService, private roomService: RoomService) {}
+  constructor(
+    private api: ApiService,
+    private roomService: RoomService,
+    private messageService: MessageService
+  ) {}
 
   listen() {
     console.log('listener started');
@@ -39,6 +44,8 @@ export class NotificationService {
         switch (event) {
           case `${messagesCollection}.*.create`:
             console.log('new message created', response.payload);
+            this.findAndUpdateRoom(response.payload);
+            this.findAndUpdateMessages(response.payload);
             break;
           case `${messagesCollection}.*.update`:
             console.log('new message updated', response.payload);
@@ -62,5 +69,23 @@ export class NotificationService {
         }
       });
     });
+  }
+
+  findAndUpdateRoom(message) {
+    const rId = message?.roomId?.$id;
+    let room = this.roomService.rooms.getValue().find((r) => r.$id === rId);
+    if (!room) return;
+    room.messages.push(message);
+    this.roomService.updateRooms(room);
+  }
+
+  findAndUpdateMessages(message) {
+    let messages = this.messageService.messages.getValue();
+    if (messages.length == 0) return;
+    const rId = message?.roomId?.$id;
+    console.log(messages[0]);
+    if (messages[0]?.roomId?.$id === rId) {
+      this.messageService.updateMessages(message);
+    }
   }
 }
