@@ -101,6 +101,7 @@ export class LoginPage implements OnInit {
   */
 
   // TODO: Replace with toast message
+  // Maybe no need, alert better ?
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
