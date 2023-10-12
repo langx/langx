@@ -62,9 +62,9 @@ export class ChatPage implements OnInit {
   addMessage() {
     console.log('roomID: ', this.roomId);
     const data = {
-      users: [this.currentUserId, this.uid],
       body: this.message,
       sender: this.currentUserId,
+      to: this.uid,
       roomId: this.roomId,
     };
     // Add loading indicator
