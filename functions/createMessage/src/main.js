@@ -32,8 +32,6 @@ export default async ({ req, res, log, error }) => {
   // Get body
   let body = JSON.parse(req.bodyRaw);
   log(body);
-  log(body.users[0]);
-  log(body.users[1]);
 
   // Create a common room
   let messageData = { sender: body.sender, roomId: body.roomId, body: body.body };
@@ -43,8 +41,8 @@ export default async ({ req, res, log, error }) => {
     ID.unique(),
     messageData,
     [
-      Permission.read(Role.user(body.users[0])),
-      Permission.read(Role.user(body.users[1])),
+      Permission.read(Role.user(body.to)),
+      Permission.read(Role.user(body.sender)),
       Permission.update(Role.user(body.sender)),
       Permission.delete(Role.user(body.sender)),
     ]
