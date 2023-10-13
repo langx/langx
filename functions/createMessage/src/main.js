@@ -1,4 +1,4 @@
-import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
+import { Client, Databases, Account, ID, Permission, Role } from 'node-appwrite';
 
 // TODO: add error handling
 // TODO: check req.user is session user
@@ -25,9 +25,13 @@ export default async ({ req, res, log, error }) => {
     .setKey(process.env.API_KEY);
 
   const database = new Databases(client);
-  // const teams = new Teams(client);
+  const account = new Account(client);
 
   // TODO: check req.user is session user
+  log(req);
+  log(req.headers);
+  log(req.headers['x-appwrite-user-id']);
+  log(req.headers['x-appwrite-user-jwt']);
 
   // Get body
   let body = JSON.parse(req.bodyRaw);
