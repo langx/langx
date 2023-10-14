@@ -1,44 +1,92 @@
-import { Client, Databases, Account, ID, Permission, Role } from 'node-appwrite';
-
-// TODO: add error handling
-// TODO: check req.user is session user
-// TODO: check req.bodyRaw is valid JSON
-// TODO: check req.bodyRaw has users array
-// TODO: check req.bodyRaw has 2 users
-// TODO: check req.bodyRaw has valid users
-// TODO: check req.bodyRaw has users that are not the same
-// TODO: check req.bodyRaw has users that are not already in a same room
+import {
+  Client,
+  Databases,
+  Account,
+  ID,
+  Permission,
+  Role,
+} from 'node-appwrite';
 
 // to TEST in console, execute with POST request
-// {"users": ["6524afa03cd93836a360","65247085558316be817c"], "sender":"65247085558316be817c", "roomId":"65255ccfa80ead294d12", "body":"test string"}
+// {"body":"123","to":"65247085558316be817c","roomId":"6526aafd84d0bae225b1"}
 export default async ({ req, res, log, error }) => {
-  if (req.method === 'GET') {
-    // Send a response with the res object helpers
-    // `res.send()` dispatches a string back to the client
-    return res.send('Hello, World!');
+  // Log request
+  log('req:');
+  log(req);
+
+  let isLogged = false;
+  let response = {};
+
+  if (!req.headers['x-appwrite-user-id']) {
+    error('user_id_missing');
+    return res.json({
+      code: 400,
+      type: 'user_id_missing',
+    });
   }
 
-  // The `req` object contains the request data
+  if (!req.headers['x-appwrite-user-jwt']) {
+    error('user_jwt_missing');
+    return res.json({
+      code: 400,
+      type: 'user_jwt_missing',
+    });
+  }
+
+  if (!req.bodyRaw) {
+    error('body_missing');
+    return res.json({
+      code: 400,
+      type: 'body_missing',
+    });
+  }
+
+  // START: VERIFY USER WITH JWT
+  const verifyUser = new Client()
+    .setEndpoint(process.env.APP_ENDPOINT)
+    .setProject(process.env.APP_PROJECT)
+    .setJWT(req.headers['x-appwrite-user-jwt']);
+
+  const account = new Account(verifyUser);
+  await account.get().then(
+    (result) => {
+      if (result.$id === req.headers['x-appwrite-user-id']) {
+        isLogged = true;
+        log('jwt is valid');
+      }
+      response = result;
+    },
+    (error) => {
+      log('jwt is invalid');
+      log(error);
+      response = error;
+      // {"code":401,"type":"user_jwt_invalid","response":{"message":"Failed to verify JWT. Invalid token: Incomplete segments","code":401,"type":"user_jwt_invalid","version":"1.4.5"}}
+    }
+  );
+
+  if (!isLogged) {
+    return res.json(response);
+  }
+  // END: VERIFY USER WITH JWT
+
   const client = new Client()
     .setEndpoint(process.env.APP_ENDPOINT)
     .setProject(process.env.APP_PROJECT)
     .setKey(process.env.API_KEY);
 
   const database = new Databases(client);
-  const account = new Account(client);
-
-  // TODO: check req.user is session user
-  log(req);
-  log(req.headers);
-  log(req.headers['x-appwrite-user-id']);
-  log(req.headers['x-appwrite-user-jwt']);
 
   // Get body
   let body = JSON.parse(req.bodyRaw);
+  log('body:');
   log(body);
 
-  // Create a common room
-  let messageData = { sender: body.sender, roomId: body.roomId, body: body.body };
+  // Create a message
+  let messageData = {
+    sender: req.headers['x-appwrite-user-id'],
+    roomId: body.roomId,
+    body: body.body,
+  };
   let message = await database.createDocument(
     process.env.APP_DATABASE,
     process.env.MESSAGES_COLLECTION,
@@ -46,12 +94,15 @@ export default async ({ req, res, log, error }) => {
     messageData,
     [
       Permission.read(Role.user(body.to)),
-      Permission.read(Role.user(body.sender)),
-      Permission.update(Role.user(body.sender)),
-      Permission.delete(Role.user(body.sender)),
+      Permission.read(Role.user(req.headers['x-appwrite-user-id'])),
+      Permission.update(Role.user(req.headers['x-appwrite-user-id'])),
+      Permission.delete(Role.user(req.headers['x-appwrite-user-id'])),
     ]
   );
+  log('message');
   log(message);
 
-  return res.json(message);
+  response = res.json(message);
+
+  return response;
 };
