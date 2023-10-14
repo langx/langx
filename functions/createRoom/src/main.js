@@ -7,8 +7,6 @@ import {
   Role,
 } from 'node-appwrite';
 
-// to TEST in console, execute with POST request
-// {"users": ["6512ecb2917a0cdb2be2","6512ece88600be61c83b"]}
 export default async ({ req, res, log, error }) => {
   // Log request
   log('req:');
@@ -48,6 +46,7 @@ export default async ({ req, res, log, error }) => {
     .setJWT(req.headers['x-appwrite-user-jwt']);
 
   const account = new Account(verifyUser);
+  const db = new Databases(verifyUser);
   await account.get().then(
     (result) => {
       if (result.$id === req.headers['x-appwrite-user-id']) {
@@ -68,6 +67,19 @@ export default async ({ req, res, log, error }) => {
     return res.json(response);
   }
   // END: VERIFY USER WITH JWT
+
+  // START: UPDATE LAST SEEN
+  let presence = await db.updateDocument(
+    process.env.APP_DATABASE,
+    process.env.USERS_COLLECTION,
+    req.headers['x-appwrite-user-id'],
+    {
+      lastSeen: new Date(),
+    }
+  );
+  log('presence:');
+  log(presence);
+  // END: UPDATE LAST SEEN
 
   const client = new Client()
     .setEndpoint(process.env.APP_ENDPOINT)
