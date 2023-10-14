@@ -38,6 +38,6 @@ export class AuthGuard implements CanLoad {
 
   startListener() {
     this.notification.listen();
-    console.log('listener started');
+    console.log('Notification Service started');
   }
 }
