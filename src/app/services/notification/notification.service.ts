@@ -8,6 +8,8 @@ import { MessageService } from '../chat/message.service';
   providedIn: 'root',
 })
 export class NotificationService {
+  listenerFn: Function;
+
   constructor(
     private api: ApiService,
     private roomService: RoomService,
@@ -37,7 +39,7 @@ export class NotificationService {
     channels.push(messagesCollection);
 
     const client = this.api.client$();
-    return client.subscribe(channels, (response) => {
+    this.listenerFn = client.subscribe(channels, (response) => {
       // check if the response is a new message
       response.events.forEach((event) => {
         switch (event) {
@@ -68,6 +70,13 @@ export class NotificationService {
         }
       });
     });
+    return this.listenerFn;
+  }
+
+  unsubscribe() {
+    if (this.listenerFn) {
+      this.listenerFn();
+    }
   }
 
   findAndUpdateRoom(message) {
