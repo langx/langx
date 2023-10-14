@@ -48,7 +48,8 @@
         {{cUserDoc?.country}}
       </ion-card-subtitle>
       <ion-card-subtitle *ngIf="!cUserSession?.online">
-        Active {{lastSeen(cUserSession?.lastSeen)}}
+        <!-- #192 TODO: last seen may be calculated last 2 min are online -->
+        Active in {{lastSeen(cUserDoc?.lastSeen)}} ago
       </ion-card-subtitle>
       <ion-card-subtitle *ngIf="cUserSession?.online" color="primary">
         Online

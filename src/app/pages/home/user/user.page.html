@@ -13,8 +13,8 @@
   <ion-card>
     <ion-card-header id="profile-pic">
       <img
-      [src]="user?.profilePhoto"
-      (click)="openPreview([user?.profilePhoto])"
+        [src]="user?.profilePhoto"
+        (click)="openPreview([user?.profilePhoto])"
         alt="Profile Picture"
         referrerpolicy="no-referrer"
       />
@@ -23,7 +23,8 @@
         {{getAge(user?.birthdate)}} | {{getGender()}} | {{user?.country?.name}}
       </ion-card-subtitle>
       <ion-card-subtitle *ngIf="!user?.online">
-        Active {{lastSeen(user?.lastSeen)}}
+        <!-- #192 TODO: last seen may be calculated last 2 min are online -->
+        Active in {{lastSeen(user?.lastSeen)}} ago
       </ion-card-subtitle>
       <ion-card-subtitle *ngIf="user?.online" color="primary">
         Online
