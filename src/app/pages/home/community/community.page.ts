@@ -38,7 +38,6 @@ export class CommunityPage implements OnInit {
   }
 
   ngOnDestroy() {
-    // TODO: It may be moved to home.page.ts
     this.filter$.unsubscribe();
     console.log('filters unsubscribed');
   }
