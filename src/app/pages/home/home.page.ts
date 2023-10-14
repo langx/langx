@@ -17,6 +17,6 @@ export class HomePage implements OnInit {
 
   unsubscribeListener() {
     this.notification.unsubscribe();
-    console.log('listener stopped');
+    console.log('Notification Service stopped');
   }
 }
