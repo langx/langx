@@ -63,8 +63,13 @@ export class MessageService {
       .createExecution('createMessage', body)
       .then((result) => {
         console.log('createMessage execution:', result);
-        // TODO: Check result.status === "completed"
-        return JSON.parse(result.responseBody);
+        if (result.status === 'completed') {
+          return JSON.parse(result.responseBody);
+        } else {
+          return Promise.reject({
+            message: 'Execution Failed, Please try again later!',
+          });
+        }
       })
       .catch((error) => {
         console.log('error: ', error);

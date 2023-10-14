@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent } from '@ionic/angular';
+import { IonContent, ToastController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -33,7 +33,8 @@ export class ChatPage implements OnInit {
     private messageService: MessageService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -61,14 +62,17 @@ export class ChatPage implements OnInit {
 
   addMessage() {
     console.log('roomID: ', this.roomId);
-    const data = {
-      users: [this.currentUserId, this.uid],
+    let data = {
+      to: this.uid,
       body: this.message,
-      sender: this.currentUserId,
       roomId: this.roomId,
     };
+    let dataWithUserData = {
+      ...data,
+      sender: this.currentUserId,
+    };
     // Add loading indicator
-    this.messageService.updateMessages(data);
+    this.messageService.updateMessages(dataWithUserData);
     const promise = this.messageService.createMessage(data);
     promise.then(
       (response) => {
@@ -78,8 +82,8 @@ export class ChatPage implements OnInit {
         this.scrollToBottom();
       },
       (error) => {
-        // TODO: Add toast message here
-        console.log(error); // Failure
+        console.log('error: ', error.message); // Failure
+        this.presentToast('Error: ' + error.message, 'danger');
       }
     );
   }
@@ -116,5 +120,20 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(1500).then(() => {
       console.log('scrolled to bottom');
     });
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
