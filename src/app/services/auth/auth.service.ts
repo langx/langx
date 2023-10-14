@@ -53,6 +53,7 @@ export class AuthService {
     );
   }
 
+  // This is not used.
   updatePrefs(prefs: Models.Preferences) {
     const authReq = this.api.account.updatePrefs(prefs);
     return from(authReq).pipe(
