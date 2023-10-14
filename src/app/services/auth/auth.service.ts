@@ -84,7 +84,6 @@ export class AuthService {
     } catch (e) {
       console.log(`${e}`);
     } finally {
-      // this.router.navigate(['/']);
       this._user.next(null);
     }
   }
