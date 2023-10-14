@@ -10,9 +10,7 @@ register();
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(
-    private storageService: StorageService,
-  ) {}
+  constructor(private storageService: StorageService) {}
 
   async ngOnInit() {
     await this.checkStorageForDarkMode();
@@ -20,14 +18,14 @@ export class AppComponent {
 
   async checkStorageForDarkMode() {
     await this.storageService.initStorage();
-    let darkMode = await this.storageService.get('darkMode')
+    let darkMode = await this.storageService.get('darkMode');
     console.log('darkMode: ', darkMode);
 
-    if(darkMode == null) {
+    if (darkMode == null) {
       this.initDarkMode();
     } else if (darkMode) {
       this.toggleDarkTheme(true);
-    } else { 
+    } else {
       this.toggleDarkTheme(false);
     }
   }
@@ -43,11 +41,12 @@ export class AppComponent {
     this.toggleDarkTheme(prefersDark.matches);
 
     // Listen for changes to the prefers-color-scheme media query
-    prefersDark.addEventListener('change', (mediaQuery) => this.toggleDarkTheme(mediaQuery.matches));
+    prefersDark.addEventListener('change', (mediaQuery) =>
+      this.toggleDarkTheme(mediaQuery.matches)
+    );
   }
 
   toggleDarkTheme(shouldAdd) {
-      document.body.classList.toggle('dark', shouldAdd);
+    document.body.classList.toggle('dark', shouldAdd);
   }
-
 }

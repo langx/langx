@@ -7,16 +7,16 @@ import { NotificationService } from 'src/app/services/notification/notification.
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  listenerFn: Function;
-  
   constructor(private notification: NotificationService) {}
 
-  async ngOnInit() {
-    this.listenerFn = this.notification.listen();
+  async ngOnInit() {}
+
+  ngOnDestroy() {
+    this.unsubscribeListener();
   }
 
-  async ngOnDestroy() {
-    this.listenerFn();
-    console.log('listener stopped');
+  unsubscribeListener() {
+    this.notification.unsubscribe();
+    console.log('Notification Service stopped');
   }
 }
