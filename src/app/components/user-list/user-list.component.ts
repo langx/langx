@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+import { lastSeen } from 'src/app/extras/utils';
 
 @Component({
   selector: 'app-user-list',
@@ -27,5 +28,10 @@ export class UserListComponent implements OnInit {
       .filter((language) => !language?.motherLanguage)
       .map((language) => language?.name);
     return studyLanguages.join(', ');
+  }
+
+  lastSeen(d: any) {
+    if (!d) return null;
+    return lastSeen(d);
   }
 }
