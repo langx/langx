@@ -128,6 +128,7 @@ export class CompletePage implements OnInit {
       country: form.value.country,
       countryCode: form.value.countryCode,
       gender: form.value.genderValue,
+      lastSeen: new Date(),
     };
     console.log('data:', data);
 
