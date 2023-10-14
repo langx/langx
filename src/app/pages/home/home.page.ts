@@ -8,11 +8,12 @@ import { NotificationService } from 'src/app/services/notification/notification.
 })
 export class HomePage implements OnInit {
   listenerFn: Function;
-  
+
   constructor(private notification: NotificationService) {}
 
   async ngOnInit() {
     this.listenerFn = this.notification.listen();
+    console.log('listener started');
   }
 
   async ngOnDestroy() {
