@@ -73,7 +73,7 @@ export class AuthService {
       return true;
     } catch (e) {
       this._user.next(null);
-      console.log('Error while checking if user is logged in:', e);
+      console.log('there is no user while checking isLoggedIn:');
       return false;
     }
   }
