@@ -1,60 +1,36 @@
 {
-    "projectId": "650750d21e4a6a589be3",
-    "projectName": "languageXchange",
-    "functions": [
-        {
-            "$id": "createRoom",
-            "name": "createRoom",
-            "runtime": "node-20.0",
-            "execute": [],
-            "events": [],
-            "schedule": "",
-            "timeout": 15,
-            "enabled": true,
-            "logging": true,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "ignore": [
-                "node_modules",
-                ".npm"
-            ],
-            "path": "functions/createRoom"
-        },
-        {
-            "$id": "createMessage",
-            "name": "createMessage",
-            "runtime": "node-20.0",
-            "execute": [],
-            "events": [],
-            "schedule": "",
-            "timeout": 15,
-            "enabled": true,
-            "logging": true,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "ignore": [
-                "node_modules",
-                ".npm"
-            ],
-            "path": "functions/createMessage"
-        },
-        {
-            "$id": "updatePresence",
-            "name": "updatePresence",
-            "runtime": "node-20.0",
-            "execute": [],
-            "events": [],
-            "schedule": "",
-            "timeout": 15,
-            "enabled": true,
-            "logging": true,
-            "entrypoint": "src/main.js",
-            "commands": "npm install",
-            "ignore": [
-                "node_modules",
-                ".npm"
-            ],
-            "path": "functions/updatePresence"
-        }
-    ]
+  "projectId": "650750d21e4a6a589be3",
+  "projectName": "languageXchange",
+  "functions": [
+    {
+      "$id": "createRoom",
+      "name": "createRoom",
+      "runtime": "node-20.0",
+      "execute": [],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/createRoom"
+    },
+    {
+      "$id": "createMessage",
+      "name": "createMessage",
+      "runtime": "node-20.0",
+      "execute": [],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/createMessage"
+    }
+  ]
 }
