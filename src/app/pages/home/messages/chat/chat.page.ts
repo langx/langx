@@ -62,14 +62,17 @@ export class ChatPage implements OnInit {
 
   addMessage() {
     console.log('roomID: ', this.roomId);
-    const data = {
-      body: this.message,
-      sender: this.currentUserId,
+    let data = {
       to: this.uid,
+      body: this.message,
       roomId: this.roomId,
     };
+    let dataWithUserData = {
+      ...data,
+      sender: this.currentUserId,
+    };
     // Add loading indicator
-    this.messageService.updateMessages(data);
+    this.messageService.updateMessages(dataWithUserData);
     const promise = this.messageService.createMessage(data);
     promise.then(
       (response) => {
