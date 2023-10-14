@@ -20,6 +20,7 @@ export class LoginGuard implements CanLoad {
         return false;
       }
     } catch (e) {
+      // TODO: Test here
       console.log(e);
       this.navigate('/login');
       return true;
