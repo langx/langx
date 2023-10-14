@@ -47,11 +47,13 @@
         {{getAge(cUserDoc?.birthdate)}} | {{getGender()}} |
         {{cUserDoc?.country}}
       </ion-card-subtitle>
-      <ion-card-subtitle *ngIf="!cUserSession?.online">
-        <!-- #192 TODO: last seen may be calculated last 2 min are online -->
+      <ion-card-subtitle *ngIf="lastSeen(cUserDoc?.lastSeen) != 'online'">
         Active in {{lastSeen(cUserDoc?.lastSeen)}} ago
       </ion-card-subtitle>
-      <ion-card-subtitle *ngIf="cUserSession?.online" color="primary">
+      <ion-card-subtitle
+        *ngIf="lastSeen(cUserDoc?.lastSeen) === 'online'"
+        color="primary"
+      >
         Online
       </ion-card-subtitle>
     </ion-card-header>
