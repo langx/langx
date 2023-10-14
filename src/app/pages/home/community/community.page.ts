@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { RoomService } from 'src/app/services/chat/room.service';
 import {
   FilterService,
@@ -27,7 +28,8 @@ export class CommunityPage implements OnInit {
     private roomService: RoomService,
     private userService: UserService,
     private filterService: FilterService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -126,22 +128,23 @@ export class CommunityPage implements OnInit {
 
     await this.roomService.checkRoom(user.$id).then(
       (response) => {
-        roomId = response.$id;
+        roomId = response?.$id;
         console.log(response); // Success
+
+        // Redirect to chat page
+        const navData: NavigationExtras = {
+          queryParams: {
+            name: user?.name,
+            uid: user?.$id,
+          },
+        };
+        this.router.navigate(['/', 'home', 'chat', roomId], navData);
       },
       (error) => {
-        console.log(error); // Failure
-        // TODO: Test this, add toast message
-        return;
+        console.log('error: ', error.message); // Failure
+        this.presentToast('Error: ' + error.message, 'danger');
       }
     );
-    const navData: NavigationExtras = {
-      queryParams: {
-        name: user?.name,
-        uid: user?.$id,
-      },
-    };
-    this.router.navigate(['/', 'home', 'chat', roomId], navData);
   }
 
   //
@@ -161,5 +164,20 @@ export class CommunityPage implements OnInit {
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
