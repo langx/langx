@@ -15,7 +15,6 @@ export class NotificationService {
   ) {}
 
   listen() {
-    console.log('listener started');
     let channels = [];
 
     // channel for rooms
