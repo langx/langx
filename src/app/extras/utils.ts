@@ -15,10 +15,10 @@ export function lastSeen(date: Date) {
     return days + 'd';
   } else if (hours > 0) {
     return hours + 'h';
-  } else if (minutes > 0) {
+  } else if (minutes > 2) {
     return minutes + 'm';
   } else {
-    return 'just now';
+    return 'online';
   }
 }
 
