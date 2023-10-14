@@ -30,6 +30,7 @@ export class UserService {
     this.userDoc.next(user);
   }
 
+  // TODO: It may be moved to notification service.
   // Listen to user
   listenUserDoc(userid: string) {
     const client = this.api.client$();
