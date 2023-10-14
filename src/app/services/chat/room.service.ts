@@ -57,7 +57,7 @@ export class RoomService {
         return values.documents[0];
       } else {
         console.log('No room find, creating new one');
-        return this.createRoom([cUserId, userId]);
+        return this.createRoom(userId);
       }
     });
   }
@@ -124,9 +124,9 @@ export class RoomService {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
   }
 
-  async createRoom(users: string[]): Promise<any> {
+  async createRoom(userId: string): Promise<any> {
     // It triggers a function that creates a room
-    const body = JSON.stringify({ users: users });
+    const body = JSON.stringify({ to: userId });
     return await this.api.functions
       .createExecution('createRoom', body)
       .then((result) => {
