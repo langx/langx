@@ -4,7 +4,7 @@
   </ion-thumbnail>
   <ion-label (click)="redirect()">
     <!-- TODO: There is no item?.online -->
-    <h2><small *ngIf="item?.online">🟢 </small>{{ item?.name }}</h2>
+    <h2><small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>{{ item?.name }}</h2>
     <p>
       <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
       <ion-text *ngIf="!item?.aboutMe" style="font-style: italic">
