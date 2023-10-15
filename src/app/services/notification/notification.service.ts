@@ -3,6 +3,7 @@ import { environment } from 'src/environments/environment';
 import { ApiService } from '../api/api.service';
 import { RoomService } from '../chat/room.service';
 import { MessageService } from '../chat/message.service';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +13,15 @@ export class NotificationService {
 
   constructor(
     private api: ApiService,
+    private authService: AuthService,
     private roomService: RoomService,
     private messageService: MessageService
   ) {}
 
   listen() {
+    // Presence ping
+    this.presencePing();
+
     let channels = [];
 
     // channel for rooms
@@ -95,5 +100,28 @@ export class NotificationService {
     if (messages[0]?.roomId?.$id === rId) {
       this.messageService.updateMessages(message);
     }
+  }
+
+  presencePing() {
+    // Update user in user collection lastSeen attribute
+    // with timeout of every 60 seconds
+    setInterval(() => {
+      this.updateUserPresence();
+    }, 60000);
+  }
+
+  updateUserPresence() {
+    this.api
+      .updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        this.authService.getUserId(),
+        { lastSeen: new Date() }
+      )
+      .then((res) => {
+        console.log('User presence updated');
+      })
+      .catch((err) => {
+        console.log('User presence coudnt updated.', err);
+      });
   }
 }
