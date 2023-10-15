@@ -12,7 +12,6 @@ export class LoginGuard implements CanActivate {
   async canActivate(): Promise<boolean> {
     try {
       const isLoggedIn = await this.authService.isLoggedIn();
-      // console.log('GUARD canLoad, user:', user);
       if (!isLoggedIn) {
         return true;
       } else {
