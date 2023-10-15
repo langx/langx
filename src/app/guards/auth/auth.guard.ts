@@ -7,6 +7,7 @@ import { NotificationService } from 'src/app/services/notification/notification.
   providedIn: 'root',
 })
 // TODO: 'CanLoad' is deprecated.ts(6385)
+// Idea: CanMatch
 export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,

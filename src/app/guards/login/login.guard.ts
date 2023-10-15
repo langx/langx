@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   providedIn: 'root',
 })
 // TODO: 'CanLoad' is deprecated.ts(6385)
+// Idea: CanMatch
 export class LoginGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
