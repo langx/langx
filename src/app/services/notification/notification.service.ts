@@ -108,6 +108,8 @@ export class NotificationService {
   presencePing() {
     // Update user in user collection lastSeen attribute
     // with timeout of every 60 seconds
+    // Start with first ping
+    this.updateUserPresence();
     this.refreshIntervalId = setInterval(() => {
       this.updateUserPresence();
     }, 60000);
