@@ -10,6 +10,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class NotificationService {
   listenerFn: Function;
+  refreshIntervalId: any;
 
   constructor(
     private api: ApiService,
@@ -82,6 +83,8 @@ export class NotificationService {
     if (this.listenerFn) {
       this.listenerFn();
     }
+    // Kill presence ping
+    clearInterval(this.refreshIntervalId);
   }
 
   findAndUpdateRoom(message) {
@@ -105,7 +108,7 @@ export class NotificationService {
   presencePing() {
     // Update user in user collection lastSeen attribute
     // with timeout of every 60 seconds
-    setInterval(() => {
+    this.refreshIntervalId = setInterval(() => {
       this.updateUserPresence();
     }, 60000);
   }
