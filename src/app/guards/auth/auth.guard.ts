@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanLoad, Router } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 
@@ -7,14 +7,14 @@ import { NotificationService } from 'src/app/services/notification/notification.
   providedIn: 'root',
 })
 // TODO: 'CanLoad' is deprecated.ts(6385)
-export class AuthGuard implements CanLoad {
+export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
     private notification: NotificationService
   ) {}
 
-  async canLoad(): Promise<boolean> {
+  async canActivate(): Promise<boolean> {
     try {
       const isLoggedIn = await this.authService.isLoggedIn();
       // console.log('GUARD canLoad, user:', user);

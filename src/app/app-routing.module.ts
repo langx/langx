@@ -13,14 +13,14 @@ const routes: Routes = [
     path: 'home',
     loadChildren: () =>
       import('./pages/home/home.module').then((m) => m.HomePageModule),
-    canLoad: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'login',
     pathMatch: 'full',
     loadChildren: () =>
       import('./pages/login/login.module').then((m) => m.LoginPageModule),
-    canLoad: [LoginGuard],
+    canActivate: [LoginGuard],
   },
   {
     path: 'login',
