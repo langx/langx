@@ -124,7 +124,7 @@ export class NotificationService {
         console.log('User presence updated');
       })
       .catch((err) => {
-        console.log('User presence coudnt updated.', err);
+        console.log('User presence could not updated.', err);
       });
   }
 }
