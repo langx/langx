@@ -106,7 +106,7 @@ export class NotificationService {
     // Update user in user collection lastSeen attribute with timeout of every 60 seconds
     setInterval(() => {
       this.updateUserPresence();
-    }, 6000);
+    }, 60000);
   }
 
   updateUserPresence() {
