@@ -14,8 +14,10 @@ export class ChatBoxComponent implements OnInit {
 
   ngOnInit() {}
 
-  lastSeen(d: any) {
+  messageTime(d: any) {
     if (!d) return null;
-    return lastSeen(d);
+    let time = lastSeen(d);
+    if (time === 'online') time = 'just now';
+    return time;
   }
 }

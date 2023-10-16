@@ -6,7 +6,7 @@
           {{ chat?.body }}
         </div>
         <span class="message-time">
-          {{ lastSeen(chat?.$createdAt) }}
+          {{ messageTime(chat?.$createdAt) }}
         </span>
       </div>
     </div>
@@ -20,7 +20,7 @@
         <div class="message-text">
           {{ chat?.body }}
           <span class="message-time" *ngIf="chat?.$createdAt">
-            {{ lastSeen(chat?.$createdAt) }}
+            {{ messageTime(chat?.$createdAt) }}
           </span>
           <span class="message-time" *ngIf="!chat?.$createdAt">
             <ion-icon name="cloud-upload-outline"></ion-icon>
