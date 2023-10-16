@@ -42,10 +42,10 @@
               <p *ngIf="!room?.lastMessage?.body">Say Hi 👋</p>
             </ion-label>
             <ion-note *ngIf="room?.lastMessage">
-              {{ lastSeen(room?.lastMessage?.$updatedAt) }}
+              {{ messageTime(room?.lastMessage?.$updatedAt) }}
             </ion-note>
             <ion-note *ngIf="!room?.lastMessage">
-              {{ lastSeen(room?.$updatedAt) }}
+              {{ messageTime(room?.$updatedAt) }}
             </ion-note>
           </ng-container>
         </ion-item>
