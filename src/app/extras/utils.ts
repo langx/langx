@@ -15,7 +15,7 @@ export function lastSeen(date: Date) {
     return days + 'd';
   } else if (hours > 0) {
     return hours + 'h';
-  } else if (minutes > 2) {
+  } else if (minutes > 1) {
     return minutes + 'm';
   } else {
     return 'online';
