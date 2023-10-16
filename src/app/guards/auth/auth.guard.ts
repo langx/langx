@@ -36,7 +36,7 @@ export class AuthGuard implements CanActivate, CanLoad {
     try {
       const isLoggedIn = await this.authService.isLoggedIn();
       if (isLoggedIn) {
-        this.startListener();
+        // this.startListener();
         return true;
       } else {
         this.navigate('/login');
