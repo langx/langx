@@ -60,8 +60,10 @@ export class MessagesPage implements OnInit {
     console.log('archiveChat clicked', room);
   }
 
-  lastSeen(d: any) {
+  messageTime(d: any) {
     if (!d) return null;
-    return lastSeen(d);
+    let time = lastSeen(d);
+    if (time === 'online') time = 'just now';
+    return time;
   }
 }

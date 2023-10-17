@@ -1,0 +1,52 @@
+PODS:
+  - Capacitor (5.2.2):
+    - CapacitorCordova
+  - CapacitorApp (5.0.6):
+    - Capacitor
+  - CapacitorCamera (5.0.7):
+    - Capacitor
+  - CapacitorCordova (5.2.2)
+  - CapacitorHaptics (5.0.6):
+    - Capacitor
+  - CapacitorKeyboard (5.0.6):
+    - Capacitor
+  - CapacitorStatusBar (5.0.6):
+    - Capacitor
+
+DEPENDENCIES:
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
+  - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
+  - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
+  - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+
+EXTERNAL SOURCES:
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorApp:
+    :path: "../../node_modules/@capacitor/app"
+  CapacitorCamera:
+    :path: "../../node_modules/@capacitor/camera"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorHaptics:
+    :path: "../../node_modules/@capacitor/haptics"
+  CapacitorKeyboard:
+    :path: "../../node_modules/@capacitor/keyboard"
+  CapacitorStatusBar:
+    :path: "../../node_modules/@capacitor/status-bar"
+
+SPEC CHECKSUMS:
+  Capacitor: 070b18988e0f566728ae9a5eb3a7a974595f1626
+  CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
+  CapacitorCamera: 084b0b228bba7d00587910337b1c89e93b1d32ab
+  CapacitorCordova: 3773395d5331add072300ff6041ca2cf7b93cb0b
+  CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
+  CapacitorKeyboard: b978154b024a5f65e044908e37d15b7de58b9d12
+  CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
+
+PODFILE CHECKSUM: 3d364089fbea25a4a6298746022e532616ef4206
+
+COCOAPODS: 1.13.0
