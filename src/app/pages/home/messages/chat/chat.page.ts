@@ -19,7 +19,8 @@ export class ChatPage implements OnInit {
   isTyping: boolean = false;
 
   name: string;
-  uid: string;
+  userId: string;
+  userProfilePhoto: string;
   roomId: string;
   currentUserId: string;
 
@@ -54,7 +55,8 @@ export class ChatPage implements OnInit {
     const data: any = this.route.snapshot.queryParams;
     console.log('route snapshot data: ', data);
     if (data?.name) this.name = data.name;
-    if (data?.uid) this.uid = data.uid;
+    if (data?.uid) this.userId = data.uid;
+    if (data?.upp) this.userProfilePhoto = data.upp;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     this.roomId = chatRoomId;
     this.currentUserId = this.authService.getUserId();
@@ -63,7 +65,7 @@ export class ChatPage implements OnInit {
   addMessage() {
     console.log('roomID: ', this.roomId);
     let data = {
-      to: this.uid,
+      to: this.userId,
       body: this.message,
       roomId: this.roomId,
     };
