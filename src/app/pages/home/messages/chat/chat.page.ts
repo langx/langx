@@ -20,6 +20,7 @@ export class ChatPage implements OnInit {
 
   name: string;
   userId: string;
+  userProfilePhoto: string;
   roomId: string;
   currentUserId: string;
 
@@ -55,6 +56,7 @@ export class ChatPage implements OnInit {
     console.log('route snapshot data: ', data);
     if (data?.name) this.name = data.name;
     if (data?.uid) this.userId = data.uid;
+    if (data?.upp) this.userProfilePhoto = data.upp;
     const chatRoomId: string = this.route.snapshot.paramMap.get('id');
     this.roomId = chatRoomId;
     this.currentUserId = this.authService.getUserId();
@@ -107,10 +109,10 @@ export class ChatPage implements OnInit {
   }
 
   // Navigate to user profile page
-  goProfile(userId: string) {
+  goProfile(uid: string) {
     console.log('goProfile clicked');
-    console.log('uid: ', userId);
-    this.router.navigateByUrl(`/home/user/${userId}`);
+    console.log('uid: ', uid);
+    this.router.navigateByUrl(`/home/user/${uid}`);
   }
 
   // TODO: Do we need this function?

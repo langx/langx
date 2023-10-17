@@ -41,6 +41,7 @@ export class MessagesPage implements OnInit {
       queryParams: {
         name: room?.userData?.name,
         uid: room?.userData?.$id,
+        upp: room?.userData?.profilePhoto,
       },
     };
     this.router.navigate(['/', 'home', 'chat', room.$id], navData);
