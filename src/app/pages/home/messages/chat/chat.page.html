@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/messages"></ion-back-button>
       <ion-avatar (click)="goProfile(userId)" style="width: 40px; height: 40px">
-        <img src="" />
+        <img [src]="userProfilePhoto" />
       </ion-avatar>
     </ion-buttons>
     <ion-buttons slot="end">
