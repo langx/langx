@@ -95,7 +95,7 @@ export class EditPage implements OnInit {
           this.loadingController(true);
 
           let blob = this.dataURLtoBlob(data.data);
-          this.uploadImage(blob, image).then((url) => {
+          this.uploadImage(blob).then((url) => {
             this.uploadedImageURL = url;
             if (which == 'pp') this.changePP();
             if (which == 'other') this.addOtherPhotos();
@@ -124,10 +124,9 @@ export class EditPage implements OnInit {
     return new Blob([u8arr], { type: mime });
   }
 
-  async uploadImage(blob: any, imageData: any) {
+  async uploadImage(blob: any) {
     let url = '';
     try {
-      const currentDate = Date.now();
       var file = new File([blob], this.cUserId, { type: blob.type });
 
       await this.userService.uploadFile(file).then(
