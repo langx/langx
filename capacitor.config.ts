@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'firestore-chat-app',
+  appId: 'tech.newchapter.languageXchange',
+  appName: 'languageXchange',
   webDir: 'www',
   server: {
     androidScheme: 'https',
