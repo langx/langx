@@ -7,44 +7,35 @@ import { StorageService } from 'src/app/services/storage/storage.service';
   styleUrls: ['./appearance.page.scss'],
 })
 export class AppearancePage implements OnInit {
-  defaultValue: string;
-  darkMode: boolean;
-  prefersDark: boolean;
+  theme: string;
+  themes: string[] = ['day', 'night'];
 
   constructor(private storageService: StorageService) {}
 
   async ngOnInit() {
-    await this.checkStorageForDarkMode();
+    await this.checkTheme();
   }
 
-  async checkStorageForDarkMode() {
-    await this.storageService.initStorage();
-    let darkMode = await this.getValue('darkMode');
-
-    console.log('darkMode in storage: ', darkMode);
-
-    if (darkMode == null) {
-      this.defaultValue = 'auto';
-    } else if (darkMode) {
-      this.defaultValue = 'dark';
-    } else {
-      this.defaultValue = 'light';
+  async checkTheme() {
+    this.theme = await this.getValue('theme');
+    if (this.theme == null || !this.themes.includes(this.theme)) {
+      await this.setValue('auto');
+      this.theme = 'auto';
     }
+    console.log('theme in storage: ', this.theme);
   }
 
-  // This is for the radio buttons
-  modeChange = (event) => {
+  // This is for the radio buttons event
+  modeChange = (event: any) => {
     let val = event.detail.value;
     console.log(val);
+    this.setValue(val);
     if (val == 'auto') {
-      this.removeValue('darkMode');
       this.initAutoMode();
-    } else if (val == 'dark') {
+    } else if (val == 'night') {
       this.toggleDarkTheme(true);
-      this.setValue(true);
-    } else if (val == 'light') {
+    } else if (val == 'day') {
       this.toggleDarkTheme(false);
-      this.setValue(false);
     }
   };
 
@@ -57,15 +48,11 @@ export class AppearancePage implements OnInit {
     document.body.classList.toggle('dark', shouldAdd);
   }
 
-  async setValue(isDark: boolean) {
-    await this.storageService.set('darkMode', isDark);
+  async setValue(theme: string) {
+    await this.storageService.setValue('theme', theme);
   }
 
-  async getValue(key: string) {
-    return this.storageService.get(key);
-  }
-
-  async removeValue(key: string) {
-    await this.storageService.remove(key);
+  async getValue(theme: string) {
+    return this.storageService.getValue(theme);
   }
 }

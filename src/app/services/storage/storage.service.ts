@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from 'appwrite';
 import { ApiService } from '../api/api.service';
 import { Storage as localStorage } from '@ionic/storage-angular';
+import { Preferences } from '@capacitor/preferences';
 
 @Injectable({
   providedIn: 'root',
@@ -32,8 +33,28 @@ export class StorageService {
   }
 
   //
+  // Capacitor Preferences
+  //
+
+  async setValue(key: string, value: string) {
+    await Preferences.set({
+      key: key,
+      value: value,
+    });
+  }
+
+  async getValue(key: string): Promise<string> {
+    const { value } = await Preferences.get({ key: key });
+    return value;
+  }
+
+  async removeValue(key: string) {
+    await Preferences.remove({ key: key });
+  }
+
+  //
   // Local Storage
-  // TODO: Seperate this into a seperate service
+  // TODO: Do issue #215 first then delete localStorage totally
   //
 
   async initLocalStorage() {
