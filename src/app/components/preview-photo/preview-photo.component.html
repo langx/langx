@@ -1,4 +1,4 @@
-<ion-header>
+<ion-header class="ion-no-border">
   <ion-toolbar></ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true" class="ion-padding">
@@ -20,7 +20,8 @@
     mousewheel="true"
   >
     <swiper-slide *ngFor="let photo of photos">
-      <!-- TODO: Test this following zoom feature on mobile-->
+      <!-- TODO: Test this following zoom feature on mobile
+      Tested and its not working -->
       <div class="swiper-zoom-container">
         <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer" />
       </div>
