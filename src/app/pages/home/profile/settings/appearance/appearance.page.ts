@@ -14,7 +14,13 @@ export class AppearancePage implements OnInit {
   constructor(private storageService: StorageService) {}
 
   async ngOnInit() {
-    await this.checkStorageForDarkMode();
+    // await this.checkStorageForDarkMode();
+    // await this.storageService.setValue('darkMode', 'true');
+    await this.getName();
+  }
+
+  async getName() {
+    this.storageService.getValue('darkMode');
   }
 
   async checkStorageForDarkMode() {
