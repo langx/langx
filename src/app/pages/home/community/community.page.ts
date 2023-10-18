@@ -79,11 +79,11 @@ export class CommunityPage implements OnInit {
   // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
     // Getting the filter data from localStorage
-    const languagesString = await this.storageService.get('languages');
-    const gender = (await this.storageService.get('gender')) || null;
-    const country = (await this.storageService.get('country')) || null;
-    const minAgeString = await this.storageService.get('minAge');
-    const maxAgeString = await this.storageService.get('maxAge');
+    const languagesString = await this.storageService.getValue('languages');
+    const gender = (await this.storageService.getValue('gender')) || null;
+    const country = (await this.storageService.getValue('country')) || null;
+    const minAgeString = await this.storageService.getValue('minAge');
+    const maxAgeString = await this.storageService.getValue('maxAge');
 
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
