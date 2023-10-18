@@ -78,8 +78,8 @@ export class EditPage implements OnInit {
         this.loadingController(false);
       });
 
+      if (!image) return;
       await this.loadingController(true);
-
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
         componentProps: {
