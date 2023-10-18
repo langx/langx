@@ -50,11 +50,11 @@ export class FiltersPage implements OnInit {
 
   async checkStorage() {
     // check localStorage
-    const languagesString = await this.storageService.get('languages');
-    const gender = (await this.storageService.get('gender')) || null;
-    const country = (await this.storageService.get('country')) || null;
-    const minAgeString = await this.storageService.get('minAge');
-    const maxAgeString = await this.storageService.get('maxAge');
+    const languagesString = await this.storageService.getValue('languages');
+    const gender = (await this.storageService.getValue('gender')) || null;
+    const country = (await this.storageService.getValue('country')) || null;
+    const minAgeString = await this.storageService.getValue('minAge');
+    const maxAgeString = await this.storageService.getValue('maxAge');
 
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
@@ -81,29 +81,30 @@ export class FiltersPage implements OnInit {
     this.router.navigateByUrl('/home/community');
   }
 
+  // TODO: #219 Test .toString() may create another BUG
   setLocalStorage(filterData: FilterData) {
     if (!filterData.languages) filterData.languages = [];
     if (filterData.languages.length > 0) {
-      this.storageService.set('languages', filterData.languages);
+      this.storageService.setValue('languages', filterData.languages.toString());
     }
     if (filterData.gender) {
-      this.storageService.set('gender', filterData.gender);
+      this.storageService.setValue('gender', filterData.gender);
     }
     if (filterData.country) {
-      this.storageService.set('country', filterData.country);
+      this.storageService.setValue('country', filterData.country);
     }
     if (filterData.minAge && filterData.maxAge) {
-      this.storageService.set('minAge', filterData.minAge);
-      this.storageService.set('maxAge', filterData.maxAge);
+      this.storageService.setValue('minAge', filterData.minAge.toString());
+      this.storageService.setValue('maxAge', filterData.maxAge.toString());
     }
   }
 
   removeLocalStorage() {
-    this.storageService.remove('languages');
-    this.storageService.remove('gender');
-    this.storageService.remove('country');
-    this.storageService.remove('minAge');
-    this.storageService.remove('maxAge');
+    this.storageService.removeValue('languages');
+    this.storageService.removeValue('gender');
+    this.storageService.removeValue('country');
+    this.storageService.removeValue('minAge');
+    this.storageService.removeValue('maxAge');
   }
 
   //
