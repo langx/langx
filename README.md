@@ -6,10 +6,17 @@ This project developed by New Chapter Team.
 
 ## Table of Contents
 
+- [Status](#status)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Status
+
+This project is currently in development. The current version is 0.1.0. For more information, please refer to the project's GitHub repository.
+
+To check the status of the website, database and CDN, please visit the following link: https://status.languagexchange.net/
 
 ## Installation
 
