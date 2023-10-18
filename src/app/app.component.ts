@@ -13,7 +13,7 @@ export class AppComponent {
   constructor(private storageService: StorageService) {}
 
   async ngOnInit() {
-    await this.checkStorageForDarkMode();
+    // await this.checkStorageForDarkMode();
   }
 
   async checkStorageForDarkMode() {
