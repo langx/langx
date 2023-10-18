@@ -13,31 +13,29 @@ export class AppComponent {
   constructor(private storageService: StorageService) {}
 
   async ngOnInit() {
-    // await this.checkStorageForDarkMode();
+    await this.checkTheme();
   }
 
-  async checkStorageForDarkMode() {
-    await this.storageService.initStorage();
-    let darkMode = await this.storageService.get('darkMode');
-    console.log('darkMode: ', darkMode);
+  async checkTheme() {
+    let theme = await this.storageService.getValue('theme');
+    if (theme == null) {
+      await this.storageService.setValue('theme', 'auto');
+      theme = 'auto';
+    }
 
-    if (darkMode == null) {
-      this.initDarkMode();
-    } else if (darkMode) {
+    if (theme == 'auto') {
+      this.initAutoMode();
+    } else if (theme == 'night') {
       this.toggleDarkTheme(true);
-    } else {
+    } else if (theme == 'day') {
       this.toggleDarkTheme(false);
     }
+
+    console.log('theme in storage: ', theme);
   }
 
-  async getValue(key: string) {
-    return await this.storageService.get(key);
-  }
-
-  initDarkMode() {
-    //console.log('initDarkMode');
+  initAutoMode() {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    //console.log('prefersDark: ', prefersDark);
     this.toggleDarkTheme(prefersDark.matches);
 
     // Listen for changes to the prefers-color-scheme media query
