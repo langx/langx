@@ -59,7 +59,7 @@
         </ion-item>
         <ion-item>
           <ion-icon name="calendar-number-outline"></ion-icon>
-          <ion-label>{{user?.birthdate | date: 'dd/MM/YYYY'}}</ion-label>
+          <ion-label>{{getAge(user?.birthdate)}} years old</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
