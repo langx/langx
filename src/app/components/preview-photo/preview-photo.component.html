@@ -1,4 +1,7 @@
-<ion-content [fullscreen]="true">
+<ion-header>
+  <ion-toolbar></ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
     <ion-fab-button (click)="close()" size="small" color="medium">
       <ion-icon name="close-outline"></ion-icon>
@@ -8,7 +11,7 @@
   <!-- TODO: initialSlide does not work -->
   <swiper-container
     [spaceBetween]="15"
-    [initialSlide]=2
+    [initialSlide]="2"
     [centeredSlides]="true"
     [pagination]="true"
     [navigation]="true"
