@@ -81,6 +81,7 @@ export class FiltersPage implements OnInit {
     this.router.navigateByUrl('/home/community');
   }
 
+  // TODO: #219 Test .toString() may create another BUG
   setLocalStorage(filterData: FilterData) {
     if (!filterData.languages) filterData.languages = [];
     if (filterData.languages.length > 0) {
