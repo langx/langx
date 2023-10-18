@@ -21,7 +21,6 @@ export class CommunityPage implements OnInit {
   users = [];
 
   isAllUsersLoaded: boolean = false; // Pagination variable
-  isLoading: boolean = false;
 
   constructor(
     private router: Router,
@@ -47,15 +46,12 @@ export class CommunityPage implements OnInit {
   //
 
   async getUsers(filterData?: FilterData) {
-    this.isLoading = true;
     await this.userService.listUsers(filterData).then(
       (response) => {
-        this.isLoading = false;
         console.log(response);
         this.users = response.documents;
       },
       (error) => {
-        this.isLoading = false;
         console.log(error);
       }
     );

@@ -20,14 +20,12 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-
-  <ion-card class="apps-card" *ngIf="!isLoading">
+  <ion-card class="apps-card">
     <ion-card-header>
       <ion-card-subtitle>Your Daily List</ion-card-subtitle>
       <ion-card-title> Language Mates </ion-card-title>
     </ion-card-header>
-    <ion-card-content *ngIf="!isLoading">
+    <ion-card-content>
       <ion-list>
         <app-user-list
           *ngFor="let user of users"
