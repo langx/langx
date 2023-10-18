@@ -43,10 +43,9 @@ export class StorageService {
     });
   }
 
-  async getValue(key: string) {
+  async getValue(key: string): Promise<string> {
     const { value } = await Preferences.get({ key: key });
-
-    console.log(`Hello ${value}!`);
+    return value;
   }
 
   async removeValue(key: string) {
