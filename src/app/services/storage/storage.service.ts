@@ -54,7 +54,7 @@ export class StorageService {
 
   //
   // Local Storage
-  // TODO: Seperate this into a seperate service
+  // TODO: Do issue #215 first then delete localStorage totally
   //
 
   async initLocalStorage() {
