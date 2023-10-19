@@ -43,6 +43,7 @@ export class FcmService {
 
     // Listeners for registration, errors, and incoming notifications
     PushNotifications.addListener('registration', (token: Token) => {
+      // TODO: Save this token to database!
       console.log('My token: ' + JSON.stringify(token));
     });
 
