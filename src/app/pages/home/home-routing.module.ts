@@ -36,7 +36,8 @@ const routes: Routes = [
   },
   {
     path: 'chat/:id',
-    loadChildren: () => import('./messages/chat/chat.module').then( m => m.ChatPageModule)
+    loadChildren: () =>
+      import('./messages/chat/chat.module').then((m) => m.ChatPageModule),
   },
   {
     path: 'filters',
@@ -82,6 +83,11 @@ const routes: Routes = [
       import('./profile/settings/privacy/privacy.module').then(
         (m) => m.PrivacyPageModule
       ),
+  },
+  {
+    path: 'fcm-test',
+    loadChildren: () =>
+      import('./fcm-test/fcm-test.module').then((m) => m.FcmTestPageModule),
   },
 ];
 
