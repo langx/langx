@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PushNotifications } from '@capacitor/push-notifications';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-fcm-test',
@@ -6,7 +8,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./fcm-test.page.scss'],
 })
 export class FcmTestPage implements OnInit {
-  constructor() {}
+  id = null;
 
-  ngOnInit() {}
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit() {
+    this.route.paramMap.subscribe((params) => {
+      this.id = params.get('id');
+    });
+  }
+
+  resetBadgeCount() {
+    PushNotifications.removeAllDeliveredNotifications();
+  }
 }
