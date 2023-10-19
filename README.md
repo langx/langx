@@ -102,6 +102,9 @@ To secure the `GoogleService-info.plist` file, you can ensure that it is not pub
 
 It is also important to keep your Firebase project's API key and other sensitive information secure. You can use a password manager to securely store your API key and other credentials, and avoid hardcoding them in your app's code.
 
+For more information on how to secure your Firebase project, please refer to the following resources:
+- [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
