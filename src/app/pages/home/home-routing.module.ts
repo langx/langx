@@ -85,7 +85,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'fcm-test',
+    path: 'fcm-test/:id',
     loadChildren: () =>
       import('./fcm-test/fcm-test.module').then((m) => m.FcmTestPageModule),
   },
