@@ -31,6 +31,21 @@
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/createMessage"
+    },
+    {
+      "$id": "push-notification-with-fcm",
+      "name": "push-notification-with-fcm",
+      "runtime": "node-20.0",
+      "execute": [],
+      "events": [],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/push-notification-with-fcm"
     }
   ]
 }
