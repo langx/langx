@@ -12,6 +12,8 @@ PODS:
     - Capacitor
   - CapacitorPreferences (5.0.6):
     - Capacitor
+  - CapacitorPushNotifications (5.1.0):
+    - Capacitor
   - CapacitorStatusBar (5.0.6):
     - Capacitor
   - Firebase/CoreOnly (10.16.0):
@@ -75,6 +77,7 @@ DEPENDENCIES:
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
+  - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - Firebase/Messaging
 
@@ -105,6 +108,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/keyboard"
   CapacitorPreferences:
     :path: "../../node_modules/@capacitor/preferences"
+  CapacitorPushNotifications:
+    :path: "../../node_modules/@capacitor/push-notifications"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
 
@@ -116,6 +121,7 @@ SPEC CHECKSUMS:
   CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
   CapacitorKeyboard: b978154b024a5f65e044908e37d15b7de58b9d12
   CapacitorPreferences: f03954bcb0ff09c792909e46bff88e3183c16b10
+  CapacitorPushNotifications: b31e326c6e4eb216a622041d6ca21a973f34943f
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
   Firebase: 25899099b77d255a636e3579c3d9dce10ec150d5
   FirebaseCore: 65a801af84cca84361ef9eac3fd868656968a53b
@@ -127,6 +133,6 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: 410c9493dc2f5b78d63528b78e26c10b633c60b2
+PODFILE CHECKSUM: b1c5388a3bdd3ae88190541f5f7c4eec401b474d
 
 COCOAPODS: 1.13.0
