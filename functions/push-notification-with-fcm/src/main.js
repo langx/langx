@@ -1,16 +1,14 @@
 import { throwIfMissing, sendPushNotification } from './utils.js';
 
-export default async ({ req, res, log, error }) => {
-  throwIfMissing(process.env, [
-    'FCM_PROJECT_ID',
-    'FCM_PRIVATE_KEY',
-    'FCM_CLIENT_EMAIL',
-    'FCM_DATABASE_URL',
-  ]);
+// Test Data with 11 Pro Simulator
+// {"deviceToken":"egEjInzQzEwcr4sAsf5bAs:APA91bFHrqkhyx36bkQDlHPgKgtfEP2G0g4jkw9EXWKwhg8f6dah_4_Caz1etlkt_25M4BGQWeMKWihRrB31-aWEq7u1vvENZoZZHSyEqItZ2karOhf_utTnD7YKIBqng1-rBQVN9oYb", "message":"Hello World"}
 
+export default async ({ req, res, log, error }) => {
   try {
+    log(req);
+    log(req.body);
     throwIfMissing(req.body, ['deviceToken', 'message']);
-    throwIfMissing(req.body.message, ['title', 'body']);
+    // throwIfMissing(req.body.message, ['title', 'body']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
@@ -20,10 +18,15 @@ export default async ({ req, res, log, error }) => {
   try {
     const response = await sendPushNotification({
       notification: {
-        title: req.body.message.title,
-        body: req.body.message.body,
+        // title: req.body.message.title,
+        // body: req.body.message.body,
+        title: 'languageXchange',
+        body: req.body.message,
       },
-      token: req.deviceToken,
+      data: {
+        detailsId: '33',
+      },
+      token: req.body.deviceToken,
     });
     log(`Successfully sent message: ${response}`);
 
