@@ -42,7 +42,7 @@ export class UserService {
         '.documents.' +
         userid,
       (response) => {
-        console.log(response.payload);
+        // console.log(response.payload);
         this.setEvent(response.payload);
       }
     );
