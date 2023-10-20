@@ -1,4 +1,5 @@
-import * as admin from 'firebase-admin';
+import admin from 'firebase-admin';
+import googleServices from './google-services.json' assert { type: 'json' };
 
 /**
  * Throws an error if any of the keys are missing from the object
@@ -24,11 +25,7 @@ export function throwIfMissing(obj, keys) {
  */
 export async function sendPushNotification(payload) {
   admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FCM_PROJECT_ID,
-      clientEmail: process.env.FCM_CLIENT_EMAIL,
-      privateKey: process.env.FCM_PRIVATE_KEY,
-    }),
+    credential: admin.credential.cert(googleServices),
     databaseURL: process.env.FCM_DATABASE_URL,
   });
   return await admin.messaging().send(payload);
