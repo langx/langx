@@ -16,6 +16,7 @@ export class FcmService {
   constructor(private router: Router) {}
 
   public initPush() {
+    // TODO: #226 Web notification can also be implemented here
     if (Capacitor.getPlatform() !== 'web') {
       this.registerPush();
     }
