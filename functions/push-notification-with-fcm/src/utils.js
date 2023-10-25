@@ -24,9 +24,11 @@ export function throwIfMissing(obj, keys) {
  * @returns {Promise<string>}
  */
 export async function sendPushNotification(payload) {
-  admin.initializeApp({
-    credential: admin.credential.cert(googleServices),
-    databaseURL: process.env.FCM_DATABASE_URL,
-  });
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(googleServices),
+      databaseURL: process.env.FCM_DATABASE_URL,
+    });
+  }
   return await admin.messaging().send(payload);
 }
