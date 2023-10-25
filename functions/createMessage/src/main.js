@@ -17,6 +17,8 @@ export default async ({ req, res, log, error }) => {
   let isLogged = false;
   let response = {};
 
+  // TODO: #228 throwIfMissing(req.headers['x-appwrite-user-id'], 'user_id_missing');
+
   if (!req.headers['x-appwrite-user-id']) {
     error('user_id_missing');
     return res.json({
