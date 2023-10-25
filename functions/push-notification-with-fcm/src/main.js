@@ -1,13 +1,14 @@
 import { throwIfMissing, sendPushNotification } from './utils.js';
 
 // Test Data with 11 Pro Simulator
-// {"deviceToken":"egEjInzQzEwcr4sAsf5bAs:APA91bFHrqkhyx36bkQDlHPgKgtfEP2G0g4jkw9EXWKwhg8f6dah_4_Caz1etlkt_25M4BGQWeMKWihRrB31-aWEq7u1vvENZoZZHSyEqItZ2karOhf_utTnD7YKIBqng1-rBQVN9oYb", "message":"Hello World"}
+// {"deviceToken":"deR53P4J8EfejYGytvEcPA:APA91bGsYbpHZewq6WuYPGrw2HhJvg9imL__2c0YSPFkKXRJSLklzYWlR9VP7-6LXoIKl47wjPn5YTE4BXKGWW3h1eZ9Fw_BS7nKqYnbOgk0i7d2sG31djhISxXgjErbcxqeijbqQjHZ", "message":"Hello World"}
+// event trigger: databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7
 
 export default async ({ req, res, log, error }) => {
   try {
     log(req);
     log(req.body);
-    throwIfMissing(req.body, ['deviceToken', 'message']);
+    // throwIfMissing(req.body, ['deviceToken', 'message']);
     // throwIfMissing(req.body.message, ['title', 'body']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
