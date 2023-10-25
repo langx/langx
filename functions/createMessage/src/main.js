@@ -86,6 +86,7 @@ export default async ({ req, res, log, error }) => {
     sender: req.headers['x-appwrite-user-id'],
     roomId: body.roomId,
     body: body.body,
+    to: body.to,
   };
   let message = await database.createDocument(
     process.env.APP_DATABASE,
