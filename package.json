@@ -1,7 +1,7 @@
 {
-  "name": "firestore-chat-app",
+  "name": "languagexchange",
   "version": "0.0.1",
-  "author": "Ionic Framework",
+  "author": "languageXchange",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
