@@ -2,7 +2,7 @@
   "name": "languagexchange",
   "version": "0.0.1",
   "author": "languageXchange",
-  "homepage": "https://ionicframework.com/",
+  "homepage": "https://languageXchange.net/",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -53,7 +53,7 @@
     "@angular/compiler-cli": "^16.0.0",
     "@angular/language-service": "^16.0.0",
     "@capacitor/assets": "^3.0.1",
-    "@capacitor/cli": "5.2.2",
+    "@capacitor/cli": "^5.5.1",
     "@ionic/angular-toolkit": "^9.0.0",
     "@types/jasmine": "~4.3.0",
     "@types/node": "^12.11.1",
