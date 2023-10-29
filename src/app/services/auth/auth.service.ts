@@ -33,6 +33,7 @@ export class AuthService {
   login(email: string, password: string) {
     const authReq = this.api.account.createEmailSession(email, password);
     // TODO: Add error handling with toast message
+    // TODO: this.api.account organize inside the api.service.ts
     return from(authReq).pipe(
       catchError((error) => of(error)),
       concatMap(() => this.api.account.get()),

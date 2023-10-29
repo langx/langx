@@ -10,6 +10,7 @@ This project developed by New Chapter Team.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
+- [Security](#security)
 - [License](#license)
 
 ## Status
@@ -88,6 +89,21 @@ Fork the project repository to your own GitHub account.
 7. Once your pull request has been approved, it will be merged into the main branch of the project.
 
 That's it! You should now be able to contribute to the project and help make it better. If you encounter any issues during the contribution process, please refer to the project's documentation or open an issue on the project's GitHub repository.
+
+## Security
+
+### GoogleService-info.plist
+
+The content of the Firebase config or object can be considered as public, including the app's platform-specific ID (Apple bundle ID or Android package name) and the Firebase project-specific values, like the API Key, project ID, Realtime Database URL, and Cloud Storage bucket name. Given this, use Firebase Security Rules to protect your data and files in Realtime Database, Cloud Firestore, and Cloud Storage.
+
+`GoogleService-info.plist` is a configuration file that contains information about a Firebase project, such as the project's API key, database URL, and storage bucket. It is used by iOS apps to connect to Firebase services, such as Firebase Authentication, Firebase Realtime Database, and Firebase Cloud Messaging.
+
+To secure the `GoogleService-info.plist` file, you can ensure that it is not publicly accessible. This can be done by adding the file to your app's .gitignore file to prevent it from being committed to your repository. Additionally, you can use Firebase Security Rules to restrict access to your Firebase project's resources, such as the Realtime Database and Cloud Storage, to only authorized users.
+
+It is also important to keep your Firebase project's API key and other sensitive information secure. You can use a password manager to securely store your API key and other credentials, and avoid hardcoding them in your app's code.
+
+For more information on how to secure your Firebase project, please refer to the following resources:
+- [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
 
 ## License
 
