@@ -88,7 +88,7 @@ export class FcmService {
         );
         const data = notification.notification.data;
         if (data.roomId) {
-          // TODO: No need Room navData
+          // TODO: #231 No need Room navData
           // Redirect to chat page
           const navData: NavigationExtras = {
             queryParams: {
