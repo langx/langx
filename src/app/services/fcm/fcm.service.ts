@@ -82,12 +82,15 @@ export class FcmService {
     PushNotifications.addListener(
       'pushNotificationActionPerformed',
       async (notification: ActionPerformed) => {
-        const data = notification.notification.data;
         console.log(
           'Action performed: ' + JSON.stringify(notification.notification)
         );
-        if (data.detailsId) {
-          this.router.navigateByUrl(`/home/fcm-test/${data.detailsId}`);
+        const data = notification.notification.data;
+        if (data.roomId) {
+          console.log('navigate to chat', data.roomId);
+          // TODO: #Bug Navigation does not work
+          this.router.navigateByUrl(`/chat/${data.roomId}`);
+          console.log('navigated to chat', data.roomId);
         }
       }
     );
