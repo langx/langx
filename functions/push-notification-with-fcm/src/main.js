@@ -40,6 +40,14 @@ export default async ({ req, res, log, error }) => {
         data: {
           roomId: req.body.roomId.$id,
         },
+        apns: {
+          payload: {
+            aps: {
+              badge: 1,
+              sound: 'bingbong.aiff',
+            },
+          },
+        },
         token: prefs['ios'],
       });
       log(`Successfully sent message: ${response}`);
