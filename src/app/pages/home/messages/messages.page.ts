@@ -31,7 +31,8 @@ export class MessagesPage implements OnInit {
   async ngOnInit() {
     // Trigger FCM
     this.fcmService.registerPush();
-    await this.listRooms(); // get all chat Rooms
+    // Get all chat Rooms
+    await this.listRooms();
   }
 
   async listRooms() {
