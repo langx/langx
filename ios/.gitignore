@@ -11,3 +11,13 @@ capacitor-cordova-ios-plugins
 # Generated Config files
 App/App/capacitor.config.json
 App/App/config.xml
+
+# The content of the Firebase config file or object is considered 
+# public, including the app's platform-specific ID (Apple bundle ID or
+# Android package name) and the Firebase project-specific values, like
+# the API Key, project ID, Realtime Database URL, and Cloud Storage 
+# bucket name. Given this, use Firebase Security Rules to protect your
+# data and files in Realtime Database, Cloud Firestore, and Cloud Storage.
+
+# Firebase config file
+App/App/GoogleService-Info.plist

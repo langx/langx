@@ -17,6 +17,8 @@ export default async ({ req, res, log, error }) => {
   let isLogged = false;
   let response = {};
 
+  // TODO: #228 throwIfMissing(req.headers['x-appwrite-user-id'], 'user_id_missing');
+
   if (!req.headers['x-appwrite-user-id']) {
     error('user_id_missing');
     return res.json({
@@ -86,6 +88,7 @@ export default async ({ req, res, log, error }) => {
     sender: req.headers['x-appwrite-user-id'],
     roomId: body.roomId,
     body: body.body,
+    to: body.to,
   };
   let message = await database.createDocument(
     process.env.APP_DATABASE,

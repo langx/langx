@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { RoomService } from 'src/app/services/chat/room.service';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
 
 @Component({
   selector: 'app-messages',
@@ -23,10 +24,13 @@ export class MessagesPage implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private fcmService: FcmService
   ) {}
 
   async ngOnInit() {
+    // Trigger FCM
+    this.fcmService.initPush();
     await this.listRooms(); // get all chat Rooms
   }
 
