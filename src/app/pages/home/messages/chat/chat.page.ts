@@ -4,6 +4,8 @@ import { IonContent, ToastController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
+import { RoomService } from 'src/app/services/chat/room.service';
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-chat',
@@ -18,11 +20,10 @@ export class ChatPage implements OnInit {
 
   isTyping: boolean = false;
 
-  name: string;
-  userId: string;
-  userProfilePhoto: string;
-  roomId: string;
   currentUserId: string;
+  roomId: string;
+  userId: string;
+  user: any;
 
   model = {
     icon: 'chatbubbles-outline',
@@ -31,8 +32,10 @@ export class ChatPage implements OnInit {
   };
 
   constructor(
-    private messageService: MessageService,
     private authService: AuthService,
+    private roomService: RoomService,
+    private userService: UserService,
+    private messageService: MessageService,
     private route: ActivatedRoute,
     private router: Router,
     private toastController: ToastController
@@ -49,17 +52,42 @@ export class ChatPage implements OnInit {
     this.scrollToBottom();
   }
 
-  // TODO: Check if the room exists or not
-  // Client side params are set, such as name, uid, roomId
   initChatPage() {
-    const data: any = this.route.snapshot.queryParams;
-    console.log('route snapshot data: ', data);
-    if (data?.name) this.name = data.name;
-    if (data?.uid) this.userId = data.uid;
-    if (data?.upp) this.userProfilePhoto = data.upp;
-    const chatRoomId: string = this.route.snapshot.paramMap.get('id');
-    this.roomId = chatRoomId;
+    // get current user id
     this.currentUserId = this.authService.getUserId();
+
+    // get room document id from route
+    this.roomId = this.route.snapshot.paramMap.get('id');
+
+    // get room document from db
+    this.roomService
+      .getRoom(this.roomId)
+      .then((room) => {
+        console.log('room: ', room);
+        room.users.forEach((user) => {
+          if (user !== this.currentUserId) this.userId = user;
+        });
+
+        // get user document from db
+        this.userService
+          .getUserDoc(this.userId)
+          .then((user) => {
+            console.log('user: ', user);
+            this.user = user;
+          })
+          .catch((err) => {
+            // Check if the user exists or not
+            console.log('user error: ', err.message);
+            this.presentToast('User not found', 'danger');
+            this.router.navigateByUrl('/home/messages');
+          });
+      })
+      .catch((err) => {
+        // Check if the room exists or not
+        console.log('room error: ', err.message);
+        this.presentToast('Room not found', 'danger');
+        this.router.navigateByUrl('/home/messages');
+      });
   }
 
   addMessage() {

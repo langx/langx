@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { RoomService } from 'src/app/services/chat/room.service';
 import {
@@ -127,14 +127,7 @@ export class CommunityPage implements OnInit {
         roomId = response?.$id;
         console.log(response); // Success
 
-        // Redirect to chat page
-        const navData: NavigationExtras = {
-          queryParams: {
-            name: user?.name,
-            uid: user?.$id,
-          },
-        };
-        this.router.navigate(['/', 'home', 'chat', roomId], navData);
+        this.router.navigate(['/', 'home', 'chat', roomId]);
       },
       (error) => {
         console.log('error: ', error.message); // Failure
