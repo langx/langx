@@ -20,11 +20,9 @@ export class ChatPage implements OnInit {
 
   isTyping: boolean = false;
 
-  name: string;
-  userId: string;
-  userProfilePhoto: string;
-  roomId: string;
   currentUserId: string;
+  roomId: string;
+  userId: string;
   user: any;
 
   model = {
@@ -76,9 +74,6 @@ export class ChatPage implements OnInit {
           .then((user) => {
             console.log('user: ', user);
             this.user = user;
-            this.name = user.name;
-            this.userId = user.$id;
-            this.userProfilePhoto = user.profilePhoto;
           })
           .catch((err) => {
             // Check if the user exists or not
