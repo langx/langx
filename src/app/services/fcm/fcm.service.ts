@@ -64,6 +64,10 @@ export class FcmService {
         }
       });
     });
+  }
+
+  listenerPush() {
+    console.log('Listener FCM started');
 
     PushNotifications.addListener(
       'registrationError',
