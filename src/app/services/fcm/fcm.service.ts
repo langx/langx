@@ -16,14 +16,12 @@ import { ApiService } from '../api/api.service';
 export class FcmService {
   constructor(private router: Router, private api: ApiService) {}
 
-  public initPush() {
+  async registerPush() {
     // TODO: #226 Web notification can also be implemented here
-    if (Capacitor.getPlatform() !== 'web') {
-      this.registerPush();
+    if (Capacitor.getPlatform() === 'web') {
+      return;
     }
-  }
 
-  private async registerPush() {
     // Check permission
     let permStatus = await PushNotifications.checkPermissions();
 
@@ -67,6 +65,11 @@ export class FcmService {
   }
 
   listenerPush() {
+    // TODO: #226 Web notification can also be implemented here
+    if (Capacitor.getPlatform() === 'web') {
+      return;
+    }
+
     console.log('Listener FCM started');
 
     PushNotifications.addListener(
