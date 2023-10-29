@@ -7,7 +7,7 @@ import {
   ActionPerformed,
   RegistrationError,
 } from '@capacitor/push-notifications';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -88,15 +88,8 @@ export class FcmService {
         );
         const data = notification.notification.data;
         if (data.roomId) {
-          // TODO: #231 No need Room navData
           // Redirect to chat page
-          const navData: NavigationExtras = {
-            queryParams: {
-              name: 'user?.name',
-              uid: 'user?.$id',
-            },
-          };
-          this.router.navigate(['/', 'home', 'chat', data.roomId], navData);
+          this.router.navigate(['/', 'home', 'chat', data.roomId]);
         }
       }
     );
