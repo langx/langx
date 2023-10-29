@@ -7,7 +7,7 @@ import {
   ActionPerformed,
   RegistrationError,
 } from '@capacitor/push-notifications';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -82,15 +82,21 @@ export class FcmService {
     PushNotifications.addListener(
       'pushNotificationActionPerformed',
       async (notification: ActionPerformed) => {
+        console.log('Push action performed: ' + JSON.stringify(notification));
         console.log(
           'Action performed: ' + JSON.stringify(notification.notification)
         );
         const data = notification.notification.data;
         if (data.roomId) {
-          console.log('navigate to chat', data.roomId);
-          // TODO: #Bug Navigation does not work
-          this.router.navigateByUrl(`/chat/${data.roomId}`);
-          console.log('navigated to chat', data.roomId);
+          // TODO: No need Room navData
+          // Redirect to chat page
+          const navData: NavigationExtras = {
+            queryParams: {
+              name: 'user?.name',
+              uid: 'user?.$id',
+            },
+          };
+          this.router.navigate(['/', 'home', 'chat', data.roomId], navData);
         }
       }
     );
