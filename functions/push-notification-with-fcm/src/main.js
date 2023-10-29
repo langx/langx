@@ -38,7 +38,7 @@ export default async ({ req, res, log, error }) => {
           body: req.body.body,
         },
         data: {
-          detailsId: '33',
+          roomId: req.body.roomId.$id,
         },
         token: prefs['ios'],
       });
