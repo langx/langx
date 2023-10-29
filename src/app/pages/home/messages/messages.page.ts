@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { lastSeen } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -41,14 +41,7 @@ export class MessagesPage implements OnInit {
   }
 
   getChat(room) {
-    const navData: NavigationExtras = {
-      queryParams: {
-        name: room?.userData?.name,
-        uid: room?.userData?.$id,
-        upp: room?.userData?.profilePhoto,
-      },
-    };
-    this.router.navigate(['/', 'home', 'chat', room.$id], navData);
+    this.router.navigate(['/', 'home', 'chat', room.$id]);
   }
 
   openArchiveMessages() {
