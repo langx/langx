@@ -7,7 +7,7 @@ import {
   ActionPerformed,
   RegistrationError,
 } from '@capacitor/push-notifications';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ApiService } from '../api/api.service';
 
 @Injectable({
@@ -16,14 +16,12 @@ import { ApiService } from '../api/api.service';
 export class FcmService {
   constructor(private router: Router, private api: ApiService) {}
 
-  public initPush() {
+  async registerPush() {
     // TODO: #226 Web notification can also be implemented here
-    if (Capacitor.getPlatform() !== 'web') {
-      this.registerPush();
+    if (Capacitor.getPlatform() === 'web') {
+      return;
     }
-  }
 
-  private async registerPush() {
     // Check permission
     let permStatus = await PushNotifications.checkPermissions();
 
@@ -64,6 +62,15 @@ export class FcmService {
         }
       });
     });
+  }
+
+  listenerPush() {
+    // TODO: #226 Web notification can also be implemented here
+    if (Capacitor.getPlatform() === 'web') {
+      return;
+    }
+
+    console.log('Listener FCM started');
 
     PushNotifications.addListener(
       'registrationError',
@@ -88,15 +95,8 @@ export class FcmService {
         );
         const data = notification.notification.data;
         if (data.roomId) {
-          // TODO: #231 No need Room navData
           // Redirect to chat page
-          const navData: NavigationExtras = {
-            queryParams: {
-              name: 'user?.name',
-              uid: 'user?.$id',
-            },
-          };
-          this.router.navigate(['/', 'home', 'chat', data.roomId], navData);
+          this.router.navigate(['/', 'home', 'chat', data.roomId]);
         }
       }
     );

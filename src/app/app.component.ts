@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { StorageService } from './services/storage/storage.service';
+import { FcmService } from './services/fcm/fcm.service';
 import { register } from 'swiper/element/bundle';
 
 register();
@@ -10,10 +11,14 @@ register();
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private storageService: StorageService) {}
+  constructor(
+    private storageService: StorageService,
+    private fcmService: FcmService
+  ) {}
 
   async ngOnInit() {
     await this.checkTheme();
+    this.fcmService.listenerPush();
   }
 
   async checkTheme() {
