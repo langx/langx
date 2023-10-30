@@ -21,28 +21,30 @@ export default async ({ req, res, log, error }) => {
   const body = JSON.parse(req.bodyRaw);
   log(`body: ${JSON.stringify(body)}`);
 
+  // TODO: #237 #SECURITY: VERIFY USER WITH JWT
   // START: VERIFY USER WITH JWT
-  const verifyUser = new Client()
-    .setEndpoint(process.env.APP_ENDPOINT)
-    .setProject(process.env.APP_PROJECT)
-    .setJWT(req.headers['x-appwrite-user-jwt']);
+  /*
+  try {
+    const verifyUser = new Client()
+      .setEndpoint(process.env.APP_ENDPOINT)
+      .setProject(process.env.APP_PROJECT)
+      .setJWT(req.headers['x-appwrite-user-jwt']);
 
-  const account = new Account(verifyUser);
-  await account.get().then(
-    (result) => {
-      if (result.$id === req.headers['x-appwrite-user-id']) {
-        log('jwt is valid');
-      } else {
-        log('jwt is invalid');
-        return res.json({ ok: false, error: 'jwt is invalid' }, 400);
-      }
-    },
-    (err) => {
+    const account = new Account(verifyUser);
+    const user = await account.get();
+    log(`user: ${JSON.stringify(user)}`);
+
+    if (user.$id === req.headers['x-appwrite-user-id']) {
+      log('jwt is valid');
+    } else {
       log('jwt is invalid');
-      return res.json({ ok: false, error: err.message }, 400);
+      return res.json({ ok: false, error: 'jwt is invalid' }, 400);
     }
-  );
-
+  } catch (err) {
+    log('jwt is invalid');
+    return res.json({ ok: false, error: err.message }, 400);
+  }
+  */
   // END: VERIFY USER WITH JWT
 
   const client = new Client()
