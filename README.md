@@ -1,3 +1,5 @@
+[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
+
 # languageXchange
 
 languageXchange is a web application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app uses Appwrite for the back-end. <!-- and includes Appwrite Cloud Functions for additional functionality.-->
@@ -103,6 +105,7 @@ To secure the `GoogleService-info.plist` file, you can ensure that it is not pub
 It is also important to keep your Firebase project's API key and other sensitive information secure. You can use a password manager to securely store your API key and other credentials, and avoid hardcoding them in your app's code.
 
 For more information on how to secure your Firebase project, please refer to the following resources:
+
 - [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
 
 ## License
