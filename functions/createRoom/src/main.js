@@ -1,3 +1,4 @@
+import { throwIfMissing } from './utils.js';
 import {
   Client,
   Databases,
@@ -8,38 +9,17 @@ import {
 } from 'node-appwrite';
 
 export default async ({ req, res, log, error }) => {
-  // Log request
-  log('req:');
-  log(req);
-
-  let isLogged = false;
-  let response = {};
-
-  // TODO: #228 throwIfMissing(req.headers['x-appwrite-user-id'], 'user_id_missing');
-
-  if (!req.headers['x-appwrite-user-id']) {
-    error('user_id_missing');
-    return res.json({
-      code: 400,
-      type: 'user_id_missing',
-    });
+  try {
+    log(`req: ${JSON.stringify(req)}`);
+    throwIfMissing(req.headers, ['x-appwrite-user-id', 'x-appwrite-user-jwt']);
+    const body = JSON.parse(req.bodyRaw);
+    throwIfMissing(body, ['to']);
+  } catch (err) {
+    return res.json({ ok: false, error: err.message }, 400);
   }
 
-  if (!req.headers['x-appwrite-user-jwt']) {
-    error('user_jwt_missing');
-    return res.json({
-      code: 400,
-      type: 'user_jwt_missing',
-    });
-  }
-
-  if (!req.bodyRaw) {
-    error('body_missing');
-    return res.json({
-      code: 400,
-      type: 'body_missing',
-    });
-  }
+  const body = JSON.parse(req.bodyRaw);
+  log(`body: ${JSON.stringify(body)}`);
 
   // START: VERIFY USER WITH JWT
   const verifyUser = new Client()
@@ -51,22 +31,18 @@ export default async ({ req, res, log, error }) => {
   await account.get().then(
     (result) => {
       if (result.$id === req.headers['x-appwrite-user-id']) {
-        isLogged = true;
         log('jwt is valid');
+      } else {
+        log('jwt is invalid');
+        return res.json({ ok: false, error: 'jwt is invalid' }, 400);
       }
-      response = result;
     },
-    (error) => {
+    (err) => {
       log('jwt is invalid');
-      log(error);
-      response = error;
-      // {"code":401,"type":"user_jwt_invalid","response":{"message":"Failed to verify JWT. Invalid token: Incomplete segments","code":401,"type":"user_jwt_invalid","version":"1.4.5"}}
+      return res.json({ ok: false, error: err.message }, 400);
     }
   );
 
-  if (!isLogged) {
-    return res.json(response);
-  }
   // END: VERIFY USER WITH JWT
 
   const client = new Client()
@@ -75,11 +51,6 @@ export default async ({ req, res, log, error }) => {
     .setKey(process.env.API_KEY);
 
   const database = new Databases(client);
-
-  // Get body
-  let body = JSON.parse(req.bodyRaw);
-  log('body:');
-  log(body);
 
   // Create a room
   let roomData = { users: [req.headers['x-appwrite-user-id'], body.to] };
