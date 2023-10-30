@@ -9,9 +9,7 @@ import { Client, Users, Databases } from 'node-appwrite';
 export default async ({ req, res, log, error }) => {
   try {
     log(req);
-    log(req.body);
-    // throwIfMissing(req.body, ['deviceToken', 'message']);
-    // throwIfMissing(req.body.message, ['title', 'body']);
+    throwIfMissing(req.body, ['to', 'sender', 'body', 'roomId']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
@@ -26,45 +24,73 @@ export default async ({ req, res, log, error }) => {
   const db = new Databases(client);
 
   const prefs = await users.getPrefs(req.body.to);
-  log(prefs);
 
-  const userDoc = await db.getDocument(
+  try {
+    log(prefs);
+    throwIfMissing(prefs, ['ios']);
+  } catch (err) {
+    return res.json({ ok: false, error: err.message }, 400);
+  }
+
+  const senderUserDoc = await db.getDocument(
     process.env.APP_DATABASE,
     process.env.USERS_COLLECTION,
     req.body.sender
   );
-  log(userDoc);
 
-  if (prefs['ios'] !== '') {
-    log(`Sending message to device: ${req.body.to}`);
+  try {
+    log(senderUserDoc);
+    throwIfMissing(senderUserDoc, ['lastSeen', 'name']);
+  } catch (err) {
+    return res.json({ ok: false, error: err.message }, 400);
+  }
 
-    try {
-      const response = await sendPushNotification({
-        notification: {
-          title: userDoc.name,
-          body: req.body.body,
-        },
-        data: {
-          roomId: req.body.roomId.$id,
-        },
-        apns: {
-          payload: {
-            aps: {
-              badge: 1,
-              sound: 'bingbong.aiff',
-            },
+  const toUserDoc = await db.getDocument(
+    process.env.APP_DATABASE,
+    process.env.USERS_COLLECTION,
+    req.body.to
+  );
+
+  try {
+    log(toUserDoc);
+    throwIfMissing(toUserDoc, ['lastSeen', 'name']);
+  } catch (err) {
+    return res.json({ ok: false, error: err.message }, 400);
+  }
+
+  // Check user is online or not
+  const now = new Date();
+  const lastSeen = new Date(toUserDoc.lastSeen);
+  if (now - lastSeen < 1000 * 60 * 1) {
+    log(`User is still online: ${toUserDoc.name}`);
+    return res.json({ ok: false, error: 'User is online' }, 400);
+  }
+
+  log(`Sending message to device: ${req.body.to}`);
+  try {
+    const response = await sendPushNotification({
+      notification: {
+        title: senderUserDoc.name,
+        body: req.body.body,
+      },
+      data: {
+        roomId: req.body.roomId.$id,
+      },
+      apns: {
+        payload: {
+          aps: {
+            badge: 1,
+            sound: 'bingbong.aiff',
           },
         },
-        token: prefs['ios'],
-      });
-      log(`Successfully sent message: ${response}`);
+      },
+      token: prefs['ios'],
+    });
+    log(`Successfully sent message: ${response}`);
 
-      return res.json({ ok: true, messageId: response });
-    } catch (e) {
-      error(e);
-      return res.json({ ok: false, error: 'Failed to send the message' }, 500);
-    }
-  } else {
-    return res.json({ ok: false, error: 'User not found' }, 404);
+    return res.json({ ok: true, messageId: response });
+  } catch (e) {
+    error(e);
+    return res.json({ ok: false, error: 'Failed to send the message' }, 500);
   }
 };
