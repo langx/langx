@@ -20,7 +20,7 @@
     {
       "$id": "createMessage",
       "name": "createMessage",
-      "runtime": "node-20.0",
+      "runtime": "node-16.0",
       "execute": [],
       "events": [],
       "schedule": "",
