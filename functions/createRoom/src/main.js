@@ -23,6 +23,7 @@ export default async ({ req, res, log, error }) => {
 
   // Create a room
   let roomData = { users: [req.headers['x-appwrite-user-id'], body.to] };
+
   let room = await database.createDocument(
     process.env.APP_DATABASE,
     process.env.ROOMS_COLLECTION,
