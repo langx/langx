@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-export default class TutorialController {
+export default class MessageController {
   async create(req: Request, res: Response) {
     try {
       res.status(201).json({

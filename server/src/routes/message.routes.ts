@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import TestController from '../controllers/test.controller';
+import MessageController from '../controllers/message.controller';
 
 class TutorialRoutes {
   router = Router();
-  controller = new TestController();
+  controller = new MessageController();
 
   constructor() {
     this.intializeRoutes();
