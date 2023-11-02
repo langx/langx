@@ -1,8 +1,5 @@
 import express, { Application } from 'express';
-import env from 'dotenv';
 import Server from './src/index';
-
-env.config();
 
 const app: Application = express();
 const server: Server = new Server(app);
