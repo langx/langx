@@ -18,7 +18,7 @@ const client = new Client()
 
 const database = new Databases(client);
 
-export default class MessageController {
+export default class RoomController {
   async create(req: Request, res: Response) {
     try {
       throwIfMissing(req.headers, ['x-appwrite-user-id']);

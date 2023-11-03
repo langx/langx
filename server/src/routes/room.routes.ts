@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import MessageController from '../controllers/message.controller';
+import RoomController from '../controllers/room.controller';
 
 class TutorialRoutes {
   router = Router();
-  controller = new MessageController();
+  controller = new RoomController();
 
   constructor() {
     this.intializeRoutes();
