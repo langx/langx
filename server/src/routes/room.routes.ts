@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import RoomController from '../controllers/room.controller';
 
-class TutorialRoutes {
+class RoomRoutes {
   router = Router();
   controller = new RoomController();
 
@@ -15,4 +15,4 @@ class TutorialRoutes {
   }
 }
 
-export default new TutorialRoutes().router;
+export default new RoomRoutes().router;
