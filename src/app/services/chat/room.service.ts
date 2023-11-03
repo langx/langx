@@ -126,18 +126,25 @@ export class RoomService {
   }
 
   async createRoom(userId: string): Promise<any> {
-    // It triggers a function that creates a room
+    // Set body
     const body = { to: userId };
-  
-    let currentUserId = this.authService.getUserId();
-    
+
+    // Set x-appwrite-user-id header
+    const currentUserId = this.authService.getUserId();
     axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
-    console.log(typeof this.cUserId, this.cUserId);
+
+    // Set x-appwrite-jwt header
+    await this.authService.createJWT().then((result) => {
+      console.log('result: ', result);
+      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+    });
+
+    // Call the function with headers
     return axios
       .post('http://localhost:3000/api/room', body)
       .then((result) => {
         console.log('result: ', result);
-        return result.data;
+        return new Promise(result.data);
       })
       .catch((error) => {
         return Promise.reject(error);
