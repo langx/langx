@@ -139,7 +139,7 @@ export class RoomService {
       axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
     });
 
-    // Call the function with headers
+    // Call the /api/room
     return axios
       .post('http://localhost:3000/api/room', body)
       .then((result) => {
