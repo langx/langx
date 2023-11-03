@@ -79,25 +79,6 @@ export class MessageService {
       .catch((error) => {
         return Promise.reject(error);
       });
-
-    // It triggers a function that creates a room
-    // const body = JSON.stringify(data);
-    // return await this.api.functions
-    //   .createExecution('createMessage', body)
-    //   .then((result) => {
-    //     console.log('createMessage execution:', result);
-    //     if (result.status === 'completed') {
-    //       return JSON.parse(result.responseBody);
-    //     } else {
-    //       return Promise.reject({
-    //         message: 'Execution Failed, Please try again later!',
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error: ', error);
-    //     return Promise.reject(error);
-    //   });
   }
 
   // Listen to messages in a room
