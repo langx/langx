@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 import { throwIfMissing } from '../utils/utils';
-import { Client, Databases, ID, Permission, Role } from 'node-appwrite';
+import {
+  Client,
+  Databases,
+  Account,
+  ID,
+  Permission,
+  Role,
+} from 'node-appwrite';
 import 'dotenv/config';
 
-const env: any= {
+const env: any = {
   APP_ENDPOINT: process.env.APP_ENDPOINT as string,
   APP_PROJECT: process.env.APP_PROJECT as string,
   API_KEY: process.env.API_KEY as string,
@@ -21,17 +28,39 @@ const database = new Databases(client);
 export default class RoomController {
   async create(req: Request, res: Response) {
     try {
-      throwIfMissing(req.headers, ['x-appwrite-user-id']);
+      throwIfMissing(req.headers, ['x-appwrite-user-id', 'x-appwrite-jwt']);
       throwIfMissing(req.body, ['to']);
       const sender: string = req.headers['x-appwrite-user-id'] as string;
+      const jwt: string = req.headers['x-appwrite-jwt'] as string;
       const to: string = req.body.to;
+
+      // Logs
+      // console.log(typeof req.headers['x-appwrite-jwt'], jwt);
+      // console.log(typeof req.headers['x-appwrite-user-id'], sender);
+      // console.log(typeof to, to);
+
+      // Check JWT
+      const verifyUser = new Client()
+        .setEndpoint(env.APP_ENDPOINT)
+        .setProject(env.APP_PROJECT)
+        .setJWT(jwt);
+
+      const account = new Account(verifyUser);
+      const user = await account.get();
+      // console.log(`user: ${JSON.stringify(user)}`);
+
+      if (user.$id === sender) {
+        console.log('jwt is valid');
+      } else {
+        console.log('jwt is invalid');
+        return res.status(400).json({ ok: false, error: 'jwt is invalid' });
+      }
 
       // Create a room
       let roomData = { users: [sender, to] };
-      console.log(typeof req.headers['x-appwrite-user-id'], sender);
-      console.log(typeof to, to);
+      // console.log(roomData);
 
-      console.log(roomData);
+      // Create document
       let room = await database.createDocument(
         env.APP_DATABASE,
         env.ROOMS_COLLECTION,
@@ -40,13 +69,9 @@ export default class RoomController {
         [Permission.read(Role.user(sender)), Permission.read(Role.user(to))]
       );
 
-      console.log(room);
+      if (room?.$id) console.log('room created');
 
-      res.status(201).json({
-        message: 'create OK',
-        to: req.body.to,
-        sender: req.headers['user-id'],
-      });
+      res.status(201).json(room);
     } catch (err) {
       res.status(500).json({
         message: 'Internal Server Error!',
