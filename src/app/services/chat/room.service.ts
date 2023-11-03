@@ -144,27 +144,11 @@ export class RoomService {
       .post('http://localhost:3000/api/room', body)
       .then((result) => {
         console.log('result: ', result);
-        return new Promise(result.data);
+        return result.data;
       })
       .catch((error) => {
         return Promise.reject(error);
       });
-    //    return await this.api.functions
-    //      .createExecution('createRoom', body)
-    //      .then((result) => {
-    //        console.log('execution:', result);
-    //        if (result.status === 'completed') {
-    //          return JSON.parse(result.responseBody);
-    //        } else {
-    //          return Promise.reject({
-    //            message: 'Execution Failed, Please try again later!',
-    //          });
-    //        }
-    //      })
-    //      .catch((error) => {
-    //        console.log('error: ', error);
-    //        return Promise.reject(error);
-    //      });
   }
 
   listenRooms() {
