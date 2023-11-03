@@ -18,13 +18,6 @@ const env: any = {
   ROOMS_COLLECTION: process.env.ROOMS_COLLECTION as string,
 };
 
-const client = new Client()
-  .setEndpoint(env.APP_ENDPOINT)
-  .setProject(env.APP_PROJECT)
-  .setKey(env.API_KEY);
-
-const database = new Databases(client);
-
 export default class RoomController {
   async create(req: Request, res: Response) {
     try {
@@ -56,9 +49,16 @@ export default class RoomController {
         return res.status(400).json({ ok: false, error: 'jwt is invalid' });
       }
 
+      // Create client for DB
+      const client = new Client()
+        .setEndpoint(env.APP_ENDPOINT)
+        .setProject(env.APP_PROJECT)
+        .setKey(env.API_KEY);
+
+      const database = new Databases(client);
+
       // Create a room
       let roomData = { users: [sender, to] };
-      // console.log(roomData);
 
       // Create document
       let room = await database.createDocument(
@@ -69,7 +69,7 @@ export default class RoomController {
         [Permission.read(Role.user(sender)), Permission.read(Role.user(to))]
       );
 
-      if (room?.$id) console.log('room created');
+      room?.$id ? console.log('room created') : console.log('room not created');
 
       res.status(201).json(room);
     } catch (err) {
