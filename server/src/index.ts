@@ -10,6 +10,7 @@ export default class Server {
 
   private config(app: Application): void {
     const corsOptions: CorsOptions = {
+      // TODO: !IMPORTANT! Change this to your Angular app URL
       origin: 'http://localhost:8100',
     };
 
