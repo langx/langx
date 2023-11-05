@@ -3,6 +3,8 @@ import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import axios from 'axios';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 export class MessageService {
   messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private authService: AuthService) {}
 
   // Update messages behavior subject
   updateMessages(message) {
@@ -57,22 +59,24 @@ export class MessageService {
 
   // Create a message
   async createMessage(data: any): Promise<any> {
-    // It triggers a function that creates a room
-    const body = JSON.stringify(data);
-    return await this.api.functions
-      .createExecution('createMessage', body)
+    // Set x-appwrite-user-id header
+    const currentUserId = this.authService.getUserId();
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+
+    // Set x-appwrite-jwt header
+    await this.authService.createJWT().then((result) => {
+      console.log('result: ', result);
+      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+    });
+
+    // Call the /api/message
+    return axios
+      .post('http://localhost:3000/api/message', data)
       .then((result) => {
-        console.log('createMessage execution:', result);
-        if (result.status === 'completed') {
-          return JSON.parse(result.responseBody);
-        } else {
-          return Promise.reject({
-            message: 'Execution Failed, Please try again later!',
-          });
-        }
+        console.log('result: ', result);
+        return result.data;
       })
       .catch((error) => {
-        console.log('error: ', error);
         return Promise.reject(error);
       });
   }

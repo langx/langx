@@ -26,6 +26,10 @@ export class AuthService {
     return this._user.value?.$id;
   }
 
+  createJWT() {
+    return this.api.account.createJWT();
+  }
+
   //
   // ACCOUNT API
   //
