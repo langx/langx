@@ -71,7 +71,7 @@ export class MessageService {
 
     // Call the /api/message
     return axios
-      .post('http://localhost:3000/api/message', data)
+      .post('https://api.languagexchange.net/api/message', data)
       .then((result) => {
         console.log('result: ', result);
         return result.data;
