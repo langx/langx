@@ -141,7 +141,7 @@ export class RoomService {
 
     // Call the /api/room
     return axios
-      .post('http://localhost:3000/api/room', body)
+      .post('https://api.languagexchange.net/api/room', body)
       .then((result) => {
         console.log('result: ', result);
         return result.data;
