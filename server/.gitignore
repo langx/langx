@@ -125,3 +125,6 @@ Temporary Items
 
 dist
 data
+
+# Pm2
+ecosystem.config.js
