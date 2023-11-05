@@ -9,12 +9,13 @@ export default class Server {
   }
 
   private config(app: Application): void {
-    const corsOptions: CorsOptions = {
-      // TODO: !IMPORTANT! Change this to your Angular app URL
-      origin: 'http://localhost:8100',
-    };
+    // TODO: !IMPORTANT! Change this to your Angular app URL
+    // const corsOptions: CorsOptions = {
+    //   origin: 'http://localhost:8100',
+    // };
+    // app.use(cors(corsOptions));
 
-    app.use(cors(corsOptions));
+    app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
   }
