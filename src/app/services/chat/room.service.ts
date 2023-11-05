@@ -5,6 +5,7 @@ import { Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
 import { BehaviorSubject } from 'rxjs';
+import axios from 'axios';
 
 @Injectable({
   providedIn: 'root',
@@ -125,22 +126,27 @@ export class RoomService {
   }
 
   async createRoom(userId: string): Promise<any> {
-    // It triggers a function that creates a room
-    const body = JSON.stringify({ to: userId });
-    return await this.api.functions
-      .createExecution('createRoom', body)
+    // Set body
+    const body = { to: userId };
+
+    // Set x-appwrite-user-id header
+    const currentUserId = this.authService.getUserId();
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+
+    // Set x-appwrite-jwt header
+    await this.authService.createJWT().then((result) => {
+      console.log('result: ', result);
+      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+    });
+
+    // Call the /api/room
+    return axios
+      .post('http://localhost:3000/api/room', body)
       .then((result) => {
-        console.log('execution:', result);
-        if (result.status === 'completed') {
-          return JSON.parse(result.responseBody);
-        } else {
-          return Promise.reject({
-            message: 'Execution Failed, Please try again later!',
-          });
-        }
+        console.log('result: ', result);
+        return result.data;
       })
       .catch((error) => {
-        console.log('error: ', error);
         return Promise.reject(error);
       });
   }
