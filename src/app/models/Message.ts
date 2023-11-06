@@ -1,9 +1,9 @@
 import { Models } from 'appwrite';
 
-// TODO: Implement this
 export type Message = Models.Document & {
   body: string;
-  seen: boolean;
+  seen: boolean | false;
   sender: string;
+  to: string;
   roomId: string;
 };
