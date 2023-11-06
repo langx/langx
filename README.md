@@ -110,4 +110,4 @@ For more information on how to secure your Firebase project, please refer to the
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
