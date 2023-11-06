@@ -48,8 +48,10 @@ export class ChatPage implements OnInit {
     this.messages = this.messageService.messages;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewChecked() {
+    // TODO: Needs optimization
     this.scrollToBottom();
+    console.log('ngAfterViewChecked');
   }
 
   initChatPage() {
@@ -133,7 +135,7 @@ export class ChatPage implements OnInit {
   }
 
   scrollToBottom() {
-    this.content.scrollToBottom(100);
+    this.content.scrollToBottom(300);
   }
 
   // Navigate to user profile page
