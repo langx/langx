@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { registerAction } from 'src/app/store/actions';
 
 @Component({
   selector: 'app-signup',
@@ -17,6 +19,7 @@ export class SignupPage implements OnInit {
 
   constructor(
     private router: Router,
+    private store: Store,
     private authService: AuthService,
     private alertController: AlertController
   ) {}
@@ -49,7 +52,9 @@ export class SignupPage implements OnInit {
       return;
     }
 
-    this.register(this.form);
+    console.log('form value:', this.form.value);
+    this.store.dispatch(registerAction(this.form.value));
+    // this.register(this.form);
   }
 
   register(form: FormGroup) {
