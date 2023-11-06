@@ -7,10 +7,10 @@ export type User = Models.Document & {
   countyCode: string;
   gender: string;
   birthdate: Date;
-  languageArray: string[];
-  profilePhoto: URL;
-  languages: Language[];
-  otherPhotos: URL[];
-  aboutMe: string;
-  lastSeen: Date;
+  languageArray?: string[];
+  profilePhoto?: URL;
+  languages?: Language[];
+  otherPhotos?: URL[];
+  aboutMe?: string;
+  lastSeen?: Date;
 };
