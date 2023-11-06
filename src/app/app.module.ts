@@ -6,15 +6,12 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-// import { Drivers } from '@ionic/storage';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    IonicModule.forRoot({
-      // mode: 'md'
-    }),
+    IonicModule.forRoot(),
     AppRoutingModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
