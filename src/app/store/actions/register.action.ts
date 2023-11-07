@@ -11,7 +11,7 @@ export const registerAction = createAction(
 
 export const registerSuccessAction = createAction(
   ActionTypes.REGISTER_SUCCESS,
-  props<{ currentUser: Account }>()
+  props<{ payload: Account }>()
 );
 
 export const registerFailureAction = createAction(ActionTypes.REGISTER_FAILURE);
