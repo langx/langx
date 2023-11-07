@@ -1,8 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ActionTypes } from './actionTypes';
-import { RegisterRequestInterface } from '../models/types/requests/registerRequest.interface';
-import { Account } from '../models/Account';
+import { ActionTypes } from '../actionTypes';
+import { RegisterRequestInterface } from '../../models/types/requests/registerRequest.interface';
+import { Account } from '../../models/Account';
 
 export const registerAction = createAction(
   ActionTypes.REGISTER,
