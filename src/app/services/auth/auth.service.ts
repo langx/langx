@@ -1,16 +1,25 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
 import { ID, Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  from,
+  catchError,
+  tap,
+  of,
+  Observable,
+} from 'rxjs';
+
+import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { Account } from 'src/app/models/Account';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private _user = new BehaviorSubject<Models.User<Models.Preferences> | null>(
-    null
-  );
+  private _user = new BehaviorSubject<Account | null>(null);
 
   constructor(private api: ApiService) {}
 
@@ -42,6 +51,24 @@ export class AuthService {
       catchError((error) => of(error)),
       concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
+    );
+  }
+
+  register2(data: RegisterRequestInterface): Observable<Account> {
+    const promise = this.api.account.create(
+      ID.unique(),
+      data.email,
+      data.password,
+      data.name
+    );
+    return from(promise).pipe(
+      concatMap(() =>
+        this.api.account.createEmailSession(data.email, data.password)
+      ),
+      concatMap(() => this.api.account.get()),
+      tap((user) => {
+        return this._user.next(user);
+      })
     );
   }
 
