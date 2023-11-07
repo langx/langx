@@ -33,6 +33,7 @@
     "@capacitor/status-bar": "5.0.6",
     "@ionic/angular": "^7.0.0",
     "@ionic/pwa-elements": "^3.2.2",
+    "@ngrx/effects": "^16.3.0",
     "@ngrx/store": "^16.3.0",
     "appwrite": "^13.0.0",
     "axios": "^1.6.0",
