@@ -31,7 +31,7 @@ export class SignupPage implements OnInit {
     this.initValues();
   }
 
-  initValues(): void{
+  initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
