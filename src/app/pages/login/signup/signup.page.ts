@@ -2,10 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { registerAction } from 'src/app/store/actions';
+import { isLoadingSelector } from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-signup',
@@ -14,7 +16,7 @@ import { registerAction } from 'src/app/store/actions';
 })
 export class SignupPage implements OnInit {
   form: FormGroup;
-  isLoading: boolean = false;
+  isLoading$: Observable<boolean>;
   public progress: number = 0.2;
 
   constructor(
@@ -26,6 +28,11 @@ export class SignupPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.initValues();
+  }
+
+  initValues(): void{
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
   initForm() {
@@ -58,8 +65,6 @@ export class SignupPage implements OnInit {
   }
 
   register(form: FormGroup) {
-    this.isLoading = true;
-
     this.authService
       .register(form.value.email, form.value.password, form.value.name)
       .subscribe((user: any) => {
@@ -80,7 +85,6 @@ export class SignupPage implements OnInit {
           });
         //hideLoader();
         form.reset();
-        this.isLoading = false;
       });
   }
 

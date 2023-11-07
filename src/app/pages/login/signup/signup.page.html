@@ -36,14 +36,14 @@
     <ion-row>
       <ion-col>
         <ion-button
-          *ngIf="!isLoading"
+          [disabled]="(isLoading$ | async)"
           type="submit"
           color="primary"
           expand="block"
-          >Sign Up</ion-button
         >
-        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          Sign Up
+          <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+          </ion-spinner>
         </ion-button>
       </ion-col>
     </ion-row>
