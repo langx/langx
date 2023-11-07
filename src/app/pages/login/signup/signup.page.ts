@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { registerAction } from 'src/app/store/actions/register.action';
 import { isLoadingSelector } from 'src/app/store/selectors';
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 
 @Component({
   selector: 'app-signup',
@@ -58,10 +59,12 @@ export class SignupPage implements OnInit {
       this.showAlert('Please fill all required fields');
       return;
     }
+    this.register2(this.form);
+  }
 
-    console.log('form value:', this.form.value);
-    this.store.dispatch(registerAction(this.form.value));
-    // this.register(this.form);
+  register2(form: FormGroup) {
+    const request: RegisterRequestInterface = form.value;
+    this.store.dispatch(registerAction({ request }));
   }
 
   register(form: FormGroup) {
