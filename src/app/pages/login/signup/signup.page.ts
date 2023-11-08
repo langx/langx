@@ -7,8 +7,12 @@ import { Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { registerAction } from 'src/app/store/actions/register.action';
-import { isLoadingSelector } from 'src/app/store/selectors';
+import {
+  isLoadingSelector,
+  validationErrorSelector,
+} from 'src/app/store/selectors';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 @Component({
   selector: 'app-signup',
@@ -18,6 +22,8 @@ import { RegisterRequestInterface } from 'src/app/models/types/requests/register
 export class SignupPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
+  validationError$: Observable<ErrorInterface | null>;
+
   public progress: number = 0.2;
 
   constructor(
@@ -34,6 +40,10 @@ export class SignupPage implements OnInit {
 
   initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$.subscribe((error: ErrorInterface) => {
+      if (error) this.showAlert(error.message);
+    });
   }
 
   initForm() {
