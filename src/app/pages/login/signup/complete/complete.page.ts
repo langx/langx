@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from 'src/app/extras/data';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 
 import { getAge } from 'src/app/extras/utils';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { completeRegistrationAction } from 'src/app/store/actions/register.action';
 import {
@@ -31,13 +28,7 @@ export class CompletePage implements OnInit {
   isLoading$: Observable<boolean>;
   validationError$: Observable<ErrorInterface | null>;
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private alertController: AlertController,
-    private authService: AuthService,
-    private userService: UserService
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initForm();
@@ -49,7 +40,7 @@ export class CompletePage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.validationError$ = this.store.pipe(select(validationErrorSelector));
     this.validationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.showAlert(error.message);
+      if (error) this.presentToast(error.message, 'danger');
     });
   }
 
@@ -90,7 +81,10 @@ export class CompletePage implements OnInit {
           value.day.text + '/' + value.month.value + '/' + value.year.text;
         let newDate = new Date(val);
         if (getAge(newDate) < 13) {
-          this.showAlert('You must be at least 13 years old to use this app');
+          this.presentToast(
+            'You must be at least 13 years old to use this app',
+            'danger'
+          );
         } else {
           this.form.controls['birthdate'].setValue(val);
           this.form.controls['birthdateWithDateFormat'].setValue(newDate);
@@ -138,7 +132,7 @@ export class CompletePage implements OnInit {
   async onSubmit() {
     console.log('form.value:', this.form.value);
     if (!this.form.valid) {
-      this.showAlert('Please fill all the required fields');
+      this.presentToast('Please fill all the required fields', 'danger');
       return;
     }
     this.complete(this.form);
@@ -173,15 +167,21 @@ export class CompletePage implements OnInit {
         );
       })
       .unsubscribe();
-      this.form.reset();
+    this.form.reset();
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }
