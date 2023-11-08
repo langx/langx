@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { languagesData } from 'src/app/extras/data';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
@@ -22,7 +22,7 @@ export class Step3Page implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private alertController: AlertController,
+    private toastController: ToastController,
     private authService: AuthService,
     private languageService: LanguageService,
     private userService: UserService
@@ -70,7 +70,7 @@ export class Step3Page implements OnInit {
 
   async onSubmit() {
     if (this.studyLanguages.find((lang) => lang.level === 0)) {
-      this.showAlert('Please select your level for all languages');
+      this.presentToast('Please select your level for all languages', 'danger');
       return;
     }
     this.completeLanguages(this.motherLanguages, this.studyLanguages);
@@ -146,17 +146,22 @@ export class Step3Page implements OnInit {
     } catch (error) {
       console.log('error:', error);
       this.isLoading = false; //hideLoader
-      this.showAlert('Please try again later.');
+      this.presentToast('Please try again later.', 'danger');
     }
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }
