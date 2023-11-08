@@ -3,6 +3,18 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="onSubmit()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        color="primary"
+      >
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>Your Languages</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
