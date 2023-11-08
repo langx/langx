@@ -16,15 +16,16 @@
     </ion-list-header>
     <ion-searchbar [(ngModel)]="search"></ion-searchbar>
     <ion-row>
-      <ion-col value="start" (ionChange)="checkboxChecked($event)">
-        <!--TODO: You can check max 5 items -->
+      <ion-col value="start">
         <ion-item *ngFor="let lang of languages | customFilter: search">
           <ion-checkbox
+            (ionChange)="checkboxChange($event, lang.code)"
             value="{{lang.code}}"
-            [checked]="studyLanguages.includes(lang.code)"
+            [disabled]="disabledStatus[lang.code]"
             labelPlacement="start"
-            >{{lang.name}}</ion-checkbox
           >
+            {{lang.name}}
+          </ion-checkbox>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -37,8 +38,9 @@
         (click)="onSubmit()"
         color="primary"
         expand="block"
-        >Continue</ion-button
       >
+        Continue
+      </ion-button>
       <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       </ion-button>
