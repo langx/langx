@@ -9,20 +9,29 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-list-header>
-      <ion-title>Mother Language</ion-title>
-      <ion-note>the language you speak at home</ion-note>
-    </ion-list-header>
-    <ion-searchbar [(ngModel)]="term"></ion-searchbar>
-    <ion-radio-group value="start" (ionChange)="radioChecked($event)">
-      <ion-item *ngFor="let lang of languages | customFilter: term">
-        <ion-radio value="{{lang.code}}" labelPlacement="start"
-          >{{lang.nativeName}}</ion-radio
-        >
-      </ion-item>
-    </ion-radio-group>
-  </ion-list>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Mother Language</ion-card-title>
+      <ion-card-subtitle>the language you speak at home</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-searchbar [(ngModel)]="term"></ion-searchbar>
+        <ion-row>
+          <ion-col value="start">
+            <ion-radio-group value="start" (ionChange)="radioChecked($event)">
+              <ion-item *ngFor="let lang of languages | customFilter: term">
+                <ion-radio value="{{lang.code}}" labelPlacement="start"
+                  >{{lang.nativeName}}</ion-radio
+                >
+              </ion-item>
+            </ion-radio-group>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
   <ion-row>
     <ion-col>
