@@ -3,9 +3,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { Store } from '@ngrx/store';
+
 import { getAge } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
+import { completeRegistrationAction } from 'src/app/store/actions/register.action';
 
 @Component({
   selector: 'app-complete',
@@ -19,6 +23,7 @@ export class CompletePage implements OnInit {
   isLoading: boolean = false;
 
   constructor(
+    private store: Store,
     private router: Router,
     private alertController: AlertController,
     private authService: AuthService,
@@ -117,7 +122,13 @@ export class CompletePage implements OnInit {
       this.showAlert('Please fill all the required fields');
       return;
     }
-    this.complete(this.form);
+    this.complete2(this.form);
+    //this.complete(this.form);
+  }
+
+  complete2(form: FormGroup) {
+    const request: CompleteRegistrationRequestInterface = form.value;
+    this.store.dispatch(completeRegistrationAction({ request }));
   }
 
   complete(form: FormGroup) {
