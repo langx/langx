@@ -42,11 +42,11 @@ export class Step1Page implements OnInit {
         motherLanguage: this.motherLanguage,
       },
     };
-    this.isLoading = false; //hideLoader();
     this.router.navigate(
       ['/', 'login', 'signup', 'language', 'step2'],
       navData
     );
+    this.isLoading = false;
     console.log('step1 completed');
   }
 
