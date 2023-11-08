@@ -69,14 +69,15 @@ export class SignupPage implements OnInit {
       this.showAlert('Please fill all required fields');
       return;
     }
-    this.register2(this.form);
+    this.register(this.form);
   }
 
-  register2(form: FormGroup) {
+  register(form: FormGroup) {
     const request: RegisterRequestInterface = form.value;
     this.store.dispatch(registerAction({ request }));
   }
 
+  /*
   register(form: FormGroup) {
     this.authService
       .register(form.value.email, form.value.password, form.value.name)
@@ -100,6 +101,7 @@ export class SignupPage implements OnInit {
         form.reset();
       });
   }
+  */
 
   async showAlert(msg: string) {
     const alert = await this.alertController.create({

@@ -54,7 +54,7 @@ export class AuthService {
     );
   }
 
-  register2(data: RegisterRequestInterface): Observable<Account> {
+  register(data: RegisterRequestInterface): Observable<Account> {
     const promise = this.api.account.create(
       ID.unique(),
       data.email,
@@ -65,19 +65,6 @@ export class AuthService {
       concatMap(() =>
         this.api.account.createEmailSession(data.email, data.password)
       ),
-      concatMap(() => this.api.account.get()),
-      tap((user) => {
-        return this._user.next(user);
-      })
-    );
-  }
-
-  register(email: string, password: string, name: string) {
-    const authReq = this.api.account.create(ID.unique(), email, password, name);
-    // TODO: Add error handling with toast message
-
-    return from(authReq).pipe(
-      concatMap(() => this.api.account.createEmailSession(email, password)),
       concatMap(() => this.api.account.get()),
       tap((user) => {
         return this._user.next(user);
