@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { ID, Query } from 'appwrite';
+import { BehaviorSubject, Observable, from } from 'rxjs';
+
 import { FilterData } from '../filter/filter.service';
 import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
-import { ID, Query } from 'appwrite';
 import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';
-import { BehaviorSubject } from 'rxjs';
+import { User } from 'src/app/models/User';
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +59,12 @@ export class UserService {
       environment.appwrite.USERS_COLLECTION,
       uid,
       data
+    );
+  }
+
+  createUserDoc2(uid: string, data: any): Observable<User> {
+    return from(
+      this.api.createDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );
   }
 
