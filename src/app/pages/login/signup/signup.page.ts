@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { registerAction } from 'src/app/store/actions/register.action';
 import {
   isLoadingSelector,
@@ -28,7 +26,7 @@ export class SignupPage implements OnInit {
 
   constructor(
     private store: Store,
-    private alertController: AlertController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -40,7 +38,7 @@ export class SignupPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.validationError$ = this.store.pipe(select(validationErrorSelector));
     this.validationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.showAlert(error.message);
+      if (error) this.presentToast(error.message, 'danger');
     });
   }
 
@@ -64,7 +62,7 @@ export class SignupPage implements OnInit {
 
   async onSubmit() {
     if (!this.form.valid) {
-      this.showAlert('Please fill all required fields');
+      this.presentToast('Please fill all required fields', 'danger');
       return;
     }
     this.register(this.form);
@@ -73,41 +71,21 @@ export class SignupPage implements OnInit {
   register(form: FormGroup) {
     const request: RegisterRequestInterface = form.value;
     this.store.dispatch(registerAction({ request }));
+    this.form.reset();
   }
 
-  /*
-  register(form: FormGroup) {
-    this.authService
-      .register(form.value.email, form.value.password, form.value.name)
-      .subscribe((user: any) => {
-        console.log('user:', user);
-        this.authService
-          .isLoggedIn()
-          .then((isLoggedIn) => {
-            if (isLoggedIn) {
-              this.router.navigateByUrl('/login/signup/complete');
-            } else {
-              // TODO: show error toasts message
-              console.log('error:', 'Could not sign you up, please try again.');
-            }
-          })
-          .catch((e) => {
-            // TODO: show error toasts message
-            console.log('error:', e);
-          });
-        //hideLoader();
-        form.reset();
-      });
-  }
-  */
+  //
+  // Present Toast
+  //
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
 
-    await alert.present();
+    await toast.present();
   }
 }
