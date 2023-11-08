@@ -5,6 +5,7 @@ import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 
 // Register
 export const registerAction = createAction(
@@ -25,7 +26,7 @@ export const registerFailureAction = createAction(
 // Complete Registration
 export const completeRegistrationAction = createAction(
   ActionTypes.COMPLETE_REGISTRATION,
-  props<{ request: RegisterRequestInterface }>()
+  props<{ request: CompleteRegistrationRequestInterface }>()
 );
 
 export const completeRegistrationSuccessAction = createAction(
