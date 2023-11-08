@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { languagesData } from '../../../../../extras/data';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+
+import { languagesData } from 'src/app/extras/data';
 
 @Component({
   selector: 'app-step1',
@@ -32,6 +33,7 @@ export class Step1Page implements OnInit {
       this.presentToast('Please select your mother language', 'danger');
       return;
     }
+
     this.step1Completed();
   }
 
