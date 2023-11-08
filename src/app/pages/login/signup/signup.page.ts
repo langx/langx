@@ -27,9 +27,7 @@ export class SignupPage implements OnInit {
   public progress: number = 0.2;
 
   constructor(
-    private router: Router,
     private store: Store,
-    private authService: AuthService,
     private alertController: AlertController
   ) {}
 
@@ -106,7 +104,6 @@ export class SignupPage implements OnInit {
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
-      //subHeader: 'Important message',
       message: msg,
       buttons: ['OK'],
     });
