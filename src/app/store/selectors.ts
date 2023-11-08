@@ -9,3 +9,8 @@ export const isLoadingSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.isLoading
 );
+
+export const validationErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.validationError
+);
