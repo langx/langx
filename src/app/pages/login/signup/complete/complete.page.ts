@@ -4,7 +4,7 @@ import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 
-import { getAge } from 'src/app/extras/utils';
+import { getAge, nameParts } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { completeRegistrationAction } from 'src/app/store/actions/register.action';
 import {
@@ -141,21 +141,8 @@ export class CompletePage implements OnInit {
   complete(form: FormGroup) {
     this.account$
       .subscribe((account: Account | null) => {
-        //TODO: Move following logic to utils.js
-        let username: string = '';
-        const nameParts = account.name.split(' ');
-        if (nameParts.length > 1) {
-          username =
-            nameParts[0] +
-            ' ' +
-            nameParts[nameParts.length - 1].charAt(0) +
-            '.';
-        } else {
-          username = account.name;
-        }
-
         const request: CompleteRegistrationRequestInterface = {
-          name: username,
+          name: nameParts(account.name),
           birthdate: form.value.birthdateWithDateFormat,
           country: form.value.country,
           countryCode: form.value.countryCode,
