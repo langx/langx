@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { languagesData } from 'src/app/extras/data';
 import { ActivatedRoute } from '@angular/router';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-step2',
@@ -21,7 +21,7 @@ export class Step2Page implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private alertController: AlertController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -45,10 +45,10 @@ export class Step2Page implements OnInit {
 
   onSubmit() {
     if (this.studyLanguages.length < 1) {
-      this.showAlert('Please select at least one study language.');
+      this.presentToast('Please select at least one study language.', 'danger');
       return;
     } else if (!this.motherLanguage) {
-      this.showAlert('Please go back to select a mother language.');
+      this.presentToast('Please go back to select a mother language.', 'danger');
       return;
     }
     this.step2Completed();
@@ -70,13 +70,18 @@ export class Step2Page implements OnInit {
     console.log('step2 completed');
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }
