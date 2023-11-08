@@ -1,6 +1,9 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import {
+  completeRegistrationAction,
+  completeRegistrationFailureAction,
+  completeRegistrationSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -36,6 +39,30 @@ const loadingReducer = createReducer(
   ),
   on(
     registerFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      validationError: action.error,
+    })
+  ),
+  on(
+    completeRegistrationAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      validationError: null,
+    })
+  ),
+  on(
+    completeRegistrationSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    completeRegistrationFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
