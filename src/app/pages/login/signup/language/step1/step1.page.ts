@@ -36,7 +36,7 @@ export class Step1Page implements OnInit {
   }
 
   step1Completed() {
-    this.isLoading = true; //showLoader();
+    this.isLoading = true;
     const navData: NavigationExtras = {
       queryParams: {
         motherLanguage: this.motherLanguage,
