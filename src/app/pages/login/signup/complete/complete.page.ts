@@ -171,7 +171,9 @@ export class CompletePage implements OnInit {
           gender: form.value.genderValue,
           lastSeen: new Date(),
         };
-        this.store.dispatch(completeRegistrationAction({ request }));
+        this.store.dispatch(
+          completeRegistrationAction({ request, id: account.$id })
+        );
       })
       .unsubscribe();
   }
