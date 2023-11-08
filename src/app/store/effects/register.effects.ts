@@ -9,6 +9,8 @@ import {
 } from '../actions/register.action';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { Account } from 'src/app/models/Account';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 @Injectable()
 export class RegisterEffect {
@@ -23,8 +25,11 @@ export class RegisterEffect {
         this.authService.register2(request).pipe(
           map((payload: Account) => registerSuccessAction({ payload })),
 
-          catchError(() => {
-            return of(registerFailureAction());
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(registerFailureAction({ error }));
           })
         )
       )
