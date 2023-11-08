@@ -1,9 +1,11 @@
 import { Account } from '../../Account';
+import { User } from '../../User';
 import { ErrorInterface } from '../errors/error.interface';
 
 export interface AuthStateInterface {
   isLoading: boolean;
-  currentUser: Account | null;
+  account: Account | null;
+  currentUser: User | null;
   isLoggedIn: boolean | null;
   validationError: ErrorInterface | null;
 }
