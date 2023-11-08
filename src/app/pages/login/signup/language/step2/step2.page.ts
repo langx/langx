@@ -16,7 +16,8 @@ export class Step2Page implements OnInit {
   search: string;
 
   motherLanguage: string;
-  studyLanguages: Array<string> = [];
+  studyLanguages: string[] = [];
+  disabledStatus: { [key: string]: boolean } = {};
 
   constructor(
     private router: Router,
@@ -30,17 +31,36 @@ export class Step2Page implements OnInit {
     this.motherLanguage = data.motherLanguage;
   }
 
-  // TODO: #142 [BUG] : The checkboxChecked() function is working properly
-  // But the html displays much higher than 5 checkboxes as checked even if it's not in the array
-  checkboxChecked(event) {
-    if (this.studyLanguages.includes(event.detail.value)) {
+  MAXNUMBER_STUDYING = 5;
+  checkboxChange(event, langCode) {
+    if (event.detail.checked) {
+      if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
+        this.studyLanguages.push(langCode);
+        if (this.studyLanguages.length == this.MAXNUMBER_STUDYING) {
+          for (const lang of this.languages) {
+            if (!this.studyLanguages.includes(lang.code)) {
+              this.disabledStatus[lang.code] = true;
+            }
+          }
+        }
+      } else {
+        this.presentToast(
+          `You can only select ${this.MAXNUMBER_STUDYING} checkboxes.`,
+          'danger'
+        );
+      }
+    } else {
       this.studyLanguages = this.studyLanguages.filter(
-        (item) => item !== event.detail.value
+        (item) => item !== langCode
       );
-    } else if (this.studyLanguages.length < 5) {
-      this.studyLanguages.push(event.detail.value);
+      if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
+        for (const lang of this.languages) {
+          if (!this.studyLanguages.includes(lang.code)) {
+            this.disabledStatus[lang.code] = false;
+          }
+        }
+      }
     }
-    console.log(this.studyLanguages);
   }
 
   onSubmit() {
@@ -48,7 +68,10 @@ export class Step2Page implements OnInit {
       this.presentToast('Please select at least one study language.', 'danger');
       return;
     } else if (!this.motherLanguage) {
-      this.presentToast('Please go back to select a mother language.', 'danger');
+      this.presentToast(
+        'Please go back to select a mother language.',
+        'danger'
+      );
       return;
     }
     this.step2Completed();
