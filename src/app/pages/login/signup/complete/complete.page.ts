@@ -31,8 +31,6 @@ export class CompletePage implements OnInit {
   isLoading$: Observable<boolean>;
   validationError$: Observable<ErrorInterface | null>;
 
-  isLoading = false;
-
   constructor(
     private store: Store,
     private router: Router,
