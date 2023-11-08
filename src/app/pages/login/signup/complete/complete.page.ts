@@ -3,13 +3,21 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
 import { getAge } from 'src/app/extras/utils';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { completeRegistrationAction } from 'src/app/store/actions/register.action';
+import {
+  accountSelector,
+  isLoadingSelector,
+  validationErrorSelector,
+} from 'src/app/store/selectors';
+import { Observable } from 'rxjs';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 @Component({
   selector: 'app-complete',
@@ -18,9 +26,12 @@ import { completeRegistrationAction } from 'src/app/store/actions/register.actio
 })
 export class CompletePage implements OnInit {
   public progress: number = 0.7;
-
   form: FormGroup;
-  isLoading: boolean = false;
+  account$: Observable<Account | null>;
+  isLoading$: Observable<boolean>;
+  validationError$: Observable<ErrorInterface | null>;
+
+  isLoading = false;
 
   constructor(
     private store: Store,
@@ -32,6 +43,16 @@ export class CompletePage implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.initValues();
+  }
+
+  initValues(): void {
+    this.account$ = this.store.pipe(select(accountSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$.subscribe((error: ErrorInterface) => {
+      if (error) this.showAlert(error.message);
+    });
   }
 
   initForm() {
@@ -127,8 +148,32 @@ export class CompletePage implements OnInit {
   }
 
   complete2(form: FormGroup) {
-    const request: CompleteRegistrationRequestInterface = form.value;
-    this.store.dispatch(completeRegistrationAction({ request }));
+    this.account$
+      .subscribe((account: Account | null) => {
+        //TODO: Move following logic to utils.js
+        let username: string = '';
+        const nameParts = account.name.split(' ');
+        if (nameParts.length > 1) {
+          username =
+            nameParts[0] +
+            ' ' +
+            nameParts[nameParts.length - 1].charAt(0) +
+            '.';
+        } else {
+          username = account.name;
+        }
+
+        const request: CompleteRegistrationRequestInterface = {
+          name: username,
+          birthdate: form.value.birthdateWithDateFormat,
+          country: form.value.country,
+          countryCode: form.value.countryCode,
+          gender: form.value.genderValue,
+          lastSeen: new Date(),
+        };
+        this.store.dispatch(completeRegistrationAction({ request }));
+      })
+      .unsubscribe();
   }
 
   complete(form: FormGroup) {
