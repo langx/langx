@@ -1,8 +1,9 @@
 import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from '../actionTypes';
-import { RegisterRequestInterface } from '../../models/types/requests/registerRequest.interface';
-import { Account } from '../../models/Account';
+import { Account } from 'src/app/models/Account';
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export const registerAction = createAction(
   ActionTypes.REGISTER,
@@ -14,4 +15,7 @@ export const registerSuccessAction = createAction(
   props<{ payload: Account }>()
 );
 
-export const registerFailureAction = createAction(ActionTypes.REGISTER_FAILURE);
+export const registerFailureAction = createAction(
+  ActionTypes.REGISTER_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
