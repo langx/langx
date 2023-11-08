@@ -9,27 +9,32 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-list-header>
-      <ion-title>Study Languages</ion-title>
-      <ion-note>the languages you want to learn</ion-note>
-    </ion-list-header>
-    <ion-searchbar [(ngModel)]="search"></ion-searchbar>
-    <ion-row>
-      <ion-col value="start">
-        <ion-item *ngFor="let lang of languages | customFilter: search">
-          <ion-checkbox
-            (ionChange)="checkboxChange($event, lang.code)"
-            value="{{lang.code}}"
-            [disabled]="disabledStatus[lang.code]"
-            labelPlacement="start"
-          >
-            {{lang.name}}
-          </ion-checkbox>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-list>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Study Languages</ion-card-title>
+      <ion-card-subtitle>the languages you want to learn</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-searchbar [(ngModel)]="search"></ion-searchbar>
+        <ion-row>
+          <ion-col value="start">
+            <ion-item *ngFor="let lang of languages | customFilter: search">
+              <ion-checkbox
+                (ionChange)="checkboxChange($event, lang.code)"
+                value="{{lang.code}}"
+                [disabled]="disabledStatus[lang.code]"
+                labelPlacement="start"
+              >
+                {{lang.name}}
+              </ion-checkbox>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
   <ion-row>
     <ion-col>
