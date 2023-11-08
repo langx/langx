@@ -20,6 +20,7 @@ import { Account } from 'src/app/models/Account';
 })
 export class AuthService {
   private _user = new BehaviorSubject<Account | null>(null);
+  private account$: Observable<Account | null> = null;
 
   constructor(private api: ApiService) {}
 

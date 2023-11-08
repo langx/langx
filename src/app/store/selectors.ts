@@ -15,6 +15,11 @@ export const validationErrorSelector = createSelector(
   (authState: AuthStateInterface) => authState.validationError
 );
 
+export const accountSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.account
+);
+
 export const currentUserSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.currentUser

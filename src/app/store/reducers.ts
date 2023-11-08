@@ -9,6 +9,7 @@ import { AuthStateInterface } from '../models/types/states/authState.interface';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
+  account: null,
   currentUser: null,
   isLoggedIn: null,
   validationError: null,
@@ -30,7 +31,7 @@ const loadingReducer = createReducer(
       ...state,
       isLoading: false,
       isLoggedIn: true,
-      currentUser: action.payload,
+      account: action.payload,
     })
   ),
   on(
