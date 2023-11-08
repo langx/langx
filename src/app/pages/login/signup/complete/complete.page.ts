@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from 'src/app/extras/data';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { getAge, nameParts } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
@@ -12,7 +13,6 @@ import {
   isLoadingSelector,
   validationErrorSelector,
 } from 'src/app/store/selectors';
-import { Observable } from 'rxjs';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
