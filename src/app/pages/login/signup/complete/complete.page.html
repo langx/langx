@@ -72,14 +72,14 @@
     <ion-row>
       <ion-col>
         <ion-button
-          *ngIf="!isLoading"
+          [disabled]="(isLoading$ | async)"
           type="submit"
           color="primary"
           expand="block"
-          >Continue</ion-button
         >
-        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          Continue
+          <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+          </ion-spinner>
         </ion-button>
       </ion-col>
     </ion-row>
