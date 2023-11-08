@@ -141,11 +141,10 @@ export class CompletePage implements OnInit {
       this.showAlert('Please fill all the required fields');
       return;
     }
-    this.complete2(this.form);
-    //this.complete(this.form);
+    this.complete(this.form);
   }
 
-  complete2(form: FormGroup) {
+  complete(form: FormGroup) {
     this.account$
       .subscribe((account: Account | null) => {
         //TODO: Move following logic to utils.js
@@ -174,58 +173,12 @@ export class CompletePage implements OnInit {
         );
       })
       .unsubscribe();
-  }
-
-  complete(form: FormGroup) {
-    console.log('form.value:', form.value);
-    const data = {
-      name: '',
-      birthdate: form.value.birthdateWithDateFormat,
-      country: form.value.country,
-      countryCode: form.value.countryCode,
-      gender: form.value.genderValue,
-      lastSeen: new Date(),
-    };
-    console.log('data:', data);
-
-    let user: any;
-    this.authService
-      .getUser()
-      .subscribe((u) => {
-        user = u;
-        const nameParts = user.name.split(' ');
-        if (nameParts.length > 1) {
-          data.name =
-            nameParts[0] +
-            ' ' +
-            nameParts[nameParts.length - 1].charAt(0) +
-            '.';
-        } else {
-          data.name = user.name;
-        }
-      })
-      .unsubscribe();
-    // console.log('user:', user);
-
-    this.userService.createUserDoc(user.$id, data).then((userDoc: any) => {
-      console.log('userDoc:', userDoc);
-      this.authService.isLoggedIn().then((isLoggedIn) => {
-        if (isLoggedIn) {
-          this.router.navigateByUrl('/login/signup/language');
-          // TODO: to make form empty, it has to be tested
-          this.initForm();
-        } else {
-          // TODO: show error toasts message
-          console.log('error:', 'Could not sign you up, please try again.');
-        }
-      });
-    });
+      this.form.reset();
   }
 
   async showAlert(msg: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
-      //subHeader: 'Important message',
       message: msg,
       buttons: ['OK'],
     });

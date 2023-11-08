@@ -53,7 +53,7 @@ export class RegisterEffect {
     this.actions$.pipe(
       ofType(completeRegistrationAction),
       switchMap(({ request, id }) => {
-        return this.userService.createUserDoc2(id, request).pipe(
+        return this.userService.createUserDoc(id, request).pipe(
           map((payload: User) =>
             completeRegistrationSuccessAction({ payload })
           ),

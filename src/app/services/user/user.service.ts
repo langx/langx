@@ -54,15 +54,7 @@ export class UserService {
     return this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid);
   }
 
-  createUserDoc(uid: string, data: any): Promise<any> {
-    return this.api.createDocument(
-      environment.appwrite.USERS_COLLECTION,
-      uid,
-      data
-    );
-  }
-
-  createUserDoc2(uid: string, data: any): Observable<User> {
+  createUserDoc(uid: string, data: any): Observable<User> {
     return from(
       this.api.createDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );
