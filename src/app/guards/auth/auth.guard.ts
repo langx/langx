@@ -49,7 +49,7 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
   }
 
-  navigate(url) {
+  navigate(url: string) {
     this.router.navigateByUrl(url, { replaceUrl: true });
   }
 
