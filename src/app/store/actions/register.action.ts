@@ -56,3 +56,18 @@ export const languageSelectionFailureAction = createAction(
   ActionTypes.LANGUAGE_SELECTION_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const updateLanguageArrayAction = createAction(
+  ActionTypes.UPDATE_LANGUAGE_ARRAY,
+  props<{ request: string[] }>()
+);
+
+export const updateLanguageArraySuccessAction = createAction(
+  ActionTypes.UPDATE_LANGUAGE_ARRAY_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const updateLanguageArrayFailureAction = createAction(
+  ActionTypes.UPDATE_LANGUAGE_ARRAY_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
