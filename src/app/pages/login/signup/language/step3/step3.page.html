@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button [disabled]="(isLoading$ | async)"></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
@@ -38,15 +38,21 @@
         <ion-list class="hasIcon">
           <ion-item>
             <ion-icon name="battery-dead-outline"></ion-icon>
-            <ion-radio value="1">Beginner</ion-radio>
+            <ion-radio value="1" [disabled]="(isLoading$ | async)">
+              Beginner
+            </ion-radio>
           </ion-item>
           <ion-item>
             <ion-icon name="battery-half-outline"></ion-icon>
-            <ion-radio value="2">Intermediate</ion-radio>
+            <ion-radio value="2" [disabled]="(isLoading$ | async)">
+              Intermediate
+            </ion-radio>
           </ion-item>
           <ion-item>
             <ion-icon name="battery-full-outline"></ion-icon>
-            <ion-radio value="3">Fluent</ion-radio>
+            <ion-radio value="3" [disabled]="(isLoading$ | async)">
+              Fluent
+            </ion-radio>
           </ion-item>
         </ion-list>
       </ion-radio-group>
