@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import {
+  isLoadingSelector,
+  validationErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-login',
@@ -13,17 +20,29 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 export class LoginPage implements OnInit {
   form: FormGroup;
   isLoading: boolean = false;
+  isLoading$: Observable<boolean>;
+  validationError$: Observable<ErrorInterface | null>;
 
   value: any = '';
 
   constructor(
+    private store: Store,
     private router: Router,
     private authService: AuthService,
-    private alertController: AlertController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
     this.initForm();
+    this.initValues();
+  }
+
+  initValues() {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$.subscribe((error: ErrorInterface) => {
+      if (error) this.presentToast(error.message, 'danger');
+    });
   }
 
   initForm() {
@@ -101,15 +120,18 @@ export class LoginPage implements OnInit {
   }
   */
 
-  // TODO: Replace with toast message
-  // Maybe no need, alert better ?
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }
