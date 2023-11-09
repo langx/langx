@@ -23,6 +23,7 @@ const initialState: AuthStateInterface = {
   isLoggedIn: null,
   validationError: null,
   languages: null,
+  isLanguageDone: false,
 };
 
 const loadingReducer = createReducer(
@@ -82,6 +83,7 @@ const loadingReducer = createReducer(
       ...state,
       isLoading: true,
       validationError: null,
+      isLanguageDone: false,
     })
   ),
   on(
@@ -90,6 +92,7 @@ const loadingReducer = createReducer(
       ...state,
       isLoading: false,
       languages: action.payload,
+      isLanguageDone: true,
     })
   ),
   on(

@@ -29,3 +29,8 @@ export const isLoggedInSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.isLoggedIn
 );
+
+export const isLanguageDoneSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.isLanguageDone
+);
