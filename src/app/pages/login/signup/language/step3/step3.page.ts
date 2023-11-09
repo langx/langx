@@ -31,6 +31,7 @@ export class Step3Page implements OnInit {
 
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
+  isLanguageDone$: Observable<boolean>;
   validationError$: Observable<ErrorInterface | null>;
 
   constructor(
@@ -47,6 +48,7 @@ export class Step3Page implements OnInit {
     // Init values From Store
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLanguageDone$ = this.store.pipe(select(isLanguageDoneSelector));
     this.validationError$ = this.store.pipe(select(validationErrorSelector));
     this.validationError$.subscribe((error: ErrorInterface) => {
       if (error) this.presentToast(error.message, 'danger');
@@ -124,8 +126,7 @@ export class Step3Page implements OnInit {
     this.store.dispatch(languageSelectionAction({ request: languages }));
 
     // Subscribe to the store and wait for the language selection to be successful
-    this.store
-      .pipe(select(isLanguageDoneSelector))
+    this.isLanguageDone$
       .subscribe((isLanguageDone: boolean) => {
         // Dispatch the second action
         if (isLanguageDone) {
@@ -133,8 +134,7 @@ export class Step3Page implements OnInit {
             updateLanguageArrayAction({ id: userId, request: languageArray })
           );
         }
-      })
-      .unsubscribe();
+      });
   }
 
   //
