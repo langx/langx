@@ -86,6 +86,10 @@ export class AuthService {
     return from(authReq);
   }
 
+  getAccount(): Observable<Account> {
+    return from(this.api.account.get());
+  }
+
   async isLoggedIn() {
     try {
       const user = await this.api.account.get();
