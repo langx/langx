@@ -128,18 +128,22 @@ export class RegisterEffect {
       ofType(updateLanguageArrayAction),
 
       switchMap(({ request, id }) => {
-        return this.userService.updateUserDoc(id, {
-          languageArray: request,
-        });
-      }),
+        return this.userService
+          .updateUserDoc2(id, {
+            languageArray: request,
+          })
+          .pipe(
+            map((payload: User) =>
+              updateLanguageArraySuccessAction({ payload })
+            ),
 
-      map((payload: User) => updateLanguageArraySuccessAction({ payload })),
-
-      catchError((errorResponse: HttpErrorResponse) => {
-        const error: ErrorInterface = {
-          message: errorResponse.message,
-        };
-        return of(updateLanguageArrayFailureAction({ error }));
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(updateLanguageArrayFailureAction({ error }));
+            })
+          );
       })
     )
   );
