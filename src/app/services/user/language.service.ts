@@ -24,6 +24,7 @@ export class LanguageService {
     );
   }
 
+  // It is triggerred by edit.page.ts
   createLanguageDoc(data: any): Promise<any> {
     return this.api.createDocument(
       environment.appwrite.LANGUAGES_COLLECTION,
