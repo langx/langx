@@ -10,7 +10,7 @@ import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { environment } from 'src/environments/environment';
 import { reducers } from 'src/app/store/reducers/auth.reducer';
-import { RegisterEffect } from 'src/app/store/effects/register.effects';
+import { AuthEffect } from 'src/app/store/effects/auth.effect';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +25,7 @@ import { RegisterEffect } from 'src/app/store/effects/register.effects';
     }),
     EffectsModule.forRoot([]),
     StoreModule.forFeature('auth', reducers),
-    EffectsModule.forFeature([RegisterEffect]),
+    EffectsModule.forFeature([AuthEffect]),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
