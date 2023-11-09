@@ -6,11 +6,11 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
 
-import { environment } from '../environments/environment';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-import { reducers } from './store/reducers/auth.reducer';
-import { RegisterEffect } from './store/effects/register.effects';
+import { AppComponent } from 'src/app/app.component';
+import { AppRoutingModule } from 'src/app/app-routing.module';
+import { environment } from 'src/environments/environment';
+import { reducers } from 'src/app/store/reducers/auth.reducer';
+import { RegisterEffect } from 'src/app/store/effects/register.effects';
 
 @NgModule({
   declarations: [AppComponent],
