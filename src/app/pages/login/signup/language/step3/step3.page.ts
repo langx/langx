@@ -24,8 +24,6 @@ import {
 })
 export class Step3Page implements OnInit {
   public progress: number = 1;
-  isLoading: boolean = false;
-  fill = 'clear';
 
   motherLanguages: Array<any> = [];
   studyLanguages: Array<any> = [];
@@ -106,8 +104,6 @@ export class Step3Page implements OnInit {
 
     const languages = this.motherLanguages.concat(this.studyLanguages);
     this.completeLanguages2(languages);
-
-    // this.completeLanguages(this.motherLanguages, this.studyLanguages);
   }
 
   completeLanguages2(languages) {
@@ -140,8 +136,6 @@ export class Step3Page implements OnInit {
     console.log('studyLanguages:', studyLanguages);
 
     try {
-      this.isLoading = true;
-
       // TODO: Error handling if any of the following fails
       // SCOPE: It may saved some languages and not others
       motherLanguages.forEach((motherlang) => {
@@ -190,10 +184,8 @@ export class Step3Page implements OnInit {
         });
 
       this.router.navigateByUrl('/home');
-      this.isLoading = false;
     } catch (error) {
       console.log('error:', error);
-      this.isLoading = false;
       this.presentToast('Please try again later.', 'danger');
     }
   }
