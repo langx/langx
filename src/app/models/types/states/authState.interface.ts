@@ -10,4 +10,5 @@ export interface AuthStateInterface {
   isLoggedIn: boolean | null;
   validationError: ErrorInterface | null;
   languages: Language[] | null;
+  isLanguageDone: boolean;
 }
