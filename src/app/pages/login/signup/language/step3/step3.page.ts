@@ -10,7 +10,10 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { languageSelectionAction } from 'src/app/store/actions/register.action';
+import {
+  languageSelectionAction,
+  updateLanguageArrayAction,
+} from 'src/app/store/actions/register.action';
 import {
   accountSelector,
   isLoadingSelector,
@@ -108,89 +111,41 @@ export class Step3Page implements OnInit {
 
   completeLanguages2(languages) {
     let languageArray: string[] = [];
-    // Add userId to each language
-    // And fill languageArray with language codes
+    let userId: string;
+
     this.account$
       .subscribe((account: Account | null) => {
-        languages.forEach((lang) => {
-          lang.userId = account.$id;
-          languageArray.push(lang.code);
-        });
+        userId = account.$id;
       })
       .unsubscribe();
+
+    // Add userId to each language and fill languageArray with language codes
+    languages.forEach((lang) => {
+      lang.userId = userId;
+      languageArray.push(lang.code);
+    });
     console.log('languages:', languages);
 
-    this.store.dispatch(languageSelectionAction({ languages }));
-    // TODO: dispatch languageArray to store
+    this.store.dispatch(languageSelectionAction({ request: languages }));
+    this.store.dispatch(
+      updateLanguageArrayAction({ id: userId, request: languageArray })
+    );
   }
 
   completeLanguages(motherLanguages, studyLanguages) {
     let user: any;
     let languageArray: Array<string> = [];
 
-    this.authService
-      .getUser()
-      .subscribe((u) => {
-        user = u;
+    this.userService
+      .updateUserDoc(user.$id, {
+        languageArray: languageArray,
       })
-      .unsubscribe();
-
-    console.log('motherLanguages:', motherLanguages);
-    console.log('studyLanguages:', studyLanguages);
-
-    try {
-      // TODO: Error handling if any of the following fails
-      // SCOPE: It may saved some languages and not others
-      motherLanguages.forEach((motherlang) => {
-        // Add the language name to the languageArray
-        languageArray.push(motherlang.name);
-
-        motherlang.userId = user.$id;
-        this.languageService
-          .createLanguageDoc(motherlang)
-          .then((res) => {
-            console.log('result:', res);
-          })
-          .catch((err) => {
-            console.log('err:', err);
-          });
+      .then(() => {
+        console.log('Language Array Updated');
+      })
+      .catch((error) => {
+        console.log(error);
       });
-
-      // TODO: Error handling if any of the following fails
-      // SCOPE: It may saved some languages and not others
-      studyLanguages.forEach((studyLang) => {
-        // Add the language name to the languageArray
-        languageArray.push(studyLang.name);
-
-        studyLang.userId = user.$id;
-        this.languageService
-          .createLanguageDoc(studyLang)
-          .then((res) => {
-            console.log('result:', res);
-          })
-          .catch((err) => {
-            console.log('err:', err);
-          });
-      });
-
-      // TODO: Error handling if any of the following fails
-      // Add the languages to the languageArray in the user doc
-      this.userService
-        .updateUserDoc(user.$id, {
-          languageArray: languageArray,
-        })
-        .then(() => {
-          console.log('Language Array Updated');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      this.router.navigateByUrl('/home');
-    } catch (error) {
-      console.log('error:', error);
-      this.presentToast('Please try again later.', 'danger');
-    }
   }
 
   //

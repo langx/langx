@@ -101,8 +101,8 @@ export class RegisterEffect {
     this.actions$.pipe(
       ofType(languageSelectionAction),
 
-      switchMap(({ languages }) => {
-        const observables = languages.map(
+      switchMap(({ request }) => {
+        const observables = request.map(
           (language: AddLanguageRequestInterface) => {
             return this.languageService.createLanguageDoc2(language);
           }
