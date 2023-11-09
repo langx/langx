@@ -16,7 +16,7 @@ import {
   isLanguageDoneSelector,
   isLoadingSelector,
   validationErrorSelector,
-} from 'src/app/store/selectors';
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-step3',
