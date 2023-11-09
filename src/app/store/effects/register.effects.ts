@@ -123,6 +123,27 @@ export class RegisterEffect {
     )
   );
 
+  updateLanguageArray$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateLanguageArrayAction),
+
+      switchMap(({ request, id }) => {
+        return this.userService.updateUserDoc(id, {
+          languageArray: request,
+        });
+      }),
+
+      map((payload: User) => updateLanguageArraySuccessAction({ payload })),
+
+      catchError((errorResponse: HttpErrorResponse) => {
+        const error: ErrorInterface = {
+          message: errorResponse.message,
+        };
+        return of(updateLanguageArrayFailureAction({ error }));
+      })
+    )
+  );
+
   redirectAfterBothActions$ = createEffect(
     () =>
       combineLatest([
