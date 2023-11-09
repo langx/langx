@@ -4,13 +4,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { registerAction } from 'src/app/store/actions/register.action';
 import {
   isLoadingSelector,
   validationErrorSelector,
-} from 'src/app/store/selectors';
-import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-signup',
@@ -24,10 +24,7 @@ export class SignupPage implements OnInit {
 
   public progress: number = 0.2;
 
-  constructor(
-    private store: Store,
-    private toastController: ToastController
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initForm();

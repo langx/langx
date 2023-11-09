@@ -8,13 +8,13 @@ import { Observable } from 'rxjs';
 import { getAge, nameParts } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { completeRegistrationAction } from 'src/app/store/actions/register.action';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   accountSelector,
   isLoadingSelector,
   validationErrorSelector,
-} from 'src/app/store/selectors';
-import { Account } from 'src/app/models/Account';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-complete',
