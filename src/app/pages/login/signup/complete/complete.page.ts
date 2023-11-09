@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 
 import { getAge, nameParts } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
-import { completeRegistrationAction } from 'src/app/store/actions/register.action';
+import { completeRegistrationAction } from 'src/app/store/actions/auth.action';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
