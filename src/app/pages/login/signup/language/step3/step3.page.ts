@@ -10,7 +10,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   languageSelectionAction,
   updateLanguageArrayAction,
-} from 'src/app/store/actions/register.action';
+} from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
   isLanguageDoneSelector,

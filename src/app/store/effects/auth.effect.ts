@@ -36,7 +36,7 @@ import {
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
-} from 'src/app/store/actions/register.action';
+} from 'src/app/store/actions/auth.action';
 
 @Injectable()
 export class AuthEffect {

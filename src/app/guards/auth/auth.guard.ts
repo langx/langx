@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
-import { isLoggedInAction } from 'src/app/store/actions/register.action';
+import { isLoggedInAction } from 'src/app/store/actions/auth.action';
 
 @Injectable({
   providedIn: 'root',

@@ -17,7 +17,7 @@ import {
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
-} from '../actions/register.action';
+} from 'src/app/store/actions/auth.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,

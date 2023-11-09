@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { registerAction } from 'src/app/store/actions/register.action';
+import { registerAction } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
   validationErrorSelector,
