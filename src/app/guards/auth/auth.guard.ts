@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, CanLoad, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { isLoggedInAction } from 'src/app/store/actions/register.action';
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +15,13 @@ export class AuthGuard implements CanActivate, CanLoad {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private store: Store
   ) {}
 
   async canActivate(): Promise<boolean> {
+    this.store.dispatch(isLoggedInAction());
+
     try {
       const isLoggedIn = await this.authService.isLoggedIn();
       if (isLoggedIn) {
