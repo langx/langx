@@ -5,6 +5,9 @@ import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
   completeRegistrationSuccessAction,
+  isLoggedInAction,
+  isLoggedInFailureAction,
+  isLoggedInSuccessAction,
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
@@ -121,6 +124,32 @@ const loadingReducer = createReducer(
   ),
   on(
     updateLanguageArrayFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      validationError: action.error,
+    })
+  ),
+  // End of Register Actions
+  on(
+    isLoggedInAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      validationError: null,
+    })
+  ),
+  on(
+    isLoggedInSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      isLoggedIn: true,
+      account: action.payload,
+    })
+  ),
+  on(
+    isLoggedInFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
