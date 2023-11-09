@@ -111,6 +111,14 @@ export class Step3Page implements OnInit {
   }
 
   completeLanguages2(languages) {
+    // Add userId to each language
+    this.account$
+      .subscribe((account: Account | null) => {
+        languages.forEach((lang) => {
+          lang.userId = account.$id;
+        });
+      })
+      .unsubscribe();
     console.log('languages:', languages);
 
     // this.store.dispatch(languageSelectionAction({ languages }));
