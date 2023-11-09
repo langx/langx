@@ -121,7 +121,7 @@ export class Step3Page implements OnInit {
       .unsubscribe();
     console.log('languages:', languages);
 
-    // this.store.dispatch(languageSelectionAction({ languages }));
+    this.store.dispatch(languageSelectionAction({ languages }));
     // TODO: dispatch languageArray to store
   }
 
