@@ -33,10 +33,10 @@ import {
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
-} from '../actions/register.action';
+} from 'src/app/store/actions/register.action';
 
 @Injectable()
-export class RegisterEffect {
+export class AuthEffect {
   register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(registerAction),
