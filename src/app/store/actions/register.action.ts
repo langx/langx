@@ -29,6 +29,7 @@ export const registerFailureAction = createAction(
 export const completeRegistrationAction = createAction(
   ActionTypes.COMPLETE_REGISTRATION,
   props<{ request: CompleteRegistrationRequestInterface; id: string }>()
+  // TODO: id should be of first props
 );
 
 export const completeRegistrationSuccessAction = createAction(
