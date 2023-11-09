@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Store } from '@ngrx/store';
 
 import { languagesData } from 'src/app/extras/data';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { languageSelectionAction } from 'src/app/store/actions/register.action';
 
 @Component({
   selector: 'app-step3',
@@ -26,7 +28,8 @@ export class Step3Page implements OnInit {
     private toastController: ToastController,
     private authService: AuthService,
     private languageService: LanguageService,
-    private userService: UserService
+    private userService: UserService,
+    private store: Store
   ) {}
 
   ngOnInit() {
@@ -65,8 +68,9 @@ export class Step3Page implements OnInit {
   }
 
   radioChecked(event, item) {
+    const level = event.detail.value;
     this.studyLanguages.find((lang) => lang.code === item.code).level =
-      event.detail.value;
+      Number(level);
   }
 
   async onSubmit() {
@@ -74,7 +78,12 @@ export class Step3Page implements OnInit {
       this.presentToast('Please select your level for all languages', 'danger');
       return;
     }
-    this.completeLanguages(this.motherLanguages, this.studyLanguages);
+
+    const languages = this.motherLanguages.concat(this.studyLanguages);
+    console.log('languages:', languages);
+    this.store.dispatch(languageSelectionAction({ languages }));
+
+    // this.completeLanguages(this.motherLanguages, this.studyLanguages);
   }
 
   completeLanguages(motherLanguages, studyLanguages) {
@@ -87,13 +96,12 @@ export class Step3Page implements OnInit {
         user = u;
       })
       .unsubscribe();
-    // console.log('user:', user);
 
     console.log('motherLanguages:', motherLanguages);
     console.log('studyLanguages:', studyLanguages);
 
     try {
-      this.isLoading = true; //showLoader
+      this.isLoading = true;
 
       // TODO: Error handling if any of the following fails
       // SCOPE: It may saved some languages and not others
@@ -143,10 +151,10 @@ export class Step3Page implements OnInit {
         });
 
       this.router.navigateByUrl('/home');
-      this.isLoading = false; //hideLoader
+      this.isLoading = false;
     } catch (error) {
       console.log('error:', error);
-      this.isLoading = false; //hideLoader
+      this.isLoading = false;
       this.presentToast('Please try again later.', 'danger');
     }
   }
