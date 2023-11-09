@@ -35,6 +35,10 @@ export class CompletePage implements OnInit {
     this.initValues();
   }
 
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
   initValues(): void {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
@@ -154,7 +158,6 @@ export class CompletePage implements OnInit {
         );
       })
       .unsubscribe();
-    this.form.reset();
   }
 
   //
