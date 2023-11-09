@@ -1,9 +1,25 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
-import { catchError, map, of, switchMap, tap, forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import {
+  catchError,
+  map,
+  of,
+  switchMap,
+  tap,
+  forkJoin,
+  combineLatest,
+} from 'rxjs';
 
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { UserService } from 'src/app/services/user/user.service';
+import { User } from 'src/app/models/User';
+import { LanguageService } from 'src/app/services/user/language.service';
+import { Language } from 'src/app/models/Language';
+import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
@@ -14,15 +30,10 @@ import {
   registerAction,
   registerFailureAction,
   registerSuccessAction,
+  updateLanguageArrayAction,
+  updateLanguageArrayFailureAction,
+  updateLanguageArraySuccessAction,
 } from '../actions/register.action';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { Account } from 'src/app/models/Account';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { UserService } from 'src/app/services/user/user.service';
-import { User } from 'src/app/models/User';
-import { LanguageService } from 'src/app/services/user/language.service';
-import { Language } from 'src/app/models/Language';
-import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
 
 @Injectable()
 export class RegisterEffect {
@@ -112,10 +123,12 @@ export class RegisterEffect {
     )
   );
 
-  redirectAfterLanguageSelection$ = createEffect(
+  redirectAfterBothActions$ = createEffect(
     () =>
-      this.actions$.pipe(
-        ofType(languageSelectionSuccessAction),
+      combineLatest([
+        this.actions$.pipe(ofType(languageSelectionSuccessAction)),
+        this.actions$.pipe(ofType(updateLanguageArraySuccessAction)),
+      ]).pipe(
         tap(() => {
           this.router.navigateByUrl('/home');
         })
