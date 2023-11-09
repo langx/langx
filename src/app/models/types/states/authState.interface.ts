@@ -1,4 +1,5 @@
 import { Account } from '../../Account';
+import { Language } from '../../Language';
 import { User } from '../../User';
 import { ErrorInterface } from '../errors/error.interface';
 
@@ -8,4 +9,5 @@ export interface AuthStateInterface {
   currentUser: User | null;
   isLoggedIn: boolean | null;
   validationError: ErrorInterface | null;
+  languages: Language[] | null;
 }
