@@ -60,6 +60,12 @@ export class UserService {
     );
   }
 
+  updateUserDoc2(uid: string, data: any): Observable<any> {
+    return from(
+      this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+    );
+  }
+
   updateUserDoc(uid: string, data: any): Promise<any> {
     return this.api.updateDocument(
       environment.appwrite.USERS_COLLECTION,
