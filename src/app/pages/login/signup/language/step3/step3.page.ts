@@ -126,7 +126,8 @@ export class Step3Page implements OnInit {
     });
     console.log('languages:', languages);
 
-    this.store.dispatch(languageSelectionAction({ request: languages }));
+    this.store.dispatch(
+      languageSelectionAction({ request: languages }));
     this.store.dispatch(
       updateLanguageArrayAction({ id: userId, request: languageArray })
     );
