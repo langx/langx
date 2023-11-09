@@ -5,6 +5,6 @@ export type Language = Models.Document & {
   level: number;
   motherLanguage: boolean;
   name: string;
-  nativeName: Date;
+  nativeName: string;
   userId: string;
 };
