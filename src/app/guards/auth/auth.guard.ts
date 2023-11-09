@@ -1,8 +1,8 @@
-import { Injectable, OnInit } from '@angular/core';
-import { CanActivate, CanLoad, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { Observable, filter, tap } from 'rxjs';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { isLoggedInAction } from 'src/app/store/actions/auth.action';
 import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
@@ -10,33 +10,30 @@ import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
 @Injectable({
   providedIn: 'root',
 })
-// TODO: 'CanLoad' is deprecated.ts(6385)
-// TODO: IDEA: CanMatch
-export class AuthGuard implements CanActivate, CanLoad, OnInit {
+export class AuthGuard implements CanActivate {
   constructor(
-    private authService: AuthService,
     private router: Router,
     private notification: NotificationService,
     private store: Store
   ) {}
 
-  ngOnInit() {}
-
-  async canActivate(): Promise<boolean> {
+  canActivate(): Observable<boolean> {
     this.store.dispatch(isLoggedInAction());
-    return new Promise((resolve) => {
-      this.store.pipe(select(isLoggedInSelector)).subscribe((isLoggedIn) => {
-        if (isLoggedIn) {
-          this.startListener();
-          resolve(true);
+    return this.store.pipe(
+      select(isLoggedInSelector),
+      filter((isLoggedIn) => isLoggedIn !== null), // ignore values until isLoggedIn is not null
+      tap((isLoggedIn) => {
+        console.log('isLoggedIn', isLoggedIn);
+        if (!isLoggedIn) {
+          this.router.navigateByUrl('/login');
         } else {
-          this.navigate('/login');
-          resolve(false);
+          // this.startListener();
         }
-      });
-    });
+      })
+    );
   }
 
+  /*
   async canLoad(): Promise<boolean> {
     try {
       const isLoggedIn = await this.authService.isLoggedIn();
@@ -53,6 +50,7 @@ export class AuthGuard implements CanActivate, CanLoad, OnInit {
       return false;
     }
   }
+  */
 
   navigate(url: string) {
     this.router.navigateByUrl(url, { replaceUrl: true });
