@@ -7,6 +7,7 @@ import { RegisterRequestInterface } from 'src/app/models/types/requests/register
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
+import { Language } from 'src/app/models/Language';
 
 // Register
 export const registerAction = createAction(
@@ -48,7 +49,7 @@ export const languageSelectionAction = createAction(
 
 export const languageSelectionSuccessAction = createAction(
   ActionTypes.LANGUAGE_SELECTION_SUCCESS,
-  props<{ payload: User }>()
+  props<{ payload: Language[] }>()
 );
 
 export const languageSelectionFailureAction = createAction(
