@@ -29,7 +29,7 @@ const initialState: AuthStateInterface = {
   isLanguageDone: false,
 };
 
-const loadingReducer = createReducer(
+const authReducer = createReducer(
   initialState,
   on(
     registerAction,
@@ -159,5 +159,5 @@ const loadingReducer = createReducer(
 );
 
 export function reducers(state: AuthStateInterface, action: Action) {
-  return loadingReducer(state, action);
+  return authReducer(state, action);
 }
