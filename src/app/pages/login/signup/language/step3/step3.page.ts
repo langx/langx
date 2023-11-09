@@ -1,13 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { languagesData } from 'src/app/extras/data';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { languageSelectionAction } from 'src/app/store/actions/register.action';
+import {
+  accountSelector,
+  isLoadingSelector,
+  validationErrorSelector,
+} from 'src/app/store/selectors';
 
 @Component({
   selector: 'app-step3',
@@ -22,6 +30,10 @@ export class Step3Page implements OnInit {
   motherLanguages: Array<any> = [];
   studyLanguages: Array<any> = [];
 
+  account$: Observable<Account | null>;
+  isLoading$: Observable<boolean>;
+  validationError$: Observable<ErrorInterface | null>;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -33,6 +45,19 @@ export class Step3Page implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initValues();
+  }
+
+  initValues() {
+    // Init values From Store
+    this.account$ = this.store.pipe(select(accountSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$.subscribe((error: ErrorInterface) => {
+      if (error) this.presentToast(error.message, 'danger');
+    });
+
+    // Init Values From Step 2
     const data: any = this.route.snapshot.queryParams;
     console.log('navData coming from step2', data);
     let studyLanguages: Array<string> = [];
@@ -80,10 +105,16 @@ export class Step3Page implements OnInit {
     }
 
     const languages = this.motherLanguages.concat(this.studyLanguages);
-    console.log('languages:', languages);
-    this.store.dispatch(languageSelectionAction({ languages }));
+    this.completeLanguages2(languages);
 
     // this.completeLanguages(this.motherLanguages, this.studyLanguages);
+  }
+
+  completeLanguages2(languages) {
+    console.log('languages:', languages);
+
+    // this.store.dispatch(languageSelectionAction({ languages }));
+    // TODO: dispatch languageArray to store
   }
 
   completeLanguages(motherLanguages, studyLanguages) {
