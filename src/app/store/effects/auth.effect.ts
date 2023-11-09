@@ -24,6 +24,9 @@ import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
   completeRegistrationSuccessAction,
+  isLoggedInAction,
+  isLoggedInFailureAction,
+  isLoggedInSuccessAction,
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
@@ -86,7 +89,7 @@ export class AuthEffect {
     )
   );
 
-  redirectAfterComplete$ = createEffect(
+  redirectAfterCompleteRegistration$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(completeRegistrationSuccessAction),
@@ -148,7 +151,7 @@ export class AuthEffect {
     )
   );
 
-  redirectAfterBothActions$ = createEffect(
+  redirectAfterBothLanguageSelectionAndUpdateLanguageArray$ = createEffect(
     () =>
       combineLatest([
         this.actions$.pipe(ofType(languageSelectionSuccessAction)),
@@ -159,6 +162,26 @@ export class AuthEffect {
         })
       ),
     { dispatch: false }
+  );
+
+  isLoggedIn$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(isLoggedInAction),
+      switchMap(() => {
+        return this.authService.getAccount().pipe(
+          map((payload: Account) => {
+            return isLoggedInSuccessAction({ payload });
+          }),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(isLoggedInFailureAction({ error }));
+          })
+        );
+      })
+    )
   );
 
   constructor(
