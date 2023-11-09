@@ -25,32 +25,15 @@ export class AuthGuard implements CanActivate {
       tap((isLoggedIn) => {
         console.log('isLoggedIn', isLoggedIn);
         if (!isLoggedIn) {
-          this.router.navigateByUrl('/login');
+          this.navigate('/login');
         } else {
+
+          // TODO: Notification Service
           // this.startListener();
         }
       })
     );
   }
-
-  /*
-  async canLoad(): Promise<boolean> {
-    try {
-      const isLoggedIn = await this.authService.isLoggedIn();
-      if (isLoggedIn) {
-        // this.startListener();
-        return true;
-      } else {
-        this.navigate('/login');
-        return false;
-      }
-    } catch (e) {
-      console.log(e);
-      this.navigate('/login');
-      return false;
-    }
-  }
-  */
 
   navigate(url: string) {
     this.router.navigateByUrl(url, { replaceUrl: true });
