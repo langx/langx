@@ -11,6 +11,9 @@ import {
   registerAction,
   registerFailureAction,
   registerSuccessAction,
+  updateLanguageArrayAction,
+  updateLanguageArrayFailureAction,
+  updateLanguageArraySuccessAction,
 } from '../actions/register.action';
 
 const initialState: AuthStateInterface = {
@@ -91,6 +94,30 @@ const loadingReducer = createReducer(
   ),
   on(
     languageSelectionFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      validationError: action.error,
+    })
+  ),
+  on(
+    updateLanguageArrayAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      validationError: null,
+    })
+  ),
+  on(
+    updateLanguageArraySuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    updateLanguageArrayFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
