@@ -112,6 +112,17 @@ export class RegisterEffect {
     )
   );
 
+  redirectAfterLanguageSelection$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(languageSelectionSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/home');
+        })
+      ),
+    { dispatch: false }
+  );
+
   constructor(
     private actions$: Actions,
     private authService: AuthService,
