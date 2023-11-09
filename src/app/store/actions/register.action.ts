@@ -71,3 +71,17 @@ export const updateLanguageArrayFailureAction = createAction(
   ActionTypes.UPDATE_LANGUAGE_ARRAY_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// End of Register Actions
+
+export const isLoggedInAction = createAction(ActionTypes.ISLOGGEDIN);
+
+export const isLoggedInSuccessAction = createAction(
+  ActionTypes.ISLOGGEDIN_SUCCESS,
+  props<{ payload: Account }>()
+);
+
+export const isLoggedInFailureAction = createAction(
+  ActionTypes.ISLOGGEDIN_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
