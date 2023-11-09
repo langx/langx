@@ -9,6 +9,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { reducers } from './store/reducers/auth.reducer';
+import { RegisterEffect } from './store/effects/register.effects';
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +24,8 @@ import { AppRoutingModule } from './app-routing.module';
       logOnly: environment.production,
     }),
     EffectsModule.forRoot([]),
+    StoreModule.forFeature('auth', reducers),
+    EffectsModule.forFeature([RegisterEffect]),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
