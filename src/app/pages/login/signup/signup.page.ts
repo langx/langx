@@ -34,6 +34,10 @@ export class SignupPage implements OnInit {
     this.initValues();
   }
 
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
   initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.validationError$ = this.store.pipe(select(validationErrorSelector));
@@ -71,7 +75,6 @@ export class SignupPage implements OnInit {
   register(form: FormGroup) {
     const request: RegisterRequestInterface = form.value;
     this.store.dispatch(registerAction({ request }));
-    this.form.reset();
   }
 
   //
