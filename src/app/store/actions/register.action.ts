@@ -44,7 +44,7 @@ export const completeRegistrationFailureAction = createAction(
 // Language Selection
 export const languageSelectionAction = createAction(
   ActionTypes.LANGUAGE_SELECTION,
-  props<{ languages: AddLanguageRequestInterface[] }>()
+  props<{ request: AddLanguageRequestInterface[] }>()
 );
 
 export const languageSelectionSuccessAction = createAction(
@@ -59,7 +59,7 @@ export const languageSelectionFailureAction = createAction(
 
 export const updateLanguageArrayAction = createAction(
   ActionTypes.UPDATE_LANGUAGE_ARRAY,
-  props<{ request: string[] }>()
+  props<{ id: string; request: string[] }>()
 );
 
 export const updateLanguageArraySuccessAction = createAction(
