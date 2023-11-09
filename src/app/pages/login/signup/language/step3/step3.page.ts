@@ -107,11 +107,14 @@ export class Step3Page implements OnInit {
   }
 
   completeLanguages2(languages) {
+    let languageArray: string[] = [];
     // Add userId to each language
+    // And fill languageArray with language codes
     this.account$
       .subscribe((account: Account | null) => {
         languages.forEach((lang) => {
           lang.userId = account.$id;
+          languageArray.push(lang.code);
         });
       })
       .unsubscribe();
