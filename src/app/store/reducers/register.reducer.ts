@@ -11,7 +11,7 @@ import {
   registerAction,
   registerFailureAction,
   registerSuccessAction,
-} from './actions/register.action';
+} from '../actions/register.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,

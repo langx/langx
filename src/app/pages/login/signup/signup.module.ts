@@ -7,7 +7,7 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { SignupPageRoutingModule } from './signup-routing.module';
 import { SignupPage } from './signup.page';
-import { reducers } from 'src/app/store/reducers';
+import { reducers } from 'src/app/store/reducers/register.reducer';
 import { RegisterEffect } from 'src/app/store/effects/register.effects';
 
 @NgModule({
