@@ -5,6 +5,7 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         expand="block"
         size="large"
@@ -55,14 +56,14 @@
   <ion-row>
     <ion-col>
       <ion-button
-        *ngIf="!isLoading"
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         color="primary"
         expand="block"
-        >Complete ✅</ion-button
       >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        Complete ✅
+        <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+        </ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>
