@@ -13,6 +13,7 @@ import {
 } from 'src/app/store/actions/register.action';
 import {
   accountSelector,
+  isLanguageDoneSelector,
   isLoadingSelector,
   validationErrorSelector,
 } from 'src/app/store/selectors';
@@ -119,12 +120,21 @@ export class Step3Page implements OnInit {
     });
     console.log('languages:', languages);
 
+    // Dispatch the first action
     this.store.dispatch(languageSelectionAction({ request: languages }));
 
-    // TODO: Do After Language Selection Success
-    this.store.dispatch(
-      updateLanguageArrayAction({ id: userId, request: languageArray })
-    );
+    // Subscribe to the store and wait for the language selection to be successful
+    this.store
+      .pipe(select(isLanguageDoneSelector))
+      .subscribe((isLanguageDone: boolean) => {
+        // Dispatch the second action
+        if (isLanguageDone) {
+          this.store.dispatch(
+            updateLanguageArrayAction({ id: userId, request: languageArray })
+          );
+        }
+      })
+      .unsubscribe();
   }
 
   //
