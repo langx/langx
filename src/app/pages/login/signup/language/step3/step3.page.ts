@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -7,9 +7,6 @@ import { Observable } from 'rxjs';
 import { languagesData } from 'src/app/extras/data';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { LanguageService } from 'src/app/services/user/language.service';
-import { UserService } from 'src/app/services/user/user.service';
 import {
   languageSelectionAction,
   updateLanguageArrayAction,
@@ -36,12 +33,8 @@ export class Step3Page implements OnInit {
   validationError$: Observable<ErrorInterface | null>;
 
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
-    private authService: AuthService,
-    private languageService: LanguageService,
-    private userService: UserService,
     private store: Store
   ) {}
 
@@ -106,10 +99,10 @@ export class Step3Page implements OnInit {
     }
 
     const languages = this.motherLanguages.concat(this.studyLanguages);
-    this.completeLanguages2(languages);
+    this.completeLanguages(languages);
   }
 
-  completeLanguages2(languages) {
+  completeLanguages(languages) {
     let languageArray: string[] = [];
     let userId: string;
 
@@ -126,27 +119,12 @@ export class Step3Page implements OnInit {
     });
     console.log('languages:', languages);
 
-    this.store.dispatch(
-      languageSelectionAction({ request: languages }));
+    this.store.dispatch(languageSelectionAction({ request: languages }));
+
+    // TODO: Do After Language Selection Success
     this.store.dispatch(
       updateLanguageArrayAction({ id: userId, request: languageArray })
     );
-  }
-
-  completeLanguages(motherLanguages, studyLanguages) {
-    let user: any;
-    let languageArray: Array<string> = [];
-
-    this.userService
-      .updateUserDoc(user.$id, {
-        languageArray: languageArray,
-      })
-      .then(() => {
-        console.log('Language Array Updated');
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
 
   //
