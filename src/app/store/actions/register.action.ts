@@ -1,11 +1,12 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ActionTypes } from '../actionTypes';
+import { ActionTypes } from 'src/app/store/actionTypes';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
+import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
 
 // Register
 export const registerAction = createAction(
@@ -42,7 +43,7 @@ export const completeRegistrationFailureAction = createAction(
 // Language Selection
 export const languageSelectionAction = createAction(
   ActionTypes.LANGUAGE_SELECTION,
-  props<{ language: string }>()
+  props<{ languages: AddLanguageRequestInterface[] }>()
 );
 
 export const languageSelectionSuccessAction = createAction(
