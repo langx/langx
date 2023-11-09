@@ -153,6 +153,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
+      isLoggedIn: false,
       validationError: action.error,
     })
   )
