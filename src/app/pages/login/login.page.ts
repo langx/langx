@@ -19,10 +19,11 @@ import {
 })
 export class LoginPage implements OnInit {
   form: FormGroup;
-  isLoading: boolean = false;
   isLoading$: Observable<boolean>;
   validationError$: Observable<ErrorInterface | null>;
 
+  // TODO: Delete this property and edit related code by replacing it with the isLoading$ observable
+  isLoading: boolean = false;
   value: any = '';
 
   constructor(
