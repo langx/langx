@@ -74,6 +74,22 @@ export class UserService {
     );
   }
 
+  listUsers2(): Observable<any> {
+    const queries: any[] = [];
+
+    // Query for users that are not the current user
+    queries.push(Query.notEqual('$id', this.authService.getUserId()));
+
+    // Query for users descending by last seen
+    // TODO: Update this filter for this after presence is implemented
+    queries.push(Query.orderDesc('$updatedAt'));
+
+    return from(this.api.listDocuments(
+      environment.appwrite.USERS_COLLECTION,
+      queries
+    ));
+  }
+
   // TODO: Pagination
   listUsers(filterData?: FilterData): Promise<any> {
     const queries: any[] = [];
