@@ -30,6 +30,9 @@ import {
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
+  loginAction,
+  loginFailureAction,
+  loginSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -40,6 +43,35 @@ import {
 
 @Injectable()
 export class AuthEffect {
+  login$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loginAction),
+      switchMap(({ request }) =>
+        this.authService.login(request).pipe(
+          map((payload: Account) => loginSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(loginFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  redirectAfterLogin$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/home');
+        })
+      ),
+    { dispatch: false }
+  );
+
   register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(registerAction),
