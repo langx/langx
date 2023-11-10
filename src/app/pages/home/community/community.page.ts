@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Store } from '@ngrx/store';
+
 import { RoomService } from 'src/app/services/chat/room.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { getUsersAction } from 'src/app/store/actions/community.action';
 import {
   FilterService,
   FilterData,
 } from 'src/app/services/filter/filter.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
-import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-community',
@@ -23,6 +26,7 @@ export class CommunityPage implements OnInit {
   isAllUsersLoaded: boolean = false; // Pagination variable
 
   constructor(
+    private store: Store,
     private router: Router,
     private roomService: RoomService,
     private userService: UserService,
@@ -44,6 +48,10 @@ export class CommunityPage implements OnInit {
   //
   // Get Users
   //
+
+  async getUsers2() {
+    this.store.dispatch(getUsersAction());
+  }
 
   async getUsers(filterData?: FilterData) {
     await this.userService.listUsers(filterData).then(
@@ -143,7 +151,8 @@ export class CommunityPage implements OnInit {
   handleRefresh(event?) {
     this.users = [];
     this.isAllUsersLoaded = false;
-    this.getUsers(this.filterData);
+    this.getUsers2();
+    //this.getUsers(this.filterData);
     if (event) event.target.complete();
   }
 
