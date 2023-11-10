@@ -26,16 +26,16 @@
       <ion-card-title> Language Mates </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list *ngIf="!isLoading">
+      <ion-list>
         <app-user-list
-          *ngFor="let user of users"
+          *ngFor="let user of (users$ | async)"
           [item]="user"
           (onClick)="startChat(user)"
         >
         </app-user-list>
       </ion-list>
 
-      <ion-list *ngIf="(isLoading)">
+      <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '0123456789'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
