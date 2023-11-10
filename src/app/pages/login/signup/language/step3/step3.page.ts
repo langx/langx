@@ -15,7 +15,7 @@ import {
   accountSelector,
   isLanguageDoneSelector,
   isLoadingSelector,
-  validationErrorSelector,
+  registerValidationErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -49,7 +49,7 @@ export class Step3Page implements OnInit {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.isLanguageDone$ = this.store.pipe(select(isLanguageDoneSelector));
-    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$ = this.store.pipe(select(registerValidationErrorSelector));
     this.validationError$.subscribe((error: ErrorInterface) => {
       if (error) this.presentToast(error.message, 'danger');
     });

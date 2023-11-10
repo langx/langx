@@ -11,5 +11,6 @@ export interface AuthStateInterface {
   languages: Language[] | null;
   isLanguageDone: boolean;
   unauthorizedError: string | null;
-  validationError: ErrorInterface | null;
+  registerValidationError: ErrorInterface | null;
+  loginValidationError: ErrorInterface | null;
 }
