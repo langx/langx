@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { loginAction } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
   loginValidationErrorSelector,
@@ -21,7 +22,7 @@ import {
 export class LoginPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
-  loginValidationError$: Observable<ErrorInterface| null>;
+  loginValidationError$: Observable<ErrorInterface | null>;
   unauthorizedError$: Observable<string | null>;
 
   // TODO: Delete this property and edit related code by replacing it with the isLoading$ observable
@@ -30,7 +31,6 @@ export class LoginPage implements OnInit {
 
   constructor(
     private store: Store,
-    private router: Router,
     private authService: AuthService,
     private toastController: ToastController
   ) {}
@@ -43,7 +43,7 @@ export class LoginPage implements OnInit {
   initValues() {
     // isLoading
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    
+
     // Login Validation Error
     this.loginValidationError$ = this.store.pipe(
       select(loginValidationErrorSelector)
@@ -78,6 +78,12 @@ export class LoginPage implements OnInit {
   }
 
   login(form: FormGroup) {
+    const request: LoginRequestInterface = form.value;
+    this.store.dispatch(loginAction({ request }));
+  }
+
+  /*
+  login(form: FormGroup) {
     this.isLoading = true;
 
     this.authService
@@ -97,6 +103,7 @@ export class LoginPage implements OnInit {
         this.isLoading = false;
       });
   }
+  */
 
   // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
   // Some browsers like Firefox and Safari don't respect 3rd party cookies for privacy reasons.
