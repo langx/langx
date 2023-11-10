@@ -27,7 +27,6 @@ export class AuthGuard implements CanActivate {
         if (!isLoggedIn) {
           this.navigate('/login');
         } else {
-
           // TODO: Notification Service
           // this.startListener();
         }
