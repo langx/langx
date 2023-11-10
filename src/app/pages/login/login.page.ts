@@ -6,10 +6,9 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   isLoadingSelector,
-  validationErrorSelector,
+  unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -20,7 +19,7 @@ import {
 export class LoginPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
-  validationError$: Observable<ErrorInterface | null>;
+  unauthorizedError$: Observable<string | null>;
 
   // TODO: Delete this property and edit related code by replacing it with the isLoading$ observable
   isLoading: boolean = false;
@@ -40,9 +39,11 @@ export class LoginPage implements OnInit {
 
   initValues() {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.validationError$ = this.store.pipe(select(validationErrorSelector));
-    this.validationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.presentToast(error.message, 'danger');
+    this.unauthorizedError$ = this.store.pipe(
+      select(unauthorizedErrorSelector)
+    );
+    this.unauthorizedError$.subscribe((message: string) => {
+      if (message) this.presentToast(message, 'danger');
     });
   }
 
