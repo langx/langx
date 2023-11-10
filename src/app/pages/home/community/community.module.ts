@@ -9,6 +9,7 @@ import { CommunityPageRoutingModule } from './community-routing.module';
 import { CommunityPage } from './community.page';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
 import { communityReducers } from 'src/app/store/reducers/community.reducer';
+import { CommunityEffects } from 'src/app/store/effects/community.effect';
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { communityReducers } from 'src/app/store/reducers/community.reducer';
     IonicModule,
     CommunityPageRoutingModule,
     StoreModule.forFeature('community', communityReducers),
-    // EffectsModule.forFeature([]),
+    EffectsModule.forFeature([CommunityEffects]),
   ],
   declarations: [CommunityPage, UserListComponent],
 })
