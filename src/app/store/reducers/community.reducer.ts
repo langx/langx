@@ -9,6 +9,7 @@ import {
 
 const initialState: CommunityStateInterface = {
   isLoading: false,
+  total: null,
   users: null,
   error: null,
 };
@@ -29,7 +30,8 @@ const communityReducer = createReducer(
     (state, action): CommunityStateInterface => ({
       ...state,
       isLoading: false,
-      users: action.payload,
+      total: action.payload?.total,
+      users: action.payload?.documents,
     })
   ),
   on(
@@ -42,6 +44,9 @@ const communityReducer = createReducer(
   )
 );
 
-export function communityReducers(state: CommunityStateInterface, action: Action) {
+export function communityReducers(
+  state: CommunityStateInterface,
+  action: Action
+) {
   return communityReducer(state, action);
 }
