@@ -25,8 +25,6 @@ export class LoginPage implements OnInit {
   loginValidationError$: Observable<ErrorInterface | null>;
   unauthorizedError$: Observable<string | null>;
 
-  // TODO: Delete this property and edit related code by replacing it with the isLoading$ observable
-  isLoading: boolean = false;
   value: any = '';
 
   constructor(
@@ -50,6 +48,7 @@ export class LoginPage implements OnInit {
     );
     this.loginValidationError$.subscribe((error: ErrorInterface) => {
       if (error) this.presentToast(error.message, 'danger');
+      this.form.enable();
     });
 
     // Unauthorized Error
@@ -80,6 +79,7 @@ export class LoginPage implements OnInit {
   login(form: FormGroup) {
     const request: LoginRequestInterface = form.value;
     this.store.dispatch(loginAction({ request }));
+    form.disable();
   }
 
   // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
