@@ -4,10 +4,12 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import {
   isLoadingSelector,
+  loginValidationErrorSelector,
   unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
@@ -19,6 +21,7 @@ import {
 export class LoginPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
+  loginValidationError$: Observable<ErrorInterface| null>;
   unauthorizedError$: Observable<string | null>;
 
   // TODO: Delete this property and edit related code by replacing it with the isLoading$ observable
@@ -38,7 +41,18 @@ export class LoginPage implements OnInit {
   }
 
   initValues() {
+    // isLoading
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    
+    // Login Validation Error
+    this.loginValidationError$ = this.store.pipe(
+      select(loginValidationErrorSelector)
+    );
+    this.loginValidationError$.subscribe((error: ErrorInterface) => {
+      if (error) this.presentToast(error.message, 'danger');
+    });
+
+    // Unauthorized Error
     this.unauthorizedError$ = this.store.pipe(
       select(unauthorizedErrorSelector)
     );
