@@ -173,11 +173,8 @@ export class AuthEffect {
             return isLoggedInSuccessAction({ payload });
           }),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(isLoggedInFailureAction({ error }));
+          catchError(() => {
+            return of(isLoggedInFailureAction());
           })
         );
       })

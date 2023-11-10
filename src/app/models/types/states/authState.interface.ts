@@ -8,7 +8,8 @@ export interface AuthStateInterface {
   account: Account | null;
   currentUser: User | null;
   isLoggedIn: boolean | null;
-  validationError: ErrorInterface | null;
   languages: Language[] | null;
   isLanguageDone: boolean;
+  unauthorizedError: string | null;
+  validationError: ErrorInterface | null;
 }

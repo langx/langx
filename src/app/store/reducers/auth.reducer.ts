@@ -24,9 +24,10 @@ const initialState: AuthStateInterface = {
   account: null,
   currentUser: null,
   isLoggedIn: null,
-  validationError: null,
   languages: null,
   isLanguageDone: false,
+  validationError: null,
+  unauthorizedError: null,
 };
 
 const authReducer = createReducer(
@@ -137,6 +138,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: true,
       validationError: null,
+      unauthorizedError: null,
     })
   ),
   on(
@@ -154,7 +156,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       isLoggedIn: false,
-      validationError: action.error,
+      unauthorizedError: 'Please login or signup to continue.',
     })
   )
 );
