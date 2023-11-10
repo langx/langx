@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { getUsersAction } from 'src/app/store/actions/community.action';
+import { isLoadingSelector, usersSelector } from 'src/app/store/selectors/community.selector';
+import { User } from 'src/app/models/User';
 import {
   FilterService,
   FilterData,
@@ -20,11 +23,11 @@ import {
 export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterData;
-  isLoading: boolean = false  ;
-
-  users = [];
 
   isAllUsersLoaded: boolean = false; // Pagination variable
+
+  isLoading$: Observable<boolean>;
+  users$: Observable<User[] | null> = null;
 
   constructor(
     private store: Store,
@@ -39,11 +42,17 @@ export class CommunityPage implements OnInit {
   async ngOnInit() {
     await this.checkLocalStorage();
     await this.checkFilter();
+    this.initValues();
   }
 
   ngOnDestroy() {
     this.filter$.unsubscribe();
     console.log('filters unsubscribed');
+  }
+
+  initValues(): void {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.users$ = this.store.pipe(select(usersSelector));
   }
 
   //
@@ -54,6 +63,7 @@ export class CommunityPage implements OnInit {
     this.store.dispatch(getUsersAction());
   }
 
+  /*
   async getUsers(filterData?: FilterData) {
     await this.userService.listUsers(filterData).then(
       (response) => {
@@ -65,6 +75,7 @@ export class CommunityPage implements OnInit {
       }
     );
   }
+  */
 
   //
   // Check Filter
@@ -150,10 +161,10 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event?) {
-    this.users = [];
+    // this.users = [];
     this.isAllUsersLoaded = false;
     this.getUsers2();
-    //this.getUsers(this.filterData);
+    // this.getUsers(this.filterData);
     if (event) event.target.complete();
   }
 
