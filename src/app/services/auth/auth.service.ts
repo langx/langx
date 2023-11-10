@@ -91,18 +91,6 @@ export class AuthService {
     return from(this.api.account.get());
   }
 
-  async isLoggedIn() {
-    try {
-      const user = await this.api.account.get();
-      this._user.next(user);
-      return true;
-    } catch (e) {
-      this._user.next(null);
-      console.log('there is no user while checking isLoggedIn:');
-      return false;
-    }
-  }
-
   async logout() {
     try {
       await this.api.account.deleteSession('current');
@@ -111,23 +99,6 @@ export class AuthService {
     } finally {
       this._user.next(null);
     }
-  }
-
-  // TODO: #149 Login with Google (createOAuth2Session)
-  async signInWithGoogle() {
-    console.log('signInWithGoogle');
-    this.api.account.createOAuth2Session(
-      'google',
-      //environment.url.SIGNUP_COMPLETE_URL,
-      environment.url.LOGIN_URL,
-      environment.url.LOGIN_URL
-    );
-    const session = await this.api.account.getSession('current');
-
-    // Provider information
-    console.log(session.provider);
-    console.log(session.providerUid);
-    console.log(session.providerAccessToken);
   }
 
   resetPassword(email: string) {
@@ -154,6 +125,23 @@ export class AuthService {
       });
   }
 
+  // TODO: #149 Login with Google (createOAuth2Session)
+  async signInWithGoogle() {
+    console.log('signInWithGoogle');
+    this.api.account.createOAuth2Session(
+      'google',
+      //environment.url.SIGNUP_COMPLETE_URL,
+      environment.url.LOGIN_URL,
+      environment.url.LOGIN_URL
+    );
+    const session = await this.api.account.getSession('current');
+
+    // Provider information
+    console.log(session.provider);
+    console.log(session.providerUid);
+    console.log(session.providerAccessToken);
+  }
+
   // OPTIONAL: Login with Magic Link (createMagicSession)
   // Not needed to login anonymously
   /*
@@ -165,6 +153,21 @@ export class AuthService {
       concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
+  }
+  */
+
+  // NOT USED ANYMORE
+  /*
+  async isLoggedIn() {
+    try {
+      const user = await this.api.account.get();
+      this._user.next(user);
+      return true;
+    } catch (e) {
+      this._user.next(null);
+      console.log('there is no user while checking isLoggedIn:');
+      return false;
+    }
   }
   */
 }
