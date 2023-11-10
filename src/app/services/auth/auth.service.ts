@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
-import {
-  BehaviorSubject,
-  concatMap,
-  from,
-  catchError,
-  tap,
-  of,
-  Observable,
-} from 'rxjs';
+import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
 
-import { ApiService } from '../api/api.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { Account } from 'src/app/models/Account';
