@@ -56,17 +56,6 @@ export class AuthService {
     );
   }
 
-  login2(email: string, password: string) {
-    const authReq = this.api.account.createEmailSession(email, password);
-    // TODO: Add error handling with toast message
-    // TODO: this.api.account organize inside the api.service.ts
-    return from(authReq).pipe(
-      catchError((error) => of(error)),
-      concatMap(() => this.api.account.get()),
-      tap((user) => this._user.next(user))
-    );
-  }
-
   register(data: RegisterRequestInterface): Observable<Account> {
     const promise = this.api.account.create(
       ID.unique(),
