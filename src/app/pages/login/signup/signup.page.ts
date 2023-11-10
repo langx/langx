@@ -9,7 +9,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { registerAction } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
-  validationErrorSelector,
+  registerValidationErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -37,7 +37,7 @@ export class SignupPage implements OnInit {
 
   initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$ = this.store.pipe(select(registerValidationErrorSelector));
     this.validationError$.subscribe((error: ErrorInterface) => {
       if (error) this.presentToast(error.message, 'danger');
     });

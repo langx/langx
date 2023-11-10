@@ -11,6 +11,9 @@ import {
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
+  loginAction,
+  loginFailureAction,
+  loginSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -26,18 +29,46 @@ const initialState: AuthStateInterface = {
   isLoggedIn: null,
   languages: null,
   isLanguageDone: false,
-  validationError: null,
+  registerValidationError: null,
+  loginValidationError: null,
   unauthorizedError: null,
 };
 
 const authReducer = createReducer(
   initialState,
+  //Login Actions
+  on(
+    loginAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      loginValidationError: null,
+    })
+  ),
+  on(
+    loginSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      isLoggedIn: true,
+      account: action.payload,
+    })
+  ),
+  on(
+    loginFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      loginValidationError: action.error,
+    })
+  ),
+  // Register Actions
   on(
     registerAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
-      validationError: null,
+      registerValidationError: null,
     })
   ),
   on(
@@ -54,15 +85,16 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      validationError: action.error,
+      registerValidationError: action.error,
     })
   ),
+  // Complete Registration Actions
   on(
     completeRegistrationAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
-      validationError: null,
+      registerValidationError: null,
     })
   ),
   on(
@@ -78,7 +110,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      validationError: action.error,
+      registerValidationError: action.error,
     })
   ),
   on(
@@ -86,7 +118,7 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
-      validationError: null,
+      registerValidationError: null,
       isLanguageDone: false,
     })
   ),
@@ -104,7 +136,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      validationError: action.error,
+      registerValidationError: action.error,
     })
   ),
   on(
@@ -112,7 +144,7 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
-      validationError: null,
+      registerValidationError: null,
     })
   ),
   on(
@@ -128,16 +160,15 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      validationError: action.error,
+      registerValidationError: action.error,
     })
   ),
-  // End of Register Actions
+  // isLoggedIn Actions
   on(
     isLoggedInAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
-      validationError: null,
       unauthorizedError: null,
     })
   ),

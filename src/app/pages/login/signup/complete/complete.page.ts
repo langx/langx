@@ -13,7 +13,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   accountSelector,
   isLoadingSelector,
-  validationErrorSelector,
+  registerValidationErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -42,7 +42,7 @@ export class CompletePage implements OnInit {
   initValues(): void {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.validationError$ = this.store.pipe(select(validationErrorSelector));
+    this.validationError$ = this.store.pipe(select(registerValidationErrorSelector));
     this.validationError$.subscribe((error: ErrorInterface) => {
       if (error) this.presentToast(error.message, 'danger');
     });
