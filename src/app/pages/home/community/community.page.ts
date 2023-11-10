@@ -20,6 +20,7 @@ import {
 export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterData;
+  isLoading: boolean = false  ;
 
   users = [];
 
