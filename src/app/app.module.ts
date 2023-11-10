@@ -9,7 +9,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { environment } from 'src/environments/environment';
-import { reducers } from 'src/app/store/reducers/auth.reducer';
+import { authReducers } from 'src/app/store/reducers/auth.reducer';
 import { AuthEffect } from 'src/app/store/effects/auth.effect';
 
 @NgModule({
@@ -24,7 +24,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
       logOnly: environment.production,
     }),
     EffectsModule.forRoot([]),
-    StoreModule.forFeature('auth', reducers),
+    StoreModule.forFeature('auth', authReducers),
     EffectsModule.forFeature([AuthEffect]),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
