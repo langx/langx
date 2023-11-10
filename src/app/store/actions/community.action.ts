@@ -12,7 +12,7 @@ export const getUsersSuccessAction = createAction(
   props<{ payload: User[] }>()
 );
 
-export const isLoggedInFailureAction = createAction(
+export const getUsersFailureAction = createAction(
   ActionTypes.GETUSERS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
