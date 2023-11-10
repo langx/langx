@@ -14,6 +14,7 @@ import { ApiService } from '../api/api.service';
 import { environment } from 'src/environments/environment';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { Account } from 'src/app/models/Account';
+import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +45,18 @@ export class AuthService {
   // ACCOUNT API
   //
 
-  login(email: string, password: string) {
+  login(data: LoginRequestInterface): Observable<Account> {
+    const authReq = this.api.account.createEmailSession(
+      data.email,
+      data.password
+    );
+    return from(authReq).pipe(
+      concatMap(() => this.api.account.get()),
+      tap((user) => this._user.next(user))
+    );
+  }
+
+  login2(email: string, password: string) {
     const authReq = this.api.account.createEmailSession(email, password);
     // TODO: Add error handling with toast message
     // TODO: this.api.account organize inside the api.service.ts
