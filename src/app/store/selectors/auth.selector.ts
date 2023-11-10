@@ -10,16 +10,6 @@ export const isLoadingSelector = createSelector(
   (authState: AuthStateInterface) => authState.isLoading
 );
 
-export const registerValidationErrorSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.registerValidationError
-);
-
-export const unauthorizedErrorSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.unauthorizedError
-);
-
 export const accountSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.account
@@ -38,4 +28,19 @@ export const isLanguageDoneSelector = createSelector(
 export const isLoggedInSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.isLoggedIn
+);
+
+export const loginValidationErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.loginValidationError
+);
+
+export const registerValidationErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.registerValidationError
+);
+
+export const unauthorizedErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unauthorizedError
 );
