@@ -38,6 +38,10 @@ export class LoginPage implements OnInit {
     this.initValues();
   }
 
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
   initValues() {
     // isLoading
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
