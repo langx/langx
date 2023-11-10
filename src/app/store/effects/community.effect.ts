@@ -19,7 +19,9 @@ export class CommunityEffects {
       ofType(getUsersAction),
       switchMap(() =>
         this.userService.listUsers2().pipe(
-          map((payload: getUsersResponseInterface) => getUsersSuccessAction({ payload })),
+          map((payload: getUsersResponseInterface) =>
+            getUsersSuccessAction({ payload })
+          ),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
