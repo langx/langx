@@ -3,11 +3,28 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
+import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
 import { Language } from 'src/app/models/Language';
+
+// Login
+export const loginAction = createAction(
+  ActionTypes.LOGIN,
+  props<{ request: LoginRequestInterface }>()
+);
+
+export const loginSuccessAction = createAction(
+  ActionTypes.LOGIN_SUCCESS,
+  props<{ payload: Account }>()
+);
+
+export const loginFailureAction = createAction(
+  ActionTypes.LOGIN_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
 
 // Register
 export const registerAction = createAction(
@@ -72,8 +89,7 @@ export const updateLanguageArrayFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-// End of Register Actions
-
+// isLoggedIn
 export const isLoggedInAction = createAction(ActionTypes.ISLOGGEDIN);
 
 export const isLoggedInSuccessAction = createAction(
