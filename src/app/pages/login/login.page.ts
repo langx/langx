@@ -82,29 +82,6 @@ export class LoginPage implements OnInit {
     this.store.dispatch(loginAction({ request }));
   }
 
-  /*
-  login(form: FormGroup) {
-    this.isLoading = true;
-
-    this.authService
-      .login(form.value.email, form.value.password)
-      .subscribe((user: any) => {
-        console.log('user:', user);
-        this.authService.isLoggedIn().then((isLoggedIn) => {
-          if (isLoggedIn) {
-            this.router.navigateByUrl('/home');
-          } else {
-            // TODO: show error toasts message
-            console.log('error:', 'Could not sign you up, please try again.');
-          }
-        });
-        //hideLoader();
-        form.reset();
-        this.isLoading = false;
-      });
-  }
-  */
-
   // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
   // Some browsers like Firefox and Safari don't respect 3rd party cookies for privacy reasons.
   // Appwrite -> appwrite.mydomain.com
