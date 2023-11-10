@@ -6,7 +6,6 @@ import { Observable } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { getUsersAction } from 'src/app/store/actions/community.action';
 import { isLoadingSelector, usersSelector } from 'src/app/store/selectors/community.selector';
 import { User } from 'src/app/models/User';
@@ -33,7 +32,6 @@ export class CommunityPage implements OnInit {
     private store: Store,
     private router: Router,
     private roomService: RoomService,
-    private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService,
     private toastController: ToastController
