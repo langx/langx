@@ -42,6 +42,6 @@ const communityReducer = createReducer(
   )
 );
 
-export function reducers(state: CommunityStateInterface, action: Action) {
+export function communityReducers(state: CommunityStateInterface, action: Action) {
   return communityReducer(state, action);
 }
