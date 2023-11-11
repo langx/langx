@@ -50,6 +50,12 @@ export class UserService {
     );
   }
 
+  getUserDoc2(uid: string): Observable<any> {
+    return from(
+      this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid)
+    );
+  }
+
   getUserDoc(uid: string): Promise<any> {
     return this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid);
   }
@@ -84,10 +90,9 @@ export class UserService {
     // TODO: Update this filter for this after presence is implemented
     queries.push(Query.orderDesc('$updatedAt'));
 
-    return from(this.api.listDocuments(
-      environment.appwrite.USERS_COLLECTION,
-      queries
-    ));
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
   }
 
   // TODO: Pagination
