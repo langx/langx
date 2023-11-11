@@ -10,6 +10,7 @@ import { User } from 'src/app/models/User';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getRoomAction,
   getUsersAction,
@@ -31,6 +32,7 @@ export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
+  currentUser$: Observable<User>;
   isLoading$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
@@ -56,6 +58,7 @@ export class CommunityPage implements OnInit {
   }
 
   initValues(): void {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
@@ -164,8 +167,11 @@ export class CommunityPage implements OnInit {
   // Get or Create Room
   //
 
-  getRoom(userId: string ) {
-    this.store.dispatch(getRoomAction({ userId }));
+  getRoom(userId: string) {
+    this.currentUser$.subscribe((user) => {
+      const currentUserId = user.$id;
+      this.store.dispatch(getRoomAction({ currentUserId, userId }));
+    });
   }
 
   /*
