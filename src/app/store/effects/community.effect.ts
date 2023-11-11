@@ -18,7 +18,7 @@ export class CommunityEffects {
     this.actions$.pipe(
       ofType(getUsersAction),
       switchMap(({ filterData }) =>
-        this.userService.listUsers2(filterData).pipe(
+        this.userService.listUsers(filterData).pipe(
           map((payload: getUsersResponseInterface) =>
             getUsersSuccessAction({ payload })
           ),
