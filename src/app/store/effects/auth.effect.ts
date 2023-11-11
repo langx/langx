@@ -212,12 +212,18 @@ export class AuthEffect {
                 return isLoggedInSuccessAction({ payload });
               }),
               catchError(() => {
-                return of(isLoggedInFailureAction());
+                const error: ErrorInterface = {
+                  message: 'Registration is not completed yet. Please try again.',
+                };
+                return of(isLoggedInFailureAction({ error }));
               })
             );
           }),
           catchError(() => {
-            return of(isLoggedInFailureAction());
+            const error: ErrorInterface = {
+              message: 'Please login or signup to continue.',
+            };
+            return of(isLoggedInFailureAction({ error }));
           })
         );
       })

@@ -188,7 +188,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       isLoggedIn: false,
-      unauthorizedError: 'Please login or signup to continue.',
+      unauthorizedError: action.error,
     })
   )
 );
