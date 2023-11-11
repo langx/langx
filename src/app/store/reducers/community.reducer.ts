@@ -8,12 +8,16 @@ import {
   getUsersWithOffsetAction,
   getUsersWithOffsetSuccessAction,
   getUsersWithOffsetFailureAction,
+  getRoomAction,
+  getRoomSuccessAction,
+  getRoomFailureAction,
 } from 'src/app/store/actions/community.action';
 
 const initialState: CommunityStateInterface = {
   isLoading: false,
   total: null,
   users: null,
+  room: null,
   error: null,
 };
 
@@ -64,6 +68,31 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersWithOffsetFailureAction,
+    (state, action): CommunityStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getRoomAction,
+    (state): CommunityStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+      room: null,
+    })
+  ),
+  on(
+    getRoomSuccessAction,
+    (state, action): CommunityStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: action.payload,
+    })
+  ),
+  on(
+    getRoomFailureAction,
     (state, action): CommunityStateInterface => ({
       ...state,
       isLoading: false,
