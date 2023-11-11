@@ -28,8 +28,6 @@ export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
-  isAllUsersLoaded: boolean = false; // Pagination variable
-
   isLoading$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
@@ -123,11 +121,6 @@ export class CommunityPage implements OnInit {
   //
 
   loadMore(event) {
-    if (this.isAllUsersLoaded) {
-      event.target.complete();
-      return;
-    }
-
     // Offset is the number of users already loaded
     let offset: number = 0;
     this.users$
@@ -137,8 +130,13 @@ export class CommunityPage implements OnInit {
           .subscribe((total) => {
             if (offset < total) {
               this.store.dispatch(
-                getUsersWithOffsetAction({ filterData: this.filterData, offset })
+                getUsersWithOffsetAction({
+                  filterData: this.filterData,
+                  offset,
+                })
               );
+            } else {
+              console.log('All users loaded');
             }
           })
           .unsubscribe();
@@ -176,7 +174,6 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event?) {
-    this.isAllUsersLoaded = false;
     this.getUsers(this.filterData);
     if (event) event.target.complete();
   }
