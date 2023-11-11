@@ -115,7 +115,7 @@ const communityReducer = createReducer(
     (state, action): CommunityStateInterface => ({
       ...state,
       isLoading: false,
-      room: action.payload.documents[0],
+      room: action.payload,
     })
   ),
   on(
