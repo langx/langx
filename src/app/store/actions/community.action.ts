@@ -4,6 +4,7 @@ import { ActionTypes } from 'src/app/store/actions/community.actiontypes';
 import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 
 // Get Users Actions
 export const getUsersAction = createAction(
@@ -40,15 +41,31 @@ export const getUsersWithOffsetFailureAction = createAction(
 // Get Room Actions
 export const getRoomAction = createAction(
   ActionTypes.GET_ROOM,
-  props<{ userId: string }>()
+  props<{ currentUserId: string; userId: string }>()
 );
 
 export const getRoomSuccessAction = createAction(
   ActionTypes.GET_ROOM_SUCCESS,
-  props<{ payload: any }>()
+  props<{ payload: getRoomsResponseInterface }>()
 );
 
 export const getRoomFailureAction = createAction(
   ActionTypes.GET_ROOM_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Create Room Actions
+export const createRoomAction = createAction(
+  ActionTypes.CREATE_ROOM,
+  props<{ currentUserId: string; userId: string }>()
+);
+
+export const createRoomSuccessAction = createAction(
+  ActionTypes.CREATE_ROOM_SUCCESS,
+  props<{ payload: getRoomsResponseInterface }>()
+);
+
+export const createRoomFailureAction = createAction(
+  ActionTypes.CREATE_ROOM_FAILURE,
   props<{ error: ErrorInterface }>()
 );
