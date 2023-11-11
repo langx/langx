@@ -10,6 +10,9 @@ import {
   getUsersAction,
   getUsersFailureAction,
   getUsersSuccessAction,
+  getUsersWithOffsetAction,
+  getUsersWithOffsetFailureAction,
+  getUsersWithOffsetSuccessAction,
 } from 'src/app/store/actions/community.action';
 
 @Injectable()
@@ -28,6 +31,26 @@ export class CommunityEffects {
               message: errorResponse.message,
             };
             return of(getUsersFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  getUsersWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersWithOffsetAction),
+      switchMap(({ filterData, offset }) =>
+        this.userService.listUsers(filterData, offset).pipe(
+          map((payload: getUsersResponseInterface) =>
+            getUsersWithOffsetSuccessAction({ payload })
+          ),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getUsersWithOffsetFailureAction({ error }));
           })
         )
       )
