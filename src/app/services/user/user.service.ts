@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { ID, Query } from 'appwrite';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 
-import { FilterData } from '../filter/filter.service';
-import { ApiService } from '../api/api.service';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
-import { AuthService } from '../auth/auth.service';
-import { StorageService } from '../storage/storage.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 
 @Injectable({
@@ -96,7 +96,7 @@ export class UserService {
   }
 
   // TODO: Pagination
-  listUsers(filterData?: FilterData): Promise<any> {
+  listUsers(filterData?: FilterDataInterface): Promise<any> {
     const queries: any[] = [];
 
     // Query for users that are not the current user
