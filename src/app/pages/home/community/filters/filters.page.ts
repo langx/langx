@@ -3,12 +3,18 @@ import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
+import { Observable, map } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { User } from 'src/app/models/User';
 import {
   FilterService,
   FilterData,
 } from 'src/app/services/filter/filter.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { Language } from 'src/app/models/Language';
 
 @Component({
   selector: 'app-filters',
@@ -22,12 +28,15 @@ export class FiltersPage implements OnInit {
   isLoading: boolean = false;
   cUserDoc: any;
 
+  currentUser$: Observable<User | null>;
+
   ionRangeDefault = { lower: 20, upper: 75 };
 
   // filters data
   filterData: FilterData = {} as FilterData;
 
   constructor(
+    private store: Store,
     private authService: AuthService,
     private navCtrl: NavController,
     private router: Router,
@@ -37,8 +46,13 @@ export class FiltersPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    await this.getUserData();
+    this.initValues();
+    // await this.getUserData();
     await this.checkStorage();
+  }
+
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
   async getUserData() {
@@ -115,8 +129,10 @@ export class FiltersPage implements OnInit {
   // LANGUAGE Methods
   //
 
-  getStudyLanguages() {
-    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  getStudyLanguages(): Observable<Language[]> {
+    return this.currentUser$.pipe(
+      map(user => user.languages.filter(lang => !lang.motherLanguage))
+    );
   }
 
   languageChecked(event, langName) {
