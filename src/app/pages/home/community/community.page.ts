@@ -78,7 +78,7 @@ export class CommunityPage implements OnInit {
       });
   }
 
-  // TODO: Idea: it could be save it account.user.prefs
+  // TODO: #246 Save filterData with JSON.stringify();
   async checkLocalStorage() {
     // Getting the filter data from Capacitor Preferences
     let languagesString =
