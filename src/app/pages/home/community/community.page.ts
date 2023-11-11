@@ -135,6 +135,14 @@ export class CommunityPage implements OnInit {
       event.target.complete();
       return;
     }
+
+    // Offset is the number of users already loaded
+    let offset = 0;
+    this.users$.subscribe((users) => {
+      offset = users.length;
+      this.store.dispatch(getUsersAction({ filterData: this.filterData, offset }));
+    }).unsubscribe();
+
     // this.getUsers(this.filterData);
     event.target.complete();
     console.log('Async operation loadMore has ended');
