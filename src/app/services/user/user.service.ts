@@ -83,7 +83,7 @@ export class UserService {
 
   listUsers(
     filterData: FilterDataInterface,
-    offset?: number,
+    offset?: number
   ): Observable<getUsersResponseInterface> {
     // Set default offset to 0
     if (!offset) offset = 0;
