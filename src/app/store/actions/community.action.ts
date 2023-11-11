@@ -40,7 +40,7 @@ export const getUsersWithOffsetFailureAction = createAction(
 // Get Room Actions
 export const getRoomAction = createAction(
   ActionTypes.GET_ROOM,
-  props<{ id: string }>()
+  props<{ userId: string }>()
 );
 
 export const getRoomSuccessAction = createAction(

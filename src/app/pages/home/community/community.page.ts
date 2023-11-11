@@ -9,7 +9,9 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
+  getRoomAction,
   getUsersAction,
   getUsersWithOffsetAction,
 } from 'src/app/store/actions/community.action';
@@ -19,7 +21,6 @@ import {
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/community.selector';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 @Component({
   selector: 'app-community',
@@ -160,8 +161,12 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  // Start Chat
+  // Get or Create Room
   //
+
+  getRoom(userId: string ) {
+    this.store.dispatch(getRoomAction({ userId }));
+  }
 
   async startChat(user: any) {
     let roomId: string;
