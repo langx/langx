@@ -7,12 +7,12 @@ import { Store, select } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { Language } from 'src/app/models/Language';
 import {
   FilterService,
   FilterData,
 } from 'src/app/services/filter/filter.service';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { Language } from 'src/app/models/Language';
 
 @Component({
   selector: 'app-filters',
