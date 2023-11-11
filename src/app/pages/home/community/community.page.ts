@@ -16,6 +16,7 @@ import {
 import {
   isLoadingSelector,
   usersSelector,
+  totalSelector,
 } from 'src/app/store/selectors/community.selector';
 
 @Component({
@@ -31,6 +32,7 @@ export class CommunityPage implements OnInit {
 
   isLoading$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
+  total$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
@@ -55,6 +57,7 @@ export class CommunityPage implements OnInit {
   initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
   }
 
   //
@@ -130,9 +133,15 @@ export class CommunityPage implements OnInit {
     this.users$
       .subscribe((users) => {
         offset = users.length;
-        this.store.dispatch(
-          getUsersWithOffsetAction({ filterData: this.filterData, offset })
-        );
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              this.store.dispatch(
+                getUsersWithOffsetAction({ filterData: this.filterData, offset })
+              );
+            }
+          })
+          .unsubscribe();
       })
       .unsubscribe();
 
