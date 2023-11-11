@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
+import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,8 @@ import { User } from 'src/app/models/User';
 export class RoomService {
   rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   cUserId: string;
-  currentUser: Observable<User>;
+
+  currentUser$: Observable<User>;
 
   constructor(
     private api: ApiService,
@@ -46,10 +48,10 @@ export class RoomService {
     }
   }
 
-  getRoom2(userId: string): Observable<Room | null> {
+  getRoom2(currentUserId: string, userId: string): Observable<getRoomsResponseInterface | null> {
     return from(this.api.listDocuments(
       environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', this.authService.getUserId()), Query.search('users', userId)]
+      [Query.search('users', currentUserId), Query.search('users', userId)]
     ));
   }
 
