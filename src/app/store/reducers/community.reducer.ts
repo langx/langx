@@ -5,6 +5,9 @@ import {
   getUsersAction,
   getUsersSuccessAction,
   getUsersFailureAction,
+  getUsersWithOffsetAction,
+  getUsersWithOffsetSuccessAction,
+  getUsersWithOffsetFailureAction,
 } from 'src/app/store/actions/community.action';
 
 const initialState: CommunityStateInterface = {
@@ -36,6 +39,31 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersFailureAction,
+    (state, action): CommunityStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getUsersWithOffsetAction,
+    (state): CommunityStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersWithOffsetSuccessAction,
+    (state, action): CommunityStateInterface => ({
+      ...state,
+      isLoading: false,
+      total: action.payload?.total,
+      users: [...state.users, ...action.payload?.documents],
+    })
+  ),
+  on(
+    getUsersWithOffsetFailureAction,
     (state, action): CommunityStateInterface => ({
       ...state,
       isLoading: false,
