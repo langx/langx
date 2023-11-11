@@ -14,7 +14,7 @@ import { getUsersResponseInterface } from 'src/app/models/types/responses/getUse
   providedIn: 'root',
 })
 export class UserService {
-  NUMBER_OF_USERS_PER_PAGE = 10;
+  LIMIT_DOCS = 5;
 
   //TODO : Add model for user here
   private userDoc = new BehaviorSubject<any>(null);
@@ -81,11 +81,12 @@ export class UserService {
     );
   }
 
-  // TODO: Pagination
   listUsers(
-    filterData?: FilterDataInterface
+    filterData: FilterDataInterface,
+    offset?: number,
   ): Observable<getUsersResponseInterface> {
-    console.log('listUsers2 filterData', filterData);
+    // Set default offset to 0
+    if (!offset) offset = 0;
 
     const queries: any[] = [];
 
@@ -123,6 +124,10 @@ export class UserService {
       // OR Query for users with any of the selected languages
       queries.push(Query.search('languageArray', keywords));
     }
+
+    // Limit and offset
+    queries.push(Query.limit(this.LIMIT_DOCS));
+    queries.push(Query.offset(offset));
 
     return from(
       this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)

@@ -8,7 +8,7 @@ import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 // Get Users
 export const getUsersAction = createAction(
   ActionTypes.GETUSERS,
-  props<{ filterData?: FilterDataInterface }>()
+  props<{ filterData: FilterDataInterface, offset?: number }>()
 );
 
 export const getUsersSuccessAction = createAction(
