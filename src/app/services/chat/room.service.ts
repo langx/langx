@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
-import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
-import { AuthService } from '../auth/auth.service';
-import { UserService } from '../user/user.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import axios from 'axios';
+
+import { environment } from 'src/environments/environment';
+import { ApiService } from 'src/app/services/api/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { Room } from 'src/app/models/Room';
+import { User } from 'src/app/models/User';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +16,7 @@ import axios from 'axios';
 export class RoomService {
   rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   cUserId: string;
+  currentUser: Observable<User>;
 
   constructor(
     private api: ApiService,
@@ -40,6 +44,13 @@ export class RoomService {
       const newRooms = [...currentRooms, room];
       this.rooms.next(newRooms);
     }
+  }
+
+  getRoom2(userId: string): Observable<Room | null> {
+    return from(this.api.listDocuments(
+      environment.appwrite.ROOMS_COLLECTION,
+      [Query.search('users', this.authService.getUserId()), Query.search('users', userId)]
+    ));
   }
 
   async checkRoom(userId: string): Promise<any> {
