@@ -17,7 +17,9 @@ import {
   isLoadingSelector,
   usersSelector,
   totalSelector,
+  errorSelector,
 } from 'src/app/store/selectors/community.selector';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 @Component({
   selector: 'app-community',
@@ -56,6 +58,15 @@ export class CommunityPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    // Present Toast if error
+    this.store
+      .pipe(select(errorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+        }
+      });
   }
 
   //
