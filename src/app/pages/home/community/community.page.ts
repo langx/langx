@@ -63,20 +63,6 @@ export class CommunityPage implements OnInit {
     this.store.dispatch(getUsersAction({ filterData }));
   }
 
-  /*
-  async getUsers(filterData?: FilterData) {
-    await this.userService.listUsers(filterData).then(
-      (response) => {
-        console.log(response);
-        this.users = response.documents;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-  */
-
   //
   // Check Filter
   //
@@ -138,10 +124,14 @@ export class CommunityPage implements OnInit {
 
     // Offset is the number of users already loaded
     let offset = 0;
-    this.users$.subscribe((users) => {
-      offset = users.length;
-      this.store.dispatch(getUsersAction({ filterData: this.filterData, offset }));
-    }).unsubscribe();
+    this.users$
+      .subscribe((users) => {
+        offset = users.length;
+        this.store.dispatch(
+          getUsersAction({ filterData: this.filterData, offset })
+        );
+      })
+      .unsubscribe();
 
     // this.getUsers(this.filterData);
     event.target.complete();
