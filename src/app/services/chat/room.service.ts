@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Observable, from, switchMap } from 'rxjs';
 import axios from 'axios';
 
 import { environment } from 'src/environments/environment';
@@ -48,11 +48,48 @@ export class RoomService {
     }
   }
 
-  getRoom2(currentUserId: string, userId: string): Observable<getRoomsResponseInterface | null> {
-    return from(this.api.listDocuments(
-      environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', currentUserId), Query.search('users', userId)]
-    ));
+  getRoom2(
+    currentUserId: string,
+    userId: string
+  ): Observable<getRoomsResponseInterface | null> {
+    return from(
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
+        Query.search('users', currentUserId),
+        Query.search('users', userId),
+      ])
+    );
+  }
+
+  createRoom2(currentUserId: string, userId: string): Observable<Room | null> {
+    // Set body
+    const body = { to: userId };
+
+    // Set x-appwrite-user-id header
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+
+    // Set x-appwrite-jwt header
+    return from(
+      this.authService.createJWT().then((result) => {
+        console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/room
+        return from(
+          axios
+            .post('https://api.languagexchange.net/api/room', body)
+            .then((result) => {
+              const resultData: Room = result.data;
+              return resultData;
+            })
+            .catch((error) => {
+              console.log('error: ', error);
+              return error;
+            })
+        );
+      })
+    );
   }
 
   async checkRoom(userId: string): Promise<any> {
