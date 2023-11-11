@@ -7,12 +7,13 @@ import { Observable } from 'rxjs';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { getUsersAction } from 'src/app/store/actions/community.action';
-import { isLoadingSelector, usersSelector } from 'src/app/store/selectors/community.selector';
 import { User } from 'src/app/models/User';
+import { FilterService } from 'src/app/services/filter/filter.service';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import {
-  FilterService,
-  FilterData,
-} from 'src/app/services/filter/filter.service';
+  isLoadingSelector,
+  usersSelector,
+} from 'src/app/store/selectors/community.selector';
 
 @Component({
   selector: 'app-community',
@@ -21,7 +22,7 @@ import {
 })
 export class CommunityPage implements OnInit {
   filter$: any;
-  filterData: FilterData;
+  filterData: FilterDataInterface;
 
   isAllUsersLoaded: boolean = false; // Pagination variable
 
@@ -58,6 +59,7 @@ export class CommunityPage implements OnInit {
   //
 
   async getUsers2() {
+    console.log('filterData: ', this.filterData);
     this.store.dispatch(getUsersAction());
   }
 
@@ -82,7 +84,7 @@ export class CommunityPage implements OnInit {
   async checkFilter() {
     this.filter$ = this.filterService
       .getEvent()
-      .subscribe((filterData: FilterData) => {
+      .subscribe((filterData: FilterDataInterface) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
         // Handle Refresh fetch users by using filterData in getUsers()
@@ -107,7 +109,7 @@ export class CommunityPage implements OnInit {
       languages = languagesString.toLocaleString().split(',');
     }
 
-    let filterData: FilterData = {
+    let filterData: FilterDataInterface = {
       languages: languages,
       gender: gender,
       country: country,

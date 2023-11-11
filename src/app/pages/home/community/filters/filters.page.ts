@@ -9,10 +9,8 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { Language } from 'src/app/models/Language';
-import {
-  FilterService,
-  FilterData,
-} from 'src/app/services/filter/filter.service';
+import { FilterService } from 'src/app/services/filter/filter.service';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 
 @Component({
   selector: 'app-filters',
@@ -31,7 +29,7 @@ export class FiltersPage implements OnInit {
   ionRangeDefault = { lower: 20, upper: 75 };
 
   // filters data
-  filterData: FilterData = {} as FilterData;
+  filterData: FilterDataInterface = {} as FilterDataInterface;
 
   constructor(
     private store: Store,
@@ -83,7 +81,7 @@ export class FiltersPage implements OnInit {
     this.router.navigateByUrl('/home/community');
   }
 
-  setLocalStorage(filterData: FilterData) {
+  setLocalStorage(filterData: FilterDataInterface) {
     if (!filterData.languages) filterData.languages = [];
     if (filterData.languages.length > 0) {
       this.storageService.setValue(
@@ -208,7 +206,7 @@ export class FiltersPage implements OnInit {
   //
 
   resetFilter() {
-    this.filterData = {} as FilterData;
+    this.filterData = {} as FilterDataInterface;
     console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();

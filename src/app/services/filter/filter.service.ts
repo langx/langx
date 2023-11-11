@@ -1,28 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-// TODO: Move interface to a models folder as a separate file
-export interface FilterData {
-  languages: Array<string>;
-  gender: string;
-  country: string;
-  minAge: number;
-  maxAge: number;
-}
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilterService {
-  private isFilterTracker = new BehaviorSubject<FilterData>(null);
+  private isFilterTracker = new BehaviorSubject<FilterDataInterface>(null);
 
   constructor() {}
 
-  getEvent(): BehaviorSubject<FilterData> {
+  getEvent(): BehaviorSubject<FilterDataInterface> {
     return this.isFilterTracker;
   }
 
-  setEvent(filterData: FilterData): void {
+  setEvent(filterData: FilterDataInterface): void {
     this.isFilterTracker.next(filterData);
   }
 }
