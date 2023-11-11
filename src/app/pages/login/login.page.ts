@@ -22,7 +22,6 @@ import {
 export class LoginPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
-  loginValidationError$: Observable<ErrorInterface | null>;
 
   value: any = '';
 
@@ -45,16 +44,15 @@ export class LoginPage implements OnInit {
     // isLoading
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
-    // Login Validation Error
-    this.loginValidationError$ = this.store.pipe(
-      select(loginValidationErrorSelector)
-    );
-    this.loginValidationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.presentToast(error.message, 'danger');
-      this.form.enable();
-    });
-
     // Present Toast if error
+    // Login Validation Error
+    this.store
+      .pipe(select(loginValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+        this.form.enable();
+      });
+    // Unauthorized Error
     this.store
       .pipe(select(unauthorizedErrorSelector))
       .subscribe((error: ErrorInterface) => {

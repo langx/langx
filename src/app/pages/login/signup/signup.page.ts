@@ -20,7 +20,6 @@ import {
 export class SignupPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
-  validationError$: Observable<ErrorInterface | null>;
 
   public progress: number = 0.2;
 
@@ -37,10 +36,13 @@ export class SignupPage implements OnInit {
 
   initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.validationError$ = this.store.pipe(select(registerValidationErrorSelector));
-    this.validationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.presentToast(error.message, 'danger');
-    });
+
+    // Present Toast if error
+    this.store
+      .pipe(select(registerValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+      });
   }
 
   initForm() {

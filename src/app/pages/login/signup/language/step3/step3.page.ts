@@ -32,7 +32,6 @@ export class Step3Page implements OnInit {
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
   isLanguageDone$: Observable<boolean>;
-  validationError$: Observable<ErrorInterface | null>;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,10 +48,13 @@ export class Step3Page implements OnInit {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.isLanguageDone$ = this.store.pipe(select(isLanguageDoneSelector));
-    this.validationError$ = this.store.pipe(select(registerValidationErrorSelector));
-    this.validationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.presentToast(error.message, 'danger');
-    });
+
+    // Present Toast if error
+    this.store
+      .pipe(select(registerValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+      });
 
     // Init Values From Step 2
     const data: any = this.route.snapshot.queryParams;
@@ -126,15 +128,14 @@ export class Step3Page implements OnInit {
     this.store.dispatch(languageSelectionAction({ request: languages }));
 
     // Subscribe to the store and wait for the language selection to be successful
-    this.isLanguageDone$
-      .subscribe((isLanguageDone: boolean) => {
-        // Dispatch the second action
-        if (isLanguageDone) {
-          this.store.dispatch(
-            updateLanguageArrayAction({ id: userId, request: languageArray })
-          );
-        }
-      });
+    this.isLanguageDone$.subscribe((isLanguageDone: boolean) => {
+      // Dispatch the second action
+      if (isLanguageDone) {
+        this.store.dispatch(
+          updateLanguageArrayAction({ id: userId, request: languageArray })
+        );
+      }
+    });
   }
 
   //

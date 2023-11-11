@@ -26,7 +26,6 @@ export class CompletePage implements OnInit {
   form: FormGroup;
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
-  validationError$: Observable<ErrorInterface | null>;
 
   constructor(private store: Store, private toastController: ToastController) {}
 
@@ -42,10 +41,13 @@ export class CompletePage implements OnInit {
   initValues(): void {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.validationError$ = this.store.pipe(select(registerValidationErrorSelector));
-    this.validationError$.subscribe((error: ErrorInterface) => {
-      if (error) this.presentToast(error.message, 'danger');
-    });
+
+    // Present Toast if error
+    this.store
+      .pipe(select(registerValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+      });
   }
 
   initForm() {
