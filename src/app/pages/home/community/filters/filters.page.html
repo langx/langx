@@ -35,7 +35,7 @@
     </ion-card-header>
 
     <ion-card-content class="hasIcon">
-      <ion-item *ngFor="let lang of getStudyLanguages()">
+      <ion-item *ngFor="let lang of (getStudyLanguages() | async)">
         <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline">
         </ion-icon>
         <ion-icon *ngIf="lang.level == 2" name="battery-half-outline">
