@@ -95,18 +95,23 @@ export class CommunityPage implements OnInit {
   // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
     // Getting the filter data from Capacitor Preferences
-    const languagesString = await this.storageService.getValue('languages') || [];
+    let languagesString =
+      (await this.storageService.getValue('languages')) || [];
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = await this.storageService.getValue('minAge') || null;
-    const maxAgeString = await this.storageService.getValue('maxAge') || null;
+    const minAgeString = (await this.storageService.getValue('minAge')) || null;
+    const maxAgeString = (await this.storageService.getValue('maxAge')) || null;
 
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
 
+    // TODO: Do better logic here
     let languages: Array<any> = [];
     if (languagesString) {
       languages = languagesString.toLocaleString().split(',');
+      if (languages.length === 1 && languages[0] === '') {
+        languages = [];
+      }
     }
 
     let filterData: FilterDataInterface = {
