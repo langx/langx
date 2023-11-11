@@ -9,6 +9,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
 import { Language } from 'src/app/models/Language';
+import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 
 // Login
 export const loginAction = createAction(
@@ -94,7 +95,7 @@ export const isLoggedInAction = createAction(ActionTypes.ISLOGGEDIN);
 
 export const isLoggedInSuccessAction = createAction(
   ActionTypes.ISLOGGEDIN_SUCCESS,
-  props<{ payload: { account: Account; currentUser: User } }>()
+  props<{ payload: isLoggedInResponseInterface }>()
 );
 
 export const isLoggedInFailureAction = createAction(
