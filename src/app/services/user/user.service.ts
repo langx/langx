@@ -82,7 +82,7 @@ export class UserService {
   }
 
   // TODO: Pagination
-  listUsers2(
+  listUsers(
     filterData?: FilterDataInterface
   ): Observable<getUsersResponseInterface> {
     console.log('listUsers2 filterData', filterData);
