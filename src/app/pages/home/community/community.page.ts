@@ -60,7 +60,7 @@ export class CommunityPage implements OnInit {
 
   async getUsers2(filterData?: FilterDataInterface) {
     console.log('filterData: ', this.filterData);
-    this.store.dispatch(getUsersAction());
+    this.store.dispatch(getUsersAction({ filterData }));
   }
 
   /*

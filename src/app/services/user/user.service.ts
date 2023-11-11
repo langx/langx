@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
+import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -80,7 +81,11 @@ export class UserService {
     );
   }
 
-  listUsers2(): Observable<any> {
+  listUsers2(
+    filterData?: FilterDataInterface
+  ): Observable<getUsersResponseInterface> {
+    console.log('listUsers2 filterData', filterData);
+
     const queries: any[] = [];
 
     // Query for users that are not the current user
@@ -89,6 +94,34 @@ export class UserService {
     // Query for users descending by last seen
     // TODO: Update this filter for this after presence is implemented
     queries.push(Query.orderDesc('$updatedAt'));
+
+    // Query for users with the selected gender filter
+    if (filterData?.gender) {
+      queries.push(Query.equal('gender', filterData?.gender));
+    }
+
+    // Query for users with the selected country filter
+    if (filterData?.country) {
+      queries.push(Query.equal('countryCode', filterData?.country));
+    }
+
+    // Query for users with birthdates between the selected min and max ages
+    if (filterData?.minAge && filterData?.maxAge) {
+      const minDate = new Date();
+      minDate.setFullYear(minDate.getFullYear() - filterData?.maxAge);
+      const maxDate = new Date();
+      maxDate.setFullYear(maxDate.getFullYear() - filterData?.minAge);
+
+      queries.push(Query.greaterThanEqual('birthdate', minDate.toISOString()));
+      queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
+    }
+
+    // Query for users with the selected languages filter
+    if (filterData?.languages.length > 0) {
+      const keywords = filterData.languages.join(' ');
+      // OR Query for users with any of the selected languages
+      queries.push(Query.search('languageArray', keywords));
+    }
 
     return from(
       this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)

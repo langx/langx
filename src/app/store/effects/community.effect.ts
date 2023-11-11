@@ -17,8 +17,8 @@ export class CommunityEffects {
   getUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersAction),
-      switchMap(() =>
-        this.userService.listUsers2().pipe(
+      switchMap(({ filterData }) =>
+        this.userService.listUsers2(filterData).pipe(
           map((payload: getUsersResponseInterface) =>
             getUsersSuccessAction({ payload })
           ),
