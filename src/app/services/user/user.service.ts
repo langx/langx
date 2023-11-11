@@ -14,7 +14,7 @@ import { getUsersResponseInterface } from 'src/app/models/types/responses/getUse
   providedIn: 'root',
 })
 export class UserService {
-  LIMIT_DOCS = 5;
+  LIMIT_DOCS = 10;
 
   //TODO : Add model for user here
   private userDoc = new BehaviorSubject<any>(null);
