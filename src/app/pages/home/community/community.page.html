@@ -30,7 +30,7 @@
         <app-user-list
           *ngFor="let user of (users$ | async)"
           [item]="user"
-          (onClick)="startChat(user)"
+          (onClick)="getRoom(user?.$id)"
         >
         </app-user-list>
       </ion-list>
