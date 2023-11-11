@@ -73,8 +73,8 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  async getUsers(filterData?: FilterDataInterface) {
-    console.log('filterData: ', this.filterData);
+  async getUsers() {
+    const filterData = this.filterData;
     this.store.dispatch(getUsersAction({ filterData }));
   }
 
@@ -185,7 +185,7 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event?) {
-    this.getUsers(this.filterData);
+    this.getUsers();
     if (event) event.target.complete();
   }
 
