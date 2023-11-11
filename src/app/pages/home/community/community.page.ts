@@ -6,10 +6,13 @@ import { Observable } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { getUsersAction } from 'src/app/store/actions/community.action';
 import { User } from 'src/app/models/User';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import {
+  getUsersAction,
+  getUsersWithOffsetAction,
+} from 'src/app/store/actions/community.action';
 import {
   isLoadingSelector,
   usersSelector,
@@ -123,12 +126,12 @@ export class CommunityPage implements OnInit {
     }
 
     // Offset is the number of users already loaded
-    let offset = 0;
+    let offset: number = 0;
     this.users$
       .subscribe((users) => {
         offset = users.length;
         this.store.dispatch(
-          getUsersAction({ filterData: this.filterData, offset })
+          getUsersWithOffsetAction({ filterData: this.filterData, offset })
         );
       })
       .unsubscribe();
