@@ -94,7 +94,7 @@ export const isLoggedInAction = createAction(ActionTypes.ISLOGGEDIN);
 
 export const isLoggedInSuccessAction = createAction(
   ActionTypes.ISLOGGEDIN_SUCCESS,
-  props<{ payload: Account }>()
+  props<{ payload: { account: Account; currentUser: User } }>()
 );
 
 export const isLoggedInFailureAction = createAction(
