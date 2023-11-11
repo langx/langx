@@ -28,8 +28,14 @@ export class FiltersPage implements OnInit {
 
   ionRangeDefault = { lower: 20, upper: 75 };
 
-  // filters data
-  filterData: FilterDataInterface = {} as FilterDataInterface;
+  // Filters data
+  filterData: FilterDataInterface = {
+    languages: [],
+    gender: null,
+    country: null,
+    minAge: null,
+    maxAge: null,
+  };
 
   constructor(
     private store: Store,
@@ -49,7 +55,7 @@ export class FiltersPage implements OnInit {
   }
 
   async checkStorage() {
-    // check localStorage
+    // Check localStorage
     const languagesString = await this.storageService.getValue('languages');
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
@@ -206,7 +212,13 @@ export class FiltersPage implements OnInit {
   //
 
   resetFilter() {
-    this.filterData = {} as FilterDataInterface;
+    this.filterData = {
+      languages: [],
+      gender: null,
+      country: null,
+      minAge: null,
+      maxAge: null,
+    };
     console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();
