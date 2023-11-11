@@ -178,7 +178,8 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       isLoggedIn: true,
-      account: action.payload,
+      account: action.payload?.account,
+      currentUser: action.payload?.currentUser,
     })
   ),
   on(

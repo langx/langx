@@ -201,10 +201,18 @@ export class AuthEffect {
       ofType(isLoggedInAction),
       switchMap(() => {
         return this.authService.getAccount().pipe(
-          map((payload: Account) => {
-            return isLoggedInSuccessAction({ payload });
+          switchMap((account: Account) => {
+            return this.userService.getUserDoc2(account.$id).pipe(
+              map((currentUser: User) => {
+                return isLoggedInSuccessAction({
+                  payload: { account: account, currentUser: currentUser },
+                });
+              }),
+              catchError(() => {
+                return of(isLoggedInFailureAction());
+              })
+            );
           }),
-
           catchError(() => {
             return of(isLoggedInFailureAction());
           })
