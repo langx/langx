@@ -42,7 +42,6 @@ export class FiltersPage implements OnInit {
 
   async ngOnInit() {
     this.initValues();
-    // await this.getUserData();
     await this.checkStorage();
   }
 
