@@ -20,6 +20,7 @@ import { User } from 'src/app/models/User';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { Language } from 'src/app/models/Language';
 import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
+import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
@@ -204,9 +205,11 @@ export class AuthEffect {
           switchMap((account: Account) => {
             return this.userService.getUserDoc2(account.$id).pipe(
               map((currentUser: User) => {
-                return isLoggedInSuccessAction({
-                  payload: { account: account, currentUser: currentUser },
-                });
+                const payload: isLoggedInResponseInterface = {
+                  account: account,
+                  currentUser: currentUser,
+                };
+                return isLoggedInSuccessAction({ payload });
               }),
               catchError(() => {
                 return of(isLoggedInFailureAction());
