@@ -5,11 +5,14 @@ import { catchError, map, of, switchMap } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { RoomService } from 'src/app/services/chat/room.service';
+import { Room } from 'src/app/models/Room';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 import {
   createRoomAction,
+  createRoomFailureAction,
+  createRoomSuccessAction,
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
@@ -81,6 +84,24 @@ export class CommunityEffects {
               message: errorResponse.message,
             };
             return of(getRoomFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  createRoom$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createRoomAction),
+      switchMap(({ currentUserId, userId }) =>
+        this.roomService.createRoom2(currentUserId, userId).pipe(
+          map((payload: Room) => createRoomSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(createRoomFailureAction({ error }));
           })
         )
       )
