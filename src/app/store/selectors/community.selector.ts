@@ -2,20 +2,25 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 import { CommunityStateInterface } from 'src/app/models/types/states/communityState.interface';
 
-export const authFeatureSelector =
+export const communityFeatureSelector =
   createFeatureSelector<CommunityStateInterface>('community');
 
 export const isLoadingSelector = createSelector(
-  authFeatureSelector,
+  communityFeatureSelector,
   (communityState: CommunityStateInterface) => communityState.isLoading
 );
 
 export const usersSelector = createSelector(
-  authFeatureSelector,
+  communityFeatureSelector,
   (communityState: CommunityStateInterface) => communityState.users
 );
 
+export const totalSelector = createSelector(
+  communityFeatureSelector,
+  (communityState: CommunityStateInterface) => communityState.total
+);
+
 export const errorSelector = createSelector(
-  authFeatureSelector,
+  communityFeatureSelector,
   (communityState: CommunityStateInterface) => communityState.error
 );
