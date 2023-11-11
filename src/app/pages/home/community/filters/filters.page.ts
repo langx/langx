@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { User } from 'src/app/models/User';
 import {
   FilterService,
@@ -26,7 +24,6 @@ export class FiltersPage implements OnInit {
   countryData = countryData;
 
   isLoading: boolean = false;
-  cUserDoc: any;
 
   currentUser$: Observable<User | null>;
 
@@ -37,12 +34,10 @@ export class FiltersPage implements OnInit {
 
   constructor(
     private store: Store,
-    private authService: AuthService,
     private navCtrl: NavController,
     private router: Router,
     private filterService: FilterService,
-    private storageService: StorageService,
-    private userService: UserService
+    private storageService: StorageService
   ) {}
 
   async ngOnInit() {
@@ -53,13 +48,6 @@ export class FiltersPage implements OnInit {
 
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-  }
-
-  async getUserData() {
-    this.userService.getUserDoc(this.authService.getUserId()).then((user) => {
-      this.cUserDoc = user;
-      console.log(user);
-    });
   }
 
   async checkStorage() {
@@ -131,7 +119,7 @@ export class FiltersPage implements OnInit {
 
   getStudyLanguages(): Observable<Language[]> {
     return this.currentUser$.pipe(
-      map(user => user.languages.filter(lang => !lang.motherLanguage))
+      map((user) => user.languages.filter((lang) => !lang.motherLanguage))
     );
   }
 
