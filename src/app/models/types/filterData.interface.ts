@@ -1,5 +1,5 @@
 export interface FilterDataInterface {
-  languages: Array<string>;
+  languages: string[];
   gender: string;
   country: string;
   minAge: number;
