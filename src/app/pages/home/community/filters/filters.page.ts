@@ -23,6 +23,7 @@ export class FiltersPage implements OnInit {
   searchTerm: string;
   countryData = countryData;
 
+  // TODO: Useless
   isLoading: boolean = false;
 
   currentUser$: Observable<User | null>;
