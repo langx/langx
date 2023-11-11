@@ -94,7 +94,7 @@ export class CommunityPage implements OnInit {
 
   // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
-    // Getting the filter data from localStorage
+    // Getting the filter data from Capacitor Preferences
     const languagesString = await this.storageService.getValue('languages');
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;

@@ -87,6 +87,7 @@ export class FiltersPage implements OnInit {
     this.router.navigateByUrl('/home/community');
   }
 
+  // TODO: Save with JSON.stringify();
   setLocalStorage(filterData: FilterDataInterface) {
     if (!filterData.languages) filterData.languages = [];
     if (filterData.languages.length > 0) {
