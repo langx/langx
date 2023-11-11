@@ -168,6 +168,7 @@ export class CommunityPage implements OnInit {
     this.store.dispatch(getRoomAction({ userId }));
   }
 
+  /*
   async startChat(user: any) {
     let roomId: string;
 
@@ -184,6 +185,7 @@ export class CommunityPage implements OnInit {
       }
     );
   }
+  */
 
   //
   // Pull to refresh
