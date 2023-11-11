@@ -58,7 +58,7 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  async getUsers2() {
+  async getUsers2(filterData?: FilterDataInterface) {
     console.log('filterData: ', this.filterData);
     this.store.dispatch(getUsersAction());
   }
@@ -95,11 +95,11 @@ export class CommunityPage implements OnInit {
   // TODO: Idea: it could be save it account.user.prefs
   async checkLocalStorage() {
     // Getting the filter data from Capacitor Preferences
-    const languagesString = await this.storageService.getValue('languages');
+    const languagesString = await this.storageService.getValue('languages') || [];
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = await this.storageService.getValue('minAge');
-    const maxAgeString = await this.storageService.getValue('maxAge');
+    const minAgeString = await this.storageService.getValue('minAge') || null;
+    const maxAgeString = await this.storageService.getValue('maxAge') || null;
 
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
@@ -161,10 +161,8 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event?) {
-    // this.users = [];
     this.isAllUsersLoaded = false;
-    this.getUsers2();
-    // this.getUsers(this.filterData);
+    this.getUsers2(this.filterData);
     if (event) event.target.complete();
   }
 
