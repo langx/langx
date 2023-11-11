@@ -99,5 +99,6 @@ export const isLoggedInSuccessAction = createAction(
 );
 
 export const isLoggedInFailureAction = createAction(
-  ActionTypes.ISLOGGEDIN_FAILURE
+  ActionTypes.ISLOGGEDIN_FAILURE,
+  props<{ error: ErrorInterface }>()
 );

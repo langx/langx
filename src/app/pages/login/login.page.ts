@@ -23,7 +23,6 @@ export class LoginPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
   loginValidationError$: Observable<ErrorInterface | null>;
-  unauthorizedError$: Observable<string | null>;
 
   value: any = '';
 
@@ -55,13 +54,12 @@ export class LoginPage implements OnInit {
       this.form.enable();
     });
 
-    // Unauthorized Error
-    this.unauthorizedError$ = this.store.pipe(
-      select(unauthorizedErrorSelector)
-    );
-    this.unauthorizedError$.subscribe((message: string) => {
-      if (message) this.presentToast(message, 'danger');
-    });
+    // Present Toast if error
+    this.store
+      .pipe(select(unauthorizedErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error.message) this.presentToast(error.message, 'danger');
+      });
   }
 
   initForm() {
