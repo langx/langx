@@ -78,14 +78,9 @@ export class RoomService {
         // Call the /api/room
         return from(
           axios
-            .post('https://api.languagexchange.net/api/room', body)
+            .post(environment.url.CREATE_ROOM_API_URL, body)
             .then((result) => {
-              const resultData: Room = result.data;
-              return resultData;
-            })
-            .catch((error) => {
-              console.log('error: ', error);
-              return error;
+              return result.data as Room;
             })
         );
       })
