@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 import { lastSeen } from 'src/app/extras/utils';
+import { User } from 'src/app/models/User';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
+import { getRoomsAction } from 'src/app/store/actions/room.action';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-messages',
@@ -15,6 +20,8 @@ export class MessagesPage implements OnInit {
   rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   isLoading: boolean = false;
 
+  currentUser$: Observable<User | null>;
+
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
@@ -22,6 +29,7 @@ export class MessagesPage implements OnInit {
   };
 
   constructor(
+    private store: Store,
     private router: Router,
     private authService: AuthService,
     private roomService: RoomService,
@@ -29,10 +37,27 @@ export class MessagesPage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.initValues();
     // Trigger FCM
     this.fcmService.registerPush();
     // Get all chat Rooms
-    await this.listRooms();
+    this.listRooms2();
+    //await this.listRooms();
+  }
+
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+  }
+
+  listRooms2() {
+    this.currentUser$
+      .subscribe((user) => {
+        if (user) {
+          const currentUserId = user.$id;
+          this.store.dispatch(getRoomsAction({ currentUserId }));
+        }
+      })
+      .unsubscribe();
   }
 
   async listRooms() {
