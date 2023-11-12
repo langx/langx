@@ -4,7 +4,6 @@ import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { RoomService } from 'src/app/services/chat/room.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { FilterService } from 'src/app/services/filter/filter.service';
@@ -40,7 +39,6 @@ export class CommunityPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private roomService: RoomService,
     private filterService: FilterService,
     private storageService: StorageService,
     private toastController: ToastController
@@ -171,27 +169,8 @@ export class CommunityPage implements OnInit {
     this.currentUser$.subscribe((user) => {
       const currentUserId = user.$id;
       this.store.dispatch(getRoomAction({ currentUserId, userId }));
-    });
+    }).unsubscribe();
   }
-
-  /*
-  async startChat(user: any) {
-    let roomId: string;
-
-    await this.roomService.checkRoom(user.$id).then(
-      (response) => {
-        roomId = response?.$id;
-        console.log(response); // Success
-
-        this.router.navigate(['/', 'home', 'chat', roomId]);
-      },
-      (error) => {
-        console.log('error: ', error.message); // Failure
-        this.presentToast('Error: ' + error.message, 'danger');
-      }
-    );
-  }
-  */
 
   //
   // Pull to refresh
