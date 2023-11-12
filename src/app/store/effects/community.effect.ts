@@ -96,7 +96,7 @@ export class CommunityEffects {
     this.actions$.pipe(
       ofType(createRoomAction),
       switchMap(({ currentUserId, userId }) =>
-        this.roomService.createRoom2(currentUserId, userId).pipe(
+        this.roomService.createRoom(currentUserId, userId).pipe(
           map((payload: Room) => createRoomSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {

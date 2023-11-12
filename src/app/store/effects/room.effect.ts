@@ -19,7 +19,7 @@ export class RoomEffects {
     this.actions$.pipe(
       ofType(getRoomsAction),
       switchMap(({ currentUserId }) =>
-        this.roomService.listRooms2(currentUserId).pipe(
+        this.roomService.listRooms(currentUserId).pipe(
           map((payload: getRoomsResponseInterface) =>
             getRoomsSuccessAction({ payload })
           ),
