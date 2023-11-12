@@ -25,8 +25,10 @@
     <app-empty-screen *ngIf="(rooms | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
-    <ion-list *ngIf="(rooms | async)?.length > 0">
-      <div *ngFor="let room of (rooms | async)" detail>
+    <ion-list *ngIf="(rooms$ | async)?.length > 0">
+      <div *ngFor="let room of (rooms$ | async)" detail>
+        <ion-item>{{room?.$id}}</ion-item>
+        <!--
         <ion-item (click)="getChat(room)">
           <ng-container *ngIf="room">
             <ion-avatar slot="start">
@@ -49,6 +51,7 @@
             </ion-note>
           </ng-container>
         </ion-item>
+        -->
       </div>
     </ion-list>
   </ng-container>
