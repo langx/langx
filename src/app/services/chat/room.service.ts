@@ -7,6 +7,7 @@ import {
   forkJoin,
   from,
   map,
+  of,
   switchMap,
 } from 'rxjs';
 
@@ -132,12 +133,17 @@ export class RoomService {
       (id) => id != currentUserId
     );
     userId = userId[0];
-    return from(this.userService.getUserDoc(userId)).pipe(
-      map((data) => {
-        room.userData = data as User;
-        return room as RoomWithUserData;
-      })
-    );
+    if (userId === undefined) {
+      room.userData = null;
+      return of(room);
+    } else {
+      return from(this.userService.getUserDoc(userId)).pipe(
+        map((data) => {
+          room.userData = data as User;
+          return room;
+        })
+      );
+    }
   }
 
   fillRoomWithLastMessage2(room: RoomWithUserData): RoomWithUserData {
