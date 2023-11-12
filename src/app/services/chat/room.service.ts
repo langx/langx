@@ -70,7 +70,12 @@ export class RoomService {
     );
   }
 
-  createRoom2(currentUserId: string, userId: string): Observable<Room | null> {
+  // TODO: WILL BE DELETED
+  getRoom(roomId: string): Promise<any> {
+    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
+  }
+
+  createRoom(currentUserId: string, userId: string): Observable<Room | null> {
     // Set body
     const body = { to: userId };
 
@@ -97,7 +102,7 @@ export class RoomService {
     );
   }
 
-  listRooms2(currentUserId: string): Observable<getRoomsResponseInterface> {
+  listRooms(currentUserId: string): Observable<getRoomsResponseInterface> {
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         Query.search('users', currentUserId),
@@ -106,12 +111,12 @@ export class RoomService {
       switchMap((payload: getRoomsResponseInterface) => {
         const roomObservables = payload.documents.map(
           (room: RoomWithUserData) =>
-            this.fillRoomWithUserData2(room, currentUserId)
+            this.fillRoomWithUserData(room, currentUserId)
         );
         return forkJoin(roomObservables).pipe(
           map((rooms) => {
             payload.documents = rooms
-              .map((room) => this.fillRoomWithLastMessage2(room))
+              .map((room) => this.fillRoomWithLastMessage(room))
               .sort((a, b) => {
                 let aDate = a.lastMessage
                   ? a.lastMessage.$createdAt
@@ -129,7 +134,7 @@ export class RoomService {
     );
   }
 
-  fillRoomWithUserData2(
+  fillRoomWithUserData(
     room: RoomWithUserData,
     currentUserId: string
   ): Observable<RoomWithUserData> {
@@ -150,17 +155,13 @@ export class RoomService {
     }
   }
 
-  fillRoomWithLastMessage2(room: RoomWithUserData): RoomWithUserData {
+  fillRoomWithLastMessage(room: RoomWithUserData): RoomWithUserData {
     const lastMessage = room?.messages[room?.messages.length - 1];
     room.lastMessage = lastMessage;
     return room;
   }
 
   // TODO: WILL BE DELETED
-  getRoom(roomId: string): Promise<any> {
-    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
-  }
-
   listenRooms() {
     console.log('listenRooms started');
     const client = this.api.client$();
