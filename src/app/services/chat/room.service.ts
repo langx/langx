@@ -23,8 +23,8 @@ import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoo
   providedIn: 'root',
 })
 export class RoomService {
-  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  cUserId: string;
+  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]); // TODO: WILL BE DELETED
+  cUserId: string; // TODO: WILL BE DELETED
 
   currentUser$: Observable<User>;
 
@@ -33,8 +33,6 @@ export class RoomService {
     private authService: AuthService,
     private userService: UserService
   ) {}
-
-
 
   getRoom2(
     currentUserId: string,
