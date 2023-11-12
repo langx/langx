@@ -9,4 +9,5 @@ export type Room = Models.Document & {
 
 export type RoomWithUserData = Room & {
   userData: User;
+  lastMessage: Message;
 };
