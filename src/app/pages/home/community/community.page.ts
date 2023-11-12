@@ -90,8 +90,9 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterDataInterface) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-        // Handle Refresh fetch users by using filterData in getUsers()
-        this.handleRefresh(null);
+
+        // Get users
+        this.getUsers();
       });
   }
 
@@ -178,7 +179,7 @@ export class CommunityPage implements OnInit {
   // Pull to refresh
   //
 
-  handleRefresh(event?) {
+  handleRefresh(event) {
     this.getUsers();
     if (event) event.target.complete();
   }
