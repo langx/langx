@@ -1,13 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
-import { BehaviorSubject, Observable, from, switchMap } from 'rxjs';
 import axios from 'axios';
+import {
+  BehaviorSubject,
+  Observable,
+  forkJoin,
+  from,
+  map,
+  switchMap,
+} from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { Room } from 'src/app/models/Room';
+import { Room, RoomWithUserData } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 
@@ -87,39 +94,49 @@ export class RoomService {
     );
   }
 
-  // Get rooms from current session to initialize the message tab
-  listRooms2(currentUserId: string): Observable<any> {
+  listRooms2(currentUserId: string): Observable<getRoomsResponseInterface> {
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         Query.search('users', currentUserId),
       ])
-    );
-    /*
-    .pipe(
-      map((values) => {
-        values.documents.forEach((room) => {
-          room = this.fillRoomWithUserData(room, currentUserId);
-          room = this.fillRoomWithLastMessage(room);
-        });
-        // TODO: Order rooms by last message $createdAt
-        values.documents.sort((a, b) => {
-          const aLastMessage = a.lastMessage;
-          const bLastMessage = b.lastMessage;
-          if (aLastMessage && bLastMessage) {
-            return bLastMessage.$createdAt - aLastMessage.$createdAt;
-          } else if (aLastMessage) {
-            return -1;
-          } else if (bLastMessage) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-        console.log('listRooms: ', values.documents);
-        return values.documents;
+    ).pipe(
+      switchMap((payload: getRoomsResponseInterface) => {
+        const roomObservables = payload.documents.map(
+          (room: RoomWithUserData) =>
+            this.fillRoomWithUserData2(room, currentUserId)
+        );
+        return forkJoin(roomObservables).pipe(
+          map((rooms) => {
+            payload.documents = rooms.map((room) =>
+              this.fillRoomWithLastMessage2(room)
+            );
+            return payload;
+          })
+        );
       })
     );
-      */
+  }
+
+  fillRoomWithUserData2(
+    room: RoomWithUserData,
+    currentUserId: string
+  ): Observable<RoomWithUserData> {
+    let userId: string[] | string = room.users.filter(
+      (id) => id != currentUserId
+    );
+    userId = userId[0];
+    return from(this.userService.getUserDoc(userId)).pipe(
+      map((data) => {
+        room.userData = data as User;
+        return room as RoomWithUserData;
+      })
+    );
+  }
+
+  fillRoomWithLastMessage2(room: RoomWithUserData): RoomWithUserData {
+    const lastMessage = room?.messages[room?.messages.length - 1];
+    room.lastMessage = lastMessage;
+    return room;
   }
 
   async checkRoom(userId: string): Promise<any> {
