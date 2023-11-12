@@ -20,9 +20,8 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-  <ng-container *ngIf="!isLoading">
-    <app-empty-screen *ngIf="(rooms | async)?.length == 0" [model]="model">
+  <ng-container>
+    <app-empty-screen *ngIf="(rooms$ | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
     <ion-list *ngIf="(rooms$ | async)?.length > 0">
