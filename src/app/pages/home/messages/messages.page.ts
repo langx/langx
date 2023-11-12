@@ -8,8 +8,6 @@ import { lastSeen } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { RoomService } from 'src/app/services/chat/room.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { getRoomsAction } from 'src/app/store/actions/room.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -27,7 +25,6 @@ import {
 })
 export class MessagesPage implements OnInit {
   rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  isLoading: boolean = false;
 
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
@@ -43,8 +40,6 @@ export class MessagesPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private authService: AuthService,
-    private roomService: RoomService,
     private fcmService: FcmService,
     private toastController: ToastController
   ) {}
@@ -54,7 +49,7 @@ export class MessagesPage implements OnInit {
     // Trigger FCM
     this.fcmService.registerPush();
     // Get all chat Rooms
-    this.listRooms2();
+    this.listRooms();
     //await this.listRooms();
   }
 
@@ -74,7 +69,7 @@ export class MessagesPage implements OnInit {
       });
   }
 
-  listRooms2() {
+  listRooms() {
     this.currentUser$
       .subscribe((user) => {
         if (user) {
@@ -83,12 +78,6 @@ export class MessagesPage implements OnInit {
         }
       })
       .unsubscribe();
-  }
-
-  async listRooms() {
-    const cUserId = this.authService.getUserId();
-    await this.roomService.listRooms(cUserId);
-    this.rooms = this.roomService.rooms;
   }
 
   getChat(room) {
@@ -108,6 +97,10 @@ export class MessagesPage implements OnInit {
   archiveChat(room) {
     console.log('archiveChat clicked', room);
   }
+
+  //
+  // Utils
+  //
 
   messageTime(d: any) {
     if (!d) return null;

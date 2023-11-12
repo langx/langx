@@ -34,6 +34,7 @@ export class RoomService {
     private userService: UserService
   ) {}
 
+  /*
   // Update rooms behavior subject
   async updateRooms(room) {
     room = await this.fillRoomWithUserData(room, this.cUserId);
@@ -55,6 +56,7 @@ export class RoomService {
       this.rooms.next(newRooms);
     }
   }
+  */
 
   getRoom2(
     currentUserId: string,
@@ -150,85 +152,6 @@ export class RoomService {
 
   fillRoomWithLastMessage2(room: RoomWithUserData): RoomWithUserData {
     const lastMessage = room?.messages[room?.messages.length - 1];
-    room.lastMessage = lastMessage;
-    return room;
-  }
-
-  async checkRoom(userId: string): Promise<any> {
-    let cUserId = this.authService.getUserId();
-    console.log('checkRoom: ', cUserId, userId);
-
-    const promise = this.api.listDocuments(
-      environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', cUserId), Query.search('users', userId)]
-    );
-
-    return promise.then((values) => {
-      console.log('result checkROOM: ', values);
-      if (values.total > 0) {
-        console.log('Room found: ', values);
-        return values.documents[0];
-      } else {
-        console.log('No room find, creating new one');
-        return this.createRoom(userId);
-      }
-    });
-  }
-
-  // Get rooms from current session to initialize the message tab
-  async listRooms(currentUserId: string) {
-    this.cUserId = currentUserId;
-    const promise = this.api.listDocuments(
-      environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', currentUserId)]
-    );
-    await promise.then((values) => {
-      values.documents.forEach((room) => {
-        room = this.fillRoomWithUserData(room, currentUserId);
-        room = this.fillRoomWithLastMessage(room);
-      });
-      // TODO: Order rooms by last message $createdAt
-      /*
-      values.documents.sort((a, b) => {
-        const aLastMessage = a.lastMessage;
-        const bLastMessage = b.lastMessage;
-        if (aLastMessage && bLastMessage) {
-          return bLastMessage.$createdAt - aLastMessage.$createdAt;
-        } else if (aLastMessage) {
-          return -1;
-        } else if (bLastMessage) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      */
-      console.log('listRooms: ', values.documents);
-      this.rooms.next(values.documents);
-    });
-  }
-
-  fillRoomWithUserData(room, currentUserId) {
-    // Check if the user is not the current user
-    room.users.forEach((userId) => {
-      if (userId != currentUserId) {
-        // Get the user data and add it to the element as userData
-        room.userData = this.userService.getUserDoc(userId).then(
-          (data) => {
-            room.userData = data;
-          },
-          (error) => {
-            console.log('error: ', error);
-          }
-        );
-      }
-    });
-    return room;
-  }
-
-  async fillRoomWithLastMessage(room) {
-    // Set Last message of every room
-    const lastMessage = room.messages[room.messages.length - 1];
     room.lastMessage = lastMessage;
     return room;
   }
