@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { RoomService } from 'src/app/services/chat/room.service';
@@ -71,8 +72,9 @@ export class CommunityEffects {
       ofType(getRoomAction),
       switchMap(({ currentUserId, userId }) =>
         this.roomService.getRoom2(currentUserId, userId).pipe(
-          map((payload: getRoomsResponseInterface) => {
-            if (payload.total === 1) {
+          map((data: getRoomsResponseInterface) => {
+            if (data.total === 1) {
+              const payload: Room = data.documents[0];
               return getRoomSuccessAction({ payload });
             } else {
               return createRoomAction({ currentUserId, userId });
@@ -108,8 +110,21 @@ export class CommunityEffects {
     )
   );
 
+  redirectAfterGetOrCreateRoom$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(createRoomSuccessAction, getRoomSuccessAction),
+        tap(({ payload }) => {
+          const roomId = payload.$id;
+          this.router.navigate(['/', 'home', 'chat', roomId]);
+        })
+      ),
+    { dispatch: false }
+  );
+
   constructor(
     private actions$: Actions,
+    private router: Router,
     private userService: UserService,
     private roomService: RoomService
   ) {}

@@ -4,7 +4,6 @@ import { ActionTypes } from 'src/app/store/actions/community.actiontypes';
 import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
-import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 import { Room } from 'src/app/models/Room';
 
 // Get Users Actions
@@ -47,7 +46,7 @@ export const getRoomAction = createAction(
 
 export const getRoomSuccessAction = createAction(
   ActionTypes.GET_ROOM_SUCCESS,
-  props<{ payload: getRoomsResponseInterface }>()
+  props<{ payload: Room }>()
 );
 
 export const getRoomFailureAction = createAction(
@@ -63,7 +62,7 @@ export const createRoomAction = createAction(
 
 export const createRoomSuccessAction = createAction(
   ActionTypes.CREATE_ROOM_SUCCESS,
-  props<{ payload: Room}>()
+  props<{ payload: Room }>()
 );
 
 export const createRoomFailureAction = createAction(
