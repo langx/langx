@@ -156,34 +156,9 @@ export class RoomService {
     return room;
   }
 
+  // TODO: WILL BE DELETED
   getRoom(roomId: string): Promise<any> {
     return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
-  }
-
-  async createRoom(userId: string): Promise<any> {
-    // Set body
-    const body = { to: userId };
-
-    // Set x-appwrite-user-id header
-    const currentUserId = this.authService.getUserId();
-    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
-
-    // Set x-appwrite-jwt header
-    await this.authService.createJWT().then((result) => {
-      console.log('result: ', result);
-      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
-    });
-
-    // Call the /api/room
-    return axios
-      .post('https://api.languagexchange.net/api/room', body)
-      .then((result) => {
-        console.log('result: ', result);
-        return result.data;
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
   }
 
   listenRooms() {
