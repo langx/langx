@@ -26,7 +26,6 @@ const initialState: CommunityStateInterface = {
 
 const communityReducer = createReducer(
   initialState,
-  // Get Users Reducers
   on(
     getUsersAction,
     (state): CommunityStateInterface => ({
