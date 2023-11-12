@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { lastSeen } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
@@ -24,8 +24,6 @@ import {
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
