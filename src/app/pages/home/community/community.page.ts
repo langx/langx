@@ -166,10 +166,12 @@ export class CommunityPage implements OnInit {
   //
 
   getRoom(userId: string) {
-    this.currentUser$.subscribe((user) => {
-      const currentUserId = user.$id;
-      this.store.dispatch(getRoomAction({ currentUserId, userId }));
-    }).unsubscribe();
+    this.currentUser$
+      .subscribe((user) => {
+        const currentUserId = user.$id;
+        this.store.dispatch(getRoomAction({ currentUserId, userId }));
+      })
+      .unsubscribe();
   }
 
   //
