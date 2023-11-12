@@ -111,12 +111,14 @@ export class RoomService {
             payload.documents = rooms
               .map((room) => this.fillRoomWithLastMessage2(room))
               .sort((a, b) => {
-                if (!a.lastMessage || !b.lastMessage) {
-                  return 0;
-                }
-                return a.lastMessage.$createdAt < b.lastMessage.$createdAt
-                  ? 1
-                  : -1;
+                let aDate = a.lastMessage
+                  ? a.lastMessage.$createdAt
+                  : a.$createdAt;
+                let bDate = b.lastMessage
+                  ? b.lastMessage.$createdAt
+                  : b.$createdAt;
+
+                return aDate < bDate ? 1 : -1;
               });
             return payload;
           })
