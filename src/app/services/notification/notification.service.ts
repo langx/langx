@@ -62,11 +62,11 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.create`:
             console.log('new room created', response.payload);
-            this.roomService.updateRooms(response.payload);
+            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
-            this.roomService.updateRooms(response.payload);
+            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:
             console.log('new room deleted', response.payload);
@@ -92,7 +92,7 @@ export class NotificationService {
     let room = this.roomService.rooms.getValue().find((r) => r.$id === rId);
     if (!room) return;
     room.messages.push(message);
-    this.roomService.updateRooms(room);
+    // this.roomService.updateRooms(room);
   }
 
   findAndUpdateMessages(message) {
