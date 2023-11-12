@@ -34,29 +34,7 @@ export class RoomService {
     private userService: UserService
   ) {}
 
-  /*
-  // Update rooms behavior subject
-  async updateRooms(room) {
-    room = await this.fillRoomWithUserData(room, this.cUserId);
-    room = await this.fillRoomWithLastMessage(room);
-    const currentRooms = this.rooms.getValue();
-    const existingRoom = currentRooms.find((r) => r.$id === room.$id);
-    if (existingRoom) {
-      // Update the existing room item in the array
-      const updatedRooms = currentRooms.map((r) => {
-        if (r === existingRoom) {
-          return room;
-        }
-        return r;
-      });
-      this.rooms.next(updatedRooms);
-    } else {
-      // Add the new room item to the array
-      const newRooms = [...currentRooms, room];
-      this.rooms.next(newRooms);
-    }
-  }
-  */
+
 
   getRoom2(
     currentUserId: string,
@@ -175,5 +153,28 @@ export class RoomService {
         console.log(response);
       }
     );
+  }
+
+  // TODO: WILL BE DELETED
+  // Update rooms behavior subject
+  async updateRooms(room) {
+    room = await this.fillRoomWithUserData(room, this.cUserId);
+    room = await this.fillRoomWithLastMessage(room);
+    const currentRooms = this.rooms.getValue();
+    const existingRoom = currentRooms.find((r) => r.$id === room.$id);
+    if (existingRoom) {
+      // Update the existing room item in the array
+      const updatedRooms = currentRooms.map((r) => {
+        if (r === existingRoom) {
+          return room;
+        }
+        return r;
+      });
+      this.rooms.next(updatedRooms);
+    } else {
+      // Add the new room item to the array
+      const newRooms = [...currentRooms, room];
+      this.rooms.next(newRooms);
+    }
   }
 }
