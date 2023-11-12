@@ -26,31 +26,30 @@
 
     <ion-list *ngIf="(rooms$ | async)?.length > 0">
       <div *ngFor="let room of (rooms$ | async)" detail>
-        <ion-item>{{room?.$id}}</ion-item>
-        <!--
         <ion-item (click)="getChat(room)">
           <ng-container *ngIf="room">
             <ion-avatar slot="start">
               <img
-                [src]="room?.userData?.profilePhoto"
+                [src]="room?.['userData']?.profilePhoto"
                 alt=""
                 referrerpolicy="no-referrer"
               />
             </ion-avatar>
             <ion-label>
-              <h2>{{room?.userData?.name}}</h2>
-              <p *ngIf="room?.lastMessage?.body">{{room?.lastMessage?.body}}</p>
-              <p *ngIf="!room?.lastMessage?.body">Say Hi 👋</p>
+              <h2>{{room?.['userData']?.name}}</h2>
+              <p *ngIf="room?.['lastMessage']?.body">
+                {{room?.['lastMessage']?.body}}
+              </p>
+              <p *ngIf="!room?.['lastMessage']?.body">Say Hi 👋</p>
             </ion-label>
-            <ion-note *ngIf="room?.lastMessage">
-              {{ messageTime(room?.lastMessage?.$updatedAt) }}
+            <ion-note *ngIf="room?.['lastMessage']">
+              {{ messageTime(room?.['lastMessage']?.$updatedAt) }}
             </ion-note>
-            <ion-note *ngIf="!room?.lastMessage">
+            <ion-note *ngIf="!room?.['lastMessage']">
               {{ messageTime(room?.$updatedAt) }}
             </ion-note>
           </ng-container>
         </ion-item>
-        -->
       </div>
     </ion-list>
 
