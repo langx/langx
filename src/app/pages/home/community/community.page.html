@@ -35,6 +35,7 @@
         </app-user-list>
       </ion-list>
 
+      <!-- Skeleton Start -->
       <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '0123456789'.split('')">
           <ion-thumbnail slot="start">
@@ -62,6 +63,7 @@
           </ion-label>
         </ion-item>
       </ion-list>
+      <!-- Skeleton End -->
     </ion-card-content>
   </ion-card>
 
