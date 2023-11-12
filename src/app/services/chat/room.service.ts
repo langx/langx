@@ -87,6 +87,41 @@ export class RoomService {
     );
   }
 
+  // Get rooms from current session to initialize the message tab
+  listRooms2(currentUserId: string): Observable<any> {
+    return from(
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
+        Query.search('users', currentUserId),
+      ])
+    );
+    /*
+    .pipe(
+      map((values) => {
+        values.documents.forEach((room) => {
+          room = this.fillRoomWithUserData(room, currentUserId);
+          room = this.fillRoomWithLastMessage(room);
+        });
+        // TODO: Order rooms by last message $createdAt
+        values.documents.sort((a, b) => {
+          const aLastMessage = a.lastMessage;
+          const bLastMessage = b.lastMessage;
+          if (aLastMessage && bLastMessage) {
+            return bLastMessage.$createdAt - aLastMessage.$createdAt;
+          } else if (aLastMessage) {
+            return -1;
+          } else if (bLastMessage) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+        console.log('listRooms: ', values.documents);
+        return values.documents;
+      })
+    );
+      */
+  }
+
   async checkRoom(userId: string): Promise<any> {
     let cUserId = this.authService.getUserId();
     console.log('checkRoom: ', cUserId, userId);
