@@ -21,6 +21,7 @@ import {
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
+  selectRoomAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -74,6 +75,18 @@ export class RoomEffects {
     () =>
       this.actions$.pipe(
         ofType(createRoomSuccessAction, getRoomSuccessAction),
+        tap(({ payload }) => {
+          const roomId = payload.$id;
+          this.router.navigate(['/', 'home', 'chat', roomId]);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  redirectAfterSelectRoom$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(selectRoomAction),
         tap(({ payload }) => {
           const roomId = payload.$id;
           this.router.navigate(['/', 'home', 'chat', roomId]);

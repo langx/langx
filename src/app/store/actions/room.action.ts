@@ -39,6 +39,12 @@ export const createRoomFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Select Room Actions
+export const selectRoomAction = createAction(
+  ActionTypes.SELECT_ROOM,
+  props<{ payload: RoomWithUserData }>()
+);
+
 // Get Rooms Actions
 export const getRoomsAction = createAction(
   ActionTypes.GET_ROOMS,

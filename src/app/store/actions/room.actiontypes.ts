@@ -5,6 +5,7 @@ export enum ActionTypes {
   CREATE_ROOM = '[Room] Create Room',
   CREATE_ROOM_SUCCESS = '[Room] Create Room Success',
   CREATE_ROOM_FAILURE = '[Room] Create Room Failure',
+  SELECT_ROOM = '[Room] Select Room',
   GET_ROOMS = '[Room] Get Rooms',
   GET_ROOMS_SUCCESS = '[Room] Get Rooms Success',
   GET_ROOMS_FAILURE = '[Room] Get Rooms Failure',
