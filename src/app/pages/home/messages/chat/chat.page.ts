@@ -1,11 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, ToastController } from '@ionic/angular';
-import { BehaviorSubject } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+import { Message } from 'src/app/models/Message';
+import { User } from 'src/app/models/User';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  isLoadingSelector,
+  messagesSelector,
+  totalMessagesSelector,
+} from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-chat',
@@ -14,6 +24,11 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
+
+  currentUser$: Observable<User | null>;
+  isLoading$: Observable<boolean>;
+  messages$: Observable<Message[] | null>;
+  totalMessages$: Observable<number | null> = null;
 
   messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   message: string = '';
@@ -32,6 +47,7 @@ export class ChatPage implements OnInit {
   };
 
   constructor(
+    private store: Store,
     private authService: AuthService,
     private roomService: RoomService,
     private userService: UserService,
@@ -42,6 +58,7 @@ export class ChatPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initValues();
     this.initChatPage();
 
     this.messageService.listMessages(this.roomId);
@@ -52,6 +69,13 @@ export class ChatPage implements OnInit {
     // TODO: Needs optimization
     this.scrollToBottom();
     // console.log('ngAfterViewChecked');
+  }
+
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.messages$ = this.store.pipe(select(messagesSelector));
+    this.totalMessages$ = this.store.pipe(select(totalMessagesSelector));
   }
 
   initChatPage() {
