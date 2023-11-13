@@ -47,25 +47,13 @@ export class RoomService {
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
-    ).pipe(
-      switchMap((payload: getRoomsResponseInterface) => {
-        const roomObservables = payload.documents.map(
-          (room: RoomWithUserData) =>
-            this.fillRoomWithUserData(room, currentUserId)
-        );
-        return forkJoin(roomObservables).pipe(
-          map((rooms) => {
-            payload.documents = rooms.map((room) =>
-              this.fillRoomWithLastMessage(room)
-            );
-            return payload;
-          })
-        );
-      })
     );
   }
 
-  createRoom(currentUserId: string, userId: string): Observable<Room | null> {
+  createRoom(
+    currentUserId: string,
+    userId: string
+  ): Observable<RoomWithUserData | null> {
     // Set body
     const body = { to: userId };
 
@@ -85,8 +73,12 @@ export class RoomService {
           axios
             .post(environment.url.CREATE_ROOM_API_URL, body)
             .then((result) => {
-              return result.data as Room;
+              return result.data as RoomWithUserData;
             })
+        ).pipe(
+          switchMap((room: RoomWithUserData) =>
+            this.fillRoomWithUserData(room, currentUserId)
+          )
         );
       })
     );
