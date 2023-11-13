@@ -13,10 +13,10 @@ import {
   getUsersWithOffsetAction,
   getUsersWithOffsetFailureAction,
   getUsersWithOffsetSuccessAction,
-} from 'src/app/store/actions/community.action';
+} from 'src/app/store/actions/user.action';
 
 @Injectable()
-export class CommunityEffects {
+export class UserEffects {
   getUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersAction),

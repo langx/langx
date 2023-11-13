@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
-import { CommunityStateInterface } from 'src/app/models/types/states/communityState.interface';
+import { UserStateInterface } from 'src/app/models/types/states/userState.interface';
 import {
   getUsersAction,
   getUsersSuccessAction,
@@ -8,20 +8,20 @@ import {
   getUsersWithOffsetAction,
   getUsersWithOffsetSuccessAction,
   getUsersWithOffsetFailureAction,
-} from 'src/app/store/actions/community.action';
+} from 'src/app/store/actions/user.action';
 
-const initialState: CommunityStateInterface = {
+const initialState: UserStateInterface = {
   isLoading: false,
   total: null,
   users: null,
   error: null,
 };
 
-const communityReducer = createReducer(
+const userReducer = createReducer(
   initialState,
   on(
     getUsersAction,
-    (state): CommunityStateInterface => ({
+    (state): UserStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -29,7 +29,7 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersSuccessAction,
-    (state, action): CommunityStateInterface => ({
+    (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
       total: action.payload?.total,
@@ -38,7 +38,7 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersFailureAction,
-    (state, action): CommunityStateInterface => ({
+    (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -46,7 +46,7 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersWithOffsetAction,
-    (state): CommunityStateInterface => ({
+    (state): UserStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -54,7 +54,7 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersWithOffsetSuccessAction,
-    (state, action): CommunityStateInterface => ({
+    (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
       total: action.payload?.total,
@@ -63,7 +63,7 @@ const communityReducer = createReducer(
   ),
   on(
     getUsersWithOffsetFailureAction,
-    (state, action): CommunityStateInterface => ({
+    (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -71,9 +71,6 @@ const communityReducer = createReducer(
   )
 );
 
-export function communityReducers(
-  state: CommunityStateInterface,
-  action: Action
-) {
-  return communityReducer(state, action);
+export function userReducers(state: UserStateInterface, action: Action) {
+  return userReducer(state, action);
 }
