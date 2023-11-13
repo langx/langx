@@ -44,7 +44,10 @@ export class MessageService {
   }
 
   // Get messages from a room to initialize the chat
-  listMessages(roomId: string): Observable<getMessagesResponseInterface> {
+  listMessages(
+    roomId: string,
+    offset?: number
+  ): Observable<getMessagesResponseInterface> {
     return from(
       this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, [
         Query.equal('roomId', roomId),
