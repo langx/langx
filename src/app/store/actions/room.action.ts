@@ -34,3 +34,19 @@ export const getRoomsWithOffsetFailureAction = createAction(
   ActionTypes.GETROOMS_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Get Messages Actions
+export const getMessagesAction = createAction(
+  ActionTypes.GETMESSAGES,
+  props<{ roomId: string }>()
+);
+
+export const getMessagesSuccessAction = createAction(
+  ActionTypes.GETMESSAGES_SUCCESS,
+  props<{ payload: any }>()
+);
+
+export const getMessagesFailureAction = createAction(
+  ActionTypes.GETMESSAGES_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
