@@ -20,11 +20,6 @@ export const totalSelector = createSelector(
   (communityState: CommunityStateInterface) => communityState.total
 );
 
-export const roomSelector = createSelector(
-  communityFeatureSelector,
-  (communityState: CommunityStateInterface) => communityState.room
-);
-
 export const errorSelector = createSelector(
   communityFeatureSelector,
   (communityState: CommunityStateInterface) => communityState.error

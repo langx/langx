@@ -10,6 +10,11 @@ export const isLoadingSelector = createSelector(
   (roomState: RoomStateInterface) => roomState.isLoading
 );
 
+export const roomSelector = createSelector(
+  roomFeatureSelector,
+  (communityState: RoomStateInterface) => communityState.room
+);
+
 export const roomsSelector = createSelector(
   roomFeatureSelector,
   (roomState: RoomStateInterface) => roomState.rooms

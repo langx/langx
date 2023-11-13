@@ -1,4 +1,10 @@
 export enum ActionTypes {
+  GET_ROOM = '[Community] Get Room',
+  GET_ROOM_SUCCESS = '[Community] Get Room Success',
+  GET_ROOM_FAILURE = '[Community] Get Room Failure',
+  CREATE_ROOM = '[Community] Create Room',
+  CREATE_ROOM_SUCCESS = '[Community] Create Room Success',
+  CREATE_ROOM_FAILURE = '[Community] Create Room Failure',
   GET_ROOMS = '[Room] Get Rooms',
   GET_ROOMS_SUCCESS = '[Room] Get Rooms Success',
   GET_ROOMS_FAILURE = '[Room] Get Rooms Failure',

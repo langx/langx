@@ -10,8 +10,8 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
-  getRoomAction,
   getUsersAction,
   getUsersWithOffsetAction,
 } from 'src/app/store/actions/community.action';
