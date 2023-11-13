@@ -6,8 +6,9 @@ export interface RoomStateInterface {
   isLoading: boolean;
   rooms: RoomWithUserData[] | null;
   total_rooms: number;
+  error_rooms: ErrorInterface | null;
   room: RoomWithUserData | null;
   messages: Message[] | null;
   total_messages: number;
-  error: ErrorInterface | null;
+  error_messages: ErrorInterface | null;
 }

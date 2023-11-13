@@ -17,10 +17,11 @@ const initialState: RoomStateInterface = {
   isLoading: false,
   rooms: null,
   total_rooms: null,
+  error_rooms: null,
   room: null,
   messages: null,
   total_messages: null,
-  error: null,
+  error_messages: null,
 };
 
 const roomReducer = createReducer(
@@ -31,7 +32,7 @@ const roomReducer = createReducer(
     (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
-      error: null,
+      error_rooms: null,
     })
   ),
   on(
@@ -48,7 +49,7 @@ const roomReducer = createReducer(
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      error: action.error,
+      error_rooms: action.error,
     })
   ),
   on(
@@ -56,7 +57,7 @@ const roomReducer = createReducer(
     (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
-      error: null,
+      error_rooms: null,
     })
   ),
   on(
@@ -73,7 +74,7 @@ const roomReducer = createReducer(
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      error: action.error,
+      error_rooms: action.error,
     })
   ),
   // Get Messages Reducers
@@ -82,7 +83,7 @@ const roomReducer = createReducer(
     (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
-      error: null,
+      error_messages: null,
     })
   ),
   on(
@@ -99,7 +100,7 @@ const roomReducer = createReducer(
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      error: action.error,
+      error_messages: action.error,
     })
   )
 );
