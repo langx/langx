@@ -19,3 +19,18 @@ export const getRoomsFailureAction = createAction(
   ActionTypes.GETROOMS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const getRoomWithOffsetAction = createAction(
+  ActionTypes.GETROOOM_WITH_OFFSET,
+  props<{ currentUserId: string; offset: number }>()
+);
+
+export const getRoomWithOffsetSuccessAction = createAction(
+  ActionTypes.GETROOOM_WITH_OFFSET_SUCCESS,
+  props<{ payload: getRoomsResponseInterface }>()
+);
+
+export const getRoomWithOffsetFailureAction = createAction(
+  ActionTypes.GETROOOM_WITH_OFFSET_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
