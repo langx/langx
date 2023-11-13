@@ -5,6 +5,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
+import { createMessageRequest } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 // Get Rooms Actions
 export const getRoomsAction = createAction(
@@ -75,8 +76,7 @@ export const getMessagesWithOffsetFailureAction = createAction(
 // Create Message Actions
 export const createMessageAction = createAction(
   ActionTypes.CREATE_MESSAGE,
-  // TODO: Create interface for this request
-  props<{ roomId: string; message: string }>()
+  props<{ request: createMessageRequest; currentUserId: string }>()
 );
 
 export const createMessageSuccessAction = createAction(
