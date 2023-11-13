@@ -8,33 +8,33 @@ import { Room } from 'src/app/models/Room';
 
 // Get Users Actions
 export const getUsersAction = createAction(
-  ActionTypes.GETUSERS,
+  ActionTypes.GET_USERS,
   props<{ filterData: FilterDataInterface }>()
 );
 
 export const getUsersSuccessAction = createAction(
-  ActionTypes.GETUSERS_SUCCESS,
+  ActionTypes.GET_USERS_SUCCESS,
   props<{ payload: getUsersResponseInterface }>()
 );
 
 export const getUsersFailureAction = createAction(
-  ActionTypes.GETUSERS_FAILURE,
+  ActionTypes.GET_USERS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
 // Get Users With Offset Actions
 export const getUsersWithOffsetAction = createAction(
-  ActionTypes.GETUSERS_WITH_OFFSET,
+  ActionTypes.GET_USERS_WITH_OFFSET,
   props<{ filterData: FilterDataInterface; offset: number }>()
 );
 
 export const getUsersWithOffsetSuccessAction = createAction(
-  ActionTypes.GETUSERS_WITH_OFFSET_SUCCESS,
+  ActionTypes.GET_USERS_WITH_OFFSET_SUCCESS,
   props<{ payload: getUsersResponseInterface }>()
 );
 
 export const getUsersWithOffsetFailureAction = createAction(
-  ActionTypes.GETUSERS_WITH_OFFSET_FAILURE,
+  ActionTypes.GET_USERS_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
