@@ -34,7 +34,7 @@ export class RoomService {
     private userService: UserService
   ) {}
 
-  getRoom2(
+  getRoom(
     currentUserId: string,
     userId: string
   ): Observable<getRoomsResponseInterface | null> {
@@ -153,10 +153,6 @@ export class RoomService {
   //
   // TODO: WILL BE DELETED
   //
-
-  getRoom(roomId: string): Promise<any> {
-    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
-  }
 
   listenRooms() {
     console.log('listenRooms started');
