@@ -56,17 +56,17 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     this.initValues();
     this.listMessages();
-
-    this.messageService.listMessages(this.roomId);
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewInit() {
     // TODO: Needs optimization
     this.scrollToBottom();
     // console.log('ngAfterViewChecked');
   }
 
   initValues() {
+    this.roomId = this.route.snapshot.paramMap.get('id');
+
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
@@ -83,9 +83,18 @@ export class ChatPage implements OnInit {
   }
 
   listMessages() {
-    // get room document id from route
-    this.roomId = this.route.snapshot.paramMap.get('id');
     this.store.dispatch(getMessagesAction({ roomId: this.roomId }));
+  }
+
+  //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // Offset is the number of messages that we already have
+    let offset: number = 0;
+
+    event.target.complete();
   }
 
   /*
