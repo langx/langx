@@ -120,7 +120,7 @@ const roomReducer = createReducer(
       ...state,
       isLoading: false,
       total_messages: action.payload?.total,
-      messages: [...state.messages, ...action.payload?.documents],
+      messages: [...action.payload?.documents, ...state.messages],
     })
   ),
   on(
