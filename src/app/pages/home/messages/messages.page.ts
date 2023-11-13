@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -29,6 +29,8 @@ export class MessagesPage implements OnInit {
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
 
+  isLoadingCtrlActive: boolean = false;
+
   model = {
     icon: 'chatbubbles-outline',
     title: 'No Chat Rooms',
@@ -39,6 +41,7 @@ export class MessagesPage implements OnInit {
     private store: Store,
     private router: Router,
     private fcmService: FcmService,
+    private loadingCtrl: LoadingController,
     private toastController: ToastController
   ) {}
 
@@ -56,6 +59,13 @@ export class MessagesPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    // Loading Controller
+    this.isLoading$.subscribe((isLoading) => {
+      if (this.isLoadingCtrlActive === isLoading) return;
+      else this.isLoadingCtrlActive = isLoading;
+      this.loadingController(isLoading);
+    });
 
     // Present Toast if error
     this.store
@@ -105,6 +115,24 @@ export class MessagesPage implements OnInit {
     let time = lastSeen(d);
     if (time === 'online') time = 'just now';
     return time;
+  }
+
+  //
+  // Loading Controller
+  //
+
+  async loadingController(isShow: boolean) {
+    if (isShow) {
+      await this.loadingCtrl
+        .create({
+          message: 'Please wait...',
+        })
+        .then((loadingEl) => {
+          loadingEl.present();
+        });
+    } else {
+      this.loadingCtrl.dismiss();
+    }
   }
 
   //
