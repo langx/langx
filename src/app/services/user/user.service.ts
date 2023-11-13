@@ -83,9 +83,6 @@ export class UserService {
     filterData: FilterDataInterface,
     offset?: number
   ): Observable<getUsersResponseInterface> {
-    // Set default offset to 0
-    if (!offset) offset = 0;
-
     // Define queries
     const queries: any[] = [];
 
@@ -126,7 +123,7 @@ export class UserService {
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
-    queries.push(Query.offset(offset));
+    if (offset) queries.push(Query.offset(offset));
 
     return from(
       this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
