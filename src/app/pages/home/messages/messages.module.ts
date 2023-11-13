@@ -8,8 +8,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { MessagesPageRoutingModule } from './messages-routing.module';
 import { MessagesPage } from './messages.page';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { roomReducers } from 'src/app/store/reducers/room.reducer';
-import { RoomEffects } from 'src/app/store/effects/room.effect';
 
 @NgModule({
   imports: [
@@ -18,8 +16,6 @@ import { RoomEffects } from 'src/app/store/effects/room.effect';
     IonicModule,
     MessagesPageRoutingModule,
     ComponentsModule,
-    StoreModule.forFeature('room', roomReducers),
-    EffectsModule.forFeature([RoomEffects]),
   ],
   declarations: [MessagesPage],
 })
