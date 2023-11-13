@@ -15,7 +15,7 @@ import {
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/room.action';
 import {
-  errorSelector,
+  errorRoomsSelector,
   isLoadingSelector,
   roomsSelector,
   totalRoomsSelector,
@@ -72,7 +72,7 @@ export class MessagesPage implements OnInit {
 
     // Present Toast if error
     this.store
-      .pipe(select(errorSelector))
+      .pipe(select(errorRoomsSelector))
       .subscribe((error: ErrorInterface) => {
         if (error) {
           this.presentToast(error.message, 'danger');

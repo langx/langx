@@ -20,6 +20,11 @@ export const totalRoomsSelector = createSelector(
   (roomState: RoomStateInterface) => roomState.total_rooms
 );
 
+export const errorRoomsSelector = createSelector(
+  roomFeatureSelector,
+  (roomState: RoomStateInterface) => roomState.error_rooms
+);
+
 export const messagesSelector = createSelector(
   roomFeatureSelector,
   (roomState: RoomStateInterface) => roomState.messages
@@ -30,7 +35,7 @@ export const totalMessagesSelector = createSelector(
   (roomState: RoomStateInterface) => roomState.total_messages
 );
 
-export const errorSelector = createSelector(
+export const errorMessagesSelector = createSelector(
   roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.error
+  (roomState: RoomStateInterface) => roomState.error_messages
 );

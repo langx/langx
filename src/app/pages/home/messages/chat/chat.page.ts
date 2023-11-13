@@ -13,7 +13,7 @@ import { RoomService } from 'src/app/services/chat/room.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
-  errorSelector,
+  errorMessagesSelector,
   isLoadingSelector,
   messagesSelector,
   totalMessagesSelector,
@@ -81,7 +81,7 @@ export class ChatPage implements OnInit {
 
     // Present Toast if error
     this.store
-      .pipe(select(errorSelector))
+      .pipe(select(errorMessagesSelector))
       .subscribe((error: ErrorInterface) => {
         if (error) {
           this.presentToast(error.message, 'danger');
