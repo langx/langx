@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, ToastController } from '@ionic/angular';
+import { IonContent, LoadingController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -30,6 +30,8 @@ import { roomSelector } from 'src/app/store/selectors/room.selector';
 })
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
+  loadingOverlay: HTMLIonLoadingElement;
+  isLoadingOverlayActive = false;
   form: FormGroup;
 
   room$: Observable<RoomWithUserData | null>;
@@ -54,6 +56,7 @@ export class ChatPage implements OnInit {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
+    private loadingCtrl: LoadingController,
     private toastController: ToastController
   ) {}
 
@@ -77,6 +80,11 @@ export class ChatPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    // Loading Controller
+    this.isLoading$.subscribe((isLoading) => {
+      this.loadingController(isLoading);
+    });
 
     // Present Toast if error
     this.store
@@ -205,6 +213,32 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(1500).then(() => {
       console.log('scrolled to bottom');
     });
+  }
+
+  //
+  // Loading Controller
+  //
+
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
+        this.isLoadingOverlayActive = true;
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive = false;
+      }
+    } else if (
+      this.loadingOverlay &&
+      this.loadingOverlay.present &&
+      !this.isLoadingOverlayActive
+    ) {
+      this.isLoadingOverlayActive = true;
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive = false;
+    }
   }
 
   //
