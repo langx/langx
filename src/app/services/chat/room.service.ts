@@ -82,6 +82,7 @@ export class RoomService {
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
         Query.search('users', currentUserId),
+        Query.orderDesc('$createdAt'),
       ])
     ).pipe(
       switchMap((payload: getRoomsResponseInterface) => {
