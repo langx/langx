@@ -5,6 +5,9 @@ import {
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
+  getRoomByIdAction,
+  getRoomByIdFailureAction,
+  getRoomByIdSuccessAction,
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
@@ -27,6 +30,32 @@ const initialState: RoomStateInterface = {
 
 const roomReducer = createReducer(
   initialState,
+  // Get Room By Id Reducers
+  on(
+    getRoomByIdAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+      room: null,
+    })
+  ),
+  on(
+    getRoomByIdSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: action.payload,
+    })
+  ),
+  on(
+    getRoomByIdFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
   // Get Room Reducers
   on(
     getRoomAction,
