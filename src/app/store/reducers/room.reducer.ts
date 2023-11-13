@@ -5,6 +5,9 @@ import {
   getMessagesAction,
   getMessagesFailureAction,
   getMessagesSuccessAction,
+  getMessagesWithOffsetAction,
+  getMessagesWithOffsetFailureAction,
+  getMessagesWithOffsetSuccessAction,
   getRoomsAction,
   getRoomsFailureAction,
   getRoomsSuccessAction,
@@ -97,6 +100,31 @@ const roomReducer = createReducer(
   ),
   on(
     getMessagesFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error_messages: action.error,
+    })
+  ),
+  on(
+    getMessagesWithOffsetAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error_messages: null,
+    })
+  ),
+  on(
+    getMessagesWithOffsetSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      total_messages: action.payload?.total,
+      messages: [...state.messages, ...action.payload?.documents],
+    })
+  ),
+  on(
+    getMessagesWithOffsetFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
