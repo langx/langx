@@ -15,10 +15,10 @@ import {
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/room.action';
 import {
-  errorRoomsSelector,
   isLoadingSelector,
   roomsSelector,
-  totalRoomsSelector,
+  totalSelector,
+  errorSelector,
 } from 'src/app/store/selectors/room.selector';
 
 @Component({
@@ -30,7 +30,7 @@ export class MessagesPage implements OnInit {
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
-  totalRooms$: Observable<number | null> = null;
+  total$: Observable<number | null> = null;
 
   isLoadingCtrlActive: boolean = false;
 
@@ -61,7 +61,7 @@ export class MessagesPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
-    this.totalRooms$ = this.store.pipe(select(totalRoomsSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
@@ -72,7 +72,7 @@ export class MessagesPage implements OnInit {
 
     // Present Toast if error
     this.store
-      .pipe(select(errorRoomsSelector))
+      .pipe(select(errorSelector))
       .subscribe((error: ErrorInterface) => {
         if (error) {
           this.presentToast(error.message, 'danger');
@@ -107,7 +107,7 @@ export class MessagesPage implements OnInit {
         this.rooms$
           .subscribe((users) => {
             offset = users.length;
-            this.totalRooms$
+            this.total$
               .subscribe((total) => {
                 if (offset < total) {
                   this.store.dispatch(

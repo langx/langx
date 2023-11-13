@@ -7,23 +7,11 @@ import { Router } from '@angular/router';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
-import { MessageService } from 'src/app/services/chat/message.service';
-import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 import { Room } from 'src/app/models/Room';
-import { Message } from 'src/app/models/Message';
 import {
-  createMessageAction,
-  createMessageFailureAction,
-  createMessageSuccessAction,
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
-  getMessagesAction,
-  getMessagesFailureAction,
-  getMessagesSuccessAction,
-  getMessagesWithOffsetAction,
-  getMessagesWithOffsetFailureAction,
-  getMessagesWithOffsetSuccessAction,
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
@@ -135,68 +123,9 @@ export class RoomEffects {
     )
   );
 
-  getMessages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getMessagesAction),
-      switchMap(({ roomId }) =>
-        this.messagesService.listMessages(roomId).pipe(
-          map((payload: getMessagesResponseInterface) =>
-            getMessagesSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getMessagesFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
-  getMessagesWithOffset$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getMessagesWithOffsetAction),
-      switchMap(({ roomId, offset }) =>
-        this.messagesService.listMessages(roomId, offset).pipe(
-          map((payload: getMessagesResponseInterface) =>
-            getMessagesWithOffsetSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getMessagesWithOffsetFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
-  createMessage$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(createMessageAction),
-      switchMap(({ request, currentUserId }) =>
-        this.messagesService.createMessage(request, currentUserId).pipe(
-          map((payload: Message) => createMessageSuccessAction({ payload })),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(createMessageFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
   constructor(
     private actions$: Actions,
     private router: Router,
-    private roomService: RoomService,
-    private messagesService: MessageService
+    private roomService: RoomService
   ) {}
 }

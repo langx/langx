@@ -9,8 +9,8 @@ import { ChatPageRoutingModule } from './chat-routing.module';
 import { ChatPage } from './chat.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component';
-import { roomReducers } from 'src/app/store/reducers/room.reducer';
-import { RoomEffects } from 'src/app/store/effects/room.effect';
+import { messageReducers } from 'src/app/store/reducers/message.reducer';
+import { MessageEffects } from 'src/app/store/effects/message.effect';
 
 @NgModule({
   imports: [
@@ -20,8 +20,8 @@ import { RoomEffects } from 'src/app/store/effects/room.effect';
     IonicModule,
     ChatPageRoutingModule,
     ComponentsModule,
-    StoreModule.forFeature('room', roomReducers),
-    EffectsModule.forFeature([RoomEffects]),
+    StoreModule.forFeature('message', messageReducers),
+    EffectsModule.forFeature([MessageEffects]),
   ],
   declarations: [ChatPage, ChatBoxComponent],
 })

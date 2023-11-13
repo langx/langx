@@ -12,7 +12,7 @@ export const isLoadingSelector = createSelector(
 
 export const roomSelector = createSelector(
   roomFeatureSelector,
-  (communityState: RoomStateInterface) => communityState.room
+  (roomState: RoomStateInterface) => roomState.room
 );
 
 export const roomsSelector = createSelector(
@@ -20,27 +20,12 @@ export const roomsSelector = createSelector(
   (roomState: RoomStateInterface) => roomState.rooms
 );
 
-export const totalRoomsSelector = createSelector(
+export const totalSelector = createSelector(
   roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.total_rooms
+  (roomState: RoomStateInterface) => roomState.total
 );
 
-export const errorRoomsSelector = createSelector(
+export const errorSelector = createSelector(
   roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.error_rooms
-);
-
-export const messagesSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.messages
-);
-
-export const totalMessagesSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.total_messages
-);
-
-export const errorMessagesSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.error_messages
+  (roomState: RoomStateInterface) => roomState.error
 );
