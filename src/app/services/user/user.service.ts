@@ -14,8 +14,6 @@ import { getUsersResponseInterface } from 'src/app/models/types/responses/getUse
   providedIn: 'root',
 })
 export class UserService {
-  LIMIT_DOCS = 10;
-
   //TODO : Add model for user here
   private userDoc = new BehaviorSubject<any>(null);
 
@@ -88,6 +86,7 @@ export class UserService {
     // Set default offset to 0
     if (!offset) offset = 0;
 
+    // Define queries
     const queries: any[] = [];
 
     // Query for users that are not the current user
@@ -126,7 +125,7 @@ export class UserService {
     }
 
     // Limit and offset
-    queries.push(Query.limit(this.LIMIT_DOCS));
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
     queries.push(Query.offset(offset));
 
     return from(
