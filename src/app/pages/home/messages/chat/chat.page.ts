@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { MessageService } from 'src/app/services/chat/message.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getMessagesAction,
@@ -50,7 +49,6 @@ export class ChatPage implements OnInit {
 
   constructor(
     private store: Store,
-    private messageService: MessageService,
     private route: ActivatedRoute,
     private router: Router,
     private toastController: ToastController
