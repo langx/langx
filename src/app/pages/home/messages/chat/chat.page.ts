@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, LoadingController, ToastController } from '@ionic/angular';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -8,6 +9,9 @@ import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { RoomWithUserData } from 'src/app/models/Room';
+import { roomSelector } from 'src/app/store/selectors/room.selector';
+import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
   getMessagesAction,
@@ -19,9 +23,6 @@ import {
   messagesSelector,
   totalSelector,
 } from 'src/app/store/selectors/message.selector';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { RoomWithUserData } from 'src/app/models/Room';
-import { roomSelector } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-chat',
@@ -82,11 +83,13 @@ export class ChatPage implements OnInit {
     this.total$ = this.store.pipe(select(totalSelector));
 
     // Check room$ and currentUser$ for null
-    this.room$.subscribe((room) => {
-      if (!room) {
-        console.log('Room is null');
-      }
-    });
+    this.room$
+      .subscribe((room) => {
+        if (!room || room.$id !== this.roomId) {
+          this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
+        }
+      })
+      .unsubscribe();
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
