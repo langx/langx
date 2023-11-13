@@ -44,6 +44,9 @@ export class RoomEffects {
       switchMap(({ currentUserId, offset }) =>
         this.roomService.listRooms(currentUserId, offset).pipe(
           map((payload: getRoomsResponseInterface) =>
+            // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
+            // It may checked first all cureent rooms array,
+            // Then order all of them by last message timestamp
             getRoomsWithOffsetSuccessAction({ payload })
           ),
 
