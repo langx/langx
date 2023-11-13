@@ -5,12 +5,18 @@ import {
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
+  createRoomAction,
+  createRoomFailureAction,
+  createRoomSuccessAction,
   getMessagesAction,
   getMessagesFailureAction,
   getMessagesSuccessAction,
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
+  getRoomAction,
+  getRoomFailureAction,
+  getRoomSuccessAction,
   getRoomsAction,
   getRoomsFailureAction,
   getRoomsSuccessAction,
@@ -21,10 +27,10 @@ import {
 
 const initialState: RoomStateInterface = {
   isLoading: false,
+  room: null,
   rooms: null,
   total_rooms: null,
   error_rooms: null,
-  room: null,
   messages: null,
   total_messages: null,
   error_messages: null,
@@ -32,6 +38,55 @@ const initialState: RoomStateInterface = {
 
 const roomReducer = createReducer(
   initialState,
+  on(
+    getRoomAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error_rooms: null,
+      room: null,
+    })
+  ),
+  on(
+    getRoomSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: action.payload,
+    })
+  ),
+  on(
+    getRoomFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error_rooms: action.error,
+    })
+  ),
+  on(
+    createRoomAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error_rooms: null,
+    })
+  ),
+  on(
+    createRoomSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: action.payload,
+    })
+  ),
+  on(
+    createRoomFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error_rooms: action.error,
+    })
+  ),
   // Get Rooms Reducers
   on(
     getRoomsAction,

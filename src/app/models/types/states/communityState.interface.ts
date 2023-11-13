@@ -6,6 +6,5 @@ export interface CommunityStateInterface {
   isLoading: boolean;
   total: number;
   users: User[] | null;
-  room: Room | null;
   error: ErrorInterface | null;
 }
