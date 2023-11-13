@@ -35,8 +35,6 @@ export class ChatPage implements OnInit {
   messages$: Observable<Message[] | null>;
   totalMessages$: Observable<number | null> = null;
 
-  message: string = '';
-
   isTyping: boolean = false;
 
   currentUserId: string;
@@ -136,6 +134,7 @@ export class ChatPage implements OnInit {
     console.log('createMessage clicked');
   }
 
+  /*
   addMessage() {
     console.log('roomID: ', this.roomId);
     let data = {
@@ -163,6 +162,7 @@ export class ChatPage implements OnInit {
       }
     );
   }
+  */
 
   typingFocus() {
     this.isTyping = true;
