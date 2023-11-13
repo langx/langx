@@ -14,6 +14,7 @@ import {
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
+  selectRoomAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {
@@ -26,6 +27,7 @@ const initialState: RoomStateInterface = {
 
 const roomReducer = createReducer(
   initialState,
+  // Get Room Reducers
   on(
     getRoomAction,
     (state): RoomStateInterface => ({
@@ -51,6 +53,7 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
+  // Create Room Reducers
   on(
     createRoomAction,
     (state): RoomStateInterface => ({
@@ -73,6 +76,14 @@ const roomReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+  // Select Room Reducers
+  on(
+    selectRoomAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      room: action.payload,
     })
   ),
   // Get Rooms Reducers

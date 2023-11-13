@@ -13,6 +13,7 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
+  selectRoomAction,
 } from 'src/app/store/actions/room.action';
 import {
   isLoadingSelector,
@@ -123,7 +124,7 @@ export class MessagesPage implements OnInit {
   }
 
   getChat(room) {
-    this.router.navigate(['/', 'home', 'chat', room.$id]);
+    this.store.dispatch(selectRoomAction({ payload: room }));
   }
 
   openArchiveMessages() {
