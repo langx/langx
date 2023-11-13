@@ -7,62 +7,62 @@ import { getMessagesResponseInterface } from 'src/app/models/types/responses/get
 
 // Get Rooms Actions
 export const getRoomsAction = createAction(
-  ActionTypes.GETROOMS,
+  ActionTypes.GET_ROOMS,
   props<{ currentUserId: string }>()
 );
 
 export const getRoomsSuccessAction = createAction(
-  ActionTypes.GETROOMS_SUCCESS,
+  ActionTypes.GET_ROOMS_SUCCESS,
   props<{ payload: getRoomsResponseInterface }>()
 );
 
 export const getRoomsFailureAction = createAction(
-  ActionTypes.GETROOMS_FAILURE,
+  ActionTypes.GET_ROOMS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
 export const getRoomsWithOffsetAction = createAction(
-  ActionTypes.GETROOMS_WITH_OFFSET,
+  ActionTypes.GET_ROOMS_WITH_OFFSET,
   props<{ currentUserId: string; offset: number }>()
 );
 
 export const getRoomsWithOffsetSuccessAction = createAction(
-  ActionTypes.GETROOMS_WITH_OFFSET_SUCCESS,
+  ActionTypes.GET_ROOMS_WITH_OFFSET_SUCCESS,
   props<{ payload: getRoomsResponseInterface }>()
 );
 
 export const getRoomsWithOffsetFailureAction = createAction(
-  ActionTypes.GETROOMS_WITH_OFFSET_FAILURE,
+  ActionTypes.GET_ROOMS_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
 // Get Messages Actions
 export const getMessagesAction = createAction(
-  ActionTypes.GETMESSAGES,
+  ActionTypes.GET_MESSAGES,
   props<{ roomId: string }>()
 );
 
 export const getMessagesSuccessAction = createAction(
-  ActionTypes.GETMESSAGES_SUCCESS,
+  ActionTypes.GET_MESSAGES_SUCCESS,
   props<{ payload: getMessagesResponseInterface }>()
 );
 
 export const getMessagesFailureAction = createAction(
-  ActionTypes.GETMESSAGES_FAILURE,
+  ActionTypes.GET_MESSAGES_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
 export const getMessagesWithOffsetAction = createAction(
-  ActionTypes.GETMESSAGES_WITH_OFFSET,
+  ActionTypes.GET_MESSAGES_WITH_OFFSET,
   props<{ roomId: string; offset: number }>()
 );
 
 export const getMessagesWithOffsetSuccessAction = createAction(
-  ActionTypes.GETMESSAGES_WITH_OFFSET_SUCCESS,
+  ActionTypes.GET_MESSAGES_WITH_OFFSET_SUCCESS,
   props<{ payload: getMessagesResponseInterface }>()
 );
 
 export const getMessagesWithOffsetFailureAction = createAction(
-  ActionTypes.GETMESSAGES_WITH_OFFSET_FAILURE,
+  ActionTypes.GET_MESSAGES_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );
