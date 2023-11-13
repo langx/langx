@@ -21,7 +21,6 @@ import {
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/user.selector';
-// import { errorSelector } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-community',
@@ -68,7 +67,7 @@ export class CommunityPage implements OnInit {
       this.loadingController(isLoading);
     });
 
-    // Community Errors
+    // User Errors
     this.store
       .pipe(select(errorSelector))
       .subscribe((error: ErrorInterface) => {
@@ -76,9 +75,6 @@ export class CommunityPage implements OnInit {
           this.presentToast(error.message, 'danger');
         }
       });
-
-    // Room Errors
-    // this.store.pipe(select(errorSelector)).subscribe((error: ErrorInterface) => {
   }
 
   //
