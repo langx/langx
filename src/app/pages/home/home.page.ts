@@ -39,7 +39,6 @@ export class HomePage implements OnInit {
         map(([isLoadingUser, isLoadingRoom]) => isLoadingUser || isLoadingRoom)
       )
       .subscribe((isLoading) => {
-        console.log('Loading Controller', isLoading);
         this.loadingController(isLoading);
       });
   }
@@ -53,13 +52,15 @@ export class HomePage implements OnInit {
   // Loading Controller
   //
 
-  async loadingController(isShow: boolean) {
-    if (isShow) {
-      this.loadingOverlay = await this.loadingCtrl.create({
-        message: 'Please wait...',
-      });
-      await this.loadingOverlay.present();
-    } else if (this.loadingOverlay) {
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay || !this.loadingOverlay.present) {
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+      }
+    } else if (this.loadingOverlay && this.loadingOverlay.present) {
       await this.loadingOverlay.dismiss();
       this.loadingOverlay = undefined;
     }
