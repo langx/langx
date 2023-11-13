@@ -9,8 +9,11 @@ import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
-import { getRoomsAction } from 'src/app/store/actions/room.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  getRoomsAction,
+  getRoomsWithOffsetAction,
+} from 'src/app/store/actions/room.action';
 import {
   errorSelector,
   isLoadingSelector,
@@ -86,6 +89,46 @@ export class MessagesPage implements OnInit {
         }
       })
       .unsubscribe();
+  }
+
+  //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // Offset is the number of users already loaded
+    let offset: number = 0;
+    this.currentUser$
+      .subscribe((user) => {
+        let currentUserId: string;
+        if (user) {
+          currentUserId = user.$id;
+        }
+        this.rooms$
+          .subscribe((users) => {
+            offset = users.length;
+            this.total$
+              .subscribe((total) => {
+                if (offset < total) {
+                  this.store.dispatch(
+                    getRoomsWithOffsetAction({
+                      currentUserId,
+                      offset,
+                    })
+                  );
+                } else {
+                  console.log('All users loaded');
+                }
+              })
+              .unsubscribe();
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+
+    // this.getUsers(this.filterData);
+    event.target.complete();
+    console.log('Async operation loadMore has ended');
   }
 
   getChat(room) {

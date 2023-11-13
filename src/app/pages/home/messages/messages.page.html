@@ -83,4 +83,7 @@
     </ion-list>
     <!-- Skeleton End -->
   </ng-container>
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
