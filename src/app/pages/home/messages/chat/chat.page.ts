@@ -37,7 +37,6 @@ export class ChatPage implements OnInit {
 
   isTyping: boolean = false;
 
-  currentUserId: string;
   roomId: string;
   userId: string;
   user: any;

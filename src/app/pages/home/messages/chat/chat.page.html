@@ -34,7 +34,10 @@
     class="chats-group"
     *ngFor="let msg of (messages$ | async)"
   >
-    <app-chat-box [chat]="msg" [current_user_id]="currentUserId"></app-chat-box>
+    <app-chat-box
+      [chat]="msg"
+      [current_user_id]="(currentUser$ | async).$id"
+    ></app-chat-box>
   </ion-item-group>
 </ion-content>
 
@@ -70,7 +73,6 @@
     <!--
     <small>uID: {{ uid }}</small>
     <small> typing: {{ isTyping }}</small><br />
-    <small>cID: {{ currentUserId }}</small>
     <small> typing: {{ isTyping }}</small><br />
     <small>roomId: {{ roomId }}</small><br />-->
   </ion-toolbar>
