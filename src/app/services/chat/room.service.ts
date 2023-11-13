@@ -41,12 +41,32 @@ export class RoomService {
     // Define queries
     const queries: any[] = [];
 
-    // Query for rooms, user attibute that contain current user and userId
+    // Query for rooms, user attribute that contain current user and userId
     queries.push(Query.search('users', currentUserId));
     queries.push(Query.search('users', userId));
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((response: getRoomsResponseInterface) => {
+        if (response.documents.length > 0) {
+          const room: Room = response.documents[0];
+          return this.fillRoomWithUserData(room, currentUserId).pipe(
+            map(
+              (
+                roomWithUserData: RoomWithUserData
+              ): getRoomsResponseInterface => {
+                return {
+                  ...response,
+                  documents: [roomWithUserData],
+                };
+              }
+            )
+          );
+        } else {
+          return of(response);
+        }
+      })
     );
   }
 
@@ -133,7 +153,7 @@ export class RoomService {
   // Utils
   //
 
-  fillRoomWithUserData(
+  private fillRoomWithUserData(
     room: Room, // TODO: it has to be Room model.
     currentUserId: string
   ): Observable<RoomWithUserData> {
@@ -154,7 +174,7 @@ export class RoomService {
     }
   }
 
-  fillRoomWithLastMessage(room: RoomWithUserData): RoomWithUserData {
+  private fillRoomWithLastMessage(room: RoomWithUserData): RoomWithUserData {
     const lastMessage = room?.messages[room?.messages.length - 1];
     room.lastMessage = lastMessage;
     return room;
