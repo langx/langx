@@ -48,11 +48,21 @@ export class MessageService {
     roomId: string,
     offset?: number
   ): Observable<getMessagesResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for messages that equal to roomId
+    queries.push(Query.equal('roomId', roomId));
+
+    // Query for messages that order by createdAt
+    queries.push(Query.orderDesc('$createdAt'));
+
+    // Limit and offset
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) queries.push(Query.offset(offset));
+
     return from(
-      this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, [
-        Query.equal('roomId', roomId),
-        Query.orderDesc('$createdAt'),
-      ])
+      this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, queries)
     ).pipe(tap((response) => response.documents.reverse()));
   }
 
