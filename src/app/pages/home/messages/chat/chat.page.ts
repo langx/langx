@@ -81,6 +81,13 @@ export class ChatPage implements OnInit {
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
+    // Check room$ and currentUser$ for null
+    this.room$.subscribe((room) => {
+      if (!room) {
+        console.log('Room is null');
+      }
+    });
+
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
       this.loadingController(isLoading);
