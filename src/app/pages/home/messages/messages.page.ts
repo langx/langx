@@ -128,7 +128,6 @@ export class MessagesPage implements OnInit {
 
     // this.getUsers(this.filterData);
     event.target.complete();
-    console.log('Async operation loadMore has ended');
   }
 
   getChat(room) {
