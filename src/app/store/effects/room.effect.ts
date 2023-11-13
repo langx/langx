@@ -6,6 +6,8 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
+import { MessageService } from 'src/app/services/chat/message.service';
+import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 import {
   getMessagesAction,
   getMessagesFailureAction,
@@ -20,8 +22,6 @@ import {
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
 } from 'src/app/store/actions/room.action';
-import { MessageService } from 'src/app/services/chat/message.service';
-import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 
 @Injectable()
 export class RoomEffects {
