@@ -18,7 +18,7 @@ import {
   errorSelector,
   isLoadingSelector,
   roomsSelector,
-  totalSelector,
+  totalRoomsSelector,
 } from 'src/app/store/selectors/room.selector';
 
 @Component({
@@ -30,7 +30,7 @@ export class MessagesPage implements OnInit {
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
-  total$: Observable<number | null> = null;
+  totalRooms$: Observable<number | null> = null;
 
   isLoadingCtrlActive: boolean = false;
 
@@ -61,7 +61,7 @@ export class MessagesPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
-    this.total$ = this.store.pipe(select(totalSelector));
+    this.totalRooms$ = this.store.pipe(select(totalRoomsSelector));
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
@@ -107,7 +107,7 @@ export class MessagesPage implements OnInit {
         this.rooms$
           .subscribe((users) => {
             offset = users.length;
-            this.total$
+            this.totalRooms$
               .subscribe((total) => {
                 if (offset < total) {
                   this.store.dispatch(
@@ -117,7 +117,7 @@ export class MessagesPage implements OnInit {
                     })
                   );
                 } else {
-                  console.log('All users loaded');
+                  console.log('All rooms loaded');
                 }
               })
               .unsubscribe();
