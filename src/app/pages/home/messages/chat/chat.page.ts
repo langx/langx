@@ -19,6 +19,7 @@ import {
   messagesSelector,
   totalMessagesSelector,
 } from 'src/app/store/selectors/room.selector';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-chat',
@@ -27,6 +28,7 @@ import {
 })
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
+  form: FormGroup;
 
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
@@ -58,6 +60,7 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
     this.initValues();
+    this.initForm();
     this.listMessages();
   }
 
@@ -83,6 +86,14 @@ export class ChatPage implements OnInit {
           this.presentToast(error.message, 'danger');
         }
       });
+  }
+
+  initForm() {
+    this.form = new FormGroup({
+      body: new FormControl('', {
+        validators: [Validators.required, Validators.maxLength(500)],
+      }),
+    });
   }
 
   listMessages() {
@@ -119,6 +130,10 @@ export class ChatPage implements OnInit {
       .unsubscribe();
 
     event.target.complete();
+  }
+
+  createMessage() {
+    console.log('createMessage clicked');
   }
 
   addMessage() {
