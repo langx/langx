@@ -11,6 +11,9 @@ import {
   getRoomsAction,
   getRoomsFailureAction,
   getRoomsSuccessAction,
+  getRoomsWithOffsetAction,
+  getRoomsWithOffsetFailureAction,
+  getRoomsWithOffsetSuccessAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -29,6 +32,26 @@ export class RoomEffects {
               message: errorResponse.message,
             };
             return of(getRoomsFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  getRoomsWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomsWithOffsetAction),
+      switchMap(({ currentUserId, offset }) =>
+        this.roomService.listRooms(currentUserId, offset).pipe(
+          map((payload: getRoomsResponseInterface) =>
+            getRoomsWithOffsetSuccessAction({ payload })
+          ),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getRoomsWithOffsetFailureAction({ error }));
           })
         )
       )
