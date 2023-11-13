@@ -32,8 +32,8 @@ export class LoginPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.initForm();
     this.initValues();
+    this.initForm();
   }
 
   ionViewWillLeave() {
@@ -44,7 +44,6 @@ export class LoginPage implements OnInit {
     // isLoading
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
-    // Present Toast if error
     // Login Validation Error
     this.store
       .pipe(select(loginValidationErrorSelector))
