@@ -12,6 +12,9 @@ import {
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
+  getRoomByIdAction,
+  getRoomByIdFailureAction,
+  getRoomByIdSuccessAction,
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
@@ -26,6 +29,26 @@ import {
 
 @Injectable()
 export class RoomEffects {
+  getRoomById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomByIdAction),
+      switchMap(({ roomId }) =>
+        this.roomService.getRoomById(roomId).pipe(
+          map((payload: RoomWithUserData) =>
+            getRoomByIdSuccessAction({ payload })
+          ),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getRoomByIdFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
   getRoom$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomAction),
