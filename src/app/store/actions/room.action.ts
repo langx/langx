@@ -5,6 +5,22 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 import { RoomWithUserData } from 'src/app/models/Room';
 
+// Get Room By Id Actions
+export const getRoomByIdAction = createAction(
+  ActionTypes.GET_ROOM_BY_ID,
+  props<{ roomId: string }>()
+);
+
+export const getRoomByIdSuccessAction = createAction(
+  ActionTypes.GET_ROOM_BY_ID_SUCCESS,
+  props<{ payload: RoomWithUserData }>()
+);
+
+export const getRoomByIdFailureAction = createAction(
+  ActionTypes.GET_ROOM_BY_ID_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Get Room Actions
 export const getRoomAction = createAction(
   ActionTypes.GET_ROOM,
