@@ -21,6 +21,13 @@
 <ion-content>
   <app-empty-screen *ngIf="(messages$ | async)?.length == 0" [model]="model">
   </app-empty-screen>
+  <ion-infinite-scroll
+    threshold="0px"
+    position="top"
+    (ionInfinite)="loadMore($event)"
+  >
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
   <ion-item-group
     lines="none"
