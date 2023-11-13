@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -41,8 +41,7 @@ export class CommunityPage implements OnInit {
     private router: Router,
     private filterService: FilterService,
     private storageService: StorageService,
-    private toastController: ToastController,
-    private loadingCtrl: LoadingController
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -61,11 +60,6 @@ export class CommunityPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-
-    // Loading Controller
-    this.isLoading$.subscribe((isLoading) => {
-      this.loadingController(isLoading);
-    });
 
     // User Errors
     this.store
@@ -137,6 +131,19 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Get or Create Room
+  //
+
+  getRoom(userId: string) {
+    this.currentUser$
+      .subscribe((user) => {
+        const currentUserId = user.$id;
+        this.store.dispatch(getRoomAction({ currentUserId, userId }));
+      })
+      .unsubscribe();
+  }
+
+  //
   // Infinite Scroll
   //
 
@@ -168,19 +175,6 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  // Get or Create Room
-  //
-
-  getRoom(userId: string) {
-    this.currentUser$
-      .subscribe((user) => {
-        const currentUserId = user.$id;
-        this.store.dispatch(getRoomAction({ currentUserId, userId }));
-      })
-      .unsubscribe();
-  }
-
-  //
   // Pull to refresh
   //
 
@@ -195,24 +189,6 @@ export class CommunityPage implements OnInit {
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
-  }
-
-  //
-  // Loading Controller
-  //
-
-  async loadingController(isShow: boolean) {
-    if (isShow) {
-      await this.loadingCtrl
-        .create({
-          message: 'Please wait...',
-        })
-        .then((loadingEl) => {
-          loadingEl.present();
-        });
-    } else {
-      this.loadingCtrl.dismiss();
-    }
   }
 
   //
