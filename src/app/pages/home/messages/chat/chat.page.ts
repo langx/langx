@@ -121,47 +121,6 @@ export class ChatPage implements OnInit {
     event.target.complete();
   }
 
-  /*
-  initChatPage() {
-    // get current user id
-    this.currentUserId = this.authService.getUserId();
-
-    // get room document id from route
-    this.roomId = this.route.snapshot.paramMap.get('id');
-
-    // get room document from db
-    this.roomService
-      .getRoom(this.roomId)
-      .then((room) => {
-        console.log('room: ', room);
-        room.users.forEach((user) => {
-          if (user !== this.currentUserId) this.userId = user;
-        });
-
-        // get user document from db
-        this.userService
-          .getUserDoc(this.userId)
-          .then((user) => {
-            console.log('user: ', user);
-            this.user = user;
-          })
-          .catch((err) => {
-            // Check if the user exists or not
-            console.log('user error: ', err.message);
-            this.presentToast('User not found', 'danger');
-            this.router.navigateByUrl('/home/messages');
-          });
-      })
-      .catch((err) => {
-        // Check if the room exists or not
-        console.log('room error: ', err.message);
-        this.presentToast('Room not found', 'danger');
-        this.router.navigateByUrl('/home/messages');
-      });
-  }
-
-  */
-
   addMessage() {
     console.log('roomID: ', this.roomId);
     let data = {
