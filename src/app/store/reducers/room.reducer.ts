@@ -6,6 +6,8 @@ import {
   getRoomsFailureAction,
   getRoomsSuccessAction,
   getRoomsWithOffsetAction,
+  getRoomsWithOffsetFailureAction,
+  getRoomsWithOffsetSuccessAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {
@@ -51,16 +53,16 @@ const roomReducer = createReducer(
     })
   ),
   on(
-    getRoomsSuccessAction,
+    getRoomsWithOffsetSuccessAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       total: action.payload?.total,
-      rooms: action.payload?.documents,
+      rooms: [...state.rooms, ...action.payload?.documents],
     })
   ),
   on(
-    getRoomsFailureAction,
+    getRoomsWithOffsetFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
