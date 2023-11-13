@@ -8,7 +8,11 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
+import { Message } from 'src/app/models/Message';
 import {
+  createMessageAction,
+  createMessageFailureAction,
+  createMessageSuccessAction,
   getMessagesAction,
   getMessagesFailureAction,
   getMessagesSuccessAction,
@@ -102,6 +106,24 @@ export class RoomEffects {
               message: errorResponse.message,
             };
             return of(getMessagesWithOffsetFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  createMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createMessageAction),
+      switchMap(({ request, currentUserId }) =>
+        this.messagesService.createMessage(request, currentUserId).pipe(
+          map((payload: Message) => createMessageSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(createMessageFailureAction({ error }));
           })
         )
       )
