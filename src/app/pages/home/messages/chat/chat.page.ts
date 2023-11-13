@@ -20,6 +20,8 @@ import {
   totalSelector,
 } from 'src/app/store/selectors/message.selector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { RoomWithUserData } from 'src/app/models/Room';
+import { roomSelector } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-chat',
@@ -30,6 +32,7 @@ export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   form: FormGroup;
 
+  room$: Observable<RoomWithUserData | null>;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
@@ -69,6 +72,7 @@ export class ChatPage implements OnInit {
   initValues() {
     this.roomId = this.route.snapshot.paramMap.get('id');
 
+    this.room$ = this.store.pipe(select(roomSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
