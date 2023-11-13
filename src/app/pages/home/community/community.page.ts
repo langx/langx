@@ -81,7 +81,7 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  async getUsers() {
+  async listUsers() {
     const filterData = this.filterData;
     this.store.dispatch(getUsersAction({ filterData }));
   }
@@ -97,8 +97,8 @@ export class CommunityPage implements OnInit {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
 
-        // Get users
-        this.getUsers();
+        // List Users
+        this.listUsers();
       });
   }
 
@@ -186,7 +186,7 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event) {
-    this.getUsers();
+    this.listUsers();
     if (event) event.target.complete();
   }
 
