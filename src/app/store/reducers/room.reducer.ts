@@ -2,6 +2,9 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
 import {
+  createMessageAction,
+  createMessageFailureAction,
+  createMessageSuccessAction,
   getMessagesAction,
   getMessagesFailureAction,
   getMessagesSuccessAction,
@@ -125,6 +128,30 @@ const roomReducer = createReducer(
   ),
   on(
     getMessagesWithOffsetFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error_messages: action.error,
+    })
+  ),
+  on(
+    createMessageAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error_messages: null,
+    })
+  ),
+  on(
+    createMessageSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      messages: [...state.messages, action.payload],
+    })
+  ),
+  on(
+    createMessageFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
