@@ -47,6 +47,21 @@ export class RoomService {
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((payload: getRoomsResponseInterface) => {
+        const roomObservables = payload.documents.map(
+          (room: RoomWithUserData) =>
+            this.fillRoomWithUserData(room, currentUserId)
+        );
+        return forkJoin(roomObservables).pipe(
+          map((rooms) => {
+            payload.documents = rooms.map((room) =>
+              this.fillRoomWithLastMessage(room)
+            );
+            return payload;
+          })
+        );
+      })
     );
   }
 
@@ -128,7 +143,7 @@ export class RoomService {
   //
 
   fillRoomWithUserData(
-    room: RoomWithUserData,
+    room: RoomWithUserData, // TODO: it has to be Room model.
     currentUserId: string
   ): Observable<RoomWithUserData> {
     let userId: string[] | string = room.users.filter(
