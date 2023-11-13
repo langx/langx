@@ -46,11 +46,6 @@ export class RoomService {
     );
   }
 
-  // TODO: WILL BE DELETED
-  getRoom(roomId: string): Promise<any> {
-    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
-  }
-
   createRoom(currentUserId: string, userId: string): Observable<Room | null> {
     // Set body
     const body = { to: userId };
@@ -124,6 +119,10 @@ export class RoomService {
     );
   }
 
+  //
+  // Utils
+  //
+
   fillRoomWithUserData(
     room: RoomWithUserData,
     currentUserId: string
@@ -151,7 +150,14 @@ export class RoomService {
     return room;
   }
 
+  //
   // TODO: WILL BE DELETED
+  //
+
+  getRoom(roomId: string): Promise<any> {
+    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
+  }
+
   listenRooms() {
     console.log('listenRooms started');
     const client = this.api.client$();
@@ -167,7 +173,6 @@ export class RoomService {
     );
   }
 
-  // TODO: WILL BE DELETED
   // Update rooms behavior subject
   async updateRooms(room) {
     room = await this.fillRoomWithUserData(room, this.cUserId);
