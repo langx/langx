@@ -9,15 +9,16 @@ import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
+  createMessageAction,
   getMessagesAction,
   getMessagesWithOffsetAction,
-} from 'src/app/store/actions/room.action';
+} from 'src/app/store/actions/message.action';
 import {
-  errorMessagesSelector,
+  errorSelector,
   isLoadingSelector,
   messagesSelector,
-  totalMessagesSelector,
-} from 'src/app/store/selectors/room.selector';
+  totalSelector,
+} from 'src/app/store/selectors/message.selector';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -32,7 +33,7 @@ export class ChatPage implements OnInit {
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
-  totalMessages$: Observable<number | null> = null;
+  total$: Observable<number | null> = null;
 
   isTyping: boolean = false;
 
@@ -72,11 +73,11 @@ export class ChatPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
-    this.totalMessages$ = this.store.pipe(select(totalMessagesSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
 
     // Present Toast if error
     this.store
-      .pipe(select(errorMessagesSelector))
+      .pipe(select(errorSelector))
       .subscribe((error: ErrorInterface) => {
         if (error) {
           this.presentToast(error.message, 'danger');
@@ -107,9 +108,9 @@ export class ChatPage implements OnInit {
     this.messages$
       .subscribe((messages) => {
         offset = messages.length;
-        this.totalMessages$
-          .subscribe((totalMessages) => {
-            if (offset < totalMessages) {
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
               this.store.dispatch(
                 getMessagesWithOffsetAction({
                   roomId: this.roomId,
@@ -130,6 +131,13 @@ export class ChatPage implements OnInit {
 
   createMessage() {
     console.log('createMessage clicked');
+    let request = {
+      currentUserId: 'this.currentUserId',
+      to: 'this.userId',
+      body: 'this.message',
+      roomId: 'this.roomId',
+    };
+    // this.store.dispatch(createMessageAction({ roomId: this.roomId }));
   }
 
   /*
