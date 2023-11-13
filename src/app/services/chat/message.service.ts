@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
-import { BehaviorSubject, Observable, from, tap } from 'rxjs';
+import { BehaviorSubject, Observable, from, switchMap, tap } from 'rxjs';
 import axios from 'axios';
 
 import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
+import { Message } from 'src/app/models/Message';
+import { createMessageRequest } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +17,87 @@ export class MessageService {
   messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   constructor(private api: ApiService, private authService: AuthService) {}
+
+  // Create a message
+  createMessage(
+    request: createMessageRequest,
+    currentUserId: string
+  ): Observable<Message | null> {
+    // Set x-appwrite-user-id header
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+
+    // Set x-appwrite-jwt header
+    return from(
+      this.authService.createJWT().then((result) => {
+        console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/message
+        return from(
+          axios
+            .post(environment.url.CREATE_MESSAGE_API_URL, request)
+            .then((result) => {
+              return result.data as Message;
+            })
+        );
+      })
+    );
+  }
+
+  // Get messages from a room to initialize the chat
+  listMessages(
+    roomId: string,
+    offset?: number
+  ): Observable<getMessagesResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for messages that equal to roomId
+    queries.push(Query.equal('roomId', roomId));
+
+    // Query for messages that order by createdAt
+    queries.push(Query.orderDesc('$createdAt'));
+
+    // Limit and offset
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) queries.push(Query.offset(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, queries)
+    ).pipe(tap((response) => response.documents.reverse()));
+  }
+
+  //
+  // TODO: WILL BE DELETED
+  //
+
+  /*
+  // Create a message
+  async createMessage(data: any): Promise<any> {
+    // Set x-appwrite-user-id header
+    const currentUserId = this.authService.getUserId();
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+
+    // Set x-appwrite-jwt header
+    await this.authService.createJWT().then((result) => {
+      console.log('result: ', result);
+      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+    });
+
+    // Call the /api/message
+    return axios
+      .post('https://api.languagexchange.net/api/message', data)
+      .then((result) => {
+        console.log('result: ', result);
+        return result.data;
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+  */
 
   // Update messages behavior subject
   updateMessages(message) {
@@ -41,53 +124,6 @@ export class MessageService {
       const newMessages = [...currentMessages, message];
       this.messages.next(newMessages);
     }
-  }
-
-  // Get messages from a room to initialize the chat
-  listMessages(
-    roomId: string,
-    offset?: number
-  ): Observable<getMessagesResponseInterface> {
-    // Define queries
-    const queries: any[] = [];
-
-    // Query for messages that equal to roomId
-    queries.push(Query.equal('roomId', roomId));
-
-    // Query for messages that order by createdAt
-    queries.push(Query.orderDesc('$createdAt'));
-
-    // Limit and offset
-    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
-    if (offset) queries.push(Query.offset(offset));
-
-    return from(
-      this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, queries)
-    ).pipe(tap((response) => response.documents.reverse()));
-  }
-
-  // Create a message
-  async createMessage(data: any): Promise<any> {
-    // Set x-appwrite-user-id header
-    const currentUserId = this.authService.getUserId();
-    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
-
-    // Set x-appwrite-jwt header
-    await this.authService.createJWT().then((result) => {
-      console.log('result: ', result);
-      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
-    });
-
-    // Call the /api/message
-    return axios
-      .post('https://api.languagexchange.net/api/message', data)
-      .then((result) => {
-        console.log('result: ', result);
-        return result.data;
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
   }
 
   // Listen to messages in a room
