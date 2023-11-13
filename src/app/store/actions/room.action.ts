@@ -3,7 +3,7 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/room.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
-import { Room } from 'src/app/models/Room';
+import { RoomWithUserData } from 'src/app/models/Room';
 
 // Get Room Actions
 export const getRoomAction = createAction(
@@ -14,7 +14,7 @@ export const getRoomAction = createAction(
 
 export const getRoomSuccessAction = createAction(
   ActionTypes.GET_ROOM_SUCCESS,
-  props<{ payload: Room }>()
+  props<{ payload: RoomWithUserData }>()
 );
 
 export const getRoomFailureAction = createAction(
@@ -31,7 +31,7 @@ export const createRoomAction = createAction(
 
 export const createRoomSuccessAction = createAction(
   ActionTypes.CREATE_ROOM_SUCCESS,
-  props<{ payload: Room }>()
+  props<{ payload: RoomWithUserData }>()
 );
 
 export const createRoomFailureAction = createAction(
