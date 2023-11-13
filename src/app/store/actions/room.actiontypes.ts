@@ -11,4 +11,7 @@ export enum ActionTypes {
   GET_MESSAGES_WITH_OFFSET = '[Message] Get Messages With Offset',
   GET_MESSAGES_WITH_OFFSET_SUCCESS = '[Message] Get Messages With Offset Success',
   GET_MESSAGES_WITH_OFFSET_FAILURE = '[Message] Get Messages With Offset Failure',
+  CREATE_MESSAGE = '[Message] Create Message',
+  CREATE_MESSAGE_SUCCESS = '[Message] Create Message Success',
+  CREATE_MESSAGE_FAILURE = '[Message] Create Message Failure',
 }
