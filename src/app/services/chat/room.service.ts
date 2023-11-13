@@ -34,6 +34,16 @@ export class RoomService {
     private userService: UserService
   ) {}
 
+  getRoomById(roomId: string): Observable<RoomWithUserData | null> {
+    return from(
+      this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId)
+    ).pipe(
+      switchMap((room: Room) => {
+        return this.fillRoomWithUserData(room, this.cUserId);
+      })
+    );
+  }
+
   getRoom(
     currentUserId: string,
     userId: string
