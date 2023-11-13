@@ -23,6 +23,9 @@ export const environment = {
     CREATE_ROOM_API_URL: 'https://api.languagexchange.net/api/room',
     CREATE_MESSAGE_API_URL: 'https://api.languagexchange.net/api/message',
   },
+  opts: {
+    PAGINATION_LIMIT: 10,
+  },
 };
 
 /*
