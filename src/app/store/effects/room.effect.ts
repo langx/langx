@@ -10,6 +10,9 @@ import {
   getMessagesAction,
   getMessagesFailureAction,
   getMessagesSuccessAction,
+  getMessagesWithOffsetAction,
+  getMessagesWithOffsetFailureAction,
+  getMessagesWithOffsetSuccessAction,
   getRoomsAction,
   getRoomsFailureAction,
   getRoomsSuccessAction,
@@ -79,6 +82,26 @@ export class RoomEffects {
               message: errorResponse.message,
             };
             return of(getMessagesFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  getMessagesWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getMessagesWithOffsetAction),
+      switchMap(({ roomId, offset }) =>
+        this.messagesService.listMessages(roomId, offset).pipe(
+          map((payload: getMessagesResponseInterface) =>
+            getMessagesWithOffsetSuccessAction({ payload })
+          ),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getMessagesWithOffsetFailureAction({ error }));
           })
         )
       )
