@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
-import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
-import { BehaviorSubject } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
+import { BehaviorSubject, Observable, from, tap } from 'rxjs';
 import axios from 'axios';
+
+import { ApiService } from 'src/app/services/api/api.service';
+import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -42,19 +44,13 @@ export class MessageService {
   }
 
   // Get messages from a room to initialize the chat
-  listMessages(roomId: string) {
-    const promise = this.api.listDocuments(
-      environment.appwrite.MESSAGES_COLLECTION,
-      [Query.equal('roomId', roomId), Query.orderDesc('$createdAt')]
-    );
-    promise.then(
-      (response) => {
-        this.messages.next(response.documents.reverse());
-      },
-      (error) => {
-        console.log(error); // Failure
-      }
-    );
+  listMessages(roomId: string): Observable<getMessagesResponseInterface> {
+    return from(
+      this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, [
+        Query.equal('roomId', roomId),
+        Query.orderDesc('$createdAt'),
+      ])
+    ).pipe(tap((response) => response.documents.reverse()));
   }
 
   // Create a message
