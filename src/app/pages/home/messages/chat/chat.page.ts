@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { getMessagesAction } from 'src/app/store/actions/room.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   errorMessagesSelector,
@@ -61,7 +62,7 @@ export class ChatPage implements OnInit {
 
   ngOnInit() {
     this.initValues();
-    this.initChatPage();
+    this.listMessages();
 
     this.messageService.listMessages(this.roomId);
     this.messages = this.messageService.messages;
@@ -89,6 +90,13 @@ export class ChatPage implements OnInit {
       });
   }
 
+  listMessages() {
+    // get room document id from route
+    this.roomId = this.route.snapshot.paramMap.get('id');
+    this.store.dispatch(getMessagesAction({ roomId: this.roomId }));
+  }
+
+  /*
   initChatPage() {
     // get current user id
     this.currentUserId = this.authService.getUserId();
@@ -126,6 +134,8 @@ export class ChatPage implements OnInit {
         this.router.navigateByUrl('/home/messages');
       });
   }
+
+  */
 
   addMessage() {
     console.log('roomID: ', this.roomId);
