@@ -51,7 +51,7 @@ export class ChatPage implements OnInit {
   ngAfterViewChecked() {
     // TODO: Needs optimization
     this.scrollToBottom();
-    console.log('ngAfterViewChecked');
+    // console.log('ngAfterViewChecked');
   }
 
   initChatPage() {
