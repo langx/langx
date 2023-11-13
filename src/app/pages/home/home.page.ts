@@ -14,6 +14,7 @@ import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room
 })
 export class HomePage implements OnInit {
   loadingOverlay: HTMLIonLoadingElement;
+  isLoadingOverlayActive = false;
 
   constructor(
     private store: Store,
@@ -54,15 +55,23 @@ export class HomePage implements OnInit {
 
   async loadingController(isLoading: boolean) {
     if (isLoading) {
-      if (!this.loadingOverlay || !this.loadingOverlay.present) {
+      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
+        this.isLoadingOverlayActive = true;
         this.loadingOverlay = await this.loadingCtrl.create({
           message: 'Please wait...',
         });
         await this.loadingOverlay.present();
+        this.isLoadingOverlayActive = false;
       }
-    } else if (this.loadingOverlay && this.loadingOverlay.present) {
+    } else if (
+      this.loadingOverlay &&
+      this.loadingOverlay.present &&
+      !this.isLoadingOverlayActive
+    ) {
+      this.isLoadingOverlayActive = true;
       await this.loadingOverlay.dismiss();
       this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive = false;
     }
   }
 }
