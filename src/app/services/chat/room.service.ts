@@ -73,10 +73,10 @@ export class RoomService {
           axios
             .post(environment.url.CREATE_ROOM_API_URL, body)
             .then((result) => {
-              return result.data as RoomWithUserData;
+              return result.data as Room;
             })
         ).pipe(
-          switchMap((room: RoomWithUserData) =>
+          switchMap((room: Room) =>
             this.fillRoomWithUserData(room, currentUserId)
           )
         );
@@ -105,9 +105,8 @@ export class RoomService {
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
       switchMap((payload: getRoomsResponseInterface) => {
-        const roomObservables = payload.documents.map(
-          (room: RoomWithUserData) =>
-            this.fillRoomWithUserData(room, currentUserId)
+        const roomObservables = payload.documents.map((room: Room) =>
+          this.fillRoomWithUserData(room, currentUserId)
         );
         return forkJoin(roomObservables).pipe(
           map((rooms) => {
@@ -135,7 +134,7 @@ export class RoomService {
   //
 
   fillRoomWithUserData(
-    room: RoomWithUserData, // TODO: it has to be Room model.
+    room: Room, // TODO: it has to be Room model.
     currentUserId: string
   ): Observable<RoomWithUserData> {
     let userId: string[] | string = room.users.filter(
@@ -143,13 +142,13 @@ export class RoomService {
     );
     userId = userId[0];
     if (userId === undefined) {
-      room.userData = null;
-      return of(room);
+      room['userData'] = null;
+      return of(room as RoomWithUserData);
     } else {
       return from(this.userService.getUserDoc(userId)).pipe(
         map((data) => {
-          room.userData = data as User;
-          return room;
+          room['userData'] = data as User;
+          return room as RoomWithUserData;
         })
       );
     }
