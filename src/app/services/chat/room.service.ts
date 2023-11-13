@@ -78,12 +78,25 @@ export class RoomService {
     );
   }
 
-  listRooms(currentUserId: string): Observable<getRoomsResponseInterface> {
+  listRooms(
+    currentUserId: string,
+    offset?: number
+  ): Observable<getRoomsResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for rooms that contain the current user
+    queries.push(Query.search('users', currentUserId));
+
+    // Query for rooms descending by $createdAt
+    queries.push(Query.orderDesc('$createdAt'));
+
+    // Limit and offset
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) queries.push(Query.offset(offset));
+
     return from(
-      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-        Query.search('users', currentUserId),
-        Query.orderDesc('$createdAt'),
-      ])
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
       switchMap((payload: getRoomsResponseInterface) => {
         const roomObservables = payload.documents.map(
