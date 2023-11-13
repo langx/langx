@@ -21,16 +21,16 @@ export const getRoomsFailureAction = createAction(
 );
 
 export const getRoomWithOffsetAction = createAction(
-  ActionTypes.GETROOOM_WITH_OFFSET,
+  ActionTypes.GETROOMS_WITH_OFFSET,
   props<{ currentUserId: string; offset: number }>()
 );
 
 export const getRoomWithOffsetSuccessAction = createAction(
-  ActionTypes.GETROOOM_WITH_OFFSET_SUCCESS,
+  ActionTypes.GETROOMS_WITH_OFFSET_SUCCESS,
   props<{ payload: getRoomsResponseInterface }>()
 );
 
 export const getRoomWithOffsetFailureAction = createAction(
-  ActionTypes.GETROOOM_WITH_OFFSET_FAILURE,
+  ActionTypes.GETROOMS_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );
