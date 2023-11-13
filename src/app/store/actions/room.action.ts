@@ -51,3 +51,18 @@ export const getMessagesFailureAction = createAction(
   ActionTypes.GETMESSAGES_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const getMessagesWithOffsetAction = createAction(
+  ActionTypes.GETMESSAGES_WITH_OFFSET,
+  props<{ roomId: string; offset: number }>()
+);
+
+export const getMessagesWithOffsetSuccessAction = createAction(
+  ActionTypes.GETMESSAGES_WITH_OFFSET_SUCCESS,
+  props<{ payload: getMessagesResponseInterface }>()
+);
+
+export const getMessagesWithOffsetFailureAction = createAction(
+  ActionTypes.GETMESSAGES_WITH_OFFSET_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
