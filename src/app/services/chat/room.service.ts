@@ -38,11 +38,15 @@ export class RoomService {
     currentUserId: string,
     userId: string
   ): Observable<getRoomsResponseInterface | null> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for rooms, user attibute that contain current user and userId
+    queries.push(Query.search('users', currentUserId));
+    queries.push(Query.search('users', userId));
+
     return from(
-      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, [
-        Query.search('users', currentUserId),
-        Query.search('users', userId),
-      ])
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     );
   }
 
