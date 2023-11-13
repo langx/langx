@@ -12,7 +12,7 @@ export class HomePage implements OnInit {
   async ngOnInit() {}
 
   ngOnDestroy() {
-    this.unsubscribeListener();
+    // this.unsubscribeListener();
   }
 
   unsubscribeListener() {
