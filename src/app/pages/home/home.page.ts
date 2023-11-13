@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { LoadingController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { combineLatest, map } from 'rxjs';
+
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
+import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-home',
@@ -7,16 +13,55 @@ import { NotificationService } from 'src/app/services/notification/notification.
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  constructor(private notification: NotificationService) {}
+  loadingOverlay: HTMLIonLoadingElement;
 
-  async ngOnInit() {}
+  constructor(
+    private store: Store,
+    private notification: NotificationService,
+    private loadingCtrl: LoadingController
+  ) {}
+
+  async ngOnInit() {
+    this.initValues();
+  }
 
   ngOnDestroy() {
     // this.unsubscribeListener();
   }
 
+  initValues() {
+    // Loading Controller
+    combineLatest([
+      this.store.pipe(select(isLoadingUser)),
+      this.store.pipe(select(isLoadingRoom)),
+    ])
+      .pipe(
+        map(([isLoadingUser, isLoadingRoom]) => isLoadingUser || isLoadingRoom)
+      )
+      .subscribe((isLoading) => {
+        console.log('Loading Controller', isLoading);
+        this.loadingController(isLoading);
+      });
+  }
+
   unsubscribeListener() {
     this.notification.unsubscribe();
     console.log('Notification Service stopped');
+  }
+
+  //
+  // Loading Controller
+  //
+
+  async loadingController(isShow: boolean) {
+    if (isShow) {
+      this.loadingOverlay = await this.loadingCtrl.create({
+        message: 'Please wait...',
+      });
+      await this.loadingOverlay.present();
+    } else if (this.loadingOverlay) {
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+    }
   }
 }
