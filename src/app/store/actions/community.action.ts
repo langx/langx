@@ -9,6 +9,7 @@ import { Room } from 'src/app/models/Room';
 // Get Users Actions
 export const getUsersAction = createAction(
   ActionTypes.GET_USERS,
+  // TODO: Create interface for this request
   props<{ filterData: FilterDataInterface }>()
 );
 
@@ -25,6 +26,7 @@ export const getUsersFailureAction = createAction(
 // Get Users With Offset Actions
 export const getUsersWithOffsetAction = createAction(
   ActionTypes.GET_USERS_WITH_OFFSET,
+  // TODO: Create interface for this request
   props<{ filterData: FilterDataInterface; offset: number }>()
 );
 
@@ -41,6 +43,7 @@ export const getUsersWithOffsetFailureAction = createAction(
 // Get Room Actions
 export const getRoomAction = createAction(
   ActionTypes.GET_ROOM,
+  // TODO: Create interface for this request
   props<{ currentUserId: string; userId: string }>()
 );
 
@@ -57,6 +60,7 @@ export const getRoomFailureAction = createAction(
 // Create Room Actions
 export const createRoomAction = createAction(
   ActionTypes.CREATE_ROOM,
+  // TODO: Create interface for this request
   props<{ currentUserId: string; userId: string }>()
 );
 

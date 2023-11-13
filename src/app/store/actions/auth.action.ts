@@ -77,6 +77,7 @@ export const languageSelectionFailureAction = createAction(
 
 export const updateLanguageArrayAction = createAction(
   ActionTypes.UPDATE_LANGUAGE_ARRAY,
+  // TODO: Create interface for this request
   props<{ request: string[]; id: string }>()
 );
 

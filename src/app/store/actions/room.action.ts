@@ -9,6 +9,7 @@ import { Message } from 'src/app/models/Message';
 // Get Rooms Actions
 export const getRoomsAction = createAction(
   ActionTypes.GET_ROOMS,
+  // TODO: Create interface for this request
   props<{ currentUserId: string }>()
 );
 
@@ -24,6 +25,7 @@ export const getRoomsFailureAction = createAction(
 
 export const getRoomsWithOffsetAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET,
+  // TODO: Create interface for this request
   props<{ currentUserId: string; offset: number }>()
 );
 
@@ -40,6 +42,7 @@ export const getRoomsWithOffsetFailureAction = createAction(
 // Get Messages Actions
 export const getMessagesAction = createAction(
   ActionTypes.GET_MESSAGES,
+  // TODO: Create interface for this request
   props<{ roomId: string }>()
 );
 
@@ -55,6 +58,7 @@ export const getMessagesFailureAction = createAction(
 
 export const getMessagesWithOffsetAction = createAction(
   ActionTypes.GET_MESSAGES_WITH_OFFSET,
+  // TODO: Create interface for this request
   props<{ roomId: string; offset: number }>()
 );
 
@@ -71,6 +75,7 @@ export const getMessagesWithOffsetFailureAction = createAction(
 // Create Message Actions
 export const createMessageAction = createAction(
   ActionTypes.CREATE_MESSAGE,
+  // TODO: Create interface for this request
   props<{ roomId: string; message: string }>()
 );
 
