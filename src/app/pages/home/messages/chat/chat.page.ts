@@ -2,15 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
-import { RoomService } from 'src/app/services/chat/room.service';
-import { UserService } from 'src/app/services/user/user.service';
 import { getMessagesAction } from 'src/app/store/actions/room.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
@@ -33,7 +30,6 @@ export class ChatPage implements OnInit {
   messages$: Observable<Message[] | null>;
   totalMessages$: Observable<number | null> = null;
 
-  messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   message: string = '';
 
   isTyping: boolean = false;
@@ -51,9 +47,6 @@ export class ChatPage implements OnInit {
 
   constructor(
     private store: Store,
-    private authService: AuthService,
-    private roomService: RoomService,
-    private userService: UserService,
     private messageService: MessageService,
     private route: ActivatedRoute,
     private router: Router,
@@ -65,7 +58,6 @@ export class ChatPage implements OnInit {
     this.listMessages();
 
     this.messageService.listMessages(this.roomId);
-    this.messages = this.messageService.messages;
   }
 
   ngAfterViewChecked() {
