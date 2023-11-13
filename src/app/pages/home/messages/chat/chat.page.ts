@@ -6,12 +6,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
+  errorSelector,
   isLoadingSelector,
   messagesSelector,
   totalMessagesSelector,
@@ -76,6 +78,15 @@ export class ChatPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.totalMessages$ = this.store.pipe(select(totalMessagesSelector));
+
+    // Present Toast if error
+    this.store
+      .pipe(select(errorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+        }
+      });
   }
 
   initChatPage() {
