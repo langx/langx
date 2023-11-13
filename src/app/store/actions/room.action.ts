@@ -3,6 +3,7 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/room.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
+import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 
 // Get Rooms Actions
 export const getRoomsAction = createAction(
@@ -43,7 +44,7 @@ export const getMessagesAction = createAction(
 
 export const getMessagesSuccessAction = createAction(
   ActionTypes.GETMESSAGES_SUCCESS,
-  props<{ payload: any }>()
+  props<{ payload: getMessagesResponseInterface }>()
 );
 
 export const getMessagesFailureAction = createAction(
