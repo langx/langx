@@ -19,13 +19,13 @@
 </ion-header>
 
 <ion-content>
-  <app-empty-screen *ngIf="(messages | async)?.length == 0" [model]="model">
+  <app-empty-screen *ngIf="(messages$ | async)?.length == 0" [model]="model">
   </app-empty-screen>
 
   <ion-item-group
     lines="none"
     class="chats-group"
-    *ngFor="let msg of messages | async"
+    *ngFor="let msg of (messages$ | async)"
   >
     <app-chat-box [chat]="msg" [current_user_id]="currentUserId"></app-chat-box>
   </ion-item-group>
