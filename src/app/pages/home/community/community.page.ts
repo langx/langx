@@ -14,13 +14,14 @@ import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
   getUsersAction,
   getUsersWithOffsetAction,
-} from 'src/app/store/actions/community.action';
+} from 'src/app/store/actions/user.action';
 import {
   isLoadingSelector,
   usersSelector,
   totalSelector,
   errorSelector,
-} from 'src/app/store/selectors/community.selector';
+} from 'src/app/store/selectors/user.selector';
+// import { errorSelector } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-community',
@@ -67,7 +68,7 @@ export class CommunityPage implements OnInit {
       this.loadingController(isLoading);
     });
 
-    // Present Toast if error
+    // Community Errors
     this.store
       .pipe(select(errorSelector))
       .subscribe((error: ErrorInterface) => {
@@ -75,6 +76,9 @@ export class CommunityPage implements OnInit {
           this.presentToast(error.message, 'danger');
         }
       });
+
+    // Room Errors
+    // this.store.pipe(select(errorSelector)).subscribe((error: ErrorInterface) => {
   }
 
   //

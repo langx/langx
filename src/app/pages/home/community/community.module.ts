@@ -8,8 +8,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { CommunityPageRoutingModule } from './community-routing.module';
 import { CommunityPage } from './community.page';
 import { UserListComponent } from 'src/app/components/user-list/user-list.component';
-import { communityReducers } from 'src/app/store/reducers/community.reducer';
-import { CommunityEffects } from 'src/app/store/effects/community.effect';
+import { userReducers } from 'src/app/store/reducers/user.reducer';
+import { UserEffects } from 'src/app/store/effects/user.effect';
 
 @NgModule({
   imports: [
@@ -17,8 +17,8 @@ import { CommunityEffects } from 'src/app/store/effects/community.effect';
     FormsModule,
     IonicModule,
     CommunityPageRoutingModule,
-    StoreModule.forFeature('community', communityReducers),
-    EffectsModule.forFeature([CommunityEffects]),
+    StoreModule.forFeature('user', userReducers),
+    EffectsModule.forFeature([UserEffects]),
   ],
   declarations: [CommunityPage, UserListComponent],
 })
