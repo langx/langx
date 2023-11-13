@@ -8,8 +8,11 @@ import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
-import { getMessagesAction } from 'src/app/store/actions/room.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  getMessagesAction,
+  getMessagesWithOffsetAction,
+} from 'src/app/store/actions/room.action';
 import {
   errorMessagesSelector,
   isLoadingSelector,
@@ -93,6 +96,27 @@ export class ChatPage implements OnInit {
   loadMore(event) {
     // Offset is the number of messages that we already have
     let offset: number = 0;
+
+    this.messages$
+      .subscribe((messages) => {
+        offset = messages.length;
+        this.totalMessages$
+          .subscribe((totalMessages) => {
+            if (offset < totalMessages) {
+              this.store.dispatch(
+                getMessagesWithOffsetAction({
+                  roomId: this.roomId,
+                  offset: offset,
+                })
+              );
+            } else {
+              event.target.disabled = true;
+              console.log('All messages loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
 
     event.target.complete();
   }
