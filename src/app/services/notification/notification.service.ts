@@ -1,37 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Observable, from } from 'rxjs';
-import { Store, select } from '@ngrx/store';
 
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { User } from 'src/app/models/User';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
   listenerFn: Function;
-  refreshIntervalId: any;
-
-  currentUser$: Observable<User>;
 
   constructor(
-    private store: Store,
     private api: ApiService,
     private roomService: RoomService,
     private messageService: MessageService
-  ) {
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
-  }
+  ) {}
 
   listen() {
-    // Presence ping
-    this.presencePing();
-
     let channels = [];
 
     // channel for rooms
@@ -92,8 +80,6 @@ export class NotificationService {
     if (this.listenerFn) {
       this.listenerFn();
     }
-    // Kill presence ping
-    clearInterval(this.refreshIntervalId);
   }
 
   findAndUpdateRoom(message) {
@@ -112,29 +98,6 @@ export class NotificationService {
     if (messages[0]?.roomId?.$id === rId) {
       this.messageService.updateMessages(message);
     }
-  }
-
-  presencePing() {
-    // Update user in user collection lastSeen attribute
-    // with timeout of every 60 seconds
-    // Start with first ping
-    this.dispatchUpdatePresence();
-    this.refreshIntervalId = setInterval(() => {
-      this.dispatchUpdatePresence();
-    }, 60000);
-  }
-
-  dispatchUpdatePresence() {
-    this.currentUser$
-      .subscribe((user) => {
-        this.store.dispatch(
-          updatePresenceAction({
-            currentUserId: user.$id,
-            request: { lastSeen: new Date() },
-          })
-        );
-      })
-      .unsubscribe();
   }
 
   updatePresence(
