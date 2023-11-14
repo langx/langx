@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomWithUserData } from 'src/app/models/Room';
 import { roomSelector } from 'src/app/store/selectors/room.selector';
@@ -149,16 +150,19 @@ export class ChatPage implements OnInit {
   }
 
   createMessage() {
-    console.log('createMessage clicked');
-    let request = {
-      currentUserId: 'this.currentUserId',
-      to: 'this.userId',
-      body: 'this.message',
-      roomId: 'this.roomId',
-    };
-    // this.store.dispatch(createMessageAction({ roomId: this.roomId }));
+    this.currentUser$
+      .subscribe((currentUser) => {
+        const request: createMessageRequestInterface = {
+          body: this.form.value.body,
+          roomId: this.roomId,
+          to: this.user.$id,
+        };
+        this.store.dispatch(
+          createMessageAction({ request, currentUserId: currentUser.$id })
+        );
+      })
+      .unsubscribe();
   }
-
   /*
   addMessage() {
     console.log('roomID: ', this.roomId);

@@ -4,7 +4,7 @@ import { ActionTypes } from 'src/app/store/actions/message.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
-import { createMessageRequest } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 // Get Messages Actions
 export const getMessagesAction = createAction(
@@ -42,7 +42,7 @@ export const getMessagesWithOffsetFailureAction = createAction(
 // Create Message Actions
 export const createMessageAction = createAction(
   ActionTypes.CREATE_MESSAGE,
-  props<{ request: createMessageRequest; currentUserId: string }>()
+  props<{ request: createMessageRequestInterface; currentUserId: string }>()
 );
 
 export const createMessageSuccessAction = createAction(

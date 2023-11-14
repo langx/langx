@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
-import { createMessageRequest } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class MessageService {
 
   // Create a message
   createMessage(
-    request: createMessageRequest,
+    request: createMessageRequestInterface,
     currentUserId: string
   ): Observable<Message | null> {
     // Set x-appwrite-user-id header
