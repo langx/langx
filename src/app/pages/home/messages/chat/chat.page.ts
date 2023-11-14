@@ -160,6 +160,7 @@ export class ChatPage implements OnInit {
         this.store.dispatch(
           createMessageAction({ request, currentUserId: currentUser.$id })
         );
+        this.form.reset();
       })
       .unsubscribe();
   }
