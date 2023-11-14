@@ -1,31 +1,31 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
+import { RoomsStateInterface } from 'src/app/models/types/states/roomsState.interface';
 
-export const roomFeatureSelector =
-  createFeatureSelector<RoomStateInterface>('room');
+export const roomsFeatureSelector =
+  createFeatureSelector<RoomsStateInterface>('rooms');
 
 export const isLoadingSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.isLoading
+  roomsFeatureSelector,
+  (roomState: RoomsStateInterface) => roomState.isLoading
 );
 
 export const roomSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.room
+  roomsFeatureSelector,
+  (roomState: RoomsStateInterface) => roomState.room
 );
 
 export const roomsSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.rooms
+  roomsFeatureSelector,
+  (roomState: RoomsStateInterface) => roomState.rooms
 );
 
 export const totalSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.total
+  roomsFeatureSelector,
+  (roomState: RoomsStateInterface) => roomState.total
 );
 
 export const errorSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.error
+  roomsFeatureSelector,
+  (roomState: RoomsStateInterface) => roomState.error
 );
