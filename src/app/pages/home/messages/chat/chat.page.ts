@@ -42,10 +42,8 @@ export class ChatPage implements OnInit {
   total$: Observable<number | null> = null;
 
   isTyping: boolean = false;
-
   roomId: string;
-  userId: string;
-  user: any;
+  user: User;
 
   model = {
     icon: 'chatbubbles-outline',
@@ -83,13 +81,13 @@ export class ChatPage implements OnInit {
     this.total$ = this.store.pipe(select(totalSelector));
 
     // Check room$ and currentUser$ for null
-    this.room$
-      .subscribe((room) => {
-        if (!room || room.$id !== this.roomId) {
-          this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
-        }
-      })
-      .unsubscribe();
+    this.room$.subscribe((room) => {
+      if (!room) {
+        this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
+      } else {
+        this.user = room.userData;
+      }
+    });
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
