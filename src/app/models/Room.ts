@@ -4,7 +4,6 @@ import { User } from './User';
 
 export type Room = Models.Document & {
   users: string[];
-  messages: Message[];
 };
 
 export type RoomWithUserData = Room & {

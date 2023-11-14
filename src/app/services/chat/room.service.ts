@@ -177,12 +177,6 @@ export class RoomService {
     }
   }
 
-  private fillRoomWithLastMessage(room: RoomWithUserData): RoomWithUserData {
-    const lastMessage = room?.messages[room?.messages.length - 1];
-    room.lastMessage = lastMessage;
-    return room;
-  }
-
   //
   // TODO: WILL BE DELETED
   //
@@ -205,7 +199,7 @@ export class RoomService {
   // Update rooms behavior subject
   async updateRooms(room) {
     room = await this.fillRoomWithUserData(room, this.cUserId);
-    room = await this.fillRoomWithLastMessage(room);
+    // room = await this.fillRoomWithLastMessage(room);
     const currentRooms = this.rooms.getValue();
     const existingRoom = currentRooms.find((r) => r.$id === room.$id);
     if (existingRoom) {
