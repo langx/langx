@@ -163,35 +163,6 @@ export class ChatPage implements OnInit {
       })
       .unsubscribe();
   }
-  /*
-  addMessage() {
-    console.log('roomID: ', this.roomId);
-    let data = {
-      to: this.userId,
-      body: this.message,
-      roomId: this.roomId,
-    };
-    let dataWithUserData = {
-      ...data,
-      sender: this.currentUserId,
-    };
-    // Add loading indicator
-    this.messageService.updateMessages(dataWithUserData);
-    const promise = this.messageService.createMessage(data);
-    promise.then(
-      (response) => {
-        console.log(response); // Success
-        this.message = '';
-        // It pulls down
-        this.scrollToBottom();
-      },
-      (error) => {
-        console.log('error: ', error.message); // Failure
-        this.presentToast('Error: ' + error.message, 'danger');
-      }
-    );
-  }
-  */
 
   typingFocus() {
     this.isTyping = true;
