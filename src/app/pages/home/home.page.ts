@@ -27,7 +27,7 @@ export class HomePage implements OnInit {
   }
 
   ngOnDestroy() {
-    // this.unsubscribeListener();
+    this.unsubscribeListener();
   }
 
   initValues() {
