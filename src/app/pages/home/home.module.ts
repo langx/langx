@@ -10,7 +10,7 @@ import { HomePage } from './home.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { userReducers } from 'src/app/store/reducers/user.reducer';
 import { UserEffects } from 'src/app/store/effects/user.effect';
-import { roomReducers } from 'src/app/store/reducers/room.reducer';
+import { roomsReducers } from 'src/app/store/reducers/room.reducer';
 import { RoomEffects } from 'src/app/store/effects/room.effect';
 
 @NgModule({
@@ -21,7 +21,7 @@ import { RoomEffects } from 'src/app/store/effects/room.effect';
     HomePageRoutingModule,
     ComponentsModule,
     StoreModule.forFeature('user', userReducers),
-    StoreModule.forFeature('room', roomReducers),
+    StoreModule.forFeature('rooms', roomsReducers),
     EffectsModule.forFeature([UserEffects, RoomEffects]),
   ],
   declarations: [HomePage],
