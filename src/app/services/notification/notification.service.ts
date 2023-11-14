@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Observable, from } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+
 import { environment } from 'src/environments/environment';
-import { ApiService } from '../api/api.service';
-import { RoomService } from '../chat/room.service';
-import { MessageService } from '../chat/message.service';
-import { AuthService } from '../auth/auth.service';
+import { ApiService } from 'src/app/services/api/api.service';
+import { RoomService } from 'src/app/services/chat/room.service';
+import { MessageService } from 'src/app/services/chat/message.service';
+import { User } from 'src/app/models/User';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +17,16 @@ export class NotificationService {
   listenerFn: Function;
   refreshIntervalId: any;
 
+  currentUser$: Observable<User>;
+
   constructor(
+    private store: Store,
     private api: ApiService,
-    private authService: AuthService,
     private roomService: RoomService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+  }
 
   listen() {
     // Presence ping
@@ -109,24 +118,37 @@ export class NotificationService {
     // Update user in user collection lastSeen attribute
     // with timeout of every 60 seconds
     // Start with first ping
-    this.updateUserPresence();
+    this.dispatchUpdatePresence();
     this.refreshIntervalId = setInterval(() => {
-      this.updateUserPresence();
-    }, 5000);
+      this.dispatchUpdatePresence();
+    }, 60000);
   }
 
-  updateUserPresence() {
-    this.api
-      .updateDocument(
-        environment.appwrite.USERS_COLLECTION,
-        this.authService.getUserId(),
-        { lastSeen: new Date() }
-      )
-      .then((res) => {
-        console.log('User presence updated');
+  dispatchUpdatePresence() {
+    this.currentUser$
+      .subscribe((user) => {
+        this.store.dispatch(
+          updatePresenceAction({
+            currentUserId: user.$id,
+            request: { lastSeen: new Date() },
+          })
+        );
       })
-      .catch((err) => {
-        console.log('User presence could not updated.', err);
-      });
+      .unsubscribe();
+  }
+
+  updatePresence(
+    currentUserId: string,
+    request: { lastSeen: Date }
+  ): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUserId,
+        {
+          lastSeen: request.lastSeen,
+        }
+      )
+    );
   }
 }
