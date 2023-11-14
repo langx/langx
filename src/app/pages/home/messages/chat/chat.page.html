@@ -34,10 +34,8 @@
     class="chats-group"
     *ngFor="let msg of (messages$ | async)"
   >
-    <app-chat-box
-      [chat]="msg"
-      [current_user_id]="(currentUser$ | async).$id"
-    ></app-chat-box>
+    <app-chat-box [chat]="msg" [current_user_id]="(currentUser$ | async).$id">
+    </app-chat-box>
   </ion-item-group>
 </ion-content>
 
@@ -56,11 +54,8 @@
         </ion-textarea>
         <ion-buttons slot="start">
           <ion-button>
-            <ion-icon
-              slot="icon-only"
-              name="camera-outline"
-              color="medium"
-            ></ion-icon>
+            <ion-icon slot="icon-only" name="camera-outline" color="medium">
+            </ion-icon>
           </ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
@@ -73,11 +68,5 @@
         </ion-buttons>
       </ion-item>
     </form>
-    <!-- TODO: This has to be isTyping from room subscribtion -->
-    <!--
-    <small>uID: {{ uid }}</small>
-    <small> typing: {{ isTyping }}</small><br />
-    <small> typing: {{ isTyping }}</small><br />
-    <small>roomId: {{ roomId }}</small><br />-->
   </ion-toolbar>
 </ion-footer>
