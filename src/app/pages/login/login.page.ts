@@ -55,7 +55,7 @@ export class LoginPage implements OnInit {
     this.store
       .pipe(select(unauthorizedErrorSelector))
       .subscribe((error: ErrorInterface) => {
-        if (error.message) this.presentToast(error.message, 'danger');
+        if (error.message) this.presentToast(error.message, 'warning');
       });
   }
 
