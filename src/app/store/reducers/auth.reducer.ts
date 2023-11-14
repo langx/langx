@@ -21,6 +21,10 @@ import {
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
 } from 'src/app/store/actions/auth.action';
+import {
+  updatePresenceFailureAction,
+  updatePresenceSuccessAction,
+} from '../actions/presence.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -32,6 +36,7 @@ const initialState: AuthStateInterface = {
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
+  presenceError: null,
 };
 
 const authReducer = createReducer(
@@ -189,6 +194,21 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: false,
       unauthorizedError: action.error,
+    })
+  ),
+  // Update Presence Actions
+  on(
+    updatePresenceSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    updatePresenceFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      presenceError: action.error,
     })
   )
 );
