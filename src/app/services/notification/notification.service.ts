@@ -51,22 +51,22 @@ export class NotificationService {
         switch (event) {
           case `${messagesCollection}.*.create`:
             console.log('new message created', response.payload);
-            this.findAndUpdateRoom(response.payload);
-            this.findAndUpdateMessages(response.payload);
+            // this.findAndUpdateRoom(response.payload);
+            // this.findAndUpdateMessages(response.payload);
             break;
           case `${messagesCollection}.*.update`:
-            console.log('new message updated', response.payload);
+            // console.log('new message updated', response.payload);
             break;
           case `${messagesCollection}.*.delete`:
-            console.log('new message deleted', response.payload);
+            // console.log('new message deleted', response.payload);
             break;
           case `${roomsCollection}.*.create`:
             console.log('new room created', response.payload);
-            this.roomService.updateRooms(response.payload);
+            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
-            this.roomService.updateRooms(response.payload);
+            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:
             console.log('new room deleted', response.payload);
@@ -112,7 +112,7 @@ export class NotificationService {
     this.updateUserPresence();
     this.refreshIntervalId = setInterval(() => {
       this.updateUserPresence();
-    }, 60000);
+    }, 5000);
   }
 
   updateUserPresence() {

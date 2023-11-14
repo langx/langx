@@ -36,7 +36,7 @@ export class AuthGuard implements CanLoad {
             observer.next(this.router.parseUrl('/login'));
           } else {
             // TODO: Notification Service
-            // this.startListener();
+            this.startListener();
             observer.next(true);
           }
           observer.complete();
