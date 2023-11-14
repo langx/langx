@@ -135,26 +135,19 @@ export class RoomService {
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
       switchMap((payload: getRoomsResponseInterface) => {
-        const roomObservables = payload.documents.map((room: Room) =>
-          this.fillRoomWithUserData(room, currentUserId)
-        );
-        return forkJoin(roomObservables).pipe(
-          map((rooms) => {
-            payload.documents = rooms
-              .map((room) => this.fillRoomWithLastMessage(room))
-              .sort((a, b) => {
-                let aDate = a.lastMessage
-                  ? a.lastMessage.$createdAt
-                  : a.$createdAt;
-                let bDate = b.lastMessage
-                  ? b.lastMessage.$createdAt
-                  : b.$createdAt;
-
-                return aDate < bDate ? 1 : -1;
-              });
-            return payload;
-          })
-        );
+        if (payload.documents.length > 0) {
+          const roomObservables = payload.documents.map((room: Room) =>
+            this.fillRoomWithUserData(room, currentUserId)
+          );
+          return forkJoin(roomObservables).pipe(
+            map((rooms) => {
+              payload.documents = rooms;
+              return payload;
+            })
+          );
+        } else {
+          return of(payload);
+        }
       })
     );
   }
