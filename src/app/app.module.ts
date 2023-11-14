@@ -20,7 +20,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     IonicModule.forRoot(),
     StoreModule.forRoot({}),
     StoreDevtoolsModule.instrument({
-      maxAge: 25,
+      maxAge: 250,
       logOnly: environment.production,
     }),
     EffectsModule.forRoot([]),
