@@ -10,11 +10,11 @@ import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { selectRoomAction } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
-  selectRoomAction,
-} from 'src/app/store/actions/room.action';
+} from 'src/app/store/actions/rooms.action';
 import {
   isLoadingSelector,
   roomsSelector,
