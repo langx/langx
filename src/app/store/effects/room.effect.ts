@@ -18,14 +18,16 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
+  selectRoomAction,
+} from 'src/app/store/actions/room.action';
+import {
   getRoomsAction,
   getRoomsFailureAction,
   getRoomsSuccessAction,
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
-  selectRoomAction,
-} from 'src/app/store/actions/room.action';
+} from 'src/app/store/actions/rooms.action';
 
 @Injectable()
 export class RoomEffects {
