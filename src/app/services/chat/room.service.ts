@@ -114,6 +114,10 @@ export class RoomService {
   }
 
   //
+  // TODO: WILL BE DELETED
+  //
+
+  //
   // Utils
   //
 
@@ -137,10 +141,6 @@ export class RoomService {
       );
     }
   }
-
-  //
-  // TODO: WILL BE DELETED
-  //
 
   listenRooms() {
     console.log('listenRooms started');
