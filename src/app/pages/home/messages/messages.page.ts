@@ -119,7 +119,6 @@ export class MessagesPage implements OnInit {
       })
       .unsubscribe();
 
-    // this.getUsers(this.filterData);
     event.target.complete();
   }
 
