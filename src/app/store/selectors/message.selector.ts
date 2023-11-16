@@ -12,13 +12,18 @@ export const isLoadingSelector = createSelector(
 
 export const messagesSelector = createSelector(
   messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.messages
+  (messageState: MessageStateInterface) => messageState.room?.messages
 );
 
 export const totalSelector = createSelector(
   messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.total
+  (messageState: MessageStateInterface) => messageState.room?.total
 );
+
+// export const userDataSelector = createSelector(
+//   messageFeatureSelector,
+//   (messageState: MessageStateInterface) => messageState.room?.userData
+// );
 
 export const errorSelector = createSelector(
   messageFeatureSelector,

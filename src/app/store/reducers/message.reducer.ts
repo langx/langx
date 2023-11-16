@@ -22,9 +22,7 @@ import {
 
 const initialState: MessageStateInterface = {
   isLoading: false,
-  messages: null,
-  userData: null,
-  total: null,
+  room: null,
   error: null,
 };
 
@@ -44,8 +42,11 @@ const messageReducer = createReducer(
     (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,
-      total: action.payload?.total,
-      messages: action.payload?.documents,
+      room: {
+        ...state.room,
+        total: action.payload?.total,
+        messages: action.payload?.documents,
+      },
     })
   ),
   on(
@@ -69,8 +70,11 @@ const messageReducer = createReducer(
     (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,
-      total: action.payload?.total,
-      messages: [...action.payload?.documents, ...state.messages],
+      room: {
+        ...state.room,
+        total: action.payload?.total,
+        messages: [...action.payload?.documents, ...state.room.messages],
+      },
     })
   ),
   on(
@@ -81,30 +85,30 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
-  on(
-    createMessageAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: true,
-      error: null,
-    })
-  ),
-  on(
-    createMessageSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      messages: [...state.messages, action.payload],
-    })
-  ),
-  on(
-    createMessageFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
+  // on(
+  //   createMessageAction,
+  //   (state): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: true,
+  //     error: null,
+  //   })
+  // ),
+  // on(
+  //   createMessageSuccessAction,
+  //   (state, action): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     messages: [...state.messages, action.payload],
+  //   })
+  // ),
+  // on(
+  //   createMessageFailureAction,
+  //   (state, action): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // ),
   // Get Room By Id Reducers
   // on(
   //   getRoomByIdAction,
@@ -140,18 +144,14 @@ const messageReducer = createReducer(
     activateRoomAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      messages: action.payload.messages,
-      total: action.payload.total,
-      userData: action.payload.userData,
+      room: action.payload,
     })
   ),
   on(
     deactivateRoomAction,
     (state): MessageStateInterface => ({
       ...state,
-      messages: null,
-      total: null,
-      userData: null,
+      room: null,
     })
   )
 );
