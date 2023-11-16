@@ -85,30 +85,33 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
-  // on(
-  //   createMessageAction,
-  //   (state): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: true,
-  //     error: null,
-  //   })
-  // ),
-  // on(
-  //   createMessageSuccessAction,
-  //   (state, action): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     messages: [...state.messages, action.payload],
-  //   })
-  // ),
-  // on(
-  //   createMessageFailureAction,
-  //   (state, action): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
+  on(
+    createMessageAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    createMessageSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: {
+        ...state.room,
+        messages: [...state.room.messages, action.payload],
+      },
+    })
+  ),
+  on(
+    createMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
   // Get Room By Id Reducers
   // on(
   //   getRoomByIdAction,

@@ -69,7 +69,7 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     this.initValues();
     this.initForm();
-    this.listMessages();
+    // this.listMessages();
   }
 
   ngAfterViewInit() {
@@ -172,15 +172,19 @@ export class ChatPage implements OnInit {
   createMessage() {
     this.currentUser$
       .subscribe((currentUser) => {
-        const request: createMessageRequestInterface = {
-          body: this.form.value.body,
-          roomId: this.roomId,
-          to: this.user.$id,
-        };
-        this.store.dispatch(
-          createMessageAction({ request, currentUserId: currentUser.$id })
-        );
-        this.form.reset();
+        this.user$
+          .subscribe((user) => {
+            const request: createMessageRequestInterface = {
+              body: this.form.value.body,
+              roomId: this.roomId,
+              to: user.$id,
+            };
+            this.store.dispatch(
+              createMessageAction({ request, currentUserId: currentUser.$id })
+            );
+            this.form.reset();
+          })
+          .unsubscribe();
       })
       .unsubscribe();
   }
