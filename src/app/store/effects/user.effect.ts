@@ -8,6 +8,8 @@ import { NotificationService } from 'src/app/services/notification/notification.
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 import { User } from 'src/app/models/User';
+
+import { getRoomsSuccessAction } from 'src/app/store/actions/rooms.action';
 import {
   getUsersAction,
   getUsersFailureAction,
@@ -15,7 +17,7 @@ import {
   getUsersWithOffsetAction,
   getUsersWithOffsetFailureAction,
   getUsersWithOffsetSuccessAction,
-} from 'src/app/store/actions/user.action';
+} from 'src/app/store/actions/users.action';
 import {
   updatePresenceAction,
   updatePresenceFailureAction,
@@ -85,6 +87,20 @@ export class UserEffects {
       })
     )
   );
+
+  // TODO: Take a look here!
+  // fillRoomWithUserData$ = createEffect(
+  //   this.actions$.pipe(
+  //     ofType(getRoomsSuccessAction),
+  //     map(({ payload }) => {
+  //       return getUsersAction({
+  //         filterData: {
+  //           userIds: payload.map((room) => room.userId),
+  //         },
+  //       });
+  //     })
+  //   )
+  // );
 
   constructor(
     private actions$: Actions,

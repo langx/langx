@@ -8,7 +8,7 @@ import {
   getUsersWithOffsetAction,
   getUsersWithOffsetSuccessAction,
   getUsersWithOffsetFailureAction,
-} from 'src/app/store/actions/user.action';
+} from 'src/app/store/actions/users.action';
 
 const initialState: UserStateInterface = {
   isLoading: false,
