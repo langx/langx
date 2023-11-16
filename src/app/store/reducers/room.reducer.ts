@@ -171,6 +171,15 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
+  // Deactivate Room Reducers
+  on(deactivateRoomAction, (state, action): RoomStateInterface => {
+    return {
+      ...state,
+      rooms: state.rooms.map((room) =>
+        room.$id === action.payload.$id ? action.payload : room
+      ),
+    };
+  })
 );
 
 export function roomReducers(state: RoomStateInterface, action: Action) {

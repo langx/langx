@@ -10,6 +10,11 @@ export const isLoadingSelector = createSelector(
   (messageState: MessageStateInterface) => messageState.isLoading
 );
 
+export const roomSelector = createSelector(
+  messageFeatureSelector,
+  (messageState: MessageStateInterface) => messageState.room
+);
+
 export const messagesSelector = createSelector(
   messageFeatureSelector,
   (messageState: MessageStateInterface) => messageState.room?.messages

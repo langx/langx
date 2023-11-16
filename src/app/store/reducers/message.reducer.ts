@@ -139,7 +139,7 @@ const messageReducer = createReducer(
   //     error: action.error,
   //   })
   // ),
-  // Activate/Deactivate Room Reducers
+  // Activate Room Reducers
   on(
     activateRoomAction,
     (state, action): MessageStateInterface => ({
