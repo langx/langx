@@ -12,7 +12,10 @@ import { createMessageRequestInterface } from 'src/app/models/types/requests/cre
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { activeRoomSelector } from 'src/app/store/selectors/room.selector';
-import { getRoomByIdAction } from 'src/app/store/actions/room.action';
+import {
+  deactivateRoomAction,
+  getRoomByIdAction,
+} from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
   getMessagesAction,
@@ -72,6 +75,10 @@ export class ChatPage implements OnInit {
     // console.log('ngAfterViewChecked');
   }
 
+  ngOnDestroy() {
+    this.store.dispatch(deactivateRoomAction());
+  }
+
   initValues() {
     this.roomId = this.route.snapshot.paramMap.get('id');
 
@@ -82,13 +89,15 @@ export class ChatPage implements OnInit {
     this.total$ = this.store.pipe(select(totalSelector));
 
     // Check room$ and currentUser$ for null
-    this.activeRoom$.subscribe((room) => {
-      if (!room) {
-        this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
-      } else {
-        this.user = room.userData;
-      }
-    });
+    this.activeRoom$
+      .subscribe((room) => {
+        if (!room) {
+          this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
+        } else {
+          this.user = room.userData;
+        }
+      })
+      .unsubscribe();
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
