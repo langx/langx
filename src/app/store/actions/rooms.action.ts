@@ -21,22 +21,6 @@ export const getRoomsFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-export const getRoomsWithOffsetAction = createAction(
-  ActionTypes.GET_ROOMS_WITH_OFFSET,
-  // TODO: Create interface for this request
-  props<{ currentUserId: string; offset: number }>()
-);
-
-export const getRoomsWithOffsetSuccessAction = createAction(
-  ActionTypes.GET_ROOMS_WITH_OFFSET_SUCCESS,
-  props<{ payload: listRoomsResponseInterface }>()
-);
-
-export const getRoomsWithOffsetFailureAction = createAction(
-  ActionTypes.GET_ROOMS_WITH_OFFSET_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
 // Fill Rooms With User Data Actions
 export const fillRoomsWithUserDataSuccessAction = createAction(
   ActionTypes.FILL_ROOMS_WITH_USER_DATA_SUCCESS,
@@ -56,5 +40,44 @@ export const fillRoomsWithMessagesSuccessAction = createAction(
 
 export const fillRoomsWithMessagesFailureAction = createAction(
   ActionTypes.FILL_ROOMS_WITH_MESSAGES_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Get Rooms With Offset Actions
+export const getRoomsWithOffsetAction = createAction(
+  ActionTypes.GET_ROOMS_WITH_OFFSET,
+  // TODO: Create interface for this request
+  props<{ currentUserId: string; offset: number }>()
+);
+
+export const getRoomsWithOffsetSuccessAction = createAction(
+  ActionTypes.GET_ROOMS_WITH_OFFSET_SUCCESS,
+  props<{ payload: listRoomsResponseInterface; currentUserId: string }>()
+);
+
+export const getRoomsWithOffsetFailureAction = createAction(
+  ActionTypes.GET_ROOMS_WITH_OFFSET_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Fill Rooms With Offset With User Data Actions
+export const fillRoomsWithOffsetWithUserDataSuccessAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_SUCCESS,
+  props<{ payload: listRoomsResponseInterface }>()
+);
+
+export const fillRoomsWithOffsetWithUserDataFailureAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Fill Rooms With Offset With Messages Actions
+export const fillRoomsWithOffsetWithMessagesSuccessAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_SUCCESS,
+  props<{ payload: listRoomsResponseInterface }>()
+);
+
+export const fillRoomsWithOffsetWithMessagesFailureAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_FAILURE,
   props<{ error: ErrorInterface }>()
 );
