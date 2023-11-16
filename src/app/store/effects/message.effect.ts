@@ -5,7 +5,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
-import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
+import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
 import {
   createMessageAction,
@@ -26,7 +26,7 @@ export class MessageEffects {
       ofType(getMessagesAction),
       switchMap(({ roomId }) =>
         this.messagesService.listMessages(roomId).pipe(
-          map((payload: getMessagesResponseInterface) =>
+          map((payload: listMessagesResponseInterface) =>
             getMessagesSuccessAction({ payload })
           ),
 
@@ -46,7 +46,7 @@ export class MessageEffects {
       ofType(getMessagesWithOffsetAction),
       switchMap(({ roomId, offset }) =>
         this.messagesService.listMessages(roomId, offset).pipe(
-          map((payload: getMessagesResponseInterface) =>
+          map((payload: listMessagesResponseInterface) =>
             getMessagesWithOffsetSuccessAction({ payload })
           ),
 
