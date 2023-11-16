@@ -1,13 +1,13 @@
 // TODO: Not used yet, but will be used in the future
 import { AuthStateInterface } from './authState.interface';
 import { MessageStateInterface } from './messageState.interface';
-import { RoomsStateInterface } from './roomsState.interface';
+import { RoomStateInterface } from './roomState.interface';
 import { UserStateInterface } from './userState.interface';
 
 export interface AppStateInterface {
   auth: AuthStateInterface;
   user: UserStateInterface;
-  room: RoomsStateInterface;
+  room: RoomStateInterface;
   message: MessageStateInterface;
 }
 
