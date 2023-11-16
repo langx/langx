@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ActionTypes } from 'src/app/store/actions/message.actiontypes';
+import { ActionTypes } from 'src/app/store/actions/types/message.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';

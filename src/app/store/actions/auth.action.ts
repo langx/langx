@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ActionTypes } from 'src/app/store/actions/auth.actiontypes';
+import { ActionTypes } from 'src/app/store/actions/types/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
