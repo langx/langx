@@ -20,10 +20,10 @@ export const totalSelector = createSelector(
   (messageState: MessageStateInterface) => messageState.room?.total
 );
 
-// export const userDataSelector = createSelector(
-//   messageFeatureSelector,
-//   (messageState: MessageStateInterface) => messageState.room?.userData
-// );
+export const userDataSelector = createSelector(
+  messageFeatureSelector,
+  (messageState: MessageStateInterface) => messageState.room?.userData
+);
 
 export const errorSelector = createSelector(
   messageFeatureSelector,
