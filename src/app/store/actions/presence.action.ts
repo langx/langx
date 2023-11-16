@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ActionTypes } from 'src/app/store/actions/presence.actiontypes';
+import { ActionTypes } from 'src/app/store/actions/types/presence.actiontypes';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 

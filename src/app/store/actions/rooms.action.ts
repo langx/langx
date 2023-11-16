@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-import { ActionTypes } from 'src/app/store/actions/rooms.actiontypes';
+import { ActionTypes } from 'src/app/store/actions/types/rooms.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 
