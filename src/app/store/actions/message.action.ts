@@ -5,6 +5,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Get Messages Actions
 export const getMessagesAction = createAction(
@@ -53,4 +54,15 @@ export const createMessageSuccessAction = createAction(
 export const createMessageFailureAction = createAction(
   ActionTypes.CREATE_MESSAGE_FAILURE,
   props<{ error: ErrorInterface }>()
+);
+
+// Activate/Deactivate Room Actions
+export const activateRoomAction = createAction(
+  ActionTypes.ACTIVATE_ROOM,
+  props<{ payload: RoomExtendedInterface }>()
+);
+
+export const deactivateRoomAction = createAction(
+  ActionTypes.DEACTIVATE_ROOM,
+  props<{ payload: RoomExtendedInterface }>()
 );

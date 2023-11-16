@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
+import { deactivateRoomAction } from '../actions/message.action';
 import {
   getRoomsAction,
   getRoomsFailureAction,
@@ -23,8 +24,6 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
-  activateRoomAction,
-  deactivateRoomAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {

@@ -46,7 +46,6 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
-  activateRoomAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -298,18 +297,6 @@ export class RoomEffects {
     () =>
       this.actions$.pipe(
         ofType(createRoomSuccessAction, getRoomSuccessAction),
-        tap(({ payload }) => {
-          const roomId = payload.$id;
-          this.router.navigate(['/', 'home', 'chat', roomId]);
-        })
-      ),
-    { dispatch: false }
-  );
-
-  redirectAfterActivateRoom$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(activateRoomAction),
         tap(({ payload }) => {
           const roomId = payload.$id;
           this.router.navigate(['/', 'home', 'chat', roomId]);
