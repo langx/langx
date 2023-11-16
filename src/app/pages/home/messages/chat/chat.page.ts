@@ -11,7 +11,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomWithUserData } from 'src/app/models/Room';
-import { roomSelector } from 'src/app/store/selectors/room.selector';
+import { activeRoomSelector } from 'src/app/store/selectors/room.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
@@ -36,7 +36,7 @@ export class ChatPage implements OnInit {
   isLoadingOverlayActive = false;
   form: FormGroup;
 
-  room$: Observable<RoomWithUserData | null>;
+  activeRoom$: Observable<RoomWithUserData | null>;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
@@ -75,14 +75,14 @@ export class ChatPage implements OnInit {
   initValues() {
     this.roomId = this.route.snapshot.paramMap.get('id');
 
-    this.room$ = this.store.pipe(select(roomSelector));
+    this.activeRoom$ = this.store.pipe(select(activeRoomSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
     // Check room$ and currentUser$ for null
-    this.room$.subscribe((room) => {
+    this.activeRoom$.subscribe((room) => {
       if (!room) {
         this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
       } else {
