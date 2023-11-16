@@ -6,7 +6,7 @@
         (click)="goProfile(user.$id)"
         style="width: 40px; height: 40px"
       >
-        <img [src]="user?.profilePhoto" />
+        <img [src]="(user$ | async)?.profilePhoto" />
       </ion-avatar>
     </ion-buttons>
     <ion-buttons slot="end">
@@ -14,7 +14,9 @@
         <ion-icon slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title (click)="goProfile(user.$id)">{{user?.name}}</ion-title>
+    <ion-title (click)="goProfile(user.$id)"
+      >{{(user$ | async)?.name}}</ion-title
+    >
   </ion-toolbar>
 </ion-header>
 

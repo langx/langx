@@ -26,6 +26,7 @@ import {
   isLoadingSelector,
   messagesSelector,
   totalSelector,
+  userDataSelector,
 } from 'src/app/store/selectors/message.selector';
 
 @Component({
@@ -39,7 +40,7 @@ export class ChatPage implements OnInit {
   isLoadingOverlayActive = false;
   form: FormGroup;
 
-  activeRoom$: Observable<RoomExtendedInterface | null>;
+  user$: Observable<User | null>;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
@@ -82,7 +83,7 @@ export class ChatPage implements OnInit {
   initValues() {
     this.roomId = this.route.snapshot.paramMap.get('id');
 
-    this.activeRoom$ = this.store.pipe(select(activeRoomSelector));
+    this.user$ = this.store.pipe(select(userDataSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
@@ -193,6 +194,7 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(300);
   }
 
+  // TODO: Fix this bug
   // Navigate to user profile page
   goProfile(uid: string) {
     console.log('goProfile clicked');
