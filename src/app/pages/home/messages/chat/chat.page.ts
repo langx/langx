@@ -100,7 +100,16 @@ export class ChatPage implements OnInit {
     this.room$
       .subscribe((room) => {
         if (!room) {
-          this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
+          this.currentUser$
+            .subscribe((currentUser) => {
+              this.store.dispatch(
+                getRoomByIdAction({
+                  currentUserId: currentUser.$id,
+                  roomId: this.roomId,
+                })
+              );
+            })
+            .unsubscribe();
         }
       })
       .unsubscribe();

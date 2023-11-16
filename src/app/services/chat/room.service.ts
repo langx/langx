@@ -38,10 +38,6 @@ export class RoomService {
   getRoomById(roomId: string): Observable<RoomExtendedInterface | null> {
     return from(
       this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId)
-    ).pipe(
-      switchMap((room: Room) => {
-        return this.fillRoomWithUserData(room, this.cUserId);
-      })
     );
   }
 
