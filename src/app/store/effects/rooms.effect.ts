@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
+import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import {
   getRoomsAction,
@@ -36,7 +36,7 @@ export class RoomsEffects {
       ofType(getRoomsAction),
       switchMap(({ currentUserId }) =>
         this.roomService.listRooms(currentUserId).pipe(
-          map((payload: getRoomsResponseInterface) =>
+          map((payload: listRoomsResponseInterface) =>
             getRoomsSuccessAction({ payload })
           ),
 
@@ -56,7 +56,7 @@ export class RoomsEffects {
       ofType(getRoomsWithOffsetAction),
       switchMap(({ currentUserId, offset }) =>
         this.roomService.listRooms(currentUserId, offset).pipe(
-          map((payload: getRoomsResponseInterface) =>
+          map((payload: listRoomsResponseInterface) =>
             // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
             // It may checked first all cureent rooms array,
             // Then order all of them by last message timestamp
@@ -99,7 +99,7 @@ export class RoomsEffects {
       ofType(getRoomAction),
       switchMap(({ currentUserId, userId }) =>
         this.roomService.getRoom(currentUserId, userId).pipe(
-          map((data: getRoomsResponseInterface) => {
+          map((data: listRoomsResponseInterface) => {
             if (data.total === 1) {
               const payload: RoomExtendedInterface = data.documents[0];
               return getRoomSuccessAction({ payload });
