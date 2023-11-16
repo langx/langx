@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/user.actiontypes';
-import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
+import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 
@@ -14,7 +14,7 @@ export const getUsersAction = createAction(
 
 export const getUsersSuccessAction = createAction(
   ActionTypes.GET_USERS_SUCCESS,
-  props<{ payload: getUsersResponseInterface }>()
+  props<{ payload: listUsersResponseInterface }>()
 );
 
 export const getUsersFailureAction = createAction(
@@ -31,7 +31,7 @@ export const getUsersWithOffsetAction = createAction(
 
 export const getUsersWithOffsetSuccessAction = createAction(
   ActionTypes.GET_USERS_WITH_OFFSET_SUCCESS,
-  props<{ payload: getUsersResponseInterface }>()
+  props<{ payload: listUsersResponseInterface }>()
 );
 
 export const getUsersWithOffsetFailureAction = createAction(

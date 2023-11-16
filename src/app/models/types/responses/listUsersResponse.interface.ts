@@ -1,6 +1,6 @@
 import { User } from 'src/app/models/User';
 
-export interface getUsersResponseInterface {
+export interface listUsersResponseInterface {
   total: number;
   documents: User[];
 }
