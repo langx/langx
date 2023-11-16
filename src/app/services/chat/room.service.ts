@@ -58,27 +58,29 @@ export class RoomService {
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
-    ).pipe(
-      switchMap((response: listRoomsResponseInterface) => {
-        if (response.documents.length > 0) {
-          const room: Room = response.documents[0];
-          return this.fillRoomWithUserData(room, currentUserId).pipe(
-            map(
-              (
-                roomWithUserData: RoomExtendedInterface
-              ): listRoomsResponseInterface => {
-                return {
-                  ...response,
-                  documents: [roomWithUserData],
-                };
-              }
-            )
-          );
-        } else {
-          return of(response);
-        }
-      })
     );
+    // TODO: Take a look here!
+    // .pipe(
+    //   switchMap((response: listRoomsResponseInterface) => {
+    //     if (response.documents.length > 0) {
+    //       const room: Room = response.documents[0];
+    //       return this.fillRoomWithUserData(room, currentUserId).pipe(
+    //         map(
+    //           (
+    //             roomWithUserData: RoomExtendedInterface
+    //           ): listRoomsResponseInterface => {
+    //             return {
+    //               ...response,
+    //               documents: [roomWithUserData],
+    //             };
+    //           }
+    //         )
+    //       );
+    //     } else {
+    //       return of(response);
+    //     }
+    //   })
+    // );
   }
 
   createRoom(
@@ -134,23 +136,25 @@ export class RoomService {
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
-    ).pipe(
-      switchMap((payload: listRoomsResponseInterface) => {
-        if (payload.documents.length > 0) {
-          const roomObservables = payload.documents.map((room: Room) =>
-            this.fillRoomWithUserData(room, currentUserId)
-          );
-          return forkJoin(roomObservables).pipe(
-            map((rooms) => {
-              payload.documents = rooms;
-              return payload;
-            })
-          );
-        } else {
-          return of(payload);
-        }
-      })
     );
+    // TODO: Take a look here!
+    // .pipe(
+    //   switchMap((payload: listRoomsResponseInterface) => {
+    //     if (payload.documents.length > 0) {
+    //       const roomObservables = payload.documents.map((room: Room) =>
+    //         this.fillRoomWithUserData(room, currentUserId)
+    //       );
+    //       return forkJoin(roomObservables).pipe(
+    //         map((rooms) => {
+    //           payload.documents = rooms;
+    //           return payload;
+    //         })
+    //       );
+    //     } else {
+    //       return of(payload);
+    //     }
+    //   })
+    // );
   }
 
   //
