@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
-import { RoomsStateInterface } from 'src/app/models/types/states/roomsState.interface';
+import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
 import {
   getRoomsAction,
   getRoomsFailureAction,
@@ -26,7 +26,7 @@ import {
   selectRoomAction,
 } from 'src/app/store/actions/room.action';
 
-const initialState: RoomsStateInterface = {
+const initialState: RoomStateInterface = {
   isLoading: false,
   total: null,
   error: null,
@@ -34,12 +34,12 @@ const initialState: RoomsStateInterface = {
   activeRoom: null,
 };
 
-const roomsReducer = createReducer(
+const roomReducer = createReducer(
   initialState,
   // Get Rooms Reducers
   on(
     getRoomsAction,
-    (state): RoomsStateInterface => ({
+    (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -47,7 +47,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomsFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -55,7 +55,7 @@ const roomsReducer = createReducer(
   ),
   on(
     fillRoomsWithUserDataFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -63,7 +63,7 @@ const roomsReducer = createReducer(
   ),
   on(
     fillRoomsWithMessagesFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -71,7 +71,7 @@ const roomsReducer = createReducer(
   ),
   on(
     fillRoomsWithMessagesSuccessAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       total: action.payload?.total,
@@ -80,7 +80,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomsWithOffsetAction,
-    (state): RoomsStateInterface => ({
+    (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -88,7 +88,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomsWithOffsetFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -96,7 +96,7 @@ const roomsReducer = createReducer(
   ),
   on(
     fillRoomsWithOffsetWithUserDataFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -104,7 +104,7 @@ const roomsReducer = createReducer(
   ),
   on(
     fillRoomsWithOffsetWithMessagesFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -112,7 +112,7 @@ const roomsReducer = createReducer(
   ),
   on(
     fillRoomsWithOffsetWithMessagesSuccessAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       total: action.payload?.total,
@@ -122,7 +122,7 @@ const roomsReducer = createReducer(
   // Get Room By Id Reducers
   on(
     getRoomByIdAction,
-    (state): RoomsStateInterface => ({
+    (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -131,7 +131,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomByIdSuccessAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       activeRoom: action.payload,
@@ -139,7 +139,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomByIdFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -148,7 +148,7 @@ const roomsReducer = createReducer(
   // Get Room Reducers
   on(
     getRoomAction,
-    (state): RoomsStateInterface => ({
+    (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -157,7 +157,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomSuccessAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       activeRoom: action.payload,
@@ -165,7 +165,7 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -174,7 +174,7 @@ const roomsReducer = createReducer(
   // Create Room Reducers
   on(
     createRoomAction,
-    (state): RoomsStateInterface => ({
+    (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -182,7 +182,7 @@ const roomsReducer = createReducer(
   ),
   on(
     createRoomSuccessAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       activeRoom: action.payload,
@@ -190,7 +190,7 @@ const roomsReducer = createReducer(
   ),
   on(
     createRoomFailureAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
@@ -199,13 +199,13 @@ const roomsReducer = createReducer(
   // Select Room Reducers
   on(
     selectRoomAction,
-    (state, action): RoomsStateInterface => ({
+    (state, action): RoomStateInterface => ({
       ...state,
       activeRoom: action.payload,
     })
   )
 );
 
-export function roomsReducers(state: RoomsStateInterface, action: Action) {
-  return roomsReducer(state, action);
+export function roomReducers(state: RoomStateInterface, action: Action) {
+  return roomReducer(state, action);
 }
