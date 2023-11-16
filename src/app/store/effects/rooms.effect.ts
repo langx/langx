@@ -9,6 +9,14 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 import { RoomWithUserData } from 'src/app/models/Room';
 import {
+  getRoomsAction,
+  getRoomsFailureAction,
+  getRoomsSuccessAction,
+  getRoomsWithOffsetAction,
+  getRoomsWithOffsetFailureAction,
+  getRoomsWithOffsetSuccessAction,
+} from 'src/app/store/actions/rooms.action';
+import {
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
@@ -20,17 +28,9 @@ import {
   getRoomSuccessAction,
   selectRoomAction,
 } from 'src/app/store/actions/room.action';
-import {
-  getRoomsAction,
-  getRoomsFailureAction,
-  getRoomsSuccessAction,
-  getRoomsWithOffsetAction,
-  getRoomsWithOffsetFailureAction,
-  getRoomsWithOffsetSuccessAction,
-} from 'src/app/store/actions/rooms.action';
 
 @Injectable()
-export class RoomEffects {
+export class RoomsEffects {
   getRoomById$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomByIdAction),

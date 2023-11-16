@@ -5,7 +5,7 @@ import { Observable, combineLatest, map } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
-import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
+import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/rooms.selector';
 import { User } from 'src/app/models/User';
 import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';

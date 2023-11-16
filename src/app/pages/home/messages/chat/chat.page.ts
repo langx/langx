@@ -11,7 +11,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomWithUserData } from 'src/app/models/Room';
-import { activeRoomSelector } from 'src/app/store/selectors/room.selector';
+import { activeRoomSelector } from 'src/app/store/selectors/rooms.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
