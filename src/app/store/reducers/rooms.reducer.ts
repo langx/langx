@@ -6,10 +6,12 @@ import {
   getRoomsFailureAction,
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
-  getRoomsWithOffsetSuccessAction,
   fillRoomsWithMessagesSuccessAction,
   fillRoomsWithMessagesFailureAction,
   fillRoomsWithUserDataFailureAction,
+  fillRoomsWithOffsetWithMessagesSuccessAction,
+  fillRoomsWithOffsetWithUserDataFailureAction,
+  fillRoomsWithOffsetWithMessagesFailureAction,
 } from 'src/app/store/actions/rooms.action';
 import {
   createRoomAction,
@@ -44,15 +46,6 @@ const roomsReducer = createReducer(
     })
   ),
   on(
-    fillRoomsWithMessagesSuccessAction,
-    (state, action): RoomsStateInterface => ({
-      ...state,
-      isLoading: false,
-      total: action.payload?.total,
-      rooms: action.payload?.documents,
-    })
-  ),
-  on(
     getRoomsFailureAction,
     (state, action): RoomsStateInterface => ({
       ...state,
@@ -77,6 +70,15 @@ const roomsReducer = createReducer(
     })
   ),
   on(
+    fillRoomsWithMessagesSuccessAction,
+    (state, action): RoomsStateInterface => ({
+      ...state,
+      isLoading: false,
+      total: action.payload?.total,
+      rooms: action.payload?.documents,
+    })
+  ),
+  on(
     getRoomsWithOffsetAction,
     (state): RoomsStateInterface => ({
       ...state,
@@ -85,20 +87,36 @@ const roomsReducer = createReducer(
     })
   ),
   on(
-    getRoomsWithOffsetSuccessAction,
-    (state, action): RoomsStateInterface => ({
-      ...state,
-      isLoading: false,
-      total: action.payload?.total,
-      rooms: [...state.rooms, ...action.payload?.documents],
-    })
-  ),
-  on(
     getRoomsWithOffsetFailureAction,
     (state, action): RoomsStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+  on(
+    fillRoomsWithOffsetWithUserDataFailureAction,
+    (state, action): RoomsStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    fillRoomsWithOffsetWithMessagesFailureAction,
+    (state, action): RoomsStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    fillRoomsWithOffsetWithMessagesSuccessAction,
+    (state, action): RoomsStateInterface => ({
+      ...state,
+      isLoading: false,
+      total: action.payload?.total,
+      rooms: [...state.rooms, ...action.payload?.documents],
     })
   ),
   // Get Room By Id Reducers

@@ -31,6 +31,10 @@ import {
   fillRoomsWithUserDataFailureAction,
   fillRoomsWithMessagesSuccessAction,
   fillRoomsWithMessagesFailureAction,
+  fillRoomsWithOffsetWithUserDataSuccessAction,
+  fillRoomsWithOffsetWithUserDataFailureAction,
+  fillRoomsWithOffsetWithMessagesSuccessAction,
+  fillRoomsWithOffsetWithMessagesFailureAction,
 } from 'src/app/store/actions/rooms.action';
 import {
   createRoomAction,
@@ -61,29 +65,6 @@ export class RoomsEffects {
               message: errorResponse.message,
             };
             return of(getRoomsFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
-  getRoomsWithOffset$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getRoomsWithOffsetAction),
-      switchMap(({ currentUserId, offset }) =>
-        this.roomService.listRooms(currentUserId, offset).pipe(
-          map((payload: listRoomsResponseInterface) =>
-            // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
-            // It may checked first all cureent rooms array,
-            // Then order all of them by last message timestamp
-            getRoomsWithOffsetSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getRoomsWithOffsetFailureAction({ error }));
           })
         )
       )
@@ -152,6 +133,96 @@ export class RoomsEffects {
               message: errorResponse.message,
             };
             return of(fillRoomsWithMessagesFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  getRoomsWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomsWithOffsetAction),
+      switchMap(({ currentUserId, offset }) =>
+        this.roomService.listRooms(currentUserId, offset).pipe(
+          map((payload: listRoomsResponseInterface) =>
+            // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
+            // It may checked first all cureent rooms array,
+            // Then order all of them by last message timestamp
+            getRoomsWithOffsetSuccessAction({ payload, currentUserId })
+          ),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getRoomsWithOffsetFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  fillRoomsWithOffsetWithUserData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomsWithOffsetSuccessAction),
+      mergeMap((action) =>
+        from(action.payload.documents).pipe(
+          mergeMap((room: any) => {
+            const userId = room.users.filter(
+              (id: string) => id !== action.currentUserId
+            )[0];
+            return this.userService
+              .getUserDoc2(userId)
+              .pipe(map((userData) => ({ ...room, userData })));
+          }),
+          toArray(),
+          map((roomsWithUserData) =>
+            fillRoomsWithOffsetWithUserDataSuccessAction({
+              payload: {
+                total: action.payload.total,
+                documents: roomsWithUserData,
+              },
+            })
+          ),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(fillRoomsWithOffsetWithUserDataFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  fillRoomsWithOffsetWithMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fillRoomsWithOffsetWithUserDataSuccessAction),
+      mergeMap((action) =>
+        from(action.payload.documents).pipe(
+          mergeMap((room: any) => {
+            return this.messageService.listMessages(room.$id).pipe(
+              map((messages) => ({
+                ...room,
+                total: messages.total,
+                messages: messages.documents,
+              }))
+            );
+          }),
+          toArray(),
+          map((roomsWithMessages) =>
+            fillRoomsWithOffsetWithMessagesSuccessAction({
+              payload: {
+                total: action.payload.total,
+                documents: roomsWithMessages,
+              },
+            })
+          ),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(fillRoomsWithOffsetWithMessagesFailureAction({ error }));
           })
         )
       )
