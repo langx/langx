@@ -11,15 +11,12 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-import { activeRoomSelector } from 'src/app/store/selectors/room.selector';
-import {
-  deactivateRoomAction,
-  getRoomByIdAction,
-} from 'src/app/store/actions/room.action';
+import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
   getMessagesAction,
   getMessagesWithOffsetAction,
+  deactivateRoomAction,
 } from 'src/app/store/actions/message.action';
 import {
   errorSelector,

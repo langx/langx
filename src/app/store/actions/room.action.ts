@@ -53,34 +53,3 @@ export const createRoomFailureAction = createAction(
   ActionTypes.CREATE_ROOM_FAILURE,
   props<{ error: ErrorInterface }>()
 );
-
-// Activate/Deactivate Room Actions
-export const activateRoomAction = createAction(
-  ActionTypes.ACTIVATE_ROOM,
-  props<{ payload: RoomExtendedInterface }>()
-);
-
-export const activateRoomSuccessAction = createAction(
-  ActionTypes.ACTIVATE_ROOM_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
-);
-
-export const activateRoomFailureAction = createAction(
-  ActionTypes.ACTIVATE_ROOM_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
-export const deactivateRoomAction = createAction(
-  ActionTypes.DEACTIVATE_ROOM,
-  props<{ payload: RoomExtendedInterface }>()
-);
-
-export const deactivateRoomSuccessAction = createAction(
-  ActionTypes.DEACTIVATE_ROOM_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
-);
-
-export const deactivateRoomFailureAction = createAction(
-  ActionTypes.DEACTIVATE_ROOM_FAILURE,
-  props<{ error: ErrorInterface }>()
-);

@@ -2,13 +2,13 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import {
-  activateRoomAction,
-  deactivateRoomAction,
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
 } from '../actions/room.action';
 import {
+  activateRoomAction,
+  deactivateRoomAction,
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
