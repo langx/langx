@@ -1,14 +1,26 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import {
+  catchError,
+  from,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+  tap,
+  toArray,
+} from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
+import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import {
+  fillRoomsWithUserDataSuccessAction,
+  fillRoomsWithUserDataFailureAction,
   getRoomsAction,
   getRoomsFailureAction,
   getRoomsSuccessAction,
@@ -37,7 +49,7 @@ export class RoomsEffects {
       switchMap(({ currentUserId }) =>
         this.roomService.listRooms(currentUserId).pipe(
           map((payload: listRoomsResponseInterface) =>
-            getRoomsSuccessAction({ payload })
+            getRoomsSuccessAction({ payload, currentUserId })
           ),
 
           catchError((errorResponse: HttpErrorResponse) => {
@@ -70,6 +82,40 @@ export class RoomsEffects {
             return of(getRoomsWithOffsetFailureAction({ error }));
           })
         )
+      )
+    )
+  );
+
+  fillRoomsWithUserData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomsSuccessAction),
+      mergeMap((action) =>
+        from(action.payload.documents).pipe(
+          mergeMap((room: any) => {
+            const userId = room.users.filter(
+              (id: string) => id !== action.currentUserId
+            )[0];
+            return this.userService.getUserDoc2(userId).pipe(
+              map((userData) => ({ ...room, userData })),
+
+              catchError((errorResponse: HttpErrorResponse) => {
+                const error: ErrorInterface = {
+                  message: errorResponse.message,
+                };
+                return of(getRoomsWithOffsetFailureAction({ error }));
+              })
+            );
+          }),
+          toArray()
+        )
+      ),
+      map((roomsWithUserData) =>
+        fillRoomsWithUserDataSuccessAction({
+          payload: {
+            total: roomsWithUserData.length,
+            documents: roomsWithUserData,
+          },
+        })
       )
     )
   );
@@ -166,6 +212,7 @@ export class RoomsEffects {
   constructor(
     private actions$: Actions,
     private router: Router,
-    private roomService: RoomService
+    private roomService: RoomService,
+    private userService: UserService
   ) {}
 }
