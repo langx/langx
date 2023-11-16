@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/rooms.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
+import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 
 // Get Rooms Actions
 export const getRoomsAction = createAction(
@@ -13,7 +13,7 @@ export const getRoomsAction = createAction(
 
 export const getRoomsSuccessAction = createAction(
   ActionTypes.GET_ROOMS_SUCCESS,
-  props<{ payload: getRoomsResponseInterface }>()
+  props<{ payload: listRoomsResponseInterface }>()
 );
 
 export const getRoomsFailureAction = createAction(
@@ -29,7 +29,7 @@ export const getRoomsWithOffsetAction = createAction(
 
 export const getRoomsWithOffsetSuccessAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET_SUCCESS,
-  props<{ payload: getRoomsResponseInterface }>()
+  props<{ payload: listRoomsResponseInterface }>()
 );
 
 export const getRoomsWithOffsetFailureAction = createAction(

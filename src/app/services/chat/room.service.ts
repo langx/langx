@@ -18,7 +18,7 @@ import { UserService } from 'src/app/services/user/user.service';
 import { Room } from 'src/app/models/Room';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { User } from 'src/app/models/User';
-import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
+import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +48,7 @@ export class RoomService {
   getRoom(
     currentUserId: string,
     userId: string
-  ): Observable<getRoomsResponseInterface | null> {
+  ): Observable<listRoomsResponseInterface | null> {
     // Define queries
     const queries: any[] = [];
 
@@ -59,14 +59,14 @@ export class RoomService {
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
-      switchMap((response: getRoomsResponseInterface) => {
+      switchMap((response: listRoomsResponseInterface) => {
         if (response.documents.length > 0) {
           const room: Room = response.documents[0];
           return this.fillRoomWithUserData(room, currentUserId).pipe(
             map(
               (
                 roomWithUserData: RoomExtendedInterface
-              ): getRoomsResponseInterface => {
+              ): listRoomsResponseInterface => {
                 return {
                   ...response,
                   documents: [roomWithUserData],
@@ -118,7 +118,7 @@ export class RoomService {
   listRooms(
     currentUserId: string,
     offset?: number
-  ): Observable<getRoomsResponseInterface> {
+  ): Observable<listRoomsResponseInterface> {
     // Define queries
     const queries: any[] = [];
 
@@ -135,7 +135,7 @@ export class RoomService {
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
-      switchMap((payload: getRoomsResponseInterface) => {
+      switchMap((payload: listRoomsResponseInterface) => {
         if (payload.documents.length > 0) {
           const roomObservables = payload.documents.map((room: Room) =>
             this.fillRoomWithUserData(room, currentUserId)
