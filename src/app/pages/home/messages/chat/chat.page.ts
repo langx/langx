@@ -88,16 +88,17 @@ export class ChatPage implements OnInit {
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
+    // TODO: Take a look here!
     // Check room$ and currentUser$ for null
-    this.activeRoom$
-      .subscribe((room) => {
-        if (!room) {
-          this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
-        } else {
-          this.user = room.userData;
-        }
-      })
-      .unsubscribe();
+    // this.activeRoom$
+    //   .subscribe((room) => {
+    //     if (!room) {
+    //       this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
+    //     } else {
+    //       this.user = room.userData;
+    //     }
+    //   })
+    //   .unsubscribe();
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
