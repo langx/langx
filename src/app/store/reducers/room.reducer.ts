@@ -120,32 +120,6 @@ const roomReducer = createReducer(
       rooms: [...state.rooms, ...action.payload?.documents],
     })
   ),
-  // Get Room By Id Reducers
-  on(
-    getRoomByIdAction,
-    (state): RoomStateInterface => ({
-      ...state,
-      isLoading: true,
-      error: null,
-      activeRoom: null,
-    })
-  ),
-  on(
-    getRoomByIdSuccessAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      activeRoom: action.payload,
-    })
-  ),
-  on(
-    getRoomByIdFailureAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
   // Get Room Reducers
   on(
     getRoomAction,
@@ -197,21 +171,6 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // Activate/Deactivate Room Reducers
-  on(
-    activateRoomAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      activeRoom: action.payload,
-    })
-  ),
-  on(
-    deactivateRoomAction,
-    (state): RoomStateInterface => ({
-      ...state,
-      activeRoom: null,
-    })
-  )
 );
 
 export function roomReducers(state: RoomStateInterface, action: Action) {

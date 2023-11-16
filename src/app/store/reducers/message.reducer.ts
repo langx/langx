@@ -2,6 +2,13 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import {
+  activateRoomAction,
+  deactivateRoomAction,
+  getRoomByIdAction,
+  getRoomByIdFailureAction,
+  getRoomByIdSuccessAction,
+} from '../actions/room.action';
+import {
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
@@ -16,6 +23,7 @@ import {
 const initialState: MessageStateInterface = {
   isLoading: false,
   messages: null,
+  userData: null,
   total: null,
   error: null,
 };
@@ -95,6 +103,55 @@ const messageReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+  // Get Room By Id Reducers
+  // on(
+  //   getRoomByIdAction,
+  //   (state): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: true,
+  //     error: null,
+  //     messages: null,
+  //     total: null,
+  //     userData: null,
+  //   })
+  // ),
+  // on(
+  //   getRoomByIdSuccessAction,
+  //   (state, action): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     messages: action.payload.messages,
+  //     total: action.payload.total,
+  //     userData: action.payload.userData,
+  //   })
+  // ),
+  // on(
+  //   getRoomByIdFailureAction,
+  //   (state, action): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // ),
+  // Activate/Deactivate Room Reducers
+  on(
+    activateRoomAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      messages: action.payload.messages,
+      total: action.payload.total,
+      userData: action.payload.userData,
+    })
+  ),
+  on(
+    deactivateRoomAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      messages: null,
+      total: null,
+      userData: null,
     })
   )
 );
