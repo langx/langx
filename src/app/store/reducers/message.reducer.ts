@@ -5,7 +5,7 @@ import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
-} from '../actions/room.action';
+} from 'src/app/store/actions/room.action';
 import {
   activateRoomAction,
   deactivateRoomAction,
@@ -113,35 +113,31 @@ const messageReducer = createReducer(
     })
   ),
   // Get Room By Id Reducers
-  // on(
-  //   getRoomByIdAction,
-  //   (state): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: true,
-  //     error: null,
-  //     messages: null,
-  //     total: null,
-  //     userData: null,
-  //   })
-  // ),
-  // on(
-  //   getRoomByIdSuccessAction,
-  //   (state, action): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     messages: action.payload.messages,
-  //     total: action.payload.total,
-  //     userData: action.payload.userData,
-  //   })
-  // ),
-  // on(
-  //   getRoomByIdFailureAction,
-  //   (state, action): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
+  on(
+    getRoomByIdAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+      room: null,
+    })
+  ),
+  on(
+    getRoomByIdSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: action.payload,
+    })
+  ),
+  on(
+    getRoomByIdFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
   // Activate Room Reducers
   on(
     activateRoomAction,

@@ -47,7 +47,7 @@ export class ChatPage implements OnInit {
 
   isTyping: boolean = false;
   roomId: string;
-  user: User;
+  user: User; // TODO: Remove this
 
   model = {
     icon: 'chatbubbles-outline',
@@ -97,15 +97,13 @@ export class ChatPage implements OnInit {
 
     // TODO: Take a look here!
     // Check room$ and currentUser$ for null
-    // this.activeRoom$
-    //   .subscribe((room) => {
-    //     if (!room) {
-    //       this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
-    //     } else {
-    //       this.user = room.userData;
-    //     }
-    //   })
-    //   .unsubscribe();
+    this.room$
+      .subscribe((room) => {
+        if (!room) {
+          this.store.dispatch(getRoomByIdAction({ roomId: this.roomId }));
+        }
+      })
+      .unsubscribe();
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
