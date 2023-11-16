@@ -130,9 +130,13 @@ export class RoomsEffects {
       mergeMap((action) =>
         from(action.payload.documents).pipe(
           mergeMap((room: any) => {
-            return this.messageService
-              .listMessages(room.$id)
-              .pipe(map((messages) => ({ ...room, messages })));
+            return this.messageService.listMessages(room.$id).pipe(
+              map((messages) => ({
+                ...room,
+                total: messages.total,
+                messages: messages.documents,
+              }))
+            );
           }),
           toArray(),
           map((roomsWithMessages) =>

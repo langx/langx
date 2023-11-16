@@ -4,10 +4,12 @@ import { RoomsStateInterface } from 'src/app/models/types/states/roomsState.inte
 import {
   getRoomsAction,
   getRoomsFailureAction,
-  getRoomsSuccessAction,
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
+  fillRoomsWithMessagesSuccessAction,
+  fillRoomsWithMessagesFailureAction,
+  fillRoomsWithUserDataFailureAction,
 } from 'src/app/store/actions/rooms.action';
 import {
   createRoomAction,
@@ -42,7 +44,7 @@ const roomsReducer = createReducer(
     })
   ),
   on(
-    getRoomsSuccessAction,
+    fillRoomsWithMessagesSuccessAction,
     (state, action): RoomsStateInterface => ({
       ...state,
       isLoading: false,
@@ -52,6 +54,22 @@ const roomsReducer = createReducer(
   ),
   on(
     getRoomsFailureAction,
+    (state, action): RoomsStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    fillRoomsWithUserDataFailureAction,
+    (state, action): RoomsStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    fillRoomsWithMessagesFailureAction,
     (state, action): RoomsStateInterface => ({
       ...state,
       isLoading: false,
