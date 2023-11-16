@@ -24,7 +24,7 @@ import {
 
 const initialState: RoomsStateInterface = {
   isLoading: false,
-  room: null,
+  activeRoom: null,
   rooms: null,
   total: null,
   error: null,
@@ -90,7 +90,7 @@ const roomsReducer = createReducer(
       ...state,
       isLoading: true,
       error: null,
-      room: null,
+      activeRoom: null,
     })
   ),
   on(
@@ -98,7 +98,7 @@ const roomsReducer = createReducer(
     (state, action): RoomsStateInterface => ({
       ...state,
       isLoading: false,
-      room: action.payload,
+      activeRoom: action.payload,
     })
   ),
   on(
@@ -116,7 +116,7 @@ const roomsReducer = createReducer(
       ...state,
       isLoading: true,
       error: null,
-      room: null,
+      activeRoom: null,
     })
   ),
   on(
@@ -124,7 +124,7 @@ const roomsReducer = createReducer(
     (state, action): RoomsStateInterface => ({
       ...state,
       isLoading: false,
-      room: action.payload,
+      activeRoom: action.payload,
     })
   ),
   on(
@@ -149,7 +149,7 @@ const roomsReducer = createReducer(
     (state, action): RoomsStateInterface => ({
       ...state,
       isLoading: false,
-      room: action.payload,
+      activeRoom: action.payload,
     })
   ),
   on(
@@ -165,7 +165,7 @@ const roomsReducer = createReducer(
     selectRoomAction,
     (state, action): RoomsStateInterface => ({
       ...state,
-      room: action.payload,
+      activeRoom: action.payload,
     })
   )
 );
