@@ -47,3 +47,14 @@ export const fillRoomsWithUserDataFailureAction = createAction(
   ActionTypes.FILL_ROOMS_WITH_USER_DATA_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Fill Rooms With Messages Actions
+export const fillRoomsWithMessagesSuccessAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_MESSAGES_SUCCESS,
+  props<{ payload: listRoomsResponseInterface }>()
+);
+
+export const fillRoomsWithMessagesFailureAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_MESSAGES_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
