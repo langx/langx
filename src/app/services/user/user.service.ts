@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
-import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
+import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -82,7 +82,7 @@ export class UserService {
   listUsers(
     filterData: FilterDataInterface,
     offset?: number
-  ): Observable<getUsersResponseInterface> {
+  ): Observable<listUsersResponseInterface> {
     // Define queries
     const queries: any[] = [];
 

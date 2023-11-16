@@ -6,7 +6,7 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { UserService } from 'src/app/services/user/user.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getUsersResponseInterface } from 'src/app/models/types/responses/getUsersResponse.interface';
+import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 import { User } from 'src/app/models/User';
 import {
   getUsersAction,
@@ -29,7 +29,7 @@ export class UserEffects {
       ofType(getUsersAction),
       switchMap(({ filterData }) =>
         this.userService.listUsers(filterData).pipe(
-          map((payload: getUsersResponseInterface) =>
+          map((payload: listUsersResponseInterface) =>
             getUsersSuccessAction({ payload })
           ),
 
@@ -49,7 +49,7 @@ export class UserEffects {
       ofType(getUsersWithOffsetAction),
       switchMap(({ filterData, offset }) =>
         this.userService.listUsers(filterData, offset).pipe(
-          map((payload: getUsersResponseInterface) =>
+          map((payload: listUsersResponseInterface) =>
             getUsersWithOffsetSuccessAction({ payload })
           ),
 
