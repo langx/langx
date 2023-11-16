@@ -13,7 +13,7 @@ export const getRoomsAction = createAction(
 
 export const getRoomsSuccessAction = createAction(
   ActionTypes.GET_ROOMS_SUCCESS,
-  props<{ payload: listRoomsResponseInterface }>()
+  props<{ payload: listRoomsResponseInterface; currentUserId: string }>()
 );
 
 export const getRoomsFailureAction = createAction(
@@ -34,5 +34,16 @@ export const getRoomsWithOffsetSuccessAction = createAction(
 
 export const getRoomsWithOffsetFailureAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Fill Rooms With User Data Actions
+export const fillRoomsWithUserDataSuccessAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_USER_DATA_SUCCESS,
+  props<{ payload: listRoomsResponseInterface }>()
+);
+
+export const fillRoomsWithUserDataFailureAction = createAction(
+  ActionTypes.FILL_ROOMS_WITH_USER_DATA_FAILURE,
   props<{ error: ErrorInterface }>()
 );
