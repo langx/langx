@@ -10,7 +10,7 @@ import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { RoomWithUserData } from 'src/app/models/Room';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { activeRoomSelector } from 'src/app/store/selectors/rooms.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
@@ -36,7 +36,7 @@ export class ChatPage implements OnInit {
   isLoadingOverlayActive = false;
   form: FormGroup;
 
-  activeRoom$: Observable<RoomWithUserData | null>;
+  activeRoom$: Observable<RoomExtendedInterface | null>;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
