@@ -3,8 +3,8 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export interface RoomsStateInterface {
   isLoading: boolean;
-  activeRoom: RoomWithUserData | null;
-  rooms: RoomWithUserData[] | null;
   total: number;
   error: ErrorInterface | null;
+  rooms: RoomWithUserData[] | null;
+  activeRoom: RoomWithUserData | null;
 }

@@ -24,10 +24,10 @@ import {
 
 const initialState: RoomsStateInterface = {
   isLoading: false,
-  activeRoom: null,
-  rooms: null,
   total: null,
   error: null,
+  rooms: null,
+  activeRoom: null,
 };
 
 const roomsReducer = createReducer(
