@@ -9,4 +9,8 @@ export enum ActionTypes {
   FILL_ROOMS_WITH_USER_DATA_FAILURE = '[Rooms] Fill Rooms With User Data Failure',
   FILL_ROOMS_WITH_MESSAGES_SUCCESS = '[Rooms] Fill Rooms With Messages Success',
   FILL_ROOMS_WITH_MESSAGES_FAILURE = '[Rooms] Fill Rooms With Messages Failure',
+  FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_SUCCESS = '[Rooms] Fill Rooms With Offset With User Data Success',
+  FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_FAILURE = '[Rooms] Fill Rooms With Offset With User Data Failure',
+  FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_SUCCESS = '[Rooms] Fill Rooms With Offset With Messages Success',
+  FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_FAILURE = '[Rooms] Fill Rooms With Offset With Messages Failure',
 }
