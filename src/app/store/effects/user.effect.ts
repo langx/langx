@@ -28,8 +28,8 @@ export class UserEffects {
   getUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersAction),
-      switchMap(({ filterData }) =>
-        this.userService.listUsers(filterData).pipe(
+      switchMap(({ currentUserId, filterData }) =>
+        this.userService.listUsers(currentUserId, filterData).pipe(
           map((payload: listUsersResponseInterface) =>
             getUsersSuccessAction({ payload })
           ),
@@ -48,8 +48,8 @@ export class UserEffects {
   getUsersWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersWithOffsetAction),
-      switchMap(({ filterData, offset }) =>
-        this.userService.listUsers(filterData, offset).pipe(
+      switchMap(({ currentUserId, filterData, offset }) =>
+        this.userService.listUsers(currentUserId, filterData, offset).pipe(
           map((payload: listUsersResponseInterface) =>
             getUsersWithOffsetSuccessAction({ payload })
           ),
