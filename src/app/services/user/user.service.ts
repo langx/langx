@@ -80,6 +80,7 @@ export class UserService {
   }
 
   listUsers(
+    currentUserId: string,
     filterData: FilterDataInterface,
     offset?: number
   ): Observable<listUsersResponseInterface> {
@@ -87,7 +88,7 @@ export class UserService {
     const queries: any[] = [];
 
     // Query for users that are not the current user
-    queries.push(Query.notEqual('$id', this.authService.getUserId()));
+    queries.push(Query.notEqual('$id', currentUserId));
 
     // Query for users descending by last seen
     // TODO: Update this filter for this after presence is implemented

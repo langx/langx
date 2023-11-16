@@ -45,9 +45,15 @@ export class CommunityPage implements OnInit {
   ) {}
 
   async ngOnInit() {
+    // Check Local Storage for filters
     await this.checkLocalStorage();
     await this.checkFilter();
+
+    // Init values
     this.initValues();
+
+    // List Users
+    this.listUsers();
   }
 
   ngOnDestroy() {
@@ -75,9 +81,14 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  async listUsers() {
+  listUsers() {
     const filterData = this.filterData;
-    this.store.dispatch(getUsersAction({ filterData }));
+    this.currentUser$
+      .subscribe((user) => {
+        const currentUserId = user.$id;
+        this.store.dispatch(getUsersAction({ currentUserId, filterData }));
+      })
+      .unsubscribe();
   }
 
   //
@@ -90,9 +101,6 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterDataInterface) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-
-        // List Users
-        this.listUsers();
       });
   }
 
@@ -156,12 +164,18 @@ export class CommunityPage implements OnInit {
         this.total$
           .subscribe((total) => {
             if (offset < total) {
-              this.store.dispatch(
-                getUsersWithOffsetAction({
-                  filterData: this.filterData,
-                  offset,
-                })
-              );
+              this.currentUser$.subscribe((user) => {
+                const currentUserId = user.$id;
+                console.log('Current user: ', currentUserId);
+                const filterData = this.filterData;
+                this.store.dispatch(
+                  getUsersWithOffsetAction({
+                    currentUserId,
+                    filterData,
+                    offset,
+                  })
+                );
+              });
             } else {
               console.log('All users loaded');
             }

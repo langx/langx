@@ -9,7 +9,7 @@ import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 export const getUsersAction = createAction(
   ActionTypes.GET_USERS,
   // TODO: Create interface for this request
-  props<{ filterData: FilterDataInterface }>()
+  props<{ currentUserId: string; filterData: FilterDataInterface }>()
 );
 
 export const getUsersSuccessAction = createAction(
@@ -26,7 +26,11 @@ export const getUsersFailureAction = createAction(
 export const getUsersWithOffsetAction = createAction(
   ActionTypes.GET_USERS_WITH_OFFSET,
   // TODO: Create interface for this request
-  props<{ filterData: FilterDataInterface; offset: number }>()
+  props<{
+    currentUserId: string;
+    filterData: FilterDataInterface;
+    offset: number;
+  }>()
 );
 
 export const getUsersWithOffsetSuccessAction = createAction(
