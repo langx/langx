@@ -72,7 +72,7 @@ export const activateRoomFailureAction = createAction(
 
 export const deactivateRoomAction = createAction(
   ActionTypes.DEACTIVATE_ROOM,
-  // props<{ payload: RoomExtendedInterface }>()
+  props<{ payload: RoomExtendedInterface }>()
 );
 
 export const deactivateRoomSuccessAction = createAction(

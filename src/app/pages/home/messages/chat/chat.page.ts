@@ -25,6 +25,7 @@ import {
   errorSelector,
   isLoadingSelector,
   messagesSelector,
+  roomSelector,
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
@@ -40,6 +41,7 @@ export class ChatPage implements OnInit {
   isLoadingOverlayActive = false;
   form: FormGroup;
 
+  room$: Observable<RoomExtendedInterface | null>;
   user$: Observable<User | null>;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
@@ -77,12 +79,19 @@ export class ChatPage implements OnInit {
   }
 
   ngOnDestroy() {
-    this.store.dispatch(deactivateRoomAction());
+    this.room$
+      .subscribe((room) => {
+        if (room) {
+          this.store.dispatch(deactivateRoomAction({ payload: room }));
+        }
+      })
+      .unsubscribe();
   }
 
   initValues() {
     this.roomId = this.route.snapshot.paramMap.get('id');
 
+    this.room$ = this.store.pipe(select(roomSelector));
     this.user$ = this.store.pipe(select(userDataSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
