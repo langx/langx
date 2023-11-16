@@ -54,8 +54,10 @@ export const createRoomFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-// Select Room Actions
-export const selectRoomAction = createAction(
-  ActionTypes.SELECT_ROOM,
+// Activate/Deactivate Room Actions
+export const activateRoomAction = createAction(
+  ActionTypes.ACTIVATE_ROOM,
   props<{ payload: RoomExtendedInterface }>()
 );
+
+export const deactivateRoomAction = createAction(ActionTypes.DEAVTIVATE_ROOM);

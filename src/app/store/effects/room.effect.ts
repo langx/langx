@@ -46,7 +46,7 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
-  selectRoomAction,
+  activateRoomAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -306,10 +306,10 @@ export class RoomEffects {
     { dispatch: false }
   );
 
-  redirectAfterSelectRoom$ = createEffect(
+  redirectAfterActivateRoom$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(selectRoomAction),
+        ofType(activateRoomAction),
         tap(({ payload }) => {
           const roomId = payload.$id;
           this.router.navigate(['/', 'home', 'chat', roomId]);

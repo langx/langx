@@ -10,7 +10,7 @@ import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { selectRoomAction } from 'src/app/store/actions/room.action';
+import { activateRoomAction } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
@@ -123,7 +123,7 @@ export class MessagesPage implements OnInit {
   }
 
   getChat(room) {
-    this.store.dispatch(selectRoomAction({ payload: room }));
+    this.store.dispatch(activateRoomAction({ payload: room }));
   }
 
   openArchiveMessages() {

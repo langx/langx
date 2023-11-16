@@ -23,7 +23,8 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
-  selectRoomAction,
+  activateRoomAction,
+  deactivateRoomAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {
@@ -196,12 +197,19 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // Select Room Reducers
+  // Activate/Deactivate Room Reducers
   on(
-    selectRoomAction,
+    activateRoomAction,
     (state, action): RoomStateInterface => ({
       ...state,
       activeRoom: action.payload,
+    })
+  ),
+  on(
+    deactivateRoomAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      activeRoom: null,
     })
   )
 );
