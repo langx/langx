@@ -37,17 +37,14 @@
             </ion-avatar>
             <ion-label>
               <h2>{{room?.['userData']?.name}}</h2>
-              <p *ngIf="room?.['lastMessage']?.body">
-                {{room?.['lastMessage']?.body}}
-              </p>
-              <p *ngIf="!room?.['lastMessage']?.body">Say Hi 👋</p>
+              <p>{{getLastMessage(room)?.body}}</p>
             </ion-label>
-            <ion-note *ngIf="room?.['lastMessage']">
-              {{ messageTime(room?.['lastMessage']?.$updatedAt) }}
-            </ion-note>
-            <ion-note *ngIf="!room?.['lastMessage']">
+            <ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>
+            <!--
+            <ion-note *ngIf="!getLastMessage(room)?.time">
               {{ messageTime(room?.$updatedAt) }}
             </ion-note>
+            -->
           </ng-container>
         </ion-item>
       </div>
