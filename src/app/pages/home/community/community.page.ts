@@ -14,7 +14,7 @@ import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
   getUsersAction,
   getUsersWithOffsetAction,
-} from 'src/app/store/actions/user.action';
+} from 'src/app/store/actions/users.action';
 import {
   isLoadingSelector,
   usersSelector,
