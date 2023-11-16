@@ -20,7 +20,7 @@ import {
   roomsSelector,
   totalSelector,
   errorSelector,
-} from 'src/app/store/selectors/room.selector';
+} from 'src/app/store/selectors/rooms.selector';
 
 @Component({
   selector: 'app-messages',
