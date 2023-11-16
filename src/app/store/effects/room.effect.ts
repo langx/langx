@@ -50,7 +50,7 @@ import {
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
-export class RoomsEffects {
+export class RoomEffects {
   getRooms$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomsAction),
