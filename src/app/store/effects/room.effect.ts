@@ -46,6 +46,10 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
+  fillRoomByIdWithUserDataSuccessAction,
+  fillRoomByIdWithUserDataFailureAction,
+  fillRoomByIdWithMessagesSuccessAction,
+  fillRoomByIdWithMessagesFailureAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -231,10 +235,10 @@ export class RoomEffects {
   getRoomById$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomByIdAction),
-      switchMap(({ roomId }) =>
+      switchMap(({ currentUserId, roomId }) =>
         this.roomService.getRoomById(roomId).pipe(
           map((payload: RoomExtendedInterface) =>
-            getRoomByIdSuccessAction({ payload })
+            getRoomByIdSuccessAction({ payload, currentUserId })
           ),
 
           catchError((errorResponse: HttpErrorResponse) => {
@@ -245,6 +249,57 @@ export class RoomEffects {
           })
         )
       )
+    )
+  );
+
+  fillRoomByIdWithUserData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomByIdSuccessAction),
+      mergeMap((action) => {
+        const room = action.payload;
+        const userId = room.users.filter(
+          (id: string) => id !== action.currentUserId
+        )[0];
+        return this.userService.getUserDoc2(userId).pipe(
+          map((userData) => ({ ...room, userData })),
+          map((roomWithUserData) =>
+            fillRoomByIdWithUserDataSuccessAction({ payload: roomWithUserData })
+          )
+        );
+      }),
+
+      catchError((errorResponse: HttpErrorResponse) => {
+        const error: ErrorInterface = {
+          message: errorResponse.message,
+        };
+        return of(fillRoomByIdWithUserDataFailureAction({ error }));
+      })
+    )
+  );
+
+  fillRoomByIdWithMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fillRoomByIdWithUserDataSuccessAction),
+      mergeMap((action) => {
+        const room = action.payload;
+        return this.messageService.listMessages(room.$id).pipe(
+          map((messages) => ({
+            ...room,
+            total: messages.total,
+            messages: messages.documents,
+          })),
+          map((roomWithMessages) =>
+            fillRoomByIdWithMessagesSuccessAction({ payload: roomWithMessages })
+          )
+        );
+      }),
+
+      catchError((errorResponse: HttpErrorResponse) => {
+        const error: ErrorInterface = {
+          message: errorResponse.message,
+        };
+        return of(fillRoomByIdWithMessagesFailureAction({ error }));
+      })
     )
   );
 

@@ -7,16 +7,38 @@ import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interfa
 // Get Room By Id Actions
 export const getRoomByIdAction = createAction(
   ActionTypes.GET_ROOM_BY_ID,
-  props<{ roomId: string }>()
+  props<{ currentUserId: string; roomId: string }>()
 );
 
 export const getRoomByIdSuccessAction = createAction(
   ActionTypes.GET_ROOM_BY_ID_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
+  props<{ payload: RoomExtendedInterface; currentUserId: string }>()
 );
 
 export const getRoomByIdFailureAction = createAction(
   ActionTypes.GET_ROOM_BY_ID_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Fill Room By Id With User Data Actions
+export const fillRoomByIdWithUserDataSuccessAction = createAction(
+  ActionTypes.FILL_ROOM_BY_ID_WITH_USER_DATA_SUCCESS,
+  props<{ payload: RoomExtendedInterface }>()
+);
+
+export const fillRoomByIdWithUserDataFailureAction = createAction(
+  ActionTypes.FILL_ROOM_BY_ID_WITH_USER_DATA_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Fill Room By Id With Messages Actions
+export const fillRoomByIdWithMessagesSuccessAction = createAction(
+  ActionTypes.FILL_ROOM_BY_ID_WITH_MESSAGES_SUCCESS,
+  props<{ payload: RoomExtendedInterface }>()
+);
+
+export const fillRoomByIdWithMessagesFailureAction = createAction(
+  ActionTypes.FILL_ROOM_BY_ID_WITH_MESSAGES_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 

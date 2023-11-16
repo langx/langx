@@ -2,6 +2,10 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import {
+  fillRoomByIdWithMessagesFailureAction,
+  fillRoomByIdWithMessagesSuccessAction,
+  fillRoomByIdWithUserDataFailureAction,
+  fillRoomByIdWithUserDataSuccessAction,
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
@@ -135,6 +139,34 @@ const messageReducer = createReducer(
     (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    fillRoomByIdWithUserDataSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      room: action.payload,
+    })
+  ),
+  on(
+    fillRoomByIdWithUserDataFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
+  ),
+  on(
+    fillRoomByIdWithMessagesSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      room: action.payload,
+    })
+  ),
+  on(
+    fillRoomByIdWithMessagesFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
       error: action.error,
     })
   ),
