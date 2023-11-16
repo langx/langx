@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/room.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { RoomWithUserData } from 'src/app/models/Room';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Get Room By Id Actions
 export const getRoomByIdAction = createAction(
@@ -12,7 +12,7 @@ export const getRoomByIdAction = createAction(
 
 export const getRoomByIdSuccessAction = createAction(
   ActionTypes.GET_ROOM_BY_ID_SUCCESS,
-  props<{ payload: RoomWithUserData }>()
+  props<{ payload: RoomExtendedInterface }>()
 );
 
 export const getRoomByIdFailureAction = createAction(
@@ -29,7 +29,7 @@ export const getRoomAction = createAction(
 
 export const getRoomSuccessAction = createAction(
   ActionTypes.GET_ROOM_SUCCESS,
-  props<{ payload: RoomWithUserData }>()
+  props<{ payload: RoomExtendedInterface }>()
 );
 
 export const getRoomFailureAction = createAction(
@@ -46,7 +46,7 @@ export const createRoomAction = createAction(
 
 export const createRoomSuccessAction = createAction(
   ActionTypes.CREATE_ROOM_SUCCESS,
-  props<{ payload: RoomWithUserData }>()
+  props<{ payload: RoomExtendedInterface }>()
 );
 
 export const createRoomFailureAction = createAction(
@@ -57,5 +57,5 @@ export const createRoomFailureAction = createAction(
 // Select Room Actions
 export const selectRoomAction = createAction(
   ActionTypes.SELECT_ROOM,
-  props<{ payload: RoomWithUserData }>()
+  props<{ payload: RoomExtendedInterface }>()
 );

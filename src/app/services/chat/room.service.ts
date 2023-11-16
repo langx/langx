@@ -15,7 +15,8 @@ import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
-import { Room, RoomWithUserData } from 'src/app/models/Room';
+import { Room } from 'src/app/models/Room';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { User } from 'src/app/models/User';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
 
@@ -34,7 +35,7 @@ export class RoomService {
     private userService: UserService
   ) {}
 
-  getRoomById(roomId: string): Observable<RoomWithUserData | null> {
+  getRoomById(roomId: string): Observable<RoomExtendedInterface | null> {
     return from(
       this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId)
     ).pipe(
@@ -64,7 +65,7 @@ export class RoomService {
           return this.fillRoomWithUserData(room, currentUserId).pipe(
             map(
               (
-                roomWithUserData: RoomWithUserData
+                roomWithUserData: RoomExtendedInterface
               ): getRoomsResponseInterface => {
                 return {
                   ...response,
@@ -83,7 +84,7 @@ export class RoomService {
   createRoom(
     currentUserId: string,
     userId: string
-  ): Observable<RoomWithUserData | null> {
+  ): Observable<RoomExtendedInterface | null> {
     // Set body
     const body = { to: userId };
 
@@ -159,19 +160,19 @@ export class RoomService {
   private fillRoomWithUserData(
     room: Room, // TODO: it has to be Room model.
     currentUserId: string
-  ): Observable<RoomWithUserData> {
+  ): Observable<RoomExtendedInterface> {
     let userId: string[] | string = room.users.filter(
       (id) => id != currentUserId
     );
     userId = userId[0];
     if (userId === undefined) {
       room['userData'] = null;
-      return of(room as RoomWithUserData);
+      return of(room as RoomExtendedInterface);
     } else {
       return from(this.userService.getUserDoc(userId)).pipe(
         map((data) => {
           room['userData'] = data as User;
-          return room as RoomWithUserData;
+          return room as RoomExtendedInterface;
         })
       );
     }

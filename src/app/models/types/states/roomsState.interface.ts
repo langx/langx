@@ -1,10 +1,10 @@
-import { RoomWithUserData } from 'src/app/models/Room';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export interface RoomsStateInterface {
   isLoading: boolean;
   total: number;
   error: ErrorInterface | null;
-  rooms: RoomWithUserData[] | null;
-  activeRoom: RoomWithUserData | null;
+  rooms: RoomExtendedInterface[] | null;
+  activeRoom: RoomExtendedInterface | null;
 }

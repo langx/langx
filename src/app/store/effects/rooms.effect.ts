@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getRoomsResponseInterface } from 'src/app/models/types/responses/getRoomsResponse.interface';
-import { RoomWithUserData } from 'src/app/models/Room';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import {
   getRoomsAction,
   getRoomsFailureAction,
@@ -36,7 +36,7 @@ export class RoomsEffects {
       ofType(getRoomByIdAction),
       switchMap(({ roomId }) =>
         this.roomService.getRoomById(roomId).pipe(
-          map((payload: RoomWithUserData) =>
+          map((payload: RoomExtendedInterface) =>
             getRoomByIdSuccessAction({ payload })
           ),
 
@@ -58,7 +58,7 @@ export class RoomsEffects {
         this.roomService.getRoom(currentUserId, userId).pipe(
           map((data: getRoomsResponseInterface) => {
             if (data.total === 1) {
-              const payload: RoomWithUserData = data.documents[0];
+              const payload: RoomExtendedInterface = data.documents[0];
               return getRoomSuccessAction({ payload });
             } else {
               return createRoomAction({ currentUserId, userId });
@@ -81,7 +81,7 @@ export class RoomsEffects {
       ofType(createRoomAction),
       switchMap(({ currentUserId, userId }) =>
         this.roomService.createRoom(currentUserId, userId).pipe(
-          map((payload: RoomWithUserData) =>
+          map((payload: RoomExtendedInterface) =>
             createRoomSuccessAction({ payload })
           ),
 
