@@ -2,7 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/message.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
+import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
@@ -15,7 +15,7 @@ export const getMessagesAction = createAction(
 
 export const getMessagesSuccessAction = createAction(
   ActionTypes.GET_MESSAGES_SUCCESS,
-  props<{ payload: getMessagesResponseInterface }>()
+  props<{ payload: listMessagesResponseInterface }>()
 );
 
 export const getMessagesFailureAction = createAction(
@@ -31,7 +31,7 @@ export const getMessagesWithOffsetAction = createAction(
 
 export const getMessagesWithOffsetSuccessAction = createAction(
   ActionTypes.GET_MESSAGES_WITH_OFFSET_SUCCESS,
-  props<{ payload: getMessagesResponseInterface }>()
+  props<{ payload: listMessagesResponseInterface }>()
 );
 
 export const getMessagesWithOffsetFailureAction = createAction(

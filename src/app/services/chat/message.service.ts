@@ -6,7 +6,7 @@ import axios from 'axios';
 import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { getMessagesResponseInterface } from 'src/app/models/types/responses/getMessagesResponse.interface';
+import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
@@ -50,7 +50,7 @@ export class MessageService {
   listMessages(
     roomId: string,
     offset?: number
-  ): Observable<getMessagesResponseInterface> {
+  ): Observable<listMessagesResponseInterface> {
     // Define queries
     const queries: any[] = [];
 
