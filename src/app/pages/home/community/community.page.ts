@@ -5,12 +5,15 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { User } from 'src/app/models/User';
 import { FilterService } from 'src/app/services/filter/filter.service';
+import { User } from 'src/app/models/User';
+import { Account } from 'src/app/models/Account';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
 import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
   getUsersAction,
@@ -22,8 +25,6 @@ import {
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/user.selector';
-import { roomsSelector } from 'src/app/store/selectors/room.selector';
-import { activateRoomAction } from 'src/app/store/actions/message.action';
 
 @Component({
   selector: 'app-community',
@@ -34,7 +35,7 @@ export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
-  currentUser$: Observable<User>;
+  currentUser$: Observable<Account>;
   isLoading$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
@@ -67,7 +68,7 @@ export class CommunityPage implements OnInit {
   }
 
   initValues(): void {
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
