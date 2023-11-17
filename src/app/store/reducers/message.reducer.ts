@@ -2,6 +2,11 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import {
+  getRoomByIdAction,
+  getRoomByIdFailureAction,
+  getRoomByIdSuccessAction,
+} from 'src/app/store/actions/room.action';
+import {
   activateRoomAction,
   deactivateRoomAction,
   createMessageAction,
@@ -105,6 +110,28 @@ const messageReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+  // Get Room By Id Reducers for only loader
+  on(
+    getRoomByIdAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    getRoomByIdSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    getRoomByIdFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
     })
   ),
   // Activate Room Reducers
