@@ -11,6 +11,7 @@ export const getProfileAction = createAction(
 
 export const getProfileSuccessAction = createAction(
   ActionTypes.GET_PROFILE_SUCCESS,
+  // TODO: Add interface
   props<{ payload: any }>()
 );
 
