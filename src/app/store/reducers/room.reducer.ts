@@ -84,7 +84,6 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // TODO: Take a look here
   // Get Room Reducers
   on(
     getRoomAction,
