@@ -7,11 +7,13 @@ import {
   getRoomsFailureAction,
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
+  fillRoomsWithUserDataSuccessAction,
+  fillRoomsWithUserDataFailureAction,
   fillRoomsWithMessagesSuccessAction,
   fillRoomsWithMessagesFailureAction,
-  fillRoomsWithUserDataFailureAction,
-  fillRoomsWithOffsetWithMessagesSuccessAction,
+  fillRoomsWithOffsetWithUserDataSuccessAction,
   fillRoomsWithOffsetWithUserDataFailureAction,
+  fillRoomsWithOffsetWithMessagesSuccessAction,
   fillRoomsWithOffsetWithMessagesFailureAction,
 } from 'src/app/store/actions/rooms.action';
 import {
@@ -51,15 +53,16 @@ const roomReducer = createReducer(
     })
   ),
   on(
-    fillRoomsWithUserDataFailureAction,
+    fillRoomsWithUserDataSuccessAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      error: action.error,
+      total: action.payload?.total,
+      rooms: action.payload?.documents,
     })
   ),
   on(
-    fillRoomsWithMessagesFailureAction,
+    fillRoomsWithUserDataFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
@@ -73,6 +76,14 @@ const roomReducer = createReducer(
       isLoading: false,
       total: action.payload?.total,
       rooms: action.payload?.documents,
+    })
+  ),
+  on(
+    fillRoomsWithMessagesFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
     })
   ),
   on(

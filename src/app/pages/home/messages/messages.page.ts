@@ -149,13 +149,17 @@ export class MessagesPage implements OnInit {
       body: 'Say Hi! 👋',
       time: null,
     };
-    if (room.messages.length > 0) {
+    if (
+      room &&
+      room.messages &&
+      room.lastMessage !== undefined &&
+      room.messages.length > 0
+    ) {
       lastMessage.body = room.messages[room.messages.length - 1].body;
       lastMessage.time = room.messages[room.messages.length - 1].$updatedAt;
     }
     return lastMessage;
   }
-
   messageTime(d: any) {
     if (!d) return null;
     let time = lastSeen(d);
