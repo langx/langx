@@ -1,8 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { loginAction } from 'src/app/store/actions/auth.action';
+import {
+  isLoadingSelector,
+  loginValidationErrorSelector,
+  unauthorizedErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-login',
@@ -11,18 +21,42 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class LoginPage implements OnInit {
   form: FormGroup;
-  isLoading: boolean = false;
+  isLoading$: Observable<boolean>;
 
   value: any = '';
 
   constructor(
-    private router: Router,
+    private store: Store,
     private authService: AuthService,
-    private alertController: AlertController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
+    this.initValues();
     this.initForm();
+  }
+
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
+  initValues() {
+    // isLoading
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
+    // Login Validation Error
+    this.store
+      .pipe(select(loginValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+        this.form.enable();
+      });
+    // Unauthorized Error
+    this.store
+      .pipe(select(unauthorizedErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error.message) this.presentToast(error.message, 'warning');
+      });
   }
 
   initForm() {
@@ -42,24 +76,9 @@ export class LoginPage implements OnInit {
   }
 
   login(form: FormGroup) {
-    this.isLoading = true;
-
-    this.authService
-      .login(form.value.email, form.value.password)
-      .subscribe((user: any) => {
-        console.log('user:', user);
-        this.authService.isLoggedIn().then((isLoggedIn) => {
-          if (isLoggedIn) {
-            this.router.navigateByUrl('/home');
-          } else {
-            // TODO: show error toasts message
-            console.log('error:', 'Could not sign you up, please try again.');
-          }
-        });
-        //hideLoader();
-        form.reset();
-        this.isLoading = false;
-      });
+    const request: LoginRequestInterface = form.value;
+    this.store.dispatch(loginAction({ request }));
+    form.disable();
   }
 
   // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
@@ -100,15 +119,18 @@ export class LoginPage implements OnInit {
   }
   */
 
-  // TODO: Replace with toast message
-  // Maybe no need, alert better ?
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }

@@ -1,8 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
     <ion-title>Complete Your Profile</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
@@ -18,6 +15,7 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
+        [disabled]="(isLoading$ | async)"
         required
       >
       </ion-input>
@@ -37,6 +35,7 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
+        [disabled]="(isLoading$ | async)"
         required
       >
       </ion-input>
@@ -56,6 +55,7 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
+        [disabled]="(isLoading$ | async)"
         required
       >
       </ion-input>
@@ -72,14 +72,14 @@
     <ion-row>
       <ion-col>
         <ion-button
-          *ngIf="!isLoading"
+          [disabled]="(isLoading$ | async)"
           type="submit"
           color="primary"
           expand="block"
-          >Continue</ion-button
         >
-        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+          Continue
+          <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+          </ion-spinner>
         </ion-button>
       </ion-col>
     </ion-row>

@@ -1,11 +1,31 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, ToastController } from '@ionic/angular';
-import { BehaviorSubject } from 'rxjs';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { MessageService } from 'src/app/services/chat/message.service';
-import { RoomService } from 'src/app/services/chat/room.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { IonContent, LoadingController, ToastController } from '@ionic/angular';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { Message } from 'src/app/models/Message';
+import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { getRoomByIdAction } from 'src/app/store/actions/room.action';
+import {
+  createMessageAction,
+  getMessagesAction,
+  getMessagesWithOffsetAction,
+  deactivateRoomAction,
+} from 'src/app/store/actions/message.action';
+import {
+  errorSelector,
+  isLoadingSelector,
+  messagesSelector,
+  roomSelector,
+  totalSelector,
+  userDataSelector,
+} from 'src/app/store/selectors/message.selector';
 
 @Component({
   selector: 'app-chat',
@@ -14,16 +34,20 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
+  loadingOverlay: HTMLIonLoadingElement;
+  isLoadingOverlayActive = false;
+  form: FormGroup;
 
-  messages: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  message: string = '';
+  room$: Observable<RoomExtendedInterface | null>;
+  user$: Observable<User | null>;
+  currentUser$: Observable<User | null>;
+  isLoading$: Observable<boolean>;
+  messages$: Observable<Message[] | null>;
+  total$: Observable<number | null> = null;
 
   isTyping: boolean = false;
-
-  currentUserId: string;
   roomId: string;
-  userId: string;
-  user: any;
+  user: User; // TODO: Remove this
 
   model = {
     icon: 'chatbubbles-outline',
@@ -32,92 +56,140 @@ export class ChatPage implements OnInit {
   };
 
   constructor(
-    private authService: AuthService,
-    private roomService: RoomService,
-    private userService: UserService,
-    private messageService: MessageService,
+    private store: Store,
     private route: ActivatedRoute,
     private router: Router,
+    private loadingCtrl: LoadingController,
     private toastController: ToastController
   ) {}
 
   ngOnInit() {
-    this.initChatPage();
-
-    this.messageService.listMessages(this.roomId);
-    this.messages = this.messageService.messages;
+    this.initValues();
+    this.initForm();
+    // this.listMessages();
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewInit() {
     // TODO: Needs optimization
     this.scrollToBottom();
-    console.log('ngAfterViewChecked');
+    // console.log('ngAfterViewChecked');
   }
 
-  initChatPage() {
-    // get current user id
-    this.currentUserId = this.authService.getUserId();
+  ngOnDestroy() {
+    this.room$
+      .subscribe((room) => {
+        if (room) {
+          this.store.dispatch(deactivateRoomAction({ payload: room }));
+        }
+      })
+      .unsubscribe();
+  }
 
-    // get room document id from route
+  initValues() {
     this.roomId = this.route.snapshot.paramMap.get('id');
 
-    // get room document from db
-    this.roomService
-      .getRoom(this.roomId)
-      .then((room) => {
-        console.log('room: ', room);
-        room.users.forEach((user) => {
-          if (user !== this.currentUserId) this.userId = user;
-        });
+    this.room$ = this.store.pipe(select(roomSelector));
+    this.user$ = this.store.pipe(select(userDataSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.messages$ = this.store.pipe(select(messagesSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
 
-        // get user document from db
-        this.userService
-          .getUserDoc(this.userId)
-          .then((user) => {
-            console.log('user: ', user);
-            this.user = user;
-          })
-          .catch((err) => {
-            // Check if the user exists or not
-            console.log('user error: ', err.message);
-            this.presentToast('User not found', 'danger');
-            this.router.navigateByUrl('/home/messages');
-          });
+    // Check room$ and currentUser$ for null
+    this.room$
+      .subscribe((room) => {
+        if (!room) {
+          this.currentUser$
+            .subscribe((currentUser) => {
+              this.store.dispatch(
+                getRoomByIdAction({
+                  currentUserId: currentUser.$id,
+                  roomId: this.roomId,
+                })
+              );
+            })
+            .unsubscribe();
+        }
       })
-      .catch((err) => {
-        // Check if the room exists or not
-        console.log('room error: ', err.message);
-        this.presentToast('Room not found', 'danger');
-        this.router.navigateByUrl('/home/messages');
+      .unsubscribe();
+
+    // Loading Controller
+    this.isLoading$.subscribe((isLoading) => {
+      this.loadingController(isLoading);
+    });
+
+    // Present Toast if error
+    this.store
+      .pipe(select(errorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+        }
       });
   }
 
-  addMessage() {
-    console.log('roomID: ', this.roomId);
-    let data = {
-      to: this.userId,
-      body: this.message,
-      roomId: this.roomId,
-    };
-    let dataWithUserData = {
-      ...data,
-      sender: this.currentUserId,
-    };
-    // Add loading indicator
-    this.messageService.updateMessages(dataWithUserData);
-    const promise = this.messageService.createMessage(data);
-    promise.then(
-      (response) => {
-        console.log(response); // Success
-        this.message = '';
-        // It pulls down
-        this.scrollToBottom();
-      },
-      (error) => {
-        console.log('error: ', error.message); // Failure
-        this.presentToast('Error: ' + error.message, 'danger');
-      }
-    );
+  initForm() {
+    this.form = new FormGroup({
+      body: new FormControl('', {
+        validators: [Validators.required, Validators.maxLength(500)],
+      }),
+    });
+  }
+
+  listMessages() {
+    this.store.dispatch(getMessagesAction({ roomId: this.roomId }));
+  }
+
+  //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // Offset is the number of messages that we already have
+    let offset: number = 0;
+
+    this.messages$
+      .subscribe((messages) => {
+        offset = messages.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              this.store.dispatch(
+                getMessagesWithOffsetAction({
+                  roomId: this.roomId,
+                  offset: offset,
+                })
+              );
+            } else {
+              event.target.disabled = true;
+              console.log('All messages loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+
+    event.target.complete();
+  }
+
+  createMessage() {
+    this.currentUser$
+      .subscribe((currentUser) => {
+        this.user$
+          .subscribe((user) => {
+            const request: createMessageRequestInterface = {
+              body: this.form.value.body,
+              roomId: this.roomId,
+              to: user.$id,
+            };
+            this.store.dispatch(
+              createMessageAction({ request, currentUserId: currentUser.$id })
+            );
+            this.form.reset();
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
   }
 
   typingFocus() {
@@ -138,6 +210,7 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(300);
   }
 
+  // TODO: Fix this bug
   // Navigate to user profile page
   goProfile(uid: string) {
     console.log('goProfile clicked');
@@ -152,6 +225,32 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(1500).then(() => {
       console.log('scrolled to bottom');
     });
+  }
+
+  //
+  // Loading Controller
+  //
+
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
+        this.isLoadingOverlayActive = true;
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive = false;
+      }
+    } else if (
+      this.loadingOverlay &&
+      this.loadingOverlay.present &&
+      !this.isLoadingOverlayActive
+    ) {
+      this.isLoadingOverlayActive = true;
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive = false;
+    }
   }
 
   //

@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { countryData } from 'src/app/extras/data';
 import { Router } from '@angular/router';
-import {
-  FilterService,
-  FilterData,
-} from 'src/app/services/filter/filter.service';
+import { Observable, map } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { User } from 'src/app/models/User';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { Language } from 'src/app/models/Language';
+import { FilterService } from 'src/app/services/filter/filter.service';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 
 @Component({
   selector: 'app-filters',
@@ -19,37 +21,41 @@ export class FiltersPage implements OnInit {
   searchTerm: string;
   countryData = countryData;
 
+  // TODO: Useless
   isLoading: boolean = false;
-  cUserDoc: any;
+
+  currentUser$: Observable<User | null>;
 
   ionRangeDefault = { lower: 20, upper: 75 };
 
-  // filters data
-  filterData: FilterData = {} as FilterData;
+  // Filters data
+  filterData: FilterDataInterface = {
+    languages: [],
+    gender: null,
+    country: null,
+    minAge: null,
+    maxAge: null,
+  };
 
   constructor(
-    private authService: AuthService,
+    private store: Store,
     private navCtrl: NavController,
     private router: Router,
     private filterService: FilterService,
-    private storageService: StorageService,
-    private userService: UserService
+    private storageService: StorageService
   ) {}
 
   async ngOnInit() {
-    await this.getUserData();
+    this.initValues();
     await this.checkStorage();
   }
 
-  async getUserData() {
-    this.userService.getUserDoc(this.authService.getUserId()).then((user) => {
-      this.cUserDoc = user;
-      console.log(user);
-    });
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
   async checkStorage() {
-    // check localStorage
+    // Check localStorage
     const languagesString = await this.storageService.getValue('languages');
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
@@ -81,7 +87,8 @@ export class FiltersPage implements OnInit {
     this.router.navigateByUrl('/home/community');
   }
 
-  setLocalStorage(filterData: FilterData) {
+  // TODO: #246 Save filterData with JSON.stringify();
+  setLocalStorage(filterData: FilterDataInterface) {
     if (!filterData.languages) filterData.languages = [];
     if (filterData.languages.length > 0) {
       this.storageService.setValue(
@@ -115,8 +122,10 @@ export class FiltersPage implements OnInit {
   // LANGUAGE Methods
   //
 
-  getStudyLanguages() {
-    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
+  getStudyLanguages(): Observable<Language[]> {
+    return this.currentUser$.pipe(
+      map((user) => user.languages.filter((lang) => !lang.motherLanguage))
+    );
   }
 
   languageChecked(event, langName) {
@@ -204,7 +213,13 @@ export class FiltersPage implements OnInit {
   //
 
   resetFilter() {
-    this.filterData = {} as FilterData;
+    this.filterData = {
+      languages: [],
+      gender: null,
+      country: null,
+      minAge: null,
+      maxAge: null,
+    };
     console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();

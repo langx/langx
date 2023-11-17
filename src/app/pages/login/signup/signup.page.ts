@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { registerAction } from 'src/app/store/actions/auth.action';
+import {
+  isLoadingSelector,
+  registerValidationErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-signup',
@@ -12,17 +19,30 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class SignupPage implements OnInit {
   form: FormGroup;
-  isLoading: boolean = false;
+  isLoading$: Observable<boolean>;
+
   public progress: number = 0.2;
 
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private alertController: AlertController
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initForm();
+    this.initValues();
+  }
+
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
+  initValues(): void {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
+    // Present Toast if error
+    this.store
+      .pipe(select(registerValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+      });
   }
 
   initForm() {
@@ -45,48 +65,29 @@ export class SignupPage implements OnInit {
 
   async onSubmit() {
     if (!this.form.valid) {
-      this.showAlert('Please fill all required fields');
+      this.presentToast('Please fill all required fields', 'danger');
       return;
     }
-
     this.register(this.form);
   }
 
   register(form: FormGroup) {
-    this.isLoading = true;
-
-    this.authService
-      .register(form.value.email, form.value.password, form.value.name)
-      .subscribe((user: any) => {
-        console.log('user:', user);
-        this.authService
-          .isLoggedIn()
-          .then((isLoggedIn) => {
-            if (isLoggedIn) {
-              this.router.navigateByUrl('/login/signup/complete');
-            } else {
-              // TODO: show error toasts message
-              console.log('error:', 'Could not sign you up, please try again.');
-            }
-          })
-          .catch((e) => {
-            // TODO: show error toasts message
-            console.log('error:', e);
-          });
-        //hideLoader();
-        form.reset();
-        this.isLoading = false;
-      });
+    const request: RegisterRequestInterface = form.value;
+    this.store.dispatch(registerAction({ request }));
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
 
-    await alert.present();
+    await toast.present();
   }
 }

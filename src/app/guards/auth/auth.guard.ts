@@ -1,55 +1,50 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, CanLoad, Router } from '@angular/router';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Store, select } from '@ngrx/store';
+import { Observable, filter } from 'rxjs';
+import {
+  ActivatedRouteSnapshot,
+  CanLoad,
+  Router,
+  UrlTree,
+} from '@angular/router';
+
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { isLoggedInAction } from 'src/app/store/actions/auth.action';
+import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
 
 @Injectable({
   providedIn: 'root',
 })
-// TODO: 'CanLoad' is deprecated.ts(6385)
-// Idea: CanMatch
-export class AuthGuard implements CanActivate, CanLoad {
+export class AuthGuard implements CanLoad {
   constructor(
-    private authService: AuthService,
     private router: Router,
-    private notification: NotificationService
+    private notification: NotificationService,
+    private store: Store
   ) {}
 
-  async canActivate(): Promise<boolean> {
-    try {
-      const isLoggedIn = await this.authService.isLoggedIn();
-      if (isLoggedIn) {
-        this.startListener();
-        return true;
-      } else {
-        this.navigate('/login');
-        return false;
-      }
-    } catch (e) {
-      console.log(e);
-      this.navigate('/login');
-      return false;
-    }
+  canLoad(next: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
+    return new Observable((observer) => {
+      this.store.dispatch(isLoggedInAction());
+      this.store
+        .pipe(
+          select(isLoggedInSelector),
+          filter((isLoggedIn) => isLoggedIn !== null) // ignore values until isLoggedIn is not null
+        )
+        .subscribe((isLoggedIn) => {
+          console.log('isLoggedIn', isLoggedIn);
+          if (!isLoggedIn) {
+            observer.next(this.router.parseUrl('/login'));
+          } else {
+            // TODO: Notification Service
+            this.startListener();
+            observer.next(true);
+          }
+          observer.complete();
+        });
+    });
   }
 
-  async canLoad(): Promise<boolean> {
-    try {
-      const isLoggedIn = await this.authService.isLoggedIn();
-      if (isLoggedIn) {
-        // this.startListener();
-        return true;
-      } else {
-        this.navigate('/login');
-        return false;
-      }
-    } catch (e) {
-      console.log(e);
-      this.navigate('/login');
-      return false;
-    }
-  }
-
-  navigate(url) {
+  navigate(url: string) {
     this.router.navigateByUrl(url, { replaceUrl: true });
   }
 

@@ -36,3 +36,14 @@ export function getBirthdate(age: number) {
   let birthDate = new Date(birthYear, now.getMonth(), now.getDate());
   return birthDate;
 }
+
+export function nameParts(name: string) {
+  let result: string = '';
+  let parts = name.split(' ');
+  if (parts.length > 1) {
+    result = parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
+  } else {
+    result = name;
+  }
+  return result;
+}

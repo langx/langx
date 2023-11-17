@@ -1,29 +1,264 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
-import { environment } from 'src/environments/environment';
 import { Query } from 'appwrite';
-import { AuthService } from '../auth/auth.service';
-import { UserService } from '../user/user.service';
-import { BehaviorSubject } from 'rxjs';
 import axios from 'axios';
+import {
+  BehaviorSubject,
+  Observable,
+  forkJoin,
+  from,
+  iif,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
+
+import { environment } from 'src/environments/environment';
+import { ApiService } from 'src/app/services/api/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { UserService } from 'src/app/services/user/user.service';
+import { MessageService } from 'src/app/services/chat/message.service';
+import { Room } from 'src/app/models/Room';
+import { User } from 'src/app/models/User';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoomService {
-  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  cUserId: string;
+  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]); // TODO: WILL BE DELETED
+  cUserId: string; // TODO: WILL BE DELETED
+
+  currentUser$: Observable<User>;
 
   constructor(
     private api: ApiService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private messageService: MessageService
   ) {}
+
+  getRoomById(
+    currentUserId: string,
+    roomId: string
+  ): Observable<listRoomsResponseInterface | null> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for rooms, user attribute that contain current user and userId
+    queries.push(Query.equal('$id', roomId));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((data: listRoomsResponseInterface) =>
+        iif(
+          () => data.total > 0,
+          of(data).pipe(
+            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithMessages(data))
+          ),
+          of(data)
+        )
+      )
+    );
+  }
+
+  getRoom(
+    currentUserId: string,
+    userId: string
+  ): Observable<listRoomsResponseInterface | null> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for rooms, user attribute that contain current user and userId
+    queries.push(Query.search('users', currentUserId));
+    queries.push(Query.search('users', userId));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((data: listRoomsResponseInterface) =>
+        iif(
+          () => data.total > 0,
+          of(data).pipe(
+            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithMessages(data))
+          ),
+          of(data)
+        )
+      )
+    );
+  }
+
+  createRoom(
+    currentUserId: string,
+    userId: string
+  ): Observable<listRoomsResponseInterface | null> {
+    // Set body
+    const body = { to: userId };
+
+    // Set x-appwrite-user-id header
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+
+    // Set x-appwrite-jwt header
+    return from(
+      this.authService.createJWT().then((result) => {
+        console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/room
+        return from(
+          axios
+            .post(environment.url.CREATE_ROOM_API_URL, body)
+            .then((result) => {
+              return {
+                documents: [result.data],
+                total: 1,
+              };
+            })
+        ).pipe(
+          switchMap((data: listRoomsResponseInterface) =>
+            iif(
+              () => data.total > 0,
+              of(data).pipe(
+                switchMap(() =>
+                  this.fillRoomsWithUserData(data, currentUserId)
+                ),
+                switchMap(() => this.fillRoomsWithMessages(data))
+              ),
+              of(data)
+            )
+          )
+        );
+      })
+    );
+  }
+
+  listRooms(
+    currentUserId: string,
+    offset?: number
+  ): Observable<listRoomsResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for rooms that contain the current user
+    queries.push(Query.search('users', currentUserId));
+
+    // Query for rooms descending by $updatedAt
+    queries.push(Query.orderDesc('$updatedAt'));
+
+    // Limit and offset
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) queries.push(Query.offset(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((data: listRoomsResponseInterface) =>
+        iif(
+          () => data.total > 0,
+          of(data).pipe(
+            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithMessages(data))
+          ),
+          of(data)
+        )
+      )
+    );
+  }
+
+  //
+  // Utils
+  //
+
+  private fillRoomsWithUserData(
+    data: listRoomsResponseInterface,
+    currentUserId: string
+  ): Observable<listRoomsResponseInterface> {
+    const roomObservables = data.documents.map((room) =>
+      this.fillRoomWithUserData(room, currentUserId)
+    );
+
+    return forkJoin(roomObservables).pipe(
+      map((rooms) => {
+        data.documents = rooms;
+        return data;
+      })
+    );
+  }
+
+  private fillRoomWithUserData(
+    room: Room,
+    currentUserId: string
+  ): Observable<RoomExtendedInterface> {
+    let userId: string[] | string = room.users.filter(
+      (id) => id != currentUserId
+    );
+    userId = userId[0];
+    if (userId === undefined) {
+      room['userData'] = null;
+      return of(room as RoomExtendedInterface);
+    } else {
+      return from(this.userService.getUserDoc(userId)).pipe(
+        map((data) => {
+          room['userData'] = data as User;
+          return room as RoomExtendedInterface;
+        })
+      );
+    }
+  }
+
+  private fillRoomsWithMessages(
+    data: listRoomsResponseInterface
+  ): Observable<listRoomsResponseInterface> {
+    const roomObservables = data.documents.map((room) =>
+      this.fillRoomWithMessages(room)
+    );
+
+    return forkJoin(roomObservables).pipe(
+      map((rooms) => {
+        data.documents = rooms;
+        return data;
+      })
+    );
+  }
+
+  private fillRoomWithMessages(room: Room): Observable<RoomExtendedInterface> {
+    return from(this.messageService.listMessages(room.$id)).pipe(
+      map((data) => {
+        room['total'] = data.total;
+        room['messages'] = data.documents;
+        return room as RoomExtendedInterface;
+      })
+    );
+  }
+
+  //
+  // TODO: WILL BE DELETED
+  //
+
+  listenRooms() {
+    console.log('listenRooms started');
+    const client = this.api.client$();
+    return client.subscribe(
+      'databases.' +
+        environment.appwrite.APP_DATABASE +
+        '.collections.' +
+        environment.appwrite.ROOMS_COLLECTION +
+        '.documents',
+      (response) => {
+        console.log(response);
+      }
+    );
+  }
 
   // Update rooms behavior subject
   async updateRooms(room) {
     room = await this.fillRoomWithUserData(room, this.cUserId);
-    room = await this.fillRoomWithLastMessage(room);
+    // room = await this.fillRoomWithLastMessage(room);
     const currentRooms = this.rooms.getValue();
     const existingRoom = currentRooms.find((r) => r.$id === room.$id);
     if (existingRoom) {
@@ -40,129 +275,5 @@ export class RoomService {
       const newRooms = [...currentRooms, room];
       this.rooms.next(newRooms);
     }
-  }
-
-  async checkRoom(userId: string): Promise<any> {
-    let cUserId = this.authService.getUserId();
-    console.log('checkRoom: ', cUserId, userId);
-
-    const promise = this.api.listDocuments(
-      environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', cUserId), Query.search('users', userId)]
-    );
-
-    return promise.then((values) => {
-      console.log('result checkROOM: ', values);
-      if (values.total > 0) {
-        console.log('Room found: ', values);
-        return values.documents[0];
-      } else {
-        console.log('No room find, creating new one');
-        return this.createRoom(userId);
-      }
-    });
-  }
-
-  // Get rooms from current session to initialize the message tab
-  async listRooms(currentUserId: string) {
-    this.cUserId = currentUserId;
-    const promise = this.api.listDocuments(
-      environment.appwrite.ROOMS_COLLECTION,
-      [Query.search('users', currentUserId)]
-    );
-    await promise.then((values) => {
-      values.documents.forEach((room) => {
-        room = this.fillRoomWithUserData(room, currentUserId);
-        room = this.fillRoomWithLastMessage(room);
-      });
-      // TODO: Order rooms by last message $createdAt
-      /*
-      values.documents.sort((a, b) => {
-        const aLastMessage = a.lastMessage;
-        const bLastMessage = b.lastMessage;
-        if (aLastMessage && bLastMessage) {
-          return bLastMessage.$createdAt - aLastMessage.$createdAt;
-        } else if (aLastMessage) {
-          return -1;
-        } else if (bLastMessage) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
-      */
-      console.log('listRooms: ', values.documents);
-      this.rooms.next(values.documents);
-    });
-  }
-
-  fillRoomWithUserData(room, currentUserId) {
-    // Check if the user is not the current user
-    room.users.forEach((userId) => {
-      if (userId != currentUserId) {
-        // Get the user data and add it to the element as userData
-        room.userData = this.userService.getUserDoc(userId).then(
-          (data) => {
-            room.userData = data;
-          },
-          (error) => {
-            console.log('error: ', error);
-          }
-        );
-      }
-    });
-    return room;
-  }
-
-  async fillRoomWithLastMessage(room) {
-    // Set Last message of every room
-    const lastMessage = room.messages[room.messages.length - 1];
-    room.lastMessage = lastMessage;
-    return room;
-  }
-
-  getRoom(roomId: string): Promise<any> {
-    return this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId);
-  }
-
-  async createRoom(userId: string): Promise<any> {
-    // Set body
-    const body = { to: userId };
-
-    // Set x-appwrite-user-id header
-    const currentUserId = this.authService.getUserId();
-    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
-
-    // Set x-appwrite-jwt header
-    await this.authService.createJWT().then((result) => {
-      console.log('result: ', result);
-      axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
-    });
-
-    // Call the /api/room
-    return axios
-      .post('https://api.languagexchange.net/api/room', body)
-      .then((result) => {
-        console.log('result: ', result);
-        return result.data;
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
-  }
-
-  listenRooms() {
-    console.log('listenRooms started');
-    const client = this.api.client$();
-    return client.subscribe(
-      'databases.' +
-        environment.appwrite.APP_DATABASE +
-        '.collections.' +
-        environment.appwrite.ROOMS_COLLECTION +
-        '.documents',
-      (response) => {
-        console.log(response);
-      }
-    );
   }
 }

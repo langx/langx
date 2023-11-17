@@ -1,10 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
 import { languagesData } from 'src/app/extras/data';
-import { AlertController } from '@ionic/angular';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { LanguageService } from 'src/app/services/user/language.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import {
+  languageSelectionAction,
+  updateLanguageArrayAction,
+} from 'src/app/store/actions/auth.action';
+import {
+  accountSelector,
+  isLanguageDoneSelector,
+  isLoadingSelector,
+  registerValidationErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-step3',
@@ -13,22 +25,38 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class Step3Page implements OnInit {
   public progress: number = 1;
-  isLoading: boolean = false;
-  fill = 'clear';
 
   motherLanguages: Array<any> = [];
   studyLanguages: Array<any> = [];
 
+  account$: Observable<Account | null>;
+  isLoading$: Observable<boolean>;
+  isLanguageDone$: Observable<boolean>;
+
   constructor(
-    private router: Router,
     private route: ActivatedRoute,
-    private alertController: AlertController,
-    private authService: AuthService,
-    private languageService: LanguageService,
-    private userService: UserService
+    private toastController: ToastController,
+    private store: Store
   ) {}
 
   ngOnInit() {
+    this.initValues();
+  }
+
+  initValues() {
+    // Init values From Store
+    this.account$ = this.store.pipe(select(accountSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLanguageDone$ = this.store.pipe(select(isLanguageDoneSelector));
+
+    // Present Toast if error
+    this.store
+      .pipe(select(registerValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+      });
+
+    // Init Values From Step 2
     const data: any = this.route.snapshot.queryParams;
     console.log('navData coming from step2', data);
     let studyLanguages: Array<string> = [];
@@ -64,99 +92,64 @@ export class Step3Page implements OnInit {
   }
 
   radioChecked(event, item) {
+    const level = event.detail.value;
     this.studyLanguages.find((lang) => lang.code === item.code).level =
-      event.detail.value;
+      Number(level);
   }
 
   async onSubmit() {
     if (this.studyLanguages.find((lang) => lang.level === 0)) {
-      this.showAlert('Please select your level for all languages');
+      this.presentToast('Please select your level for all languages', 'danger');
       return;
     }
-    this.completeLanguages(this.motherLanguages, this.studyLanguages);
+
+    const languages = this.motherLanguages.concat(this.studyLanguages);
+    this.completeLanguages(languages);
   }
 
-  completeLanguages(motherLanguages, studyLanguages) {
-    let user: any;
-    let languageArray: Array<string> = [];
+  completeLanguages(languages) {
+    let languageArray: string[] = [];
+    let userId: string;
 
-    this.authService
-      .getUser()
-      .subscribe((u) => {
-        user = u;
+    this.account$
+      .subscribe((account: Account | null) => {
+        userId = account.$id;
       })
       .unsubscribe();
-    // console.log('user:', user);
 
-    console.log('motherLanguages:', motherLanguages);
-    console.log('studyLanguages:', studyLanguages);
+    // Add userId to each language and fill languageArray with language codes
+    languages.forEach((lang) => {
+      lang.userId = userId;
+      languageArray.push(lang.code);
+    });
+    console.log('languages:', languages);
 
-    try {
-      this.isLoading = true; //showLoader
+    // Dispatch the first action
+    this.store.dispatch(languageSelectionAction({ request: languages }));
 
-      // TODO: Error handling if any of the following fails
-      // SCOPE: It may saved some languages and not others
-      motherLanguages.forEach((motherlang) => {
-        // Add the language name to the languageArray
-        languageArray.push(motherlang.name);
-
-        motherlang.userId = user.$id;
-        this.languageService
-          .createLanguageDoc(motherlang)
-          .then((res) => {
-            console.log('result:', res);
-          })
-          .catch((err) => {
-            console.log('err:', err);
-          });
-      });
-
-      // TODO: Error handling if any of the following fails
-      // SCOPE: It may saved some languages and not others
-      studyLanguages.forEach((studyLang) => {
-        // Add the language name to the languageArray
-        languageArray.push(studyLang.name);
-
-        studyLang.userId = user.$id;
-        this.languageService
-          .createLanguageDoc(studyLang)
-          .then((res) => {
-            console.log('result:', res);
-          })
-          .catch((err) => {
-            console.log('err:', err);
-          });
-      });
-
-      // TODO: Error handling if any of the following fails
-      // Add the languages to the languageArray in the user doc
-      this.userService
-        .updateUserDoc(user.$id, {
-          languageArray: languageArray,
-        })
-        .then(() => {
-          console.log('Language Array Updated');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      this.router.navigateByUrl('/home');
-      this.isLoading = false; //hideLoader
-    } catch (error) {
-      console.log('error:', error);
-      this.isLoading = false; //hideLoader
-      this.showAlert('Please try again later.');
-    }
+    // Subscribe to the store and wait for the language selection to be successful
+    this.isLanguageDone$.subscribe((isLanguageDone: boolean) => {
+      // Dispatch the second action
+      if (isLanguageDone) {
+        this.store.dispatch(
+          updateLanguageArrayAction({ id: userId, request: languageArray })
+        );
+      }
+    });
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }

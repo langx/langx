@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { languagesData } from '../../../../../extras/data';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
+
+import { languagesData } from 'src/app/extras/data';
 
 @Component({
   selector: 'app-step1',
@@ -18,7 +19,7 @@ export class Step1Page implements OnInit {
 
   constructor(
     private router: Router,
-    private alertController: AlertController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {}
@@ -29,34 +30,40 @@ export class Step1Page implements OnInit {
 
   onSubmit() {
     if (!this.motherLanguage) {
-      this.showAlert('Please select your mother language');
+      this.presentToast('Please select your mother language', 'danger');
       return;
     }
+
     this.step1Completed();
   }
 
   step1Completed() {
-    this.isLoading = true; //showLoader();
+    this.isLoading = true;
     const navData: NavigationExtras = {
       queryParams: {
         motherLanguage: this.motherLanguage,
       },
     };
-    this.isLoading = false; //hideLoader();
     this.router.navigate(
       ['/', 'login', 'signup', 'language', 'step2'],
       navData
     );
+    this.isLoading = false;
     console.log('step1 completed');
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }

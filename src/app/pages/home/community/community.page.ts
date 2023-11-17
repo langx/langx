@@ -1,13 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { RoomService } from 'src/app/services/chat/room.service';
-import {
-  FilterService,
-  FilterData,
-} from 'src/app/services/filter/filter.service';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { User } from 'src/app/models/User';
+import { FilterService } from 'src/app/services/filter/filter.service';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { getRoomAction } from 'src/app/store/actions/room.action';
+import {
+  getUsersAction,
+  getUsersWithOffsetAction,
+} from 'src/app/store/actions/users.action';
+import {
+  isLoadingSelector,
+  usersSelector,
+  totalSelector,
+  errorSelector,
+} from 'src/app/store/selectors/user.selector';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
 
 @Component({
   selector: 'app-community',
@@ -16,24 +32,33 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class CommunityPage implements OnInit {
   filter$: any;
-  filterData: FilterData;
+  filterData: FilterDataInterface;
 
-  users = [];
+  currentUser$: Observable<User>;
+  isLoading$: Observable<boolean>;
+  users$: Observable<User[] | null> = null;
+  total$: Observable<number | null> = null;
 
-  isAllUsersLoaded: boolean = false; // Pagination variable
+  rooms$: Observable<RoomExtendedInterface[] | null> = null;
 
   constructor(
+    private store: Store,
     private router: Router,
-    private roomService: RoomService,
-    private userService: UserService,
     private filterService: FilterService,
     private storageService: StorageService,
     private toastController: ToastController
   ) {}
 
   async ngOnInit() {
+    // Check Local Storage for filters
     await this.checkLocalStorage();
     await this.checkFilter();
+
+    // Init values
+    this.initValues();
+
+    // List Users
+    this.listUsers();
   }
 
   ngOnDestroy() {
@@ -41,20 +66,36 @@ export class CommunityPage implements OnInit {
     console.log('filters unsubscribed');
   }
 
+  initValues(): void {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.users$ = this.store.pipe(select(usersSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
+
+    this.rooms$ = this.store.pipe(select(roomsSelector));
+
+    // User Errors
+    this.store
+      .pipe(select(errorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+        }
+      });
+  }
+
   //
   // Get Users
   //
 
-  async getUsers(filterData?: FilterData) {
-    await this.userService.listUsers(filterData).then(
-      (response) => {
-        console.log(response);
-        this.users = response.documents;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+  listUsers() {
+    const filterData = this.filterData;
+    this.currentUser$
+      .subscribe((user) => {
+        const currentUserId = user.$id;
+        this.store.dispatch(getUsersAction({ currentUserId, filterData }));
+      })
+      .unsubscribe();
   }
 
   //
@@ -64,32 +105,35 @@ export class CommunityPage implements OnInit {
   async checkFilter() {
     this.filter$ = this.filterService
       .getEvent()
-      .subscribe((filterData: FilterData) => {
+      .subscribe((filterData: FilterDataInterface) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
-        // Handle Refresh fetch users by using filterData in getUsers()
-        this.handleRefresh(null);
       });
   }
 
-  // TODO: Idea: it could be save it account.user.prefs
+  // TODO: #246 Save filterData with JSON.stringify();
   async checkLocalStorage() {
-    // Getting the filter data from localStorage
-    const languagesString = await this.storageService.getValue('languages');
+    // Getting the filter data from Capacitor Preferences
+    let languagesString =
+      (await this.storageService.getValue('languages')) || [];
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = await this.storageService.getValue('minAge');
-    const maxAgeString = await this.storageService.getValue('maxAge');
+    const minAgeString = (await this.storageService.getValue('minAge')) || null;
+    const maxAgeString = (await this.storageService.getValue('maxAge')) || null;
 
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
 
+    // TODO: Do better logic here
     let languages: Array<any> = [];
     if (languagesString) {
       languages = languagesString.toLocaleString().split(',');
+      if (languages.length === 1 && languages[0] === '') {
+        languages = [];
+      }
     }
 
-    let filterData: FilterData = {
+    let filterData: FilterDataInterface = {
       languages: languages,
       gender: gender,
       country: country,
@@ -102,48 +146,78 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Get or Create Room
+  //
+
+  getRoom(userId: string) {
+    this.rooms$
+      .subscribe((rooms) => {
+        this.currentUser$
+          .subscribe((user) => {
+            const currentUserId = user.$id;
+            if (rooms) {
+              const room = rooms.find(
+                (room) =>
+                  room.users.includes(currentUserId) &&
+                  room.users.includes(userId)
+              );
+              if (room) {
+                this.store.dispatch(activateRoomAction({ payload: room }));
+              } else {
+                this.store.dispatch(getRoomAction({ currentUserId, userId }));
+              }
+            } else {
+              this.store.dispatch(getRoomAction({ currentUserId, userId }));
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+  }
+
+  //
   // Infinite Scroll
   //
 
   loadMore(event) {
-    if (this.isAllUsersLoaded) {
-      event.target.complete();
-      return;
-    }
+    // Offset is the number of users already loaded
+    let offset: number = 0;
+    this.users$
+      .subscribe((users) => {
+        offset = users.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              this.currentUser$.subscribe((user) => {
+                const currentUserId = user.$id;
+                // console.log('Current user: ', currentUserId);
+                const filterData = this.filterData;
+                this.store.dispatch(
+                  getUsersWithOffsetAction({
+                    currentUserId,
+                    filterData,
+                    offset,
+                  })
+                );
+              });
+            } else {
+              console.log('All users loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+
     // this.getUsers(this.filterData);
     event.target.complete();
-    console.log('Async operation loadMore has ended');
-  }
-
-  //
-  // Start Chat
-  //
-
-  async startChat(user: any) {
-    let roomId: string;
-
-    await this.roomService.checkRoom(user.$id).then(
-      (response) => {
-        roomId = response?.$id;
-        console.log(response); // Success
-
-        this.router.navigate(['/', 'home', 'chat', roomId]);
-      },
-      (error) => {
-        console.log('error: ', error.message); // Failure
-        this.presentToast('Error: ' + error.message, 'danger');
-      }
-    );
   }
 
   //
   // Pull to refresh
   //
 
-  handleRefresh(event?) {
-    this.users = [];
-    this.isAllUsersLoaded = false;
-    this.getUsers(this.filterData);
+  handleRefresh(event) {
+    this.listUsers();
     if (event) event.target.complete();
   }
 

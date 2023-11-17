@@ -1,7 +1,20 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button [disabled]="(isLoading$ | async)"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        [disabled]="(isLoading$ | async)"
+        (click)="onSubmit()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        color="primary"
+      >
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Your Languages</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
@@ -25,15 +38,21 @@
         <ion-list class="hasIcon">
           <ion-item>
             <ion-icon name="battery-dead-outline"></ion-icon>
-            <ion-radio value="1">Beginner</ion-radio>
+            <ion-radio value="1" [disabled]="(isLoading$ | async)">
+              Beginner
+            </ion-radio>
           </ion-item>
           <ion-item>
             <ion-icon name="battery-half-outline"></ion-icon>
-            <ion-radio value="2">Intermediate</ion-radio>
+            <ion-radio value="2" [disabled]="(isLoading$ | async)">
+              Intermediate
+            </ion-radio>
           </ion-item>
           <ion-item>
             <ion-icon name="battery-full-outline"></ion-icon>
-            <ion-radio value="3">Fluent</ion-radio>
+            <ion-radio value="3" [disabled]="(isLoading$ | async)">
+              Fluent
+            </ion-radio>
           </ion-item>
         </ion-list>
       </ion-radio-group>
@@ -43,14 +62,14 @@
   <ion-row>
     <ion-col>
       <ion-button
-        *ngIf="!isLoading"
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         color="primary"
         expand="block"
-        >Complete ✅</ion-button
       >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        Complete ✅
+        <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+        </ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>

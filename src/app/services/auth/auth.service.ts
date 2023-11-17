@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
 import { ID, Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, catchError, tap, of } from 'rxjs';
+import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
+
+import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { Account } from 'src/app/models/Account';
+import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private _user = new BehaviorSubject<Models.User<Models.Preferences> | null>(
-    null
-  );
+  private _user = new BehaviorSubject<Account | null>(null);
+  private account$: Observable<Account | null> = null;
 
   constructor(private api: ApiService) {}
 
@@ -34,23 +37,28 @@ export class AuthService {
   // ACCOUNT API
   //
 
-  login(email: string, password: string) {
-    const authReq = this.api.account.createEmailSession(email, password);
-    // TODO: Add error handling with toast message
-    // TODO: this.api.account organize inside the api.service.ts
+  login(data: LoginRequestInterface): Observable<Account> {
+    const authReq = this.api.account.createEmailSession(
+      data.email,
+      data.password
+    );
     return from(authReq).pipe(
-      catchError((error) => of(error)),
       concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
   }
 
-  register(email: string, password: string, name: string) {
-    const authReq = this.api.account.create(ID.unique(), email, password, name);
-    // TODO: Add error handling with toast message
-
-    return from(authReq).pipe(
-      concatMap(() => this.api.account.createEmailSession(email, password)),
+  register(data: RegisterRequestInterface): Observable<Account> {
+    const promise = this.api.account.create(
+      ID.unique(),
+      data.email,
+      data.password,
+      data.name
+    );
+    return from(promise).pipe(
+      concatMap(() =>
+        this.api.account.createEmailSession(data.email, data.password)
+      ),
       concatMap(() => this.api.account.get()),
       tap((user) => {
         return this._user.next(user);
@@ -58,7 +66,6 @@ export class AuthService {
     );
   }
 
-  // This is not used.
   updatePrefs(prefs: Models.Preferences) {
     const authReq = this.api.account.updatePrefs(prefs);
     return from(authReq).pipe(
@@ -72,16 +79,8 @@ export class AuthService {
     return from(authReq);
   }
 
-  async isLoggedIn() {
-    try {
-      const user = await this.api.account.get();
-      this._user.next(user);
-      return true;
-    } catch (e) {
-      this._user.next(null);
-      console.log('there is no user while checking isLoggedIn:');
-      return false;
-    }
+  getAccount(): Observable<Account> {
+    return from(this.api.account.get());
   }
 
   async logout() {
@@ -92,23 +91,6 @@ export class AuthService {
     } finally {
       this._user.next(null);
     }
-  }
-
-  // TODO: #149 Login with Google (createOAuth2Session)
-  async signInWithGoogle() {
-    console.log('signInWithGoogle');
-    this.api.account.createOAuth2Session(
-      'google',
-      //environment.url.SIGNUP_COMPLETE_URL,
-      environment.url.LOGIN_URL,
-      environment.url.LOGIN_URL
-    );
-    const session = await this.api.account.getSession('current');
-
-    // Provider information
-    console.log(session.provider);
-    console.log(session.providerUid);
-    console.log(session.providerAccessToken);
   }
 
   resetPassword(email: string) {
@@ -135,6 +117,23 @@ export class AuthService {
       });
   }
 
+  // TODO: #149 Login with Google (createOAuth2Session)
+  async signInWithGoogle() {
+    console.log('signInWithGoogle');
+    this.api.account.createOAuth2Session(
+      'google',
+      //environment.url.SIGNUP_COMPLETE_URL,
+      environment.url.LOGIN_URL,
+      environment.url.LOGIN_URL
+    );
+    const session = await this.api.account.getSession('current');
+
+    // Provider information
+    console.log(session.provider);
+    console.log(session.providerUid);
+    console.log(session.providerAccessToken);
+  }
+
   // OPTIONAL: Login with Magic Link (createMagicSession)
   // Not needed to login anonymously
   /*
@@ -146,6 +145,21 @@ export class AuthService {
       concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
+  }
+  */
+
+  // NOT USED ANYMORE
+  /*
+  async isLoggedIn() {
+    try {
+      const user = await this.api.account.get();
+      this._user.next(user);
+      return true;
+    } catch (e) {
+      this._user.next(null);
+      console.log('there is no user while checking isLoggedIn:');
+      return false;
+    }
   }
   */
 }
