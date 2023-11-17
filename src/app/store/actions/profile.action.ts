@@ -6,6 +6,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 // Get Profile Actions
 export const getProfileAction = createAction(
   ActionTypes.GET_PROFILE,
+  // TODO: Add request interface
   props<{ userId: string }>()
 );
 
