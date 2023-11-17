@@ -15,10 +15,12 @@ import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { MessageService } from 'src/app/services/chat/message.service';
 import { Room } from 'src/app/models/Room';
-import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { User } from 'src/app/models/User';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
+import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +34,8 @@ export class RoomService {
   constructor(
     private api: ApiService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private messageService: MessageService
   ) {}
 
   getRoomById(roomId: string): Observable<RoomExtendedInterface | null> {
@@ -110,19 +113,38 @@ export class RoomService {
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((data: listRoomsResponseInterface) =>
+        this.fillRoomsWithUserData(data, currentUserId)
+      ),
+      switchMap((data: listRoomsResponseInterface) =>
+        this.fillRoomsWithMessages(data)
+      )
     );
   }
-
-  //
-  // TODO: WILL BE DELETED
-  //
 
   //
   // Utils
   //
 
+  private fillRoomsWithUserData(
+    data: listRoomsResponseInterface,
+    currentUserId: string
+  ): Observable<listRoomsResponseInterface> {
+    const roomObservables = data.documents.map((room) =>
+      this.fillRoomWithUserData(room, currentUserId)
+    );
+
+    return forkJoin(roomObservables).pipe(
+      map((rooms) => {
+        data.documents = rooms;
+        return data;
+      })
+    );
+  }
+
   private fillRoomWithUserData(
-    room: Room, // TODO: it has to be Room model.
+    room: Room,
     currentUserId: string
   ): Observable<RoomExtendedInterface> {
     let userId: string[] | string = room.users.filter(
@@ -141,6 +163,35 @@ export class RoomService {
       );
     }
   }
+
+  private fillRoomsWithMessages(
+    data: listRoomsResponseInterface
+  ): Observable<listRoomsResponseInterface> {
+    const roomObservables = data.documents.map((room) =>
+      this.fillRoomWithMessages(room)
+    );
+
+    return forkJoin(roomObservables).pipe(
+      map((rooms) => {
+        data.documents = rooms;
+        return data;
+      })
+    );
+  }
+
+  private fillRoomWithMessages(room: Room): Observable<RoomExtendedInterface> {
+    return from(this.messageService.listMessages(room.$id)).pipe(
+      map((data) => {
+        room['total'] = data.total;
+        room['messages'] = data.documents;
+        return room as RoomExtendedInterface;
+      })
+    );
+  }
+
+  //
+  // TODO: WILL BE DELETED
+  //
 
   listenRooms() {
     console.log('listenRooms started');
