@@ -3,23 +3,23 @@ import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
+import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { lastSeen } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
-import { User } from 'src/app/models/User';
+import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { FcmService } from 'src/app/services/fcm/fcm.service';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { activateRoomAction } from 'src/app/store/actions/message.action';
-import {
-  getRoomsAction,
-  getRoomsWithOffsetAction,
-} from 'src/app/store/actions/rooms.action';
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import {
   isLoadingSelector,
   roomsSelector,
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/room.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
+import {
+  getRoomsAction,
+  getRoomsWithOffsetAction,
+} from 'src/app/store/actions/rooms.action';
 
 @Component({
   selector: 'app-messages',
@@ -27,7 +27,7 @@ import {
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  currentUser$: Observable<User | null>;
+  currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
@@ -56,7 +56,7 @@ export class MessagesPage implements OnInit {
   }
 
   initValues() {
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
