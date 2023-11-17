@@ -163,6 +163,8 @@ export class CommunityPage implements OnInit {
               );
               if (room) {
                 this.store.dispatch(activateRoomAction({ payload: room }));
+              } else {
+                this.store.dispatch(getRoomAction({ currentUserId, userId }));
               }
             } else {
               this.store.dispatch(getRoomAction({ currentUserId, userId }));

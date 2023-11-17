@@ -76,24 +76,24 @@ export const createRoomFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-// Fill Room With User Data Actions
-export const fillRoomWithUserDataSuccessAction = createAction(
-  ActionTypes.FILL_ROOM_WITH_USER_DATA_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
-);
+// // Fill Room With User Data Actions
+// export const fillRoomWithUserDataSuccessAction = createAction(
+//   ActionTypes.FILL_ROOM_WITH_USER_DATA_SUCCESS,
+//   props<{ payload: RoomExtendedInterface }>()
+// );
 
-export const fillRoomWithUserDataFailureAction = createAction(
-  ActionTypes.FILL_ROOM_WITH_USER_DATA_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
+// export const fillRoomWithUserDataFailureAction = createAction(
+//   ActionTypes.FILL_ROOM_WITH_USER_DATA_FAILURE,
+//   props<{ error: ErrorInterface }>()
+// );
 
-// Fill Room With Messages Actions
-export const fillRoomWithMessagesSuccessAction = createAction(
-  ActionTypes.FILL_ROOM_WITH_MESSAGES_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
-);
+// // Fill Room With Messages Actions
+// export const fillRoomWithMessagesSuccessAction = createAction(
+//   ActionTypes.FILL_ROOM_WITH_MESSAGES_SUCCESS,
+//   props<{ payload: RoomExtendedInterface }>()
+// );
 
-export const fillRoomWithMessagesFailureAction = createAction(
-  ActionTypes.FILL_ROOM_WITH_MESSAGES_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
+// export const fillRoomWithMessagesFailureAction = createAction(
+//   ActionTypes.FILL_ROOM_WITH_MESSAGES_FAILURE,
+//   props<{ error: ErrorInterface }>()
+// );

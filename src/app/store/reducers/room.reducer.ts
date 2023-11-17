@@ -14,10 +14,10 @@ import {
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
-  fillRoomWithMessagesFailureAction,
-  fillRoomWithMessagesSuccessAction,
-  fillRoomWithUserDataFailureAction,
-  fillRoomWithUserDataSuccessAction,
+  // fillRoomWithMessagesFailureAction,
+  // fillRoomWithMessagesSuccessAction,
+  // fillRoomWithUserDataFailureAction,
+  // fillRoomWithUserDataSuccessAction,
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
@@ -96,14 +96,14 @@ const roomReducer = createReducer(
       activeRoom: null,
     })
   ),
-  // on(
-  //   getRoomSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     rooms: [...state.rooms, action.payload],
-  //   })
-  // ),
+  on(
+    getRoomSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      rooms: [action.payload, ...(state.rooms || [])],
+    })
+  ),
   on(
     getRoomFailureAction,
     (state, action): RoomStateInterface => ({
@@ -147,31 +147,31 @@ const roomReducer = createReducer(
   //     rooms: [...state.rooms, action.payload],
   //   })
   // ),
-  on(
-    fillRoomWithUserDataFailureAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-  // Fill Room With Messages Reducers
-  on(
-    fillRoomWithMessagesSuccessAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      rooms: [action.payload, ...(state.rooms || [])],
-    })
-  ),
-  on(
-    fillRoomWithMessagesFailureAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
+  // on(
+  //   fillRoomWithUserDataFailureAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // ),
+  // // Fill Room With Messages Reducers
+  // on(
+  //   fillRoomWithMessagesSuccessAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     rooms: [action.payload, ...(state.rooms || [])],
+  //   })
+  // ),
+  // on(
+  //   fillRoomWithMessagesFailureAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // ),
   // Deactivate Room Reducers
   on(deactivateRoomAction, (state, action): RoomStateInterface => {
     return {
