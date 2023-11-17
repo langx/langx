@@ -27,10 +27,10 @@ import {
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
-  fillRoomsWithUserDataSuccessAction,
-  fillRoomsWithUserDataFailureAction,
-  fillRoomsWithMessagesSuccessAction,
-  fillRoomsWithMessagesFailureAction,
+  // fillRoomsWithUserDataSuccessAction,
+  // fillRoomsWithUserDataFailureAction,
+  // fillRoomsWithMessagesSuccessAction,
+  // fillRoomsWithMessagesFailureAction,
   fillRoomsWithOffsetWithUserDataSuccessAction,
   fillRoomsWithOffsetWithUserDataFailureAction,
   fillRoomsWithOffsetWithMessagesSuccessAction,
@@ -64,7 +64,7 @@ export class RoomEffects {
       switchMap(({ currentUserId }) =>
         this.roomService.listRooms(currentUserId).pipe(
           map((payload: listRoomsResponseInterface) =>
-            getRoomsSuccessAction({ payload, currentUserId })
+            getRoomsSuccessAction({ payload })
           ),
 
           catchError((errorResponse: HttpErrorResponse) => {
@@ -78,73 +78,73 @@ export class RoomEffects {
     )
   );
 
-  fillRoomsWithUserData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getRoomsSuccessAction),
-      mergeMap((action) =>
-        from(action.payload.documents).pipe(
-          mergeMap((room: any) => {
-            const userId = room.users.filter(
-              (id: string) => id !== action.currentUserId
-            )[0];
-            return this.userService
-              .getUserDoc2(userId)
-              .pipe(map((userData) => ({ ...room, userData })));
-          }),
-          toArray(),
-          map((roomsWithUserData) =>
-            fillRoomsWithUserDataSuccessAction({
-              payload: {
-                total: action.payload.total,
-                documents: roomsWithUserData,
-              },
-            })
-          ),
+  // fillRoomsWithUserData$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(getRoomsSuccessAction),
+  //     mergeMap((action) =>
+  //       from(action.payload.documents).pipe(
+  //         mergeMap((room: any) => {
+  //           const userId = room.users.filter(
+  //             (id: string) => id !== action.currentUserId
+  //           )[0];
+  //           return this.userService
+  //             .getUserDoc2(userId)
+  //             .pipe(map((userData) => ({ ...room, userData })));
+  //         }),
+  //         toArray(),
+  //         map((roomsWithUserData) =>
+  //           fillRoomsWithUserDataSuccessAction({
+  //             payload: {
+  //               total: action.payload.total,
+  //               documents: roomsWithUserData,
+  //             },
+  //           })
+  //         ),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(fillRoomsWithUserDataFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
+  //         catchError((errorResponse: HttpErrorResponse) => {
+  //           const error: ErrorInterface = {
+  //             message: errorResponse.message,
+  //           };
+  //           return of(fillRoomsWithUserDataFailureAction({ error }));
+  //         })
+  //       )
+  //     )
+  //   )
+  // );
 
-  fillRoomsWithMessages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(fillRoomsWithUserDataSuccessAction),
-      mergeMap((action) =>
-        from(action.payload.documents).pipe(
-          mergeMap((room: any) => {
-            return this.messageService.listMessages(room.$id).pipe(
-              map((messages) => ({
-                ...room,
-                total: messages.total,
-                messages: messages.documents,
-              }))
-            );
-          }),
-          toArray(),
-          map((roomsWithMessages) =>
-            fillRoomsWithMessagesSuccessAction({
-              payload: {
-                total: action.payload.total,
-                documents: roomsWithMessages,
-              },
-            })
-          ),
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(fillRoomsWithMessagesFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
+  // fillRoomsWithMessages$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(fillRoomsWithUserDataSuccessAction),
+  //     mergeMap((action) =>
+  //       from(action.payload.documents).pipe(
+  //         mergeMap((room: any) => {
+  //           return this.messageService.listMessages(room.$id).pipe(
+  //             map((messages) => ({
+  //               ...room,
+  //               total: messages.total,
+  //               messages: messages.documents,
+  //             }))
+  //           );
+  //         }),
+  //         toArray(),
+  //         map((roomsWithMessages) =>
+  //           fillRoomsWithMessagesSuccessAction({
+  //             payload: {
+  //               total: action.payload.total,
+  //               documents: roomsWithMessages,
+  //             },
+  //           })
+  //         ),
+  //         catchError((errorResponse: HttpErrorResponse) => {
+  //           const error: ErrorInterface = {
+  //             message: errorResponse.message,
+  //           };
+  //           return of(fillRoomsWithMessagesFailureAction({ error }));
+  //         })
+  //       )
+  //     )
+  //   )
+  // );
 
   getRoomsWithOffset$ = createEffect(() =>
     this.actions$.pipe(

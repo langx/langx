@@ -7,10 +7,10 @@ import {
   getRoomsFailureAction,
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
-  fillRoomsWithUserDataSuccessAction,
-  fillRoomsWithUserDataFailureAction,
-  fillRoomsWithMessagesSuccessAction,
-  fillRoomsWithMessagesFailureAction,
+  // fillRoomsWithUserDataSuccessAction,
+  // fillRoomsWithUserDataFailureAction,
+  // fillRoomsWithMessagesSuccessAction,
+  // fillRoomsWithMessagesFailureAction,
   fillRoomsWithOffsetWithUserDataSuccessAction,
   fillRoomsWithOffsetWithUserDataFailureAction,
   fillRoomsWithOffsetWithMessagesSuccessAction,
@@ -49,41 +49,8 @@ const roomReducer = createReducer(
       error: null,
     })
   ),
-  // on(
-  //   getRoomsSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     total: action.payload?.total,
-  //     rooms: action.payload?.documents,
-  //   })
-  // ),
   on(
-    getRoomsFailureAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-  on(
-    fillRoomsWithUserDataSuccessAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      total: action.payload?.total,
-    })
-  ),
-  on(
-    fillRoomsWithUserDataFailureAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-  on(
-    fillRoomsWithMessagesSuccessAction,
+    getRoomsSuccessAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
@@ -92,13 +59,46 @@ const roomReducer = createReducer(
     })
   ),
   on(
-    fillRoomsWithMessagesFailureAction,
+    getRoomsFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
     })
   ),
+  // on(
+  //   fillRoomsWithUserDataSuccessAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     total: action.payload?.total,
+  //   })
+  // ),
+  // on(
+  //   fillRoomsWithUserDataFailureAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // ),
+  // on(
+  //   fillRoomsWithMessagesSuccessAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     total: action.payload?.total,
+  //     rooms: action.payload?.documents,
+  //   })
+  // ),
+  // on(
+  //   fillRoomsWithMessagesFailureAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // ),
   on(
     getRoomsWithOffsetAction,
     (state): RoomStateInterface => ({
