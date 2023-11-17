@@ -4,11 +4,11 @@ import { Store, select } from '@ngrx/store';
 import { Observable, combineLatest, map } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
+import { Account } from 'src/app/models/Account';
 import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
 import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
-import { User } from 'src/app/models/User';
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { updatePresenceAction } from 'src/app/store/actions/presence.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +20,7 @@ export class HomePage implements OnInit {
   isLoadingOverlayActive = false;
   refreshIntervalId: any;
 
-  currentUser$: Observable<User>;
+  currentUser$: Observable<Account>;
 
   constructor(
     private store: Store,
@@ -40,7 +40,7 @@ export class HomePage implements OnInit {
   }
 
   initValues() {
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.currentUser$ = this.store.pipe(select(accountSelector));
     // Loading Controller
     combineLatest([
       this.store.pipe(select(isLoadingUser)),
@@ -65,12 +65,10 @@ export class HomePage implements OnInit {
 
   presencePing() {
     // Update user in user collection lastSeen attribute
-    // with timeout of every 60 seconds
-    // Start with first ping
+    this.dispatchUpdatePresence();
     this.refreshIntervalId = setInterval(() => {
       this.dispatchUpdatePresence();
     }, 60000);
-    this.dispatchUpdatePresence();
   }
 
   dispatchUpdatePresence() {
