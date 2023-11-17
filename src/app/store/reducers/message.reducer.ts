@@ -112,7 +112,7 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
-  // Get Room By Id Reducers for only loader
+  // Get Room By Id Reducers for only loader & error
   on(
     getRoomByIdAction,
     (state): MessageStateInterface => ({
@@ -122,7 +122,7 @@ const messageReducer = createReducer(
   ),
   on(
     getRoomByIdSuccessAction,
-    (state, action): MessageStateInterface => ({
+    (state): MessageStateInterface => ({
       ...state,
       isLoading: false,
     })
