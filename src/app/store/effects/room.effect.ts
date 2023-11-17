@@ -163,11 +163,6 @@ export class RoomEffects {
               const payload: RoomExtendedInterface = data.documents[0];
               return getRoomSuccessAction({ payload });
             } else {
-              const error: ErrorInterface = {
-                message: 'createRoom has to be start here',
-              };
-              return getRoomFailureAction({ error });
-              // TODO: Take a look here
               return createRoomAction({ currentUserId, userId });
             }
           }),
@@ -188,9 +183,17 @@ export class RoomEffects {
       ofType(createRoomAction),
       switchMap(({ currentUserId, userId }) =>
         this.roomService.createRoom(currentUserId, userId).pipe(
-          map((payload: RoomExtendedInterface) =>
-            createRoomSuccessAction({ payload })
-          ),
+          map((data: listRoomsResponseInterface) => {
+            if (data.total === 1) {
+              const payload: RoomExtendedInterface = data.documents[0];
+              return createRoomSuccessAction({ payload });
+            } else {
+              const error: ErrorInterface = {
+                message: 'Room was not created',
+              };
+              return createRoomFailureAction({ error });
+            }
+          }),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
