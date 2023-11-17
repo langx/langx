@@ -12,4 +12,8 @@ export enum ActionTypes {
   CREATE_ROOM = '[Room] Create Room',
   CREATE_ROOM_SUCCESS = '[Room] Create Room Success',
   CREATE_ROOM_FAILURE = '[Room] Create Room Failure',
+  FILL_ROOM_WITH_USER_DATA_SUCCESS = '[Room] Fill Room With User Data Success',
+  FILL_ROOM_WITH_USER_DATA_FAILURE = '[Room] Fill Room With User Data Failure',
+  FILL_ROOM_WITH_MESSAGES_SUCCESS = '[Room] Fill Room With Messages Success',
+  FILL_ROOM_WITH_MESSAGES_FAILURE = '[Room] Fill Room With Messages Failure',
 }
