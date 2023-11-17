@@ -118,14 +118,14 @@ const roomReducer = createReducer(
       error: null,
     })
   ),
-  // on(
-  //   createRoomSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     rooms: [...state.rooms, action.payload],
-  //   })
-  // ),
+  on(
+    createRoomSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      rooms: [action.payload, ...(state.rooms || [])],
+    })
+  ),
   on(
     createRoomFailureAction,
     (state, action): RoomStateInterface => ({

@@ -74,7 +74,7 @@ export class RoomService {
   createRoom(
     currentUserId: string,
     userId: string
-  ): Observable<RoomExtendedInterface | null> {
+  ): Observable<listRoomsResponseInterface | null> {
     // Set body
     const body = { to: userId };
 
@@ -94,11 +94,23 @@ export class RoomService {
           axios
             .post(environment.url.CREATE_ROOM_API_URL, body)
             .then((result) => {
-              return result.data as Room;
+              return {
+                documents: [result.data],
+                total: 1,
+              };
             })
         ).pipe(
-          switchMap((room: Room) =>
-            this.fillRoomWithUserData(room, currentUserId)
+          switchMap((data: listRoomsResponseInterface) =>
+            iif(
+              () => data.total > 0,
+              of(data).pipe(
+                switchMap(() =>
+                  this.fillRoomsWithUserData(data, currentUserId)
+                ),
+                switchMap(() => this.fillRoomsWithMessages(data))
+              ),
+              of(data)
+            )
           )
         );
       })
