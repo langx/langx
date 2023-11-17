@@ -6,10 +6,11 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { Message } from 'src/app/models/Message';
+import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
@@ -40,7 +41,7 @@ export class ChatPage implements OnInit {
 
   room$: Observable<RoomExtendedInterface | null>;
   user$: Observable<User | null>;
-  currentUser$: Observable<User | null>;
+  currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
@@ -90,7 +91,7 @@ export class ChatPage implements OnInit {
 
     this.room$ = this.store.pipe(select(roomSelector));
     this.user$ = this.store.pipe(select(userDataSelector));
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
