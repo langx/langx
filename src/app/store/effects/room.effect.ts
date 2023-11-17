@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
-import { UserService } from 'src/app/services/user/user.service';
-import { MessageService } from 'src/app/services/chat/message.service';
-
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -30,10 +26,6 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
-  fillRoomByIdWithUserDataSuccessAction,
-  fillRoomByIdWithUserDataFailureAction,
-  fillRoomByIdWithMessagesSuccessAction,
-  fillRoomByIdWithMessagesFailureAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -86,10 +78,18 @@ export class RoomEffects {
     this.actions$.pipe(
       ofType(getRoomByIdAction),
       switchMap(({ currentUserId, roomId }) =>
-        this.roomService.getRoomById(roomId).pipe(
-          map((payload: RoomExtendedInterface) =>
-            getRoomByIdSuccessAction({ payload, currentUserId })
-          ),
+        this.roomService.getRoomById(currentUserId, roomId).pipe(
+          map((data: listRoomsResponseInterface) => {
+            if (data.total === 1) {
+              const payload: RoomExtendedInterface = data.documents[0];
+              return getRoomByIdSuccessAction({ payload });
+            } else {
+              const error: ErrorInterface = {
+                message: 'Room with requested ID could not find',
+              };
+              return getRoomByIdFailureAction({ error });
+            }
+          }),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
@@ -99,57 +99,6 @@ export class RoomEffects {
           })
         )
       )
-    )
-  );
-
-  fillRoomByIdWithUserData$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getRoomByIdSuccessAction),
-      mergeMap((action) => {
-        const room = action.payload;
-        const userId = room.users.filter(
-          (id: string) => id !== action.currentUserId
-        )[0];
-        return this.userService.getUserDoc2(userId).pipe(
-          map((userData) => ({ ...room, userData })),
-          map((roomWithUserData) =>
-            fillRoomByIdWithUserDataSuccessAction({ payload: roomWithUserData })
-          )
-        );
-      }),
-
-      catchError((errorResponse: HttpErrorResponse) => {
-        const error: ErrorInterface = {
-          message: errorResponse.message,
-        };
-        return of(fillRoomByIdWithUserDataFailureAction({ error }));
-      })
-    )
-  );
-
-  fillRoomByIdWithMessages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(fillRoomByIdWithUserDataSuccessAction),
-      mergeMap((action) => {
-        const room = action.payload;
-        return this.messageService.listMessages(room.$id).pipe(
-          map((messages) => ({
-            ...room,
-            total: messages.total,
-            messages: messages.documents,
-          })),
-          map((roomWithMessages) =>
-            fillRoomByIdWithMessagesSuccessAction({ payload: roomWithMessages })
-          )
-        );
-      }),
-
-      catchError((errorResponse: HttpErrorResponse) => {
-        const error: ErrorInterface = {
-          message: errorResponse.message,
-        };
-        return of(fillRoomByIdWithMessagesFailureAction({ error }));
-      })
     )
   );
 
@@ -208,16 +157,14 @@ export class RoomEffects {
 
   activateRoomAfterGetOrCreateRoom$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getRoomSuccessAction, createRoomSuccessAction),
+      ofType(
+        getRoomSuccessAction,
+        createRoomSuccessAction,
+        getRoomByIdSuccessAction
+      ),
       map((action) => activateRoomAction({ payload: action.payload }))
     )
   );
 
-  constructor(
-    private actions$: Actions,
-    private router: Router,
-    private roomService: RoomService,
-    private userService: UserService,
-    private messageService: MessageService
-  ) {}
+  constructor(private actions$: Actions, private roomService: RoomService) {}
 }

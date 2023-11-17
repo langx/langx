@@ -38,9 +38,29 @@ export class RoomService {
     private messageService: MessageService
   ) {}
 
-  getRoomById(roomId: string): Observable<RoomExtendedInterface | null> {
+  getRoomById(
+    currentUserId: string,
+    roomId: string
+  ): Observable<listRoomsResponseInterface | null> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for rooms, user attribute that contain current user and userId
+    queries.push(Query.equal('$id', roomId));
+
     return from(
-      this.api.getDocument(environment.appwrite.ROOMS_COLLECTION, roomId)
+      this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((data: listRoomsResponseInterface) =>
+        iif(
+          () => data.total > 0,
+          of(data).pipe(
+            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithMessages(data))
+          ),
+          of(data)
+        )
+      )
     );
   }
 
