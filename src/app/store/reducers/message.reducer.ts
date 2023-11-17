@@ -132,6 +132,7 @@ const messageReducer = createReducer(
     (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,
+      error: action.error,
     })
   ),
   // Activate Room Reducers
