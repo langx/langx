@@ -6,6 +6,7 @@ import {
   fillRoomByIdWithMessagesSuccessAction,
   fillRoomByIdWithUserDataFailureAction,
   fillRoomByIdWithUserDataSuccessAction,
+  fillRoomWithMessagesSuccessAction,
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
@@ -146,6 +147,7 @@ const messageReducer = createReducer(
     fillRoomByIdWithUserDataSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      isLoading: false,
       room: action.payload,
     })
   ),
@@ -153,6 +155,7 @@ const messageReducer = createReducer(
     fillRoomByIdWithUserDataFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      isLoading: false,
       error: action.error,
     })
   ),
@@ -160,6 +163,7 @@ const messageReducer = createReducer(
     fillRoomByIdWithMessagesSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      isLoading: false,
       room: action.payload,
     })
   ),
@@ -167,7 +171,17 @@ const messageReducer = createReducer(
     fillRoomByIdWithMessagesFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      isLoading: false,
       error: action.error,
+    })
+  ),
+  // Get Room Reducers
+  on(
+    fillRoomWithMessagesSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      room: action.payload,
     })
   ),
   // Activate Room Reducers
