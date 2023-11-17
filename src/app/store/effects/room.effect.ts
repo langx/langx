@@ -102,6 +102,17 @@ export class RoomEffects {
     )
   );
 
+  redirectAfterGetRoomByIdFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(getRoomByIdFailureAction),
+        tap(() => {
+          this.router.navigate(['/', 'home', 'messages']);
+        })
+      ),
+    { dispatch: false }
+  );
+
   getRoom$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomAction),
