@@ -6,10 +6,10 @@ import {
   fillRoomByIdWithMessagesSuccessAction,
   fillRoomByIdWithUserDataFailureAction,
   fillRoomByIdWithUserDataSuccessAction,
-  fillRoomWithMessagesSuccessAction,
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
+  getRoomSuccessAction,
 } from 'src/app/store/actions/room.action';
 import {
   activateRoomAction,
@@ -176,8 +176,9 @@ const messageReducer = createReducer(
     })
   ),
   // Get Room Reducers
+  // TODO: Just activate room
   on(
-    fillRoomWithMessagesSuccessAction,
+    getRoomSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,

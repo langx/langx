@@ -57,6 +57,17 @@ export class RoomService {
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
+    ).pipe(
+      switchMap((data: listRoomsResponseInterface) =>
+        iif(
+          () => data.total > 0,
+          of(data).pipe(
+            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithMessages(data))
+          ),
+          of(data)
+        )
+      )
     );
   }
 
