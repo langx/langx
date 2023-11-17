@@ -30,6 +30,17 @@ export class UserListComponent implements OnInit {
     return studyLanguages.join(', ');
   }
 
+  //
+  // Utils
+  //
+
+  messageTime(d: any) {
+    if (!d) return null;
+    let time = lastSeen(d);
+    if (time === 'online') time = 'just now';
+    return time;
+  }
+
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
