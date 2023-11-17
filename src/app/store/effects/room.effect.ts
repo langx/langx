@@ -50,6 +50,10 @@ import {
   fillRoomByIdWithUserDataFailureAction,
   fillRoomByIdWithMessagesSuccessAction,
   fillRoomByIdWithMessagesFailureAction,
+  fillRoomWithUserDataSuccessAction,
+  fillRoomWithUserDataFailureAction,
+  fillRoomWithMessagesSuccessAction,
+  fillRoomWithMessagesFailureAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -345,6 +349,55 @@ export class RoomEffects {
           })
         )
       )
+    )
+  );
+
+  fillRoomWithUserData$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createRoomSuccessAction, getRoomSuccessAction),
+      mergeMap((action) => {
+        const room = action.payload;
+        const userId = room.users.filter((id: string) => id !== room.$id)[0];
+        return this.userService.getUserDoc2(userId).pipe(
+          map((userData) => ({ ...room, userData })),
+          map((roomWithUserData) =>
+            fillRoomWithUserDataSuccessAction({ payload: roomWithUserData })
+          )
+        );
+      }),
+
+      catchError((errorResponse: HttpErrorResponse) => {
+        const error: ErrorInterface = {
+          message: errorResponse.message,
+        };
+        return of(fillRoomWithUserDataFailureAction({ error }));
+      })
+    )
+  );
+
+  fillRoomWithMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fillRoomWithUserDataSuccessAction),
+      mergeMap((action) => {
+        const room = action.payload;
+        return this.messageService.listMessages(room.$id).pipe(
+          map((messages) => ({
+            ...room,
+            total: messages.total,
+            messages: messages.documents,
+          })),
+          map((roomWithMessages) =>
+            fillRoomWithMessagesSuccessAction({ payload: roomWithMessages })
+          )
+        );
+      }),
+
+      catchError((errorResponse: HttpErrorResponse) => {
+        const error: ErrorInterface = {
+          message: errorResponse.message,
+        };
+        return of(fillRoomWithMessagesFailureAction({ error }));
+      })
     )
   );
 
