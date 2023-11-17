@@ -52,7 +52,7 @@ export const getRoomsWithOffsetAction = createAction(
 
 export const getRoomsWithOffsetSuccessAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET_SUCCESS,
-  props<{ payload: listRoomsResponseInterface; currentUserId: string }>()
+  props<{ payload: listRoomsResponseInterface }>()
 );
 
 export const getRoomsWithOffsetFailureAction = createAction(
@@ -60,24 +60,24 @@ export const getRoomsWithOffsetFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-// Fill Rooms With Offset With User Data Actions
-export const fillRoomsWithOffsetWithUserDataSuccessAction = createAction(
-  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_SUCCESS,
-  props<{ payload: listRoomsResponseInterface }>()
-);
+// // Fill Rooms With Offset With User Data Actions
+// export const fillRoomsWithOffsetWithUserDataSuccessAction = createAction(
+//   ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_SUCCESS,
+//   props<{ payload: listRoomsResponseInterface }>()
+// );
 
-export const fillRoomsWithOffsetWithUserDataFailureAction = createAction(
-  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
+// export const fillRoomsWithOffsetWithUserDataFailureAction = createAction(
+//   ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_USER_DATA_FAILURE,
+//   props<{ error: ErrorInterface }>()
+// );
 
-// Fill Rooms With Offset With Messages Actions
-export const fillRoomsWithOffsetWithMessagesSuccessAction = createAction(
-  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_SUCCESS,
-  props<{ payload: listRoomsResponseInterface }>()
-);
+// // Fill Rooms With Offset With Messages Actions
+// export const fillRoomsWithOffsetWithMessagesSuccessAction = createAction(
+//   ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_SUCCESS,
+//   props<{ payload: listRoomsResponseInterface }>()
+// );
 
-export const fillRoomsWithOffsetWithMessagesFailureAction = createAction(
-  ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
+// export const fillRoomsWithOffsetWithMessagesFailureAction = createAction(
+//   ActionTypes.FILL_ROOMS_WITH_OFFSET_WITH_MESSAGES_FAILURE,
+//   props<{ error: ErrorInterface }>()
+// );
