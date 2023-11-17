@@ -51,15 +51,16 @@ export class CommunityPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Check Local Storage for filters
-    await this.checkLocalStorage();
-    await this.checkFilter();
-
     // Init values
     this.initValues();
 
     // List Users
-    this.listUsers();
+    // It triggers after subscribing to the filter
+    // this.listUsers();
+
+    // Check Local Storage for filters
+    await this.checkLocalStorage();
+    await this.checkFilter();
   }
 
   ngOnDestroy() {
@@ -109,6 +110,9 @@ export class CommunityPage implements OnInit {
       .subscribe((filterData: FilterDataInterface) => {
         this.filterData = filterData;
         console.log('Subscribed filter: ', filterData);
+
+        // List Users
+        this.listUsers();
       });
   }
 
