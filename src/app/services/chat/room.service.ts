@@ -147,8 +147,8 @@ export class RoomService {
     // Query for rooms that contain the current user
     queries.push(Query.search('users', currentUserId));
 
-    // Query for rooms descending by $createdAt
-    queries.push(Query.orderDesc('$createdAt'));
+    // Query for rooms descending by $updatedAt
+    queries.push(Query.orderDesc('$updatedAt'));
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
