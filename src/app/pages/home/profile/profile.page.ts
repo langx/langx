@@ -46,8 +46,6 @@ export class ProfilePage implements OnInit {
   cUserSession: any;
   cUserDoc: any;
 
-  isLoading: boolean = false;
-
   userServiceFn: Function;
   userDoc$: Subscription;
 
@@ -69,8 +67,6 @@ export class ProfilePage implements OnInit {
   }
 
   async getProfileInfo() {
-    //showLoader();
-    this.isLoading = true;
 
     this.authService
       .getUser()
@@ -93,8 +89,6 @@ export class ProfilePage implements OnInit {
     this.userServiceFn = this.userService.listenUserDoc(this.cUserSession.$id);
     this.listenUserDoc();
 
-    //hideLoader();
-    this.isLoading = false;
   }
 
   listenUserDoc() {
@@ -118,12 +112,8 @@ export class ProfilePage implements OnInit {
 
   async logout() {
     try {
-      //showLoader();
-      this.isLoading = true;
       await this.authService.logout();
       this.router.navigateByUrl('/login', { replaceUrl: true });
-      //hideLoader();
-      this.isLoading = false;
     } catch (e) {
       console.log(e);
     }
