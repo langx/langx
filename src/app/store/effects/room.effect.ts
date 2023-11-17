@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -166,5 +167,21 @@ export class RoomEffects {
     )
   );
 
-  constructor(private actions$: Actions, private roomService: RoomService) {}
+  redirectAfterActivateRoom$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(activateRoomAction),
+        tap(({ payload }) => {
+          const roomId = payload.$id;
+          this.router.navigate(['/', 'home', 'chat', roomId]);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  constructor(
+    private actions$: Actions,
+    private router: Router,
+    private roomService: RoomService
+  ) {}
 }

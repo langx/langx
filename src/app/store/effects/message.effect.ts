@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
-import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
 import {
-  activateRoomAction,
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
@@ -81,21 +79,8 @@ export class MessageEffects {
     )
   );
 
-  redirectAfterActivateRoom$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(activateRoomAction),
-        tap(({ payload }) => {
-          const roomId = payload.$id;
-          this.router.navigate(['/', 'home', 'chat', roomId]);
-        })
-      ),
-    { dispatch: false }
-  );
-
   constructor(
     private actions$: Actions,
-    private messagesService: MessageService,
-    private router: Router
+    private messagesService: MessageService
   ) {}
 }
