@@ -14,10 +14,6 @@ import {
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
-  // fillRoomWithMessagesFailureAction,
-  // fillRoomWithMessagesSuccessAction,
-  // fillRoomWithUserDataFailureAction,
-  // fillRoomWithUserDataSuccessAction,
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
@@ -138,40 +134,6 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // Fill Room With User Data Reducers
-  // on(
-  //   fillRoomWithUserDataSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     rooms: [...state.rooms, action.payload],
-  //   })
-  // ),
-  // on(
-  //   fillRoomWithUserDataFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
-  // // Fill Room With Messages Reducers
-  // on(
-  //   fillRoomWithMessagesSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     rooms: [action.payload, ...(state.rooms || [])],
-  //   })
-  // ),
-  // on(
-  //   fillRoomWithMessagesFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
   // Deactivate Room Reducers
   on(deactivateRoomAction, (state, action): RoomStateInterface => {
     return {
