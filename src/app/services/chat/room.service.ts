@@ -6,6 +6,7 @@ import {
   Observable,
   forkJoin,
   from,
+  iif,
   map,
   of,
   switchMap,
@@ -20,7 +21,6 @@ import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
-import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -115,10 +115,14 @@ export class RoomService {
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
       switchMap((data: listRoomsResponseInterface) =>
-        this.fillRoomsWithUserData(data, currentUserId)
-      ),
-      switchMap((data: listRoomsResponseInterface) =>
-        this.fillRoomsWithMessages(data)
+        iif(
+          () => data.total > 0,
+          of(data).pipe(
+            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithMessages(data))
+          ),
+          of(data)
+        )
       )
     );
   }
