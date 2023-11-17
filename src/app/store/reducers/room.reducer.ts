@@ -15,6 +15,7 @@ import {
   fillRoomsWithOffsetWithUserDataFailureAction,
   fillRoomsWithOffsetWithMessagesSuccessAction,
   fillRoomsWithOffsetWithMessagesFailureAction,
+  getRoomsSuccessAction,
 } from 'src/app/store/actions/rooms.action';
 import {
   createRoomAction,
@@ -48,6 +49,15 @@ const roomReducer = createReducer(
       error: null,
     })
   ),
+  // on(
+  //   getRoomsSuccessAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     total: action.payload?.total,
+  //     rooms: action.payload?.documents,
+  //   })
+  // ),
   on(
     getRoomsFailureAction,
     (state, action): RoomStateInterface => ({
