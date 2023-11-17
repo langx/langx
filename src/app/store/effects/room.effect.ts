@@ -263,17 +263,17 @@ export class RoomEffects {
   );
 
   // TODO: Only Redirect Activate Success Action
-  redirectAfterGetOrCreateRoom$ = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(createRoomSuccessAction, getRoomSuccessAction),
-        tap(({ payload }) => {
-          const roomId = payload.$id;
-          this.router.navigate(['/', 'home', 'chat', roomId]);
-        })
-      ),
-    { dispatch: false }
-  );
+  // redirectAfterGetOrCreateRoom$ = createEffect(
+  //   () =>
+  //     this.actions$.pipe(
+  //       ofType(createRoomSuccessAction, getRoomSuccessAction),
+  //       tap(({ payload }) => {
+  //         const roomId = payload.$id;
+  //         this.router.navigate(['/', 'home', 'chat', roomId]);
+  //       })
+  //     ),
+  //   { dispatch: false }
+  // );
 
   constructor(
     private actions$: Actions,
