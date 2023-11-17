@@ -148,7 +148,6 @@ export class MessagesPage implements OnInit {
       time: null,
     };
     if (room.messages.length > 0) {
-      console.log('room.messages', room.$id);
       lastMessage.body = room.messages[room.messages.length - 1].body;
       lastMessage.time = room.messages[room.messages.length - 1].$updatedAt;
     }
