@@ -48,14 +48,16 @@ export class LoginPage implements OnInit {
     this.store
       .pipe(select(loginValidationErrorSelector))
       .subscribe((error: ErrorInterface) => {
-        if (error) this.presentToast(error.message, 'danger');
-        this.form.enable();
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.form.enable();
+        }
       });
     // Unauthorized Error
     this.store
       .pipe(select(unauthorizedErrorSelector))
       .subscribe((error: ErrorInterface) => {
-        if (error.message) this.presentToast(error.message, 'warning');
+        if (error && error.message) this.presentToast(error.message, 'warning');
       });
   }
 
