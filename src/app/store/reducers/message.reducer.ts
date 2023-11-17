@@ -9,7 +9,6 @@ import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
-  getRoomSuccessAction,
 } from 'src/app/store/actions/room.action';
 import {
   activateRoomAction,
@@ -177,14 +176,14 @@ const messageReducer = createReducer(
   ),
   // Get Room Reducers
   // TODO: Just activate room
-  on(
-    getRoomSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      room: action.payload,
-    })
-  ),
+  // on(
+  //   getRoomSuccessAction,
+  //   (state, action): MessageStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     room: action.payload,
+  //   })
+  // ),
   // Activate Room Reducers
   on(
     activateRoomAction,

@@ -11,6 +11,7 @@ import { MessageService } from 'src/app/services/chat/message.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   getRoomsAction,
   getRoomsFailureAction,
@@ -253,6 +254,13 @@ export class RoomEffects {
   //     })
   //   )
   // );
+
+  activateRoomAfterGetOrCreateRoom$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getRoomSuccessAction, createRoomSuccessAction),
+      map((action) => activateRoomAction({ payload: action.payload }))
+    )
+  );
 
   // TODO: Only Redirect Activate Success Action
   redirectAfterGetOrCreateRoom$ = createEffect(
