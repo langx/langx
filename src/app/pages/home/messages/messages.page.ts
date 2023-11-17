@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -43,7 +42,6 @@ export class MessagesPage implements OnInit {
 
   constructor(
     private store: Store,
-    private router: Router,
     private fcmService: FcmService,
     private toastController: ToastController
   ) {}
@@ -149,17 +147,14 @@ export class MessagesPage implements OnInit {
       body: 'Say Hi! 👋',
       time: null,
     };
-    if (
-      room &&
-      room.messages &&
-      room.lastMessage !== undefined &&
-      room.messages.length > 0
-    ) {
+    if (room.messages.length > 0) {
+      console.log('room.messages', room.$id);
       lastMessage.body = room.messages[room.messages.length - 1].body;
       lastMessage.time = room.messages[room.messages.length - 1].$updatedAt;
     }
     return lastMessage;
   }
+
   messageTime(d: any) {
     if (!d) return null;
     let time = lastSeen(d);

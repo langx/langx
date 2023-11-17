@@ -58,7 +58,6 @@ const roomReducer = createReducer(
       ...state,
       isLoading: false,
       total: action.payload?.total,
-      rooms: action.payload?.documents,
     })
   ),
   on(
