@@ -12,33 +12,11 @@ export const getRoomByIdAction = createAction(
 
 export const getRoomByIdSuccessAction = createAction(
   ActionTypes.GET_ROOM_BY_ID_SUCCESS,
-  props<{ payload: RoomExtendedInterface; currentUserId: string }>()
+  props<{ payload: RoomExtendedInterface }>()
 );
 
 export const getRoomByIdFailureAction = createAction(
   ActionTypes.GET_ROOM_BY_ID_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
-// Fill Room By Id With User Data Actions
-export const fillRoomByIdWithUserDataSuccessAction = createAction(
-  ActionTypes.FILL_ROOM_BY_ID_WITH_USER_DATA_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
-);
-
-export const fillRoomByIdWithUserDataFailureAction = createAction(
-  ActionTypes.FILL_ROOM_BY_ID_WITH_USER_DATA_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
-// Fill Room By Id With Messages Actions
-export const fillRoomByIdWithMessagesSuccessAction = createAction(
-  ActionTypes.FILL_ROOM_BY_ID_WITH_MESSAGES_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
-);
-
-export const fillRoomByIdWithMessagesFailureAction = createAction(
-  ActionTypes.FILL_ROOM_BY_ID_WITH_MESSAGES_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 

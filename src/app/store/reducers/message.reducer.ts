@@ -2,15 +2,6 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import {
-  fillRoomByIdWithMessagesFailureAction,
-  fillRoomByIdWithMessagesSuccessAction,
-  fillRoomByIdWithUserDataFailureAction,
-  fillRoomByIdWithUserDataSuccessAction,
-  getRoomByIdAction,
-  getRoomByIdFailureAction,
-  getRoomByIdSuccessAction,
-} from 'src/app/store/actions/room.action';
-import {
   activateRoomAction,
   deactivateRoomAction,
   createMessageAction,
@@ -116,74 +107,6 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
-  // Get Room By Id Reducers
-  on(
-    getRoomByIdAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: true,
-      error: null,
-      room: null,
-    })
-  ),
-  on(
-    getRoomByIdSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      room: action.payload,
-    })
-  ),
-  on(
-    getRoomByIdFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-  on(
-    fillRoomByIdWithUserDataSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      room: action.payload,
-    })
-  ),
-  on(
-    fillRoomByIdWithUserDataFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-  on(
-    fillRoomByIdWithMessagesSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      room: action.payload,
-    })
-  ),
-  on(
-    fillRoomByIdWithMessagesFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-  // Get Room Reducers
-  // TODO: Just activate room
-  // on(
-  //   getRoomSuccessAction,
-  //   (state, action): MessageStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     room: action.payload,
-  //   })
-  // ),
   // Activate Room Reducers
   on(
     activateRoomAction,

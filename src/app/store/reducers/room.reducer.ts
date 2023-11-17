@@ -17,6 +17,9 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
+  getRoomByIdAction,
+  getRoomByIdFailureAction,
+  getRoomByIdSuccessAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {
@@ -108,7 +111,6 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // TODO: Take a look here
   // Create Room Reducers
   on(
     createRoomAction,
@@ -128,6 +130,30 @@ const roomReducer = createReducer(
   ),
   on(
     createRoomFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  // Get Room By Id Reducers
+  on(
+    getRoomByIdAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getRoomByIdSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      rooms: [action.payload, ...(state.rooms || [])],    })
+  ),
+  on(
+    getRoomByIdFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
