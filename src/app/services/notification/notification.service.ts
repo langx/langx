@@ -1,28 +1,25 @@
 import { Injectable } from '@angular/core';
+import { Observable, from } from 'rxjs';
+
 import { environment } from 'src/environments/environment';
-import { ApiService } from '../api/api.service';
-import { RoomService } from '../chat/room.service';
-import { MessageService } from '../chat/message.service';
-import { AuthService } from '../auth/auth.service';
+import { ApiService } from 'src/app/services/api/api.service';
+import { RoomService } from 'src/app/services/chat/room.service';
+import { MessageService } from 'src/app/services/chat/message.service';
+import { User } from 'src/app/models/User';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
   listenerFn: Function;
-  refreshIntervalId: any;
 
   constructor(
     private api: ApiService,
-    private authService: AuthService,
     private roomService: RoomService,
     private messageService: MessageService
   ) {}
 
   listen() {
-    // Presence ping
-    this.presencePing();
-
     let channels = [];
 
     // channel for rooms
@@ -51,22 +48,22 @@ export class NotificationService {
         switch (event) {
           case `${messagesCollection}.*.create`:
             console.log('new message created', response.payload);
-            this.findAndUpdateRoom(response.payload);
-            this.findAndUpdateMessages(response.payload);
+            // this.findAndUpdateRoom(response.payload);
+            // this.findAndUpdateMessages(response.payload);
             break;
           case `${messagesCollection}.*.update`:
-            console.log('new message updated', response.payload);
+            // console.log('new message updated', response.payload);
             break;
           case `${messagesCollection}.*.delete`:
-            console.log('new message deleted', response.payload);
+            // console.log('new message deleted', response.payload);
             break;
           case `${roomsCollection}.*.create`:
             console.log('new room created', response.payload);
-            this.roomService.updateRooms(response.payload);
+            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
-            this.roomService.updateRooms(response.payload);
+            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:
             console.log('new room deleted', response.payload);
@@ -83,8 +80,6 @@ export class NotificationService {
     if (this.listenerFn) {
       this.listenerFn();
     }
-    // Kill presence ping
-    clearInterval(this.refreshIntervalId);
   }
 
   findAndUpdateRoom(message) {
@@ -105,28 +100,18 @@ export class NotificationService {
     }
   }
 
-  presencePing() {
-    // Update user in user collection lastSeen attribute
-    // with timeout of every 60 seconds
-    // Start with first ping
-    this.updateUserPresence();
-    this.refreshIntervalId = setInterval(() => {
-      this.updateUserPresence();
-    }, 60000);
-  }
-
-  updateUserPresence() {
-    this.api
-      .updateDocument(
+  updatePresence(
+    currentUserId: string,
+    request: { lastSeen: Date }
+  ): Observable<User> {
+    return from(
+      this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,
-        this.authService.getUserId(),
-        { lastSeen: new Date() }
+        currentUserId,
+        {
+          lastSeen: request.lastSeen,
+        }
       )
-      .then((res) => {
-        console.log('User presence updated');
-      })
-      .catch((err) => {
-        console.log('User presence could not updated.', err);
-      });
+    );
   }
 }

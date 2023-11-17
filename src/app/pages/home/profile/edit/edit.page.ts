@@ -1,5 +1,4 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import {
@@ -36,7 +35,6 @@ export class EditPage implements OnInit {
     private userService: UserService,
     private languageService: LanguageService,
     private toastController: ToastController,
-    private router: Router,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController
   ) {}

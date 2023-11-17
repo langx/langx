@@ -1,11 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { countryData, birthdateData, genderData } from 'src/app/extras/data';
-import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
-import { getAge } from 'src/app/extras/utils';
-import { AuthService } from 'src/app/services/auth/auth.service';
-import { UserService } from 'src/app/services/user/user.service';
+import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { getAge, nameParts } from 'src/app/extras/utils';
+import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
+import { completeRegistrationAction } from 'src/app/store/actions/auth.action';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import {
+  accountSelector,
+  isLoadingSelector,
+  registerValidationErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-complete',
@@ -14,19 +23,31 @@ import { UserService } from 'src/app/services/user/user.service';
 })
 export class CompletePage implements OnInit {
   public progress: number = 0.7;
-
   form: FormGroup;
-  isLoading: boolean = false;
+  account$: Observable<Account | null>;
+  isLoading$: Observable<boolean>;
 
-  constructor(
-    private router: Router,
-    private alertController: AlertController,
-    private authService: AuthService,
-    private userService: UserService
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initForm();
+    this.initValues();
+  }
+
+  ionViewWillLeave() {
+    this.form.reset();
+  }
+
+  initValues(): void {
+    this.account$ = this.store.pipe(select(accountSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
+    // Present Toast if error
+    this.store
+      .pipe(select(registerValidationErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error) this.presentToast(error.message, 'danger');
+      });
   }
 
   initForm() {
@@ -66,7 +87,10 @@ export class CompletePage implements OnInit {
           value.day.text + '/' + value.month.value + '/' + value.year.text;
         let newDate = new Date(val);
         if (getAge(newDate) < 13) {
-          this.showAlert('You must be at least 13 years old to use this app');
+          this.presentToast(
+            'You must be at least 13 years old to use this app',
+            'danger'
+          );
         } else {
           this.form.controls['birthdate'].setValue(val);
           this.form.controls['birthdateWithDateFormat'].setValue(newDate);
@@ -114,65 +138,42 @@ export class CompletePage implements OnInit {
   async onSubmit() {
     console.log('form.value:', this.form.value);
     if (!this.form.valid) {
-      this.showAlert('Please fill all the required fields');
+      this.presentToast('Please fill all the required fields', 'danger');
       return;
     }
     this.complete(this.form);
   }
 
   complete(form: FormGroup) {
-    console.log('form.value:', form.value);
-    const data = {
-      name: '',
-      birthdate: form.value.birthdateWithDateFormat,
-      country: form.value.country,
-      countryCode: form.value.countryCode,
-      gender: form.value.genderValue,
-      lastSeen: new Date(),
-    };
-    console.log('data:', data);
-
-    let user: any;
-    this.authService
-      .getUser()
-      .subscribe((u) => {
-        user = u;
-        const nameParts = user.name.split(' ');
-        if (nameParts.length > 1) {
-          data.name =
-            nameParts[0] +
-            ' ' +
-            nameParts[nameParts.length - 1].charAt(0) +
-            '.';
-        } else {
-          data.name = user.name;
-        }
+    this.account$
+      .subscribe((account: Account | null) => {
+        const request: CompleteRegistrationRequestInterface = {
+          name: nameParts(account.name),
+          birthdate: form.value.birthdateWithDateFormat,
+          country: form.value.country,
+          countryCode: form.value.countryCode,
+          gender: form.value.genderValue,
+          lastSeen: new Date(),
+        };
+        this.store.dispatch(
+          completeRegistrationAction({ request, id: account.$id })
+        );
       })
       .unsubscribe();
-    // console.log('user:', user);
-
-    this.userService.createUserDoc(user.$id, data).then((userDoc: any) => {
-      console.log('userDoc:', userDoc);
-      this.authService.isLoggedIn().then((isLoggedIn) => {
-        if (isLoggedIn) {
-          this.router.navigateByUrl('/login/signup/language');
-          // TODO: to make form empty, it has to be tested
-          this.initForm();
-        } else {
-          // TODO: show error toasts message
-          console.log('error:', 'Could not sign you up, please try again.');
-        }
-      });
-    });
   }
 
-  async showAlert(msg: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      //subHeader: 'Important message',
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
       message: msg,
-      buttons: ['OK'],
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
     });
-    await alert.present();
+
+    await toast.present();
   }
 }

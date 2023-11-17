@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
-import { FilterData } from '../filter/filter.service';
-import { ApiService } from '../api/api.service';
-import { environment } from 'src/environments/environment';
 import { ID, Query } from 'appwrite';
-import { AuthService } from '../auth/auth.service';
-import { StorageService } from '../storage/storage.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
+
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { ApiService } from 'src/app/services/api/api.service';
+import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { User } from 'src/app/models/User';
+import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  NUMBER_OF_USERS_PER_PAGE = 10;
-
   //TODO : Add model for user here
   private userDoc = new BehaviorSubject<any>(null);
 
@@ -48,15 +49,25 @@ export class UserService {
     );
   }
 
+  getUserDoc2(uid: string): Observable<any> {
+    return from(
+      this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid)
+    );
+  }
+
   getUserDoc(uid: string): Promise<any> {
     return this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid);
   }
 
-  createUserDoc(uid: string, data: any): Promise<any> {
-    return this.api.createDocument(
-      environment.appwrite.USERS_COLLECTION,
-      uid,
-      data
+  createUserDoc(uid: string, data: any): Observable<User> {
+    return from(
+      this.api.createDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+    );
+  }
+
+  updateUserDoc2(uid: string, data: any): Observable<any> {
+    return from(
+      this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );
   }
 
@@ -68,12 +79,16 @@ export class UserService {
     );
   }
 
-  // TODO: Pagination
-  listUsers(filterData?: FilterData): Promise<any> {
+  listUsers(
+    currentUserId: string,
+    filterData: FilterDataInterface,
+    offset?: number
+  ): Observable<listUsersResponseInterface> {
+    // Define queries
     const queries: any[] = [];
 
     // Query for users that are not the current user
-    queries.push(Query.notEqual('$id', this.authService.getUserId()));
+    queries.push(Query.notEqual('$id', currentUserId));
 
     // Query for users descending by last seen
     // TODO: Update this filter for this after presence is implemented
@@ -107,9 +122,12 @@ export class UserService {
       queries.push(Query.search('languageArray', keywords));
     }
 
-    return this.api.listDocuments(
-      environment.appwrite.USERS_COLLECTION,
-      queries
+    // Limit and offset
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) queries.push(Query.offset(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
     );
   }
 

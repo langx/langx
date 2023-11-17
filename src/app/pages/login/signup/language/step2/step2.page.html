@@ -3,32 +3,50 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="onSubmit()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        color="primary"
+      >
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>Your Languages</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-list-header>
-      <ion-title>Study Languages</ion-title>
-      <ion-note>the languages you want to learn</ion-note>
-    </ion-list-header>
-    <ion-searchbar [(ngModel)]="search"></ion-searchbar>
-    <ion-row>
-      <ion-col value="start" (ionChange)="checkboxChecked($event)">
-        <!--TODO: You can check max 5 items -->
-        <ion-item *ngFor="let lang of languages | customFilter: search">
-          <ion-checkbox
-            value="{{lang.code}}"
-            [checked]="studyLanguages.includes(lang.code)"
-            labelPlacement="start"
-            >{{lang.name}}</ion-checkbox
-          >
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-list>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Study Languages</ion-card-title>
+      <ion-card-subtitle>the languages you want to learn</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-searchbar [(ngModel)]="search"></ion-searchbar>
+        <ion-row>
+          <ion-col value="start">
+            <ion-item *ngFor="let lang of languages | customFilter: search">
+              <ion-checkbox
+                (ionChange)="checkboxChange($event, lang.code)"
+                value="{{lang.code}}"
+                [disabled]="disabledStatus[lang.code]"
+                labelPlacement="start"
+              >
+                {{lang.name}}
+              </ion-checkbox>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
   <ion-row>
     <ion-col>
@@ -37,8 +55,9 @@
         (click)="onSubmit()"
         color="primary"
         expand="block"
-        >Continue</ion-button
       >
+        Continue
+      </ion-button>
       <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
         <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
       </ion-button>

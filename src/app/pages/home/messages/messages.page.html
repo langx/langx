@@ -20,36 +20,67 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-  <ng-container *ngIf="!isLoading">
-    <app-empty-screen *ngIf="(rooms | async)?.length == 0" [model]="model">
+  <ng-container>
+    <app-empty-screen *ngIf="(rooms$ | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
-    <ion-list *ngIf="(rooms | async)?.length > 0">
-      <div *ngFor="let room of (rooms | async)" detail>
+    <ion-list *ngIf="(rooms$ | async)?.length > 0">
+      <div *ngFor="let room of (rooms$ | async)" detail>
         <ion-item (click)="getChat(room)">
           <ng-container *ngIf="room">
             <ion-avatar slot="start">
               <img
-                [src]="room?.userData?.profilePhoto"
+                [src]="room?.['userData']?.profilePhoto"
                 alt=""
                 referrerpolicy="no-referrer"
               />
             </ion-avatar>
             <ion-label>
-              <h2>{{room?.userData?.name}}</h2>
-              <p *ngIf="room?.lastMessage?.body">{{room?.lastMessage?.body}}</p>
-              <p *ngIf="!room?.lastMessage?.body">Say Hi 👋</p>
+              <h2>{{room?.['userData']?.name}}</h2>
+              <p>{{getLastMessage(room)?.body}}</p>
             </ion-label>
-            <ion-note *ngIf="room?.lastMessage">
-              {{ messageTime(room?.lastMessage?.$updatedAt) }}
-            </ion-note>
-            <ion-note *ngIf="!room?.lastMessage">
+            <ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>
+            <!--
+            <ion-note *ngIf="!getLastMessage(room)?.time">
               {{ messageTime(room?.$updatedAt) }}
             </ion-note>
+            -->
           </ng-container>
         </ion-item>
       </div>
     </ion-list>
+
+    <!-- Skeleton Start -->
+    <ion-list *ngIf="(isLoading$ | async)">
+      <ion-item *ngFor="let i of '0123456789'.split('')">
+        <ion-thumbnail slot="start">
+          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+        </ion-thumbnail>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 80%"
+            ></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 60%"
+            ></ion-skeleton-text>
+          </p>
+          <p>
+            <ion-skeleton-text
+              [animated]="true"
+              style="width: 30%"
+            ></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <!-- Skeleton End -->
   </ng-container>
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
