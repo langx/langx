@@ -36,7 +36,6 @@ export class RoomEffects {
       ofType(getRoomsAction),
       switchMap(({ currentUserId }) =>
         this.roomService.listRooms(currentUserId).pipe(
-          // tap((payload: listRoomsResponseInterface) => console.log(payload)),
           map((payload: listRoomsResponseInterface) =>
             getRoomsSuccessAction({ payload })
           ),
