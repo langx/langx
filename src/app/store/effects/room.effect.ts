@@ -2,16 +2,7 @@ import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import {
-  catchError,
-  from,
-  map,
-  mergeMap,
-  of,
-  switchMap,
-  tap,
-  toArray,
-} from 'rxjs';
+import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { UserService } from 'src/app/services/user/user.service';
@@ -27,14 +18,6 @@ import {
   getRoomsWithOffsetAction,
   getRoomsWithOffsetFailureAction,
   getRoomsWithOffsetSuccessAction,
-  // fillRoomsWithUserDataSuccessAction,
-  // fillRoomsWithUserDataFailureAction,
-  // fillRoomsWithMessagesSuccessAction,
-  // fillRoomsWithMessagesFailureAction,
-  // fillRoomsWithOffsetWithUserDataSuccessAction,
-  // fillRoomsWithOffsetWithUserDataFailureAction,
-  // fillRoomsWithOffsetWithMessagesSuccessAction,
-  // fillRoomsWithOffsetWithMessagesFailureAction,
 } from 'src/app/store/actions/rooms.action';
 import {
   createRoomAction,
@@ -100,141 +83,6 @@ export class RoomEffects {
       )
     )
   );
-
-  // fillRoomsWithUserData$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(getRoomsSuccessAction),
-  //     mergeMap((action) =>
-  //       from(action.payload.documents).pipe(
-  //         mergeMap((room: any) => {
-  //           const userId = room.users.filter(
-  //             (id: string) => id !== action.currentUserId
-  //           )[0];
-  //           return this.userService
-  //             .getUserDoc2(userId)
-  //             .pipe(map((userData) => ({ ...room, userData })));
-  //         }),
-  //         toArray(),
-  //         map((roomsWithUserData) =>
-  //           fillRoomsWithUserDataSuccessAction({
-  //             payload: {
-  //               total: action.payload.total,
-  //               documents: roomsWithUserData,
-  //             },
-  //           })
-  //         ),
-
-  //         catchError((errorResponse: HttpErrorResponse) => {
-  //           const error: ErrorInterface = {
-  //             message: errorResponse.message,
-  //           };
-  //           return of(fillRoomsWithUserDataFailureAction({ error }));
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
-
-  // fillRoomsWithMessages$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(fillRoomsWithUserDataSuccessAction),
-  //     mergeMap((action) =>
-  //       from(action.payload.documents).pipe(
-  //         mergeMap((room: any) => {
-  //           return this.messageService.listMessages(room.$id).pipe(
-  //             map((messages) => ({
-  //               ...room,
-  //               total: messages.total,
-  //               messages: messages.documents,
-  //             }))
-  //           );
-  //         }),
-  //         toArray(),
-  //         map((roomsWithMessages) =>
-  //           fillRoomsWithMessagesSuccessAction({
-  //             payload: {
-  //               total: action.payload.total,
-  //               documents: roomsWithMessages,
-  //             },
-  //           })
-  //         ),
-  //         catchError((errorResponse: HttpErrorResponse) => {
-  //           const error: ErrorInterface = {
-  //             message: errorResponse.message,
-  //           };
-  //           return of(fillRoomsWithMessagesFailureAction({ error }));
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
-
-  // fillRoomsWithOffsetWithUserData$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(getRoomsWithOffsetSuccessAction),
-  //     mergeMap((action) =>
-  //       from(action.payload.documents).pipe(
-  //         mergeMap((room: any) => {
-  //           const userId = room.users.filter(
-  //             (id: string) => id !== action.currentUserId
-  //           )[0];
-  //           return this.userService
-  //             .getUserDoc2(userId)
-  //             .pipe(map((userData) => ({ ...room, userData })));
-  //         }),
-  //         toArray(),
-  //         map((roomsWithUserData) =>
-  //           fillRoomsWithOffsetWithUserDataSuccessAction({
-  //             payload: {
-  //               total: action.payload.total,
-  //               documents: roomsWithUserData,
-  //             },
-  //           })
-  //         ),
-  //         catchError((errorResponse: HttpErrorResponse) => {
-  //           const error: ErrorInterface = {
-  //             message: errorResponse.message,
-  //           };
-  //           return of(fillRoomsWithOffsetWithUserDataFailureAction({ error }));
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
-
-  // fillRoomsWithOffsetWithMessages$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(fillRoomsWithOffsetWithUserDataSuccessAction),
-  //     mergeMap((action) =>
-  //       from(action.payload.documents).pipe(
-  //         mergeMap((room: any) => {
-  //           return this.messageService.listMessages(room.$id).pipe(
-  //             map((messages) => ({
-  //               ...room,
-  //               total: messages.total,
-  //               messages: messages.documents,
-  //             }))
-  //           );
-  //         }),
-  //         toArray(),
-  //         map((roomsWithMessages) =>
-  //           fillRoomsWithOffsetWithMessagesSuccessAction({
-  //             payload: {
-  //               total: action.payload.total,
-  //               documents: roomsWithMessages,
-  //             },
-  //           })
-  //         ),
-  //         catchError((errorResponse: HttpErrorResponse) => {
-  //           const error: ErrorInterface = {
-  //             message: errorResponse.message,
-  //           };
-  //           return of(fillRoomsWithOffsetWithMessagesFailureAction({ error }));
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
 
   getRoomById$ = createEffect(() =>
     this.actions$.pipe(

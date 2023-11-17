@@ -9,14 +9,6 @@ import {
   getRoomsWithOffsetAction,
   getRoomsWithOffsetSuccessAction,
   getRoomsWithOffsetFailureAction,
-  // fillRoomsWithUserDataSuccessAction,
-  // fillRoomsWithUserDataFailureAction,
-  // fillRoomsWithMessagesSuccessAction,
-  // fillRoomsWithMessagesFailureAction,
-  // fillRoomsWithOffsetWithUserDataSuccessAction,
-  // fillRoomsWithOffsetWithUserDataFailureAction,
-  // fillRoomsWithOffsetWithMessagesSuccessAction,
-  // fillRoomsWithOffsetWithMessagesFailureAction,
 } from 'src/app/store/actions/rooms.action';
 import {
   createRoomAction,
@@ -67,39 +59,7 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // on(
-  //   fillRoomsWithUserDataSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     total: action.payload?.total,
-  //   })
-  // ),
-  // on(
-  //   fillRoomsWithUserDataFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
-  // on(
-  //   fillRoomsWithMessagesSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     total: action.payload?.total,
-  //     rooms: action.payload?.documents,
-  //   })
-  // ),
-  // on(
-  //   fillRoomsWithMessagesFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
+
   on(
     getRoomsWithOffsetAction,
     (state): RoomStateInterface => ({
@@ -125,39 +85,6 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
-  // on(
-  //   fillRoomsWithOffsetWithUserDataSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     total: action.payload?.total,
-  //   })
-  // ),
-  // on(
-  //   fillRoomsWithOffsetWithUserDataFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
-  // on(
-  //   fillRoomsWithOffsetWithMessagesSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     total: action.payload?.total,
-  //     rooms: [...state.rooms, ...action.payload?.documents],
-  //   })
-  // ),
-  // on(
-  //   fillRoomsWithOffsetWithMessagesFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // ),
   // TODO: Take a look here
   // Get Room Reducers
   on(
