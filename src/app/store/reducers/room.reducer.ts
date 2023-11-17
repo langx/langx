@@ -103,15 +103,15 @@ const roomReducer = createReducer(
     })
   ),
   on(
-    fillRoomsWithOffsetWithUserDataFailureAction,
+    fillRoomsWithOffsetWithUserDataSuccessAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      error: action.error,
+      total: action.payload?.total,
     })
   ),
   on(
-    fillRoomsWithOffsetWithMessagesFailureAction,
+    fillRoomsWithOffsetWithUserDataFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
@@ -125,6 +125,14 @@ const roomReducer = createReducer(
       isLoading: false,
       total: action.payload?.total,
       rooms: [...state.rooms, ...action.payload?.documents],
+    })
+  ),
+  on(
+    fillRoomsWithOffsetWithMessagesFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
     })
   ),
   // Get Room Reducers
