@@ -9,6 +9,7 @@ import { User } from 'src/app/models/User';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
@@ -21,6 +22,8 @@ import {
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/user.selector';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
 
 @Component({
   selector: 'app-community',
@@ -35,6 +38,8 @@ export class CommunityPage implements OnInit {
   isLoading$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
+
+  rooms$: Observable<RoomExtendedInterface[] | null> = null;
 
   constructor(
     private store: Store,
@@ -66,6 +71,8 @@ export class CommunityPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    this.rooms$ = this.store.pipe(select(roomsSelector));
 
     // User Errors
     this.store
@@ -143,10 +150,25 @@ export class CommunityPage implements OnInit {
   //
 
   getRoom(userId: string) {
-    this.currentUser$
-      .subscribe((user) => {
-        const currentUserId = user.$id;
-        this.store.dispatch(getRoomAction({ currentUserId, userId }));
+    this.rooms$
+      .subscribe((rooms) => {
+        this.currentUser$
+          .subscribe((user) => {
+            const currentUserId = user.$id;
+            if (rooms) {
+              const room = rooms.find(
+                (room) =>
+                  room.users.includes(currentUserId) &&
+                  room.users.includes(userId)
+              );
+              if (room) {
+                this.store.dispatch(activateRoomAction({ payload: room }));
+              }
+            } else {
+              this.store.dispatch(getRoomAction({ currentUserId, userId }));
+            }
+          })
+          .unsubscribe();
       })
       .unsubscribe();
   }
@@ -166,7 +188,7 @@ export class CommunityPage implements OnInit {
             if (offset < total) {
               this.currentUser$.subscribe((user) => {
                 const currentUserId = user.$id;
-                console.log('Current user: ', currentUserId);
+                // console.log('Current user: ', currentUserId);
                 const filterData = this.filterData;
                 this.store.dispatch(
                   getUsersWithOffsetAction({
