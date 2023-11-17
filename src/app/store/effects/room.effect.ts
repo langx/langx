@@ -254,6 +254,7 @@ export class RoomEffects {
   //   )
   // );
 
+  // TODO: Only Redirect Activate Success Action
   redirectAfterGetOrCreateRoom$ = createEffect(
     () =>
       this.actions$.pipe(
