@@ -38,6 +38,9 @@ export class LoginPage implements OnInit {
 
   ionViewWillLeave() {
     this.form.reset();
+
+    // Enable form if redirect here later
+    this.form.enable();
   }
 
   initValues() {
