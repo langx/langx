@@ -2,15 +2,19 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { UserService } from 'src/app/services/user/user.service';
 import { User } from 'src/app/models/User';
+import { Language } from 'src/app/models/Language';
+import { Account } from 'src/app/models/Account';
 import { getProfileAction } from 'src/app/store/actions/profile.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  accountSelector,
+  currentUserSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-profile',
@@ -49,77 +53,47 @@ export class ProfilePage implements OnInit {
   ];
 
   currentUser$: Observable<User | null> = null;
-  cUserSession: any;
-  cUserDoc: any;
+  account$: Observable<Account | null> = null;
 
-  userServiceFn: Function;
-  userDoc$: Subscription;
+  currentUser: User | null = null;
+  studyLanguages: Language[] = [];
+  motherLanguages: Language[] = [];
+  gender: string = null;
+  lastSeen: string = null;
+  age: number = null;
+  profilePhoto: URL = null;
+  otherPhotos: URL[] = [];
 
   constructor(
     private store: Store,
     private router: Router,
     private authService: AuthService,
-    private userService: UserService,
     private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
     this.initValues();
-    this.initProfile();
-    // this.getProfileInfo();
-    // TODO: Subscribes may be here better. :92
-  }
-
-  ngOnDestroy() {
-    this.userServiceFn(); // Unsubscribe to userService Listener
-    this.userDoc$.unsubscribe(); // Unsubscribe to userDoc
   }
 
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-  }
+    this.account$ = this.store.pipe(select(accountSelector));
 
-  initProfile() {
-    this.currentUser$
-      .subscribe((user) => {
-        this.store.dispatch(getProfileAction({ userId: user?.$id }));
-      })
-      .unsubscribe();
-  }
-
-  //
-  // TODO: Delete this function
-  //
-
-  async getProfileInfo() {
-    this.authService
-      .getUser()
-      .subscribe((cUser) => {
-        if (cUser) {
-          console.log(cUser);
-          this.cUserSession = cUser;
-        }
-      })
-      .unsubscribe();
-    // TODO: Unsubscribe may not be necessary to update the user info
-
-    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
-      this.cUserDoc = user;
-      console.log(user);
-    });
-
-    // Listen to user that is logged in
-    // Created 2 Subscriptions
-    this.userServiceFn = this.userService.listenUserDoc(this.cUserSession.$id);
-    this.listenUserDoc();
-  }
-
-  listenUserDoc() {
-    this.userDoc$ = this.userService.getEvent().subscribe((user) => {
-      if (user) {
-        this.cUserDoc = user;
-        console.log('Subscribed user: ', this.cUserDoc);
-      }
+    // Set currentUser
+    this.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+      this.studyLanguages = user?.languages.filter(
+        (lang) => !lang.motherLanguage
+      );
+      this.motherLanguages = user?.languages.filter(
+        (lang) => lang.motherLanguage
+      );
+      this.gender =
+        user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
+      this.lastSeen = lastSeen(user?.lastSeen);
+      this.age = getAge(user?.birthdate);
+      this.profilePhoto = user?.profilePhoto;
+      this.otherPhotos = user?.otherPhotos;
     });
   }
 
@@ -162,33 +136,20 @@ export class ProfilePage implements OnInit {
     this.modal.dismiss();
   }
 
-  getStudyLanguages() {
-    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
-  }
+  // lastSeen(d: any) {
+  //   if (!d) return null;
+  //   console.log(d);
+  //   return lastSeen(d);
+  // }
 
-  getMotherLanguage() {
-    return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
-  }
-
-  getGender(): string {
-    return (
-      this.cUserDoc?.gender.charAt(0).toUpperCase() +
-      this.cUserDoc?.gender.slice(1)
-    );
-  }
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
-  }
-
-  getAge(d: any) {
-    if (!d) return null;
-    return getAge(d);
-  }
+  // getAge(d: any) {
+  //   if (!d) return null;
+  //   return getAge(d);
+  // }
 
   handleRefresh(event) {
-    this.getProfileInfo();
+    this.store.dispatch(getProfileAction({ userId: this.currentUser?.$id }));
+    this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
   }
