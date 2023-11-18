@@ -206,7 +206,7 @@ export class AuthEffect {
       switchMap(() => {
         return this.authService.getAccount().pipe(
           switchMap((account: Account) => {
-            return this.userService.getUserDoc2(account.$id).pipe(
+            return this.userService.getUserDoc(account.$id).pipe(
               map((currentUser: User) => {
                 const payload: isLoggedInResponseInterface = {
                   account: account,

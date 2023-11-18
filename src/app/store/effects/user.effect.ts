@@ -22,7 +22,7 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(getUserAction),
       switchMap(({ userId }) => {
-        return this.userService.getUserDoc2(userId).pipe(
+        return this.userService.getUserDoc(userId).pipe(
           map((payload: User) => getUserSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {

@@ -202,7 +202,7 @@ export class RoomService {
       room['userData'] = null;
       return of(room as RoomExtendedInterface);
     } else {
-      return from(this.userService.getUserDoc(userId)).pipe(
+      return this.userService.getUserDoc(userId).pipe(
         map((data) => {
           room['userData'] = data as User;
           return room as RoomExtendedInterface;
