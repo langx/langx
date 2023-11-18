@@ -21,3 +21,19 @@ export const getUserFailureAction = createAction(
   ActionTypes.GET_USER_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const updateUserAction = createAction(
+  ActionTypes.UPDATE_USER,
+  // TODO: Add request interface
+  props<{ request: { userId: string } }>()
+);
+
+export const updateUserSuccessAction = createAction(
+  ActionTypes.UPDATE_USER_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const updateUserFailureAction = createAction(
+  ActionTypes.UPDATE_USER_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
