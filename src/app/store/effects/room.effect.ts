@@ -10,14 +10,6 @@ import { listRoomsResponseInterface } from 'src/app/models/types/responses/listR
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
-  getRoomsAction,
-  getRoomsFailureAction,
-  getRoomsSuccessAction,
-  getRoomsWithOffsetAction,
-  getRoomsWithOffsetFailureAction,
-  getRoomsWithOffsetSuccessAction,
-} from 'src/app/store/actions/rooms.action';
-import {
   createRoomAction,
   createRoomFailureAction,
   createRoomSuccessAction,
@@ -31,49 +23,6 @@ import {
 
 @Injectable()
 export class RoomEffects {
-  getRooms$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getRoomsAction),
-      switchMap(({ currentUserId }) =>
-        this.roomService.listRooms(currentUserId).pipe(
-          map((payload: listRoomsResponseInterface) =>
-            getRoomsSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getRoomsFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
-  getRoomsWithOffset$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getRoomsWithOffsetAction),
-      switchMap(({ currentUserId, offset }) =>
-        this.roomService.listRooms(currentUserId, offset).pipe(
-          map((payload: listRoomsResponseInterface) =>
-            // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
-            // It may checked first all cureent rooms array,
-            // Then order all of them by last message timestamp
-            getRoomsWithOffsetSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getRoomsWithOffsetFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
   getRoomById$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomByIdAction),
