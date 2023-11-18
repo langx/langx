@@ -3,12 +3,12 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/types/language.actiontypes';
 import { Language } from 'src/app/models/Language';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 
 // Create Language Actions
 export const createLanguageAction = createAction(
   ActionTypes.CREATE_LANGUAGE,
-  // TODO: Add request interface here
-  props<{ request: any }>()
+  props<{ request: createLanguageRequestInterface }>()
 );
 
 export const createLanguageSuccessAction = createAction(

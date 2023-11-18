@@ -7,7 +7,7 @@ import { LoginRequestInterface } from 'src/app/models/types/requests/loginReques
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
-import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { Language } from 'src/app/models/Language';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 
@@ -62,7 +62,7 @@ export const completeRegistrationFailureAction = createAction(
 // Language Selection
 export const languageSelectionAction = createAction(
   ActionTypes.LANGUAGE_SELECTION,
-  props<{ request: AddLanguageRequestInterface[] }>()
+  props<{ request: createLanguageRequestInterface[] }>()
 );
 
 export const languageSelectionSuccessAction = createAction(
