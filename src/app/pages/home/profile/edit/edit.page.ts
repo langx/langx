@@ -11,6 +11,7 @@ import {
 } from '@ionic/angular';
 
 // Interface Imports
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 
@@ -24,8 +25,11 @@ import { EditLanguageComponent } from 'src/app/components/edit-language/edit-lan
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
 // Selector and Action Imports
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { updateUserAction } from 'src/app/store/actions/user.action';
+import {
+  currentUserSelector,
+  editProfileErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-edit',
@@ -69,6 +73,13 @@ export class EditPage implements OnInit {
         (lang) => !lang.motherLanguage
       );
     });
+
+    // editProfileError Handling
+    this.store
+      .pipe(select(editProfileErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error && error.message) this.presentToast(error.message, 'danger');
+      });
   }
 
   initForm() {
