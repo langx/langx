@@ -27,7 +27,7 @@ import {
 import {
   updatePresenceFailureAction,
   updatePresenceSuccessAction,
-} from '../actions/presence.action';
+} from 'src/app/store/actions/presence.action';
 import {
   getUserAction,
   getUserFailureAction,
@@ -35,12 +35,12 @@ import {
   updateUserAction,
   updateUserFailureAction,
   updateUserSuccessAction,
-} from '../actions/user.action';
+} from 'src/app/store/actions/user.action';
 import {
   updateLanguageAction,
   updateLanguageFailureAction,
   updateLanguageSuccessAction,
-} from '../actions/language.action';
+} from 'src/app/store/actions/language.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
