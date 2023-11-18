@@ -103,3 +103,16 @@ export const isLoggedInFailureAction = createAction(
   ActionTypes.ISLOGGEDIN_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Logout
+export const logoutAction = createAction(ActionTypes.LOGOUT);
+
+export const logoutSuccessAction = createAction(
+  ActionTypes.LOGOUT_SUCCESS,
+  props<{ payload: null }>()
+);
+
+export const logoutFailureAction = createAction(
+  ActionTypes.LOGOUT_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
