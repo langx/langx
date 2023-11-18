@@ -1,0 +1,39 @@
+import { Injectable } from '@angular/core';
+import { createEffect, ofType, Actions } from '@ngrx/effects';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, of, switchMap } from 'rxjs';
+
+import { UserService } from 'src/app/services/user/user.service';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+import {
+  uploadProfilePictureAction,
+  uploadProfilePictureFailureAction,
+  uploadProfilePictureSuccessAction,
+} from 'src/app/store/actions/bucket.action';
+
+@Injectable()
+export class BucketEffects {
+  uploadProfilePicture$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(uploadProfilePictureAction),
+      switchMap(({ request }) => {
+        return this.userService.uploadFile(request).pipe(
+          map((payload: URL) => {
+            console.log(payload);
+            return uploadProfilePictureSuccessAction({ payload });
+          }),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(uploadProfilePictureFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  constructor(private actions$: Actions, private userService: UserService) {}
+}

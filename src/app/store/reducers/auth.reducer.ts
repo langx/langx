@@ -47,6 +47,11 @@ import {
   updateLanguageFailureAction,
   updateLanguageSuccessAction,
 } from 'src/app/store/actions/language.action';
+import {
+  uploadProfilePictureAction,
+  uploadProfilePictureFailureAction,
+  uploadProfilePictureSuccessAction,
+} from 'src/app/store/actions/bucket.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -350,6 +355,34 @@ const authReducer = createReducer(
   ),
   on(
     deleteLanguageFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  // Bucket Actions
+  on(
+    uploadProfilePictureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    uploadProfilePictureSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        profilePhoto: action.payload,
+      },
+    })
+  ),
+  on(
+    uploadProfilePictureFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,

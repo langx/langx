@@ -16,6 +16,7 @@ import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
+import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
 // Service Imports
 import { UserService } from 'src/app/services/user/user.service';
@@ -27,6 +28,7 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 
 // Selector and Action Imports
 import { updateUserAction } from 'src/app/store/actions/user.action';
+import { uploadProfilePictureAction } from 'src/app/store/actions/bucket.action';
 import {
   createLanguageAction,
   deleteLanguageAction,
@@ -36,7 +38,6 @@ import {
   currentUserSelector,
   editProfileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
-import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
 @Component({
   selector: 'app-edit',
@@ -53,7 +54,7 @@ export class EditPage implements OnInit {
 
   cUserDoc: any;
 
-  uploadedImageURL: string = '';
+  uploadedImageURL: any;
 
   constructor(
     private store: Store,
@@ -128,16 +129,18 @@ export class EditPage implements OnInit {
 
       await modal.onDidDismiss().then((data) => {
         if (data?.data) {
-          this.loadingController(true);
-
           let blob = this.dataURLtoBlob(data.data);
-          this.uploadImage(blob).then((url) => {
-            this.uploadedImageURL = url;
-            if (which == 'pp') this.changePP();
-            if (which == 'other') this.addOtherPhotos();
+          this.uploadImage(blob);
 
-            this.loadingController(false);
-          });
+          // this.loadingController(true);
+          // this.uploadImage(blob).then((url) => {
+          //   this.uploadedImageURL = url;
+          //   console.log('HEREREREREREREHRHERHEHR');
+          //   console.log(this.uploadedImageURL);
+          //   // if (which == 'pp') this.changePP();
+          //   // if (which == 'other') this.addOtherPhotos();
+          //   this.loadingController(false);
+          // });
         } else {
           console.log('No image data');
         }
@@ -161,101 +164,113 @@ export class EditPage implements OnInit {
   }
 
   async uploadImage(blob: any) {
-    let url = '';
-    try {
-      var file = new File([blob], this.currentUser.$id, { type: blob.type });
+    let file = new File([blob], this.currentUser.$id, { type: blob.type });
 
-      await this.userService.uploadFile(file).then(
-        (response) => {
-          console.log(response); // Success
-          url = this.userService.getFileView(response.$id).href;
-          console.log(url); // Resource URL
-        },
-        function (error) {
-          console.log(error); // Failure
-        }
-      );
-      return url;
-    } catch (e) {
-      throw e;
-    }
-  }
+    this.store.dispatch(uploadProfilePictureAction({ request: file }));
 
-  async changePP() {
-    this.isLoading = true;
+    // let url = '';
+    // try {
+    //   var file = new File([blob], this.currentUser.$id, { type: blob.type });
 
-    if (this.uploadedImageURL != '') {
-      this.cUserDoc.profilePhoto = this.uploadedImageURL;
-      this.uploadedImageURL = '';
-    }
-
-    await this.userService
-      .updateUserDoc2(this.currentUser.$id, {
-        profilePhoto: this.cUserDoc.profilePhoto,
-      })
-      .then(() => {
-        this.presentToast('Profile Picture Updated.');
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.log(error);
-        this.isLoading = false;
-      });
+    //   await this.userService.uploadFile(file).then(
+    //     (response) => {
+    //       console.log(response); // Success
+    //       url = this.userService.getFileView(response.$id).href;
+    //       console.log(url); // Resource URL
+    //     },
+    //     function (error) {
+    //       console.log(error); // Failure
+    //     }
+    //   );
+    //   return url;
+    // } catch (e) {
+    //   throw e;
+    // }
   }
 
   deletePP() {
-    this.presentToast('At least one profile picture required.', 'danger');
+    this.presentToast('deletePP', 'danger');
   }
 
-  async addOtherPhotos() {
-    this.isLoading = true;
-
-    if (this.uploadedImageURL != '') {
-      this.cUserDoc.otherPhotos.push(this.uploadedImageURL);
-      this.uploadedImageURL = '';
-    }
-
-    await this.userService
-      .updateUserDoc2(this.currentUser.$id, {
-        otherPhotos: this.cUserDoc.otherPhotos,
-      })
-      .then(() => {
-        this.presentToast('Picture added to Other Photos.');
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.log(error);
-        this.isLoading = false;
-      });
+  deleteOtherPhotos(image) {
+    this.presentToast('deleteOtherPhotos', 'danger');
   }
 
-  async deleteOtherPhotos(image) {
-    this.isLoading = true;
+  // async changePP() {
+  //   this.isLoading = true;
 
-    const newOtherPhotos = this.cUserDoc.otherPhotos.filter(
-      (item) => item !== image
-    );
+  //   if (this.uploadedImageURL != '') {
+  //     this.currentUser.profilePhoto = this.uploadedImageURL;
+  //     this.uploadedImageURL = '';
+  //   }
 
-    await this.userService
-      .updateUserDoc2(this.currentUser.$id, {
-        otherPhotos: newOtherPhotos,
-      })
-      .then(() => {
-        // Update Markup cUserDoc
-        this.updateOtherPhotos(newOtherPhotos);
-        // DONE: Delete the image from storage
-        this.presentToast('Picture removed from Other Photos.');
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.log(error);
-        this.isLoading = false;
-      });
-  }
+  //   await this.userService
+  //     .updateUserDoc2(this.currentUser.$id, {
+  //       profilePhoto: this.curre.profilePhoto,
+  //     })
+  //     .then(() => {
+  //       this.presentToast('Profile Picture Updated.');
+  //       this.isLoading = false;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       this.isLoading = false;
+  //     });
+  // }
 
-  async updateOtherPhotos(newOtherPhotos) {
-    this.cUserDoc.otherPhotos = newOtherPhotos;
-  }
+  // deletePP() {
+  //   this.presentToast('At least one profile picture required.', 'danger');
+  // }
+
+  // async addOtherPhotos() {
+  //   this.isLoading = true;
+
+  //   if (this.uploadedImageURL != '') {
+  //     this.cUserDoc.otherPhotos.push(this.uploadedImageURL);
+  //     this.uploadedImageURL = '';
+  //   }
+
+  //   await this.userService
+  //     .updateUserDoc2(this.currentUser.$id, {
+  //       otherPhotos: this.cUserDoc.otherPhotos,
+  //     })
+  //     .then(() => {
+  //       this.presentToast('Picture added to Other Photos.');
+  //       this.isLoading = false;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       this.isLoading = false;
+  //     });
+  // }
+
+  // async deleteOtherPhotos(image) {
+  //   this.isLoading = true;
+
+  //   const newOtherPhotos = this.cUserDoc.otherPhotos.filter(
+  //     (item) => item !== image
+  //   );
+
+  //   await this.userService
+  //     .updateUserDoc2(this.currentUser.$id, {
+  //       otherPhotos: newOtherPhotos,
+  //     })
+  //     .then(() => {
+  //       // Update Markup cUserDoc
+  //       this.updateOtherPhotos(newOtherPhotos);
+  //       // DONE: Delete the image from storage
+  //       this.presentToast('Picture removed from Other Photos.');
+  //       this.isLoading = false;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       this.isLoading = false;
+  //     });
+  // }
+
+  // async updateOtherPhotos(newOtherPhotos) {
+  //   this.cUserDoc.otherPhotos = newOtherPhotos;
+  // }
 
   //
   // Edit About Me
