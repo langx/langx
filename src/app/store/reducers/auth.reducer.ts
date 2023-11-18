@@ -37,6 +37,9 @@ import {
   updateUserSuccessAction,
 } from 'src/app/store/actions/user.action';
 import {
+  createLanguageAction,
+  createLanguageFailureAction,
+  createLanguageSuccessAction,
   updateLanguageAction,
   updateLanguageFailureAction,
   updateLanguageSuccessAction,
@@ -59,6 +62,7 @@ const initialState: AuthStateInterface = {
 
 const authReducer = createReducer(
   initialState,
+
   //Login Actions
   on(
     loginAction,
@@ -85,6 +89,7 @@ const authReducer = createReducer(
       loginValidationError: action.error,
     })
   ),
+
   // Register Actions
   on(
     registerAction,
@@ -111,6 +116,7 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
   // Complete Registration Actions
   on(
     completeRegistrationAction,
@@ -186,6 +192,7 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
   // isLoggedIn Actions
   on(
     isLoggedInAction,
@@ -215,6 +222,7 @@ const authReducer = createReducer(
       unauthorizedError: action.error,
     })
   ),
+
   // Get User Actions
   on(
     getUserAction,
@@ -239,6 +247,7 @@ const authReducer = createReducer(
       profileError: action.error,
     })
   ),
+
   // Update User Actions
   on(
     updateUserAction,
@@ -263,6 +272,36 @@ const authReducer = createReducer(
       editProfileError: action.error,
     })
   ),
+
+  // Create Language Actions
+  on(
+    createLanguageAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  // TODO: Take a look here
+  on(
+    createLanguageSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        languages: [...state.currentUser.languages, action.payload],
+      },
+    })
+  ),
+  on(
+    createLanguageFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
   // Update Language Actions
   on(
     updateLanguageAction,
@@ -271,7 +310,6 @@ const authReducer = createReducer(
       isLoading: true,
     })
   ),
-  // TODO: Take a look here
   on(updateLanguageSuccessAction, (state, action): AuthStateInterface => {
     const updatedLanguages = state.currentUser.languages.map((language) =>
       language.$id === action.payload.$id ? action.payload : language
@@ -294,6 +332,7 @@ const authReducer = createReducer(
       editProfileError: action.error,
     })
   ),
+
   // Update Presence Actions
   on(
     updatePresenceSuccessAction,
@@ -309,6 +348,7 @@ const authReducer = createReducer(
       presenceError: action.error,
     })
   ),
+
   // Logout Actions
   on(
     logoutAction,
