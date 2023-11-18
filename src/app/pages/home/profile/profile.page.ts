@@ -56,7 +56,8 @@ export class ProfilePage implements OnInit {
   currentUser$: Observable<User | null> = null;
   account$: Observable<Account | null> = null;
 
-  currentUser: User | null = null;
+  // TODO: Use currentUser directly
+  currentUserId: string | null = null;
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
@@ -82,7 +83,7 @@ export class ProfilePage implements OnInit {
 
     // Set currentUser
     this.currentUser$.subscribe((user) => {
-      this.currentUser = user;
+      this.currentUserId = user.$id;
       this.studyLanguages = user?.languages.filter(
         (lang) => !lang.motherLanguage
       );
@@ -153,7 +154,7 @@ export class ProfilePage implements OnInit {
   // }
 
   handleRefresh(event) {
-    this.store.dispatch(getProfileAction({ userId: this.currentUser?.$id }));
+    this.store.dispatch(getProfileAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
