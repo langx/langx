@@ -23,8 +23,9 @@ import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.com
 import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
-// Selector Imports
+// Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { updateUserAction } from 'src/app/store/actions/user.action';
 
 @Component({
   selector: 'app-edit',
@@ -245,16 +246,22 @@ export class EditPage implements OnInit {
   //
 
   saveAboutMe() {
-    this.userService
-      .updateUserDoc(this.cUserId, { aboutMe: this.cUserDoc.aboutMe })
-      .then(() => {
-        this.presentToast('About me saved.');
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.log(error);
-        this.isLoading = false;
-      });
+    const request = {
+      userId: this.currentUser?.$id,
+      data: this.form.value,
+    };
+    this.store.dispatch(updateUserAction({ request }));
+
+    // this.userService
+    //   .updateUserDoc(this.cUserId, { aboutMe: this.cUserDoc.aboutMe })
+    //   .then(() => {
+    //     this.presentToast('About me saved.');
+    //     this.isLoading = false;
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     this.isLoading = false;
+    //   });
   }
 
   //
