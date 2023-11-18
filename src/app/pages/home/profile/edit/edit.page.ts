@@ -4,11 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {
-  LoadingController,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 
 // Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -53,8 +49,7 @@ export class EditPage implements OnInit {
   constructor(
     private store: Store,
     private modalCtrl: ModalController,
-    private toastController: ToastController,
-    private loadingCtrl: LoadingController
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -144,71 +139,9 @@ export class EditPage implements OnInit {
     }
   }
 
-  dataURLtoBlob(dataurl: any) {
-    var arr = dataurl.split(','),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
-  }
-
-  async uploadImage(blob: any) {
-    // let url = '';
-    // try {
-    //   var file = new File([blob], this.currentUser.$id, { type: blob.type });
-    //   await this.userService.uploadFile(file).then(
-    //     (response) => {
-    //       console.log(response); // Success
-    //       url = this.userService.getFileView(response.$id).href;
-    //       console.log(url); // Resource URL
-    //     },
-    //     function (error) {
-    //       console.log(error); // Failure
-    //     }
-    //   );
-    //   return url;
-    // } catch (e) {
-    //   throw e;
-    // }
-  }
-
   deletePP() {
-    this.presentToast('deletePP', 'danger');
+    this.presentToast('At least one profile picture required.', 'danger');
   }
-
-  deleteOtherPhotos(image) {
-    this.presentToast('deleteOtherPhotos', 'danger');
-  }
-
-  // async changePP() {
-  //   this.isLoading = true;
-
-  //   if (this.uploadedImageURL != '') {
-  //     this.currentUser.profilePhoto = this.uploadedImageURL;
-  //     this.uploadedImageURL = '';
-  //   }
-
-  //   await this.userService
-  //     .updateUserDoc2(this.currentUser.$id, {
-  //       profilePhoto: this.curre.profilePhoto,
-  //     })
-  //     .then(() => {
-  //       this.presentToast('Profile Picture Updated.');
-  //       this.isLoading = false;
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       this.isLoading = false;
-  //     });
-  // }
-
-  // deletePP() {
-  //   this.presentToast('At least one profile picture required.', 'danger');
-  // }
 
   // async addOtherPhotos() {
   //   this.isLoading = true;
@@ -231,6 +164,10 @@ export class EditPage implements OnInit {
   //       this.isLoading = false;
   //     });
   // }
+
+  deleteOtherPhotos(image) {
+    this.presentToast('deleteOtherPhotos', 'danger');
+  }
 
   // async deleteOtherPhotos(image) {
   //   this.isLoading = true;
@@ -361,6 +298,22 @@ export class EditPage implements OnInit {
     };
 
     this.store.dispatch(deleteLanguageAction({ request }));
+  }
+
+  //
+  // Utils
+  //
+
+  private dataURLtoBlob(dataurl: any) {
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
   }
 
   //
