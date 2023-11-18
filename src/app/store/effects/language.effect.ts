@@ -22,16 +22,20 @@ export class LanguageEffects {
     this.actions$.pipe(
       ofType(createLanguageAction),
       switchMap(({ request }) => {
-        return this.languageService.createLanguageDoc(request).pipe(
-          map((payload: Language) => createLanguageSuccessAction({ payload })),
+        return this.languageService
+          .createLanguageDocWithUpdatingLanguageArray(request)
+          .pipe(
+            map((payload: Language) =>
+              createLanguageSuccessAction({ payload })
+            ),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(createLanguageFailureAction({ error }));
-          })
-        );
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(createLanguageFailureAction({ error }));
+            })
+          );
       })
     )
   );

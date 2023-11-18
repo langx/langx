@@ -143,7 +143,7 @@ export class AuthEffect {
       switchMap(({ request }) => {
         const observables = request.map(
           (language: AddLanguageRequestInterface) => {
-            return this.languageService.createLanguageDoc2(language);
+            return this.languageService.createLanguageDoc(language);
           }
         );
         return forkJoin(observables).pipe(

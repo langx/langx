@@ -16,8 +16,7 @@ export class LanguageService {
     return this.api.getDocument(environment.appwrite.LANGUAGES_COLLECTION, uid);
   }
 
-  // TODO: Delete this function
-  createLanguageDoc2(data: any): Observable<any> {
+  createLanguageDoc(data: any): Observable<any> {
     return from(
       this.api.createDocument(
         environment.appwrite.LANGUAGES_COLLECTION,
@@ -28,7 +27,7 @@ export class LanguageService {
   }
 
   // It is triggerred by edit.page.ts
-  createLanguageDoc(data: any): Observable<Language> {
+  createLanguageDocWithUpdatingLanguageArray(data: any): Observable<Language> {
     return from(
       this.api.createDocument(
         environment.appwrite.LANGUAGES_COLLECTION,
