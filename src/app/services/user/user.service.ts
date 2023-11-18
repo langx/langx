@@ -44,13 +44,14 @@ export class UserService {
     );
   }
 
-  getUserDoc2(uid: string): Observable<any> {
+  getUserDoc(uid: string): Observable<any> {
     return from(
       this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid)
     );
   }
 
-  getUserDoc(uid: string): Promise<any> {
+  // TODO: Delete this function
+  getUserDoc2(uid: string): Promise<any> {
     return this.api.getDocument(environment.appwrite.USERS_COLLECTION, uid);
   }
 
