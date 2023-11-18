@@ -17,4 +17,7 @@ export enum ActionTypes {
   UPDATE_LANGUAGE_ARRAY = '[Auth] Update Language Array',
   UPDATE_LANGUAGE_ARRAY_SUCCESS = '[Auth] Update Language Array Success',
   UPDATE_LANGUAGE_ARRAY_FAILURE = '[Auth] Update Language Array Failure',
+  LOGOUT = '[Auth] Logout',
+  LOGOUT_SUCCESS = '[Auth] Logout Success',
+  LOGOUT_FAILURE = '[Auth] Logout Failure',
 }
