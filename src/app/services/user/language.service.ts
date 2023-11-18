@@ -8,19 +8,16 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { UserService } from 'src/app/services/user/user.service';
 
 // Interface Imports
+import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
-import { User } from 'src/app/models/User';
+import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
   constructor(private api: ApiService, private userService: UserService) {}
-
-  getLanguageDoc(uid: string): Promise<any> {
-    return this.api.getDocument(environment.appwrite.LANGUAGES_COLLECTION, uid);
-  }
 
   createLanguageDoc(data: any): Observable<any> {
     return from(
@@ -65,8 +62,7 @@ export class LanguageService {
 
   // It is triggerred by edit.page.ts
   deleteLanguageDocWithUpdatingLanguageArray(
-    request: { $id: string; name: string; userId: string },
-    languageArray: string[]
+    request: deleteLanguageRequestInterface
   ): Observable<User> {
     return from(
       this.api.deleteDocument(
@@ -76,7 +72,7 @@ export class LanguageService {
     ).pipe(
       switchMap(() => {
         const newLanguageArray = {
-          languageArray: languageArray.filter(
+          languageArray: request.languageArray.filter(
             (language) => language !== request.name
           ),
         };

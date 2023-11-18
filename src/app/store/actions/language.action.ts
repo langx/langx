@@ -5,6 +5,7 @@ import { Language } from 'src/app/models/Language';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { User } from 'src/app/models/User';
+import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 
 // Create Language Actions
 export const createLanguageAction = createAction(
@@ -42,11 +43,7 @@ export const updateLanguageFailureAction = createAction(
 // Delete Language Actions
 export const deleteLanguageAction = createAction(
   ActionTypes.DELETE_LANGUAGE,
-  props<{
-    // TODO: Add request interface here
-    request: { $id: string; name: string; userId: string };
-    languageArray: string[];
-  }>()
+  props<{ request: deleteLanguageRequestInterface }>()
 );
 
 export const deleteLanguageSuccessAction = createAction(
