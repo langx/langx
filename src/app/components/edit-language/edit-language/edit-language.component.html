@@ -11,8 +11,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-
   <ion-card *ngFor="let item of languages">
     <ion-card-header>
       <ion-card-title>{{ item?.name }}</ion-card-title>

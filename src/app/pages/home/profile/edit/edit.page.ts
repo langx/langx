@@ -344,24 +344,32 @@ export class EditPage implements OnInit {
 
   async editLanguages() {
     const eventEmitter = new EventEmitter();
-    eventEmitter.subscribe((selectedLanguage) => {
-      console.log(selectedLanguage);
-      this.languageService
-        .updateLanguageDoc(selectedLanguage.$id, {
-          level: selectedLanguage.level,
-        })
-        .then(() => {
-          this.cUserDoc.languages.forEach((lang) => {
-            if (lang.code === selectedLanguage.code) {
-              lang.level = selectedLanguage.level;
-            }
-          });
-          this.presentToast(`${selectedLanguage?.name} updated`);
-        })
-        .catch((error) => {
-          this.presentToast('Please try again later', 'danger');
-          console.log(error);
-        });
+    eventEmitter.subscribe((item) => {
+      console.log(item);
+
+      const request = {
+        userId: this.currentUser?.$id,
+        data: item,
+      };
+
+      // this.store.dispatch(updateLanguageAction({ request }));
+
+      // this.languageService
+      //   .updateLanguageDoc(selectedLanguage.$id, {
+      //     level: selectedLanguage.level,
+      //   })
+      //   .then(() => {
+      //     this.cUserDoc.languages.forEach((lang) => {
+      //       if (lang.code === selectedLanguage.code) {
+      //         lang.level = selectedLanguage.level;
+      //       }
+      //     });
+      //     this.presentToast(`${selectedLanguage?.name} updated`);
+      //   })
+      //   .catch((error) => {
+      //     this.presentToast('Please try again later', 'danger');
+      //     console.log(error);
+      //   });
     });
 
     const modal = await this.modalCtrl.create({
