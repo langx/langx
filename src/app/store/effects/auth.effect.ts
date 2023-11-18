@@ -45,10 +45,10 @@ import {
   updateLanguageArraySuccessAction,
 } from 'src/app/store/actions/auth.action';
 import {
-  getProfileAction,
-  getProfileFailureAction,
-  getProfileSuccessAction,
-} from 'src/app/store/actions/profile.action';
+  getUserAction,
+  getUserFailureAction,
+  getUserSuccessAction,
+} from 'src/app/store/actions/user.action';
 
 @Injectable()
 export class AuthEffect {
@@ -241,16 +241,16 @@ export class AuthEffect {
 
   getProfile$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getProfileAction),
+      ofType(getUserAction),
       switchMap(({ userId }) => {
         return this.userService.getUserDoc2(userId).pipe(
-          map((payload: User) => getProfileSuccessAction({ payload })),
+          map((payload: User) => getUserSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
             };
-            return of(getProfileFailureAction({ error }));
+            return of(getUserFailureAction({ error }));
           })
         );
       })
