@@ -15,8 +15,7 @@ export class AddLanguageComponent implements OnInit {
   languageData: any;
   selectedLanguage: any;
 
-  isLoading: boolean = false; //TODO: Make it work
-  isSubmit: boolean = false;
+  isShowLevels: boolean = false;
 
   constructor(
     private toastController: ToastController,
@@ -42,7 +41,7 @@ export class AddLanguageComponent implements OnInit {
       this.presentToast('Please select a language.', 'danger');
       return;
     } else {
-      this.isSubmit = true;
+      this.isShowLevels = true;
     }
   }
 
