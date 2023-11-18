@@ -26,7 +26,10 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 
 // Selector and Action Imports
 import { updateUserAction } from 'src/app/store/actions/user.action';
-import { updateLanguageAction } from 'src/app/store/actions/language.action';
+import {
+  createLanguageAction,
+  updateLanguageAction,
+} from 'src/app/store/actions/language.action';
 import {
   currentUserSelector,
   editProfileErrorSelector,
@@ -281,10 +284,10 @@ export class EditPage implements OnInit {
         motherLanguage: false,
       };
 
-      console.log(data);
+      this.store.dispatch(createLanguageAction({ request: data }));
 
-      // // If it length is 6, then don't let the user to add one more study language.
-      // if (this.cUserDoc.languages.length >= 6) {
+      // If it length is 6, then don't let the user to add one more study language.
+      // if (this.currentUser.languages.length >= 6) {
       //   this.presentToast(
       //     'You can add max 5 Study Languages. Please remove at least one and try again.',
       //     'danger'
@@ -294,7 +297,7 @@ export class EditPage implements OnInit {
       // }
 
       // // Check if the language is already added
-      // if (this.cUserDoc.languageArray.includes(selectedLanguage.name)) {
+      // if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
       //   this.presentToast('Language already added.', 'danger');
       //   this.isLoading = false;
       //   return;
