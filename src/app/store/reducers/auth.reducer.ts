@@ -25,6 +25,11 @@ import {
   updatePresenceFailureAction,
   updatePresenceSuccessAction,
 } from '../actions/presence.action';
+import {
+  getProfileAction,
+  getProfileFailureAction,
+  getProfileSuccessAction,
+} from '../actions/profile.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -36,6 +41,7 @@ const initialState: AuthStateInterface = {
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
+  profileError: null,
   presenceError: null,
 };
 
@@ -184,6 +190,7 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: true,
       account: action.payload?.account,
+      // TODO: No need here to fill currentUser
       currentUser: action.payload?.currentUser,
     })
   ),
@@ -194,6 +201,30 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: false,
       unauthorizedError: action.error,
+    })
+  ),
+  // Get Profile Actions
+  on(
+    getProfileAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    getProfileSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    getProfileFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      profileError: action.error,
     })
   ),
   // Update Presence Actions

@@ -13,5 +13,6 @@ export interface AuthStateInterface {
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
   loginValidationError: ErrorInterface | null;
+  profileError: ErrorInterface | null;
   presenceError: ErrorInterface | null;
 }
