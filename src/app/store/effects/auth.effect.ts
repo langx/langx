@@ -281,7 +281,7 @@ export class AuthEffect {
       this.actions$.pipe(
         ofType(logoutSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/login');
+          this.router.navigateByUrl('/login', { replaceUrl: true });
         })
       ),
     { dispatch: false }
