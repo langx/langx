@@ -355,7 +355,7 @@ export class EditPage implements OnInit {
     }
 
     const request: deleteLanguageRequestInterface = {
-      $id: language.$id,
+      id: language.$id,
       name: language.name,
       userId: this.currentUser.$id,
       languageArray: this.currentUser.languageArray,
