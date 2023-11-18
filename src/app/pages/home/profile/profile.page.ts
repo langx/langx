@@ -1,20 +1,34 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ErrorHandler, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { IonModal, LoadingController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import {
+  IonModal,
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 
+// Component and utils Imports
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
+
+// Interfaces Imports
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+// Actions Imports
 import { getUserAction } from 'src/app/store/actions/user.action';
 import { logoutAction } from 'src/app/store/actions/auth.action';
+
+// Selectors Imports
 import {
   accountSelector,
   currentUserSelector,
   isLoadingSelector,
+  profileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -70,7 +84,8 @@ export class ProfilePage implements OnInit {
     private store: Store,
     private router: Router,
     private modalCtrl: ModalController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
@@ -106,6 +121,13 @@ export class ProfilePage implements OnInit {
         this.loadingController(false);
       }
     });
+
+    // profileError Handling
+    this.store
+      .pipe(select(profileErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error && error.message) this.presentToast(error.message, 'warning');
+      });
   }
 
   getAccountPage(page) {
@@ -186,5 +208,20 @@ export class ProfilePage implements OnInit {
       this.loadingOverlay = undefined;
       this.isLoadingOverlayActive = false;
     }
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
