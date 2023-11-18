@@ -272,17 +272,20 @@ const authReducer = createReducer(
     })
   ),
   // TODO: Take a look here
-  on(
-    updateLanguageSuccessAction,
-    (state, action): AuthStateInterface => ({
+  on(updateLanguageSuccessAction, (state, action): AuthStateInterface => {
+    const updatedLanguages = state.currentUser.languages.map((language) =>
+      language.$id === action.payload.$id ? action.payload : language
+    );
+
+    return {
       ...state,
       isLoading: false,
       currentUser: {
         ...state.currentUser,
-        //languages: action.payload,
+        languages: updatedLanguages,
       },
-    })
-  ),
+    };
+  }),
   on(
     updateLanguageFailureAction,
     (state, action): AuthStateInterface => ({
