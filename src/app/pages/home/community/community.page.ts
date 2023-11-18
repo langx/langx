@@ -194,6 +194,7 @@ export class CommunityPage implements OnInit {
           .subscribe((total) => {
             if (offset < total) {
               this.currentUser$.subscribe((user) => {
+                if (!user) return;
                 const currentUserId = user.$id;
                 // console.log('Current user: ', currentUserId);
                 const filterData = this.filterData;
