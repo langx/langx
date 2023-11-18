@@ -119,12 +119,6 @@ export class ProfilePage implements OnInit {
 
   async logout() {
     this.store.dispatch(logoutAction());
-    // try {
-    //   await this.authService.logout();
-    //   this.router.navigateByUrl('/login', { replaceUrl: true });
-    // } catch (e) {
-    //   console.log(e);
-    // }
   }
 
   editProfile() {
