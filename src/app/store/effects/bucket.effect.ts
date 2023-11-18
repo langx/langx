@@ -20,7 +20,6 @@ export class BucketEffects {
       switchMap(({ request }) => {
         return this.userService.uploadFile(request).pipe(
           map((payload: URL) => {
-            console.log(payload);
             return uploadProfilePictureSuccessAction({ payload });
           }),
 
