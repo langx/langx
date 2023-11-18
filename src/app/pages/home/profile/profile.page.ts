@@ -87,6 +87,10 @@ export class ProfilePage implements OnInit {
       .unsubscribe();
   }
 
+  //
+  // TODO: Delete this function
+  //
+
   async getProfileInfo() {
     this.authService
       .getUser()
