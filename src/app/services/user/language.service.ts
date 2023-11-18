@@ -12,6 +12,7 @@ import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
+import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -29,12 +30,14 @@ export class LanguageService {
     );
   }
 
-  updateLanguageDoc(uid: string, data: any): Observable<Language> {
+  updateLanguageDoc(
+    request: updateLanguageRequestInterface
+  ): Observable<Language> {
     return from(
       this.api.updateDocument(
         environment.appwrite.LANGUAGES_COLLECTION,
-        uid,
-        data
+        request.id,
+        request.data
       )
     );
   }
