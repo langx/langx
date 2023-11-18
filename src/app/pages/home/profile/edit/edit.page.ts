@@ -14,7 +14,6 @@ import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 
 // Service Imports
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
 
@@ -45,7 +44,6 @@ export class EditPage implements OnInit {
 
   constructor(
     private store: Store,
-    private authService: AuthService,
     private userService: UserService,
     private languageService: LanguageService,
     private toastController: ToastController,
@@ -55,7 +53,6 @@ export class EditPage implements OnInit {
 
   ngOnInit() {
     this.initValues();
-    // this.getProfileInfo();
   }
 
   initValues() {
@@ -68,20 +65,6 @@ export class EditPage implements OnInit {
         (lang) => !lang.motherLanguage
       );
     });
-  }
-
-  getProfileInfo() {
-    //showLoader();
-    this.isLoading = true;
-
-    this.cUserId = this.authService.getUserId();
-    this.userService.getUserDoc(this.cUserId).then((user) => {
-      this.cUserDoc = user;
-      console.log(user);
-    });
-
-    //hideLoader();
-    this.isLoading = false;
   }
 
   //
@@ -249,10 +232,6 @@ export class EditPage implements OnInit {
   //
   // Edit About Me
   //
-
-  // textAreaValue() {
-  //   return this.cUserDoc?.aboutMe;
-  // }
 
   ionInputAboutMe(event) {
     this.cUserDoc.aboutMe = event.target.value;
