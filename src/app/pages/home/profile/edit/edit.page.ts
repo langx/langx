@@ -52,7 +52,6 @@ export class EditPage implements OnInit {
   studyLanguages: Language[] = [];
 
   cUserDoc: any;
-  cUserId: string;
 
   uploadedImageURL: string = '';
 
@@ -164,7 +163,7 @@ export class EditPage implements OnInit {
   async uploadImage(blob: any) {
     let url = '';
     try {
-      var file = new File([blob], this.cUserId, { type: blob.type });
+      var file = new File([blob], this.currentUser.$id, { type: blob.type });
 
       await this.userService.uploadFile(file).then(
         (response) => {
@@ -191,7 +190,7 @@ export class EditPage implements OnInit {
     }
 
     await this.userService
-      .updateUserDoc(this.cUserId, {
+      .updateUserDoc(this.currentUser.$id, {
         profilePhoto: this.cUserDoc.profilePhoto,
       })
       .then(() => {
@@ -217,7 +216,7 @@ export class EditPage implements OnInit {
     }
 
     await this.userService
-      .updateUserDoc(this.cUserId, {
+      .updateUserDoc(this.currentUser.$id, {
         otherPhotos: this.cUserDoc.otherPhotos,
       })
       .then(() => {
@@ -238,7 +237,7 @@ export class EditPage implements OnInit {
     );
 
     await this.userService
-      .updateUserDoc(this.cUserId, {
+      .updateUserDoc(this.currentUser.$id, {
         otherPhotos: newOtherPhotos,
       })
       .then(() => {
