@@ -36,6 +36,7 @@ import {
   currentUserSelector,
   editProfileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
+import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
 @Component({
   selector: 'app-edit',
@@ -276,7 +277,7 @@ export class EditPage implements OnInit {
   async editLanguages() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((item) => {
-      const request = {
+      const request: updateLanguageRequestInterface = {
         id: item.$id,
         data: {
           level: item?.level,

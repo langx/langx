@@ -46,20 +46,16 @@ export class LanguageEffects {
     this.actions$.pipe(
       ofType(updateLanguageAction),
       switchMap(({ request }) => {
-        return this.languageService
-          .updateLanguageDoc(request.id, request.data)
-          .pipe(
-            map((payload: Language) =>
-              updateLanguageSuccessAction({ payload })
-            ),
+        return this.languageService.updateLanguageDoc(request).pipe(
+          map((payload: Language) => updateLanguageSuccessAction({ payload })),
 
-            catchError((errorResponse: HttpErrorResponse) => {
-              const error: ErrorInterface = {
-                message: errorResponse.message,
-              };
-              return of(updateLanguageFailureAction({ error }));
-            })
-          );
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(updateLanguageFailureAction({ error }));
+          })
+        );
       })
     )
   );

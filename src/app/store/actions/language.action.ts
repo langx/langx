@@ -2,10 +2,11 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/types/language.actiontypes';
 import { Language } from 'src/app/models/Language';
+import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
-import { User } from 'src/app/models/User';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
+import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
 // Create Language Actions
 export const createLanguageAction = createAction(
@@ -27,7 +28,7 @@ export const createLanguageFailureAction = createAction(
 export const updateLanguageAction = createAction(
   ActionTypes.UPDATE_LANGUAGE,
   // TODO: Add request interface here
-  props<{ request: { id: string; data: { level: number } } }>()
+  props<{ request: updateLanguageRequestInterface }>()
 );
 
 export const updateLanguageSuccessAction = createAction(
