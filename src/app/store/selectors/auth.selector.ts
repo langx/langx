@@ -49,3 +49,8 @@ export const profileErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.profileError
 );
+
+export const editProfileErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.editProfileError
+);
