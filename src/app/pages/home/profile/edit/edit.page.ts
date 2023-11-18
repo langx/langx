@@ -14,6 +14,7 @@ import {
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 
 // Service Imports
 import { UserService } from 'src/app/services/user/user.service';
@@ -275,7 +276,7 @@ export class EditPage implements OnInit {
   async addLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
-      let data = {
+      let data: createLanguageRequestInterface = {
         userId: this.currentUser.$id,
         name: selectedLanguage.name,
         nativeName: selectedLanguage.nativeName,

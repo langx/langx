@@ -19,7 +19,7 @@ import { UserService } from 'src/app/services/user/user.service';
 import { User } from 'src/app/models/User';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { Language } from 'src/app/models/Language';
-import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import {
   completeRegistrationAction,
@@ -142,7 +142,7 @@ export class AuthEffect {
 
       switchMap(({ request }) => {
         const observables = request.map(
-          (language: AddLanguageRequestInterface) => {
+          (language: createLanguageRequestInterface) => {
             return this.languageService.createLanguageDoc(language);
           }
         );
