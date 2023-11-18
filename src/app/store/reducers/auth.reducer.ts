@@ -32,6 +32,9 @@ import {
   getUserAction,
   getUserFailureAction,
   getUserSuccessAction,
+  updateUserAction,
+  updateUserFailureAction,
+  updateUserSuccessAction,
 } from '../actions/user.action';
 
 const initialState: AuthStateInterface = {
@@ -224,6 +227,30 @@ const authReducer = createReducer(
   ),
   on(
     getUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      profileError: action.error,
+    })
+  ),
+  // Update User Actions
+  on(
+    updateUserAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    updateUserSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    updateUserFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
