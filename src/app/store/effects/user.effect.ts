@@ -22,6 +22,11 @@ import {
   updatePresenceFailureAction,
   updatePresenceSuccessAction,
 } from '../actions/presence.action';
+import {
+  getUserAction,
+  getUserFailureAction,
+  getUserSuccessAction,
+} from 'src/app/store/actions/user.action';
 
 @Injectable()
 export class UserEffects {
@@ -83,6 +88,24 @@ export class UserEffects {
               return of(updatePresenceFailureAction({ error }));
             })
           );
+      })
+    )
+  );
+
+  getUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUserAction),
+      switchMap(({ userId }) => {
+        return this.userService.getUserDoc2(userId).pipe(
+          map((payload: User) => getUserSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getUserFailureAction({ error }));
+          })
+        );
       })
     )
   );

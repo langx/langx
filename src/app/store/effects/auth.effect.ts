@@ -44,11 +44,6 @@ import {
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
 } from 'src/app/store/actions/auth.action';
-import {
-  getUserAction,
-  getUserFailureAction,
-  getUserSuccessAction,
-} from 'src/app/store/actions/user.action';
 
 @Injectable()
 export class AuthEffect {
@@ -233,24 +228,6 @@ export class AuthEffect {
               message: 'Please login or signup to continue.',
             };
             return of(isLoggedInFailureAction({ error }));
-          })
-        );
-      })
-    )
-  );
-
-  getProfile$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getUserAction),
-      switchMap(({ userId }) => {
-        return this.userService.getUserDoc2(userId).pipe(
-          map((payload: User) => getUserSuccessAction({ payload })),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getUserFailureAction({ error }));
           })
         );
       })
