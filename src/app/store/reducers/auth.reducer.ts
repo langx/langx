@@ -40,6 +40,9 @@ import {
   createLanguageAction,
   createLanguageFailureAction,
   createLanguageSuccessAction,
+  deleteLanguageAction,
+  deleteLanguageFailureAction,
+  deleteLanguageSuccessAction,
   updateLanguageAction,
   updateLanguageFailureAction,
   updateLanguageSuccessAction,
@@ -281,7 +284,6 @@ const authReducer = createReducer(
       isLoading: true,
     })
   ),
-  // TODO: Take a look here
   on(
     createLanguageSuccessAction,
     (state, action): AuthStateInterface => ({
@@ -323,6 +325,31 @@ const authReducer = createReducer(
   }),
   on(
     updateLanguageFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  // Delete Language Actions
+  on(
+    deleteLanguageAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    deleteLanguageSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    deleteLanguageFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
