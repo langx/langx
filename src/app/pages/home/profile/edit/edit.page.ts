@@ -285,62 +285,29 @@ export class EditPage implements OnInit {
         motherLanguage: false,
       };
 
+      // If it length is 6, then don't let the user to add one more study language.
+      if (this.currentUser.languages.length >= 6) {
+        this.presentToast(
+          'You can add max 5 Study Languages. Please remove at least one and try again.',
+          'danger'
+        );
+        this.isLoading = false;
+        return;
+      }
+
+      // Check if the language is already added
+      if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
+        this.presentToast('Language already added.', 'danger');
+        this.isLoading = false;
+        return;
+      }
+
       this.store.dispatch(
         createLanguageAction({
           request: data,
           languageArray: this.currentUser.languageArray,
         })
       );
-
-      // If it length is 6, then don't let the user to add one more study language.
-      // if (this.currentUser.languages.length >= 6) {
-      //   this.presentToast(
-      //     'You can add max 5 Study Languages. Please remove at least one and try again.',
-      //     'danger'
-      //   );
-      //   this.isLoading = false;
-      //   return;
-      // }
-
-      // // Check if the language is already added
-      // if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
-      //   this.presentToast('Language already added.', 'danger');
-      //   this.isLoading = false;
-      //   return;
-      // }
-
-      // this.languageService
-      //   .createLanguageDoc(data)
-      //   .then((res) => {
-      //     // Push the language data to the array
-      //     this.cUserDoc.languages.push(res);
-
-      //     // Update languageArray
-      //     const newLanguageArray = this.cUserDoc.languageArray;
-      //     if (!newLanguageArray.includes(data.name)) {
-      //       newLanguageArray.push(data.name);
-      //     }
-
-      //     // Update user doc with new languageArray
-      //     this.userService
-      //       .updateUserDoc(this.cUserId, {
-      //         languageArray: this.cUserDoc.languageArray,
-      //       })
-      //       .then(() => {
-      //         // Update languageArray
-      //         this.cUserDoc.languageArray = newLanguageArray;
-      //         console.log('Language Array Updated');
-      //         this.presentToast('Language added.');
-      //       })
-      //       .catch((error) => {
-      //         console.log(error);
-      //         this.presentToast('Please try again later.', 'danger');
-      //       });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     this.presentToast('Please try again later.', 'danger');
-      //   });
     });
 
     const modal = await this.modalCtrl.create({
