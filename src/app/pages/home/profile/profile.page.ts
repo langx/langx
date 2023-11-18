@@ -1,19 +1,20 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { IonModal, ModalController } from '@ionic/angular';
+import { IonModal, LoadingController, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
 import { getProfileAction } from 'src/app/store/actions/profile.action';
+import { logoutAction } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
   currentUserSelector,
+  isLoadingSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -67,8 +68,8 @@ export class ProfilePage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private authService: AuthService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -95,6 +96,15 @@ export class ProfilePage implements OnInit {
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
     });
+
+    // isLoading
+    this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+      if (isLoading) {
+        this.loadingController(true);
+      } else {
+        this.loadingController(false);
+      }
+    });
   }
 
   getAccountPage(page) {
@@ -108,12 +118,13 @@ export class ProfilePage implements OnInit {
   }
 
   async logout() {
-    try {
-      await this.authService.logout();
-      this.router.navigateByUrl('/login', { replaceUrl: true });
-    } catch (e) {
-      console.log(e);
-    }
+    this.store.dispatch(logoutAction());
+    // try {
+    //   await this.authService.logout();
+    //   this.router.navigateByUrl('/login', { replaceUrl: true });
+    // } catch (e) {
+    //   console.log(e);
+    // }
   }
 
   editProfile() {
@@ -152,5 +163,33 @@ export class ProfilePage implements OnInit {
     this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
+  }
+
+  //
+  // Loading Controller
+  //
+
+  loadingOverlay: HTMLIonLoadingElement;
+  isLoadingOverlayActive = false;
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
+        this.isLoadingOverlayActive = true;
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive = false;
+      }
+    } else if (
+      this.loadingOverlay &&
+      this.loadingOverlay.present &&
+      !this.isLoadingOverlayActive
+    ) {
+      this.isLoadingOverlayActive = true;
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive = false;
+    }
   }
 }
