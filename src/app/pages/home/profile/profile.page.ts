@@ -1,11 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { IonModal, ModalController } from '@ionic/angular';
+import { Observable, Subscription } from 'rxjs';
+
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { UserService } from 'src/app/services/user/user.service';
-import { Subscription } from 'rxjs';
+import { User } from 'src/app/models/User';
+import { getProfileAction } from 'src/app/store/actions/profile.action';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-profile',
@@ -43,6 +48,7 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
+  currentUser$: Observable<User | null> = null;
   cUserSession: any;
   cUserDoc: any;
 
@@ -50,6 +56,7 @@ export class ProfilePage implements OnInit {
   userDoc$: Subscription;
 
   constructor(
+    private store: Store,
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
@@ -57,7 +64,9 @@ export class ProfilePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getProfileInfo();
+    this.initValues();
+    this.initProfile();
+    // this.getProfileInfo();
     // TODO: Subscribes may be here better. :92
   }
 
@@ -66,8 +75,19 @@ export class ProfilePage implements OnInit {
     this.userDoc$.unsubscribe(); // Unsubscribe to userDoc
   }
 
-  async getProfileInfo() {
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+  }
 
+  initProfile() {
+    this.currentUser$
+      .subscribe((user) => {
+        this.store.dispatch(getProfileAction({ userId: user?.$id }));
+      })
+      .unsubscribe();
+  }
+
+  async getProfileInfo() {
     this.authService
       .getUser()
       .subscribe((cUser) => {
@@ -88,7 +108,6 @@ export class ProfilePage implements OnInit {
     // Created 2 Subscriptions
     this.userServiceFn = this.userService.listenUserDoc(this.cUserSession.$id);
     this.listenUserDoc();
-
   }
 
   listenUserDoc() {
