@@ -36,6 +36,11 @@ import {
   updateUserFailureAction,
   updateUserSuccessAction,
 } from '../actions/user.action';
+import {
+  updateLanguageAction,
+  updateLanguageFailureAction,
+  updateLanguageSuccessAction,
+} from '../actions/language.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -252,6 +257,34 @@ const authReducer = createReducer(
   ),
   on(
     updateUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+  // Update Language Actions
+  on(
+    updateLanguageAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  // TODO: Take a look here
+  on(
+    updateLanguageSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        //languages: action.payload,
+      },
+    })
+  ),
+  on(
+    updateLanguageFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
