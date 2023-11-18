@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/types/profile.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { User } from 'src/app/models/User';
 
 // Get Profile Actions
 export const getProfileAction = createAction(
@@ -13,7 +14,7 @@ export const getProfileAction = createAction(
 export const getProfileSuccessAction = createAction(
   ActionTypes.GET_PROFILE_SUCCESS,
   // TODO: Add interface
-  props<{ payload: any }>()
+  props<{ payload: User }>()
 );
 
 export const getProfileFailureAction = createAction(
