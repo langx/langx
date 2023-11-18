@@ -18,9 +18,6 @@ import { createLanguageRequestInterface } from 'src/app/models/types/requests/cr
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
-// Service Imports
-import { UserService } from 'src/app/services/user/user.service';
-
 // Component Imports
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
@@ -37,6 +34,7 @@ import {
 import {
   currentUserSelector,
   editProfileErrorSelector,
+  isLoadingSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -45,22 +43,17 @@ import {
   styleUrls: ['./edit.page.scss'],
 })
 export class EditPage implements OnInit {
-  isLoading: boolean = false;
   form: FormGroup;
 
+  isLoading$: Observable<boolean> = null;
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
 
-  cUserDoc: any;
-
-  uploadedImageURL: any;
-
   constructor(
     private store: Store,
-    private userService: UserService,
-    private toastController: ToastController,
     private modalCtrl: ModalController,
+    private toastController: ToastController,
     private loadingCtrl: LoadingController
   ) {}
 
@@ -71,6 +64,7 @@ export class EditPage implements OnInit {
 
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
     // Set currentUser
     this.currentUser$.subscribe((user) => {
@@ -112,42 +106,41 @@ export class EditPage implements OnInit {
         resultType: CameraResultType.DataUrl,
       }).catch((error) => {
         console.log(error);
-        this.loadingController(false);
       });
 
       if (!image) return;
-      await this.loadingController(true);
+
       const modal = await this.modalCtrl.create({
         component: ImageCropComponent,
         componentProps: {
           image: image,
         },
       });
-
-      this.loadingController(false);
       modal.present();
 
       await modal.onDidDismiss().then((data) => {
         if (data?.data) {
+          // URL to Blob
           let blob = this.dataURLtoBlob(data.data);
-          this.uploadImage(blob);
 
-          // this.loadingController(true);
-          // this.uploadImage(blob).then((url) => {
-          //   this.uploadedImageURL = url;
-          //   console.log('HEREREREREREREHRHERHEHR');
-          //   console.log(this.uploadedImageURL);
-          //   // if (which == 'pp') this.changePP();
-          //   // if (which == 'other') this.addOtherPhotos();
-          //   this.loadingController(false);
-          // });
+          // Blob to File
+          let file = new File([blob], this.currentUser.$id, {
+            type: blob.type,
+          });
+
+          // Upload File
+          if (which == 'pp') {
+            this.store.dispatch(uploadProfilePictureAction({ request: file }));
+          }
+          if (which == 'other') {
+            // this.store.dispatch(uploadProfilePictureAction({ request: file }));
+          }
         } else {
-          console.log('No image data');
+          this.presentToast('Image not selected properly.', 'danger');
         }
       });
     } catch (e) {
       console.log(e);
-      this.loadingController(false);
     }
   }
 
@@ -164,14 +157,9 @@ export class EditPage implements OnInit {
   }
 
   async uploadImage(blob: any) {
-    let file = new File([blob], this.currentUser.$id, { type: blob.type });
-
-    this.store.dispatch(uploadProfilePictureAction({ request: file }));
-
     // let url = '';
     // try {
     //   var file = new File([blob], this.currentUser.$id, { type: blob.type });
-
     //   await this.userService.uploadFile(file).then(
     //     (response) => {
     //       console.log(response); // Success
@@ -330,14 +318,12 @@ export class EditPage implements OnInit {
           'You can add max 5 Study Languages. Please remove at least one and try again.',
           'danger'
         );
-        this.isLoading = false;
         return;
       }
 
       // Check if the language is already added
       if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
         this.presentToast('Language already added.', 'danger');
-        this.isLoading = false;
         return;
       }
 
@@ -364,7 +350,6 @@ export class EditPage implements OnInit {
     // If it length is 2, then don't let the user to delete last study language.
     if (this.currentUser.languages.length <= 2) {
       this.presentToast('At least one study language required.', 'danger');
-      this.isLoading = false;
       return;
     }
 
@@ -376,28 +361,6 @@ export class EditPage implements OnInit {
     };
 
     this.store.dispatch(deleteLanguageAction({ request }));
-  }
-
-  async updateLanguages(newLanguages) {
-    this.cUserDoc.languages = newLanguages;
-  }
-
-  //
-  // Loading Controller
-  //
-
-  async loadingController(isShow: boolean) {
-    if (isShow) {
-      await this.loadingCtrl
-        .create({
-          message: 'Please wait...',
-        })
-        .then((loadingEl) => {
-          loadingEl.present();
-        });
-    } else {
-      this.loadingCtrl.dismiss();
-    }
   }
 
   //
