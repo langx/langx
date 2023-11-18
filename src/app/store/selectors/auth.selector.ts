@@ -44,3 +44,8 @@ export const unauthorizedErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.unauthorizedError
 );
+
+export const profileErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.profileError
+);
