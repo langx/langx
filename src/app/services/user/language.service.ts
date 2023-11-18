@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../api/api.service';
-import { environment } from 'src/environments/environment';
 import { ID } from 'appwrite';
 import { Observable, from } from 'rxjs';
+
+import { environment } from 'src/environments/environment';
+import { ApiService } from 'src/app/services/api/api.service';
+import { Language } from 'src/app/models/Language';
 
 @Injectable({
   providedIn: 'root',
@@ -33,11 +35,13 @@ export class LanguageService {
     );
   }
 
-  updateLanguageDoc(uid: string, data: any): Promise<any> {
-    return this.api.updateDocument(
-      environment.appwrite.LANGUAGES_COLLECTION,
-      uid,
-      data
+  updateLanguageDoc(uid: string, data: any): Observable<Language> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.LANGUAGES_COLLECTION,
+        uid,
+        data
+      )
     );
   }
 
