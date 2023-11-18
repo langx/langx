@@ -287,10 +287,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      currentUser: {
-        ...state.currentUser,
-        languages: [...state.currentUser.languages, action.payload],
-      },
+      currentUser: action.payload,
     })
   ),
   on(
