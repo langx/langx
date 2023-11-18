@@ -346,48 +346,44 @@ export class EditPage implements OnInit {
   }
 
   deleteLanguage(language) {
-    // Show Loading
-    this.isLoading = true;
     console.log(language);
     // If it length is 2, then don't let the user to delete last study language.
-    if (this.cUserDoc.languages.length <= 2) {
+    if (this.currentUser.languages.length <= 2) {
       this.presentToast('At least one study language required.', 'danger');
       this.isLoading = false;
       return;
     }
-    this.languageService
-      .deleteLanguageDoc(language.$id)
-      .then((res) => {
-        // Filter out the language from the array
-        const newLanguages = this.cUserDoc.languages.filter(
-          (lang) => lang.$id !== language.$id
-        );
-        // Update languageArray
-        const index = this.cUserDoc.languageArray.indexOf(language.name);
-        if (index > -1) {
-          this.cUserDoc.languageArray.splice(index, 1);
-        }
-        // Update user doc with new languageArray
-        this.userService
-          .updateUserDoc(this.cUserId, {
-            languageArray: this.cUserDoc.languageArray,
-          })
-          .then(() => {
-            this.updateLanguages(newLanguages);
-            this.presentToast(`${language.name} language deleted.`);
-            console.log('Language Array Updated');
-          })
-          .catch((error) => {
-            this.presentToast('Please try again later.', 'danger');
-            console.log(error);
-          });
-        // Hide Loading
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.log(error);
-        this.presentToast('Please try again later.', 'danger');
-      });
+    // this.languageService
+    //   .deleteLanguageDoc(language.$id)
+    //   .then((res) => {
+    //     // Filter out the language from the array
+    //     const newLanguages = this.cUserDoc.languages.filter(
+    //       (lang) => lang.$id !== language.$id
+    //     );
+    //     // Update languageArray
+    //     const index = this.cUserDoc.languageArray.indexOf(language.name);
+    //     if (index > -1) {
+    //       this.cUserDoc.languageArray.splice(index, 1);
+    //     }
+    //     // Update user doc with new languageArray
+    //     this.userService
+    //       .updateUserDoc(this.cUserId, {
+    //         languageArray: this.cUserDoc.languageArray,
+    //       })
+    //       .then(() => {
+    //         this.updateLanguages(newLanguages);
+    //         this.presentToast(`${language.name} language deleted.`);
+    //         console.log('Language Array Updated');
+    //       })
+    //       .catch((error) => {
+    //         this.presentToast('Please try again later.', 'danger');
+    //         console.log(error);
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     this.presentToast('Please try again later.', 'danger');
+    //   });
   }
 
   async updateLanguages(newLanguages) {
