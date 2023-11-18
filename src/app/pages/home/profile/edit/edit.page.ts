@@ -262,17 +262,6 @@ export class EditPage implements OnInit {
       data: this.form.value,
     };
     this.store.dispatch(updateUserAction({ request }));
-
-    // this.userService
-    //   .updateUserDoc(this.cUserId, { aboutMe: this.cUserDoc.aboutMe })
-    //   .then(() => {
-    //     this.presentToast('About me saved.');
-    //     this.isLoading = false;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     this.isLoading = false;
-    //   });
   }
 
   //
