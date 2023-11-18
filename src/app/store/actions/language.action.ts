@@ -38,3 +38,19 @@ export const updateLanguageFailureAction = createAction(
   ActionTypes.UPDATE_LANGUAGE_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Delete Language Actions
+export const deleteLanguageAction = createAction(
+  ActionTypes.DELETE_LANGUAGE,
+  props<{ request: { id: string; languageArray: string[] } }>()
+);
+
+export const deleteLanguageSuccessAction = createAction(
+  ActionTypes.DELETE_LANGUAGE_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const deleteLanguageFailureAction = createAction(
+  ActionTypes.DELETE_LANGUAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
