@@ -7,7 +7,9 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
+
 import { ComponentsModule } from 'src/app/components/components.module';
+
 import { userReducers } from 'src/app/store/reducers/user.reducer';
 import { roomReducers } from 'src/app/store/reducers/room.reducer';
 import { UserEffects } from 'src/app/store/effects/user.effect';
@@ -16,6 +18,7 @@ import { RoomEffects } from 'src/app/store/effects/room.effect';
 import { RoomsEffects } from 'src/app/store/effects/rooms.effect';
 import { LanguageEffects } from 'src/app/store/effects/language.effect';
 import { PresenceEffects } from 'src/app/store/effects/presence.effect';
+import { BucketEffects } from 'src/app/store/effects/bucket.effect';
 
 @NgModule({
   imports: [
@@ -33,6 +36,7 @@ import { PresenceEffects } from 'src/app/store/effects/presence.effect';
       RoomsEffects,
       LanguageEffects,
       PresenceEffects,
+      BucketEffects,
     ]),
   ],
   declarations: [HomePage],

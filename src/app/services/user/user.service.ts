@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Query } from 'appwrite';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Observable, from, of, switchMap } from 'rxjs';
 
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ApiService } from 'src/app/services/api/api.service';
@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
+import { BucketFile } from 'src/app/models/BucketFile';
 
 @Injectable({
   providedIn: 'root',
@@ -132,15 +133,21 @@ export class UserService {
   // Upload Bucket
   //
 
-  uploadFile(file: any): Promise<any> {
-    return this.storage.createFile(
-      environment.appwrite.USER_BUCKET,
-      ID.unique(),
-      file
-    );
+  uploadFile(request: File): Observable<URL> {
+    return from(
+      this.storage.createFile(
+        environment.appwrite.USER_BUCKET,
+        ID.unique(),
+        request
+      )
+    ).pipe(switchMap((response: BucketFile) => this.getFileView(response.$id)));
   }
 
-  getFileView(fileId: string): URL {
-    return this.storage.getFileView(environment.appwrite.USER_BUCKET, fileId);
+  private getFileView(fileId: string): Observable<URL> {
+    const url = this.storage.getFileView(
+      environment.appwrite.USER_BUCKET,
+      fileId
+    );
+    return of(url);
   }
 }
