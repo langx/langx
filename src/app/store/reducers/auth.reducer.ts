@@ -14,6 +14,9 @@ import {
   loginAction,
   loginFailureAction,
   loginSuccessAction,
+  logoutAction,
+  logoutFailureAction,
+  logoutSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -240,6 +243,32 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       presenceError: action.error,
+    })
+  ),
+  // Logout Actions
+  on(
+    logoutAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    logoutSuccessAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      isLoggedIn: false,
+      account: null,
+      currentUser: null,
+    })
+  ),
+  on(
+    logoutFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      unauthorizedError: action.error,
     })
   )
 );
