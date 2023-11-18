@@ -4,10 +4,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
+import { LanguageService } from 'src/app/services/user/language.service';
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 import { User } from 'src/app/models/User';
+import { Language } from 'src/app/models/Language';
 
 import {
   getUsersAction,
@@ -30,6 +32,11 @@ import {
   updateUserFailureAction,
   updateUserSuccessAction,
 } from 'src/app/store/actions/user.action';
+import {
+  updateLanguageAction,
+  updateLanguageFailureAction,
+  updateLanguageSuccessAction,
+} from 'src/app/store/actions/language.action';
 
 @Injectable()
 export class UserEffects {
@@ -133,9 +140,32 @@ export class UserEffects {
     )
   );
 
+  updateLanguage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateLanguageAction),
+      switchMap(({ request }) => {
+        return this.languageService
+          .updateLanguageDoc(request.id, request.data)
+          .pipe(
+            map((payload: Language) =>
+              updateLanguageSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(updateLanguageFailureAction({ error }));
+            })
+          );
+      })
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private userService: UserService,
+    private languageService: LanguageService,
     private notificationService: NotificationService
   ) {}
 }
