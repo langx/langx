@@ -190,7 +190,7 @@ export class EditPage implements OnInit {
     }
 
     await this.userService
-      .updateUserDoc(this.currentUser.$id, {
+      .updateUserDoc2(this.currentUser.$id, {
         profilePhoto: this.cUserDoc.profilePhoto,
       })
       .then(() => {
@@ -216,7 +216,7 @@ export class EditPage implements OnInit {
     }
 
     await this.userService
-      .updateUserDoc(this.currentUser.$id, {
+      .updateUserDoc2(this.currentUser.$id, {
         otherPhotos: this.cUserDoc.otherPhotos,
       })
       .then(() => {
@@ -237,7 +237,7 @@ export class EditPage implements OnInit {
     );
 
     await this.userService
-      .updateUserDoc(this.currentUser.$id, {
+      .updateUserDoc2(this.currentUser.$id, {
         otherPhotos: newOtherPhotos,
       })
       .then(() => {

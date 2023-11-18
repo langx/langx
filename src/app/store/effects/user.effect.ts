@@ -41,7 +41,7 @@ export class UserEffects {
       ofType(updateUserAction),
       switchMap(({ request }) => {
         return this.userService
-          .updateUserDoc2(request.userId, request.data)
+          .updateUserDoc(request.userId, request.data)
           .pipe(
             map((payload: User) => updateUserSuccessAction({ payload })),
 
