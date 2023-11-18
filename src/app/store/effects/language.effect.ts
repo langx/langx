@@ -8,6 +8,9 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { Language } from 'src/app/models/Language';
 
 import {
+  createLanguageAction,
+  createLanguageFailureAction,
+  createLanguageSuccessAction,
   updateLanguageAction,
   updateLanguageFailureAction,
   updateLanguageSuccessAction,
@@ -15,6 +18,24 @@ import {
 
 @Injectable()
 export class LanguageEffects {
+  createLanguage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(createLanguageAction),
+      switchMap(({ request }) => {
+        return this.languageService.createLanguageDoc(request).pipe(
+          map((payload: Language) => createLanguageSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(createLanguageFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
   updateLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateLanguageAction),
