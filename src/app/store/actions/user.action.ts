@@ -25,7 +25,7 @@ export const getUserFailureAction = createAction(
 export const updateUserAction = createAction(
   ActionTypes.UPDATE_USER,
   // TODO: Add request interface
-  props<{ request: { userId: string } }>()
+  props<{ request: { userId: string, data: User } }>()
 );
 
 export const updateUserSuccessAction = createAction(
