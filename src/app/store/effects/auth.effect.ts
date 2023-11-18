@@ -34,6 +34,9 @@ import {
   loginAction,
   loginFailureAction,
   loginSuccessAction,
+  logoutAction,
+  logoutFailureAction,
+  logoutSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -252,6 +255,36 @@ export class AuthEffect {
         );
       })
     )
+  );
+
+  logout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(logoutAction),
+      switchMap(() => {
+        return this.authService.logout().pipe(
+          map(() => {
+            return logoutSuccessAction({ payload: null });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(logoutFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  redirectAfterLogout$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(logoutSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/login');
+        })
+      ),
+    { dispatch: false }
   );
 
   constructor(
