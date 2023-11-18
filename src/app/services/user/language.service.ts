@@ -46,7 +46,7 @@ export class LanguageService {
     ).pipe(
       switchMap((payload: Language) => {
         const newLanguageArray = {
-          languageArray: [...languageArray, payload.code],
+          languageArray: [...languageArray, payload.name],
         };
         return this.userService.updateUserDoc2(data.userId, newLanguageArray);
       })
