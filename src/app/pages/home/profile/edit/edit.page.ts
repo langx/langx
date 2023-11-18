@@ -15,6 +15,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
+import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 
 // Service Imports
 import { UserService } from 'src/app/services/user/user.service';
@@ -352,18 +353,14 @@ export class EditPage implements OnInit {
       return;
     }
 
-    const request = {
+    const request: deleteLanguageRequestInterface = {
       $id: language.$id,
       name: language.name,
       userId: this.currentUser.$id,
+      languageArray: this.currentUser.languageArray,
     };
 
-    this.store.dispatch(
-      deleteLanguageAction({
-        request,
-        languageArray: this.currentUser.languageArray,
-      })
-    );
+    this.store.dispatch(deleteLanguageAction({ request }));
   }
 
   async updateLanguages(newLanguages) {
