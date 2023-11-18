@@ -126,7 +126,7 @@ export class ProfilePage implements OnInit {
     this.store
       .pipe(select(profileErrorSelector))
       .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'warning');
+        if (error && error.message) this.presentToast(error.message, 'danger');
       });
   }
 
