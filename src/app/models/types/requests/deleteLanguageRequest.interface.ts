@@ -1,5 +1,5 @@
 export interface deleteLanguageRequestInterface {
-  $id: string;
+  id: string;
   name: string;
   userId: string;
   languageArray: string[];

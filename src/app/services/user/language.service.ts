@@ -70,7 +70,7 @@ export class LanguageService {
     return from(
       this.api.deleteDocument(
         environment.appwrite.LANGUAGES_COLLECTION,
-        request.$id
+        request.id
       )
     ).pipe(
       switchMap(() => {
