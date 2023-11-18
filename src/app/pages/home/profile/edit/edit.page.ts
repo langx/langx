@@ -84,7 +84,7 @@ export class EditPage implements OnInit {
 
   initForm() {
     this.form = new FormGroup({
-      aboutMe: new FormControl('', {
+      aboutMe: new FormControl(this.currentUser?.aboutMe, {
         validators: [Validators.maxLength(500)],
       }),
     });
