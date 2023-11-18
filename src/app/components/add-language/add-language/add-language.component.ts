@@ -23,7 +23,6 @@ export class AddLanguageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.languageArray);
     this.filterLanuages();
   }
 
@@ -32,11 +31,9 @@ export class AddLanguageComponent implements OnInit {
     this.languageData = languagesData.filter(
       (language) => !this.languageArray.includes(language.name)
     );
-    console.log(this.languageData.length);
   }
 
   next() {
-    console.log('submit:' + this.selectedLanguage);
     if (!this.selectedLanguage) {
       this.presentToast('Please select a language.', 'danger');
       return;
@@ -56,7 +53,6 @@ export class AddLanguageComponent implements OnInit {
 
   radioChecked(event) {
     this.selectedLanguage.level = parseInt(event.detail.value);
-    console.log('radioChecked:' + this.selectedLanguage.level);
   }
 
   changeLang(event) {
