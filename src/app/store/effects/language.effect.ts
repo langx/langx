@@ -12,6 +12,9 @@ import {
   createLanguageAction,
   createLanguageFailureAction,
   createLanguageSuccessAction,
+  deleteLanguageAction,
+  deleteLanguageFailureAction,
+  deleteLanguageSuccessAction,
   updateLanguageAction,
   updateLanguageFailureAction,
   updateLanguageSuccessAction,
@@ -55,6 +58,26 @@ export class LanguageEffects {
                 message: errorResponse.message,
               };
               return of(updateLanguageFailureAction({ error }));
+            })
+          );
+      })
+    )
+  );
+
+  deleteLanguage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteLanguageAction),
+      switchMap(({ request, languageArray }) => {
+        return this.languageService
+          .deleteLanguageDocWithUpdatingLanguageArray(request, languageArray)
+          .pipe(
+            map((payload: User) => deleteLanguageSuccessAction({ payload })),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(deleteLanguageFailureAction({ error }));
             })
           );
       })

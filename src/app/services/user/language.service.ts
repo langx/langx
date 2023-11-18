@@ -32,6 +32,16 @@ export class LanguageService {
     );
   }
 
+  updateLanguageDoc(uid: string, data: any): Observable<Language> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.LANGUAGES_COLLECTION,
+        uid,
+        data
+      )
+    );
+  }
+
   // It is triggerred by edit.page.ts
   createLanguageDocWithUpdatingLanguageArray(
     data: createLanguageRequestInterface,
@@ -53,20 +63,28 @@ export class LanguageService {
     );
   }
 
-  updateLanguageDoc(uid: string, data: any): Observable<Language> {
+  // It is triggerred by edit.page.ts
+  deleteLanguageDocWithUpdatingLanguageArray(
+    request: { $id: string; name: string; userId: string },
+    languageArray: string[]
+  ): Observable<User> {
     return from(
-      this.api.updateDocument(
+      this.api.deleteDocument(
         environment.appwrite.LANGUAGES_COLLECTION,
-        uid,
-        data
+        request.$id
       )
-    );
-  }
-
-  deleteLanguageDoc(uid: string): Promise<any> {
-    return this.api.deleteDocument(
-      environment.appwrite.LANGUAGES_COLLECTION,
-      uid
+    ).pipe(
+      switchMap(() => {
+        const newLanguageArray = {
+          languageArray: languageArray.filter(
+            (language) => language !== request.name
+          ),
+        };
+        return this.userService.updateUserDoc2(
+          request.userId,
+          newLanguageArray
+        );
+      })
     );
   }
 }

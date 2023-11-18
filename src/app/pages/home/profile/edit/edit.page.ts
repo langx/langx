@@ -18,7 +18,6 @@ import { createLanguageRequestInterface } from 'src/app/models/types/requests/cr
 
 // Service Imports
 import { UserService } from 'src/app/services/user/user.service';
-import { LanguageService } from 'src/app/services/user/language.service';
 
 // Component Imports
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
@@ -29,6 +28,7 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 import { updateUserAction } from 'src/app/store/actions/user.action';
 import {
   createLanguageAction,
+  deleteLanguageAction,
   updateLanguageAction,
 } from 'src/app/store/actions/language.action';
 import {
@@ -57,7 +57,6 @@ export class EditPage implements OnInit {
   constructor(
     private store: Store,
     private userService: UserService,
-    private languageService: LanguageService,
     private toastController: ToastController,
     private modalCtrl: ModalController,
     private loadingCtrl: LoadingController
@@ -273,6 +272,30 @@ export class EditPage implements OnInit {
   // Edit Languages
   //
 
+  async editLanguages() {
+    const eventEmitter = new EventEmitter();
+    eventEmitter.subscribe((item) => {
+      const request = {
+        id: item.$id,
+        data: {
+          level: item?.level,
+        },
+      };
+
+      this.store.dispatch(updateLanguageAction({ request }));
+    });
+
+    const modal = await this.modalCtrl.create({
+      component: EditLanguageComponent,
+      componentProps: {
+        languages: this.studyLanguages,
+        onClick: eventEmitter,
+      },
+    });
+
+    modal.present();
+  }
+
   async addLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
@@ -321,69 +344,26 @@ export class EditPage implements OnInit {
     modal.present();
   }
 
-  async editLanguages() {
-    const eventEmitter = new EventEmitter();
-    eventEmitter.subscribe((item) => {
-      const request = {
-        id: item.$id,
-        data: {
-          level: item?.level,
-        },
-      };
-
-      this.store.dispatch(updateLanguageAction({ request }));
-    });
-
-    const modal = await this.modalCtrl.create({
-      component: EditLanguageComponent,
-      componentProps: {
-        languages: this.studyLanguages,
-        onClick: eventEmitter,
-      },
-    });
-
-    modal.present();
-  }
-
   deleteLanguage(language) {
-    console.log(language);
     // If it length is 2, then don't let the user to delete last study language.
     if (this.currentUser.languages.length <= 2) {
       this.presentToast('At least one study language required.', 'danger');
       this.isLoading = false;
       return;
     }
-    // this.languageService
-    //   .deleteLanguageDoc(language.$id)
-    //   .then((res) => {
-    //     // Filter out the language from the array
-    //     const newLanguages = this.cUserDoc.languages.filter(
-    //       (lang) => lang.$id !== language.$id
-    //     );
-    //     // Update languageArray
-    //     const index = this.cUserDoc.languageArray.indexOf(language.name);
-    //     if (index > -1) {
-    //       this.cUserDoc.languageArray.splice(index, 1);
-    //     }
-    //     // Update user doc with new languageArray
-    //     this.userService
-    //       .updateUserDoc(this.cUserId, {
-    //         languageArray: this.cUserDoc.languageArray,
-    //       })
-    //       .then(() => {
-    //         this.updateLanguages(newLanguages);
-    //         this.presentToast(`${language.name} language deleted.`);
-    //         console.log('Language Array Updated');
-    //       })
-    //       .catch((error) => {
-    //         this.presentToast('Please try again later.', 'danger');
-    //         console.log(error);
-    //       });
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     this.presentToast('Please try again later.', 'danger');
-    //   });
+
+    const request = {
+      $id: language.$id,
+      name: language.name,
+      userId: this.currentUser.$id,
+    };
+
+    this.store.dispatch(
+      deleteLanguageAction({
+        request,
+        languageArray: this.currentUser.languageArray,
+      })
+    );
   }
 
   async updateLanguages(newLanguages) {
