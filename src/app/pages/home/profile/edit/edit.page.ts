@@ -3,6 +3,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   LoadingController,
   ModalController,
@@ -32,6 +33,7 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 })
 export class EditPage implements OnInit {
   isLoading: boolean = false;
+  form: FormGroup;
 
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
@@ -53,6 +55,7 @@ export class EditPage implements OnInit {
 
   ngOnInit() {
     this.initValues();
+    this.initForm();
   }
 
   initValues() {
@@ -64,6 +67,14 @@ export class EditPage implements OnInit {
       this.studyLanguages = user?.languages.filter(
         (lang) => !lang.motherLanguage
       );
+    });
+  }
+
+  initForm() {
+    this.form = new FormGroup({
+      aboutMe: new FormControl('', {
+        validators: [Validators.maxLength(500)],
+      }),
     });
   }
 
@@ -233,12 +244,7 @@ export class EditPage implements OnInit {
   // Edit About Me
   //
 
-  ionInputAboutMe(event) {
-    this.cUserDoc.aboutMe = event.target.value;
-  }
-
   saveAboutMe() {
-    this.isLoading = true;
     this.userService
       .updateUserDoc(this.cUserId, { aboutMe: this.cUserDoc.aboutMe })
       .then(() => {
@@ -254,10 +260,6 @@ export class EditPage implements OnInit {
   //
   // Edit Languages
   //
-
-  getStudyLanguages() {
-    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
-  }
 
   async addLanguage() {
     const eventEmitter = new EventEmitter();
@@ -358,7 +360,7 @@ export class EditPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: EditLanguageComponent,
       componentProps: {
-        languages: this.getStudyLanguages(),
+        languages: this.studyLanguages,
         onClick: eventEmitter,
       },
     });

@@ -53,34 +53,34 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        <ion-row>
-          <ion-col>About Me</ion-col>
-          <ion-col>
-            <ion-card-subtitle>
-              <ion-button (click)="saveAboutMe()" size="small">Save</ion-button>
-            </ion-card-subtitle>
-          </ion-col>
-        </ion-row>
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item lines="none">
-          <ion-textarea
-            (ionInput)="ionInputAboutMe($event)"
-            [autoGrow]="true"
-            [counter]="true"
-            maxlength="500"
-            rows="5"
-            helperText="hobbies, interests, etc."
-            placeholder="You can edit here your profile description."
-            [value]="(currentUser$ | async)?.aboutMe"
-          ></ion-textarea>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
+    <form [formGroup]="form" (ngSubmit)="saveAboutMe()">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-row>
+            <ion-col>About Me</ion-col>
+            <ion-col>
+              <ion-card-subtitle>
+                <ion-button type="submit" size="small">Save</ion-button>
+              </ion-card-subtitle>
+            </ion-col>
+          </ion-row>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item lines="none">
+            <ion-textarea
+              formControlName="aboutMe"
+              [autoGrow]="true"
+              [counter]="true"
+              rows="5"
+              helperText="hobbies, interests, etc."
+              placeholder="You can edit here your profile description."
+            ></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </form>
   </ion-card>
 
   <ion-card>
