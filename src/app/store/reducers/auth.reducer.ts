@@ -29,10 +29,10 @@ import {
   updatePresenceSuccessAction,
 } from '../actions/presence.action';
 import {
-  getProfileAction,
-  getProfileFailureAction,
-  getProfileSuccessAction,
-} from '../actions/profile.action';
+  getUserAction,
+  getUserFailureAction,
+  getUserSuccessAction,
+} from '../actions/user.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -206,16 +206,16 @@ const authReducer = createReducer(
       unauthorizedError: action.error,
     })
   ),
-  // Get Profile Actions
+  // Get User Actions
   on(
-    getProfileAction,
+    getUserAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
     })
   ),
   on(
-    getProfileSuccessAction,
+    getUserSuccessAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
@@ -223,7 +223,7 @@ const authReducer = createReducer(
     })
   ),
   on(
-    getProfileFailureAction,
+    getUserFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,

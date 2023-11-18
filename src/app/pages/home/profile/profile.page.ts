@@ -9,7 +9,7 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
-import { getProfileAction } from 'src/app/store/actions/profile.action';
+import { getUserAction } from 'src/app/store/actions/user.action';
 import { logoutAction } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
@@ -154,7 +154,7 @@ export class ProfilePage implements OnInit {
   // }
 
   handleRefresh(event) {
-    this.store.dispatch(getProfileAction({ userId: this.currentUserId }));
+    this.store.dispatch(getUserAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
