@@ -26,6 +26,7 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 
 // Selector and Action Imports
 import { updateUserAction } from 'src/app/store/actions/user.action';
+import { updateLanguageAction } from 'src/app/store/actions/language.action';
 import {
   currentUserSelector,
   editProfileErrorSelector,
@@ -348,11 +349,13 @@ export class EditPage implements OnInit {
       console.log(item);
 
       const request = {
-        userId: this.currentUser?.$id,
-        data: item,
+        id: item.$id,
+        data: {
+          level: item?.level,
+        },
       };
 
-      // this.store.dispatch(updateLanguageAction({ request }));
+      this.store.dispatch(updateLanguageAction({ request }));
 
       // this.languageService
       //   .updateLanguageDoc(selectedLanguage.$id, {
