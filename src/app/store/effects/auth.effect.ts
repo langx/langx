@@ -168,7 +168,7 @@ export class AuthEffect {
 
       switchMap(({ request, id }) => {
         return this.userService
-          .updateUserDoc2(id, {
+          .updateUserDoc(id, {
             languageArray: request,
           })
           .pipe(

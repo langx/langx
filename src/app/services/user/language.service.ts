@@ -58,7 +58,7 @@ export class LanguageService {
         const newLanguageArray = {
           languageArray: [...languageArray, payload.name],
         };
-        return this.userService.updateUserDoc2(data.userId, newLanguageArray);
+        return this.userService.updateUserDoc(data.userId, newLanguageArray);
       })
     );
   }
@@ -79,7 +79,7 @@ export class LanguageService {
             (language) => language !== request.name
           ),
         };
-        return this.userService.updateUserDoc2(
+        return this.userService.updateUserDoc(
           request.userId,
           newLanguageArray
         );

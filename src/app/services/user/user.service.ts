@@ -61,14 +61,14 @@ export class UserService {
     );
   }
 
-  // TODO: Take a look here, function duplicated
-  updateUserDoc2(uid: string, data: any): Observable<User> {
+  updateUserDoc(uid: string, data: any): Observable<User> {
     return from(
       this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );
   }
 
-  updateUserDoc(uid: string, data: any): Promise<any> {
+  // TODO: Delete this function
+  updateUserDoc2(uid: string, data: any): Promise<any> {
     return this.api.updateDocument(
       environment.appwrite.USERS_COLLECTION,
       uid,
