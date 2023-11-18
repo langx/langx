@@ -19,7 +19,7 @@
             <ion-card-subtitle>
               <ion-button
                 (click)="selectImage('pp')"
-                [disabled]="isLoading"
+                [disabled]="(isLoading$ | async)"
                 size="small"
               >
                 Edit
@@ -146,7 +146,7 @@
             <ion-card-subtitle>
               <ion-button
                 (click)="selectImage('other')"
-                [disabled]="isLoading"
+                [disabled]="(isLoading$ | async)"
                 size="small"
               >
                 Add
