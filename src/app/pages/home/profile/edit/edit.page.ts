@@ -1,11 +1,17 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 import {
   LoadingController,
   ModalController,
   ToastController,
 } from '@ionic/angular';
+
+// Interface Imports
+import { User } from 'src/app/models/User';
+import { Language } from 'src/app/models/Language';
 
 // Service Imports
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -17,6 +23,9 @@ import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.com
 import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
+// Selector Imports
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+
 @Component({
   selector: 'app-edit',
   templateUrl: './edit.page.html',
@@ -25,12 +34,17 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 export class EditPage implements OnInit {
   isLoading: boolean = false;
 
+  currentUser$: Observable<User | null> = null;
+  currentUser: User | null = null;
+  studyLanguages: Language[] = [];
+
   cUserDoc: any;
   cUserId: string;
 
   uploadedImageURL: string = '';
 
   constructor(
+    private store: Store,
     private authService: AuthService,
     private userService: UserService,
     private languageService: LanguageService,
@@ -40,7 +54,20 @@ export class EditPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getProfileInfo();
+    this.initValues();
+    // this.getProfileInfo();
+  }
+
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    // Set currentUser
+    this.currentUser$.subscribe((user) => {
+      this.currentUser = user;
+      this.studyLanguages = user?.languages.filter(
+        (lang) => !lang.motherLanguage
+      );
+    });
   }
 
   getProfileInfo() {
@@ -223,9 +250,9 @@ export class EditPage implements OnInit {
   // Edit About Me
   //
 
-  textAreaValue() {
-    return this.cUserDoc?.aboutMe;
-  }
+  // textAreaValue() {
+  //   return this.cUserDoc?.aboutMe;
+  // }
 
   ionInputAboutMe(event) {
     this.cUserDoc.aboutMe = event.target.value;
