@@ -98,6 +98,7 @@ export class ProfilePage implements OnInit {
 
     // Set currentUser
     this.currentUser$.subscribe((user) => {
+      if (!user) return;
       this.currentUserId = user.$id;
       this.studyLanguages = user?.languages.filter(
         (lang) => !lang.motherLanguage
