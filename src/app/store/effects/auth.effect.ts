@@ -41,6 +41,11 @@ import {
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
 } from 'src/app/store/actions/auth.action';
+import {
+  getProfileAction,
+  getProfileFailureAction,
+  getProfileSuccessAction,
+} from 'src/app/store/actions/profile.action';
 
 @Injectable()
 export class AuthEffect {
@@ -213,7 +218,8 @@ export class AuthEffect {
               }),
               catchError(() => {
                 const error: ErrorInterface = {
-                  message: 'Registration is not completed yet. Please try again.',
+                  message:
+                    'Registration is not completed yet. Please try again.',
                 };
                 return of(isLoggedInFailureAction({ error }));
               })
@@ -224,6 +230,24 @@ export class AuthEffect {
               message: 'Please login or signup to continue.',
             };
             return of(isLoggedInFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  getProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getProfileAction),
+      switchMap(({ userId }) => {
+        return this.userService.getUserDoc2(userId).pipe(
+          map((payload: User) => getProfileSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getProfileFailureAction({ error }));
           })
         );
       })
