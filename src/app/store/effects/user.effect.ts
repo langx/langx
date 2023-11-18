@@ -26,6 +26,9 @@ import {
   getUserAction,
   getUserFailureAction,
   getUserSuccessAction,
+  updateUserAction,
+  updateUserFailureAction,
+  updateUserSuccessAction,
 } from 'src/app/store/actions/user.action';
 
 @Injectable()
@@ -106,6 +109,26 @@ export class UserEffects {
             return of(getUserFailureAction({ error }));
           })
         );
+      })
+    )
+  );
+
+  updateUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateUserAction),
+      switchMap(({ request }) => {
+        return this.userService
+          .updateUserDoc2(request.userId, request.data)
+          .pipe(
+            map((payload: User) => updateUserSuccessAction({ payload })),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(updateUserFailureAction({ error }));
+            })
+          );
       })
     )
   );
