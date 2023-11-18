@@ -256,11 +256,7 @@ const authReducer = createReducer(
   on(
     logoutSuccessAction,
     (state): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      isLoggedIn: false,
-      account: null,
-      currentUser: null,
+      ...initialState,
     })
   ),
   on(

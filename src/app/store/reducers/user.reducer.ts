@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { UserStateInterface } from 'src/app/models/types/states/userState.interface';
+import { logoutSuccessAction } from '../actions/auth.action';
 import {
   getUsersAction,
   getUsersSuccessAction,
@@ -67,6 +68,13 @@ const userReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+  // Clear After Logout Success Action
+  on(
+    logoutSuccessAction,
+    (): UserStateInterface => ({
+      ...initialState,
     })
   )
 );
