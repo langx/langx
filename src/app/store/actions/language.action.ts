@@ -42,7 +42,11 @@ export const updateLanguageFailureAction = createAction(
 // Delete Language Actions
 export const deleteLanguageAction = createAction(
   ActionTypes.DELETE_LANGUAGE,
-  props<{ request: { id: string; languageArray: string[] } }>()
+  props<{
+    // TODO: Add request interface here
+    request: { $id: string; name: string; userId: string };
+    languageArray: string[];
+  }>()
 );
 
 export const deleteLanguageSuccessAction = createAction(
