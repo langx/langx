@@ -6,6 +6,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { Language } from 'src/app/models/Language';
+import { User } from 'src/app/models/User';
 
 import {
   createLanguageAction,
@@ -21,13 +22,11 @@ export class LanguageEffects {
   createLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createLanguageAction),
-      switchMap(({ request }) => {
+      switchMap(({ request, languageArray }) => {
         return this.languageService
-          .createLanguageDocWithUpdatingLanguageArray(request)
+          .createLanguageDocWithUpdatingLanguageArray(request, languageArray)
           .pipe(
-            map((payload: Language) =>
-              createLanguageSuccessAction({ payload })
-            ),
+            map((payload: User) => createLanguageSuccessAction({ payload })),
 
             catchError((errorResponse: HttpErrorResponse) => {
               const error: ErrorInterface = {

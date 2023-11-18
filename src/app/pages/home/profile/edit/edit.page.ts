@@ -285,7 +285,12 @@ export class EditPage implements OnInit {
         motherLanguage: false,
       };
 
-      this.store.dispatch(createLanguageAction({ request: data }));
+      this.store.dispatch(
+        createLanguageAction({
+          request: data,
+          languageArray: this.currentUser.languageArray,
+        })
+      );
 
       // If it length is 6, then don't let the user to add one more study language.
       // if (this.currentUser.languages.length >= 6) {

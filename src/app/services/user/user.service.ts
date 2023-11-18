@@ -5,7 +5,6 @@ import { BehaviorSubject, Observable, from } from 'rxjs';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
@@ -17,11 +16,7 @@ export class UserService {
   //TODO : Add model for user here
   private userDoc = new BehaviorSubject<any>(null);
 
-  constructor(
-    private api: ApiService,
-    private authService: AuthService,
-    private storage: StorageService
-  ) {}
+  constructor(private api: ApiService, private storage: StorageService) {}
 
   getEvent(): BehaviorSubject<any> {
     return this.userDoc;
@@ -65,7 +60,8 @@ export class UserService {
     );
   }
 
-  updateUserDoc2(uid: string, data: any): Observable<any> {
+  // TODO: Take a look here, function duplicated
+  updateUserDoc2(uid: string, data: any): Observable<User> {
     return from(
       this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );

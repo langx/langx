@@ -4,16 +4,17 @@ import { ActionTypes } from 'src/app/store/actions/types/language.actiontypes';
 import { Language } from 'src/app/models/Language';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
+import { User } from 'src/app/models/User';
 
 // Create Language Actions
 export const createLanguageAction = createAction(
   ActionTypes.CREATE_LANGUAGE,
-  props<{ request: createLanguageRequestInterface }>()
+  props<{ request: createLanguageRequestInterface; languageArray: string[] }>()
 );
 
 export const createLanguageSuccessAction = createAction(
   ActionTypes.CREATE_LANGUAGE_SUCCESS,
-  props<{ payload: Language }>()
+  props<{ payload: User }>()
 );
 
 export const createLanguageFailureAction = createAction(
