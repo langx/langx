@@ -47,8 +47,9 @@ const initialState: AuthStateInterface = {
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
-  profileError: null,
   presenceError: null,
+  profileError: null,
+  editProfileError: null,
 };
 
 const authReducer = createReducer(
@@ -254,7 +255,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      profileError: action.error,
+      editProfileError: action.error,
     })
   ),
   // Update Presence Actions
