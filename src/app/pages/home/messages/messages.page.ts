@@ -79,10 +79,6 @@ export class MessagesPage implements OnInit {
           this.presentToast(error.message, 'danger');
         }
       });
-
-    this.rooms$.subscribe((rooms) => {
-      console.log('rooms', rooms);
-    });
   }
 
   listRooms() {
