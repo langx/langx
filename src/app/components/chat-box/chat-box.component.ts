@@ -1,3 +1,4 @@
+import { Store } from '@ngrx/store';
 import {
   Component,
   Input,
@@ -9,6 +10,7 @@ import {
 
 import { lastSeen } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
+import { updateMessageAction } from 'src/app/store/actions/message.action';
 
 @Component({
   selector: 'app-chat-box',
@@ -23,7 +25,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   msg: Message = null;
 
-  constructor(private el: ElementRef) {}
+  constructor(private store: Store, private el: ElementRef) {}
 
   ngOnInit() {
     this.msg = { ...this.chat };
@@ -44,8 +46,9 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     if (entry.isIntersecting) {
       if (this.msg.to === this.current_user_id && this.msg.seen === false) {
         console.log(entry.target, ' seen');
-        // this.msg.seen = true;
+        this.msg.seen = true;
         // Dispatch action to update message seen status
+        this.store.dispatch(updateMessageAction({ request: this.msg }));
       }
     }
   }
