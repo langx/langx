@@ -143,6 +143,7 @@ export class MessagesPage implements OnInit {
     console.log('archiveChat clicked', room);
   }
 
+  getBadge(room) {}
   //
   // Utils
   //
@@ -164,6 +165,11 @@ export class MessagesPage implements OnInit {
     let time = lastSeen(d);
     if (time === 'online') time = 'just now';
     return time;
+  }
+
+  lastSeen(d: any) {
+    if (!d) return null;
+    return lastSeen(d);
   }
 
   //
