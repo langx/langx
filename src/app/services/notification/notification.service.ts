@@ -78,7 +78,6 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.create`:
             console.log('[NOTIFICATION] room created', response.payload);
-            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.update`:
             console.log('[NOTIFICATION] room updated', response.payload);
