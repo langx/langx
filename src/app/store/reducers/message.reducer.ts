@@ -3,7 +3,10 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import { logoutSuccessAction } from '../actions/auth.action';
-import { findAndUpdateActiveRoomMessageAction } from '../actions/notification.action';
+import {
+  findActiveRoomAndAddMessageAction,
+  findAndUpdateMessageSeenAttributeAction,
+} from 'src/app/store/actions/notification.action';
 import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
@@ -21,6 +24,9 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
+  updateMessageSeenAction,
+  updateMessageSeenSuccessAction,
+  updateMessageSeenFailureAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -31,6 +37,7 @@ const initialState: MessageStateInterface = {
 
 const messageReducer = createReducer(
   initialState,
+
   // Get Messages Reducers
   on(
     getMessagesAction,
@@ -92,29 +99,38 @@ const messageReducer = createReducer(
     createMessageAction,
     (state): MessageStateInterface => ({
       ...state,
+      // TODO: Here we need to update the room messages
+      // To show user loading icon
+      // room: {
+      //   ...state.room,
+      //   // messages: [...state.room.messages, action.payload],
+      //},
       isLoading: true,
       error: null,
     })
   ),
   on(
     createMessageSuccessAction,
-    (state, action): MessageStateInterface => ({
+    (state): MessageStateInterface => ({
       ...state,
       isLoading: false,
-      room: {
-        ...state.room,
-        // messages: [...state.room.messages, action.payload],
-      },
     })
   ),
   on(
     createMessageFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      // TODO: Here we need to update the room messages
+      // To show user failed icon
+      // room: {
+      //   ...state.room,
+      //   // messages: [...state.room.messages, action.payload],
+      // },
       isLoading: false,
       error: action.error,
     })
   ),
+
   // Get Room By Id Reducers for only loader & error
   on(
     getRoomByIdAction,
@@ -138,6 +154,39 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
+
+  // Update Message Reducers
+  on(
+    updateMessageSeenAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      error: null,
+    })
+  ),
+  on(
+    updateMessageSeenSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      // Only update after notification came, not here !
+      room: {
+        ...state.room,
+        messages: state.room.messages.map((msg) => {
+          if (msg.$id === action.payload.$id) {
+            return { ...msg, seen: true };
+          }
+          return msg;
+        }),
+      },
+    })
+  ),
+  on(
+    updateMessageSeenFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
+  ),
+
   // Activate Room Reducers
   on(
     activateRoomAction,
@@ -153,6 +202,7 @@ const messageReducer = createReducer(
       room: null,
     })
   ),
+
   // Clear After Logout Success Action
   on(
     logoutSuccessAction,
@@ -163,7 +213,7 @@ const messageReducer = createReducer(
 
   // Find And Update Active Room Message Reducers
   on(
-    findAndUpdateActiveRoomMessageAction,
+    findActiveRoomAndAddMessageAction,
     (state, action): MessageStateInterface => {
       // Check if there is any room in the state
       if (!state.room) return { ...state };
@@ -192,6 +242,35 @@ const messageReducer = createReducer(
       // );
       // // Return the new state
       // return { ...state, rooms: sortedRooms };
+    }
+  ),
+  on(
+    findAndUpdateMessageSeenAttributeAction,
+    (state, action): MessageStateInterface => {
+      // Check if there is any room in the state
+      if (!state.room) return { ...state };
+
+      // Check if the message belongs to the active room
+      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+
+      // Return the new state
+      const payload: Message = {
+        ...action.payload,
+        roomId: action.payload.roomId.$id,
+      };
+
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          messages: state.room.messages.map((msg) => {
+            if (msg.$id === action.payload.$id) {
+              return { ...msg, seen: true };
+            }
+            return msg;
+          }),
+        },
+      };
     }
   )
 );

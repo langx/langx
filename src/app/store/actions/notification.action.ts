@@ -9,12 +9,17 @@ export const findAndUpdateRoomUpdatedAtAction = createAction(
   props<{ payload: Room }>()
 );
 
-export const findAndUpdateRoomMessageAction = createAction(
-  ActionTypes.FIND_AND_UPDATE_ROOM_MESSAGE,
+export const findRoomAndAddMessageAction = createAction(
+  ActionTypes.FIND_ROOM_AND_ADD_MESSAGE,
   props<{ payload: MessageExtendedInterface }>()
 );
 
-export const findAndUpdateActiveRoomMessageAction = createAction(
-  ActionTypes.FIND_AND_UPDATE_ACTIVE_ROOM_MESSAGE,
+export const findActiveRoomAndAddMessageAction = createAction(
+  ActionTypes.FIND_ACTIVE_ROOM_AND_ADD_MESSAGE,
+  props<{ payload: MessageExtendedInterface }>()
+);
+
+export const findAndUpdateMessageSeenAttributeAction = createAction(
+  ActionTypes.FIND_AND_UPDATE_MESSAGE_SEEN_ATTRIBUTE,
   props<{ payload: MessageExtendedInterface }>()
 );
