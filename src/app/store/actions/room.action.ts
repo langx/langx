@@ -2,9 +2,7 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/types/room.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-import { Room } from 'src/app/models/Room';
 
 // Get Room By Id Actions
 export const getRoomByIdAction = createAction(
@@ -54,14 +52,4 @@ export const createRoomSuccessAction = createAction(
 export const createRoomFailureAction = createAction(
   ActionTypes.CREATE_ROOM_FAILURE,
   props<{ error: ErrorInterface }>()
-);
-
-export const findAndUpdateRoomUpdatedAtAction = createAction(
-  ActionTypes.FIND_AND_UPDATE_ROOM_UPDATED_AT,
-  props<{ payload: Room }>()
-);
-
-export const findAndUpdateRoomMessageAction = createAction(
-  ActionTypes.FIND_AND_UPDATE_ROOM_MESSAGE,
-  props<{ payload: MessageExtendedInterface }>()
 );

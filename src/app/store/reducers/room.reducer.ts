@@ -22,9 +22,11 @@ import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
-  findAndUpdateRoomUpdatedAtAction,
-  findAndUpdateRoomMessageAction,
 } from 'src/app/store/actions/room.action';
+import {
+  findAndUpdateRoomMessageAction,
+  findAndUpdateRoomUpdatedAtAction,
+} from 'src/app/store/actions/notification.action';
 
 const initialState: RoomStateInterface = {
   isLoading: false,

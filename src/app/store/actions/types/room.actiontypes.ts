@@ -8,6 +8,4 @@ export enum ActionTypes {
   CREATE_ROOM = '[Room] Create Room',
   CREATE_ROOM_SUCCESS = '[Room] Create Room Success',
   CREATE_ROOM_FAILURE = '[Room] Create Room Failure',
-  FIND_AND_UPDATE_ROOM_UPDATED_AT = '[Room] Find And Update Room Updated At',
-  FIND_AND_UPDATE_ROOM_MESSAGE = '[Room] Find And Update Room Message',
 }
