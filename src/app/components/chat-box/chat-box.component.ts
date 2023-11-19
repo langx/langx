@@ -10,7 +10,7 @@ import {
 
 import { lastSeen } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
-import { updateMessageAction } from 'src/app/store/actions/message.action';
+import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
 
 @Component({
   selector: 'app-chat-box',
@@ -47,7 +47,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.msg.to === this.current_user_id && this.msg.seen === false) {
         this.msg.seen = true;
         // Dispatch action to update message seen status
-        this.store.dispatch(updateMessageAction({ request: this.msg }));
+        this.store.dispatch(updateMessageSeenAction({ request: this.msg }));
       }
     }
   }

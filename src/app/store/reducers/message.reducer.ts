@@ -5,7 +5,7 @@ import { MessageStateInterface } from 'src/app/models/types/states/messageState.
 import { logoutSuccessAction } from '../actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
-  findAndUpdateMessageAction,
+  findAndUpdateMessageSeenAttributeAction,
 } from 'src/app/store/actions/notification.action';
 import {
   getRoomByIdAction,
@@ -24,8 +24,9 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
-  updateMessageAction,
-  updateMessageSuccessAction,
+  updateMessageSeenAction,
+  updateMessageSeenSuccessAction,
+  updateMessageSeenFailureAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -156,14 +157,14 @@ const messageReducer = createReducer(
 
   // Update Message Reducers
   on(
-    updateMessageAction,
+    updateMessageSeenAction,
     (state): MessageStateInterface => ({
       ...state,
       error: null,
     })
   ),
   on(
-    updateMessageSuccessAction,
+    updateMessageSeenSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
       // Only update after notification came, not here !
@@ -179,7 +180,7 @@ const messageReducer = createReducer(
     })
   ),
   on(
-    createMessageFailureAction,
+    updateMessageSeenFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
       error: action.error,
@@ -243,32 +244,35 @@ const messageReducer = createReducer(
       // return { ...state, rooms: sortedRooms };
     }
   ),
-  on(findAndUpdateMessageAction, (state, action): MessageStateInterface => {
-    // Check if there is any room in the state
-    if (!state.room) return { ...state };
+  on(
+    findAndUpdateMessageSeenAttributeAction,
+    (state, action): MessageStateInterface => {
+      // Check if there is any room in the state
+      if (!state.room) return { ...state };
 
-    // Check if the message belongs to the active room
-    if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+      // Check if the message belongs to the active room
+      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
 
-    // Return the new state
-    const payload: Message = {
-      ...action.payload,
-      roomId: action.payload.roomId.$id,
-    };
+      // Return the new state
+      const payload: Message = {
+        ...action.payload,
+        roomId: action.payload.roomId.$id,
+      };
 
-    return {
-      ...state,
-      room: {
-        ...state.room,
-        messages: state.room.messages.map((msg) => {
-          if (msg.$id === action.payload.$id) {
-            return { ...msg, seen: true };
-          }
-          return msg;
-        }),
-      },
-    };
-  })
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          messages: state.room.messages.map((msg) => {
+            if (msg.$id === action.payload.$id) {
+              return { ...msg, seen: true };
+            }
+            return msg;
+          }),
+        },
+      };
+    }
+  )
 );
 
 export function messageReducers(state: MessageStateInterface, action: Action) {
