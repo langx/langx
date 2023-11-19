@@ -48,7 +48,10 @@
                   <p>{{getLastMessage(room)?.body}}</p>
                 </ion-label>
                 <!--<ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>-->
-                <ion-badge slot="end" color="danger"
+                <ion-badge
+                  slot="end"
+                  color="danger"
+                  *ngIf="getBadge(room) !== 0"
                   >{{getBadge(room)}}</ion-badge
                 >
                 <div class="metadata-end-wrapper" slot="end">
