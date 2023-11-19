@@ -2,10 +2,13 @@ import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
 
-import { ApiService } from 'src/app/services/api/api.service';
+// Environment and services Imports
 import { environment } from 'src/environments/environment';
-import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
+import { ApiService } from 'src/app/services/api/api.service';
+
+// Interface Imports
 import { Account } from 'src/app/models/Account';
+import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 
 @Injectable({
@@ -83,7 +86,7 @@ export class AuthService {
     return from(this.api.account.get());
   }
 
-  logout() :Observable<any> {
+  logout(): Observable<any> {
     return from(this.api.account.deleteSession('current')).pipe(
       tap(() => this._user.next(null))
     );

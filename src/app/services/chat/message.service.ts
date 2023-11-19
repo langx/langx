@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
-import { BehaviorSubject, Observable, from, switchMap, tap } from 'rxjs';
+import { Observable, from, switchMap, tap } from 'rxjs';
 import axios from 'axios';
 
 // Environment and Services Imports

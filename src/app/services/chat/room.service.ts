@@ -1,16 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
 import axios from 'axios';
-import {
-  BehaviorSubject,
-  Observable,
-  forkJoin,
-  from,
-  iif,
-  map,
-  of,
-  switchMap,
-} from 'rxjs';
+import { Observable, forkJoin, from, iif, map, of, switchMap } from 'rxjs';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
@@ -29,9 +20,6 @@ import { listRoomsResponseInterface } from 'src/app/models/types/responses/listR
   providedIn: 'root',
 })
 export class RoomService {
-  rooms: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]); // TODO: WILL BE DELETED
-  cUserId: string; // TODO: WILL BE DELETED
-
   currentUser$: Observable<User>;
 
   constructor(

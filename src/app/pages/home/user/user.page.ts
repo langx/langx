@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+
 import { getAge, lastSeen } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-user',
@@ -18,7 +18,6 @@ export class UserPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private userService: UserService,
     private modalCtrl: ModalController
   ) {}
 
@@ -26,19 +25,19 @@ export class UserPage implements OnInit {
     //TODO: this.userID may be used in nowhere
     const id: string = this.route.snapshot.paramMap.get('id');
     if (id) this.userId = id;
-    this.getUserData();
+    // this.getUserData();
   }
 
-  async getUserData() {
-    await this.userService
-      .getUserDoc2(this.userId)
-      .then((user) => {
-        this.user = user;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  // async getUserData() {
+  //   await this.userService
+  //     .getUserDoc2(this.userId)
+  //     .then((user) => {
+  //       this.user = user;
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }
 
   async openPreview(photos) {
     console.log(photos);
@@ -61,8 +60,7 @@ export class UserPage implements OnInit {
 
   getGender(): string {
     return (
-      this.user?.gender.charAt(0).toUpperCase() +
-      this.user?.gender.slice(1)
+      this.user?.gender.charAt(0).toUpperCase() + this.user?.gender.slice(1)
     );
   }
 
