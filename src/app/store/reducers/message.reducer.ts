@@ -3,7 +3,10 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import { logoutSuccessAction } from '../actions/auth.action';
-import { findActiveRoomAndAddMessageAction } from '../actions/notification.action';
+import {
+  findActiveRoomAndAddMessageAction,
+  findAndUpdateMessageAction,
+} from 'src/app/store/actions/notification.action';
 import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
@@ -151,16 +154,16 @@ const messageReducer = createReducer(
       error: null,
     })
   ),
-  // TODO: Only update after notification came, not here !
   on(
     updateMessageSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      // Only update after notification came, not here !
       room: {
         ...state.room,
         messages: state.room.messages.map((msg) => {
           if (msg.$id === action.payload.$id) {
-            return { ...msg, ...action.payload };
+            return { ...msg, seen: true };
           }
           return msg;
         }),
@@ -231,7 +234,33 @@ const messageReducer = createReducer(
       // // Return the new state
       // return { ...state, rooms: sortedRooms };
     }
-  )
+  ),
+  on(findAndUpdateMessageAction, (state, action): MessageStateInterface => {
+    // Check if there is any room in the state
+    if (!state.room) return { ...state };
+
+    // Check if the message belongs to the active room
+    if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+
+    // Return the new state
+    const payload: Message = {
+      ...action.payload,
+      roomId: action.payload.roomId.$id,
+    };
+
+    return {
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room.messages.map((msg) => {
+          if (msg.$id === action.payload.$id) {
+            return { ...msg, seen: true };
+          }
+          return msg;
+        }),
+      },
+    };
+  })
 );
 
 export function messageReducers(state: MessageStateInterface, action: Action) {
