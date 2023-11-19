@@ -17,9 +17,9 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
-  updateMessageAction,
-  updateMessageFailureAction,
-  updateMessageSuccessAction,
+  updateMessageSeenAction,
+  updateMessageSeenFailureAction,
+  updateMessageSeenSuccessAction,
 } from 'src/app/store/actions/message.action';
 
 @Injectable()
@@ -84,16 +84,18 @@ export class MessageEffects {
 
   updateMessage$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(updateMessageAction),
+      ofType(updateMessageSeenAction),
       switchMap(({ request }) =>
         this.messagesService.updateMessage(request).pipe(
-          map((payload: Message) => updateMessageSuccessAction({ payload })),
+          map((payload: Message) =>
+            updateMessageSeenSuccessAction({ payload })
+          ),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
             };
-            return of(updateMessageFailureAction({ error }));
+            return of(updateMessageSeenFailureAction({ error }));
           })
         )
       )

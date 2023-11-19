@@ -68,17 +68,17 @@ export const deactivateRoomAction = createAction(
 );
 
 // Update Message Actions
-export const updateMessageAction = createAction(
-  ActionTypes.UPDATE_MESSAGE,
-  props<{ request: Message}>()
+export const updateMessageSeenAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_SEEN,
+  props<{ request: Message }>()
 );
 
-export const updateMessageSuccessAction = createAction(
-  ActionTypes.UPDATE_MESSAGE_SUCCESS,
+export const updateMessageSeenSuccessAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_SEEN_SUCCESS,
   props<{ payload: Message }>()
 );
 
-export const updateMessageFailureAction = createAction(
-  ActionTypes.UPDATE_MESSAGE_FAILURE,
+export const updateMessageSeenFailureAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_SEEN_FAILURE,
   props<{ error: ErrorInterface }>()
 );

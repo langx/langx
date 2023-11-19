@@ -19,7 +19,7 @@ export const findActiveRoomAndAddMessageAction = createAction(
   props<{ payload: MessageExtendedInterface }>()
 );
 
-export const findAndUpdateMessageAction = createAction(
-  ActionTypes.FIND_AND_UPDATE_MESSAGE,
+export const findAndUpdateMessageSeenAttributeAction = createAction(
+  ActionTypes.FIND_AND_UPDATE_MESSAGE_SEEN_ATTRIBUTE,
   props<{ payload: MessageExtendedInterface }>()
 );
