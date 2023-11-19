@@ -157,28 +157,6 @@ export class EditPage implements OnInit {
     this.presentToast('At least one profile picture required.', 'danger');
   }
 
-  // async addOtherPhotos() {
-  //   this.isLoading = true;
-
-  //   if (this.uploadedImageURL != '') {
-  //     this.cUserDoc.otherPhotos.push(this.uploadedImageURL);
-  //     this.uploadedImageURL = '';
-  //   }
-
-  //   await this.userService
-  //     .updateUserDoc2(this.currentUser.$id, {
-  //       otherPhotos: this.cUserDoc.otherPhotos,
-  //     })
-  //     .then(() => {
-  //       this.presentToast('Picture added to Other Photos.');
-  //       this.isLoading = false;
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       this.isLoading = false;
-  //     });
-  // }
-
   deleteOtherPhotos(image) {
     this.presentToast('deleteOtherPhotos', 'danger');
   }
