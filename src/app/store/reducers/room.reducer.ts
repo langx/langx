@@ -24,7 +24,7 @@ import {
   getRoomByIdSuccessAction,
 } from 'src/app/store/actions/room.action';
 import {
-  findAndUpdateRoomMessageAction,
+  findRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
 
@@ -202,7 +202,7 @@ const roomReducer = createReducer(
   }),
 
   // Find And Update Room Message Reducers
-  on(findAndUpdateRoomMessageAction, (state, action): RoomStateInterface => {
+  on(findRoomAndAddMessageAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
     const updatedRooms = state.rooms.map((room) => {
       const payload: Message = {

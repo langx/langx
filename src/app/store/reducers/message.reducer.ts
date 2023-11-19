@@ -3,7 +3,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import { logoutSuccessAction } from '../actions/auth.action';
-import { findAndUpdateActiveRoomMessageAction } from '../actions/notification.action';
+import { findActiveRoomAndAddMessageAction } from '../actions/notification.action';
 import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
@@ -165,7 +165,7 @@ const messageReducer = createReducer(
 
   // Find And Update Active Room Message Reducers
   on(
-    findAndUpdateActiveRoomMessageAction,
+    findActiveRoomAndAddMessageAction,
     (state, action): MessageStateInterface => {
       // Check if there is any room in the state
       if (!state.room) return { ...state };
