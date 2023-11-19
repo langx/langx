@@ -13,3 +13,8 @@ export const findAndUpdateRoomMessageAction = createAction(
   ActionTypes.FIND_AND_UPDATE_ROOM_MESSAGE,
   props<{ payload: MessageExtendedInterface }>()
 );
+
+export const findAndUpdateActiveRoomMessageAction = createAction(
+  ActionTypes.FIND_AND_UPDATE_ACTIVE_ROOM_MESSAGE,
+  props<{ payload: MessageExtendedInterface }>()
+);

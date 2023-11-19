@@ -1,7 +1,9 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
+import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import { logoutSuccessAction } from '../actions/auth.action';
+import { findAndUpdateActiveRoomMessageAction } from '../actions/notification.action';
 import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
@@ -157,6 +159,40 @@ const messageReducer = createReducer(
     (): MessageStateInterface => ({
       ...initialState,
     })
+  ),
+
+  // Find And Update Active Room Message Reducers
+  on(
+    findAndUpdateActiveRoomMessageAction,
+    (state, action): MessageStateInterface => {
+      // Check if there is any room in the state
+      if (!state.room) return { ...state };
+
+      // Check if the message belongs to the active room
+      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+
+      // Return the new state
+      const payload: Message = {
+        ...action.payload,
+        roomId: action.payload.roomId.$id,
+      };
+
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          messages: [...(state.room.messages || []), payload],
+        },
+      };
+
+      // Sort rooms by $updatedAt in descending order
+      // const sortedRooms = updatedRooms.sort(
+      //   (a, b) =>
+      //     new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+      // );
+      // // Return the new state
+      // return { ...state, rooms: sortedRooms };
+    }
   )
 );
 
