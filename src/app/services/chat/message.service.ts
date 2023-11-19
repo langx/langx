@@ -46,6 +46,19 @@ export class MessageService {
     );
   }
 
+  // Update Message
+  updateMessage(message: Message): Observable<Message> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.MESSAGES_COLLECTION,
+        message.$id,
+        {
+          seen: message.seen,
+        }
+      )
+    );
+  }
+
   // Get messages from a room to initialize the chat
   listMessages(
     roomId: string,

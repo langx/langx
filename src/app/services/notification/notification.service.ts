@@ -10,9 +10,10 @@ import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.i
 import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
 import {
-  findAndUpdateActiveRoomMessageAction,
-  findAndUpdateRoomMessageAction,
+  findRoomAndAddMessageAction,
+  findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
+  findAndUpdateMessageSeenAttributeAction,
 } from 'src/app/store/actions/notification.action';
 
 @Injectable({
@@ -56,34 +57,40 @@ export class NotificationService {
       response.events.forEach((event) => {
         switch (event) {
           case `${messagesCollection}.*.create`:
-            console.log('new message created', response.payload);
-            let message = response.payload as MessageExtendedInterface;
+            console.log('[NOTIFICATION] message created', response.payload);
+            const createdMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
-              findAndUpdateRoomMessageAction({ payload: message })
+              findRoomAndAddMessageAction({ payload: createdMessage })
             );
             this.store.dispatch(
-              findAndUpdateActiveRoomMessageAction({ payload: message })
+              findActiveRoomAndAddMessageAction({ payload: createdMessage })
             );
             break;
           case `${messagesCollection}.*.update`:
-            console.log('new message updated', response.payload);
+            console.log('[NOTIFICATION] message updated', response.payload);
+            const updatedMessage = response.payload as MessageExtendedInterface;
+            this.store.dispatch(
+              findAndUpdateMessageSeenAttributeAction({
+                payload: updatedMessage,
+              })
+            );
             break;
           case `${messagesCollection}.*.delete`:
-            console.log('new message deleted', response.payload);
+            console.log('[NOTIFICATION] message deleted', response.payload);
             break;
           case `${roomsCollection}.*.create`:
-            console.log('new room created', response.payload);
+            console.log('[NOTIFICATION] room created', response.payload);
             // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.update`:
-            console.log('new room updated', response.payload);
-            let room = response.payload as Room;
+            console.log('[NOTIFICATION] room updated', response.payload);
+            const updatedRoom = response.payload as Room;
             this.store.dispatch(
-              findAndUpdateRoomUpdatedAtAction({ payload: room })
+              findAndUpdateRoomUpdatedAtAction({ payload: updatedRoom })
             );
             break;
           case `${roomsCollection}.*.delete`:
-            console.log('new room deleted', response.payload);
+            console.log('[NOTIFICATION] room deleted', response.payload);
             break;
           default:
             break;

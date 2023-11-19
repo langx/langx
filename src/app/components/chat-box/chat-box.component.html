@@ -1,28 +1,30 @@
-<ion-item *ngIf="chat?.sender != current_user_id" lines="none">
+<ion-item *ngIf="msg?.sender != current_user_id" lines="none">
   <div class="message-body">
     <div class="message-main-receiver">
       <div class="receiver">
         <div class="message-text">
-          {{ chat?.body }}
+          {{ msg?.body }}
         </div>
         <span class="message-time">
-          {{ messageTime(chat?.$createdAt) }}
+          {{ messageTime(msg?.$createdAt) }}
         </span>
       </div>
     </div>
   </div>
 </ion-item>
 
-<ion-item *ngIf="chat?.sender == current_user_id" lines="none">
+<ion-item *ngIf="msg?.sender == current_user_id" lines="none">
   <div class="message-body">
     <div class="message-main-sender">
       <div class="sender">
         <div class="message-text">
-          {{ chat?.body }}
-          <span class="message-time" *ngIf="chat?.$createdAt">
-            {{ messageTime(chat?.$createdAt) }}
+          {{ msg?.body }}
+          <span class="message-time" *ngIf="msg?.$createdAt">
+            {{ messageTime(msg?.$createdAt) }}
+            <ion-icon *ngIf="!msg?.seen" name="checkmark-outline"></ion-icon>
+            <ion-icon *ngIf="msg?.seen" name="checkmark-circle-outline"></ion-icon>
           </span>
-          <span class="message-time" *ngIf="!chat?.$createdAt">
+          <span class="message-time" *ngIf="!msg?.$createdAt">
             <ion-icon name="cloud-upload-outline"></ion-icon>
           </span>
         </div>
