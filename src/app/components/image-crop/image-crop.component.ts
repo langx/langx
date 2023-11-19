@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Capacitor } from '@capacitor/core';
-import { LoadingController, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import {
   ImageCroppedEvent,
   ImageCropperComponent,
@@ -27,13 +27,10 @@ export class ImageCropComponent implements OnInit {
 
   constructor(
     private modalCtrl: ModalController,
-    private loadingCtrl: LoadingController,
     private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit() {
-    this.loadingCtrl.create();
-  }
+  ngOnInit() {}
 
   rotate() {
     this.transform = {
@@ -53,12 +50,7 @@ export class ImageCropComponent implements OnInit {
     // event.blob can be used to upload the cropped image
   }
 
-  imageLoaded(image?: LoadedImage) {
-    this.loadingCtrl.dismiss();
-  }
-
   loadImageFailed() {
-    this.loadingCtrl.dismiss();
     // TODO: here trigger a toast message and exit the modal
     console.log('Image Load Failed');
   }
