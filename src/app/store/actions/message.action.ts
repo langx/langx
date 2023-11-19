@@ -66,3 +66,19 @@ export const deactivateRoomAction = createAction(
   ActionTypes.DEACTIVATE_ROOM,
   props<{ payload: RoomExtendedInterface }>()
 );
+
+// Update Message Actions
+export const updateMessageAction = createAction(
+  ActionTypes.UPDATE_MESSAGE,
+  props<{ request: Message}>()
+);
+
+export const updateMessageSuccessAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_SUCCESS,
+  props<{ payload: Message }>()
+);
+
+export const updateMessageFailureAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
