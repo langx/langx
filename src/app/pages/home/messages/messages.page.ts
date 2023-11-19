@@ -32,6 +32,7 @@ export class MessagesPage implements OnInit {
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
 
+  currentUserId: string = null;
   isLoadingCtrlActive: boolean = false;
 
   model = {
@@ -60,6 +61,15 @@ export class MessagesPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    // Set Current User Id
+    this.currentUser$
+      .subscribe((user) => {
+        if (user) {
+          this.currentUserId = user.$id;
+        }
+      })
+      .unsubscribe();
 
     // Present Toast if error
     this.store
@@ -144,7 +154,9 @@ export class MessagesPage implements OnInit {
   }
 
   getBadge(room): number {
-    return room.messages.filter((message) => message.seen === false).length;
+    return room.messages.filter(
+      (message) => message.seen === false && message.to === this.currentUserId
+    ).length;
   }
   //
   // Utils
