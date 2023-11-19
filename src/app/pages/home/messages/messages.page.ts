@@ -97,6 +97,7 @@ export class MessagesPage implements OnInit {
         }
         this.rooms$
           .subscribe((users) => {
+            if (!users) return;
             offset = users.length;
             this.total$
               .subscribe((total) => {

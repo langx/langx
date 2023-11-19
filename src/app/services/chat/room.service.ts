@@ -104,7 +104,7 @@ export class RoomService {
     // Set x-appwrite-jwt header
     return from(
       this.authService.createJWT().then((result) => {
-        console.log('result: ', result);
+        // console.log('result: ', result);
         axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
       })
     ).pipe(
