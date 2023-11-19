@@ -200,8 +200,9 @@ const roomReducer = createReducer(
     // Return the new state
     return { ...state, rooms: sortedRooms };
   }),
+
+  // Find And Update Room Message Reducers
   on(findAndUpdateRoomMessageAction, (state, action): RoomStateInterface => {
-    console.log('findAndUpdateRoomMessageAction', action.payload);
     // Create a new array with the updated room
     const updatedRooms = state.rooms.map((room) => {
       const payload: Message = {
