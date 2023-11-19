@@ -24,62 +24,67 @@
     <app-empty-screen *ngIf="(rooms$ | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
-    <ion-list *ngIf="(rooms$ | async)?.length > 0">
-      <div *ngFor="let room of (rooms$ | async)" detail>
-        <ion-item (click)="getChat(room)">
-          <ng-container *ngIf="room">
-            <ion-avatar slot="start">
-              <img
-                [src]="room?.['userData']?.profilePhoto"
-                alt=""
-                referrerpolicy="no-referrer"
-              />
-            </ion-avatar>
-            <ion-label>
-              <h2>{{room?.['userData']?.name}}</h2>
-              <p>{{getLastMessage(room)?.body}}</p>
-            </ion-label>
-            <!--<ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>-->
-            <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
-            <!--
+    <ion-card>
+      <ion-card-content>
+        <ion-list *ngIf="(rooms$ | async)?.length > 0">
+          <div *ngFor="let room of (rooms$ | async)" detail>
+            <ion-item (click)="getChat(room)">
+              <ng-container *ngIf="room">
+                <ion-avatar slot="start">
+                  <img
+                    [src]="room?.['userData']?.profilePhoto"
+                    alt=""
+                    referrerpolicy="no-referrer"
+                  />
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{room?.['userData']?.name}}</h2>
+                  <p>{{getLastMessage(room)?.body}}</p>
+                </ion-label>
+                <!--<ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>-->
+                <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
+                <!--<ion-badge color="danger">4</ion-badge>-->
+                <!--
             <ion-note *ngIf="!getLastMessage(room)?.time">
               {{ messageTime(room?.$updatedAt) }}
             </ion-note>
             -->
-          </ng-container>
-        </ion-item>
-      </div>
-    </ion-list>
+              </ng-container>
+            </ion-item>
+          </div>
+        </ion-list>
 
-    <!-- Skeleton Start -->
-    <ion-list *ngIf="(isLoading$ | async)">
-      <ion-item *ngFor="let i of '0123456789'.split('')">
-        <ion-thumbnail slot="start">
-          <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-        </ion-thumbnail>
-        <ion-label>
-          <h3>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 80%"
-            ></ion-skeleton-text>
-          </h3>
-          <p>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 60%"
-            ></ion-skeleton-text>
-          </p>
-          <p>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 30%"
-            ></ion-skeleton-text>
-          </p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-    <!-- Skeleton End -->
+        <!-- Skeleton Start -->
+        <ion-list *ngIf="(isLoading$ | async)">
+          <ion-item *ngFor="let i of '0123456789'.split('')">
+            <ion-thumbnail slot="start">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 80%"
+                ></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 60%"
+                ></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 30%"
+                ></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+        <!-- Skeleton End -->
+      </ion-card-content>
+    </ion-card>
   </ng-container>
   <ion-infinite-scroll (ionInfinite)="loadMore($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
