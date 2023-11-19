@@ -12,11 +12,14 @@ import {
   switchMap,
 } from 'rxjs';
 
+// Environment and Services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { MessageService } from 'src/app/services/chat/message.service';
+
+// Interface Imports
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
