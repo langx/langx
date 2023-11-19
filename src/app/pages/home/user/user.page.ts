@@ -31,7 +31,7 @@ export class UserPage implements OnInit {
 
   async getUserData() {
     await this.userService
-      .getUserDoc(this.userId)
+      .getUserDoc2(this.userId)
       .then((user) => {
         this.user = user;
       })

@@ -8,8 +8,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-
   <ion-card>
     <ion-card-header>
       <ion-card-title>User Id</ion-card-title>
@@ -18,7 +16,7 @@
       <ion-list>
         <ion-item>
           <ion-icon name="id-card-outline"></ion-icon>
-          <ion-label>{{ cUserSession?.$id }}</ion-label>
+          <ion-label>{{ (account$ | async)?.$id }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -32,7 +30,7 @@
       <ion-list>
         <ion-item>
           <ion-icon name="mail-outline"></ion-icon>
-          <ion-label>{{ cUserSession?.email }}</ion-label>
+          <ion-label>{{ (account$ | async)?.email }}</ion-label>
           <!--
           <ion-buttons slot="end">
             <ion-button size="small" disabled>
@@ -51,11 +49,11 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngIf="cUserSession?.googleVerified">
+        <ion-item *ngIf="(account$ | async)?.emailVerification">
           <ion-icon name="logo-google"></ion-icon>
-          <ion-label>behicsakar@gmail.com</ion-label>
+          <ion-label>Google Verified Badge</ion-label>
         </ion-item>
-        <ion-item *ngIf="!cUserSession?.googleVerified">
+        <ion-item *ngIf="!(account$ | async)?.emailVerification">
           <ion-icon name="unlink-outline"></ion-icon>
           <ion-label>None</ion-label>
         </ion-item>
@@ -65,17 +63,17 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Last Successful Login</ion-card-title>
+      <ion-card-title>Last Seen</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
           <ion-label
-            >{{ cUserSession?.accessedAt| date: 'dd/MM/yyyy, HH:mm:ss'
-            }}</ion-label
-          >
-          <ion-note>{{ lastSeen(cUserSession?.accessedAt) }}</ion-note>
+            >{{ (currentUser$ | async)?.lastSeen| date: 'dd/MM/yyyy, HH:mm:ss'
+            }}
+          </ion-label>
+          <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -90,10 +88,12 @@
         <ion-item>
           <ion-icon name="key-outline"></ion-icon>
           <ion-label
-            >{{ cUserSession?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
+            >{{ (account$ | async)?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
             }}</ion-label
           >
-          <ion-note>{{ lastSeen(cUserSession?.passwordUpdate) }}</ion-note>
+          <ion-note
+            >{{ lastSeen((account$ | async)?.passwordUpdate) }}</ion-note
+          >
         </ion-item>
       </ion-list>
     </ion-card-content>

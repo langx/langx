@@ -15,8 +15,7 @@ export class AddLanguageComponent implements OnInit {
   languageData: any;
   selectedLanguage: any;
 
-  isLoading: boolean = false; //TODO: Make it work
-  isSubmit: boolean = false;
+  isShowLevels: boolean = false;
 
   constructor(
     private toastController: ToastController,
@@ -24,7 +23,6 @@ export class AddLanguageComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log(this.languageArray);
     this.filterLanuages();
   }
 
@@ -33,16 +31,14 @@ export class AddLanguageComponent implements OnInit {
     this.languageData = languagesData.filter(
       (language) => !this.languageArray.includes(language.name)
     );
-    console.log(this.languageData.length);
   }
 
   next() {
-    console.log('submit:' + this.selectedLanguage);
     if (!this.selectedLanguage) {
       this.presentToast('Please select a language.', 'danger');
       return;
     } else {
-      this.isSubmit = true;
+      this.isShowLevels = true;
     }
   }
 
@@ -57,7 +53,6 @@ export class AddLanguageComponent implements OnInit {
 
   radioChecked(event) {
     this.selectedLanguage.level = parseInt(event.detail.value);
-    console.log('radioChecked:' + this.selectedLanguage.level);
   }
 
   changeLang(event) {

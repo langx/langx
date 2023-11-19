@@ -83,14 +83,10 @@ export class AuthService {
     return from(this.api.account.get());
   }
 
-  async logout() {
-    try {
-      await this.api.account.deleteSession('current');
-    } catch (e) {
-      console.log(`${e}`);
-    } finally {
-      this._user.next(null);
-    }
+  logout() :Observable<any> {
+    return from(this.api.account.deleteSession('current')).pipe(
+      tap(() => this._user.next(null))
+    );
   }
 
   resetPassword(email: string) {

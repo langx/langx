@@ -7,7 +7,7 @@ import { LoginRequestInterface } from 'src/app/models/types/requests/loginReques
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
-import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { Language } from 'src/app/models/Language';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 
@@ -62,7 +62,7 @@ export const completeRegistrationFailureAction = createAction(
 // Language Selection
 export const languageSelectionAction = createAction(
   ActionTypes.LANGUAGE_SELECTION,
-  props<{ request: AddLanguageRequestInterface[] }>()
+  props<{ request: createLanguageRequestInterface[] }>()
 );
 
 export const languageSelectionSuccessAction = createAction(
@@ -101,5 +101,18 @@ export const isLoggedInSuccessAction = createAction(
 
 export const isLoggedInFailureAction = createAction(
   ActionTypes.ISLOGGEDIN_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Logout
+export const logoutAction = createAction(ActionTypes.LOGOUT);
+
+export const logoutSuccessAction = createAction(
+  ActionTypes.LOGOUT_SUCCESS,
+  props<{ payload: null }>()
+);
+
+export const logoutFailureAction = createAction(
+  ActionTypes.LOGOUT_FAILURE,
   props<{ error: ErrorInterface }>()
 );

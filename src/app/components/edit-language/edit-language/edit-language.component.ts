@@ -1,25 +1,29 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
+import { Language } from 'src/app/models/Language';
+
 @Component({
   selector: 'app-edit-language',
   templateUrl: './edit-language.component.html',
   styleUrls: ['./edit-language.component.scss'],
 })
 export class EditLanguageComponent implements OnInit {
-  @Input() languages: any;
+  @Input() languages: Language[] | null = null;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
-  cUserSession: any;
-
-  isLoading: boolean = false;
 
   constructor(private modalCtrl: ModalController) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('languages', this.languages);
+  }
 
-  radioChecked(event, selectedLanguage) {
-    selectedLanguage.level = parseInt(event.detail.value);
-    this.onClick.emit(selectedLanguage);
+  radioChecked(event, item) {
+    let updatedLanguage: Language = {
+      ...item,
+      level: parseInt(event.detail.value),
+    };
+    this.onClick.emit(updatedLanguage);
   }
 
   close() {

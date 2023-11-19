@@ -1,11 +1,35 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { Component, ErrorHandler, OnInit, ViewChild } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { IonModal, ModalController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import {
+  IonModal,
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
+
+// Component and utils Imports
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { UserService } from 'src/app/services/user/user.service';
-import { Subscription } from 'rxjs';
+
+// Interfaces Imports
+import { User } from 'src/app/models/User';
+import { Language } from 'src/app/models/Language';
+import { Account } from 'src/app/models/Account';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+// Actions Imports
+import { getUserAction } from 'src/app/store/actions/user.action';
+import { logoutAction } from 'src/app/store/actions/auth.action';
+
+// Selectors Imports
+import {
+  accountSelector,
+  currentUserSelector,
+  isLoadingSelector,
+  profileErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-profile',
@@ -43,67 +67,68 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
-  cUserSession: any;
-  cUserDoc: any;
+  currentUser$: Observable<User | null> = null;
+  account$: Observable<Account | null> = null;
 
-  isLoading: boolean = false;
-
-  userServiceFn: Function;
-  userDoc$: Subscription;
+  // TODO: Use currentUser directly
+  currentUserId: string | null = null;
+  studyLanguages: Language[] = [];
+  motherLanguages: Language[] = [];
+  gender: string = null;
+  lastSeen: string = null;
+  age: number = null;
+  profilePhoto: URL = null;
+  otherPhotos: URL[] = [];
 
   constructor(
+    private store: Store,
     private router: Router,
-    private authService: AuthService,
-    private userService: UserService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
-    this.getProfileInfo();
-    // TODO: Subscribes may be here better. :92
+    this.initValues();
   }
 
-  ngOnDestroy() {
-    this.userServiceFn(); // Unsubscribe to userService Listener
-    this.userDoc$.unsubscribe(); // Unsubscribe to userDoc
-  }
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.account$ = this.store.pipe(select(accountSelector));
 
-  async getProfileInfo() {
-    //showLoader();
-    this.isLoading = true;
-
-    this.authService
-      .getUser()
-      .subscribe((cUser) => {
-        if (cUser) {
-          console.log(cUser);
-          this.cUserSession = cUser;
-        }
-      })
-      .unsubscribe();
-    // TODO: Unsubscribe may not be necessary to update the user info
-
-    this.userService.getUserDoc(this.cUserSession.$id).then((user) => {
-      this.cUserDoc = user;
-      console.log(user);
+    // Set currentUser
+    this.currentUser$.subscribe((user) => {
+      if (!user) return;
+      this.currentUserId = user.$id;
+      this.studyLanguages = user?.languages.filter(
+        (lang) => !lang.motherLanguage
+      );
+      this.motherLanguages = user?.languages.filter(
+        (lang) => lang.motherLanguage
+      );
+      this.gender =
+        user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
+      this.lastSeen = lastSeen(user?.lastSeen);
+      this.age = getAge(user?.birthdate);
+      this.profilePhoto = user?.profilePhoto;
+      this.otherPhotos = user?.otherPhotos;
     });
 
-    // Listen to user that is logged in
-    // Created 2 Subscriptions
-    this.userServiceFn = this.userService.listenUserDoc(this.cUserSession.$id);
-    this.listenUserDoc();
-
-    //hideLoader();
-    this.isLoading = false;
-  }
-
-  listenUserDoc() {
-    this.userDoc$ = this.userService.getEvent().subscribe((user) => {
-      if (user) {
-        this.cUserDoc = user;
-        console.log('Subscribed user: ', this.cUserDoc);
+    // isLoading
+    this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+      if (isLoading) {
+        this.loadingController(true);
+      } else {
+        this.loadingController(false);
       }
     });
+
+    // profileError Handling
+    this.store
+      .pipe(select(profileErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error && error.message) this.presentToast(error.message, 'danger');
+      });
   }
 
   getAccountPage(page) {
@@ -117,16 +142,7 @@ export class ProfilePage implements OnInit {
   }
 
   async logout() {
-    try {
-      //showLoader();
-      this.isLoading = true;
-      await this.authService.logout();
-      this.router.navigateByUrl('/login', { replaceUrl: true });
-      //hideLoader();
-      this.isLoading = false;
-    } catch (e) {
-      console.log(e);
-    }
+    this.store.dispatch(logoutAction());
   }
 
   editProfile() {
@@ -149,34 +165,64 @@ export class ProfilePage implements OnInit {
     this.modal.dismiss();
   }
 
-  getStudyLanguages() {
-    return this.cUserDoc?.languages.filter((lang) => !lang.motherLanguage);
-  }
+  // lastSeen(d: any) {
+  //   if (!d) return null;
+  //   console.log(d);
+  //   return lastSeen(d);
+  // }
 
-  getMotherLanguage() {
-    return this.cUserDoc?.languages.filter((lang) => lang.motherLanguage);
-  }
-
-  getGender(): string {
-    return (
-      this.cUserDoc?.gender.charAt(0).toUpperCase() +
-      this.cUserDoc?.gender.slice(1)
-    );
-  }
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
-  }
-
-  getAge(d: any) {
-    if (!d) return null;
-    return getAge(d);
-  }
+  // getAge(d: any) {
+  //   if (!d) return null;
+  //   return getAge(d);
+  // }
 
   handleRefresh(event) {
-    this.getProfileInfo();
+    this.store.dispatch(getUserAction({ userId: this.currentUserId }));
+    this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
+  }
+
+  //
+  // Loading Controller
+  //
+
+  loadingOverlay: HTMLIonLoadingElement;
+  isLoadingOverlayActive = false;
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
+        this.isLoadingOverlayActive = true;
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive = false;
+      }
+    } else if (
+      this.loadingOverlay &&
+      this.loadingOverlay.present &&
+      !this.isLoadingOverlayActive
+    ) {
+      this.isLoadingOverlayActive = true;
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive = false;
+    }
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }

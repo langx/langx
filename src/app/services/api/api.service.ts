@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, Databases, Account, Teams, Functions } from 'appwrite';
+import { Client, Databases, Account } from 'appwrite';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,8 +9,6 @@ export class ApiService {
   client: Client = new Client();
   database: Databases;
   account: Account;
-  teams: Teams;
-  functions: Functions;
 
   constructor() {
     this.init();
@@ -23,8 +21,6 @@ export class ApiService {
 
     this.database = new Databases(this.client);
     this.account = new Account(this.client);
-    this.teams = new Teams(this.client);
-    this.functions = new Functions(this.client);
   }
 
   // TODO: check if this is needed, or if we can use directly the this.client

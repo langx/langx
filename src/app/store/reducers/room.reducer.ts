@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
 import { deactivateRoomAction } from '../actions/message.action';
+import { logoutSuccessAction } from '../actions/auth.action';
 import {
   getRoomsAction,
   getRoomsSuccessAction,
@@ -149,7 +150,8 @@ const roomReducer = createReducer(
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      rooms: [action.payload, ...(state.rooms || [])],    })
+      rooms: [action.payload, ...(state.rooms || [])],
+    })
   ),
   on(
     getRoomByIdFailureAction,
@@ -167,7 +169,14 @@ const roomReducer = createReducer(
         room.$id === action.payload.$id ? action.payload : room
       ),
     };
-  })
+  }),
+  // Clear After Logout Success Action
+  on(
+    logoutSuccessAction,
+    (): RoomStateInterface => ({
+      ...initialState,
+    })
+  )
 );
 
 export function roomReducers(state: RoomStateInterface, action: Action) {
