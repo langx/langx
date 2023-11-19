@@ -157,37 +157,21 @@ export class EditPage implements OnInit {
     this.presentToast('At least one profile picture required.', 'danger');
   }
 
-  deleteOtherPhotos(image) {
-    this.presentToast('deleteOtherPhotos', 'danger');
+  async deleteOtherPhotos(image) {
+    const newOtherPhotos = this.currentUser.otherPhotos.filter(
+      (item) => item !== image
+    );
+
+    const request = {
+      userId: this.currentUser?.$id,
+      data: {
+        $id: this.currentUser.$id,
+        otherPhotos: newOtherPhotos,
+      },
+    };
+
+    this.store.dispatch(updateUserAction({ request }));
   }
-
-  // async deleteOtherPhotos(image) {
-  //   this.isLoading = true;
-
-  //   const newOtherPhotos = this.cUserDoc.otherPhotos.filter(
-  //     (item) => item !== image
-  //   );
-
-  //   await this.userService
-  //     .updateUserDoc2(this.currentUser.$id, {
-  //       otherPhotos: newOtherPhotos,
-  //     })
-  //     .then(() => {
-  //       // Update Markup cUserDoc
-  //       this.updateOtherPhotos(newOtherPhotos);
-  //       // DONE: Delete the image from storage
-  //       this.presentToast('Picture removed from Other Photos.');
-  //       this.isLoading = false;
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       this.isLoading = false;
-  //     });
-  // }
-
-  // async updateOtherPhotos(newOtherPhotos) {
-  //   this.cUserDoc.otherPhotos = newOtherPhotos;
-  // }
 
   //
   // Edit About Me
