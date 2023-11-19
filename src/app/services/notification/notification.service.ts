@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, from } from 'rxjs';
 
+// Environment and services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
-import { RoomService } from 'src/app/services/chat/room.service';
-import { MessageService } from 'src/app/services/chat/message.service';
-import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
+
+// Interface Imports
 import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
+import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
+
+// Action Imports
 import {
   findRoomAndAddMessageAction,
   findActiveRoomAndAddMessageAction,
@@ -22,12 +25,7 @@ import {
 export class NotificationService {
   listenerFn: Function;
 
-  constructor(
-    private store: Store,
-    private api: ApiService,
-    private roomService: RoomService,
-    private messageService: MessageService
-  ) {}
+  constructor(private store: Store, private api: ApiService) {}
 
   listen() {
     let channels = [];
@@ -103,24 +101,6 @@ export class NotificationService {
   unsubscribe() {
     if (this.listenerFn) {
       this.listenerFn();
-    }
-  }
-
-  findAndUpdateRoom(message) {
-    const rId = message?.roomId?.$id;
-    let room = this.roomService.rooms.getValue().find((r) => r.$id === rId);
-    if (!room) return;
-    room.messages.push(message);
-    this.roomService.updateRooms(room);
-  }
-
-  findAndUpdateMessages(message) {
-    let messages = this.messageService.messages.getValue();
-    if (messages.length == 0) return;
-    const rId = message?.roomId?.$id;
-    console.log(messages[0]);
-    if (messages[0]?.roomId?.$id === rId) {
-      this.messageService.updateMessages(message);
     }
   }
 
