@@ -165,7 +165,7 @@ export class MessagesPage implements OnInit {
   messageTime(d: any) {
     if (!d) return null;
     let time = lastSeen(d);
-    if (time === 'online') time = 'just now';
+    if (time === 'online') time = 'now';
     return time;
   }
 
