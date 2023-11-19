@@ -103,7 +103,7 @@ const messageReducer = createReducer(
       isLoading: false,
       room: {
         ...state.room,
-        messages: [...state.room.messages, action.payload],
+        // messages: [...state.room.messages, action.payload],
       },
     })
   ),
