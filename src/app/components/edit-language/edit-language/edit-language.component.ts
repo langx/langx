@@ -15,7 +15,7 @@ export class EditLanguageComponent implements OnInit {
   constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    console.log('languages', this.languages);
+    // console.log('languages', this.languages);
   }
 
   radioChecked(event, item) {
