@@ -110,7 +110,7 @@ const messageReducer = createReducer(
   ),
   on(
     createMessageSuccessAction,
-    (state, action): MessageStateInterface => ({
+    (state): MessageStateInterface => ({
       ...state,
       isLoading: false,
     })
