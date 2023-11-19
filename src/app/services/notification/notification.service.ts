@@ -16,7 +16,7 @@ import {
   findRoomAndAddMessageAction,
   findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
-  findAndUpdateMessageSeenAttributeAction,
+  findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 
 @Injectable({
@@ -68,7 +68,7 @@ export class NotificationService {
             console.log('[NOTIFICATION] message updated', response.payload);
             const updatedMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
-              findAndUpdateMessageSeenAttributeAction({
+              findActiveRoomAndUpdateMessageSeenAction({
                 payload: updatedMessage,
               })
             );

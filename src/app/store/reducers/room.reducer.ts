@@ -1,9 +1,12 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
+// Interface Imports
 import { Message } from 'src/app/models/Message';
 import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
-import { deactivateRoomAction } from '../actions/message.action';
-import { logoutSuccessAction } from '../actions/auth.action';
+
+// Action Imports
+import { deactivateRoomAction } from 'src/app/store/actions/message.action';
+import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
 import {
   getRoomsAction,
   getRoomsSuccessAction,
@@ -183,7 +186,7 @@ const roomReducer = createReducer(
     })
   ),
 
-  // Find And Update Room Reducers
+  // Find And Update Room Reducer
   on(findAndUpdateRoomUpdatedAtAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
     const updatedRooms = state.rooms.map((room) =>
@@ -201,7 +204,7 @@ const roomReducer = createReducer(
     return { ...state, rooms: sortedRooms };
   }),
 
-  // Find And Update Room Message Reducers
+  // Find And Update Room Message Reducer
   on(findRoomAndAddMessageAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
     const updatedRooms = state.rooms.map((room) => {
@@ -226,23 +229,6 @@ const roomReducer = createReducer(
     // Return the new state
     return { ...state, rooms: sortedRooms };
   })
-
-  // on(
-  //   findAndUpdateRoomSuccessAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     rooms: [action.payload, ...(state.rooms || [])],
-  //   })
-  // ),
-  // on(
-  //   findAndUpdateRoomFailureAction,
-  //   (state, action): RoomStateInterface => ({
-  //     ...state,
-  //     isLoading: false,
-  //     error: action.error,
-  //   })
-  // )
 );
 
 export function roomReducers(state: RoomStateInterface, action: Action) {

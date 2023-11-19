@@ -5,7 +5,7 @@ import { MessageStateInterface } from 'src/app/models/types/states/messageState.
 import { logoutSuccessAction } from '../actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
-  findAndUpdateMessageSeenAttributeAction,
+  findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
   getRoomByIdAction,
@@ -245,7 +245,7 @@ const messageReducer = createReducer(
     }
   ),
   on(
-    findAndUpdateMessageSeenAttributeAction,
+    findActiveRoomAndUpdateMessageSeenAction,
     (state, action): MessageStateInterface => {
       // Check if there is any room in the state
       if (!state.room) return { ...state };
