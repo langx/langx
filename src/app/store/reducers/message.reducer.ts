@@ -21,6 +21,8 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
+  updateMessageAction,
+  updateMessageSuccessAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -193,6 +195,38 @@ const messageReducer = createReducer(
       // // Return the new state
       // return { ...state, rooms: sortedRooms };
     }
+  ),
+
+  // Update Message Reducers
+  on(
+    updateMessageAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      error: null,
+    })
+  ),
+  // TODO: Only update after notification came not here !
+  on(
+    updateMessageSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room.messages.map((msg) => {
+          if (msg.$id === action.payload.$id) {
+            return { ...msg, ...action.payload };
+          }
+          return msg;
+        }),
+      },
+    })
+  ),
+  on(
+    createMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
   )
 );
 
