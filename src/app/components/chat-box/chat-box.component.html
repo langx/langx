@@ -21,6 +21,8 @@
           {{ chat?.body }}
           <span class="message-time" *ngIf="chat?.$createdAt">
             {{ messageTime(chat?.$createdAt) }}
+            <ion-icon *ngIf="!chat?.seen" name="checkmark-outline"></ion-icon>
+            <ion-icon *ngIf="chat?.seen" name="checkmark-circle-outline"></ion-icon>
           </span>
           <span class="message-time" *ngIf="!chat?.$createdAt">
             <ion-icon name="cloud-upload-outline"></ion-icon>
