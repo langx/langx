@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, combineLatest, map, tap } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { Account } from 'src/app/models/Account';
@@ -50,7 +50,8 @@ export class HomePage implements OnInit {
         map(([isLoadingUser, isLoadingRoom]) => isLoadingUser || isLoadingRoom)
       )
       .subscribe((isLoading) => {
-        this.loadingController(isLoading);
+        // TODO: Take a look here!!!
+        // this.loadingController(isLoading);
       });
   }
 
