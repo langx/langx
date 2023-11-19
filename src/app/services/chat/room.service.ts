@@ -235,45 +235,4 @@ export class RoomService {
       })
     );
   }
-
-  //
-  // TODO: WILL BE DELETED
-  //
-
-  listenRooms() {
-    console.log('listenRooms started');
-    const client = this.api.client$();
-    return client.subscribe(
-      'databases.' +
-        environment.appwrite.APP_DATABASE +
-        '.collections.' +
-        environment.appwrite.ROOMS_COLLECTION +
-        '.documents',
-      (response) => {
-        console.log(response);
-      }
-    );
-  }
-
-  // Update rooms behavior subject
-  async updateRooms(room) {
-    room = await this.fillRoomWithUserData(room, this.cUserId);
-    // room = await this.fillRoomWithLastMessage(room);
-    const currentRooms = this.rooms.getValue();
-    const existingRoom = currentRooms.find((r) => r.$id === room.$id);
-    if (existingRoom) {
-      // Update the existing room item in the array
-      const updatedRooms = currentRooms.map((r) => {
-        if (r === existingRoom) {
-          return room;
-        }
-        return r;
-      });
-      this.rooms.next(updatedRooms);
-    } else {
-      // Add the new room item to the array
-      const newRooms = [...currentRooms, room];
-      this.rooms.next(newRooms);
-    }
-  }
 }
