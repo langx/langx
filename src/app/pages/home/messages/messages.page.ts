@@ -143,8 +143,8 @@ export class MessagesPage implements OnInit {
     console.log('archiveChat clicked', room);
   }
 
-  getBadge(room): number{
-    return null;
+  getBadge(room): number {
+    return room.messages.filter((message) => message.seen === false).length;
   }
   //
   // Utils
