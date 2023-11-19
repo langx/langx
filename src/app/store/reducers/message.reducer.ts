@@ -98,6 +98,12 @@ const messageReducer = createReducer(
     createMessageAction,
     (state): MessageStateInterface => ({
       ...state,
+      // TODO: Here we need to update the room messages
+      // To show user loading icon
+      // room: {
+      //   ...state.room,
+      //   // messages: [...state.room.messages, action.payload],
+      //},
       isLoading: true,
       error: null,
     })
@@ -107,16 +113,18 @@ const messageReducer = createReducer(
     (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,
-      room: {
-        ...state.room,
-        // messages: [...state.room.messages, action.payload],
-      },
     })
   ),
   on(
     createMessageFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
+      // TODO: Here we need to update the room messages
+      // To show user failed icon
+      // room: {
+      //   ...state.room,
+      //   // messages: [...state.room.messages, action.payload],
+      // },
       isLoading: false,
       error: action.error,
     })
