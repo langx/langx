@@ -10,8 +10,8 @@ import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.i
 import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
 import {
-  findAndUpdateActiveRoomMessageAction,
-  findAndUpdateRoomMessageAction,
+  findRoomAndAddMessageAction,
+  findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
 
@@ -59,10 +59,10 @@ export class NotificationService {
             console.log('new message created', response.payload);
             let message = response.payload as MessageExtendedInterface;
             this.store.dispatch(
-              findAndUpdateRoomMessageAction({ payload: message })
+              findRoomAndAddMessageAction({ payload: message })
             );
             this.store.dispatch(
-              findAndUpdateActiveRoomMessageAction({ payload: message })
+              findActiveRoomAndAddMessageAction({ payload: message })
             );
             break;
           case `${messagesCollection}.*.update`:
