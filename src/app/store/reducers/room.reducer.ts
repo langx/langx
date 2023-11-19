@@ -21,6 +21,7 @@ import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
+  findAndUpdateRoomAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {
@@ -176,7 +177,42 @@ const roomReducer = createReducer(
     (): RoomStateInterface => ({
       ...initialState,
     })
-  )
+  ),
+
+  // Find And Update Room Reducers
+  on(findAndUpdateRoomAction, (state, action): RoomStateInterface => {
+    // Create a new array with the updated room
+    const updatedRooms = state.rooms.map((room) =>
+      room.$id === action.payload.$id
+        ? { ...room, $updatedAt: action.payload.$updatedAt }
+        : room
+    );
+
+    // Sort rooms by $updatedAt in descending order
+    const sortedRooms = updatedRooms.sort(
+      (a, b) =>
+        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+    );
+    // Return the new state
+    return { ...state, rooms: sortedRooms };
+  })
+
+  // on(
+  //   findAndUpdateRoomSuccessAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     rooms: [action.payload, ...(state.rooms || [])],
+  //   })
+  // ),
+  // on(
+  //   findAndUpdateRoomFailureAction,
+  //   (state, action): RoomStateInterface => ({
+  //     ...state,
+  //     isLoading: false,
+  //     error: action.error,
+  //   })
+  // )
 );
 
 export function roomReducers(state: RoomStateInterface, action: Action) {

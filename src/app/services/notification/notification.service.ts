@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable, from } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
@@ -6,6 +7,8 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { User } from 'src/app/models/User';
+import { findAndUpdateRoomAction } from 'src/app/store/actions/room.action';
+import { Room } from 'src/app/models/Room';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +17,7 @@ export class NotificationService {
   listenerFn: Function;
 
   constructor(
+    private store: Store,
     private api: ApiService,
     private roomService: RoomService,
     private messageService: MessageService
@@ -63,6 +67,8 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
+            let room = response.payload as Room;
+            this.store.dispatch(findAndUpdateRoomAction({payload: room}));
             // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:

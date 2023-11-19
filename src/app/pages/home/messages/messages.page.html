@@ -39,7 +39,8 @@
               <h2>{{room?.['userData']?.name}}</h2>
               <p>{{getLastMessage(room)?.body}}</p>
             </ion-label>
-            <ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>
+            <!--<ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>-->
+            <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
             <!--
             <ion-note *ngIf="!getLastMessage(room)?.time">
               {{ messageTime(room?.$updatedAt) }}
