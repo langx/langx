@@ -9,17 +9,17 @@ import { Room } from 'src/app/models/Room';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
+import {
+  getRoomsAction,
+  getRoomsWithOffsetAction,
+} from 'src/app/store/actions/rooms.action';
 import {
   isLoadingSelector,
   roomsSelector,
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/room.selector';
-import { activateRoomAction } from 'src/app/store/actions/message.action';
-import {
-  getRoomsAction,
-  getRoomsWithOffsetAction,
-} from 'src/app/store/actions/rooms.action';
 
 @Component({
   selector: 'app-messages',
@@ -143,7 +143,9 @@ export class MessagesPage implements OnInit {
     console.log('archiveChat clicked', room);
   }
 
-  getBadge(room) {}
+  getBadge(room): number{
+    return null;
+  }
   //
   // Utils
   //
