@@ -48,6 +48,9 @@ import {
   updateLanguageSuccessAction,
 } from 'src/app/store/actions/language.action';
 import {
+  uploadOtherPhotosAction,
+  uploadOtherPhotosFailureAction,
+  uploadOtherPhotosSuccessAction,
   uploadProfilePictureAction,
   uploadProfilePictureFailureAction,
   uploadProfilePictureSuccessAction,
@@ -383,6 +386,33 @@ const authReducer = createReducer(
   ),
   on(
     uploadProfilePictureFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  on(
+    uploadOtherPhotosAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    uploadOtherPhotosSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        otherPhotos: action.payload.otherPhotos,
+      },
+    })
+  ),
+  on(
+    uploadOtherPhotosFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,

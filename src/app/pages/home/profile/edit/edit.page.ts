@@ -21,7 +21,10 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 
 // Selector and Action Imports
 import { updateUserAction } from 'src/app/store/actions/user.action';
-import { uploadProfilePictureAction } from 'src/app/store/actions/bucket.action';
+import {
+  uploadOtherPhotosAction,
+  uploadProfilePictureAction,
+} from 'src/app/store/actions/bucket.action';
 import {
   createLanguageAction,
   deleteLanguageAction,
@@ -125,10 +128,21 @@ export class EditPage implements OnInit {
 
           // Upload File
           if (which == 'pp') {
-            this.store.dispatch(uploadProfilePictureAction({ request: file }));
+            this.store.dispatch(
+              uploadProfilePictureAction({
+                request: file,
+                currentUserId: this.currentUser.$id,
+              })
+            );
           }
           if (which == 'other') {
-            // this.store.dispatch(uploadProfilePictureAction({ request: file }));
+            this.store.dispatch(
+              uploadOtherPhotosAction({
+                request: file,
+                currentUserId: this.currentUser.$id,
+                otherPhotos: this.currentUser.otherPhotos,
+              })
+            );
           }
         } else {
           this.presentToast('Image not selected properly.', 'danger');
