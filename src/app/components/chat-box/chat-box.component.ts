@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+
 import { lastSeen } from 'src/app/extras/utils';
+import { Message } from 'src/app/models/Message';
 
 @Component({
   selector: 'app-chat-box',
@@ -7,8 +9,8 @@ import { lastSeen } from 'src/app/extras/utils';
   styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit {
-  @Input() chat: any;
-  @Input() current_user_id: any;
+  @Input() chat: Message;
+  @Input() current_user_id: string;
 
   constructor() {}
 
