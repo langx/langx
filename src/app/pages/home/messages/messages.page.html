@@ -38,12 +38,22 @@
                   />
                 </ion-avatar>
                 <ion-label>
-                  <h2>{{room?.['userData']?.name}}</h2>
+                  <h2>
+                    <small
+                      *ngIf="lastSeen(room?.['userData']?.lastSeen) == 'online'"
+                      >🟢
+                    </small>
+                    {{room?.['userData']?.name}}
+                  </h2>
                   <p>{{getLastMessage(room)?.body}}</p>
                 </ion-label>
                 <!--<ion-note> {{ messageTime(getLastMessage(room)?.time) }} </ion-note>-->
-                <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
-                <!--<ion-badge color="danger">4</ion-badge>-->
+                <ion-badge slot="end" color="danger"
+                  >{{getBadge(room)}}</ion-badge
+                >
+                <div class="metadata-end-wrapper" slot="end">
+                  <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
+                </div>
                 <!--
             <ion-note *ngIf="!getLastMessage(room)?.time">
               {{ messageTime(room?.$updatedAt) }}
