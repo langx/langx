@@ -33,6 +33,7 @@ const initialState: MessageStateInterface = {
 
 const messageReducer = createReducer(
   initialState,
+
   // Get Messages Reducers
   on(
     getMessagesAction,
@@ -117,6 +118,7 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
+
   // Get Room By Id Reducers for only loader & error
   on(
     getRoomByIdAction,
@@ -140,6 +142,39 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
+
+  // Update Message Reducers
+  on(
+    updateMessageAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      error: null,
+    })
+  ),
+  // TODO: Only update after notification came, not here !
+  on(
+    updateMessageSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room.messages.map((msg) => {
+          if (msg.$id === action.payload.$id) {
+            return { ...msg, ...action.payload };
+          }
+          return msg;
+        }),
+      },
+    })
+  ),
+  on(
+    createMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
+  ),
+
   // Activate Room Reducers
   on(
     activateRoomAction,
@@ -155,6 +190,7 @@ const messageReducer = createReducer(
       room: null,
     })
   ),
+
   // Clear After Logout Success Action
   on(
     logoutSuccessAction,
@@ -195,38 +231,6 @@ const messageReducer = createReducer(
       // // Return the new state
       // return { ...state, rooms: sortedRooms };
     }
-  ),
-
-  // Update Message Reducers
-  on(
-    updateMessageAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      error: null,
-    })
-  ),
-  // TODO: Only update after notification came not here !
-  on(
-    updateMessageSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      room: {
-        ...state.room,
-        messages: state.room.messages.map((msg) => {
-          if (msg.$id === action.payload.$id) {
-            return { ...msg, ...action.payload };
-          }
-          return msg;
-        }),
-      },
-    })
-  ),
-  on(
-    createMessageFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      error: action.error,
-    })
   )
 );
 
