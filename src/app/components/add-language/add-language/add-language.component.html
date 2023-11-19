@@ -14,7 +14,7 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
-        *ngIf="!isSubmit"
+        *ngIf="!isShowLevels"
         (click)="next()"
         expand="block"
         size="large"
@@ -25,7 +25,7 @@
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>
       <ion-button
-        *ngIf="isSubmit"
+        *ngIf="isShowLevels"
         (click)="onSubmit()"
         expand="block"
         size="large"
@@ -39,7 +39,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="!isSubmit" class="ion-padding">
+<ion-content *ngIf="!isShowLevels" class="ion-padding">
   <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search"></ion-searchbar>
   <ion-list>
     <ion-radio-group value="start" (ionChange)="changeLang($event)">
@@ -52,21 +52,14 @@
   </ion-list>
   <ion-row>
     <ion-col>
-      <ion-button
-        *ngIf="!isLoading"
-        (click)="next()"
-        color="primary"
-        expand="block"
+      <ion-button (click)="next()" color="primary" expand="block"
         >Next</ion-button
       >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-      </ion-button>
     </ion-col>
   </ion-row>
 </ion-content>
 
-<ion-content *ngIf="isSubmit" class="ion-padding">
+<ion-content *ngIf="isShowLevels" class="ion-padding">
   <ion-card>
     <ion-card-header>
       <ion-card-title>{{ selectedLanguage?.name }}</ion-card-title>
@@ -109,15 +102,8 @@
 
   <ion-row>
     <ion-col>
-      <ion-button
-        *ngIf="!isLoading"
-        (click)="onSubmit()"
-        color="primary"
-        expand="block"
-        >Done</ion-button
-      >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+      <ion-button (click)="onSubmit()" color="primary" expand="block">
+        Done
       </ion-button>
     </ion-col>
   </ion-row>

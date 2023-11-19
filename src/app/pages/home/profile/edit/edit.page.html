@@ -19,7 +19,7 @@
             <ion-card-subtitle>
               <ion-button
                 (click)="selectImage('pp')"
-                [disabled]="isLoading"
+                [disabled]="(isLoading$ | async)"
                 size="small"
               >
                 Edit
@@ -34,7 +34,7 @@
         <ion-item lines="none">
           <ion-thumbnail slot="start">
             <img
-              [src]="cUserDoc?.profilePhoto"
+              [src]="(currentUser$ | async)?.profilePhoto"
               alt="Profile Picture"
               referrerpolicy="no-referrer"
             />
@@ -53,34 +53,35 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>
-        <ion-row>
-          <ion-col>About Me</ion-col>
-          <ion-col>
-            <ion-card-subtitle>
-              <ion-button (click)="saveAboutMe()" size="small">Save</ion-button>
-            </ion-card-subtitle>
-          </ion-col>
-        </ion-row>
-      </ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item lines="none">
-          <ion-textarea
-            (ionInput)="ionInputAboutMe($event)"
-            [autoGrow]="true"
-            [counter]="true"
-            maxlength="500"
-            rows="5"
-            helperText="hobbies, interests, etc."
-            placeholder="You can edit here your profile description."
-            [value]="textAreaValue()"
-          ></ion-textarea>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
+    <form [formGroup]="form" (ngSubmit)="saveAboutMe()">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-row>
+            <ion-col>About Me</ion-col>
+            <ion-col>
+              <ion-card-subtitle>
+                <ion-button type="submit" size="small">Save</ion-button>
+              </ion-card-subtitle>
+            </ion-col>
+          </ion-row>
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item lines="none">
+            <ion-textarea
+              formControlName="aboutMe"
+              [autoGrow]="true"
+              [counter]="true"
+              rows="5"
+              maxlength="500"
+              helperText="hobbies, interests, etc."
+              placeholder="You can edit here your profile description."
+            ></ion-textarea>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </form>
   </ion-card>
 
   <ion-card>
@@ -103,7 +104,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item *ngFor="let lang of getStudyLanguages()">
+        <ion-item *ngFor="let lang of studyLanguages">
           <ion-icon
             *ngIf="lang.level == 1"
             name="battery-dead-outline"
@@ -145,7 +146,7 @@
             <ion-card-subtitle>
               <ion-button
                 (click)="selectImage('other')"
-                [disabled]="isLoading"
+                [disabled]="(isLoading$ | async)"
                 size="small"
               >
                 Add
@@ -158,7 +159,7 @@
     <ion-card-content>
       <!-- TODO: Better design needed here-->
       <ion-list>
-        <ion-item *ngFor="let photo of cUserDoc?.otherPhotos">
+        <ion-item *ngFor="let photo of (currentUser$ | async)?.otherPhotos">
           <ion-thumbnail slot="start">
             <img
               [src]="photo"

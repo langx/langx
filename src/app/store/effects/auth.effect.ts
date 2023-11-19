@@ -19,7 +19,7 @@ import { UserService } from 'src/app/services/user/user.service';
 import { User } from 'src/app/models/User';
 import { LanguageService } from 'src/app/services/user/language.service';
 import { Language } from 'src/app/models/Language';
-import { AddLanguageRequestInterface } from 'src/app/models/types/requests/addLanguageRequest.interface';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import {
   completeRegistrationAction,
@@ -34,6 +34,9 @@ import {
   loginAction,
   loginFailureAction,
   loginSuccessAction,
+  logoutAction,
+  logoutFailureAction,
+  logoutSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -139,8 +142,8 @@ export class AuthEffect {
 
       switchMap(({ request }) => {
         const observables = request.map(
-          (language: AddLanguageRequestInterface) => {
-            return this.languageService.createLanguageDoc2(language);
+          (language: createLanguageRequestInterface) => {
+            return this.languageService.createLanguageDoc(language);
           }
         );
         return forkJoin(observables).pipe(
@@ -165,7 +168,7 @@ export class AuthEffect {
 
       switchMap(({ request, id }) => {
         return this.userService
-          .updateUserDoc2(id, {
+          .updateUserDoc(id, {
             languageArray: request,
           })
           .pipe(
@@ -203,7 +206,7 @@ export class AuthEffect {
       switchMap(() => {
         return this.authService.getAccount().pipe(
           switchMap((account: Account) => {
-            return this.userService.getUserDoc2(account.$id).pipe(
+            return this.userService.getUserDoc(account.$id).pipe(
               map((currentUser: User) => {
                 const payload: isLoggedInResponseInterface = {
                   account: account,
@@ -213,7 +216,8 @@ export class AuthEffect {
               }),
               catchError(() => {
                 const error: ErrorInterface = {
-                  message: 'Registration is not completed yet. Please try again.',
+                  message:
+                    'Registration is not completed yet. Please try again.',
                 };
                 return of(isLoggedInFailureAction({ error }));
               })
@@ -228,6 +232,36 @@ export class AuthEffect {
         );
       })
     )
+  );
+
+  logout$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(logoutAction),
+      switchMap(() => {
+        return this.authService.logout().pipe(
+          map(() => {
+            return logoutSuccessAction({ payload: null });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(logoutFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  redirectAfterLogout$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(logoutSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/login', { replaceUrl: true });
+        })
+      ),
+    { dispatch: false }
   );
 
   constructor(

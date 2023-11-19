@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
+import { logoutSuccessAction } from '../actions/auth.action';
 import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
@@ -148,6 +149,13 @@ const messageReducer = createReducer(
     (state): MessageStateInterface => ({
       ...state,
       room: null,
+    })
+  ),
+  // Clear After Logout Success Action
+  on(
+    logoutSuccessAction,
+    (): MessageStateInterface => ({
+      ...initialState,
     })
   )
 );

@@ -14,6 +14,9 @@ import {
   loginAction,
   loginFailureAction,
   loginSuccessAction,
+  logoutAction,
+  logoutFailureAction,
+  logoutSuccessAction,
   registerAction,
   registerFailureAction,
   registerSuccessAction,
@@ -24,7 +27,34 @@ import {
 import {
   updatePresenceFailureAction,
   updatePresenceSuccessAction,
-} from '../actions/presence.action';
+} from 'src/app/store/actions/presence.action';
+import {
+  getUserAction,
+  getUserFailureAction,
+  getUserSuccessAction,
+  updateUserAction,
+  updateUserFailureAction,
+  updateUserSuccessAction,
+} from 'src/app/store/actions/user.action';
+import {
+  createLanguageAction,
+  createLanguageFailureAction,
+  createLanguageSuccessAction,
+  deleteLanguageAction,
+  deleteLanguageFailureAction,
+  deleteLanguageSuccessAction,
+  updateLanguageAction,
+  updateLanguageFailureAction,
+  updateLanguageSuccessAction,
+} from 'src/app/store/actions/language.action';
+import {
+  uploadOtherPhotosAction,
+  uploadOtherPhotosFailureAction,
+  uploadOtherPhotosSuccessAction,
+  uploadProfilePictureAction,
+  uploadProfilePictureFailureAction,
+  uploadProfilePictureSuccessAction,
+} from 'src/app/store/actions/bucket.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -37,10 +67,13 @@ const initialState: AuthStateInterface = {
   loginValidationError: null,
   unauthorizedError: null,
   presenceError: null,
+  profileError: null,
+  editProfileError: null,
 };
 
 const authReducer = createReducer(
   initialState,
+
   //Login Actions
   on(
     loginAction,
@@ -67,6 +100,7 @@ const authReducer = createReducer(
       loginValidationError: action.error,
     })
   ),
+
   // Register Actions
   on(
     registerAction,
@@ -93,6 +127,7 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
   // Complete Registration Actions
   on(
     completeRegistrationAction,
@@ -168,6 +203,7 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
   // isLoggedIn Actions
   on(
     isLoggedInAction,
@@ -184,6 +220,7 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: true,
       account: action.payload?.account,
+      // TODO: No need here to fill currentUser
       currentUser: action.payload?.currentUser,
     })
   ),
@@ -196,6 +233,193 @@ const authReducer = createReducer(
       unauthorizedError: action.error,
     })
   ),
+
+  // Get User Actions
+  on(
+    getUserAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    getUserSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    getUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      profileError: action.error,
+    })
+  ),
+
+  // Update User Actions
+  on(
+    updateUserAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    updateUserSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    updateUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  // Create Language Actions
+  on(
+    createLanguageAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    createLanguageSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    createLanguageFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  // Update Language Actions
+  on(
+    updateLanguageAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(updateLanguageSuccessAction, (state, action): AuthStateInterface => {
+    const updatedLanguages = state.currentUser.languages.map((language) =>
+      language.$id === action.payload.$id ? action.payload : language
+    );
+
+    return {
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        languages: updatedLanguages,
+      },
+    };
+  }),
+  on(
+    updateLanguageFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  // Delete Language Actions
+  on(
+    deleteLanguageAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    deleteLanguageSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+    })
+  ),
+  on(
+    deleteLanguageFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  // Bucket Actions
+  on(
+    uploadProfilePictureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    uploadProfilePictureSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        profilePhoto: action.payload.profilePhoto,
+      },
+    })
+  ),
+  on(
+    uploadProfilePictureFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
+  on(
+    uploadOtherPhotosAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    uploadOtherPhotosSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        otherPhotos: action.payload.otherPhotos,
+      },
+    })
+  ),
+  on(
+    uploadOtherPhotosFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      editProfileError: action.error,
+    })
+  ),
+
   // Update Presence Actions
   on(
     updatePresenceSuccessAction,
@@ -209,6 +433,29 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       presenceError: action.error,
+    })
+  ),
+
+  // Logout Actions
+  on(
+    logoutAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    logoutSuccessAction,
+    (): AuthStateInterface => ({
+      ...initialState,
+    })
+  ),
+  on(
+    logoutFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      unauthorizedError: action.error,
     })
   )
 );
