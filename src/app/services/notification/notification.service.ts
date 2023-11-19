@@ -12,7 +12,7 @@ import { Room } from 'src/app/models/Room';
 import {
   findAndUpdateRoomMessageAction,
   findAndUpdateRoomUpdatedAtAction,
-} from 'src/app/store/actions/room.action';
+} from 'src/app/store/actions/notification.action';
 
 @Injectable({
   providedIn: 'root',
@@ -57,18 +57,16 @@ export class NotificationService {
           case `${messagesCollection}.*.create`:
             console.log('new message created', response.payload);
             let message = response.payload as MessageExtendedInterface;
-            // message.roomId = response.payload.roomId.$id;
             this.store.dispatch(
               findAndUpdateRoomMessageAction({ payload: message })
             );
-            // this.findAndUpdateRoom(response.payload);
-            // this.findAndUpdateMessages(response.payload);
+            // this.store.dispatch(findAndUpdateActiveRoomMessageAction({ payload: message }));
             break;
           case `${messagesCollection}.*.update`:
-            // console.log('new message updated', response.payload);
+            console.log('new message updated', response.payload);
             break;
           case `${messagesCollection}.*.delete`:
-            // console.log('new message deleted', response.payload);
+            console.log('new message deleted', response.payload);
             break;
           case `${roomsCollection}.*.create`:
             console.log('new room created', response.payload);
@@ -80,7 +78,6 @@ export class NotificationService {
             this.store.dispatch(
               findAndUpdateRoomUpdatedAtAction({ payload: room })
             );
-            // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:
             console.log('new room deleted', response.payload);
