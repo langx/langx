@@ -5,6 +5,7 @@ import { catchError, map, of, switchMap } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { User } from 'src/app/models/User';
 
 import {
   uploadOtherPhotosAction,
@@ -20,12 +21,24 @@ export class BucketEffects {
   uploadProfilePicture$ = createEffect(() =>
     this.actions$.pipe(
       ofType(uploadProfilePictureAction),
-      switchMap(({ request }) => {
+      switchMap(({ request, currentUserId }) => {
         return this.userService.uploadFile(request).pipe(
           map((payload: URL) => {
-            return uploadProfilePictureSuccessAction({ payload });
+            return payload;
           }),
-
+          switchMap((payload) => {
+            return this.userService
+              .updateUserDoc(currentUserId, {
+                profilePhoto: payload,
+              })
+              .pipe(
+                map((userData: User) => {
+                  return uploadProfilePictureSuccessAction({
+                    payload: userData,
+                  });
+                })
+              );
+          }),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,

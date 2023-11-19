@@ -380,7 +380,7 @@ const authReducer = createReducer(
       isLoading: false,
       currentUser: {
         ...state.currentUser,
-        profilePhoto: action.payload,
+        profilePhoto: action.payload.profilePhoto,
       },
     })
   ),

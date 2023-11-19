@@ -12,7 +12,7 @@ export const uploadProfilePictureAction = createAction(
 
 export const uploadProfilePictureSuccessAction = createAction(
   ActionTypes.UPLOAD_PROFILE_PICTURE_SUCCESS,
-  props<{ payload: URL }>()
+  props<{ payload: User }>()
 );
 
 export const uploadProfilePictureFailureAction = createAction(
