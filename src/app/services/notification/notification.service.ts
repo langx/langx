@@ -6,9 +6,13 @@ import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { RoomService } from 'src/app/services/chat/room.service';
 import { MessageService } from 'src/app/services/chat/message.service';
+import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
 import { User } from 'src/app/models/User';
-import { findAndUpdateRoomAction } from 'src/app/store/actions/room.action';
 import { Room } from 'src/app/models/Room';
+import {
+  findAndUpdateRoomMessageAction,
+  findAndUpdateRoomUpdatedAtAction,
+} from 'src/app/store/actions/room.action';
 
 @Injectable({
   providedIn: 'root',
@@ -52,6 +56,11 @@ export class NotificationService {
         switch (event) {
           case `${messagesCollection}.*.create`:
             console.log('new message created', response.payload);
+            let message = response.payload as MessageExtendedInterface;
+            // message.roomId = response.payload.roomId.$id;
+            this.store.dispatch(
+              findAndUpdateRoomMessageAction({ payload: message })
+            );
             // this.findAndUpdateRoom(response.payload);
             // this.findAndUpdateMessages(response.payload);
             break;
@@ -68,7 +77,9 @@ export class NotificationService {
           case `${roomsCollection}.*.update`:
             console.log('new room updated', response.payload);
             let room = response.payload as Room;
-            this.store.dispatch(findAndUpdateRoomAction({payload: room}));
+            this.store.dispatch(
+              findAndUpdateRoomUpdatedAtAction({ payload: room })
+            );
             // this.roomService.updateRooms(response.payload);
             break;
           case `${roomsCollection}.*.delete`:

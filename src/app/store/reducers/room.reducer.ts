@@ -1,5 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
+import { Message } from 'src/app/models/Message';
 import { RoomStateInterface } from 'src/app/models/types/states/roomState.interface';
 import { deactivateRoomAction } from '../actions/message.action';
 import { logoutSuccessAction } from '../actions/auth.action';
@@ -21,7 +22,8 @@ import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
-  findAndUpdateRoomAction,
+  findAndUpdateRoomUpdatedAtAction,
+  findAndUpdateRoomMessageAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: RoomStateInterface = {
@@ -180,13 +182,38 @@ const roomReducer = createReducer(
   ),
 
   // Find And Update Room Reducers
-  on(findAndUpdateRoomAction, (state, action): RoomStateInterface => {
+  on(findAndUpdateRoomUpdatedAtAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
     const updatedRooms = state.rooms.map((room) =>
       room.$id === action.payload.$id
         ? { ...room, $updatedAt: action.payload.$updatedAt }
         : room
     );
+
+    // Sort rooms by $updatedAt in descending order
+    const sortedRooms = updatedRooms.sort(
+      (a, b) =>
+        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+    );
+    // Return the new state
+    return { ...state, rooms: sortedRooms };
+  }),
+  on(findAndUpdateRoomMessageAction, (state, action): RoomStateInterface => {
+    console.log('findAndUpdateRoomMessageAction', action.payload);
+    // Create a new array with the updated room
+    const updatedRooms = state.rooms.map((room) => {
+      const payload: Message = {
+        ...action.payload,
+        roomId: action.payload.roomId.$id,
+      };
+
+      return room.$id === action.payload.roomId.$id
+        ? {
+            ...room,
+            messages: [...(room.messages || []), payload],
+          }
+        : room;
+    });
 
     // Sort rooms by $updatedAt in descending order
     const sortedRooms = updatedRooms.sort(
