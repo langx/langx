@@ -75,8 +75,6 @@ export class ProfilePage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
-  lastSeen: string = null;
-  age: number = null;
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
 
@@ -98,8 +96,7 @@ export class ProfilePage implements OnInit {
 
     // Set currentUser
     this.currentUser$.subscribe((user) => {
-      if (!user) return;
-      this.currentUserId = user.$id;
+      this.currentUserId = user?.$id;
       this.studyLanguages = user?.languages.filter(
         (lang) => !lang.motherLanguage
       );
@@ -108,8 +105,6 @@ export class ProfilePage implements OnInit {
       );
       this.gender =
         user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-      this.lastSeen = lastSeen(user?.lastSeen);
-      this.age = getAge(user?.birthdate);
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
     });
@@ -209,6 +204,20 @@ export class ProfilePage implements OnInit {
       this.loadingOverlay = undefined;
       this.isLoadingOverlayActive = false;
     }
+  }
+
+  //
+  // Utils
+  //
+
+  lastSeen(d: any) {
+    if (!d) return null;
+    return lastSeen(d);
+  }
+
+  getAge(d: any) {
+    if (!d) return null;
+    return getAge(d);
   }
 
   //

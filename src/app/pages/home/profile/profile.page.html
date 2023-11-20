@@ -42,12 +42,18 @@
         {{(account$ | async)?.name}}
       </ion-card-title>
       <ion-card-subtitle>
-        {{age}} | {{gender}} | {{(currentUser$ | async)?.country}}
+        {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} |
+        {{(currentUser$ | async)?.country}}
       </ion-card-subtitle>
-      <ion-card-subtitle *ngIf="lastSeen != 'online'">
-        Active in {{lastSeen}} ago
+      <ion-card-subtitle
+        *ngIf="lastSeen((currentUser$ | async)?.lastSeen) != 'online'"
+      >
+        Active in {{lastSeen((currentUser$ | async)?.lastSeen)}} ago
       </ion-card-subtitle>
-      <ion-card-subtitle *ngIf="lastSeen === 'online'" color="primary">
+      <ion-card-subtitle
+        *ngIf="lastSeen((currentUser$ | async)?.lastSeen) === 'online'"
+        color="primary"
+      >
         Online
       </ion-card-subtitle>
     </ion-card-header>
@@ -146,9 +152,7 @@
         keyboard="true"
         mousewheel="true"
       >
-        <swiper-slide
-          *ngFor="let photo of otherPhotos; let i = index"
-        >
+        <swiper-slide *ngFor="let photo of otherPhotos; let i = index">
           <!-- TODO: Test this following zoom feature on mobile-->
           <div class="swiper-zoom-container">
             <img
