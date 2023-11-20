@@ -42,7 +42,6 @@ const initialState: RoomStateInterface = {
   totalUnseen: 0,
   error: null,
   rooms: null,
-  activeRoom: null,
 };
 
 const roomReducer = createReducer(
@@ -106,7 +105,6 @@ const roomReducer = createReducer(
       ...state,
       isLoading: true,
       error: null,
-      activeRoom: null,
     })
   ),
   on(
