@@ -5,4 +5,7 @@ export enum ActionTypes {
   UPDATE_CURRENT_USER = '[User] Update Current User',
   UPDATE_CURRENT_USER_SUCCESS = '[User] Update Current User Success',
   UPDATE_CURRENT_USER_FAILURE = '[User] Update Current User Failure',
+  GET_USER_BY_ID = '[User] Get User',
+  GET_USER_BY_ID_SUCCESS = '[User] Get User Success',
+  GET_USER_BY_ID_FAILURE = '[User] Get User Failure',
 }
