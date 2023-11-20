@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable, from } from 'rxjs';
 
 // Environment and services Imports
@@ -17,7 +17,9 @@ import {
   findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
   findActiveRoomAndUpdateMessageSeenAction,
+  findOrAddRoomAction,
 } from 'src/app/store/actions/notification.action';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -78,6 +80,19 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.create`:
             console.log('[NOTIFICATION] room created', response.payload);
+            const createdRoom = response.payload as Room;
+
+            this.store
+              .pipe(select(currentUserSelector))
+              .subscribe((user) => {
+                this.store.dispatch(
+                  findOrAddRoomAction({
+                    payload: createdRoom,
+                    currentUserId: user.$id,
+                  })
+                );
+              })
+              .unsubscribe();
             break;
           case `${roomsCollection}.*.update`:
             console.log('[NOTIFICATION] room updated', response.payload);
