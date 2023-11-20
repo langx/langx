@@ -2,9 +2,8 @@ import { throwIfMissing, sendPushNotification } from './utils.js';
 
 import { Client, Users, Databases } from 'node-appwrite';
 
-// Test Data with 11 Pro Simulator
-// {"deviceToken":"deR53P4J8EfejYGytvEcPA:APA91bGsYbpHZewq6WuYPGrw2HhJvg9imL__2c0YSPFkKXRJSLklzYWlR9VP7-6LXoIKl47wjPn5YTE4BXKGWW3h1eZ9Fw_BS7nKqYnbOgk0i7d2sG31djhISxXgjErbcxqeijbqQjHZ", "message":"Hello World"}
-// event trigger: databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7
+// Event trigger:
+// databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create
 
 export default async ({ req, res, log, error }) => {
   try {
@@ -53,7 +52,7 @@ export default async ({ req, res, log, error }) => {
 
   try {
     log(toUserDoc);
-    throwIfMissing(toUserDoc, ['lastSeen', 'name']);
+    throwIfMissing(toUserDoc, ['lastSeen', 'name', 'totalUnseen']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
@@ -80,7 +79,7 @@ export default async ({ req, res, log, error }) => {
       apns: {
         payload: {
           aps: {
-            badge: 1,
+            badge: toUserDoc.totalUnseen + 1,
             sound: 'bingbong.aiff',
           },
         },
