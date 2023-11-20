@@ -32,7 +32,8 @@ import {
   findOrAddRoomAction,
   findOrAddRoomSuccessAction,
   findOrAddRoomFailureAction,
-  totalUnseenMessagesAction,
+  totalUnseenMessagesSuccessAction,
+  findRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 
 const initialState: RoomStateInterface = {
@@ -194,14 +195,14 @@ const roomReducer = createReducer(
   // Find And Update Room Reducer
   on(findAndUpdateRoomUpdatedAtAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
-    const updatedRooms = state.rooms.map((room) =>
+    const updatedRooms = state.rooms?.map((room) =>
       room.$id === action.payload.$id
         ? { ...room, $updatedAt: action.payload.$updatedAt }
         : room
     );
 
     // Sort rooms by $updatedAt in descending order
-    const sortedRooms = updatedRooms.sort(
+    const sortedRooms = updatedRooms?.sort(
       (a, b) =>
         new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
     );
@@ -212,7 +213,7 @@ const roomReducer = createReducer(
   // Find And Update Room Message Reducer
   on(findRoomAndAddMessageAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
-    const updatedRooms = state.rooms.map((room) => {
+    const updatedRooms = state.rooms?.map((room) => {
       const payload: Message = {
         ...action.payload,
         roomId: action.payload.roomId.$id,
@@ -227,7 +228,7 @@ const roomReducer = createReducer(
     });
 
     // Sort rooms by $updatedAt in descending order
-    const sortedRooms = updatedRooms.sort(
+    const sortedRooms = updatedRooms?.sort(
       (a, b) =>
         new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
     );
@@ -235,10 +236,40 @@ const roomReducer = createReducer(
     return { ...state, rooms: sortedRooms };
   }),
 
+  // Find And Update Room Message Seen Reducer
+  on(
+    findRoomAndUpdateMessageSeenAction,
+    (state, action): RoomStateInterface => {
+      // Create a new array with the updated room
+      const updatedRooms = state.rooms?.map((room) => {
+        const updatedMessages = room.messages?.map((message) =>
+          message.$id === action.payload.$id
+            ? { ...message, seen: true }
+            : message
+        );
+
+        return room.$id === action.payload.roomId.$id
+          ? {
+              ...room,
+              messages: updatedMessages,
+            }
+          : room;
+      });
+
+      // Sort rooms by $updatedAt in descending order
+      const sortedRooms = updatedRooms?.sort(
+        (a, b) =>
+          new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+      );
+      // Return the new state
+      return { ...state, rooms: sortedRooms };
+    }
+  ),
+
   // Find Or Add Room Reducer
   on(
     findOrAddRoomAction,
-    (state, action): RoomStateInterface => ({
+    (state): RoomStateInterface => ({
       ...state,
       isLoading: true,
       error: null,
@@ -280,7 +311,7 @@ const roomReducer = createReducer(
 
   // Total Unseen Messages Reducer
   on(
-    totalUnseenMessagesAction,
+    totalUnseenMessagesSuccessAction,
     (state, action): RoomStateInterface => ({
       ...state,
       totalUnseen: action.payload,
