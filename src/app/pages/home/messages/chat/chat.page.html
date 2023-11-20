@@ -2,6 +2,13 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/messages"></ion-back-button>
+      <ion-avatar
+        (click)="goProfile(user.$id)"
+        style="width: 40px; height: 40px"
+        class="ion-margin-start"
+      >
+        <img [src]="(user$ | async)?.profilePhoto" />
+      </ion-avatar>
     </ion-buttons>
 
     <ion-buttons slot="end">
@@ -9,13 +16,6 @@
         <ion-icon slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-avatar
-      (click)="goProfile(user.$id)"
-      style="width: 40px; height: 40px"
-      class="ion-margin-horizontal"
-    >
-      <img [src]="(user$ | async)?.profilePhoto" />
-    </ion-avatar>
     <ion-title (click)="goProfile(user.$id)">
       {{(user$ | async)?.name}}
     </ion-title>
