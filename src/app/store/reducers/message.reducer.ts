@@ -221,6 +221,13 @@ const messageReducer = createReducer(
       // Check if the message belongs to the active room
       if (state.room.$id !== action.payload.roomId.$id) return { ...state };
 
+      // Check if the message already exists in the room
+      if (
+        state.room.messages &&
+        state.room.messages.some((msg) => msg.$id === action.payload.$id)
+      )
+        return { ...state };
+
       // Return the new state
       const payload: Message = {
         ...action.payload,
