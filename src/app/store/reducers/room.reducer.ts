@@ -32,20 +32,19 @@ import {
   findOrAddRoomAction,
   findOrAddRoomSuccessAction,
   findOrAddRoomFailureAction,
-  totalUnseenMessagesSuccessAction,
   findRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 
 const initialState: RoomStateInterface = {
   isLoading: false,
   total: null,
-  totalUnseen: 0,
   error: null,
   rooms: null,
 };
 
 const roomReducer = createReducer(
   initialState,
+
   // Get Rooms Reducers
   on(
     getRoomsAction,
@@ -304,15 +303,6 @@ const roomReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
-    })
-  ),
-
-  // Total Unseen Messages Reducer
-  on(
-    totalUnseenMessagesSuccessAction,
-    (state, action): RoomStateInterface => ({
-      ...state,
-      totalUnseen: action.payload,
     })
   )
 );
