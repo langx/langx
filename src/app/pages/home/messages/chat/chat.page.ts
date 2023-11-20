@@ -116,7 +116,8 @@ export class ChatPage implements OnInit {
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
-      this.loadingController(isLoading);
+      // TODO: #258 Loading Controller is frozen
+      // this.loadingController(isLoading);
     });
 
     // Present Toast if error
