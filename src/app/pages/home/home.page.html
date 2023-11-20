@@ -3,6 +3,9 @@
     <ion-tab-button tab="messages">
       <ion-icon aria-hidden="true" name="chatbubbles-outline"></ion-icon>
       <ion-label>Messages</ion-label>
+      <ion-badge color="danger" *ngIf="(totalUnseen$ | async) !== 0">
+        {{(totalUnseen$ | async)}}
+      </ion-badge>
     </ion-tab-button>
     <ion-tab-button tab="community">
       <ion-icon aria-hidden="true" name="compass-outline"></ion-icon>

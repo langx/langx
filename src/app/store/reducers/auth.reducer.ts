@@ -1,6 +1,7 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { AuthStateInterface } from 'src/app/models/types/states/authState.interface';
+import { totalUnseenMessagesSuccessAction } from 'src/app/store/actions/notification.action';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
@@ -417,6 +418,18 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       editProfileError: action.error,
+    })
+  ),
+
+  // Total Unseen Messages Reducer
+  on(
+    totalUnseenMessagesSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      currentUser: {
+        ...state.currentUser,
+        totalUnseen: action.payload,
+      },
     })
   ),
 

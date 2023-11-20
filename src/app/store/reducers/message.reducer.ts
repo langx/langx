@@ -5,7 +5,7 @@ import { MessageStateInterface } from 'src/app/models/types/states/messageState.
 import { logoutSuccessAction } from '../actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
-  findAndUpdateMessageSeenAttributeAction,
+  findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
   getRoomByIdAction,
@@ -221,6 +221,13 @@ const messageReducer = createReducer(
       // Check if the message belongs to the active room
       if (state.room.$id !== action.payload.roomId.$id) return { ...state };
 
+      // Check if the message already exists in the room
+      if (
+        state.room.messages &&
+        state.room.messages.some((msg) => msg.$id === action.payload.$id)
+      )
+        return { ...state };
+
       // Return the new state
       const payload: Message = {
         ...action.payload,
@@ -245,7 +252,7 @@ const messageReducer = createReducer(
     }
   ),
   on(
-    findAndUpdateMessageSeenAttributeAction,
+    findActiveRoomAndUpdateMessageSeenAction,
     (state, action): MessageStateInterface => {
       // Check if there is any room in the state
       if (!state.room) return { ...state };
