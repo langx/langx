@@ -57,5 +57,5 @@ export const editProfileErrorSelector = createSelector(
 
 export const totalUnseenSelector = createSelector(
   authFeatureSelector,
-  (authState: AuthStateInterface) => authState.currentUser.totalUnseen
+  (authState: AuthStateInterface) => authState.currentUser?.totalUnseen
 );
