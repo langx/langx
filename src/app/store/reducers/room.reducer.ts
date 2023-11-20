@@ -252,10 +252,19 @@ const roomReducer = createReducer(
     if (roomExists) return { ...state };
 
     // If the room doesn't exist, add the room to the state
+    const updatedRooms = [action.payload, ...(state.rooms || [])];
+
+    // Sort rooms by $updatedAt in descending order
+    const sortedRooms = updatedRooms.sort(
+      (a, b) =>
+        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+    );
+
+    // If the room doesn't exist, add the room to the state
     return {
       ...state,
       isLoading: false,
-      rooms: [action.payload, ...(state.rooms || [])],
+      rooms: sortedRooms,
     };
   }),
   on(
