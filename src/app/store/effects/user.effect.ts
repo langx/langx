@@ -11,6 +11,9 @@ import {
   getCurrentUserAction,
   getCurrentUserFailureAction,
   getCurrentUserSuccessAction,
+  getUserByIdAction,
+  getUserByIdFailureAction,
+  getUserByIdSuccessAction,
   updateCurrentUserAction,
   updateCurrentUserFailureAction,
   updateCurrentUserSuccessAction,
@@ -52,6 +55,24 @@ export class UserEffects {
               return of(updateCurrentUserFailureAction({ error }));
             })
           );
+      })
+    )
+  );
+
+  getUserById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUserByIdAction),
+      switchMap(({ userId }) => {
+        return this.userService.getUserDoc(userId).pipe(
+          map((payload: User) => getUserByIdSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getUserByIdFailureAction({ error }));
+          })
+        );
       })
     )
   );
