@@ -1,21 +1,42 @@
 {
-  "projectId": "650750d21e4a6a589be3",
-  "projectName": "languageXchange",
-  "functions": [
-    {
-      "$id": "push-notification-with-fcm",
-      "name": "push-notification-with-fcm",
-      "runtime": "node-18.0",
-      "execute": [],
-      "events": [],
-      "schedule": "",
-      "timeout": 15,
-      "enabled": true,
-      "logging": true,
-      "entrypoint": "src/main.js",
-      "commands": "npm install",
-      "ignore": ["node_modules", ".npm"],
-      "path": "functions/push-notification-with-fcm"
-    }
-  ]
+    "projectId": "650750d21e4a6a589be3",
+    "projectName": "languageXchange",
+    "functions": [
+        {
+            "$id": "push-notification-with-fcm",
+            "name": "push-notification-with-fcm",
+            "runtime": "node-18.0",
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "path": "functions/push-notification-with-fcm"
+        },
+        {
+            "$id": "total-unseen",
+            "name": "total-unseen",
+            "runtime": "node-18.0",
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "src/main.js",
+            "commands": "npm install",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "path": "functions/total-unseen"
+        }
+    ]
 }
