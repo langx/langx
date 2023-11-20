@@ -49,7 +49,6 @@ export class UserService {
     queries.push(Query.notEqual('$id', currentUserId));
 
     // Query for users descending by last seen
-    // TODO: Update this filter for this after presence is implemented
     queries.push(Query.orderDesc('$updatedAt'));
 
     // Query for users with the selected gender filter
