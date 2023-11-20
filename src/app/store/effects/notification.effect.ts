@@ -2,17 +2,30 @@ import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
-import { RoomService } from 'src/app/services/chat/room.service';
+// Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
-import { roomsSelector } from '../selectors/room.selector';
+// Service Imports
+import { RoomService } from 'src/app/services/chat/room.service';
+
+// Selector Imports
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+
+// Action Imports
 import {
   findOrAddRoomAction,
   findOrAddRoomFailureAction,
   findOrAddRoomSuccessAction,
+  totalUnseenMessagesAction,
+  totalUnseenMessagesSuccessAction,
 } from 'src/app/store/actions/notification.action';
+import {
+  getRoomsSuccessAction,
+  getRoomsWithOffsetSuccessAction,
+} from 'src/app/store/actions/rooms.action';
 
 @Injectable()
 export class NotificationEffects {
@@ -38,6 +51,36 @@ export class NotificationEffects {
             return of(findOrAddRoomFailureAction({ error }));
           })
         );
+      })
+    )
+  );
+
+  totalUnseenMessages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(
+        totalUnseenMessagesAction,
+        getRoomsSuccessAction,
+        getRoomsWithOffsetSuccessAction
+      ),
+      withLatestFrom(
+        this.store.pipe(select(currentUserSelector)),
+        this.store.pipe(select(roomsSelector))
+      ),
+      map(([action, currentUser, rooms]) => {
+        // Calculate the total number of unseen messages
+        const totalUnseenMessages = rooms?.reduce((count, room) => {
+          const unseenMessagesInRoom = room.messages.reduce(
+            (count, message) =>
+              count +
+              (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
+            0
+          );
+          return count + unseenMessagesInRoom;
+        }, 0);
+
+        return totalUnseenMessagesSuccessAction({
+          payload: totalUnseenMessages,
+        });
       })
     )
   );

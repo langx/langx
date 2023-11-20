@@ -11,6 +11,9 @@ import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
 import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
 
+// Selector Imports
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+
 // Action Imports
 import {
   findRoomAndAddMessageAction,
@@ -19,8 +22,8 @@ import {
   findActiveRoomAndUpdateMessageSeenAction,
   findOrAddRoomAction,
   totalUnseenMessagesAction,
+  findRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Injectable({
   providedIn: 'root',
@@ -67,16 +70,23 @@ export class NotificationService {
               findActiveRoomAndAddMessageAction({ payload: createdMessage })
             );
             // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction({ payload: 1 }));
+            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
             console.log('[NOTIFICATION] message updated', response.payload);
             const updatedMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
+              findRoomAndUpdateMessageSeenAction({
+                payload: updatedMessage,
+              })
+            );
+            this.store.dispatch(
               findActiveRoomAndUpdateMessageSeenAction({
                 payload: updatedMessage,
               })
             );
+            // Dispatch the badge counter action for tab messages
+            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.delete`:
             console.log('[NOTIFICATION] message deleted', response.payload);
