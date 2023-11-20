@@ -8,11 +8,6 @@ import {
   findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
-  getRoomByIdAction,
-  getRoomByIdFailureAction,
-  getRoomByIdSuccessAction,
-} from 'src/app/store/actions/room.action';
-import {
   activateRoomAction,
   deactivateRoomAction,
   createMessageAction,
@@ -126,30 +121,6 @@ const messageReducer = createReducer(
       //   ...state.room,
       //   // messages: [...state.room.messages, action.payload],
       // },
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-
-  // Get Room By Id Reducers for only loader & error
-  on(
-    getRoomByIdAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: true,
-    })
-  ),
-  on(
-    getRoomByIdSuccessAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-    })
-  ),
-  on(
-    getRoomByIdFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
       isLoading: false,
       error: action.error,
     })
