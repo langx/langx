@@ -40,6 +40,10 @@ const routes: Routes = [
       import('./messages/chat/chat.module').then((m) => m.ChatPageModule),
   },
   {
+    path: 'chat',
+    redirectTo: 'messages',
+  },
+  {
     path: 'filters',
     loadChildren: () =>
       import('./community/filters/filters.module').then(
@@ -50,6 +54,10 @@ const routes: Routes = [
     path: 'user/:id',
     loadChildren: () =>
       import('./user/user.module').then((m) => m.UserPageModule),
+  },
+  {
+    path: 'user',
+    redirectTo: 'community',
   },
   {
     path: 'profile/edit',
