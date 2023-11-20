@@ -68,15 +68,17 @@ export class NotificationEffects {
       ),
       map(([action, currentUser, rooms]) => {
         // Calculate the total number of unseen messages
-        const totalUnseenMessages = rooms?.reduce((count, room) => {
-          const unseenMessagesInRoom = room.messages.reduce(
-            (count, message) =>
-              count +
-              (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
-            0
-          );
-          return count + unseenMessagesInRoom;
-        }, 0);
+        const totalUnseenMessages = rooms
+          ? rooms.reduce((count, room) => {
+              const unseenMessagesInRoom = room.messages.reduce(
+                (count, message) =>
+                  count +
+                  (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
+                0
+              );
+              return count + unseenMessagesInRoom;
+            }, 0)
+          : currentUser.totalUnseen;
 
         return totalUnseenMessagesSuccessAction({
           payload: totalUnseenMessages,
