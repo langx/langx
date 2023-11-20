@@ -5,10 +5,13 @@ import { Observable, combineLatest, map, tap } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { Account } from 'src/app/models/Account';
-import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
-import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { updatePresenceAction } from 'src/app/store/actions/presence.action';
+import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
+import {
+  isLoadingSelector as isLoadingRoom,
+  totalUnseenSelector,
+} from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +23,7 @@ export class HomePage implements OnInit {
   isLoadingOverlayActive = false;
   refreshIntervalId: any;
 
+  totalUnseen$: Observable<number>;
   currentUser$: Observable<Account>;
 
   constructor(
@@ -40,7 +44,9 @@ export class HomePage implements OnInit {
   }
 
   initValues() {
+    this.totalUnseen$ = this.store.pipe(select(totalUnseenSelector));
     this.currentUser$ = this.store.pipe(select(accountSelector));
+
     // Loading Controller
     combineLatest([
       this.store.pipe(select(isLoadingUser)),

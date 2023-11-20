@@ -40,3 +40,8 @@ export const findActiveRoomAndUpdateMessageSeenAction = createAction(
   ActionTypes.FIND_ACTIVE_ROOM_AND_UPDATE_MESSAGE_SEEN,
   props<{ payload: MessageExtendedInterface }>()
 );
+
+export const totalUnseenMessagesAction = createAction(
+  ActionTypes.TOTAL_UNSEEN_MESSAGES,
+  props<{ payload: number }>()
+);
