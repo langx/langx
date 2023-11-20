@@ -30,12 +30,12 @@ import {
   updatePresenceSuccessAction,
 } from 'src/app/store/actions/presence.action';
 import {
-  getUserAction,
-  getUserFailureAction,
-  getUserSuccessAction,
-  updateUserAction,
-  updateUserFailureAction,
-  updateUserSuccessAction,
+  getCurrentUserAction,
+  getCurrentUserFailureAction,
+  getCurrentUserSuccessAction,
+  updateCurrentUserAction,
+  updateCurrentUserFailureAction,
+  updateCurrentUserSuccessAction,
 } from 'src/app/store/actions/user.action';
 import {
   createLanguageAction,
@@ -237,14 +237,14 @@ const authReducer = createReducer(
 
   // Get User Actions
   on(
-    getUserAction,
+    getCurrentUserAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
     })
   ),
   on(
-    getUserSuccessAction,
+    getCurrentUserSuccessAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
@@ -252,7 +252,7 @@ const authReducer = createReducer(
     })
   ),
   on(
-    getUserFailureAction,
+    getCurrentUserFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
@@ -262,14 +262,14 @@ const authReducer = createReducer(
 
   // Update User Actions
   on(
-    updateUserAction,
+    updateCurrentUserAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
     })
   ),
   on(
-    updateUserSuccessAction,
+    updateCurrentUserSuccessAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
@@ -277,7 +277,7 @@ const authReducer = createReducer(
     })
   ),
   on(
-    updateUserFailureAction,
+    updateCurrentUserFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,

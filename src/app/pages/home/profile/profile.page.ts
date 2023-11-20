@@ -20,7 +20,7 @@ import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 // Actions Imports
-import { getUserAction } from 'src/app/store/actions/user.action';
+import { getCurrentUserAction } from 'src/app/store/actions/user.action';
 import { logoutAction } from 'src/app/store/actions/auth.action';
 
 // Selectors Imports
@@ -177,7 +177,7 @@ export class ProfilePage implements OnInit {
   // }
 
   handleRefresh(event) {
-    this.store.dispatch(getUserAction({ userId: this.currentUserId }));
+    this.store.dispatch(getCurrentUserAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
