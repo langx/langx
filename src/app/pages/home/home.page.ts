@@ -50,7 +50,7 @@ export class HomePage implements OnInit {
         map(([isLoadingUser, isLoadingRoom]) => isLoadingUser || isLoadingRoom)
       )
       .subscribe((isLoading) => {
-        // TODO: Take a look here!!!
+        // TODO: #258 Loading Controller is frozen
         // this.loadingController(isLoading);
       });
   }
