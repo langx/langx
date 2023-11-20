@@ -10,12 +10,18 @@ import {
   getUsersWithOffsetSuccessAction,
   getUsersWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
+import {
+  getUserByIdAction,
+  getUserByIdFailureAction,
+  getUserByIdSuccessAction,
+} from 'src/app/store/actions/user.action';
 
 const initialState: UserStateInterface = {
   isLoading: false,
   total: null,
   users: null,
   error: null,
+  user: null,
 };
 
 const userReducer = createReducer(
@@ -64,6 +70,32 @@ const userReducer = createReducer(
   ),
   on(
     getUsersWithOffsetFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
+  // Get User By Id Reducers
+  on(
+    getUserByIdAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getUserByIdSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      user: action.payload,
+    })
+  ),
+  on(
+    getUserByIdFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,

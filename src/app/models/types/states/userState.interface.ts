@@ -5,5 +5,6 @@ export interface UserStateInterface {
   isLoading: boolean;
   total: number;
   users: User[] | null;
+  user: User | null;
   error: ErrorInterface | null;
 }
