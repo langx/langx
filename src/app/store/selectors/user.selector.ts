@@ -24,3 +24,8 @@ export const errorSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.error
 );
+
+export const userSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.user
+);
