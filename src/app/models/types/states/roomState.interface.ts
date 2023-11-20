@@ -7,5 +7,4 @@ export interface RoomStateInterface {
   totalUnseen: number;
   error: ErrorInterface | null;
   rooms: RoomExtendedInterface[] | null;
-  activeRoom: RoomExtendedInterface | null;
 }
