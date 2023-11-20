@@ -44,8 +44,8 @@ export class HomePage implements OnInit {
   }
 
   initValues() {
-    this.totalUnseen$ = this.store.pipe(select(totalUnseenSelector));
     this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.totalUnseen$ = this.store.pipe(select(totalUnseenSelector));
 
     // Loading Controller
     combineLatest([
