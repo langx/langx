@@ -6,4 +6,5 @@ export enum ActionTypes {
   FIND_ROOM_AND_ADD_MESSAGE = '[Notification] Find Room And Add Message',
   FIND_ACTIVE_ROOM_AND_ADD_MESSAGE = '[Notification] Find Active Room And Add Message',
   FIND_ACTIVE_ROOM_AND_UPDATE_MESSAGE_SEEN = '[Notification] Find Active Room And Update Message Seen',
+  TOTAL_UNSEEN_MESSAGES = '[Notification] Total Unseen Messages',
 }

@@ -18,6 +18,7 @@ import {
   findAndUpdateRoomUpdatedAtAction,
   findActiveRoomAndUpdateMessageSeenAction,
   findOrAddRoomAction,
+  totalUnseenMessagesAction,
 } from 'src/app/store/actions/notification.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
@@ -65,6 +66,8 @@ export class NotificationService {
             this.store.dispatch(
               findActiveRoomAndAddMessageAction({ payload: createdMessage })
             );
+            // Dispatch the badge counter action for tab messages
+            this.store.dispatch(totalUnseenMessagesAction({ payload: 1 }));
             break;
           case `${messagesCollection}.*.update`:
             console.log('[NOTIFICATION] message updated', response.payload);
