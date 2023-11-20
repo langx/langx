@@ -19,6 +19,7 @@ import { RoomsEffects } from 'src/app/store/effects/rooms.effect';
 import { LanguageEffects } from 'src/app/store/effects/language.effect';
 import { PresenceEffects } from 'src/app/store/effects/presence.effect';
 import { BucketEffects } from 'src/app/store/effects/bucket.effect';
+import { NotificationEffects } from 'src/app/store/effects/notification.effect';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { BucketEffects } from 'src/app/store/effects/bucket.effect';
       LanguageEffects,
       PresenceEffects,
       BucketEffects,
+      NotificationEffects,
     ]),
   ],
   declarations: [HomePage],

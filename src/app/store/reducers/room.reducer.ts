@@ -29,6 +29,9 @@ import {
 import {
   findRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
+  findOrAddRoomAction,
+  findOrAddRoomSuccessAction,
+  findOrAddRoomFailureAction,
 } from 'src/app/store/actions/notification.action';
 
 const initialState: RoomStateInterface = {
@@ -228,7 +231,41 @@ const roomReducer = createReducer(
     );
     // Return the new state
     return { ...state, rooms: sortedRooms };
-  })
+  }),
+
+  // Find Or Add Room Reducer
+  on(
+    findOrAddRoomAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(findOrAddRoomSuccessAction, (state, action): RoomStateInterface => {
+    // Check if the room already exists
+    const roomExists = state.rooms?.find(
+      (room) => room.$id === action.payload.$id
+    );
+
+    // If the room already exists, return the state
+    if (roomExists) return { ...state };
+
+    // If the room doesn't exist, add the room to the state
+    return {
+      ...state,
+      isLoading: false,
+      rooms: [action.payload, ...(state.rooms || [])],
+    };
+  }),
+  on(
+    findOrAddRoomFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  )
 );
 
 export function roomReducers(state: RoomStateInterface, action: Action) {
