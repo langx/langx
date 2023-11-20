@@ -37,3 +37,18 @@ export const updateCurrentUserFailureAction = createAction(
   ActionTypes.UPDATE_CURRENT_USER_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const getUserByIdAction = createAction(
+  ActionTypes.GET_USER_BY_ID,
+  props<{ userId: string }>()
+);
+
+export const getUserByIdSuccessAction = createAction(
+  ActionTypes.GET_USER_BY_ID_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const getUserByIdFailureAction = createAction(
+  ActionTypes.GET_USER_BY_ID_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
