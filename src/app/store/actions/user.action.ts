@@ -5,35 +5,35 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
 
 // Get User Actions
-export const getUserAction = createAction(
-  ActionTypes.GET_USER,
+export const getCurrentUserAction = createAction(
+  ActionTypes.GET_CURRENT_USER,
   // TODO: Add request interface
   props<{ userId: string }>()
 );
 
-export const getUserSuccessAction = createAction(
-  ActionTypes.GET_USER_SUCCESS,
+export const getCurrentUserSuccessAction = createAction(
+  ActionTypes.GET_CURRENT_USER_SUCCESS,
   // TODO: Add interface
   props<{ payload: User }>()
 );
 
-export const getUserFailureAction = createAction(
-  ActionTypes.GET_USER_FAILURE,
+export const getCurrentUserFailureAction = createAction(
+  ActionTypes.GET_CURRENT_USER_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
-export const updateUserAction = createAction(
-  ActionTypes.UPDATE_USER,
+export const updateCurrentUserAction = createAction(
+  ActionTypes.UPDATE_CURRENT_USER,
   // TODO: Add request interface
-  props<{ request: { userId: string, data: any} }>()
+  props<{ request: { userId: string; data: any } }>()
 );
 
-export const updateUserSuccessAction = createAction(
-  ActionTypes.UPDATE_USER_SUCCESS,
+export const updateCurrentUserSuccessAction = createAction(
+  ActionTypes.UPDATE_CURRENT_USER_SUCCESS,
   props<{ payload: User }>()
 );
 
-export const updateUserFailureAction = createAction(
-  ActionTypes.UPDATE_USER_FAILURE,
+export const updateCurrentUserFailureAction = createAction(
+  ActionTypes.UPDATE_CURRENT_USER_FAILURE,
   props<{ error: ErrorInterface }>()
 );

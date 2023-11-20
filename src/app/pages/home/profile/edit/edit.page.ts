@@ -20,7 +20,7 @@ import { EditLanguageComponent } from 'src/app/components/edit-language/edit-lan
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
 
 // Selector and Action Imports
-import { updateUserAction } from 'src/app/store/actions/user.action';
+import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
 import {
   uploadOtherPhotosAction,
   uploadProfilePictureAction,
@@ -170,7 +170,7 @@ export class EditPage implements OnInit {
       },
     };
 
-    this.store.dispatch(updateUserAction({ request }));
+    this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
   //
@@ -182,7 +182,7 @@ export class EditPage implements OnInit {
       userId: this.currentUser?.$id,
       data: this.form.value,
     };
-    this.store.dispatch(updateUserAction({ request }));
+    this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
   //
