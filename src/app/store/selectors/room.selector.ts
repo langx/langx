@@ -24,8 +24,3 @@ export const errorSelector = createSelector(
   roomFeatureSelector,
   (roomState: RoomStateInterface) => roomState.error
 );
-
-export const totalUnseenSelector = createSelector(
-  roomFeatureSelector,
-  (roomState: RoomStateInterface) => roomState.totalUnseen
-);

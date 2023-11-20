@@ -5,13 +5,13 @@ import { Observable, combineLatest, map, tap } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { Account } from 'src/app/models/Account';
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  accountSelector,
+  totalUnseenSelector,
+} from 'src/app/store/selectors/auth.selector';
 import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
-import {
-  isLoadingSelector as isLoadingRoom,
-  totalUnseenSelector,
-} from 'src/app/store/selectors/room.selector';
+import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-home',
