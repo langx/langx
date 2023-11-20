@@ -87,7 +87,7 @@ export class ChatPage implements OnInit {
   }
 
   initValues() {
-    this.roomId = this.route.snapshot.paramMap.get('id');
+    this.roomId = this.route.snapshot.paramMap.get('id') || null;
 
     this.room$ = this.store.pipe(select(roomSelector));
     this.user$ = this.store.pipe(select(userDataSelector));
