@@ -18,5 +18,7 @@
       </ion-text>
     </p>
   </ion-label>
-  <ion-note> {{ messageTime(item.lastSeen) }} </ion-note>
+  <div class="metadata-end-wrapper" slot="end">
+    <ion-note> {{ messageTime(item.lastSeen) }} </ion-note>
+  </div>
 </ion-item>

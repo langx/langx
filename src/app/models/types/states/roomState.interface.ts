@@ -6,5 +6,4 @@ export interface RoomStateInterface {
   total: number;
   error: ErrorInterface | null;
   rooms: RoomExtendedInterface[] | null;
-  activeRoom: RoomExtendedInterface | null;
 }

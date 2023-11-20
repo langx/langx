@@ -13,4 +13,5 @@ export type User = Models.Document & {
   otherPhotos?: URL[];
   aboutMe?: string;
   lastSeen?: Date;
+  totalUnseen?: number;
 };

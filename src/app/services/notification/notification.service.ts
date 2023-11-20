@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable, from } from 'rxjs';
 
 // Environment and services Imports
@@ -11,12 +11,18 @@ import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
 import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
 
+// Selector Imports
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+
 // Action Imports
 import {
   findRoomAndAddMessageAction,
   findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
-  findAndUpdateMessageSeenAttributeAction,
+  findActiveRoomAndUpdateMessageSeenAction,
+  findOrAddRoomAction,
+  totalUnseenMessagesAction,
+  findRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 
 @Injectable({
@@ -63,21 +69,43 @@ export class NotificationService {
             this.store.dispatch(
               findActiveRoomAndAddMessageAction({ payload: createdMessage })
             );
+            // Dispatch the badge counter action for tab messages
+            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
             console.log('[NOTIFICATION] message updated', response.payload);
             const updatedMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
-              findAndUpdateMessageSeenAttributeAction({
+              findRoomAndUpdateMessageSeenAction({
                 payload: updatedMessage,
               })
             );
+            this.store.dispatch(
+              findActiveRoomAndUpdateMessageSeenAction({
+                payload: updatedMessage,
+              })
+            );
+            // Dispatch the badge counter action for tab messages
+            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.delete`:
             console.log('[NOTIFICATION] message deleted', response.payload);
             break;
           case `${roomsCollection}.*.create`:
             console.log('[NOTIFICATION] room created', response.payload);
+            const createdRoom = response.payload as Room;
+
+            this.store
+              .pipe(select(currentUserSelector))
+              .subscribe((user) => {
+                this.store.dispatch(
+                  findOrAddRoomAction({
+                    payload: createdRoom,
+                    currentUserId: user.$id,
+                  })
+                );
+              })
+              .unsubscribe();
             break;
           case `${roomsCollection}.*.update`:
             console.log('[NOTIFICATION] room updated', response.payload);

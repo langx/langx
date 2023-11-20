@@ -1,14 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, combineLatest, map } from 'rxjs';
+import { Observable, combineLatest, map, tap } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { Account } from 'src/app/models/Account';
+import {
+  accountSelector,
+  totalUnseenSelector,
+} from 'src/app/store/selectors/auth.selector';
+import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
 import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
-import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +23,7 @@ export class HomePage implements OnInit {
   isLoadingOverlayActive = false;
   refreshIntervalId: any;
 
+  totalUnseen$: Observable<number>;
   currentUser$: Observable<Account>;
 
   constructor(
@@ -40,7 +44,9 @@ export class HomePage implements OnInit {
   }
 
   initValues() {
+    this.totalUnseen$ = this.store.pipe(select(totalUnseenSelector));
     this.currentUser$ = this.store.pipe(select(accountSelector));
+
     // Loading Controller
     combineLatest([
       this.store.pipe(select(isLoadingUser)),
@@ -50,7 +56,8 @@ export class HomePage implements OnInit {
         map(([isLoadingUser, isLoadingRoom]) => isLoadingUser || isLoadingRoom)
       )
       .subscribe((isLoading) => {
-        this.loadingController(isLoading);
+        // TODO: #258 Loading Controller is frozen
+        // this.loadingController(isLoading);
       });
   }
 

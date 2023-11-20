@@ -20,8 +20,6 @@ import { listRoomsResponseInterface } from 'src/app/models/types/responses/listR
   providedIn: 'root',
 })
 export class RoomService {
-  currentUser$: Observable<User>;
-
   constructor(
     private api: ApiService,
     private authService: AuthService,
@@ -128,6 +126,21 @@ export class RoomService {
     );
   }
 
+  extendRoom(
+    room: Room,
+    currentUserId: string
+  ): Observable<RoomExtendedInterface> {
+    return of(room).pipe(
+      switchMap((data: Room) => {
+        return this.fillRoomWithUserData(data, currentUserId).pipe(
+          switchMap((roomWithUserData) =>
+            this.fillRoomWithMessages(roomWithUserData)
+          )
+        );
+      })
+    );
+  }
+
   listRooms(
     currentUserId: string,
     offset?: number
@@ -148,7 +161,7 @@ export class RoomService {
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
     ).pipe(
-      switchMap((data: listRoomsResponseInterface) =>
+      switchMap((data) =>
         iif(
           () => data.total > 0,
           of(data).pipe(
@@ -195,8 +208,13 @@ export class RoomService {
     } else {
       return this.userService.getUserDoc(userId).pipe(
         map((data) => {
-          room['userData'] = data as User;
-          return room as RoomExtendedInterface;
+          const roomWithUserData: RoomExtendedInterface = {
+            ...room,
+            userData: data as User,
+            total: 0,
+            messages: [],
+          };
+          return roomWithUserData;
         })
       );
     }
@@ -217,7 +235,9 @@ export class RoomService {
     );
   }
 
-  private fillRoomWithMessages(room: Room): Observable<RoomExtendedInterface> {
+  private fillRoomWithMessages(
+    room: RoomExtendedInterface
+  ): Observable<RoomExtendedInterface> {
     return from(this.messageService.listMessages(room.$id)).pipe(
       map((data) => {
         room['total'] = data.total;
