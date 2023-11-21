@@ -2,6 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
@@ -96,15 +97,15 @@ const messageReducer = createReducer(
     createMessageAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      // TODO: Here we need to update the room messages
-      // To show user loading icon
-      // room: {
-      //   ...state.room,
-      //   // messages: [...state.room.messages, action.payload],
-      //},
       isLoading: true,
       error: null,
-      tempMessages: [...(state.tempMessages || []), action.request],
+      tempMessages: [
+        ...(state.tempMessages || []),
+        {
+          ...action.request,
+          error: null,
+        },
+      ],
     })
   ),
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
@@ -114,21 +115,17 @@ const messageReducer = createReducer(
     return {
       ...state,
       isLoading: false,
-      tempMessages: tempMessages,
+      tempMessages: null,
     };
   }),
   on(
     createMessageFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      // TODO: Here we need to update the room messages
-      // To show user failed icon
-      // room: {
-      //   ...state.room,
-      //   // messages: [...state.room.messages, action.payload],
-      // },
       isLoading: false,
       error: action.error,
+      tempMessages: null,
+      // tempMessages: tempMessages,
     })
   ),
 

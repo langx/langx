@@ -75,7 +75,7 @@ export class MessageEffects {
             const error: ErrorInterface = {
               message: errorResponse.message,
             };
-            return of(createMessageFailureAction({ error }));
+            return of(createMessageFailureAction({ error, payload: request }));
           })
         )
       )

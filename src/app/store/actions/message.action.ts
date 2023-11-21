@@ -53,7 +53,7 @@ export const createMessageSuccessAction = createAction(
 
 export const createMessageFailureAction = createAction(
   ActionTypes.CREATE_MESSAGE_FAILURE,
-  props<{ error: ErrorInterface }>()
+  props<{ error: ErrorInterface; payload: createMessageRequestInterface }>()
 );
 
 // Activate/Deactivate Room Actions

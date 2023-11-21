@@ -9,6 +9,7 @@ import { Message } from 'src/app/models/Message';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -46,7 +47,7 @@ export class ChatPage implements OnInit {
   currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
   isLoading_offset$: Observable<boolean>;
-  tempMessages$: Observable<createMessageRequestInterface[] | null>;
+  tempMessages$: Observable<tempMessageInterface[] | null>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
 
