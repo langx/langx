@@ -7,7 +7,7 @@ import { createMessageRequestInterface } from '../requests/createMessageRequest.
 export interface MessageStateInterface {
   isLoading: boolean;
   isLoading_offset: boolean;
-  tempMessage: createMessageRequestInterface | null;
+  tempMessages: createMessageRequestInterface[] | null;
   room: RoomExtendedInterface | null;
   error: ErrorInterface | null;
 }
