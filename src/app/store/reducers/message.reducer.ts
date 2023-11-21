@@ -2,7 +2,7 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
-import { logoutSuccessAction } from '../actions/auth.action';
+import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
   findActiveRoomAndUpdateMessageSeenAction,
