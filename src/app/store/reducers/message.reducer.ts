@@ -112,22 +112,28 @@ const messageReducer = createReducer(
     const tempMessages = state.tempMessages
       ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
       : null;
+    console.log('tempMessages', tempMessages);
     return {
       ...state,
       isLoading: false,
-      tempMessages: null,
+      tempMessages: tempMessages,
     };
   }),
-  on(
-    createMessageFailureAction,
-    (state, action): MessageStateInterface => ({
+  on(createMessageFailureAction, (state, action): MessageStateInterface => {
+    const tempMessages = state.tempMessages
+      ? state.tempMessages.map((msg) =>
+          msg.body === action.payload.body
+            ? { ...msg, error: action.error }
+            : msg
+        )
+      : null;
+    return {
       ...state,
       isLoading: false,
       error: action.error,
-      tempMessages: null,
-      // tempMessages: tempMessages,
-    })
-  ),
+      tempMessages: tempMessages,
+    };
+  }),
 
   // Update Message Reducers
   on(
