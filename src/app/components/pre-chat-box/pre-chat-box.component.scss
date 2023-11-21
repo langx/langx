@@ -21,6 +21,17 @@
   word-wrap: break-word;
 }
 
+.message-time {
+  position: absolute;
+  bottom: 0;
+  right: 1px;
+  font-size: 9px;
+  font-weight: 200;
+  text-align: right;
+  float: right;
+  padding: 5px !important;
+}
+
 .sender {
   position: relative;
   width: auto !important;

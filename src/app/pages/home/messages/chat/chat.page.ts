@@ -25,6 +25,7 @@ import {
   isLoadingSelector,
   messagesSelector,
   roomSelector,
+  tempMessageSelector,
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
@@ -45,6 +46,7 @@ export class ChatPage implements OnInit {
   currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
   isLoading_offset$: Observable<boolean>;
+  tempMessage$: Observable<createMessageRequestInterface | null>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
 
@@ -96,6 +98,7 @@ export class ChatPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
+    this.tempMessage$ = this.store.pipe(select(tempMessageSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
