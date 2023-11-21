@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
 
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -67,10 +67,9 @@ export class MessageEffects {
   createMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createMessageAction),
-      switchMap(({ request, currentUserId }) =>
+      mergeMap(({ request, currentUserId }) =>
         this.messagesService.createMessage(request, currentUserId).pipe(
           map((payload: Message) => createMessageSuccessAction({ payload })),
-
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
@@ -85,6 +84,7 @@ export class MessageEffects {
   updateMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateMessageSeenAction),
+      // TODO: #263 It may be mergeMap as well!
       switchMap(({ request }) =>
         this.messagesService.updateMessage(request).pipe(
           map((payload: Message) =>

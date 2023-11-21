@@ -4,11 +4,16 @@
       <div class="sender">
         <div class="message-text">
           {{ tempMsg?.body }}
-            <span class="message-time">
-              <ion-icon name="cloud-upload-outline"></ion-icon>
-            </span>
+          <span class="message-time">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+          </span>
         </div>
       </div>
     </div>
   </div>
+  <ion-icon
+    *ngIf="tempMsg?.error"
+    name="close-circle-outline"
+    color="danger"
+  ></ion-icon>
 </ion-item>
