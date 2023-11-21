@@ -37,39 +37,41 @@
   <ion-list>
     <div class="message-container">
       <!-- Skeleton Start -->
-      <div *ngFor="let i of '01234'.split('')">
-        <ion-item-group *ngIf="(isLoading$ | async)">
-          <ion-item lines="none">
-            <div class="message-body">
-              <div class="message-main-receiver">
-                <div class="receiver">
-                  <div class="message-text">
-                    <ion-skeleton-text
-                      [animated]="true"
-                      style="width: 60%"
-                    ></ion-skeleton-text>
+      <div *ngIf="(isLoading_offset$ | async)">
+        <div *ngFor="let i of '012'.split('')">
+          <ion-item-group>
+            <ion-item lines="none">
+              <div class="message-body">
+                <div class="message-main-receiver">
+                  <div class="receiver">
+                    <div class="message-text">
+                      <ion-skeleton-text
+                        [animated]="true"
+                        style="width: 60%"
+                      ></ion-skeleton-text>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ion-item>
-        </ion-item-group>
-        <ion-item-group *ngIf="(isLoading$ | async)">
-          <ion-item lines="none">
-            <div class="message-body">
-              <div class="message-main-sender">
-                <div class="sender">
-                  <div class="message-text">
-                    <ion-skeleton-text
-                      [animated]="true"
-                      style="width: 100%"
-                    ></ion-skeleton-text>
+            </ion-item>
+          </ion-item-group>
+          <ion-item-group>
+            <ion-item lines="none">
+              <div class="message-body">
+                <div class="message-main-sender">
+                  <div class="sender">
+                    <div class="message-text">
+                      <ion-skeleton-text
+                        [animated]="true"
+                        style="width: 100%"
+                      ></ion-skeleton-text>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </ion-item>
-        </ion-item-group>
+            </ion-item>
+          </ion-item-group>
+        </div>
       </div>
       <!-- Skeleton End -->
 

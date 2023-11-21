@@ -21,6 +21,7 @@ import {
 } from 'src/app/store/actions/message.action';
 import {
   errorSelector,
+  isLoadingOffsetSelector,
   isLoadingSelector,
   messagesSelector,
   roomSelector,
@@ -43,6 +44,7 @@ export class ChatPage implements OnInit {
   user$: Observable<User | null>;
   currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
+  isLoading_offset$: Observable<boolean>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
 
@@ -93,6 +95,7 @@ export class ChatPage implements OnInit {
     this.user$ = this.store.pipe(select(userDataSelector));
     this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
@@ -116,6 +119,7 @@ export class ChatPage implements OnInit {
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
+      // if (!isLoading) this.scrollToBottom();
       // TODO: #258 Loading Controller is frozen
       // this.loadingController(isLoading);
     });
