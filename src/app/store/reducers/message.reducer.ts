@@ -26,6 +26,8 @@ import {
 
 const initialState: MessageStateInterface = {
   isLoading: false,
+  isLoading_offset: false,
+  tempMessage: null,
   room: null,
   error: null,
 };
@@ -66,7 +68,7 @@ const messageReducer = createReducer(
     getMessagesWithOffsetAction,
     (state): MessageStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoading_offset: true,
       error: null,
     })
   ),
@@ -74,7 +76,7 @@ const messageReducer = createReducer(
     getMessagesWithOffsetSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoading_offset: false,
       room: {
         ...state.room,
         total: action.payload?.total,
@@ -86,13 +88,13 @@ const messageReducer = createReducer(
     getMessagesWithOffsetFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoading_offset: false,
       error: action.error,
     })
   ),
   on(
     createMessageAction,
-    (state): MessageStateInterface => ({
+    (state, action): MessageStateInterface => ({
       ...state,
       // TODO: Here we need to update the room messages
       // To show user loading icon
@@ -102,6 +104,7 @@ const messageReducer = createReducer(
       //},
       isLoading: true,
       error: null,
+      tempMessage: action.request,
     })
   ),
   on(
@@ -109,6 +112,7 @@ const messageReducer = createReducer(
     (state): MessageStateInterface => ({
       ...state,
       isLoading: false,
+      tempMessage: null,
     })
   ),
   on(
