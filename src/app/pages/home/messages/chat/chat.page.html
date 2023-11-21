@@ -86,6 +86,10 @@
         >
         </app-chat-box>
       </ion-item-group>
+      <app-pre-chat-box
+        *ngIf="(tempMessage$ | async)"
+        [tempMsg]="(tempMessage$ | async)"
+      ></app-pre-chat-box>
     </div>
   </ion-list>
 </ion-content>
