@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 
 @Component({
   selector: 'app-pre-chat-box',
@@ -7,7 +8,7 @@ import { createMessageRequestInterface } from 'src/app/models/types/requests/cre
   styleUrls: ['./pre-chat-box.component.scss'],
 })
 export class PreChatBoxComponent implements OnInit {
-  @Input() tempMsg: createMessageRequestInterface | null;
+  @Input() tempMsg: tempMessageInterface | null;
 
   constructor() {}
 
