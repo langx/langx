@@ -1,0 +1,34 @@
+.message-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: auto;
+}
+
+.message-main-sender {
+  padding: 5px !important;
+  float: inline-end;
+  max-width: 80%;
+}
+
+.message-text {
+  display: contents;
+  margin: 0 !important;
+  padding: 5px !important;
+  //font-weight: 300;
+  font-size: 15px;
+  padding-bottom: 0 !important;
+  word-wrap: break-word;
+}
+
+.sender {
+  position: relative;
+  width: auto !important;
+  background: var(--ion-color-primary) !important;
+  color: var(--ion-color-primary-contrast);
+  border-radius: 10px 10px 0 10px;
+  padding: 10px 30px 15px 10px !important;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
+}
