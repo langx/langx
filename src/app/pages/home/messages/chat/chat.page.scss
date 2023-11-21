@@ -1,11 +1,74 @@
 ion-content {
-  position: relative;
+  --ion-background-color: var(--ion-item-background);
 }
 
-ion-list {
+ion-infinite-scroll-content {
+  min-height: 1px;
+}
+
+// Chat Box component styles
+.message-body {
+  margin: 0 !important;
+  padding: 0 !important;
   width: 100%;
-  bottom: 0;
+  height: auto;
+}
+
+.message-main-receiver {
+  padding: 5px !important;
+  float: inline-start;
+  max-width: 80%;
+  width: 35%;
+}
+
+.message-main-sender {
+  padding: 5px !important;
+  float: inline-end;
+  max-width: 80%;
+  width: 30%;
+}
+
+.message-text {
+  display: contents;
+  margin: 0 !important;
+  padding: 5px !important;
+  //font-weight: 300;
+  font-size: 15px;
+  padding-bottom: 0 !important;
+  word-wrap: break-word;
+}
+
+.message-time {
   position: absolute;
-  max-height: 100%;
-  overflow-y: auto;
+  bottom: 0;
+  right: 1px;
+  font-size: 9px;
+  font-weight: 200;
+  text-align: right;
+  float: right;
+  padding: 5px !important;
+}
+
+.receiver {
+  position: relative;
+  width: auto !important;
+  padding: 10px 30px 15px 10px !important;
+  border-radius: 10px 10px 10px 0;
+  background: var(--ion-color-light) !important;
+  color: var(--ion-color-light-contrast) !important;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
+}
+
+.sender {
+  position: relative;
+  width: auto !important;
+  background: var(--ion-color-light) !important;
+  color: var(--ion-color-primary-contrast);
+  border-radius: 10px 10px 0 10px;
+  padding: 10px 30px 15px 10px !important;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
 }

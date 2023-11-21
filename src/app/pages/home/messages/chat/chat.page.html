@@ -25,22 +25,67 @@
 <ion-content>
   <app-empty-screen *ngIf="(messages$ | async)?.length == 0" [model]="model">
   </app-empty-screen>
+
   <ion-infinite-scroll
-    threshold="0px"
     position="top"
+    threshold="20%"
     (ionInfinite)="loadMore($event)"
   >
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-item-group
-    lines="none"
-    class="chats-group"
-    *ngFor="let msg of (messages$ | async)"
-  >
-    <app-chat-box [chat]="msg" [current_user_id]="(currentUser$ | async).$id">
-    </app-chat-box>
-  </ion-item-group>
+  <ion-list>
+    <div class="message-container">
+      <!-- Skeleton Start -->
+      <div *ngFor="let i of '01234'.split('')">
+        <ion-item-group *ngIf="(isLoading$ | async)">
+          <ion-item lines="none">
+            <div class="message-body">
+              <div class="message-main-receiver">
+                <div class="receiver">
+                  <div class="message-text">
+                    <ion-skeleton-text
+                      [animated]="true"
+                      style="width: 60%"
+                    ></ion-skeleton-text>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-item>
+        </ion-item-group>
+        <ion-item-group *ngIf="(isLoading$ | async)">
+          <ion-item lines="none">
+            <div class="message-body">
+              <div class="message-main-sender">
+                <div class="sender">
+                  <div class="message-text">
+                    <ion-skeleton-text
+                      [animated]="true"
+                      style="width: 100%"
+                    ></ion-skeleton-text>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ion-item>
+        </ion-item-group>
+      </div>
+      <!-- Skeleton End -->
+
+      <ion-item-group
+        lines="none"
+        class="chats-group"
+        *ngFor="let msg of (messages$ | async)"
+      >
+        <app-chat-box
+          [chat]="msg"
+          [current_user_id]="(currentUser$ | async).$id"
+        >
+        </app-chat-box>
+      </ion-item-group>
+    </div>
+  </ion-list>
 </ion-content>
 
 <ion-footer>
