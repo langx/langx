@@ -15,9 +15,9 @@ export const isLoadingOffsetSelector = createSelector(
   (messageState: MessageStateInterface) => messageState.isLoading_offset
 );
 
-export const tempMessageSelector = createSelector(
+export const tempMessagesSelector = createSelector(
   messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.tempMessage
+  (messageState: MessageStateInterface) => messageState.tempMessages
 );
 
 export const roomSelector = createSelector(

@@ -27,7 +27,7 @@ import {
 const initialState: MessageStateInterface = {
   isLoading: false,
   isLoading_offset: false,
-  tempMessage: null,
+  tempMessages: null,
   room: null,
   error: null,
 };
@@ -104,17 +104,19 @@ const messageReducer = createReducer(
       //},
       isLoading: true,
       error: null,
-      tempMessage: action.request,
+      tempMessages: [...(state.tempMessages || []), action.request],
     })
   ),
-  on(
-    createMessageSuccessAction,
-    (state): MessageStateInterface => ({
+  on(createMessageSuccessAction, (state, action): MessageStateInterface => {
+    const tempMessages = state.tempMessages
+      ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
+      : null;
+    return {
       ...state,
       isLoading: false,
-      tempMessage: null,
-    })
-  ),
+      tempMessages: tempMessages,
+    };
+  }),
   on(
     createMessageFailureAction,
     (state, action): MessageStateInterface => ({
