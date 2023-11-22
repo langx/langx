@@ -6,24 +6,9 @@ import { listMessagesResponseInterface } from 'src/app/models/types/responses/li
 import { Message } from 'src/app/models/Message';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 
-// Get Messages Actions
-export const getMessagesAction = createAction(
-  ActionTypes.GET_MESSAGES,
-  // TODO: Create interface for this request
-  props<{ roomId: string }>()
-);
-
-export const getMessagesSuccessAction = createAction(
-  ActionTypes.GET_MESSAGES_SUCCESS,
-  props<{ payload: listMessagesResponseInterface }>()
-);
-
-export const getMessagesFailureAction = createAction(
-  ActionTypes.GET_MESSAGES_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
+// Get Messages With Offset Actions
 export const getMessagesWithOffsetAction = createAction(
   ActionTypes.GET_MESSAGES_WITH_OFFSET,
   // TODO: Create interface for this request
@@ -53,7 +38,7 @@ export const createMessageSuccessAction = createAction(
 
 export const createMessageFailureAction = createAction(
   ActionTypes.CREATE_MESSAGE_FAILURE,
-  props<{ error: ErrorInterface }>()
+  props<{ error: ErrorInterface; payload: createMessageRequestInterface }>()
 );
 
 // Activate/Deactivate Room Actions
@@ -81,4 +66,26 @@ export const updateMessageSeenSuccessAction = createAction(
 export const updateMessageSeenFailureAction = createAction(
   ActionTypes.UPDATE_MESSAGE_SEEN_FAILURE,
   props<{ error: ErrorInterface }>()
+);
+
+// Remove Message From Temp Messages Actions
+export const removeMessageFromTempMessagesAction = createAction(
+  ActionTypes.REMOVE_MESSAGE_FROM_TEMP_MESSAGES,
+  props<{ payload: tempMessageInterface }>()
+);
+
+// Resend Message From Temp Messages Actions
+export const resendMessageFromTempMessagesAction = createAction(
+  ActionTypes.RESEND_MESSAGE_FROM_TEMP_MESSAGES,
+  props<{ request: tempMessageInterface }>()
+);
+
+export const resendMessageFromTempMessagesSuccessAction = createAction(
+  ActionTypes.RESEND_MESSAGE_FROM_TEMP_MESSAGES_SUCCESS,
+  props<{ payload: Message }>()
+);
+
+export const resendMessageFromTempMessagesFailureAction = createAction(
+  ActionTypes.RESEND_MESSAGE_FROM_TEMP_MESSAGES_FAILURE,
+  props<{ error: ErrorInterface; payload: tempMessageInterface }>()
 );

@@ -2,7 +2,8 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
-import { logoutSuccessAction } from '../actions/auth.action';
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
+import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
   findActiveRoomAndUpdateMessageSeenAction,
@@ -13,19 +14,22 @@ import {
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
-  getMessagesAction,
-  getMessagesFailureAction,
-  getMessagesSuccessAction,
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
   updateMessageSeenAction,
   updateMessageSeenSuccessAction,
   updateMessageSeenFailureAction,
+  removeMessageFromTempMessagesAction,
+  resendMessageFromTempMessagesAction,
+  resendMessageFromTempMessagesSuccessAction,
+  resendMessageFromTempMessagesFailureAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
   isLoading: false,
+  isLoading_offset: false,
+  tempMessages: null,
   room: null,
   error: null,
 };
@@ -33,40 +37,12 @@ const initialState: MessageStateInterface = {
 const messageReducer = createReducer(
   initialState,
 
-  // Get Messages Reducers
-  on(
-    getMessagesAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: true,
-      error: null,
-    })
-  ),
-  on(
-    getMessagesSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      room: {
-        ...state.room,
-        total: action.payload?.total,
-        messages: action.payload?.documents,
-      },
-    })
-  ),
-  on(
-    getMessagesFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
+  // Get Messages With Offset Reducers
   on(
     getMessagesWithOffsetAction,
     (state): MessageStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoading_offset: true,
       error: null,
     })
   ),
@@ -74,7 +50,7 @@ const messageReducer = createReducer(
     getMessagesWithOffsetSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoading_offset: false,
       room: {
         ...state.room,
         total: action.payload?.total,
@@ -86,45 +62,50 @@ const messageReducer = createReducer(
     getMessagesWithOffsetFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoading_offset: false,
       error: action.error,
     })
   ),
   on(
     createMessageAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      // TODO: Here we need to update the room messages
-      // To show user loading icon
-      // room: {
-      //   ...state.room,
-      //   // messages: [...state.room.messages, action.payload],
-      //},
-      isLoading: true,
-      error: null,
-    })
-  ),
-  on(
-    createMessageSuccessAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-    })
-  ),
-  on(
-    createMessageFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      // TODO: Here we need to update the room messages
-      // To show user failed icon
-      // room: {
-      //   ...state.room,
-      //   // messages: [...state.room.messages, action.payload],
-      // },
-      isLoading: false,
-      error: action.error,
+      isLoading: true,
+      error: null,
+      tempMessages: [
+        ...(state.tempMessages || []),
+        {
+          ...action.request,
+          error: null,
+        },
+      ],
     })
   ),
+  on(createMessageSuccessAction, (state, action): MessageStateInterface => {
+    const tempMessages = state.tempMessages
+      ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
+      : null;
+    return {
+      ...state,
+      isLoading: false,
+      tempMessages: tempMessages,
+    };
+  }),
+  on(createMessageFailureAction, (state, action): MessageStateInterface => {
+    const tempMessages = state.tempMessages
+      ? state.tempMessages.map((msg) =>
+          msg.body === action.payload.body
+            ? { ...msg, error: action.error }
+            : msg
+        )
+      : null;
+    return {
+      ...state,
+      isLoading: false,
+      error: action.error,
+      tempMessages: tempMessages,
+    };
+  }),
 
   // Update Message Reducers
   on(
@@ -248,6 +229,71 @@ const messageReducer = createReducer(
             return msg;
           }),
         },
+      };
+    }
+  ),
+
+  // Remove Message From Temp Messages Reducers
+  on(
+    removeMessageFromTempMessagesAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.filter((msg) => msg.body !== action.payload.body)
+        : null;
+      return {
+        ...state,
+        tempMessages: tempMessages,
+      };
+    }
+  ),
+  on(
+    resendMessageFromTempMessagesAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.map((msg) =>
+            msg.body === action.request.body ? { ...msg, error: null } : msg
+          )
+        : null;
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+        tempMessages: tempMessages,
+      };
+    }
+  ),
+  on(
+    resendMessageFromTempMessagesSuccessAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
+        : null;
+      const updatedRoom = {
+        ...state.room,
+        messages: [...state.room.messages, action.payload],
+      };
+      return {
+        ...state,
+        room: updatedRoom,
+        tempMessages: tempMessages,
+        isLoading: false,
+      };
+    }
+  ),
+  on(
+    resendMessageFromTempMessagesFailureAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.map((msg) =>
+            msg.body === action.payload?.body
+              ? { ...msg, error: action.error }
+              : msg
+          )
+        : null;
+      return {
+        ...state,
+        tempMessages: tempMessages,
+        isLoading: false,
       };
     }
   )

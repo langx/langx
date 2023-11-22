@@ -3,27 +3,32 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonContent, LoadingController, ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, from } from 'rxjs';
 
+// Interface Imports
 import { Message } from 'src/app/models/Message';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+
+// Selector and Action Imports
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
-  getMessagesAction,
   getMessagesWithOffsetAction,
   deactivateRoomAction,
 } from 'src/app/store/actions/message.action';
 import {
   errorSelector,
+  isLoadingOffsetSelector,
   isLoadingSelector,
   messagesSelector,
   roomSelector,
+  tempMessagesSelector,
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
@@ -39,16 +44,22 @@ export class ChatPage implements OnInit {
   isLoadingOverlayActive = false;
   form: FormGroup;
 
+  private subscriptions = new Subscription();
+
   room$: Observable<RoomExtendedInterface | null>;
   user$: Observable<User | null>;
   currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
+  isLoading_offset$: Observable<boolean>;
+  tempMessages$: Observable<tempMessageInterface[] | null>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
 
   isTyping: boolean = false;
   roomId: string;
-  user: User; // TODO: Remove this
+
+  // Add a flag to indicate whether it's the first load
+  private isFirstLoad: boolean = true;
 
   model = {
     icon: 'chatbubbles-outline',
@@ -67,16 +78,15 @@ export class ChatPage implements OnInit {
   ngOnInit() {
     this.initValues();
     this.initForm();
-    // this.listMessages();
   }
 
   ngAfterViewInit() {
-    // TODO: Needs optimization
-    this.scrollToBottom();
-    // console.log('ngAfterViewChecked');
+    this.initValuesAfterViewInit();
   }
 
   ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+
     this.room$
       .subscribe((room) => {
         if (room) {
@@ -93,6 +103,8 @@ export class ChatPage implements OnInit {
     this.user$ = this.store.pipe(select(userDataSelector));
     this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
+    this.tempMessages$ = this.store.pipe(select(tempMessagesSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
@@ -116,6 +128,7 @@ export class ChatPage implements OnInit {
 
     // Loading Controller
     this.isLoading$.subscribe((isLoading) => {
+      // if (!isLoading) this.scrollToBottom();
       // TODO: #258 Loading Controller is frozen
       // this.loadingController(isLoading);
     });
@@ -138,8 +151,42 @@ export class ChatPage implements OnInit {
     });
   }
 
-  listMessages() {
-    this.store.dispatch(getMessagesAction({ roomId: this.roomId }));
+  initValuesAfterViewInit() {
+    // To Scroll to bottom triggers
+    this.subscriptions.add(
+      this.tempMessages$.subscribe((msg) => {
+        if (msg != null) {
+          this.subscriptions.add(
+            this.isUserAtBottom().subscribe((isAtBottom) => {
+              if (isAtBottom || this.isFirstLoad) {
+                setTimeout(() => {
+                  this.content.scrollToBottom(300);
+                }, 0);
+              }
+            })
+          );
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.room$.subscribe((room) => {
+        if (room != null) {
+          this.subscriptions.add(
+            this.isUserAtBottom().subscribe((isAtBottom) => {
+              if (isAtBottom || this.isFirstLoad) {
+                // Wait for the view to update then scroll to bottom
+                setTimeout(() => {
+                  this.content.scrollToBottom(0);
+                  // After the first load, set the flag to false
+                  this.isFirstLoad = false;
+                }, 0);
+              }
+            })
+          );
+        }
+      })
+    );
   }
 
   //
@@ -208,16 +255,12 @@ export class ChatPage implements OnInit {
     console.log('onTypingStatusChange', this.isTyping);
   }
 
-  scrollToBottom() {
-    this.content.scrollToBottom(300);
-  }
-
-  // TODO: Fix this bug
-  // Navigate to user profile page
-  goProfile(uid: string) {
-    console.log('goProfile clicked');
-    console.log('uid: ', uid);
-    this.router.navigateByUrl(`/home/user/${uid}`);
+  redirectUserProfile() {
+    this.user$
+      .subscribe((user) => {
+        this.router.navigateByUrl(`/home/user/${user.$id}`);
+      })
+      .unsubscribe();
   }
 
   // TODO: Do we need this function?
@@ -227,6 +270,27 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(1500).then(() => {
       console.log('scrolled to bottom');
     });
+  }
+
+  //
+  // Utils
+  //
+
+  isUserAtBottom(): Observable<boolean> {
+    return from(this.checkIfUserAtBottom());
+  }
+
+  async checkIfUserAtBottom(): Promise<boolean> {
+    const scrollElement = await this.content.getScrollElement();
+
+    // Calculate the bottom 10% position
+    const bottomPosition = scrollElement.scrollHeight * 0.9;
+
+    // The chat is considered to be at the bottom if the scroll position is greater than the bottom 10% position
+    const atBottom =
+      scrollElement.scrollTop + scrollElement.clientHeight >= bottomPosition;
+
+    return atBottom;
   }
 
   //
