@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { countryData, birthdateData, genderData } from 'src/app/extras/data';
+import { Router } from '@angular/router';
+import {
+  countryData,
+  birthdateData,
+  genderData,
+} from 'src/app/extras/localeData';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -27,7 +32,11 @@ export class CompletePage implements OnInit {
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
 
-  constructor(private store: Store, private toastController: ToastController) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -41,6 +50,15 @@ export class CompletePage implements OnInit {
   initValues(): void {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
+    // Disable Form if loading
+    this.isLoading$.subscribe((isLoading: boolean) => {
+      if (isLoading) {
+        this.form.disable();
+      } else {
+        this.form.enable();
+      }
+    });
 
     // Present Toast if error
     this.store
@@ -147,8 +165,14 @@ export class CompletePage implements OnInit {
   complete(form: FormGroup) {
     this.account$
       .subscribe((account: Account | null) => {
+        // TODO: If guard works fine for the complete page, this should not be needed
+        if (!account) {
+          this.router.navigate(['/login']);
+          this.presentToast('Please login or register again', 'danger');
+          return;
+        }
         const request: CompleteRegistrationRequestInterface = {
-          name: nameParts(account.name),
+          name: nameParts(account?.name),
           birthdate: form.value.birthdateWithDateFormat,
           country: form.value.country,
           countryCode: form.value.countryCode,
