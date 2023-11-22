@@ -2,7 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
-import { removeMessageFromTempMessagesAction } from 'src/app/store/actions/message.action';
+import {
+  removeMessageFromTempMessagesAction,
+  resendMessageFromTempMessagesAction,
+} from 'src/app/store/actions/message.action';
 
 @Component({
   selector: 'app-pre-chat-box',
@@ -17,11 +20,12 @@ export class PreChatBoxComponent implements OnInit {
   ngOnInit() {}
 
   resendMessage() {
-    console.log('resend message clicked');
+    this.store.dispatch(
+      resendMessageFromTempMessagesAction({ request: this.tempMsg })
+    );
   }
 
   deleteMessage() {
-    console.log('delete message clicked');
     this.store.dispatch(
       removeMessageFromTempMessagesAction({ payload: this.tempMsg })
     );
