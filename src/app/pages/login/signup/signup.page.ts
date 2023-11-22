@@ -37,6 +37,15 @@ export class SignupPage implements OnInit {
   initValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
+    // Disable Form if loading
+    this.isLoading$.subscribe((isLoading: boolean) => {
+      if (isLoading) {
+        this.form.disable();
+      } else {
+        this.form.enable();
+      }
+    });
+
     // Present Toast if error
     this.store
       .pipe(select(registerValidationErrorSelector))
