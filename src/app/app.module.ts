@@ -10,6 +10,7 @@ import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 import { environment } from 'src/environments/environment';
 import { authReducers } from 'src/app/store/reducers/auth.reducer';
+import { localeReducers } from 'src/app/store/reducers/locale.reducer';
 import { AuthEffect } from 'src/app/store/effects/auth.effect';
 
 @NgModule({
@@ -25,6 +26,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     }),
     EffectsModule.forRoot([]),
     StoreModule.forFeature('auth', authReducers),
+    StoreModule.forFeature('locale', localeReducers),
     EffectsModule.forFeature([AuthEffect]),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
