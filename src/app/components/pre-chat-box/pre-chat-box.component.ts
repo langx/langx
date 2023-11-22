@@ -13,4 +13,12 @@ export class PreChatBoxComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  resendMessage() {
+    console.log('resend message clicked');
+  }
+
+  deleteMessage() {
+    console.log('delete message clicked');
+  }
 }
