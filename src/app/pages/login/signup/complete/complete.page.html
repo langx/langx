@@ -15,7 +15,6 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
-        [disabled]="(isLoading$ | async)"
         required
       >
       </ion-input>
@@ -35,7 +34,6 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
-        [disabled]="(isLoading$ | async)"
         required
       >
       </ion-input>
@@ -55,7 +53,6 @@
         labelPlacement="floating"
         type="text"
         [readonly]="true"
-        [disabled]="(isLoading$ | async)"
         required
       >
       </ion-input>
@@ -71,12 +68,7 @@
 
     <ion-row>
       <ion-col>
-        <ion-button
-          [disabled]="(isLoading$ | async)"
-          type="submit"
-          color="primary"
-          expand="block"
-        >
+        <ion-button type="submit" color="primary" expand="block">
           Continue
           <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
           </ion-spinner>
