@@ -1,36 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  countryData,
-  birthdateData,
-  genderData,
-} from 'src/app/extras/localeData';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { birthdateData, genderData } from 'src/app/extras/localeData';
 
 import { getAge, nameParts } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { completeRegistrationAction } from 'src/app/store/actions/auth.action';
 import { Account } from 'src/app/models/Account';
+import { Countries } from 'src/app/models/locale/Countries';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { countriesSelector } from 'src/app/store/selectors/locale.selector';
 import {
   accountSelector,
   isLoadingSelector,
   registerValidationErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
+import { Country } from 'src/app/models/locale/Country';
 
 @Component({
   selector: 'app-complete',
   templateUrl: './complete.page.html',
   styleUrls: ['./complete.page.scss'],
 })
-export class CompletePage implements OnInit {
+export class CompletePage implements OnInit, OnDestroy {
   public progress: number = 0.7;
+
+  searchTerm: string;
+
+  private subscriptions = new Subscription();
   form: FormGroup;
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
+  countries$: Observable<Countries>;
+  countyData: Country[];
 
   constructor(
     private store: Store,
@@ -47,18 +52,32 @@ export class CompletePage implements OnInit {
     this.form.reset();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   initValues(): void {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
+    // Countries values
+    this.countries$ = this.store.pipe(select(countriesSelector));
+    this.subscriptions.add(
+      this.countries$.subscribe((countries: Countries) => {
+        this.countyData = countries?.countries;
+      })
+    );
+
     // Disable Form if loading
-    this.isLoading$.subscribe((isLoading: boolean) => {
-      if (isLoading) {
-        this.form.disable();
-      } else {
-        this.form.enable();
-      }
-    });
+    this.subscriptions.add(
+      this.isLoading$.subscribe((isLoading: boolean) => {
+        if (isLoading) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      })
+    );
 
     // Present Toast if error
     this.store
@@ -135,23 +154,13 @@ export class CompletePage implements OnInit {
     },
   ];
 
-  public countryPickerColumns = [
-    {
-      name: 'country',
-      options: countryData,
-    },
-  ];
-
-  public countryPickerButtons = [
-    { text: 'Cancel', role: 'cancel' },
-    {
-      text: 'Confirm',
-      handler: (value) => {
-        this.form.controls['country'].setValue(value.country.text);
-        this.form.controls['countryCode'].setValue(value.country.value);
-      },
-    },
-  ];
+  countryChange(event) {
+    this.form.controls['countryCode'].setValue(event.detail.value);
+    const country = this.countyData?.find(
+      (country) => country.code === event.detail.value
+    );
+    this.form.controls['country'].setValue(country?.name);
+  }
 
   async onSubmit() {
     console.log('form.value:', this.form.value);
@@ -159,7 +168,7 @@ export class CompletePage implements OnInit {
       this.presentToast('Please fill all the required fields', 'danger');
       return;
     }
-    this.complete(this.form);
+    // this.complete(this.form);
   }
 
   complete(form: FormGroup) {

@@ -47,7 +47,7 @@
 
     <ion-item lines="full">
       <ion-input
-        id="picker-country"
+        id="country-modal"
         formControlName="country"
         label="Country of Residence"
         labelPlacement="floating"
@@ -56,12 +56,6 @@
         required
       >
       </ion-input>
-      <ion-picker
-        trigger="picker-country"
-        [columns]="countryPickerColumns"
-        [buttons]="countryPickerButtons"
-      >
-      </ion-picker>
     </ion-item>
 
     <ion-note>You must be at least 13 years old to use this app.</ion-note>
@@ -77,3 +71,46 @@
     </ion-row>
   </form>
 </ion-content>
+
+<!------------------>
+<!-- MODALS start -->
+<!------------------>
+
+<!-- Country Modal -->
+<ion-modal
+  #countryModal
+  trigger="country-modal"
+  [initialBreakpoint]="0.3"
+  [breakpoints]="[0.3, 0.8]"
+>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Country</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="countryModal.dismiss()" color="primary">
+            Confirm
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-searchbar
+        [(ngModel)]="searchTerm"
+        placeholder="Search"
+        (click)="countryModal.setCurrentBreakpoint(0.8)"
+      ></ion-searchbar>
+      <ion-list>
+        <ion-radio-group value="start" (ionChange)="countryChange($event)">
+          <ion-item
+            *ngFor="let country of (countries$ | async)?.countries | customFilter: searchTerm"
+          >
+            <ion-radio value="{{ country?.code }}" labelPlacement="start">
+              {{ country?.name }}
+            </ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-modal>

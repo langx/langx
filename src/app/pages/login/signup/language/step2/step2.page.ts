@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
-import { languagesData } from 'src/app/extras/data';
+import { languagesData } from 'src/app/extras/localeData';
 
 @Component({
   selector: 'app-step2',

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { languagesData } from 'src/app/extras/data';
+import { languagesData } from 'src/app/extras/localeData';
 
 @Component({
   selector: 'app-add-language',
