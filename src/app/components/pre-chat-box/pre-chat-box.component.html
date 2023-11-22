@@ -1,0 +1,27 @@
+<ion-item lines="none">
+  <div class="message-body">
+    <div class="message-main-sender">
+      <div class="sender">
+        <div class="message-text">
+          {{ tempMsg?.body }}
+          <span class="message-time">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ion-icon
+    name="refresh-circle-outline"
+    *ngIf="tempMsg?.error"
+    color="success"
+    class="ion-padding-end"
+    (click)="resendMessage()"
+  ></ion-icon>
+  <ion-icon
+    *ngIf="tempMsg?.error"
+    name="close-circle-outline"
+    color="danger"
+    (click)="deleteMessage()"
+  ></ion-icon>
+</ion-item>

@@ -1,12 +1,3 @@
-ion-content {
-  --ion-background-color: var(--ion-item-background);
-}
-
-ion-infinite-scroll-content {
-  min-height: 1px;
-}
-
-// Chat Box component styles
 .message-body {
   margin: 0 !important;
   padding: 0 !important;
@@ -14,18 +5,10 @@ ion-infinite-scroll-content {
   height: auto;
 }
 
-.message-main-receiver {
-  padding: 5px !important;
-  float: inline-start;
-  max-width: 80%;
-  width: 35%;
-}
-
 .message-main-sender {
   padding: 5px !important;
   float: inline-end;
   max-width: 80%;
-  width: 30%;
 }
 
 .message-text {
@@ -49,22 +32,10 @@ ion-infinite-scroll-content {
   padding: 5px !important;
 }
 
-.receiver {
-  position: relative;
-  width: auto !important;
-  padding: 10px 30px 15px 10px !important;
-  border-radius: 10px 10px 10px 0;
-  background: var(--ion-color-light) !important;
-  color: var(--ion-color-light-contrast) !important;
-  font-size: 12px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  word-wrap: break-word;
-}
-
 .sender {
   position: relative;
   width: auto !important;
-  background: var(--ion-color-light) !important;
+  background: var(--ion-color-primary) !important;
   color: var(--ion-color-primary-contrast);
   border-radius: 10px 10px 0 10px;
   padding: 10px 30px 15px 10px !important;
