@@ -12,8 +12,16 @@
     </div>
   </div>
   <ion-icon
+    name="refresh-circle-outline"
+    *ngIf="tempMsg?.error"
+    color="success"
+    class="ion-padding-end"
+    (click)="resendMessage()"
+  ></ion-icon>
+  <ion-icon
     *ngIf="tempMsg?.error"
     name="close-circle-outline"
     color="danger"
+    (click)="deleteMessage()"
   ></ion-icon>
 </ion-item>
