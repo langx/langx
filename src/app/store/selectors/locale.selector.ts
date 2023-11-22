@@ -5,12 +5,12 @@ import { LocaleStateInterface } from 'src/app/models/types/states/localeState.in
 export const localeFeatureSelector =
   createFeatureSelector<LocaleStateInterface>('locale');
 
-export const listCountriesSelector = createSelector(
+export const countriesSelector = createSelector(
   localeFeatureSelector,
   (localeState: LocaleStateInterface) => localeState.countries
 );
 
-export const listLanguagesSelector = createSelector(
+export const languagesSelector = createSelector(
   localeFeatureSelector,
   (localeState: LocaleStateInterface) => localeState.languages
 );
