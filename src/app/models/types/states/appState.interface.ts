@@ -1,6 +1,6 @@
 // TODO: Not used yet, but will be used in the future
 import { AuthStateInterface } from './authState.interface';
-import { LocaleStateInterface } from './localeState.interface copy';
+import { LocaleStateInterface } from './localeState.interface';
 import { MessageStateInterface } from './messageState.interface';
 import { RoomStateInterface } from './roomState.interface';
 import { UserStateInterface } from './userState.interface';

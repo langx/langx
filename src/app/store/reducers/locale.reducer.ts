@@ -1,6 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
-import { LocaleStateInterface } from 'src/app/models/types/states/localeState.interface copy';
+import { LocaleStateInterface } from 'src/app/models/types/states/localeState.interface';
 import {
   listCountriesAction,
   listCountriesFailureAction,
