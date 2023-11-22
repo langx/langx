@@ -23,6 +23,7 @@ import {
   updateMessageSeenAction,
   updateMessageSeenSuccessAction,
   updateMessageSeenFailureAction,
+  removeMessageFromTempMessagesAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -257,6 +258,20 @@ const messageReducer = createReducer(
             return msg;
           }),
         },
+      };
+    }
+  ),
+
+  // Remove Message From Temp Messages Reducers
+  on(
+    removeMessageFromTempMessagesAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.filter((msg) => msg.body !== action.payload.body)
+        : null;
+      return {
+        ...state,
+        tempMessages: tempMessages,
       };
     }
   )

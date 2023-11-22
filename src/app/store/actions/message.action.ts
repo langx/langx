@@ -6,6 +6,7 @@ import { listMessagesResponseInterface } from 'src/app/models/types/responses/li
 import { Message } from 'src/app/models/Message';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 
 // Get Messages Actions
 export const getMessagesAction = createAction(
@@ -81,4 +82,10 @@ export const updateMessageSeenSuccessAction = createAction(
 export const updateMessageSeenFailureAction = createAction(
   ActionTypes.UPDATE_MESSAGE_SEEN_FAILURE,
   props<{ error: ErrorInterface }>()
+);
+
+// Remove Message From Temp Messages Actions
+export const removeMessageFromTempMessagesAction = createAction(
+  ActionTypes.REMOVE_MESSAGE_FROM_TEMP_MESSAGES,
+  props<{ payload: tempMessageInterface }>()
 );
