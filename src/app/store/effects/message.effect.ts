@@ -4,18 +4,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
+// Interface Imports
 import { Message } from 'src/app/models/Message';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
+import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+
+// Selector and Action Imports
 import { currentUserSelector } from '../selectors/auth.selector';
 import {
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
-  getMessagesAction,
-  getMessagesFailureAction,
-  getMessagesSuccessAction,
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
@@ -26,30 +27,9 @@ import {
   updateMessageSeenFailureAction,
   updateMessageSeenSuccessAction,
 } from 'src/app/store/actions/message.action';
-import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 @Injectable()
 export class MessageEffects {
-  getMessages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getMessagesAction),
-      switchMap(({ roomId }) =>
-        this.messagesService.listMessages(roomId).pipe(
-          map((payload: listMessagesResponseInterface) =>
-            getMessagesSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getMessagesFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
   getMessagesWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getMessagesWithOffsetAction),
