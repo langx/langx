@@ -1,3 +1,5 @@
+import { FormControl } from '@angular/forms';
+
 export function lastSeen(date: Date) {
   let now = new Date();
   let lastSeen = new Date(date);
@@ -46,4 +48,15 @@ export function nameParts(name: string) {
     result = name;
   }
   return result;
+}
+
+export function dateValidator(control: FormControl) {
+  const value = control.value;
+  const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+
+  if (value && !value.match(datePattern)) {
+    return { dateInvalid: true };
+  }
+
+  return null;
 }
