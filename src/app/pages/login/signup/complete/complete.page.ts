@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { birthdateData, genderData } from 'src/app/extras/localeData';
+import { birthdateData } from 'src/app/extras/localeData'; // TODO: Delete it
 
 import { getAge, nameParts } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
@@ -94,7 +94,6 @@ export class CompletePage implements OnInit, OnDestroy {
         validators: [Validators.required],
       }),
       gender: new FormControl('', { validators: [Validators.required] }),
-      genderValue: new FormControl('', { validators: [Validators.required] }),
       country: new FormControl('', { validators: [Validators.required] }),
       countryCode: new FormControl('', { validators: [Validators.required] }),
     });
@@ -136,23 +135,9 @@ export class CompletePage implements OnInit, OnDestroy {
     },
   ];
 
-  public genderPickerColumns = [
-    {
-      name: 'gender',
-      options: genderData,
-    },
-  ];
-
-  public genderPickerButtons = [
-    { text: 'Cancel', role: 'cancel' },
-    {
-      text: 'Confirm',
-      handler: (value) => {
-        this.form.controls['genderValue'].setValue(value.gender.value);
-        this.form.controls['gender'].setValue(value.gender.text);
-      },
-    },
-  ];
+  genderChange(event) {
+    this.form.controls['gender'].setValue(event.detail.value);
+  }
 
   countryChange(event) {
     this.form.controls['countryCode'].setValue(event.detail.value);
@@ -168,7 +153,7 @@ export class CompletePage implements OnInit, OnDestroy {
       this.presentToast('Please fill all the required fields', 'danger');
       return;
     }
-    // this.complete(this.form);
+    this.complete(this.form);
   }
 
   complete(form: FormGroup) {
@@ -185,7 +170,7 @@ export class CompletePage implements OnInit, OnDestroy {
           birthdate: form.value.birthdateWithDateFormat,
           country: form.value.country,
           countryCode: form.value.countryCode,
-          gender: form.value.genderValue,
+          gender: form.value.gender,
           lastSeen: new Date(),
         };
         this.store.dispatch(
