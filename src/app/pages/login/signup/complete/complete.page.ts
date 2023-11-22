@@ -26,11 +26,11 @@ import { Country } from 'src/app/models/locale/Country';
   styleUrls: ['./complete.page.scss'],
 })
 export class CompletePage implements OnInit, OnDestroy {
-  public progress: number = 0.7;
+  private subscriptions = new Subscription();
 
+  public progress: number = 0.7;
   searchTerm: string;
 
-  private subscriptions = new Subscription();
   form: FormGroup;
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
