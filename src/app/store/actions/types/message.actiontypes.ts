@@ -14,4 +14,7 @@ export enum ActionTypes {
   UPDATE_MESSAGE_SEEN_SUCCESS = '[Message] Update Message Seen Success',
   UPDATE_MESSAGE_SEEN_FAILURE = '[Message] Update Message Seen Failure',
   REMOVE_MESSAGE_FROM_TEMP_MESSAGES = '[Message] Delete From Temp Messages',
+  RESEND_MESSAGE_FROM_TEMP_MESSAGES = '[Message] Resend From Temp Messages',
+  RESEND_MESSAGE_FROM_TEMP_MESSAGES_SUCCESS = '[Message] Resend From Temp Messages Success',
+  RESEND_MESSAGE_FROM_TEMP_MESSAGES_FAILURE = '[Message] Resend From Temp Messages Failure',
 }
