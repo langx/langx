@@ -3,6 +3,8 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, from, map, of, switchMap } from 'rxjs';
 
+import { Languages } from 'src/app/models/locale/Languages';
+import { Countries } from 'src/app/models/locale/Countries';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { ApiService } from 'src/app/services/api/api.service';
 import {
@@ -21,7 +23,7 @@ export class LocaleEffects {
       ofType(listCountriesAction),
       switchMap(() => {
         return from(this.api.listCountries()).pipe(
-          map((payload: any[]) => {
+          map((payload: Countries) => {
             return listCountriesSuccessAction({ payload });
           }),
 
@@ -41,7 +43,7 @@ export class LocaleEffects {
       ofType(listLanguagesAction),
       switchMap(() => {
         return from(this.api.listLanguages()).pipe(
-          map((payload: any[]) => {
+          map((payload: Languages) => {
             return listLanguagesSuccessAction({ payload });
           }),
 
