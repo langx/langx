@@ -24,6 +24,9 @@ import {
   updateMessageSeenSuccessAction,
   updateMessageSeenFailureAction,
   removeMessageFromTempMessagesAction,
+  resendMessageFromTempMessagesAction,
+  resendMessageFromTempMessagesSuccessAction,
+  resendMessageFromTempMessagesFailureAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -272,6 +275,57 @@ const messageReducer = createReducer(
       return {
         ...state,
         tempMessages: tempMessages,
+      };
+    }
+  ),
+  on(
+    resendMessageFromTempMessagesAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.map((msg) =>
+            msg.body === action.request.body ? { ...msg, error: null } : msg
+          )
+        : null;
+      return {
+        ...state,
+        isLoading: true,
+        error: null,
+        tempMessages: tempMessages,
+      };
+    }
+  ),
+  on(
+    resendMessageFromTempMessagesSuccessAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
+        : null;
+      const updatedRoom = {
+        ...state.room,
+        messages: [...state.room.messages, action.payload],
+      };
+      return {
+        ...state,
+        room: updatedRoom,
+        tempMessages: tempMessages,
+        isLoading: false,
+      };
+    }
+  ),
+  on(
+    resendMessageFromTempMessagesFailureAction,
+    (state, action): MessageStateInterface => {
+      const tempMessages = state.tempMessages
+        ? state.tempMessages.map((msg) =>
+            msg.body === action.payload?.body
+              ? { ...msg, error: action.error }
+              : msg
+          )
+        : null;
+      return {
+        ...state,
+        tempMessages: tempMessages,
+        isLoading: false,
       };
     }
   )

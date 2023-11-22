@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { createEffect, ofType, Actions } from '@ngrx/effects';
+import { createEffect, ofType, Actions, act } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
+import { catchError, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 
+import { Message } from 'src/app/models/Message';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
-import { Message } from 'src/app/models/Message';
+import { currentUserSelector } from '../selectors/auth.selector';
 import {
   createMessageAction,
   createMessageFailureAction,
@@ -17,10 +19,14 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
+  resendMessageFromTempMessagesAction,
+  resendMessageFromTempMessagesFailureAction,
+  resendMessageFromTempMessagesSuccessAction,
   updateMessageSeenAction,
   updateMessageSeenFailureAction,
   updateMessageSeenSuccessAction,
 } from 'src/app/store/actions/message.action';
+import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 @Injectable()
 export class MessageEffects {
@@ -102,8 +108,43 @@ export class MessageEffects {
     )
   );
 
+  resendMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resendMessageFromTempMessagesAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      mergeMap(([action, currentUser]) => {
+        const newRequest: createMessageRequestInterface = {
+          roomId: action.request.roomId,
+          to: action.request.to,
+          body: action.request.body,
+        };
+
+        return this.messagesService
+          .createMessage(newRequest, currentUser.$id)
+          .pipe(
+            map((payload: Message) =>
+              resendMessageFromTempMessagesSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(
+                resendMessageFromTempMessagesFailureAction({
+                  error,
+                  payload: action.request,
+                })
+              );
+            })
+          );
+      })
+    )
+  );
+
   constructor(
     private actions$: Actions,
+    private store: Store,
     private messagesService: MessageService
   ) {}
 }
