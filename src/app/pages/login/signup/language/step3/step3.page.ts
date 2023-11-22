@@ -4,7 +4,7 @@ import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { languagesData } from 'src/app/extras/data';
+import { languagesData } from 'src/app/extras/localeData';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 
-import { languagesData } from 'src/app/extras/data';
+import { languagesData } from 'src/app/extras/localeData';
 
 @Component({
   selector: 'app-step1',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { countryData } from 'src/app/extras/data';
+import { countryData } from 'src/app/extras/localeData';
 import { Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
