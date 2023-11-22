@@ -8,8 +8,13 @@
         size="large"
         slot="icon-only"
         shape="round"
+        class="icon-wrapper"
       >
         <ion-icon name="filter-outline"></ion-icon>
+        <div
+          class="red-dot"
+          *ngIf="filterData?.country || filterData?.gender || filterData?.languages.length > 0 || filterData?.maxAge || filterData?.minAge"
+        ></div>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
