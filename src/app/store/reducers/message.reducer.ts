@@ -14,9 +14,6 @@ import {
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
-  getMessagesAction,
-  getMessagesFailureAction,
-  getMessagesSuccessAction,
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
@@ -40,35 +37,7 @@ const initialState: MessageStateInterface = {
 const messageReducer = createReducer(
   initialState,
 
-  // Get Messages Reducers
-  on(
-    getMessagesAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      isLoading: true,
-      error: null,
-    })
-  ),
-  on(
-    getMessagesSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      room: {
-        ...state.room,
-        total: action.payload?.total,
-        messages: action.payload?.documents,
-      },
-    })
-  ),
-  on(
-    getMessagesFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
+  // Get Messages With Offset Reducers
   on(
     getMessagesWithOffsetAction,
     (state): MessageStateInterface => ({
@@ -116,7 +85,6 @@ const messageReducer = createReducer(
     const tempMessages = state.tempMessages
       ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
       : null;
-    console.log('tempMessages', tempMessages);
     return {
       ...state,
       isLoading: false,

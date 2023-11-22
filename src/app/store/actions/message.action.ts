@@ -8,23 +8,7 @@ import { createMessageRequestInterface } from 'src/app/models/types/requests/cre
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 
-// Get Messages Actions
-export const getMessagesAction = createAction(
-  ActionTypes.GET_MESSAGES,
-  // TODO: Create interface for this request
-  props<{ roomId: string }>()
-);
-
-export const getMessagesSuccessAction = createAction(
-  ActionTypes.GET_MESSAGES_SUCCESS,
-  props<{ payload: listMessagesResponseInterface }>()
-);
-
-export const getMessagesFailureAction = createAction(
-  ActionTypes.GET_MESSAGES_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
+// Get Messages With Offset Actions
 export const getMessagesWithOffsetAction = createAction(
   ActionTypes.GET_MESSAGES_WITH_OFFSET,
   // TODO: Create interface for this request
