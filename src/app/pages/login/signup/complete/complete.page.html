@@ -28,7 +28,8 @@
 
     <ion-item lines="full">
       <ion-input
-        id="picker-gender"
+        id="gender-modal"
+        class="capitalize"
         formControlName="gender"
         label="Gender"
         labelPlacement="floating"
@@ -37,12 +38,6 @@
         required
       >
       </ion-input>
-      <ion-picker
-        trigger="picker-gender"
-        [columns]="genderPickerColumns"
-        [buttons]="genderPickerButtons"
-      >
-      </ion-picker>
     </ion-item>
 
     <ion-item lines="full">
@@ -113,4 +108,39 @@
       </ion-list>
     </ion-content>
   </ng-template>
+</ion-modal>
+
+<!-- Gender Modal -->
+<ion-modal
+  #genderModal
+  trigger="gender-modal"
+  class="modalClass"
+  [initialBreakpoint]="1"
+  [breakpoints]="[0, 1]"
+>
+  <div class="block">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Gender</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="genderModal.dismiss()" color="primary"
+              >Confirm</ion-button
+            >
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-radio-group (ionChange)="genderChange($event)">
+        <ion-list>
+          <ion-item> <ion-radio value="male">Male</ion-radio><br /> </ion-item>
+          <ion-item>
+            <ion-radio value="female">Female</ion-radio><br />
+          </ion-item>
+          <ion-item>
+            <ion-radio value="other">Other</ion-radio>
+          </ion-item>
+        </ion-list>
+      </ion-radio-group>
+    </ng-template>
+  </div>
 </ion-modal>
