@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/messages"></ion-back-button>
       <ion-avatar
-        (click)="goProfile(user.$id)"
+        (click)="redirectUserProfile()"
         style="width: 40px; height: 40px"
         class="ion-margin-start"
       >
@@ -16,7 +16,7 @@
         <ion-icon slot="icon-only" name="search-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title (click)="goProfile(user.$id)">
+    <ion-title (click)="redirectUserProfile()">
       {{(user$ | async)?.name}}
     </ion-title>
   </ion-toolbar>

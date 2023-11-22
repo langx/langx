@@ -53,7 +53,6 @@ export class ChatPage implements OnInit {
 
   isTyping: boolean = false;
   roomId: string;
-  user: User; // TODO: Remove this
 
   model = {
     icon: 'chatbubbles-outline',
@@ -220,12 +219,12 @@ export class ChatPage implements OnInit {
     this.content.scrollToBottom(300);
   }
 
-  // TODO: Fix this bug
-  // Navigate to user profile page
-  goProfile(uid: string) {
-    console.log('goProfile clicked');
-    console.log('uid: ', uid);
-    this.router.navigateByUrl(`/home/user/${uid}`);
+  redirectUserProfile() {
+    this.user$
+      .subscribe((user) => {
+        this.router.navigateByUrl(`/home/user/${user.$id}`);
+      })
+      .unsubscribe();
   }
 
   // TODO: Do we need this function?
