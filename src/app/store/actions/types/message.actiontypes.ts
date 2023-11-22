@@ -13,4 +13,5 @@ export enum ActionTypes {
   UPDATE_MESSAGE_SEEN = '[Message] Update Message Seen',
   UPDATE_MESSAGE_SEEN_SUCCESS = '[Message] Update Message Seen Success',
   UPDATE_MESSAGE_SEEN_FAILURE = '[Message] Update Message Seen Failure',
+  REMOVE_MESSAGE_FROM_TEMP_MESSAGES = '[Message] Delete From Temp Messages',
 }
