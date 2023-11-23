@@ -1,26 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
-import { StorageService } from 'src/app/services/storage/storage.service';
-import { FilterService } from 'src/app/services/filter/filter.service';
+// Interface Imports
 import { User } from 'src/app/models/User';
 import { Account } from 'src/app/models/Account';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
-import { roomsSelector } from 'src/app/store/selectors/room.selector';
+
+// Service Imports
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { FilterService } from 'src/app/services/filter/filter.service';
+
+// Action Imports
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
   getUsersAction,
   getUsersWithOffsetAction,
 } from 'src/app/store/actions/users.action';
+
+// Selector Imports
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
 import {
-  isLoadingSelector,
+  isLoadingSelector as isLoadingUserStateSelector,
   usersSelector,
   totalSelector,
   errorSelector,
@@ -32,13 +40,14 @@ import {
   styleUrls: ['./community.page.scss'],
 })
 export class CommunityPage implements OnInit {
-  subscription: Subscription = new Subscription();
+  subscription: Subscription;
 
   filter$: any;
   filterData: FilterDataInterface;
 
   currentUser$: Observable<Account>;
-  isLoading$: Observable<boolean>;
+  isLoadingUserState$: Observable<boolean>;
+  isLoadingRoomState$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
 
@@ -49,37 +58,28 @@ export class CommunityPage implements OnInit {
     private router: Router,
     private filterService: FilterService,
     private storageService: StorageService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController
   ) {}
 
   async ngOnInit() {
     // Init values
     this.initValues();
 
-    // List Users
-    // It triggers after subscribing to the filter
-    // this.listUsers();
-
     // Check Local Storage for filters
     await this.checkLocalStorage();
     await this.checkFilter();
   }
 
-  ngOnDestroy() {
-    this.filter$.unsubscribe();
-    console.log('filters unsubscribed');
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
 
-    // Unsubscribe from all subscriptions
-    this.subscription.unsubscribe();
-  }
-
-  initValues(): void {
-    this.currentUser$ = this.store.pipe(select(accountSelector));
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.users$ = this.store.pipe(select(usersSelector));
-    this.total$ = this.store.pipe(select(totalSelector));
-
-    this.rooms$ = this.store.pipe(select(roomsSelector));
+    // Loading
+    this.subscription.add(
+      this.isLoadingRoomState$.subscribe((isLoading) => {
+        this.loadingController(isLoading);
+      })
+    );
 
     // User Errors
     this.subscription.add(
@@ -91,6 +91,35 @@ export class CommunityPage implements OnInit {
           }
         })
     );
+  }
+
+  ionViewDidLeave() {
+    // If loadingCtrl is active, dismiss it
+    if (this.loadingOverlay) {
+      this.loadingOverlay.dismiss();
+    }
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
+  ngOnDestroy() {
+    this.filter$.unsubscribe();
+    console.log('filters unsubscribed');
+  }
+
+  initValues(): void {
+    // Set values from selectors
+    this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.users$ = this.store.pipe(select(usersSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
+    this.isLoadingUserState$ = this.store.pipe(
+      select(isLoadingUserStateSelector)
+    );
+    this.isLoadingRoomState$ = this.store.pipe(
+      select(isLoadingRoomStateSelector)
+    );
+
+    this.rooms$ = this.store.pipe(select(roomsSelector));
   }
 
   //
@@ -255,5 +284,33 @@ export class CommunityPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //
+  // Loading Controller
+  //
+
+  private loadingOverlay: HTMLIonLoadingElement;
+  private isLoadingOverlayActive = false;
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
+        this.isLoadingOverlayActive = true;
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive = false;
+      }
+    } else if (
+      this.loadingOverlay &&
+      this.loadingOverlay.present &&
+      !this.isLoadingOverlayActive
+    ) {
+      this.isLoadingOverlayActive = true;
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive = false;
+    }
   }
 }
