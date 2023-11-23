@@ -7,5 +7,6 @@ export interface MessageStateInterface {
   isLoading_offset: boolean;
   tempMessages: tempMessageInterface[] | null;
   room: RoomExtendedInterface | null;
+  imageUrl: URL | null;
   error: ErrorInterface | null;
 }
