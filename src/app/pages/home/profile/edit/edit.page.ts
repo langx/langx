@@ -160,11 +160,11 @@ export class EditPage implements OnInit {
         if (data?.data) {
           // URL to Blob
           let blob: Blob = this.dataURLtoBlob(data.data);
-          console.log(`Original size: ${blob.size}`);
+          // console.log(`Original size: ${blob.size}`);
 
           // Check size of the file here
           blob = await this.checkFileSize(blob);
-          console.log(`Final size: ${blob.size}`);
+          // console.log(`Final size: ${blob.size}`);
 
           // Blob to File
           let file = new File([blob], this.currentUser.$id, {
@@ -198,14 +198,13 @@ export class EditPage implements OnInit {
     }
   }
 
-  // TODO: Delete logs
   // TODO: Move end of the file under utils
   async checkFileSize(
     blob: Blob,
     quality: number = 0.6,
     attempts: number = 0
   ): Promise<Blob> {
-    console.log(`Checking size: ${blob.size}`);
+    // console.log(`Checking size: ${blob.size}`);
     if (blob.size > 2000000 && attempts < 5) {
       // limit to 5 attempts
       const compressedBlob = await this.compressImage(blob, quality);
@@ -219,11 +218,11 @@ export class EditPage implements OnInit {
       new Compressor(blob, {
         quality: quality,
         success: (result: Blob) => {
-          console.log(`Compressed from ${blob.size} to ${result.size}`);
+          // console.log(`Compressed from ${blob.size} to ${result.size}`);
           resolve(result);
         },
         error: (error: Error) => {
-          console.log(`Compression error: ${error.message}`);
+          // console.log(`Compression error: ${error.message}`);
           reject(error);
         },
       });
