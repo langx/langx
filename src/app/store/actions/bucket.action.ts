@@ -35,3 +35,19 @@ export const uploadOtherPhotosFailureAction = createAction(
   ActionTypes.UPLOAD_OTHER_PHOTOS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Upload Image For Message
+export const uploadImageForMessageAction = createAction(
+  ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE,
+  props<{ request: File }>()
+);
+
+export const uploadImageForMessageSuccessAction = createAction(
+  ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE_SUCCESS,
+  props<{ payload: URL }>()
+);
+
+export const uploadImageForMessageFailureAction = createAction(
+  ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
