@@ -106,9 +106,6 @@ export class CommunityPage implements OnInit {
         }
       });
 
-    // Log
-    console.log('Community Page left');
-
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
