@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
@@ -94,10 +94,21 @@ export class CommunityPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    // If loadingCtrl is active, dismiss it
-    if (this.loadingOverlay) {
-      this.loadingOverlay.dismiss();
-    }
+    this.isLoadingOverlayActive
+      .pipe(
+        filter((isActive) => !isActive),
+        take(1)
+      )
+      .subscribe(async () => {
+        if (this.loadingOverlay) {
+          await this.loadingOverlay.dismiss();
+          this.loadingOverlay = undefined;
+        }
+      });
+
+    // Log
+    console.log('Community Page left');
+
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
@@ -291,26 +302,22 @@ export class CommunityPage implements OnInit {
   //
 
   private loadingOverlay: HTMLIonLoadingElement;
-  private isLoadingOverlayActive = false;
+  isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
   async loadingController(isLoading: boolean) {
     if (isLoading) {
-      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
-        this.isLoadingOverlayActive = true;
+      if (!this.loadingOverlay) {
+        this.isLoadingOverlayActive.next(true);
         this.loadingOverlay = await this.loadingCtrl.create({
           message: 'Please wait...',
         });
         await this.loadingOverlay.present();
-        this.isLoadingOverlayActive = false;
+        this.isLoadingOverlayActive.next(false);
       }
-    } else if (
-      this.loadingOverlay &&
-      this.loadingOverlay.present &&
-      !this.isLoadingOverlayActive
-    ) {
-      this.isLoadingOverlayActive = true;
+    } else if (this.loadingOverlay) {
+      this.isLoadingOverlayActive.next(true);
       await this.loadingOverlay.dismiss();
       this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive = false;
+      this.isLoadingOverlayActive.next(false);
     }
   }
 }
