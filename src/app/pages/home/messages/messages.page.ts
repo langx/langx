@@ -34,7 +34,6 @@ export class MessagesPage implements OnInit {
   total$: Observable<number | null> = null;
 
   currentUserId: string = null;
-  isLoadingCtrlActive: boolean = false;
 
   model = {
     icon: 'chatbubbles-outline',
