@@ -22,7 +22,6 @@ import { logoutAction } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
   currentUserSelector,
-  isLoadingSelector,
   profileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
@@ -66,7 +65,6 @@ export class ProfilePage implements OnInit {
 
   currentUser$: Observable<User | null> = null;
   account$: Observable<Account | null> = null;
-  isLoading$: Observable<boolean> = null;
 
   currentUserId: string | null = null;
   studyLanguages: Language[] = [];
@@ -105,7 +103,6 @@ export class ProfilePage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.account$ = this.store.pipe(select(accountSelector));
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
     // Set currentUser
     this.currentUser$.subscribe((user) => {

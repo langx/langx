@@ -25,11 +25,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content
-  *ngIf="!(isLoading$ | async)"
-  class="ion-padding"
-  [fullscreen]="true"
->
+<ion-content class="ion-padding" [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -172,60 +168,6 @@
     </ion-card-content>
   </ion-card>
 </ion-content>
-
-<!-------------------->
-<!-- SKELETON start -->
-<!-------------------->
-
-<ion-content
-  *ngIf="(isLoading$ | async)"
-  class="ion-padding"
-  [fullscreen]="true"
->
-  <ion-card *ngFor="let i of '01'.split('')">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-skeleton-text
-          [animated]="true"
-          style="width: 80px"
-        ></ion-skeleton-text
-      ></ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list class="hasIcon">
-        <ion-item>
-          <ion-label>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 80px"
-            ></ion-skeleton-text
-          ></ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 80px"
-            ></ion-skeleton-text
-          ></ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>
-            <ion-skeleton-text
-              [animated]="true"
-              style="width: 80px"
-            ></ion-skeleton-text
-          ></ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-</ion-content>
-
-<!------------------>
-<!-- MODALS start -->
-<!------------------>
 
 <ion-modal
   trigger="settings-modal"
