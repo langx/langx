@@ -1,11 +1,15 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController, ToastController } from '@ionic/angular';
 import Compressor from 'compressorjs';
+import {
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 
 // Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -53,7 +57,8 @@ export class EditPage implements OnInit {
   constructor(
     private store: Store,
     private modalCtrl: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -345,5 +350,29 @@ export class EditPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //
+  // Loading Controller
+  //
+
+  private loadingOverlay: HTMLIonLoadingElement;
+  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay) {
+        this.isLoadingOverlayActive.next(true);
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive.next(false);
+      }
+    } else if (this.loadingOverlay) {
+      this.isLoadingOverlayActive.next(true);
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive.next(false);
+    }
   }
 }
