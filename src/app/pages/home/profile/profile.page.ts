@@ -97,7 +97,7 @@ export class ProfilePage implements OnInit {
       });
   }
 
-  ionViewDidLeave() {
+  ionViewWillLeave() {
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
