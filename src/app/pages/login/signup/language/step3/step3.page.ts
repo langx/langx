@@ -139,7 +139,7 @@ export class Step3Page implements OnInit, OnDestroy {
     // Add userId to each language and fill languageArray with language codes
     languages.forEach((lang) => {
       lang.userId = userId;
-      languageArray.push(lang.code);
+      languageArray.push(lang.name);
     });
     console.log('languages:', languages);
 
