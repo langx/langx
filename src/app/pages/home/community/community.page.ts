@@ -93,7 +93,7 @@ export class CommunityPage implements OnInit {
     );
   }
 
-  ionViewDidLeave() {
+  ionViewWillLeave() {
     // If loadingCtrl is active, dismiss it
     if (this.loadingOverlay) {
       this.loadingOverlay.dismiss();
