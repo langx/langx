@@ -110,13 +110,13 @@ export class ProfilePage implements OnInit {
     });
 
     // isLoading
-    this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
-      if (isLoading) {
-        this.loadingController(true);
-      } else {
-        this.loadingController(false);
-      }
-    });
+    // this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+    //   if (isLoading) {
+    //     this.loadingController(true);
+    //   } else {
+    //     this.loadingController(false);
+    //   }
+    // });
 
     // profileError Handling
     this.store
