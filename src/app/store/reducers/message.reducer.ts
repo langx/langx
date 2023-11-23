@@ -9,6 +9,10 @@ import {
   findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
+  uploadImageForMessageFailureAction,
+  uploadImageForMessageSuccessAction,
+} from 'src/app/store/actions/bucket.action';
+import {
   activateRoomAction,
   deactivateRoomAction,
   createMessageAction,
@@ -31,6 +35,7 @@ const initialState: MessageStateInterface = {
   isLoading_offset: false,
   tempMessages: null,
   room: null,
+  imageUrl: null,
   error: null,
 };
 
@@ -296,6 +301,22 @@ const messageReducer = createReducer(
         isLoading: false,
       };
     }
+  ),
+
+  // Image Upload For Message
+  on(
+    uploadImageForMessageSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      imageUrl: action.payload,
+    })
+  ),
+  on(
+    uploadImageForMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
   )
 );
 
