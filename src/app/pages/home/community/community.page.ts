@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FilterService } from 'src/app/services/filter/filter.service';
@@ -32,6 +32,8 @@ import {
   styleUrls: ['./community.page.scss'],
 })
 export class CommunityPage implements OnInit {
+  subscription: Subscription = new Subscription();
+
   filter$: any;
   filterData: FilterDataInterface;
 
@@ -66,6 +68,9 @@ export class CommunityPage implements OnInit {
   ngOnDestroy() {
     this.filter$.unsubscribe();
     console.log('filters unsubscribed');
+
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValues(): void {
@@ -77,13 +82,15 @@ export class CommunityPage implements OnInit {
     this.rooms$ = this.store.pipe(select(roomsSelector));
 
     // User Errors
-    this.store
-      .pipe(select(errorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-        }
-      });
+    this.subscription.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
   }
 
   //
