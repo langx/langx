@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Client, Databases, Account } from 'appwrite';
+import { Client, Databases, Account, Locale } from 'appwrite';
 
 import { environment } from 'src/environments/environment';
 
@@ -10,6 +10,7 @@ export class ApiService {
   client: Client = new Client();
   database: Databases;
   account: Account;
+  locale: Locale;
 
   constructor() {
     this.init();
@@ -22,6 +23,7 @@ export class ApiService {
 
     this.database = new Databases(this.client);
     this.account = new Account(this.client);
+    this.locale = new Locale(this.client);
   }
 
   // TODO: check if this is needed, or if we can use directly the this.client
@@ -87,5 +89,14 @@ export class ApiService {
       collectionId,
       documentId
     );
+  }
+
+  // Locale API
+  listCountries(): Promise<any> {
+    return this.locale.listCountries();
+  }
+
+  listLanguages(): Promise<any> {
+    return this.locale.listLanguages();
   }
 }

@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
-import { languagesData } from 'src/app/extras/data';
+import { Language } from 'src/app/models/locale/Language';
+import { Languages } from 'src/app/models/locale/Languages';
+import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
   selector: 'app-step1',
@@ -12,20 +16,36 @@ import { languagesData } from 'src/app/extras/data';
 export class Step1Page implements OnInit {
   public progress: number = 0.33;
   isLoading: boolean = false;
-  public languages = languagesData;
   term: string;
+
+  languages$: Observable<Languages> = null;
+  languages: Language[];
 
   motherLanguage: string;
 
   constructor(
+    private store: Store,
     private router: Router,
     private toastController: ToastController
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initValues();
+  }
+
+  initValues() {
+    this.languages$ = this.store.pipe(select(languagesSelector));
+    this.languages$
+      .subscribe((data) => {
+        this.languages = data?.languages;
+      })
+      .unsubscribe();
+  }
 
   radioChecked(event) {
+    console.log(event.detail.value);
     this.motherLanguage = event.detail.value;
+    console.log(this.motherLanguage);
   }
 
   onSubmit() {

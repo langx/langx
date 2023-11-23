@@ -32,7 +32,9 @@
         <ion-searchbar [(ngModel)]="search"></ion-searchbar>
         <ion-row>
           <ion-col value="start">
-            <ion-item *ngFor="let lang of languages | customFilter: search">
+            <ion-item
+              *ngFor="let lang of (languages$ | async)?.languages | customFilter: search"
+            >
               <ion-checkbox
                 (ionChange)="checkboxChange($event, lang.code)"
                 value="{{lang.code}}"

@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { countryData, birthdateData, genderData } from 'src/app/extras/data';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
-import { getAge, nameParts } from 'src/app/extras/utils';
+import { getAge, nameParts, dateValidator } from 'src/app/extras/utils';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { completeRegistrationAction } from 'src/app/store/actions/auth.action';
 import { Account } from 'src/app/models/Account';
+import { Countries } from 'src/app/models/locale/Countries';
+import { Country } from 'src/app/models/locale/Country';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { countriesSelector } from 'src/app/store/selectors/locale.selector';
 import {
   accountSelector,
   isLoadingSelector,
@@ -21,13 +24,23 @@ import {
   templateUrl: './complete.page.html',
   styleUrls: ['./complete.page.scss'],
 })
-export class CompletePage implements OnInit {
+export class CompletePage implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
+
   public progress: number = 0.7;
+  searchTerm: string;
+
   form: FormGroup;
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
+  countries$: Observable<Countries>;
+  countyData: Country[];
 
-  constructor(private store: Store, private toastController: ToastController) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -38,121 +51,103 @@ export class CompletePage implements OnInit {
     this.form.reset();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   initValues(): void {
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
+    // Countries values
+    this.countries$ = this.store.pipe(select(countriesSelector));
+    this.subscriptions.add(
+      this.countries$.subscribe((countries: Countries) => {
+        this.countyData = countries?.countries;
+      })
+    );
+
+    // Disable Form if loading
+    this.subscriptions.add(
+      this.isLoading$.subscribe((isLoading: boolean) => {
+        if (isLoading) {
+          this.form.disable();
+        } else {
+          this.form.enable();
+        }
+      })
+    );
+
     // Present Toast if error
-    this.store
-      .pipe(select(registerValidationErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error) this.presentToast(error.message, 'danger');
-      });
+    this.subscriptions.add(
+      this.store
+        .pipe(select(registerValidationErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) this.presentToast(error.message, 'danger');
+        })
+    );
   }
 
   initForm() {
     this.form = new FormGroup({
-      birthdate: new FormControl('', { validators: [Validators.required] }),
-      birthdateWithDateFormat: new FormControl('', {
-        validators: [Validators.required],
+      birthdate: new FormControl('', {
+        validators: [Validators.required, dateValidator],
       }),
       gender: new FormControl('', { validators: [Validators.required] }),
-      genderValue: new FormControl('', { validators: [Validators.required] }),
       country: new FormControl('', { validators: [Validators.required] }),
       countryCode: new FormControl('', { validators: [Validators.required] }),
     });
   }
 
-  public birthdatePickerColumns = [
-    {
-      name: 'day',
-      options: birthdateData.day,
-    },
-    {
-      name: 'month',
-      options: birthdateData.month,
-    },
-    {
-      name: 'year',
-      options: birthdateData.year,
-    },
-  ];
+  genderChange(event) {
+    this.form.controls['gender'].setValue(event.detail.value);
+  }
 
-  public birthdatePickerButtons = [
-    { text: 'Cancel', role: 'cancel' },
-    {
-      text: 'Confirm',
-      handler: (value) => {
-        let val =
-          value.day.text + '/' + value.month.value + '/' + value.year.text;
-        let newDate = new Date(val);
-        if (getAge(newDate) < 13) {
-          this.presentToast(
-            'You must be at least 13 years old to use this app',
-            'danger'
-          );
-        } else {
-          this.form.controls['birthdate'].setValue(val);
-          this.form.controls['birthdateWithDateFormat'].setValue(newDate);
-        }
-      },
-    },
-  ];
-
-  public genderPickerColumns = [
-    {
-      name: 'gender',
-      options: genderData,
-    },
-  ];
-
-  public genderPickerButtons = [
-    { text: 'Cancel', role: 'cancel' },
-    {
-      text: 'Confirm',
-      handler: (value) => {
-        this.form.controls['genderValue'].setValue(value.gender.value);
-        this.form.controls['gender'].setValue(value.gender.text);
-      },
-    },
-  ];
-
-  public countryPickerColumns = [
-    {
-      name: 'country',
-      options: countryData,
-    },
-  ];
-
-  public countryPickerButtons = [
-    { text: 'Cancel', role: 'cancel' },
-    {
-      text: 'Confirm',
-      handler: (value) => {
-        this.form.controls['country'].setValue(value.country.text);
-        this.form.controls['countryCode'].setValue(value.country.value);
-      },
-    },
-  ];
+  countryChange(event) {
+    this.form.controls['countryCode'].setValue(event.detail.value);
+    const country = this.countyData?.find(
+      (country) => country.code === event.detail.value
+    );
+    this.form.controls['country'].setValue(country?.name);
+  }
 
   async onSubmit() {
     console.log('form.value:', this.form.value);
+
+    // Check form is valid
     if (!this.form.valid) {
       this.presentToast('Please fill all the required fields', 'danger');
       return;
     }
+
+    // Check age is at least 13
+    if (getAge(new Date(this.form.value.birthdate)) < 13) {
+      this.presentToast(
+        'You must be at least 13 years old to use this app',
+        'danger'
+      );
+      return;
+    }
+
+    // Complete registration
     this.complete(this.form);
   }
 
   complete(form: FormGroup) {
     this.account$
       .subscribe((account: Account | null) => {
+        // TODO: If guard works fine for the complete page, this should not be needed
+        if (!account) {
+          this.router.navigate(['/login']);
+          this.presentToast('Please login or register again', 'danger');
+          return;
+        }
         const request: CompleteRegistrationRequestInterface = {
-          name: nameParts(account.name),
-          birthdate: form.value.birthdateWithDateFormat,
+          name: nameParts(account?.name),
+          birthdate: new Date(form.value.birthdate),
           country: form.value.country,
           countryCode: form.value.countryCode,
-          gender: form.value.genderValue,
+          gender: form.value.gender,
           lastSeen: new Date(),
         };
         this.store.dispatch(

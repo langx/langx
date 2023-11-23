@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
-import { StorageService } from './services/storage/storage.service';
-import { FcmService } from './services/fcm/fcm.service';
 import { register } from 'swiper/element/bundle';
+import { Store } from '@ngrx/store';
+
+import { StorageService } from 'src/app/services/storage/storage.service';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
+import {
+  listCountriesAction,
+  listLanguagesAction,
+} from 'src/app/store/actions/locale.action';
 
 register();
 
@@ -12,12 +18,24 @@ register();
 })
 export class AppComponent {
   constructor(
+    private store: Store,
     private storageService: StorageService,
     private fcmService: FcmService
   ) {}
 
   async ngOnInit() {
+    await this.initValues();
+  }
+
+  async initValues() {
+    // Check theme
     await this.checkTheme();
+
+    // Init Locale
+    this.store.dispatch(listCountriesAction());
+    this.store.dispatch(listLanguagesAction());
+
+    // FCM Service listener
     this.fcmService.listenerPush();
   }
 
