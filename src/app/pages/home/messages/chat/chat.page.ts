@@ -23,6 +23,7 @@ import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interfa
 // Selector and Action Imports
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
+import { uploadImageForMessageAction } from 'src/app/store/actions/bucket.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -325,11 +326,11 @@ export class ChatPage implements OnInit, OnDestroy {
           });
 
           // Upload File
-          //   this.store.dispatch(
-          //     uploadImageForMessageAction({
-          //       request: file,
-          //     })
-          //   );
+          this.store.dispatch(
+            uploadImageForMessageAction({
+              request: file,
+            })
+          );
         } else {
           this.presentToast('Image not selected properly.', 'danger');
         }
