@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
-import { FcmService } from 'src/app/services/fcm/fcm.service';
-import { lastSeen } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { lastSeen } from 'src/app/extras/utils';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
@@ -27,6 +27,7 @@ import {
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
+  subscription: Subscription;
   currentUser$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
@@ -56,6 +57,26 @@ export class MessagesPage implements OnInit {
     //await this.listRooms();
   }
 
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+  }
+
+  ionViewDidLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
   initValues() {
     this.currentUser$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
@@ -70,15 +91,6 @@ export class MessagesPage implements OnInit {
         }
       })
       .unsubscribe();
-
-    // Present Toast if error
-    this.store
-      .pipe(select(errorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-        }
-      });
   }
 
   listRooms() {
