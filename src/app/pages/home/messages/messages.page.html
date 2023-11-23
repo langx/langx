@@ -95,6 +95,46 @@
         <!------------------>
       </ion-card-content>
     </ion-card>
+
+    <!-------------------->
+    <!-- SKELETON start -->
+    <!-------------------->
+
+    <ion-card *ngIf="(rooms$ | async)?.length == null">
+      <ion-card-content>
+        <ion-list *ngIf="(isLoading$ | async)">
+          <ion-item *ngFor="let i of '01234'.split('')">
+            <ion-thumbnail slot="start">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 80%"
+                ></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 60%"
+                ></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 30%"
+                ></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+
+        <!------------------>
+        <!-- SKELETON end -->
+        <!------------------>
+      </ion-card-content>
+    </ion-card>
   </ng-container>
   <ion-infinite-scroll (ionInfinite)="loadMore($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
