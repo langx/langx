@@ -198,37 +198,6 @@ export class EditPage implements OnInit {
     }
   }
 
-  // TODO: Move end of the file under utils
-  async checkFileSize(
-    blob: Blob,
-    quality: number = 0.6,
-    attempts: number = 0
-  ): Promise<Blob> {
-    // console.log(`Checking size: ${blob.size}`);
-    if (blob.size > 2000000 && attempts < 5) {
-      // limit to 5 attempts
-      const compressedBlob = await this.compressImage(blob, quality);
-      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
-    }
-    return blob;
-  }
-
-  compressImage(blob: Blob, quality: number): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      new Compressor(blob, {
-        quality: quality,
-        success: (result: Blob) => {
-          // console.log(`Compressed from ${blob.size} to ${result.size}`);
-          resolve(result);
-        },
-        error: (error: Error) => {
-          // console.log(`Compression error: ${error.message}`);
-          reject(error);
-        },
-      });
-    });
-  }
-
   deletePP() {
     this.presentToast('At least one profile picture required.', 'danger');
   }
@@ -366,6 +335,36 @@ export class EditPage implements OnInit {
       u8arr[n] = bstr.charCodeAt(n);
     }
     return new Blob([u8arr], { type: mime });
+  }
+
+  private async checkFileSize(
+    blob: Blob,
+    quality: number = 0.6,
+    attempts: number = 0
+  ): Promise<Blob> {
+    // console.log(`Checking size: ${blob.size}`);
+    if (blob.size > 2000000 && attempts < 5) {
+      // limit to 5 attempts
+      const compressedBlob = await this.compressImage(blob, quality);
+      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
+    }
+    return blob;
+  }
+
+  private compressImage(blob: Blob, quality: number): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      new Compressor(blob, {
+        quality: quality,
+        success: (result: Blob) => {
+          // console.log(`Compressed from ${blob.size} to ${result.size}`);
+          resolve(result);
+        },
+        error: (error: Error) => {
+          // console.log(`Compression error: ${error.message}`);
+          reject(error);
+        },
+      });
+    });
   }
 
   //
