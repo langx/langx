@@ -138,8 +138,8 @@
 <ion-modal
   #countryModal
   trigger="country-modal"
-  [initialBreakpoint]="0.3"
-  [breakpoints]="[0.3, 0.8]"
+  [initialBreakpoint]="0.5"
+  [breakpoints]="[0.5, 0.9]"
 >
   <ng-template>
     <ion-header>
@@ -156,15 +156,15 @@
       <ion-searchbar
         [(ngModel)]="searchTerm"
         placeholder="Search"
-        (click)="countryModal.setCurrentBreakpoint(0.8)"
+        (click)="countryModal.setCurrentBreakpoint(0.9)"
       ></ion-searchbar>
       <ion-list>
         <ion-radio-group value="start" (ionChange)="countryChange($event)">
           <ion-item
-            *ngFor="let country of countryData | customFilter: searchTerm"
+            *ngFor="let country of (countries$ | async)?.countries | customFilter: searchTerm"
           >
-            <ion-radio value="{{ country?.value }}" labelPlacement="start"
-              >{{ country?.text }}</ion-radio
+            <ion-radio value="{{ country?.code}}" labelPlacement="start"
+              >{{ country?.name }}</ion-radio
             >
           </ion-item>
         </ion-radio-group>
