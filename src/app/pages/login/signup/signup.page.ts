@@ -69,14 +69,26 @@ export class SignupPage implements OnInit {
       password: new FormControl('', {
         validators: [Validators.required, Validators.minLength(8)],
       }),
+      terms: new FormControl(false, {
+        validators: [Validators.requiredTrue],
+      }),
     });
   }
 
   async onSubmit() {
+    // Check terms checkbox
+    if (this.form.value.terms === false) {
+      this.presentToast('Please accept terms and conditions', 'danger');
+      return;
+    }
+
+    // Check if form is valid
     if (!this.form.valid) {
       this.presentToast('Please fill all required fields', 'danger');
       return;
     }
+
+    // Start register process
     this.register(this.form);
   }
 
