@@ -15,8 +15,6 @@
         labelPlacement="floating"
         formControlName="name"
         type="text"
-        [readonly]="(isLoading$ | async)"
-        [disabled]="(isLoading$ | async)"
         required
       ></ion-input>
     </ion-item>
@@ -26,8 +24,6 @@
         labelPlacement="floating"
         formControlName="email"
         type="text"
-        [readonly]="(isLoading$ | async)"
-        [disabled]="(isLoading$ | async)"
         required
       ></ion-input>
     </ion-item>
@@ -37,15 +33,13 @@
         labelPlacement="floating"
         formControlName="password"
         type="password"
-        [readonly]="(isLoading$ | async)"
-        [disabled]="(isLoading$ | async)"
         required
       ></ion-input>
     </ion-item>
     <ion-row class="ion-margin-vertical">
       <ion-col size="12" class="alignItems">
         <div align="left">
-          <ion-checkbox></ion-checkbox>
+          <ion-checkbox formControlName="terms"></ion-checkbox>
           <ion-note>I accept the policy and terms</ion-note>
         </div>
       </ion-col>

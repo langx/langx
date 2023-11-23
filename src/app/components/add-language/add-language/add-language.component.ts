@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
-import { languagesData } from 'src/app/extras/data';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { Language } from 'src/app/models/locale/Language';
+import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
   selector: 'app-add-language',
@@ -11,24 +15,37 @@ export class AddLanguageComponent implements OnInit {
   @Input() languageArray: any;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
+  languages: Language[];
+
   searchTerm: string;
-  languageData: any;
   selectedLanguage: any;
+  languageData: any;
 
   isShowLevels: boolean = false;
 
   constructor(
+    private store: Store,
     private toastController: ToastController,
     private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
+    this.initValues();
     this.filterLanuages();
+  }
+
+  initValues() {
+    this.store
+      .pipe(select(languagesSelector))
+      .subscribe((data) => {
+        this.languages = data?.languages;
+      })
+      .unsubscribe();
   }
 
   filterLanuages() {
     // remove languages already selected
-    this.languageData = languagesData.filter(
+    this.languageData = this.languages.filter(
       (language) => !this.languageArray.includes(language.name)
     );
   }
@@ -57,9 +74,9 @@ export class AddLanguageComponent implements OnInit {
 
   changeLang(event) {
     const val = event.target.value;
-    languagesData.find((language) => {
+    this.languages.find((language) => {
       if (language.code === val) {
-        this.selectedLanguage = language;
+        this.selectedLanguage = { ...language };
       }
     });
   }
