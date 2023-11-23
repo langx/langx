@@ -2,8 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
-import { languagesData } from 'src/app/extras/localeData';
+import { Language } from 'src/app/models/locale/Language';
+import { Languages } from 'src/app/models/locale/Languages';
+import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
   selector: 'app-step2',
@@ -13,23 +17,39 @@ import { languagesData } from 'src/app/extras/localeData';
 export class Step2Page implements OnInit {
   public progress: number = 0.66;
   isLoading: boolean = false;
-  public languages = languagesData;
   search: string;
+
+  languages$: Observable<Languages> = null;
+  languages: Language[];
 
   motherLanguage: string;
   studyLanguages: string[] = [];
   disabledStatus: { [key: string]: boolean } = {};
 
   constructor(
+    private store: Store,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController
   ) {}
 
   ngOnInit() {
+    this.initValues();
+  }
+
+  initValues() {
+    // Data coming from step1
     const data: any = this.route.snapshot.queryParams;
     console.log('navData coming from step1', data);
     this.motherLanguage = data.motherLanguage;
+
+    // Data coming from store
+    this.languages$ = this.store.pipe(select(languagesSelector));
+    this.languages$
+      .subscribe((data) => {
+        this.languages = data?.languages;
+      })
+      .unsubscribe();
   }
 
   MAXNUMBER_STUDYING = 5;
