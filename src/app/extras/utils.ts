@@ -53,10 +53,8 @@ export function nameParts(name: string) {
 export function dateValidator(control: FormControl) {
   const value = control.value;
   const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-
   if (value && !value.match(datePattern)) {
     return { dateInvalid: true };
   }
-
   return null;
 }
