@@ -343,7 +343,7 @@ export class EditPage implements OnInit {
     attempts: number = 0
   ): Promise<Blob> {
     // console.log(`Checking size: ${blob.size}`);
-    if (blob.size > 2000000 && attempts < 5) {
+    if (blob.size > 2000000 && attempts < 10) {
       // limit to 5 attempts
       const compressedBlob = await this.compressImage(blob, quality);
       return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
