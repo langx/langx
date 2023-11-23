@@ -9,21 +9,15 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
       <ion-input
-        id="picker-birthdate"
         formControlName="birthdate"
         label="Date of Birth"
+        placeholder="DD/MM/YYYY"
         labelPlacement="floating"
         type="text"
-        [readonly]="true"
+        maxlength="10"
         required
-      >
-      </ion-input>
-      <ion-picker
-        trigger="picker-birthdate"
-        [columns]="birthdatePickerColumns"
-        [buttons]="birthdatePickerButtons"
-      >
-      </ion-picker>
+        [value]="form.get('birthdate').value | dateMask"
+      ></ion-input>
     </ion-item>
 
     <ion-item lines="full">
