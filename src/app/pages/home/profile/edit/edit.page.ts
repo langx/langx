@@ -1,10 +1,10 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import Compressor from 'compressorjs';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
 import {
   LoadingController,
   ModalController,
@@ -48,6 +48,7 @@ import {
 })
 export class EditPage implements OnInit {
   form: FormGroup;
+  subscriptions: Subscription;
 
   isLoading$: Observable<boolean> = null;
   currentUser$: Observable<User | null> = null;
@@ -66,24 +67,57 @@ export class EditPage implements OnInit {
     this.initForm();
   }
 
+  ionViewWillEnter() {
+    this.subscriptions = new Subscription();
+
+    // Set currentUser
+    this.subscriptions.add(
+      this.currentUser$.subscribe((user) => {
+        this.currentUser = user;
+        this.studyLanguages = user?.languages.filter(
+          (lang) => !lang.motherLanguage
+        );
+      })
+    );
+
+    // Loading
+    this.subscriptions.add(
+      this.isLoading$.subscribe((isLoading) => {
+        this.loadingController(isLoading);
+      })
+    );
+
+    // Edit Profile Error Handling
+    this.subscriptions.add(
+      this.store
+        .pipe(select(editProfileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'danger');
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    this.isLoadingOverlayActive
+      .pipe(
+        filter((isActive) => !isActive),
+        take(1)
+      )
+      .subscribe(async () => {
+        if (this.loadingOverlay) {
+          await this.loadingOverlay.dismiss();
+          this.loadingOverlay = undefined;
+        }
+      });
+
+    // Unsubscribe from all subscriptions
+    this.subscriptions.unsubscribe();
+  }
+
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-
-    // Set currentUser
-    this.currentUser$.subscribe((user) => {
-      this.currentUser = user;
-      this.studyLanguages = user?.languages.filter(
-        (lang) => !lang.motherLanguage
-      );
-    });
-
-    // editProfileError Handling
-    this.store
-      .pipe(select(editProfileErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'danger');
-      });
   }
 
   initForm() {
@@ -166,8 +200,6 @@ export class EditPage implements OnInit {
 
   // TODO: Delete logs
   // TODO: Move end of the file under utils
-  // TODO: Show loading while compressing & uploading
-  // TODO: Show percentage while compressing | uploading
   async checkFileSize(
     blob: Blob,
     quality: number = 0.6,
