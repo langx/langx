@@ -4,5 +4,6 @@ export interface tempMessageInterface {
   roomId: string;
   to: string;
   body: string;
+  isImage: boolean;
   error: ErrorInterface | null;
 }

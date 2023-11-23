@@ -56,6 +56,7 @@ export class MessageEffects {
       mergeMap(({ request, currentUserId }) =>
         this.messagesService.createMessage(request, currentUserId).pipe(
           map((payload: Message) => createMessageSuccessAction({ payload })),
+
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
@@ -97,6 +98,7 @@ export class MessageEffects {
           roomId: action.request.roomId,
           to: action.request.to,
           body: action.request.body,
+          isImage: action.request.isImage,
         };
 
         return this.messagesService

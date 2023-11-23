@@ -239,6 +239,7 @@ export class ChatPage implements OnInit, OnDestroy {
               body: this.form.value.body,
               roomId: this.roomId,
               to: user.$id,
+              isImage: false,
             };
             this.store.dispatch(
               createMessageAction({ request, currentUserId: currentUser.$id })
