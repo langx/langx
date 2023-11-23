@@ -8,6 +8,9 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
 
 import {
+  uploadImageForMessageAction,
+  uploadImageForMessageFailureAction,
+  uploadImageForMessageSuccessAction,
   uploadOtherPhotosAction,
   uploadOtherPhotosFailureAction,
   uploadOtherPhotosSuccessAction,
@@ -77,6 +80,26 @@ export class BucketEffects {
           message: errorResponse.message,
         };
         return of(uploadOtherPhotosFailureAction({ error }));
+      })
+    )
+  );
+
+  uploadImageForMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(uploadImageForMessageAction),
+      switchMap(({ request }) => {
+        return this.userService.uploadFile(request).pipe(
+          map((payload) => {
+            return uploadImageForMessageSuccessAction({ payload });
+          }),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(uploadImageForMessageFailureAction({ error }));
+          })
+        );
       })
     )
   );
