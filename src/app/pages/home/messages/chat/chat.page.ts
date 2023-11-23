@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, LoadingController, ToastController } from '@ionic/angular';
+import { IonContent, ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
@@ -71,7 +71,6 @@ export class ChatPage implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
-    private loadingCtrl: LoadingController,
     private toastController: ToastController
   ) {}
 
@@ -125,22 +124,6 @@ export class ChatPage implements OnInit, OnDestroy {
         }
       })
       .unsubscribe();
-
-    // Loading Controller
-    this.isLoading$.subscribe((isLoading) => {
-      // if (!isLoading) this.scrollToBottom();
-      // TODO: #258 Loading Controller is frozen
-      // this.loadingController(isLoading);
-    });
-
-    // Present Toast if error
-    this.store
-      .pipe(select(errorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-        }
-      });
   }
 
   initForm() {
@@ -186,6 +169,17 @@ export class ChatPage implements OnInit, OnDestroy {
           );
         }
       })
+    );
+
+    // Present Toast if error
+    this.subscriptions.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
     );
   }
 
@@ -282,41 +276,12 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async checkIfUserAtBottom(): Promise<boolean> {
     const scrollElement = await this.content.getScrollElement();
-
     // Calculate the bottom 10% position
     const bottomPosition = scrollElement.scrollHeight * 0.9;
-
     // The chat is considered to be at the bottom if the scroll position is greater than the bottom 10% position
     const atBottom =
       scrollElement.scrollTop + scrollElement.clientHeight >= bottomPosition;
-
     return atBottom;
-  }
-
-  //
-  // Loading Controller
-  //
-
-  async loadingController(isLoading: boolean) {
-    if (isLoading) {
-      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
-        this.isLoadingOverlayActive = true;
-        this.loadingOverlay = await this.loadingCtrl.create({
-          message: 'Please wait...',
-        });
-        await this.loadingOverlay.present();
-        this.isLoadingOverlayActive = false;
-      }
-    } else if (
-      this.loadingOverlay &&
-      this.loadingOverlay.present &&
-      !this.isLoadingOverlayActive
-    ) {
-      this.isLoadingOverlayActive = true;
-      await this.loadingOverlay.dismiss();
-      this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive = false;
-    }
   }
 
   //

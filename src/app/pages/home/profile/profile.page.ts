@@ -1,13 +1,8 @@
 import { Component, ErrorHandler, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import {
-  IonModal,
-  LoadingController,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { Observable, Subscription } from 'rxjs';
+import { IonModal, ModalController, ToastController } from '@ionic/angular';
 
 // Component and utils Imports
 import { lastSeen, getAge } from 'src/app/extras/utils';
@@ -27,7 +22,6 @@ import { logoutAction } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
   currentUserSelector,
-  isLoadingSelector,
   profileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
@@ -67,10 +61,11 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
+  subscription: Subscription;
+
   currentUser$: Observable<User | null> = null;
   account$: Observable<Account | null> = null;
 
-  // TODO: Use currentUser directly
   currentUserId: string | null = null;
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
@@ -82,12 +77,27 @@ export class ProfilePage implements OnInit {
     private store: Store,
     private router: Router,
     private modalCtrl: ModalController,
-    private loadingCtrl: LoadingController,
     private toastController: ToastController
   ) {}
 
   ngOnInit() {
     this.initValues();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Profile Error Handling
+    this.store
+      .pipe(select(profileErrorSelector))
+      .subscribe((error: ErrorInterface) => {
+        if (error && error.message) this.presentToast(error.message, 'danger');
+      });
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValues() {
@@ -108,22 +118,6 @@ export class ProfilePage implements OnInit {
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
     });
-
-    // isLoading
-    this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
-      if (isLoading) {
-        this.loadingController(true);
-      } else {
-        this.loadingController(false);
-      }
-    });
-
-    // profileError Handling
-    this.store
-      .pipe(select(profileErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'danger');
-      });
   }
 
   getAccountPage(page) {
@@ -160,50 +154,11 @@ export class ProfilePage implements OnInit {
     this.modal.dismiss();
   }
 
-  // lastSeen(d: any) {
-  //   if (!d) return null;
-  //   console.log(d);
-  //   return lastSeen(d);
-  // }
-
-  // getAge(d: any) {
-  //   if (!d) return null;
-  //   return getAge(d);
-  // }
-
   handleRefresh(event) {
     this.store.dispatch(getCurrentUserAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
     console.log('Async operation refresh has ended');
-  }
-
-  //
-  // Loading Controller
-  //
-
-  loadingOverlay: HTMLIonLoadingElement;
-  isLoadingOverlayActive = false;
-  async loadingController(isLoading: boolean) {
-    if (isLoading) {
-      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
-        this.isLoadingOverlayActive = true;
-        this.loadingOverlay = await this.loadingCtrl.create({
-          message: 'Please wait...',
-        });
-        await this.loadingOverlay.present();
-        this.isLoadingOverlayActive = false;
-      }
-    } else if (
-      this.loadingOverlay &&
-      this.loadingOverlay.present &&
-      !this.isLoadingOverlayActive
-    ) {
-      this.isLoadingOverlayActive = true;
-      await this.loadingOverlay.dismiss();
-      this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive = false;
-    }
   }
 
   //

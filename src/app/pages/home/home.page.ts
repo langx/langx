@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, combineLatest, map, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { NotificationService } from 'src/app/services/notification/notification.service';
 import { Account } from 'src/app/models/Account';
+import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 import {
   accountSelector,
   totalUnseenSelector,
 } from 'src/app/store/selectors/auth.selector';
-import { updatePresenceAction } from 'src/app/store/actions/presence.action';
-import { isLoadingSelector as isLoadingUser } from 'src/app/store/selectors/user.selector';
-import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room.selector';
 
 @Component({
   selector: 'app-home',
@@ -19,8 +16,6 @@ import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  loadingOverlay: HTMLIonLoadingElement;
-  isLoadingOverlayActive = false;
   refreshIntervalId: any;
 
   totalUnseen$: Observable<number>;
@@ -28,8 +23,7 @@ export class HomePage implements OnInit {
 
   constructor(
     private store: Store,
-    private notification: NotificationService,
-    private loadingCtrl: LoadingController
+    private notification: NotificationService
   ) {}
 
   async ngOnInit() {
@@ -46,19 +40,6 @@ export class HomePage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(accountSelector));
     this.totalUnseen$ = this.store.pipe(select(totalUnseenSelector));
-
-    // Loading Controller
-    combineLatest([
-      this.store.pipe(select(isLoadingUser)),
-      this.store.pipe(select(isLoadingRoom)),
-    ])
-      .pipe(
-        map(([isLoadingUser, isLoadingRoom]) => isLoadingUser || isLoadingRoom)
-      )
-      .subscribe((isLoading) => {
-        // TODO: #258 Loading Controller is frozen
-        // this.loadingController(isLoading);
-      });
   }
 
   unsubscribeListener() {
@@ -89,31 +70,5 @@ export class HomePage implements OnInit {
         );
       })
       .unsubscribe();
-  }
-
-  //
-  // Loading Controller
-  //
-
-  async loadingController(isLoading: boolean) {
-    if (isLoading) {
-      if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
-        this.isLoadingOverlayActive = true;
-        this.loadingOverlay = await this.loadingCtrl.create({
-          message: 'Please wait...',
-        });
-        await this.loadingOverlay.present();
-        this.isLoadingOverlayActive = false;
-      }
-    } else if (
-      this.loadingOverlay &&
-      this.loadingOverlay.present &&
-      !this.isLoadingOverlayActive
-    ) {
-      this.isLoadingOverlayActive = true;
-      await this.loadingOverlay.dismiss();
-      this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive = false;
-    }
   }
 }

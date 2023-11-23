@@ -1,10 +1,15 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
-import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import Compressor from 'compressorjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController, ToastController } from '@ionic/angular';
+import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import {
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 
 // Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -43,6 +48,7 @@ import {
 })
 export class EditPage implements OnInit {
   form: FormGroup;
+  subscriptions: Subscription;
 
   isLoading$: Observable<boolean> = null;
   currentUser$: Observable<User | null> = null;
@@ -52,7 +58,8 @@ export class EditPage implements OnInit {
   constructor(
     private store: Store,
     private modalCtrl: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -60,24 +67,57 @@ export class EditPage implements OnInit {
     this.initForm();
   }
 
+  ionViewWillEnter() {
+    this.subscriptions = new Subscription();
+
+    // Set currentUser
+    this.subscriptions.add(
+      this.currentUser$.subscribe((user) => {
+        this.currentUser = user;
+        this.studyLanguages = user?.languages.filter(
+          (lang) => !lang.motherLanguage
+        );
+      })
+    );
+
+    // Loading
+    this.subscriptions.add(
+      this.isLoading$.subscribe((isLoading) => {
+        this.loadingController(isLoading);
+      })
+    );
+
+    // Edit Profile Error Handling
+    this.subscriptions.add(
+      this.store
+        .pipe(select(editProfileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'danger');
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    this.isLoadingOverlayActive
+      .pipe(
+        filter((isActive) => !isActive),
+        take(1)
+      )
+      .subscribe(async () => {
+        if (this.loadingOverlay) {
+          await this.loadingOverlay.dismiss();
+          this.loadingOverlay = undefined;
+        }
+      });
+
+    // Unsubscribe from all subscriptions
+    this.subscriptions.unsubscribe();
+  }
+
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-
-    // Set currentUser
-    this.currentUser$.subscribe((user) => {
-      this.currentUser = user;
-      this.studyLanguages = user?.languages.filter(
-        (lang) => !lang.motherLanguage
-      );
-    });
-
-    // editProfileError Handling
-    this.store
-      .pipe(select(editProfileErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'danger');
-      });
   }
 
   initForm() {
@@ -116,10 +156,15 @@ export class EditPage implements OnInit {
       });
       modal.present();
 
-      await modal.onDidDismiss().then((data) => {
+      await modal.onDidDismiss().then(async (data) => {
         if (data?.data) {
           // URL to Blob
-          let blob = this.dataURLtoBlob(data.data);
+          let blob: Blob = this.dataURLtoBlob(data.data);
+          // console.log(`Original size: ${blob.size}`);
+
+          // Check size of the file here
+          blob = await this.checkFileSize(blob);
+          // console.log(`Final size: ${blob.size}`);
 
           // Blob to File
           let file = new File([blob], this.currentUser.$id, {
@@ -292,6 +337,36 @@ export class EditPage implements OnInit {
     return new Blob([u8arr], { type: mime });
   }
 
+  private async checkFileSize(
+    blob: Blob,
+    quality: number = 0.6,
+    attempts: number = 0
+  ): Promise<Blob> {
+    // console.log(`Checking size: ${blob.size}`);
+    if (blob.size > 2000000 && attempts < 10) {
+      // limit to 5 attempts
+      const compressedBlob = await this.compressImage(blob, quality);
+      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
+    }
+    return blob;
+  }
+
+  private compressImage(blob: Blob, quality: number): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      new Compressor(blob, {
+        quality: quality,
+        success: (result: Blob) => {
+          // console.log(`Compressed from ${blob.size} to ${result.size}`);
+          resolve(result);
+        },
+        error: (error: Error) => {
+          // console.log(`Compression error: ${error.message}`);
+          reject(error);
+        },
+      });
+    });
+  }
+
   //
   // Present Toast
   //
@@ -305,5 +380,29 @@ export class EditPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //
+  // Loading Controller
+  //
+
+  private loadingOverlay: HTMLIonLoadingElement;
+  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay) {
+        this.isLoadingOverlayActive.next(true);
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive.next(false);
+      }
+    } else if (this.loadingOverlay) {
+      this.isLoadingOverlayActive.next(true);
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive.next(false);
+    }
   }
 }
