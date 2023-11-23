@@ -24,7 +24,7 @@
     <app-empty-screen *ngIf="(rooms$ | async)?.length == 0" [model]="model">
     </app-empty-screen>
 
-    <ion-card>
+    <ion-card *ngIf="(rooms$ | async)?.length > 0">
       <ion-card-content>
         <ion-list *ngIf="(rooms$ | async)?.length > 0">
           <div *ngFor="let room of (rooms$ | async)" detail>
