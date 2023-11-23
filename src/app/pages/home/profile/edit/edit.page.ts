@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
+import Compressor from 'compressorjs';
 
 // Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -116,10 +117,15 @@ export class EditPage implements OnInit {
       });
       modal.present();
 
-      await modal.onDidDismiss().then((data) => {
+      await modal.onDidDismiss().then(async (data) => {
         if (data?.data) {
           // URL to Blob
-          let blob = this.dataURLtoBlob(data.data);
+          let blob: Blob = this.dataURLtoBlob(data.data);
+          console.log(`Original size: ${blob.size}`);
+
+          // Check size of the file here
+          blob = await this.checkFileSize(blob);
+          console.log(`Final size: ${blob.size}`);
 
           // Blob to File
           let file = new File([blob], this.currentUser.$id, {
@@ -151,6 +157,40 @@ export class EditPage implements OnInit {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  // TODO: Delete logs
+  // TODO: Move end of the file under utils
+  // TODO: Show loading while compressing & uploading
+  // TODO: Show percentage while compressing | uploading
+  async checkFileSize(
+    blob: Blob,
+    quality: number = 0.6,
+    attempts: number = 0
+  ): Promise<Blob> {
+    console.log(`Checking size: ${blob.size}`);
+    if (blob.size > 2000000 && attempts < 5) {
+      // limit to 5 attempts
+      const compressedBlob = await this.compressImage(blob, quality);
+      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
+    }
+    return blob;
+  }
+
+  compressImage(blob: Blob, quality: number): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      new Compressor(blob, {
+        quality: quality,
+        success: (result: Blob) => {
+          console.log(`Compressed from ${blob.size} to ${result.size}`);
+          resolve(result);
+        },
+        error: (error: Error) => {
+          console.log(`Compression error: ${error.message}`);
+          reject(error);
+        },
+      });
+    });
   }
 
   deletePP() {
