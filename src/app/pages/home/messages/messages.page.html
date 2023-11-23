@@ -53,17 +53,15 @@
                   </ion-badge>
                   <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
                 </div>
-                <!--
-            <ion-note *ngIf="!getLastMessage(room)?.time">
-              {{ messageTime(room?.$updatedAt) }}
-            </ion-note>
-            -->
               </ng-container>
             </ion-item>
           </div>
         </ion-list>
 
-        <!-- Skeleton Start -->
+        <!-------------------->
+        <!-- SKELETON start -->
+        <!-------------------->
+
         <ion-list *ngIf="(isLoading$ | async)">
           <ion-item *ngFor="let i of '0123456789'.split('')">
             <ion-thumbnail slot="start">
@@ -91,7 +89,10 @@
             </ion-label>
           </ion-item>
         </ion-list>
-        <!-- Skeleton End -->
+
+        <!------------------>
+        <!-- SKELETON end -->
+        <!------------------>
       </ion-card-content>
     </ion-card>
   </ng-container>
