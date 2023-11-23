@@ -19,8 +19,6 @@ import { isLoadingSelector as isLoadingRoom } from 'src/app/store/selectors/room
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  loadingOverlay: HTMLIonLoadingElement;
-  isLoadingOverlayActive = false;
   refreshIntervalId: any;
 
   totalUnseen$: Observable<number>;
@@ -95,6 +93,8 @@ export class HomePage implements OnInit {
   // Loading Controller
   //
 
+  private loadingOverlay: HTMLIonLoadingElement;
+  private isLoadingOverlayActive = false;
   async loadingController(isLoading: boolean) {
     if (isLoading) {
       if (!this.loadingOverlay && !this.isLoadingOverlayActive) {
