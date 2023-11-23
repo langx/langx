@@ -1,9 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, ToastController } from '@ionic/angular';
+import { IonContent, ModalController, ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import Compressor from 'compressorjs';
+
+// Component Imports
+import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -40,12 +46,9 @@ import {
 })
 export class ChatPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
-  loadingOverlay: HTMLIonLoadingElement;
-  isLoadingOverlayActive = false;
   form: FormGroup;
 
   private subscriptions = new Subscription();
-
   room$: Observable<RoomExtendedInterface | null>;
   user$: Observable<User | null>;
   currentUser$: Observable<Account | null>;
@@ -56,6 +59,7 @@ export class ChatPage implements OnInit, OnDestroy {
   total$: Observable<number | null> = null;
 
   isTyping: boolean = false;
+  currentUserId: string;
   roomId: string;
 
   // Add a flag to indicate whether it's the first load
@@ -71,6 +75,7 @@ export class ChatPage implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
+    private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
 
@@ -121,6 +126,15 @@ export class ChatPage implements OnInit, OnDestroy {
               );
             })
             .unsubscribe();
+        }
+      })
+      .unsubscribe();
+
+    // Set currentUserId
+    this.currentUser$
+      .subscribe((currentUser) => {
+        if (currentUser) {
+          this.currentUserId = currentUser.$id;
         }
       })
       .unsubscribe();
@@ -267,7 +281,112 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
-  // Utils
+  // Select Image
+  //
+
+  async selectImage() {
+    try {
+      if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+
+      // TODO: Capacitor pop up style is not good. It should be changed.
+      const image = await Camera.getPhoto({
+        quality: 100,
+        allowEditing: true,
+        source: CameraSource.Prompt,
+        resultType: CameraResultType.DataUrl,
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      if (!image) return;
+
+      const modal = await this.modalCtrl.create({
+        component: ImageCropComponent,
+        componentProps: {
+          image: image,
+        },
+      });
+      modal.present();
+
+      // TODO: Comment logs
+      await modal.onDidDismiss().then(async (data) => {
+        if (data?.data) {
+          // URL to Blob
+          let blob: Blob = this.dataURLtoBlob(data.data);
+          console.log(`Original size: ${blob.size}`);
+
+          // Check size of the file here
+          blob = await this.checkFileSize(blob);
+          console.log(`Final size: ${blob.size}`);
+
+          // Blob to File
+          let file = new File([blob], this.currentUserId, {
+            type: blob.type,
+          });
+
+          // Upload File
+          //   this.store.dispatch(
+          //     uploadImageForMessageAction({
+          //       request: file,
+          //     })
+          //   );
+        } else {
+          this.presentToast('Image not selected properly.', 'danger');
+        }
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  //
+  // Utils for image upload
+  //
+
+  private dataURLtoBlob(dataurl: any) {
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  }
+
+  private async checkFileSize(
+    blob: Blob,
+    quality: number = 0.6,
+    attempts: number = 0
+  ): Promise<Blob> {
+    // console.log(`Checking size: ${blob.size}`);
+    if (blob.size > 2000000 && attempts < 10) {
+      // limit to 5 attempts
+      const compressedBlob = await this.compressImage(blob, quality);
+      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
+    }
+    return blob;
+  }
+
+  private compressImage(blob: Blob, quality: number): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      new Compressor(blob, {
+        quality: quality,
+        success: (result: Blob) => {
+          // console.log(`Compressed from ${blob.size} to ${result.size}`);
+          resolve(result);
+        },
+        error: (error: Error) => {
+          // console.log(`Compression error: ${error.message}`);
+          reject(error);
+        },
+      });
+    });
+  }
+
+  //
+  // Utils for scroll to bottom
   //
 
   isUserAtBottom(): Observable<boolean> {
