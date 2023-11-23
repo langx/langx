@@ -302,7 +302,7 @@ export class CommunityPage implements OnInit {
   //
 
   private loadingOverlay: HTMLIonLoadingElement;
-  isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
+  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
   async loadingController(isLoading: boolean) {
     if (isLoading) {
       if (!this.loadingOverlay) {
