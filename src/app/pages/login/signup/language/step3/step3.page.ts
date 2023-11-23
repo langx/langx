@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 
 import { Account } from 'src/app/models/Account';
 import { Language } from 'src/app/models/locale/Language';
-import { Languages } from 'src/app/models/locale/Languages';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 import {
@@ -28,7 +27,6 @@ import {
 export class Step3Page implements OnInit, OnDestroy {
   public progress: number = 1;
 
-  languages$: Observable<Languages> = null;
   languages: Language[];
 
   motherLanguages: Array<any> = [];
@@ -56,8 +54,8 @@ export class Step3Page implements OnInit, OnDestroy {
 
   initValues() {
     // Data coming from store
-    this.languages$ = this.store.pipe(select(languagesSelector));
-    this.languages$
+    this.store
+      .pipe(select(languagesSelector))
       .subscribe((data) => {
         this.languages = data?.languages;
       })
