@@ -22,7 +22,7 @@
 
     <ion-item lines="full">
       <ion-input
-        id="gender-modal"
+        id="gender-modal-complete"
         class="capitalize"
         formControlName="gender"
         label="Gender"
@@ -36,7 +36,7 @@
 
     <ion-item lines="full">
       <ion-input
-        id="country-modal"
+        id="country-modal-complete"
         formControlName="country"
         label="Country of Residence"
         labelPlacement="floating"
@@ -67,8 +67,8 @@
 
 <!-- Country Modal -->
 <ion-modal
-  #countryModal
-  trigger="country-modal"
+  #countryModalComplete
+  trigger="country-modal-complete"
   [initialBreakpoint]="0.5"
   [breakpoints]="[0.5, 0.9]"
 >
@@ -77,7 +77,7 @@
       <ion-toolbar>
         <ion-title>Country</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="countryModal.dismiss()" color="primary">
+          <ion-button (click)="countryModalComplete.dismiss()" color="primary">
             Confirm
           </ion-button>
         </ion-buttons>
@@ -87,7 +87,7 @@
       <ion-searchbar
         [(ngModel)]="searchTerm"
         placeholder="Search"
-        (click)="countryModal.setCurrentBreakpoint(0.9)"
+        (click)="countryModalComplete.setCurrentBreakpoint(0.9)"
       ></ion-searchbar>
       <ion-list>
         <ion-radio-group value="start" (ionChange)="countryChange($event)">
@@ -106,8 +106,8 @@
 
 <!-- Gender Modal -->
 <ion-modal
-  #genderModal
-  trigger="gender-modal"
+  #genderModalComplete
+  trigger="gender-modal-complete"
   class="modalClass"
   [initialBreakpoint]="1"
   [breakpoints]="[0, 1]"
@@ -118,7 +118,7 @@
         <ion-toolbar>
           <ion-title>Gender</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="genderModal.dismiss()" color="primary"
+            <ion-button (click)="genderModalComplete.dismiss()" color="primary"
               >Confirm</ion-button
             >
           </ion-buttons>
