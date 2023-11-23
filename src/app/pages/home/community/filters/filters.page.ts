@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { countryData } from 'src/app/extras/localeData';
 import { Router } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -11,20 +10,25 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { Language } from 'src/app/models/Language';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { Countries } from 'src/app/models/locale/Countries';
+import { Country } from 'src/app/models/locale/Country';
+import { countriesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
   selector: 'app-filters',
   templateUrl: './filters.page.html',
   styleUrls: ['./filters.page.scss'],
 })
-export class FiltersPage implements OnInit {
+export class FiltersPage implements OnInit, OnDestroy {
   searchTerm: string;
-  countryData = countryData;
 
   // TODO: Useless
   isLoading: boolean = false;
 
+  private subscriptions = new Subscription();
   currentUser$: Observable<User | null>;
+  countries$: Observable<Countries>;
+  countyData: Country[];
 
   ionRangeDefault = { lower: 20, upper: 75 };
 
@@ -50,7 +54,19 @@ export class FiltersPage implements OnInit {
     await this.checkStorage();
   }
 
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
   initValues() {
+    // Countries values
+    this.countries$ = this.store.pipe(select(countriesSelector));
+    this.subscriptions.add(
+      this.countries$.subscribe((countries: Countries) => {
+        this.countyData = countries?.countries;
+      })
+    );
+
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
@@ -163,8 +179,8 @@ export class FiltersPage implements OnInit {
   }
 
   showCountry() {
-    return countryData.find((item) => item.value === this.filterData.country)
-      ?.text;
+    return this.countyData.find((item) => item.code === this.filterData.country)
+      ?.name;
   }
 
   //
