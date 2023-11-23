@@ -40,6 +40,11 @@ export const userDataSelector = createSelector(
   (messageState: MessageStateInterface) => messageState.room?.userData
 );
 
+export const imageUrlSelector = createSelector(
+  messageFeatureSelector,
+  (messageState: MessageStateInterface) => messageState.imageUrl
+);
+
 export const errorSelector = createSelector(
   messageFeatureSelector,
   (messageState: MessageStateInterface) => messageState.error

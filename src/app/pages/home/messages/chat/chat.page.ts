@@ -31,6 +31,7 @@ import {
 } from 'src/app/store/actions/message.action';
 import {
   errorSelector,
+  imageUrlSelector,
   isLoadingOffsetSelector,
   isLoadingSelector,
   messagesSelector,
@@ -183,6 +184,13 @@ export class ChatPage implements OnInit, OnDestroy {
             })
           );
         }
+      })
+    );
+
+    // Uploaded Image URL to present
+    this.subscriptions.add(
+      this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
+        if (url) console.log('url', url);
       })
     );
 
