@@ -51,3 +51,7 @@ export const uploadImageForMessageFailureAction = createAction(
   ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const clearImageUrlStateAction = createAction(
+  ActionTypes.CLEAR_IMAGE_URL_STATE
+);

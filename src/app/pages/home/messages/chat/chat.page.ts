@@ -23,7 +23,10 @@ import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interfa
 // Selector and Action Imports
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
-import { uploadImageForMessageAction } from 'src/app/store/actions/bucket.action';
+import {
+  clearImageUrlStateAction,
+  uploadImageForMessageAction,
+} from 'src/app/store/actions/bucket.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -180,7 +183,10 @@ export class ChatPage implements OnInit, OnDestroy {
     // Uploaded Image URL to present
     this.subscriptions.add(
       this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
-        if (url) this.createMessageWithImage(url);
+        if (url) {
+          this.store.dispatch(clearImageUrlStateAction());
+          this.createMessageWithImage(url);
+        }
       })
     );
 

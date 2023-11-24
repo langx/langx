@@ -8,4 +8,5 @@ export enum ActionTypes {
   UPLOAD_IMAGE_FOR_MESSAGE = '[S3] Upload Image For Message',
   UPLOAD_IMAGE_FOR_MESSAGE_SUCCESS = '[S3] Upload Image For Message Success',
   UPLOAD_IMAGE_FOR_MESSAGE_FAILURE = '[S3] Upload Image For Message Failure',
+  CLEAR_IMAGE_URL_STATE = '[S3] Clear Image Url State',
 }
