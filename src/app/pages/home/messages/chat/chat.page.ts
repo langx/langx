@@ -1,14 +1,19 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonContent, ModalController, ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
-import { VoiceRecorder } from 'capacitor-voice-recorder';
+import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Compressor from 'compressorjs';
+import {
+  GestureController,
+  IonContent,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 
 // Component Imports
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
@@ -72,8 +77,10 @@ export class ChatPage implements OnInit, OnDestroy {
   private isFirstLoad: boolean = true;
 
   // Recording Feature
-  recording: boolean = false;
+  isRecording: boolean = false;
   storedFileNames: any = [];
+  durationDisplay: string = '';
+  duration: number = 0;
 
   model = {
     icon: 'chatbubbles-outline',
@@ -86,7 +93,8 @@ export class ChatPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private modalCtrl: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private gestureCtrl: GestureController
   ) {}
 
   async ngOnInit() {
@@ -95,8 +103,13 @@ export class ChatPage implements OnInit, OnDestroy {
 
     // Recording Feature
     this.loadFiles();
-    if (Capacitor.getPlatform() != 'web')
-      await VoiceRecorder.requestAudioRecordingPermission();
+    if (Capacitor.getPlatform() != 'web') {
+      const permission = (await VoiceRecorder.hasAudioRecordingPermission())
+        .value;
+      if (!permission) {
+        await VoiceRecorder.requestAudioRecordingPermission();
+      }
+    }
   }
 
   // Recording Feature
@@ -110,8 +123,61 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
+  startRecording() {
+    if (this.isRecording) {
+      return;
+    }
+    this.isRecording = true;
+    VoiceRecorder.startRecording();
+  }
+
+  stopRecording() {
+    if (!this.isRecording) {
+      return;
+    }
+    VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
+      if (result.value && result.value.recordDataBase64) {
+        const recordData = result.value.recordDataBase64;
+        console.log('Recorded data', recordData);
+
+        // Save the file to the device
+        const fileName = `${this.roomId}-${Date.now()}.m4a`;
+        await Filesystem.writeFile({
+          path: fileName,
+          data: recordData,
+          directory: Directory.Data,
+        });
+
+        this.loadFiles();
+      }
+
+      this.isRecording = false;
+    });
+  }
+
+  async play(fileName: string) {
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    console.log('Audio file', audioFile);
+    const base64Sound = audioFile.data;
+
+    // Play the audio file
+    const audioRef = new Audio(`data:audio/m4a;base64,${base64Sound}`);
+    audioRef.oncanplaythrough = () => audioRef.play();
+    audioRef.load();
+  }
+
   ngAfterViewInit() {
     this.initValuesAfterViewInit();
+
+    // Recording Feature
+    // const longPress = this.gestureCtrl.create({
+
+    // });
+
+    // longPress.enable();
   }
 
   ngOnDestroy() {
