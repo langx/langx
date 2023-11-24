@@ -231,6 +231,21 @@ export class ChatPage implements OnInit, OnDestroy {
     }, 1000);
   }
 
+  iconColor: string = 'medium';
+
+  changeColor(color: string) {
+    this.iconColor = color;
+  }
+
+  mouseUpListener = () => {
+    this.changeColor('medium');
+    window.removeEventListener('mouseup', this.mouseUpListener);
+  };
+
+  listenForMouseUp() {
+    window.addEventListener('mouseup', this.mouseUpListener);
+  }
+
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
 
