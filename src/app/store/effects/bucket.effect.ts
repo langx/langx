@@ -3,9 +3,10 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
 
-import { UserService } from 'src/app/services/user/user.service';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { UserService } from 'src/app/services/user/user.service';
+import { MessageService } from 'src/app/services/chat/message.service';
 
 import {
   uploadImageForMessageAction,
@@ -88,7 +89,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadImageForMessageAction),
       switchMap(({ request }) => {
-        return this.userService.uploadFile(request).pipe(
+        return this.messageService.uploadFile(request).pipe(
           map((payload) => {
             return uploadImageForMessageSuccessAction({ payload });
           }),
@@ -104,5 +105,9 @@ export class BucketEffects {
     )
   );
 
-  constructor(private actions$: Actions, private userService: UserService) {}
+  constructor(
+    private actions$: Actions,
+    private userService: UserService,
+    private messageService: MessageService
+  ) {}
 }

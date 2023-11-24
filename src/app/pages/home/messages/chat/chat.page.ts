@@ -61,7 +61,6 @@ export class ChatPage implements OnInit, OnDestroy {
   total$: Observable<number | null> = null;
 
   isTyping: boolean = false;
-  currentUserId: string;
   roomId: string;
 
   // Add a flag to indicate whether it's the first load
@@ -128,15 +127,6 @@ export class ChatPage implements OnInit, OnDestroy {
               );
             })
             .unsubscribe();
-        }
-      })
-      .unsubscribe();
-
-    // Set currentUserId
-    this.currentUser$
-      .subscribe((currentUser) => {
-        if (currentUser) {
-          this.currentUserId = currentUser.$id;
         }
       })
       .unsubscribe();
@@ -351,7 +341,7 @@ export class ChatPage implements OnInit, OnDestroy {
           console.log(`Final size: ${blob.size}`);
 
           // Blob to File
-          let file = new File([blob], this.currentUserId, {
+          let file = new File([blob], this.roomId, {
             type: blob.type,
           });
 

@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Query } from 'appwrite';
-import { Observable, from, switchMap, tap } from 'rxjs';
+import { ID, Query } from 'appwrite';
+import { Observable, from, of, switchMap, tap } from 'rxjs';
 import axios from 'axios';
 
 // Environment and Services Imports
-import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
+import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { StorageService } from '../storage/storage.service';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
+import { BucketFile } from 'src/app/models/BucketFile';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
@@ -17,7 +19,11 @@ import { createMessageRequestInterface } from 'src/app/models/types/requests/cre
   providedIn: 'root',
 })
 export class MessageService {
-  constructor(private api: ApiService, private authService: AuthService) {}
+  constructor(
+    private api: ApiService,
+    private authService: AuthService,
+    private storage: StorageService
+  ) {}
 
   // Create a message
   createMessage(
@@ -81,5 +87,27 @@ export class MessageService {
     return from(
       this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, queries)
     ).pipe(tap((response) => response.documents.reverse()));
+  }
+
+  //
+  // Upload Bucket
+  //
+
+  uploadFile(request: File): Observable<URL> {
+    return from(
+      this.storage.createFile(
+        environment.appwrite.MESSAGE_BUCKET,
+        ID.unique(),
+        request
+      )
+    ).pipe(switchMap((response: BucketFile) => this.getFileView(response.$id)));
+  }
+
+  private getFileView(fileId: string): Observable<URL> {
+    const url = this.storage.getFileView(
+      environment.appwrite.MESSAGE_BUCKET,
+      fileId
+    );
+    return of(url);
   }
 }
