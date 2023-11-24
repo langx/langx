@@ -4,6 +4,9 @@
       <div class="sender">
         <div class="message-text">
           {{ tempMsg?.body }}
+          <ion-thumbnail slot="start" *ngIf="tempMsg?.isImage">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
           <span class="message-time">
             <ion-icon name="cloud-upload-outline"></ion-icon>
           </span>
