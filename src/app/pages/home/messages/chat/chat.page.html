@@ -65,12 +65,20 @@
     <form [formGroup]="form" (ngSubmit)="createMessage()">
       <ion-item>
         <ion-textarea
+          *ngIf="!isRecording"
           placeholder="Type your message..."
           type="text"
           formControlName="body"
           (ionFocus)="typingFocus()"
           (ionBlur)="typingBlur()"
           autoGrow="true"
+        >
+        </ion-textarea>
+        <ion-textarea
+          *ngIf="isRecording"
+          placeholder="Recording..."
+          [value]="durationDisplay"
+          disabled="true"
         >
         </ion-textarea>
         <ion-buttons slot="start">
@@ -80,7 +88,7 @@
           </ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button>
+          <ion-button #recordButton>
             <ion-icon slot="icon-only" name="mic" color="medium"></ion-icon>
           </ion-button>
           <ion-button type="submit">
