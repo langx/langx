@@ -152,7 +152,7 @@ export class ChatPage implements OnInit, OnDestroy {
         console.log('Recorded data', recordData);
 
         // Save the file to the device
-        const fileName = `${this.roomId}-${Date.now()}.m4a`;
+        const fileName = `${this.roomId}.mp3`;
         await Filesystem.writeFile({
           path: fileName,
           data: recordData,
