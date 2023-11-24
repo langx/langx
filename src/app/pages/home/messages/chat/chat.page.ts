@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
@@ -50,6 +56,7 @@ import {
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-chat',
@@ -58,6 +65,8 @@ import {
 })
 export class ChatPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
+  @ViewChild('recordButton', { read: ElementRef }) recordButton: ElementRef;
+
   form: FormGroup;
 
   private subscriptions = new Subscription();
@@ -76,17 +85,17 @@ export class ChatPage implements OnInit, OnDestroy {
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
 
-  // Recording Feature
-  isRecording: boolean = false;
-  storedFileNames: any = [];
-  durationDisplay: string = '';
-  duration: number = 0;
-
   model = {
     icon: 'chatbubbles-outline',
     title: 'No conversation',
     color: 'warning',
   };
+
+  // Recording Feature
+  isRecording: boolean = false;
+  storedFileNames: any = [];
+  durationDisplay: string = '';
+  duration: number = 0;
 
   constructor(
     private store: Store,
@@ -136,6 +145,8 @@ export class ChatPage implements OnInit, OnDestroy {
       return;
     }
     VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
+      this.isRecording = false;
+
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
         console.log('Recorded data', recordData);
@@ -150,8 +161,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
         this.loadFiles();
       }
-
-      this.isRecording = false;
     });
   }
 
@@ -164,20 +173,62 @@ export class ChatPage implements OnInit, OnDestroy {
     const base64Sound = audioFile.data;
 
     // Play the audio file
-    const audioRef = new Audio(`data:audio/m4a;base64,${base64Sound}`);
-    audioRef.oncanplaythrough = () => audioRef.play();
+    const audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`); // Change the MIME type to audio/mp3
+    audioRef.oncanplaythrough = () => {
+      console.log('Audio file duration', audioRef.duration);
+      return audioRef.play();
+    };
     audioRef.load();
+  }
+
+  async deleteRecording(fileName: string) {
+    await Filesystem.deleteFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    this.loadFiles();
   }
 
   ngAfterViewInit() {
     this.initValuesAfterViewInit();
 
     // Recording Feature
-    // const longPress = this.gestureCtrl.create({
+    const longPress = this.gestureCtrl.create(
+      {
+        el: this.recordButton.nativeElement,
+        gestureName: 'long-press',
+        threshold: 0,
+        onStart: () => {
+          Haptics.impact({ style: ImpactStyle.Light });
+          this.startRecording();
+          this.calculateDuration();
+        },
+        onEnd: () => {
+          Haptics.impact({ style: ImpactStyle.Light });
+          this.stopRecording();
+        },
+      },
+      true
+    );
 
-    // });
+    longPress.enable();
+  }
 
-    // longPress.enable();
+  calculateDuration() {
+    if (!this.isRecording) {
+      this.duration = 0;
+      this.durationDisplay = '';
+      return;
+    }
+
+    this.duration++;
+    const minutes = Math.floor(this.duration / 60);
+    const seconds = (this.duration % 60).toString().padStart(2, '0');
+    this.durationDisplay = `${minutes}:${seconds}`;
+
+    setTimeout(() => {
+      this.calculateDuration();
+    }, 1000);
   }
 
   ngOnDestroy() {
