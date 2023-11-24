@@ -52,6 +52,8 @@
 	<string>$(PRODUCT_NAME) allows you to upload and save picture to your gallery.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) allows you to upload a picture from your gallery to personalize your account.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>$(PRODUCT_NAME) allows you to record a voice message to send audio message.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
