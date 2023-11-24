@@ -28,7 +28,7 @@
 
   <ion-infinite-scroll
     position="top"
-    threshold="20%"
+    threshold="50%"
     (ionInfinite)="loadMore($event)"
   >
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
@@ -36,45 +36,6 @@
 
   <ion-list>
     <div class="message-container">
-      <!-- Skeleton Start -->
-      <div *ngIf="(isLoading_offset$ | async)">
-        <div *ngFor="let i of '01234'.split('')">
-          <ion-item-group>
-            <ion-item lines="none">
-              <div class="message-body">
-                <div class="message-main-receiver">
-                  <div class="receiver">
-                    <div class="message-text">
-                      <ion-skeleton-text
-                        [animated]="true"
-                        style="width: 60%"
-                      ></ion-skeleton-text>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ion-item>
-          </ion-item-group>
-          <ion-item-group>
-            <ion-item lines="none">
-              <div class="message-body">
-                <div class="message-main-sender">
-                  <div class="sender">
-                    <div class="message-text">
-                      <ion-skeleton-text
-                        [animated]="true"
-                        style="width: 100%"
-                      ></ion-skeleton-text>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </ion-item>
-          </ion-item-group>
-        </div>
-      </div>
-      <!-- Skeleton End -->
-
       <ion-item-group
         lines="none"
         class="chats-group"
