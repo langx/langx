@@ -98,4 +98,8 @@
       </ion-item>
     </form>
   </ion-toolbar>
+  <p *ngFor="let file of storedFileNames">
+    <ion-button (click)="deleteRecording(file.name)">D</ion-button>
+    <ion-button (click)="play(file.name)">{{file.name}}</ion-button>
+  </p>
 </ion-footer>
