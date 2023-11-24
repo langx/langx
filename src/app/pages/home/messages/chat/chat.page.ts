@@ -5,6 +5,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Compressor from 'compressorjs';
 
@@ -69,6 +71,10 @@ export class ChatPage implements OnInit, OnDestroy {
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
 
+  // Recording Feature
+  recording: boolean = false;
+  storedFileNames: any = [];
+
   model = {
     icon: 'chatbubbles-outline',
     title: 'No conversation',
@@ -83,9 +89,25 @@ export class ChatPage implements OnInit, OnDestroy {
     private toastController: ToastController
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.initValues();
     this.initForm();
+
+    // Recording Feature
+    this.loadFiles();
+    if (Capacitor.getPlatform() != 'web')
+      await VoiceRecorder.requestAudioRecordingPermission();
+  }
+
+  // Recording Feature
+  async loadFiles() {
+    Filesystem.readdir({
+      path: '',
+      directory: Directory.Data,
+    }).then((result) => {
+      console.log('Directory listing', result);
+      this.storedFileNames = result.files;
+    });
   }
 
   ngAfterViewInit() {
