@@ -190,7 +190,7 @@ export class ChatPage implements OnInit, OnDestroy {
     // Uploaded Image URL to present
     this.subscriptions.add(
       this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
-        if (url) console.log('url', url);
+        if (url) this.createMessageWithImage(url);
       })
     );
 
@@ -248,6 +248,27 @@ export class ChatPage implements OnInit, OnDestroy {
               roomId: this.roomId,
               to: user.$id,
               isImage: false,
+            };
+            this.store.dispatch(
+              createMessageAction({ request, currentUserId: currentUser.$id })
+            );
+            this.form.reset();
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+  }
+
+  createMessageWithImage(image: URL) {
+    this.currentUser$
+      .subscribe((currentUser) => {
+        this.user$
+          .subscribe((user) => {
+            const request: createMessageRequestInterface = {
+              roomId: this.roomId,
+              to: user.$id,
+              isImage: true,
+              image: image,
             };
             this.store.dispatch(
               createMessageAction({ request, currentUserId: currentUser.$id })

@@ -1,7 +1,7 @@
 export interface createMessageRequestInterface {
-  roomId: string;
+  body?: string;
   to: string;
-  body: string;
+  roomId: string;
   isImage: boolean;
-  image?: string;
+  image?: URL;
 }

@@ -4,6 +4,7 @@
       <div class="receiver">
         <div class="message-text">
           {{ msg?.body }}
+          <img *ngIf="msg?.isImage" [src]="msg?.image" alt="Image message">
         </div>
         <span class="message-time">
           {{ messageTime(msg?.$createdAt) }}
@@ -19,6 +20,7 @@
       <div class="sender">
         <div class="message-text">
           {{ msg?.body }}
+          <img *ngIf="msg?.isImage" [src]="msg?.image" alt="Image message">
           <span class="message-time" *ngIf="msg?.$createdAt">
             {{ messageTime(msg?.$createdAt) }}
             <ion-icon *ngIf="!msg?.seen" name="checkmark-outline"></ion-icon>
