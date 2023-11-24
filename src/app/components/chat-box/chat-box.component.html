@@ -4,7 +4,12 @@
       <div class="receiver">
         <div class="message-text">
           {{ msg?.body }}
-          <img *ngIf="msg?.isImage" [src]="msg?.image" alt="Image message">
+          <img
+            *ngIf="msg?.isImage"
+            [src]="msg?.image"
+            alt="Image message"
+            referrerpolicy="no-referrer"
+          />
         </div>
         <span class="message-time">
           {{ messageTime(msg?.$createdAt) }}
@@ -20,11 +25,19 @@
       <div class="sender">
         <div class="message-text">
           {{ msg?.body }}
-          <img *ngIf="msg?.isImage" [src]="msg?.image" alt="Image message">
+          <img
+            *ngIf="msg?.isImage"
+            [src]="msg?.image"
+            alt="Image message"
+            referrerpolicy="no-referrer"
+          />
           <span class="message-time" *ngIf="msg?.$createdAt">
             {{ messageTime(msg?.$createdAt) }}
             <ion-icon *ngIf="!msg?.seen" name="checkmark-outline"></ion-icon>
-            <ion-icon *ngIf="msg?.seen" name="checkmark-circle-outline"></ion-icon>
+            <ion-icon
+              *ngIf="msg?.seen"
+              name="checkmark-circle-outline"
+            ></ion-icon>
           </span>
           <span class="message-time" *ngIf="!msg?.$createdAt">
             <ion-icon name="cloud-upload-outline"></ion-icon>
