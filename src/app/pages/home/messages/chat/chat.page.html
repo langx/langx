@@ -65,7 +65,7 @@
     <form [formGroup]="form" (ngSubmit)="createMessage()">
       <ion-item>
         <ion-textarea
-          *ngIf="!isRecording"
+          *ngIf="!isRecording && storedFileNames.length == 0"
           placeholder="Type your message..."
           type="text"
           formControlName="body"
@@ -74,13 +74,27 @@
           autoGrow="true"
         >
         </ion-textarea>
-        <ion-textarea
+        <ion-text
           *ngIf="isRecording"
           placeholder="Recording..."
-          [value]="durationDisplay"
           disabled="true"
         >
-        </ion-textarea>
+          {{durationDisplay}} Recording...
+        </ion-text>
+        <div *ngIf="storedFileNames.length > 0">
+          <ion-buttons slot="center">
+            <ion-button (click)="play(storedFileNames[0].name)" fill="clear">
+              <ion-icon slot="icon-only" name="play" color="success"></ion-icon>
+            </ion-button>
+            <ion-button
+              (click)="deleteRecording(storedFileNames[0].name)"
+              fill="clear"
+            >
+              <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
+            </ion-button>
+            <ion-text class="ion-padding-horizontal">[Audio]</ion-text>
+          </ion-buttons>
+        </div>
         <ion-buttons slot="start">
           <ion-button (click)="selectImage()">
             <ion-icon slot="icon-only" name="camera-outline" color="medium">
@@ -88,8 +102,17 @@
           </ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button #recordButton>
-            <ion-icon slot="icon-only" name="mic" color="medium"></ion-icon>
+          <ion-button
+            #recordButton
+            (mousedown)="changeColor('danger'); listenForMouseUp()"
+            (touchstart)="changeColor('danger')"
+            (touchend)="changeColor('medium')"
+          >
+            <ion-icon
+              slot="icon-only"
+              name="mic"
+              [color]="iconColor"
+            ></ion-icon>
           </ion-button>
           <ion-button type="submit">
             <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
@@ -98,8 +121,4 @@
       </ion-item>
     </form>
   </ion-toolbar>
-  <p *ngFor="let file of storedFileNames">
-    <ion-button (click)="deleteRecording(file.name)">D</ion-button>
-    <ion-button (click)="play(file.name)">{{file.name}}</ion-button>
-  </p>
 </ion-footer>
