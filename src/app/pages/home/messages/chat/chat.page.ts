@@ -144,15 +144,14 @@ export class ChatPage implements OnInit, OnDestroy {
     if (!this.isRecording) {
       return;
     }
+    this.isRecording = false;
     VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
-      this.isRecording = false;
-
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
         console.log('Recorded data', recordData);
 
         // Save the file to the device
-        const fileName = `${this.roomId}.mp3`;
+        const fileName = `${this.roomId}.m4a`;
         await Filesystem.writeFile({
           path: fileName,
           data: recordData,
@@ -191,8 +190,10 @@ export class ChatPage implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     this.initValuesAfterViewInit();
+    this.enableLongPress();
+  }
 
-    // Recording Feature
+  enableLongPress() {
     const longPress = this.gestureCtrl.create(
       {
         el: this.recordButton.nativeElement,
@@ -200,12 +201,14 @@ export class ChatPage implements OnInit, OnDestroy {
         threshold: 0,
         onStart: () => {
           Haptics.impact({ style: ImpactStyle.Light });
+          this.changeColor('danger');
           this.startRecording();
           this.calculateDuration();
         },
         onEnd: () => {
-          Haptics.impact({ style: ImpactStyle.Light });
           this.stopRecording();
+          this.changeColor('medium');
+          Haptics.impact({ style: ImpactStyle.Light });
         },
       },
       true
@@ -235,15 +238,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
   changeColor(color: string) {
     this.iconColor = color;
-  }
-
-  mouseUpListener = () => {
-    this.changeColor('medium');
-    window.removeEventListener('mouseup', this.mouseUpListener);
-  };
-
-  listenForMouseUp() {
-    window.addEventListener('mouseup', this.mouseUpListener);
   }
 
   ngOnDestroy() {

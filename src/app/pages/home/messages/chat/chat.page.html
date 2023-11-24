@@ -69,6 +69,7 @@
           placeholder="Type your message..."
           type="text"
           formControlName="body"
+          rows="1"
           (ionFocus)="typingFocus()"
           (ionBlur)="typingBlur()"
           autoGrow="true"
@@ -92,7 +93,7 @@
             >
               <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
             </ion-button>
-            <ion-text class="ion-padding-horizontal">[Audio]</ion-text>
+            <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text>
           </ion-buttons>
         </div>
         <ion-buttons slot="start">
@@ -102,12 +103,7 @@
           </ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button
-            #recordButton
-            (mousedown)="changeColor('danger'); listenForMouseUp()"
-            (touchstart)="changeColor('danger')"
-            (touchend)="changeColor('medium')"
-          >
+          <ion-button #recordButton>
             <ion-icon
               slot="icon-only"
               name="mic"
