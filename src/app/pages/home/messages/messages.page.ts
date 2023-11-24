@@ -175,7 +175,11 @@ export class MessagesPage implements OnInit {
       time: null,
     };
     if (room.messages.length > 0) {
-      lastMessage.body = room.messages[room.messages.length - 1].body;
+      if (room.messages[room.messages.length - 1].isImage) {
+        lastMessage.body = '📷 Image';
+      } else {
+        lastMessage.body = room.messages[room.messages.length - 1].body;
+      }
       lastMessage.time = room.messages[room.messages.length - 1].$updatedAt;
     }
     return lastMessage;
