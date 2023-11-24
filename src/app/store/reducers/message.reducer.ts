@@ -9,6 +9,7 @@ import {
   findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
+  clearImageUrlStateAction,
   uploadImageForMessageFailureAction,
   uploadImageForMessageSuccessAction,
 } from 'src/app/store/actions/bucket.action';
@@ -316,6 +317,13 @@ const messageReducer = createReducer(
     (state, action): MessageStateInterface => ({
       ...state,
       error: action.error,
+    })
+  ),
+  on(
+    clearImageUrlStateAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      imageUrl: null,
     })
   )
 );
