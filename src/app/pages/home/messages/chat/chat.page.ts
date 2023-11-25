@@ -97,6 +97,7 @@ export class ChatPage implements OnInit, OnDestroy {
   durationDisplay: string = '';
   duration: number = 0;
   iconColorOfMic: string = 'medium';
+  micPermission: boolean = false;
 
   constructor(
     private store: Store,
@@ -112,18 +113,20 @@ export class ChatPage implements OnInit, OnDestroy {
     this.initForm();
 
     // Recording Feature
-
     this.loadFiles();
-    console.log(
-      '🚀 ~ file: chat.page.ts:482 ~ ChatPage ~ checkMicPermission ~ loadFiles:'
-    );
     if (Capacitor.getPlatform() != 'web') {
-      const permission = (await VoiceRecorder.hasAudioRecordingPermission())
-        .value;
-      if (!permission) {
+      this.micPermission = (
+        await VoiceRecorder.hasAudioRecordingPermission()
+      ).value;
+      if (!this.micPermission) {
         await VoiceRecorder.requestAudioRecordingPermission();
       }
     }
+  }
+
+  ngAfterViewInit() {
+    this.initValuesAfterViewInit();
+    this.enableLongPress();
   }
 
   ngOnDestroy() {
@@ -474,11 +477,6 @@ export class ChatPage implements OnInit, OnDestroy {
       directory: Directory.Data,
     });
     this.loadFiles();
-  }
-
-  ngAfterViewInit() {
-    this.initValuesAfterViewInit();
-    this.enableLongPress();
   }
 
   //
