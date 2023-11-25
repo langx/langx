@@ -94,8 +94,6 @@ export class ChatPage implements OnInit, OnDestroy {
   // Recording Audio Variables
   isRecording: boolean = false;
   storedFileNames: FileInfo[] = [];
-  durationDisplay: string = '';
-  duration: number = 0;
   iconColorOfMic: string = 'medium';
   micPermission: boolean = false;
 
@@ -434,12 +432,7 @@ export class ChatPage implements OnInit, OnDestroy {
       this.isRecording = false;
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
-        console.log('Recorded data', recordData);
-
-        // Delete the previous recording
-        if (this.storedFileNames.length > 0) {
-          this.deleteRecording(this.storedFileNames[0].name);
-        }
+        // console.log('Recorded data', recordData);
 
         // Save the file to the device
         const fileName = `${this.roomId}.m4a`;
@@ -459,7 +452,7 @@ export class ChatPage implements OnInit, OnDestroy {
       path: fileName,
       directory: Directory.Data,
     });
-    console.log('Audio file', audioFile);
+    // console.log('Audio file', audioFile);
     const base64Sound = audioFile.data;
 
     // Play the audio file
@@ -497,35 +490,17 @@ export class ChatPage implements OnInit, OnDestroy {
           this.startRecording();
           Haptics.impact({ style: ImpactStyle.Light });
           this.changeColor('danger');
-          this.calculateDuration();
         },
         onEnd: () => {
           this.stopRecording();
-          this.changeColor('medium');
           Haptics.impact({ style: ImpactStyle.Light });
+          this.changeColor('medium');
         },
       },
       true
     );
 
     longPress.enable();
-  }
-
-  calculateDuration() {
-    if (!this.isRecording) {
-      this.duration = 0;
-      this.durationDisplay = '';
-      return;
-    }
-
-    this.duration++;
-    const minutes = Math.floor(this.duration / 60);
-    const seconds = (this.duration % 60).toString().padStart(2, '0');
-    this.durationDisplay = `${minutes}:${seconds}`;
-
-    setTimeout(() => {
-      this.calculateDuration();
-    }, 1000);
   }
 
   //
