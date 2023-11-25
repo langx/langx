@@ -80,9 +80,9 @@
           placeholder="Recording..."
           disabled="true"
         >
-          {{durationDisplay}} Recording...
+          {{durationDisplay}}
         </ion-text>
-        <div *ngIf="storedFileNames.length > 0">
+        <div *ngIf="!isRecording && storedFileNames.length > 0">
           <ion-buttons slot="center">
             <ion-button (click)="play(storedFileNames[0].name)" fill="clear">
               <ion-icon slot="icon-only" name="play" color="success"></ion-icon>
@@ -107,7 +107,7 @@
             <ion-icon
               slot="icon-only"
               name="mic"
-              [color]="iconColor"
+              [color]="iconColorOfMic"
             ></ion-icon>
           </ion-button>
           <ion-button type="submit">

@@ -10,7 +10,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
-import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Compressor from 'compressorjs';
@@ -91,11 +91,12 @@ export class ChatPage implements OnInit, OnDestroy {
     color: 'warning',
   };
 
-  // Recording Feature
+  // Recording Audio Variables
   isRecording: boolean = false;
-  storedFileNames: any = [];
+  storedFileNames: FileInfo[] = [];
   durationDisplay: string = '';
   duration: number = 0;
+  iconColorOfMic: string = 'medium';
 
   constructor(
     private store: Store,
@@ -111,7 +112,11 @@ export class ChatPage implements OnInit, OnDestroy {
     this.initForm();
 
     // Recording Feature
+
     this.loadFiles();
+    console.log(
+      '🚀 ~ file: chat.page.ts:482 ~ ChatPage ~ checkMicPermission ~ loadFiles:'
+    );
     if (Capacitor.getPlatform() != 'web') {
       const permission = (await VoiceRecorder.hasAudioRecordingPermission())
         .value;
@@ -119,125 +124,6 @@ export class ChatPage implements OnInit, OnDestroy {
         await VoiceRecorder.requestAudioRecordingPermission();
       }
     }
-  }
-
-  // Recording Feature
-  async loadFiles() {
-    Filesystem.readdir({
-      path: '',
-      directory: Directory.Data,
-    }).then((result) => {
-      console.log('Directory listing', result);
-      this.storedFileNames = result.files;
-    });
-  }
-
-  startRecording() {
-    if (this.isRecording) {
-      return;
-    }
-    this.isRecording = true;
-    VoiceRecorder.startRecording();
-  }
-
-  stopRecording() {
-    if (!this.isRecording) {
-      return;
-    }
-    this.isRecording = false;
-    VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
-      if (result.value && result.value.recordDataBase64) {
-        const recordData = result.value.recordDataBase64;
-        console.log('Recorded data', recordData);
-
-        // Save the file to the device
-        const fileName = `${this.roomId}.m4a`;
-        await Filesystem.writeFile({
-          path: fileName,
-          data: recordData,
-          directory: Directory.Data,
-        });
-
-        this.loadFiles();
-      }
-    });
-  }
-
-  async play(fileName: string) {
-    const audioFile = await Filesystem.readFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-    console.log('Audio file', audioFile);
-    const base64Sound = audioFile.data;
-
-    // Play the audio file
-    const audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`); // Change the MIME type to audio/mp3
-    audioRef.oncanplaythrough = () => {
-      console.log('Audio file duration', audioRef.duration);
-      return audioRef.play();
-    };
-    audioRef.load();
-  }
-
-  async deleteRecording(fileName: string) {
-    await Filesystem.deleteFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-    this.loadFiles();
-  }
-
-  ngAfterViewInit() {
-    this.initValuesAfterViewInit();
-    this.enableLongPress();
-  }
-
-  enableLongPress() {
-    const longPress = this.gestureCtrl.create(
-      {
-        el: this.recordButton.nativeElement,
-        gestureName: 'long-press',
-        threshold: 0,
-        onStart: () => {
-          Haptics.impact({ style: ImpactStyle.Light });
-          this.changeColor('danger');
-          this.startRecording();
-          this.calculateDuration();
-        },
-        onEnd: () => {
-          this.stopRecording();
-          this.changeColor('medium');
-          Haptics.impact({ style: ImpactStyle.Light });
-        },
-      },
-      true
-    );
-
-    longPress.enable();
-  }
-
-  calculateDuration() {
-    if (!this.isRecording) {
-      this.duration = 0;
-      this.durationDisplay = '';
-      return;
-    }
-
-    this.duration++;
-    const minutes = Math.floor(this.duration / 60);
-    const seconds = (this.duration % 60).toString().padStart(2, '0');
-    this.durationDisplay = `${minutes}:${seconds}`;
-
-    setTimeout(() => {
-      this.calculateDuration();
-    }, 1000);
-  }
-
-  iconColor: string = 'medium';
-
-  changeColor(color: string) {
-    this.iconColor = color;
   }
 
   ngOnDestroy() {
@@ -512,6 +398,136 @@ export class ChatPage implements OnInit, OnDestroy {
     } catch (e) {
       console.log(e);
     }
+  }
+
+  //
+  // Record Audio
+  //
+
+  // Recording Feature
+  async loadFiles() {
+    Filesystem.readdir({
+      path: '',
+      directory: Directory.Data,
+    }).then((result) => {
+      console.log('Directory listing', result);
+      this.storedFileNames = result.files;
+    });
+  }
+
+  startRecording() {
+    if (this.isRecording) {
+      return;
+    }
+    this.isRecording = true;
+    VoiceRecorder.startRecording();
+  }
+
+  stopRecording() {
+    if (!this.isRecording) {
+      return;
+    }
+    VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
+      this.isRecording = false;
+      if (result.value && result.value.recordDataBase64) {
+        const recordData = result.value.recordDataBase64;
+        console.log('Recorded data', recordData);
+
+        // Delete the previous recording
+        if (this.storedFileNames.length > 0) {
+          this.deleteRecording(this.storedFileNames[0].name);
+        }
+
+        // Save the file to the device
+        const fileName = `${this.roomId}.m4a`;
+        await Filesystem.writeFile({
+          path: fileName,
+          data: recordData,
+          directory: Directory.Data,
+        });
+
+        this.loadFiles();
+      }
+    });
+  }
+
+  async play(fileName: string) {
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    console.log('Audio file', audioFile);
+    const base64Sound = audioFile.data;
+
+    // Play the audio file
+    const audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`); // Change the MIME type to audio/mp3
+    audioRef.oncanplaythrough = () => {
+      console.log('Audio file duration', audioRef.duration);
+      return audioRef.play();
+    };
+    audioRef.load();
+  }
+
+  async deleteRecording(fileName: string) {
+    await Filesystem.deleteFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    this.loadFiles();
+  }
+
+  ngAfterViewInit() {
+    this.initValuesAfterViewInit();
+    this.enableLongPress();
+  }
+
+  //
+  // Utils for record audio
+  //
+
+  changeColor(color: string) {
+    this.iconColorOfMic = color;
+  }
+
+  enableLongPress() {
+    const longPress = this.gestureCtrl.create(
+      {
+        el: this.recordButton.nativeElement,
+        gestureName: 'long-press',
+        threshold: 0,
+        onStart: () => {
+          this.startRecording();
+          Haptics.impact({ style: ImpactStyle.Light });
+          this.changeColor('danger');
+          this.calculateDuration();
+        },
+        onEnd: () => {
+          this.stopRecording();
+          this.changeColor('medium');
+          Haptics.impact({ style: ImpactStyle.Light });
+        },
+      },
+      true
+    );
+
+    longPress.enable();
+  }
+
+  calculateDuration() {
+    if (!this.isRecording) {
+      this.duration = 0;
+      this.durationDisplay = '';
+      return;
+    }
+
+    this.duration++;
+    const minutes = Math.floor(this.duration / 60);
+    const seconds = (this.duration % 60).toString().padStart(2, '0');
+    this.durationDisplay = `${minutes}:${seconds}`;
+
+    setTimeout(() => {
+      this.calculateDuration();
+    }, 1000);
   }
 
   //
