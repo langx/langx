@@ -35,27 +35,27 @@ To install the project locally, follow these steps:
    - Replace the `YOUR_ENDPOINT` and `YOUR_PROJECT_ID` and etc. placeholders in the `environment.ts` file with the actual values from your Appwrite project.
      ```typescript
      export const environment = {
-     production: false,
-       appwrite: {
-       APP_ENDPOINT: '',
-       APP_PROJECT: '',
-       APP_DATABASE: '',
-       USERS_COLLECTION: '',
-       ROOMS_COLLECTION: '',
-       MESSAGES_COLLECTION: '',
-       LANGUAGES_COLLECTION: '',
-       USER_BUCKET: '',
-       MESSAGE_BUCKET: '',
-     },
-     url: {
-       HOMEPAGE_URL: '',
-       RESET_PASSWORD_URL: '',
-       HOME_URL: '',
-       LOGIN_URL: '',
-       SIGNUP_COMPLETE_URL: '',
-       CREATE_ROOM_API_URL: '',
-       CREATE_MESSAGE_API_URL: '',
-     },
+        production: false,
+          appwrite: {
+          APP_ENDPOINT: '',
+          APP_PROJECT: '',
+          APP_DATABASE: '',
+          USERS_COLLECTION: '',
+          ROOMS_COLLECTION: '',
+          MESSAGES_COLLECTION: '',
+          LANGUAGES_COLLECTION: '',
+          USER_BUCKET: '',
+          MESSAGE_BUCKET: '',
+        },
+        url: {
+          HOMEPAGE_URL: '',
+          RESET_PASSWORD_URL: '',
+          HOME_URL: '',
+          LOGIN_URL: '',
+          SIGNUP_COMPLETE_URL: '',
+          CREATE_ROOM_API_URL: '',
+          CREATE_MESSAGE_API_URL: '',
+        },
      };
      ```
 3. Start the development server using the command `ionic serve`
