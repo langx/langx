@@ -32,14 +32,30 @@ To install the project locally, follow these steps:
 2. Create a new Appwrite project and enable the Authentication and Database services.
    - In the Appwrite console, go to Project Settings and copy the Appwrite endpoint and project ID.
    - Rename the `environment.ts.sample` file in the `src/environments` directory to `environment.ts`
-   - Replace the `YOUR_ENDPOINT` and `YOUR_PROJECT_ID` placeholders in the `environment.ts` file with the actual values from your Appwrite project.
+   - Replace the `YOUR_ENDPOINT` and `YOUR_PROJECT_ID` and etc. placeholders in the `environment.ts` file with the actual values from your Appwrite project.
      ```typescript
      export const environment = {
-       production: false,
+     production: false,
        appwrite: {
-         endpoint: "YOUR_ENDPOINT",
-         projectId: "YOUR_PROJECT_ID",
-       },
+       APP_ENDPOINT: '',
+       APP_PROJECT: '',
+       APP_DATABASE: '',
+       USERS_COLLECTION: '',
+       ROOMS_COLLECTION: '',
+       MESSAGES_COLLECTION: '',
+       LANGUAGES_COLLECTION: '',
+       USER_BUCKET: '',
+       MESSAGE_BUCKET: '',
+     },
+     url: {
+       HOMEPAGE_URL: '',
+       RESET_PASSWORD_URL: '',
+       HOME_URL: '',
+       LOGIN_URL: '',
+       SIGNUP_COMPLETE_URL: '',
+       CREATE_ROOM_API_URL: '',
+       CREATE_MESSAGE_API_URL: '',
+     },
      };
      ```
 3. Start the development server using the command `ionic serve`
