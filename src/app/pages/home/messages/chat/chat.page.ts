@@ -304,6 +304,8 @@ export class ChatPage implements OnInit, OnDestroy {
     const file = new File([blob], fileName, {
       type: 'audio/ogg',
     });
+
+    // Upload the file and delete it from local storage
     this.uploadAudio(file);
     await this.deleteRecording(fileName);
   }
