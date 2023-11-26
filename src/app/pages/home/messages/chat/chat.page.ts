@@ -92,12 +92,16 @@ export class ChatPage implements OnInit, OnDestroy {
     color: 'warning',
   };
 
-  // Recording Audio Variables
+  // Image Variables
+  imageUrl: URL;
+
+  // Audio Variables
   isRecording: boolean = false;
   micPermission: boolean = false;
   storedFileNames: FileInfo[] = [];
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
+  audioUrl: URL;
 
   constructor(
     private store: Store,
@@ -210,11 +214,21 @@ export class ChatPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
         if (url) {
-          this.createMessageWithImage(url);
+          this.imageUrl = url;
+          this.submitForm();
           this.store.dispatch(clearImageUrlStateAction());
         }
       })
     );
+
+    // Uploaded Audio URL to present
+    // this.subscriptions.add(
+    //   this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
+    //     if (url) {
+    //       this.store.dispatch(clearImageUrlStateAction());
+    //     }
+    //   })
+    // );
 
     // Present Toast if error
     this.subscriptions.add(
@@ -233,59 +247,28 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   submitForm() {
-    if (this.storedFileNames.length > 0) {
-      this.user$
-        .subscribe((user) => {
-          this.createMessageWithAudio(user, this.storedFileNames[0]);
-        })
-        .unsubscribe();
-    } else if (false) {
-      // TODO: Add audio message here
-    } else {
-      this.user$
-        .subscribe((user) => {
-          this.createMessageWithText(user);
-        })
-        .unsubscribe();
-    }
-  }
-
-  createMessageWithText(user: User) {
-    const request: createMessageRequestInterface = {
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'body',
-      body: this.form.value.body,
-    };
-    this.store.dispatch(createMessageAction({ request }));
-    this.form.reset();
-  }
-
-  createMessageWithImage(image: URL) {
     this.user$
       .subscribe((user) => {
-        const request: createMessageRequestInterface = {
-          roomId: this.roomId,
-          to: user.$id,
-          type: 'image',
-          image: image,
-        };
-        this.store.dispatch(createMessageAction({ request }));
-        this.form.reset();
+        let request: createMessageRequestInterface = null;
+
+        // Fill the request with the proper data
+        if (this.form.valid) {
+          request = this.createMessageWithText(user);
+        } else if (this.audioUrl) {
+          request = this.createMessageWithAudio(user);
+        } else if (this.imageUrl) {
+          request = this.createMessageWithImage(user);
+        } else {
+          this.presentToast('Please type your message.', 'danger');
+        }
+
+        // Dispatch action to create message
+        if (request) {
+          this.store.dispatch(createMessageAction({ request }));
+          this.form.reset();
+        }
       })
       .unsubscribe();
-  }
-
-  createMessageWithAudio(user: User, audioFile: FileInfo) {
-    // TODO: Take a look here!
-    const request: createMessageRequestInterface = {
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'audio',
-      audio: new URL(audioFile.uri),
-    };
-    this.store.dispatch(createMessageAction({ request }));
-    this.form.reset();
   }
 
   //
@@ -375,6 +358,40 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
 
     event.target.complete();
+  }
+
+  //
+  // Utils for text message
+  //
+
+  createMessageWithText(user: User): createMessageRequestInterface {
+    const request: createMessageRequestInterface = {
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'body',
+      body: this.form.value.body,
+    };
+    return request;
+  }
+
+  createMessageWithImage(user: User) {
+    const request: createMessageRequestInterface = {
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'image',
+      image: this.imageUrl,
+    };
+    return request;
+  }
+
+  createMessageWithAudio(user: User) {
+    const request: createMessageRequestInterface = {
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'audio',
+      audio: this.audioUrl,
+    };
+    return request;
   }
 
   //
