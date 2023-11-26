@@ -28,7 +28,7 @@ export const getMessagesWithOffsetFailureAction = createAction(
 // Create Message Actions
 export const createMessageAction = createAction(
   ActionTypes.CREATE_MESSAGE,
-  props<{ request: createMessageRequestInterface; currentUserId: string }>()
+  props<{ request: createMessageRequestInterface }>()
 );
 
 export const createMessageSuccessAction = createAction(
