@@ -1,15 +1,25 @@
+<!-- Receiver -->
 <ion-item *ngIf="msg?.sender != current_user_id" lines="none">
   <div class="message-body">
     <div class="message-main-receiver">
       <div class="receiver">
         <div class="message-text">
-          {{ msg?.body }}
+          <!-- Text message -->
+          <span *ngIf="msg?.type == 'body'">{{ msg?.body }}</span>
+
+          <!-- Image message -->
           <img
-            *ngIf="msg?.isImage"
+            *ngIf="msg?.type == 'image'"
             [src]="msg?.image"
             alt="Image message"
             referrerpolicy="no-referrer"
           />
+
+          <!-- Audio message -->
+          <audio controls *ngIf="msg?.type == 'audio'">
+            <source [src]="msg?.audio" type="audio/ogg" />
+            Your browser does not support the audio element.
+          </audio>
         </div>
         <span class="message-time">
           {{ messageTime(msg?.$createdAt) }}
@@ -19,18 +29,29 @@
   </div>
 </ion-item>
 
+<!-- Sender -->
 <ion-item *ngIf="msg?.sender == current_user_id" lines="none">
   <div class="message-body">
     <div class="message-main-sender">
       <div class="sender">
         <div class="message-text">
-          {{ msg?.body }}
+          <!-- Text message -->
+          <span *ngIf="msg?.type == 'body'">{{ msg?.body }}</span>
+
+          <!-- Image message -->
           <img
-            *ngIf="msg?.isImage"
+            *ngIf="msg?.type == 'image'"
             [src]="msg?.image"
             alt="Image message"
             referrerpolicy="no-referrer"
           />
+
+          <!-- Audio message -->
+          <audio controls *ngIf="msg?.type == 'audio'">
+            <source [src]="msg?.audio" type="audio/ogg" />
+            Your browser does not support the audio element.
+          </audio>
+
           <span class="message-time" *ngIf="msg?.$createdAt">
             {{ messageTime(msg?.$createdAt) }}
             <ion-icon *ngIf="!msg?.seen" name="checkmark-outline"></ion-icon>
