@@ -8,5 +8,6 @@ export interface MessageStateInterface {
   tempMessages: tempMessageInterface[] | null;
   room: RoomExtendedInterface | null;
   imageUrl: URL | null;
+  audioUrl: URL | null;
   error: ErrorInterface | null;
 }
