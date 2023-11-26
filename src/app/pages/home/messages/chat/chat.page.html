@@ -87,6 +87,9 @@
             <ion-button (click)="play(storedFileNames[0].name)" fill="clear">
               <ion-icon slot="icon-only" name="play" color="success"></ion-icon>
             </ion-button>
+            <ion-button (click)="stop()" fill="clear">
+              <ion-icon slot="icon-only" name="stop" color="warning"></ion-icon>
+            </ion-button>
             <ion-button
               (click)="deleteRecording(storedFileNames[0].name)"
               fill="clear"
