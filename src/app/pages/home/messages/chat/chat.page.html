@@ -84,11 +84,15 @@
         </ion-text>
         <div *ngIf="!isRecording && storedFileNames.length > 0">
           <ion-buttons slot="center">
-            <ion-button (click)="play(storedFileNames[0].name)" fill="clear">
-              <ion-icon slot="icon-only" name="play" color="success"></ion-icon>
-            </ion-button>
-            <ion-button (click)="stop()" fill="clear">
-              <ion-icon slot="icon-only" name="stop" color="warning"></ion-icon>
+            <ion-button
+              (click)="togglePlayStop(storedFileNames[0].name)"
+              fill="clear"
+            >
+              <ion-icon
+                slot="icon-only"
+                [name]="isPlaying() ? 'pause' : 'play'"
+                [color]="isPlaying() ? 'warning' : 'success'"
+              ></ion-icon>
             </ion-button>
             <ion-button
               (click)="deleteRecording(storedFileNames[0].name)"

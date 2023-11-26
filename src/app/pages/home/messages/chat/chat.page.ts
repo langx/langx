@@ -472,6 +472,18 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
+  async togglePlayStop(fileName: string) {
+    if (this.isPlaying()) {
+      this.stop();
+    } else {
+      await this.play(fileName);
+    }
+  }
+
+  isPlaying(): boolean {
+    return this.audioRef ? !this.audioRef.paused : false;
+  }
+
   async deleteRecording(fileName: string) {
     await Filesystem.deleteFile({
       path: fileName,
