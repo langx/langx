@@ -228,38 +228,6 @@ export class ChatPage implements OnInit, OnDestroy {
     );
   }
 
-  //
-  // Infinite Scroll
-  //
-
-  loadMore(event) {
-    // Offset is the number of messages that we already have
-    let offset: number = 0;
-
-    this.messages$
-      .subscribe((messages) => {
-        offset = messages.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < total) {
-              this.store.dispatch(
-                getMessagesWithOffsetAction({
-                  roomId: this.roomId,
-                  offset: offset,
-                })
-              );
-            } else {
-              event.target.disabled = true;
-              console.log('All messages loaded');
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
-
-    event.target.complete();
-  }
-
   submitForm() {
     this.user$
       .subscribe((user) => {
@@ -371,6 +339,38 @@ export class ChatPage implements OnInit, OnDestroy {
     );
 
     longPress.enable();
+  }
+
+  //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // Offset is the number of messages that we already have
+    let offset: number = 0;
+
+    this.messages$
+      .subscribe((messages) => {
+        offset = messages.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              this.store.dispatch(
+                getMessagesWithOffsetAction({
+                  roomId: this.roomId,
+                  offset: offset,
+                })
+              );
+            } else {
+              event.target.disabled = true;
+              console.log('All messages loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+
+    event.target.complete();
   }
 
   //
