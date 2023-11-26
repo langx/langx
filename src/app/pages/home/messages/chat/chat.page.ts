@@ -460,9 +460,9 @@ export class ChatPage implements OnInit, OnDestroy {
     this.audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`);
     this.audioRef.oncanplaythrough = () => {
       console.log('Audio file duration', this.audioRef.duration);
-      return this.audioRef.play();
     };
     this.audioRef.load();
+    return this.audioRef.play();
   }
 
   stop() {
