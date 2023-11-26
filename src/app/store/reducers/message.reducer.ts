@@ -9,6 +9,9 @@ import {
   findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
+  clearAudioUrlStateAction,
+  uploadAudioForMessageFailureAction,
+  uploadAudioForMessageSuccessAction,
   clearImageUrlStateAction,
   uploadImageForMessageFailureAction,
   uploadImageForMessageSuccessAction,
@@ -37,6 +40,7 @@ const initialState: MessageStateInterface = {
   tempMessages: null,
   room: null,
   imageUrl: null,
+  audioUrl: null,
   error: null,
 };
 
@@ -332,6 +336,29 @@ const messageReducer = createReducer(
     (state): MessageStateInterface => ({
       ...state,
       imageUrl: null,
+    })
+  ),
+
+  // Upload Audio For Message
+  on(
+    uploadAudioForMessageSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      audioUrl: action.payload,
+    })
+  ),
+  on(
+    uploadAudioForMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
+  ),
+  on(
+    clearAudioUrlStateAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      audioUrl: null,
     })
   )
 );
