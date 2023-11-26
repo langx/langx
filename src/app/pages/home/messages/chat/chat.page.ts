@@ -254,9 +254,7 @@ export class ChatPage implements OnInit, OnDestroy {
     const request: createMessageRequestInterface = {
       roomId: this.roomId,
       to: user.$id,
-      isText: true,
-      isImage: false,
-      isAudio: false,
+      type: 'body',
       body: this.form.value.body,
     };
     this.store.dispatch(createMessageAction({ request }));
@@ -269,9 +267,7 @@ export class ChatPage implements OnInit, OnDestroy {
         const request: createMessageRequestInterface = {
           roomId: this.roomId,
           to: user.$id,
-          isText: false,
-          isImage: true,
-          isAudio: false,
+          type: 'image',
           image: image,
         };
         this.store.dispatch(createMessageAction({ request }));
@@ -285,9 +281,7 @@ export class ChatPage implements OnInit, OnDestroy {
     const request: createMessageRequestInterface = {
       roomId: this.roomId,
       to: user.$id,
-      isText: false,
-      isImage: false,
-      isAudio: true,
+      type: 'audio',
       audio: new URL(audioFile.uri),
     };
     this.store.dispatch(createMessageAction({ request }));

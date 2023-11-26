@@ -90,6 +90,7 @@ export class MessageEffects {
     )
   );
 
+  // TODO: Use request directly instead of creating newRequest
   resendMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resendMessageFromTempMessagesAction),
@@ -98,9 +99,7 @@ export class MessageEffects {
         const newRequest: createMessageRequestInterface = {
           roomId: action.request.roomId,
           to: action.request.to,
-          isText: action.request.isText,
-          isImage: action.request.isImage,
-          isAudio: action.request.isAudio,
+          type: action.request.type,
           body: action.request.body,
         };
 
