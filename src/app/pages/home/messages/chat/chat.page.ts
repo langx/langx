@@ -453,7 +453,7 @@ export class ChatPage implements OnInit, OnDestroy {
     return this.audioRef.play();
   }
 
-  stop() {
+  async stop() {
     if (this.audioRef) {
       this.audioRef.pause();
       this.audioRef.currentTime = 0;
@@ -473,6 +473,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   async deleteRecording(fileName: string) {
+    await this.stop();
     await Filesystem.deleteFile({
       path: fileName,
       directory: Directory.Data,
@@ -488,6 +489,21 @@ export class ChatPage implements OnInit, OnDestroy {
     this.iconColorOfMic = color;
   }
 
+  async checkMicPermission() {
+    if (Capacitor.getPlatform() != 'web') {
+      this.micPermission = (
+        await VoiceRecorder.hasAudioRecordingPermission()
+      ).value;
+      if (!this.micPermission) {
+        this.micPermission = (
+          await VoiceRecorder.requestAudioRecordingPermission()
+        ).value;
+      }
+    } else {
+      this.micPermission = true;
+    }
+  }
+
   enableLongPress() {
     const longPress = this.gestureCtrl.create(
       {
@@ -495,20 +511,9 @@ export class ChatPage implements OnInit, OnDestroy {
         gestureName: 'long-press',
         threshold: 0,
         onWillStart: async (_: GestureDetail) => {
-          // Recording Feature
+          await this.stop();
           this.loadFiles();
-          if (Capacitor.getPlatform() != 'web') {
-            this.micPermission = (
-              await VoiceRecorder.hasAudioRecordingPermission()
-            ).value;
-            if (!this.micPermission) {
-              this.micPermission = (
-                await VoiceRecorder.requestAudioRecordingPermission()
-              ).value;
-            }
-          } else {
-            this.micPermission = true;
-          }
+          await this.checkMicPermission();
           return Promise.resolve();
         },
         onStart: () => {
