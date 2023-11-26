@@ -9,6 +9,9 @@ import { UserService } from 'src/app/services/user/user.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 
 import {
+  uploadAudioForMessageAction,
+  uploadAudioForMessageFailureAction,
+  uploadAudioForMessageSuccessAction,
   uploadImageForMessageAction,
   uploadImageForMessageFailureAction,
   uploadImageForMessageSuccessAction,
@@ -89,7 +92,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadImageForMessageAction),
       switchMap(({ request }) => {
-        return this.messageService.uploadFile(request).pipe(
+        return this.messageService.uploadImage(request).pipe(
           map((payload) => {
             return uploadImageForMessageSuccessAction({ payload });
           }),
@@ -99,6 +102,26 @@ export class BucketEffects {
               message: errorResponse.message,
             };
             return of(uploadImageForMessageFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  uploadAudioForMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(uploadAudioForMessageAction),
+      switchMap(({ request }) => {
+        return this.messageService.uploadAudio(request).pipe(
+          map((payload) => {
+            return uploadAudioForMessageSuccessAction({ payload });
+          }),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(uploadAudioForMessageFailureAction({ error }));
           })
         );
       })
