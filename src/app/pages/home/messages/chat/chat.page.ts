@@ -6,6 +6,7 @@ import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import Compressor from 'compressorjs';
 import {
   Component,
@@ -57,7 +58,6 @@ import {
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-chat',
@@ -94,10 +94,10 @@ export class ChatPage implements OnInit, OnDestroy {
 
   // Recording Audio Variables
   isRecording: boolean = false;
+  micPermission: boolean = false;
   storedFileNames: FileInfo[] = [];
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
-  micPermission: boolean = false;
 
   constructor(
     private store: Store,
@@ -408,17 +408,12 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   startRecording() {
-    if (this.isRecording) {
-      return;
-    }
-    this.isRecording = true;
-    VoiceRecorder.startRecording();
+    VoiceRecorder.startRecording().then(() => {
+      this.isRecording = true;
+    });
   }
 
   stopRecording() {
-    if (!this.isRecording) {
-      return;
-    }
     VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
       this.isRecording = false;
       if (result.value && result.value.recordDataBase64) {
@@ -507,17 +502,23 @@ export class ChatPage implements OnInit, OnDestroy {
               await VoiceRecorder.hasAudioRecordingPermission()
             ).value;
             if (!this.micPermission) {
-              await VoiceRecorder.requestAudioRecordingPermission();
+              this.micPermission = (
+                await VoiceRecorder.requestAudioRecordingPermission()
+              ).value;
             }
+          } else {
+            this.micPermission = true;
           }
           return Promise.resolve();
         },
         onStart: () => {
+          if (!this.micPermission || this.isRecording) return;
           this.startRecording();
           Haptics.impact({ style: ImpactStyle.Light });
           this.changeColor('danger');
         },
         onEnd: () => {
+          if (!this.micPermission || !this.isRecording) return;
           this.stopRecording();
           Haptics.impact({ style: ImpactStyle.Light });
           this.changeColor('medium');
