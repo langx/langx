@@ -260,7 +260,7 @@ export class ChatPage implements OnInit, OnDestroy {
     event.target.complete();
   }
 
-  createMessage() {
+  submitForm() {
     this.currentUser$
       .subscribe((currentUser) => {
         this.user$

@@ -57,7 +57,7 @@
 
 <ion-footer>
   <ion-toolbar>
-    <form [formGroup]="form" (ngSubmit)="createMessage()">
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
       <ion-item>
         <ion-textarea
           *ngIf="!isRecording && storedFileNames.length == 0"
