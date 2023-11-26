@@ -330,53 +330,16 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async selectImage() {
     try {
-      if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+      await this.requestCameraPermissions();
 
-      // TODO: Capacitor pop up style is not good. It should be changed.
-      const image = await Camera.getPhoto({
-        quality: 100,
-        allowEditing: true,
-        source: CameraSource.Prompt,
-        resultType: CameraResultType.DataUrl,
-      }).catch((error) => {
-        console.log(error);
-      });
+      const image = await this.getCameraPhoto();
 
       if (!image) return;
 
-      const modal = await this.modalCtrl.create({
-        component: ImageCropComponent,
-        componentProps: {
-          image: image,
-        },
-      });
-      modal.present();
+      const modal = await this.createImageCropModal(image);
 
-      // TODO: Comment logs
       await modal.onDidDismiss().then(async (data) => {
-        if (data?.data) {
-          // URL to Blob
-          let blob: Blob = this.dataURLtoBlob(data.data);
-          console.log(`Original size: ${blob.size}`);
-
-          // Check size of the file here
-          blob = await this.checkFileSize(blob);
-          console.log(`Final size: ${blob.size}`);
-
-          // Blob to File
-          let file = new File([blob], this.roomId, {
-            type: blob.type,
-          });
-
-          // Upload File
-          this.store.dispatch(
-            uploadImageForMessageAction({
-              request: file,
-            })
-          );
-        } else {
-          this.presentToast('Image not selected properly.', 'danger');
-        }
+        await this.handleModalDismiss(data);
       });
     } catch (e) {
       console.log(e);
@@ -419,10 +382,108 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
+  // Utils for image upload
+  //
+
+  private async requestCameraPermissions() {
+    if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+  }
+
+  private async getCameraPhoto() {
+    return await Camera.getPhoto({
+      quality: 100,
+      allowEditing: true,
+      source: CameraSource.Prompt,
+      resultType: CameraResultType.DataUrl,
+    }).catch((error) => {
+      console.log(error);
+    });
+  }
+
+  private async createImageCropModal(image) {
+    const modal = await this.modalCtrl.create({
+      component: ImageCropComponent,
+      componentProps: {
+        image: image,
+      },
+    });
+    modal.present();
+    return modal;
+  }
+
+  private async handleModalDismiss(data) {
+    if (data?.data) {
+      let blob: Blob = this.dataURLtoBlob(data.data);
+      console.log(`Original size: ${blob.size}`);
+
+      blob = await this.checkFileSize(blob);
+      console.log(`Final size: ${blob.size}`);
+
+      let file = new File([blob], this.roomId, {
+        type: blob.type,
+      });
+
+      this.uploadImage(file);
+    } else {
+      this.presentToast('Image not selected properly.', 'danger');
+    }
+  }
+
+  private uploadImage(file) {
+    this.store.dispatch(
+      uploadImageForMessageAction({
+        request: file,
+      })
+    );
+  }
+
+  private dataURLtoBlob(dataurl: any) {
+    var arr = dataurl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  }
+
+  private async checkFileSize(
+    blob: Blob,
+    quality: number = 0.6,
+    attempts: number = 0
+  ): Promise<Blob> {
+    // console.log(`Checking size: ${blob.size}`);
+    if (blob.size > 2000000 && attempts < 10) {
+      // limit to 5 attempts
+      const compressedBlob = await this.compressImage(blob, quality);
+      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
+    }
+    return blob;
+  }
+
+  private compressImage(blob: Blob, quality: number): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      new Compressor(blob, {
+        quality: quality,
+        success: (result: Blob) => {
+          // console.log(`Compressed from ${blob.size} to ${result.size}`);
+          resolve(result);
+        },
+        error: (error: Error) => {
+          // console.log(`Compression error: ${error.message}`);
+          reject(error);
+        },
+      });
+    });
+  }
+
+  //
   // Utils for record audio
   //
 
-  async checkMicPermission() {
+  private async checkMicPermission() {
     if (Capacitor.getPlatform() != 'web') {
       this.micPermission = (
         await VoiceRecorder.hasAudioRecordingPermission()
@@ -437,13 +498,13 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
-  startRecording() {
+  private startRecording() {
     VoiceRecorder.startRecording().then(() => {
       this.isRecording = true;
     });
   }
 
-  stopRecording() {
+  private stopRecording() {
     VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
       this.isRecording = false;
       if (result.value && result.value.recordDataBase64) {
@@ -456,7 +517,7 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
-  async loadFiles() {
+  private async loadFiles() {
     Filesystem.readdir({
       path: '',
       directory: Directory.Data,
@@ -466,7 +527,7 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
-  async saveRecording(recordData: string, fileName: string) {
+  private async saveRecording(recordData: string, fileName: string) {
     await Filesystem.writeFile({
       path: fileName,
       data: recordData,
@@ -526,52 +587,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
   changeColor(color: string) {
     this.iconColorOfMic = color;
-  }
-
-  //
-  // Utils for image upload
-  //
-
-  private dataURLtoBlob(dataurl: any) {
-    var arr = dataurl.split(','),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
-  }
-
-  private async checkFileSize(
-    blob: Blob,
-    quality: number = 0.6,
-    attempts: number = 0
-  ): Promise<Blob> {
-    // console.log(`Checking size: ${blob.size}`);
-    if (blob.size > 2000000 && attempts < 10) {
-      // limit to 5 attempts
-      const compressedBlob = await this.compressImage(blob, quality);
-      return this.checkFileSize(compressedBlob, quality * 0.8, attempts + 1);
-    }
-    return blob;
-  }
-
-  private compressImage(blob: Blob, quality: number): Promise<Blob> {
-    return new Promise((resolve, reject) => {
-      new Compressor(blob, {
-        quality: quality,
-        success: (result: Blob) => {
-          // console.log(`Compressed from ${blob.size} to ${result.size}`);
-          resolve(result);
-        },
-        error: (error: Error) => {
-          // console.log(`Compression error: ${error.message}`);
-          reject(error);
-        },
-      });
-    });
   }
 
   //
