@@ -6,10 +6,8 @@ export interface MessageExtendedInterface extends Models.Document {
   seen: boolean | false;
   to: string;
   roomId: Room;
-  isText: boolean;
+  type: string;
   body?: string;
-  isImage: boolean;
   image?: URL;
-  isAudio: boolean;
   audio?: URL;
 }
