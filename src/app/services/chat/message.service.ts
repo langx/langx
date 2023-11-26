@@ -93,17 +93,19 @@ export class MessageService {
   // Upload Bucket
   //
 
-  uploadFile(request: File): Observable<URL> {
+  uploadImage(request: File): Observable<URL> {
     return from(
       this.storage.createFile(
         environment.appwrite.MESSAGE_BUCKET,
         ID.unique(),
         request
       )
-    ).pipe(switchMap((response: BucketFile) => this.getFileView(response.$id)));
+    ).pipe(
+      switchMap((response: BucketFile) => this.getImageView(response.$id))
+    );
   }
 
-  private getFileView(fileId: string): Observable<URL> {
+  private getImageView(fileId: string): Observable<URL> {
     const url = this.storage.getFileView(
       environment.appwrite.MESSAGE_BUCKET,
       fileId
