@@ -40,6 +40,7 @@ import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   clearImageUrlStateAction,
+  uploadAudioForMessageAction,
   uploadImageForMessageAction,
 } from 'src/app/store/actions/bucket.action';
 import {
@@ -225,7 +226,7 @@ export class ChatPage implements OnInit, OnDestroy {
     // this.subscriptions.add(
     //   this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
     //     if (url) {
-    //       this.store.dispatch(clearImageUrlStateAction());
+    //       this.store.dispatch(clearAudioUrlStateAction());
     //     }
     //   })
     // );
@@ -592,6 +593,14 @@ export class ChatPage implements OnInit, OnDestroy {
     } else {
       await this.play(fileName);
     }
+  }
+
+  private uploadAudio(file) {
+    this.store.dispatch(
+      uploadAudioForMessageAction({
+        request: file,
+      })
+    );
   }
 
   isPlaying(): boolean {
