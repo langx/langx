@@ -1,10 +1,3 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
@@ -15,7 +8,15 @@ import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import Compressor from 'compressorjs';
 import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
   GestureController,
+  GestureDetail,
   IonContent,
   ModalController,
   ToastController,
@@ -110,17 +111,6 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
-
-    // Recording Feature
-    this.loadFiles();
-    if (Capacitor.getPlatform() != 'web') {
-      this.micPermission = (
-        await VoiceRecorder.hasAudioRecordingPermission()
-      ).value;
-      if (!this.micPermission) {
-        await VoiceRecorder.requestAudioRecordingPermission();
-      }
-    }
   }
 
   ngAfterViewInit() {
@@ -509,6 +499,19 @@ export class ChatPage implements OnInit, OnDestroy {
         el: this.recordButton.nativeElement,
         gestureName: 'long-press',
         threshold: 0,
+        onWillStart: async (_: GestureDetail) => {
+          // Recording Feature
+          this.loadFiles();
+          if (Capacitor.getPlatform() != 'web') {
+            this.micPermission = (
+              await VoiceRecorder.hasAudioRecordingPermission()
+            ).value;
+            if (!this.micPermission) {
+              await VoiceRecorder.requestAudioRecordingPermission();
+            }
+          }
+          return Promise.resolve();
+        },
         onStart: () => {
           this.startRecording();
           Haptics.impact({ style: ImpactStyle.Light });
