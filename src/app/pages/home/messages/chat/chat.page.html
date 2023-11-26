@@ -11,11 +11,6 @@
       </ion-avatar>
     </ion-buttons>
 
-    <ion-buttons slot="end">
-      <ion-button (click)="search()">
-        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
     <ion-title (click)="redirectUserProfile()">
       {{(user$ | async)?.name}}
     </ion-title>
