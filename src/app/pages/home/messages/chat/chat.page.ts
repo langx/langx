@@ -324,15 +324,6 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
   }
 
-  // TODO: Do we need this function?
-  search() {
-    console.log('test clicked', this.content);
-    // TODO: We already have global scroll to bottom function
-    this.content.scrollToBottom(1500).then(() => {
-      console.log('scrolled to bottom');
-    });
-  }
-
   //
   // Select Image
   //
