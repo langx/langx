@@ -14,6 +14,7 @@ export const environment = {
     LANGUAGES_COLLECTION: '6511599e2bf0bb1b4d2c',
     USER_BUCKET: '6515f94d20becd47cb40',
     MESSAGE_BUCKET: '655fedc46d24b615878a',
+    AUDIO_BUCKET: '6563aa2ef2cd2964cf27',
   },
   url: {
     HOMEPAGE_URL: 'http://localhost:8100/',
