@@ -39,8 +39,9 @@ import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interfa
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
-  clearImageUrlStateAction,
+  clearAudioUrlStateAction,
   uploadAudioForMessageAction,
+  clearImageUrlStateAction,
   uploadImageForMessageAction,
 } from 'src/app/store/actions/bucket.action';
 import {
@@ -49,6 +50,7 @@ import {
   deactivateRoomAction,
 } from 'src/app/store/actions/message.action';
 import {
+  audioUrlSelector,
   errorSelector,
   imageUrlSelector,
   isLoadingOffsetSelector,
@@ -223,13 +225,15 @@ export class ChatPage implements OnInit, OnDestroy {
     );
 
     // Uploaded Audio URL to present
-    // this.subscriptions.add(
-    //   this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
-    //     if (url) {
-    //       this.store.dispatch(clearAudioUrlStateAction());
-    //     }
-    //   })
-    // );
+    this.subscriptions.add(
+      this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
+        if (url) {
+          this.audioUrl = url;
+          this.submitForm();
+          this.store.dispatch(clearAudioUrlStateAction());
+        }
+      })
+    );
 
     // Present Toast if error
     this.subscriptions.add(
@@ -247,7 +251,13 @@ export class ChatPage implements OnInit, OnDestroy {
   // Form Submit
   //
 
-  submitForm() {
+  async submitForm() {
+    // Upload audio if storedFileNames is not empty
+    if (this.storedFileNames.length > 0) {
+      await this.handleAudioUpload();
+      return;
+    }
+
     this.user$
       .subscribe((user) => {
         let request: createMessageRequestInterface = null;
@@ -266,10 +276,36 @@ export class ChatPage implements OnInit, OnDestroy {
         // Dispatch action to create message
         if (request) {
           this.store.dispatch(createMessageAction({ request }));
+
+          // Reset the form and the variables
           this.form.reset();
+          this.audioUrl = null;
+          this.imageUrl = null;
         }
       })
       .unsubscribe();
+  }
+
+  private async handleAudioUpload() {
+    const fileName = this.storedFileNames[0].name;
+
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+
+    const base64Sound = audioFile.data;
+
+    // Convert base64 to blob using fetch API
+    const response = await fetch(`data:audio/ogg;base64,${base64Sound}`);
+    const blob: Blob = await response.blob();
+
+    console.log('fileName', fileName);
+    const file = new File([blob], fileName, {
+      type: 'audio/ogg',
+    });
+    this.uploadAudio(file);
+    await this.deleteRecording(fileName);
   }
 
   //
