@@ -90,7 +90,7 @@ export class MessageService {
   }
 
   //
-  // Upload Bucket
+  // Upload Image
   //
 
   uploadImage(request: File): Observable<URL> {
@@ -108,6 +108,30 @@ export class MessageService {
   private getImageView(fileId: string): Observable<URL> {
     const url = this.storage.getFileView(
       environment.appwrite.MESSAGE_BUCKET,
+      fileId
+    );
+    return of(url);
+  }
+
+  //
+  // Upload Audio
+  //
+
+  uploadAudio(request: File): Observable<URL> {
+    return from(
+      this.storage.createFile(
+        environment.appwrite.AUDIO_BUCKET,
+        ID.unique(),
+        request
+      )
+    ).pipe(
+      switchMap((response: BucketFile) => this.getAudioView(response.$id))
+    );
+  }
+
+  private getAudioView(fileId: string): Observable<URL> {
+    const url = this.storage.getFileView(
+      environment.appwrite.AUDIO_BUCKET,
       fileId
     );
     return of(url);
