@@ -396,15 +396,54 @@ export class ChatPage implements OnInit, OnDestroy {
   // Record Audio
   //
 
-  // Recording Feature
-  async loadFiles() {
-    Filesystem.readdir({
-      path: '',
-      directory: Directory.Data,
-    }).then((result) => {
-      console.log('Directory listing', result);
-      this.storedFileNames = result.files;
-    });
+  enableLongPress() {
+    const longPress = this.gestureCtrl.create(
+      {
+        el: this.recordButton.nativeElement,
+        gestureName: 'long-press',
+        threshold: 0,
+        onWillStart: async (_: GestureDetail) => {
+          await this.stop();
+          this.loadFiles();
+          await this.checkMicPermission();
+          return Promise.resolve();
+        },
+        onStart: () => {
+          if (!this.micPermission || this.isRecording) return;
+          this.startRecording();
+          Haptics.impact({ style: ImpactStyle.Light });
+          this.changeColor('danger');
+        },
+        onEnd: () => {
+          if (!this.micPermission || !this.isRecording) return;
+          this.stopRecording();
+          Haptics.impact({ style: ImpactStyle.Light });
+          this.changeColor('medium');
+        },
+      },
+      true
+    );
+
+    longPress.enable();
+  }
+
+  //
+  // Utils for record audio
+  //
+
+  async checkMicPermission() {
+    if (Capacitor.getPlatform() != 'web') {
+      this.micPermission = (
+        await VoiceRecorder.hasAudioRecordingPermission()
+      ).value;
+      if (!this.micPermission) {
+        this.micPermission = (
+          await VoiceRecorder.requestAudioRecordingPermission()
+        ).value;
+      }
+    } else {
+      this.micPermission = true;
+    }
   }
 
   startRecording() {
@@ -418,19 +457,41 @@ export class ChatPage implements OnInit, OnDestroy {
       this.isRecording = false;
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
-        // console.log('Recorded data', recordData);
 
         // Save the file to the device
         const fileName = `${this.roomId}.m4a`;
-        await Filesystem.writeFile({
-          path: fileName,
-          data: recordData,
-          directory: Directory.Data,
-        });
-
-        this.loadFiles();
+        await this.saveRecording(recordData, fileName);
       }
     });
+  }
+
+  async loadFiles() {
+    Filesystem.readdir({
+      path: '',
+      directory: Directory.Data,
+    }).then((result) => {
+      console.log('Directory listing', result);
+      this.storedFileNames = result.files;
+    });
+  }
+
+  async saveRecording(recordData: string, fileName: string) {
+    await Filesystem.writeFile({
+      path: fileName,
+      data: recordData,
+      directory: Directory.Data,
+    });
+
+    this.loadFiles();
+  }
+
+  async deleteRecording(fileName: string) {
+    await this.stop();
+    await Filesystem.deleteFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    this.loadFiles();
   }
 
   async play(fileName: string) {
@@ -472,67 +533,8 @@ export class ChatPage implements OnInit, OnDestroy {
     return this.audioRef ? !this.audioRef.paused : false;
   }
 
-  async deleteRecording(fileName: string) {
-    await this.stop();
-    await Filesystem.deleteFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-    this.loadFiles();
-  }
-
-  //
-  // Utils for record audio
-  //
-
   changeColor(color: string) {
     this.iconColorOfMic = color;
-  }
-
-  async checkMicPermission() {
-    if (Capacitor.getPlatform() != 'web') {
-      this.micPermission = (
-        await VoiceRecorder.hasAudioRecordingPermission()
-      ).value;
-      if (!this.micPermission) {
-        this.micPermission = (
-          await VoiceRecorder.requestAudioRecordingPermission()
-        ).value;
-      }
-    } else {
-      this.micPermission = true;
-    }
-  }
-
-  enableLongPress() {
-    const longPress = this.gestureCtrl.create(
-      {
-        el: this.recordButton.nativeElement,
-        gestureName: 'long-press',
-        threshold: 0,
-        onWillStart: async (_: GestureDetail) => {
-          await this.stop();
-          this.loadFiles();
-          await this.checkMicPermission();
-          return Promise.resolve();
-        },
-        onStart: () => {
-          if (!this.micPermission || this.isRecording) return;
-          this.startRecording();
-          Haptics.impact({ style: ImpactStyle.Light });
-          this.changeColor('danger');
-        },
-        onEnd: () => {
-          if (!this.micPermission || !this.isRecording) return;
-          this.stopRecording();
-          Haptics.impact({ style: ImpactStyle.Light });
-          this.changeColor('medium');
-        },
-      },
-      true
-    );
-
-    longPress.enable();
   }
 
   //
