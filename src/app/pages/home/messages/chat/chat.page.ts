@@ -261,47 +261,35 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   submitForm() {
-    this.currentUser$
-      .subscribe((currentUser) => {
-        this.user$
-          .subscribe((user) => {
-            this.createMessageWithText(currentUser, user);
-          })
-          .unsubscribe();
+    this.user$
+      .subscribe((user) => {
+        this.createMessageWithText(user);
       })
       .unsubscribe();
   }
 
-  createMessageWithText(currentUser: any, user: any) {
+  createMessageWithText(user: any) {
     const request: createMessageRequestInterface = {
       body: this.form.value.body,
       roomId: this.roomId,
       to: user.$id,
       isImage: false,
     };
-    this.store.dispatch(
-      createMessageAction({ request, currentUserId: currentUser.$id })
-    );
+    this.store.dispatch(createMessageAction({ request }));
     this.form.reset();
   }
 
   createMessageWithImage(image: URL) {
-    this.currentUser$
-      .subscribe((currentUser) => {
-        this.user$
-          .subscribe((user) => {
-            const request: createMessageRequestInterface = {
-              roomId: this.roomId,
-              to: user.$id,
-              isImage: true,
-              image: image,
-            };
-            this.store.dispatch(
-              createMessageAction({ request, currentUserId: currentUser.$id })
-            );
-            this.form.reset();
-          })
-          .unsubscribe();
+    this.user$
+      .subscribe((user) => {
+        const request: createMessageRequestInterface = {
+          roomId: this.roomId,
+          to: user.$id,
+          isImage: true,
+          image: image,
+        };
+        this.store.dispatch(createMessageAction({ request }));
+        this.form.reset();
       })
       .unsubscribe();
   }

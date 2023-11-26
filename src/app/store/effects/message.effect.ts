@@ -53,8 +53,9 @@ export class MessageEffects {
   createMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createMessageAction),
-      mergeMap(({ request, currentUserId }) =>
-        this.messagesService.createMessage(request, currentUserId).pipe(
+      withLatestFrom(this.store.select(currentUserSelector)),
+      mergeMap(([{ request }, currentUser]) =>
+        this.messagesService.createMessage(request, currentUser.$id).pipe(
           map((payload: Message) => createMessageSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
