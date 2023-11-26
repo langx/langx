@@ -265,20 +265,24 @@ export class ChatPage implements OnInit, OnDestroy {
       .subscribe((currentUser) => {
         this.user$
           .subscribe((user) => {
-            const request: createMessageRequestInterface = {
-              body: this.form.value.body,
-              roomId: this.roomId,
-              to: user.$id,
-              isImage: false,
-            };
-            this.store.dispatch(
-              createMessageAction({ request, currentUserId: currentUser.$id })
-            );
-            this.form.reset();
+            this.createMessageWithText(currentUser, user);
           })
           .unsubscribe();
       })
       .unsubscribe();
+  }
+
+  createMessageWithText(currentUser: any, user: any) {
+    const request: createMessageRequestInterface = {
+      body: this.form.value.body,
+      roomId: this.roomId,
+      to: user.$id,
+      isImage: false,
+    };
+    this.store.dispatch(
+      createMessageAction({ request, currentUserId: currentUser.$id })
+    );
+    this.form.reset();
   }
 
   createMessageWithImage(image: URL) {
