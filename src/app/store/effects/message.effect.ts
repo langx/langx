@@ -98,8 +98,10 @@ export class MessageEffects {
         const newRequest: createMessageRequestInterface = {
           roomId: action.request.roomId,
           to: action.request.to,
-          body: action.request.body,
+          isText: action.request.isText,
           isImage: action.request.isImage,
+          isAudio: action.request.isAudio,
+          body: action.request.body,
         };
 
         return this.messagesService

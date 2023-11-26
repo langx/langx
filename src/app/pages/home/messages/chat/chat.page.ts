@@ -210,8 +210,8 @@ export class ChatPage implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
         if (url) {
-          this.store.dispatch(clearImageUrlStateAction());
           this.createMessageWithImage(url);
+          this.store.dispatch(clearImageUrlStateAction());
         }
       })
     );
@@ -228,20 +228,34 @@ export class ChatPage implements OnInit, OnDestroy {
     );
   }
 
+  //
+  // Form Submit
+  //
+
   submitForm() {
-    this.user$
-      .subscribe((user) => {
-        this.createMessageWithText(user);
-      })
-      .unsubscribe();
+    if (this.storedFileNames.length > 0) {
+      this.user$
+        .subscribe((user) => {
+          this.createMessageWithAudio(user, this.storedFileNames[0]);
+        })
+        .unsubscribe();
+    } else {
+      this.user$
+        .subscribe((user) => {
+          this.createMessageWithText(user);
+        })
+        .unsubscribe();
+    }
   }
 
-  createMessageWithText(user: any) {
+  createMessageWithText(user: User) {
     const request: createMessageRequestInterface = {
-      body: this.form.value.body,
       roomId: this.roomId,
       to: user.$id,
+      isText: true,
       isImage: false,
+      isAudio: false,
+      body: this.form.value.body,
     };
     this.store.dispatch(createMessageAction({ request }));
     this.form.reset();
@@ -253,7 +267,9 @@ export class ChatPage implements OnInit, OnDestroy {
         const request: createMessageRequestInterface = {
           roomId: this.roomId,
           to: user.$id,
+          isText: false,
           isImage: true,
+          isAudio: false,
           image: image,
         };
         this.store.dispatch(createMessageAction({ request }));
@@ -262,26 +278,18 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
   }
 
-  typingFocus() {
-    this.isTyping = true;
-    this.onTypingStatusChange();
-  }
-
-  typingBlur() {
-    this.isTyping = false;
-    this.onTypingStatusChange();
-  }
-
-  onTypingStatusChange() {
-    console.log('onTypingStatusChange', this.isTyping);
-  }
-
-  redirectUserProfile() {
-    this.user$
-      .subscribe((user) => {
-        this.router.navigateByUrl(`/home/user/${user.$id}`);
-      })
-      .unsubscribe();
+  createMessageWithAudio(user: User, audioFile: FileInfo) {
+    // TODO: Take a look here!
+    const request: createMessageRequestInterface = {
+      roomId: this.roomId,
+      to: user.$id,
+      isText: false,
+      isImage: false,
+      isAudio: true,
+      audio: new URL(audioFile.uri),
+    };
+    this.store.dispatch(createMessageAction({ request }));
+    this.form.reset();
   }
 
   //
@@ -597,6 +605,32 @@ export class ChatPage implements OnInit, OnDestroy {
     const atBottom =
       scrollElement.scrollTop + scrollElement.clientHeight >= bottomPosition;
     return atBottom;
+  }
+
+  //
+  // Other Utils
+  //
+
+  typingFocus() {
+    this.isTyping = true;
+    this.onTypingStatusChange();
+  }
+
+  typingBlur() {
+    this.isTyping = false;
+    this.onTypingStatusChange();
+  }
+
+  onTypingStatusChange() {
+    console.log('onTypingStatusChange', this.isTyping);
+  }
+
+  redirectUserProfile() {
+    this.user$
+      .subscribe((user) => {
+        this.router.navigateByUrl(`/home/user/${user.$id}`);
+      })
+      .unsubscribe();
   }
 
   //
