@@ -95,6 +95,7 @@ export class ChatPage implements OnInit, OnDestroy {
   isRecording: boolean = false;
   storedFileNames: FileInfo[] = [];
   iconColorOfMic: string = 'medium';
+  audioRef: HTMLAudioElement;
   micPermission: boolean = false;
 
   constructor(
@@ -456,12 +457,19 @@ export class ChatPage implements OnInit, OnDestroy {
     const base64Sound = audioFile.data;
 
     // Play the audio file
-    const audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`); // Change the MIME type to audio/mp3
-    audioRef.oncanplaythrough = () => {
-      console.log('Audio file duration', audioRef.duration);
-      return audioRef.play();
+    this.audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`);
+    this.audioRef.oncanplaythrough = () => {
+      console.log('Audio file duration', this.audioRef.duration);
+      return this.audioRef.play();
     };
-    audioRef.load();
+    this.audioRef.load();
+  }
+
+  stop() {
+    if (this.audioRef) {
+      this.audioRef.pause();
+      this.audioRef.currentTime = 0;
+    }
   }
 
   async deleteRecording(fileName: string) {
