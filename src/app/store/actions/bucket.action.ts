@@ -55,3 +55,23 @@ export const uploadImageForMessageFailureAction = createAction(
 export const clearImageUrlStateAction = createAction(
   ActionTypes.CLEAR_IMAGE_URL_STATE
 );
+
+// Upload Audio For Message
+export const uploadAudioForMessageAction = createAction(
+  ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE,
+  props<{ request: File }>()
+);
+
+export const uploadAudioForMessageSuccessAction = createAction(
+  ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE_SUCCESS,
+  props<{ payload: URL }>()
+);
+
+export const uploadAudioForMessageFailureAction = createAction(
+  ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const clearAudioUrlStateAction = createAction(
+  ActionTypes.CLEAR_AUDIO_URL_STATE
+);
