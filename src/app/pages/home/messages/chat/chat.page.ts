@@ -239,6 +239,8 @@ export class ChatPage implements OnInit, OnDestroy {
           this.createMessageWithAudio(user, this.storedFileNames[0]);
         })
         .unsubscribe();
+    } else if (false) {
+      // TODO: Add audio message here
     } else {
       this.user$
         .subscribe((user) => {
