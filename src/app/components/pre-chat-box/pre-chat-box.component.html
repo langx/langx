@@ -3,11 +3,23 @@
     <div class="message-main-sender">
       <div class="sender">
         <div class="message-text">
-          {{ tempMsg?.body }}
-          <!-- TODO: Take a look here! -->
-          <!-- <ion-thumbnail slot="start" *ngIf="tempMsg?.isImage">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail> -->
+          <!-- Text message -->
+          <span *ngIf="tempMsg?.type == 'body'">{{ tempMsg?.body }}</span>
+
+          <!-- Image message -->
+          <img
+            *ngIf="tempMsg?.type == 'image'"
+            [src]="tempMsg?.image"
+            alt="Image message"
+            referrerpolicy="no-referrer"
+          />
+
+          <!-- Audio message -->
+          <audio controls *ngIf="tempMsg?.type == 'audio'">
+            <source [src]="tempMsg?.audio" type="audio/ogg" />
+            Your browser does not support the audio element.
+          </audio>
+
           <span class="message-time">
             <ion-icon name="cloud-upload-outline"></ion-icon>
           </span>
