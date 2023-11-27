@@ -22,7 +22,7 @@ export class MessageService {
   constructor(
     private api: ApiService,
     private authService: AuthService,
-    private storage: StorageService
+    private storageService: StorageService
   ) {}
 
   // Create a message
@@ -95,7 +95,7 @@ export class MessageService {
 
   uploadImage(request: File): Observable<URL> {
     return from(
-      this.storage.createFile(
+      this.storageService.createFile(
         environment.appwrite.MESSAGE_BUCKET,
         ID.unique(),
         request
@@ -106,7 +106,7 @@ export class MessageService {
   }
 
   private getImageView(fileId: string): Observable<URL> {
-    const url = this.storage.getFileView(
+    const url = this.storageService.getFileView(
       environment.appwrite.MESSAGE_BUCKET,
       fileId
     );
@@ -119,7 +119,7 @@ export class MessageService {
 
   uploadAudio(request: File): Observable<URL> {
     return from(
-      this.storage.createFile(
+      this.storageService.createFile(
         environment.appwrite.AUDIO_BUCKET,
         ID.unique(),
         request
@@ -130,7 +130,7 @@ export class MessageService {
   }
 
   private getAudioView(fileId: string): Observable<URL> {
-    const url = this.storage.getFileView(
+    const url = this.storageService.getFileView(
       environment.appwrite.AUDIO_BUCKET,
       fileId
     );
