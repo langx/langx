@@ -94,13 +94,7 @@ const messageReducer = createReducer(
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
     let tempMessages: tempMessageInterface[];
     tempMessages = state.tempMessages
-      ? state.tempMessages.filter((msg) => msg?.body !== action.payload?.body)
-      : null;
-
-    tempMessages = tempMessages
-      ? tempMessages.filter(
-          (msg) => msg?.image.toString() !== action.payload?.image.toString()
-        )
+      ? state.tempMessages.filter((msg) => msg?.$id !== action.payload?.$id)
       : null;
 
     return {
