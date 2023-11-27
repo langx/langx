@@ -97,6 +97,7 @@ export class MessageEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       mergeMap(([action, currentUser]) => {
         const newRequest: createMessageRequestInterface = {
+          $id: action.request.$id,
           roomId: action.request.roomId,
           to: action.request.to,
           type: action.request.type,

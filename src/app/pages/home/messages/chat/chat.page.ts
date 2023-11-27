@@ -7,6 +7,7 @@ import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
 import {
   Component,
@@ -405,6 +406,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   createMessageWithText(user: User): createMessageRequestInterface {
     const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
       roomId: this.roomId,
       to: user.$id,
       type: 'body',
@@ -415,6 +417,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   createMessageWithImage(user: User) {
     const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
       roomId: this.roomId,
       to: user.$id,
       type: 'image',
@@ -425,6 +428,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   createMessageWithAudio(user: User) {
     const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
       roomId: this.roomId,
       to: user.$id,
       type: 'audio',
