@@ -107,6 +107,7 @@ export class ChatPage implements OnInit, OnDestroy {
   audioRef: HTMLAudioElement;
   audioUrl: URL;
   audioId: string;
+  private audioIdTemp: string;
 
   constructor(
     private store: Store,
@@ -254,8 +255,8 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   async submitForm() {
-    // Upload audio if storedFileNames is not empty
-    if (this.storedFileNames.length > 0) {
+    // Upload audio if there is an audioId
+    if (this.audioId) {
       await this.handleAudioUpload();
       return;
     }
@@ -405,12 +406,13 @@ export class ChatPage implements OnInit, OnDestroy {
 
   createMessageWithAudio(user: User) {
     const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
+      $id: this.audioIdTemp.replace('.mp3', ''),
       roomId: this.roomId,
       to: user.$id,
       type: 'audio',
       audio: this.audioUrl,
     };
+    this.audioIdTemp = null;
     return request;
   }
 
@@ -532,7 +534,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   private async handleAudioUpload() {
-    const fileName = this.storedFileNames[0].name;
+    const fileName = this.audioId;
 
     const audioFile = await Filesystem.readFile({
       path: fileName,
@@ -550,9 +552,15 @@ export class ChatPage implements OnInit, OnDestroy {
       type: 'audio/ogg',
     });
 
-    // Upload the file and delete it from local storage
-    this.uploadAudio(file);
-    await this.deleteRecording();
+    // Upload the file
+    this.store.dispatch(
+      uploadAudioForMessageAction({
+        request: file,
+      })
+    );
+
+    this.audioIdTemp = this.audioId;
+    this.audioId = null;
   }
 
   private startRecording() {
@@ -638,14 +646,6 @@ export class ChatPage implements OnInit, OnDestroy {
     } else {
       await this.play();
     }
-  }
-
-  private uploadAudio(file) {
-    this.store.dispatch(
-      uploadAudioForMessageAction({
-        request: file,
-      })
-    );
   }
 
   isPlaying(): boolean {
