@@ -1,5 +1,5 @@
 import { Store } from '@ngrx/store';
-import { Directory, FileInfo, Filesystem } from '@capacitor/filesystem';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 import {
   Component,
   Input,
