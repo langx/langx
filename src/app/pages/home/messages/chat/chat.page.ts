@@ -106,6 +106,7 @@ export class ChatPage implements OnInit, OnDestroy {
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
   audioUrl: URL;
+  audioId: string;
 
   constructor(
     private store: Store,
@@ -285,30 +286,6 @@ export class ChatPage implements OnInit, OnDestroy {
         }
       })
       .unsubscribe();
-  }
-
-  private async handleAudioUpload() {
-    const fileName = this.storedFileNames[0].name;
-
-    const audioFile = await Filesystem.readFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-
-    const base64Sound = audioFile.data;
-
-    // Convert base64 to blob using fetch API
-    const response = await fetch(`data:audio/ogg;base64,${base64Sound}`);
-    const blob: Blob = await response.blob();
-
-    console.log('fileName', fileName);
-    const file = new File([blob], fileName, {
-      type: 'audio/ogg',
-    });
-
-    // Upload the file and delete it from local storage
-    this.uploadAudio(file);
-    await this.deleteRecording(fileName);
   }
 
   //
@@ -554,6 +531,30 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
+  private async handleAudioUpload() {
+    const fileName = this.storedFileNames[0].name;
+
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+
+    const base64Sound = audioFile.data;
+
+    // Convert base64 to blob using fetch API
+    const response = await fetch(`data:audio/ogg;base64,${base64Sound}`);
+    const blob: Blob = await response.blob();
+
+    console.log('fileName', fileName);
+    const file = new File([blob], fileName, {
+      type: 'audio/ogg',
+    });
+
+    // Upload the file and delete it from local storage
+    this.uploadAudio(file);
+    await this.deleteRecording();
+  }
+
   private startRecording() {
     VoiceRecorder.startRecording().then(() => {
       this.isRecording = true;
@@ -566,9 +567,10 @@ export class ChatPage implements OnInit, OnDestroy {
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
 
+        console.log('Record data', recordData);
         // Save the file to the device
-        const fileName = `${this.roomId}.m4a`;
-        await this.saveRecording(recordData, fileName);
+        this.audioId = `${uuidv4().replace(/-/g, '')}.mp3`;
+        await this.saveRecording(recordData);
       }
     });
   }
@@ -583,9 +585,9 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
-  private async saveRecording(recordData: string, fileName: string) {
+  private async saveRecording(recordData: string) {
     await Filesystem.writeFile({
-      path: fileName,
+      path: this.audioId,
       data: recordData,
       directory: Directory.Data,
     });
@@ -593,18 +595,19 @@ export class ChatPage implements OnInit, OnDestroy {
     this.loadFiles();
   }
 
-  async deleteRecording(fileName: string) {
+  async deleteRecording() {
     await this.stop();
     await Filesystem.deleteFile({
-      path: fileName,
+      path: this.audioId,
+      // path: this.storedFileNames[0].name,
       directory: Directory.Data,
     });
     this.loadFiles();
   }
 
-  async play(fileName: string) {
+  async play() {
     const audioFile = await Filesystem.readFile({
-      path: fileName,
+      path: this.audioId,
       directory: Directory.Data,
     });
     // console.log('Audio file', audioFile);
@@ -629,11 +632,11 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
-  async togglePlayStop(fileName: string) {
+  async togglePlayStop() {
     if (this.isPlaying()) {
       this.stop();
     } else {
-      await this.play(fileName);
+      await this.play();
     }
   }
 
