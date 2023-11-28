@@ -60,7 +60,7 @@
     <form [formGroup]="form" (ngSubmit)="submitForm()">
       <ion-item>
         <ion-textarea
-          *ngIf="!isRecording && storedFileNames.length == 0"
+          *ngIf="!isRecording && !audioId"
           placeholder="Type your message..."
           type="text"
           formControlName="body"
@@ -77,22 +77,16 @@
         >
           Recording ..
         </ion-text>
-        <div *ngIf="!isRecording && storedFileNames.length > 0">
+        <div *ngIf="!isRecording && audioId">
           <ion-buttons slot="center">
-            <ion-button
-              (click)="togglePlayStop()"
-              fill="clear"
-            >
+            <ion-button (click)="togglePlayStop()" fill="clear">
               <ion-icon
                 slot="icon-only"
                 [name]="isPlaying() ? 'pause' : 'play'"
                 [color]="isPlaying() ? 'warning' : 'success'"
               ></ion-icon>
             </ion-button>
-            <ion-button
-              (click)="deleteRecording()"
-              fill="clear"
-            >
+            <ion-button (click)="deleteRecording()" fill="clear">
               <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
             </ion-button>
             <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text>
