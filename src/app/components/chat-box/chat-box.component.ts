@@ -1,4 +1,5 @@
 import { Store } from '@ngrx/store';
+import { Directory, FileInfo, Filesystem } from '@capacitor/filesystem';
 import {
   Component,
   Input,
@@ -24,6 +25,8 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   private observer: IntersectionObserver;
 
   msg: Message = null;
+  storedFileNames: FileInfo[] = [];
+  audioRef: HTMLAudioElement;
 
   constructor(private store: Store, private el: ElementRef) {}
 
@@ -32,6 +35,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    // This is for the seen action when the message is in view
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => this.handleIntersect(entry));
     });
@@ -56,5 +60,48 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     let time = lastSeen(d);
     if (time === 'online') time = 'now';
     return time;
+  }
+
+  //
+  // Utils for audio
+  //
+
+  async play(fileName: string) {
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    // console.log('Audio file', audioFile);
+    const base64Sound = audioFile.data;
+
+    // Play the audio file
+    this.audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`);
+    this.audioRef.oncanplaythrough = () => {
+      console.log('Audio file duration', this.audioRef.duration);
+    };
+    this.audioRef.onended = () => {
+      this.audioRef = null;
+    };
+    this.audioRef.load();
+    return this.audioRef.play();
+  }
+
+  async stop() {
+    if (this.audioRef) {
+      this.audioRef.pause();
+      this.audioRef.currentTime = 0;
+    }
+  }
+
+  async togglePlayStop(fileName: string) {
+    if (this.isPlaying()) {
+      this.stop();
+    } else {
+      await this.play(fileName);
+    }
+  }
+
+  isPlaying(): boolean {
+    return this.audioRef ? !this.audioRef.paused : false;
   }
 }

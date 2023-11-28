@@ -47,10 +47,26 @@
           />
 
           <!-- Audio message -->
-          <audio controls *ngIf="msg?.type == 'audio'">
+          <!-- <audio controls *ngIf="msg?.type == 'audio'">
             <source [src]="msg?.audio" type="audio/mpeg" />
             Your browser does not support the audio element.
-          </audio>
+          </audio> -->
+
+          <div *ngIf="msg?.type == 'audio'">
+            <ion-buttons slot="center">
+              <ion-button
+                (click)="togglePlayStop(storedFileNames[0].name)"
+                fill="clear"
+              >
+                <ion-icon
+                  slot="icon-only"
+                  [name]="isPlaying() ? 'pause' : 'play'"
+                  [color]="isPlaying() ? 'warning' : 'success'"
+                ></ion-icon>
+              </ion-button>
+              <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text>
+            </ion-buttons>
+          </div>
 
           <span class="message-time" *ngIf="msg?.$createdAt">
             {{ messageTime(msg?.$createdAt) }}
