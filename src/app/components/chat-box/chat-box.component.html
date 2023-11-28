@@ -54,14 +54,11 @@
 
           <div *ngIf="msg?.type == 'audio'">
             <ion-buttons slot="center">
-              <ion-button
-                (click)="togglePlayStop(storedFileNames[0].name)"
-                fill="clear"
-              >
+              <ion-button (click)="togglePlayStop()" fill="clear">
                 <ion-icon
                   slot="icon-only"
                   [name]="isPlaying() ? 'pause' : 'play'"
-                  [color]="isPlaying() ? 'warning' : 'success'"
+                  [color]="isPlaying() ? 'danger' : 'success'"
                 ></ion-icon>
               </ion-button>
               <!-- <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text> -->
