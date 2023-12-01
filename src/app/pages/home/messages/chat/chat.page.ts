@@ -529,7 +529,9 @@ export class ChatPage implements OnInit, OnDestroy {
         ).value;
       }
     } else {
-      this.micPermission = true;
+      this.micPermission = (
+        await VoiceRecorder.requestAudioRecordingPermission()
+      ).value;
     }
   }
 
