@@ -542,15 +542,15 @@ export class ChatPage implements OnInit, OnDestroy {
     });
 
     const base64Sound = audioFile.data;
+    // console.log('Base64 Audio:', base64Sound);
 
     // Convert base64 to blob using fetch API
-    const response = await fetch(`data:audio/ogg;base64,${base64Sound}`);
+    const response = await fetch(`data:audio/mp3;base64,${base64Sound}`);
     const blob: Blob = await response.blob();
+    // console.log('Blob', blob);
 
     console.log('fileName', fileName);
-    const file = new File([blob], fileName, {
-      type: 'audio/ogg',
-    });
+    const file = new File([blob], fileName);
 
     // Upload the file
     this.store.dispatch(
@@ -572,6 +572,8 @@ export class ChatPage implements OnInit, OnDestroy {
   private stopRecording() {
     VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
       this.isRecording = false;
+      console.log(result.value.mimeType);
+      console.log(result.value.msDuration);
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
 
@@ -607,10 +609,24 @@ export class ChatPage implements OnInit, OnDestroy {
     await this.stop();
     await Filesystem.deleteFile({
       path: this.audioId,
-      // path: this.storedFileNames[0].name,
       directory: Directory.Data,
     });
     this.loadFiles();
+  }
+
+  async deleteAllRecordings() {
+    await this.loadFiles();
+    if (this.storedFileNames && this.storedFileNames.length > 0) {
+      for (let file of this.storedFileNames) {
+        await Filesystem.deleteFile({
+          path: file.name,
+          directory: Directory.Data,
+        });
+      }
+      this.storedFileNames = [];
+    } else {
+      console.log('No files to delete');
+    }
   }
 
   async play() {
@@ -618,7 +634,6 @@ export class ChatPage implements OnInit, OnDestroy {
       path: this.audioId,
       directory: Directory.Data,
     });
-    // console.log('Audio file', audioFile);
     const base64Sound = audioFile.data;
 
     // Play the audio file
