@@ -26,18 +26,19 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   msg: Message = null;
 
-  audioRef: HTMLAudioElement;
+  audioRef: HTMLAudioElement = null;
   audioUrl: URL;
   audioId: string = null;
+  isDownloaded: boolean = false;
 
   constructor(private store: Store, private el: ElementRef) {}
 
-  ngOnInit() {
-    this.initValues();
+  async ngOnInit() {
+    await this.initValues();
   }
 
   ngAfterViewInit() {
-    // This is for the seen action when the message is in viewc
+    // This is for the seen action when the message is in view
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => this.handleIntersect(entry));
     });
@@ -48,14 +49,14 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.observer.disconnect();
   }
 
-  initValues() {
+  async initValues() {
     this.msg = { ...this.chat };
 
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
       this.audioId = this.msg?.$id + '.mp3';
       this.audioUrl = this.msg?.audio;
-      this.readFiles(this.msg?.$id);
+      await this.readFiles(this.msg?.$id);
     }
   }
 
@@ -69,37 +70,44 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
         path: id + '.mp3',
         directory: Directory.Data,
       });
+      this.audioRef = new Audio('data:audio/mp3;base64,' + ret.data);
+
       console.log('File found');
+      this.isDownloaded = true;
     } catch (e) {
       console.log('File not found, fetching from server');
+      // TODO : Download file from server
+      // this.downloadFile();
     }
-    // const audioFile = await Filesystem.readFile({
-    //   path: id + '.mp31',
-    //   directory: Directory.Data,
-    // });
-    // console.log('Audio file', audioFile);
   }
 
-  // Write a function that downloads audio file from the server to save Filesystem with writeFile
-  async downloadFile(url: URL) {
-    const response = await fetch(url);
+  // TODO : Download file from server logic
+  async downloadFile() {
+    const response = await fetch(this.msg?.audio);
     const blob = await response.blob();
-    console.log('Downloaded blob', blob);
 
-    const fileName = new Date().getTime() + '.mp3';
+    // Create a new FileReader instance
+    const reader = new FileReader();
 
+    const base64Audio = await new Promise((resolve) => {
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(blob);
+    });
+
+    // TODO: Take a look here to see if we can use the base64Audio directly
+    const base64AudioString = base64Audio.toString();
+
+    const fileName = this.msg.$id + '.mp3';
     await Filesystem.writeFile({
       path: fileName,
-      data: blob,
+      data: base64AudioString,
       directory: Directory.Data,
     });
+
     console.log('Download complete');
-    // Read file from the filesystem
-    const ret = await Filesystem.readdir({
-      path: fileName,
-      directory: Directory.Data,
-    });
-    console.log('Read directory', ret);
+    this.isDownloaded = true;
   }
 
   async play(fileName: string) {
@@ -109,11 +117,12 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     // console.log('Audio file', audioFile);
     const base64Sound = audioFile.data;
+    // console.log('Base64 Audio:', base64Sound);
 
     // Play the audio file
     this.audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`);
     this.audioRef.oncanplaythrough = () => {
-      console.log('Audio file duration', this.audioRef.duration);
+      // console.log('Audio file duration', this.audioRef.duration);
     };
     this.audioRef.onended = () => {
       this.audioRef = null;
