@@ -16,21 +16,32 @@
           />
 
           <!-- Audio message -->
-          <!-- <audio controls *ngIf="msg?.type == 'audio'">
-            <source [src]="msg?.audio" type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio> -->
-
           <div *ngIf="msg?.type == 'audio'">
             <ion-buttons slot="center">
-              <ion-button (click)="togglePlayStop()" fill="clear">
+              <ion-button
+                *ngIf="isDownloaded"
+                (click)="togglePlayStop()"
+                fill="clear"
+              >
                 <ion-icon
                   slot="icon-only"
                   [name]="isPlaying() ? 'pause' : 'play'"
                   [color]="isPlaying() ? 'danger' : 'success'"
                 ></ion-icon>
               </ion-button>
-              <!-- <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text> -->
+
+              <ion-button
+                *ngIf="!isDownloaded"
+                (click)="downloadFile()"
+                fill="clear"
+              >
+                <ion-icon
+                  slot="icon-only"
+                  name="cloud-download-outline"
+                  color="tertiary"
+                ></ion-icon>
+              </ion-button>
+
               <div *ngFor="let i of '012'.split('')">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -73,21 +84,30 @@
           />
 
           <!-- Audio message -->
-          <!-- <audio controls *ngIf="msg?.type == 'audio'">
-            <source [src]="msg?.audio" type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio> -->
-
           <div *ngIf="msg?.type == 'audio'">
             <ion-buttons slot="center">
-              <ion-button (click)="togglePlayStop()" fill="clear">
+              <ion-button
+                *ngIf="isDownloaded"
+                (click)="togglePlayStop()"
+                fill="clear"
+              >
                 <ion-icon
                   slot="icon-only"
                   [name]="isPlaying() ? 'pause' : 'play'"
                   [color]="isPlaying() ? 'danger' : 'success'"
                 ></ion-icon>
               </ion-button>
-              <!-- <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text> -->
+              <ion-button
+                *ngIf="!isDownloaded"
+                (click)="downloadFile()"
+                fill="clear"
+              >
+                <ion-icon
+                  slot="icon-only"
+                  name="cloud-download-outline"
+                  color="tertiary"
+                ></ion-icon>
+              </ion-button>
               <div *ngFor="let i of '012'.split('')">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
