@@ -101,7 +101,9 @@ export class MessageEffects {
           roomId: action.request.roomId,
           to: action.request.to,
           type: action.request.type,
-          body: action.request.body,
+          body: action.request?.body || null,
+          image: action.request?.image || null,
+          audio: action.request?.audio || null,
         };
 
         return this.messagesService
