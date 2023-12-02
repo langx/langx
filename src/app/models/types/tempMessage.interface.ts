@@ -1,10 +1,12 @@
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export interface tempMessageInterface {
-  body?: string;
+  $id: string;
   to: string;
   roomId: string;
-  isImage: boolean;
+  type: string;
+  body?: string;
   image?: URL;
+  audio?: URL;
   error: ErrorInterface | null;
 }

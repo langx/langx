@@ -6,6 +6,8 @@ PODS:
   - CapacitorCamera (5.0.7):
     - Capacitor
   - CapacitorCordova (5.2.2)
+  - CapacitorFilesystem (5.1.4):
+    - Capacitor
   - CapacitorHaptics (5.0.6):
     - Capacitor
   - CapacitorKeyboard (5.0.6):
@@ -17,6 +19,8 @@ PODS:
   - CapacitorSplashScreen (5.0.6):
     - Capacitor
   - CapacitorStatusBar (5.0.6):
+    - Capacitor
+  - CapacitorVoiceRecorder (5.0.0):
     - Capacitor
   - Firebase/CoreOnly (10.16.0):
     - FirebaseCore (= 10.16.0)
@@ -76,12 +80,14 @@ DEPENDENCIES:
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCamera (from `../../node_modules/@capacitor/camera`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorFilesystem (from `../../node_modules/@capacitor/filesystem`)"
   - "CapacitorHaptics (from `../../node_modules/@capacitor/haptics`)"
   - "CapacitorKeyboard (from `../../node_modules/@capacitor/keyboard`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
+  - CapacitorVoiceRecorder (from `../../node_modules/capacitor-voice-recorder`)
   - Firebase/Messaging
 
 SPEC REPOS:
@@ -105,6 +111,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/camera"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
+  CapacitorFilesystem:
+    :path: "../../node_modules/@capacitor/filesystem"
   CapacitorHaptics:
     :path: "../../node_modules/@capacitor/haptics"
   CapacitorKeyboard:
@@ -117,18 +125,22 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
+  CapacitorVoiceRecorder:
+    :path: "../../node_modules/capacitor-voice-recorder"
 
 SPEC CHECKSUMS:
   Capacitor: 070b18988e0f566728ae9a5eb3a7a974595f1626
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
   CapacitorCamera: 084b0b228bba7d00587910337b1c89e93b1d32ab
   CapacitorCordova: 3773395d5331add072300ff6041ca2cf7b93cb0b
+  CapacitorFilesystem: af704badfbc69f6f8623d9ed313e5490e3723dcb
   CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
   CapacitorKeyboard: b978154b024a5f65e044908e37d15b7de58b9d12
   CapacitorPreferences: f03954bcb0ff09c792909e46bff88e3183c16b10
   CapacitorPushNotifications: b31e326c6e4eb216a622041d6ca21a973f34943f
   CapacitorSplashScreen: 5fa2ab5e46cf5cc530cf16a51c80c7a986579ccd
   CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
+  CapacitorVoiceRecorder: 872ea857b497ce2c71afe3e4eb5de0a74290c0db
   Firebase: 25899099b77d255a636e3579c3d9dce10ec150d5
   FirebaseCore: 65a801af84cca84361ef9eac3fd868656968a53b
   FirebaseCoreInternal: 26233f705cc4531236818a07ac84d20c333e505a
@@ -139,6 +151,6 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: 8a3d2c633fd60b886c93628b369942ba7f254e22
+PODFILE CHECKSUM: 5965d44736cd3f0614d4fa72d56703f5cbe91f75
 
 COCOAPODS: 1.14.2

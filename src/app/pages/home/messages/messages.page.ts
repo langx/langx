@@ -171,17 +171,35 @@ export class MessagesPage implements OnInit {
 
   getLastMessage(room) {
     let lastMessage = {
-      body: 'Say Hi! 👋',
+      body: null,
       time: null,
     };
-    if (room.messages.length > 0) {
-      if (room.messages[room.messages.length - 1].isImage) {
-        lastMessage.body = '📷 Image';
-      } else {
+
+    const type = room.messages[room.messages.length - 1]?.type || null;
+    lastMessage.time =
+      room.messages[room.messages.length - 1]?.$updatedAt || null;
+
+    switch (type) {
+      case 'body':
         lastMessage.body = room.messages[room.messages.length - 1].body;
-      }
-      lastMessage.time = room.messages[room.messages.length - 1].$updatedAt;
+        break;
+      case 'image':
+        lastMessage.body = '📷 Image';
+        break;
+      case 'audio':
+        lastMessage.body = '🎵 Audio';
+        break;
+      // case 'video':
+      //   lastMessage.body = '🎥 Video';
+      //   break;
+      // case 'file':
+      //   lastMessage.body = '📁 File';
+      //   break;
+      default:
+        lastMessage.body = 'Say Hi! 👋';
+        break;
     }
+
     return lastMessage;
   }
 

@@ -9,6 +9,9 @@ import {
   findActiveRoomAndUpdateMessageSeenAction,
 } from 'src/app/store/actions/notification.action';
 import {
+  clearAudioUrlStateAction,
+  uploadAudioForMessageFailureAction,
+  uploadAudioForMessageSuccessAction,
   clearImageUrlStateAction,
   uploadImageForMessageFailureAction,
   uploadImageForMessageSuccessAction,
@@ -37,6 +40,7 @@ const initialState: MessageStateInterface = {
   tempMessages: null,
   room: null,
   imageUrl: null,
+  audioUrl: null,
   error: null,
 };
 
@@ -90,13 +94,7 @@ const messageReducer = createReducer(
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
     let tempMessages: tempMessageInterface[];
     tempMessages = state.tempMessages
-      ? state.tempMessages.filter((msg) => msg?.body !== action.payload?.body)
-      : null;
-
-    tempMessages = tempMessages
-      ? tempMessages.filter(
-          (msg) => msg?.image.toString() !== action.payload?.image.toString()
-        )
+      ? state.tempMessages.filter((msg) => msg?.$id !== action.payload?.$id)
       : null;
 
     return {
@@ -332,6 +330,29 @@ const messageReducer = createReducer(
     (state): MessageStateInterface => ({
       ...state,
       imageUrl: null,
+    })
+  ),
+
+  // Upload Audio For Message
+  on(
+    uploadAudioForMessageSuccessAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      audioUrl: action.payload,
+    })
+  ),
+  on(
+    uploadAudioForMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
+  ),
+  on(
+    clearAudioUrlStateAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      audioUrl: null,
     })
   )
 );
