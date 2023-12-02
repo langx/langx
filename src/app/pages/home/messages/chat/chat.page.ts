@@ -174,7 +174,11 @@ export class ChatPage implements OnInit, OnDestroy {
   initForm() {
     this.form = new FormGroup({
       body: new FormControl('', {
-        validators: [Validators.required, Validators.maxLength(500)],
+        validators: [
+          Validators.required,
+          Validators.maxLength(500),
+          this.notBlankValidator,
+        ],
       }),
     });
   }
@@ -740,6 +744,12 @@ export class ChatPage implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/home/user/${user.$id}`);
       })
       .unsubscribe();
+  }
+
+  notBlankValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 
   //
