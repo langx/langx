@@ -24,7 +24,7 @@ export class PreChatBoxComponent implements OnInit {
 
   async ngOnInit() {
     await this.initValues();
-    this.errorHandler();
+    // this.errorHandler();
   }
 
   async initValues() {
