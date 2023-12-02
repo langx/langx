@@ -43,18 +43,35 @@
     <ion-row>
       <ion-col>
         <p></p>
-        <ion-card>
+        <ion-card class="ion-text-start">
           <ion-card-header>
             <ion-card-title>Login with</ion-card-title>
           </ion-card-header>
-          <ion-card-content align="center">
-            <ion-icon
-              (click)="signInWithGoogle()"
-              size="large"
-              name="logo-google"
-            ></ion-icon>
-            <ion-icon size="large" name="logo-facebook"></ion-icon>
-            <ion-icon size="large" name="logo-apple"></ion-icon>
+          <ion-card-content>
+            <ion-buttons>
+              <ion-button expand="block" fill="clear">
+                <ion-icon
+                  (click)="signInWithGoogle()"
+                  size="large"
+                  name="logo-google"
+                  class="ion-padding ion-margin"
+                ></ion-icon>
+              </ion-button>
+              <ion-button expand="block" fill="clear">
+                <ion-icon
+                  size="large"
+                  name="logo-facebook"
+                  class="ion-padding ion-margin"
+                ></ion-icon>
+              </ion-button>
+              <ion-button expand="block" fill="clear">
+                <ion-icon
+                  size="large"
+                  name="logo-apple"
+                  class="ion-padding ion-margin"
+                ></ion-icon>
+              </ion-button>
+            </ion-buttons>
           </ion-card-content>
         </ion-card>
       </ion-col>
