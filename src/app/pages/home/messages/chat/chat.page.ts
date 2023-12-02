@@ -406,7 +406,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   createMessageWithAudio(user: User) {
     const request: createMessageRequestInterface = {
-      $id: this.audioIdTemp.replace('.mp3', ''),
+      $id: this.audioIdTemp,
       roomId: this.roomId,
       to: user.$id,
       type: 'audio',
@@ -549,7 +549,7 @@ export class ChatPage implements OnInit, OnDestroy {
     // console.log('Base64 Audio:', base64Sound);
 
     // Convert base64 to blob using fetch API
-    const response = await fetch(`data:audio/mp3;base64,${base64Sound}`);
+    const response = await fetch(`data:audio/aac;base64,${base64Sound}`);
     const blob: Blob = await response.blob();
     // console.log('Blob', blob);
 
@@ -583,7 +583,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
         console.log('Record data', recordData);
         // Save the file to the device
-        this.audioId = `${uuidv4().replace(/-/g, '')}.mp3`;
+        this.audioId = `${uuidv4().replace(/-/g, '')}`;
         await this.saveRecording(recordData);
       }
     });
@@ -619,7 +619,14 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   // async deleteAllRecordings() {
-  //   await this.loadFiles();
+  //   await Filesystem.readdir({
+  //     path: '',
+  //     directory: Directory.Data,
+  //   }).then((result) => {
+  //     // console.log('Directory listing', result);
+  //     this.storedFileNames = result.files;
+  //   });
+  //   console.log('DETECTED: Stored file names', this.storedFileNames);
   //   if (this.storedFileNames && this.storedFileNames.length > 0) {
   //     for (let file of this.storedFileNames) {
   //       await Filesystem.deleteFile({
@@ -628,6 +635,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //       });
   //     }
   //     this.storedFileNames = [];
+  //     console.log('DELETED ALL:', this.storedFileNames);
   //   } else {
   //     console.log('No files to delete');
   //   }
@@ -641,7 +649,7 @@ export class ChatPage implements OnInit, OnDestroy {
     const base64Sound = audioFile.data;
 
     // Play the audio file
-    this.audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`);
+    this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
     this.audioRef.oncanplaythrough = () => {
       console.log('Audio file duration', this.audioRef.duration);
     };
