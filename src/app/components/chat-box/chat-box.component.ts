@@ -1,5 +1,6 @@
 import { Store } from '@ngrx/store';
 import { Directory, Filesystem } from '@capacitor/filesystem';
+import { ModalController } from '@ionic/angular';
 import {
   Component,
   Input,
@@ -9,6 +10,7 @@ import {
   OnDestroy,
 } from '@angular/core';
 
+import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { lastSeen } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
@@ -30,7 +32,11 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   audioId: string = null;
   isDownloaded: boolean = false;
 
-  constructor(private store: Store, private el: ElementRef) {}
+  constructor(
+    private store: Store,
+    private modalCtrl: ModalController,
+    private el: ElementRef
+  ) {}
 
   async ngOnInit() {
     await this.initValues();
@@ -168,5 +174,24 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     let time = lastSeen(d);
     if (time === 'online') time = 'now';
     return time;
+  }
+
+  //
+  // Utils for image preview
+  //
+
+  async openPreview(image) {
+    console.log(image);
+    const modal = await this.modalCtrl.create({
+      component: PreviewPhotoComponent,
+      componentProps: {
+        photos: image,
+      },
+    });
+    modal.present();
+  }
+
+  test() {
+    console.log('test');
   }
 }
