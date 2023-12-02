@@ -7,6 +7,7 @@ import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
   findActiveRoomAndUpdateMessageSeenAction,
+  findAndUpdateActiveRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
 import {
   clearAudioUrlStateAction,
@@ -149,6 +150,22 @@ const messageReducer = createReducer(
       ...state,
       error: action.error,
     })
+  ),
+
+  // Find And Update Active Room Reduce
+  on(
+    findAndUpdateActiveRoomUpdatedAtAction,
+    (state, action): MessageStateInterface => {
+      // Check if the room id matches the action payload id
+      if (state.room?.$id === action.payload.$id) {
+        // If it matches, return a new state with the updated room
+        return {
+          ...state,
+          room: { ...state.room, $updatedAt: action.payload.$updatedAt },
+        };
+      }
+      return state;
+    }
   ),
 
   // Activate Room Reducers

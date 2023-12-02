@@ -26,6 +26,11 @@ export const findAndUpdateRoomUpdatedAtAction = createAction(
   props<{ payload: Room }>()
 );
 
+export const findAndUpdateActiveRoomUpdatedAtAction = createAction(
+  ActionTypes.FIND_AND_UPDATE_ACTIVE_ROOM_UPDATED_AT,
+  props<{ payload: Room }>()
+);
+
 export const findRoomAndAddMessageAction = createAction(
   ActionTypes.FIND_ROOM_AND_ADD_MESSAGE,
   props<{ payload: MessageExtendedInterface }>()
