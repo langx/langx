@@ -54,7 +54,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
-      this.audioId = this.msg?.$id + '.mp3';
+      this.audioId = this.msg?.$id;
       this.audioUrl = this.msg?.audio;
       await this.readFiles(this.msg?.$id);
     }
@@ -67,10 +67,10 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   private async readFiles(id: string) {
     try {
       const ret = await Filesystem.readFile({
-        path: id + '.mp3',
+        path: id,
         directory: Directory.Data,
       });
-      this.audioRef = new Audio('data:audio/mp3;base64,' + ret.data);
+      this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
 
       console.log('File found');
       this.isDownloaded = true;
@@ -99,7 +99,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     // TODO: Take a look here to see if we can use the base64Audio directly
     const base64AudioString = base64Audio.toString();
 
-    const fileName = this.msg.$id + '.mp3';
+    const fileName = this.msg.$id;
     await Filesystem.writeFile({
       path: fileName,
       data: base64AudioString,
@@ -120,7 +120,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log('Base64 Audio:', base64Sound);
 
     // Play the audio file
-    this.audioRef = new Audio(`data:audio/mp3;base64,${base64Sound}`);
+    this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
     this.audioRef.oncanplaythrough = () => {
       // console.log('Audio file duration', this.audioRef.duration);
     };
