@@ -11,6 +11,7 @@
           <img
             *ngIf="msg?.type == 'image'"
             [src]="msg?.image"
+            (click)="openPreview([msg?.image])"
             alt="Image message"
             referrerpolicy="no-referrer"
           />
@@ -80,6 +81,7 @@
           <img
             *ngIf="msg?.type == 'image'"
             [src]="msg?.image"
+            (click)="openPreview([msg?.image])"
             alt="Image message"
             referrerpolicy="no-referrer"
           />
