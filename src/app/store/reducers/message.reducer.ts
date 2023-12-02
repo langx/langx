@@ -38,7 +38,6 @@ import {
 const initialState: MessageStateInterface = {
   isLoading: false,
   isLoading_offset: false,
-  tempMessages: null,
   room: null,
   imageUrl: null,
   audioUrl: null,
@@ -83,30 +82,38 @@ const messageReducer = createReducer(
       ...state,
       isLoading: true,
       error: null,
-      tempMessages: [
-        ...(state.tempMessages || []),
-        {
-          ...action.request,
-          error: null,
-        },
-      ],
+      room: {
+        ...state.room,
+        tempMessages: [
+          ...(state.room.tempMessages || []),
+          {
+            ...action.request,
+            error: null,
+          },
+        ],
+      },
     })
   ),
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
     let tempMessages: tempMessageInterface[];
-    tempMessages = state.tempMessages
-      ? state.tempMessages.filter((msg) => msg?.$id !== action.payload?.$id)
+    tempMessages = state.room.tempMessages
+      ? state.room.tempMessages.filter(
+          (msg) => msg?.$id !== action.payload?.$id
+        )
       : null;
 
     return {
       ...state,
       isLoading: false,
-      tempMessages: tempMessages,
+      room: {
+        ...state.room,
+        tempMessages: tempMessages,
+      },
     };
   }),
   on(createMessageFailureAction, (state, action): MessageStateInterface => {
-    const tempMessages = state.tempMessages
-      ? state.tempMessages.map((msg) =>
+    const tempMessages = state.room.tempMessages
+      ? state.room.tempMessages.map((msg) =>
           msg.body === action.payload.body
             ? { ...msg, error: action.error }
             : msg
@@ -116,7 +123,10 @@ const messageReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
-      tempMessages: tempMessages,
+      room: {
+        ...state.room,
+        tempMessages: tempMessages,
+      },
     };
   }),
 
@@ -266,20 +276,25 @@ const messageReducer = createReducer(
   on(
     removeMessageFromTempMessagesAction,
     (state, action): MessageStateInterface => {
-      const tempMessages = state.tempMessages
-        ? state.tempMessages.filter((msg) => msg.body !== action.payload.body)
+      const tempMessages = state.room.tempMessages
+        ? state.room.tempMessages.filter(
+            (msg) => msg.body !== action.payload.body
+          )
         : null;
       return {
         ...state,
-        tempMessages: tempMessages,
+        room: {
+          ...state.room,
+          tempMessages: tempMessages,
+        },
       };
     }
   ),
   on(
     resendMessageFromTempMessagesAction,
     (state, action): MessageStateInterface => {
-      const tempMessages = state.tempMessages
-        ? state.tempMessages.map((msg) =>
+      const tempMessages = state.room.tempMessages
+        ? state.room.tempMessages.map((msg) =>
             msg.body === action.request.body ? { ...msg, error: null } : msg
           )
         : null;
@@ -287,24 +302,29 @@ const messageReducer = createReducer(
         ...state,
         isLoading: true,
         error: null,
-        tempMessages: tempMessages,
+        room: {
+          ...state.room,
+          tempMessages: tempMessages,
+        },
       };
     }
   ),
   on(
     resendMessageFromTempMessagesSuccessAction,
     (state, action): MessageStateInterface => {
-      const tempMessages = state.tempMessages
-        ? state.tempMessages.filter((msg) => msg.body !== action.payload?.body)
+      const tempMessages = state.room.tempMessages
+        ? state.room.tempMessages.filter(
+            (msg) => msg.body !== action.payload?.body
+          )
         : null;
       const updatedRoom = {
         ...state.room,
         messages: [...state.room.messages, action.payload],
+        tempMessages: tempMessages,
       };
       return {
         ...state,
         room: updatedRoom,
-        tempMessages: tempMessages,
         isLoading: false,
       };
     }
@@ -312,8 +332,8 @@ const messageReducer = createReducer(
   on(
     resendMessageFromTempMessagesFailureAction,
     (state, action): MessageStateInterface => {
-      const tempMessages = state.tempMessages
-        ? state.tempMessages.map((msg) =>
+      const tempMessages = state.room.tempMessages
+        ? state.room.tempMessages.map((msg) =>
             msg.body === action.payload?.body
               ? { ...msg, error: action.error }
               : msg
@@ -321,8 +341,11 @@ const messageReducer = createReducer(
         : null;
       return {
         ...state,
-        tempMessages: tempMessages,
         isLoading: false,
+        room: {
+          ...state.room,
+          tempMessages: tempMessages,
+        },
       };
     }
   ),

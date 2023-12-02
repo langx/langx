@@ -212,7 +212,8 @@ export class RoomService {
             ...room,
             userData: data as User,
             total: 0,
-            messages: [],
+            messages: null,
+            tempMessages: null,
           };
           return roomWithUserData;
         })
