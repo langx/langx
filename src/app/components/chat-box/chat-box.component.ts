@@ -72,12 +72,17 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       });
       this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
 
-      console.log('File found');
       this.isDownloaded = true;
+
+      // Log
+      console.log('File found');
     } catch (e) {
+      // Download file from server
+      this.downloadFile();
+
+      // Log
       console.log('File not found, fetching from server');
-      // TODO : Download file from server
-      // this.downloadFile();
+
     }
   }
 
