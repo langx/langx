@@ -578,8 +578,8 @@ export class ChatPage implements OnInit, OnDestroy {
   private stopRecording() {
     VoiceRecorder.stopRecording().then(async (result: RecordingData) => {
       this.isRecording = false;
-      console.log(result.value.mimeType);
-      console.log(result.value.msDuration);
+      // console.log(result.value.mimeType);
+      // console.log(result.value.msDuration);
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
 
