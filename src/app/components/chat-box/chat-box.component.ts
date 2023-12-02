@@ -27,7 +27,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   msg: Message = null;
 
   audioRef: HTMLAudioElement = null;
-  audioUrl: URL;
   audioId: string = null;
   isDownloaded: boolean = false;
 
@@ -55,7 +54,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
       this.audioId = this.msg?.$id;
-      this.audioUrl = this.msg?.audio;
       await this.readFiles(this.msg?.$id);
     }
   }
