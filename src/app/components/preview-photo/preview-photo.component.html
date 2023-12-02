@@ -15,13 +15,13 @@
     [centeredSlides]="true"
     [pagination]="true"
     [navigation]="true"
+    [zoom]="true"
     pagination-dynamic-bullets="true"
     keyboard="true"
     mousewheel="true"
   >
     <swiper-slide *ngFor="let photo of photos">
-      <!-- TODO: Test this following zoom feature on mobile
-      Tested and its not working -->
+      <!-- TODO: Zoom is still not working -->
       <div class="swiper-zoom-container">
         <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer" />
       </div>
