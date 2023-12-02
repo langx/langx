@@ -19,6 +19,7 @@ import {
   findRoomAndAddMessageAction,
   findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
+  findAndUpdateActiveRoomUpdatedAtAction,
   findActiveRoomAndUpdateMessageSeenAction,
   findOrAddRoomAction,
   totalUnseenMessagesAction,
@@ -112,6 +113,9 @@ export class NotificationService {
             const updatedRoom = response.payload as Room;
             this.store.dispatch(
               findAndUpdateRoomUpdatedAtAction({ payload: updatedRoom })
+            );
+            this.store.dispatch(
+              findAndUpdateActiveRoomUpdatedAtAction({ payload: updatedRoom })
             );
             break;
           case `${roomsCollection}.*.delete`:
