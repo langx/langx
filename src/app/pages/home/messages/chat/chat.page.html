@@ -11,11 +11,6 @@
       </ion-avatar>
     </ion-buttons>
 
-    <ion-buttons slot="end">
-      <ion-button (click)="search()">
-        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
     <ion-title (click)="redirectUserProfile()">
       {{(user$ | async)?.name}}
     </ion-title>
@@ -53,7 +48,7 @@
           class="chats-group"
           *ngFor="let tempMsg of (tempMessages$ | async)"
         >
-          <app-pre-chat-box [tempMsg]="tempMsg"> </app-pre-chat-box>
+          <app-pre-chat-box [tempMsg]="tempMsg"></app-pre-chat-box>
         </ion-item-group>
       </div>
     </div>
@@ -62,17 +57,41 @@
 
 <ion-footer>
   <ion-toolbar>
-    <form [formGroup]="form" (ngSubmit)="createMessage()">
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
       <ion-item>
         <ion-textarea
+          *ngIf="!isRecording && !audioId"
           placeholder="Type your message..."
           type="text"
           formControlName="body"
+          rows="1"
           (ionFocus)="typingFocus()"
           (ionBlur)="typingBlur()"
           autoGrow="true"
         >
         </ion-textarea>
+        <ion-text
+          *ngIf="isRecording"
+          placeholder="Recording..."
+          disabled="true"
+        >
+          Recording ..
+        </ion-text>
+        <div *ngIf="!isRecording && audioId">
+          <ion-buttons slot="center">
+            <ion-button (click)="togglePlayStop()" fill="clear">
+              <ion-icon
+                slot="icon-only"
+                [name]="isPlaying() ? 'pause' : 'play'"
+                [color]="isPlaying() ? 'warning' : 'success'"
+              ></ion-icon>
+            </ion-button>
+            <ion-button (click)="deleteRecording()" fill="clear">
+              <ion-icon slot="icon-only" name="trash" color="danger"></ion-icon>
+            </ion-button>
+            <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text>
+          </ion-buttons>
+        </div>
         <ion-buttons slot="start">
           <ion-button (click)="selectImage()">
             <ion-icon slot="icon-only" name="camera-outline" color="medium">
@@ -80,8 +99,12 @@
           </ion-button>
         </ion-buttons>
         <ion-buttons slot="end">
-          <ion-button>
-            <ion-icon slot="icon-only" name="mic" color="medium"></ion-icon>
+          <ion-button #recordButton>
+            <ion-icon
+              slot="icon-only"
+              name="mic"
+              [color]="iconColorOfMic"
+            ></ion-icon>
           </ion-button>
           <ion-button type="submit">
             <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
@@ -90,4 +113,6 @@
       </ion-item>
     </form>
   </ion-toolbar>
+  <!-- <ion-button (click)="deleteAllRecordings()" size="small">Del</ion-button>
+  <ion-button (click)="listAllRecordings()" size="small">List</ion-button> -->
 </ion-footer>

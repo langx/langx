@@ -53,8 +53,9 @@ export class MessageEffects {
   createMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createMessageAction),
-      mergeMap(({ request, currentUserId }) =>
-        this.messagesService.createMessage(request, currentUserId).pipe(
+      withLatestFrom(this.store.select(currentUserSelector)),
+      mergeMap(([{ request }, currentUser]) =>
+        this.messagesService.createMessage(request, currentUser.$id).pipe(
           map((payload: Message) => createMessageSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
@@ -89,16 +90,20 @@ export class MessageEffects {
     )
   );
 
+  // TODO: Use request directly instead of creating newRequest
   resendMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resendMessageFromTempMessagesAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       mergeMap(([action, currentUser]) => {
         const newRequest: createMessageRequestInterface = {
+          $id: action.request.$id,
           roomId: action.request.roomId,
           to: action.request.to,
-          body: action.request.body,
-          isImage: action.request.isImage,
+          type: action.request.type,
+          body: action.request?.body || null,
+          image: action.request?.image || null,
+          audio: action.request?.audio || null,
         };
 
         return this.messagesService

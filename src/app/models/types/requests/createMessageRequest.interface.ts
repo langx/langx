@@ -1,7 +1,9 @@
 export interface createMessageRequestInterface {
-  body?: string;
+  $id: string;
   to: string;
   roomId: string;
-  isImage: boolean;
+  type: string;
+  body?: string;
   image?: URL;
+  audio?: URL;
 }

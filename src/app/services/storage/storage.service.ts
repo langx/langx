@@ -29,6 +29,10 @@ export class StorageService {
     return this.storage.getFileView(bucketId, fileId);
   }
 
+  getFileDownload(bucketId: string, fileId: string): URL {
+    return this.storage.getFileDownload(bucketId, fileId);
+  }
+
   //
   // Capacitor Preferences
   //

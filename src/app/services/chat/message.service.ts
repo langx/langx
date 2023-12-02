@@ -22,7 +22,7 @@ export class MessageService {
   constructor(
     private api: ApiService,
     private authService: AuthService,
-    private storage: StorageService
+    private storageService: StorageService
   ) {}
 
   // Create a message
@@ -90,22 +90,48 @@ export class MessageService {
   }
 
   //
-  // Upload Bucket
+  // Upload Image
   //
 
-  uploadFile(request: File): Observable<URL> {
+  uploadImage(request: File): Observable<URL> {
     return from(
-      this.storage.createFile(
+      this.storageService.createFile(
         environment.appwrite.MESSAGE_BUCKET,
         ID.unique(),
         request
       )
-    ).pipe(switchMap((response: BucketFile) => this.getFileView(response.$id)));
+    ).pipe(
+      switchMap((response: BucketFile) => this.getImageView(response.$id))
+    );
   }
 
-  private getFileView(fileId: string): Observable<URL> {
-    const url = this.storage.getFileView(
+  private getImageView(fileId: string): Observable<URL> {
+    const url = this.storageService.getFileView(
       environment.appwrite.MESSAGE_BUCKET,
+      fileId
+    );
+    return of(url);
+  }
+
+  //
+  // Upload Audio
+  //
+
+  uploadAudio(request: File): Observable<URL> {
+    return from(
+      this.storageService.createFile(
+        environment.appwrite.AUDIO_BUCKET,
+        ID.unique(),
+        request
+      )
+    ).pipe(
+      switchMap((response: BucketFile) => this.getAudioView(response.$id))
+    );
+  }
+
+  private getAudioView(fileId: string): Observable<URL> {
+    const url = this.storageService.getFileView(
+      environment.appwrite.AUDIO_BUCKET,
       fileId
     );
     return of(url);

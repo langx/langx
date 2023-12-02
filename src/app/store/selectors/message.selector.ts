@@ -45,6 +45,11 @@ export const imageUrlSelector = createSelector(
   (messageState: MessageStateInterface) => messageState.imageUrl
 );
 
+export const audioUrlSelector = createSelector(
+  messageFeatureSelector,
+  (messageState: MessageStateInterface) => messageState.audioUrl
+);
+
 export const errorSelector = createSelector(
   messageFeatureSelector,
   (messageState: MessageStateInterface) => messageState.error

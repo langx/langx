@@ -8,9 +8,30 @@ import { Client, Users, Databases } from 'node-appwrite';
 export default async ({ req, res, log, error }) => {
   try {
     log(req);
-    throwIfMissing(req.body, ['to', 'sender', 'body', 'roomId']);
+    throwIfMissing(req.body, ['to', 'sender', 'roomId', 'type']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
+  }
+
+  const type = req.body.type;
+
+  switch (type) {
+    case 'body':
+      throwIfMissing(req.body, ['body']);
+      break;
+    case 'image':
+      throwIfMissing(req.body, ['image']);
+      break;
+    case 'audio':
+      throwIfMissing(req.body, ['audio']);
+      break;
+    default:
+      // Send error response
+      res.status(400).json({
+        ok: false,
+        error: 'type is not valid',
+      });
+      break;
   }
 
   // Init SDK
@@ -67,12 +88,34 @@ export default async ({ req, res, log, error }) => {
   // }
 
   log(`Sending message to device: ${req.body.to}`);
+
+  let notification = {
+    title: senderUserDoc.name,
+    body: null,
+  };
+
+  switch (type) {
+    case 'body':
+      notification.body = req.body.body;
+      break;
+    case 'image':
+      notification.body = '📷 Image';
+      break;
+    case 'audio':
+      notification.body = '🔊 Audio';
+      break;
+    default:
+      // Send error response
+      res.status(400).json({
+        ok: false,
+        error: 'type is not valid',
+      });
+      break;
+  }
+
   try {
     const response = await sendPushNotification({
-      notification: {
-        title: senderUserDoc.name,
-        body: req.body.body,
-      },
+      notification: notification,
       data: {
         roomId: req.body.roomId.$id,
       },
