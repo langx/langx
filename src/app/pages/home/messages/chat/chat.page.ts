@@ -622,39 +622,39 @@ export class ChatPage implements OnInit, OnDestroy {
     this.audioId = null;
   }
 
-  async deleteAllRecordings() {
-    await Filesystem.readdir({
-      path: '',
-      directory: Directory.Data,
-    }).then((result) => {
-      // console.log('Directory listing', result);
-      this.storedFileNames = result.files;
-    });
-    console.log('DETECTED: Stored file names', this.storedFileNames);
-    if (this.storedFileNames && this.storedFileNames.length > 0) {
-      for (let file of this.storedFileNames) {
-        await Filesystem.deleteFile({
-          path: file.name,
-          directory: Directory.Data,
-        });
-      }
-      this.storedFileNames = [];
-      console.log('DELETED ALL:', this.storedFileNames);
-    } else {
-      console.log('No files to delete');
-    }
-  }
+  // async deleteAllRecordings() {
+  //   await Filesystem.readdir({
+  //     path: '',
+  //     directory: Directory.Data,
+  //   }).then((result) => {
+  //     // console.log('Directory listing', result);
+  //     this.storedFileNames = result.files;
+  //   });
+  //   console.log('DETECTED: Stored file names', this.storedFileNames);
+  //   if (this.storedFileNames && this.storedFileNames.length > 0) {
+  //     for (let file of this.storedFileNames) {
+  //       await Filesystem.deleteFile({
+  //         path: file.name,
+  //         directory: Directory.Data,
+  //       });
+  //     }
+  //     this.storedFileNames = [];
+  //     console.log('DELETED ALL:', this.storedFileNames);
+  //   } else {
+  //     console.log('No files to delete');
+  //   }
+  // }
 
-  async listAllRecordings() {
-    await Filesystem.readdir({
-      path: '',
-      directory: Directory.Data,
-    }).then((result) => {
-      // console.log('Directory listing', result);
-      this.storedFileNames = result.files;
-    });
-    console.log('LIST: Stored file names', this.storedFileNames);
-  }
+  // async listAllRecordings() {
+  //   await Filesystem.readdir({
+  //     path: '',
+  //     directory: Directory.Data,
+  //   }).then((result) => {
+  //     // console.log('Directory listing', result);
+  //     this.storedFileNames = result.files;
+  //   });
+  //   console.log('LIST: Stored file names', this.storedFileNames);
+  // }
 
   async play() {
     const audioFile = await Filesystem.readFile({
