@@ -86,19 +86,18 @@ export class NewPage implements OnInit {
       .updateRecovery(this.id, this.secret, this.form.value.password)
       .then((response) => {
         console.log(response);
-        if (response.code) {
-          console.log('error:', response.message);
-          this.presentToast(
-            'Link is expired or invalid. Please try again.',
-            'danger'
-          );
-          this.router.navigateByUrl('/login');
-          return;
-        }
-
         this.presentToast('Password Updated', 'success');
         this.form.reset();
         this.router.navigateByUrl('/login');
+      })
+      .catch((error) => {
+        console.log('error:', error.message);
+        this.presentToast(
+          'Link is expired or invalid. Please try again.',
+          'danger'
+        );
+        this.router.navigateByUrl('/login');
+        return;
       });
   }
 

@@ -105,15 +105,14 @@ export class AuthService {
   }
 
   updateRecovery(userId: string, secret: string, password: string) {
-    return this.api.account
-      .updateRecovery(userId, secret, password, password)
-      .then((response) => {
-        console.log('Recovery successfully updated', response);
-      })
-      .catch((error) => {
-        console.log('Error updating recovery', error);
-        return error;
-      });
+    return this.api.account.updateRecovery(userId, secret, password, password);
+    // .then((response) => {
+    //   console.log('Recovery successfully updated', response);
+    // })
+    // .catch((error) => {
+    //   console.log('Error updating recovery', error);
+    //   return error;
+    // });
   }
 
   // TODO: #149 Login with Google (createOAuth2Session)
