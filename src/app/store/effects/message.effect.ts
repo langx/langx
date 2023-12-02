@@ -72,8 +72,7 @@ export class MessageEffects {
   updateMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateMessageSeenAction),
-      // TODO: #263 It may be mergeMap as well!
-      switchMap(({ request }) =>
+      mergeMap(({ request }) =>
         this.messagesService.updateMessage(request).pipe(
           map((payload: Message) =>
             updateMessageSeenSuccessAction({ payload })
