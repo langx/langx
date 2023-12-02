@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Directory, Filesystem } from '@capacitor/filesystem';
+import { ToastController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
@@ -19,10 +20,11 @@ export class PreChatBoxComponent implements OnInit {
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   async ngOnInit() {
     await this.initValues();
+    this.errorHandler();
   }
 
   async initValues() {
@@ -30,6 +32,12 @@ export class PreChatBoxComponent implements OnInit {
     if (this.tempMsg.type === 'audio') {
       this.audioId = this.tempMsg?.$id;
       await this.readFiles(this.tempMsg?.$id);
+    }
+  }
+
+  errorHandler() {
+    if (this.tempMsg.error) {
+      this.presentToast(this.tempMsg.error.message, 'danger');
     }
   }
 
@@ -96,5 +104,20 @@ export class PreChatBoxComponent implements OnInit {
 
   isPlaying(): boolean {
     return this.audioRef ? !this.audioRef.paused : false;
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
