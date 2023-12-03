@@ -9,21 +9,23 @@
   </ion-fab>
 
   <swiper-container
-    [spaceBetween]="15"
+    #slides
+    [slidesPerView]="1"
+    [spaceBetween]="10"
     [centeredSlides]="true"
-    [pagination]="true"
-    [navigation]="true"
-    [zoom]="true"
-    pagination-dynamic-bullets="true"
     keyboard="true"
     mousewheel="true"
   >
     <swiper-slide *ngFor="let photo of [1, 2, 3]">
       <div class="swiper-zoom-container">
-        <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer" />
+        <img [src]="photo" alt="Intro Image" referrerpolicy="no-referrer" />
       </div>
-      <ion-text class="ion-padding">Test</ion-text>
-      <h1 class="ion-padding ion-margin"></h1>
+      <ion-button (click)="nextSlide()" class="ion-padding ion-margin"
+        >Next</ion-button
+      >
     </swiper-slide>
   </swiper-container>
 </ion-content>
+<ion-footer class="ion-no-border">
+  <ion-toolbar></ion-toolbar>
+</ion-footer>
