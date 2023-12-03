@@ -38,6 +38,15 @@
           <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
           </ion-spinner>
         </ion-button>
+        <ion-button
+          (click)="showIntro()"
+          fill="clear"
+          size="small"
+          expand="block"
+          class="ion-margin-top"
+        >
+          Show Intro
+        </ion-button>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -105,10 +114,3 @@
     <p class="signup"></p>
   </form>
 </ion-content>
-<ion-footer class="ion-no-border" style="background-color: transparent">
-  <ion-toolbar>
-    <ion-button (click)="showIntro()" fill="clear" size="small" expand="block">
-      Show Intro
-    </ion-button>
-  </ion-toolbar>
-</ion-footer>
