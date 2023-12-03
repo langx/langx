@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
+import { Preferences } from '@capacitor/preferences';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -14,6 +15,8 @@ import {
   loginValidationErrorSelector,
   unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
+
+const INTRO_SEEN = 'introSeen';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +41,9 @@ export class LoginPage implements OnInit {
   async ngOnInit() {
     this.initValues();
     this.initForm();
+
+    // Init Intro
+    await this.checkIntroSeen();
     await this.initIntro();
   }
 
@@ -85,9 +91,8 @@ export class LoginPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: IntroComponent,
       componentProps: {
-        onFinish: () => {
-          this.introSeen = true;
-          console.log('introSeen:', this.introSeen);
+        onFinish: async () => {
+          await this.setIntroSeen(true);
           modal.dismiss();
         },
       },
@@ -144,6 +149,23 @@ export class LoginPage implements OnInit {
     });
   }
   */
+
+  //
+  // Utils
+  //
+
+  async checkIntroSeen() {
+    await Preferences.get({ key: INTRO_SEEN }).then((res) => {
+      res && res.value
+        ? (this.introSeen = JSON.parse(res.value))
+        : (this.introSeen = false);
+    });
+  }
+
+  async setIntroSeen(value: boolean) {
+    await Preferences.set({ key: INTRO_SEEN, value: JSON.stringify(value) });
+    this.introSeen = value;
+  }
 
   //
   // Present Toast
