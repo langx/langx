@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
+import { IntroComponent } from 'src/app/components/intro/intro.component';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -25,15 +26,19 @@ export class LoginPage implements OnInit {
 
   value: any = '';
 
+  introSeen: boolean = false;
+
   constructor(
     private store: Store,
     private authService: AuthService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private modalCtrl: ModalController
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.initValues();
     this.initForm();
+    await this.initIntro();
   }
 
   ionViewWillLeave() {
@@ -41,6 +46,20 @@ export class LoginPage implements OnInit {
 
     // Enable form if redirect here later
     this.form.enable();
+  }
+
+  // TODO: Reorder this function after initForm()
+  async initIntro() {
+    if (this.introSeen) return;
+    const modal = await this.modalCtrl.create({
+      component: IntroComponent,
+    });
+
+    await modal.present();
+
+    modal.onDidDismiss().then((data) => {
+      this.introSeen = true;
+    });
   }
 
   initValues() {
