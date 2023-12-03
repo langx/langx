@@ -81,16 +81,23 @@
         <div align="left">
           <ion-note>
             Not a member yet?
-            <ion-text routerLink="signup" color="primary">Sign Up</ion-text>
+            <ion-button fill="clear" routerLink="signup" color="primary">
+              Sign Up
+            </ion-button>
           </ion-note>
         </div>
       </ion-col>
       <ion-col size="6">
         <div align="right">
           <ion-note>
-            <ion-text routerLink="reset-password" color="primary">
-              Forgot password?
-            </ion-text>
+            Forgot password?
+            <ion-button
+              fill="clear"
+              routerLink="reset-password"
+              color="primary"
+            >
+              Reset it
+            </ion-button>
           </ion-note>
         </div>
       </ion-col>
@@ -98,3 +105,10 @@
     <p class="signup"></p>
   </form>
 </ion-content>
+<ion-footer class="ion-no-border" style="background-color: transparent">
+  <ion-toolbar>
+    <ion-button fill="clear" size="small" expand="block">
+      Show Intro
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
