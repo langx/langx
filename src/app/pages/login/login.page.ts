@@ -48,23 +48,6 @@ export class LoginPage implements OnInit {
     this.form.enable();
   }
 
-  // TODO: Reorder this function after initForm()
-  async initIntro() {
-    if (this.introSeen) return;
-    const modal = await this.modalCtrl.create({
-      component: IntroComponent,
-      componentProps: {
-        onFinish: () => {
-          this.introSeen = true;
-          console.log('introSeen:', this.introSeen);
-          modal.dismiss();
-        },
-      },
-    });
-
-    return await modal.present();
-  }
-
   initValues() {
     // isLoading
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
@@ -95,6 +78,22 @@ export class LoginPage implements OnInit {
         validators: [Validators.required, Validators.minLength(6)],
       }),
     });
+  }
+
+  async initIntro() {
+    if (this.introSeen) return;
+    const modal = await this.modalCtrl.create({
+      component: IntroComponent,
+      componentProps: {
+        onFinish: () => {
+          this.introSeen = true;
+          console.log('introSeen:', this.introSeen);
+          modal.dismiss();
+        },
+      },
+    });
+
+    return await modal.present();
   }
 
   onSubmit() {
