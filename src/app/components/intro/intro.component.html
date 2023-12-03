@@ -8,10 +8,8 @@
     </ion-fab-button>
   </ion-fab>
 
-  <!-- TODO: initialSlide does not work -->
   <swiper-container
     [spaceBetween]="15"
-    [initialSlide]="2"
     [centeredSlides]="true"
     [pagination]="true"
     [navigation]="true"
@@ -21,10 +19,11 @@
     mousewheel="true"
   >
     <swiper-slide *ngFor="let photo of [1, 2, 3]">
-      <!-- TODO: Zoom is still not working -->
       <div class="swiper-zoom-container">
         <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer" />
       </div>
+      <ion-text class="ion-padding">Test</ion-text>
+      <h1 class="ion-padding ion-margin"></h1>
     </swiper-slide>
   </swiper-container>
 </ion-content>
