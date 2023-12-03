@@ -5,11 +5,14 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: './intro.component.html',
   styleUrls: ['./intro.component.scss'],
 })
-export class IntroComponent  implements OnInit {
+export class IntroComponent implements OnInit {
   @Input() onFinish: () => void;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {}
 
+  close() {
+    this.onFinish();
+  }
 }

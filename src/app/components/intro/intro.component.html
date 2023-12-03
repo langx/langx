@@ -1,3 +1,30 @@
-<p>
-  intro works!
-</p>
+<ion-header class="ion-no-border">
+  <ion-toolbar></ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
+    <ion-fab-button (click)="close()" size="small" color="medium">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- TODO: initialSlide does not work -->
+  <swiper-container
+    [spaceBetween]="15"
+    [initialSlide]="2"
+    [centeredSlides]="true"
+    [pagination]="true"
+    [navigation]="true"
+    [zoom]="true"
+    pagination-dynamic-bullets="true"
+    keyboard="true"
+    mousewheel="true"
+  >
+    <swiper-slide *ngFor="let photo of [1, 2, 3]">
+      <!-- TODO: Zoom is still not working -->
+      <div class="swiper-zoom-container">
+        <img [src]="photo" alt="Profile Picture" referrerpolicy="no-referrer" />
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</ion-content>
