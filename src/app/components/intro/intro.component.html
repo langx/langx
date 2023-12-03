@@ -16,9 +16,13 @@
     keyboard="true"
     mousewheel="true"
   >
-    <swiper-slide *ngFor="let photo of [1, 2, 3]">
+    <swiper-slide>
       <div class="swiper-zoom-container">
-        <img [src]="photo" alt="Intro Image" referrerpolicy="no-referrer" />
+        <img
+          src="https://i.pravatar.cc/300"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
       </div>
       <ion-button
         (click)="nextSlide()"
@@ -26,6 +30,38 @@
         class="ion-padding ion-margin"
       >
         Next
+      </ion-button>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="swiper-zoom-container">
+        <img
+          src="https://i.pravatar.cc/301"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+      <ion-button
+        (click)="nextSlide()"
+        size="small"
+        class="ion-padding ion-margin"
+      >
+        Next
+      </ion-button>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="swiper-zoom-container">
+        <img
+          src="https://i.pravatar.cc/302"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
+      </div>
+      <ion-button
+        (click)="onFinish()"
+        size="small"
+        class="ion-padding ion-margin"
+      >
+        Done !
       </ion-button>
     </swiper-slide>
   </swiper-container>
