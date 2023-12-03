@@ -53,6 +53,12 @@ export class LoginPage implements OnInit {
     if (this.introSeen) return;
     const modal = await this.modalCtrl.create({
       component: IntroComponent,
+      componentProps: {
+        onFinish: () => {
+          console.log('onFinish');
+          modal.dismiss();
+        },
+      },
     });
 
     await modal.present();
