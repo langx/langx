@@ -55,17 +55,14 @@ export class LoginPage implements OnInit {
       component: IntroComponent,
       componentProps: {
         onFinish: () => {
-          console.log('onFinish');
+          this.introSeen = true;
+          console.log('introSeen:', this.introSeen);
           modal.dismiss();
         },
       },
     });
 
-    await modal.present();
-
-    modal.onDidDismiss().then((data) => {
-      this.introSeen = true;
-    });
+    return await modal.present();
   }
 
   initValues() {
