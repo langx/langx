@@ -1,13 +1,13 @@
 ---
-name: "\U0001F680 Feature Request"
-about: Suggest an idea for this project
-title: "\U0001F680 [Feature] : "
-labels: feature
+name: "\U000026A0 Warning Request"
+about: Suggest an warning for this project to optimize the code
+title: "\U000026A0 [Warning] : "
+labels: help wanted, test, warning
 assignees: behics
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
+**Is your warning request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
 **Describe the solution you'd like**
