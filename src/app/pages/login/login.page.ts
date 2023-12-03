@@ -101,6 +101,11 @@ export class LoginPage implements OnInit {
     return await modal.present();
   }
 
+  async showIntro() {
+    await this.setIntroSeen(false);
+    await this.initIntro();
+  }
+
   onSubmit() {
     if (!this.form.valid) return;
     this.login(this.form);
