@@ -38,15 +38,32 @@
           <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
           </ion-spinner>
         </ion-button>
-        <ion-button
-          (click)="showIntro()"
-          fill="clear"
-          size="small"
-          expand="block"
-          class="ion-margin-top"
-        >
-          Show Intro
-        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-margin-vertical">
+      <ion-col size="6" class="alignItems">
+        <div align="left">
+          <ion-note>
+            Not a member yet?
+            <ion-button fill="clear" routerLink="signup" color="primary">
+              Sign Up
+            </ion-button>
+          </ion-note>
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div align="right">
+          <ion-note>
+            Forgot password?
+            <ion-button
+              fill="clear"
+              routerLink="reset-password"
+              color="primary"
+            >
+              Reset it
+            </ion-button>
+          </ion-note>
+        </div>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -85,32 +102,18 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-margin-vertical">
-      <ion-col size="6" class="alignItems">
-        <div align="left">
-          <ion-note>
-            Not a member yet?
-            <ion-button fill="clear" routerLink="signup" color="primary">
-              Sign Up
-            </ion-button>
-          </ion-note>
-        </div>
-      </ion-col>
-      <ion-col size="6">
-        <div align="right">
-          <ion-note>
-            Forgot password?
-            <ion-button
-              fill="clear"
-              routerLink="reset-password"
-              color="primary"
-            >
-              Reset it
-            </ion-button>
-          </ion-note>
-        </div>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          (click)="showIntro()"
+          fill="clear"
+          size="small"
+          expand="block"
+          class="ion-margin-top"
+        >
+          Show Intro
+        </ion-button>
       </ion-col>
     </ion-row>
-    <p class="signup"></p>
   </form>
 </ion-content>
