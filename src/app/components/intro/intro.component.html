@@ -18,38 +18,14 @@
   >
     <swiper-slide>
       <div class="swiper-zoom-container">
-        <div class="slider">
-          <svg height="50" width="150">
-            <circle
-              id="english"
-              cx="25"
-              cy="25"
-              r="20"
-              stroke="black"
-              stroke-width="2"
-              fill="red"
-            />
-            <circle
-              id="spanish"
-              cx="75"
-              cy="25"
-              r="20"
-              stroke="black"
-              stroke-width="2"
-              fill="transparent"
-            />
-            <circle
-              id="french"
-              cx="125"
-              cy="25"
-              r="20"
-              stroke="black"
-              stroke-width="2"
-              fill="yellow"
-            />
-          </svg>
-        </div>
+        <img
+          src="https://i.pravatar.cc/301"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
       </div>
+      <h1>Join the community!</h1>
+      <p>Sign up for free.</p>
       <ion-button
         (click)="nextSlide()"
         size="small"
@@ -66,6 +42,8 @@
           referrerpolicy="no-referrer"
         />
       </div>
+      <h1>Find a partner!</h1>
+      <p>Search by language, location, gender, and more.</p>
       <ion-button
         (click)="nextSlide()"
         size="small"
@@ -82,6 +60,8 @@
           referrerpolicy="no-referrer"
         />
       </div>
+      <h1>Start talking!</h1>
+      <p>Pick any way to talk: text, voice note, and more.</p>
       <ion-button
         (click)="onFinish()"
         size="small"
