@@ -6,7 +6,7 @@
     <ion-title>Log In</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content scrollY="false">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <ion-item lines="full">
       <ion-input
@@ -40,6 +40,32 @@
         </ion-button>
       </ion-col>
     </ion-row>
+    <ion-row class="ion-margin-vertical">
+      <ion-col size="6" class="alignItems">
+        <div align="left">
+          <ion-note>
+            Not a member yet?
+            <ion-button fill="clear" routerLink="signup" color="primary">
+              Sign Up
+            </ion-button>
+          </ion-note>
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div align="right">
+          <ion-note>
+            Forgot password?
+            <ion-button
+              fill="clear"
+              routerLink="reset-password"
+              color="primary"
+            >
+              Reset it
+            </ion-button>
+          </ion-note>
+        </div>
+      </ion-col>
+    </ion-row>
     <ion-row>
       <ion-col>
         <p></p>
@@ -48,7 +74,7 @@
             <ion-card-title>Login with</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <ion-buttons>
+            <ion-buttons class="loginButtons">
               <ion-button expand="block" fill="clear">
                 <ion-icon
                   (click)="signInWithGoogle()"
@@ -76,34 +102,18 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    <ion-row class="ion-margin-vertical">
-      <ion-col size="6" class="alignItems">
-        <div align="left">
-          <ion-note>
-            Not a member yet?
-            <ion-text routerLink="signup" color="primary">Sign Up</ion-text>
-          </ion-note>
-        </div>
-      </ion-col>
-      <ion-col size="6">
-        <div align="right">
-          <ion-note>
-            <ion-text routerLink="reset-password" color="primary">
-              Forgot password?
-            </ion-text>
-          </ion-note>
-        </div>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          (click)="showIntro()"
+          fill="clear"
+          size="small"
+          expand="block"
+          class="ion-margin-top"
+        >
+          Show Intro
+        </ion-button>
       </ion-col>
     </ion-row>
-    <p class="signup"></p>
   </form>
-
-  <!--
-  <ion-button (click)="setValue()">Set Value</ion-button>
-  <ion-button (click)="getValue()">Get Value</ion-button>
-  <ion-button (click)="removeValue()">Remove Value</ion-button>
-  <ion-button (click)="clearStorage()">Clear Storage</ion-button>
-
-  <p>{{ value }}</p>
--->
 </ion-content>
