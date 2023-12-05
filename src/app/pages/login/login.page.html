@@ -68,41 +68,37 @@
             </div>
           </ion-col>
         </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-buttons class="loginButtons">
+              <ion-button expand="block" fill="clear">
+                <ion-icon
+                  (click)="signInWithGoogle()"
+                  size="large"
+                  name="logo-google"
+                  class="ion-padding ion-margin"
+                ></ion-icon>
+              </ion-button>
+              <ion-button expand="block" fill="clear">
+                <ion-icon
+                  size="large"
+                  name="logo-facebook"
+                  class="ion-padding ion-margin"
+                ></ion-icon>
+              </ion-button>
+              <ion-button expand="block" fill="clear">
+                <ion-icon
+                  size="large"
+                  name="logo-apple"
+                  class="ion-padding ion-margin"
+                ></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-col>
+        </ion-row>
       </form>
     </ion-card-content>
   </ion-card>
-  <ion-row>
-    <ion-col>
-      <ion-card class="ion-text-start">
-        <ion-card-content>
-          <ion-buttons class="loginButtons">
-            <ion-button expand="block" fill="clear">
-              <ion-icon
-                (click)="signInWithGoogle()"
-                size="large"
-                name="logo-google"
-                class="ion-padding ion-margin"
-              ></ion-icon>
-            </ion-button>
-            <ion-button expand="block" fill="clear">
-              <ion-icon
-                size="large"
-                name="logo-facebook"
-                class="ion-padding ion-margin"
-              ></ion-icon>
-            </ion-button>
-            <ion-button expand="block" fill="clear">
-              <ion-icon
-                size="large"
-                name="logo-apple"
-                class="ion-padding ion-margin"
-              ></ion-icon>
-            </ion-button>
-          </ion-buttons>
-        </ion-card-content>
-      </ion-card>
-    </ion-col>
-  </ion-row>
   <ion-row>
     <ion-col>
       <ion-button
@@ -111,6 +107,7 @@
         size="small"
         expand="block"
         class="ion-margin-top"
+        color="dark"
       >
         Show Intro
       </ion-button>
