@@ -18,11 +18,37 @@
   >
     <swiper-slide>
       <div class="swiper-zoom-container">
-        <img
-          src="https://i.pravatar.cc/300"
-          alt="Intro Image"
-          referrerpolicy="no-referrer"
-        />
+        <div class="slider">
+          <svg height="50" width="150">
+            <circle
+              id="english"
+              cx="25"
+              cy="25"
+              r="20"
+              stroke="black"
+              stroke-width="2"
+              fill="red"
+            />
+            <circle
+              id="spanish"
+              cx="75"
+              cy="25"
+              r="20"
+              stroke="black"
+              stroke-width="2"
+              fill="transparent"
+            />
+            <circle
+              id="french"
+              cx="125"
+              cy="25"
+              r="20"
+              stroke="black"
+              stroke-width="2"
+              fill="yellow"
+            />
+          </svg>
+        </div>
       </div>
       <ion-button
         (click)="nextSlide()"
