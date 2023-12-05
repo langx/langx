@@ -4,113 +4,112 @@
   </ion-toolbar>
 </ion-header>
 <ion-content scrollY="false">
-  <ion-card>
-    <ion-card-content>
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <ion-item lines="full">
-          <ion-input
-            label="Email"
-            labelPlacement="floating"
-            formControlName="email"
-            type="text"
-            required
-          ></ion-input>
-        </ion-item>
-        <ion-item lines="full">
-          <ion-input
-            label="Password"
-            labelPlacement="floating"
-            formControlName="password"
-            type="password"
-            required
-          ></ion-input>
-        </ion-item>
+  <div class="center-content">
+    <ion-card>
+      <ion-card-content>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <ion-item lines="full">
+            <ion-input
+              label="Email"
+              labelPlacement="floating"
+              formControlName="email"
+              type="text"
+              required
+            ></ion-input>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-input
+              label="Password"
+              labelPlacement="floating"
+              formControlName="password"
+              type="password"
+              required
+            ></ion-input>
+          </ion-item>
+          <ion-row>
+            <ion-col>
+              <ion-button
+                [disabled]="(isLoading$ | async)"
+                type="submit"
+                color="primary"
+                expand="block"
+              >
+                Login
+                <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+                </ion-spinner>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-margin-vertical">
+            <ion-col size="6" class="alignItems">
+              <div align="left">
+                <ion-note>
+                  Not a member yet?
+                  <ion-button fill="clear" routerLink="signup" color="primary">
+                    Sign Up
+                  </ion-button>
+                </ion-note>
+              </div>
+            </ion-col>
+            <ion-col size="6">
+              <div align="right">
+                <ion-note>
+                  Forgot password?
+                  <ion-button
+                    fill="clear"
+                    routerLink="reset-password"
+                    color="primary"
+                  >
+                    Reset it
+                  </ion-button>
+                </ion-note>
+              </div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-buttons class="loginButtons">
+                <ion-button expand="block" fill="clear">
+                  <ion-icon
+                    (click)="signInWithGoogle()"
+                    size="large"
+                    name="logo-google"
+                    class="ion-padding-horizontal"
+                  ></ion-icon>
+                </ion-button>
+                <ion-button expand="block" fill="clear">
+                  <ion-icon
+                    size="large"
+                    name="logo-facebook"
+                    class="ion-padding-horizontal"
+                  ></ion-icon>
+                </ion-button>
+                <ion-button expand="block" fill="clear">
+                  <ion-icon
+                    size="large"
+                    name="logo-apple"
+                    class="ion-padding-horizontal"
+                  ></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </ion-col>
+          </ion-row>
+        </form>
         <ion-row>
           <ion-col>
             <ion-button
-              [disabled]="(isLoading$ | async)"
-              type="submit"
-              color="primary"
+              (click)="showIntro()"
+              fill="clear"
+              size="small"
               expand="block"
+              class="ion-margin-top"
+              color="dark"
             >
-              Login
-              <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
-              </ion-spinner>
+              Show Intro
             </ion-button>
           </ion-col>
         </ion-row>
-        <ion-row class="ion-margin-vertical">
-          <ion-col size="6" class="alignItems">
-            <div align="left">
-              <ion-note>
-                Not a member yet?
-                <ion-button fill="clear" routerLink="signup" color="primary">
-                  Sign Up
-                </ion-button>
-              </ion-note>
-            </div>
-          </ion-col>
-          <ion-col size="6">
-            <div align="right">
-              <ion-note>
-                Forgot password?
-                <ion-button
-                  fill="clear"
-                  routerLink="reset-password"
-                  color="primary"
-                >
-                  Reset it
-                </ion-button>
-              </ion-note>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-buttons class="loginButtons">
-              <ion-button expand="block" fill="clear">
-                <ion-icon
-                  (click)="signInWithGoogle()"
-                  size="large"
-                  name="logo-google"
-                  class="ion-padding ion-margin"
-                ></ion-icon>
-              </ion-button>
-              <ion-button expand="block" fill="clear">
-                <ion-icon
-                  size="large"
-                  name="logo-facebook"
-                  class="ion-padding ion-margin"
-                ></ion-icon>
-              </ion-button>
-              <ion-button expand="block" fill="clear">
-                <ion-icon
-                  size="large"
-                  name="logo-apple"
-                  class="ion-padding ion-margin"
-                ></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-col>
-        </ion-row>
-      </form>
-    </ion-card-content>
-  </ion-card>
-  <ion-row>
-    <ion-col>
-      <ion-button
-        (click)="showIntro()"
-        fill="clear"
-        size="small"
-        expand="block"
-        class="ion-margin-top"
-        color="dark"
-      >
-        Show Intro
-      </ion-button>
-    </ion-col>
-  </ion-row>
-  <!-- 
-    </ion-card-content>
-  </ion-card> -->
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
