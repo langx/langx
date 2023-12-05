@@ -7,7 +7,7 @@
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" scrollY="false">
   <ion-card>
     <ion-card-content>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
