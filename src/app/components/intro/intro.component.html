@@ -1,0 +1,119 @@
+<!-- <ion-header class="ion-no-border">
+  <ion-toolbar></ion-toolbar>
+</ion-header> -->
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
+    <ion-fab-button (click)="close()" size="small" color="medium">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab> -->
+
+  <swiper-container
+    #slides
+    [slidesPerView]="1"
+    [spaceBetween]="10"
+    [centeredSlides]="true"
+    keyboard="true"
+    mousewheel="true"
+  >
+    <swiper-slide>
+      <div class="swiper-zoom-container">
+        <img
+          class="intro-image"
+          src="/assets/image/intro01.png"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
+        <ion-text color="light">
+          <h1>Join the community!</h1>
+        </ion-text>
+        <div class="button-container">
+          <ion-button
+            (click)="close()"
+            size="small"
+            fill="clear"
+            class="skip-button"
+          >
+            Skip
+          </ion-button>
+          <ion-button
+            (click)="nextSlide()"
+            size="small"
+            color="light"
+            slot="right"
+            class="next-button"
+          >
+            Next
+          </ion-button>
+        </div>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="swiper-zoom-container">
+        <img
+          class="intro-image"
+          src="/assets/image/intro02.png"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
+        <ion-text color="light">
+          <h1>Find a partner!</h1>
+        </ion-text>
+        <div class="button-container">
+          <ion-button
+            (click)="close()"
+            size="small"
+            fill="clear"
+            class="skip-button"
+          >
+            Skip
+          </ion-button>
+          <ion-button
+            (click)="nextSlide()"
+            size="small"
+            color="light"
+            slot="right"
+            class="next-button"
+          >
+            Next
+          </ion-button>
+        </div>
+      </div>
+    </swiper-slide>
+    <swiper-slide>
+      <div class="swiper-zoom-container">
+        <img
+          class="intro-image"
+          src="/assets/image/intro03.png"
+          alt="Intro Image"
+          referrerpolicy="no-referrer"
+        />
+        <ion-text color="light">
+          <h1>Start talking!</h1>
+        </ion-text>
+        <div class="button-container">
+          <ion-button
+            (click)="close()"
+            size="small"
+            fill="clear"
+            class="skip-button"
+          >
+            Skip
+          </ion-button>
+          <ion-button
+            (click)="close()"
+            size="small"
+            color="light"
+            slot="right"
+            class="next-button"
+          >
+            Done
+          </ion-button>
+        </div>
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</ion-content>
+<!-- <ion-footer class="ion-no-border">
+  <ion-toolbar></ion-toolbar>
+</ion-footer> -->

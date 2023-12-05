@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
+import { Preferences } from '@capacitor/preferences';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
+import { IntroComponent } from 'src/app/components/intro/intro.component';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -13,6 +15,8 @@ import {
   loginValidationErrorSelector,
   unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
+
+const INTRO_SEEN = 'introSeen';
 
 @Component({
   selector: 'app-login',
@@ -25,15 +29,22 @@ export class LoginPage implements OnInit {
 
   value: any = '';
 
+  introSeen: boolean = false;
+
   constructor(
     private store: Store,
     private authService: AuthService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private modalCtrl: ModalController
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.initValues();
     this.initForm();
+
+    // Init Intro
+    await this.checkIntroSeen();
+    await this.initIntro();
   }
 
   ionViewWillLeave() {
@@ -73,6 +84,26 @@ export class LoginPage implements OnInit {
         validators: [Validators.required, Validators.minLength(6)],
       }),
     });
+  }
+
+  async initIntro() {
+    if (this.introSeen) return;
+    const modal = await this.modalCtrl.create({
+      component: IntroComponent,
+      componentProps: {
+        onFinish: async () => {
+          await this.setIntroSeen(true);
+          modal.dismiss();
+        },
+      },
+    });
+
+    return await modal.present();
+  }
+
+  async showIntro() {
+    await this.setIntroSeen(false);
+    await this.initIntro();
   }
 
   onSubmit() {
@@ -123,6 +154,23 @@ export class LoginPage implements OnInit {
     });
   }
   */
+
+  //
+  // Utils
+  //
+
+  async checkIntroSeen() {
+    await Preferences.get({ key: INTRO_SEEN }).then((res) => {
+      res && res.value
+        ? (this.introSeen = JSON.parse(res.value))
+        : (this.introSeen = false);
+    });
+  }
+
+  async setIntroSeen(value: boolean) {
+    await Preferences.set({ key: INTRO_SEEN, value: JSON.stringify(value) });
+    this.introSeen = value;
+  }
 
   //
   // Present Toast
