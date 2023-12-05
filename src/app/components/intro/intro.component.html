@@ -1,12 +1,12 @@
-<ion-header class="ion-no-border">
+<!-- <ion-header class="ion-no-border">
   <ion-toolbar></ion-toolbar>
-</ion-header>
+</ion-header> -->
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
+  <!-- <ion-fab slot="fixed" vertical="top" horizontal="end" [edge]="false">
     <ion-fab-button (click)="close()" size="small" color="medium">
       <ion-icon name="close-outline"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <swiper-container
     #slides
@@ -19,59 +19,101 @@
     <swiper-slide>
       <div class="swiper-zoom-container">
         <img
-          src="https://i.pravatar.cc/301"
+          class="intro-image"
+          src="/assets/image/intro01.png"
           alt="Intro Image"
           referrerpolicy="no-referrer"
         />
+        <ion-text color="light">
+          <h1>Join the community!</h1>
+        </ion-text>
+        <div class="button-container">
+          <ion-button
+            (click)="close()"
+            size="small"
+            fill="clear"
+            class="skip-button"
+          >
+            Skip
+          </ion-button>
+          <ion-button
+            (click)="nextSlide()"
+            size="small"
+            color="light"
+            slot="right"
+            class="next-button"
+          >
+            Next
+          </ion-button>
+        </div>
       </div>
-      <h1>Join the community!</h1>
-      <p>Sign up for free.</p>
-      <ion-button
-        (click)="nextSlide()"
-        size="small"
-        class="ion-padding ion-margin"
-      >
-        Next
-      </ion-button>
     </swiper-slide>
     <swiper-slide>
       <div class="swiper-zoom-container">
         <img
-          src="https://i.pravatar.cc/301"
+          class="intro-image"
+          src="/assets/image/intro02.png"
           alt="Intro Image"
           referrerpolicy="no-referrer"
         />
+        <ion-text color="light">
+          <h1>Find a partner!</h1>
+        </ion-text>
+        <div class="button-container">
+          <ion-button
+            (click)="close()"
+            size="small"
+            fill="clear"
+            class="skip-button"
+          >
+            Skip
+          </ion-button>
+          <ion-button
+            (click)="nextSlide()"
+            size="small"
+            color="light"
+            slot="right"
+            class="next-button"
+          >
+            Next
+          </ion-button>
+        </div>
       </div>
-      <h1>Find a partner!</h1>
-      <p>Search by language, location, gender, and more.</p>
-      <ion-button
-        (click)="nextSlide()"
-        size="small"
-        class="ion-padding ion-margin"
-      >
-        Next
-      </ion-button>
     </swiper-slide>
     <swiper-slide>
       <div class="swiper-zoom-container">
         <img
-          src="https://i.pravatar.cc/302"
+          class="intro-image"
+          src="/assets/image/intro03.png"
           alt="Intro Image"
           referrerpolicy="no-referrer"
         />
+        <ion-text color="light">
+          <h1>Start talking!</h1>
+        </ion-text>
+        <div class="button-container">
+          <ion-button
+            (click)="close()"
+            size="small"
+            fill="clear"
+            class="skip-button"
+          >
+            Skip
+          </ion-button>
+          <ion-button
+            (click)="close()"
+            size="small"
+            color="light"
+            slot="right"
+            class="next-button"
+          >
+            Done
+          </ion-button>
+        </div>
       </div>
-      <h1>Start talking!</h1>
-      <p>Pick any way to talk: text, voice note, and more.</p>
-      <ion-button
-        (click)="onFinish()"
-        size="small"
-        class="ion-padding ion-margin"
-      >
-        Done !
-      </ion-button>
     </swiper-slide>
   </swiper-container>
 </ion-content>
-<ion-footer class="ion-no-border">
+<!-- <ion-footer class="ion-no-border">
   <ion-toolbar></ion-toolbar>
-</ion-footer>
+</ion-footer> -->
