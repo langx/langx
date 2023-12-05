@@ -1,62 +1,66 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button defaultHref="/login"></ion-back-button>
     </ion-buttons>
     <ion-title>Register</ion-title>
     <ion-progress-bar [value]="progress"></ion-progress-bar>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <ion-item lines="full">
-      <ion-input
-        label="Full Name"
-        labelPlacement="floating"
-        formControlName="name"
-        type="text"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-input
-        label="Email"
-        labelPlacement="floating"
-        formControlName="email"
-        type="text"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-input
-        label="Password"
-        labelPlacement="floating"
-        formControlName="password"
-        type="password"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-row class="ion-margin-vertical">
-      <ion-col size="12" class="alignItems">
-        <div align="left">
-          <ion-checkbox formControlName="terms"></ion-checkbox>
-          <ion-note>I accept the policy and terms</ion-note>
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button
-          [disabled]="(isLoading$ | async)"
-          type="submit"
-          color="primary"
-          expand="block"
-        >
-          Sign Up
-          <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
-          </ion-spinner>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <ion-item lines="full">
+          <ion-input
+            label="Full Name"
+            labelPlacement="floating"
+            formControlName="name"
+            type="text"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-item lines="full">
+          <ion-input
+            label="Email"
+            labelPlacement="floating"
+            formControlName="email"
+            type="text"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-item lines="full">
+          <ion-input
+            label="Password"
+            labelPlacement="floating"
+            formControlName="password"
+            type="password"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-row class="ion-margin-vertical">
+          <ion-col size="12" class="alignItems">
+            <div class="checkbox-container">
+              <ion-checkbox formControlName="terms"></ion-checkbox>
+              <small>I accept the policy and terms.</small>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-button
+              [disabled]="(isLoading$ | async)"
+              type="submit"
+              color="primary"
+              expand="block"
+            >
+              Sign Up
+              <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+              </ion-spinner>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
