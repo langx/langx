@@ -5,60 +5,68 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <ion-item lines="full">
-      <ion-input
-        formControlName="birthdate"
-        label="Date of Birth"
-        placeholder="DD/MM/YYYY"
-        labelPlacement="floating"
-        type="text"
-        maxlength="10"
-        required
-        [value]="form.get('birthdate').value | dateMask"
-      ></ion-input>
-    </ion-item>
+<ion-content [fullscreen]="true" scrollY="false">
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <ion-item lines="full">
+          <ion-input
+            formControlName="birthdate"
+            label="Date of Birth"
+            placeholder="DD/MM/YYYY"
+            labelPlacement="floating"
+            type="text"
+            maxlength="10"
+            required
+            [value]="form.get('birthdate').value | dateMask"
+          ></ion-input>
+        </ion-item>
 
-    <ion-item lines="full">
-      <ion-input
-        id="gender-modal-complete"
-        class="capitalize"
-        formControlName="gender"
-        label="Gender"
-        labelPlacement="floating"
-        type="text"
-        [readonly]="true"
-        required
-      >
-      </ion-input>
-    </ion-item>
+        <ion-item lines="full">
+          <ion-input
+            id="gender-modal-complete"
+            class="capitalize"
+            formControlName="gender"
+            label="Gender"
+            labelPlacement="floating"
+            type="text"
+            [readonly]="true"
+            required
+          >
+          </ion-input>
+        </ion-item>
 
-    <ion-item lines="full">
-      <ion-input
-        id="country-modal-complete"
-        formControlName="country"
-        label="Country of Residence"
-        labelPlacement="floating"
-        type="text"
-        [readonly]="true"
-        required
-      >
-      </ion-input>
-    </ion-item>
+        <ion-item lines="full">
+          <ion-input
+            id="country-modal-complete"
+            formControlName="country"
+            label="Country of Residence"
+            labelPlacement="floating"
+            type="text"
+            [readonly]="true"
+            required
+          >
+          </ion-input>
+        </ion-item>
 
-    <ion-note>You must be at least 13 years old to use this app.</ion-note>
+        <ion-row class="ion-margin-vertical">
+          <ion-col size="12" class="alignItems">
+            <small>You must be at least 13 years old.</small>
+          </ion-col>
+        </ion-row>
 
-    <ion-row>
-      <ion-col>
-        <ion-button type="submit" color="primary" expand="block">
-          Continue
-          <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
-          </ion-spinner>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
+        <ion-row>
+          <ion-col>
+            <ion-button type="submit" color="primary" expand="block">
+              Continue
+              <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+              </ion-spinner>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 
 <!------------------>
