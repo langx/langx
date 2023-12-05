@@ -7,113 +7,116 @@
   </ion-toolbar>
 </ion-header>
 <ion-content scrollY="false">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <ion-item lines="full">
-      <ion-input
-        label="Email"
-        labelPlacement="floating"
-        formControlName="email"
-        type="text"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-input
-        label="Password"
-        labelPlacement="floating"
-        formControlName="password"
-        type="password"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-row>
-      <ion-col>
-        <ion-button
-          [disabled]="(isLoading$ | async)"
-          type="submit"
-          color="primary"
-          expand="block"
-        >
-          Login
-          <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
-          </ion-spinner>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-    <ion-row class="ion-margin-vertical">
-      <ion-col size="6" class="alignItems">
-        <div align="left">
-          <ion-note>
-            Not a member yet?
-            <ion-button fill="clear" routerLink="signup" color="primary">
-              Sign Up
-            </ion-button>
-          </ion-note>
-        </div>
-      </ion-col>
-      <ion-col size="6">
-        <div align="right">
-          <ion-note>
-            Forgot password?
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <ion-item lines="full">
+          <ion-input
+            label="Email"
+            labelPlacement="floating"
+            formControlName="email"
+            type="text"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-item lines="full">
+          <ion-input
+            label="Password"
+            labelPlacement="floating"
+            formControlName="password"
+            type="password"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-row>
+          <ion-col>
             <ion-button
-              fill="clear"
-              routerLink="reset-password"
+              [disabled]="(isLoading$ | async)"
+              type="submit"
               color="primary"
+              expand="block"
             >
-              Reset it
+              Login
+              <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+              </ion-spinner>
             </ion-button>
-          </ion-note>
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <p></p>
-        <ion-card class="ion-text-start">
-          <ion-card-header>
-            <ion-card-title>Login with</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            <ion-buttons class="loginButtons">
-              <ion-button expand="block" fill="clear">
-                <ion-icon
-                  (click)="signInWithGoogle()"
-                  size="large"
-                  name="logo-google"
-                  class="ion-padding ion-margin"
-                ></ion-icon>
-              </ion-button>
-              <ion-button expand="block" fill="clear">
-                <ion-icon
-                  size="large"
-                  name="logo-facebook"
-                  class="ion-padding ion-margin"
-                ></ion-icon>
-              </ion-button>
-              <ion-button expand="block" fill="clear">
-                <ion-icon
-                  size="large"
-                  name="logo-apple"
-                  class="ion-padding ion-margin"
-                ></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-button
-          (click)="showIntro()"
-          fill="clear"
-          size="small"
-          expand="block"
-          class="ion-margin-top"
-        >
-          Show Intro
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-margin-vertical">
+          <ion-col size="6" class="alignItems">
+            <div align="left">
+              <ion-note>
+                Not a member yet?
+                <ion-button fill="clear" routerLink="signup" color="primary">
+                  Sign Up
+                </ion-button>
+              </ion-note>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div align="right">
+              <ion-note>
+                Forgot password?
+                <ion-button
+                  fill="clear"
+                  routerLink="reset-password"
+                  color="primary"
+                >
+                  Reset it
+                </ion-button>
+              </ion-note>
+            </div>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+  </ion-card>
+  <ion-row>
+    <ion-col>
+      <ion-card class="ion-text-start">
+        <ion-card-content>
+          <ion-buttons class="loginButtons">
+            <ion-button expand="block" fill="clear">
+              <ion-icon
+                (click)="signInWithGoogle()"
+                size="large"
+                name="logo-google"
+                class="ion-padding ion-margin"
+              ></ion-icon>
+            </ion-button>
+            <ion-button expand="block" fill="clear">
+              <ion-icon
+                size="large"
+                name="logo-facebook"
+                class="ion-padding ion-margin"
+              ></ion-icon>
+            </ion-button>
+            <ion-button expand="block" fill="clear">
+              <ion-icon
+                size="large"
+                name="logo-apple"
+                class="ion-padding ion-margin"
+              ></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-button
+        (click)="showIntro()"
+        fill="clear"
+        size="small"
+        expand="block"
+        class="ion-margin-top"
+      >
+        Show Intro
+      </ion-button>
+    </ion-col>
+  </ion-row>
+  <!-- 
+    </ion-card-content>
+  </ion-card> -->
 </ion-content>
