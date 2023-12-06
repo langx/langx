@@ -69,6 +69,7 @@ export class NewPage implements OnInit {
   showPassword() {
     this.password_type = this.password_type === 'text' ? 'password' : 'text';
   }
+
   showPassword2() {
     this.password2_type = this.password2_type === 'text' ? 'password' : 'text';
   }
