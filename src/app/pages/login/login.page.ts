@@ -118,15 +118,10 @@ export class LoginPage implements OnInit {
     form.disable();
   }
 
-  // TODO: Appwrite uses a secure cookie and localstorage fallback for storing the session key.
-  // Some browsers like Firefox and Safari don't respect 3rd party cookies for privacy reasons.
-  // Appwrite -> appwrite.mydomain.com
-  // Website -> mydomain.com or myapp.mydomain.com
-  // More: https://github.com/appwrite/appwrite/issues/1203
   signInWithGoogle() {
-    this.authService.signInWithGoogle().then((userId: any) => {
-      console.log('userId:', userId);
-      /*
+    console.log('signInWithGoogle');
+    this.authService.signInWithGoogle();
+    /*
       this.authService.isLoggedIn().then((isLoggedIn) => {
         if (isLoggedIn) {
           this.router.navigateByUrl('/home');
@@ -135,7 +130,6 @@ export class LoginPage implements OnInit {
         }
       });
       */
-    });
   }
 
   /*
