@@ -4,59 +4,63 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <ion-item lines="full">
-      <ion-input
-        label="New Password"
-        labelPlacement="floating"
-        formControlName="password"
-        [type]="password_type"
-        required
-      ></ion-input>
-      <ion-icon
-        *ngIf="password_type==='password'"
-        name="eye-outline"
-        (click)="showPassword()"
-      ></ion-icon>
-      <ion-icon
-        *ngIf="password_type==='text'"
-        name="eye-off-outline"
-        (click)="showPassword()"
-      ></ion-icon>
-    </ion-item>
-    <ion-item lines="full">
-      <ion-input
-        label="Password Again"
-        labelPlacement="floating"
-        formControlName="password2"
-        [type]="password2_type"
-        required
-      ></ion-input>
-      <ion-icon
-        *ngIf="password2_type==='password'"
-        name="eye-outline"
-        (click)="showPassword2()"
-      ></ion-icon>
-      <ion-icon
-        *ngIf="password2_type==='text'"
-        name="eye-off-outline"
-        (click)="showPassword2()"
-      ></ion-icon>
-    </ion-item>
-    <ion-row>
-      <ion-col>
-        <ion-button
-          *ngIf="!isLoading"
-          type="submit"
-          color="primary"
-          expand="block"
-          >Reset Password</ion-button
-        >
-        <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-          <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
-        </ion-button>
-      </ion-col>
-    </ion-row>
-  </form>
+<ion-content [fullscreen]="true" scrollY="false">
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <ion-item lines="full">
+          <ion-input
+            label="New Password"
+            labelPlacement="floating"
+            formControlName="password"
+            [type]="password_type"
+            required
+          ></ion-input>
+          <ion-icon
+            *ngIf="password_type==='password'"
+            name="eye-outline"
+            (click)="showPassword()"
+          ></ion-icon>
+          <ion-icon
+            *ngIf="password_type==='text'"
+            name="eye-off-outline"
+            (click)="showPassword()"
+          ></ion-icon>
+        </ion-item>
+        <ion-item lines="full">
+          <ion-input
+            label="Password Again"
+            labelPlacement="floating"
+            formControlName="password2"
+            [type]="password2_type"
+            required
+          ></ion-input>
+          <ion-icon
+            *ngIf="password2_type==='password'"
+            name="eye-outline"
+            (click)="showPassword2()"
+          ></ion-icon>
+          <ion-icon
+            *ngIf="password2_type==='text'"
+            name="eye-off-outline"
+            (click)="showPassword2()"
+          ></ion-icon>
+        </ion-item>
+        <ion-row>
+          <ion-col>
+            <ion-button
+              *ngIf="!isLoading"
+              type="submit"
+              color="primary"
+              expand="block"
+              >Reset Password</ion-button
+            >
+            <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
+              <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
