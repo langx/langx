@@ -99,6 +99,11 @@ export const isLoggedInSuccessAction = createAction(
   props<{ payload: isLoggedInResponseInterface }>()
 );
 
+export const isLoggedInSuccessCompleteRegistrationAction = createAction(
+  ActionTypes.ISLOGGEDIN_SUCCESS_COMPLETE_REGISTRATION,
+  props<{ payload: isLoggedInResponseInterface; error: ErrorInterface }>()
+);
+
 export const isLoggedInFailureAction = createAction(
   ActionTypes.ISLOGGEDIN_FAILURE,
   props<{ error: ErrorInterface }>()

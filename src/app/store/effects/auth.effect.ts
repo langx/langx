@@ -28,6 +28,7 @@ import {
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
+  isLoggedInSuccessCompleteRegistrationAction,
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
@@ -215,11 +216,20 @@ export class AuthEffect {
                 return isLoggedInSuccessAction({ payload });
               }),
               catchError(() => {
+                const payload: isLoggedInResponseInterface = {
+                  account: account,
+                  currentUser: null,
+                };
                 const error: ErrorInterface = {
                   message:
                     'Registration is not completed yet. Please try again.',
                 };
-                return of(isLoggedInFailureAction({ error }));
+                return of(
+                  isLoggedInSuccessCompleteRegistrationAction({
+                    payload,
+                    error,
+                  })
+                );
               })
             );
           }),
@@ -232,6 +242,17 @@ export class AuthEffect {
         );
       })
     )
+  );
+
+  redirectAfterIsLoggedInSuccessCompleteRegistration$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(isLoggedInSuccessCompleteRegistrationAction),
+        tap(() => {
+          this.router.navigateByUrl('/login/signup/complete');
+        })
+      ),
+    { dispatch: false }
   );
 
   logout$ = createEffect(() =>
