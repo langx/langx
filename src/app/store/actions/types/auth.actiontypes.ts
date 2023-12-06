@@ -4,6 +4,7 @@ export enum ActionTypes {
   LOGIN_FAILURE = '[Auth] Login Failure',
   ISLOGGEDIN = '[Auth] IsLoggedIn',
   ISLOGGEDIN_SUCCESS = '[Auth] IsLoggedIn Success',
+  ISLOGGEDIN_SUCCESS_COMPLETE_REGISTRATION = '[Auth] IsLoggedIn Success Complete Registration',
   ISLOGGEDIN_FAILURE = '[Auth] IsLoggedIn Failure',
   REGISTER = '[Auth] Register',
   REGISTER_SUCCESS = '[Auth] Register Success',

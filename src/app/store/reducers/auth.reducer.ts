@@ -9,6 +9,7 @@ import {
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
+  isLoggedInSuccessCompleteRegistrationAction,
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
@@ -223,6 +224,17 @@ const authReducer = createReducer(
       account: action.payload?.account,
       // TODO: No need here to fill currentUser
       currentUser: action.payload?.currentUser,
+    })
+  ),
+  on(
+    isLoggedInSuccessCompleteRegistrationAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      isLoggedIn: true,
+      account: action.payload?.account,
+      currentUser: action.payload?.currentUser,
+      unauthorizedError: action.error,
     })
   ),
   on(
