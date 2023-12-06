@@ -82,9 +82,12 @@
           <ion-row>
             <ion-col>
               <ion-buttons class="loginButtons">
-                <ion-button expand="block" fill="clear">
+                <ion-button
+                  (click)="signInWithGoogle()"
+                  expand="block"
+                  fill="clear"
+                >
                   <ion-icon
-                    (click)="signInWithGoogle()"
                     size="large"
                     name="logo-google"
                     class="ion-padding-horizontal"

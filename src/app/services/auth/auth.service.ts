@@ -116,20 +116,13 @@ export class AuthService {
   }
 
   // TODO: #149 Login with Google (createOAuth2Session)
-  async signInWithGoogle() {
+  signInWithGoogle() {
     console.log('signInWithGoogle');
     this.api.account.createOAuth2Session(
       'google',
-      //environment.url.SIGNUP_COMPLETE_URL,
-      environment.url.LOGIN_URL,
+      environment.url.HOME_URL,
       environment.url.LOGIN_URL
     );
-    const session = await this.api.account.getSession('current');
-
-    // Provider information
-    console.log(session.provider);
-    console.log(session.providerUid);
-    console.log(session.providerAccessToken);
   }
 
   // OPTIONAL: Login with Magic Link (createMagicSession)
