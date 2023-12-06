@@ -1,7 +1,11 @@
+export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
+export const API_URL = 'https://api.languagexchange.net/';
+export const DB_URL = 'https://db.languagexchange.net/';
+
 export const environment = {
-  production: false,
+  production: true,
   appwrite: {
-    APP_ENDPOINT: 'https://db.languagexchange.net/v1',
+    APP_ENDPOINT: `${DB_URL}v1`,
     APP_PROJECT: '650750d21e4a6a589be3',
     APP_DATABASE: '650750f16cd0c482bb83',
     USERS_COLLECTION: '65103e2d3a6b4d9494c8',
@@ -13,13 +17,13 @@ export const environment = {
     AUDIO_BUCKET: '6563aa2ef2cd2964cf27',
   },
   url: {
-    HOMEPAGE_URL: 'http://localhost:8100/',
-    RESET_PASSWORD_URL: 'http://localhost:8100/login/reset-password/new',
-    HOME_URL: 'http://localhost:8100/home',
-    LOGIN_URL: 'http://localhost:8100/login',
-    SIGNUP_COMPLETE_URL: 'http://localhost:8100/login/signup/complete',
-    CREATE_ROOM_API_URL: 'https://api.languagexchange.net/api/room',
-    CREATE_MESSAGE_API_URL: 'https://api.languagexchange.net/api/message',
+    HOMEPAGE_URL: HOMEPAGE_URL,
+    RESET_PASSWORD_URL: `${HOMEPAGE_URL}login/reset-password/new`,
+    HOME_URL: `${HOMEPAGE_URL}home`,
+    LOGIN_URL: `${HOMEPAGE_URL}login`,
+    SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
+    CREATE_ROOM_API_URL: `${API_URL}api/room`,
+    CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
   },
   opts: {
     PAGINATION_LIMIT: 10,
