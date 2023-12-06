@@ -30,6 +30,7 @@ export class LoginPage implements OnInit {
   value: any = '';
 
   introSeen: boolean = false;
+  password_type: string = 'password';
 
   constructor(
     private store: Store,
@@ -170,6 +171,10 @@ export class LoginPage implements OnInit {
   async setIntroSeen(value: boolean) {
     await Preferences.set({ key: INTRO_SEEN, value: JSON.stringify(value) });
     this.introSeen = value;
+  }
+
+  showPassword() {
+    this.password_type = this.password_type === 'text' ? 'password' : 'text';
   }
 
   //
