@@ -67,3 +67,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Notes.md
+Notes.md
