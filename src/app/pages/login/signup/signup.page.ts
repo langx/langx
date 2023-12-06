@@ -23,6 +23,8 @@ export class SignupPage implements OnInit {
 
   public progress: number = 0.2;
 
+  password_type: string = 'password';
+
   constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
@@ -95,6 +97,14 @@ export class SignupPage implements OnInit {
   register(form: FormGroup) {
     const request: RegisterRequestInterface = form.value;
     this.store.dispatch(registerAction({ request }));
+  }
+
+  //
+  // Utils
+  //
+
+  showPassword() {
+    this.password_type = this.password_type === 'text' ? 'password' : 'text';
   }
 
   //
