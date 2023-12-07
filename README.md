@@ -75,7 +75,7 @@ To push Appwrite Cloud Functions, follow these steps:
 5. Follow the prompts to select your Appwrite project and choose the language you want to use for your functions.
 6. Once the initialization is complete, you can check Cloud Functions code in the `appwrite/functions/index.js` file (if you're using JavaScript) or you can convert `appwrite/functions/index.js` to `appwrite/functions/index.ts` file (if you're using TypeScript).
 7. Once you've written your Cloud Functions code, run the command `appwrite functions deploy` to deploy your functions to Appwrite.
-8. Appwrite will provide you with a URL for each of your Cloud Functions that you can use to call them from your app.
+8. Go to database function console and make sure that right permissions you set for related function.
 
 That's it! You should now be able to push your Appwrite Cloud Functions to Appwrite and use them in your app. If you encounter any issues during the process, please refer to the Appwrite documentation or open an issue on the Appwrite GitHub repository.
 -->
