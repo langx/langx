@@ -121,34 +121,7 @@ export class LoginPage implements OnInit {
   signInWithGoogle() {
     console.log('signInWithGoogle');
     this.authService.signInWithGoogle();
-    /*
-      this.authService.isLoggedIn().then((isLoggedIn) => {
-        if (isLoggedIn) {
-          this.router.navigateByUrl('/home');
-        } else {
-          console.log('error:', 'Could not sign you up, please try again.');
-        }
-      });
-      */
   }
-
-  /*
-  signInWithGoogle() {
-    this.authService.signInWithGoogle().then((userId: any) => {
-      this.authService.getUserData().then((user) => {
-        if (user.completeProfile) {
-          if (user.completeLanguages) {
-            this.router.navigateByUrl('/home');
-          } else {
-            this.router.navigateByUrl('/login/signup/language');
-          }
-        } else {
-          this.router.navigateByUrl('/login/signup/complete');
-        }
-      });
-    });
-  }
-  */
 
   //
   // Utils

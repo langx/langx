@@ -124,33 +124,4 @@ export class AuthService {
       environment.url.LOGIN_URL
     );
   }
-
-  // OPTIONAL: Login with Magic Link (createMagicSession)
-  // Not needed to login anonymously
-  /*
-  anonLogin(name: string) {
-    const authReq = this.api.account.createAnonymousSession();
-
-    return from(authReq).pipe(
-      mergeMap(() => this.api.account.updateName(name)),
-      concatMap(() => this.api.account.get()),
-      tap((user) => this._user.next(user))
-    );
-  }
-  */
-
-  // NOT USED ANYMORE
-  /*
-  async isLoggedIn() {
-    try {
-      const user = await this.api.account.get();
-      this._user.next(user);
-      return true;
-    } catch (e) {
-      this._user.next(null);
-      console.log('there is no user while checking isLoggedIn:');
-      return false;
-    }
-  }
-  */
 }
