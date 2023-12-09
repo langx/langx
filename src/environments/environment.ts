@@ -1,7 +1,3 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
 export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
