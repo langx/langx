@@ -115,7 +115,6 @@ export class AuthService {
     // });
   }
 
-  // TODO: #149 Login with Google (createOAuth2Session)
   signInWithGoogle() {
     console.log('signInWithGoogle');
     this.api.account.createOAuth2Session(
