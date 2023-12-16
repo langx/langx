@@ -1,4 +1,4 @@
-export const HOMEPAGE_URL = 'http://localhost/';
+export const HOMEPAGE_URL = 'http://localhost:8100/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
 
