@@ -9,4 +9,10 @@ export class Oauth2Component implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  onOAuthBtnClick() {}
+
+  onOAuthRefreshBtnClick() {}
+
+  onLogoutClick() {}
 }
