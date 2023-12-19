@@ -23,7 +23,7 @@ export class Oauth2Component implements OnInit {
     resourceUrl: 'https://www.googleapis.com/userinfo/v2/me',
     logsEnabled: true,
     web: {
-      appId: environment.bundleId,
+      appId: environment.oauth.google.clientID,
       responseType: 'token', // implicit flow
       accessTokenEndpoint: '', // clear the tokenEndpoint as we know that implicit flow gets the accessToken from the authorizationRequest
       redirectUrl: 'http://localhost:8100',
