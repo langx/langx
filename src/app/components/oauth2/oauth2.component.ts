@@ -13,7 +13,6 @@ import { environment } from 'src/environments/environment';
 })
 export class Oauth2Component implements OnInit {
   accessToken: string;
-  refreshToken: string;
 
   constructor() {}
 
@@ -24,13 +23,13 @@ export class Oauth2Component implements OnInit {
     accessTokenEndpoint: 'https://www.googleapis.com/oauth2/v4/token',
     scope: 'email profile',
     resourceUrl: 'https://www.googleapis.com/userinfo/v2/me',
-    logsEnabled: true,
+    logsEnabled: false,
     web: {
       appId: environment.oauth.google.clientID,
       responseType: 'token', // implicit flow
       accessTokenEndpoint: '', // clear the tokenEndpoint as we know that implicit flow gets the accessToken from the authorizationRequest
       redirectUrl: 'http://localhost:8100',
-      windowOptions: 'height=600,left=0,top=0',
+      windowOptions: 'height=600',
     },
     android: {
       appId: environment.bundleId,
@@ -47,14 +46,10 @@ export class Oauth2Component implements OnInit {
   onOAuthBtnClick() {
     OAuth2Client.authenticate(this.oauth2Options)
       .then((response) => {
-        this.accessToken = response['access_token']; // storage recommended for android logout
-        this.refreshToken = response['refresh_token'];
-
-        // only if you include a resourceUrl protected user values are included in the response!
-        let oauthUserId = response['id'];
-        let name = response['name'];
+        this.accessToken = response['access_token'];
 
         // go to backend
+        console.log('OAuth success', response);
       })
       .catch((reason) => {
         console.error('OAuth rejected', reason);
