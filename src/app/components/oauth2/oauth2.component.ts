@@ -4,6 +4,7 @@ import {
   OAuth2Client,
 } from '@byteowls/capacitor-oauth2';
 
+import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -14,7 +15,7 @@ import { environment } from 'src/environments/environment';
 export class Oauth2Component implements OnInit {
   accessToken: string;
 
-  constructor() {}
+  constructor(private api: ApiService) {}
 
   ngOnInit() {}
 
@@ -54,5 +55,13 @@ export class Oauth2Component implements OnInit {
       .catch((reason) => {
         console.error('OAuth rejected', reason);
       });
+  }
+
+  onOAuthAppwrite() {
+    this.api.account.createOAuth2Session(
+      'google',
+      environment.url.HOME_URL,
+      environment.url.LOGIN_URL
+    );
   }
 }
