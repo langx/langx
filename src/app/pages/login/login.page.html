@@ -18,7 +18,9 @@
               formControlName="email"
               type="text"
               required
+              appAutofill
             ></ion-input>
+            <!-- TODO: Test this directive above about autoFill. -->
           </ion-item>
           <ion-item lines="full">
             <ion-input
@@ -27,7 +29,9 @@
               formControlName="password"
               [type]="password_type"
               required
+              appAutofill
             ></ion-input>
+            <!-- TODO: Test this directive above about autoFill. -->
             <ion-icon
               *ngIf="password_type==='password'"
               name="eye-outline"
