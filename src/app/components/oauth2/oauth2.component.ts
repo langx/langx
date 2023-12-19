@@ -26,18 +26,18 @@ export class Oauth2Component implements OnInit {
       appId: environment.bundleId,
       responseType: 'token', // implicit flow
       accessTokenEndpoint: '', // clear the tokenEndpoint as we know that implicit flow gets the accessToken from the authorizationRequest
-      redirectUrl: 'http://localhost:4200',
+      redirectUrl: 'http://localhost:8100',
       windowOptions: 'height=600,left=0,top=0',
     },
     android: {
       appId: environment.bundleId,
       responseType: 'code', // if you configured a android app in google dev console the value must be "code"
-      redirectUrl: 'com.companyname.appname:/', // package name from google dev console
+      redirectUrl: 'languageXchange:/', // package name from google dev console
     },
     ios: {
       appId: environment.bundleId,
       responseType: 'code', // if you configured a ios app in google dev console the value must be "code"
-      redirectUrl: 'com.companyname.appname:/', // Bundle ID from google dev console
+      redirectUrl: 'languageXchange:/', // Bundle ID from google dev console
     },
   };
 
