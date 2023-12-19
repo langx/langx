@@ -35,19 +35,8 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>api.languagexchange.net</key>
+			<key>languagexchange.net</key>
 			<dict>
-				<key>NSAllowsArbitraryLoads</key>
-				<true/>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
-			<key>db.languagexchange.net</key>
-			<dict>
-				<key>NSAllowsArbitraryLoads</key>
-				<true/>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 				<key>NSIncludesSubdomains</key>
