@@ -29,6 +29,12 @@ export const environment = {
   opts: {
     PAGINATION_LIMIT: 10,
   },
+  oauth: {
+    google: {
+      clientID:
+        '108932543808-gm27rt47oc22bd190ogrh7j5cmosv5su.apps.googleusercontent.com',
+    },
+  },
 };
 
 /*
