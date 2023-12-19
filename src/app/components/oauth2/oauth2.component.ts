@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { OAuth2Client } from '@byteowls/capacitor-oauth2';
+import {
+  OAuth2AuthenticateOptions,
+  OAuth2Client,
+} from '@byteowls/capacitor-oauth2';
 
 import { environment } from 'src/environments/environment';
 
@@ -16,7 +19,7 @@ export class Oauth2Component implements OnInit {
 
   ngOnInit() {}
 
-  oauth2Options = {
+  oauth2Options: OAuth2AuthenticateOptions = {
     authorizationBaseUrl: 'https://accounts.google.com/o/oauth2/auth',
     accessTokenEndpoint: 'https://www.googleapis.com/oauth2/v4/token',
     scope: 'email profile',
@@ -57,8 +60,4 @@ export class Oauth2Component implements OnInit {
         console.error('OAuth rejected', reason);
       });
   }
-
-  onOAuthRefreshBtnClick() {}
-
-  onLogoutClick() {}
 }
