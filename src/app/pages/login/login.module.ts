@@ -7,6 +7,7 @@ import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
 import { IntroComponent } from 'src/app/components/intro/intro.component';
+import { AutofillDirective } from 'src/app/directives/autofill.directive';
 
 @NgModule({
   imports: [
@@ -16,7 +17,7 @@ import { IntroComponent } from 'src/app/components/intro/intro.component';
     IonicModule,
     LoginPageRoutingModule,
   ],
-  declarations: [LoginPage, IntroComponent],
+  declarations: [LoginPage, IntroComponent, AutofillDirective],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class LoginPageModule {}
