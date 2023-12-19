@@ -4,6 +4,7 @@ export const DB_URL = 'https://db.languagexchange.net/';
 
 export const environment = {
   production: true,
+  bundleId: 'tech.newchapter.languagexchange',
   appwrite: {
     APP_ENDPOINT: `${DB_URL}v1`,
     APP_PROJECT: '650750d21e4a6a589be3',
