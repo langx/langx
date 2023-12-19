@@ -120,7 +120,15 @@ export class LoginPage implements OnInit {
 
   signInWithGoogle() {
     console.log('signInWithGoogle');
-    // this.authService.signInWithGoogle();
+    this.authService.signInWithGoogle();
+  }
+
+  signInWithFacebook() {
+    this.authService.signInWithFacebook();
+  }
+
+  signInWithApple() {
+    this.authService.signInWithApple();
   }
 
   //

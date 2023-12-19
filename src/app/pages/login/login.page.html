@@ -100,14 +100,22 @@
                     class="ion-padding-horizontal"
                   ></ion-icon>
                 </ion-button>
-                <ion-button expand="block" fill="clear">
+                <ion-button
+                  (click)="signInWithFacebook()"
+                  expand="block"
+                  fill="clear"
+                >
                   <ion-icon
                     size="large"
                     name="logo-facebook"
                     class="ion-padding-horizontal"
                   ></ion-icon>
                 </ion-button>
-                <ion-button expand="block" fill="clear">
+                <ion-button
+                  (click)="signInWithApple()"
+                  expand="block"
+                  fill="clear"
+                >
                   <ion-icon
                     size="large"
                     name="logo-apple"
