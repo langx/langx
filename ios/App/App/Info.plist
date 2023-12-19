@@ -23,7 +23,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>yourapp</string>
+				<string>languageXchange</string>
 			</array>
 		</dict>
 	</array>
