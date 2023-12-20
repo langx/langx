@@ -120,7 +120,7 @@ export class AuthService {
     this.api.account.createOAuth2Session(
       'google',
       // environment.url.HOME_URL,
-      'http://192.168.0.106:8100/home',
+      'https://localhost:8100/home',
       environment.url.LOGIN_URL
     );
   }
