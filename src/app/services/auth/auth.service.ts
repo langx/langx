@@ -119,16 +119,21 @@ export class AuthService {
     console.log('signInWithGoogle');
     this.api.account.createOAuth2Session(
       'google',
-      // environment.url.HOME_URL,
-      'https://localhost:8100/home',
+      environment.url.HOME_URL,
       environment.url.LOGIN_URL
     );
   }
 
   signInWithFacebook() {
-    this.api.account.listSessions().then((response) => {
-      console.log('listSessions', response);
-    });
+    this.api.account.createOAuth2Session(
+      'facebook',
+      environment.url.HOME_URL,
+      environment.url.LOGIN_URL
+    );
+    // TODO: Delete here
+    // this.api.account.listSessions().then((response) => {
+    //   console.log('listSessions', response);
+    // });
   }
 
   signInWithApple() {
