@@ -118,19 +118,6 @@ export class LoginPage implements OnInit {
     form.disable();
   }
 
-  signInWithGoogle() {
-    console.log('signInWithGoogle');
-    this.authService.signInWithGoogle();
-  }
-
-  signInWithFacebook() {
-    this.authService.signInWithFacebook();
-  }
-
-  signInWithApple() {
-    this.authService.signInWithApple();
-  }
-
   //
   // Utils
   //
