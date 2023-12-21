@@ -1,21 +1,9 @@
 .center-content {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.loginButtons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.center-content {
-  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  height: 100%;
 }
 
 ion-note div {
