@@ -130,10 +130,6 @@ export class AuthService {
       environment.url.HOME_URL,
       environment.url.LOGIN_URL
     );
-    // TODO: Delete here
-    // this.api.account.listSessions().then((response) => {
-    //   console.log('listSessions', response);
-    // });
   }
 
   signInWithApple() {
