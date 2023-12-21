@@ -92,6 +92,7 @@ export class AuthService {
     );
   }
 
+  // TODO: It may be async function
   resetPassword(email: string) {
     console.log('resetPassword:', email);
     return this.api.account
