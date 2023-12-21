@@ -35,9 +35,9 @@
       <img
         [src]="(currentUser$ | async)?.profilePhoto"
         (click)="openPreview([profilePhoto])"
+        style="max-width: 200px"
         alt="Profile Picture"
         referrerpolicy="no-referrer"
-        style="max-width: 200px"
       />
       <ion-card-title class=".ion-text-center">
         {{(account$ | async)?.name}}
