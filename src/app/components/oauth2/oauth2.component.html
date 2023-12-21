@@ -1,25 +1,98 @@
 <!-- OAuth2 Start -->
-<ion-buttons class="loginButtons">
-  <ion-button (click)="signInWithGoogle()" expand="block" fill="clear">
-    <ion-icon
-      size="large"
-      name="logo-google"
-      class="ion-padding-horizontal"
-    ></ion-icon>
-  </ion-button>
-  <ion-button (click)="signInWithFacebook()" expand="block" fill="clear">
-    <ion-icon
-      size="large"
-      name="logo-facebook"
-      class="ion-padding-horizontal"
-    ></ion-icon>
-  </ion-button>
-  <ion-button (click)="signInWithApple()" expand="block" fill="clear">
-    <ion-icon
-      size="large"
-      name="logo-apple"
-      class="ion-padding-horizontal"
-    ></ion-icon>
-  </ion-button>
-</ion-buttons>
+<div class="loginButtons">
+  <button (click)="signInWithGoogle()" class="gsi-material-button">
+    <div class="gsi-material-button-state"></div>
+    <div class="gsi-material-button-content-wrapper">
+      <div class="gsi-material-button-icon">
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 48 48"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          style="display: block"
+        >
+          <path
+            fill="#EA4335"
+            d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+          ></path>
+          <path
+            fill="#4285F4"
+            d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+          ></path>
+          <path
+            fill="#FBBC05"
+            d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+          ></path>
+          <path
+            fill="#34A853"
+            d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+          ></path>
+          <path fill="none" d="M0 0h48v48H0z"></path>
+        </svg>
+      </div>
+      <span style="display: none">Sign in with Google</span>
+    </div>
+  </button>
+  <button (click)="signInWithFacebook()" class="gsi-material-button">
+    <div class="gsi-material-button-state"></div>
+    <div class="gsi-material-button-content-wrapper">
+      <div class="gsi-material-button-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 48 48"
+          version="1.1"
+        >
+          <g id="surface1">
+            <path
+              style="
+                stroke: none;
+                fill-rule: nonzero;
+                fill: rgb(9.803922%, 46.666667%, 95.294118%);
+                fill-opacity: 1;
+              "
+              d="M 48 24 C 48 10.746094 37.253906 0 24 0 C 10.746094 0 0 10.746094 0 24 C 0 35.976562 8.773438 45.90625 20.25 47.710938 L 20.25 30.9375 L 14.15625 30.9375 L 14.15625 24 L 20.25 24 L 20.25 18.710938 C 20.25 12.695312 23.835938 9.371094 29.316406 9.371094 C 31.941406 9.371094 34.6875 9.839844 34.6875 9.839844 L 34.6875 15.746094 L 31.660156 15.746094 C 28.679688 15.746094 27.75 17.597656 27.75 19.496094 L 27.75 24 L 34.40625 24 L 33.34375 30.9375 L 27.75 30.9375 L 27.75 47.710938 C 39.226562 45.910156 48 35.980469 48 24 Z M 48 24 "
+            />
+            <path
+              style="
+                stroke: none;
+                fill-rule: nonzero;
+                fill: rgb(99.607843%, 99.607843%, 99.607843%);
+                fill-opacity: 1;
+              "
+              d="M 33.34375 30.9375 L 34.40625 24 L 27.75 24 L 27.75 19.496094 C 27.75 17.601562 28.679688 15.746094 31.660156 15.746094 L 34.6875 15.746094 L 34.6875 9.839844 C 34.6875 9.839844 31.941406 9.371094 29.316406 9.371094 C 23.835938 9.371094 20.25 12.695312 20.25 18.710938 L 20.25 24 L 14.15625 24 L 14.15625 30.9375 L 20.25 30.9375 L 20.25 47.710938 C 21.472656 47.902344 22.722656 48 24 48 C 25.277344 48 26.527344 47.898438 27.75 47.710938 L 27.75 30.9375 Z M 33.34375 30.9375 "
+            />
+          </g>
+        </svg>
+      </div>
+      <span style="display: none">Sign in with Facebook</span>
+    </div>
+  </button>
+  <button (click)="signInWithApple()" class="gsi-material-button">
+    <div class="gsi-material-button-state"></div>
+    <div class="gsi-material-button-content-wrapper">
+      <div class="gsi-material-button-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="-4.5 0 48 48"
+          version="1.1"
+        >
+          <g id="surface1">
+            <path
+              style="
+                stroke: none;
+                fill-rule: nonzero;
+                fill: rgb(0%, 0%, 0%);
+                fill-opacity: 1;
+              "
+              d="M 37.757812 16.023438 C 37.480469 16.234375 32.574219 18.945312 32.574219 24.976562 C 32.574219 31.949219 38.816406 34.417969 39.003906 34.480469 C 38.976562 34.628906 38.011719 37.859375 35.714844 41.148438 C 33.664062 44.042969 31.519531 46.933594 28.261719 46.933594 C 25.003906 46.933594 24.167969 45.078125 20.40625 45.078125 C 16.742188 45.078125 15.4375 46.996094 12.457031 46.996094 C 9.476562 46.996094 7.398438 44.316406 5.007812 41.027344 C 2.238281 37.164062 0 31.160156 0 25.464844 C 0 16.328125 6.054688 11.480469 12.015625 11.480469 C 15.183594 11.480469 17.824219 13.523438 19.8125 13.523438 C 21.703125 13.523438 24.65625 11.359375 28.257812 11.359375 C 29.625 11.359375 34.53125 11.480469 37.757812 16.023438 Z M 26.546875 7.492188 C 28.039062 5.757812 29.09375 3.351562 29.09375 0.945312 C 29.09375 0.609375 29.0625 0.273438 29 0 C 26.578125 0.0898438 23.691406 1.582031 21.953125 3.5625 C 20.585938 5.085938 19.3125 7.492188 19.3125 9.929688 C 19.3125 10.296875 19.375 10.664062 19.402344 10.78125 C 19.558594 10.808594 19.804688 10.84375 20.054688 10.84375 C 22.230469 10.84375 24.964844 9.414062 26.546875 7.492188 Z M 26.546875 7.492188 "
+            />
+          </g>
+        </svg>
+      </div>
+      <span style="display: none">Sign in with Apple</span>
+    </div>
+  </button>
+</div>
 <!-- OAuth2 End -->
