@@ -10,3 +10,14 @@
   justify-content: center;
   align-items: center;
 }
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+ion-note div {
+  font-size: 0.9em; /* Adjust the font size here */
+}
