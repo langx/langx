@@ -1,4 +1,25 @@
-<!-- OAuth2 Test Start -->
-<ion-button (click)="onOAuthBtnClick()" expand="clear"> google </ion-button>
-<ion-button (click)="onOAuthAppwrite()" expand="clear"> google2 </ion-button>
-<!-- OAuth2 Test End -->
+<!-- OAuth2 Start -->
+<ion-buttons class="loginButtons">
+  <ion-button (click)="signInWithGoogle()" expand="block" fill="clear">
+    <ion-icon
+      size="large"
+      name="logo-google"
+      class="ion-padding-horizontal"
+    ></ion-icon>
+  </ion-button>
+  <ion-button (click)="signInWithFacebook()" expand="block" fill="clear">
+    <ion-icon
+      size="large"
+      name="logo-facebook"
+      class="ion-padding-horizontal"
+    ></ion-icon>
+  </ion-button>
+  <ion-button (click)="signInWithApple()" expand="block" fill="clear">
+    <ion-icon
+      size="large"
+      name="logo-apple"
+      class="ion-padding-horizontal"
+    ></ion-icon>
+  </ion-button>
+</ion-buttons>
+<!-- OAuth2 End -->

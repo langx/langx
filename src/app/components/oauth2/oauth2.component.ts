@@ -5,6 +5,7 @@ import {
 } from '@byteowls/capacitor-oauth2';
 
 import { ApiService } from 'src/app/services/api/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -15,7 +16,7 @@ import { environment } from 'src/environments/environment';
 export class Oauth2Component implements OnInit {
   accessToken: string;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private authService: AuthService) {}
 
   ngOnInit() {}
 
@@ -63,5 +64,17 @@ export class Oauth2Component implements OnInit {
       environment.url.HOME_URL,
       environment.url.LOGIN_URL
     );
+  }
+
+  signInWithGoogle() {
+    this.authService.signInWithGoogle();
+  }
+
+  signInWithFacebook() {
+    this.authService.signInWithFacebook();
+  }
+
+  signInWithApple() {
+    this.authService.signInWithApple();
   }
 }
