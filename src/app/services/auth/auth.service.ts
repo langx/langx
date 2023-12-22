@@ -134,8 +134,10 @@ export class AuthService {
   }
 
   signInWithApple() {
-    this.api.account.deleteSessions().then((response) => {
-      console.log('deleteSessions', response);
-    });
+    this.api.account.createOAuth2Session(
+      'apple',
+      environment.url.HOME_URL,
+      environment.url.LOGIN_URL
+    );
   }
 }
