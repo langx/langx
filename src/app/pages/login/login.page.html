@@ -57,38 +57,24 @@
               </ion-button>
             </ion-col>
           </ion-row>
-          <ion-row class="ion-margin-vertical">
-            <ion-col size="6" class="alignItems">
-              <div class="center-content">
-                <ion-note>
-                  <div>Not a member yet?</div>
-                  <div class="center-content">
-                    <ion-button
-                      fill="clear"
-                      routerLink="signup"
-                      color="primary"
-                    >
-                      Sign Up
-                    </ion-button>
-                  </div>
-                </ion-note>
-              </div>
+          <ion-rows>
+            <ion-col class="custom-col">
+              <div>Not a member yet?</div>
+              <ion-button fill="clear" routerLink="signup" color="primary">
+                Sign Up
+              </ion-button>
             </ion-col>
-            <ion-col size="6">
-              <div class="center-content">
-                <ion-note>
-                  <div>Forgot password?</div>
-                  <div class="center-content">
-                    <ion-button
-                      fill="clear"
-                      routerLink="reset-password"
-                      color="primary"
-                    >
-                      Reset it
-                    </ion-button>
-                  </div>
-                </ion-note>
-              </div>
+          </ion-rows>
+          <ion-row>
+            <ion-col class="custom-col">
+              <div>Forgot password?</div>
+              <ion-button
+                fill="clear"
+                routerLink="reset-password"
+                color="primary"
+              >
+                Reset it
+              </ion-button>
             </ion-col>
           </ion-row>
         </form>
