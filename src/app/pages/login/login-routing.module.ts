@@ -20,6 +20,13 @@ const routes: Routes = [
         (m) => m.ResetPasswordPageModule
       ),
   },
+  {
+    path: 'oauth2-callback',
+    loadChildren: () =>
+      import('src/app/components/oauth2-callback/oauth2-callback.module').then(
+        (m) => m.Oauth2CallbackModule
+      ),
+  },
 ];
 
 @NgModule({
