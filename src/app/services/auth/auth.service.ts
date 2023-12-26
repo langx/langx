@@ -116,8 +116,8 @@ export class AuthService {
     // });
   }
 
-  signInWithGoogle() {
-    console.log('signInWithGoogle');
+  signInWithGoogle(platform: string) {
+    console.log('signInWithGoogle', platform);
     this.api.account.createOAuth2Session(
       'google',
       environment.url.HOME_URL,
@@ -125,7 +125,7 @@ export class AuthService {
     );
   }
 
-  signInWithFacebook() {
+  signInWithFacebook(platform: string) {
     this.api.account.createOAuth2Session(
       'facebook',
       environment.url.HOME_URL,
@@ -133,7 +133,7 @@ export class AuthService {
     );
   }
 
-  signInWithApple() {
+  signInWithApple(platform: string) {
     this.api.account.createOAuth2Session(
       'apple',
       environment.url.HOME_URL,
