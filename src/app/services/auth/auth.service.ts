@@ -18,6 +18,9 @@ export class AuthService {
   private _user = new BehaviorSubject<Account | null>(null);
   private account$: Observable<Account | null> = null;
 
+  private success: string;
+  private failure: string;
+
   constructor(private api: ApiService) {}
 
   //
@@ -118,26 +121,43 @@ export class AuthService {
 
   signInWithGoogle(platform: string) {
     console.log('signInWithGoogle', platform);
-    this.api.account.createOAuth2Session(
-      'google',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
-    );
+    this.setPlatformUrls(platform);
+    this.api.account.createOAuth2Session('google', this.success, this.failure);
   }
 
   signInWithFacebook(platform: string) {
+    console.log('signInWithFacebook', platform);
+    this.setPlatformUrls(platform);
     this.api.account.createOAuth2Session(
       'facebook',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
+      this.success,
+      this.failure
     );
   }
 
   signInWithApple(platform: string) {
-    this.api.account.createOAuth2Session(
-      'apple',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
-    );
+    console.log('signInWithApple', platform);
+    this.setPlatformUrls(platform);
+    this.api.account.createOAuth2Session('apple', this.success, this.failure);
+  }
+
+  //
+  // Utils
+  //
+
+  setPlatformUrls(platform: string) {
+    switch (platform) {
+      case 'ios':
+        this.success = environment.url.HOME_URL;
+        this.failure = environment.url.HOME_URL;
+        break;
+      case 'android':
+        this.success = environment.url.HOME_URL;
+        this.failure = environment.url.HOME_URL;
+        break;
+      default:
+        this.success = environment.url.HOME_URL;
+        this.failure = environment.url.LOGIN_URL;
+    }
   }
 }
