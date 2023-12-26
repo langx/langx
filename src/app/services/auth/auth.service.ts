@@ -148,12 +148,9 @@ export class AuthService {
   setPlatformUrls(platform: string) {
     switch (platform) {
       case 'ios':
-        this.success = environment.url.HOME_URL;
-        this.failure = environment.url.HOME_URL;
-        break;
       case 'android':
-        this.success = environment.url.HOME_URL;
-        this.failure = environment.url.HOME_URL;
+        this.success = environment.url.HOME_URL_IOS;
+        this.failure = environment.url.HOME_URL_IOS;
         break;
       default:
         this.success = environment.url.HOME_URL;
