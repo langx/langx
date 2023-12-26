@@ -1,4 +1,5 @@
 export const HOMEPAGE_URL = 'http://localhost:8100/';
+export const HOMEPAGE_URL_IOS = 'languageXchange://localhost/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
 
@@ -20,8 +21,10 @@ export const environment = {
   url: {
     HOMEPAGE_URL: HOMEPAGE_URL,
     RESET_PASSWORD_URL: `${HOMEPAGE_URL}login/reset-password/new`,
-    HOME_URL: `${HOMEPAGE_URL}home`,
+    HOME_URL: `${HOMEPAGE_URL}login/oauth2-callback`,
+    HOME_URL_IOS: `${HOMEPAGE_URL_IOS}login/oauth2-callback`,
     LOGIN_URL: `${HOMEPAGE_URL}login`,
+    LOGIN_URL_IOS: `${HOMEPAGE_URL_IOS}login`,
     SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
