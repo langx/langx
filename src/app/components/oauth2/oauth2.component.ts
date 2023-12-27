@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 
-import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -13,7 +12,7 @@ export class Oauth2Component implements OnInit {
   accessToken: string;
   platform: string;
 
-  constructor(private api: ApiService, private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.platform = Capacitor.getPlatform();
