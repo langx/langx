@@ -80,7 +80,7 @@ export class AppComponent {
     );
   }
 
-  toggleDarkTheme(shouldAdd) {
+  toggleDarkTheme(shouldAdd: boolean) {
     document.body.classList.toggle('dark', shouldAdd);
   }
 
