@@ -23,7 +23,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>languageXchange</string>
+				<string>tech.newchapter.languagexchange</string>
 			</array>
 		</dict>
 	</array>
