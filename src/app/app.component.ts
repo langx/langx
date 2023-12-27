@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { register } from 'swiper/element/bundle';
+import { Router } from '@angular/router';
+import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Store } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -20,7 +22,9 @@ export class AppComponent {
   constructor(
     private store: Store,
     private storageService: StorageService,
-    private fcmService: FcmService
+    private fcmService: FcmService,
+    private router: Router,
+    private zone: NgZone
   ) {}
 
   async ngOnInit() {
@@ -30,6 +34,9 @@ export class AppComponent {
   async initValues() {
     // Check theme
     await this.checkTheme();
+
+    // Init Deep Link
+    this.initDeepLink();
 
     // Init Locale
     this.store.dispatch(listCountriesAction());
@@ -69,5 +76,18 @@ export class AppComponent {
 
   toggleDarkTheme(shouldAdd) {
     document.body.classList.toggle('dark', shouldAdd);
+  }
+
+  // Deep Link
+  initDeepLink() {
+    App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+      this.zone.run(() => {
+        // console.log('appUrlOpen', event);
+        const slug = event.url.split('app.languagexchange.net').pop();
+        if (slug) {
+          this.router.navigateByUrl(slug);
+        }
+      });
+    });
   }
 }
