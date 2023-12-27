@@ -5,10 +5,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './oauth2-callback.component.html',
   styleUrls: ['./oauth2-callback.component.scss'],
 })
-export class Oauth2CallbackComponent  implements OnInit {
-
-  constructor() { }
+export class Oauth2CallbackComponent implements OnInit {
+  constructor() {}
 
   ngOnInit() {}
-
 }
