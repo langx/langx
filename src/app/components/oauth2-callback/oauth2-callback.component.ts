@@ -63,6 +63,6 @@ export class Oauth2CallbackComponent implements OnInit {
   }
 
   navigateWithToken() {
-    this.router.navigate(['login', 'oauth2', this.token]);
+    window.location.href = `tech.newchapter.languagexchange:/login/oauth2/${this.token}`;
   }
 }
