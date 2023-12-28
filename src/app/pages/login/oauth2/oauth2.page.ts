@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { Store } from '@ngrx/store';
+import { LoginWithJwtRequestInterface } from 'src/app/models/types/requests/loginWithJwtRequest.interface';
 
 import { loginWithJWTAction } from 'src/app/store/actions/auth.action';
 
@@ -32,7 +33,7 @@ export class Oauth2Page implements OnInit {
     ) {
       if (this.token) {
         console.log('Dispatch to loginWithJWTAction');
-        let request = { jwt: this.token };
+        let request: LoginWithJwtRequestInterface = { jwt: this.token };
         this.store.dispatch(loginWithJWTAction({ request }));
         return;
       }
