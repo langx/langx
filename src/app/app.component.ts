@@ -79,7 +79,8 @@ export class AppComponent {
   }
 
   // Deep Link
-  // TODO : Use Environtment Variables here
+  // TODO: Use Environtment Variables here
+  // TODO: Make better logic
   initDeepLink() {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       this.zone.run(() => {
