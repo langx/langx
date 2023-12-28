@@ -24,15 +24,12 @@ export class Oauth2Component implements OnInit {
   }
 
   state: string = JSON.stringify({
-    success: 'https://app.languagexchange.net/home',
-    // success: "https://api.languagexchange.net/api/oauth2",
+    success: 'https://app.languagexchange.net/login/oauth2-callback',
     failure: 'https://app.languagexchange.net/login',
   });
 
   oauth2Options: OAuth2AuthenticateOptions = {
     authorizationBaseUrl: 'https://accounts.google.com/o/oauth2/auth',
-    // accessTokenEndpoint: 'https://www.googleapis.com/oauth2/v4/token',
-    // resourceUrl: 'https://www.googleapis.com/userinfo/v2/me',
     scope: 'email profile',
     logsEnabled: true,
     state: this.state,
@@ -43,14 +40,8 @@ export class Oauth2Component implements OnInit {
     web: {
       windowTarget: '_self',
     },
-    // android: {
-    //    appId: environment.oauth.google.ios_clientID,
-    //    redirectUrl: 'tech.newchapter.languagexchange:/login/oauth2-callback',
-    // },
-    // ios: {
-    //    appId: environment.oauth.google.ios_clientID,
-    //    redirectUrl: 'tech.newchapter.languagexchange:/login/oauth2-callback',
-    // },
+    android: {},
+    ios: {},
   };
 
   signInWithGoogle() {
