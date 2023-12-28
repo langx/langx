@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-oauth2',
@@ -9,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class Oauth2Page implements OnInit {
   token: string = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit() {
     this.initValues();
@@ -17,5 +18,20 @@ export class Oauth2Page implements OnInit {
 
   initValues() {
     this.token = this.route.snapshot.paramMap.get('token') || null;
+    if (
+      Capacitor.getPlatform() === 'android' ||
+      Capacitor.getPlatform() === 'ios'
+    ) {
+      if (this.token) {
+        console.log('Dispatch to loginWithJWTAction');
+        return;
+      } else {
+        this.router.navigateByUrl('/home');
+        return;
+      }
+    }
+
+    this.router.navigateByUrl('/home');
+    return;
   }
 }
