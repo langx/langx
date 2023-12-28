@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { ApiService } from 'src/app/services/api/api.service';
 
 @Component({
   selector: 'app-oauth2-callback',
@@ -10,15 +9,23 @@ import { ApiService } from 'src/app/services/api/api.service';
   styleUrls: ['./oauth2-callback.component.scss'],
 })
 export class Oauth2CallbackComponent implements OnInit {
+  params: Params;
+
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
-    private api: ApiService
+    private authService: AuthService
   ) {}
 
   async ngOnInit() {
-    this.api.account.createJWT().then((res) => {
-      console.log('createJWT', res);
-    });
+    this.initValues();
+  }
+
+  initValues() {
+    // Set Params
+    this.params = this.route.snapshot.queryParams;
+  }
+
+  createJWT() {
+    return this.authService.createJWT();
   }
 }
