@@ -21,13 +21,13 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'oauth2',
-    redirectTo: '/login',
-  },
-  {
     path: 'oauth2/:token',
     loadChildren: () =>
       import('./oauth2/oauth2.module').then((m) => m.Oauth2PageModule),
+  },
+  {
+    path: 'oauth2',
+    redirectTo: '/login',
   },
   {
     path: 'oauth2-callback',
