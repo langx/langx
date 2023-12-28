@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ID, Models } from 'appwrite';
 import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
 
@@ -18,7 +19,7 @@ export class AuthService {
   private _user = new BehaviorSubject<Account | null>(null);
   private account$: Observable<Account | null> = null;
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private http: HttpClient) {}
 
   //
   // USER DATA
@@ -141,5 +142,21 @@ export class AuthService {
       environment.url.HOME_URL,
       environment.url.LOGIN_URL
     );
+  }
+
+  getCookies(params: any) {
+    let httpParams = new HttpParams();
+    Object.keys(params).forEach((key) => {
+      httpParams = httpParams.append(key, params[key]);
+    });
+
+    this.http
+      .get(
+        'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
+        { params: httpParams }
+      )
+      .subscribe((response) => {
+        console.log(response);
+      });
   }
 }
