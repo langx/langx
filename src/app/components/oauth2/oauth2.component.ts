@@ -23,25 +23,34 @@ export class Oauth2Component implements OnInit {
     this.platform = Capacitor.getPlatform();
   }
 
-  state: string = JSON.stringify({
+  webState: string = JSON.stringify({
+    success: 'https://app.languagexchange.net/home',
+    failure: 'https://app.languagexchange.net/login',
+  });
+
+  mobileState: string = JSON.stringify({
     success: 'https://app.languagexchange.net/login/oauth2-callback',
     failure: 'https://app.languagexchange.net/login',
   });
 
   googleOauth2Options: OAuth2AuthenticateOptions = {
     authorizationBaseUrl: 'https://accounts.google.com/o/oauth2/auth',
-    scope: 'email profile',
-    logsEnabled: true,
-    state: this.state,
-    responseType: 'code',
     redirectUrl:
       'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
     appId: environment.oauth.google.clientID,
+    state: this.webState,
+    scope: 'email profile',
+    logsEnabled: true,
+    responseType: 'code',
     web: {
       windowTarget: '_self',
     },
-    android: {},
-    ios: {},
+    android: {
+      state: this.mobileState,
+    },
+    ios: {
+      state: this.mobileState,
+    },
   };
 
   signInWithGoogle() {
