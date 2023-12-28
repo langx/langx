@@ -35,6 +35,9 @@ import {
   loginAction,
   loginFailureAction,
   loginSuccessAction,
+  loginWithJWTAction,
+  loginWithJWTFailureAction,
+  loginWithJWTSuccessAction,
   logoutAction,
   logoutFailureAction,
   logoutSuccessAction,
@@ -75,6 +78,24 @@ export class AuthEffect {
         })
       ),
     { dispatch: false }
+  );
+
+  loginWithJWT$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(loginWithJWTAction),
+      switchMap(({ request }) =>
+        this.authService.loginWithJWT(request).pipe(
+          map((payload: Account) => loginWithJWTSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(loginWithJWTFailureAction({ error }));
+          })
+        )
+      )
+    )
   );
 
   register$ = createEffect(() =>
