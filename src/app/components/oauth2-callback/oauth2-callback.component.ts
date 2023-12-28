@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { ApiService } from 'src/app/services/api/api.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -11,8 +11,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class Oauth2CallbackComponent implements OnInit {
   params: Params;
+  token: string = null;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
     private api: ApiService
@@ -28,17 +30,22 @@ export class Oauth2CallbackComponent implements OnInit {
     console.log('params: ', this.params);
 
     if (this.params['jwt']) {
-      console.log('jwt: ', this.params['jwt']);
+      this.token = this.params['jwt'];
+      console.log('jwt: ', this.token);
       console.log('redirect to mobile app');
+
+      this.navigateWithToken();
     } else {
       // Check session
       this.checkSession()
-        .then((response) => {
+        .then(async (response) => {
           console.log('session: ', response);
-          const jwt = this.createJWT();
+          this.token = (await this.createJWT()).jwt;
           console.log('creating new jwt..');
-          console.log('jwt: ', jwt);
+          console.log('jwt: ', this.token);
           console.log('redirect to web app');
+
+          this.navigateWithToken();
         })
         .catch((error) => {
           console.log('error: ', error);
@@ -53,5 +60,9 @@ export class Oauth2CallbackComponent implements OnInit {
 
   createJWT() {
     return this.authService.createJWT();
+  }
+
+  navigateWithToken() {
+    this.router.navigate(['login', 'oauth2', this.token]);
   }
 }
