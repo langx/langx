@@ -78,7 +78,10 @@ export class AppComponent {
     document.body.classList.toggle('dark', shouldAdd);
   }
 
+  //
   // Deep Link
+  //
+
   // TODO: Use Environtment Variables here
   // TODO: Make better logic
   initDeepLink() {
