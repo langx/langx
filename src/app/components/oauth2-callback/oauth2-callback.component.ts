@@ -64,5 +64,13 @@ export class Oauth2CallbackComponent implements OnInit {
 
   navigateWithToken() {
     window.location.href = `tech.newchapter.languagexchange:/login/oauth2/${this.token}`;
+    // If it is in web browser, redirect to home page
+    setTimeout(() => {
+      this.navigateToHome();
+    }, 2500);
+  }
+
+  navigateToHome() {
+    this.router.navigateByUrl('/home');
   }
 }
