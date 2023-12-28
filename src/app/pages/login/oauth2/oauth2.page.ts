@@ -40,7 +40,8 @@ export class Oauth2Page implements OnInit {
       }
     }
 
-    this.router.navigateByUrl('/home');
+    // TODO: Uncomment this when the mobile app is ready
+    // this.router.navigateByUrl('/home');
     return;
   }
 }
