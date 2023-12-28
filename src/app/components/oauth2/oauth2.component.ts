@@ -28,12 +28,12 @@ export class Oauth2Component implements OnInit {
     failure: 'https://app.languagexchange.net/login',
   });
 
-  oauth2Options: OAuth2AuthenticateOptions = {
+  googleOauth2Options: OAuth2AuthenticateOptions = {
     authorizationBaseUrl: 'https://accounts.google.com/o/oauth2/auth',
     scope: 'email profile',
     logsEnabled: true,
     state: this.state,
-    responseType: 'code', // implicit flow
+    responseType: 'code',
     redirectUrl:
       'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
     appId: environment.oauth.google.clientID,
@@ -45,7 +45,7 @@ export class Oauth2Component implements OnInit {
   };
 
   signInWithGoogle() {
-    OAuth2Client.authenticate(this.oauth2Options)
+    OAuth2Client.authenticate(this.googleOauth2Options)
       .then((response) => {
         this.code = response['code'];
         console.log('code: ', this.code);
