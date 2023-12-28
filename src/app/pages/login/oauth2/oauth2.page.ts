@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-oauth2',
@@ -6,10 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./oauth2.page.scss'],
 })
 export class Oauth2Page implements OnInit {
+  token: string = null;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.initValues();
   }
 
+  initValues() {
+    this.token = this.route.snapshot.paramMap.get('token') || null;
+  }
 }
