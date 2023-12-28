@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Client, Databases, Account, Locale } from 'appwrite';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,7 @@ export class ApiService {
   account: Account;
   locale: Locale;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.init();
   }
 
@@ -89,6 +91,18 @@ export class ApiService {
       collectionId,
       documentId
     );
+  }
+
+  // Rest API
+  createJWTSession(jwt: string): Observable<any> {
+    const url = `${environment.appwrite.APP_ENDPOINT}/account`;
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'X-Appwrite-Response-Format': '1.4.0',
+      'X-Appwrite-Project': environment.appwrite.APP_PROJECT,
+      'X-Appwrite-JWT': jwt,
+    });
+    return this.http.get(url, { headers });
   }
 
   // Locale API
