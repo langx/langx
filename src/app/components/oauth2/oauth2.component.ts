@@ -23,6 +23,7 @@ export class Oauth2Component implements OnInit {
     this.platform = Capacitor.getPlatform();
   }
 
+  // TODO: Use environment variable here
   webState: string = JSON.stringify({
     success: 'https://app.languagexchange.net/home',
     failure: 'https://app.languagexchange.net/login',
