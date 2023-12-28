@@ -3,7 +3,6 @@ import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Store } from '@ngrx/store';
-import { CookieService } from 'ngx-cookie-service';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
@@ -25,16 +24,11 @@ export class AppComponent {
     private storageService: StorageService,
     private fcmService: FcmService,
     private router: Router,
-    private zone: NgZone,
-    private cookieService: CookieService
+    private zone: NgZone
   ) {}
 
   async ngOnInit() {
     await this.initValues();
-    this.cookieService.set('test', 'Hello World', {
-      sameSite: 'None',
-      secure: true,
-    });
   }
 
   async initValues() {
