@@ -10,6 +10,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { Account } from 'src/app/models/Account';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
+import { LoginWithJwtRequestInterface } from 'src/app/models/types/requests/loginWithJwtRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -46,6 +47,15 @@ export class AuthService {
       data.password
     );
     return from(authReq).pipe(
+      concatMap(() => this.api.account.get()),
+      tap((user) => this._user.next(user))
+    );
+  }
+
+  loginWithJWT(request: LoginWithJwtRequestInterface): Observable<Account> {
+    const authReq = this.api.createJWTSession(request.jwt);
+    return authReq.pipe(
+      tap((res) => console.log('loginWithJWT res:', res)),
       concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
