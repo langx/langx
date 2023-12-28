@@ -27,21 +27,18 @@ export class Oauth2Page implements OnInit {
     this.token = this.route.snapshot.paramMap.get('token') || null;
     if (
       Capacitor.getPlatform() === 'android' ||
-      Capacitor.getPlatform() === 'ios'
+      Capacitor.getPlatform() === 'ios' ||
+      Capacitor.getPlatform() === 'web' // TODO: Remove this line
     ) {
       if (this.token) {
         console.log('Dispatch to loginWithJWTAction');
         let request = { jwt: this.token };
         this.store.dispatch(loginWithJWTAction({ request }));
         return;
-      } else {
-        this.router.navigateByUrl('/home');
-        return;
       }
     }
 
-    // TODO: Uncomment this when the mobile app is ready
-    // this.router.navigateByUrl('/home');
+    this.router.navigateByUrl('/home');
     return;
   }
 }
