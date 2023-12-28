@@ -71,6 +71,8 @@ export class Oauth2CallbackComponent implements OnInit {
   }
 
   navigateToHome() {
-    this.router.navigateByUrl('/home');
+    // this.router.navigateByUrl('/home');
+    // TODO: Remove this line
+    this.router.navigateByUrl(`/login/oauth2/${this.token}`);
   }
 }
