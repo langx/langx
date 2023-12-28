@@ -21,6 +21,11 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'oauth2',
+    loadChildren: () =>
+      import('./oauth2/oauth2.module').then((m) => m.Oauth2PageModule),
+  },
+  {
     path: 'oauth2-callback',
     loadChildren: () =>
       import('src/app/components/oauth2-callback/oauth2-callback.module').then(
