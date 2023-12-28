@@ -4,7 +4,19 @@
     "details": [
       {
         "appID": "8F63M4JH8P.tech.newchapter.languageXchange",
-        "paths": ["*"]
+        "paths": [
+          "*",
+          "NOT https://app.languagexchange.net/login/oauth2-callback",
+          "NOT https://app.languagexchange.net/login/oauth2-callback/*",
+          "NOT https://app.languagexchange.net/login/oauth2-callback/",
+          "NOT https://app.languagexchange.net/login/oauth2-callback/*/",
+          "NOT https://app.languagexchange.net/login/oauth2-callback/*/*",
+          "NOT /login/oauth2-callback",
+          "NOT /login/oauth2-callback/*",
+          "NOT /login/oauth2-callback/",
+          "NOT /login/oauth2-callback/*/",
+          "NOT /login/oauth2-callback/*/*"
+        ]
       }
     ]
   }
