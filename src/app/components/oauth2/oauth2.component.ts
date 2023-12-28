@@ -37,13 +37,14 @@ export class Oauth2Component implements OnInit {
     authorizationBaseUrl: 'https://accounts.google.com/o/oauth2/auth',
     redirectUrl:
       'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
-    appId: environment.oauth.google.clientID,
     state: this.webState,
+    appId: environment.oauth.google.clientID,
     scope: 'email profile',
     logsEnabled: true,
     responseType: 'code',
     web: {
       windowTarget: '_self',
+      state: this.mobileState, // TODO: Delete this line
     },
     android: {
       state: this.mobileState,
