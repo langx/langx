@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
+import { Store } from '@ngrx/store';
+
+import { loginWithJWTAction } from 'src/app/store/actions/auth.action';
 
 @Component({
   selector: 'app-oauth2',
@@ -10,7 +13,11 @@ import { Capacitor } from '@capacitor/core';
 export class Oauth2Page implements OnInit {
   token: string = null;
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private store: Store
+  ) {}
 
   ngOnInit() {
     this.initValues();
@@ -24,6 +31,8 @@ export class Oauth2Page implements OnInit {
     ) {
       if (this.token) {
         console.log('Dispatch to loginWithJWTAction');
+        let request = { jwt: this.token };
+        this.store.dispatch(loginWithJWTAction({ request }));
         return;
       } else {
         this.router.navigateByUrl('/home');
