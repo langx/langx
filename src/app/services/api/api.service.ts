@@ -34,6 +34,10 @@ export class ApiService {
     return this.client;
   }
 
+  setJWT(jwt: string): void {
+    this.client.setJWT(jwt);
+  }
+
   listDocuments(collectionId: string, queries?: string[]): Promise<any> {
     if (queries) {
       return this.database.listDocuments(
