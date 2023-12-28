@@ -5,6 +5,7 @@ import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Interface Imports
 import { Account } from 'src/app/models/Account';
@@ -19,7 +20,10 @@ export class AuthService {
   private _user = new BehaviorSubject<Account | null>(null);
   private account$: Observable<Account | null> = null;
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private storageService: StorageService
+  ) {}
 
   //
   // USER DATA
@@ -55,9 +59,8 @@ export class AuthService {
   loginWithJWT(request: LoginWithJwtRequestInterface): Observable<Account> {
     const authReq = this.api.createJWTSession(request.jwt);
     this.api.setJWT(request.jwt);
+    this.storageService.setValue('userToken', request.jwt);
 
-    const acc = this.api.account.get();
-    console.log('loginWithJWT acc:', acc);
     return authReq.pipe(
       tap((res) => console.log('loginWithJWT res:', res)),
       concatMap(() => this.api.account.get()),
