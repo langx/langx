@@ -98,6 +98,28 @@ export class AuthEffect {
     )
   );
 
+  redirectAfterLoginWithJWT$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginWithJWTSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/home');
+        })
+      ),
+    { dispatch: false }
+  );
+
+  redirectAfterLoginWithJWTFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginWithJWTFailureAction),
+        tap(() => {
+          this.router.navigateByUrl('/login');
+        })
+      ),
+    { dispatch: false }
+  );
+
   register$ = createEffect(() =>
     this.actions$.pipe(
       ofType(registerAction),
