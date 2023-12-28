@@ -82,10 +82,19 @@ export class AppComponent {
   initDeepLink() {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       this.zone.run(() => {
-        // console.log('appUrlOpen', event);
+        console.log('appUrlOpen', event);
         const slug = event.url.split('app.languagexchange.net').pop();
+        console.log('slug: ', slug);
         if (slug) {
-          this.router.navigateByUrl(slug);
+          if (slug.startsWith('tech.newchapter.languagexchange:/')) {
+            const newSlug = slug
+              .split('tech.newchapter.languagexchange:')
+              .pop();
+            console.log('newSlug: ', newSlug);
+            this.router.navigateByUrl(newSlug);
+          } else {
+            this.router.navigateByUrl(slug);
+          }
         }
       });
     });
