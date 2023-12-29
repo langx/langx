@@ -13,13 +13,11 @@ import {
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Interface Imports
 import { Account } from 'src/app/models/Account';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
-import { LoginWithJwtRequestInterface } from 'src/app/models/types/requests/loginWithJwtRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -28,10 +26,7 @@ export class AuthService {
   private _user = new BehaviorSubject<Account | null>(null);
   private account$: Observable<Account | null> = null;
 
-  constructor(
-    private api: ApiService,
-    private storageService: StorageService
-  ) {}
+  constructor(private api: ApiService) {}
 
   //
   // USER DATA
@@ -59,18 +54,6 @@ export class AuthService {
       data.password
     );
     return from(authReq).pipe(
-      concatMap(() => this.api.account.get()),
-      tap((user) => this._user.next(user))
-    );
-  }
-
-  loginWithJWT(request: LoginWithJwtRequestInterface): Observable<Account> {
-    const authReq = this.api.createJWTSession(request.jwt);
-    this.api.setJWT(request.jwt);
-    this.storageService.setValue('userToken', request.jwt);
-
-    return authReq.pipe(
-      tap((res) => console.log('loginWithJWT res:', res)),
       concatMap(() => this.api.account.get()),
       tap((user) => this._user.next(user))
     );
@@ -113,11 +96,6 @@ export class AuthService {
 
   logout(): Observable<any> {
     return from(this.api.account.deleteSession('current')).pipe(
-      catchError((error) => {
-        console.error('Error deleting session:', error);
-        return of(null);
-      }),
-      tap(() => this.storageService.removeValue('userToken')),
       tap(() => this._user.next(null))
     );
   }
