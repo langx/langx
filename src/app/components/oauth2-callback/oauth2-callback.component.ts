@@ -63,11 +63,9 @@ export class Oauth2CallbackComponent implements OnInit {
   }
 
   navigateWithToken() {
+    // TODO: If there is no app installed in the device, redirect to web app
     window.location.href = `tech.newchapter.languagexchange:/login/oauth2/${this.token}`;
-    // If it is in web browser, redirect to home page
-    setTimeout(() => {
-      this.navigateToHome();
-    }, 2500);
+    this.navigateToHome();
   }
 
   navigateToHome() {
