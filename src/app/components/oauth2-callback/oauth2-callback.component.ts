@@ -16,7 +16,6 @@ export class Oauth2CallbackComponent implements OnInit {
   async initValues() {
     // Set Params
     const params = this.route.snapshot.queryParamMap;
-    console.log('params: ', params);
 
     const cookieFallback = {};
     const key = params.get('key');
