@@ -40,8 +40,8 @@ export class Oauth2CallbackComponent implements OnInit {
       this.checkSession()
         .then(async (response) => {
           console.log('session: ', response);
-          this.token = (await this.createJWT()).jwt;
           console.log('creating new jwt..');
+          this.token = (await this.createJWT()).jwt;
           console.log('jwt: ', this.token);
           console.log('redirect to web app');
 
