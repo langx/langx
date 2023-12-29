@@ -1,7 +1,4 @@
 PODS:
-  - ByteowlsCapacitorOauth2 (5.0.0):
-    - Capacitor
-    - OAuthSwift (= 2.2.0)
   - Capacitor (5.5.1):
     - CapacitorCordova
   - CapacitorApp (5.0.6):
@@ -78,11 +75,9 @@ PODS:
     - nanopb/encode (= 2.30909.1)
   - nanopb/decode (2.30909.1)
   - nanopb/encode (2.30909.1)
-  - OAuthSwift (2.2.0)
   - PromisesObjC (2.3.1)
 
 DEPENDENCIES:
-  - "ByteowlsCapacitorOauth2 (from `../../node_modules/@byteowls/capacitor-oauth2`)"
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorBrowser (from `../../node_modules/@capacitor/browser`)"
@@ -108,12 +103,9 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - nanopb
-    - OAuthSwift
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  ByteowlsCapacitorOauth2:
-    :path: "../../node_modules/@byteowls/capacitor-oauth2"
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorApp:
@@ -142,7 +134,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/capacitor-voice-recorder"
 
 SPEC CHECKSUMS:
-  ByteowlsCapacitorOauth2: 9e7cdae2bf251463a6ad89493e27fb288bf694d7
   Capacitor: 9da0a2415e3b6098511f8b5ffdb578d91ee79f8f
   CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
   CapacitorBrowser: 7a0fb6a1011abfaaf2dfedfd8248f942a8eda3d6
@@ -164,9 +155,8 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
-  OAuthSwift: 75efbb5bd9a4b2b71a37bd7e986bf3f55ddd54c6
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: 44bf73afd9bfe63431382b4d6258569b8802e00c
+PODFILE CHECKSUM: 322b7bccc05a3208b9958d40552173507cea25d0
 
 COCOAPODS: 1.14.3
