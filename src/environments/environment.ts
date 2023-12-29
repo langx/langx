@@ -23,8 +23,9 @@ export const environment = {
     SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
-    SUCCESS_OAUTH2: `${HOMEPAGE_URL}login/oauth2-callback`,
-    FAILURE_OAUTH2: `${HOMEPAGE_URL}login`,
+    // SUCCESS_OAUTH2: `${HOMEPAGE_URL}login/oauth2-callback`,
+    SUCCESS_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/success`,
+    FAILURE_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/failure`,
   },
   opts: {
     PAGINATION_LIMIT: 10,
@@ -42,9 +43,9 @@ export const environment = {
       uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/facebook/650750d21e4a6a589be3',
     },
     apple: {
-      appID: '',
-      base: '',
-      uri: '',
+      appID: 'service.tech.newchapter.languageXchange',
+      base: 'https://appleid.apple.com/auth/authorize',
+      uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/apple/650750d21e4a6a589be3',
     },
   },
 };
