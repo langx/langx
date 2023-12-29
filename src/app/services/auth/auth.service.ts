@@ -146,8 +146,7 @@ export class AuthService {
     // });
   }
 
-  signInWithGoogle(platform: string) {
-    console.log('signInWithGoogle', platform);
+  signInWithGoogle() {
     this.api.account.createOAuth2Session(
       'google',
       environment.url.SUCCESS_OAUTH2,
@@ -155,8 +154,7 @@ export class AuthService {
     );
   }
 
-  signInWithFacebook(platform: string) {
-    console.log('signInWithFacebook', platform);
+  signInWithFacebook() {
     this.api.account.createOAuth2Session(
       'facebook',
       environment.url.SUCCESS_OAUTH2,
@@ -164,8 +162,7 @@ export class AuthService {
     );
   }
 
-  signInWithApple(platform: string) {
-    console.log('signInWithApple', platform);
+  signInWithApple() {
     this.api.account.createOAuth2Session(
       'apple',
       environment.url.SUCCESS_OAUTH2,
