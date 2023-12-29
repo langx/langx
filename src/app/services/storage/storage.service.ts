@@ -42,14 +42,20 @@ export class StorageService {
       key: key,
       value: value,
     });
+    // Log
+    console.log('setValue: ', key, value);
   }
 
   async getValue(key: string): Promise<string> {
     const { value } = await Preferences.get({ key: key });
+    // Log
+    console.log('getValue: ', value);
     return value;
   }
 
   async removeValue(key: string) {
     await Preferences.remove({ key: key });
+    // Log
+    console.log('removed: ', key);
   }
 }
