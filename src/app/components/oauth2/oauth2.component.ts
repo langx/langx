@@ -23,12 +23,6 @@ export class Oauth2Component implements OnInit {
     this.platform = Capacitor.getPlatform();
   }
 
-  // TODO: Delete here
-  // webState: string = JSON.stringify({
-  //   success: 'https://app.languagexchange.net/home',
-  //   failure: 'https://app.languagexchange.net/login',
-  // });
-
   // TODO: Use environment variable here
   oauth2State: string = JSON.stringify({
     success: 'https://app.languagexchange.net/login/oauth2-callback',
