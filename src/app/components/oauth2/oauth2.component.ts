@@ -23,9 +23,9 @@ export class Oauth2Component implements OnInit {
   });
 
   googleOptions: OAuth2AuthenticateOptions = {
+    appId: environment.oauth.google.appID,
     authorizationBaseUrl: environment.oauth.google.base,
     redirectUrl: environment.oauth.google.redirect,
-    appId: environment.oauth.google.clientID,
     state: this.oauth2State,
     scope: 'email profile',
     responseType: 'code',
