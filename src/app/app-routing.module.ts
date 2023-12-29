@@ -19,6 +19,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./pages/login/login.module').then((m) => m.LoginPageModule),
   },
+  {
+    path: 'auth/oauth2/success',
+    loadChildren: () =>
+      import('src/app/components/oauth2-callback/oauth2-callback.module').then(
+        (m) => m.Oauth2CallbackModule
+      ),
+  },
 ];
 
 @NgModule({
