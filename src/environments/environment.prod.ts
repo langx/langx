@@ -34,10 +34,17 @@ export const environment = {
       appID:
         '108932543808-gm27rt47oc22bd190ogrh7j5cmosv5su.apps.googleusercontent.com',
       base: 'https://accounts.google.com/o/oauth2/v2/auth',
-      redirect:
-        'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
+      uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
     },
-    facebook: {},
-    apple: {},
+    facebook: {
+      appID: '756286679647299',
+      base: 'https://www.facebook.com/v2.8/dialog/oauth',
+      uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/facebook/650750d21e4a6a589be3',
+    },
+    apple: {
+      appID: '',
+      base: '',
+      uri: '',
+    },
   },
 };
