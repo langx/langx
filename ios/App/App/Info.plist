@@ -29,12 +29,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>WKAppBoundDomains</key>
-	<array>
-		<string>languagexchange.net</string>
-		<string>db.languagexchange.net</string>
-		<string>app.languagexchange.net</string>
-	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
