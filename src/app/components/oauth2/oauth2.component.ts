@@ -35,7 +35,7 @@ export class Oauth2Component implements OnInit {
     state: this.oauth2State,
     scope: 'email profile',
     responseType: 'code',
-    logsEnabled: true,
+    logsEnabled: false,
     web: {
       windowTarget: '_self',
     },
@@ -44,21 +44,7 @@ export class Oauth2Component implements OnInit {
   };
 
   signInWithGoogle() {
-    OAuth2Client.authenticate(this.googleOauth2Options)
-      .then((response) => {
-        this.code = response['code'];
-        console.log('code: ', this.code);
-
-        // go to backend
-        console.log('OAuth success', response);
-      })
-      .catch((reason) => {
-        console.error('OAuth rejected', reason);
-      });
-  }
-
-  signInWithGoogle2() {
-    this.authService.signInWithGoogle();
+    OAuth2Client.authenticate(this.googleOauth2Options);
   }
 
   signInWithFacebook() {
