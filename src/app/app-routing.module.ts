@@ -26,6 +26,10 @@ const routes: Routes = [
         (m) => m.Oauth2CallbackModule
       ),
   },
+  {
+    path: 'auth/oauth2/failure',
+    redirectTo: 'login',
+  },
 ];
 
 @NgModule({
