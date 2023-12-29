@@ -99,6 +99,7 @@ export class ApiService {
     );
   }
 
+  // TODO: Delete this function
   // Rest API
   createJWTSession(jwt: string): Observable<any> {
     const url = `${environment.appwrite.APP_ENDPOINT}/account`;
