@@ -1,4 +1,3 @@
-// export const HOMEPAGE_URL = 'http://192.168.0.106:8100/';
 export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
@@ -21,11 +20,11 @@ export const environment = {
   url: {
     HOMEPAGE_URL: HOMEPAGE_URL,
     RESET_PASSWORD_URL: `${HOMEPAGE_URL}login/reset-password/new`,
-    HOME_URL: `${HOMEPAGE_URL}home`,
-    LOGIN_URL: `${HOMEPAGE_URL}login`,
     SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    SUCCESS_OAUTH2: `${HOMEPAGE_URL}login/oauth2-callback`,
+    FAILURE_OAUTH2: `${HOMEPAGE_URL}login`,
   },
   opts: {
     PAGINATION_LIMIT: 10,
