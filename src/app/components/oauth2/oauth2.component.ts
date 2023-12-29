@@ -25,11 +25,25 @@ export class Oauth2Component implements OnInit {
   googleOptions: OAuth2AuthenticateOptions = {
     appId: environment.oauth.google.appID,
     authorizationBaseUrl: environment.oauth.google.base,
-    redirectUrl: environment.oauth.google.redirect,
+    redirectUrl: environment.oauth.google.uri,
     state: this.oauth2State,
     scope: 'email profile',
     responseType: 'code',
     logsEnabled: false,
+    web: {
+      windowTarget: '_self',
+    },
+    android: {},
+    ios: {},
+  };
+
+  facebookOptions: OAuth2AuthenticateOptions = {
+    appId: environment.oauth.facebook.appID,
+    authorizationBaseUrl: environment.oauth.facebook.base,
+    redirectUrl: environment.oauth.facebook.uri,
+    state: this.oauth2State,
+    responseType: 'code',
+    logsEnabled: true,
     web: {
       windowTarget: '_self',
     },
@@ -42,7 +56,7 @@ export class Oauth2Component implements OnInit {
   }
 
   signInWithFacebook() {
-    this.authService.signInWithFacebook();
+    OAuth2Client.authenticate(this.facebookOptions);
   }
 
   signInWithApple() {
