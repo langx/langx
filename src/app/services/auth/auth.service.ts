@@ -150,8 +150,8 @@ export class AuthService {
     console.log('signInWithGoogle', platform);
     this.api.account.createOAuth2Session(
       'google',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
     );
   }
 
@@ -159,8 +159,8 @@ export class AuthService {
     console.log('signInWithFacebook', platform);
     this.api.account.createOAuth2Session(
       'facebook',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
     );
   }
 
@@ -168,8 +168,8 @@ export class AuthService {
     console.log('signInWithApple', platform);
     this.api.account.createOAuth2Session(
       'apple',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
     );
   }
 }
