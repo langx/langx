@@ -28,7 +28,7 @@ export class Oauth2Component implements OnInit {
     failure: environment.url.FAILURE_OAUTH2,
   });
 
-  googleOauth2Options: OAuth2AuthenticateOptions = {
+  googleOptions: OAuth2AuthenticateOptions = {
     authorizationBaseUrl: environment.oauth.google.base,
     redirectUrl: environment.oauth.google.redirect,
     appId: environment.oauth.google.clientID,
@@ -44,7 +44,7 @@ export class Oauth2Component implements OnInit {
   };
 
   signInWithGoogle() {
-    OAuth2Client.authenticate(this.googleOauth2Options);
+    OAuth2Client.authenticate(this.googleOptions);
   }
 
   signInWithFacebook() {
