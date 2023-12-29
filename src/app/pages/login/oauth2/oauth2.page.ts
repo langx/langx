@@ -12,8 +12,6 @@ import { loginWithJWTAction } from 'src/app/store/actions/auth.action';
   styleUrls: ['./oauth2.page.scss'],
 })
 export class Oauth2Page implements OnInit {
-  token: string = null;
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -25,14 +23,14 @@ export class Oauth2Page implements OnInit {
   }
 
   initValues() {
-    this.token = this.route.snapshot.paramMap.get('token') || null;
+    const token = this.route.snapshot.paramMap.get('token') || null;
     if (
       Capacitor.getPlatform() === 'android' ||
       Capacitor.getPlatform() === 'ios'
     ) {
-      if (this.token) {
+      if (token) {
         console.log('Dispatch to loginWithJWTAction');
-        let request: LoginWithJwtRequestInterface = { jwt: this.token };
+        let request: LoginWithJwtRequestInterface = { jwt: token };
         this.store.dispatch(loginWithJWTAction({ request }));
         return;
       }
