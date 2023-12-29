@@ -58,14 +58,14 @@ export class Oauth2Component implements OnInit {
   }
 
   signInWithGoogle2() {
-    this.authService.signInWithGoogle(this.platform);
+    this.authService.signInWithGoogle();
   }
 
   signInWithFacebook() {
-    this.authService.signInWithFacebook(this.platform);
+    this.authService.signInWithFacebook();
   }
 
   signInWithApple() {
-    this.authService.signInWithApple(this.platform);
+    this.authService.signInWithApple();
   }
 }
