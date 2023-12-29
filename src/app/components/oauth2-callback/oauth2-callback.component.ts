@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
+import { Subscription, filter } from 'rxjs';
+
+import { isLoggedInAction } from 'src/app/store/actions/auth.action';
+import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-oauth2-callback',
@@ -7,10 +12,41 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./oauth2-callback.component.scss'],
 })
 export class Oauth2CallbackComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  subscription: Subscription;
+
+  constructor(
+    private store: Store,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   async ngOnInit() {
     await this.initValues();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    this.subscription.add(
+      this.store
+        .pipe(
+          select(isLoggedInSelector),
+          filter((isLoggedIn) => isLoggedIn !== null) // ignore values until isLoggedIn is not null
+        )
+        .subscribe((isLoggedIn) => {
+          console.log('isLoggedIn', isLoggedIn);
+          if (!isLoggedIn) {
+            this.router.navigateByUrl('/login');
+          } else {
+            this.router.navigateByUrl('/home');
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   async initValues() {
@@ -28,12 +64,8 @@ export class Oauth2CallbackComponent implements OnInit {
     const cookieValue = JSON.stringify(cookieFallback);
     console.log('cookieValue: ', cookieValue);
 
-    // TODO: Dispatch to somewhere because
     localStorage.setItem('cookieFallback', cookieValue);
 
-    // TODO: There is a bug here, it loads the home page before the cookie is set
-    setTimeout(() => {
-      this.router.navigateByUrl('/');
-    }, 200);
+    this.store.dispatch(isLoggedInAction());
   }
 }
