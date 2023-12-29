@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Client, Databases, Account, Locale } from 'appwrite';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { environment } from 'src/environments/environment';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +12,7 @@ export class ApiService {
   account: Account;
   locale: Locale;
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.init();
   }
 
