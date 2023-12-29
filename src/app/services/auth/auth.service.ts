@@ -105,6 +105,7 @@ export class AuthService {
 
   logout(): Observable<any> {
     return from(this.api.account.deleteSession('current')).pipe(
+      tap(() => this.storageService.removeValue('userToken')),
       tap(() => this._user.next(null))
     );
   }
