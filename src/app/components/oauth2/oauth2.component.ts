@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
 import {
   OAuth2AuthenticateOptions,
   OAuth2Client,
@@ -14,14 +13,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./oauth2.component.scss'],
 })
 export class Oauth2Component implements OnInit {
-  code: string;
-  platform: string;
-
   constructor(private authService: AuthService) {}
 
-  ngOnInit() {
-    this.platform = Capacitor.getPlatform();
-  }
+  ngOnInit() {}
 
   oauth2State: string = JSON.stringify({
     success: environment.url.SUCCESS_OAUTH2,
