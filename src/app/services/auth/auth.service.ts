@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  from,
+  tap,
+  Observable,
+  of,
+  catchError,
+} from 'rxjs';
 
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
@@ -105,6 +113,10 @@ export class AuthService {
 
   logout(): Observable<any> {
     return from(this.api.account.deleteSession('current')).pipe(
+      catchError((error) => {
+        console.error('Error deleting session:', error);
+        return of(null);
+      }),
       tap(() => this.storageService.removeValue('userToken')),
       tap(() => this._user.next(null))
     );
