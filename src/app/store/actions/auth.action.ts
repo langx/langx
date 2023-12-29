@@ -4,7 +4,6 @@ import { ActionTypes } from 'src/app/store/actions/types/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
-import { LoginWithJwtRequestInterface } from 'src/app/models/types/requests/loginWithJwtRequest.interface';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
@@ -25,22 +24,6 @@ export const loginSuccessAction = createAction(
 
 export const loginFailureAction = createAction(
   ActionTypes.LOGIN_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
-// Login With JWT
-export const loginWithJWTAction = createAction(
-  ActionTypes.LOGIN_WITH_JWT,
-  props<{ request: LoginWithJwtRequestInterface }>()
-);
-
-export const loginWithJWTSuccessAction = createAction(
-  ActionTypes.LOGIN_WITH_JWT_SUCCESS,
-  props<{ payload: Account }>()
-);
-
-export const loginWithJWTFailureAction = createAction(
-  ActionTypes.LOGIN_WITH_JWT_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 

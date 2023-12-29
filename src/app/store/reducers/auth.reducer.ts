@@ -16,9 +16,6 @@ import {
   loginAction,
   loginFailureAction,
   loginSuccessAction,
-  loginWithJWTAction,
-  loginWithJWTFailureAction,
-  loginWithJWTSuccessAction,
   logoutAction,
   logoutFailureAction,
   logoutSuccessAction,
@@ -99,33 +96,6 @@ const authReducer = createReducer(
   ),
   on(
     loginFailureAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      loginValidationError: action.error,
-    })
-  ),
-
-  // Login With JWT Actions
-  on(
-    loginWithJWTAction,
-    (state): AuthStateInterface => ({
-      ...state,
-      isLoading: true,
-      loginValidationError: null,
-    })
-  ),
-  on(
-    loginWithJWTSuccessAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      isLoggedIn: true,
-      account: action.payload,
-    })
-  ),
-  on(
-    loginWithJWTFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,

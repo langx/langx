@@ -34,12 +34,6 @@ export class ApiService {
     return this.client;
   }
 
-  setJWT(jwt: string): void {
-    this.client.setJWT(jwt);
-    // TODO: Disable this console.log
-    console.log('JWT set');
-  }
-
   listDocuments(collectionId: string, queries?: string[]): Promise<any> {
     if (queries) {
       return this.database.listDocuments(
@@ -97,19 +91,6 @@ export class ApiService {
       collectionId,
       documentId
     );
-  }
-
-  // TODO: Delete this function
-  // Rest API
-  createJWTSession(jwt: string): Observable<any> {
-    const url = `${environment.appwrite.APP_ENDPOINT}/account`;
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'X-Appwrite-Response-Format': '1.4.0',
-      'X-Appwrite-Project': environment.appwrite.APP_PROJECT,
-      'X-Appwrite-JWT': jwt,
-    });
-    return this.http.get(url, { headers });
   }
 
   // Locale API

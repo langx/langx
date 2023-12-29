@@ -1,6 +1,5 @@
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
@@ -14,14 +13,12 @@ import { localeReducers } from 'src/app/store/reducers/locale.reducer';
 import { authReducers } from 'src/app/store/reducers/auth.reducer';
 import { LocaleEffects } from './store/effects/locale.effect';
 import { AuthEffect } from 'src/app/store/effects/auth.effect';
-import { AppInitService } from 'src/app/services/appInit/app-init.service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
     IonicModule.forRoot(),
     StoreModule.forRoot({}),
     StoreDevtoolsModule.instrument({
@@ -33,16 +30,7 @@ import { AppInitService } from 'src/app/services/appInit/app-init.service';
     StoreModule.forFeature('locale', localeReducers),
     EffectsModule.forFeature([LocaleEffects, AuthEffect]),
   ],
-  providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (appInitializer: AppInitService) => () =>
-        appInitializer.init(),
-      deps: [AppInitService],
-      multi: true,
-    },
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-  ],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
