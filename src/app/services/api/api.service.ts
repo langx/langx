@@ -36,6 +36,8 @@ export class ApiService {
 
   setJWT(jwt: string): void {
     this.client.setJWT(jwt);
+    // TODO: Disable this console.log
+    console.log('JWT set');
   }
 
   listDocuments(collectionId: string, queries?: string[]): Promise<any> {
