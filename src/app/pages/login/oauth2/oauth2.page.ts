@@ -28,8 +28,7 @@ export class Oauth2Page implements OnInit {
     this.token = this.route.snapshot.paramMap.get('token') || null;
     if (
       Capacitor.getPlatform() === 'android' ||
-      Capacitor.getPlatform() === 'ios' ||
-      Capacitor.getPlatform() === 'web' // TODO: Remove this line
+      Capacitor.getPlatform() === 'ios'
     ) {
       if (this.token) {
         console.log('Dispatch to loginWithJWTAction');
