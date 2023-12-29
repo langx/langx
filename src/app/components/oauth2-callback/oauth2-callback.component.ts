@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { StorageService } from 'src/app/services/storage/storage.service';
-
 @Component({
   selector: 'app-oauth2-callback',
   templateUrl: './oauth2-callback.component.html',
@@ -16,7 +14,6 @@ export class Oauth2CallbackComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private storageService: StorageService
   ) {}
 
   async ngOnInit() {
