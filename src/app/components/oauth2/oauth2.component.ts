@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -22,6 +23,20 @@ export class Oauth2Component implements OnInit {
 
   signInWithApple() {
     // TODO: It may be better usage
-    this.authService.signInWithApple();
+    // this.authService.signInWithApple();
+
+    if (Capacitor.getPlatform() === 'web') {
+      this.signInWithAppleForWeb();
+    } else {
+      this.signInWithAppleNative();
+    }
+  }
+
+  signInWithAppleForWeb() {
+    console.log('signInWithAppleForWeb');
+  }
+
+  signInWithAppleNative() {
+    console.log('signInWithAppleNative');
   }
 }
