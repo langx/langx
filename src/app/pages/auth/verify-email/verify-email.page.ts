@@ -29,10 +29,7 @@ export class VerifyEmailPage implements OnInit {
     private toastController: ToastController
   ) {}
 
-  async ngOnInit() {
-    this.initValues();
-    this.countDown();
-  }
+  async ngOnInit() {}
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
@@ -68,6 +65,11 @@ export class VerifyEmailPage implements OnInit {
   ionViewWillLeave() {
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
+  }
+
+  ionViewDidEnter() {
+    this.initValues();
+    this.countDown();
   }
 
   initValues() {
