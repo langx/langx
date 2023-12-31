@@ -31,13 +31,19 @@
         <ion-item>
           <ion-icon name="mail-outline"></ion-icon>
           <ion-label>{{ (account$ | async)?.email }}</ion-label>
-          <!--
-          <ion-buttons slot="end">
-            <ion-button size="small" disabled>
-              Change
-            </ion-button>
-          </ion-buttons>
-          -->
+          <!-- <ion-buttons slot="end">
+            <ion-button size="small" disabled> Change </ion-button>
+          </ion-buttons> -->
+          <ion-item slot="end" *ngIf="(account$ | async)?.emailVerification">
+            <ion-icon
+              name="shield-checkmark-outline"
+              color="success"
+            ></ion-icon>
+          </ion-item>
+          <ion-item *ngIf="!(account$ | async)?.emailVerification">
+            <!-- TODO: Add Email Verification -->
+            <ion-label><a href="#">Verify</a></ion-label>
+          </ion-item>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -49,13 +55,13 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
+        <!-- TODO: List Identities -->
         <ion-item *ngIf="(account$ | async)?.emailVerification">
           <ion-icon name="mail-outline"></ion-icon>
           <ion-label>Email Verified</ion-label>
         </ion-item>
         <ion-item *ngIf="!(account$ | async)?.emailVerification">
           <ion-icon name="unlink-outline"></ion-icon>
-          <!-- TODO: Add Email Verification -->
           <ion-label><a href="#">Verify Email</a></ion-label>
         </ion-item>
       </ion-list>
