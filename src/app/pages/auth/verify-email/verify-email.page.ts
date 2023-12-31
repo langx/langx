@@ -21,6 +21,8 @@ export class VerifyEmailPage implements OnInit {
   subscription: Subscription;
   second: number = 3;
 
+  verified: boolean = null;
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -42,6 +44,7 @@ export class VerifyEmailPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            this.verified = false;
           }
         })
     );
@@ -56,6 +59,7 @@ export class VerifyEmailPage implements OnInit {
               'Email has been successfully verified!',
               'success'
             );
+            this.verified = true;
           }
         })
     );
@@ -108,7 +112,7 @@ export class VerifyEmailPage implements OnInit {
     const toast = await this.toastController.create({
       message: msg,
       color: color || 'primary',
-      duration: 1500,
+      duration: 3000,
       position: 'bottom',
     });
 
