@@ -20,4 +20,5 @@ export interface AuthStateInterface {
   profileError: ErrorInterface | null;
   presenceError: ErrorInterface | null;
   editProfileError: ErrorInterface | null;
+  accountDetailError: ErrorInterface | null;
 }
