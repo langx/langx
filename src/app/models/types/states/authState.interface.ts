@@ -1,7 +1,8 @@
+import { Models } from 'appwrite';
+
 import { Account } from '../../Account';
 import { Language } from '../../Language';
 import { User } from '../../User';
-import { listIdentitiesResponseInterface } from '../responses/listIdentitiesResponse.interface';
 import { ErrorInterface } from '../errors/error.interface';
 
 export interface AuthStateInterface {
@@ -10,7 +11,7 @@ export interface AuthStateInterface {
   currentUser: User | null;
   isLoggedIn: boolean | null;
   languages: Language[] | null;
-  identities: listIdentitiesResponseInterface | null;
+  identities: Models.Identity[] | null;
   isLanguageDone: boolean;
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
