@@ -64,3 +64,8 @@ export const identitiesSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.identities
 );
+
+export const sessionsSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.sessions
+);
