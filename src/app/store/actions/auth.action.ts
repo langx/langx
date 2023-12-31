@@ -11,6 +11,7 @@ import { createLanguageRequestInterface } from 'src/app/models/types/requests/cr
 import { Language } from 'src/app/models/Language';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
+import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
 
 // Login
 export const loginAction = createAction(
@@ -120,6 +121,19 @@ export const listIdentitiesSuccessAction = createAction(
 
 export const listIdentitiesFailureAction = createAction(
   ActionTypes.LIST_IDENTITIES_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// List Sessions
+export const listSessionsAction = createAction(ActionTypes.LIST_SESSIONS);
+
+export const listSessionsSuccessAction = createAction(
+  ActionTypes.LIST_SESSIONS_SUCCESS,
+  props<{ payload: listSessionsResponseInterface }>()
+);
+
+export const listSessionsFailureAction = createAction(
+  ActionTypes.LIST_SESSIONS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
