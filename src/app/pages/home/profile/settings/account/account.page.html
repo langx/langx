@@ -50,12 +50,13 @@
     <ion-card-content>
       <ion-list>
         <ion-item *ngIf="(account$ | async)?.emailVerification">
-          <ion-icon name="logo-google"></ion-icon>
-          <ion-label>Google Verified Badge</ion-label>
+          <ion-icon name="mail-outline"></ion-icon>
+          <ion-label>Email Verified</ion-label>
         </ion-item>
         <ion-item *ngIf="!(account$ | async)?.emailVerification">
           <ion-icon name="unlink-outline"></ion-icon>
-          <ion-label>None</ion-label>
+          <!-- TODO: Add Email Verification -->
+          <ion-label><a href="#">Verify Email</a></ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
