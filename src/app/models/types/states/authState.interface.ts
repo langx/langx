@@ -14,7 +14,8 @@ export interface AuthStateInterface {
   identities: Models.Identity[] | null;
   sessions: Models.Session[] | null;
   isLanguageDone: boolean;
-  verifyEmailSuccess: boolean,
+  verifyEmailSuccess: boolean;
+  verifyEmailConfirmationSuccess: boolean;
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
   loginValidationError: ErrorInterface | null;
@@ -22,4 +23,5 @@ export interface AuthStateInterface {
   presenceError: ErrorInterface | null;
   editProfileError: ErrorInterface | null;
   accountDetailError: ErrorInterface | null;
+  verifyEmailConfirmationError: ErrorInterface | null;
 }
