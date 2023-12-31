@@ -22,6 +22,7 @@ import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
+import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
@@ -36,6 +37,9 @@ import {
   listIdentitiesAction,
   listIdentitiesFailureAction,
   listIdentitiesSuccessAction,
+  listSessionsAction,
+  listSessionsFailureAction,
+  listSessionsSuccessAction,
   loginAction,
   loginFailureAction,
   loginSuccessAction,
@@ -272,6 +276,25 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(listIdentitiesFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  listSessions$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(listSessionsAction),
+      switchMap(() => {
+        return this.authService.listSessions().pipe(
+          map((payload: listSessionsResponseInterface) => {
+            return listSessionsSuccessAction({ payload });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(listSessionsFailureAction({ error }));
           })
         );
       })
