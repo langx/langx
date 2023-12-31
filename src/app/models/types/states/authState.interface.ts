@@ -12,6 +12,7 @@ export interface AuthStateInterface {
   isLoggedIn: boolean | null;
   languages: Language[] | null;
   identities: Models.Identity[] | null;
+  sessions: Models.Session[] | null;
   isLanguageDone: boolean;
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
