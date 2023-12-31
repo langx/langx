@@ -10,6 +10,7 @@ import { CompleteRegistrationRequestInterface } from 'src/app/models/types/reque
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { Language } from 'src/app/models/Language';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
+import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 
 // Login
 export const loginAction = createAction(
@@ -106,6 +107,19 @@ export const isLoggedInSuccessCompleteRegistrationAction = createAction(
 
 export const isLoggedInFailureAction = createAction(
   ActionTypes.ISLOGGEDIN_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// List Identities
+export const listIdentitiesAction = createAction(ActionTypes.LIST_IDENTITIES);
+
+export const listIdentitiesSuccessAction = createAction(
+  ActionTypes.LIST_IDENTITIES_SUCCESS,
+  props<{ payload: listIdentitiesResponseInterface }>()
+);
+
+export const listIdentitiesFailureAction = createAction(
+  ActionTypes.LIST_IDENTITIES_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
