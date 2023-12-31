@@ -19,6 +19,7 @@ import {
 })
 export class VerifyEmailPage implements OnInit {
   subscription: Subscription;
+  second: number = 3;
 
   constructor(
     private store: Store,
@@ -28,6 +29,7 @@ export class VerifyEmailPage implements OnInit {
 
   async ngOnInit() {
     this.initValues();
+    this.countDown();
   }
 
   ionViewWillEnter() {
@@ -79,6 +81,20 @@ export class VerifyEmailPage implements OnInit {
     };
 
     this.store.dispatch(verifyEmailConfirmationAction({ request }));
+  }
+
+  //
+  // Count Down
+  //
+
+  countDown() {
+    const interval = setInterval(() => {
+      this.second--;
+
+      if (this.second === 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
   }
 
   //
