@@ -53,6 +53,9 @@ import {
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
   verifyEmailAction,
+  verifyEmailConfirmationAction,
+  verifyEmailConfirmationFailureAction,
+  verifyEmailConfirmationSuccessAction,
   verifyEmailFailureAction,
   verifyEmailSuccessAction,
 } from 'src/app/store/actions/auth.action';
@@ -281,6 +284,35 @@ export class AuthEffect {
             return of(verifyEmailFailureAction({ error }));
           })
         );
+      })
+    )
+  );
+
+  verifyEmailConfirmation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(verifyEmailConfirmationAction),
+      switchMap(({ request }) => {
+        return this.authService
+          .verifyEmailConfirmation(request.userId, request.secret)
+          .pipe(
+            map(({ response }) => {
+              console.log('response', response);
+              if (response?.secret !== '') {
+                return verifyEmailConfirmationSuccessAction();
+              } else {
+                const error: ErrorInterface = {
+                  message: response?.message,
+                };
+                return verifyEmailConfirmationFailureAction({ error });
+              }
+            }),
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(verifyEmailConfirmationFailureAction({ error }));
+            })
+          );
       })
     )
   );
