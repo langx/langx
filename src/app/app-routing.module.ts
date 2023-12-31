@@ -30,6 +30,13 @@ const routes: Routes = [
     path: 'auth/oauth2/failure',
     redirectTo: 'login',
   },
+  {
+    path: 'auth/verify-email',
+    loadChildren: () =>
+      import('./pages/auth/verify-email/verify-email.module').then(
+        (m) => m.VerifyEmailPageModule
+      ),
+  },
 ];
 
 @NgModule({
