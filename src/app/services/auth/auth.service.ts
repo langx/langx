@@ -106,6 +106,10 @@ export class AuthService {
     );
   }
 
+  verifyEmailConfirmation(userId: string, secret: string): Observable<any> {
+    return from(this.api.account.updateVerification(userId, 'secret'));
+  }
+
   // TODO: It may be async function
   resetPassword(email: string) {
     console.log('resetPassword:', email);
