@@ -13,6 +13,9 @@ import {
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
+  listIdentitiesAction,
+  listIdentitiesFailureAction,
+  listIdentitiesSuccessAction,
   loginAction,
   loginFailureAction,
   loginSuccessAction,
@@ -64,6 +67,7 @@ const initialState: AuthStateInterface = {
   currentUser: null,
   isLoggedIn: null,
   languages: null,
+  identities: null,
   isLanguageDone: false,
   registerValidationError: null,
   loginValidationError: null,
@@ -458,6 +462,31 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       presenceError: action.error,
+    })
+  ),
+
+  // List Identities Actions
+  on(
+    listIdentitiesAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    listIdentitiesSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      identities: action.payload,
+    })
+  ),
+  on(
+    listIdentitiesFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      registerValidationError: action.error,
     })
   ),
 
