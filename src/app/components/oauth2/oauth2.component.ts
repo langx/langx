@@ -22,15 +22,7 @@ export class Oauth2Component implements OnInit {
   }
 
   signInWithApple() {
-    // TODO: It may be better usage
-    if (Capacitor.getPlatform() === 'web') {
-      this.authService.signInWithApple();
-    } else {
-      this.signInWithAppleNative();
-    }
-  }
-
-  signInWithAppleNative() {
-    console.log('signInWithAppleNative');
+    // TODO: #313  🚀 [Feature] : Native sing-in-with-apple
+    this.authService.signInWithApple();
   }
 }
