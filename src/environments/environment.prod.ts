@@ -23,7 +23,6 @@ export const environment = {
     SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
-    // SUCCESS_OAUTH2: `${HOMEPAGE_URL}login/oauth2-callback`,
     SUCCESS_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/success`,
     FAILURE_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/failure`,
   },
