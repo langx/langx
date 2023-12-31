@@ -16,6 +16,9 @@ import {
   listIdentitiesAction,
   listIdentitiesFailureAction,
   listIdentitiesSuccessAction,
+  listSessionsAction,
+  listSessionsFailureAction,
+  listSessionsSuccessAction,
   loginAction,
   loginFailureAction,
   loginSuccessAction,
@@ -483,6 +486,34 @@ const authReducer = createReducer(
   ),
   on(
     listIdentitiesFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      registerValidationError: action.error,
+    })
+  ),
+
+  // List Sessions Actions
+  on(
+    listSessionsAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    listSessionsSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: {
+        ...state.currentUser,
+        sessions: action.payload?.sessions,
+      },
+    })
+  ),
+  on(
+    listSessionsFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
