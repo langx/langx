@@ -317,6 +317,22 @@ export class AuthEffect {
     )
   );
 
+  redirectAfterVerifyEmailConfirmation$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          verifyEmailConfirmationSuccessAction,
+          verifyEmailConfirmationFailureAction
+        ),
+        tap(() => {
+          setTimeout(() => {
+            this.router.navigateByUrl('/home');
+          }, 3000);
+        })
+      ),
+    { dispatch: false }
+  );
+
   listIdentities$ = createEffect(() =>
     this.actions$.pipe(
       ofType(listIdentitiesAction),
