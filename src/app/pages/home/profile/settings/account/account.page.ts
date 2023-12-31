@@ -47,9 +47,8 @@ export class AccountPage implements OnInit {
     this.sessions$ = this.store.pipe(select(sessionsSelector));
   }
 
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
+  verifyEmail() {
+    console.warn('verifyEmail clicked');
   }
 
   // TODO: implement these methods
@@ -58,5 +57,14 @@ export class AccountPage implements OnInit {
     // TODO: implement this method
     // First show a modal to confirm the action
     // Then call the service to disable the account
+  }
+
+  //
+  // Utils
+  //
+
+  lastSeen(d: any) {
+    if (!d) return null;
+    return lastSeen(d);
   }
 }
