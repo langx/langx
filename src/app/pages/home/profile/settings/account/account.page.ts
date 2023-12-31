@@ -19,7 +19,8 @@ import {
   identitiesSelector,
   sessionsSelector,
   isLoadingSelector,
-  accountDetailError,
+  accountDetailErrorSelector,
+  verifyEmailSuccessSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -35,6 +36,10 @@ export class AccountPage implements OnInit {
   identities$: Observable<Models.Identity[]> = null;
   sessions$: Observable<Models.Session[]> = null;
   isLoading$: Observable<boolean> = null;
+  verifyEmailSuccess$: Observable<boolean> = null;
+
+  verifyButtonDisabled = false; // to control the button's state
+  verifyButtonText = 'Verify'; // to hold the button's text
 
   constructor(private store: Store, private toastController: ToastController) {}
 
@@ -48,10 +53,22 @@ export class AccountPage implements OnInit {
     // Present Toast if error
     this.subscription.add(
       this.store
-        .pipe(select(accountDetailError))
+        .pipe(select(accountDetailErrorSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    // Present Toast if verifyEmailSuccess
+    this.subscription.add(
+      this.store
+        .pipe(select(verifyEmailSuccessSelector))
+        .subscribe((verifyEmailSuccess: boolean) => {
+          if (verifyEmailSuccess) {
+            this.presentToast('Email has been successfully sent.', 'success');
+            // Lock the button for 30 seconds
           }
         })
     );
@@ -77,6 +94,22 @@ export class AccountPage implements OnInit {
 
   verifyEmail() {
     this.store.dispatch(verifyEmailAction());
+
+    this.verifyButtonDisabled = true; // disable the button
+    let countdown = 30; // start the countdown
+
+    // update the button's text and decrease the countdown value every second
+    const intervalId = setInterval(() => {
+      this.verifyButtonText = `${countdown} sec`;
+      countdown--;
+
+      // when the countdown reaches 0, re-enable the button and clear the interval
+      if (countdown < 0) {
+        this.verifyButtonDisabled = false;
+        this.verifyButtonText = 'Verify';
+        clearInterval(intervalId);
+      }
+    }, 1000);
   }
 
   // TODO: implement these methods
