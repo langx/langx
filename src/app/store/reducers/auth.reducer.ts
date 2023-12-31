@@ -71,6 +71,7 @@ const initialState: AuthStateInterface = {
   isLoggedIn: null,
   languages: null,
   identities: null,
+  sessions: null,
   isLanguageDone: false,
   registerValidationError: null,
   loginValidationError: null,
@@ -506,10 +507,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      currentUser: {
-        ...state.currentUser,
-        sessions: action.payload?.sessions,
-      },
+      sessions: action.payload?.sessions,
     })
   ),
   on(
