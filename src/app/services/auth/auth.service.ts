@@ -90,6 +90,10 @@ export class AuthService {
     return from(this.api.account.listIdentities());
   }
 
+  listSessions(): Observable<Models.SessionList> {
+    return from(this.api.account.listSessions());
+  }
+
   logout(): Observable<any> {
     return from(this.api.account.deleteSession('current')).pipe(
       tap(() => this._user.next(null))
