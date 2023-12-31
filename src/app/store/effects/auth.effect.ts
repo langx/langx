@@ -21,6 +21,7 @@ import { LanguageService } from 'src/app/services/user/language.service';
 import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
+import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
@@ -32,6 +33,9 @@ import {
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
+  listIdentitiesAction,
+  listIdentitiesFailureAction,
+  listIdentitiesSuccessAction,
   loginAction,
   loginFailureAction,
   loginSuccessAction,
@@ -253,6 +257,25 @@ export class AuthEffect {
         })
       ),
     { dispatch: false }
+  );
+
+  listIdentities$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(listIdentitiesAction),
+      switchMap(() => {
+        return this.authService.listIdentities().pipe(
+          map((payload: listIdentitiesResponseInterface) => {
+            return listIdentitiesSuccessAction({ payload });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(listIdentitiesFailureAction({ error }));
+          })
+        );
+      })
+    )
   );
 
   logout$ = createEffect(() =>
