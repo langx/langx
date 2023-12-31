@@ -68,7 +68,6 @@ export class AccountPage implements OnInit {
         .subscribe((verifyEmailSuccess: boolean) => {
           if (verifyEmailSuccess) {
             this.presentToast('Email has been successfully sent.', 'success');
-            // Lock the button for 30 seconds
           }
         })
     );
