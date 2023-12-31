@@ -100,6 +100,12 @@ export class AuthService {
     );
   }
 
+  verifyEmail(): Observable<any> {
+    return from(
+      this.api.account.createVerification(environment.url.VERIFY_EMAIL)
+    );
+  }
+
   // TODO: It may be async function
   resetPassword(email: string) {
     console.log('resetPassword:', email);
