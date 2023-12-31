@@ -1,21 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Models } from 'appwrite';
+import { ToastController } from '@ionic/angular';
 
 import { lastSeen } from 'src/app/extras/utils';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
-import { AuthService } from 'src/app/services/auth/auth.service';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   listIdentitiesAction,
   listSessionsAction,
+  verifyEmailAction,
 } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
   currentUserSelector,
   identitiesSelector,
   sessionsSelector,
+  isLoadingSelector,
+  accountDetailError,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -24,15 +28,38 @@ import {
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
+  subscription: Subscription;
+
   account$: Observable<Account | null> = null;
   currentUser$: Observable<User> = null;
   identities$: Observable<Models.Identity[]> = null;
   sessions$: Observable<Models.Session[]> = null;
+  isLoading$: Observable<boolean> = null;
 
-  constructor(private store: Store, private authService: AuthService) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initValues();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(accountDetailError))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValues() {
@@ -45,10 +72,11 @@ export class AccountPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
   verifyEmail() {
-    console.warn('verifyEmail clicked');
+    this.store.dispatch(verifyEmailAction());
   }
 
   // TODO: implement these methods
@@ -66,5 +94,20 @@ export class AccountPage implements OnInit {
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
