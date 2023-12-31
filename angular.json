@@ -29,6 +29,11 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/.well-known",
+                "output": ".well-known/"
               }
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],

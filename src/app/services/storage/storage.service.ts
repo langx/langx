@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Storage } from 'appwrite';
-import { ApiService } from '../api/api.service';
 import { Preferences } from '@capacitor/preferences';
+
+import { ApiService } from 'src/app/services/api/api.service';
 
 @Injectable({
   providedIn: 'root',

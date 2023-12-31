@@ -24,6 +24,8 @@ export class AuthGuard implements CanLoad {
 
   canLoad(next: ActivatedRouteSnapshot): Observable<boolean | UrlTree> {
     return new Observable((observer) => {
+      // TODO: Disable this console.log
+      console.log('AuthGuard');
       this.store.dispatch(isLoggedInAction());
       this.store
         .pipe(

@@ -76,7 +76,7 @@ const initialState: AuthStateInterface = {
 const authReducer = createReducer(
   initialState,
 
-  //Login Actions
+  // Login Actions
   on(
     loginAction,
     (state): AuthStateInterface => ({

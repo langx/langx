@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  from,
+  tap,
+  Observable,
+  of,
+  catchError,
+} from 'rxjs';
 
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
@@ -92,6 +100,7 @@ export class AuthService {
     );
   }
 
+  // TODO: It may be async function
   resetPassword(email: string) {
     console.log('resetPassword:', email);
     return this.api.account
@@ -116,11 +125,26 @@ export class AuthService {
   }
 
   signInWithGoogle() {
-    console.log('signInWithGoogle');
     this.api.account.createOAuth2Session(
       'google',
-      environment.url.HOME_URL,
-      environment.url.LOGIN_URL
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
+    );
+  }
+
+  signInWithFacebook() {
+    this.api.account.createOAuth2Session(
+      'facebook',
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
+    );
+  }
+
+  signInWithApple() {
+    this.api.account.createOAuth2Session(
+      'apple',
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
     );
   }
 }
