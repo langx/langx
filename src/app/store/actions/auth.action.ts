@@ -3,15 +3,16 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/types/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
+import { Language } from 'src/app/models/Language';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { CompleteRegistrationRequestInterface } from 'src/app/models/types/requests/completeRegistrationRequest.interface';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
-import { Language } from 'src/app/models/Language';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
+import { verifyEmailResponseInterface } from 'src/app/models/types/responses/verifyEmailResponse.interface';
 
 // Login
 export const loginAction = createAction(
@@ -108,6 +109,19 @@ export const isLoggedInSuccessCompleteRegistrationAction = createAction(
 
 export const isLoggedInFailureAction = createAction(
   ActionTypes.ISLOGGEDIN_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Verify Email
+export const verifyEmailAction = createAction(ActionTypes.VERIFY_EMAIL);
+
+export const verifyEmailSuccessAction = createAction(
+  ActionTypes.VERIFY_EMAIL_SUCCESS,
+  props<{ payload: verifyEmailResponseInterface }>()
+);
+
+export const verifyEmailFailureAction = createAction(
+  ActionTypes.VERIFY_EMAIL_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
