@@ -478,7 +478,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      identities: action.payload,
+      identities: action.payload?.identities,
     })
   ),
   on(
