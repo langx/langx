@@ -72,6 +72,9 @@ export class VerifyEmailPage implements OnInit {
     if (!params.get('userId') || !params.get('secret')) {
       // Present Toast if error
       this.presentToast('Invalid URL', 'danger');
+      setTimeout(() => {
+        window.location.href = '/home';
+      }, 3000);
       return;
     }
 
