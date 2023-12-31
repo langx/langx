@@ -1,14 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
-import {
-  BehaviorSubject,
-  concatMap,
-  from,
-  tap,
-  Observable,
-  of,
-  catchError,
-} from 'rxjs';
+import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
 
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
@@ -94,8 +86,8 @@ export class AuthService {
     return from(this.api.account.get());
   }
 
-  listIdentities() {
-    return this.api.account.listIdentities();
+  listIdentities(): Observable<Models.IdentityList> {
+    return from(this.api.account.listIdentities());
   }
 
   logout(): Observable<any> {
