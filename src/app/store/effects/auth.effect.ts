@@ -52,6 +52,9 @@ import {
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
+  verifyEmailAction,
+  verifyEmailFailureAction,
+  verifyEmailSuccessAction,
 } from 'src/app/store/actions/auth.action';
 
 @Injectable()
@@ -261,6 +264,25 @@ export class AuthEffect {
         })
       ),
     { dispatch: false }
+  );
+
+  verifyEmail$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(verifyEmailAction),
+      switchMap(() => {
+        return this.authService.verifyEmail().pipe(
+          map(() => {
+            return verifyEmailSuccessAction();
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(verifyEmailFailureAction({ error }));
+          })
+        );
+      })
+    )
   );
 
   listIdentities$ = createEffect(() =>
