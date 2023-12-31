@@ -10,6 +10,7 @@ import {
   listCountriesAction,
   listLanguagesAction,
 } from 'src/app/store/actions/locale.action';
+import { environment } from 'src/environments/environment';
 
 register();
 
@@ -82,25 +83,13 @@ export class AppComponent {
   // Deep Link
   //
 
-  // TODO: Use Environtment Variables here
-  // TODO: Make better logic
   initDeepLink() {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       this.zone.run(() => {
         console.log('appUrlOpen', event);
-        const slug = event.url.split('app.languagexchange.net').pop();
+        const slug = event.url.split(environment.url.HOMEPAGE_URL).pop();
         console.log('slug: ', slug);
-        if (slug) {
-          if (slug.startsWith('tech.newchapter.languagexchange:/')) {
-            const newSlug = slug
-              .split('tech.newchapter.languagexchange:')
-              .pop();
-            console.log('newSlug: ', newSlug);
-            this.router.navigateByUrl(newSlug);
-          } else {
-            this.router.navigateByUrl(slug);
-          }
-        }
+        this.router.navigateByUrl(slug);
       });
     });
   }
