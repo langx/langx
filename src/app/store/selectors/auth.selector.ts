@@ -69,3 +69,8 @@ export const sessionsSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.sessions
 );
+
+export const accountDetailError = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.accountDetailError
+);
