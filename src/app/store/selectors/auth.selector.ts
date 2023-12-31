@@ -79,3 +79,13 @@ export const verifyEmailSuccessSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.verifyEmailSuccess
 );
+
+export const verifyEmailConfirmationSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.verifyEmailConfirmationSuccess
+);
+
+export const verifyEmailConfirmationErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.verifyEmailConfirmationError
+);
