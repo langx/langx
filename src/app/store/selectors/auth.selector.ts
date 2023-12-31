@@ -70,7 +70,12 @@ export const sessionsSelector = createSelector(
   (authState: AuthStateInterface) => authState.sessions
 );
 
-export const accountDetailError = createSelector(
+export const accountDetailErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.accountDetailError
+);
+
+export const verifyEmailSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.verifyEmailSuccess
 );
