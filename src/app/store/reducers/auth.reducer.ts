@@ -82,6 +82,7 @@ const initialState: AuthStateInterface = {
   presenceError: null,
   profileError: null,
   editProfileError: null,
+  accountDetailError: null,
 };
 
 const authReducer = createReducer(
@@ -492,7 +493,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      registerValidationError: action.error,
+      accountDetailError: action.error,
     })
   ),
 
@@ -517,7 +518,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      registerValidationError: action.error,
+      accountDetailError: action.error,
     })
   ),
 
