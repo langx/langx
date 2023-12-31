@@ -31,6 +31,9 @@ import {
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
+  verifyEmailAction,
+  verifyEmailFailureAction,
+  verifyEmailSuccessAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -466,6 +469,30 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       presenceError: action.error,
+    })
+  ),
+
+  // Verify Email Actions
+  on(
+    verifyEmailAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    verifyEmailSuccessAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    verifyEmailFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      registerValidationError: action.error,
     })
   ),
 
