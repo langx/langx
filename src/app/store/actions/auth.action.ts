@@ -12,7 +12,6 @@ import { createLanguageRequestInterface } from 'src/app/models/types/requests/cr
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
-import { verifyEmailResponseInterface } from 'src/app/models/types/responses/verifyEmailResponse.interface';
 
 // Login
 export const loginAction = createAction(
@@ -116,8 +115,7 @@ export const isLoggedInFailureAction = createAction(
 export const verifyEmailAction = createAction(ActionTypes.VERIFY_EMAIL);
 
 export const verifyEmailSuccessAction = createAction(
-  ActionTypes.VERIFY_EMAIL_SUCCESS,
-  props<{ payload: verifyEmailResponseInterface }>()
+  ActionTypes.VERIFY_EMAIL_SUCCESS
 );
 
 export const verifyEmailFailureAction = createAction(
