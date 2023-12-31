@@ -12,6 +12,7 @@ import { createLanguageRequestInterface } from 'src/app/models/types/requests/cr
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
+import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
 
 // Login
 export const loginAction = createAction(
@@ -120,6 +121,21 @@ export const verifyEmailSuccessAction = createAction(
 
 export const verifyEmailFailureAction = createAction(
   ActionTypes.VERIFY_EMAIL_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Verify Email Confirmation
+export const verifyEmailConfirmationAction = createAction(
+  ActionTypes.VERIFY_EMAIL_CONFIRMATION,
+  props<{ request: verifyEmailConfirmationRequestInterface }>()
+);
+
+export const verifyEmailConfirmationSuccessAction = createAction(
+  ActionTypes.VERIFY_EMAIL_CONFIRMATION_SUCCESS
+);
+
+export const verifyEmailConfirmationFailureAction = createAction(
+  ActionTypes.VERIFY_EMAIL_CONFIRMATION_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
