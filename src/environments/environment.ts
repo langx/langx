@@ -1,9 +1,10 @@
-export const HOMEPAGE_URL = 'http://localhost:8100/';
+export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
 
 export const environment = {
   production: false,
+  bundleId: 'tech.newchapter.languagexchange',
   appwrite: {
     APP_ENDPOINT: `${DB_URL}v1`,
     APP_PROJECT: '650750d21e4a6a589be3',
@@ -19,14 +20,32 @@ export const environment = {
   url: {
     HOMEPAGE_URL: HOMEPAGE_URL,
     RESET_PASSWORD_URL: `${HOMEPAGE_URL}login/reset-password/new`,
-    HOME_URL: `${HOMEPAGE_URL}home`,
-    LOGIN_URL: `${HOMEPAGE_URL}login`,
     SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    SUCCESS_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/success`,
+    FAILURE_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/failure`,
   },
   opts: {
     PAGINATION_LIMIT: 10,
+  },
+  oauth: {
+    google: {
+      appID:
+        '108932543808-gm27rt47oc22bd190ogrh7j5cmosv5su.apps.googleusercontent.com',
+      base: 'https://accounts.google.com/o/oauth2/v2/auth',
+      uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/google/650750d21e4a6a589be3',
+    },
+    facebook: {
+      appID: '756286679647299',
+      base: 'https://www.facebook.com/v2.8/dialog/oauth',
+      uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/facebook/650750d21e4a6a589be3',
+    },
+    apple: {
+      appID: 'service.tech.newchapter.languageXchange',
+      base: 'https://appleid.apple.com/auth/authorize',
+      uri: 'https://db.languagexchange.net/v1/account/sessions/oauth2/callback/apple/650750d21e4a6a589be3',
+    },
   },
 };
 

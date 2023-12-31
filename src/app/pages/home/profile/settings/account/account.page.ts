@@ -39,5 +39,8 @@ export class AccountPage implements OnInit {
   // TODO: implement these methods
   disableAccount() {
     console.warn('disableAccount clicked');
+    // TODO: implement this method
+    // First show a modal to confirm the action
+    // Then call the service to disable the account
   }
 }

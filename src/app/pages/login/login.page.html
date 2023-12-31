@@ -57,64 +57,29 @@
               </ion-button>
             </ion-col>
           </ion-row>
-          <ion-row class="ion-margin-vertical">
-            <ion-col size="6" class="alignItems">
-              <div align="left">
-                <ion-note>
-                  Not a member yet?
-                  <ion-button fill="clear" routerLink="signup" color="primary">
-                    Sign Up
-                  </ion-button>
-                </ion-note>
-              </div>
-            </ion-col>
-            <ion-col size="6">
-              <div align="right">
-                <ion-note>
-                  Forgot password?
-                  <ion-button
-                    fill="clear"
-                    routerLink="reset-password"
-                    color="primary"
-                  >
-                    Reset it
-                  </ion-button>
-                </ion-note>
-              </div>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ion-buttons class="loginButtons">
-                <ion-button
-                  (click)="signInWithGoogle()"
-                  expand="block"
-                  fill="clear"
-                >
-                  <ion-icon
-                    size="large"
-                    name="logo-google"
-                    class="ion-padding-horizontal"
-                  ></ion-icon>
-                </ion-button>
-                <ion-button expand="block" fill="clear">
-                  <ion-icon
-                    size="large"
-                    name="logo-facebook"
-                    class="ion-padding-horizontal"
-                  ></ion-icon>
-                </ion-button>
-                <ion-button expand="block" fill="clear">
-                  <ion-icon
-                    size="large"
-                    name="logo-apple"
-                    class="ion-padding-horizontal"
-                  ></ion-icon>
-                </ion-button>
-              </ion-buttons>
-            </ion-col>
-          </ion-row>
+          <i class="custom-col">
+            <div>Not a member yet?</div>
+            <ion-button fill="clear" routerLink="signup" color="primary">
+              Sign Up
+            </ion-button>
+          </i>
+          <i class="custom-col">
+            <div>Forgot password?</div>
+            <ion-button
+              fill="clear"
+              routerLink="reset-password"
+              color="primary"
+            >
+              Reset it
+            </ion-button>
+          </i>
         </form>
+        <ion-row>
+          <ion-col>
+            <!-- OAuth2 Component -->
+            <app-oauth2></app-oauth2>
+          </ion-col>
+        </ion-row>
         <ion-row>
           <ion-col>
             <ion-button

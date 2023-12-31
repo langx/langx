@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 import { IntroComponent } from 'src/app/components/intro/intro.component';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { loginAction } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
@@ -34,7 +33,6 @@ export class LoginPage implements OnInit {
 
   constructor(
     private store: Store,
-    private authService: AuthService,
     private toastController: ToastController,
     private modalCtrl: ModalController
   ) {}
@@ -116,11 +114,6 @@ export class LoginPage implements OnInit {
     const request: LoginRequestInterface = form.value;
     this.store.dispatch(loginAction({ request }));
     form.disable();
-  }
-
-  signInWithGoogle() {
-    console.log('signInWithGoogle');
-    this.authService.signInWithGoogle();
   }
 
   //
