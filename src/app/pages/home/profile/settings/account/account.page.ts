@@ -3,13 +3,16 @@ import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { lastSeen } from 'src/app/extras/utils';
+import { Account } from 'src/app/models/Account';
+import { User } from 'src/app/models/User';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { listIdentitiesAction } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
   currentUserSelector,
+  identitiesSelector,
 } from 'src/app/store/selectors/auth.selector';
-import { Account } from 'src/app/models/Account';
-import { User } from 'src/app/models/User';
+import { Models } from 'appwrite';
 
 @Component({
   selector: 'app-account',
@@ -19,6 +22,7 @@ import { User } from 'src/app/models/User';
 export class AccountPage implements OnInit {
   account$: Observable<Account | null> = null;
   currentUser$: Observable<User> = null;
+  identities$: Observable<Models.Identity[]> = null;
 
   constructor(private store: Store, private authService: AuthService) {}
 
@@ -27,8 +31,13 @@ export class AccountPage implements OnInit {
   }
 
   initValues() {
+    // Dispatch the action to list identities
+    this.store.dispatch(listIdentitiesAction());
+
+    // Get Selectors
     this.account$ = this.store.pipe(select(accountSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.identities$ = this.store.pipe(select(identitiesSelector));
   }
 
   lastSeen(d: any) {
