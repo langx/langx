@@ -110,17 +110,10 @@ export class AuthService {
     return from(this.api.account.updateVerification(userId, secret));
   }
 
-  // TODO: It may be async function
-  resetPassword(email: string) {
-    console.log('resetPassword:', email);
-    return this.api.account
-      .createRecovery(email, environment.url.RESET_PASSWORD_URL)
-      .then((response) => {
-        console.log('Recovery email sent', response);
-      })
-      .catch((error) => {
-        console.log('Error sending recovery email', error);
-      });
+  resetPassword(email: string): Observable<any> {
+    return from(
+      this.api.account.createRecovery(email, environment.url.RESET_PASSWORD_URL)
+    );
   }
 
   updateRecovery(userId: string, secret: string, password: string) {

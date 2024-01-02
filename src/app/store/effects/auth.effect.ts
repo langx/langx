@@ -49,6 +49,9 @@ import {
   registerAction,
   registerFailureAction,
   registerSuccessAction,
+  resetPasswordAction,
+  resetPasswordFailureAction,
+  resetPasswordSuccessAction,
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
@@ -338,6 +341,36 @@ export class AuthEffect {
           setTimeout(() => {
             this.router.navigateByUrl('/home/account');
           }, 3000);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPasswordAction),
+      switchMap(({ request }) => {
+        return this.authService.resetPassword(request.email).pipe(
+          map(() => {
+            return resetPasswordSuccessAction();
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(resetPasswordFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  redirectAfterResetPasswordSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(resetPasswordSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/login');
         })
       ),
     { dispatch: false }

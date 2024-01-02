@@ -142,7 +142,7 @@ export const verifyEmailConfirmationFailureAction = createAction(
 // Reset Password
 export const resetPasswordAction = createAction(
   ActionTypes.RESET_PASSWORD,
-  props<{ email: string }>()
+  props<{ request: { email: string } }>()
 );
 
 export const resetPasswordSuccessAction = createAction(
