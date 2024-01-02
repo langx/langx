@@ -40,6 +40,9 @@ import {
   resetPasswordAction,
   resetPasswordSuccessAction,
   resetPasswordFailureAction,
+  resetPasswordConfirmationAction,
+  resetPasswordConfirmationSuccessAction,
+  resetPasswordConfirmationFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -569,7 +572,31 @@ const authReducer = createReducer(
     })
   ),
 
-  // TODO: Reset Password Confirmation Actions
+  // Reset Password Confirmation Actions
+  on(
+    resetPasswordConfirmationAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      resetPasswordConfirmationSuccess: false,
+    })
+  ),
+  on(
+    resetPasswordConfirmationSuccessAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordConfirmationSuccess: true,
+    })
+  ),
+  on(
+    resetPasswordConfirmationFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordError: action.error,
+    })
+  ),
 
   // List Identities Actions
   on(
