@@ -13,6 +13,7 @@ import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLo
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
+import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 
 // Login
 export const loginAction = createAction(
@@ -157,7 +158,7 @@ export const resetPasswordFailureAction = createAction(
 // Reset Password Confirmation
 export const resetPasswordConfirmationAction = createAction(
   ActionTypes.RESET_PASSWORD_CONFIRMATION,
-  props<{ request: { id: string; secret: string; password: string } }>()
+  props<{ request: resetPasswordConfirmationRequestInterface }>()
 );
 
 export const resetPasswordConfirmationSuccessAction = createAction(
