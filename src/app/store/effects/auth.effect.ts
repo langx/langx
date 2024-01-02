@@ -50,6 +50,9 @@ import {
   registerFailureAction,
   registerSuccessAction,
   resetPasswordAction,
+  resetPasswordConfirmationAction,
+  resetPasswordConfirmationFailureAction,
+  resetPasswordConfirmationSuccessAction,
   resetPasswordFailureAction,
   resetPasswordSuccessAction,
   updateLanguageArrayAction,
@@ -365,10 +368,32 @@ export class AuthEffect {
     )
   );
 
+  resetPasswordConfirmation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPasswordConfirmationAction),
+      switchMap(({ request }) => {
+        return this.authService.updateRecovery(request).pipe(
+          map(() => {
+            return resetPasswordConfirmationSuccessAction();
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(resetPasswordConfirmationFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
   redirectAfterResetPasswordSuccess$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(resetPasswordSuccessAction),
+        ofType(
+          resetPasswordSuccessAction,
+          resetPasswordConfirmationSuccessAction
+        ),
         tap(() => {
           this.router.navigateByUrl('/login');
         })

@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
+import { resetPasswordConfirmationAction } from 'src/app/store/actions/auth.action';
 import {
   resetPasswordConfirmationSuccessSelector,
   resetPasswordErrorSelector,
@@ -63,7 +65,10 @@ export class NewPage implements OnInit {
         .pipe(select(resetPasswordConfirmationSuccessSelector))
         .subscribe((response: boolean) => {
           if (response) {
-            this.presentToast('Email has been successfully sent.', 'success');
+            this.presentToast(
+              'Password has been successfully changed.',
+              'success'
+            );
           }
         })
     );
@@ -110,30 +115,24 @@ export class NewPage implements OnInit {
 
   onSubmit() {
     if (this.form.invalid) {
-      this.presentToast('Invalid Form', 'danger');
+      this.presentToast(
+        'Password requires a minimum of 8 characters',
+        'danger'
+      );
       return;
     } else if (this.form.value.password !== this.form.value.password2) {
       this.presentToast('Passwords do not match', 'danger');
       return;
     }
 
-    this.authService
-      .updateRecovery(this.id, this.secret, this.form.value.password)
-      .then((response) => {
-        console.log(response);
-        this.presentToast('Password Updated', 'success');
-        this.form.reset();
-        this.router.navigateByUrl('/login');
-      })
-      .catch((error) => {
-        console.log('error:', error.message);
-        this.presentToast(
-          'Link is expired or invalid. Please try again.',
-          'danger'
-        );
-        this.router.navigateByUrl('/login');
-        return;
-      });
+    const request: resetPasswordConfirmationRequestInterface = {
+      id: this.id,
+      secret: this.secret,
+      password: this.form.value.password,
+      password2: this.form.value.password2,
+    };
+
+    this.store.dispatch(resetPasswordConfirmationAction({ request }));
   }
 
   //
