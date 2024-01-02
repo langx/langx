@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { resetPasswordAction } from 'src/app/store/actions/auth.action';
 import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
 
@@ -18,12 +16,7 @@ export class ResetPasswordPage implements OnInit {
   form: FormGroup;
   isLoading$: Observable<boolean>;
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private authService: AuthService,
-    private toastController: ToastController
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initValues();
