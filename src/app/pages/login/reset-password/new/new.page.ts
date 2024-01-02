@@ -2,7 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import {
+  resetPasswordConfirmationSuccessSelector,
+  resetPasswordErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-new',
@@ -10,6 +18,8 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./new.page.scss'],
 })
 export class NewPage implements OnInit {
+  subscription: Subscription;
+
   id: string;
   secret: string;
 
@@ -21,6 +31,7 @@ export class NewPage implements OnInit {
   password2_type: string = 'password';
 
   constructor(
+    private store: Store,
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
@@ -30,6 +41,37 @@ export class NewPage implements OnInit {
   ngOnInit() {
     this.initValidation();
     this.initForm();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(resetPasswordErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    // Present Toast if resetPasswordConfirmationSuccess
+    this.subscription.add(
+      this.store
+        .pipe(select(resetPasswordConfirmationSuccessSelector))
+        .subscribe((response: boolean) => {
+          if (response) {
+            this.presentToast('Email has been successfully sent.', 'success');
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValidation() {
