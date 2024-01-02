@@ -20,6 +20,7 @@ import {
   sessionsSelector,
   isLoadingSelector,
   accountDetailErrorSelector,
+  verifyEmailErrorSelector,
   verifyEmailSuccessSelector,
 } from 'src/app/store/selectors/auth.selector';
 
@@ -54,6 +55,15 @@ export class AccountPage implements OnInit {
     this.subscription.add(
       this.store
         .pipe(select(accountDetailErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+    this.subscription.add(
+      this.store
+        .pipe(select(verifyEmailErrorSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
