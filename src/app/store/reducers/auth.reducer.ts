@@ -37,6 +37,9 @@ import {
   verifyEmailConfirmationAction,
   verifyEmailConfirmationFailureAction,
   verifyEmailConfirmationSuccessAction,
+  resetPasswordAction,
+  resetPasswordSuccessAction,
+  resetPasswordFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -81,6 +84,10 @@ const initialState: AuthStateInterface = {
   isLanguageDone: false,
   verifyEmailSuccess: false,
   verifyEmailConfirmationSuccess: false,
+  verifyEmailConfirmationError: null,
+  resetPasswordSuccess: false,
+  resetPasswordConfirmationSuccess: false,
+  resetPasswordError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -88,7 +95,6 @@ const initialState: AuthStateInterface = {
   profileError: null,
   editProfileError: null,
   accountDetailError: null,
-  verifyEmailConfirmationError: null,
 };
 
 const authReducer = createReducer(
@@ -534,6 +540,36 @@ const authReducer = createReducer(
       verifyEmailConfirmationError: action.error,
     })
   ),
+
+  // Reset Password Actions
+  on(
+    resetPasswordAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      resetPasswordSuccess: false,
+    })
+  ),
+
+  on(
+    resetPasswordSuccessAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordSuccess: true,
+    })
+  ),
+
+  on(
+    resetPasswordFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordError: action.error,
+    })
+  ),
+
+  // TODO: Reset Password Confirmation Actions
 
   // List Identities Actions
   on(
