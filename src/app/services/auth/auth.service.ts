@@ -10,6 +10,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { Account } from 'src/app/models/Account';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
+import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -116,8 +117,17 @@ export class AuthService {
     );
   }
 
-  updateRecovery(userId: string, secret: string, password: string) {
-    return this.api.account.updateRecovery(userId, secret, password, password);
+  updateRecovery(
+    req: resetPasswordConfirmationRequestInterface
+  ): Observable<any> {
+    return from(
+      this.api.account.updateRecovery(
+        req.id,
+        req.secret,
+        req.password,
+        req.password2
+      )
+    );
     // .then((response) => {
     //   console.log('Recovery successfully updated', response);
     // })
