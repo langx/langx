@@ -87,7 +87,7 @@ const initialState: AuthStateInterface = {
   isLanguageDone: false,
   verifyEmailSuccess: false,
   verifyEmailConfirmationSuccess: false,
-  verifyEmailConfirmationError: null,
+  verifyEmailError: null,
   resetPasswordSuccess: false,
   resetPasswordConfirmationSuccess: false,
   resetPasswordError: null,
@@ -510,7 +510,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      accountDetailError: action.error,
+      verifyEmailError: action.error,
     })
   ),
 
@@ -540,7 +540,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      verifyEmailConfirmationError: action.error,
+      verifyEmailError: action.error,
     })
   ),
 

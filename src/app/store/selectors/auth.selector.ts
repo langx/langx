@@ -85,9 +85,9 @@ export const verifyEmailConfirmationSuccessSelector = createSelector(
   (authState: AuthStateInterface) => authState.verifyEmailConfirmationSuccess
 );
 
-export const verifyEmailConfirmationErrorSelector = createSelector(
+export const verifyEmailErrorSelector = createSelector(
   authFeatureSelector,
-  (authState: AuthStateInterface) => authState.verifyEmailConfirmationError
+  (authState: AuthStateInterface) => authState.verifyEmailError
 );
 
 export const resetPasswordSuccessSelector = createSelector(

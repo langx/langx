@@ -16,7 +16,7 @@ export interface AuthStateInterface {
   isLanguageDone: boolean;
   verifyEmailSuccess: boolean;
   verifyEmailConfirmationSuccess: boolean;
-  verifyEmailConfirmationError: ErrorInterface | null; // TODO: Rename it to verifyEmailError
+  verifyEmailError: ErrorInterface | null;
   resetPasswordSuccess: boolean;
   resetPasswordConfirmationSuccess: boolean;
   resetPasswordError: ErrorInterface | null;

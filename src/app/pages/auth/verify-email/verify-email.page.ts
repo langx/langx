@@ -8,7 +8,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
 import { verifyEmailConfirmationAction } from 'src/app/store/actions/auth.action';
 import {
-  verifyEmailConfirmationErrorSelector,
+  verifyEmailErrorSelector,
   verifyEmailConfirmationSuccessSelector,
 } from 'src/app/store/selectors/auth.selector';
 
@@ -37,7 +37,7 @@ export class VerifyEmailPage implements OnInit {
     // Present Toast if error
     this.subscription.add(
       this.store
-        .pipe(select(verifyEmailConfirmationErrorSelector))
+        .pipe(select(verifyEmailErrorSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
