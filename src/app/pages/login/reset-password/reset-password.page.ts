@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { resetPasswordAction } from 'src/app/store/actions/auth.action';
+import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-reset-password',
@@ -11,16 +16,22 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 export class ResetPasswordPage implements OnInit {
   form: FormGroup;
-  isLoading: boolean = false;
+  isLoading$: Observable<boolean>;
 
   constructor(
+    private store: Store,
     private router: Router,
     private authService: AuthService,
     private toastController: ToastController
   ) {}
 
   ngOnInit() {
+    this.initValues();
     this.initForm();
+  }
+
+  initValues() {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
   initForm() {
@@ -40,26 +51,21 @@ export class ResetPasswordPage implements OnInit {
   }
 
   resetPassword(form: FormGroup) {
-    // showLoader();
-    this.isLoading = true;
     console.log(form.value);
-    this.authService
-      .resetPassword(form.value.email)
-      .then((data: any) => {
-        // hideLoader();
-        this.isLoading = false;
-        form.reset();
-        let msg: string = 'Please check your email';
-        this.presentToast(msg);
-        this.router.navigateByUrl('/login');
-      })
-      .catch((e) => {
-        console.log('error:', e);
-        // hideLoader();
-        this.isLoading = false;
-        let msg: string = 'Could not send reset email, please try again.';
-        this.presentToast(msg, 'danger');
-      });
+    this.store.dispatch(resetPasswordAction({ request: form.value }));
+    // this.authService
+    //   .resetPassword(form.value.email)
+    //   .then((data: any) => {
+    //     form.reset();
+    //     let msg: string = 'Please check your email';
+    //     this.presentToast(msg);
+    //     this.router.navigateByUrl('/login');
+    //   })
+    //   .catch((e) => {
+    //     console.log('error:', e);
+    //     let msg: string = 'Could not send reset email, please try again.';
+    //     this.presentToast(msg, 'danger');
+    //   });
   }
 
   //
