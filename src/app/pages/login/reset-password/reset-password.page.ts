@@ -2,10 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 import { resetPasswordAction } from 'src/app/store/actions/auth.action';
-import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  isLoadingSelector,
+  resetPasswordErrorSelector,
+  resetPasswordSuccessSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-reset-password',
@@ -14,6 +19,8 @@ import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
 })
 export class ResetPasswordPage implements OnInit {
   form: FormGroup;
+  subscription: Subscription;
+
   isLoading$: Observable<boolean>;
 
   constructor(private store: Store, private toastController: ToastController) {}
@@ -21,6 +28,37 @@ export class ResetPasswordPage implements OnInit {
   ngOnInit() {
     this.initValues();
     this.initForm();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(resetPasswordErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    // Present Toast if resetPasswordSuccess
+    this.subscription.add(
+      this.store
+        .pipe(select(resetPasswordSuccessSelector))
+        .subscribe((response: boolean) => {
+          if (response) {
+            this.presentToast('Email has been successfully sent.', 'success');
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValues() {
