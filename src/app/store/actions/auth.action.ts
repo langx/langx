@@ -139,6 +139,23 @@ export const verifyEmailConfirmationFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Reset Password
+export const resetPasswordAction = createAction(
+  ActionTypes.RESET_PASSWORD,
+  props<{ email: string }>()
+);
+
+export const resetPasswordSuccessAction = createAction(
+  ActionTypes.RESET_PASSWORD_SUCCESS
+);
+
+export const resetPasswordFailureAction = createAction(
+  ActionTypes.RESET_PASSWORD_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// TODO: Reset Password Confirmation
+
 // List Identities
 export const listIdentitiesAction = createAction(ActionTypes.LIST_IDENTITIES);
 
