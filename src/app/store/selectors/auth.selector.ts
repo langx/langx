@@ -95,6 +95,11 @@ export const resetPasswordSuccessSelector = createSelector(
   (authState: AuthStateInterface) => authState.resetPasswordSuccess
 );
 
+export const resetPasswordConfirmationSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.resetPasswordConfirmationSuccess
+);
+
 export const resetPasswordErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.resetPasswordError
