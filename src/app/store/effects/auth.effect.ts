@@ -49,6 +49,12 @@ import {
   registerAction,
   registerFailureAction,
   registerSuccessAction,
+  resetPasswordAction,
+  resetPasswordConfirmationAction,
+  resetPasswordConfirmationFailureAction,
+  resetPasswordConfirmationSuccessAction,
+  resetPasswordFailureAction,
+  resetPasswordSuccessAction,
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
@@ -338,6 +344,58 @@ export class AuthEffect {
           setTimeout(() => {
             this.router.navigateByUrl('/home/account');
           }, 3000);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  resetPassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPasswordAction),
+      switchMap(({ request }) => {
+        return this.authService.resetPassword(request.email).pipe(
+          map(() => {
+            return resetPasswordSuccessAction();
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(resetPasswordFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  resetPasswordConfirmation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(resetPasswordConfirmationAction),
+      switchMap(({ request }) => {
+        return this.authService.updateRecovery(request).pipe(
+          map(() => {
+            return resetPasswordConfirmationSuccessAction();
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(resetPasswordConfirmationFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  redirectAfterResetPasswordSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(
+          resetPasswordSuccessAction,
+          resetPasswordConfirmationSuccessAction
+        ),
+        tap(() => {
+          this.router.navigateByUrl('/login');
         })
       ),
     { dispatch: false }
