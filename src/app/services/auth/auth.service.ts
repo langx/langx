@@ -10,6 +10,7 @@ import { ApiService } from 'src/app/services/api/api.service';
 import { Account } from 'src/app/models/Account';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
+import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -110,21 +111,23 @@ export class AuthService {
     return from(this.api.account.updateVerification(userId, secret));
   }
 
-  // TODO: It may be async function
-  resetPassword(email: string) {
-    console.log('resetPassword:', email);
-    return this.api.account
-      .createRecovery(email, environment.url.RESET_PASSWORD_URL)
-      .then((response) => {
-        console.log('Recovery email sent', response);
-      })
-      .catch((error) => {
-        console.log('Error sending recovery email', error);
-      });
+  resetPassword(email: string): Observable<any> {
+    return from(
+      this.api.account.createRecovery(email, environment.url.RESET_PASSWORD_URL)
+    );
   }
 
-  updateRecovery(userId: string, secret: string, password: string) {
-    return this.api.account.updateRecovery(userId, secret, password, password);
+  updateRecovery(
+    req: resetPasswordConfirmationRequestInterface
+  ): Observable<any> {
+    return from(
+      this.api.account.updateRecovery(
+        req.id,
+        req.secret,
+        req.password,
+        req.password2
+      )
+    );
     // .then((response) => {
     //   console.log('Recovery successfully updated', response);
     // })

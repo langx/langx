@@ -13,6 +13,7 @@ import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLo
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
+import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 
 // Login
 export const loginAction = createAction(
@@ -136,6 +137,36 @@ export const verifyEmailConfirmationSuccessAction = createAction(
 
 export const verifyEmailConfirmationFailureAction = createAction(
   ActionTypes.VERIFY_EMAIL_CONFIRMATION_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Reset Password
+export const resetPasswordAction = createAction(
+  ActionTypes.RESET_PASSWORD,
+  props<{ request: { email: string } }>()
+);
+
+export const resetPasswordSuccessAction = createAction(
+  ActionTypes.RESET_PASSWORD_SUCCESS
+);
+
+export const resetPasswordFailureAction = createAction(
+  ActionTypes.RESET_PASSWORD_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Reset Password Confirmation
+export const resetPasswordConfirmationAction = createAction(
+  ActionTypes.RESET_PASSWORD_CONFIRMATION,
+  props<{ request: resetPasswordConfirmationRequestInterface }>()
+);
+
+export const resetPasswordConfirmationSuccessAction = createAction(
+  ActionTypes.RESET_PASSWORD_CONFIRMATION_SUCCESS
+);
+
+export const resetPasswordConfirmationFailureAction = createAction(
+  ActionTypes.RESET_PASSWORD_CONFIRMATION_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 

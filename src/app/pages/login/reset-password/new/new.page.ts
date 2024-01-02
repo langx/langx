@@ -2,7 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
+import { resetPasswordConfirmationAction } from 'src/app/store/actions/auth.action';
+import {
+  resetPasswordConfirmationSuccessSelector,
+  resetPasswordErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-new',
@@ -10,9 +20,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   styleUrls: ['./new.page.scss'],
 })
 export class NewPage implements OnInit {
+  subscription: Subscription;
+
   id: string;
   secret: string;
-  expire: Date;
 
   form: FormGroup;
 
@@ -22,6 +33,7 @@ export class NewPage implements OnInit {
   password2_type: string = 'password';
 
   constructor(
+    private store: Store,
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
@@ -33,25 +45,52 @@ export class NewPage implements OnInit {
     this.initForm();
   }
 
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(resetPasswordErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    // Present Toast if resetPasswordConfirmationSuccess
+    this.subscription.add(
+      this.store
+        .pipe(select(resetPasswordConfirmationSuccessSelector))
+        .subscribe((response: boolean) => {
+          if (response) {
+            this.presentToast(
+              'Password has been successfully changed.',
+              'success'
+            );
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
   initValidation() {
     const id = this.route.snapshot.queryParamMap.get('userId');
     const secret = this.route.snapshot.queryParamMap.get('secret');
-    const expire = this.route.snapshot.queryParamMap.get('expire');
 
-    if (!id || !secret || !expire) {
+    if (!id || !secret) {
       this.presentToast('Invalid URL', 'danger');
-      this.router.navigateByUrl('/login');
-      return;
-    } else if (Date.now() < new Date(expire).getTime()) {
-      // The verification link sent to the user's email address is valid for 1 hour.
-      this.presentToast('Link Expired', 'danger');
       this.router.navigateByUrl('/login');
       return;
     } else {
       this.id = id;
       this.secret = secret;
-      this.expire = new Date(expire);
-      console.log(this.id, this.secret, this.expire);
+      console.log(this.id, this.secret);
     }
   }
 
@@ -76,30 +115,24 @@ export class NewPage implements OnInit {
 
   onSubmit() {
     if (this.form.invalid) {
-      this.presentToast('Invalid Form', 'danger');
+      this.presentToast(
+        'Password requires a minimum of 8 characters',
+        'danger'
+      );
       return;
     } else if (this.form.value.password !== this.form.value.password2) {
       this.presentToast('Passwords do not match', 'danger');
       return;
     }
 
-    this.authService
-      .updateRecovery(this.id, this.secret, this.form.value.password)
-      .then((response) => {
-        console.log(response);
-        this.presentToast('Password Updated', 'success');
-        this.form.reset();
-        this.router.navigateByUrl('/login');
-      })
-      .catch((error) => {
-        console.log('error:', error.message);
-        this.presentToast(
-          'Link is expired or invalid. Please try again.',
-          'danger'
-        );
-        this.router.navigateByUrl('/login');
-        return;
-      });
+    const request: resetPasswordConfirmationRequestInterface = {
+      id: this.id,
+      secret: this.secret,
+      password: this.form.value.password,
+      password2: this.form.value.password2,
+    };
+
+    this.store.dispatch(resetPasswordConfirmationAction({ request }));
   }
 
   //

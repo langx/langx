@@ -37,6 +37,12 @@ import {
   verifyEmailConfirmationAction,
   verifyEmailConfirmationFailureAction,
   verifyEmailConfirmationSuccessAction,
+  resetPasswordAction,
+  resetPasswordSuccessAction,
+  resetPasswordFailureAction,
+  resetPasswordConfirmationAction,
+  resetPasswordConfirmationSuccessAction,
+  resetPasswordConfirmationFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -81,6 +87,10 @@ const initialState: AuthStateInterface = {
   isLanguageDone: false,
   verifyEmailSuccess: false,
   verifyEmailConfirmationSuccess: false,
+  verifyEmailError: null,
+  resetPasswordSuccess: false,
+  resetPasswordConfirmationSuccess: false,
+  resetPasswordError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -88,7 +98,6 @@ const initialState: AuthStateInterface = {
   profileError: null,
   editProfileError: null,
   accountDetailError: null,
-  verifyEmailConfirmationError: null,
 };
 
 const authReducer = createReducer(
@@ -501,7 +510,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      accountDetailError: action.error,
+      verifyEmailError: action.error,
     })
   ),
 
@@ -531,7 +540,61 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      verifyEmailConfirmationError: action.error,
+      verifyEmailError: action.error,
+    })
+  ),
+
+  // Reset Password Actions
+  on(
+    resetPasswordAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      resetPasswordSuccess: false,
+    })
+  ),
+
+  on(
+    resetPasswordSuccessAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordSuccess: true,
+    })
+  ),
+
+  on(
+    resetPasswordFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordError: action.error,
+    })
+  ),
+
+  // Reset Password Confirmation Actions
+  on(
+    resetPasswordConfirmationAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      resetPasswordConfirmationSuccess: false,
+    })
+  ),
+  on(
+    resetPasswordConfirmationSuccessAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordConfirmationSuccess: true,
+    })
+  ),
+  on(
+    resetPasswordConfirmationFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      resetPasswordError: action.error,
     })
   ),
 
