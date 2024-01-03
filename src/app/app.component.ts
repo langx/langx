@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Store } from '@ngrx/store';
 
+import { environment } from 'src/environments/environment';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import {
   listCountriesAction,
   listLanguagesAction,
 } from 'src/app/store/actions/locale.action';
-import { environment } from 'src/environments/environment';
 
 register();
 
