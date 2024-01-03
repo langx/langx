@@ -106,14 +106,15 @@ export class LoginPage implements OnInit {
   }
 
   onSubmit() {
-    if (!this.form.valid) return;
-    this.login(this.form);
-  }
+    if (!this.form.valid) {
+      this.presentToast('Please fill out all fields.', 'danger');
+      return;
+    }
 
-  login(form: FormGroup) {
-    const request: LoginRequestInterface = form.value;
+    // Login Request
+    const request: LoginRequestInterface = this.form.value;
     this.store.dispatch(loginAction({ request }));
-    form.disable();
+    this.form.disable();
   }
 
   //
