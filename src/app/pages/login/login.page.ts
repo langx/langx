@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Store, select } from '@ngrx/store';
+import { Capacitor } from '@capacitor/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { IntroComponent } from 'src/app/components/intro/intro.component';
@@ -33,6 +35,7 @@ export class LoginPage implements OnInit {
 
   constructor(
     private store: Store,
+    private router: Router,
     private toastController: ToastController,
     private modalCtrl: ModalController
   ) {}
@@ -40,6 +43,9 @@ export class LoginPage implements OnInit {
   async ngOnInit() {
     this.initValues();
     this.initForm();
+
+    // Check user is logged in in mobile
+    await this.checkUserLoggedIn();
 
     // Init Intro
     await this.checkIntroSeen();
@@ -136,6 +142,16 @@ export class LoginPage implements OnInit {
 
   showPassword() {
     this.password_type = this.password_type === 'text' ? 'password' : 'text';
+  }
+
+  async checkUserLoggedIn() {
+    const cookieFallback = localStorage.getItem('cookieFallback');
+    if (
+      Object.keys(cookieFallback).length !== 0 &&
+      Capacitor.getPlatform() !== 'web'
+    ) {
+      this.router.navigateByUrl('/home');
+    }
   }
 
   //
