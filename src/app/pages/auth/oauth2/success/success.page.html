@@ -5,5 +5,12 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-redirect></app-redirect>
+  <app-redirect
+    *ngIf="(isLoggedIn$ | async)"
+    [model]="modelSuccess"
+  ></app-redirect>
+  <app-redirect
+    *ngIf="!(isLoggedIn$ | async)"
+    [model]="modelFailed"
+  ></app-redirect>
 </ion-content>
