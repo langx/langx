@@ -119,7 +119,7 @@ export class NewPage implements OnInit {
       );
       return;
     } else if (this.form.value.password !== this.form.value.password2) {
-      this.presentToast('Passwords do not match', 'danger');
+      this.presentToast('The passwords you entered do not match.', 'danger');
       return;
     }
 
