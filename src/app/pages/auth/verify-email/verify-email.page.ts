@@ -68,10 +68,6 @@ export class VerifyEmailPage implements OnInit {
         .pipe(select(verifyEmailConfirmationSuccessSelector))
         .subscribe((verifyEmailConfirmationSuccess: boolean) => {
           if (verifyEmailConfirmationSuccess) {
-            this.presentToast(
-              'Email has been successfully verified!',
-              'success'
-            );
             this.verified = true;
           }
         })
