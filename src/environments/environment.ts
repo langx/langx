@@ -1,4 +1,5 @@
-export const HOMEPAGE_URL = 'http://localhost:8100/';
+export const HOMEPAGE_URL = 'http://192.168.0.104:8100/';
+// export const HOMEPAGE_URL = 'http://localhost:8100/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
 
@@ -19,8 +20,8 @@ export const environment = {
   },
   url: {
     HOMEPAGE_URL: HOMEPAGE_URL,
-    RESET_PASSWORD_URL: `${HOMEPAGE_URL}login/reset-password/new`,
-    SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}login/signup/complete`,
+    RESET_PASSWORD_URL: `${HOMEPAGE_URL}reset-password/new`,
+    SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}signup/complete`,
     SUCCESS_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/success`,
     FAILURE_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/failure`,
     VERIFY_EMAIL: `${HOMEPAGE_URL}auth/verify-email`,
