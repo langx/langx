@@ -36,7 +36,6 @@ export class UpdatePasswordPage implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.form.value);
     if (this.form.invalid) {
       this.presentToast(
         'Password requires a minimum of 8 characters',
@@ -47,6 +46,8 @@ export class UpdatePasswordPage implements OnInit {
       this.presentToast('The passwords you entered do not match.', 'danger');
       return;
     }
+
+    // TODO: Dispatch Update Password Action
   }
 
   //
