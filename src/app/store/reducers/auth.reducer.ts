@@ -81,7 +81,7 @@ const initialState: AuthStateInterface = {
   account: null,
   currentUser: null,
   isLoggedIn: null,
-  isCompletedRegistration: false,
+  isCompletedRegistration: null,
   languages: null,
   identities: null,
   sessions: null,
