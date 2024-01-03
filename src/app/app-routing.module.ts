@@ -22,8 +22,8 @@ const routes: Routes = [
   {
     path: 'auth/oauth2/success',
     loadChildren: () =>
-      import('src/app/components/oauth2-callback/oauth2-callback.module').then(
-        (m) => m.Oauth2CallbackModule
+      import('./pages/auth/oauth2/success/success.module').then(
+        (m) => m.SuccessPageModule
       ),
   },
   {
