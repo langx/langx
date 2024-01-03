@@ -4,7 +4,10 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, filter } from 'rxjs';
 
 import { isLoggedInAction } from 'src/app/store/actions/auth.action';
-import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  isLoadingSelector,
+  isLoggedInSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-success',
@@ -13,7 +16,9 @@ import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
 })
 export class SuccessPage implements OnInit {
   subscription: Subscription;
+
   isLoggedIn$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
 
   modelSuccess = {
     success: true,
@@ -69,6 +74,7 @@ export class SuccessPage implements OnInit {
   async initValues() {
     // Get Selectors
     this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
 
     // Set Params
     const params = this.route.snapshot.queryParamMap;
