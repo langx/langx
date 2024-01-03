@@ -19,7 +19,6 @@ import {
 })
 export class VerifyEmailPage implements OnInit {
   subscription: Subscription;
-  second: number = 3;
 
   verified: boolean = null;
 
@@ -83,7 +82,6 @@ export class VerifyEmailPage implements OnInit {
 
   ionViewDidEnter() {
     this.initValues();
-    this.countDown();
   }
 
   initValues() {
@@ -104,20 +102,6 @@ export class VerifyEmailPage implements OnInit {
     };
 
     this.store.dispatch(verifyEmailConfirmationAction({ request }));
-  }
-
-  //
-  // Count Down
-  //
-
-  countDown() {
-    const interval = setInterval(() => {
-      this.second--;
-
-      if (this.second === 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
   }
 
   //
