@@ -109,3 +109,13 @@ export const resetPasswordErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.resetPasswordError
 );
+
+export const updatePasswordSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.updatePasswordSuccess
+);
+
+export const updatePasswordErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.updatePasswordError
+);
