@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest, filter } from 'rxjs';
 
@@ -8,6 +9,7 @@ import {
   isCompletedRegistrationSelector,
   isLoadingSelector,
   isLoggedInSelector,
+  unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -38,7 +40,8 @@ export class SuccessPage implements OnInit {
   constructor(
     private store: Store,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -48,6 +51,7 @@ export class SuccessPage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
+    // Redirect to the correct page
     this.subscription.add(
       combineLatest([
         this.store.pipe(
@@ -71,6 +75,15 @@ export class SuccessPage implements OnInit {
             this.router.navigateByUrl('/home');
           }
         }, 3000);
+      })
+    );
+
+    // Error Handling
+    this.subscription.add(
+      this.store.pipe(select(unauthorizedErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'warning');
+        }
       })
     );
   }
@@ -102,5 +115,20 @@ export class SuccessPage implements OnInit {
     localStorage.setItem('cookieFallback', cookieValue);
 
     this.store.dispatch(isLoggedInAction());
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
