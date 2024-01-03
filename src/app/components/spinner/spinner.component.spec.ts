@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { Oauth2CallbackComponent } from './oauth2-callback.component';
+import { SpinnerComponent } from './spinner.component';
 
-describe('Oauth2CallbackComponent', () => {
-  let component: Oauth2CallbackComponent;
-  let fixture: ComponentFixture<Oauth2CallbackComponent>;
+describe('SpinnerComponent', () => {
+  let component: SpinnerComponent;
+  let fixture: ComponentFixture<SpinnerComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ Oauth2CallbackComponent ],
+      declarations: [ SpinnerComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Oauth2CallbackComponent);
+    fixture = TestBed.createComponent(SpinnerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

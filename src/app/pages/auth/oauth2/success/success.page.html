@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Email Verification</ion-title>
+    <ion-title>Oauth2 Login</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -9,7 +9,13 @@
     <app-spinner></app-spinner>
   </div>
   <div *ngIf="!(isLoading$ | async)">
-    <app-redirect *ngIf="verified" [model]="modelSuccess"></app-redirect>
-    <app-redirect *ngIf="!verified" [model]="modelFailed"></app-redirect>
+    <app-redirect
+      *ngIf="(isLoggedIn$ | async)"
+      [model]="modelSuccess"
+    ></app-redirect>
+    <app-redirect
+      *ngIf="!(isLoggedIn$ | async)"
+      [model]="modelFailed"
+    ></app-redirect>
   </div>
 </ion-content>

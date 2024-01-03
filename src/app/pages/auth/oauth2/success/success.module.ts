@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { VerifyEmailPageRoutingModule } from './verify-email-routing.module';
-import { VerifyEmailPage } from './verify-email.page';
+import { SuccessPageRoutingModule } from './success-routing.module';
+import { SuccessPage } from './success.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -12,9 +12,9 @@ import { ComponentsModule } from 'src/app/components/components.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    VerifyEmailPageRoutingModule,
+    SuccessPageRoutingModule,
     ComponentsModule,
   ],
-  declarations: [VerifyEmailPage],
+  declarations: [SuccessPage],
 })
-export class VerifyEmailPageModule {}
+export class SuccessPageModule {}

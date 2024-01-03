@@ -1,18 +1,38 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Subscription, filter } from 'rxjs';
+import { Observable, Subscription, filter } from 'rxjs';
 
 import { isLoggedInAction } from 'src/app/store/actions/auth.action';
-import { isLoggedInSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  isLoadingSelector,
+  isLoggedInSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
-  selector: 'app-oauth2-callback',
-  templateUrl: './oauth2-callback.component.html',
-  styleUrls: ['./oauth2-callback.component.scss'],
+  selector: 'app-success',
+  templateUrl: './success.page.html',
+  styleUrls: ['./success.page.scss'],
 })
-export class Oauth2CallbackComponent implements OnInit {
+export class SuccessPage implements OnInit {
   subscription: Subscription;
+
+  isLoggedIn$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
+
+  modelSuccess = {
+    success: true,
+    title: "Success! You've logged in.",
+    color: 'success',
+    icon: 'shield-checkmark-outline',
+  };
+
+  modelFailed = {
+    success: false,
+    title: 'Unfortunately, we were unable to log in your provider.',
+    color: 'danger',
+    icon: 'close-outline',
+  };
 
   constructor(
     private store: Store,
@@ -35,11 +55,13 @@ export class Oauth2CallbackComponent implements OnInit {
         )
         .subscribe((isLoggedIn) => {
           console.log('isLoggedIn', isLoggedIn);
-          if (!isLoggedIn) {
-            this.router.navigateByUrl('/login');
-          } else {
-            this.router.navigateByUrl('/home');
-          }
+          setTimeout(() => {
+            if (!isLoggedIn) {
+              this.router.navigateByUrl('/login');
+            } else {
+              this.router.navigateByUrl('/home');
+            }
+          }, 3000);
         })
     );
   }
@@ -50,6 +72,10 @@ export class Oauth2CallbackComponent implements OnInit {
   }
 
   async initValues() {
+    // Get Selectors
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
     // Set Params
     const params = this.route.snapshot.queryParamMap;
 
