@@ -106,10 +106,7 @@ export class Step2Page implements OnInit {
         studyLanguages: this.studyLanguages,
       },
     };
-    this.router.navigate(
-      ['/', 'login', 'signup', 'language', 'step3'],
-      navData
-    );
+    this.router.navigate(['/', 'signup', 'language', 'step3'], navData);
     this.isLoading = false;
     console.log('step2 completed');
   }
