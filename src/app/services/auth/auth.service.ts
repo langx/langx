@@ -117,6 +117,10 @@ export class AuthService {
     );
   }
 
+  updatePassword(password: string, oldPassword: string): Observable<any> {
+    return from(this.api.account.updatePassword(password, oldPassword));
+  }
+
   updateRecovery(
     req: resetPasswordConfirmationRequestInterface
   ): Observable<any> {
