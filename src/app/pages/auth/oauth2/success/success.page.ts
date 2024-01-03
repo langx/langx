@@ -54,7 +54,10 @@ export class SuccessPage implements OnInit {
           select(isLoggedInSelector),
           filter((isLoggedIn) => isLoggedIn !== null) // ignore values until isLoggedIn is not null
         ),
-        this.store.pipe(select(isCompletedRegistrationSelector)),
+        this.store.pipe(
+          select(isCompletedRegistrationSelector),
+          filter((isCompletedRegistration) => isCompletedRegistration !== null)
+        ),
       ]).subscribe(([isLoggedIn, isCompletedRegistration]) => {
         // console.log('isLoggedIn', isLoggedIn);
         // console.log('isCompletedRegistration', isCompletedRegistration);
