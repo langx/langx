@@ -46,6 +46,7 @@ import {
   updatePasswordAction,
   updatePasswordSuccessAction,
   updatePasswordFailureAction,
+  updatePasswordResetValuesAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -629,6 +630,14 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       updatePasswordError: action.error,
+    })
+  ),
+  on(
+    updatePasswordResetValuesAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      updatePasswordSuccess: null,
+      updatePasswordError: null,
     })
   ),
 

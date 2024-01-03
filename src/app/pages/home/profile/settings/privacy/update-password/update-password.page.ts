@@ -6,7 +6,10 @@ import { Observable, Subscription } from 'rxjs';
 
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
-import { updatePasswordAction } from 'src/app/store/actions/auth.action';
+import {
+  updatePasswordAction,
+  updatePasswordResetValuesAction,
+} from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
   updatePasswordErrorSelector,
@@ -60,6 +63,8 @@ export class UpdatePasswordPage implements OnInit {
               'success'
             );
             this.form.reset();
+            // Reset updatePasswordSuccessAction and updatePasswordErrorAction
+            this.store.dispatch(updatePasswordResetValuesAction());
           }
         })
     );
