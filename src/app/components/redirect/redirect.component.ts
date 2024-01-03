@@ -7,10 +7,25 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class RedirectComponent implements OnInit {
   @Input() model: any;
-  // TODO: Make countdown dynamic
   second: number = 3;
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.countDown();
+  }
+
+  //
+  // Count Down
+  //
+
+  countDown() {
+    const interval = setInterval(() => {
+      this.second--;
+
+      if (this.second === 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+  }
 }
