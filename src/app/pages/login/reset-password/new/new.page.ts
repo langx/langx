@@ -5,7 +5,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
-import { AuthService } from 'src/app/services/auth/auth.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 import { resetPasswordConfirmationAction } from 'src/app/store/actions/auth.action';
@@ -36,7 +35,6 @@ export class NewPage implements OnInit {
     private store: Store,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService,
     private toastController: ToastController
   ) {}
 
