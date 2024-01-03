@@ -121,6 +121,10 @@ export class AccountPage implements OnInit {
     }, 1000);
   }
 
+  updatePassword() {
+    console.warn('updatePassword clicked');
+  }
+
   // TODO: implement these methods
   disableAccount() {
     console.warn('disableAccount clicked');
