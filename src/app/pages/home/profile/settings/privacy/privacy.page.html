@@ -20,6 +20,23 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Legal Information</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item
+          *ngFor="let item of legacyPages"
+          (click)="openLegacyPage(item)"
+          [detail]="item?.detail"
+        >
+          <ion-text>{{item?.title}}</ion-text>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 
 <ion-footer> </ion-footer>
