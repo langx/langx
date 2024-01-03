@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
@@ -10,6 +10,7 @@ import { verifyEmailConfirmationAction } from 'src/app/store/actions/auth.action
 import {
   verifyEmailErrorSelector,
   verifyEmailConfirmationSuccessSelector,
+  isLoadingSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -19,9 +20,24 @@ import {
 })
 export class VerifyEmailPage implements OnInit {
   subscription: Subscription;
-  second: number = 3;
+
+  isLoading$: Observable<boolean>;
 
   verified: boolean = null;
+
+  modelSuccess = {
+    success: true,
+    title: 'Your email has been verified successfully.',
+    color: 'success',
+    icon: 'shield-checkmark-outline',
+  };
+
+  modelFailed = {
+    success: false,
+    title: 'Unfortunately, we were unable to verify your email.',
+    color: 'danger',
+    icon: 'close-outline',
+  };
 
   constructor(
     private store: Store,
@@ -52,10 +68,6 @@ export class VerifyEmailPage implements OnInit {
         .pipe(select(verifyEmailConfirmationSuccessSelector))
         .subscribe((verifyEmailConfirmationSuccess: boolean) => {
           if (verifyEmailConfirmationSuccess) {
-            this.presentToast(
-              'Email has been successfully verified!',
-              'success'
-            );
             this.verified = true;
           }
         })
@@ -69,10 +81,12 @@ export class VerifyEmailPage implements OnInit {
 
   ionViewDidEnter() {
     this.initValues();
-    this.countDown();
   }
 
   initValues() {
+    // Get Selectors
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
     const params = this.route.snapshot.queryParamMap;
 
     if (!params.get('userId') || !params.get('secret')) {
@@ -90,20 +104,6 @@ export class VerifyEmailPage implements OnInit {
     };
 
     this.store.dispatch(verifyEmailConfirmationAction({ request }));
-  }
-
-  //
-  // Count Down
-  //
-
-  countDown() {
-    const interval = setInterval(() => {
-      this.second--;
-
-      if (this.second === 0) {
-        clearInterval(interval);
-      }
-    }, 1000);
   }
 
   //
