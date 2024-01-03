@@ -21,6 +21,8 @@ export interface AuthStateInterface {
   resetPasswordSuccess: boolean;
   resetPasswordConfirmationSuccess: boolean;
   resetPasswordError: ErrorInterface | null;
+  updatePasswordSuccess: boolean;
+  updatePasswordError: ErrorInterface | null;
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
   loginValidationError: ErrorInterface | null;
