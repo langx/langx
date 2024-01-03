@@ -58,6 +58,35 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>Last Password Update</ion-col>
+          <ion-col>
+            <ion-card-subtitle>
+              <ion-button type="submit" size="small">Change</ion-button>
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="key-outline"></ion-icon>
+          <ion-label
+            >{{ (account$ | async)?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
+            }}</ion-label
+          >
+          <ion-note
+            >{{ lastSeen((account$ | async)?.passwordUpdate) }}</ion-note
+          >
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Active Sessions</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -88,26 +117,6 @@
             }}
           </ion-label>
           <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Last Password Update</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-icon name="key-outline"></ion-icon>
-          <ion-label
-            >{{ (account$ | async)?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
-            }}</ion-label
-          >
-          <ion-note
-            >{{ lastSeen((account$ | async)?.passwordUpdate) }}</ion-note
-          >
         </ion-item>
       </ion-list>
     </ion-card-content>
