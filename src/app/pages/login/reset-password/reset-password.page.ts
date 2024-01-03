@@ -49,6 +49,7 @@ export class ResetPasswordPage implements OnInit {
       this.store
         .pipe(select(resetPasswordSuccessSelector))
         .subscribe((response: boolean) => {
+          this.form.reset();
           if (response) {
             this.presentToast('Email has been successfully sent.', 'success');
           }
@@ -82,21 +83,8 @@ export class ResetPasswordPage implements OnInit {
   }
 
   resetPassword(form: FormGroup) {
-    console.log(form.value);
+    // console.log(form.value);
     this.store.dispatch(resetPasswordAction({ request: form.value }));
-    // this.authService
-    //   .resetPassword(form.value.email)
-    //   .then((data: any) => {
-    //     form.reset();
-    //     let msg: string = 'Please check your email';
-    //     this.presentToast(msg);
-    //     this.router.navigateByUrl('/login');
-    //   })
-    //   .catch((e) => {
-    //     console.log('error:', e);
-    //     let msg: string = 'Could not send reset email, please try again.';
-    //     this.presentToast(msg, 'danger');
-    //   });
   }
 
   //
