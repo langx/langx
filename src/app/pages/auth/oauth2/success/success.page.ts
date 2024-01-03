@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, filter } from 'rxjs';
+import { Observable, Subscription, combineLatest, filter } from 'rxjs';
 
 import { isLoggedInAction } from 'src/app/store/actions/auth.action';
 import {
+  isCompletedRegistrationSelector,
   isLoadingSelector,
   isLoggedInSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -48,21 +49,26 @@ export class SuccessPage implements OnInit {
     this.subscription = new Subscription();
 
     this.subscription.add(
-      this.store
-        .pipe(
+      combineLatest([
+        this.store.pipe(
           select(isLoggedInSelector),
           filter((isLoggedIn) => isLoggedIn !== null) // ignore values until isLoggedIn is not null
-        )
-        .subscribe((isLoggedIn) => {
-          console.log('isLoggedIn', isLoggedIn);
-          setTimeout(() => {
-            if (!isLoggedIn) {
-              this.router.navigateByUrl('/login');
-            } else {
-              this.router.navigateByUrl('/home');
-            }
-          }, 3000);
-        })
+        ),
+        this.store.pipe(select(isCompletedRegistrationSelector)),
+      ]).subscribe(([isLoggedIn, isCompletedRegistration]) => {
+        // console.log('isLoggedIn', isLoggedIn);
+        // console.log('isCompletedRegistration', isCompletedRegistration);
+
+        setTimeout(() => {
+          if (!isLoggedIn) {
+            this.router.navigateByUrl('/login');
+          } else if (!isCompletedRegistration) {
+            this.router.navigateByUrl('/signup/complete');
+          } else {
+            this.router.navigateByUrl('/home');
+          }
+        }, 3000);
+      })
     );
   }
 

@@ -264,17 +264,6 @@ export class AuthEffect {
     )
   );
 
-  // redirectAfterIsLoggedInSuccessCompleteRegistration$ = createEffect(
-  //   () =>
-  //     this.actions$.pipe(
-  //       ofType(isLoggedInSuccessCompleteRegistrationAction),
-  //       tap(() => {
-  //         this.router.navigateByUrl('/signup/complete');
-  //       })
-  //     ),
-  //   { dispatch: false }
-  // );
-
   verifyEmail$ = createEffect(() =>
     this.actions$.pipe(
       ofType(verifyEmailAction),
