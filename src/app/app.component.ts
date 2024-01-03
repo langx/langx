@@ -62,7 +62,7 @@ export class AppComponent {
       this.toggleDarkTheme(false);
     }
 
-    console.log('theme in storage: ', theme);
+    // console.log('Theme: ', theme);
   }
 
   initAutoMode() {
