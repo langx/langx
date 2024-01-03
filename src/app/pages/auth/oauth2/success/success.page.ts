@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest, filter } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
 
 import { isLoggedInAction } from 'src/app/store/actions/auth.action';
 import {
@@ -110,9 +111,13 @@ export class SuccessPage implements OnInit {
     }
 
     const cookieValue = JSON.stringify(cookieFallback);
-    console.log('cookieValue: ', cookieValue);
 
-    localStorage.setItem('cookieFallback', cookieValue);
+    if (
+      Object.keys(cookieFallback).length !== 0 &&
+      Capacitor.getPlatform() !== 'web'
+    ) {
+      localStorage.setItem('cookieFallback', cookieValue);
+    }
 
     this.store.dispatch(isLoggedInAction());
   }
