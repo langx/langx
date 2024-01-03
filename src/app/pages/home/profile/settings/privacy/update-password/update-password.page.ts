@@ -3,6 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 
+import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
+import { updatePasswordAction } from 'src/app/store/actions/auth.action';
+
 @Component({
   selector: 'app-update-password',
   templateUrl: './update-password.page.html',
@@ -47,7 +50,13 @@ export class UpdatePasswordPage implements OnInit {
       return;
     }
 
-    // TODO: Dispatch Update Password Action
+    // Dispatch Update Password Action
+    const request: updatePasswordRequestInterface = {
+      password: this.form.value.password,
+      oldPassword: this.form.value.current_password,
+    };
+
+    this.store.dispatch(updatePasswordAction({ request }));
   }
 
   //
