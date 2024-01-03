@@ -5,6 +5,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-redirect *ngIf="verified" [model]="modelSuccess"></app-redirect>
-  <app-redirect *ngIf="!verified" [model]="modelFailed"></app-redirect>
+  <div *ngIf="isLoading$ | async">
+    <app-spinner></app-spinner>
+  </div>
+  <div *ngIf="!(isLoading$ | async)">
+    <app-redirect *ngIf="verified" [model]="modelSuccess"></app-redirect>
+    <app-redirect *ngIf="!verified" [model]="modelFailed"></app-redirect>
+  </div>
 </ion-content>
