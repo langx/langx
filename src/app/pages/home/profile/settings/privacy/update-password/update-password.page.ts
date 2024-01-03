@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
 import { updatePasswordAction } from 'src/app/store/actions/auth.action';
+import {
+  isLoadingSelector,
+  updatePasswordErrorSelector,
+  updatePasswordSuccessSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-update-password',
@@ -12,7 +19,10 @@ import { updatePasswordAction } from 'src/app/store/actions/auth.action';
   styleUrls: ['./update-password.page.scss'],
 })
 export class UpdatePasswordPage implements OnInit {
+  subscription: Subscription;
   form: FormGroup;
+
+  isLoading$: Observable<boolean>;
 
   current_password_type: string = 'password';
   password_type: string = 'password';
@@ -21,7 +31,47 @@ export class UpdatePasswordPage implements OnInit {
   constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
+    this.initValues();
     this.initForm();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(updatePasswordErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    // Present Toast if updatePasswordSuccessAction
+    this.subscription.add(
+      this.store
+        .pipe(select(updatePasswordSuccessSelector))
+        .subscribe((response: boolean) => {
+          if (response) {
+            this.presentToast(
+              'Password has been successfully changed.',
+              'success'
+            );
+            this.form.reset();
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
+  initValues() {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
   initForm() {
