@@ -72,6 +72,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'account/update-password',
+    loadChildren: () =>
+      import(
+        './profile/settings/privacy/update-password/update-password.module'
+      ).then((m) => m.UpdatePasswordPageModule),
+  },
+  {
     path: 'appearance',
     loadChildren: () =>
       import('./profile/settings/appearance/appearance.module').then(
