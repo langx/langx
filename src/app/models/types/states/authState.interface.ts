@@ -10,6 +10,7 @@ export interface AuthStateInterface {
   account: Account | null;
   currentUser: User | null;
   isLoggedIn: boolean | null;
+  isCompletedRegistration: boolean;
   languages: Language[] | null;
   identities: Models.Identity[] | null;
   sessions: Models.Session[] | null;

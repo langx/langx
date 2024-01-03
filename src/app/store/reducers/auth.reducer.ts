@@ -81,6 +81,7 @@ const initialState: AuthStateInterface = {
   account: null,
   currentUser: null,
   isLoggedIn: null,
+  isCompletedRegistration: false,
   languages: null,
   identities: null,
   sessions: null,
@@ -248,6 +249,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       isLoggedIn: true,
+      isCompletedRegistration: true,
       account: action.payload?.account,
       // TODO: No need here to fill currentUser
       currentUser: action.payload?.currentUser,
@@ -259,6 +261,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       isLoggedIn: true,
+      isCompletedRegistration: false,
       account: action.payload?.account,
       currentUser: action.payload?.currentUser,
       unauthorizedError: action.error,
