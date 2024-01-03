@@ -23,6 +23,20 @@ export class VerifyEmailPage implements OnInit {
 
   verified: boolean = null;
 
+  modelSuccess = {
+    success: true,
+    title: 'Your email has been verified successfully.',
+    color: 'success',
+    icon: 'shield-checkmark-outline',
+  };
+
+  modelFailed = {
+    success: false,
+    title: 'Unfortunately, we were unable to verify your email.',
+    color: 'danger',
+    icon: 'close-outline',
+  };
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,

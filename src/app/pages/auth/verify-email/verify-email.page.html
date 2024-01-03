@@ -5,32 +5,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-redirect></app-redirect>
-  <ion-card>
-    <ion-card-header>
-      <ion-list lines="none">
-        <ion-item *ngIf="verified">
-          <ion-icon
-            name="shield-checkmark-outline"
-            color="success"
-            slot="start"
-          ></ion-icon>
-          <ion-label>
-            <h2>Your email has been verified successfully.</h2>
-            <p>You will be navigated to the next page in {{second}} seconds.</p>
-          </ion-label>
-        </ion-item>
-        <ion-item *ngIf="!verified">
-          <ion-icon name="close-outline" color="danger" slot="start"></ion-icon>
-          <ion-label>
-            <h2>Unfortunately, we were unable to verify your email..</h2>
-            <p>
-              In {{second}} seconds, you will be navigated to the next page.
-            </p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-header>
-    <ion-card-content> </ion-card-content>
-  </ion-card>
+  <app-redirect *ngIf="verified" [model]="modelSuccess"></app-redirect>
+  <app-redirect *ngIf="!verified" [model]="modelFailed"></app-redirect>
 </ion-content>
