@@ -14,6 +14,7 @@ import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
+import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
 
 // Login
 export const loginAction = createAction(
@@ -167,6 +168,21 @@ export const resetPasswordConfirmationSuccessAction = createAction(
 
 export const resetPasswordConfirmationFailureAction = createAction(
   ActionTypes.RESET_PASSWORD_CONFIRMATION_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Update Password
+export const updatePasswordAction = createAction(
+  ActionTypes.UPDATE_PASSWORD,
+  props<{ request: updatePasswordRequestInterface }>()
+);
+
+export const updatePasswordSuccessAction = createAction(
+  ActionTypes.UPDATE_PASSWORD_SUCCESS
+);
+
+export const updatePasswordFailureAction = createAction(
+  ActionTypes.UPDATE_PASSWORD_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
