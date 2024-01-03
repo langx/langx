@@ -33,6 +33,7 @@ export enum ActionTypes {
   UPDATE_PASSWORD = '[Auth] Update Password',
   UPDATE_PASSWORD_SUCCESS = '[Auth] Update Password Success',
   UPDATE_PASSWORD_FAILURE = '[Auth] Update Password Failure',
+  UPDATE_PASSWORD_RESET_VALUES = '[Auth] Update Password Reset Values',
   LIST_IDENTITIES = '[Auth] List Identities',
   LIST_IDENTITIES_SUCCESS = '[Auth] List Identities Success',
   LIST_IDENTITIES_FAILURE = '[Auth] List Identities Failure',

@@ -186,6 +186,10 @@ export const updatePasswordFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+export const updatePasswordResetValuesAction = createAction(
+  ActionTypes.UPDATE_PASSWORD_RESET_VALUES
+);
+
 // List Identities
 export const listIdentitiesAction = createAction(ActionTypes.LIST_IDENTITIES);
 
