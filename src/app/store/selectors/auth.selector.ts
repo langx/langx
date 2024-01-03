@@ -30,6 +30,11 @@ export const isLoggedInSelector = createSelector(
   (authState: AuthStateInterface) => authState.isLoggedIn
 );
 
+export const isCompletedRegistrationSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.isCompletedRegistration
+);
+
 export const loginValidationErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.loginValidationError
