@@ -20,6 +20,13 @@ const routes: Routes = [
     canLoad: [AuthGuard],
   },
   {
+    path: 'auth/success',
+    loadChildren: () =>
+      import('./pages/auth/oauth2/success/success.module').then(
+        (m) => m.SuccessPageModule
+      ),
+  },
+  {
     path: 'auth/oauth2/success',
     loadChildren: () =>
       import('./pages/auth/oauth2/success/success.module').then(
