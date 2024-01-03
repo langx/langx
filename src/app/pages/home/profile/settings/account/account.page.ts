@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import { Router } from '@angular/router';
 import { Models } from 'appwrite';
 import { ToastController } from '@ionic/angular';
 
@@ -42,7 +43,11 @@ export class AccountPage implements OnInit {
   verifyButtonDisabled = false; // to control the button's state
   verifyButtonText = 'Verify'; // to hold the button's text
 
-  constructor(private store: Store, private toastController: ToastController) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
     this.initValues();
@@ -119,6 +124,10 @@ export class AccountPage implements OnInit {
         clearInterval(intervalId);
       }
     }, 1000);
+  }
+
+  updatePassword() {
+    this.router.navigateByUrl('/home/account/update-password');
   }
 
   // TODO: implement these methods

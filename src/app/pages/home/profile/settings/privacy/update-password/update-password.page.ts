@@ -1,45 +1,40 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
-import { resetPasswordConfirmationAction } from 'src/app/store/actions/auth.action';
+import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
 import {
-  resetPasswordConfirmationSuccessSelector,
-  resetPasswordErrorSelector,
+  updatePasswordAction,
+  updatePasswordResetValuesAction,
+} from 'src/app/store/actions/auth.action';
+import {
+  isLoadingSelector,
+  updatePasswordErrorSelector,
+  updatePasswordSuccessSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
-  selector: 'app-new',
-  templateUrl: './new.page.html',
-  styleUrls: ['./new.page.scss'],
+  selector: 'app-update-password',
+  templateUrl: './update-password.page.html',
+  styleUrls: ['./update-password.page.scss'],
 })
-export class NewPage implements OnInit {
+export class UpdatePasswordPage implements OnInit {
   subscription: Subscription;
-
-  id: string;
-  secret: string;
-
   form: FormGroup;
 
-  isLoading: boolean = false;
+  isLoading$: Observable<boolean>;
 
+  current_password_type: string = 'password';
   password_type: string = 'password';
   password2_type: string = 'password';
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private route: ActivatedRoute,
-    private toastController: ToastController
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
-    this.initValidation();
+    this.initValues();
     this.initForm();
   }
 
@@ -49,7 +44,7 @@ export class NewPage implements OnInit {
     // Present Toast if error
     this.subscription.add(
       this.store
-        .pipe(select(resetPasswordErrorSelector))
+        .pipe(select(updatePasswordErrorSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
@@ -57,16 +52,19 @@ export class NewPage implements OnInit {
         })
     );
 
-    // Present Toast if resetPasswordConfirmationSuccess
+    // Present Toast if updatePasswordSuccessAction
     this.subscription.add(
       this.store
-        .pipe(select(resetPasswordConfirmationSuccessSelector))
+        .pipe(select(updatePasswordSuccessSelector))
         .subscribe((response: boolean) => {
           if (response) {
             this.presentToast(
               'Password has been successfully changed.',
               'success'
             );
+            this.form.reset();
+            // Reset updatePasswordSuccessAction and updatePasswordErrorAction
+            this.store.dispatch(updatePasswordResetValuesAction());
           }
         })
     );
@@ -77,23 +75,15 @@ export class NewPage implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  initValidation() {
-    const id = this.route.snapshot.queryParamMap.get('userId');
-    const secret = this.route.snapshot.queryParamMap.get('secret');
-
-    if (!id || !secret) {
-      this.presentToast('Invalid URL', 'danger');
-      this.router.navigateByUrl('/login');
-      return;
-    } else {
-      this.id = id;
-      this.secret = secret;
-      console.log(this.id, this.secret);
-    }
+  initValues() {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
   initForm() {
     this.form = new FormGroup({
+      current_password: new FormControl('', {
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
       password: new FormControl('', {
         validators: [Validators.required, Validators.minLength(8)],
       }),
@@ -101,14 +91,6 @@ export class NewPage implements OnInit {
         validators: [Validators.required, Validators.minLength(8)],
       }),
     });
-  }
-
-  showPassword() {
-    this.password_type = this.password_type === 'text' ? 'password' : 'text';
-  }
-
-  showPassword2() {
-    this.password2_type = this.password2_type === 'text' ? 'password' : 'text';
   }
 
   onSubmit() {
@@ -123,14 +105,30 @@ export class NewPage implements OnInit {
       return;
     }
 
-    const request: resetPasswordConfirmationRequestInterface = {
-      id: this.id,
-      secret: this.secret,
+    // Dispatch Update Password Action
+    const request: updatePasswordRequestInterface = {
       password: this.form.value.password,
-      password2: this.form.value.password2,
+      oldPassword: this.form.value.current_password,
     };
 
-    this.store.dispatch(resetPasswordConfirmationAction({ request }));
+    this.store.dispatch(updatePasswordAction({ request }));
+  }
+
+  //
+  // Password visibility
+  //
+
+  showCurrentPassword() {
+    this.current_password_type =
+      this.current_password_type === 'text' ? 'password' : 'text';
+  }
+
+  showPassword() {
+    this.password_type = this.password_type === 'text' ? 'password' : 'text';
+  }
+
+  showPassword2() {
+    this.password2_type = this.password2_type === 'text' ? 'password' : 'text';
   }
 
   //

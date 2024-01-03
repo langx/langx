@@ -146,11 +146,7 @@ export class LoginPage implements OnInit {
 
   async checkUserLoggedIn() {
     const cookieFallback = localStorage.getItem('cookieFallback');
-    if (
-      cookieFallback &&
-      Object.keys(cookieFallback).length !== 0 &&
-      Capacitor.getPlatform() !== 'web'
-    ) {
+    if (cookieFallback && Object.keys(cookieFallback).length !== 0) {
       this.router.navigateByUrl('/home');
     }
   }
