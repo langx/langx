@@ -113,6 +113,7 @@ export class SuccessPage implements OnInit {
     const cookieValue = JSON.stringify(cookieFallback);
 
     if (
+      cookieFallback &&
       Object.keys(cookieFallback).length !== 0 &&
       Capacitor.getPlatform() !== 'web'
     ) {
