@@ -91,7 +91,7 @@ export class AuthEffect {
       this.actions$.pipe(
         ofType(loginSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/home');
+          this.router.navigateByUrl('/auth/success');
         })
       ),
     { dispatch: false }
@@ -241,8 +241,7 @@ export class AuthEffect {
                   currentUser: null,
                 };
                 const error: ErrorInterface = {
-                  message:
-                    'Registration is not completed yet. Please try again.',
+                  message: 'Registration is not completed yet.',
                 };
                 return of(
                   isLoggedInSuccessCompleteRegistrationAction({
