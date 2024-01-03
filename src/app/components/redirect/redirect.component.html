@@ -1,16 +1,20 @@
 <ion-card>
-  <ion-card-content>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="ion-text-center">
-          <ion-label>
-            <h2>title</h2>
-          </ion-label>
-          <ion-text>
-            <p>subTitle</p>
-          </ion-text>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-card-content>
+  <ion-card-header>
+    <ion-list lines="none">
+      <ion-item>
+        <ion-icon
+          [name]="model?.icon"
+          [color]="model?.color"
+          slot="start"
+        ></ion-icon>
+        <ion-label>
+          <h2>{{ model?.title }}</h2>
+          <p>
+            In {{ second }} seconds, you will be navigated to the next page.
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-header>
+  <ion-card-content> </ion-card-content>
 </ion-card>

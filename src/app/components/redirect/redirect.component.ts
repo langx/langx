@@ -7,6 +7,8 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class RedirectComponent implements OnInit {
   @Input() model: any;
+  // TODO: Make countdown dynamic
+  second: number = 3;
 
   constructor() {}
 
