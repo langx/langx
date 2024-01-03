@@ -58,6 +58,9 @@ import {
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
+  updatePasswordAction,
+  updatePasswordFailureAction,
+  updatePasswordSuccessAction,
   verifyEmailAction,
   verifyEmailConfirmationAction,
   verifyEmailConfirmationFailureAction,
@@ -387,6 +390,25 @@ export class AuthEffect {
         })
       ),
     { dispatch: false }
+  );
+
+  updatePassword$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updatePasswordAction),
+      switchMap(({ request }) => {
+        return this.authService.updatePassword(request.password, request.oldPassword).pipe(
+          map(() => {
+            return updatePasswordSuccessAction();
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(updatePasswordFailureAction({ error }));
+          })
+        );
+      })
+    )
   );
 
   listIdentities$ = createEffect(() =>
