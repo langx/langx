@@ -33,6 +33,7 @@
     "@capacitor/push-notifications": "^5.1.0",
     "@capacitor/splash-screen": "^5.0.6",
     "@capacitor/status-bar": "5.0.6",
+    "@capawesome/capacitor-badge": "^5.0.0",
     "@ionic/angular": "^7.0.0",
     "@ionic/pwa-elements": "^3.2.2",
     "@ngrx/effects": "^16.3.0",
