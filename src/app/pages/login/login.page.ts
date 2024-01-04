@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Store, select } from '@ngrx/store';
-import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 

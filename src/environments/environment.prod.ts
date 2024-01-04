@@ -26,6 +26,7 @@ export const environment = {
     VERIFY_EMAIL: `${HOMEPAGE_URL}auth/verify-email`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    BADGES: `${HOMEPAGE_URL}assets/image/badges`,
   },
   opts: {
     PAGINATION_LIMIT: 10,
