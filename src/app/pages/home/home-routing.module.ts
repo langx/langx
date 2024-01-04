@@ -99,11 +99,6 @@ const routes: Routes = [
         (m) => m.PrivacyPageModule
       ),
   },
-  {
-    path: 'fcm-test/:id',
-    loadChildren: () =>
-      import('./fcm-test/fcm-test.module').then((m) => m.FcmTestPageModule),
-  },
 ];
 
 @NgModule({
