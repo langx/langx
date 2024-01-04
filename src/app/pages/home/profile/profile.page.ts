@@ -64,11 +64,6 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
-  badges = [
-    '/assets/image/badges/early-adopter.png',
-    '/assets/image/badges/early-adopter.png',
-  ];
-
   subscription: Subscription;
 
   currentUser$: Observable<User | null> = null;
@@ -80,6 +75,7 @@ export class ProfilePage implements OnInit {
   gender: string = null;
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
+  badges: string[] = [];
 
   constructor(
     private store: Store,
@@ -125,6 +121,9 @@ export class ProfilePage implements OnInit {
         user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
+      this.badges = user?.badges.map(
+        (badge) => `/assets/image/badges/${badge}.png`
+      );
     });
   }
 
