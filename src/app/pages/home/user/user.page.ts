@@ -25,6 +25,7 @@ export class UserPage implements OnInit {
   gender: string = null;
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
+  badges: string[] = [];
 
   constructor(
     private store: Store,
@@ -55,6 +56,9 @@ export class UserPage implements OnInit {
         user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
+      this.badges = user?.badges.map(
+        (badge) => `/assets/image/badges/${badge}.png`
+      );
     });
   }
 

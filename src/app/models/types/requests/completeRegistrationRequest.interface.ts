@@ -5,4 +5,5 @@ export interface CompleteRegistrationRequestInterface {
   countryCode: string;
   gender: string;
   lastSeen: Date;
+  badges: string[];
 }

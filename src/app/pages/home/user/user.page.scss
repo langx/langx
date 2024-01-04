@@ -18,3 +18,19 @@ ion-card-header img {
 swiper-container {
   --swiper-theme-color: var(--ion-color-primary);
 }
+
+.badge-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-image {
+  max-width: 60px;
+  border-radius: 15px;
+}
+
+.badge-text {
+  text-align: center;
+}

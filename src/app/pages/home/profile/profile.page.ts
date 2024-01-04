@@ -1,8 +1,11 @@
-import { Component, ErrorHandler, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
+
+// Environment Imports
+import { environment } from 'src/environments/environment';
 
 // Component and utils Imports
 import { lastSeen, getAge } from 'src/app/extras/utils';
@@ -72,6 +75,7 @@ export class ProfilePage implements OnInit {
   gender: string = null;
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
+  badges: string[] = [];
 
   constructor(
     private store: Store,
@@ -117,6 +121,9 @@ export class ProfilePage implements OnInit {
         user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
+      this.badges = user?.badges.map(
+        (badge) => `/assets/image/badges/${badge}.png`
+      );
     });
   }
 
