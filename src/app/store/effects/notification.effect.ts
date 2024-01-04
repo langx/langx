@@ -81,6 +81,7 @@ export class NotificationEffects {
             }, 0)
           : currentUser.totalUnseen;
 
+        // TODO: In future, Use Badge.get() instead of totalUnseenMessages
         // Update to app badge count
         Badge.set({ count: totalUnseenMessages });
 
