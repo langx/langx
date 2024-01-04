@@ -1,5 +1,5 @@
-// export const HOMEPAGE_URL = 'http://192.168.0.104:8100/';
-export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
+export const HOMEPAGE_URL = 'http://192.168.0.104:8100/';
+// export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
 // export const HOMEPAGE_URL = 'http://localhost:8100/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
@@ -28,6 +28,7 @@ export const environment = {
     VERIFY_EMAIL: `${HOMEPAGE_URL}auth/verify-email`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    BADGES: `${HOMEPAGE_URL}assets/image/badges`,
   },
   opts: {
     PAGINATION_LIMIT: 10,
