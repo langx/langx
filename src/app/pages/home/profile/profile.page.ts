@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
 
+// Environment Imports
+import { environment } from 'src/environments/environment';
+
 // Component and utils Imports
 import { lastSeen, getAge } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
