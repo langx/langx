@@ -61,6 +61,11 @@ export class ProfilePage implements OnInit {
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
+  badges = [
+    '/assets/image/badges/early-adopter.png',
+    '/assets/image/badges/early-adopter.png',
+  ];
+
   subscription: Subscription;
 
   currentUser$: Observable<User | null> = null;
