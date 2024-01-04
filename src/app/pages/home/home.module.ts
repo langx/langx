@@ -20,6 +20,7 @@ import { LanguageEffects } from 'src/app/store/effects/language.effect';
 import { PresenceEffects } from 'src/app/store/effects/presence.effect';
 import { BucketEffects } from 'src/app/store/effects/bucket.effect';
 import { NotificationEffects } from 'src/app/store/effects/notification.effect';
+import { NewBadgeComponent } from 'src/app/components/new-badge/new-badge.component';
 
 @NgModule({
   imports: [
@@ -41,6 +42,6 @@ import { NotificationEffects } from 'src/app/store/effects/notification.effect';
       NotificationEffects,
     ]),
   ],
-  declarations: [HomePage],
+  declarations: [HomePage, NewBadgeComponent],
 })
 export class HomePageModule {}
