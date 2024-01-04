@@ -3,6 +3,7 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import { Badge } from '@capawesome/capacitor-badge';
 
 // Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -79,6 +80,9 @@ export class NotificationEffects {
               return count + unseenMessagesInRoom;
             }, 0)
           : currentUser.totalUnseen;
+
+        // Update to app badge count
+        Badge.set({ count: totalUnseenMessages });
 
         return totalUnseenMessagesSuccessAction({
           payload: totalUnseenMessages,
