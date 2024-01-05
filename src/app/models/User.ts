@@ -15,4 +15,5 @@ export type User = Models.Document & {
   aboutMe?: string;
   lastSeen?: Date;
   totalUnseen?: number;
+  notifications?: string[];
 };
