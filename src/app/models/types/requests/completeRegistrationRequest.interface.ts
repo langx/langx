@@ -6,4 +6,5 @@ export interface CompleteRegistrationRequestInterface {
   gender: string;
   lastSeen: Date;
   badges: string[];
+  notifications: string[];
 }

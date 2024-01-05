@@ -3,6 +3,7 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { Store, select } from '@ngrx/store';
+import { Badge } from '@capawesome/capacitor-badge';
 
 // Interface Imports
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -80,6 +81,13 @@ export class NotificationEffects {
             }, 0)
           : currentUser.totalUnseen;
 
+        // TODO: In future, Use Badge.get() instead of totalUnseenMessages
+        // Update to app badge count
+        if ('setAppBadge' in navigator) {
+          Badge.set({ count: totalUnseenMessages });
+        } else {
+          console.log('Badging API is not supported in this browser.');
+        }
         return totalUnseenMessagesSuccessAction({
           payload: totalUnseenMessages,
         });
