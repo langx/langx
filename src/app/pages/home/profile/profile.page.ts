@@ -168,6 +168,10 @@ export class ProfilePage implements OnInit {
     console.log('Async operation refresh has ended');
   }
 
+  publicProfileView() {
+    this.router.navigate(['/', 'home', 'user', this.currentUserId]);
+  }
+
   //
   // Utils
   //
