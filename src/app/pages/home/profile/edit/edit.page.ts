@@ -21,8 +21,8 @@ import { updateLanguageRequestInterface } from 'src/app/models/types/requests/up
 
 // Component Imports
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
-import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
-import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
+import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language.component';
+import { AddLanguageComponent } from 'src/app/components/add-language/add-language.component';
 
 // Selector and Action Imports
 import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
