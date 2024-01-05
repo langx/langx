@@ -5,6 +5,7 @@ import { Store, select } from '@ngrx/store';
 import Compressor from 'compressorjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import { Router } from '@angular/router';
 import {
   LoadingController,
   ModalController,
@@ -57,6 +58,7 @@ export class EditPage implements OnInit {
 
   constructor(
     private store: Store,
+    private router: Router,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private loadingCtrl: LoadingController
@@ -319,6 +321,14 @@ export class EditPage implements OnInit {
     };
 
     this.store.dispatch(deleteLanguageAction({ request }));
+  }
+
+  //
+  // Public Profile View
+  //
+
+  publicProfileView() {
+    this.router.navigate(['/', 'home', 'user', this.currentUser?.$id]);
   }
 
   //
