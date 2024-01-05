@@ -120,6 +120,9 @@
       <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
+      <ion-text *ngIf="otherPhotos?.length == 0">
+        Currently, no photos are available.
+      </ion-text>
       <swiper-container
         [slidesPerView]="3.5"
         [spaceBetween]="15"
