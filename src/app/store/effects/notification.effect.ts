@@ -83,8 +83,11 @@ export class NotificationEffects {
 
         // TODO: In future, Use Badge.get() instead of totalUnseenMessages
         // Update to app badge count
-        Badge.set({ count: totalUnseenMessages });
-
+        if ('setAppBadge' in navigator) {
+          Badge.set({ count: totalUnseenMessages });
+        } else {
+          console.log('Badging API is not supported in this browser.');
+        }
         return totalUnseenMessagesSuccessAction({
           payload: totalUnseenMessages,
         });
