@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
 import {
   PushNotifications,
   Token,
@@ -7,14 +9,20 @@ import {
   ActionPerformed,
   RegistrationError,
 } from '@capacitor/push-notifications';
-import { Router } from '@angular/router';
+
 import { ApiService } from '../api/api.service';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FcmService {
-  constructor(private router: Router, private api: ApiService) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private api: ApiService
+  ) {}
 
   async registerPush() {
     // TODO: #226 Web notification can also be implemented here
@@ -58,6 +66,9 @@ export class FcmService {
               .catch((err) => {
                 console.log('ios token update error', err);
               });
+
+            // Add "push" to currentUser.notifications
+            this.updateCurrentUser();
           }
         }
       });
@@ -107,5 +118,31 @@ export class FcmService {
     const notificationList =
       await PushNotifications.getDeliveredNotifications();
     console.log('delivered notifications', notificationList);
+  }
+
+  // Update currentUser
+  updateCurrentUser() {
+    this.store
+      .pipe(select(currentUserSelector))
+      .subscribe((currentUser) => {
+        if (currentUser) {
+          let notifications = [...(currentUser?.notifications || [])];
+          console.log('notifications :', notifications);
+
+          if (!notifications.includes('push')) {
+            notifications.push('push');
+          }
+
+          // Dispatch updateCurrentUserAction
+          const request = {
+            userId: currentUser?.$id,
+            data: { notifications },
+          };
+
+          console.log('!!!! request :', request);
+          this.store.dispatch(updateCurrentUserAction({ request }));
+        }
+      })
+      .unsubscribe();
   }
 }
