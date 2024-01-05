@@ -132,13 +132,6 @@ export class AuthService {
         req.password2
       )
     );
-    // .then((response) => {
-    //   console.log('Recovery successfully updated', response);
-    // })
-    // .catch((error) => {
-    //   console.log('Error updating recovery', error);
-    //   return error;
-    // });
   }
 
   signInWithGoogle() {
