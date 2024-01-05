@@ -10,8 +10,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { EditPage } from './edit.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
-import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language/edit-language.component';
-import { AddLanguageComponent } from 'src/app/components/add-language/add-language/add-language.component';
+import { EditLanguageComponent } from 'src/app/components/edit-language/edit-language.component';
+import { AddLanguageComponent } from 'src/app/components/add-language/add-language.component';
 import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
