@@ -13,7 +13,7 @@
       <ion-card-title>Email</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item>
           <ion-icon name="mail-outline"></ion-icon>
           <ion-label>{{ (account$ | async)?.email }}</ion-label>
@@ -41,7 +41,7 @@
       <ion-card-title>Account Settings</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item (click)="updatePassword()" detail>
           <ion-icon name="key-outline"></ion-icon>
           <ion-label size="small">Change Password</ion-label>
@@ -55,7 +55,7 @@
       <ion-card-title>Last Seen</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item>
           <ion-icon name="log-in-outline"></ion-icon>
           <ion-label
@@ -73,7 +73,7 @@
       <ion-card-title>Linked Accounts</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item *ngFor="let item of identities$ | async">
           <ion-icon name="logo-{{item?.provider}}"></ion-icon>
           <ion-label>
@@ -93,7 +93,7 @@
       <ion-card-title>Active Sessions</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item *ngFor="let item of sessions$ | async">
           <ion-icon name="logo-{{item?.deviceBrand}}"></ion-icon>
           <ion-label> {{item?.ip}} </ion-label>
@@ -116,9 +116,12 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item>
           <ion-icon name="key-outline"></ion-icon>
+          <ion-label *ngIf="!((account$ | async)?.passwordUpdate)">
+            Never Changed
+          </ion-label>
           <ion-label
             >{{ (account$ | async)?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
             }}</ion-label
@@ -136,7 +139,7 @@
       <ion-card-title>User Id</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item>
           <ion-icon name="id-card-outline"></ion-icon>
           <ion-label>{{ (account$ | async)?.$id }}</ion-label>
@@ -150,16 +153,16 @@
       <ion-card-title>Other</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
+      <ion-list lines="none">
         <ion-item>
           <ion-icon name="snow-outline"></ion-icon>
           <ion-label (click)="disableAccount()">Froze Account</ion-label>
         </ion-item>
         <ion-item>
           <ion-icon name="trash-outline" color="medium"></ion-icon>
-          <ion-label color="medium" (click)="disableAccount()"
-            >Delete Account</ion-label
-          >
+          <ion-label color="medium" (click)="disableAccount()">
+            Delete Account
+          </ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
