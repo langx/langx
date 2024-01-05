@@ -38,6 +38,20 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Account Settings</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item (click)="updatePassword()" detail>
+          <ion-icon name="key-outline"></ion-icon>
+          <ion-label size="small">Change Password</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Linked Accounts</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -61,13 +75,6 @@
       <ion-card-title>
         <ion-row>
           <ion-col>Last Password Update</ion-col>
-          <ion-col>
-            <ion-card-subtitle>
-              <ion-button (click)="updatePassword()" size="small">
-                Change
-              </ion-button>
-            </ion-card-subtitle>
-          </ion-col>
         </ion-row>
       </ion-card-title>
     </ion-card-header>
