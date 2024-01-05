@@ -14,7 +14,7 @@
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="form">
-        <ion-list>
+        <ion-list (ionChange)="togglePushNotifications()">
           <ion-item>
             <ion-toggle formControlName="emailNotifications">
               Email Notifications

@@ -52,4 +52,27 @@ export class NotificationsPage implements OnInit {
       })
       .unsubscribe();
   }
+
+  async togglePushNotifications() {
+    const pushNotifications = this.form.get('pushNotifications').value;
+    const emailNotifications = this.form.get('emailNotifications').value;
+
+    console.log(this.form.value);
+
+    const notifications = [];
+
+    if (pushNotifications) {
+      notifications.push('push');
+    }
+
+    if (emailNotifications) {
+      notifications.push('email');
+    }
+
+    // const account: Account = {
+    //   notifications,
+    // };
+
+    // await this.fcmService.updateNotifications(account);
+  }
 }
