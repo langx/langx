@@ -27,6 +27,9 @@ import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
   completeRegistrationSuccessAction,
+  deleteAccountAction,
+  deleteAccountFailureAction,
+  deleteAccountSuccessAction,
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
@@ -462,6 +465,25 @@ export class AuthEffect {
     )
   );
 
+  deleteAccount$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteAccountAction),
+      switchMap(() => {
+        return this.authService.deleteAccount().pipe(
+          map((payload) => {
+            return deleteAccountSuccessAction({ payload });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(deleteAccountFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(logoutAction),
@@ -484,9 +506,9 @@ export class AuthEffect {
   redirectAfterLogout$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(logoutSuccessAction),
+        ofType(logoutSuccessAction, deleteAccountSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/login', { replaceUrl: true });
+          this.router.navigateByUrl('/', { replaceUrl: true });
         })
       ),
     { dispatch: false }
