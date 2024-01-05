@@ -4,6 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Models } from 'appwrite';
 import { ToastController } from '@ionic/angular';
+import { Browser } from '@capacitor/browser';
 
 import { lastSeen } from 'src/app/extras/utils';
 import { Account } from 'src/app/models/Account';
@@ -136,6 +137,11 @@ export class AccountPage implements OnInit {
     // TODO: implement this method
     // First show a modal to confirm the action
     // Then call the service to disable the account
+  }
+
+  async openDataDeletion() {
+    console.warn('openDataDeletion clicked');
+    await Browser.open({ url: 'https://languagexchange.net/data-deletion' });
   }
 
   //
