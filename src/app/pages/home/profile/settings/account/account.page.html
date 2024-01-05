@@ -52,6 +52,24 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Last Seen</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-icon name="log-in-outline"></ion-icon>
+          <ion-label
+            >{{ (currentUser$ | async)?.lastSeen| date: 'dd/MM/yyyy, HH:mm:ss'
+            }}
+          </ion-label>
+          <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Linked Accounts</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -64,6 +82,25 @@
           <!-- TODO: #321 Delete Identity Functionality -->
           <!-- <ion-item>
             <ion-label><a href="#">Unlink</a></ion-label>
+          </ion-item> -->
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Active Sessions</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let item of sessions$ | async">
+          <ion-icon name="logo-{{item?.deviceBrand}}"></ion-icon>
+          <ion-label> {{item?.ip}} </ion-label>
+          <ion-note>{{item?.countryName}}</ion-note>
+          <!-- TODO: #322 Delete Session Functionality -->
+          <!-- <ion-item>
+            <ion-label><a href="#">Delete</a></ion-label>
           </ion-item> -->
         </ion-item>
       </ion-list>
@@ -96,24 +133,6 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Last Seen</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-icon name="log-in-outline"></ion-icon>
-          <ion-label
-            >{{ (currentUser$ | async)?.lastSeen| date: 'dd/MM/yyyy, HH:mm:ss'
-            }}
-          </ion-label>
-          <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
       <ion-card-title>User Id</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -121,25 +140,6 @@
         <ion-item>
           <ion-icon name="id-card-outline"></ion-icon>
           <ion-label>{{ (account$ | async)?.$id }}</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Active Sessions</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let item of sessions$ | async">
-          <ion-icon name="logo-{{item?.deviceBrand}}"></ion-icon>
-          <ion-label> {{item?.ip}} </ion-label>
-          <ion-note>{{item?.countryName}}</ion-note>
-          <!-- TODO: #322 Delete Session Functionality -->
-          <!-- <ion-item>
-            <ion-label><a href="#">Delete</a></ion-label>
-          </ion-item> -->
         </ion-item>
       </ion-list>
     </ion-card-content>
