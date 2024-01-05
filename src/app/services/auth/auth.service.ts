@@ -95,12 +95,6 @@ export class AuthService {
     return from(this.api.account.listSessions());
   }
 
-  logout(): Observable<any> {
-    return from(this.api.account.deleteSession('current')).pipe(
-      tap(() => this._user.next(null))
-    );
-  }
-
   verifyEmail(): Observable<any> {
     return from(
       this.api.account.createVerification(environment.url.VERIFY_EMAIL)
@@ -155,6 +149,16 @@ export class AuthService {
       'apple',
       environment.url.SUCCESS_OAUTH2,
       environment.url.FAILURE_OAUTH2
+    );
+  }
+
+  deleteAccount(): Observable<Account> {
+    return from(this.api.account.updateStatus());
+  }
+
+  logout(): Observable<any> {
+    return from(this.api.account.deleteSession('current')).pipe(
+      tap(() => this._user.next(null))
     );
   }
 }
