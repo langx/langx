@@ -160,7 +160,7 @@
         </ion-item> -->
         <ion-item>
           <ion-icon name="trash-outline" color="medium"></ion-icon>
-          <ion-label color="medium" (click)="disableAccount()">
+          <ion-label color="medium" id="open-modal" expand="block">
             Delete Account
           </ion-label>
         </ion-item>
@@ -168,7 +168,7 @@
           <ion-col size="12" class="alignItems">
             <small>
               **This action is irreversible. See our
-              <ion-label (click)="openDataDeletion()" color="primary">
+              <ion-label (click)="openDataDeletionLink()" color="primary">
                 Data Deletion
               </ion-label>
               policy.
@@ -179,6 +179,40 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+
+  <ion-modal
+    trigger="open-modal"
+    [initialBreakpoint]="1"
+    [breakpoints]="[0, 1]"
+  >
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Delete Account</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Confirm Deletion</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p style="font-size: larger">Please confirm account deletion:</p>
+          <ul style="font-size: larger">
+            <li>This action is irreversible.</li>
+            <li>All data will be permanently removed.</li>
+            <li>Your email will not be reused.</li>
+            <li>Data recovery will not be possible.</li>
+          </ul>
+          <ion-button (click)="modal.dismiss()" color="primary">
+            Cancel
+          </ion-button>
+          <ion-button (click)="deleteAccount()" color="medium">
+            Confirm
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </ng-template>
+  </ion-modal>
 </ion-content>
 
 <ion-footer> </ion-footer>

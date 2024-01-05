@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Models } from 'appwrite';
-import { ToastController } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
 
 import { lastSeen } from 'src/app/extras/utils';
@@ -32,6 +32,8 @@ import {
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
+  @ViewChild(IonModal) modal: IonModal;
+
   subscription: Subscription;
 
   account$: Observable<Account | null> = null;
@@ -131,17 +133,14 @@ export class AccountPage implements OnInit {
     this.router.navigateByUrl('/home/account/update-password');
   }
 
-  // TODO: implement these methods
-  disableAccount() {
-    console.warn('disableAccount clicked');
-    // TODO: implement this method
-    // First show a modal to confirm the action
-    // Then call the service to disable the account
-  }
-
-  async openDataDeletion() {
+  async openDataDeletionLink() {
     console.warn('openDataDeletion clicked');
     await Browser.open({ url: 'https://languagexchange.net/data-deletion' });
+  }
+
+  // Delete account
+  deleteAccount() {
+    console.warn('disableAccount clicked');
   }
 
   //
