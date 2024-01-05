@@ -3,14 +3,15 @@ import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Models } from 'appwrite';
-import { IonModal, ToastController } from '@ionic/angular';
 import { Browser } from '@capacitor/browser';
+import { IonModal, ToastController } from '@ionic/angular';
 
 import { lastSeen } from 'src/app/extras/utils';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
+  deleteAccountAction,
   listIdentitiesAction,
   listSessionsAction,
   verifyEmailAction,
@@ -140,7 +141,8 @@ export class AccountPage implements OnInit {
 
   // Delete account
   deleteAccount() {
-    console.warn('disableAccount clicked');
+    this.modal.dismiss();
+    this.store.dispatch(deleteAccountAction());
   }
 
   //
