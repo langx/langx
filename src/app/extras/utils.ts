@@ -56,5 +56,17 @@ export function dateValidator(control: FormControl) {
   if (value && !value.match(datePattern)) {
     return { dateInvalid: true };
   }
+
+  // Create a Date object from the value
+  if (value) {
+    const [day, month, year] = value.split('/');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    // Check if the date is before 01/01/1925
+    const minDate = new Date(1925, 0, 1);
+    if (date < minDate) {
+      return { dateInvalid: true };
+    }
+  }
+
   return null;
 }
