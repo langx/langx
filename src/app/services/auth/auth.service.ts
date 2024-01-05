@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
+import { BehaviorSubject, concatMap, from, tap, Observable, of } from 'rxjs';
 
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
@@ -152,8 +152,13 @@ export class AuthService {
     );
   }
 
-  deleteAccount(): Observable<Account> {
-    return from(this.api.account.updateStatus());
+  deleteAccount(currentUserId: string): Observable<any> {
+    return of(currentUserId).pipe(
+      concatMap((userId) =>
+        this.api.deleteDocument(environment.appwrite.USERS_COLLECTION, userId)
+      ),
+      concatMap(() => this.api.account.updateStatus())
+    );
   }
 
   logout(): Observable<any> {
