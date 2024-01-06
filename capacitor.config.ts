@@ -18,6 +18,9 @@ const config: CapacitorConfig = {
       persist: true,
       autoClear: false,
     },
+    CapacitorHttp: {
+      enabled: true,
+    },
   },
 };
 
