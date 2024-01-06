@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { IonModal, ModalController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
 import { Observable } from 'rxjs';
@@ -19,6 +19,8 @@ import { userSelector } from 'src/app/store/selectors/user.selector';
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
+  @ViewChild(IonModal) modal: IonModal;
+
   userId: string;
   user$: Observable<User>;
 
