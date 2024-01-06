@@ -17,8 +17,8 @@ import {
   editProfileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 import {
+  blockUserAction,
   getUserByIdAction,
-  updateCurrentUserAction,
 } from 'src/app/store/actions/user.action';
 
 @Component({
@@ -134,14 +134,9 @@ export class UserPage implements OnInit {
         } else if (currentUser.$id === this.userId) {
           this.presentToast('You cannot block yourself.', 'danger');
         } else {
-          const request = {
-            userId: currentUser.$id,
-            data: {
-              blockedUsers: [...currentUser.blockedUsers, this.userId],
-            },
-          };
+          const request = { userId: this.userId };
           // Dispatch the action to update current user
-          this.store.dispatch(updateCurrentUserAction({ request }));
+          this.store.dispatch(blockUserAction({ request }));
         }
       })
       .unsubscribe();
