@@ -169,6 +169,14 @@ export class ProfilePage implements OnInit {
   }
 
   //
+  // Public Profile View
+  //
+
+  publicProfileView() {
+    this.router.navigate(['/', 'home', 'user', this.currentUserId]);
+  }
+
+  //
   // Utils
   //
 

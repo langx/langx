@@ -328,14 +328,6 @@ export class EditPage implements OnInit {
   }
 
   //
-  // Public Profile View
-  //
-
-  publicProfileView() {
-    this.router.navigate(['/', 'home', 'user', this.currentUser?.$id]);
-  }
-
-  //
   // Utils
   //
 
