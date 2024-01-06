@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ID, Query } from 'appwrite';
-import { Observable, from, of, switchMap } from 'rxjs';
+import axios, { AxiosResponse } from 'axios';
+import { Observable, concatMap, from, map, of, switchMap, tap } from 'rxjs';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
@@ -12,12 +13,17 @@ import { User } from 'src/app/models/User';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private api: ApiService, private storage: StorageService) {}
+  constructor(
+    private api: ApiService,
+    private authService: AuthService,
+    private storage: StorageService
+  ) {}
 
   getUserDoc(uid: string): Observable<any> {
     return from(
@@ -85,6 +91,37 @@ export class UserService {
 
     return from(
       this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+  blockUser(currentUser: User, userId: string): Observable<any> {
+    // Set body
+    const body = { to: userId };
+    // Set x-appwrite-user-id header
+    axios.defaults.headers.common['x-appwrite-user-id'] = currentUser.$id;
+
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          blockedUsers: [...currentUser.blockedUsers, userId],
+        }
+      )
+    ).pipe(
+      concatMap(() =>
+        from(this.authService.createJWT()).pipe(
+          tap((result) => {
+            console.log('result: ', result);
+            axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+          }),
+          switchMap(() => {
+            // Call the /api/user/block
+            return from(
+              axios.post(environment.api.USER_BLOCK_API_URL, body)
+            ).pipe(map((response: AxiosResponse<any>) => response.data));
+          })
+        )
+      )
     );
   }
 
