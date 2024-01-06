@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
+import { Browser } from '@capacitor/browser';
 import { Observable } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
 import { getAge, lastSeen } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { Language } from 'src/app/models/Language';
@@ -71,6 +73,18 @@ export class UserPage implements OnInit {
       },
     });
     modal.present();
+  }
+
+  //
+  // Block User
+  //
+
+  blockUser() {
+    console.log('Block User');
+  }
+
+  async openTermsAndPolicyLink() {
+    await Browser.open({ url: environment.web.TERMS_AND_CONDITIONS_URL });
   }
 
   //

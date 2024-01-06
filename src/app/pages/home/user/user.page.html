@@ -52,7 +52,7 @@
           [value]="(user$ | async)?.aboutMe"
         ></ion-textarea>
       </ion-item>
-      <ion-list class="langs">
+      <ion-list class="list-icon">
         <ion-item>
           <ion-icon name="flag-outline"></ion-icon>
           <ion-label>{{(user$ | async)?.country}}</ion-label>
@@ -77,7 +77,7 @@
       <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-list class="langs">
+      <ion-list class="list-icon">
         <ion-item *ngFor="let lang of motherLanguages">
           <ion-icon name="language-outline"></ion-icon>
           <ion-label>{{lang.name}}</ion-label>
@@ -93,7 +93,7 @@
       <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-list class="langs">
+      <ion-list class="list-icon">
         <ion-item *ngFor="let lang of studyLanguages">
           <ion-icon
             *ngIf="lang.level == 1"
@@ -166,6 +166,27 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list lines="none" class="list-icon">
+        <ion-item (click)="blockUser()" detail>
+          <ion-icon color="danger" name="ban-outline"></ion-icon>
+          <ion-label>Block User</ion-label>
+        </ion-item>
+        <ion-row>
+          <ion-col size="12" class="alignItems">
+            <small>
+              **This action is irreversible. See our
+              <ion-label (click)="openTermsAndPolicyLink()" color="primary">
+                Terms & Conditions.
+              </ion-label>
+            </small>
+          </ion-col>
+        </ion-row>
+      </ion-list>
     </ion-card-content>
   </ion-card>
 </ion-content>
