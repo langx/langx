@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Query } from 'appwrite';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { Observable, concatMap, from, map, of, switchMap, tap } from 'rxjs';
 
 // Environment and Services Imports
@@ -95,9 +95,9 @@ export class UserService {
   }
   blockUser(currentUser: User, userId: string): Observable<any> {
     // Set body
-    const body = { to: userId };
+    // const body = { to: userId };
     // Set x-appwrite-user-id header
-    axios.defaults.headers.common['x-appwrite-user-id'] = currentUser.$id;
+    // axios.defaults.headers.common['x-appwrite-user-id'] = currentUser.$id;
 
     return from(
       this.api.updateDocument(
@@ -107,22 +107,23 @@ export class UserService {
           blockedUsers: [...currentUser.blockedUsers, userId],
         }
       )
-    ).pipe(
-      concatMap(() =>
-        from(this.authService.createJWT()).pipe(
-          tap((result) => {
-            console.log('result: ', result);
-            axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
-          }),
-          switchMap(() => {
-            // Call the /api/user/block
-            return from(
-              axios.post(environment.api.USER_BLOCK_API_URL, body)
-            ).pipe(map((response: AxiosResponse<any>) => response.data));
-          })
-        )
-      )
     );
+    // .pipe(
+    //   concatMap(() =>
+    //     from(this.authService.createJWT()).pipe(
+    //       tap((result) => {
+    //         console.log('result: ', result);
+    //         axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+    //       }),
+    //       switchMap(() => {
+    //         // Call the /api/user/block
+    //         return from(axios.post(environment.api.USER_BLOCK_API_URL, body)).pipe(
+    //           map((response: AxiosResponse<any>) => response.data)
+    //         );
+    //       })
+    //     )
+    //   )
+    // );
   }
 
   //
