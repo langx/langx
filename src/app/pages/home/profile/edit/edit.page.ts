@@ -79,6 +79,9 @@ export class EditPage implements OnInit {
         this.studyLanguages = user?.languages.filter(
           (lang) => !lang.motherLanguage
         );
+
+        // Set default value for aboutMe
+        this.form.get('aboutMe').setValue(user?.aboutMe);
       })
     );
 
@@ -123,6 +126,7 @@ export class EditPage implements OnInit {
   }
 
   initForm() {
+    console.log(this.currentUser?.aboutMe);
     this.form = new FormGroup({
       aboutMe: new FormControl(this.currentUser?.aboutMe, {
         validators: [Validators.maxLength(500)],
