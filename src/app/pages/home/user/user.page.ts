@@ -1,17 +1,25 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IonModal, ModalController } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IonModal, ModalController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { getAge, lastSeen } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
-import { getUserByIdAction } from 'src/app/store/actions/user.action';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { userSelector } from 'src/app/store/selectors/user.selector';
+import {
+  currentUserSelector,
+  editProfileErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
+import {
+  getUserByIdAction,
+  updateCurrentUserAction,
+} from 'src/app/store/actions/user.action';
 
 @Component({
   selector: 'app-user',
@@ -21,8 +29,11 @@ import { userSelector } from 'src/app/store/selectors/user.selector';
 export class UserPage implements OnInit {
   @ViewChild(IonModal) modal: IonModal;
 
+  subscription: Subscription;
+
   userId: string;
   user$: Observable<User>;
+  currentUser$: Observable<User>;
 
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
@@ -34,16 +45,49 @@ export class UserPage implements OnInit {
   constructor(
     private store: Store,
     private route: ActivatedRoute,
-    private modalCtrl: ModalController
+    private router: Router,
+    private modalCtrl: ModalController,
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
     this.initValues();
   }
 
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(editProfileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    // Present Toast if user has been blocked successfully
+    this.subscription.add(
+      this.currentUser$.subscribe((currentUser: User) => {
+        if (currentUser?.blockedUsers.includes(this.userId)) {
+          this.presentToast('The user has been blocked.', 'success');
+          this.router.navigateByUrl('/home');
+        }
+      })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
   initValues() {
     this.userId = this.route.snapshot.paramMap.get('id') || null;
     this.user$ = this.store.pipe(select(userSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
@@ -82,7 +126,25 @@ export class UserPage implements OnInit {
   //
 
   blockUser() {
-    console.log('Block User');
+    this.modal.dismiss();
+    this.currentUser$
+      .subscribe((currentUser) => {
+        if (currentUser.blockedUsers.includes(this.userId)) {
+          this.presentToast('User already blocked.', 'danger');
+        } else if (currentUser.$id === this.userId) {
+          this.presentToast('You cannot block yourself.', 'danger');
+        } else {
+          const request = {
+            userId: currentUser.$id,
+            data: {
+              blockedUsers: [...currentUser.blockedUsers, this.userId],
+            },
+          };
+          // Dispatch the action to update current user
+          this.store.dispatch(updateCurrentUserAction({ request }));
+        }
+      })
+      .unsubscribe();
   }
 
   async openTermsAndPolicyLink() {
@@ -101,5 +163,20 @@ export class UserPage implements OnInit {
   getAge(d: any) {
     if (!d) return null;
     return getAge(d);
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
