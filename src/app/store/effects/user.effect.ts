@@ -2,13 +2,18 @@ import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
 
+import { currentUserSelector } from '../selectors/auth.selector';
 import {
+  blockUserAction,
+  blockUserFailureAction,
+  blockUserSuccessAction,
   getCurrentUserAction,
   getCurrentUserFailureAction,
   getCurrentUserSuccessAction,
@@ -89,7 +94,28 @@ export class UserEffects {
     { dispatch: false }
   );
 
+  blockUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(blockUserAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
+        return this.userService.blockUser(currentUser, request.userId).pipe(
+          tap((a) => console.log('blockUser$ effect:', a)),
+          map((payload: User) => blockUserSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(blockUserFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
   constructor(
+    private store: Store,
     private actions$: Actions,
     private router: Router,
     private userService: UserService
