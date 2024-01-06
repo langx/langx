@@ -216,6 +216,19 @@ export const listSessionsFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Delete Account
+export const deleteAccountAction = createAction(ActionTypes.DELETE_ACCOUNT);
+
+export const deleteAccountSuccessAction = createAction(
+  ActionTypes.DELETE_ACCOUNT_SUCCESS,
+  props<{ payload: Account }>()
+);
+
+export const deleteAccountFailureAction = createAction(
+  ActionTypes.DELETE_ACCOUNT_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Logout
 export const logoutAction = createAction(ActionTypes.LOGOUT);
 

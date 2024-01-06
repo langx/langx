@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Models } from 'appwrite';
-import { BehaviorSubject, concatMap, from, tap, Observable } from 'rxjs';
+import { BehaviorSubject, concatMap, from, tap, Observable, of } from 'rxjs';
 
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
@@ -95,12 +95,6 @@ export class AuthService {
     return from(this.api.account.listSessions());
   }
 
-  logout(): Observable<any> {
-    return from(this.api.account.deleteSession('current')).pipe(
-      tap(() => this._user.next(null))
-    );
-  }
-
   verifyEmail(): Observable<any> {
     return from(
       this.api.account.createVerification(environment.url.VERIFY_EMAIL)
@@ -132,13 +126,6 @@ export class AuthService {
         req.password2
       )
     );
-    // .then((response) => {
-    //   console.log('Recovery successfully updated', response);
-    // })
-    // .catch((error) => {
-    //   console.log('Error updating recovery', error);
-    //   return error;
-    // });
   }
 
   signInWithGoogle() {
@@ -162,6 +149,21 @@ export class AuthService {
       'apple',
       environment.url.SUCCESS_OAUTH2,
       environment.url.FAILURE_OAUTH2
+    );
+  }
+
+  deleteAccount(currentUserId: string): Observable<any> {
+    return of(currentUserId).pipe(
+      concatMap((userId) =>
+        this.api.deleteDocument(environment.appwrite.USERS_COLLECTION, userId)
+      ),
+      concatMap(() => this.api.account.updateStatus())
+    );
+  }
+
+  logout(): Observable<any> {
+    return from(this.api.account.deleteSession('current')).pipe(
+      tap(() => this._user.next(null))
     );
   }
 }
