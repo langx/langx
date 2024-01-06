@@ -30,6 +30,7 @@ export const environment = {
   api: {
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    USER_BLOCK_API_URL: `${API_URL}api/user/block`,
   },
   web: {
     PRIVACY_POLICY_URL: `${WEBSITE_URL}privacy-policy`,

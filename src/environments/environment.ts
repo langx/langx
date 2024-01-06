@@ -1,7 +1,8 @@
 // export const HOMEPAGE_URL = 'http://192.168.0.104:8100/';
 // export const HOMEPAGE_URL = 'http://localhost:8100/';
 export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
-export const API_URL = 'https://api.languagexchange.net/';
+// export const API_URL = 'https://api.languagexchange.net/';
+export const API_URL = 'http://localhost:3000/';
 export const DB_URL = 'https://db.languagexchange.net/';
 export const WEBSITE_URL = 'https://languagexchange.net/';
 
@@ -32,6 +33,7 @@ export const environment = {
   api: {
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    USER_BLOCK_API_URL: `${API_URL}api/user/block`,
   },
   web: {
     PRIVACY_POLICY_URL: `${WEBSITE_URL}privacy-policy`,
