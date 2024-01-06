@@ -3,7 +3,10 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
-import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
+import {
+  deleteAccountSuccessAction,
+  logoutSuccessAction,
+} from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
   findActiveRoomAndUpdateMessageSeenAction,
@@ -191,14 +194,6 @@ const messageReducer = createReducer(
     (state): MessageStateInterface => ({
       ...state,
       room: null,
-    })
-  ),
-
-  // Clear After Logout Success Action
-  on(
-    logoutSuccessAction,
-    (): MessageStateInterface => ({
-      ...initialState,
     })
   ),
 
@@ -393,6 +388,15 @@ const messageReducer = createReducer(
     (state): MessageStateInterface => ({
       ...state,
       audioUrl: null,
+    })
+  ),
+
+  // Set initialState after Logout/Delete Success Action
+  on(
+    logoutSuccessAction,
+    deleteAccountSuccessAction,
+    (): MessageStateInterface => ({
+      ...initialState,
     })
   )
 );

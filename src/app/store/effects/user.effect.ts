@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -77,5 +78,20 @@ export class UserEffects {
     )
   );
 
-  constructor(private actions$: Actions, private userService: UserService) {}
+  redirectAfterGetUserByIdFailed$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(getUserByIdFailureAction),
+        tap(() => {
+          this.router.navigateByUrl('/home/messages', { replaceUrl: true });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  constructor(
+    private actions$: Actions,
+    private router: Router,
+    private userService: UserService
+  ) {}
 }

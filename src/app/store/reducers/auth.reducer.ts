@@ -47,6 +47,9 @@ import {
   updatePasswordSuccessAction,
   updatePasswordFailureAction,
   updatePasswordResetValuesAction,
+  deleteAccountAction,
+  deleteAccountSuccessAction,
+  deleteAccountFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -105,6 +108,7 @@ const initialState: AuthStateInterface = {
   profileError: null,
   editProfileError: null,
   accountDetailError: null,
+  deleteAccountError: null,
 };
 
 const authReducer = createReducer(
@@ -688,6 +692,29 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       registerValidationError: action.error,
+    })
+  ),
+
+  // Delete Account Actions
+  on(
+    deleteAccountAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    deleteAccountSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...initialState,
+    })
+  ),
+  on(
+    deleteAccountFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      deleteAccountError: action.error,
     })
   ),
 

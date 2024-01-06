@@ -1,7 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
 import axios from 'axios';
-import { Observable, forkJoin, from, iif, map, of, switchMap } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  forkJoin,
+  from,
+  iif,
+  map,
+  of,
+  switchMap,
+} from 'rxjs';
+
+import { deletedUser } from 'src/app/extras/deletedUser';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
@@ -216,7 +227,16 @@ export class RoomService {
             tempMessages: null,
           };
           return roomWithUserData;
-        })
+        }),
+        catchError(() =>
+          of({
+            ...room,
+            userData: deletedUser,
+            total: 0,
+            messages: null,
+            tempMessages: null,
+          })
+        )
       );
     }
   }

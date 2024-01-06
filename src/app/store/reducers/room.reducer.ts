@@ -6,7 +6,10 @@ import { RoomStateInterface } from 'src/app/models/types/states/roomState.interf
 
 // Action Imports
 import { deactivateRoomAction } from 'src/app/store/actions/message.action';
-import { logoutSuccessAction } from 'src/app/store/actions/auth.action';
+import {
+  deleteAccountSuccessAction,
+  logoutSuccessAction,
+} from 'src/app/store/actions/auth.action';
 import {
   getRoomsAction,
   getRoomsSuccessAction,
@@ -181,13 +184,6 @@ const roomReducer = createReducer(
       ),
     };
   }),
-  // Clear After Logout Success Action
-  on(
-    logoutSuccessAction,
-    (): RoomStateInterface => ({
-      ...initialState,
-    })
-  ),
 
   // Find And Update Room Reducer
   on(findAndUpdateRoomUpdatedAtAction, (state, action): RoomStateInterface => {
@@ -303,6 +299,15 @@ const roomReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+
+  // Set initialState after Logout/Delete Success Action
+  on(
+    logoutSuccessAction,
+    deleteAccountSuccessAction,
+    (): RoomStateInterface => ({
+      ...initialState,
     })
   )
 );

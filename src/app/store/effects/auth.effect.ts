@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
@@ -10,23 +11,33 @@ import {
   tap,
   forkJoin,
   combineLatest,
+  withLatestFrom,
 } from 'rxjs';
 
+// Import Services
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { Account } from 'src/app/models/Account';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { UserService } from 'src/app/services/user/user.service';
-import { User } from 'src/app/models/User';
 import { LanguageService } from 'src/app/services/user/language.service';
+
+// Import Interfaces
+import { Account } from 'src/app/models/Account';
+import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { isLoggedInResponseInterface } from 'src/app/models/types/responses/isLoggedInResponse.interface';
 import { listIdentitiesResponseInterface } from 'src/app/models/types/responses/listIdentitiesResponse.interface';
 import { listSessionsResponseInterface } from 'src/app/models/types/responses/listSessionsResponse.interface';
+
+// Import Selector and Actions
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
   completeRegistrationSuccessAction,
+  deleteAccountAction,
+  deleteAccountFailureAction,
+  deleteAccountSuccessAction,
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
@@ -462,6 +473,26 @@ export class AuthEffect {
     )
   );
 
+  deleteAccount$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteAccountAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([action, currentUser]) => {
+        return this.authService.deleteAccount(currentUser?.$id).pipe(
+          map((payload) => {
+            return deleteAccountSuccessAction({ payload });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(deleteAccountFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(logoutAction),
@@ -484,15 +515,16 @@ export class AuthEffect {
   redirectAfterLogout$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(logoutSuccessAction),
+        ofType(logoutSuccessAction, deleteAccountSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/login', { replaceUrl: true });
+          this.router.navigateByUrl('/', { replaceUrl: true });
         })
       ),
     { dispatch: false }
   );
 
   constructor(
+    private store: Store,
     private actions$: Actions,
     private authService: AuthService,
     private userService: UserService,
