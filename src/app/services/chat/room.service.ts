@@ -112,7 +112,7 @@ export class RoomService {
         // Call the /api/room
         return from(
           axios
-            .post(environment.url.CREATE_ROOM_API_URL, body)
+            .post(environment.api.CREATE_ROOM_API_URL, body)
             .then((result) => {
               return {
                 documents: [result.data],
