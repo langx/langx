@@ -79,7 +79,7 @@ const routes: Routes = [
       ).then((m) => m.UpdatePasswordPageModule),
   },
   {
-    path: 'blocked-users',
+    path: 'account/blocked-users',
     loadChildren: () =>
       import(
         './profile/settings/privacy/blocked-users/blocked-users.module'
