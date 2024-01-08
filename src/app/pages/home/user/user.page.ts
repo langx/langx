@@ -72,8 +72,7 @@ export class UserPage implements OnInit {
     this.subscription.add(
       this.currentUser$.subscribe((currentUser: User) => {
         if (currentUser?.blockedUsers.includes(this.userId)) {
-          this.presentToast('The user has been blocked.', 'success');
-          this.router.navigateByUrl('/home');
+          this.presentToast('The user has been blocked.', 'danger');
         }
       })
     );
@@ -140,6 +139,10 @@ export class UserPage implements OnInit {
         }
       })
       .unsubscribe();
+  }
+
+  unblockUser() {
+    console.log('unblock user clicked');
   }
 
   async openTermsAndPolicyLink() {

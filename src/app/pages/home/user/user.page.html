@@ -172,9 +172,19 @@
   <ion-card>
     <ion-card-content>
       <ion-list lines="none" class="list-icon">
-        <ion-item id="block-user-modal">
+        <ion-item
+          id="block-user-modal"
+          *ngIf="!(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
+        >
           <ion-icon color="danger" name="ban-outline"></ion-icon>
           <ion-label>Block User</ion-label>
+        </ion-item>
+        <ion-item
+          id="unblock-user-modal"
+          *ngIf="(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
+        >
+          <ion-icon color="danger" name="ban-outline"></ion-icon>
+          <ion-label>The user has been blocked.</ion-label>
         </ion-item>
         <ion-row>
           <ion-col size="12" class="alignItems">
