@@ -17,7 +17,10 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { getRoomAction } from 'src/app/store/actions/room.action';
+import {
+  createRoomInitialStateAction,
+  getRoomAction,
+} from 'src/app/store/actions/room.action';
 import {
   getUsersAction,
   getUsersWithOffsetAction,
@@ -101,6 +104,8 @@ export class CommunityPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // Clear the error state
+            this.store.dispatch(createRoomInitialStateAction());
           }
         })
     );
