@@ -249,6 +249,22 @@ export const blockUserInitialStateAction = createAction(
   ActionTypes.BLOCK_USER_INITIAL_STATE
 );
 
+// Get Blocked Users
+export const getBlockedUsersAction = createAction(
+  ActionTypes.GET_BLOCKED_USERS,
+  props<{ request: { blockedUsers: string[] } }>()
+);
+
+export const getBlockedUsersSuccessAction = createAction(
+  ActionTypes.GET_BLOCKED_USERS_SUCCESS,
+  props<{ payload: User[] }>()
+);
+
+export const getBlockedUsersFailureAction = createAction(
+  ActionTypes.GET_BLOCKED_USERS_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Logout
 export const logoutAction = createAction(ActionTypes.LOGOUT);
 
