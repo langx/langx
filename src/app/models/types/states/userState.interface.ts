@@ -6,5 +6,6 @@ export interface UserStateInterface {
   total: number;
   users: User[] | null;
   user: User | null;
+  success: boolean;
   error: ErrorInterface | null;
 }

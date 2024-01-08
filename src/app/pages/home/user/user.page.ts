@@ -1,9 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { IonModal, ModalController, ToastController } from '@ionic/angular';
+import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
-import { Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import {
+  IonModal,
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 
 import { environment } from 'src/environments/environment';
 import { getAge, lastSeen } from 'src/app/extras/utils';
@@ -11,13 +16,18 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { userSelector } from 'src/app/store/selectors/user.selector';
+import {
+  isLoadingSelector,
+  successSelector,
+  userSelector,
+} from 'src/app/store/selectors/user.selector';
 import {
   currentUserSelector,
   editProfileErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 import {
   blockUserAction,
+  blockUserInitialStateAction,
   getUserByIdAction,
 } from 'src/app/store/actions/user.action';
 
@@ -45,9 +55,9 @@ export class UserPage implements OnInit {
   constructor(
     private store: Store,
     private route: ActivatedRoute,
-    private router: Router,
     private modalCtrl: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController
   ) {}
 
   async ngOnInit() {
@@ -67,18 +77,36 @@ export class UserPage implements OnInit {
           }
         })
     );
+    // Loading
+    this.subscription.add(
+      this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+        this.loadingController(isLoading);
+      })
+    );
 
     // Present Toast if user has been blocked successfully
     this.subscription.add(
-      this.currentUser$.subscribe((currentUser: User) => {
-        if (currentUser?.blockedUsers.includes(this.userId)) {
+      this.store.pipe(select(successSelector)).subscribe((success: boolean) => {
+        if (success) {
           this.presentToast('The user has been blocked.', 'danger');
+          this.store.dispatch(blockUserInitialStateAction());
         }
       })
     );
   }
 
   ionViewWillLeave() {
+    this.isLoadingOverlayActive
+      .pipe(
+        filter((isActive) => !isActive),
+        take(1)
+      )
+      .subscribe(async () => {
+        if (this.loadingOverlay) {
+          await this.loadingOverlay.dismiss();
+          this.loadingOverlay = undefined;
+        }
+      });
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
@@ -176,5 +204,29 @@ export class UserPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //
+  // Loading Controller
+  //
+
+  private loadingOverlay: HTMLIonLoadingElement;
+  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
+  async loadingController(isLoading: boolean) {
+    if (isLoading) {
+      if (!this.loadingOverlay) {
+        this.isLoadingOverlayActive.next(true);
+        this.loadingOverlay = await this.loadingCtrl.create({
+          message: 'Please wait...',
+        });
+        await this.loadingOverlay.present();
+        this.isLoadingOverlayActive.next(false);
+      }
+    } else if (this.loadingOverlay) {
+      this.isLoadingOverlayActive.next(true);
+      await this.loadingOverlay.dismiss();
+      this.loadingOverlay = undefined;
+      this.isLoadingOverlayActive.next(false);
+    }
   }
 }

@@ -1,7 +1,10 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { UserStateInterface } from 'src/app/models/types/states/userState.interface';
-import { deleteAccountSuccessAction, logoutSuccessAction } from '../actions/auth.action';
+import {
+  deleteAccountSuccessAction,
+  logoutSuccessAction,
+} from 'src/app/store/actions/auth.action';
 import {
   getUsersAction,
   getUsersSuccessAction,
@@ -11,6 +14,10 @@ import {
   getUsersWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
+  blockUserAction,
+  blockUserFailureAction,
+  blockUserInitialStateAction,
+  blockUserSuccessAction,
   getUserByIdAction,
   getUserByIdFailureAction,
   getUserByIdSuccessAction,
@@ -20,8 +27,9 @@ const initialState: UserStateInterface = {
   isLoading: false,
   total: null,
   users: null,
-  error: null,
   user: null,
+  success: false,
+  error: null,
 };
 
 const userReducer = createReducer(
@@ -108,6 +116,40 @@ const userReducer = createReducer(
     deleteAccountSuccessAction,
     (): UserStateInterface => ({
       ...initialState,
+    })
+  ),
+
+  // Block User Reducers
+  on(
+    blockUserAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    blockUserSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      user: action.payload,
+      success: true,
+    })
+  ),
+  on(
+    blockUserFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    blockUserInitialStateAction,
+    (state): UserStateInterface => ({
+      ...state,
+      success: false,
     })
   )
 );

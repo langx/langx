@@ -11,4 +11,5 @@ export enum ActionTypes {
   BLOCK_USER = '[User] Block User',
   BLOCK_USER_SUCCESS = '[User] Block User Success',
   BLOCK_USER_FAILURE = '[User] Block User Failure',
+  BLOCK_USER_INITIAL_STATE = '[User] Block User Initial State',
 }

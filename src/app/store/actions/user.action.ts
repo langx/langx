@@ -68,3 +68,7 @@ export const blockUserFailureAction = createAction(
   ActionTypes.BLOCK_USER_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const blockUserInitialStateAction = createAction(
+  ActionTypes.BLOCK_USER_INITIAL_STATE
+);
