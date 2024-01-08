@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
-import { Account } from 'src/app/models/Account';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
