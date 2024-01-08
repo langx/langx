@@ -16,20 +16,20 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { getUserByIdAction } from 'src/app/store/actions/user.action';
 import {
   isLoadingSelector,
-  successSelector,
   userSelector,
 } from 'src/app/store/selectors/user.selector';
 import {
-  currentUserSelector,
-  editProfileErrorSelector,
-} from 'src/app/store/selectors/auth.selector';
-import {
   blockUserAction,
   blockUserInitialStateAction,
-  getUserByIdAction,
-} from 'src/app/store/actions/user.action';
+} from 'src/app/store/actions/auth.action';
+import {
+  blockUserErrorSelector,
+  blockUserSuccessSelector,
+  currentUserSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-user',
@@ -67,16 +67,6 @@ export class UserPage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
-    // Present Toast if error
-    this.subscription.add(
-      this.store
-        .pipe(select(editProfileErrorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error) {
-            this.presentToast(error.message, 'danger');
-          }
-        })
-    );
     // Loading
     this.subscription.add(
       this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
@@ -84,14 +74,27 @@ export class UserPage implements OnInit {
       })
     );
 
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(blockUserErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
     // Present Toast if user has been blocked successfully
     this.subscription.add(
-      this.store.pipe(select(successSelector)).subscribe((success: boolean) => {
-        if (success) {
-          this.presentToast('The user has been blocked.', 'danger');
-          this.store.dispatch(blockUserInitialStateAction());
-        }
-      })
+      this.store
+        .pipe(select(blockUserSuccessSelector))
+        .subscribe((success: boolean) => {
+          if (success) {
+            this.presentToast('The user has been blocked.', 'danger');
+            this.store.dispatch(blockUserInitialStateAction());
+          }
+        })
     );
   }
 
