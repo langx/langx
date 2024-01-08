@@ -93,6 +93,7 @@ export class UserService {
       this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
     );
   }
+
   blockUser(currentUser: User, userId: string): Observable<any> {
     return from(
       this.api.updateDocument(
