@@ -6,8 +6,8 @@ import { BlockedUsersPage } from './blocked-users.page';
 const routes: Routes = [
   {
     path: '',
-    component: BlockedUsersPage
-  }
+    component: BlockedUsersPage,
+  },
 ];
 
 @NgModule({

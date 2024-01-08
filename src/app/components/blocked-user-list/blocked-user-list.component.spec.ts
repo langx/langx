@@ -9,8 +9,8 @@ describe('BlockedUserListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ BlockedUserListComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [BlockedUserListComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(BlockedUserListComponent);
