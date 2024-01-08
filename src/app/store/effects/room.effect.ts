@@ -106,7 +106,7 @@ export class RoomEffects {
           }),
 
           catchError((errorResponse: AxiosError) => {
-            console.log(errorResponse.response.data);
+            console.log(errorResponse?.response?.data);
             const error: ErrorInterface = {
               message: errorResponse?.response?.data['message'],
             };
