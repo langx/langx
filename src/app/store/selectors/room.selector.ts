@@ -24,3 +24,8 @@ export const errorSelector = createSelector(
   roomFeatureSelector,
   (roomState: RoomStateInterface) => roomState.error
 );
+
+export const createRoomErrorSelector = createSelector(
+  roomFeatureSelector,
+  (roomState: RoomStateInterface) => roomState.createRoomError
+);

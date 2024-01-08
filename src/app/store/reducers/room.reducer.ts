@@ -41,8 +41,9 @@ import {
 const initialState: RoomStateInterface = {
   isLoading: false,
   total: null,
-  error: null,
   rooms: null,
+  error: null,
+  createRoomError: null,
 };
 
 const roomReducer = createReducer(
@@ -147,7 +148,7 @@ const roomReducer = createReducer(
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
-      error: action.error,
+      createRoomError: action.error,
     })
   ),
   // Get Room By Id Reducers
