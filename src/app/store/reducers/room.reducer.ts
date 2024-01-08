@@ -28,6 +28,7 @@ import {
   getRoomByIdAction,
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
+  createRoomInitialStateAction,
 } from 'src/app/store/actions/room.action';
 import {
   findRoomAndAddMessageAction,
@@ -101,6 +102,7 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
+
   // Get Room Reducers
   on(
     getRoomAction,
@@ -126,6 +128,7 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
+
   // Create Room Reducers
   on(
     createRoomAction,
@@ -151,6 +154,14 @@ const roomReducer = createReducer(
       createRoomError: action.error,
     })
   ),
+  on(
+    createRoomInitialStateAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      createRoomError: null,
+    })
+  ),
+
   // Get Room By Id Reducers
   on(
     getRoomByIdAction,
@@ -176,6 +187,7 @@ const roomReducer = createReducer(
       error: action.error,
     })
   ),
+
   // Deactivate Room Reducers
   on(deactivateRoomAction, (state, action): RoomStateInterface => {
     return {

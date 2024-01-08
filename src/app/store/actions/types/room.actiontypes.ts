@@ -8,4 +8,5 @@ export enum ActionTypes {
   CREATE_ROOM = '[Room] Create Room',
   CREATE_ROOM_SUCCESS = '[Room] Create Room Success',
   CREATE_ROOM_FAILURE = '[Room] Create Room Failure',
+  CREATE_ROOM_INITIAL_STATE = '[Room] Create Room Initial State',
 }
