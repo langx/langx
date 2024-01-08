@@ -3,6 +3,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { User } from 'src/app/models/User';
+import { UserService } from 'src/app/services/user/user.service';
 import { getBlockedUsersAction } from 'src/app/store/actions/auth.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
@@ -13,7 +14,9 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 })
 export class BlockedUsersPage implements OnInit {
   currentUser$: Observable<User | null>;
-  constructor(private store: Store) {}
+  blockedUsersData$: Observable<User[] | null>;
+
+  constructor(private store: Store, private userService: UserService) {}
 
   ngOnInit() {
     this.initValues();
@@ -34,6 +37,11 @@ export class BlockedUsersPage implements OnInit {
 
   getBlockedUsers(blockedUsers: string[]) {
     const request = { blockedUsers };
-    this.store.dispatch(getBlockedUsersAction({ request }));
+    // this.store.dispatch(getBlockedUsersAction({ request }));
+
+    // TODO: Test here, delete later
+    this.blockedUsersData$ = this.userService.getBlockedUsers(
+      request.blockedUsers
+    );
   }
 }
