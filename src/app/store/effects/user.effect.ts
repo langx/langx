@@ -100,7 +100,6 @@ export class UserEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) => {
         return this.userService.blockUser(currentUser, request.userId).pipe(
-          tap((a) => console.log('blockUser$ effect:', a)),
           map((payload: User) => blockUserSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
