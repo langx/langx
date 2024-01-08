@@ -131,7 +131,7 @@ export class AccountPage implements OnInit {
     }, 1000);
   }
 
-  updatePassword() {
+  updatePasswordPage() {
     this.router.navigateByUrl('/home/account/update-password');
   }
 
