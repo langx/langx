@@ -229,6 +229,26 @@ export const deleteAccountFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Block User
+export const blockUserAction = createAction(
+  ActionTypes.BLOCK_USER,
+  props<{ request: { userId: string } }>()
+);
+
+export const blockUserSuccessAction = createAction(
+  ActionTypes.BLOCK_USER_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const blockUserFailureAction = createAction(
+  ActionTypes.BLOCK_USER_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const blockUserInitialStateAction = createAction(
+  ActionTypes.BLOCK_USER_INITIAL_STATE
+);
+
 // Logout
 export const logoutAction = createAction(ActionTypes.LOGOUT);
 

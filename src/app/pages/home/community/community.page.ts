@@ -6,7 +6,6 @@ import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
-import { Account } from 'src/app/models/Account';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -17,16 +16,22 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { getRoomAction } from 'src/app/store/actions/room.action';
+import {
+  createRoomInitialStateAction,
+  getRoomAction,
+} from 'src/app/store/actions/room.action';
 import {
   getUsersAction,
   getUsersWithOffsetAction,
 } from 'src/app/store/actions/users.action';
 
 // Selector Imports
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
-import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
+import {
+  createRoomErrorSelector,
+  roomsSelector,
+} from 'src/app/store/selectors/room.selector';
 import {
   isLoadingSelector as isLoadingUserStateSelector,
   usersSelector,
@@ -45,7 +50,7 @@ export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
-  currentUser$: Observable<Account>;
+  currentUser$: Observable<User>;
   isLoadingUserState$: Observable<boolean>;
   isLoadingRoomState$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
@@ -91,6 +96,18 @@ export class CommunityPage implements OnInit {
           }
         })
     );
+
+    this.subscription.add(
+      this.store
+        .pipe(select(createRoomErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            // Clear the error state
+            this.store.dispatch(createRoomInitialStateAction());
+          }
+        })
+    );
   }
 
   ionViewWillLeave() {
@@ -117,7 +134,7 @@ export class CommunityPage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
     this.isLoadingUserState$ = this.store.pipe(

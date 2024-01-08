@@ -1,6 +1,7 @@
 export const HOMEPAGE_URL = 'https://app.languagexchange.net/';
 export const API_URL = 'https://api.languagexchange.net/';
 export const DB_URL = 'https://db.languagexchange.net/';
+export const WEBSITE_URL = 'https://languagexchange.net/';
 
 export const environment = {
   production: true,
@@ -24,9 +25,18 @@ export const environment = {
     SUCCESS_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/success`,
     FAILURE_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/failure`,
     VERIFY_EMAIL: `${HOMEPAGE_URL}auth/verify-email`,
+    BADGES: `${HOMEPAGE_URL}assets/image/badges`,
+  },
+  api: {
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
-    BADGES: `${HOMEPAGE_URL}assets/image/badges`,
+    USER_BLOCK_API_URL: `${API_URL}api/user/block`,
+  },
+  web: {
+    PRIVACY_POLICY_URL: `${WEBSITE_URL}privacy-policy`,
+    TERMS_AND_CONDITIONS_URL: `${WEBSITE_URL}terms-conditions`,
+    COOKIES_POLICY_URL: `${WEBSITE_URL}cookies-policy`,
+    DATA_DELETION_URL: `${WEBSITE_URL}data-deletion`,
   },
   opts: {
     PAGINATION_LIMIT: 10,

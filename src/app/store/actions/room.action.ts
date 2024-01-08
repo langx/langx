@@ -53,3 +53,7 @@ export const createRoomFailureAction = createAction(
   ActionTypes.CREATE_ROOM_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+export const createRoomInitialStateAction = createAction(
+  ActionTypes.CREATE_ROOM_INITIAL_STATE
+);
