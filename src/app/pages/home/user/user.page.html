@@ -180,7 +180,6 @@
           <ion-label>Block User</ion-label>
         </ion-item>
         <ion-item
-          id="unblock-user-modal"
           [class.ion-hide]="!(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
         >
           <ion-icon color="danger" name="ban-outline"></ion-icon>
