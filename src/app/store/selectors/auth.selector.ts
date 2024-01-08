@@ -119,3 +119,13 @@ export const updatePasswordErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.updatePasswordError
 );
+
+export const blockUserSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.blockUserSuccess
+);
+
+export const blockUserErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.blockUserError
+);

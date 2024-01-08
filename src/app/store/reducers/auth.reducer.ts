@@ -50,6 +50,10 @@ import {
   deleteAccountAction,
   deleteAccountSuccessAction,
   deleteAccountFailureAction,
+  blockUserAction,
+  blockUserSuccessAction,
+  blockUserFailureAction,
+  blockUserInitialStateAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -101,6 +105,8 @@ const initialState: AuthStateInterface = {
   resetPasswordError: null,
   updatePasswordSuccess: false,
   updatePasswordError: null,
+  blockUserSuccess: false,
+  blockUserError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -715,6 +721,40 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       deleteAccountError: action.error,
+    })
+  ),
+
+  // Block User Reducers
+  on(
+    blockUserAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      blockUserError: null,
+    })
+  ),
+  on(
+    blockUserSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+      blockUserSuccess: true,
+    })
+  ),
+  on(
+    blockUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      blockUserError: action.error,
+    })
+  ),
+  on(
+    blockUserInitialStateAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      blockUserSuccess: false,
     })
   ),
 
