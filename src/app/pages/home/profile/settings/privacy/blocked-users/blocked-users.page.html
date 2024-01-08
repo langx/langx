@@ -11,13 +11,9 @@
   <ion-card>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (currentUser$ | async)?.blockedUsers">
-          {{ user }}
-          <!--   <app-user-list
-            [item]="user"
-            (onClick)="getRoom(user?.$id)"
-          >
-          </app-user-list> -->
+        <ng-container *ngFor="let user of (blockedUsersData$ | async)">
+          <!-- <app-user-list [item]="user" (onClick)="getRoom(user?.$id)"> -->
+          <app-user-list [item]="user"></app-user-list>
         </ng-container>
       </ion-list>
 
