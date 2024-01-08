@@ -41,6 +41,9 @@ import {
   deleteAccountAction,
   deleteAccountFailureAction,
   deleteAccountSuccessAction,
+  getBlockedUsersAction,
+  getBlockedUsersFailureAction,
+  getBlockedUsersSuccessAction,
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
@@ -509,6 +512,26 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(blockUserFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  getBlockedUsers$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getBlockedUsersAction),
+      switchMap(({ request }) => {
+        return this.userService.getBlockedUsers(request.blockedUsers).pipe(
+          map((payload: User[]) => {
+            return getBlockedUsersSuccessAction({ payload });
+          }),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(getBlockedUsersFailureAction({ error }));
           })
         );
       })
