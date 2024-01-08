@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 
 @Component({
@@ -30,11 +31,15 @@ export class PrivacyPage implements OnInit {
     },
   ];
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {}
 
   async openLegacyPage(page: any) {
     await Browser.open({ url: page.url });
+  }
+
+  blockedUsersPage() {
+    this.router.navigate(['home/account/blocked-users']);
   }
 }
