@@ -71,6 +71,10 @@ export class BlockedUsersPage implements OnInit {
     this.store.dispatch(getBlockedUsersAction({ request }));
   }
 
+  unBlock(userId: string) {
+    console.log('unblock', userId);
+  }
+
   //
   // Present Toast
   //
