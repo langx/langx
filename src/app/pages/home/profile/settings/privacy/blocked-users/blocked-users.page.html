@@ -12,7 +12,7 @@
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let user of (blockedUsersData$ | async)">
-          <app-user-list [item]="user"></app-user-list>
+          <app-blocked-user-list [item]="user"></app-blocked-user-list>
         </ng-container>
       </ion-list>
 
