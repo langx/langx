@@ -25,8 +25,11 @@ import {
 
 // Selector Imports
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
-import { roomsSelector } from 'src/app/store/selectors/room.selector';
 import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
+import {
+  createRoomErrorSelector,
+  roomsSelector,
+} from 'src/app/store/selectors/room.selector';
 import {
   isLoadingSelector as isLoadingUserStateSelector,
   usersSelector,
@@ -85,6 +88,16 @@ export class CommunityPage implements OnInit {
     this.subscription.add(
       this.store
         .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+
+    this.subscription.add(
+      this.store
+        .pipe(select(createRoomErrorSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
