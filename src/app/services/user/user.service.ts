@@ -54,6 +54,10 @@ export class UserService {
     // Query for users that are not the current user
     queries.push(Query.notEqual('$id', currentUserId));
 
+    // TODO: #340 Query for users that are not blocked by the current user
+    // TODO: No need to hide in UI, just don't show in the list here.
+    // let blockedUsersQuery = blockedUsers.map(id => Query.notEqual('$id', id)).join(' and ');
+
     // Query for users descending by last seen
     queries.push(Query.orderDesc('$updatedAt'));
 
@@ -103,6 +107,17 @@ export class UserService {
           blockedUsers: [...currentUser.blockedUsers, userId],
         }
       )
+    );
+  }
+
+  getBlockedUsers(blockedUsers: string[]): Observable<User[]> {
+    const queries: any[] = [];
+
+    // Query for users that are not the current user
+    queries.push(Query.equal('$id', blockedUsers));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
     );
   }
 
