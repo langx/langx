@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
@@ -90,6 +91,7 @@ export class UserEffects {
   );
 
   constructor(
+    private store: Store,
     private actions$: Actions,
     private router: Router,
     private userService: UserService

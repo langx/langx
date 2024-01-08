@@ -28,7 +28,10 @@
       <ion-card-content>
         <ion-list *ngIf="(rooms$ | async)?.length > 0">
           <div *ngFor="let room of (rooms$ | async)" detail>
-            <ion-item (click)="getChat(room)">
+            <ion-item
+              (click)="getChat(room)"
+              *ngIf="!(currentUser$ | async)?.blockedUsers.includes(room?.['userData']?.$id)"
+            >
               <ng-container *ngIf="room">
                 <ion-avatar slot="start">
                   <img

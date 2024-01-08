@@ -5,10 +5,16 @@ import { IonicModule } from '@ionic/angular';
 
 import { CommunityPageRoutingModule } from './community-routing.module';
 import { CommunityPage } from './community.page';
-import { UserListComponent } from 'src/app/components/user-list/user-list.component';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, CommunityPageRoutingModule],
-  declarations: [CommunityPage, UserListComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    CommunityPageRoutingModule,
+    ComponentsModule,
+  ],
+  declarations: [CommunityPage],
 })
 export class CommunityPageModule {}

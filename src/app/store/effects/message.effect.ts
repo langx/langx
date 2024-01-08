@@ -7,6 +7,7 @@ import { Store, select } from '@ngrx/store';
 // Interface Imports
 import { Message } from 'src/app/models/Message';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { AxiosError } from 'axios';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
@@ -58,9 +59,10 @@ export class MessageEffects {
         this.messagesService.createMessage(request, currentUser.$id).pipe(
           map((payload: Message) => createMessageSuccessAction({ payload })),
 
-          catchError((errorResponse: HttpErrorResponse) => {
+          catchError((errorResponse: AxiosError) => {
+            console.log(errorResponse?.response?.data);
             const error: ErrorInterface = {
-              message: errorResponse.message,
+              message: errorResponse?.response?.data['message'],
             };
             return of(createMessageFailureAction({ error, payload: request }));
           })

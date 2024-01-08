@@ -44,7 +44,7 @@ export class MessageService {
         // Call the /api/message
         return from(
           axios
-            .post(environment.url.CREATE_MESSAGE_API_URL, request)
+            .post(environment.api.CREATE_MESSAGE_API_URL, request)
             .then((result) => {
               return result.data as Message;
             })

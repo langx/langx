@@ -32,12 +32,14 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <app-user-list
-          *ngFor="let user of (users$ | async)"
-          [item]="user"
-          (onClick)="getRoom(user?.$id)"
-        >
-        </app-user-list>
+        <ng-container *ngFor="let user of (users$ | async)">
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getRoom(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
       </ion-list>
 
       <!-------------------->

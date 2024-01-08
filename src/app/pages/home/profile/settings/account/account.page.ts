@@ -7,6 +7,7 @@ import { Browser } from '@capacitor/browser';
 import { IonModal, ToastController } from '@ionic/angular';
 
 import { lastSeen } from 'src/app/extras/utils';
+import { environment } from 'src/environments/environment';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -135,8 +136,7 @@ export class AccountPage implements OnInit {
   }
 
   async openDataDeletionLink() {
-    console.warn('openDataDeletion clicked');
-    await Browser.open({ url: 'https://languagexchange.net/data-deletion' });
+    await Browser.open({ url: environment.web.DATA_DELETION_URL });
   }
 
   // Delete account

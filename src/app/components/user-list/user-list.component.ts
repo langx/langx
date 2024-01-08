@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { lastSeen } from 'src/app/extras/utils';
+import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-user-list',
@@ -8,7 +10,7 @@ import { lastSeen } from 'src/app/extras/utils';
   styleUrls: ['./user-list.component.scss'],
 })
 export class UserListComponent implements OnInit {
-  @Input() item: any;
+  @Input() item: User;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
   constructor(private route: Router) {}
