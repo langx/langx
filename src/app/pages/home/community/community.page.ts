@@ -27,7 +27,7 @@ import {
 } from 'src/app/store/actions/users.action';
 
 // Selector Imports
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
 import {
   createRoomErrorSelector,
@@ -51,7 +51,7 @@ export class CommunityPage implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
-  currentUser$: Observable<Account>;
+  currentUser$: Observable<User>;
   isLoadingUserState$: Observable<boolean>;
   isLoadingRoomState$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
@@ -135,7 +135,7 @@ export class CommunityPage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.users$ = this.store.pipe(select(usersSelector));
     this.total$ = this.store.pipe(select(totalSelector));
     this.isLoadingUserState$ = this.store.pipe(
