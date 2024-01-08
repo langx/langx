@@ -60,7 +60,7 @@ export class MessageEffects {
           map((payload: Message) => createMessageSuccessAction({ payload })),
 
           catchError((errorResponse: AxiosError) => {
-            console.log(errorResponse.response.data);
+            console.log(errorResponse?.response?.data);
             const error: ErrorInterface = {
               message: errorResponse?.response?.data['message'],
             };
