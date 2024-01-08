@@ -6,6 +6,7 @@ import { catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { AxiosError } from 'axios';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
@@ -104,9 +105,10 @@ export class RoomEffects {
             }
           }),
 
-          catchError((errorResponse: HttpErrorResponse) => {
+          catchError((errorResponse: AxiosError) => {
+            console.log(errorResponse.response.data);
             const error: ErrorInterface = {
-              message: errorResponse.message,
+              message: errorResponse?.response?.data['message'],
             };
             return of(createRoomFailureAction({ error }));
           })
