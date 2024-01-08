@@ -4,11 +4,11 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
 import { Room } from 'src/app/models/Room';
-import { Account } from 'src/app/models/Account';
+import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { lastSeen } from 'src/app/extras/utils';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   getRoomsAction,
@@ -28,7 +28,7 @@ import {
 })
 export class MessagesPage implements OnInit {
   subscription: Subscription;
-  currentUser$: Observable<Account | null>;
+  currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
@@ -77,7 +77,7 @@ export class MessagesPage implements OnInit {
   }
 
   initValues() {
-    this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
