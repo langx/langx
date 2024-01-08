@@ -79,6 +79,13 @@ const routes: Routes = [
       ).then((m) => m.UpdatePasswordPageModule),
   },
   {
+    path: 'blocked-users',
+    loadChildren: () =>
+      import(
+        './profile/settings/privacy/blocked-users/blocked-users.module'
+      ).then((m) => m.BlockedUsersPageModule),
+  },
+  {
     path: 'appearance',
     loadChildren: () =>
       import('./profile/settings/appearance/appearance.module').then(
