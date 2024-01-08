@@ -94,11 +94,6 @@ export class UserService {
     );
   }
   blockUser(currentUser: User, userId: string): Observable<any> {
-    // Set body
-    // const body = { to: userId };
-    // Set x-appwrite-user-id header
-    // axios.defaults.headers.common['x-appwrite-user-id'] = currentUser.$id;
-
     return from(
       this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,
@@ -108,22 +103,6 @@ export class UserService {
         }
       )
     );
-    // .pipe(
-    //   concatMap(() =>
-    //     from(this.authService.createJWT()).pipe(
-    //       tap((result) => {
-    //         console.log('result: ', result);
-    //         axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
-    //       }),
-    //       switchMap(() => {
-    //         // Call the /api/user/block
-    //         return from(axios.post(environment.api.USER_BLOCK_API_URL, body)).pipe(
-    //           map((response: AxiosResponse<any>) => response.data)
-    //         );
-    //       })
-    //     )
-    //   )
-    // );
   }
 
   //
