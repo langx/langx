@@ -2,7 +2,7 @@
   <ion-thumbnail slot="start" (click)="goProfile()">
     <img [src]="item?.profilePhoto" alt="" referrerpolicy="no-referrer" />
   </ion-thumbnail>
-  <ion-label (click)="redirect()">
+  <ion-label>
     <!-- TODO: There is no item?.online -->
     <h2>
       <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
@@ -19,6 +19,6 @@
     </p>
   </ion-label>
   <div class="metadata-end-wrapper" slot="end">
-    <ion-note> {{ messageTime(item.lastSeen) }} </ion-note>
+    <ion-button (click)="unBlock()" size="small">Unblock</ion-button>
   </div>
 </ion-item>

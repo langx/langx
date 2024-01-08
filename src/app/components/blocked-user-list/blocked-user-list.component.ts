@@ -17,7 +17,7 @@ export class BlockedUserListComponent implements OnInit {
 
   ngOnInit() {}
 
-  redirect() {
+  unBlock() {
     this.onClick.emit(this.item);
   }
 
