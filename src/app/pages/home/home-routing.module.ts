@@ -75,7 +75,7 @@ const routes: Routes = [
     path: 'account/update-password',
     loadChildren: () =>
       import(
-        './profile/settings/privacy/update-password/update-password.module'
+        './profile/settings/account/update-password/update-password.module'
       ).then((m) => m.UpdatePasswordPageModule),
   },
   {
