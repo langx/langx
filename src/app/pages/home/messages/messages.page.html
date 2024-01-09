@@ -27,12 +27,12 @@
     <ion-card *ngIf="(rooms$ | async)?.length > 0">
       <ion-card-content>
         <ion-list *ngIf="(rooms$ | async)?.length > 0">
-          <div *ngFor="let room of (rooms$ | async)" detail>
-            <ion-item-sliding>
+          <div *ngFor="let room of (rooms$ | async); let i = index">
+            <ion-item-sliding #slidingItem>
               <ion-item-options>
                 <ion-item-option
                   color="primary"
-                  (click)="archiveRoom(room)"
+                  (click)="archiveRoom(room, i)"
                   expandable
                 >
                   Archive
