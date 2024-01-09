@@ -7,9 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { ArchivePageRoutingModule } from './archive-routing.module';
 
 import { ArchivePage } from './archive.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, ArchivePageRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    ArchivePageRoutingModule,
+    ComponentsModule,
+  ],
   declarations: [ArchivePage],
 })
 export class ArchivePageModule {}
