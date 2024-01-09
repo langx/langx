@@ -8,8 +8,7 @@ import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 // Get Users Actions
 export const getUsersAction = createAction(
   ActionTypes.GET_USERS,
-  // TODO: Create interface for this request
-  props<{ currentUserId: string; filterData: FilterDataInterface }>()
+  props<{ request: { filterData: FilterDataInterface } }>()
 );
 
 export const getUsersSuccessAction = createAction(
@@ -25,11 +24,11 @@ export const getUsersFailureAction = createAction(
 // Get Users With Offset Actions
 export const getUsersWithOffsetAction = createAction(
   ActionTypes.GET_USERS_WITH_OFFSET,
-  // TODO: Create interface for this request
   props<{
-    currentUserId: string;
-    filterData: FilterDataInterface;
-    offset: number;
+    request: {
+      filterData: FilterDataInterface;
+      offset: number;
+    };
   }>()
 );
 

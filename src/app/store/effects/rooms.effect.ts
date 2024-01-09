@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 
 import { RoomService } from 'src/app/services/chat/room.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getRoomsAction,
   getRoomsFailureAction,
@@ -20,8 +22,9 @@ export class RoomsEffects {
   getRooms$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomsAction),
-      switchMap(({ currentUserId }) =>
-        this.roomService.listRooms(currentUserId).pipe(
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([_, currentUser]) =>
+        this.roomService.listRooms(currentUser).pipe(
           map((payload: listRoomsResponseInterface) =>
             getRoomsSuccessAction({ payload })
           ),
@@ -40,8 +43,9 @@ export class RoomsEffects {
   getRoomsWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomsWithOffsetAction),
-      switchMap(({ currentUserId, offset }) =>
-        this.roomService.listRooms(currentUserId, offset).pipe(
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.roomService.listRooms(currentUser, request.offset).pipe(
           map((payload: listRoomsResponseInterface) =>
             // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
             // It may checked first all cureent rooms array,
@@ -60,5 +64,9 @@ export class RoomsEffects {
     )
   );
 
-  constructor(private actions$: Actions, private roomService: RoomService) {}
+  constructor(
+    private store: Store,
+    private actions$: Actions,
+    private roomService: RoomService
+  ) {}
 }
