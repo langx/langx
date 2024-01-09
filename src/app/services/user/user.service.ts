@@ -132,6 +132,7 @@ export class UserService {
     // Combine all the Observables into one
     return forkJoin(userObservables);
   }
+
   //
   // Upload Bucket
   //
