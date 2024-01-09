@@ -9,6 +9,7 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
+import { Report } from 'src/app/models/Report';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
@@ -114,6 +115,24 @@ export class UserService {
         currentUser.$id,
         {
           blockedUsers: currentUser.blockedUsers.filter((id) => id !== userId),
+        }
+      )
+    );
+  }
+
+  reportUser(
+    currentUser: User,
+    userId: string,
+    reason: string
+  ): Observable<Report> {
+    return from(
+      this.api.createDocument(
+        environment.appwrite.REPORT_COLLECTION,
+        ID.unique(),
+        {
+          reason: reason,
+          to: userId,
+          sender: currentUser.$id,
         }
       )
     );
