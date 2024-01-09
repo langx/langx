@@ -44,6 +44,13 @@ const routes: Routes = [
     redirectTo: 'messages',
   },
   {
+    path: 'messages/archive',
+    loadChildren: () =>
+      import('./messages/archive/archive.module').then(
+        (m) => m.ArchivePageModule
+      ),
+  },
+  {
     path: 'filters',
     loadChildren: () =>
       import('./community/filters/filters.module').then(
