@@ -2,7 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
-import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  combineLatest,
+  filter,
+  take,
+} from 'rxjs';
 import {
   IonModal,
   LoadingController,
@@ -16,9 +23,15 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getUserByIdAction } from 'src/app/store/actions/user.action';
 import {
-  isLoadingSelector,
+  getUserByIdAction,
+  reportUserAction,
+  reportUserInitialStateAction,
+} from 'src/app/store/actions/user.action';
+import {
+  errorSelector,
+  isLoadingSelector as isLoadingUserSelector,
+  reportSelector,
   userSelector,
 } from 'src/app/store/selectors/user.selector';
 import {
@@ -26,6 +39,7 @@ import {
   blockUserInitialStateAction,
 } from 'src/app/store/actions/auth.action';
 import {
+  isLoadingSelector as isLoadingAuthSelector,
   blockUserErrorSelector,
   blockUserSuccessSelector,
   currentUserSelector,
@@ -70,10 +84,12 @@ export class UserPage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
-    // Loading
     this.subscription.add(
-      this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
-        this.loadingController(isLoading);
+      combineLatest([
+        this.store.pipe(select(isLoadingAuthSelector)),
+        this.store.pipe(select(isLoadingUserSelector)),
+      ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
+        this.loadingController(isLoadingAuth || isLoadingUser);
       })
     );
 
@@ -87,6 +103,15 @@ export class UserPage implements OnInit {
           }
         })
     );
+    this.subscription.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
 
     // Present Toast if user has been blocked successfully
     this.subscription.add(
@@ -94,10 +119,23 @@ export class UserPage implements OnInit {
         .pipe(select(blockUserSuccessSelector))
         .subscribe((success: boolean) => {
           if (success) {
-            this.presentToast('The user has been blocked.', 'danger');
+            this.presentToast('The user has been blocked.', 'success');
             this.store.dispatch(blockUserInitialStateAction());
           }
         })
+    );
+
+    // Present Toast if user has been reported successfully
+    this.subscription.add(
+      this.store.pipe(select(reportSelector)).subscribe((report) => {
+        if (report) {
+          this.presentToast(
+            'The user has been reported but not blocked.',
+            'success'
+          );
+          this.store.dispatch(reportUserInitialStateAction());
+        }
+      })
     );
   }
 
@@ -113,6 +151,7 @@ export class UserPage implements OnInit {
           this.loadingOverlay = undefined;
         }
       });
+
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
@@ -175,7 +214,7 @@ export class UserPage implements OnInit {
         } else {
           const request = { userId: this.userId, reason: reason };
           // Dispatch the action to update current user
-          // this.store.dispatch(reportUserAction({ request }));
+          this.store.dispatch(reportUserAction({ request }));
         }
       })
       .unsubscribe();
