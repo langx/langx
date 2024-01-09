@@ -93,14 +93,7 @@ export class MessagesPage implements OnInit {
   }
 
   listRooms() {
-    this.currentUser$
-      .subscribe((user) => {
-        if (user) {
-          const currentUserId = user.$id;
-          this.store.dispatch(getRoomsAction({ currentUserId }));
-        }
-      })
-      .unsubscribe();
+    this.store.dispatch(getRoomsAction());
   }
 
   //
@@ -110,30 +103,22 @@ export class MessagesPage implements OnInit {
   loadMore(event) {
     // Offset is the number of users already loaded
     let offset: number = 0;
-    this.currentUser$
-      .subscribe((user) => {
-        let currentUserId: string;
-        if (user) {
-          currentUserId = user.$id;
-        }
-        this.rooms$
-          .subscribe((users) => {
-            if (!users) return;
-            offset = users.length;
-            this.total$
-              .subscribe((total) => {
-                if (offset < total) {
-                  this.store.dispatch(
-                    getRoomsWithOffsetAction({
-                      currentUserId,
-                      offset,
-                    })
-                  );
-                } else {
-                  console.log('All rooms loaded');
-                }
-              })
-              .unsubscribe();
+
+    this.rooms$
+      .subscribe((users) => {
+        if (!users) return;
+        offset = users.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              this.store.dispatch(
+                getRoomsWithOffsetAction({
+                  request: { offset },
+                })
+              );
+            } else {
+              console.log('All rooms loaded');
+            }
           })
           .unsubscribe();
       })

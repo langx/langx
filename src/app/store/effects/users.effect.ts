@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
   getUsersAction,
@@ -21,8 +23,9 @@ export class UsersEffects {
   getUsers$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersAction),
-      switchMap(({ currentUserId, filterData }) =>
-        this.userService.listUsers(currentUserId, filterData).pipe(
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService.listUsers(currentUser, request.filterData).pipe(
           map((payload: listUsersResponseInterface) =>
             getUsersSuccessAction({ payload })
           ),
@@ -41,22 +44,29 @@ export class UsersEffects {
   getUsersWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersWithOffsetAction),
-      switchMap(({ currentUserId, filterData, offset }) =>
-        this.userService.listUsers(currentUserId, filterData, offset).pipe(
-          map((payload: listUsersResponseInterface) =>
-            getUsersWithOffsetSuccessAction({ payload })
-          ),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsers(currentUser, request.filterData, request.offset)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersWithOffsetSuccessAction({ payload })
+            ),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getUsersWithOffsetFailureAction({ error }));
-          })
-        )
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersWithOffsetFailureAction({ error }));
+            })
+          )
       )
     )
   );
 
-  constructor(private actions$: Actions, private userService: UserService) {}
+  constructor(
+    private store: Store,
+    private actions$: Actions,
+    private userService: UserService
+  ) {}
 }

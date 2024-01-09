@@ -5,11 +5,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 
 // Get Rooms Actions
-export const getRoomsAction = createAction(
-  ActionTypes.GET_ROOMS,
-  // TODO: Create interface for this request
-  props<{ currentUserId: string }>()
-);
+export const getRoomsAction = createAction(ActionTypes.GET_ROOMS);
 
 export const getRoomsSuccessAction = createAction(
   ActionTypes.GET_ROOMS_SUCCESS,
@@ -24,8 +20,7 @@ export const getRoomsFailureAction = createAction(
 // Get Rooms With Offset Actions
 export const getRoomsWithOffsetAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET,
-  // TODO: Create interface for this request
-  props<{ currentUserId: string; offset: number }>()
+  props<{ request: { offset: number } }>()
 );
 
 export const getRoomsWithOffsetSuccessAction = createAction(
