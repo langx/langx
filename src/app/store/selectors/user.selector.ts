@@ -29,3 +29,8 @@ export const userSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.user
 );
+
+export const reportSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.report
+);
