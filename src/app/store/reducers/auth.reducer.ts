@@ -57,6 +57,10 @@ import {
   getBlockedUsersAction,
   getBlockedUsersSuccessAction,
   getBlockedUsersFailureAction,
+  unBlockUserAction,
+  unBlockUserFailureAction,
+  unBlockUserSuccessAction,
+  unBlockUserInitialStateAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -110,6 +114,8 @@ const initialState: AuthStateInterface = {
   updatePasswordError: null,
   blockUserSuccess: false,
   blockUserError: null,
+  unBlockUserSuccess: false,
+  unBlockUserError: null,
   blockedUsersData: null,
   blockedUsersError: null,
   registerValidationError: null,
@@ -760,6 +766,40 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       blockUserSuccess: false,
+    })
+  ),
+
+  // Unblock User Reducers
+  on(
+    unBlockUserAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      unBlockUserError: null,
+    })
+  ),
+  on(
+    unBlockUserSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+      unBlockUserSuccess: true,
+    })
+  ),
+  on(
+    unBlockUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      unBlockUserError: action.error,
+    })
+  ),
+  on(
+    unBlockUserInitialStateAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      unBlockUserSuccess: false,
     })
   ),
 
