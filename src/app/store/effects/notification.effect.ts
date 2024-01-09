@@ -71,13 +71,17 @@ export class NotificationEffects {
         // Calculate the total number of unseen messages
         const totalUnseenMessages = rooms
           ? rooms.reduce((count, room) => {
-              const unseenMessagesInRoom = room.messages.reduce(
-                (count, message) =>
-                  count +
-                  (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
-                0
-              );
-              return count + unseenMessagesInRoom;
+              // Check if the room's user is not blocked by the current user
+              if (!currentUser.blockedUsers.includes(room.userData.$id)) {
+                const unseenMessagesInRoom = room.messages.reduce(
+                  (count, message) =>
+                    count +
+                    (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
+                  0
+                );
+                return count + unseenMessagesInRoom;
+              }
+              return count;
             }, 0)
           : currentUser.totalUnseen;
 
