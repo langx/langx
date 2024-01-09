@@ -133,11 +133,6 @@ export class MessagesPage implements OnInit {
     this.store.dispatch(activateRoomAction({ payload: room }));
   }
 
-  openArchiveMessages() {
-    console.log('openArchiveMessages clicked');
-    this.router.navigate(['home/messages/archive']);
-  }
-
   handleRefresh(event) {
     this.listRooms();
     event.target.complete();
@@ -150,8 +145,8 @@ export class MessagesPage implements OnInit {
     ).length;
   }
 
-  archiveChat(room) {
-    console.log('archiveChat clicked', room);
+  openArchiveChatPage() {
+    this.router.navigate(['home/messages/archive']);
   }
 
   archiveRoom(room: Room) {
