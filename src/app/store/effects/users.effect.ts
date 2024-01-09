@@ -44,19 +44,22 @@ export class UsersEffects {
   getUsersWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersWithOffsetAction),
-      switchMap(({ currentUserId, filterData, offset }) =>
-        this.userService.listUsers(currentUserId, filterData, offset).pipe(
-          map((payload: listUsersResponseInterface) =>
-            getUsersWithOffsetSuccessAction({ payload })
-          ),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsers(currentUser.$id, request.filterData, request.offset)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersWithOffsetSuccessAction({ payload })
+            ),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getUsersWithOffsetFailureAction({ error }));
-          })
-        )
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersWithOffsetFailureAction({ error }));
+            })
+          )
       )
     )
   );

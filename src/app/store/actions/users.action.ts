@@ -24,11 +24,11 @@ export const getUsersFailureAction = createAction(
 // Get Users With Offset Actions
 export const getUsersWithOffsetAction = createAction(
   ActionTypes.GET_USERS_WITH_OFFSET,
-  // TODO: Create interface for this request
   props<{
-    currentUserId: string;
-    filterData: FilterDataInterface;
-    offset: number;
+    request: {
+      filterData: FilterDataInterface;
+      offset: number;
+    };
   }>()
 );
 
