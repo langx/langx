@@ -22,6 +22,7 @@ import {
 } from 'src/app/store/actions/rooms.action';
 import {
   archiveRoomErrorSelector,
+  archiveRoomSuccessSelector,
   currentUserSelector,
 } from 'src/app/store/selectors/auth.selector';
 import {
@@ -70,6 +71,18 @@ export class MessagesPage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
+    // Present Toast if success
+    this.subscription.add(
+      this.store
+        .pipe(select(archiveRoomSuccessSelector))
+        .subscribe((success) => {
+          if (success) {
+            this.presentToast('Room Archived Successfully', 'success');
+            this.store.dispatch(archiveRoomInitialStateAction());
+          }
+        })
+    );
+
     // Present Toast if error
     this.subscription.add(
       this.store
@@ -80,12 +93,10 @@ export class MessagesPage implements OnInit {
           }
         })
     );
-
     this.subscription.add(
       this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
         if (error) {
           this.presentToast(error.message, 'danger');
-          this.store.dispatch(archiveRoomInitialStateAction());
         }
       })
     );
