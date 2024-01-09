@@ -121,7 +121,7 @@ export class UserService {
   }
 
   reportUser(
-    currentUser: User,
+    currentUserId: string,
     userId: string,
     reason: string
   ): Observable<Report> {
@@ -132,7 +132,7 @@ export class UserService {
         {
           reason: reason,
           to: userId,
-          sender: currentUser.$id,
+          sender: currentUserId,
         }
       )
     );
