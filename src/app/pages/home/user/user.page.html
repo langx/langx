@@ -173,7 +173,7 @@
     <ion-card-content>
       <ion-list lines="none" class="list-icon">
         <!-- Report User -->
-        <ion-item id="report-user-modal">
+        <ion-item id="report-user-modal" detail>
           <ion-icon color="medium" name="alert-circle-outline"></ion-icon>
           <ion-label>Report User</ion-label>
         </ion-item>
@@ -182,6 +182,7 @@
         <ion-item
           id="block-user-modal"
           [class.ion-hide]="(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
+          detail
         >
           <ion-icon color="danger" name="ban-outline"></ion-icon>
           <ion-label>Block User</ion-label>
@@ -234,6 +235,7 @@
           fill="solid"
           label="What is the reason?"
           labelPlacement="floating"
+          minlength="10"
           maxlength="500"
           counter="true"
         ></ion-textarea>
