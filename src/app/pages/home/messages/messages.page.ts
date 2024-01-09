@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
 import { Room } from 'src/app/models/Room';
@@ -43,6 +44,7 @@ export class MessagesPage implements OnInit {
 
   constructor(
     private store: Store,
+    private router: Router,
     private fcmService: FcmService,
     private toastController: ToastController
   ) {}
@@ -133,6 +135,7 @@ export class MessagesPage implements OnInit {
 
   openArchiveMessages() {
     console.log('openArchiveMessages clicked');
+    this.router.navigate(['home/messages/archive']);
   }
 
   handleRefresh(event) {
