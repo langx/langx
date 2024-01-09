@@ -8,4 +8,8 @@ export enum ActionTypes {
   GET_USER_BY_ID = '[User] Get User',
   GET_USER_BY_ID_SUCCESS = '[User] Get User Success',
   GET_USER_BY_ID_FAILURE = '[User] Get User Failure',
+  REPORT_USER = '[User] Report User',
+  REPORT_USER_SUCCESS = '[User] Report User Success',
+  REPORT_USER_FAILURE = '[User] Report User Failure',
+  REPORT_USER_INITIAL_STATE = '[User] Report User Initial State',
 }
