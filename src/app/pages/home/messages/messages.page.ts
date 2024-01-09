@@ -93,14 +93,7 @@ export class MessagesPage implements OnInit {
   }
 
   listRooms() {
-    this.currentUser$
-      .subscribe((user) => {
-        if (user) {
-          const currentUserId = user.$id;
-          this.store.dispatch(getRoomsAction({ currentUserId }));
-        }
-      })
-      .unsubscribe();
+    this.store.dispatch(getRoomsAction());
   }
 
   //
