@@ -28,36 +28,43 @@
       <ion-card-content>
         <ion-list *ngIf="(rooms$ | async)?.length > 0">
           <div *ngFor="let room of (rooms$ | async)" detail>
-            <ion-item
-              (click)="getChat(room)"
-              *ngIf="!(currentUser$ | async)?.blockedUsers.includes(room?.['userData']?.$id)"
-            >
-              <ng-container *ngIf="room">
-                <ion-avatar slot="start">
-                  <img
-                    [src]="room?.['userData']?.profilePhoto"
-                    alt=""
-                    referrerpolicy="no-referrer"
-                  />
-                </ion-avatar>
-                <ion-label>
-                  <h2>
-                    <small
-                      *ngIf="lastSeen(room?.['userData']?.lastSeen) == 'online'"
-                      >🟢
-                    </small>
-                    {{room?.['userData']?.name}}
-                  </h2>
-                  <p>{{getLastMessage(room)?.body}}</p>
-                </ion-label>
-                <div class="metadata-end-wrapper" slot="end">
-                  <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
-                    {{getBadge(room)}}
-                  </ion-badge>
-                  <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
-                </div>
-              </ng-container>
-            </ion-item>
+            <ion-item-sliding>
+              <ion-item-options>
+                <ion-item-option color="primary" (click)="archiveRoom(room)">
+                  Archive
+                </ion-item-option>
+              </ion-item-options>
+              <ion-item
+                (click)="getChat(room)"
+                *ngIf="!(currentUser$ | async)?.blockedUsers.includes(room?.['userData']?.$id)"
+              >
+                <ng-container *ngIf="room">
+                  <ion-avatar slot="start">
+                    <img
+                      [src]="room?.['userData']?.profilePhoto"
+                      alt=""
+                      referrerpolicy="no-referrer"
+                    />
+                  </ion-avatar>
+                  <ion-label>
+                    <h2>
+                      <small
+                        *ngIf="lastSeen(room?.['userData']?.lastSeen) == 'online'"
+                        >🟢
+                      </small>
+                      {{room?.['userData']?.name}}
+                    </h2>
+                    <p>{{getLastMessage(room)?.body}}</p>
+                  </ion-label>
+                  <div class="metadata-end-wrapper" slot="end">
+                    <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
+                      {{getBadge(room)}}
+                    </ion-badge>
+                    <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
+                  </div>
+                </ng-container>
+              </ion-item>
+            </ion-item-sliding>
           </div>
         </ion-list>
 
