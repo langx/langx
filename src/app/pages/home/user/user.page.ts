@@ -159,11 +159,26 @@ export class UserPage implements OnInit {
   //
 
   reportUser(reason: string) {
+    if (!reason) {
+      this.presentToast('Please enter a reason.', 'danger');
+      return;
+    }
+
     this.reportUserModal.dismiss();
-    console.log('reason: ', reason);
     const request = { userId: this.userId, reason: reason };
+
     // Dispatch the action to update current user
-    // this.store.dispatch(reportUserAction({ request }));
+    this.currentUser$
+      .subscribe((currentUser) => {
+        if (currentUser.$id === this.userId) {
+          this.presentToast('You cannot block yourself.', 'danger');
+        } else {
+          const request = { userId: this.userId, reason: reason };
+          // Dispatch the action to update current user
+          // this.store.dispatch(reportUserAction({ request }));
+        }
+      })
+      .unsubscribe();
   }
 
   //
