@@ -40,7 +40,7 @@
               </ion-item-options>
               <ion-item
                 (click)="getChat(room)"
-                *ngIf="!(currentUser$ | async)?.blockedUsers.includes(room?.['userData']?.$id)"
+                *ngIf="!(currentUser$ | async)?.blockedUsers.includes(room?.['userData']?.$id) && !(currentUser$ | async)?.archivedRooms.includes(room?.$id)"
               >
                 <ng-container *ngIf="room">
                   <ion-avatar slot="start">
