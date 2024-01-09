@@ -778,15 +778,17 @@ const authReducer = createReducer(
       unBlockUserError: null,
     })
   ),
-  on(
-    unBlockUserSuccessAction,
-    (state, action): AuthStateInterface => ({
+  on(unBlockUserSuccessAction, (state, action): AuthStateInterface => {
+    return {
       ...state,
       isLoading: false,
       currentUser: action.payload,
       unBlockUserSuccess: true,
-    })
-  ),
+      blockedUsersData: state.blockedUsersData?.filter((user) => {
+        return action.payload.blockedUsers.includes(user.$id);
+      }),
+    };
+  }),
   on(
     unBlockUserFailureAction,
     (state, action): AuthStateInterface => ({
