@@ -72,6 +72,9 @@ import {
   resetPasswordConfirmationSuccessAction,
   resetPasswordFailureAction,
   resetPasswordSuccessAction,
+  unBlockUserAction,
+  unBlockUserFailureAction,
+  unBlockUserSuccessAction,
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
@@ -512,6 +515,25 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(blockUserFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  unBlockUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(unBlockUserAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
+        return this.userService.unBlockUser(currentUser, request.userId).pipe(
+          map((payload: User) => unBlockUserSuccessAction({ payload })),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(unBlockUserFailureAction({ error }));
           })
         );
       })
