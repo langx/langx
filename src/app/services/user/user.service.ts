@@ -92,13 +92,27 @@ export class UserService {
     );
   }
 
-  blockUser(currentUser: User, userId: string): Observable<any> {
+  blockUser(currentUser: User, userId: string): Observable<User> {
     return from(
       this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,
         currentUser.$id,
         {
           blockedUsers: [...currentUser.blockedUsers, userId],
+        }
+      )
+    );
+  }
+
+  unBlockUser(currentUser: User, userId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          blockedUsers: currentUser.blockedUsers.filter(
+            (id) => id !== userId
+          ),
         }
       )
     );
