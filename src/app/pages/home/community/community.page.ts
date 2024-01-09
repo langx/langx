@@ -152,13 +152,8 @@ export class CommunityPage implements OnInit {
   //
 
   listUsers() {
-    const filterData = this.filterData;
-    this.currentUser$
-      .subscribe((user) => {
-        const currentUserId = user.$id;
-        this.store.dispatch(getUsersAction({ currentUserId, filterData }));
-      })
-      .unsubscribe();
+    const request = this.filterData;
+    this.store.dispatch(getUsersAction({ request }));
   }
 
   //
