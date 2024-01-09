@@ -77,7 +77,7 @@ export class MessagesPage implements OnInit {
         .pipe(select(archiveRoomSuccessSelector))
         .subscribe((success) => {
           if (success) {
-            this.presentToast('Room Archived Successfully', 'success');
+            this.presentToast('Room Archived Successfully', 'primary');
             this.store.dispatch(archiveRoomInitialStateAction());
           }
         })
