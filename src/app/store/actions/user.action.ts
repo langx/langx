@@ -3,6 +3,7 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/types/user.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
+import { Report } from 'src/app/models/Report';
 
 // Get User Actions
 export const getCurrentUserAction = createAction(
@@ -51,4 +52,24 @@ export const getUserByIdSuccessAction = createAction(
 export const getUserByIdFailureAction = createAction(
   ActionTypes.GET_USER_BY_ID_FAILURE,
   props<{ error: ErrorInterface }>()
+);
+
+// Report User Actions
+export const reportUserAction = createAction(
+  ActionTypes.REPORT_USER,
+  props<{ request: { userId: string; reason: any } }>()
+);
+
+export const reportUserSuccessAction = createAction(
+  ActionTypes.REPORT_USER_SUCCESS,
+  props<{ payload: Report }>()
+);
+
+export const reportUserFailureAction = createAction(
+  ActionTypes.REPORT_USER_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const reportUserInitialStateAction = createAction(
+  ActionTypes.REPORT_USER_INITIAL_STATE
 );
