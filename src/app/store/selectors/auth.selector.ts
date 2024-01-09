@@ -149,3 +149,13 @@ export const unBlockUserErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.unBlockUserError
 );
+
+export const archiveRoomSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.archiveRoomSuccess
+);
+
+export const archiveRoomErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.archiveRoomError
+);
