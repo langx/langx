@@ -144,15 +144,20 @@ export class MessagesPage implements OnInit {
     console.log('Async operation refresh has ended');
   }
 
-  archiveChat(room) {
-    console.log('archiveChat clicked', room);
-  }
-
   getBadge(room): number {
     return room.messages.filter(
       (message) => message.seen === false && message.to === this.currentUserId
     ).length;
   }
+
+  archiveChat(room) {
+    console.log('archiveChat clicked', room);
+  }
+
+  archiveRoom(room: Room) {
+    console.log('archiveRoom clicked', room);
+  }
+
   //
   // Utils
   //
