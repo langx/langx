@@ -110,15 +110,17 @@ export class UserService {
         environment.appwrite.USERS_COLLECTION,
         currentUser.$id,
         {
-          blockedUsers: currentUser.blockedUsers.filter(
-            (id) => id !== userId
-          ),
+          blockedUsers: currentUser.blockedUsers.filter((id) => id !== userId),
         }
       )
     );
   }
 
   getBlockedUsers(blockedUsers: string[]): Observable<User[]> {
+    if (blockedUsers.length === 0) {
+      return of([]);
+    }
+
     // Create an array of Observables, each one gets a blocked user
     const userObservables = blockedUsers.map((userId) =>
       from(this.api.getDocument(environment.appwrite.USERS_COLLECTION, userId))
@@ -127,7 +129,6 @@ export class UserService {
     // Combine all the Observables into one
     return forkJoin(userObservables);
   }
-
   //
   // Upload Bucket
   //
