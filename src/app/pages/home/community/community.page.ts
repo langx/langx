@@ -152,8 +152,8 @@ export class CommunityPage implements OnInit {
   //
 
   listUsers() {
-    const request = this.filterData;
-    this.store.dispatch(getUsersAction({ request }));
+    const filterData = this.filterData;
+    this.store.dispatch(getUsersAction({ request: { filterData } }));
   }
 
   //
