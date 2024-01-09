@@ -6,6 +6,7 @@ import { EmptyScreenComponent } from 'src/app/components/empty-screen/empty-scre
 import { Oauth2Component } from 'src/app/components/oauth2/oauth2.component';
 import { RedirectComponent } from 'src/app/components/redirect/redirect.component';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { RoomListComponent } from './room-list/room-list.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.component';
 
@@ -15,6 +16,7 @@ import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.
     Oauth2Component,
     RedirectComponent,
     SpinnerComponent,
+    RoomListComponent,
     UserListComponent,
     BlockedUserListComponent,
   ],
@@ -24,6 +26,7 @@ import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.
     Oauth2Component,
     RedirectComponent,
     SpinnerComponent,
+    RoomListComponent,
     UserListComponent,
     BlockedUserListComponent,
   ],
