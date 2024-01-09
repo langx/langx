@@ -4,17 +4,26 @@ import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
+// Import Models and Services
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+
+// Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { archiveRoomAction } from 'src/app/store/actions/room.action';
+import {
+  archiveRoomAction,
+  archiveRoomInitialStateAction,
+} from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
+import {
+  archiveRoomErrorSelector,
+  currentUserSelector,
+} from 'src/app/store/selectors/auth.selector';
 import {
   isLoadingSelector,
   roomsSelector,
@@ -70,6 +79,15 @@ export class MessagesPage implements OnInit {
             this.presentToast(error.message, 'danger');
           }
         })
+    );
+
+    this.subscription.add(
+      this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.store.dispatch(archiveRoomInitialStateAction());
+        }
+      })
     );
   }
 
