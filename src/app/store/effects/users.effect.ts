@@ -25,7 +25,7 @@ export class UsersEffects {
       ofType(getUsersAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
-        this.userService.listUsers(currentUser.$id, request.filterData).pipe(
+        this.userService.listUsers(currentUser, request.filterData).pipe(
           map((payload: listUsersResponseInterface) =>
             getUsersSuccessAction({ payload })
           ),
@@ -47,7 +47,7 @@ export class UsersEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.userService
-          .listUsers(currentUser.$id, request.filterData, request.offset)
+          .listUsers(currentUser, request.filterData, request.offset)
           .pipe(
             map((payload: listUsersResponseInterface) =>
               getUsersWithOffsetSuccessAction({ payload })

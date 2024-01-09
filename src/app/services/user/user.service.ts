@@ -38,7 +38,7 @@ export class UserService {
   }
 
   listUsers(
-    currentUserId: string,
+    currentUser: User,
     filterData: FilterDataInterface,
     offset?: number
   ): Observable<listUsersResponseInterface> {
@@ -46,11 +46,14 @@ export class UserService {
     const queries: any[] = [];
 
     // Query for users that are not the current user
-    queries.push(Query.notEqual('$id', currentUserId));
+    queries.push(Query.notEqual('$id', currentUser.$id));
 
-    // TODO: #340 Query for users that are not blocked by the current user
-    // TODO: No need to hide in UI, just don't show in the list here.
-    // let blockedUsersQuery = blockedUsers.map(id => Query.notEqual('$id', id)).join(' and ');
+    // Query for users that are not blocked by the current user
+    if (currentUser?.blockedUsers) {
+      currentUser.blockedUsers.forEach((id) => {
+        queries.push(Query.notEqual('$id', id));
+      });
+    }
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('$updatedAt'));
