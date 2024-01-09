@@ -180,7 +180,6 @@
           <ion-label>Block User</ion-label>
         </ion-item>
         <ion-item
-          id="unblock-user-modal"
           [class.ion-hide]="!(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
         >
           <ion-icon color="danger" name="ban-outline"></ion-icon>
@@ -189,7 +188,7 @@
         <ion-row>
           <ion-col size="12" class="alignItems">
             <small>
-              *This action is irreversible. See our
+              *This action is reversible. See our
               <ion-label (click)="openTermsAndPolicyLink()" color="primary">
                 Terms & Conditions.
               </ion-label>
@@ -220,9 +219,13 @@
         <div class="ion-padding">
           <app-user-list [item]="user$ | async"></app-user-list>
         </div>
-        <ul style="font-size: larger">
-          <li>This action is irreversible.</li>
-          <li>It will not be possible to restore access.</li>
+        <ul>
+          <li>Hide this user's info, including messages, everywhere.</li>
+          <li>Access can be restored.</li>
+          <li>
+            Unblock users at
+            <strong>Settings > Privacy > Blocked Users</strong>.
+          </li>
         </ul>
         <ion-button (click)="modal.dismiss()" color="primary">
           Cancel

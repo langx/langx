@@ -63,6 +63,7 @@ export class HomePage implements OnInit {
 
   presencePing() {
     // Update user in user collection lastSeen attribute
+    console.log('Presence Service started');
     this.dispatchUpdatePresence();
     this.refreshIntervalId = setInterval(() => {
       this.dispatchUpdatePresence();

@@ -1,0 +1,24 @@
+<ion-item>
+  <ion-thumbnail slot="start" (click)="goProfile()">
+    <img [src]="item?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+  </ion-thumbnail>
+  <ion-label>
+    <!-- TODO: There is no item?.online -->
+    <h2>
+      <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
+      {{ item?.name }}
+    </h2>
+    <p>
+      <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
+      <ion-text *ngIf="!item?.aboutMe" style="font-style: italic">
+        Learning:
+        <span>
+          {{ getStudyLanguages() }}
+        </span>
+      </ion-text>
+    </p>
+  </ion-label>
+  <div class="metadata-end-wrapper" slot="end">
+    <ion-button (click)="unBlock()" size="small">Unblock</ion-button>
+  </div>
+</ion-item>

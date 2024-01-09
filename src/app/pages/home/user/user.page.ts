@@ -172,10 +172,6 @@ export class UserPage implements OnInit {
       .unsubscribe();
   }
 
-  unblockUser() {
-    console.log('unblock user clicked');
-  }
-
   async openTermsAndPolicyLink() {
     await Browser.open({ url: environment.web.TERMS_AND_CONDITIONS_URL });
   }

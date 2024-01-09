@@ -7,6 +7,7 @@ import { Oauth2Component } from 'src/app/components/oauth2/oauth2.component';
 import { RedirectComponent } from 'src/app/components/redirect/redirect.component';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { UserListComponent } from './user-list/user-list.component';
+import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { UserListComponent } from './user-list/user-list.component';
     RedirectComponent,
     SpinnerComponent,
     UserListComponent,
+    BlockedUserListComponent,
   ],
   imports: [CommonModule, IonicModule],
   exports: [
@@ -23,6 +25,7 @@ import { UserListComponent } from './user-list/user-list.component';
     RedirectComponent,
     SpinnerComponent,
     UserListComponent,
+    BlockedUserListComponent,
   ],
 })
 export class ComponentsModule {}
