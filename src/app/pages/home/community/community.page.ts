@@ -249,19 +249,15 @@ export class CommunityPage implements OnInit {
         this.total$
           .subscribe((total) => {
             if (offset < total) {
-              this.currentUser$.subscribe((user) => {
-                if (!user) return;
-                const currentUserId = user.$id;
-                // console.log('Current user: ', currentUserId);
-                const filterData = this.filterData;
-                this.store.dispatch(
-                  getUsersWithOffsetAction({
-                    currentUserId,
+              const filterData = this.filterData;
+              this.store.dispatch(
+                getUsersWithOffsetAction({
+                  request: {
                     filterData,
                     offset,
-                  })
-                );
-              });
+                  },
+                })
+              );
             } else {
               console.log('All users loaded');
             }
