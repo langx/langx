@@ -139,3 +139,13 @@ export const blockedUsersErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.blockedUsersError
 );
+
+export const unBlockUserSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unBlockUserSuccess
+);
+
+export const unBlockUserErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unBlockUserError
+);

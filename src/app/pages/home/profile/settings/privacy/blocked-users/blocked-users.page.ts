@@ -8,12 +8,14 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   getBlockedUsersAction,
   unBlockUserAction,
+  unBlockUserInitialStateAction,
 } from 'src/app/store/actions/auth.action';
 import {
   blockedUsersDataSelector,
-  blockedUsersErrorSelector,
   currentUserSelector,
   isLoadingSelector,
+  unBlockUserErrorSelector,
+  unBlockUserSuccessSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -37,10 +39,22 @@ export class BlockedUsersPage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
-    // User Errors
+    // UnBlock User Success
     this.subscription.add(
       this.store
-        .pipe(select(blockedUsersErrorSelector))
+        .pipe(select(unBlockUserSuccessSelector))
+        .subscribe((success) => {
+          if (success) {
+            this.presentToast('User unblocked successfully', 'success');
+            this.store.dispatch(unBlockUserInitialStateAction());
+          }
+        })
+    );
+
+    // UnBlock User Errors
+    this.subscription.add(
+      this.store
+        .pipe(select(unBlockUserErrorSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
