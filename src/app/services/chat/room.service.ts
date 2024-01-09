@@ -167,7 +167,6 @@ export class RoomService {
 
     // TODO: #340 Query for users that are not blocked by the current user
     // let blockedUsersQuery = blockedUsers.map(id => Query.notEqual('$id', id)).join(' and ');
-    // TODO: No need to hide in UI, just don't show in the list here.
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
