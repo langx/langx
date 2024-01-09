@@ -1,5 +1,5 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { IonItemSliding, ToastController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -7,10 +7,10 @@ import { Observable, Subscription } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { lastSeen } from 'src/app/extras/utils';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
+import { archiveRoomAction } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
@@ -21,7 +21,6 @@ import {
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/room.selector';
-import { archiveRoomAction } from 'src/app/store/actions/room.action';
 
 @Component({
   selector: 'app-messages',
@@ -29,8 +28,6 @@ import { archiveRoomAction } from 'src/app/store/actions/room.action';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
-  @ViewChildren(IonItemSliding) slidingItems: QueryList<IonItemSliding>;
-
   subscription: Subscription;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
@@ -142,76 +139,14 @@ export class MessagesPage implements OnInit {
     console.log('Async operation refresh has ended');
   }
 
-  getBadge(room): number {
-    return room.messages.filter(
-      (message) => message.seen === false && message.to === this.currentUserId
-    ).length;
-  }
-
   openArchiveChatPage() {
     this.router.navigate(['home/messages/archive']);
   }
 
-  archiveRoom(room: Room, index: number) {
-    console.log('archiveRoom clicked', room);
-
+  archiveRoom(room: Room) {
     // Dispatch action
     const request = { roomId: room.$id };
     this.store.dispatch(archiveRoomAction({ request }));
-
-    // Close the sliding item
-    const slidingItem = this.slidingItems.toArray()[index];
-    slidingItem.close();
-  }
-
-  //
-  // Utils
-  //
-
-  getLastMessage(room) {
-    let lastMessage = {
-      body: null,
-      time: null,
-    };
-
-    const type = room.messages[room.messages.length - 1]?.type || null;
-    lastMessage.time =
-      room.messages[room.messages.length - 1]?.$updatedAt || null;
-
-    switch (type) {
-      case 'body':
-        lastMessage.body = room.messages[room.messages.length - 1].body;
-        break;
-      case 'image':
-        lastMessage.body = '📷 Image';
-        break;
-      case 'audio':
-        lastMessage.body = '🎵 Audio';
-        break;
-      // case 'video':
-      //   lastMessage.body = '🎥 Video';
-      //   break;
-      // case 'file':
-      //   lastMessage.body = '📁 File';
-      //   break;
-      default:
-        lastMessage.body = 'Say Hi! 👋';
-        break;
-    }
-
-    return lastMessage;
-  }
-
-  messageTime(d: any) {
-    if (!d) return null;
-    let time = lastSeen(d);
-    if (time === 'online') time = 'now';
-    return time;
-  }
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
   }
 
   //
