@@ -8,18 +8,21 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- <ion-card>
+  <ion-card>
     <ion-card-header>
-      <ion-card-title>Presence</ion-card-title>
+      <ion-card-title>Account Privacy</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ion-item>
-          <ion-toggle [checked]="true">Show Online Status</ion-toggle>
+          <ion-toggle [checked]="true" disabled>Show Online Status</ion-toggle>
+        </ion-item>
+        <ion-item (click)="blockedUsersPage()" detail>
+          <ion-label>Blocked Users</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
-  </ion-card> -->
+  </ion-card>
 
   <ion-card>
     <ion-card-header>

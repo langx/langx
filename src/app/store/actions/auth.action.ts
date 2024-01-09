@@ -249,6 +249,42 @@ export const blockUserInitialStateAction = createAction(
   ActionTypes.BLOCK_USER_INITIAL_STATE
 );
 
+// Unblock User
+export const unBlockUserAction = createAction(
+  ActionTypes.UNBLOCK_USER,
+  props<{ request: { userId: string } }>()
+);
+
+export const unBlockUserSuccessAction = createAction(
+  ActionTypes.UNBLOCK_USER_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const unBlockUserFailureAction = createAction(
+  ActionTypes.UNBLOCK_USER_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const unBlockUserInitialStateAction = createAction(
+  ActionTypes.UNBLOCK_USER_INITIAL_STATE
+);
+
+// Get Blocked Users
+export const getBlockedUsersAction = createAction(
+  ActionTypes.GET_BLOCKED_USERS,
+  props<{ request: { blockedUsers: string[] } }>()
+);
+
+export const getBlockedUsersSuccessAction = createAction(
+  ActionTypes.GET_BLOCKED_USERS_SUCCESS,
+  props<{ payload: User[] }>()
+);
+
+export const getBlockedUsersFailureAction = createAction(
+  ActionTypes.GET_BLOCKED_USERS_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Logout
 export const logoutAction = createAction(ActionTypes.LOGOUT);
 

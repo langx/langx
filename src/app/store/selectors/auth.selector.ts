@@ -129,3 +129,23 @@ export const blockUserErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.blockUserError
 );
+
+export const blockedUsersDataSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.blockedUsersData
+);
+
+export const blockedUsersErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.blockedUsersError
+);
+
+export const unBlockUserSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unBlockUserSuccess
+);
+
+export const unBlockUserErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unBlockUserError
+);

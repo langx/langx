@@ -54,6 +54,13 @@ import {
   blockUserSuccessAction,
   blockUserFailureAction,
   blockUserInitialStateAction,
+  getBlockedUsersAction,
+  getBlockedUsersSuccessAction,
+  getBlockedUsersFailureAction,
+  unBlockUserAction,
+  unBlockUserFailureAction,
+  unBlockUserSuccessAction,
+  unBlockUserInitialStateAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -107,6 +114,10 @@ const initialState: AuthStateInterface = {
   updatePasswordError: null,
   blockUserSuccess: false,
   blockUserError: null,
+  unBlockUserSuccess: false,
+  unBlockUserError: null,
+  blockedUsersData: null,
+  blockedUsersError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -755,6 +766,68 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       blockUserSuccess: false,
+    })
+  ),
+
+  // Unblock User Reducers
+  on(
+    unBlockUserAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      unBlockUserError: null,
+    })
+  ),
+  on(unBlockUserSuccessAction, (state, action): AuthStateInterface => {
+    return {
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+      unBlockUserSuccess: true,
+      blockedUsersData: state.blockedUsersData?.filter((user) => {
+        return action.payload.blockedUsers.includes(user.$id);
+      }),
+    };
+  }),
+  on(
+    unBlockUserFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      unBlockUserError: action.error,
+    })
+  ),
+  on(
+    unBlockUserInitialStateAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      unBlockUserSuccess: false,
+    })
+  ),
+
+  // Get Blocked Users Data Reducers
+  on(
+    getBlockedUsersAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      blockedUsersError: null,
+    })
+  ),
+  on(
+    getBlockedUsersSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      blockedUsersData: action.payload,
+    })
+  ),
+  on(
+    getBlockedUsersFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      blockedUsersError: action.error,
     })
   ),
 

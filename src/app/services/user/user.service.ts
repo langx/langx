@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Query } from 'appwrite';
-import axios from 'axios';
-import { Observable, concatMap, from, map, of, switchMap, tap } from 'rxjs';
+import { Observable, forkJoin, from, of, switchMap } from 'rxjs';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
@@ -13,17 +12,12 @@ import { User } from 'src/app/models/User';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
-import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(
-    private api: ApiService,
-    private authService: AuthService,
-    private storage: StorageService
-  ) {}
+  constructor(private api: ApiService, private storage: StorageService) {}
 
   getUserDoc(uid: string): Observable<any> {
     return from(
@@ -53,6 +47,10 @@ export class UserService {
 
     // Query for users that are not the current user
     queries.push(Query.notEqual('$id', currentUserId));
+
+    // TODO: #340 Query for users that are not blocked by the current user
+    // TODO: No need to hide in UI, just don't show in the list here.
+    // let blockedUsersQuery = blockedUsers.map(id => Query.notEqual('$id', id)).join(' and ');
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('$updatedAt'));
@@ -94,7 +92,7 @@ export class UserService {
     );
   }
 
-  blockUser(currentUser: User, userId: string): Observable<any> {
+  blockUser(currentUser: User, userId: string): Observable<User> {
     return from(
       this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,
@@ -106,6 +104,31 @@ export class UserService {
     );
   }
 
+  unBlockUser(currentUser: User, userId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          blockedUsers: currentUser.blockedUsers.filter((id) => id !== userId),
+        }
+      )
+    );
+  }
+
+  getBlockedUsers(blockedUsers: string[]): Observable<User[]> {
+    if (blockedUsers.length === 0) {
+      return of([]);
+    }
+
+    // Create an array of Observables, each one gets a blocked user
+    const userObservables = blockedUsers.map((userId) =>
+      from(this.api.getDocument(environment.appwrite.USERS_COLLECTION, userId))
+    );
+
+    // Combine all the Observables into one
+    return forkJoin(userObservables);
+  }
   //
   // Upload Bucket
   //

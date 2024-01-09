@@ -25,6 +25,10 @@ export interface AuthStateInterface {
   updatePasswordError: ErrorInterface | null;
   blockUserSuccess: boolean;
   blockUserError: ErrorInterface | null;
+  unBlockUserSuccess: boolean;
+  unBlockUserError: ErrorInterface | null;
+  blockedUsersData: User[] | null;
+  blockedUsersError: ErrorInterface | null;
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
   loginValidationError: ErrorInterface | null;
