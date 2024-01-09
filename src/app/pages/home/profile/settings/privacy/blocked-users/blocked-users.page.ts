@@ -5,7 +5,10 @@ import { Observable, Subscription } from 'rxjs';
 
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getBlockedUsersAction } from 'src/app/store/actions/auth.action';
+import {
+  getBlockedUsersAction,
+  unBlockUserAction,
+} from 'src/app/store/actions/auth.action';
 import {
   blockedUsersDataSelector,
   blockedUsersErrorSelector,
@@ -72,7 +75,8 @@ export class BlockedUsersPage implements OnInit {
   }
 
   unBlock(userId: string) {
-    console.log('unblock', userId);
+    const request = { userId };
+    this.store.dispatch(unBlockUserAction({ request }));
   }
 
   //
