@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { catchError, map, of, switchMap, tap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { User } from 'src/app/models/User';
+import { Report } from 'src/app/models/Report';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
   getCurrentUserAction,
@@ -16,6 +18,9 @@ import {
   getUserByIdAction,
   getUserByIdFailureAction,
   getUserByIdSuccessAction,
+  reportUserAction,
+  reportUserFailureAction,
+  reportUserSuccessAction,
   updateCurrentUserAction,
   updateCurrentUserFailureAction,
   updateCurrentUserSuccessAction,
@@ -88,6 +93,27 @@ export class UserEffects {
         })
       ),
     { dispatch: false }
+  );
+
+  reportUser$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(reportUserAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
+        return this.userService
+          .reportUser(currentUser.$id, request.userId, request.reason)
+          .pipe(
+            map((payload: Report) => reportUserSuccessAction({ payload })),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(reportUserFailureAction({ error }));
+            })
+          );
+      })
+    )
   );
 
   constructor(
