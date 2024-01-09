@@ -166,7 +166,11 @@ export class RoomService {
     queries.push(Query.orderDesc('$updatedAt'));
 
     // TODO: #340 Query for users that are not blocked by the current user
-    // let blockedUsersQuery = blockedUsers.map(id => Query.notEqual('$id', id)).join(' and ');
+    // if (currentUser?.blockedUsers) {
+    //   currentUser.blockedUsers.forEach((id) => {
+    //     queries.push(Query.notEqual('users', id));
+    //   });
+    // }
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
