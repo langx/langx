@@ -21,6 +21,7 @@ import {
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/room.selector';
+import { archiveRoomAction } from 'src/app/store/actions/room.action';
 
 @Component({
   selector: 'app-messages',
@@ -151,6 +152,10 @@ export class MessagesPage implements OnInit {
 
   archiveRoom(room: Room) {
     console.log('archiveRoom clicked', room);
+
+    // Dispatch action
+    const request = { roomId: room.$id };
+    this.store.dispatch(archiveRoomAction({ request }));
   }
 
   //
