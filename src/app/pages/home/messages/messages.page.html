@@ -30,7 +30,11 @@
           <div *ngFor="let room of (rooms$ | async)" detail>
             <ion-item-sliding>
               <ion-item-options>
-                <ion-item-option color="primary" (click)="archiveRoom(room)">
+                <ion-item-option
+                  color="primary"
+                  (click)="archiveRoom(room)"
+                  expandable
+                >
                   Archive
                 </ion-item-option>
               </ion-item-options>
