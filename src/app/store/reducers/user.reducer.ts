@@ -17,6 +17,10 @@ import {
   getUserByIdAction,
   getUserByIdFailureAction,
   getUserByIdSuccessAction,
+  reportUserAction,
+  reportUserFailureAction,
+  reportUserInitialStateAction,
+  reportUserSuccessAction,
 } from 'src/app/store/actions/user.action';
 
 const initialState: UserStateInterface = {
@@ -25,6 +29,7 @@ const initialState: UserStateInterface = {
   users: null,
   user: null,
   error: null,
+  report: null,
 };
 
 const userReducer = createReducer(
@@ -111,6 +116,40 @@ const userReducer = createReducer(
     deleteAccountSuccessAction,
     (): UserStateInterface => ({
       ...initialState,
+    })
+  ),
+
+  // Report User Reducers
+  on(
+    reportUserAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+      report: null,
+    })
+  ),
+  on(
+    reportUserSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      report: action.payload,
+    })
+  ),
+  on(
+    reportUserFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    reportUserInitialStateAction,
+    (state): UserStateInterface => ({
+      ...state,
+      report: null,
     })
   )
 );

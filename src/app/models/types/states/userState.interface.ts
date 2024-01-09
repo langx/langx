@@ -1,4 +1,5 @@
 import { User } from 'src/app/models/User';
+import { Report } from 'src/app/models/Report';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export interface UserStateInterface {
@@ -7,4 +8,5 @@ export interface UserStateInterface {
   users: User[] | null;
   user: User | null;
   error: ErrorInterface | null;
+  report: Report | null;
 }
