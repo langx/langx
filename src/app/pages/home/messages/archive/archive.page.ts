@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
@@ -27,12 +27,13 @@ export class ArchivePage implements OnInit {
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
+  filteredRooms$: Observable<Room[] | null> = null;
 
   currentUserId: string = null;
 
   model = {
     icon: 'chatbubbles-outline',
-    title: 'No Archived Chat Rooms',
+    title: 'No Archived Rooms',
     color: 'warning',
   };
 
@@ -50,6 +51,19 @@ export class ArchivePage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    this.filteredRooms$ = combineLatest([this.rooms$, this.currentUser$]).pipe(
+      map(([rooms, currentUser]) => {
+        if (!rooms) {
+          return null;
+        }
+        return rooms.filter(
+          (room) =>
+            !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
+            currentUser.archivedRooms.includes(room?.$id)
+        );
+      })
+    );
 
     // Set Current User Id
     this.currentUser$
