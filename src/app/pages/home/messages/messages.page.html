@@ -21,15 +21,17 @@
   </ion-refresher>
 
   <ng-container>
-    <app-empty-screen *ngIf="(rooms$ | async)?.length == 0" [model]="model">
+    <app-empty-screen
+      *ngIf="(filteredRooms$ | async)?.length == 0"
+      [model]="model"
+    >
     </app-empty-screen>
 
-    <ion-card *ngIf="(rooms$ | async)?.length > 0">
+    <ion-card *ngIf="(filteredRooms$ | async)?.length > 0">
       <ion-card-content>
-        <ion-list *ngIf="(rooms$ | async)?.length > 0">
-          <ng-container *ngFor="let room of (rooms$ | async); let i = index">
+        <ion-list>
+          <ng-container *ngFor="let room of (filteredRooms$ | async)">
             <app-room-list
-              *ngIf="!(currentUser$ | async)?.blockedUsers.includes(room?.['userData']?.$id) && !(currentUser$ | async)?.archivedRooms.includes(room?.$id)"
               [room]="room"
               [currentUserId]="currentUserId"
               (onClick)="getChat(room)"
@@ -81,7 +83,7 @@
     <!-- SKELETON start -->
     <!-------------------->
 
-    <ion-card *ngIf="(rooms$ | async)?.length == null">
+    <ion-card *ngIf="(filteredRooms$ | async)?.length == null">
       <ion-card-content>
         <ion-list *ngIf="(isLoading$ | async)">
           <ion-item *ngFor="let i of '01234'.split('')">

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
 // Import Models and Services
 import { Room } from 'src/app/models/Room';
@@ -43,6 +43,7 @@ export class MessagesPage implements OnInit {
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
+  filteredRooms$: Observable<Room[] | null> = null;
 
   currentUserId: string = null;
 
@@ -112,6 +113,19 @@ export class MessagesPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    this.filteredRooms$ = combineLatest([this.rooms$, this.currentUser$]).pipe(
+      map(([rooms, currentUser]) => {
+        if (!rooms) {
+          return null;
+        }
+        return rooms.filter(
+          (room) =>
+            !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
+            !currentUser.archivedRooms.includes(room?.$id)
+        );
+      })
+    );
 
     // Set Current User Id
     this.currentUser$
