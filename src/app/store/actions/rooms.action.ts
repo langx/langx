@@ -20,8 +20,7 @@ export const getRoomsFailureAction = createAction(
 // Get Rooms With Offset Actions
 export const getRoomsWithOffsetAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET,
-  // TODO: Create interface for this request
-  props<{ currentUserId: string; offset: number }>()
+  props<{ request: { offset: number } }>()
 );
 
 export const getRoomsWithOffsetSuccessAction = createAction(

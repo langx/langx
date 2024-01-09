@@ -43,8 +43,9 @@ export class RoomsEffects {
   getRoomsWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getRoomsWithOffsetAction),
-      switchMap(({ currentUserId, offset }) =>
-        this.roomService.listRooms(currentUserId, offset).pipe(
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.roomService.listRooms(currentUser.$id, request.offset).pipe(
           map((payload: listRoomsResponseInterface) =>
             // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
             // It may checked first all cureent rooms array,
