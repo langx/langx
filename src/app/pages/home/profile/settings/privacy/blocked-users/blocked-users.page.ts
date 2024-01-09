@@ -30,6 +30,12 @@ export class BlockedUsersPage implements OnInit {
   currentUser$: Observable<User | null>;
   blockedUsersData$: Observable<User[] | null>;
 
+  model = {
+    icon: 'ban-outline',
+    title: 'No Blocked Users',
+    color: 'warning',
+  };
+
   constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {

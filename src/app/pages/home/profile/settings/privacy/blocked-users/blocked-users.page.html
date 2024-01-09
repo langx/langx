@@ -8,7 +8,13 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card>
+  <app-empty-screen
+    *ngIf="(blockedUsersData$ | async)?.length == 0"
+    [model]="model"
+  >
+  </app-empty-screen>
+
+  <ion-card *ngIf="(blockedUsersData$ | async)?.length !== 0">
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let user of (blockedUsersData$ | async)">
