@@ -37,7 +37,8 @@ import {
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
-  @ViewChild(IonModal) modal: IonModal;
+  @ViewChild('reportUserModal') reportUserModal: IonModal;
+  @ViewChild('blockUserModal') blockUserModal: IonModal;
 
   subscription: Subscription;
 
@@ -51,6 +52,8 @@ export class UserPage implements OnInit {
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
   badges: string[] = [];
+
+  reason: string;
 
   constructor(
     private store: Store,
@@ -152,11 +155,34 @@ export class UserPage implements OnInit {
   }
 
   //
+  // Report User
+  //
+
+  reportUser(reason: string) {
+    console.log('reason: ', reason);
+
+    this.reportUserModal.dismiss();
+    // this.currentUser$
+    //   .subscribe((currentUser) => {
+    //     if (currentUser.reportedUsers.includes(this.userId)) {
+    //       this.presentToast('User already reported.', 'danger');
+    //     } else if (currentUser.$id === this.userId) {
+    //       this.presentToast('You cannot report yourself.', 'danger');
+    //     } else {
+    //       const request = { userId: this.userId, reason: reason };
+    //       // Dispatch the action to update current user
+    //       this.store.dispatch(reportUserAction({ request }));
+    //     }
+    //   })
+    //   .unsubscribe();
+  }
+
+  //
   // Block User
   //
 
   blockUser() {
-    this.modal.dismiss();
+    this.blockUserModal.dismiss();
     this.currentUser$
       .subscribe((currentUser) => {
         if (currentUser.blockedUsers.includes(this.userId)) {
