@@ -93,6 +93,12 @@ import {
   uploadProfilePictureFailureAction,
   uploadProfilePictureSuccessAction,
 } from 'src/app/store/actions/bucket.action';
+import {
+  archiveRoomAction,
+  archiveRoomFailureAction,
+  archiveRoomInitialStateAction,
+  archiveRoomSuccessAction,
+} from 'src/app/store/actions/room.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -118,6 +124,8 @@ const initialState: AuthStateInterface = {
   unBlockUserError: null,
   blockedUsersData: null,
   blockedUsersError: null,
+  archiveRoomSuccess: false,
+  archiveRoomError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -828,6 +836,40 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       blockedUsersError: action.error,
+    })
+  ),
+
+  // Archive Room Actions
+  on(
+    archiveRoomAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      archiveRoomError: null,
+    })
+  ),
+  on(
+    archiveRoomSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+      archiveRoomSuccess: true,
+    })
+  ),
+  on(
+    archiveRoomFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      archiveRoomError: action.error,
+    })
+  ),
+  on(
+    archiveRoomInitialStateAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      archiveRoomSuccess: false,
     })
   ),
 
