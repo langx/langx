@@ -153,14 +153,14 @@ export class RoomService {
   }
 
   listRooms(
-    currentUserId: string,
+    currentUser: User,
     offset?: number
   ): Observable<listRoomsResponseInterface> {
     // Define queries
     const queries: any[] = [];
 
     // Query for rooms that contain the current user
-    queries.push(Query.search('users', currentUserId));
+    queries.push(Query.search('users', currentUser.$id));
 
     // Query for rooms descending by $updatedAt
     queries.push(Query.orderDesc('$updatedAt'));
@@ -180,7 +180,7 @@ export class RoomService {
         iif(
           () => data.total > 0,
           of(data).pipe(
-            switchMap(() => this.fillRoomsWithUserData(data, currentUserId)),
+            switchMap(() => this.fillRoomsWithUserData(data, currentUser.$id)),
             switchMap(() => this.fillRoomsWithMessages(data))
           ),
           of(data)
