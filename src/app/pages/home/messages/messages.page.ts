@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { IonItemSliding, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -29,6 +29,8 @@ import { archiveRoomAction } from 'src/app/store/actions/room.action';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
+  @ViewChildren(IonItemSliding) slidingItems: QueryList<IonItemSliding>;
+
   subscription: Subscription;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
@@ -150,12 +152,16 @@ export class MessagesPage implements OnInit {
     this.router.navigate(['home/messages/archive']);
   }
 
-  archiveRoom(room: Room) {
+  archiveRoom(room: Room, index: number) {
     console.log('archiveRoom clicked', room);
 
     // Dispatch action
     const request = { roomId: room.$id };
     this.store.dispatch(archiveRoomAction({ request }));
+
+    // Close the sliding item
+    const slidingItem = this.slidingItems.toArray()[index];
+    slidingItem.close();
   }
 
   //
