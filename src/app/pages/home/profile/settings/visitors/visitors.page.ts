@@ -6,10 +6,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./visitors.page.scss'],
 })
 export class VisitorsPage implements OnInit {
+  constructor() {}
 
-  constructor() { }
+  ngOnInit() {}
 
-  ngOnInit() {
+  //
+  // Pull to refresh
+  //
+
+  handleRefresh(event) {
+    // this.listUsers();
+    if (event) event.target.complete();
   }
-
 }
