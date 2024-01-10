@@ -25,8 +25,6 @@ export class VisitsEffects {
       switchMap(([_, currentUser]) => {
         return this.userService.listVisits(currentUser.$id).pipe(
           map((payload: any) => {
-            // TODO: Delete next line
-            console.log('payload', payload);
             return getVisitsSuccessAction({ payload });
           }),
 
