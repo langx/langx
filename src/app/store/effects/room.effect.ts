@@ -26,6 +26,9 @@ import {
   archiveRoomAction,
   archiveRoomSuccessAction,
   archiveRoomFailureAction,
+  unArchiveRoomAction,
+  unArchiveRoomSuccessAction,
+  unArchiveRoomFailureAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -159,6 +162,24 @@ export class RoomEffects {
               message: errorResponse.message,
             };
             return of(archiveRoomFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  unArchivedRoom$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(unArchiveRoomAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.roomService.unArchiveRoom(currentUser, request.roomId).pipe(
+          map((payload: User) => unArchiveRoomSuccessAction({ payload })),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(unArchiveRoomFailureAction({ error }));
           })
         )
       )
