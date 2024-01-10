@@ -28,8 +28,8 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoadingUserState$ | async)">
-        <ion-item *ngFor="let i of '0123456789'.split('')">
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '0123456789'.split('')" detail>
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
@@ -37,15 +37,9 @@
             <h3>
               <ion-skeleton-text
                 [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
                 style="width: 60%"
               ></ion-skeleton-text>
-            </p>
+            </h3>
             <p>
               <ion-skeleton-text
                 [animated]="true"
@@ -54,7 +48,7 @@
             </p>
           </ion-label>
         </ion-item>
-      </ion-list> -->
+      </ion-list>
 
       <!------------------>
       <!-- SKELETON end -->
