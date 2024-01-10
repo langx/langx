@@ -61,6 +61,13 @@ export class ProfilePage implements OnInit {
       icon: 'contrast-outline',
       detail: true,
     },
+    {
+      title: 'Visitors',
+      url: 'visitors',
+      icon: 'eye-outline',
+      detail: true,
+      new: true,
+    },
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
