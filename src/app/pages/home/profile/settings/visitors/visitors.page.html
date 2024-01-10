@@ -20,7 +20,7 @@
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let visit of (visits$ | async)">
-          // TODO: Check out inputs and outputs
+          <!-- TODO: Check out inputs and outputs -->
           <app-visit-list [item]="visit" (onClick)="getRoom('1')">
           </app-visit-list>
         </ng-container>
