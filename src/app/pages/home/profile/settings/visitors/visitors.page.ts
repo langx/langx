@@ -48,6 +48,7 @@ export class VisitorsPage implements OnInit {
   //
 
   handleRefresh(event) {
+    this.listVisits();
     if (event) event.target.complete();
   }
 }
