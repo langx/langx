@@ -41,7 +41,7 @@ export const environment = {
     DATA_DELETION_URL: `${WEBSITE_URL}data-deletion`,
   },
   opts: {
-    PAGINATION_LIMIT: 10,
+    PAGINATION_LIMIT: 20,
   },
   oauth: {
     google: {
