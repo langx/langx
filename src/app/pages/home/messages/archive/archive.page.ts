@@ -5,6 +5,7 @@ import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
+import { unArchiveRoomAction } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
@@ -123,7 +124,7 @@ export class ArchivePage implements OnInit {
   unArchiveRoom(room: Room) {
     console.log('unArchiveRoom', room);
     // Dispatch action
-    // const request = { roomId: room.$id };
-    // this.store.dispatch(archiveRoomAction({ request }));
+    const request = { roomId: room.$id };
+    this.store.dispatch(unArchiveRoomAction({ request }));
   }
 }
