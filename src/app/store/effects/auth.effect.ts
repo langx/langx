@@ -105,7 +105,7 @@ export class AuthEffect {
       this.actions$.pipe(
         ofType(loginSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/auth/success');
+          this.router.navigateByUrl('/auth/success', { replaceUrl: true });
         })
       ),
     { dispatch: false }
@@ -134,7 +134,7 @@ export class AuthEffect {
       this.actions$.pipe(
         ofType(registerSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/signup/complete');
+          this.router.navigateByUrl('/signup/complete', { replaceUrl: true });
         })
       ),
     { dispatch: false }
@@ -165,7 +165,7 @@ export class AuthEffect {
       this.actions$.pipe(
         ofType(completeRegistrationSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/signup/language');
+          this.router.navigateByUrl('/signup/language', { replaceUrl: true });
         })
       ),
     { dispatch: false }
@@ -229,7 +229,7 @@ export class AuthEffect {
         this.actions$.pipe(ofType(updateLanguageArraySuccessAction)),
       ]).pipe(
         tap(() => {
-          this.router.navigateByUrl('/home');
+          this.router.navigateByUrl('/home', { replaceUrl: true });
         })
       ),
     { dispatch: false }

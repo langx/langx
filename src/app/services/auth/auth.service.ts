@@ -162,6 +162,7 @@ export class AuthService {
 
   logout(): Observable<any> {
     return from(this.api.account.deleteSession('current')).pipe(
+      tap(() => this._user.next(null)),
       tap(() => this._user.next(null))
     );
   }

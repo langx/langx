@@ -69,11 +69,11 @@ export class SuccessPage implements OnInit {
 
         setTimeout(() => {
           if (!isLoggedIn) {
-            this.router.navigateByUrl('/login');
+            this.router.navigateByUrl('/login'), { replaceUrl: true };
           } else if (!isCompletedRegistration) {
-            this.router.navigateByUrl('/signup/complete');
+            this.router.navigateByUrl('/signup/complete', { replaceUrl: true });
           } else {
-            this.router.navigateByUrl('/home');
+            this.router.navigateByUrl('/home', { replaceUrl: true });
           }
         }, 3000);
       })
