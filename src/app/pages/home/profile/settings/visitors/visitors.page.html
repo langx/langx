@@ -1,22 +1,9 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-title>Community</ion-title>
-    <ion-buttons slot="end">
-      <ion-button
-        (click)="getFiltersPage()"
-        expand="block"
-        size="large"
-        slot="icon-only"
-        shape="round"
-        class="icon-wrapper"
-      >
-        <ion-icon name="filter-outline"></ion-icon>
-        <div
-          class="red-dot"
-          *ngIf="filterData?.country || filterData?.gender || filterData?.languages.length > 0 || filterData?.maxAge || filterData?.minAge"
-        ></div>
-      </ion-button>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home/profile"></ion-back-button>
     </ion-buttons>
+    <ion-title>Visitors</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -27,18 +14,13 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Recommended For You</ion-card-subtitle>
-      <ion-card-title> Language Mates </ion-card-title>
+      <ion-card-subtitle>Recent Visitors to Your Profile</ion-card-subtitle>
+      <ion-card-title>Who visited your profile?</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
-            [item]="user"
-            (onClick)="getRoom(user?.$id)"
-          >
-          </app-user-list>
+        <ng-container *ngFor="let visit of (visits$ | async)">
+          <app-visit-list [item]="visit"> </app-visit-list>
         </ng-container>
       </ion-list>
 
@@ -46,8 +28,8 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoadingUserState$ | async)">
-        <ion-item *ngFor="let i of '0123456789'.split('')">
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '0123456789'.split('')" detail>
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
@@ -55,15 +37,9 @@
             <h3>
               <ion-skeleton-text
                 [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
                 style="width: 60%"
               ></ion-skeleton-text>
-            </p>
+            </h3>
             <p>
               <ion-skeleton-text
                 [animated]="true"

@@ -3,7 +3,15 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import {
+  catchError,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  tap,
+  withLatestFrom,
+} from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -69,10 +77,15 @@ export class UserEffects {
   getUserById$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUserByIdAction),
-      switchMap(({ userId }) => {
-        return this.userService.getUserDoc(userId).pipe(
-          map((payload: User) => getUserByIdSuccessAction({ payload })),
-
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ userId }, currentUser]) => {
+        return forkJoin({
+          user: this.userService.getUserDoc(userId),
+          visitor: this.userService.createVisitDoc(currentUser.$id, userId),
+        }).pipe(
+          map(({ user, visitor }) =>
+            getUserByIdSuccessAction({ payload: user })
+          ),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
