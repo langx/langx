@@ -64,7 +64,7 @@ export class ProfilePage implements OnInit {
     {
       title: 'Visitors',
       url: 'visitors',
-      icon: 'eye-outline',
+      icon: 'people-outline',
       detail: true,
       new: true,
     },
@@ -176,11 +176,15 @@ export class ProfilePage implements OnInit {
   }
 
   //
-  // Public Profile View
+  // Go to other pages
   //
 
   publicProfileView() {
     this.router.navigate(['/', 'home', 'user', this.currentUserId]);
+  }
+
+  getVisitorsPage() {
+    this.router.navigate(['/', 'home', 'visitors']);
   }
 
   //

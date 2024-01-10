@@ -194,9 +194,21 @@
 
   <ion-card>
     <ion-card-content>
-      <ion-list lines="none">
+      <ion-list  class="hasIcon" lines="none">
+        <ion-item (click)="getVisitorsPage()" detail>
+          <ion-icon name="people-outline"></ion-icon>
+          <ion-label>Who Visited?</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list class="hasIcon" lines="none">
         <ion-item (click)="publicProfileView()" detail>
-          <ion-label>Public Profile View</ion-label>
+          <ion-icon name="eye-outline"></ion-icon>
+          <ion-label>View Profile as Public</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
