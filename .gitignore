@@ -72,4 +72,4 @@ Thumbs.db
 Notes.md
 
 # ./well-known
-./src/well-known
+./src/well-known/*
