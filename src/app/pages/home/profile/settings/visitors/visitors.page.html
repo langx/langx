@@ -12,7 +12,10 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card>
+  <app-empty-screen *ngIf="(visits$ | async)?.length == 0" [model]="model">
+  </app-empty-screen>
+
+  <ion-card *ngIf="(visits$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-subtitle>Recent Visitors to Your Profile</ion-card-subtitle>
       <ion-card-title>Who visited your profile?</ion-card-title>
