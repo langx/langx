@@ -1,3 +1,17 @@
-<p>
-  visit-list works!
-</p>
+<ion-item detail>
+  <ion-thumbnail slot="start" (click)="goProfile()">
+    <img [src]="user?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+  </ion-thumbnail>
+  <ion-label (click)="redirect()">
+    <h2>
+      <small *ngIf="lastSeen(user?.lastSeen) == 'online'">🟢 </small>
+      {{ user?.name }}
+    </h2>
+    <p>
+      <ion-text> {{ messageTime(item?.$createdAt) }} </ion-text>
+    </p>
+  </ion-label>
+  <div class="metadata-end-wrapper" slot="end">
+    <ion-note> {{ messageTime(item?.$createdAt) }} </ion-note>
+  </div>
+</ion-item>
