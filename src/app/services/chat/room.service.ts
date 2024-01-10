@@ -210,7 +210,9 @@ export class RoomService {
         environment.appwrite.USERS_COLLECTION,
         currentUser.$id,
         {
-          archivedRooms: currentUser?.archivedRooms.filter(room => room !== roomId),
+          archivedRooms: currentUser?.archivedRooms.filter(
+            (room) => room !== roomId
+          ),
         }
       )
     );
