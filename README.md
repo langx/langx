@@ -11,6 +11,7 @@ This project developed by New Chapter Team.
 - [Status](#status)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Deep Linking](#deep-linking)
 - [Contributing](#contributing)
 - [Security](#security)
 - [License](#license)
@@ -35,27 +36,27 @@ To install the project locally, follow these steps:
    - Replace the `YOUR_ENDPOINT` and `YOUR_PROJECT_ID` and etc. placeholders in the `environment.ts` file with the actual values from your Appwrite project.
      ```typescript
      export const environment = {
-        production: false,
-          appwrite: {
-          APP_ENDPOINT: '',
-          APP_PROJECT: '',
-          APP_DATABASE: '',
-          USERS_COLLECTION: '',
-          ROOMS_COLLECTION: '',
-          MESSAGES_COLLECTION: '',
-          LANGUAGES_COLLECTION: '',
-          USER_BUCKET: '',
-          MESSAGE_BUCKET: '',
-        },
-        url: {
-          HOMEPAGE_URL: '',
-          RESET_PASSWORD_URL: '',
-          HOME_URL: '',
-          LOGIN_URL: '',
-          SIGNUP_COMPLETE_URL: '',
-          CREATE_ROOM_API_URL: '',
-          CREATE_MESSAGE_API_URL: '',
-        },
+       production: false,
+       appwrite: {
+         APP_ENDPOINT: "",
+         APP_PROJECT: "",
+         APP_DATABASE: "",
+         USERS_COLLECTION: "",
+         ROOMS_COLLECTION: "",
+         MESSAGES_COLLECTION: "",
+         LANGUAGES_COLLECTION: "",
+         USER_BUCKET: "",
+         MESSAGE_BUCKET: "",
+       },
+       url: {
+         HOMEPAGE_URL: "",
+         RESET_PASSWORD_URL: "",
+         HOME_URL: "",
+         LOGIN_URL: "",
+         SIGNUP_COMPLETE_URL: "",
+         CREATE_ROOM_API_URL: "",
+         CREATE_MESSAGE_API_URL: "",
+       },
      };
      ```
 3. Start the development server using the command `ionic serve`
@@ -91,6 +92,91 @@ To use the project, follow these steps:
 5. Once you've joined a chat room, you'll be able to chat with other participants and practice your language skills.
 
 That's it! You should now be able to use the project to practice your language skills with other users. If you encounter any issues during the usage process, please refer to the project's documentation or open an issue on the project's GitHub repository.
+
+## Deep Linking
+
+Deep linking is a technique that allows an app to be opened to a specific UI or state, using a URL. This is useful for a variety of reasons, such as driving user engagement from web to app, or simply providing a better user experience.
+
+### Android Deep Linking
+
+1. Create a `/src/.well-known` directory in your project's `src` directory.
+
+2. Inside the `/src/.well-known` directory, create a file named `assetlinks.json`
+
+3. In the `assestslinks.json` file, add the following code to it:
+
+```json
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.yourapp",
+      "sha256_cert_fingerprints": ["14:6D:E9:..."]
+    }
+  }
+]
+```
+
+Replace `com.example.yourapp` with your app's package name and replace `14:6D:E9:...` with the SHA-256 fingerprint of your app's signing certificate.
+
+4. Add the `/src/.well-known` directory to the `assets` array in your `angular.json` file.
+
+```json
+"assets": [
+  "src/favicon.ico",
+  "src/assets",
+  {
+    "glob": "**/*",
+    "input": "src/.well-known",
+    "output": "/.well-known"
+  }
+]
+```
+
+5. Rebuild your project.
+
+### iOS Universal Links
+
+1. Create a `/src/.well-known` directory in your project's `src` directory.
+
+2. Inside the `/src/.well-known` directory, create a file named `apple-app-site-association`
+
+3. In the `apple-app-site-association` file, add the following code to it:
+
+```json
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAM_ID.BUNDLE_ID",
+        "paths": ["*"]
+      }
+    ]
+  }
+}
+```
+
+Replace `TEAM_ID.BUNDLE_ID` with your app's Team ID and Bundle ID.
+
+4. Add the `/src/.well-known` directory to the `assets` array in your `angular.json` file.
+
+```json
+"assets": [
+  "src/favicon.ico",
+  "src/assets",
+  {
+    "glob": "**/*",
+    "input": "src/.well-known",
+    "output": "/.well-known"
+  }
+]
+```
+
+5. Rebuild your project.
+
+After following these steps, your Angular app should be set up to handle deep links on both Android and iOS devices.
 
 ## Contributing
 
