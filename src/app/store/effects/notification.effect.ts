@@ -72,7 +72,10 @@ export class NotificationEffects {
         const totalUnseenMessages = rooms
           ? rooms.reduce((count, room) => {
               // Check if the room's user is not blocked by the current user and the room is not archived
-              if (!currentUser.blockedUsers.includes(room.userData.$id) && !currentUser.archivedRooms.includes(room.$id)) {
+              if (
+                !currentUser.blockedUsers.includes(room.userData.$id) &&
+                !currentUser.archivedRooms.includes(room.$id)
+              ) {
                 const unseenMessagesInRoom = room.messages.reduce(
                   (count, message) =>
                     count +
@@ -85,6 +88,23 @@ export class NotificationEffects {
             }, 0)
           : currentUser.totalUnseen;
 
+        // Calculate the total number of unseen messages in archived rooms
+        const totalUnseenArchived = rooms
+          ? rooms.reduce((count, room) => {
+              // Check if the room is archived
+              if (currentUser.archivedRooms.includes(room.$id)) {
+                const unseenMessagesInRoom = room.messages.reduce(
+                  (count, message) =>
+                    count +
+                    (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
+                  0
+                );
+                return count + unseenMessagesInRoom;
+              }
+              return count;
+            }, 0)
+          : 0;
+
         // TODO: In future, Use Badge.get() instead of totalUnseenMessages
         // Update to app badge count
         if ('setAppBadge' in navigator) {
@@ -93,7 +113,10 @@ export class NotificationEffects {
           console.log('Badging API is not supported in this browser.');
         }
         return totalUnseenMessagesSuccessAction({
-          payload: totalUnseenMessages,
+          payload: {
+            totalUnseen: totalUnseenMessages,
+            totalUnseenArchived: totalUnseenArchived,
+          },
         });
       })
     )
