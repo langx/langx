@@ -69,6 +69,39 @@ export class VisitorsPage implements OnInit {
   }
 
   //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // Offset is the number of users already loaded
+    let offset: number = 0;
+    this.visits$
+      .subscribe((visits) => {
+        offset = visits.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              console.log('offset', offset);
+              console.log('total', total);
+              // this.store.dispatch(
+              //   getVisitsWithOffsetAction({
+              //     request: {
+              //       offset,
+              //     },
+              //   })
+              // );
+            } else {
+              console.log('All visits loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+
+    event.target.complete();
+  }
+
+  //
   // Pull to refresh
   //
 
