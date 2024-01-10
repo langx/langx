@@ -34,6 +34,9 @@ export class NotificationsPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
+
+    // Trigger FCM registration
+    this.fcmService.registerPush();
   }
 
   ionViewWillEnter() {
