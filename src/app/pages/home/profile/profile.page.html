@@ -69,12 +69,12 @@
         <ion-textarea
           [autoGrow]="true"
           readonly="true"
-          rows="3"
           placeholder="You can edit here your profile description."
           [value]="(currentUser$ | async)?.aboutMe"
         ></ion-textarea>
       </ion-item>
-      <ion-list class="hasIcon">
+
+      <ion-list class="hasIcon" lines="none">
         <ion-item>
           <ion-icon name="flag-outline"></ion-icon>
           <ion-label>{{(currentUser$ | async)?.country}}</ion-label>
@@ -100,7 +100,7 @@
       <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-list class="hasIcon">
+      <ion-list class="hasIcon" lines="none">
         <ion-item *ngFor="let lang of studyLanguages">
           <ion-icon
             *ngIf="lang.level == 1"
@@ -127,7 +127,7 @@
       <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-list class="hasIcon">
+      <ion-list class="hasIcon" lines="none">
         <ion-item *ngFor="let lang of motherLanguages">
           <ion-icon name="language-outline"></ion-icon>
           <ion-label>{{lang.name}}</ion-label>
@@ -194,7 +194,7 @@
 
   <ion-card>
     <ion-card-content>
-      <ion-list  class="hasIcon" lines="none">
+      <ion-list class="hasIcon" lines="none">
         <ion-item (click)="getVisitorsPage()" detail>
           <ion-icon name="people-outline"></ion-icon>
           <ion-label>Who Visited?</ion-label>
