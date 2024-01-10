@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 
 import { User } from 'src/app/models/User';
 import { Visit } from 'src/app/models/Visit';
-import { UserService } from 'src/app/services/user/user.service';
 import { getVisitsAction } from 'src/app/store/actions/visits.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
@@ -24,7 +23,7 @@ export class VisitorsPage implements OnInit {
   visits$: Observable<Visit[] | null> = null;
   total$: Observable<number | null> = null;
 
-  constructor(private store: Store, private userService: UserService) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
     this.initValues();
@@ -42,10 +41,6 @@ export class VisitorsPage implements OnInit {
   listVisits() {
     // Dispatch action to get all visits
     this.store.dispatch(getVisitsAction());
-  }
-
-  getRoom(user: any) {
-    console.log('getRoom', user);
   }
 
   //
