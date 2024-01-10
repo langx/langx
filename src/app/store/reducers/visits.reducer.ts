@@ -5,6 +5,9 @@ import {
   getVisitsAction,
   getVisitsFailureAction,
   getVisitsSuccessAction,
+  getVisitsWithOffsetAction,
+  getVisitsWithOffsetFailureAction,
+  getVisitsWithOffsetSuccessAction,
 } from 'src/app/store/actions/visits.action';
 
 const initialState: VisitsStateInterface = {
@@ -16,6 +19,8 @@ const initialState: VisitsStateInterface = {
 
 const visitsReducer = createReducer(
   initialState,
+
+  // Get Visits Reducers
   on(
     getVisitsAction,
     (state): VisitsStateInterface => ({
@@ -35,6 +40,33 @@ const visitsReducer = createReducer(
   ),
   on(
     getVisitsFailureAction,
+    (state, action): VisitsStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Visits With Offset Reducers
+  on(
+    getVisitsWithOffsetAction,
+    (state): VisitsStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getVisitsWithOffsetSuccessAction,
+    (state, action): VisitsStateInterface => ({
+      ...state,
+      isLoading: false,
+      total: action.payload.total,
+      visits: [...state.visits, ...action.payload.documents],
+    })
+  ),
+  on(
+    getVisitsWithOffsetFailureAction,
     (state, action): VisitsStateInterface => ({
       ...state,
       isLoading: false,
