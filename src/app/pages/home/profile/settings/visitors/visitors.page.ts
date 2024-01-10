@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Store, select } from '@ngrx/store';
 
 @Component({
   selector: 'app-visitors',
@@ -6,9 +7,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./visitors.page.scss'],
 })
 export class VisitorsPage implements OnInit {
-  constructor() {}
+  constructor(private store: Store) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initValues();
+    // Get all chat Rooms
+    this.listVisits();
+  }
+
+  initValues() {}
+
+  listVisits() {
+    // Dispatch action to get all visits
+    // this.store.dispatch(getVisitsAction({ request: {  } }));
+  }
 
   //
   // Pull to refresh
