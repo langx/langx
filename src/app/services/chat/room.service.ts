@@ -204,6 +204,18 @@ export class RoomService {
     );
   }
 
+  unArchiveRoom(currentUser: User, roomId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          archivedRooms: currentUser?.archivedRooms.filter(room => room !== roomId),
+        }
+      )
+    );
+  }
+
   //
   // Utils
   //
