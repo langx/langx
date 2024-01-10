@@ -21,8 +21,11 @@ export class RoomListComponent implements OnInit {
 
   @Input() room: Room;
   @Input() currentUserId: string;
+  @Input() isArchived: boolean;
+
   @Output() onClick: EventEmitter<any> = new EventEmitter();
   @Output() onArchive: EventEmitter<any> = new EventEmitter();
+  @Output() onUnarchive: EventEmitter<any> = new EventEmitter();
 
   constructor() {}
 
@@ -68,6 +71,13 @@ export class RoomListComponent implements OnInit {
 
   archiveRoom(room: Room) {
     this.onArchive.emit(room);
+
+    // Close the sliding item
+    this.slidingItem.close();
+  }
+
+  unArchiveRoom(room: Room) {
+    this.onUnarchive.emit(room);
 
     // Close the sliding item
     this.slidingItem.close();

@@ -23,8 +23,9 @@
             <app-room-list
               [room]="room"
               [currentUserId]="currentUserId"
+              [isArchived]="true"
               (onClick)="getChat(room)"
-              (onArchive)="archiveRoom(room)"
+              (onUnarchive)="unArchiveRoom(room)"
             >
             </app-room-list>
           </ng-container>
