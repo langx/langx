@@ -17,7 +17,6 @@ import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/
 })
 export class AuthService {
   private _user = new BehaviorSubject<Account | null>(null);
-  private account$: Observable<Account | null> = null;
 
   constructor(private api: ApiService) {}
 
