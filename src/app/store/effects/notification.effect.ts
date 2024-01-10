@@ -71,8 +71,8 @@ export class NotificationEffects {
         // Calculate the total number of unseen messages
         const totalUnseenMessages = rooms
           ? rooms.reduce((count, room) => {
-              // Check if the room's user is not blocked by the current user
-              if (!currentUser.blockedUsers.includes(room.userData.$id)) {
+              // Check if the room's user is not blocked by the current user and the room is not archived
+              if (!currentUser.blockedUsers.includes(room.userData.$id) && !currentUser.archivedRooms.includes(room.$id)) {
                 const unseenMessagesInRoom = room.messages.reduce(
                   (count, message) =>
                     count +
