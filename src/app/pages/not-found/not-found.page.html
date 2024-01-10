@@ -1,0 +1,16 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Page Not Found</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-redirect
+  *ngIf="(isLoggedIn$ | async)"
+  [model]="modelSuccess"
+></app-redirect>
+<app-redirect
+  *ngIf="!(isLoggedIn$ | async)"
+  [model]="modelFailed"
+></app-redirect>
+</ion-content>

@@ -44,6 +44,13 @@ const routes: Routes = [
         (m) => m.VerifyEmailPageModule
       ),
   },
+  {
+    path: '**',
+    loadChildren: () =>
+      import('./pages/not-found/not-found.module').then(
+        (m) => m.NotFoundPageModule
+      ),
+  },
 ];
 
 @NgModule({
