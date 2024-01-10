@@ -20,8 +20,7 @@
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let visit of (visits$ | async)">
-          <app-visit-list [item]="visit">
-          </app-visit-list>
+          <app-visit-list [item]="visit"> </app-visit-list>
         </ng-container>
       </ion-list>
 
@@ -62,4 +61,8 @@
       <!------------------>
     </ion-card-content>
   </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
