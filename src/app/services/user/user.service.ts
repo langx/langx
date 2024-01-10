@@ -179,6 +179,10 @@ export class UserService {
   //
 
   createVisitDoc(currentUserId: string, userId: string): Observable<any> {
+    if (currentUserId === userId) {
+      return of(null);
+    }
+
     return from(
       this.api.createDocument(
         environment.appwrite.VISITS_COLLECTION,
