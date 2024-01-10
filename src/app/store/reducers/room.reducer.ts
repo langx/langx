@@ -138,14 +138,26 @@ const roomReducer = createReducer(
       error: null,
     })
   ),
-  on(
-    createRoomSuccessAction,
-    (state, action): RoomStateInterface => ({
+  on(createRoomSuccessAction, (state, action): RoomStateInterface => {
+    const updatedRooms = state.rooms ? [...state.rooms] : [];
+    const roomIndex = updatedRooms.findIndex(
+      (room) => room.$id === action.payload.$id
+    );
+
+    if (roomIndex !== -1) {
+      // If room exists, update it
+      updatedRooms[roomIndex] = action.payload;
+    } else {
+      // If room does not exist, add it
+      updatedRooms.push(action.payload);
+    }
+
+    return {
       ...state,
       isLoading: false,
-      rooms: [action.payload, ...(state.rooms || [])],
-    })
-  ),
+      rooms: updatedRooms,
+    };
+  }),
   on(
     createRoomFailureAction,
     (state, action): RoomStateInterface => ({
