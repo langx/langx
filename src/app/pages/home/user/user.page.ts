@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
 import {
@@ -69,6 +69,7 @@ export class UserPage implements OnInit {
 
   constructor(
     private store: Store,
+    private router: Router,
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
     private toastController: ToastController,
@@ -82,6 +83,7 @@ export class UserPage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
+    // Loading
     this.subscription.add(
       combineLatest([
         this.store.pipe(select(isLoadingAuthSelector)),
@@ -119,6 +121,7 @@ export class UserPage implements OnInit {
           if (success) {
             this.presentToast('The user has been blocked.', 'success');
             this.store.dispatch(blockUserInitialStateAction());
+            this.router.navigate(['/home']);
           }
         })
     );
