@@ -194,4 +194,14 @@ export class UserService {
       )
     );
   }
+
+  listVisits(currentUserId: string): Observable<any> {
+    // TODO: querries = []
+    // orderBy...
+    return from(
+      this.api.listDocuments(environment.appwrite.VISITS_COLLECTION, [
+        Query.equal('from', currentUserId),
+      ])
+    );
+  }
 }
