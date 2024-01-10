@@ -159,3 +159,13 @@ export const archiveRoomErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.archiveRoomError
 );
+
+export const unArchiveRoomSuccessSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unArchiveRoomSuccess
+);
+
+export const unArchiveRoomErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.unArchiveRoomError
+);

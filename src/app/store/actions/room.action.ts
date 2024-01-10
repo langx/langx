@@ -78,3 +78,23 @@ export const archiveRoomFailureAction = createAction(
 export const archiveRoomInitialStateAction = createAction(
   ActionTypes.ARCHIVE_ROOM_INITIAL_STATE
 );
+
+// Unarchive Room Actions
+export const unArchiveRoomAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM,
+  props<{ request: { roomId: string } }>()
+);
+
+export const unArchiveRoomSuccessAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const unArchiveRoomFailureAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const unArchiveRoomInitialStateAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM_INITIAL_STATE
+);
