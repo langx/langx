@@ -1,7 +1,10 @@
 <ion-item-sliding #slidingItem>
   <ion-item-options>
-    <ion-item-option color="primary" (click)="archiveRoom(room)" expandable>
+    <ion-item-option *ngIf="!isArchived" (click)="archiveRoom(room)" color="primary"  expandable>
       Archive
+    </ion-item-option>
+    <ion-item-option *ngIf="isArchived" (click)="unArchiveRoom(room)" color="primary" expandable>
+      Unarchive
     </ion-item-option>
   </ion-item-options>
   <ion-item (click)="getChat(room)">

@@ -120,8 +120,8 @@ export class ArchivePage implements OnInit {
     event.target.complete();
   }
 
-  archiveRoom(room: Room) {
-    console.log('archiveRoom', room);
+  unArchiveRoom(room: Room) {
+    console.log('unArchiveRoom', room);
     // Dispatch action
     // const request = { roomId: room.$id };
     // this.store.dispatch(archiveRoomAction({ request }));
