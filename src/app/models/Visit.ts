@@ -1,6 +1,6 @@
 import { Models } from 'appwrite';
 
 export type Visit = Models.Document & {
-  visitor: string;
+  from: string;
   to: string;
 };
