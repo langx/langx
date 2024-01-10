@@ -32,18 +32,12 @@ import { listSessionsResponseInterface } from 'src/app/models/types/responses/li
 // Import Selector and Actions
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
-  blockUserAction,
-  blockUserFailureAction,
-  blockUserSuccessAction,
   completeRegistrationAction,
   completeRegistrationFailureAction,
   completeRegistrationSuccessAction,
   deleteAccountAction,
   deleteAccountFailureAction,
   deleteAccountSuccessAction,
-  getBlockedUsersAction,
-  getBlockedUsersFailureAction,
-  getBlockedUsersSuccessAction,
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
@@ -72,9 +66,6 @@ import {
   resetPasswordConfirmationSuccessAction,
   resetPasswordFailureAction,
   resetPasswordSuccessAction,
-  unBlockUserAction,
-  unBlockUserFailureAction,
-  unBlockUserSuccessAction,
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
@@ -496,64 +487,6 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(deleteAccountFailureAction({ error }));
-          })
-        );
-      })
-    )
-  );
-
-  blockUser$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(blockUserAction),
-      withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([{ request }, currentUser]) => {
-        return this.userService.blockUser(currentUser, request.userId).pipe(
-          map((payload: User) => blockUserSuccessAction({ payload })),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(blockUserFailureAction({ error }));
-          })
-        );
-      })
-    )
-  );
-
-  unBlockUser$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(unBlockUserAction),
-      withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([{ request }, currentUser]) => {
-        return this.userService.unBlockUser(currentUser, request.userId).pipe(
-          map((payload: User) => unBlockUserSuccessAction({ payload })),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(unBlockUserFailureAction({ error }));
-          })
-        );
-      })
-    )
-  );
-
-  getBlockedUsers$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getBlockedUsersAction),
-      switchMap(({ request }) => {
-        return this.userService.getBlockedUsers(request.blockedUsers).pipe(
-          map((payload: User[]) => {
-            return getBlockedUsersSuccessAction({ payload });
-          }),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getBlockedUsersFailureAction({ error }));
           })
         );
       })
