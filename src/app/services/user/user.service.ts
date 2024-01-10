@@ -102,7 +102,7 @@ export class UserService {
         environment.appwrite.USERS_COLLECTION,
         currentUser.$id,
         {
-          blockedUsers: [...currentUser.blockedUsers, userId],
+          blockedUsers: [...currentUser?.blockedUsers, userId],
         }
       )
     );

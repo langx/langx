@@ -29,6 +29,10 @@ export interface AuthStateInterface {
   unBlockUserError: ErrorInterface | null;
   blockedUsersData: User[] | null;
   blockedUsersError: ErrorInterface | null;
+  archiveRoomSuccess: boolean;
+  archiveRoomError: ErrorInterface | null;
+  unArchiveRoomSuccess: boolean;
+  unArchiveRoomError: ErrorInterface | null;
   unauthorizedError: ErrorInterface | null;
   registerValidationError: ErrorInterface | null;
   loginValidationError: ErrorInterface | null;

@@ -17,4 +17,5 @@ export type User = Models.Document & {
   totalUnseen?: number;
   notifications?: string[];
   blockedUsers?: string[];
+  archivedRooms?: string[];
 };

@@ -1,42 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Router } from '@angular/router';
 import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
-// Import Models and Services
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { FcmService } from 'src/app/services/fcm/fcm.service';
-
-// Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
-  archiveRoomAction,
-  archiveRoomInitialStateAction,
+  unArchiveRoomAction,
+  unArchiveRoomInitialStateAction,
 } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
 import {
-  archiveRoomErrorSelector,
   currentUserSelector,
+  unArchiveRoomErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 import {
+  errorSelector,
   isLoadingSelector,
   roomsSelector,
   totalSelector,
-  errorSelector,
 } from 'src/app/store/selectors/room.selector';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.page.html',
-  styleUrls: ['./messages.page.scss'],
+  selector: 'app-archive',
+  templateUrl: './archive.page.html',
+  styleUrls: ['./archive.page.scss'],
 })
-export class MessagesPage implements OnInit {
+export class ArchivePage implements OnInit {
   subscription: Subscription;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
@@ -48,21 +43,14 @@ export class MessagesPage implements OnInit {
 
   model = {
     icon: 'chatbubbles-outline',
-    title: 'No Chat Rooms',
+    title: 'No Archived Rooms',
     color: 'warning',
   };
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private fcmService: FcmService,
-    private toastController: ToastController
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.initValues();
-    // Trigger FCM
-    this.fcmService.registerPush();
     // Get all chat Rooms
     this.listRooms();
   }
@@ -81,10 +69,10 @@ export class MessagesPage implements OnInit {
         })
     );
     this.subscription.add(
-      this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
+      this.store.pipe(select(unArchiveRoomErrorSelector)).subscribe((error) => {
         if (error) {
           this.presentToast(error.message, 'danger');
-          this.store.dispatch(archiveRoomInitialStateAction());
+          this.store.dispatch(unArchiveRoomInitialStateAction());
         }
       })
     );
@@ -109,7 +97,7 @@ export class MessagesPage implements OnInit {
         return rooms.filter(
           (room) =>
             !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
-            !currentUser.archivedRooms.includes(room?.$id)
+            currentUser.archivedRooms.includes(room?.$id)
         );
       })
     );
@@ -126,6 +114,16 @@ export class MessagesPage implements OnInit {
 
   listRooms() {
     this.store.dispatch(getRoomsAction());
+  }
+
+  getChat(room) {
+    this.store.dispatch(activateRoomAction({ payload: room }));
+  }
+
+  handleRefresh(event) {
+    this.listRooms();
+    event.target.complete();
+    console.log('Async operation refresh has ended');
   }
 
   //
@@ -159,24 +157,11 @@ export class MessagesPage implements OnInit {
     event.target.complete();
   }
 
-  getChat(room) {
-    this.store.dispatch(activateRoomAction({ payload: room }));
-  }
-
-  handleRefresh(event) {
-    this.listRooms();
-    event.target.complete();
-    console.log('Async operation refresh has ended');
-  }
-
-  openArchiveChatPage() {
-    this.router.navigate(['home/messages/archive']);
-  }
-
-  archiveRoom(room: Room) {
+  unArchiveRoom(room: Room) {
+    console.log('unArchiveRoom', room);
     // Dispatch action
     const request = { roomId: room.$id };
-    this.store.dispatch(archiveRoomAction({ request }));
+    this.store.dispatch(unArchiveRoomAction({ request }));
   }
 
   //

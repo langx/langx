@@ -192,6 +192,32 @@ export class RoomService {
     );
   }
 
+  archiveRoom(currentUser: User, roomId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          archivedRooms: [...currentUser?.archivedRooms, roomId],
+        }
+      )
+    );
+  }
+
+  unArchiveRoom(currentUser: User, roomId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          archivedRooms: currentUser?.archivedRooms.filter(
+            (room) => room !== roomId
+          ),
+        }
+      )
+    );
+  }
+
   //
   // Utils
   //

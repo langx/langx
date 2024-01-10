@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
+import { User } from 'src/app/models/User';
 import { ActionTypes } from 'src/app/store/actions/types/room.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -56,4 +57,44 @@ export const createRoomFailureAction = createAction(
 
 export const createRoomInitialStateAction = createAction(
   ActionTypes.CREATE_ROOM_INITIAL_STATE
+);
+
+// Archive Room Actions
+export const archiveRoomAction = createAction(
+  ActionTypes.ARCHIVE_ROOM,
+  props<{ request: { roomId: string } }>()
+);
+
+export const archiveRoomSuccessAction = createAction(
+  ActionTypes.ARCHIVE_ROOM_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const archiveRoomFailureAction = createAction(
+  ActionTypes.ARCHIVE_ROOM_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const archiveRoomInitialStateAction = createAction(
+  ActionTypes.ARCHIVE_ROOM_INITIAL_STATE
+);
+
+// Unarchive Room Actions
+export const unArchiveRoomAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM,
+  props<{ request: { roomId: string } }>()
+);
+
+export const unArchiveRoomSuccessAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM_SUCCESS,
+  props<{ payload: User }>()
+);
+
+export const unArchiveRoomFailureAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const unArchiveRoomInitialStateAction = createAction(
+  ActionTypes.UNARCHIVE_ROOM_INITIAL_STATE
 );
