@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { User } from 'src/app/models/User';
+import { UserService } from 'src/app/services/user/user.service';
+import { getVisitsAction } from 'src/app/store/actions/visits.action';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-visitors',
@@ -7,7 +13,9 @@ import { Store, select } from '@ngrx/store';
   styleUrls: ['./visitors.page.scss'],
 })
 export class VisitorsPage implements OnInit {
-  constructor(private store: Store) {}
+  currentUser$: Observable<User | null> = null;
+
+  constructor(private store: Store, private userService: UserService) {}
 
   ngOnInit() {
     this.initValues();
@@ -15,11 +23,13 @@ export class VisitorsPage implements OnInit {
     this.listVisits();
   }
 
-  initValues() {}
+  initValues() {
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+  }
 
   listVisits() {
     // Dispatch action to get all visits
-    // this.store.dispatch(getVisitsAction({ request: {  } }));
+    this.store.dispatch(getVisitsAction());
   }
 
   //
@@ -27,7 +37,6 @@ export class VisitorsPage implements OnInit {
   //
 
   handleRefresh(event) {
-    // this.listUsers();
     if (event) event.target.complete();
   }
 }
