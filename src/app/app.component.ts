@@ -89,6 +89,7 @@ export class AppComponent {
         console.log('appUrlOpen', event);
         const slug = event.url.split(environment.url.HOMEPAGE_URL).pop();
         console.log('slug: ', slug);
+        // TODO; First redirect page to check auth status (auth/oauth2/..) and redirect to slug
         this.router.navigateByUrl(slug);
       });
     });
