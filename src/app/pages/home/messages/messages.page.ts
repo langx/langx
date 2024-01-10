@@ -66,7 +66,6 @@ export class MessagesPage implements OnInit {
     this.fcmService.registerPush();
     // Get all chat Rooms
     this.listRooms();
-    //await this.listRooms();
   }
 
   ionViewWillEnter() {
