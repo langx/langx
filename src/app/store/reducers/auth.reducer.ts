@@ -511,7 +511,8 @@ const authReducer = createReducer(
       ...state,
       currentUser: {
         ...state.currentUser,
-        totalUnseen: action.payload,
+        totalUnseen: action.payload.totalUnseen,
+        totalUnseenArchived: action.payload.totalUnseenArchived,
       },
     })
   ),
