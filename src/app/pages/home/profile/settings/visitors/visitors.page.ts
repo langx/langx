@@ -6,8 +6,11 @@ import { Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { Visit } from 'src/app/models/Visit';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { getVisitsAction } from 'src/app/store/actions/visits.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  getVisitsAction,
+  getVisitsWithOffsetAction,
+} from 'src/app/store/actions/visits.action';
 import {
   errorSelector,
   isLoadingSelector,
@@ -81,15 +84,15 @@ export class VisitorsPage implements OnInit {
         this.total$
           .subscribe((total) => {
             if (offset < total) {
-              console.log('offset', offset);
-              console.log('total', total);
-              // this.store.dispatch(
-              //   getVisitsWithOffsetAction({
-              //     request: {
-              //       offset,
-              //     },
-              //   })
-              // );
+              // console.log('offset', offset);
+              // console.log('total', total);
+              this.store.dispatch(
+                getVisitsWithOffsetAction({
+                  request: {
+                    offset,
+                  },
+                })
+              );
             } else {
               console.log('All visits loaded');
             }
