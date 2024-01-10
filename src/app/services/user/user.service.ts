@@ -127,7 +127,7 @@ export class UserService {
   ): Observable<Report> {
     return from(
       this.api.createDocument(
-        environment.appwrite.REPORT_COLLECTION,
+        environment.appwrite.REPORTS_COLLECTION,
         ID.unique(),
         {
           reason: reason,
