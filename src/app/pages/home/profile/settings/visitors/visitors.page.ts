@@ -31,6 +31,12 @@ export class VisitorsPage implements OnInit {
   visits$: Observable<Visit[] | null> = null;
   total$: Observable<number | null> = null;
 
+  model = {
+    icon: 'people-outline',
+    title: 'No Visitors Yet',
+    color: 'warning',
+  };
+
   constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
