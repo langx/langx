@@ -1,6 +1,6 @@
-import { User } from 'src/app/models/User';
+import { Visit } from 'src/app/models/Visit';
 
 export interface listVisitsResponseInterface {
-  to: number;
-  from: User;
+  total: number;
+  documents: Visit[];
 }
