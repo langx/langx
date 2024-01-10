@@ -3,13 +3,21 @@
     <ion-title>Messages</ion-title>
     <ion-buttons slot="end">
       <ion-button
+        id="notification-button"
         (click)="openArchiveChatPage()"
         expand="block"
         size="large"
         slot="icon-only"
-        shape="round"
       >
         <ion-icon name="archive-outline"></ion-icon>
+        <ion-badge
+          id="notifications-badge"
+          size="small"
+          color="danger"
+          *ngIf="(totalUnseenArchived$ | async) !== 0 || (totalUnseenArchived$ | async) === null"
+        >
+          {{(totalUnseenArchived$ | async)}}
+        </ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

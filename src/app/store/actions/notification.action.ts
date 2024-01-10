@@ -57,5 +57,5 @@ export const totalUnseenMessagesAction = createAction(
 
 export const totalUnseenMessagesSuccessAction = createAction(
   ActionTypes.TOTAL_UNSEEN_MESSAGES_SUCCESS,
-  props<{ payload: number }>()
+  props<{ payload: { totalUnseen: number; totalUnseenArchived: number } }>()
 );
