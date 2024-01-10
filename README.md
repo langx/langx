@@ -178,6 +178,8 @@ Replace `TEAM_ID.BUNDLE_ID` with your app's Team ID and Bundle ID.
 
 After following these steps, your Angular app should be set up to handle deep links on both Android and iOS devices.
 
+For more information: https://capacitorjs.com/docs/guides/deep-links
+
 ## Contributing
 
 We welcome contributions to the project! To contribute, follow these steps:
