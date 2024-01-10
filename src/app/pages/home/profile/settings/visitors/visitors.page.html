@@ -19,15 +19,11 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        aa
-        <!-- <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
-            [item]="user"
-            (onClick)="getRoom(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container> -->
+        <ng-container *ngFor="let visit of (visits$ | async)">
+          // TODO: Check out inputs and outputs
+          <app-visit-list [item]="visit" (onClick)="getRoom('1')">
+          </app-visit-list>
+        </ng-container>
       </ion-list>
 
       <!-------------------->
