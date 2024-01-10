@@ -22,7 +22,6 @@ import {
 } from 'src/app/store/actions/rooms.action';
 import {
   archiveRoomErrorSelector,
-  archiveRoomSuccessSelector,
   currentUserSelector,
 } from 'src/app/store/selectors/auth.selector';
 import {
