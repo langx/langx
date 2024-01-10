@@ -20,7 +20,7 @@ export const getVisitsFailureAction = createAction(
 // Get Visits With Offset Actions
 export const getVisitsWithOffsetAction = createAction(
   ActionTypes.GET_VISITS_WITH_OFFSET,
-  props<{ offset: number }>()
+  props<{ request: { offset: number } }>()
 );
 
 export const getVisitsWithOffsetSuccessAction = createAction(
