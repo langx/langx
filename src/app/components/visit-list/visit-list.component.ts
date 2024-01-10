@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { lastSeen } from 'src/app/extras/utils';
+import { lastSeen, lastSeenExt } from 'src/app/extras/utils';
 import { Router } from '@angular/router';
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
@@ -12,22 +12,17 @@ import { User } from 'src/app/models/User';
 })
 export class VisitListComponent implements OnInit {
   @Input() item: Visit;
-  @Output() onClick: EventEmitter<any> = new EventEmitter();
 
   user: User;
+
   constructor(private route: Router) {}
 
   ngOnInit() {
     this.user = this.item.from;
-    console.log('this.user', this.user.$id);
-  }
-
-  redirect() {
-    this.onClick.emit(this.item);
   }
 
   goProfile() {
-    // this.route.navigateByUrl('/home/user/' + this.item.$id);
+    this.route.navigateByUrl('/home/user/' + this.user.$id);
   }
 
   //
@@ -36,9 +31,9 @@ export class VisitListComponent implements OnInit {
 
   messageTime(d: any) {
     if (!d) return null;
-    let time = lastSeen(d);
-    if (time === 'online') time = 'now';
-    return time;
+    let time = lastSeenExt(d);
+    if (time === 'online') return (time = 'now');
+    return time + ' ago';
   }
 
   lastSeen(d: any) {
