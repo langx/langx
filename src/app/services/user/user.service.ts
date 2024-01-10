@@ -173,4 +173,21 @@ export class UserService {
     );
     return of(url);
   }
+
+  //
+  // Create Visit Doc
+  //
+
+  createVisitDoc(currentUserId: string, userId: string): Observable<any> {
+    return from(
+      this.api.createDocument(
+        environment.appwrite.VISITS_COLLECTION,
+        ID.unique(),
+        {
+          from: currentUserId,
+          to: userId,
+        }
+      )
+    );
+  }
 }
