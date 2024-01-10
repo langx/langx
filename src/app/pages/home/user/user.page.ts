@@ -27,6 +27,8 @@ import {
   getUserByIdAction,
   reportUserAction,
   reportUserInitialStateAction,
+  blockUserAction,
+  blockUserInitialStateAction,
 } from 'src/app/store/actions/user.action';
 import {
   errorSelector,
@@ -34,10 +36,6 @@ import {
   reportSelector,
   userSelector,
 } from 'src/app/store/selectors/user.selector';
-import {
-  blockUserAction,
-  blockUserInitialStateAction,
-} from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector as isLoadingAuthSelector,
   blockUserErrorSelector,
