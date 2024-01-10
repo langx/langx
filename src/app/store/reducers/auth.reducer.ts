@@ -98,6 +98,10 @@ import {
   archiveRoomFailureAction,
   archiveRoomInitialStateAction,
   archiveRoomSuccessAction,
+  unArchiveRoomAction,
+  unArchiveRoomFailureAction,
+  unArchiveRoomInitialStateAction,
+  unArchiveRoomSuccessAction,
 } from 'src/app/store/actions/room.action';
 
 const initialState: AuthStateInterface = {
@@ -126,6 +130,8 @@ const initialState: AuthStateInterface = {
   blockedUsersError: null,
   archiveRoomSuccess: false,
   archiveRoomError: null,
+  unArchiveRoomSuccess: false,
+  unArchiveRoomError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -870,6 +876,40 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       archiveRoomSuccess: false,
+    })
+  ),
+
+  // UnArchive Room Actions
+  on(
+    unArchiveRoomAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+      unArchiveRoomError: null,
+    })
+  ),
+  on(
+    unArchiveRoomSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.payload,
+      unArchiveRoomSuccess: true,
+    })
+  ),
+  on(
+    unArchiveRoomFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      unArchiveRoomError: action.error,
+    })
+  ),
+  on(
+    unArchiveRoomInitialStateAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      unArchiveRoomSuccess: false,
     })
   ),
 
