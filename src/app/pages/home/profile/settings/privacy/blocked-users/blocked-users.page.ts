@@ -9,7 +9,7 @@ import {
   getBlockedUsersAction,
   unBlockUserAction,
   unBlockUserInitialStateAction,
-} from 'src/app/store/actions/auth.action';
+} from 'src/app/store/actions/user.action';
 import {
   blockedUsersDataSelector,
   currentUserSelector,
