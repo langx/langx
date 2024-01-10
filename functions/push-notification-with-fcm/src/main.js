@@ -14,6 +14,7 @@ export default async ({ req, res, log, error }) => {
   }
 
   const type = req.body.type;
+  const roomId = req.body.roomId.$id;
 
   switch (type) {
     case 'body':
@@ -78,6 +79,15 @@ export default async ({ req, res, log, error }) => {
     return res.json({ ok: false, error: err.message }, 400);
   }
 
+  if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
+    return res.json({ ok: false, error: 'You are blocked by this user' }, 400);
+  }
+
+  log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
+  if (toUserDoc?.archivedRooms.includes(roomId)) {
+    return res.json({ ok: false, error: 'You are archived by this user' }, 400);
+  }
+
   // TODO: Uncomment this when production ready
   // Check user is online or not
   // const now = new Date();
@@ -117,7 +127,7 @@ export default async ({ req, res, log, error }) => {
     const response = await sendPushNotification({
       notification: notification,
       data: {
-        roomId: req.body.roomId.$id,
+        roomId: roomId,
       },
       apns: {
         payload: {
