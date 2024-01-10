@@ -11,6 +11,9 @@ import {
   getVisitsAction,
   getVisitsFailureAction,
   getVisitsSuccessAction,
+  getVisitsWithOffsetAction,
+  getVisitsWithOffsetFailureAction,
+  getVisitsWithOffsetSuccessAction,
 } from 'src/app/store/actions/visits.action';
 
 @Injectable()
@@ -34,6 +37,29 @@ export class VisitsEffects {
             return of(getVisitsFailureAction({ error }));
           })
         );
+      })
+    )
+  );
+
+  getVisitWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getVisitsWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
+        return this.userService
+          .listVisits(currentUser.$id, request.offset)
+          .pipe(
+            map((payload: any) => {
+              return getVisitsWithOffsetSuccessAction({ payload });
+            }),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getVisitsWithOffsetFailureAction({ error }));
+            })
+          );
       })
     )
   );
