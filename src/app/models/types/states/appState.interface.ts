@@ -4,6 +4,7 @@ import { LocaleStateInterface } from './localeState.interface';
 import { MessageStateInterface } from './messageState.interface';
 import { RoomStateInterface } from './roomState.interface';
 import { UserStateInterface } from './userState.interface';
+import { VisitsStateInterface } from './visitsState.interface';
 
 export interface AppStateInterface {
   auth: AuthStateInterface;
@@ -11,4 +12,5 @@ export interface AppStateInterface {
   room: RoomStateInterface;
   message: MessageStateInterface;
   locale: LocaleStateInterface;
+  visits: VisitsStateInterface;
 }

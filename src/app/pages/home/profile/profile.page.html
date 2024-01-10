@@ -222,8 +222,9 @@
               aria-hidden="true"
               slot="start"
               [name]="p.icon"
+              color="{{p?.new ? 'primary' : 'medium'}}"
             ></ion-icon>
-            <ion-label>{{ p.title }}</ion-label>
+            <ion-label> {{ p.title }} </ion-label>
           </ion-item>
         </ion-list>
       </div>

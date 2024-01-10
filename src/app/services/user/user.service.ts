@@ -13,6 +13,7 @@ import { Report } from 'src/app/models/Report';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
+import { listVisitsResponseInterface } from 'src/app/models/types/responses/listVisitsResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -127,7 +128,7 @@ export class UserService {
   ): Observable<Report> {
     return from(
       this.api.createDocument(
-        environment.appwrite.REPORT_COLLECTION,
+        environment.appwrite.REPORTS_COLLECTION,
         ID.unique(),
         {
           reason: reason,
@@ -172,5 +173,48 @@ export class UserService {
       fileId
     );
     return of(url);
+  }
+
+  //
+  // Create Visit Doc
+  //
+
+  createVisitDoc(currentUserId: string, userId: string): Observable<any> {
+    if (currentUserId === userId) {
+      return of(null);
+    }
+
+    return from(
+      this.api.createDocument(
+        environment.appwrite.VISITS_COLLECTION,
+        ID.unique(),
+        {
+          from: currentUserId,
+          to: userId,
+        }
+      )
+    );
+  }
+
+  listVisits(
+    currentUserId: string,
+    offset?: number
+  ): Observable<listVisitsResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for users that are not the current user
+    queries.push(Query.equal('to', currentUserId));
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('$updatedAt'));
+
+    // Limit and offset
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) queries.push(Query.offset(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.VISITS_COLLECTION, queries)
+    );
   }
 }

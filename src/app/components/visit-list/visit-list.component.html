@@ -1,0 +1,14 @@
+<ion-item (click)="goProfile()" detail>
+  <ion-thumbnail slot="start">
+    <img [src]="user?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+  </ion-thumbnail>
+  <ion-label>
+    <h2>
+      <small *ngIf="lastSeen(user?.lastSeen) == 'online'">🟢 </small>
+      {{ user?.name }}
+    </h2>
+    <p>
+      <ion-text> {{ messageTime(item?.$createdAt) }} </ion-text>
+    </p>
+  </ion-label>
+</ion-item>
