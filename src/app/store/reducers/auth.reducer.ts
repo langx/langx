@@ -780,6 +780,7 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       blockUserSuccess: false,
+      blockUserError: null,
     })
   ),
 
@@ -816,6 +817,7 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       unBlockUserSuccess: false,
+      unBlockUserError: null,
     })
   ),
 
@@ -876,6 +878,7 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       archiveRoomSuccess: false,
+      archiveRoomError: null,
     })
   ),
 
@@ -910,6 +913,7 @@ const authReducer = createReducer(
     (state): AuthStateInterface => ({
       ...state,
       unArchiveRoomSuccess: false,
+      unArchiveRoomError: null,
     })
   ),
 
