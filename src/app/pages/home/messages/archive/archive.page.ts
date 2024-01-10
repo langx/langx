@@ -1,17 +1,26 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { unArchiveRoomAction } from 'src/app/store/actions/room.action';
+import {
+  unArchiveRoomAction,
+  unArchiveRoomInitialStateAction,
+} from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
+  currentUserSelector,
+  unArchiveRoomErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
+import {
+  errorSelector,
   isLoadingSelector,
   roomsSelector,
   totalSelector,
@@ -38,13 +47,40 @@ export class ArchivePage implements OnInit {
     color: 'warning',
   };
 
-  constructor(private store: Store) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initValues();
     // Get all chat Rooms
     this.listRooms();
-    //await this.listRooms();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Present Toast if error
+    this.subscription.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+    this.subscription.add(
+      this.store.pipe(select(unArchiveRoomErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.store.dispatch(unArchiveRoomInitialStateAction());
+        }
+      })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValues() {
@@ -126,5 +162,20 @@ export class ArchivePage implements OnInit {
     // Dispatch action
     const request = { roomId: room.$id };
     this.store.dispatch(unArchiveRoomAction({ request }));
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 }
