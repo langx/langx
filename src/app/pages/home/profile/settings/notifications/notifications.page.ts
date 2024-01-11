@@ -46,11 +46,12 @@ export class NotificationsPage implements OnInit {
     // Present Toast if success and set form values
     this.subscription.add(
       this.currentUser$.subscribe((currentUser) => {
-        if (currentUser?.notifications !== this.currentUser?.notifications) {
-          this.presentToast('Notification settings updated!', 'success');
-        }
-        this.currentUser = currentUser;
+        // TODO: Fix this bug then present toast, it recures when user updates profile
+        // if (currentUser?.notifications !== this.currentUser?.notifications) {
+        //   this.presentToast('Notification settings updated!', 'success');
+        // }
         if (currentUser) {
+          this.currentUser = currentUser;
           const notifications = currentUser?.notifications;
 
           this.form
