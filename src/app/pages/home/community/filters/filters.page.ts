@@ -200,7 +200,7 @@ export class FiltersPage implements OnInit, OnDestroy {
     } else if (this.filterData.gender == 'female') {
       return 'Female';
     } else if (this.filterData.gender == 'other') {
-      return 'Other';
+      return 'Prefer Not to Say';
     } else return false;
   }
 
