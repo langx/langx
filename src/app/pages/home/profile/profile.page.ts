@@ -124,8 +124,15 @@ export class ProfilePage implements OnInit {
       this.motherLanguages = user?.languages.filter(
         (lang) => lang.motherLanguage
       );
-      this.gender =
-        user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
+
+      // Set readable gender
+      if (user?.gender === 'other') {
+        this.gender = 'Prefer Not To Say';
+      } else {
+        this.gender =
+          user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
+      }
+
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
       this.badges = user?.badges.map(
