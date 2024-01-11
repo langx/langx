@@ -198,7 +198,15 @@ That's it! You should now be able to contribute to the project and help make it 
 
 ## Security
 
-### GoogleService-info.plist
+### Paths
+
+- `android/app/google-services.json`
+
+- `ios/App/App/GoogleService-info.plist`
+
+### GoogleService-info.plist and google-services.json
+
+`google-services.json` is a configuration file that contains information about a Firebase project, such as the project's API key, database URL, and storage bucket. It is used by Android apps to connect to Firebase services, such as Firebase Authentication, Firebase Realtime Database, and Firebase Cloud Messaging.
 
 The content of the Firebase config or object can be considered as public, including the app's platform-specific ID (Apple bundle ID or Android package name) and the Firebase project-specific values, like the API Key, project ID, Realtime Database URL, and Cloud Storage bucket name. Given this, use Firebase Security Rules to protect your data and files in Realtime Database, Cloud Firestore, and Cloud Storage.
 
@@ -211,6 +219,8 @@ It is also important to keep your Firebase project's API key and other sensitive
 For more information on how to secure your Firebase project, please refer to the following resources:
 
 - [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
+
+
 
 ## License
 
