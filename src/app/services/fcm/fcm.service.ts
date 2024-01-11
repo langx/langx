@@ -53,25 +53,11 @@ export class FcmService {
     PushNotifications.addListener('registration', (token: Token) => {
       // TODO: It may handle in api.service.ts
       console.log('My token: ' + JSON.stringify(token));
-      this.api.account.getPrefs().then((prefs) => {
-        console.log(prefs);
-        if (prefs['ios'] !== '') {
-          if (prefs['ios'] !== token.value) {
-            prefs['ios'] = token.value;
-            this.api.account
-              .updatePrefs(prefs)
-              .then((res) => {
-                console.log('ios token updated', res);
-              })
-              .catch((err) => {
-                console.log('ios token update error', err);
-              });
-
-            // Add "push" to currentUser.notifications
-            this.updateCurrentUser();
-          }
-        }
-      });
+      if (Capacitor.getPlatform() === 'ios') {
+        this.handleTokenForIOS(token);
+      } else if (Capacitor.getPlatform() === 'android') {
+        this.handleTokenForAndroid(token);
+      }
     });
   }
 
@@ -120,6 +106,44 @@ export class FcmService {
     console.log('delivered notifications', notificationList);
   }
 
+  handleTokenForIOS(token: Token) {
+    this.api.account.getPrefs().then((prefs) => {
+      if (prefs['ios'] !== token.value) {
+        prefs['ios'] = token.value;
+        this.api.account
+          .updatePrefs(prefs)
+          .then((res) => {
+            console.log('ios token updated', res);
+          })
+          .catch((err) => {
+            console.log('ios token update error', err);
+          });
+
+        // Add "push" to currentUser.notifications
+        this.updateCurrentUser();
+      }
+    });
+  }
+
+  handleTokenForAndroid(token: Token) {
+    this.api.account.getPrefs().then((prefs) => {
+      if (prefs['android'] !== token.value) {
+        prefs['android'] = token.value;
+        this.api.account
+          .updatePrefs(prefs)
+          .then((res) => {
+            console.log('android token updated', res);
+          })
+          .catch((err) => {
+            console.log('android token update error', err);
+          });
+
+        // Add "push" to currentUser.notifications
+        this.updateCurrentUser();
+      }
+    });
+  }
+
   // Update currentUser
   updateCurrentUser() {
     this.store
@@ -139,7 +163,6 @@ export class FcmService {
             data: { notifications },
           };
 
-          console.log('!!!! request :', request);
           this.store.dispatch(updateCurrentUserAction({ request }));
         }
       })
