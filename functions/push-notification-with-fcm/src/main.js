@@ -46,13 +46,7 @@ export default async ({ req, res, log, error }) => {
 
   const prefs = await users.getPrefs(req.body.to);
 
-  try {
-    log(prefs);
-    throwIfMissing(prefs, ['ios']);
-  } catch (err) {
-    return res.json({ ok: false, error: err.message }, 400);
-  }
-
+  // Check if lastSeen and name exists
   const senderUserDoc = await db.getDocument(
     process.env.APP_DATABASE,
     process.env.USERS_COLLECTION,
@@ -79,14 +73,48 @@ export default async ({ req, res, log, error }) => {
     return res.json({ ok: false, error: err.message }, 400);
   }
 
+  // Check if user is blocked or not
+  // log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
   if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
     return res.json({ ok: false, error: 'You are blocked by this user' }, 400);
   }
 
-  log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
+  // log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
   if (toUserDoc?.archivedRooms.includes(roomId)) {
     return res.json({ ok: false, error: 'You are archived by this user' }, 400);
   }
+
+  // Check token exists or not
+
+  // Initialize flags
+  let iosExists = false;
+  let androidExists = false;
+
+  // Check if iOS token exists
+  try {
+    throwIfMissing(prefs, ['ios']);
+    iosExists = true;
+  } catch (err) {
+    console.log('iOS token missing');
+  }
+
+  // Check if Android token exists
+  try {
+    throwIfMissing(prefs, ['android']);
+    androidExists = true;
+  } catch (err) {
+    console.log('Android token missing');
+  }
+
+  // If neither iOS nor Android token exists, return an error
+  if (!iosExists && !androidExists) {
+    return res.json(
+      { ok: false, error: 'Both iOS and Android tokens are missing' },
+      400
+    );
+  }
+
+  log(prefs);
 
   // TODO: Uncomment this when production ready
   // Check user is online or not
@@ -124,24 +152,38 @@ export default async ({ req, res, log, error }) => {
   }
 
   try {
-    const response = await sendPushNotification({
-      notification: notification,
-      data: {
-        roomId: roomId,
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: toUserDoc.totalUnseen + 1,
-            sound: 'bingbong.aiff',
+    if (iosExists) {
+      const response = await sendPushNotification({
+        notification: notification,
+        data: {
+          roomId: roomId,
+        },
+        apns: {
+          payload: {
+            aps: {
+              badge: toUserDoc.totalUnseen + 1,
+              sound: 'bingbong.aiff',
+            },
           },
         },
-      },
-      token: prefs['ios'],
-    });
-    log(`Successfully sent message: ${response}`);
+        token: prefs['ios'],
+      });
+      log(`Successfully sent iOS message: ${response}`);
+    }
 
-    return res.json({ ok: true, messageId: response });
+    if (androidExists) {
+      const response = await sendPushNotification({
+        notification: notification,
+        data: {
+          roomId: roomId,
+        },
+        // Add Android-specific options here
+        token: prefs['android'],
+      });
+      log(`Successfully sent Android message: ${response}`);
+    }
+
+    return res.json({ ok: true });
   } catch (e) {
     error(e);
     return res.json({ ok: false, error: 'Failed to send the message' }, 500);
