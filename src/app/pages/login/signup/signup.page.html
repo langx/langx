@@ -58,12 +58,9 @@
                 <ion-checkbox formControlName="terms"></ion-checkbox>
                 <small>
                   I accept the
-                  <a
-                    href="https://languagexchange.net/terms-conditions"
-                    target="_blank"
-                  >
+                  <ion-label (click)="openTermsAndConditionsLink()" color="primary">
                     terms and conditions.
-                  </a>
+                  </ion-label>
                 </small>
               </div>
             </ion-col>
