@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
+import { Browser } from '@capacitor/browser';
 import { Observable } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { registerAction } from 'src/app/store/actions/auth.action';
@@ -102,6 +104,10 @@ export class SignupPage implements OnInit {
   //
   // Utils
   //
+
+  async openTermsAndConditionsLink() {
+    await Browser.open({ url: environment.web.TERMS_AND_CONDITIONS_URL });
+  }
 
   showPassword() {
     this.password_type = this.password_type === 'text' ? 'password' : 'text';
