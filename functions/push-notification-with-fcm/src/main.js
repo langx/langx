@@ -73,6 +73,15 @@ export default async ({ req, res, log, error }) => {
     return res.json({ ok: false, error: err.message }, 400);
   }
 
+  // Check user is allowed notifications in user.notifications.includes('push')
+  if (!toUserDoc || !toUserDoc.notifications || !toUserDoc.notifications.includes('push')) {
+    log('user is not allowed notification in settings')
+    return res.json({
+      ok: false,
+      error: 'User is disabled push notifications in settings',
+    });
+  }
+
   // Check if user is blocked or not
   // log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
   if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
