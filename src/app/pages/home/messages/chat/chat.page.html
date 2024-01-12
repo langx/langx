@@ -78,7 +78,7 @@
           Recording ..
         </ion-text>
         <div *ngIf="!isRecording && audioId">
-          <ion-buttons slot="center">
+          <ion-buttons>
             <ion-button (click)="togglePlayStop()" fill="clear">
               <ion-icon
                 slot="icon-only"
@@ -92,7 +92,7 @@
             <ion-text class="ion-padding-horizontal">🔊 Audio</ion-text>
           </ion-buttons>
         </div>
-        <ion-buttons slot="start">
+        <ion-buttons slot="start" class="no-margin">
           <ion-button (click)="selectImage()">
             <ion-icon slot="icon-only" name="camera-outline" color="medium">
             </ion-icon>
