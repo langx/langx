@@ -617,10 +617,12 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async deleteRecording() {
     await this.stop();
-    await Filesystem.deleteFile({
-      path: this.audioId,
-      directory: Directory.Data,
-    });
+    if (this.audioId) {
+      await Filesystem.deleteFile({
+        path: this.audioId,
+        directory: Directory.Data,
+      });
+    }
     this.loadFiles();
     this.audioIdTemp = this.audioId;
     this.audioId = null;
