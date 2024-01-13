@@ -383,22 +383,24 @@ export class ChatPage implements OnInit, OnDestroy {
 
     this.messages$
       .subscribe((messages) => {
-        offset = messages.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < total) {
-              this.store.dispatch(
-                getMessagesWithOffsetAction({
-                  roomId: this.roomId,
-                  offset: offset,
-                })
-              );
-            } else {
-              event.target.disabled = true;
-              console.log('All messages loaded');
-            }
-          })
-          .unsubscribe();
+        if (messages) {
+          offset = messages.length;
+          this.total$
+            .subscribe((total) => {
+              if (offset < total) {
+                this.store.dispatch(
+                  getMessagesWithOffsetAction({
+                    roomId: this.roomId,
+                    offset: offset,
+                  })
+                );
+              } else {
+                event.target.disabled = true;
+                console.log('All messages loaded');
+              }
+            })
+            .unsubscribe();
+        }
       })
       .unsubscribe();
 
