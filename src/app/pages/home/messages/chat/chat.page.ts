@@ -124,22 +124,6 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
-
-    Keyboard.addListener('keyboardWillShow', (info) => {
-      console.log('keyboard will show with height:', info.keyboardHeight);
-    });
-
-    Keyboard.addListener('keyboardDidShow', (info) => {
-      console.log('keyboard did show with height:', info.keyboardHeight);
-    });
-
-    Keyboard.addListener('keyboardWillHide', () => {
-      console.log('keyboard will hide');
-    });
-
-    Keyboard.addListener('keyboardDidHide', () => {
-      console.log('keyboard did hide');
-    });
   }
 
   footerClick() {
@@ -192,6 +176,17 @@ export class ChatPage implements OnInit, OnDestroy {
         }
       })
       .unsubscribe();
+
+    // Scroll to bottom when keyboard is shown
+    Keyboard.addListener('keyboardDidShow', (info) => {
+      // console.log('keyboard did show with height:', info.keyboardHeight);
+      this.content.scrollToBottom(300);
+    });
+
+    Keyboard.addListener('keyboardDidHide', () => {
+      // console.log('keyboard did hide');
+      this.content.scrollToBottom(300);
+    });
   }
 
   initForm() {
@@ -232,7 +227,7 @@ export class ChatPage implements OnInit, OnDestroy {
               if (isAtBottom || this.isFirstLoad) {
                 // Wait for the view to update then scroll to bottom
                 setTimeout(() => {
-                  this.content.scrollToBottom(0);
+                  this.content.scrollToBottom(300);
                   // After the first load, set the flag to false
                   this.isFirstLoad = false;
                 }, 0);
