@@ -309,6 +309,9 @@ export class ChatPage implements OnInit, OnDestroy {
         }
       })
       .unsubscribe();
+
+      // Scroll to bottom
+      this.content.scrollToBottom(300);
   }
 
   //
