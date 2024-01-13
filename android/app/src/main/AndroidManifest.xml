@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="app.languagexchange.net" />
-        </intent-filter>
+            </intent-filter>
         </activity>
 
         <provider
@@ -44,5 +44,4 @@
             <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
         </provider>
     </application>
-
 </manifest>
