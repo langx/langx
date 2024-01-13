@@ -282,10 +282,12 @@ export class ChatPage implements OnInit, OnDestroy {
         let request: createMessageRequestInterface = null;
 
         // Fill the request with the proper data
-        if (this.form.valid) {
-          request = this.createMessageWithText(user);
-        } else {
+        if (this.form.get('body').hasError('maxlength')) {
+          this.presentToast('Message exceeds 500 characters.', 'danger');
+        } else if (!this.form.valid) {
           this.presentToast('Please type your message.', 'danger');
+        } else {
+          request = this.createMessageWithText(user);
         }
 
         // Dispatch action to create message
