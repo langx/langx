@@ -304,6 +304,14 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
   }
 
+  onEnter(event: any) {
+    if (!event.shiftKey) {
+      event.preventDefault();
+      // Call your form submit method here
+      this.submitForm();
+    }
+  }
+
   async handleAudioClick() {
     this.form.reset();
     // Upload audio if there is an audioId

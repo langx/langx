@@ -69,6 +69,7 @@
           (ionFocus)="typingFocus()"
           (ionBlur)="typingBlur()"
           autoGrow="true"
+          (keydown.enter)="onEnter($event)"
         >
         </ion-textarea>
         <ion-text
