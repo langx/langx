@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
@@ -20,6 +21,7 @@ import {
   GestureController,
   GestureDetail,
   IonContent,
+  IonTextarea,
   ModalController,
   ToastController,
 } from '@ionic/angular';
@@ -71,6 +73,7 @@ import {
 export class ChatPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('recordButton', { read: ElementRef }) recordButton: ElementRef;
+  @ViewChild('myTextArea', { static: false }) myTextArea: IonTextarea;
 
   form: FormGroup;
 
@@ -121,6 +124,26 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
+
+    Keyboard.addListener('keyboardWillShow', (info) => {
+      console.log('keyboard will show with height:', info.keyboardHeight);
+    });
+
+    Keyboard.addListener('keyboardDidShow', (info) => {
+      console.log('keyboard did show with height:', info.keyboardHeight);
+    });
+
+    Keyboard.addListener('keyboardWillHide', () => {
+      console.log('keyboard will hide');
+    });
+
+    Keyboard.addListener('keyboardDidHide', () => {
+      console.log('keyboard did hide');
+    });
+  }
+
+  footerClick() {
+    this.myTextArea.setFocus();
   }
 
   ngAfterViewInit() {
