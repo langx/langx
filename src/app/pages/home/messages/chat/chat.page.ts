@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, from } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
@@ -20,6 +21,7 @@ import {
   GestureController,
   GestureDetail,
   IonContent,
+  IonTextarea,
   ModalController,
   ToastController,
 } from '@ionic/angular';
@@ -71,6 +73,7 @@ import {
 export class ChatPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('recordButton', { read: ElementRef }) recordButton: ElementRef;
+  @ViewChild('myTextArea', { static: false }) myTextArea: IonTextarea;
 
   form: FormGroup;
 
@@ -123,6 +126,10 @@ export class ChatPage implements OnInit, OnDestroy {
     this.initForm();
   }
 
+  footerClick() {
+    this.myTextArea.setFocus();
+  }
+
   ngAfterViewInit() {
     this.initValuesAfterViewInit();
     this.enableLongPress();
@@ -169,6 +176,17 @@ export class ChatPage implements OnInit, OnDestroy {
         }
       })
       .unsubscribe();
+
+    // Scroll to bottom when keyboard is shown
+    Keyboard.addListener('keyboardDidShow', (info) => {
+      // console.log('keyboard did show with height:', info.keyboardHeight);
+      this.content.scrollToBottom(300);
+    });
+
+    Keyboard.addListener('keyboardDidHide', () => {
+      // console.log('keyboard did hide');
+      this.content.scrollToBottom(300);
+    });
   }
 
   initForm() {
@@ -209,7 +227,7 @@ export class ChatPage implements OnInit, OnDestroy {
               if (isAtBottom || this.isFirstLoad) {
                 // Wait for the view to update then scroll to bottom
                 setTimeout(() => {
-                  this.content.scrollToBottom(0);
+                  this.content.scrollToBottom(300);
                   // After the first load, set the flag to false
                   this.isFirstLoad = false;
                 }, 0);
@@ -225,7 +243,7 @@ export class ChatPage implements OnInit, OnDestroy {
       this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
         if (url) {
           this.imageUrl = url;
-          this.submitForm();
+          this.submitImage();
           this.store.dispatch(clearImageUrlStateAction());
         }
       })
@@ -236,7 +254,7 @@ export class ChatPage implements OnInit, OnDestroy {
       this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
         if (url) {
           this.audioUrl = url;
-          this.submitForm();
+          this.submitAudio();
           this.store.dispatch(clearAudioUrlStateAction());
         }
       })
@@ -258,26 +276,18 @@ export class ChatPage implements OnInit, OnDestroy {
   // Form Submit
   //
 
-  async submitForm() {
-    // Upload audio if there is an audioId
-    if (this.audioId) {
-      await this.handleAudioUpload();
-      return;
-    }
-
+  submitForm() {
     this.user$
       .subscribe((user) => {
         let request: createMessageRequestInterface = null;
 
         // Fill the request with the proper data
-        if (this.form.valid) {
-          request = this.createMessageWithText(user);
-        } else if (this.audioUrl) {
-          request = this.createMessageWithAudio(user);
-        } else if (this.imageUrl) {
-          request = this.createMessageWithImage(user);
-        } else {
+        if (this.form.get('body').hasError('maxlength')) {
+          this.presentToast('Message exceeds 500 characters.', 'danger');
+        } else if (!this.form.valid) {
           this.presentToast('Please type your message.', 'danger');
+        } else {
+          request = this.createMessageWithText(user);
         }
 
         // Dispatch action to create message
@@ -288,6 +298,78 @@ export class ChatPage implements OnInit, OnDestroy {
           this.form.reset();
           this.audioUrl = null;
           this.imageUrl = null;
+
+          // Scroll to bottom
+          this.content.scrollToBottom(300);
+        }
+      })
+      .unsubscribe();
+  }
+
+  onEnter(event: any) {
+    if (!event.shiftKey) {
+      event.preventDefault();
+      // Call your form submit method here
+      this.submitForm();
+    }
+  }
+
+  async handleAudioClick() {
+    this.form.reset();
+    // Upload audio if there is an audioId
+    if (this.audioId) {
+      await this.handleAudioUpload();
+      return;
+    }
+  }
+
+  submitImage() {
+    this.user$
+      .subscribe((user) => {
+        let request: createMessageRequestInterface = null;
+
+        // Fill the request with the proper data
+        if (this.imageUrl) {
+          request = this.createMessageWithImage(user);
+        } else {
+          this.presentToast('Please try again.', 'danger');
+        }
+
+        // Dispatch action to create message
+        if (request) {
+          this.store.dispatch(createMessageAction({ request }));
+
+          // Reset the variable
+          this.imageUrl = null;
+
+          // Scroll to bottom
+          this.content.scrollToBottom(300);
+        }
+      })
+      .unsubscribe();
+  }
+
+  submitAudio() {
+    this.user$
+      .subscribe((user) => {
+        let request: createMessageRequestInterface = null;
+
+        // Fill the request with the proper data
+        if (this.audioUrl) {
+          request = this.createMessageWithAudio(user);
+        } else {
+          this.presentToast('Please try again.', 'danger');
+        }
+
+        // Dispatch action to create message
+        if (request) {
+          this.store.dispatch(createMessageAction({ request }));
+
+          // Reset the variable
+          this.audioUrl = null;
+
+          // Scroll to bottom
+          this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -360,22 +442,24 @@ export class ChatPage implements OnInit, OnDestroy {
 
     this.messages$
       .subscribe((messages) => {
-        offset = messages.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < total) {
-              this.store.dispatch(
-                getMessagesWithOffsetAction({
-                  roomId: this.roomId,
-                  offset: offset,
-                })
-              );
-            } else {
-              event.target.disabled = true;
-              console.log('All messages loaded');
-            }
-          })
-          .unsubscribe();
+        if (messages) {
+          offset = messages.length;
+          this.total$
+            .subscribe((total) => {
+              if (offset < total) {
+                this.store.dispatch(
+                  getMessagesWithOffsetAction({
+                    roomId: this.roomId,
+                    offset: offset,
+                  })
+                );
+              } else {
+                event.target.disabled = true;
+                console.log('All messages loaded');
+              }
+            })
+            .unsubscribe();
+        }
       })
       .unsubscribe();
 
