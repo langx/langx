@@ -1,6 +1,6 @@
 {
   "name": "languagexchange",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "languageXchange",
   "homepage": "https://languageXchange.net/",
   "scripts": {
@@ -62,7 +62,7 @@
     "@angular/compiler": "^16.0.0",
     "@angular/compiler-cli": "^16.0.0",
     "@angular/language-service": "^16.0.0",
-    "@capacitor/assets": "^3.0.1",
+    "@capacitor/assets": "^3.0.4",
     "@capacitor/cli": "^5.5.1",
     "@ionic/angular-toolkit": "^9.0.0",
     "@ngrx/store-devtools": "^16.3.0",
