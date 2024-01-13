@@ -55,11 +55,12 @@
   </ion-list>
 </ion-content>
 
-<ion-footer>
+<ion-footer (click)="footerClick()">
   <ion-toolbar>
     <form [formGroup]="form" (ngSubmit)="submitForm()">
       <ion-item>
         <ion-textarea
+          #myTextArea
           *ngIf="!isRecording && !audioId"
           placeholder="Type your message..."
           type="text"
@@ -68,6 +69,7 @@
           (ionFocus)="typingFocus()"
           (ionBlur)="typingBlur()"
           autoGrow="true"
+          (keydown.enter)="onEnter($event)"
         >
         </ion-textarea>
         <ion-text
@@ -106,13 +108,18 @@
               [color]="iconColorOfMic"
             ></ion-icon>
           </ion-button>
-          <ion-button type="submit">
-            <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
-          </ion-button>
+          <div *ngIf="!audioId">
+            <ion-button type="submit">
+              <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
+            </ion-button>
+          </div>
+          <div *ngIf="audioId">
+            <ion-button (click)="handleAudioClick()">
+              <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
+            </ion-button>
+          </div>
         </ion-buttons>
       </ion-item>
     </form>
   </ion-toolbar>
-  <!-- <ion-button (click)="deleteAllRecordings()" size="small">Del</ion-button>
-  <ion-button (click)="listAllRecordings()" size="small">List</ion-button> -->
 </ion-footer>
