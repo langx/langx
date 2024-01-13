@@ -243,7 +243,7 @@ export class ChatPage implements OnInit, OnDestroy {
       this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
         if (url) {
           this.imageUrl = url;
-          this.submitForm();
+          this.submitImage();
           this.store.dispatch(clearImageUrlStateAction());
         }
       })
@@ -254,7 +254,7 @@ export class ChatPage implements OnInit, OnDestroy {
       this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
         if (url) {
           this.audioUrl = url;
-          this.submitForm();
+          this.submitAudio();
           this.store.dispatch(clearAudioUrlStateAction());
         }
       })
@@ -276,13 +276,7 @@ export class ChatPage implements OnInit, OnDestroy {
   // Form Submit
   //
 
-  async submitForm() {
-    // Upload audio if there is an audioId
-    if (this.audioId) {
-      await this.handleAudioUpload();
-      return;
-    }
-
+  submitForm() {
     this.user$
       .subscribe((user) => {
         let request: createMessageRequestInterface = null;
@@ -290,10 +284,6 @@ export class ChatPage implements OnInit, OnDestroy {
         // Fill the request with the proper data
         if (this.form.valid) {
           request = this.createMessageWithText(user);
-        } else if (this.audioUrl) {
-          request = this.createMessageWithAudio(user);
-        } else if (this.imageUrl) {
-          request = this.createMessageWithImage(user);
         } else {
           this.presentToast('Please type your message.', 'danger');
         }
@@ -306,12 +296,73 @@ export class ChatPage implements OnInit, OnDestroy {
           this.form.reset();
           this.audioUrl = null;
           this.imageUrl = null;
+
+          // Scroll to bottom
+          this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
+  }
 
-      // Scroll to bottom
-      this.content.scrollToBottom(300);
+  async handleAudioClick() {
+    this.form.reset();
+    // Upload audio if there is an audioId
+    if (this.audioId) {
+      await this.handleAudioUpload();
+      return;
+    }
+  }
+
+  submitImage() {
+    this.user$
+      .subscribe((user) => {
+        let request: createMessageRequestInterface = null;
+
+        // Fill the request with the proper data
+        if (this.imageUrl) {
+          request = this.createMessageWithImage(user);
+        } else {
+          this.presentToast('Please try again.', 'danger');
+        }
+
+        // Dispatch action to create message
+        if (request) {
+          this.store.dispatch(createMessageAction({ request }));
+
+          // Reset the variable
+          this.imageUrl = null;
+
+          // Scroll to bottom
+          this.content.scrollToBottom(300);
+        }
+      })
+      .unsubscribe();
+  }
+
+  submitAudio() {
+    this.user$
+      .subscribe((user) => {
+        let request: createMessageRequestInterface = null;
+
+        // Fill the request with the proper data
+        if (this.audioUrl) {
+          request = this.createMessageWithAudio(user);
+        } else {
+          this.presentToast('Please try again.', 'danger');
+        }
+
+        // Dispatch action to create message
+        if (request) {
+          this.store.dispatch(createMessageAction({ request }));
+
+          // Reset the variable
+          this.audioUrl = null;
+
+          // Scroll to bottom
+          this.content.scrollToBottom(300);
+        }
+      })
+      .unsubscribe();
   }
 
   //

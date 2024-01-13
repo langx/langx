@@ -107,9 +107,16 @@
               [color]="iconColorOfMic"
             ></ion-icon>
           </ion-button>
-          <ion-button type="submit">
-            <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
-          </ion-button>
+          <div *ngIf="!audioId">
+            <ion-button type="submit">
+              <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
+            </ion-button>
+          </div>
+          <div *ngIf="audioId">
+            <ion-button (click)="handleAudioClick()">
+              <ion-icon slot="icon-only" name="send" color="primary"></ion-icon>
+            </ion-button>
+          </div>
         </ion-buttons>
       </ion-item>
     </form>
