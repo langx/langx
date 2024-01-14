@@ -62,7 +62,7 @@ export class LoginPage implements OnInit {
     // Redirect if logged in
     this.subscription.add(
       this.isLoggedIn$.subscribe((isLoggedIn) => {
-        console.log('login.page isLoggedIn:', isLoggedIn);
+        // console.log('login.page isLoggedIn:', isLoggedIn);
         if (isLoggedIn) {
           this.router.navigateByUrl('/home');
         }

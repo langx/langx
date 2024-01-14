@@ -62,7 +62,7 @@ export class NotificationService {
       response.events.forEach((event) => {
         switch (event) {
           case `${messagesCollection}.*.create`:
-            console.log('[NOTIFICATION] message created', response.payload);
+            // console.log('[NOTIFICATION] message created', response.payload);
             const createdMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
               findRoomAndAddMessageAction({ payload: createdMessage })
@@ -74,7 +74,7 @@ export class NotificationService {
             this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
-            console.log('[NOTIFICATION] message updated', response.payload);
+            // console.log('[NOTIFICATION] message updated', response.payload);
             const updatedMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
               findRoomAndUpdateMessageSeenAction({
@@ -90,10 +90,10 @@ export class NotificationService {
             this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.delete`:
-            console.log('[NOTIFICATION] message deleted', response.payload);
+            // console.log('[NOTIFICATION] message deleted', response.payload);
             break;
           case `${roomsCollection}.*.create`:
-            console.log('[NOTIFICATION] room created', response.payload);
+            // console.log('[NOTIFICATION] room created', response.payload);
             const createdRoom = response.payload as Room;
 
             this.store
@@ -109,7 +109,7 @@ export class NotificationService {
               .unsubscribe();
             break;
           case `${roomsCollection}.*.update`:
-            console.log('[NOTIFICATION] room updated', response.payload);
+            // console.log('[NOTIFICATION] room updated', response.payload);
             const updatedRoom = response.payload as Room;
             this.store.dispatch(
               findAndUpdateRoomUpdatedAtAction({ payload: updatedRoom })
@@ -119,7 +119,7 @@ export class NotificationService {
             );
             break;
           case `${roomsCollection}.*.delete`:
-            console.log('[NOTIFICATION] room deleted', response.payload);
+            // console.log('[NOTIFICATION] room deleted', response.payload);
             break;
           default:
             break;
