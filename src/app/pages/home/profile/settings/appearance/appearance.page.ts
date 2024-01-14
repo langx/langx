@@ -22,7 +22,7 @@ export class AppearancePage implements OnInit {
       await this.setValue('auto');
       this.theme = 'auto';
     }
-    console.log('theme in storage: ', this.theme);
+    // console.log('theme in storage: ', this.theme);
   }
 
   // This is for the radio buttons event
