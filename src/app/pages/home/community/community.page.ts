@@ -129,7 +129,7 @@ export class CommunityPage implements OnInit {
 
   ngOnDestroy() {
     this.filter$.unsubscribe();
-    console.log('filters unsubscribed');
+    // console.log('filters unsubscribed');
   }
 
   initValues(): void {
@@ -165,7 +165,7 @@ export class CommunityPage implements OnInit {
       .getEvent()
       .subscribe((filterData: FilterDataInterface) => {
         this.filterData = filterData;
-        console.log('Subscribed filter: ', filterData);
+        // console.log('Subscribed filter: ', filterData);
 
         // List Users
         this.listUsers();
@@ -202,7 +202,7 @@ export class CommunityPage implements OnInit {
       maxAge: maxAge,
     };
 
-    console.log('checkLocalStorage', filterData);
+    // console.log('checkLocalStorage', filterData);
     this.filterService.setEvent(filterData);
   }
 
