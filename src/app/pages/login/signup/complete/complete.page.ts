@@ -142,9 +142,11 @@ export class CompletePage implements OnInit, OnDestroy {
           this.presentToast('Please login or register again', 'danger');
           return;
         }
+
+        const [day, month, year] = form.value.birthdate.split('/');
         const request: CompleteRegistrationRequestInterface = {
           name: nameParts(account?.name),
-          birthdate: new Date(form.value.birthdate),
+          birthdate: new Date(year, month - 1, day),
           country: form.value.country,
           countryCode: form.value.countryCode,
           gender: form.value.gender,
