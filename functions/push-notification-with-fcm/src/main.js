@@ -74,8 +74,12 @@ export default async ({ req, res, log, error }) => {
   }
 
   // Check user is allowed notifications in user.notifications.includes('push')
-  if (!toUserDoc || !toUserDoc.notifications || !toUserDoc.notifications.includes('push')) {
-    log('user is not allowed notification in settings')
+  if (
+    !toUserDoc ||
+    !toUserDoc.notifications ||
+    !toUserDoc.notifications.includes('push')
+  ) {
+    log('user is not allowed notification in settings');
     return res.json({
       ok: false,
       error: 'User is disabled push notifications in settings',
@@ -125,14 +129,13 @@ export default async ({ req, res, log, error }) => {
 
   log(prefs);
 
-  // TODO: Uncomment this when production ready
-  // Check user is online or not
-  // const now = new Date();
-  // const lastSeen = new Date(toUserDoc.lastSeen);
-  // if (now - lastSeen < 1000 * 60 * 1) {
-  //   log(`User is still online: ${toUserDoc.name}`);
-  //   return res.json({ ok: false, error: 'User is online' }, 400);
-  // }
+  // Uncomment this when production ready, check user is online or not
+  const now = new Date();
+  const lastSeen = new Date(toUserDoc.lastSeen);
+  if (now - lastSeen < 1000 * 60 * 1) {
+    log(`User is still online: ${toUserDoc.name}`);
+    return res.json({ ok: false, error: 'User is online' }, 400);
+  }
 
   log(`Sending message to device: ${req.body.to}`);
 
