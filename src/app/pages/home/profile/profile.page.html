@@ -40,7 +40,7 @@
         referrerpolicy="no-referrer"
       />
       <ion-card-title class=".ion-text-center">
-        {{(account$ | async)?.name}}
+        {{(currentUser$ | async)?.name}}
       </ion-card-title>
       <ion-card-subtitle>
         {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} |
