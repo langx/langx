@@ -81,7 +81,9 @@ export class EditPage implements OnInit {
         );
 
         // Set default value for aboutMe
-        this.form.get('aboutMe').setValue(user?.aboutMe);
+        if (!this.form.get('aboutMe').value) {
+          this.form.get('aboutMe').setValue(user?.aboutMe);
+        }
       })
     );
 
