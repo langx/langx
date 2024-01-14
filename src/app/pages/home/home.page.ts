@@ -66,7 +66,7 @@ export class HomePage implements OnInit {
 
   presencePing() {
     // Update user in user collection lastSeen attribute
-    console.log('Presence Service started');
+    // console.log('Presence Service started');
     this.dispatchUpdatePresence();
 
     // Create an Observable that emits a value every 60 seconds
