@@ -177,16 +177,18 @@ export class ChatPage implements OnInit, OnDestroy {
       })
       .unsubscribe();
 
-    // Scroll to bottom when keyboard is shown
-    Keyboard.addListener('keyboardDidShow', (info) => {
-      // console.log('keyboard did show with height:', info.keyboardHeight);
-      this.content.scrollToBottom(300);
-    });
+    if (Capacitor.getPlatform() != 'web') {
+      // Scroll to bottom when keyboard is shown
+      Keyboard.addListener('keyboardDidShow', (info) => {
+        // console.log('keyboard did show with height:', info.keyboardHeight);
+        this.content.scrollToBottom(300);
+      });
 
-    Keyboard.addListener('keyboardDidHide', () => {
-      // console.log('keyboard did hide');
-      this.content.scrollToBottom(300);
-    });
+      Keyboard.addListener('keyboardDidHide', () => {
+        // console.log('keyboard did hide');
+        this.content.scrollToBottom(300);
+      });
+    }
   }
 
   initForm() {
