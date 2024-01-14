@@ -499,7 +499,7 @@ export class AuthEffect {
       switchMap(() => {
         return this.authService.logout().pipe(
           map(() => {
-            return logoutSuccessAction({ payload: null });
+            return logoutSuccessAction();
           }),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
