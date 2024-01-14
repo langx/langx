@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription, interval, tap } from 'rxjs';
 import { Preferences } from '@capacitor/preferences';
 import { ModalController } from '@ionic/angular';
 
@@ -19,7 +19,7 @@ import {
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  refreshIntervalId: any;
+  presencePing$: Subscription;
 
   totalUnseen$: Observable<number>;
   currentUser$: Observable<Account>;
@@ -43,8 +43,6 @@ export class HomePage implements OnInit {
 
   ngOnDestroy() {
     this.unsubscribeListener();
-    // Kill presence ping
-    clearInterval(this.refreshIntervalId);
   }
 
   initValues() {
@@ -53,8 +51,13 @@ export class HomePage implements OnInit {
   }
 
   unsubscribeListener() {
+    // Stop listening to notifications
     this.notification.unsubscribe();
     console.log('Notification Service stopped');
+
+    // Stop presence ping
+    this.presencePing$.unsubscribe();
+    console.log('Presence Service stopped');
   }
 
   //
@@ -65,9 +68,11 @@ export class HomePage implements OnInit {
     // Update user in user collection lastSeen attribute
     console.log('Presence Service started');
     this.dispatchUpdatePresence();
-    this.refreshIntervalId = setInterval(() => {
-      this.dispatchUpdatePresence();
-    }, 60000);
+
+    // Create an Observable that emits a value every 60 seconds
+    this.presencePing$ = interval(6000)
+      .pipe(tap(() => this.dispatchUpdatePresence()))
+      .subscribe();
   }
 
   dispatchUpdatePresence() {
