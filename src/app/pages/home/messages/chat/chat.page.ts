@@ -537,10 +537,10 @@ export class ChatPage implements OnInit, OnDestroy {
   private async handleModalDismiss(data) {
     if (data?.data) {
       let blob: Blob = this.dataURLtoBlob(data.data);
-      console.log(`Original size: ${blob.size}`);
+      // console.log(`Original size: ${blob.size}`);
 
       blob = await this.checkFileSize(blob);
-      console.log(`Final size: ${blob.size}`);
+      // console.log(`Final size: ${blob.size}`);
 
       let file = new File([blob], this.roomId, {
         type: blob.type,
@@ -642,7 +642,7 @@ export class ChatPage implements OnInit, OnDestroy {
     const blob: Blob = await response.blob();
     // console.log('Blob', blob);
 
-    console.log('fileName', fileName);
+    // console.log('fileName', fileName);
     const file = new File([blob], fileName);
 
     // Upload the file
@@ -671,7 +671,7 @@ export class ChatPage implements OnInit, OnDestroy {
       if (result.value && result.value.recordDataBase64) {
         const recordData = result.value.recordDataBase64;
 
-        console.log('Record data', recordData);
+        // console.log('Record data', recordData);
         // Save the file to the device
         this.audioId = `${uuidv4().replace(/-/g, '')}`;
         await this.saveRecording(recordData);
@@ -756,7 +756,7 @@ export class ChatPage implements OnInit, OnDestroy {
     // Play the audio file
     this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
     this.audioRef.oncanplaythrough = () => {
-      console.log('Audio file duration', this.audioRef.duration);
+      // console.log('Audio file duration', this.audioRef.duration);
     };
     this.audioRef.onended = () => {
       this.audioRef = null;
@@ -821,7 +821,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   onTypingStatusChange() {
-    console.log('onTypingStatusChange', this.isTyping);
+    // console.log('onTypingStatusChange', this.isTyping);
   }
 
   redirectUserProfile() {
