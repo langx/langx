@@ -53,11 +53,11 @@ export class HomePage implements OnInit {
   unsubscribeListener() {
     // Stop listening to notifications
     this.notification.unsubscribe();
-    console.log('Notification Service stopped');
+    // console.log('Notification Service stopped');
 
     // Stop presence ping
     this.presencePing$.unsubscribe();
-    console.log('Presence Service stopped');
+    // console.log('Presence Service stopped');
   }
 
   //

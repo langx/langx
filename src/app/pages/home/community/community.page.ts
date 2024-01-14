@@ -129,7 +129,7 @@ export class CommunityPage implements OnInit {
 
   ngOnDestroy() {
     this.filter$.unsubscribe();
-    console.log('filters unsubscribed');
+    // console.log('filters unsubscribed');
   }
 
   initValues(): void {
