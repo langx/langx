@@ -4,14 +4,18 @@ import { ModalController, ToastController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { IntroComponent } from 'src/app/components/intro/intro.component';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
-import { loginAction } from 'src/app/store/actions/auth.action';
+import {
+  isLoggedInAction,
+  loginAction,
+} from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
+  isLoggedInSelector,
   loginValidationErrorSelector,
   unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -25,7 +29,10 @@ const INTRO_SEEN = 'introSeen';
 })
 export class LoginPage implements OnInit {
   form: FormGroup;
+
+  subscription: Subscription;
   isLoading$: Observable<boolean>;
+  isLoggedIn$: Observable<boolean>;
 
   value: any = '';
 
@@ -43,40 +50,61 @@ export class LoginPage implements OnInit {
     this.initValues();
     this.initForm();
 
-    // Check user is logged in in mobile
-    await this.checkUserLoggedIn();
-
     // Init Intro
     await this.checkIntroSeen();
     await this.initIntro();
   }
 
-  ionViewWillLeave() {
-    this.form.reset();
+  ionViewWillEnter() {
+    this.store.dispatch(isLoggedInAction());
+    this.subscription = new Subscription();
 
+    // Redirect if logged in
+    this.subscription.add(
+      this.isLoggedIn$.subscribe((isLoggedIn) => {
+        console.log('login.page isLoggedIn:', isLoggedIn);
+        if (isLoggedIn) {
+          this.router.navigateByUrl('/home');
+        }
+      })
+    );
+
+    // Login Validation Error
+    this.subscription.add(
+      this.store
+        .pipe(select(loginValidationErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            this.form.enable();
+          }
+        })
+    );
+
+    // Unauthorized Error
+    this.subscription.add(
+      this.store
+        .pipe(select(unauthorizedErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'warning');
+        })
+    );
+  }
+
+  ionViewWillLeave() {
     // Enable form if redirect here later
+    this.form.reset();
     this.form.enable();
+
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
   }
 
   initValues() {
-    // isLoading
+    // Values from Store
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-
-    // Login Validation Error
-    this.store
-      .pipe(select(loginValidationErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-          this.form.enable();
-        }
-      });
-    // Unauthorized Error
-    this.store
-      .pipe(select(unauthorizedErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'warning');
-      });
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
   }
 
   initForm() {
@@ -141,18 +169,6 @@ export class LoginPage implements OnInit {
 
   showPassword() {
     this.password_type = this.password_type === 'text' ? 'password' : 'text';
-  }
-
-  async checkUserLoggedIn() {
-    const cookieFallback = localStorage.getItem('cookieFallback');
-    if (
-      cookieFallback &&
-      cookieFallback !== '' &&
-      cookieFallback !== '[]' &&
-      Object.keys(cookieFallback).length !== 0
-    ) {
-      this.router.navigateByUrl('/home');
-    }
   }
 
   //
