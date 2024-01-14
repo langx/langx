@@ -31,7 +31,7 @@ export class AuthGuard implements CanLoad {
           filter((isLoggedIn) => isLoggedIn !== null) // ignore values until isLoggedIn is not null
         )
         .subscribe((isLoggedIn) => {
-          console.log('isLoggedIn', isLoggedIn);
+          // console.log('authguard: isLoggedIn', isLoggedIn);
           if (!isLoggedIn) {
             observer.next(this.router.parseUrl(''));
           } else {
