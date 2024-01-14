@@ -232,10 +232,7 @@ export const deleteAccountFailureAction = createAction(
 // Logout
 export const logoutAction = createAction(ActionTypes.LOGOUT);
 
-export const logoutSuccessAction = createAction(
-  ActionTypes.LOGOUT_SUCCESS,
-  props<{ payload: null }>()
-);
+export const logoutSuccessAction = createAction(ActionTypes.LOGOUT_SUCCESS);
 
 export const logoutFailureAction = createAction(
   ActionTypes.LOGOUT_FAILURE,
