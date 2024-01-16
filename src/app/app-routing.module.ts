@@ -51,6 +51,13 @@ const routes: Routes = [
         (m) => m.NotFoundPageModule
       ),
   },
+  {
+    path: 'provider',
+    loadChildren: () =>
+      import('./pages/auth/provider/provider.module').then(
+        (m) => m.ProviderPageModule
+      ),
+  },
 ];
 
 @NgModule({
