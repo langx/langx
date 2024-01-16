@@ -151,7 +151,15 @@ export class AccountPage implements OnInit {
 
   lastSeen(d: any) {
     if (!d) return null;
-    return lastSeen(d);
+
+    let result = lastSeen(d);
+
+    // Check 'online'
+    if (result === 'online') {
+      return 'just now';
+    }
+
+    return result;
   }
 
   //
