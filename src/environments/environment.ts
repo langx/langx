@@ -52,6 +52,7 @@ export const environment = {
   opts: {
     PAGINATION_LIMIT: 10,
   },
+  // TODO: Delete next group of variables
   oauth: {
     google: {
       appID:
