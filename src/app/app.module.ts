@@ -21,10 +21,10 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     AppRoutingModule,
     IonicModule.forRoot(),
     StoreModule.forRoot({}),
-    StoreDevtoolsModule.instrument({
-      maxAge: 250,
-      logOnly: environment.production,
-    }),
+    // StoreDevtoolsModule.instrument({
+    //   maxAge: 250,
+    //   logOnly: environment.production,
+    // }),
     EffectsModule.forRoot([]),
     StoreModule.forFeature('auth', authReducers),
     StoreModule.forFeature('locale', localeReducers),
