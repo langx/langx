@@ -1,7 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>{{provider}}</ion-title>
+    <ion-title>
+      Login with <span class="capitalize">{{provider}}</span>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true"> </ion-content>
+<ion-content [fullscreen]="true">
+  <app-redirect [model]="model"></app-redirect>
+</ion-content>
