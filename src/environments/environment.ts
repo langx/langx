@@ -44,6 +44,11 @@ export const environment = {
     COOKIES_POLICY_URL: `${WEBSITE_URL}cookies-policy`,
     DATA_DELETION_URL: `${WEBSITE_URL}data-deletion`,
   },
+  ext: {
+    WEBSITE_URL: WEBSITE_URL,
+    STATUS_PAGE: 'https://status.languagexchange.net/',
+    GITHUB_URL: 'https://github.com/languageXchange',
+  },
   opts: {
     PAGINATION_LIMIT: 10,
   },
