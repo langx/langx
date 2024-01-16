@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-privacy',
@@ -35,11 +36,24 @@ export class PrivacyPage implements OnInit {
 
   ngOnInit() {}
 
+  blockedUsersPage() {
+    this.router.navigate(['home/account/blocked-users']);
+  }
+
+  // External links
   async openLegacyPage(page: any) {
     await Browser.open({ url: page.url });
   }
 
-  blockedUsersPage() {
-    this.router.navigate(['home/account/blocked-users']);
+  async openStatusPage() {
+    await Browser.open({ url: environment.ext.STATUS_PAGE });
+  }
+
+  async openLandingPage() {
+    await Browser.open({ url: environment.ext.WEBSITE_URL});
+  }
+
+  async openGithubPage() {
+    await Browser.open({ url: environment.ext.GITHUB_URL });
   }
 }
