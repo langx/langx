@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -20,8 +21,9 @@ export class ProviderPage implements OnInit {
   };
 
   constructor(
-    private authService: AuthService,
-    private route: ActivatedRoute
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -50,5 +52,14 @@ export class ProviderPage implements OnInit {
         this.model.color = 'danger';
         this.model.icon = 'close-outline';
     }
+  }
+
+  //
+  // Close
+  //
+
+  close() {
+    console.log('close');
+    this.router.navigateByUrl('/');
   }
 }
