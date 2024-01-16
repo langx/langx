@@ -1,0 +1,14 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title> Login with {{title}} </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()" color="dark">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <app-redirect [model]="model"></app-redirect>
+</ion-content>
