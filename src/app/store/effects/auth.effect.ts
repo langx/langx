@@ -12,12 +12,14 @@ import {
   forkJoin,
   combineLatest,
   withLatestFrom,
+  from,
 } from 'rxjs';
 
 // Import Services
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { UserService } from 'src/app/services/user/user.service';
 import { LanguageService } from 'src/app/services/user/language.service';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
 
 // Import Interfaces
 import { Account } from 'src/app/models/Account';
@@ -496,19 +498,23 @@ export class AuthEffect {
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(logoutAction),
-      switchMap(() => {
-        return this.authService.logout().pipe(
-          map(() => {
-            return logoutSuccessAction();
-          }),
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(logoutFailureAction({ error }));
+      switchMap(() =>
+        from(this.fcmService.deregisterPush()).pipe(
+          switchMap(() => {
+            return this.authService.logout().pipe(
+              map(() => {
+                return logoutSuccessAction();
+              }),
+              catchError((errorResponse: HttpErrorResponse) => {
+                const error: ErrorInterface = {
+                  message: errorResponse.message,
+                };
+                return of(logoutFailureAction({ error }));
+              })
+            );
           })
-        );
-      })
+        )
+      )
     )
   );
 
@@ -528,6 +534,7 @@ export class AuthEffect {
     private actions$: Actions,
     private authService: AuthService,
     private userService: UserService,
+    private fcmService: FcmService,
     private languageService: LanguageService,
     private router: Router
   ) {}
