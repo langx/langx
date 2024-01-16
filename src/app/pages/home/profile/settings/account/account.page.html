@@ -122,13 +122,13 @@
           <ion-label *ngIf="!((account$ | async)?.passwordUpdate)">
             Never Changed
           </ion-label>
-          <ion-label
-            >{{ (account$ | async)?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
-            }}</ion-label
-          >
-          <ion-note
-            >{{ lastSeen((account$ | async)?.passwordUpdate) }}</ion-note
-          >
+          <ion-label *ngIf="((account$ | async)?.passwordUpdate)">
+            {{ (account$ | async)?.passwordUpdate| date: 'dd/MM/yyyy, HH:mm:ss'
+            }}
+          </ion-label>
+          <ion-note>
+            {{ lastSeen((account$ | async)?.passwordUpdate) }}
+          </ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -186,7 +186,7 @@
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title >Delete Account</ion-title>
+          <ion-title>Delete Account</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-card>
