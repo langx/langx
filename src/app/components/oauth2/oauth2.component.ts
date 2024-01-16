@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import { InAppBrowser, UrlEvent } from '@capgo/inappbrowser';
+import { BackgroundColor, InAppBrowser, UrlEvent } from '@capgo/inappbrowser';
 
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
@@ -29,6 +29,7 @@ export class Oauth2Component implements OnInit {
       url: `${environment.url.AUTH_PROVIDER_URL}/google`,
       headers: this.HEADERS,
       title: 'Sign in with Google',
+      backgroundColor: BackgroundColor.WHITE,
     });
     this.addBrowserListeners();
   }
@@ -42,6 +43,7 @@ export class Oauth2Component implements OnInit {
       url: `${environment.url.AUTH_PROVIDER_URL}/facebook`,
       headers: this.HEADERS,
       title: 'Sign in with Facebook',
+      backgroundColor: BackgroundColor.WHITE,
     });
     this.addBrowserListeners();
   }
@@ -55,6 +57,7 @@ export class Oauth2Component implements OnInit {
       url: `${environment.url.AUTH_PROVIDER_URL}/apple`,
       headers: this.HEADERS,
       title: 'Sign in with Apple',
+      backgroundColor: BackgroundColor.WHITE,
     });
     this.addBrowserListeners();
   }
