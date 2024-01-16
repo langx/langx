@@ -27,6 +27,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'auth/provider/:name',
+    loadChildren: () =>
+      import('./pages/auth/provider/provider.module').then(
+        (m) => m.ProviderPageModule
+      ),
+  },
+  {
     path: 'auth/oauth2/success',
     loadChildren: () =>
       import('./pages/auth/oauth2/success/success.module').then(
