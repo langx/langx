@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 
+import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
@@ -15,7 +16,7 @@ export class Oauth2Component implements OnInit {
 
   signInWithGoogle() {
     Browser.open({
-      url: 'https://app.languageXchange.net/auth/provider/google',
+      url: `${environment.url.AUTH_PROVIDER_URL}/google`,
     });
     // this.authService.signInWithGoogle();
   }
