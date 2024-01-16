@@ -27,6 +27,7 @@ export const environment = {
     HOMEPAGE_URL: HOMEPAGE_URL,
     RESET_PASSWORD_URL: `${HOMEPAGE_URL}reset-password/new`,
     SIGNUP_COMPLETE_URL: `${HOMEPAGE_URL}signup/complete`,
+    AUTH_PROVIDER_URL: `${HOMEPAGE_URL}auth/provider`,
     SUCCESS_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/success`,
     FAILURE_OAUTH2: `${HOMEPAGE_URL}auth/oauth2/failure`,
     VERIFY_EMAIL: `${HOMEPAGE_URL}auth/verify-email`,
