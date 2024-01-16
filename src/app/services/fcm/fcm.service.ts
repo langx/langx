@@ -10,7 +10,7 @@ import {
   RegistrationError,
 } from '@capacitor/push-notifications';
 
-import { ApiService } from '../api/api.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
 
@@ -59,6 +59,17 @@ export class FcmService {
         this.handleTokenForAndroid(token);
       }
     });
+  }
+
+  // Deregister push notifications
+  async deregisterPush() {
+    if (Capacitor.getPlatform() === 'ios') {
+      await this.deleteTokenForIOS();
+    }
+
+    if (Capacitor.getPlatform() === 'android') {
+      await this.deleteTokenForAndroid();
+    }
   }
 
   listenerPush() {
@@ -142,6 +153,24 @@ export class FcmService {
         this.updateCurrentUser();
       }
     });
+  }
+
+  // Delete token for IOS
+  async deleteTokenForIOS() {
+    const prefs = await this.api.account.getPrefs();
+    if ('ios' in prefs) {
+      delete prefs['ios'];
+    }
+    await this.api.account.updatePrefs(prefs);
+  }
+
+  // Delete token for Android
+  async deleteTokenForAndroid() {
+    const prefs = await this.api.account.getPrefs();
+    if ('android' in prefs) {
+      delete prefs['android'];
+    }
+    await this.api.account.updatePrefs(prefs);
   }
 
   // Update currentUser
