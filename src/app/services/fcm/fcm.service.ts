@@ -166,7 +166,7 @@ export class FcmService {
           });
 
         // Add "push" to currentUser.notifications
-        this.updateCurrentUser();
+        this.updateCurrentUser('push');
       }
     });
   }
@@ -185,7 +185,7 @@ export class FcmService {
           });
 
         // Add "push" to currentUser.notifications
-        this.updateCurrentUser();
+        this.updateCurrentUser('push');
       }
     });
   }
@@ -203,8 +203,8 @@ export class FcmService {
             console.log('pwa token update error', err);
           });
 
-        // Add "push" to currentUser.notifications
-        this.updateCurrentUser();
+        // Add "pwa" to currentUser.notifications
+        this.updateCurrentUser('pwa');
       }
     });
   }
@@ -228,18 +228,18 @@ export class FcmService {
   }
 
   // Update currentUser
-  updateCurrentUser() {
+  updateCurrentUser(notificationType: string) {
     this.store
       .pipe(select(currentUserSelector))
       .subscribe((currentUser) => {
         if (currentUser) {
           let notifications = [...(currentUser?.notifications || [])];
-          console.log('notifications :', notifications);
 
-          if (!notifications.includes('push')) {
-            notifications.push('push');
+          if (!notifications.includes(notificationType)) {
+            notifications.push(notificationType);
           }
 
+          console.log('notifications :', notifications);
           // Dispatch updateCurrentUserAction
           const request = {
             userId: currentUser?.$id,
