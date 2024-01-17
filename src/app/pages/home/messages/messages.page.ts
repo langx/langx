@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
 // Import Models and Services
@@ -63,10 +64,19 @@ export class MessagesPage implements OnInit {
 
   async ngOnInit() {
     this.initValues();
-    // Trigger FCM registration
-    this.fcmService.registerPush();
     // Get all chat Rooms
     this.listRooms();
+
+    // Trigger FCM registration
+    if (Capacitor.getPlatform() === 'web') {
+      this.registerPushForWeb();
+    } else {
+      this.fcmService.registerPush();
+    }
+  }
+
+  registerPushForWeb() {
+    this.fcmService.registerPushForWeb();
   }
 
   ionViewWillEnter() {
