@@ -60,6 +60,9 @@ export class NotificationsPage implements OnInit {
           this.form
             .get('emailNotifications')
             .setValue(notifications.includes('email'));
+          this.form
+            .get('pwaNotifications')
+            .setValue(notifications.includes('pwa'));
         }
       })
     );
@@ -85,6 +88,7 @@ export class NotificationsPage implements OnInit {
     this.form = new FormGroup({
       pushNotifications: new FormControl(false),
       emailNotifications: new FormControl(false),
+      pwaNotifications: new FormControl(false),
     });
   }
 
@@ -101,6 +105,7 @@ export class NotificationsPage implements OnInit {
   async togglePushNotifications() {
     const pushNotifications = this.form.get('pushNotifications').value;
     const emailNotifications = this.form.get('emailNotifications').value;
+    const pwaNotifications = this.form.get('pwaNotifications').value;
 
     console.log(this.form.value);
 
@@ -112,6 +117,10 @@ export class NotificationsPage implements OnInit {
 
     if (emailNotifications) {
       notifications.push('email');
+    }
+
+    if (pwaNotifications) {
+      notifications.push('pwa');
     }
 
     // Dispatch updateCurrentUserAction
