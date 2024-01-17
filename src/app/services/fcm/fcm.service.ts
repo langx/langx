@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { mergeMap } from 'rxjs';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import {
   PushNotifications,
   Token,
@@ -21,7 +23,8 @@ export class FcmService {
   constructor(
     private store: Store,
     private router: Router,
-    private api: ApiService
+    private api: ApiService,
+    private afMessaging: AngularFireMessaging
   ) {}
 
   async registerPush() {
@@ -59,6 +62,39 @@ export class FcmService {
         this.handleTokenForAndroid(token);
       }
     });
+  }
+
+  // Register push notifications for web
+  registerPushForWeb() {
+    console.log('Registering push for web...');
+    this.afMessaging.requestPermission
+      .pipe(mergeMap(() => this.afMessaging.tokenChanges))
+      .subscribe({
+        next: (token) => {
+          if (token) {
+            console.log('Permission granted! Save to the server!', token);
+          } else {
+            console.log('Permission denied!');
+          }
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
+  }
+
+  deregisterPushForWeb() {
+    console.log('Deregistering push for web...');
+    this.afMessaging.getToken
+      .pipe(mergeMap((token) => this.afMessaging.deleteToken(token)))
+      .subscribe({
+        next: (token) => {
+          console.log('Token deleted!');
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
   }
 
   // Deregister push notifications
