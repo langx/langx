@@ -1,12 +1,12 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { Store, select } from '@ngrx/store';
 import Compressor from 'compressorjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
-import { Router } from '@angular/router';
 import {
+  IonInput,
   LoadingController,
   ModalController,
   ToastController,
@@ -48,6 +48,9 @@ import {
   styleUrls: ['./edit.page.scss'],
 })
 export class EditPage implements OnInit {
+  @ViewChild('currentUserNameInput', { static: false })
+  currentUserNameInput: IonInput;
+
   form: FormGroup;
   subscriptions: Subscription;
 
@@ -55,10 +58,11 @@ export class EditPage implements OnInit {
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
+  currentUserName: string = null;
+  isEditCurrentUserName: boolean = false;
 
   constructor(
     private store: Store,
-    private router: Router,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private loadingCtrl: LoadingController
@@ -80,9 +84,12 @@ export class EditPage implements OnInit {
           (lang) => !lang.motherLanguage
         );
 
-        // Set default value for aboutMe
+        // Set default value for aboutMe and currentUserName
         if (!this.form.get('aboutMe').value) {
           this.form.get('aboutMe').setValue(user?.aboutMe);
+        }
+        if (!this.currentUserName) {
+          this.currentUserName = user?.name;
         }
       })
     );
@@ -227,7 +234,7 @@ export class EditPage implements OnInit {
   }
 
   //
-  // Edit About Me
+  // Edit About Me and Current User Name
   //
 
   saveAboutMe() {
@@ -236,6 +243,34 @@ export class EditPage implements OnInit {
       data: this.form.value,
     };
     this.store.dispatch(updateCurrentUserAction({ request }));
+  }
+
+  editCurrentUserName() {
+    if (!this.isEditCurrentUserName) {
+      this.isEditCurrentUserName = true;
+      this.currentUserNameInput.setFocus();
+    } else {
+      this.isEditCurrentUserName = false;
+    }
+  }
+
+  saveCurrentUserName() {
+    if (this.currentUserName == this.currentUser?.name) {
+      this.isEditCurrentUserName = false;
+      return;
+    }
+
+    console.log(this.currentUserName);
+
+    // const request = {
+    //   userId: this.currentUser?.$id,
+    //   data: {
+    //     $id: this.currentUser.$id,
+    //     name: this.currentUserName,
+    //   },
+    // };
+    // this.store.dispatch(updateCurrentUserAction({ request }));
+    // this.isEditCurrentUserName = false;
   }
 
   //

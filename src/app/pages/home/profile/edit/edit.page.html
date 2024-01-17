@@ -12,6 +12,39 @@
     <ion-card-header>
       <ion-card-title>
         <ion-row>
+          <ion-col>Public Name</ion-col>
+          <ion-col>
+            <ion-card-subtitle>
+              <ion-button (click)="editCurrentUserName()" size="small"
+                >Edit</ion-button
+              >
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item [ngClass]="{'ion-hide': isEditCurrentUserName}" lines="none">
+          <ion-text>{{currentUserName}}</ion-text>
+        </ion-item>
+        <ion-item [ngClass]="{'ion-hide': !isEditCurrentUserName}">
+          <ion-input
+            #currentUserNameInput
+            [(ngModel)]="currentUserName"
+            [placeholder]="currentUserName"
+            minlength="5"
+            maxlength="30"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-row>
           <ion-col>Profile Picture</ion-col>
           <ion-col>
             <ion-card-subtitle>
@@ -177,5 +210,4 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-
 </ion-content>
