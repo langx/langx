@@ -5,6 +5,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
@@ -29,6 +30,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     StoreModule.forFeature('auth', authReducers),
     StoreModule.forFeature('locale', localeReducers),
     EffectsModule.forFeature([LocaleEffects, AuthEffect]),
+    AngularFireMessaging,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
