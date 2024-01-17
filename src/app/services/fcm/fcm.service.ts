@@ -88,7 +88,7 @@ export class FcmService {
       .pipe(mergeMap((token) => this.afMessaging.deleteToken(token)))
       .subscribe({
         next: (token) => {
-          console.log('Token deleted!');
+          console.log('Notification Token deleted!');
         },
         error: (error) => {
           console.error(error);
