@@ -102,6 +102,7 @@ export default async ({ req, res, log, error }) => {
   // Initialize flags
   let iosExists = false;
   let androidExists = false;
+  let pwaExists = false;
 
   // Check if iOS token exists
   try {
@@ -119,23 +120,23 @@ export default async ({ req, res, log, error }) => {
     console.log('Android token missing');
   }
 
-  // If neither iOS nor Android token exists, return an error
-  if (!iosExists && !androidExists) {
+  // Check if PWA token exists
+  try {
+    throwIfMissing(prefs, ['pwa']);
+    pwaExists = true;
+  } catch (err) {
+    console.log('PWA token missing');
+  }
+
+  // If neither iOS nor Android and PWA token exists, return an error
+  if (!iosExists && !androidExists && !pwaExists) {
     return res.json(
-      { ok: false, error: 'Both iOS and Android tokens are missing' },
+      { ok: false, error: 'Tokens for iOS, Android, and PWA are missing' },
       400
     );
   }
 
   log(prefs);
-
-  // Uncomment this when production ready, check user is online or not
-  const now = new Date();
-  const lastSeen = new Date(toUserDoc.lastSeen);
-  if (now - lastSeen < 1000 * 60 * 1) {
-    log(`User is still online: ${toUserDoc.name}`);
-    return res.json({ ok: false, error: 'User is online' }, 400);
-  }
 
   log(`Sending message to device: ${req.body.to}`);
 
@@ -164,35 +165,55 @@ export default async ({ req, res, log, error }) => {
   }
 
   try {
-    if (iosExists) {
+    if (pwaExists) {
       const response = await sendPushNotification({
         notification: notification,
         data: {
           roomId: roomId,
         },
-        apns: {
-          payload: {
-            aps: {
-              badge: toUserDoc.totalUnseen + 1,
-              sound: 'bingbong.aiff',
+        // Add PWA-specific options here
+        token: prefs['pwa'],
+      });
+      log(`Successfully sent PWA message: ${response}`);
+
+      // Uncomment this when production ready, check user is online or not
+      const now = new Date();
+      const lastSeen = new Date(toUserDoc.lastSeen);
+      if (now - lastSeen < 1000 * 60 * 1) {
+        log(`User is still online: ${toUserDoc.name}`);
+        return res.json({ ok: false, error: 'User is still online' }, 400);
+      }
+
+      if (iosExists) {
+        const response = await sendPushNotification({
+          notification: notification,
+          data: {
+            roomId: roomId,
+          },
+          apns: {
+            payload: {
+              aps: {
+                badge: toUserDoc.totalUnseen + 1,
+                sound: 'bingbong.aiff',
+              },
             },
           },
-        },
-        token: prefs['ios'],
-      });
-      log(`Successfully sent iOS message: ${response}`);
-    }
+          token: prefs['ios'],
+        });
+        log(`Successfully sent iOS message: ${response}`);
+      }
 
-    if (androidExists) {
-      const response = await sendPushNotification({
-        notification: notification,
-        data: {
-          roomId: roomId,
-        },
-        // Add Android-specific options here
-        token: prefs['android'],
-      });
-      log(`Successfully sent Android message: ${response}`);
+      if (androidExists) {
+        const response = await sendPushNotification({
+          notification: notification,
+          data: {
+            roomId: roomId,
+          },
+          // Add Android-specific options here
+          token: prefs['android'],
+        });
+        log(`Successfully sent Android message: ${response}`);
+      }
     }
 
     return res.json({ ok: true });

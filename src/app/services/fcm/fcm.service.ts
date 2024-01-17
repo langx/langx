@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
+import { mergeMap } from 'rxjs';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 import {
   PushNotifications,
   Token,
@@ -21,7 +23,8 @@ export class FcmService {
   constructor(
     private store: Store,
     private router: Router,
-    private api: ApiService
+    private api: ApiService,
+    private afMessaging: AngularFireMessaging
   ) {}
 
   async registerPush() {
@@ -59,6 +62,38 @@ export class FcmService {
         this.handleTokenForAndroid(token);
       }
     });
+  }
+
+  // Register push notifications for web
+  registerPushForWeb() {
+    console.log('Registering push for web...');
+    this.afMessaging.requestPermission
+      .pipe(mergeMap(() => this.afMessaging.tokenChanges))
+      .subscribe({
+        next: (token) => {
+          if (token) {
+            console.log('PWA Token: ', token);
+            this.handleTokenForWeb(token);
+          }
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
+  }
+
+  deregisterPushForWeb() {
+    console.log('Deregistering push for web...');
+    this.afMessaging.getToken
+      .pipe(mergeMap((token) => this.afMessaging.deleteToken(token)))
+      .subscribe({
+        next: (token) => {
+          console.log('Token deleted!');
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
   }
 
   // Deregister push notifications
@@ -131,7 +166,7 @@ export class FcmService {
           });
 
         // Add "push" to currentUser.notifications
-        this.updateCurrentUser();
+        this.updateCurrentUser('push');
       }
     });
   }
@@ -150,7 +185,26 @@ export class FcmService {
           });
 
         // Add "push" to currentUser.notifications
-        this.updateCurrentUser();
+        this.updateCurrentUser('push');
+      }
+    });
+  }
+
+  handleTokenForWeb(token: string) {
+    this.api.account.getPrefs().then((prefs) => {
+      if (prefs['pwa'] !== token) {
+        prefs['pwa'] = token;
+        this.api.account
+          .updatePrefs(prefs)
+          .then((res) => {
+            console.log('pwa token updated', res);
+          })
+          .catch((err) => {
+            console.log('pwa token update error', err);
+          });
+
+        // Add "pwa" to currentUser.notifications
+        this.updateCurrentUser('pwa');
       }
     });
   }
@@ -174,18 +228,18 @@ export class FcmService {
   }
 
   // Update currentUser
-  updateCurrentUser() {
+  updateCurrentUser(notificationType: string) {
     this.store
       .pipe(select(currentUserSelector))
       .subscribe((currentUser) => {
         if (currentUser) {
           let notifications = [...(currentUser?.notifications || [])];
-          console.log('notifications :', notifications);
 
-          if (!notifications.includes('push')) {
-            notifications.push('push');
+          if (!notifications.includes(notificationType)) {
+            notifications.push(notificationType);
           }
 
+          console.log('notifications :', notifications);
           // Dispatch updateCurrentUserAction
           const request = {
             userId: currentUser?.$id,

@@ -34,10 +34,15 @@
                 "glob": "**/*",
                 "input": "src/.well-known",
                 "output": ".well-known/"
-              }
+              },
+              "src/manifest.webmanifest",
+              "src/firebase-messaging-sw.js",
+              "src/combined-sw.js"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
-            "scripts": []
+            "scripts": [],
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "production": {
@@ -114,7 +119,8 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
-              }
+              },
+              "src/manifest.webmanifest"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
             "scripts": []

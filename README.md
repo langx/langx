@@ -180,6 +180,43 @@ After following these steps, your Angular app should be set up to handle deep li
 
 For more information: https://capacitorjs.com/docs/guides/deep-links
 
+## Firebase Messaging Service Worker
+
+In your project, you need to create a file named `src/firebase-messaging-sw.js`. This file will be responsible for handling Firebase messaging in the service worker.
+
+Here's a breakdown of the code in this file:
+
+```js
+// Give the service worker access to Firebase Messaging.
+// Note that you can only use Firebase Messaging here. Other Firebase libraries
+// are not available in the service worker.
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+importScripts(
+  "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
+);
+
+// Initialize the Firebase app in the service worker by passing in
+// your app's Firebase config object.
+// https://firebase.google.com/docs/web/setup#config-object
+const firebaseApp = initializeApp({
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  authDomain: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  projectId: "xxxxxxxxxxxxxxxxxx",
+  storageBucket: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  messagingSenderId: "xxxxxxxxxxxx",
+  appId: "x:xxxxxxxxxxxx:web:xxxxxxxxxxxxxxxxxxxx",
+});
+
+// Retrieve an instance of Firebase Messaging so that it can handle background
+// messages.
+const messaging = firebase.messaging();
+
+```
+
+This code initializes your Firebase application with your Firebase configuration. Replace the "xxxxxxx" with your actual Firebase configuration values.
+
+This line retrieves an instance of Firebase Messaging so that it can handle background messages.
+
 ## Contributing
 
 We welcome contributions to the project! To contribute, follow these steps:
@@ -219,8 +256,6 @@ It is also important to keep your Firebase project's API key and other sensitive
 For more information on how to secure your Firebase project, please refer to the following resources:
 
 - [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
-
-
 
 ## License
 
