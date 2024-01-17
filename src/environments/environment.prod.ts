@@ -49,6 +49,15 @@ export const environment = {
   opts: {
     PAGINATION_LIMIT: 25,
   },
+  firebaseConfig: {
+    apiKey: 'AIzaSyD3-6rHx2NTeoxgXYd7GUfVsLDxFtkVOgo',
+    authDomain: 'languagexchange-59485.firebaseapp.com',
+    projectId: 'languagexchange-59485',
+    storageBucket: 'languagexchange-59485.appspot.com',
+    messagingSenderId: '108932543808',
+    appId: '1:108932543808:web:d3da7d980b398c084936a5',
+  },
+  // TODO: Delete next group of variables
   oauth: {
     google: {
       appID:
