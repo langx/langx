@@ -34,7 +34,9 @@
                 "glob": "**/*",
                 "input": "src/.well-known",
                 "output": ".well-known/"
-              }
+              },
+              "src/manifest.webmanifest",
+              "src/firebase-messaging-sw.js"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
             "scripts": []
