@@ -105,6 +105,10 @@ export class FcmService {
     if (Capacitor.getPlatform() === 'android') {
       await this.deleteTokenForAndroid();
     }
+
+    if (Capacitor.getPlatform() === 'web') {
+      this.deregisterPushForWeb();
+    }
   }
 
   listenerPush() {
@@ -223,6 +227,15 @@ export class FcmService {
     const prefs = await this.api.account.getPrefs();
     if ('android' in prefs) {
       delete prefs['android'];
+    }
+    await this.api.account.updatePrefs(prefs);
+  }
+
+  // Delete token for Web
+  async deleteTokenForWeb() {
+    const prefs = await this.api.account.getPrefs();
+    if ('pwa' in prefs) {
+      delete prefs['pwa'];
     }
     await this.api.account.updatePrefs(prefs);
   }
