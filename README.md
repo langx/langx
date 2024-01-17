@@ -187,25 +187,30 @@ In your project, you need to create a file named `src/firebase-messaging-sw.js`.
 Here's a breakdown of the code in this file:
 
 ```js
-import { initializeApp } from "firebase/app";
-import { getMessaging } from "firebase/messaging/sw";
+// Give the service worker access to Firebase Messaging.
+// Note that you can only use Firebase Messaging here. Other Firebase libraries
+// are not available in the service worker.
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+importScripts(
+  "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
+);
 
 // Initialize the Firebase app in the service worker by passing in
 // your app's Firebase config object.
 // https://firebase.google.com/docs/web/setup#config-object
 const firebaseApp = initializeApp({
-  apiKey: "xxxxxxx",
-  authDomain: "xxxxxxx",
-  projectId: "xxxxxxx",
-  storageBucket: "xxxxxxx",
-  messagingSenderId: "xxxxxxx",
-  appId: "xxxxxxx",
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  authDomain: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  projectId: "xxxxxxxxxxxxxxxxxx",
+  storageBucket: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  messagingSenderId: "xxxxxxxxxxxx",
+  appId: "x:xxxxxxxxxxxx:web:xxxxxxxxxxxxxxxxxxxx",
 });
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
-const messaging = getMessaging(firebaseApp);
-`
+const messaging = firebase.messaging();
+
 ```
 
 This code initializes your Firebase application with your Firebase configuration. Replace the "xxxxxxx" with your actual Firebase configuration values.
