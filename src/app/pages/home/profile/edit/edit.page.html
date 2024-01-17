@@ -15,9 +15,20 @@
           <ion-col>Public Name</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button (click)="editCurrentUserName()" size="small"
-                >Edit</ion-button
+              <ion-button
+                (click)="editCurrentUserName()"
+                [ngClass]="{'ion-hide': isEditCurrentUserName}"
+                size="small"
               >
+                Edit
+              </ion-button>
+              <ion-button
+                (click)="saveCurrentUserName()"
+                [ngClass]="{'ion-hide': !isEditCurrentUserName}"
+                size="small"
+              >
+                Save
+              </ion-button>
             </ion-card-subtitle>
           </ion-col>
         </ion-row>

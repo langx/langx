@@ -255,12 +255,10 @@ export class EditPage implements OnInit {
   }
 
   saveCurrentUserName() {
+    this.isEditCurrentUserName = false;
     if (this.currentUserName == this.currentUser?.name) {
-      this.isEditCurrentUserName = false;
       return;
     }
-
-    console.log(this.currentUserName);
 
     // const request = {
     //   userId: this.currentUser?.$id,
