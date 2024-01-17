@@ -1,11 +1,13 @@
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { EffectsModule } from '@ngrx/effects';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireMessagingModule } from '@angular/fire/compat/messaging';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppComponent } from 'src/app/app.component';
 import { AppRoutingModule } from 'src/app/app-routing.module';
@@ -30,7 +32,14 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     StoreModule.forFeature('auth', authReducers),
     StoreModule.forFeature('locale', localeReducers),
     EffectsModule.forFeature([LocaleEffects, AuthEffect]),
-    AngularFireMessaging,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireMessagingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
