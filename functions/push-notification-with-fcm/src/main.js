@@ -73,6 +73,7 @@ export default async ({ req, res, log, error }) => {
     return res.json({ ok: false, error: err.message }, 400);
   }
 
+  // TODO: #387 There is a bug here, check both "push" and "pwa" notifications here
   // Check user is allowed notifications in user.notifications.includes('push')
   if (
     !toUserDoc ||
