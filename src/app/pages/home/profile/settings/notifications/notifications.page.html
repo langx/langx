@@ -15,14 +15,19 @@
     <ion-card-content>
       <form [formGroup]="form">
         <ion-list (ionChange)="togglePushNotifications()">
+          <ion-item class="vertical">
+            <ion-toggle formControlName="pushNotifications">
+              Push Notifications
+            </ion-toggle>
+          </ion-item>
           <ion-item>
             <ion-toggle formControlName="emailNotifications">
               Email Notifications
             </ion-toggle>
           </ion-item>
-          <ion-item class="vertical">
-            <ion-toggle formControlName="pushNotifications">
-              Push Notifications
+          <ion-item>
+            <ion-toggle formControlName="pwaNotifications">
+              Web Notifications
             </ion-toggle>
           </ion-item>
           <ion-row>
