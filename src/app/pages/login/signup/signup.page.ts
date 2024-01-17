@@ -64,7 +64,7 @@ export class SignupPage implements OnInit {
         validators: [
           Validators.required,
           Validators.minLength(5),
-          Validators.maxLength(20),
+          Validators.maxLength(30),
         ],
       }),
       email: new FormControl('', {
@@ -80,6 +80,24 @@ export class SignupPage implements OnInit {
   }
 
   async onSubmit() {
+    // Check name length
+    if (this.form.value.name.length < 5) {
+      this.presentToast('Name must be at least 5 characters', 'danger');
+      return;
+    }
+
+    // Check email is valid
+    if (!this.form.value.email.includes('@')) {
+      this.presentToast('Email must be valid', 'danger');
+      return;
+    }
+
+    // Check password length
+    if (this.form.value.password.length < 8) {
+      this.presentToast('Password must be at least 8 characters', 'danger');
+      return;
+    }
+
     // Check terms checkbox
     if (this.form.value.terms === false) {
       this.presentToast('Please accept terms and conditions', 'danger');
