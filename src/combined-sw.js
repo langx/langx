@@ -1,1 +1,2 @@
-importScripts("ngsw-worker.js", "firebase-messaging-sw.js");
+importScripts("ngsw-worker.js");
+importScripts("firebase-messaging-sw.js");
