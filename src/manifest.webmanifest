@@ -1,4 +1,11 @@
 {
+  "name": "languageXchange",
+  "short_name": "languageXchange",
+  "theme_color": "#FFC409",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
   "gcm_sender_id": "103953800507",
   "icons": [
     {
