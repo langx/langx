@@ -260,15 +260,14 @@ export class EditPage implements OnInit {
       return;
     }
 
-    // const request = {
-    //   userId: this.currentUser?.$id,
-    //   data: {
-    //     $id: this.currentUser.$id,
-    //     name: this.currentUserName,
-    //   },
-    // };
-    // this.store.dispatch(updateCurrentUserAction({ request }));
-    // this.isEditCurrentUserName = false;
+    const request = {
+      userId: this.currentUser?.$id,
+      data: {
+        $id: this.currentUser.$id,
+        name: this.currentUserName,
+      },
+    };
+    this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
   //
