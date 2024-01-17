@@ -72,9 +72,8 @@ export class FcmService {
       .subscribe({
         next: (token) => {
           if (token) {
-            console.log('Permission granted! Save to the server!', token);
-          } else {
-            console.log('Permission denied!');
+            console.log('PWA Token: ', token);
+            this.handleTokenForWeb(token);
           }
         },
         error: (error) => {
@@ -183,6 +182,25 @@ export class FcmService {
           })
           .catch((err) => {
             console.log('android token update error', err);
+          });
+
+        // Add "push" to currentUser.notifications
+        this.updateCurrentUser();
+      }
+    });
+  }
+
+  handleTokenForWeb(token: string) {
+    this.api.account.getPrefs().then((prefs) => {
+      if (prefs['pwa'] !== token) {
+        prefs['pwa'] = token;
+        this.api.account
+          .updatePrefs(prefs)
+          .then((res) => {
+            console.log('pwa token updated', res);
+          })
+          .catch((err) => {
+            console.log('pwa token update error', err);
           });
 
         // Add "push" to currentUser.notifications
