@@ -36,7 +36,8 @@
                 "output": ".well-known/"
               },
               "src/manifest.webmanifest",
-              "src/firebase-messaging-sw.js"
+              "src/firebase-messaging-sw.js",
+              "src/combined-sw.js"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
             "scripts": [],

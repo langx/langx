@@ -34,7 +34,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     EffectsModule.forFeature([LocaleEffects, AuthEffect]),
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireMessagingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
+    ServiceWorkerModule.register('combined-sw.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
