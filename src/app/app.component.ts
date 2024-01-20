@@ -51,6 +51,7 @@ export class AppComponent {
 
     // Analytics
     FirebaseAnalytics.initializeFirebase(environment.firebaseConfig);
+    FirebaseAnalytics.enable();
   }
 
   async checkTheme() {
