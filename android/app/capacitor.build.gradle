@@ -22,6 +22,7 @@ dependencies {
     implementation project(':capawesome-capacitor-badge')
     implementation project(':capgo-inappbrowser')
     implementation project(':capacitor-voice-recorder')
+
 }
 
 
