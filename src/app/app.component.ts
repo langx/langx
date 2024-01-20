@@ -3,6 +3,7 @@ import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Store } from '@ngrx/store';
+import { FirebaseAnalytics } from '@capacitor-community/firebase-analytics';
 
 import { environment } from 'src/environments/environment';
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -26,7 +27,9 @@ export class AppComponent {
     private fcmService: FcmService,
     private router: Router,
     private zone: NgZone
-  ) {}
+  ) {
+    FirebaseAnalytics.logEvent({ name: 'page_view', params: {} });
+  }
 
   async ngOnInit() {
     await this.initValues();
