@@ -1,19 +1,28 @@
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
+[![GitHub release](https://img.shields.io/github/release/languageXchange/languageXchange.svg)]
+[![GitHub license](https://img.shields.io/github/license/languageXchange/languageXchange.svg)]
 
-# languageXchange
+# languageXchange | Practice, Learn, Succeed!
 
-languageXchange is a web application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app uses Appwrite for the back-end. <!-- and includes Appwrite Cloud Functions for additional functionality.-->
-
-This project developed by New Chapter Team.
+languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses Appwrite for the back-end. For a detailed list of technologies used, please refer to the [Technologies](#technologies) section.
 
 ## Table of Contents
 
+- [Project Overview](#languageXchange)
 - [Status](#status)
+- [Technologies](#technologies)
+- [Links](#links)
 - [Installation](#installation)
+  - [Cloud Functions](#cloud-functions)
 - [Usage](#usage)
 - [Deep Linking](#deep-linking)
+  - [Android Deep Linking](#android-deep-linking)
+  - [iOS Universal Links](#ios-universal-links)
+- [Firebase Messaging Service Worker](#firebase-messaging-service-worker)
 - [Contributing](#contributing)
 - [Security](#security)
+  - [Paths](#paths)
+  - [GoogleService-info.plist and google-services.json](#googleservice-infoplist-and-google-servicesjson)
 - [License](#license)
 
 ## Status
@@ -21,6 +30,24 @@ This project developed by New Chapter Team.
 This project is currently in development. The current version is 0.1.0. For more information, please refer to the project's GitHub repository.
 
 To check the status of the website, database and CDN, please visit the following link: https://status.languagexchange.net/
+
+## Technologies
+
+- Language: [TypeScript](https://www.typescriptlang.org/)
+- Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
+- Database: [Appwrite](https://appwrite.io/)
+- API: [Self-hosted](https://github.com/languagexchange/server)
+- Cloud Functions: [Appwrite](https://appwrite.io/)
+- Push Notification: [Firebase](https://firebase.google.com/)
+- Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)
+- Analytics: [Google Analytics](https://analytics.google.com/analytics/web/)
+
+## Links
+
+- [App Landing Page](https://languagexchange.net/)
+- [iOS App](https://apps.apple.com/us/app/languagexchange/id6474187141)
+- [Android App](https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange)
+- [Web App](https://app.languagexchange.net/)
 
 ## Installation
 
@@ -34,13 +61,12 @@ To install the project locally, follow these steps:
    - In the Appwrite console, go to Project Settings and copy the Appwrite endpoint and project ID.
    - Rename the `environment.ts.sample` file in the `src/environments` directory to `environment.ts`
    - Rename the `environment.prod.ts.sample` file in the `src/environments` directory to `environment.prod.ts`
-   - Replace the placeholders in the `environment.ts.sample` file with your actual values. These placeholders include `<PWA_URL>`, `<API_URL>`, `<DB_URL>`, `<WEBSITE_URL>`, `<STATUS_PAGE>`, `<GITHUB_URL>`, `<BUNDLE_ID>`, `<APP_PROJECT>`, `<APP_DATABASE>`, `<USERS_COLLECTION>`, `<ROOMS_COLLECTION>`, `<MESSAGES_COLLECTION>`, `<LANGUAGES_COLLECTION>`, `<REPORTS_COLLECTION>`, `<VISITS_COLLECTION>`, `<USER_BUCKET>`, `<MESSAGE_BUCKET>`, `<AUDIO_BUCKET>`, `<API_KEY>`, `<AUTH_DOMAIN>`, `<PROJECT_ID>`, `<STORAGE_BUCKET>`, `<MESSAGING_SENDER_ID>`, `<APP_ID>`, and `<MEASUREMENT_ID>`.
+   - Replace the placeholders in the `environment.ts.sample` file with your actual values. For example, replace `<API_URL>` with the actual URL of your API, `<DB_URL>` with your database URL, and so on. Make sure to replace all placeholders in the file.
 3. Start the development server using the command `ionic serve`
 4. Open your web browser and navigate to `http://localhost:8100`
 
 That's it! You should now be able to see the project running locally on your machine. If you encounter any issues during the installation process, please refer to the project's documentation or open an issue on the project's GitHub repository.
 
-<!--
 ### Cloud Functions
 
 To push Appwrite Cloud Functions, follow these steps:
@@ -55,7 +81,6 @@ To push Appwrite Cloud Functions, follow these steps:
 8. Go to database function console and make sure that right permissions you set for related function.
 
 That's it! You should now be able to push your Appwrite Cloud Functions to Appwrite and use them in your app. If you encounter any issues during the process, please refer to the Appwrite documentation or open an issue on the Appwrite GitHub repository.
--->
 
 ## Usage
 
@@ -192,19 +217,7 @@ This line retrieves an instance of Firebase Messaging so that it can handle back
 
 ## Contributing
 
-We welcome contributions to the project! To contribute, follow these steps:
-
-Fork the project repository to your own GitHub account.
-
-1. Clone the forked repository to your local machine using the command `git clone https://github.com/behicsakar/languageXchange`
-2. Create a new branch for your changes using the command `git checkout -b my-new-branch`
-3. Make your changes to the codebase and commit them using the command `git commit -am "Add some feature"`
-4. Push your changes to your forked repository using the command `git push origin my-new-branch`
-5. Create a pull request from your forked repository to the original repository.
-6. Wait for the project maintainers to review your pull request and provide feedback.
-7. Once your pull request has been approved, it will be merged into the main branch of the project.
-
-That's it! You should now be able to contribute to the project and help make it better. If you encounter any issues during the contribution process, please refer to the project's documentation or open an issue on the project's GitHub repository.
+We welcome contributions to the project! For detailed instructions on how to contribute, please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## Security
 
