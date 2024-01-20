@@ -9,7 +9,6 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':capacitor-community-firebase-analytics')
     implementation project(':capacitor-app')
     implementation project(':capacitor-browser')
     implementation project(':capacitor-camera')
@@ -23,7 +22,6 @@ dependencies {
     implementation project(':capawesome-capacitor-badge')
     implementation project(':capgo-inappbrowser')
     implementation project(':capacitor-voice-recorder')
-
 }
 
 

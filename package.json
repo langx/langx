@@ -24,7 +24,6 @@
     "@angular/pwa": "^16.0.0",
     "@angular/router": "^16.0.0",
     "@angular/service-worker": "^16.2.7",
-    "@capacitor-community/firebase-analytics": "^5.0.1",
     "@capacitor/android": "5.5.1",
     "@capacitor/app": "5.0.6",
     "@capacitor/browser": "^5.1.0",
