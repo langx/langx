@@ -1,0 +1,65 @@
+export const PWA_URL = "<PWA_URL>";
+export const API_URL = "<API_URL>";
+export const DB_URL = "<DB_URL>";
+
+// External URLs
+export const WEBSITE_URL = "<WEBSITE_URL>";
+export const STATUS_PAGE = "<STATUS_PAGE>";
+export const GITHUB_URL = "<GITHUB_URL>";
+
+export const environment = {
+  production: true,
+  bundleId: "<BUNDLE_ID>",
+  appwrite: {
+    APP_ENDPOINT: `${DB_URL}v1`,
+    APP_PROJECT: "<APP_PROJECT>",
+    APP_DATABASE: "<APP_DATABASE>",
+    USERS_COLLECTION: "<USERS_COLLECTION>",
+    ROOMS_COLLECTION: "<ROOMS_COLLECTION>",
+    MESSAGES_COLLECTION: "<MESSAGES_COLLECTION>",
+    LANGUAGES_COLLECTION: "<LANGUAGES_COLLECTION>",
+    REPORTS_COLLECTION: "<REPORTS_COLLECTION>",
+    VISITS_COLLECTION: "<VISITS_COLLECTION>",
+    USER_BUCKET: "<USER_BUCKET>",
+    MESSAGE_BUCKET: "<MESSAGE_BUCKET>",
+    AUDIO_BUCKET: "<AUDIO_BUCKET>",
+  },
+  firebaseConfig: {
+    apiKey: "<API_KEY>",
+    authDomain: "<AUTH_DOMAIN>",
+    projectId: "<PROJECT_ID>",
+    storageBucket: "<STORAGE_BUCKET>",
+    messagingSenderId: "<MESSAGING_SENDER_ID>",
+    appId: "<APP_ID>",
+    measurementId: "<MEASUREMENT_ID>",
+  },
+  url: {
+    HOMEPAGE_URL: PWA_URL,
+    RESET_PASSWORD_URL: `${PWA_URL}reset-password/new`,
+    SIGNUP_COMPLETE_URL: `${PWA_URL}signup/complete`,
+    AUTH_PROVIDER_URL: `${PWA_URL}auth/provider`,
+    SUCCESS_OAUTH2: `${PWA_URL}auth/oauth2/success`,
+    FAILURE_OAUTH2: `${PWA_URL}auth/oauth2/failure`,
+    VERIFY_EMAIL: `${PWA_URL}auth/verify-email`,
+    BADGES: `${PWA_URL}assets/image/badges`,
+  },
+  api: {
+    CREATE_ROOM_API_URL: `${API_URL}api/room`,
+    CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    USER_BLOCK_API_URL: `${API_URL}api/user/block`,
+  },
+  web: {
+    PRIVACY_POLICY_URL: `${WEBSITE_URL}privacy-policy`,
+    TERMS_AND_CONDITIONS_URL: `${WEBSITE_URL}terms-conditions`,
+    COOKIES_POLICY_URL: `${WEBSITE_URL}cookies-policy`,
+    DATA_DELETION_URL: `${WEBSITE_URL}data-deletion`,
+  },
+  ext: {
+    WEBSITE_URL: WEBSITE_URL,
+    STATUS_PAGE: STATUS_PAGE,
+    GITHUB_URL: GITHUB_URL,
+  },
+  opts: {
+    PAGINATION_LIMIT: 25,
+  },
+};
