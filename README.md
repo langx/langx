@@ -33,32 +33,8 @@ To install the project locally, follow these steps:
 2. Create a new Appwrite project and enable the Authentication and Database services.
    - In the Appwrite console, go to Project Settings and copy the Appwrite endpoint and project ID.
    - Rename the `environment.ts.sample` file in the `src/environments` directory to `environment.ts`
-   - Replace the `YOUR_ENDPOINT` and `YOUR_PROJECT_ID` and etc. placeholders in the `environment.ts` file with the actual values from your Appwrite project.
-     ```typescript
-     export const environment = {
-       production: false,
-       appwrite: {
-         APP_ENDPOINT: "",
-         APP_PROJECT: "",
-         APP_DATABASE: "",
-         USERS_COLLECTION: "",
-         ROOMS_COLLECTION: "",
-         MESSAGES_COLLECTION: "",
-         LANGUAGES_COLLECTION: "",
-         USER_BUCKET: "",
-         MESSAGE_BUCKET: "",
-       },
-       url: {
-         HOMEPAGE_URL: "",
-         RESET_PASSWORD_URL: "",
-         HOME_URL: "",
-         LOGIN_URL: "",
-         SIGNUP_COMPLETE_URL: "",
-         CREATE_ROOM_API_URL: "",
-         CREATE_MESSAGE_API_URL: "",
-       },
-     };
-     ```
+   - Rename the `environment.prod.ts.sample` file in the `src/environments` directory to `environment.prod.ts`
+   - Replace the placeholders in the `environment.ts.sample` file with your actual values. These placeholders include `<PWA_URL>`, `<API_URL>`, `<DB_URL>`, `<WEBSITE_URL>`, `<STATUS_PAGE>`, `<GITHUB_URL>`, `<BUNDLE_ID>`, `<APP_PROJECT>`, `<APP_DATABASE>`, `<USERS_COLLECTION>`, `<ROOMS_COLLECTION>`, `<MESSAGES_COLLECTION>`, `<LANGUAGES_COLLECTION>`, `<REPORTS_COLLECTION>`, `<VISITS_COLLECTION>`, `<USER_BUCKET>`, `<MESSAGE_BUCKET>`, `<AUDIO_BUCKET>`, `<API_KEY>`, `<AUTH_DOMAIN>`, `<PROJECT_ID>`, `<STORAGE_BUCKET>`, `<MESSAGING_SENDER_ID>`, `<APP_ID>`, and `<MEASUREMENT_ID>`.
 3. Start the development server using the command `ionic serve`
 4. Open your web browser and navigate to `http://localhost:8100`
 
@@ -191,9 +167,7 @@ Here's a breakdown of the code in this file:
 // Note that you can only use Firebase Messaging here. Other Firebase libraries
 // are not available in the service worker.
 importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
-importScripts(
-  "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
-);
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js");
 
 // Initialize the Firebase app in the service worker by passing in
 // your app's Firebase config object.
@@ -210,7 +184,6 @@ const firebaseApp = initializeApp({
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
 const messaging = firebase.messaging();
-
 ```
 
 This code initializes your Firebase application with your Firebase configuration. Replace the "xxxxxxx" with your actual Firebase configuration values.
