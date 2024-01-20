@@ -1,8 +1,8 @@
+# languageXchange | Practice, Learn, Succeed!
+
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
 [![GitHub release](https://img.shields.io/github/release/languageXchange/languageXchange.svg)]
 [![GitHub license](https://img.shields.io/github/license/languageXchange/languageXchange.svg)]
-
-# languageXchange | Practice, Learn, Succeed!
 
 languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses Appwrite for the back-end. For a detailed list of technologies used, please refer to the [Technologies](#technologies) section.
 
