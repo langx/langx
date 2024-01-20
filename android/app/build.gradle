@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace "tech.newchapter.languageXchange"
@@ -7,7 +8,7 @@ android {
         applicationId "tech.newchapter.languageXchange"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
+        versionCode 18
         versionName "0.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -29,13 +30,6 @@ repositories {
         dirs '../capacitor-cordova-android-plugins/src/main/libs', 'libs'
     }
 }
-
-plugins {
-  id 'com.android.application'
-  // Add the Google services Gradle plugin
-  id 'com.google.gms.google-services'
-}
-
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
