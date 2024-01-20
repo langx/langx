@@ -48,6 +48,9 @@ export class AppComponent {
 
     // FCM Service listener
     this.fcmService.listenerPush();
+
+    // Analytics
+    FirebaseAnalytics.initializeFirebase(environment.firebaseConfig);
   }
 
   async checkTheme() {
