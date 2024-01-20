@@ -1,2 +1,6 @@
 /.well-known
 firebase-messaging-sw.js
+
+# Environments
+environments/environment.ts
+environments/environment.prod.ts
