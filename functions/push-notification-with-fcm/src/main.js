@@ -77,11 +77,15 @@ export default async ({ req, res, log, error }) => {
   // log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
   if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
     return res.json({ ok: false, error: 'You are blocked by this user' }, 400);
+  } else {
+    log('User is not blocked');
   }
 
   // log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
   if (toUserDoc?.archivedRooms.includes(roomId)) {
     return res.json({ ok: false, error: 'You are archived by this user' }, 400);
+  } else {
+    log('User is not archived');
   }
 
   // Check token exists or not
