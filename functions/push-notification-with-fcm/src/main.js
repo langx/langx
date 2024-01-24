@@ -52,41 +52,43 @@ export default async ({ req, res, log, error }) => {
     process.env.USERS_COLLECTION,
     req.body.sender
   );
+  log(senderUserDoc);
 
-  try {
-    log(`sender: ${senderUserDoc?.name}`);
-    throwIfMissing(senderUserDoc, ['lastSeen', 'name']);
-  } catch (err) {
-    return res.json({ ok: false, error: err.message }, 400);
-  }
+  // try {
+  //   log(senderUserDoc);
+  //   throwIfMissing(senderUserDoc, ['lastSeen', 'name']);
+  //   log(senderUserDoc);
+  // } catch (err) {
+  //   return res.json({ ok: false, error: err.message }, 400);
+  // }
 
   const toUserDoc = await db.getDocument(
     process.env.APP_DATABASE,
     process.env.USERS_COLLECTION,
     req.body.to
   );
+  log(toUserDoc);
 
-  try {
-    log(`to: ${toUserDoc?.name}`);
-    throwIfMissing(toUserDoc, ['lastSeen', 'name', 'totalUnseen']);
-  } catch (err) {
-    return res.json({ ok: false, error: err.message }, 400);
-  }
+  // try {
+  //   log(toUserDoc);
+  //   throwIfMissing(toUserDoc, ['lastSeen', 'name', 'totalUnseen']);
+  //   log(toUserDoc);
+  // } catch (err) {
+  //   return res.json({ ok: false, error: err.message }, 400);
+  // }
 
   // Check if user is blocked or not
-  // log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
+  log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
   if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
     return res.json({ ok: false, error: 'You are blocked by this user' }, 400);
-  } else {
-    log('User is not blocked');
   }
+  log('-- User is not blocked');
 
-  // log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
+  log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
   if (toUserDoc?.archivedRooms.includes(roomId)) {
     return res.json({ ok: false, error: 'You are archived by this user' }, 400);
-  } else {
-    log('User is not archived');
   }
+  log('-- User is not archived');
 
   // Check token exists or not
 
