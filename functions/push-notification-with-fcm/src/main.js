@@ -54,7 +54,7 @@ export default async ({ req, res, log, error }) => {
   );
 
   try {
-    log(senderUserDoc);
+    log(`sender: ${senderUserDoc?.name}`);
     throwIfMissing(senderUserDoc, ['lastSeen', 'name']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
@@ -67,7 +67,7 @@ export default async ({ req, res, log, error }) => {
   );
 
   try {
-    log(toUserDoc);
+    log(`to: ${toUserDoc?.name}`);
     throwIfMissing(toUserDoc, ['lastSeen', 'name', 'totalUnseen']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
