@@ -107,7 +107,7 @@ export class FcmService {
     }
 
     if (Capacitor.getPlatform() === 'web') {
-      this.deregisterPushForWeb();
+      // this.deregisterPushForWeb();
       await this.deleteTokenForWeb();
     }
   }
