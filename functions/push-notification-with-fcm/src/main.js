@@ -73,20 +73,6 @@ export default async ({ req, res, log, error }) => {
     return res.json({ ok: false, error: err.message }, 400);
   }
 
-  // TODO: #387 There is a bug here, check both "push" and "pwa" notifications here
-  // Check user is allowed notifications in user.notifications.includes('push')
-  if (
-    !toUserDoc ||
-    !toUserDoc.notifications ||
-    !toUserDoc.notifications.includes('push')
-  ) {
-    log('user is not allowed notification in settings');
-    return res.json({
-      ok: false,
-      error: 'User is disabled push notifications in settings',
-    });
-  }
-
   // Check if user is blocked or not
   // log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
   if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
@@ -109,24 +95,27 @@ export default async ({ req, res, log, error }) => {
   try {
     throwIfMissing(prefs, ['ios']);
     iosExists = true;
+    log(`iOS token exists: ${prefs['ios']}`);
   } catch (err) {
-    console.log('iOS token missing');
+    log('iOS token missing');
   }
 
   // Check if Android token exists
   try {
     throwIfMissing(prefs, ['android']);
     androidExists = true;
+    log(`Android token exists: ${prefs['android']}`);
   } catch (err) {
-    console.log('Android token missing');
+    log('Android token missing');
   }
 
   // Check if PWA token exists
   try {
     throwIfMissing(prefs, ['pwa']);
     pwaExists = true;
+    log(`PWA token exists: ${prefs['pwa']}`);
   } catch (err) {
-    console.log('PWA token missing');
+    log('PWA token missing');
   }
 
   // If neither iOS nor Android and PWA token exists, return an error
@@ -137,9 +126,7 @@ export default async ({ req, res, log, error }) => {
     );
   }
 
-  log(prefs);
-
-  log(`Sending message to device: ${req.body.to}`);
+  log(`Sending message to user: ${req.body.to}`);
 
   let notification = {
     title: senderUserDoc.name,
@@ -167,6 +154,19 @@ export default async ({ req, res, log, error }) => {
 
   try {
     if (pwaExists) {
+      // Check user is allowed notifications in user.notifications.includes('pwa')
+      if (
+        !toUserDoc ||
+        !toUserDoc.notifications ||
+        !toUserDoc.notifications.includes('pwa')
+      ) {
+        log('user is not allowed pwa notification in settings');
+        return res.json({
+          ok: false,
+          error: 'User is disabled pwa notifications in settings',
+        });
+      }
+
       const response = await sendPushNotification({
         notification: notification,
         data: {
@@ -176,45 +176,58 @@ export default async ({ req, res, log, error }) => {
         token: prefs['pwa'],
       });
       log(`Successfully sent PWA message: ${response}`);
+    }
 
-      // Uncomment this when production ready, check user is online or not
-      const now = new Date();
-      const lastSeen = new Date(toUserDoc.lastSeen);
-      if (now - lastSeen < 1000 * 60 * 1) {
-        log(`User is still online: ${toUserDoc.name}`);
-        return res.json({ ok: false, error: 'User is still online' }, 400);
-      }
+    // Uncomment this when production ready, check user is online or not
+    // const now = new Date();
+    // const lastSeen = new Date(toUserDoc.lastSeen);
+    // if (now - lastSeen < 1000 * 60 * 1) {
+    //   log(`User is still online: ${toUserDoc.name}`);
+    //   return res.json({ ok: false, error: 'User is still online' }, 400);
+    // }
 
-      if (iosExists) {
-        const response = await sendPushNotification({
-          notification: notification,
-          data: {
-            roomId: roomId,
-          },
-          apns: {
-            payload: {
-              aps: {
-                badge: toUserDoc.totalUnseen + 1,
-                sound: 'bingbong.aiff',
-              },
+    // Check user is allowed notifications in user.notifications.includes('pwa')
+    if (
+      !toUserDoc ||
+      !toUserDoc.notifications ||
+      !toUserDoc.notifications.includes('push')
+    ) {
+      log('user is not allowed push notification in settings');
+      return res.json({
+        ok: false,
+        error: 'User is disabled push notifications in settings',
+      });
+    }
+
+    if (iosExists) {
+      const response = await sendPushNotification({
+        notification: notification,
+        data: {
+          roomId: roomId,
+        },
+        apns: {
+          payload: {
+            aps: {
+              badge: toUserDoc.totalUnseen + 1,
+              sound: 'bingbong.aiff',
             },
           },
-          token: prefs['ios'],
-        });
-        log(`Successfully sent iOS message: ${response}`);
-      }
+        },
+        token: prefs['ios'],
+      });
+      log(`Successfully sent iOS message: ${response}`);
+    }
 
-      if (androidExists) {
-        const response = await sendPushNotification({
-          notification: notification,
-          data: {
-            roomId: roomId,
-          },
-          // Add Android-specific options here
-          token: prefs['android'],
-        });
-        log(`Successfully sent Android message: ${response}`);
-      }
+    if (androidExists) {
+      const response = await sendPushNotification({
+        notification: notification,
+        data: {
+          roomId: roomId,
+        },
+        // Add Android-specific options here
+        token: prefs['android'],
+      });
+      log(`Successfully sent Android message: ${response}`);
     }
 
     return res.json({ ok: true });
