@@ -183,14 +183,24 @@ const roomReducer = createReducer(
       error: null,
     })
   ),
-  on(
-    getRoomByIdSuccessAction,
-    (state, action): RoomStateInterface => ({
+  on(getRoomByIdSuccessAction, (state, action): RoomStateInterface => {
+    const updatedRooms = state.rooms ? [...state.rooms] : [];
+    const roomIndex = updatedRooms.findIndex(
+      (room) => room.$id === action.payload.$id
+    );
+
+    if (roomIndex !== -1) {
+      updatedRooms[roomIndex] = action.payload;
+    } else {
+      updatedRooms.unshift(action.payload);
+    }
+
+    return {
       ...state,
       isLoading: false,
-      rooms: [action.payload, ...(state.rooms || [])],
-    })
-  ),
+      rooms: updatedRooms,
+    };
+  }),
   on(
     getRoomByIdFailureAction,
     (state, action): RoomStateInterface => ({
