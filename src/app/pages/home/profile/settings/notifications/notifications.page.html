@@ -16,35 +16,17 @@
       <form [formGroup]="notificationsArrayForm">
         <ion-list (ionChange)="togglePushNotifications()">
           <ion-item class="vertical">
-            <ion-toggle formControlName="message">
-              New Messages
-            </ion-toggle>
+            <ion-toggle formControlName="message"> New Messages </ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-toggle formControlName="visit">
-              New Visits
-            </ion-toggle>
+            <ion-toggle formControlName="visit"> New Visits </ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-toggle formControlName="update">
-              Updates
-            </ion-toggle>
+            <ion-toggle formControlName="update"> Updates </ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-toggle formControlName="promotion">
-              Promotions
-            </ion-toggle>
+            <ion-toggle formControlName="promotion"> Promotions </ion-toggle>
           </ion-item>
-          <ion-row>
-            <ion-col size="12" class="alignItems">
-              <small>*Push Notifications only work on mobile devices.</small>
-            </ion-col>
-            <ion-col size="12" class="alignItems">
-              <small>
-                *Web Notifications only work on browser that you allowed.
-              </small>
-            </ion-col>
-          </ion-row>
         </ion-list>
       </form>
     </ion-card-content>
