@@ -34,14 +34,22 @@ export class PrivacyPage implements OnInit {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initValues();
+  }
 
-  blockedUsersPage() {
-    this.router.navigate(['home/account/blocked-users']);
+  initValues() {
+    // TODO: Implement init privacy values
   }
 
   profileVisitsState(event) {
     console.log('profileVisits State:', event.detail.checked);
+  }
+
+  // Internal links
+
+  blockedUsersPage() {
+    this.router.navigate(['home/account/blocked-users']);
   }
 
   // External links
@@ -54,7 +62,7 @@ export class PrivacyPage implements OnInit {
   }
 
   async openLandingPage() {
-    await Browser.open({ url: environment.ext.WEBSITE_URL});
+    await Browser.open({ url: environment.ext.WEBSITE_URL });
   }
 
   async openGithubPage() {
