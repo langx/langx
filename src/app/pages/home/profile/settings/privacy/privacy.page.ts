@@ -62,6 +62,14 @@ export class PrivacyPage implements OnInit {
         this.disabledButtons = isLoading;
       })
     );
+
+    // Set Values
+    this.subscription.add(
+      this.currentUser$.subscribe((user) => {
+        this.onlineStatus = !user.privacy.includes('onlineStatus');
+        this.profileVisits = !user.privacy.includes('profileVisits');
+      })
+    );
   }
 
   ionViewWillLeave() {
@@ -74,6 +82,10 @@ export class PrivacyPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
+  //
+  // Toggle Switches
+  //
+
   onlieStatusState(event) {
     this.onlineStatus = event.detail.checked;
   }
@@ -82,8 +94,11 @@ export class PrivacyPage implements OnInit {
     this.profileVisits = event.detail.checked;
   }
 
-  // Internal links
+  //
+  // Links
+  //
 
+  // Internal links
   blockedUsersPage() {
     this.router.navigate(['home/account/blocked-users']);
   }
