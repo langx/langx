@@ -141,10 +141,19 @@ export class NotificationsPage implements OnInit {
     }
 
     // Dispatch updateCurrentUserAction
+    this.updateCurrentUser({ notifications });
+  }
+
+  //
+  // Dispatch Actions
+  //
+
+  updateCurrentUser(data: any) {
     const request = {
       userId: this.currentUser?.$id,
-      data: { notifications },
+      data: data,
     };
+
     this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
