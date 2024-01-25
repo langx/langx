@@ -54,14 +54,6 @@ export default async ({ req, res, log, error }) => {
   );
   log(senderUserDoc);
 
-  // try {
-  //   log(senderUserDoc);
-  //   throwIfMissing(senderUserDoc, ['lastSeen', 'name']);
-  //   log(senderUserDoc);
-  // } catch (err) {
-  //   return res.json({ ok: false, error: err.message }, 400);
-  // }
-
   const toUserDoc = await db.getDocument(
     process.env.APP_DATABASE,
     process.env.USERS_COLLECTION,
@@ -69,13 +61,14 @@ export default async ({ req, res, log, error }) => {
   );
   log(toUserDoc);
 
-  // try {
-  //   log(toUserDoc);
-  //   throwIfMissing(toUserDoc, ['lastSeen', 'name', 'totalUnseen']);
-  //   log(toUserDoc);
-  // } catch (err) {
-  //   return res.json({ ok: false, error: err.message }, 400);
-  // }
+  // Check if toUserDoc has notifications enabled
+  if (!toUserDoc?.notificationsArray.includes('message')) {
+    log('User has not enabled message notifications');
+    return res.json(
+      { ok: false, error: 'User has not enabled message notifications' },
+      400
+    );
+  }
 
   // Check if user is blocked or not
   log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
