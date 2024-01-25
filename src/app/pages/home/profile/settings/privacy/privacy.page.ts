@@ -6,6 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
+import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
 import {
   currentUserSelector,
   isLoadingSelector,
@@ -19,6 +20,9 @@ import {
 export class PrivacyPage implements OnInit {
   subscription: Subscription;
   currentUser$: Observable<User>;
+
+  currentUserId: string;
+  privacy: string[];
 
   disabledButtons: boolean = false;
   onlineStatus: boolean;
@@ -65,9 +69,11 @@ export class PrivacyPage implements OnInit {
 
     // Set Values
     this.subscription.add(
-      this.currentUser$.subscribe((user) => {
-        this.onlineStatus = !user.privacy.includes('onlineStatus');
-        this.profileVisits = !user.privacy.includes('profileVisits');
+      this.currentUser$.subscribe((currentUser) => {
+        this.onlineStatus = !currentUser.privacy.includes('onlineStatus');
+        this.profileVisits = !currentUser.privacy.includes('profileVisits');
+        this.currentUserId = currentUser.$id;
+        this.privacy = currentUser.privacy;
       })
     );
   }
@@ -92,6 +98,32 @@ export class PrivacyPage implements OnInit {
 
   profileVisitsState(event) {
     this.profileVisits = event.detail.checked;
+
+    const newPrivacyArray = [...this.privacy];
+
+    if (!this.profileVisits) {
+      // If the toggle is off, add 'profileVisits' to the privacy array
+      if (!newPrivacyArray.includes('profileVisits')) {
+        newPrivacyArray.push('profileVisits');
+      }
+    } else {
+      // If the toggle is on, remove 'profileVisits' from the privacy array
+      const index = newPrivacyArray.indexOf('profileVisits');
+      if (index !== -1) {
+        newPrivacyArray.splice(index, 1);
+      }
+    }
+
+    this.privacy = newPrivacyArray; // Assign the modified array back to this.privacy
+
+    const request = {
+      userId: this.currentUserId,
+      data: {
+        privacy: this.privacy,
+      },
+    };
+
+    this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
   //
