@@ -63,7 +63,7 @@ export class SignupPage implements OnInit {
       name: new FormControl('', {
         validators: [
           Validators.required,
-          Validators.minLength(5),
+          Validators.minLength(2),
           Validators.maxLength(30),
         ],
       }),
@@ -81,8 +81,8 @@ export class SignupPage implements OnInit {
 
   async onSubmit() {
     // Check name length
-    if (this.form.value.name.length < 5) {
-      this.presentToast('Name must be at least 5 characters', 'danger');
+    if (this.form.value.name.length < 2) {
+      this.presentToast('Name must be at least 2 characters', 'danger');
       return;
     }
 
