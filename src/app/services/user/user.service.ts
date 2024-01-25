@@ -58,7 +58,7 @@ export class UserService {
     }
 
     // Query for users descending by last seen
-    queries.push(Query.orderDesc('$updatedAt'));
+    queries.push(Query.orderDesc('lastSeen'));
 
     // Query for users with the selected gender filter
     if (filterData?.gender) {
