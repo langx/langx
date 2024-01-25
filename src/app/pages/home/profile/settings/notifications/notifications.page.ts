@@ -6,11 +6,10 @@ import { Observable, Subscription } from 'rxjs';
 
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { User } from 'src/app/models/User';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
 import {
   currentUserSelector,
-  editProfileErrorSelector,
+  isLoadingSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -42,6 +41,18 @@ export class NotificationsPage implements OnInit {
   ionViewWillEnter() {
     this.initValues();
     this.subscription = new Subscription();
+
+    this.subscription.add(
+      this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+        if (isLoading) {
+          this.notificationsArrayForm.disable();
+          this.notificationsForm.disable();
+        } else {
+          this.notificationsArrayForm.enable();
+          this.notificationsForm.enable();
+        }
+      })
+    );
 
     // Present Toast if success and set form values
     this.subscription.add(
