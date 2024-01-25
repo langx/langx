@@ -42,6 +42,15 @@ export default async ({ req, res, log, error }) => {
   );
   log(toUserDoc);
 
+  // Check if toUserDoc has notifications enabled
+  if (!toUserDoc?.notificationsArray.includes('visit')) {
+    log('User has not enabled visit notifications');
+    return res.json(
+      { ok: false, error: 'User has not enabled visit notifications' },
+      400
+    );
+  }
+
   // Check if user is blocked or not
   log(`Blocked Users: ${toUserDoc.blockedUsers} -- from: ${sender}`);
   if (toUserDoc?.blockedUsers.includes(sender)) {
