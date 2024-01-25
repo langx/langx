@@ -16,6 +16,9 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 export class PrivacyPage implements OnInit {
   currentUser$: Observable<User>;
 
+  onlineStatus: boolean;
+  profileVisits: boolean;
+
   public legacyPages = [
     {
       title: 'Privacy Policy',
