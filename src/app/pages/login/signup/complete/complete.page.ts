@@ -152,11 +152,12 @@ export class CompletePage implements OnInit, OnDestroy {
           gender: form.value.gender,
           lastSeen: new Date(),
 
-          // Add early-adopter badge for new users
-          badges: ['early-adopter'],
-
           // Add default notifications
           notifications: ['email'],
+          notificationsArray: ['message', 'visit', 'update', 'promotion'],
+
+          // Add early-adopter badge for new users
+          badges: ['early-adopter'],
         };
         this.store.dispatch(
           completeRegistrationAction({ request, id: account.$id })
