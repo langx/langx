@@ -20,7 +20,7 @@ import {
   styleUrls: ['./notifications.page.scss'],
 })
 export class NotificationsPage implements OnInit {
-  newMessageForm: FormGroup;
+  notificationsForm: FormGroup;
 
   subscription: Subscription;
   currentUser$: Observable<User>;
@@ -54,13 +54,13 @@ export class NotificationsPage implements OnInit {
           this.currentUser = currentUser;
           const notifications = currentUser?.notifications;
 
-          this.newMessageForm
+          this.notificationsForm
             .get('pushNotifications')
             .setValue(notifications.includes('push'));
-          this.newMessageForm
+          this.notificationsForm
             .get('emailNotifications')
             .setValue(notifications.includes('email'));
-          this.newMessageForm
+          this.notificationsForm
             .get('pwaNotifications')
             .setValue(notifications.includes('pwa'));
         }
@@ -85,7 +85,7 @@ export class NotificationsPage implements OnInit {
   }
 
   initForm() {
-    this.newMessageForm = new FormGroup({
+    this.notificationsForm = new FormGroup({
       pushNotifications: new FormControl(false),
       emailNotifications: new FormControl(false),
       pwaNotifications: new FormControl(false),
@@ -103,11 +103,11 @@ export class NotificationsPage implements OnInit {
   }
 
   async togglePushNotifications() {
-    const pushNotifications = this.newMessageForm.get('pushNotifications').value;
-    const emailNotifications = this.newMessageForm.get('emailNotifications').value;
-    const pwaNotifications = this.newMessageForm.get('pwaNotifications').value;
+    const pushNotifications = this.notificationsForm.get('pushNotifications').value;
+    const emailNotifications = this.notificationsForm.get('emailNotifications').value;
+    const pwaNotifications = this.notificationsForm.get('pwaNotifications').value;
 
-    console.log(this.newMessageForm.value);
+    console.log(this.notificationsForm.value);
 
     const notifications = [];
 

@@ -13,7 +13,7 @@
       <ion-card-title>New Message</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <form [formGroup]="newMessageForm">
+      <form [formGroup]="notificationsForm">
         <ion-list (ionChange)="togglePushNotifications()">
           <ion-item class="vertical">
             <ion-toggle formControlName="pushNotifications">
