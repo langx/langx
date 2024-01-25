@@ -146,6 +146,10 @@ export class FcmService {
           // Redirect to chat page
           this.router.navigate(['/', 'home', 'chat', data.roomId]);
         }
+        if (data.userId) {
+          // Redirect to profile page
+          this.router.navigate(['/', 'home', 'visitors']);
+        }
       }
     );
   }

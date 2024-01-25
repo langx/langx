@@ -3,37 +3,18 @@ import { throwIfMissing, sendPushNotification } from './utils.js';
 import { Client, Users, Databases } from 'node-appwrite';
 
 // Event trigger:
-// databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create
+// databases.650750f16cd0c482bb83.collections.659dfb10b82eedbe1d6c.documents.*.create
 
 export default async ({ req, res, log, error }) => {
   try {
     log(req);
-    throwIfMissing(req.body, ['to', 'sender', 'roomId', 'type']);
+    throwIfMissing(req.body, ['to', 'from']);
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
 
-  const type = req.body.type;
-  const roomId = req.body.roomId.$id;
-
-  switch (type) {
-    case 'body':
-      throwIfMissing(req.body, ['body']);
-      break;
-    case 'image':
-      throwIfMissing(req.body, ['image']);
-      break;
-    case 'audio':
-      throwIfMissing(req.body, ['audio']);
-      break;
-    default:
-      // Send error response
-      res.status(400).json({
-        ok: false,
-        error: 'type is not valid',
-      });
-      break;
-  }
+  const to = req.body.to;
+  const sender = req.body.from.$id;
 
   // Init SDK
   const client = new Client()
@@ -50,38 +31,32 @@ export default async ({ req, res, log, error }) => {
   const senderUserDoc = await db.getDocument(
     process.env.APP_DATABASE,
     process.env.USERS_COLLECTION,
-    req.body.sender
+    sender
   );
   log(senderUserDoc);
 
   const toUserDoc = await db.getDocument(
     process.env.APP_DATABASE,
     process.env.USERS_COLLECTION,
-    req.body.to
+    to
   );
   log(toUserDoc);
 
   // Check if toUserDoc has notifications enabled
-  if (!toUserDoc?.notificationsArray.includes('message')) {
-    log('User has not enabled message notifications');
+  if (!toUserDoc?.notificationsArray.includes('visit')) {
+    log('User has not enabled visit notifications');
     return res.json(
-      { ok: false, error: 'User has not enabled message notifications' },
+      { ok: false, error: 'User has not enabled visit notifications' },
       400
     );
   }
 
   // Check if user is blocked or not
-  log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
-  if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
+  log(`Blocked Users: ${toUserDoc.blockedUsers} -- from: ${sender}`);
+  if (toUserDoc?.blockedUsers.includes(sender)) {
     return res.json({ ok: false, error: 'You are blocked by this user' }, 400);
   }
   log('-- User is not blocked');
-
-  log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
-  if (toUserDoc?.archivedRooms.includes(roomId)) {
-    return res.json({ ok: false, error: 'You are archived by this user' }, 400);
-  }
-  log('-- User is not archived');
 
   // Check token exists or not
 
@@ -129,27 +104,8 @@ export default async ({ req, res, log, error }) => {
 
   let notification = {
     title: senderUserDoc.name,
-    body: null,
+    body: 'visiting your profile.',
   };
-
-  switch (type) {
-    case 'body':
-      notification.body = req.body.body;
-      break;
-    case 'image':
-      notification.body = '📷 Image';
-      break;
-    case 'audio':
-      notification.body = '🔊 Audio';
-      break;
-    default:
-      // Send error response
-      res.status(400).json({
-        ok: false,
-        error: 'type is not valid',
-      });
-      break;
-  }
 
   try {
     if (pwaExists) {
@@ -169,21 +125,13 @@ export default async ({ req, res, log, error }) => {
       const response = await sendPushNotification({
         notification: notification,
         data: {
-          roomId: roomId,
+          userId: sender,
         },
         // Add PWA-specific options here
         token: prefs['pwa'],
       });
       log(`Successfully sent PWA message: ${response}`);
     }
-
-    // Uncomment this when production ready, check user is online or not
-    // const now = new Date();
-    // const lastSeen = new Date(toUserDoc.lastSeen);
-    // if (now - lastSeen < 1000 * 60 * 1) {
-    //   log(`User is still online: ${toUserDoc.name}`);
-    //   return res.json({ ok: false, error: 'User is still online' }, 400);
-    // }
 
     // Check user is allowed notifications in user.notifications.includes('pwa')
     if (
@@ -202,7 +150,7 @@ export default async ({ req, res, log, error }) => {
       const response = await sendPushNotification({
         notification: notification,
         data: {
-          roomId: roomId,
+          userId: sender,
         },
         apns: {
           payload: {
@@ -221,7 +169,7 @@ export default async ({ req, res, log, error }) => {
       const response = await sendPushNotification({
         notification: notification,
         data: {
-          roomId: roomId,
+          userId: sender,
         },
         // Add Android-specific options here
         token: prefs['android'],

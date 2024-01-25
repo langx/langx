@@ -1,0 +1,17 @@
+{
+  "name": "visit-notifications",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "firebase-admin": "^11.10.1",
+    "node-appwrite": "^11.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

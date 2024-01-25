@@ -10,11 +10,34 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-card-header>
-      <ion-card-title>New Message</ion-card-title>
+      <ion-card-title>Notifications</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <form [formGroup]="form">
-        <ion-list (ionChange)="togglePushNotifications()">
+      <form [formGroup]="notificationsArrayForm">
+        <ion-list (ionChange)="toggleNotificationsArray()">
+          <ion-item class="vertical">
+            <ion-toggle formControlName="message">New Messages</ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle formControlName="visit">New Profile Visits</ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle formControlName="update">App Updates</ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle formControlName="promotion">Promotions</ion-toggle>
+          </ion-item>
+        </ion-list>
+      </form>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Channels</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="notificationsForm">
+        <ion-list (ionChange)="toggleChannels()">
           <ion-item class="vertical">
             <ion-toggle formControlName="pushNotifications">
               Push Notifications

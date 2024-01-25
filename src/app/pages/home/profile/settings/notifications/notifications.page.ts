@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Capacitor } from '@capacitor/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { User } from 'src/app/models/User';
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
 import {
   currentUserSelector,
-  editProfileErrorSelector,
+  isLoadingSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -20,7 +18,8 @@ import {
   styleUrls: ['./notifications.page.scss'],
 })
 export class NotificationsPage implements OnInit {
-  form: FormGroup;
+  notificationsArrayForm: FormGroup;
+  notificationsForm: FormGroup;
 
   subscription: Subscription;
   currentUser$: Observable<User>;
@@ -43,39 +42,53 @@ export class NotificationsPage implements OnInit {
     this.initValues();
     this.subscription = new Subscription();
 
-    // Present Toast if success and set form values
     this.subscription.add(
-      this.currentUser$.subscribe((currentUser) => {
-        // TODO: Fix this bug then present toast, it recures when user updates profile
-        // if (currentUser?.notifications !== this.currentUser?.notifications) {
-        //   this.presentToast('Notification settings updated!', 'success');
-        // }
-        if (currentUser) {
-          this.currentUser = currentUser;
-          const notifications = currentUser?.notifications;
-
-          this.form
-            .get('pushNotifications')
-            .setValue(notifications.includes('push'));
-          this.form
-            .get('emailNotifications')
-            .setValue(notifications.includes('email'));
-          this.form
-            .get('pwaNotifications')
-            .setValue(notifications.includes('pwa'));
+      this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+        if (isLoading) {
+          this.notificationsArrayForm.disable();
+          this.notificationsForm.disable();
+        } else {
+          this.notificationsArrayForm.enable();
+          this.notificationsForm.enable();
         }
       })
     );
 
-    // Present Toast if verifyEmailSuccess
+    // Present Toast if success and set form values
     this.subscription.add(
-      this.store
-        .pipe(select(editProfileErrorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error) {
-            this.presentToast(error.message, 'danger');
-          }
-        })
+      this.currentUser$.subscribe((currentUser) => {
+        if (currentUser) {
+          // Set Current User
+          this.currentUser = currentUser;
+
+          // Set Notification Array
+          const notificationsArray = currentUser?.notificationsArray;
+          this.notificationsArrayForm
+            .get('message')
+            .setValue(notificationsArray.includes('message'));
+          this.notificationsArrayForm
+            .get('visit')
+            .setValue(notificationsArray.includes('visit'));
+          this.notificationsArrayForm
+            .get('update')
+            .setValue(notificationsArray.includes('update'));
+          this.notificationsArrayForm
+            .get('promotion')
+            .setValue(notificationsArray.includes('promotion'));
+
+          // Set Channels
+          const notifications = currentUser?.notifications;
+          this.notificationsForm
+            .get('pushNotifications')
+            .setValue(notifications.includes('push'));
+          this.notificationsForm
+            .get('emailNotifications')
+            .setValue(notifications.includes('email'));
+          this.notificationsForm
+            .get('pwaNotifications')
+            .setValue(notifications.includes('pwa'));
+        }
+      })
     );
   }
 
@@ -85,7 +98,14 @@ export class NotificationsPage implements OnInit {
   }
 
   initForm() {
-    this.form = new FormGroup({
+    this.notificationsArrayForm = new FormGroup({
+      message: new FormControl(false),
+      visit: new FormControl(false),
+      update: new FormControl(false),
+      promotion: new FormControl(false),
+    });
+
+    this.notificationsForm = new FormGroup({
       pushNotifications: new FormControl(false),
       emailNotifications: new FormControl(false),
       pwaNotifications: new FormControl(false),
@@ -102,32 +122,53 @@ export class NotificationsPage implements OnInit {
       .unsubscribe();
   }
 
-  async togglePushNotifications() {
-    const pushNotifications = this.form.get('pushNotifications').value;
-    const emailNotifications = this.form.get('emailNotifications').value;
-    const pwaNotifications = this.form.get('pwaNotifications').value;
+  async toggleNotificationsArray() {
+    const message = this.notificationsArrayForm.get('message').value;
+    const visit = this.notificationsArrayForm.get('visit').value;
+    const update = this.notificationsArrayForm.get('update').value;
+    const promotion = this.notificationsArrayForm.get('promotion').value;
 
-    console.log(this.form.value);
+    // console.log(this.notificationsArrayForm.value);
 
-    const notifications = [];
-
-    if (pushNotifications) {
-      notifications.push('push');
-    }
-
-    if (emailNotifications) {
-      notifications.push('email');
-    }
-
-    if (pwaNotifications) {
-      notifications.push('pwa');
-    }
+    const notificationsArray = [];
+    if (message) notificationsArray.push('message');
+    if (visit) notificationsArray.push('visit');
+    if (update) notificationsArray.push('update');
+    if (promotion) notificationsArray.push('promotion');
 
     // Dispatch updateCurrentUserAction
+    this.updateCurrentUser({ notificationsArray });
+  }
+
+  async toggleChannels() {
+    const pushNotifications =
+      this.notificationsForm.get('pushNotifications').value;
+    const emailNotifications =
+      this.notificationsForm.get('emailNotifications').value;
+    const pwaNotifications =
+      this.notificationsForm.get('pwaNotifications').value;
+
+    // console.log(this.notificationsForm.value);
+
+    const notifications = [];
+    if (pushNotifications) notifications.push('push');
+    if (emailNotifications) notifications.push('email');
+    if (pwaNotifications) notifications.push('pwa');
+
+    // Dispatch updateCurrentUserAction
+    this.updateCurrentUser({ notifications });
+  }
+
+  //
+  // Dispatch Actions
+  //
+
+  updateCurrentUser(data: any) {
     const request = {
       userId: this.currentUser?.$id,
-      data: { notifications },
+      data: data,
     };
+
     this.store.dispatch(updateCurrentUserAction({ request }));
   }
 

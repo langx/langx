@@ -5,6 +5,7 @@ export interface CompleteRegistrationRequestInterface {
   countryCode: string;
   gender: string;
   lastSeen: Date;
-  badges: string[];
-  notifications: string[];
+  badges?: string[];
+  notifications?: string[];
+  notificationsArray?: string[];
 }
