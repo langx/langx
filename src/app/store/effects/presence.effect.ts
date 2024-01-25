@@ -21,15 +21,14 @@ export class PresenceEffects {
     this.actions$.pipe(
       ofType(updatePresenceAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      // TODO: No need to pass currentUserId as a payload
-      switchMap(([{ currentUserId, request }, currentUser]) => {
+      switchMap(([{ request }, currentUser]) => {
         if (currentUser?.privacy.includes('onlineStatus')) {
           // If 'onlineStatus' is in the privacy settings, don't update presence
           return of(updatePresenceSuccessAction({ payload: currentUser }));
         } else {
           // Otherwise, update presence
           return this.notificationService
-            .updatePresence(currentUserId, request)
+            .updatePresence(currentUser.$id, request)
             .pipe(
               map((payload: User) => {
                 return updatePresenceSuccessAction({ payload });
