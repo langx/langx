@@ -88,10 +88,16 @@ export class UserEffects {
       ofType(getUserByIdAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ userId }, currentUser]) => {
-        return forkJoin({
-          user: this.userService.getUserDoc(userId),
-          visitor: this.userService.createVisitDoc(currentUser.$id, userId),
-        }).pipe(
+        const user$ = this.userService.getUserDoc(userId);
+        let visitor$;
+
+        if (currentUser?.privacy.includes('profileVisits')) {
+          visitor$ = of(null); // If 'profileVisits' is in the privacy settings, don't create a visit document
+        } else {
+          visitor$ = this.userService.createVisitDoc(currentUser.$id, userId); // Otherwise, create a visit document
+        }
+
+        return forkJoin({ user: user$, visitor: visitor$ }).pipe(
           map(({ user, visitor }) =>
             getUserByIdSuccessAction({ payload: user })
           ),
