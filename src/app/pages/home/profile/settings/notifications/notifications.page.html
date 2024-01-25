@@ -14,7 +14,7 @@
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="notificationsArrayForm">
-        <ion-list (ionChange)="togglePushNotifications()">
+        <ion-list (ionChange)="toggleNotificationsArray()">
           <ion-item class="vertical">
             <ion-toggle formControlName="message"> New Messages </ion-toggle>
           </ion-item>
@@ -37,7 +37,7 @@
     </ion-card-header>
     <ion-card-content>
       <form [formGroup]="notificationsForm">
-        <ion-list (ionChange)="togglePushNotifications()">
+        <ion-list (ionChange)="toggleChannels()">
           <ion-item class="vertical">
             <ion-toggle formControlName="pushNotifications">
               Push Notifications

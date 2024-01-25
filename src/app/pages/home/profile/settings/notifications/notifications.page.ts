@@ -82,17 +82,6 @@ export class NotificationsPage implements OnInit {
         }
       })
     );
-
-    // Present Toast if verifyEmailSuccess
-    this.subscription.add(
-      this.store
-        .pipe(select(editProfileErrorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error) {
-            this.presentToast(error.message, 'danger');
-          }
-        })
-    );
   }
 
   ionViewWillLeave() {
@@ -125,7 +114,9 @@ export class NotificationsPage implements OnInit {
       .unsubscribe();
   }
 
-  async togglePushNotifications() {
+  async toggleNotificationsArray() {}
+
+  async toggleChannels() {
     const pushNotifications =
       this.notificationsForm.get('pushNotifications').value;
     const emailNotifications =
@@ -133,7 +124,7 @@ export class NotificationsPage implements OnInit {
     const pwaNotifications =
       this.notificationsForm.get('pwaNotifications').value;
 
-    console.log(this.notificationsForm.value);
+    // console.log(this.notificationsForm.value);
 
     const notifications = [];
 
