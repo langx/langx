@@ -15,10 +15,22 @@
     <ion-card-content>
       <ion-list>
         <ion-item>
-          <ion-toggle [checked]="onlineStatus" disabled>Online Status</ion-toggle>
+          <ion-toggle
+            [checked]="onlineStatus"
+            (ionChange)="onlieStatusState($event)"
+            disabled
+          >
+            Online Status
+          </ion-toggle>
         </ion-item>
         <ion-item>
-          <ion-toggle [checked]="profileVisits" (ionChange)="profileVisitsState($event)">Profile Visits</ion-toggle>
+          <ion-toggle
+            [checked]="profileVisits"
+            (ionChange)="profileVisitsState($event)"
+            [disabled]="disabledButtons"
+          >
+            Profile Visits
+          </ion-toggle>
         </ion-item>
         <ion-item (click)="blockedUsersPage()" detail>
           <ion-label>Blocked Users</ion-label>

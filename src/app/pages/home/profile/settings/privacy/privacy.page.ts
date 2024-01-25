@@ -2,11 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  currentUserSelector,
+  isLoadingSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-privacy',
@@ -14,8 +17,10 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
   styleUrls: ['./privacy.page.scss'],
 })
 export class PrivacyPage implements OnInit {
+  subscription: Subscription;
   currentUser$: Observable<User>;
 
+  disabledButtons: boolean = false;
   onlineStatus: boolean;
   profileVisits: boolean;
 
@@ -48,13 +53,33 @@ export class PrivacyPage implements OnInit {
     this.initValues();
   }
 
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // Loading
+    this.subscription.add(
+      this.store.pipe(select(isLoadingSelector)).subscribe((isLoading) => {
+        this.disabledButtons = isLoading;
+      })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
   initValues() {
     // TODO: Implement init privacy values
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
+  onlieStatusState(event) {
+    this.onlineStatus = event.detail.checked;
+  }
+
   profileVisitsState(event) {
-    console.log('profileVisits State:', event.detail.checked);
+    this.profileVisits = event.detail.checked;
   }
 
   // Internal links
