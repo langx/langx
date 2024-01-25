@@ -122,7 +122,23 @@ export class NotificationsPage implements OnInit {
       .unsubscribe();
   }
 
-  async toggleNotificationsArray() {}
+  async toggleNotificationsArray() {
+    const message = this.notificationsArrayForm.get('message').value;
+    const visit = this.notificationsArrayForm.get('visit').value;
+    const update = this.notificationsArrayForm.get('update').value;
+    const promotion = this.notificationsArrayForm.get('promotion').value;
+
+    // console.log(this.notificationsArrayForm.value);
+
+    const notificationsArray = [];
+    if (message) notificationsArray.push('message');
+    if (visit) notificationsArray.push('visit');
+    if (update) notificationsArray.push('update');
+    if (promotion) notificationsArray.push('promotion');
+
+    // Dispatch updateCurrentUserAction
+    this.updateCurrentUser({ notificationsArray });
+  }
 
   async toggleChannels() {
     const pushNotifications =
@@ -135,18 +151,9 @@ export class NotificationsPage implements OnInit {
     // console.log(this.notificationsForm.value);
 
     const notifications = [];
-
-    if (pushNotifications) {
-      notifications.push('push');
-    }
-
-    if (emailNotifications) {
-      notifications.push('email');
-    }
-
-    if (pwaNotifications) {
-      notifications.push('pwa');
-    }
+    if (pushNotifications) notifications.push('push');
+    if (emailNotifications) notifications.push('email');
+    if (pwaNotifications) notifications.push('pwa');
 
     // Dispatch updateCurrentUserAction
     this.updateCurrentUser({ notifications });
