@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Form, FormControl, FormGroup } from '@angular/forms';
 import { Capacitor } from '@capacitor/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
@@ -20,6 +20,7 @@ import {
   styleUrls: ['./notifications.page.scss'],
 })
 export class NotificationsPage implements OnInit {
+  notificationsArrayForm: FormGroup;
   notificationsForm: FormGroup;
 
   subscription: Subscription;
@@ -85,6 +86,13 @@ export class NotificationsPage implements OnInit {
   }
 
   initForm() {
+    this.notificationsArrayForm = new FormGroup({
+      message: new FormControl(false),
+      visit: new FormControl(false),
+      update: new FormControl(false),
+      promotion: new FormControl(false),
+    });
+
     this.notificationsForm = new FormGroup({
       pushNotifications: new FormControl(false),
       emailNotifications: new FormControl(false),
@@ -103,9 +111,12 @@ export class NotificationsPage implements OnInit {
   }
 
   async togglePushNotifications() {
-    const pushNotifications = this.notificationsForm.get('pushNotifications').value;
-    const emailNotifications = this.notificationsForm.get('emailNotifications').value;
-    const pwaNotifications = this.notificationsForm.get('pwaNotifications').value;
+    const pushNotifications =
+      this.notificationsForm.get('pushNotifications').value;
+    const emailNotifications =
+      this.notificationsForm.get('emailNotifications').value;
+    const pwaNotifications =
+      this.notificationsForm.get('pwaNotifications').value;
 
     console.log(this.notificationsForm.value);
 
