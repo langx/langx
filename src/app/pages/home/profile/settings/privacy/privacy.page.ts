@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
+import { Observable } from 'rxjs';
+
 import { environment } from 'src/environments/environment';
+import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-privacy',
@@ -9,25 +12,27 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./privacy.page.scss'],
 })
 export class PrivacyPage implements OnInit {
+  currentUser$: Observable<User>;
+
   public legacyPages = [
     {
       title: 'Privacy Policy',
-      url: 'https://languagexchange.net/privacy-policy',
+      url: environment.web.PRIVACY_POLICY_URL,
       detail: true,
     },
     {
       title: 'Terms & Conditions',
-      url: 'https://languagexchange.net/terms-conditions',
+      url: environment.web.TERMS_AND_CONDITIONS_URL,
       detail: true,
     },
     {
       title: 'Cookie Policy',
-      url: 'https://languagexchange.net/cookie-policy',
+      url: environment.web.COOKIES_POLICY_URL,
       detail: true,
     },
     {
       title: 'Data Deletion',
-      url: 'https://languagexchange.net/data-deletion',
+      url: environment.web.DATA_DELETION_URL,
       detail: true,
     },
   ];
