@@ -52,8 +52,24 @@ export class NotificationsPage implements OnInit {
         // }
         if (currentUser) {
           this.currentUser = currentUser;
-          const notifications = currentUser?.notifications;
 
+          // Set Notification Array
+          const notificationsArray = currentUser?.notificationsArray;
+          this.notificationsArrayForm
+            .get('message')
+            .setValue(notificationsArray.includes('message'));
+          this.notificationsArrayForm
+            .get('visit')
+            .setValue(notificationsArray.includes('visit'));
+          this.notificationsArrayForm
+            .get('update')
+            .setValue(notificationsArray.includes('update'));
+          this.notificationsArrayForm
+            .get('promotion')
+            .setValue(notificationsArray.includes('promotion'));
+
+          // Set Channels
+          const notifications = currentUser?.notifications;
           this.notificationsForm
             .get('pushNotifications')
             .setValue(notifications.includes('push'));
