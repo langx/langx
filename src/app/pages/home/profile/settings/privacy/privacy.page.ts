@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
+import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-privacy',
@@ -37,7 +39,7 @@ export class PrivacyPage implements OnInit {
     },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private store: Store, private router: Router) {}
 
   ngOnInit() {
     this.initValues();
@@ -45,6 +47,7 @@ export class PrivacyPage implements OnInit {
 
   initValues() {
     // TODO: Implement init privacy values
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
   profileVisitsState(event) {
