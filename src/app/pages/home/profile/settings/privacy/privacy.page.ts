@@ -40,6 +40,10 @@ export class PrivacyPage implements OnInit {
     this.router.navigate(['home/account/blocked-users']);
   }
 
+  profileVisitsState(event) {
+    console.log('profileVisits State:', event.detail.checked);
+  }
+
   // External links
   async openLegacyPage(page: any) {
     await Browser.open({ url: page.url });
