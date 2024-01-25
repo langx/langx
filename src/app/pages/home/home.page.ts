@@ -76,16 +76,11 @@ export class HomePage implements OnInit {
   }
 
   dispatchUpdatePresence() {
-    this.currentUser$
-      .subscribe((user) => {
-        this.store.dispatch(
-          updatePresenceAction({
-            currentUserId: user.$id,
-            request: { lastSeen: new Date() },
-          })
-        );
+    this.store.dispatch(
+      updatePresenceAction({
+        request: { lastSeen: new Date() },
       })
-      .unsubscribe();
+    );
   }
 
   //

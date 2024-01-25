@@ -94,6 +94,25 @@ export class PrivacyPage implements OnInit {
 
   onlieStatusState(event) {
     this.onlineStatus = event.detail.checked;
+
+    const newPrivacyArray = [...this.privacy];
+
+    if (!this.onlineStatus) {
+      // If the toggle is off, add 'onlineStatus' to the privacy array
+      if (!newPrivacyArray.includes('onlineStatus')) {
+        newPrivacyArray.push('onlineStatus');
+      }
+    } else {
+      // If the toggle is on, remove 'onlineStatus' from the privacy array
+      const index = newPrivacyArray.indexOf('onlineStatus');
+      if (index !== -1) {
+        newPrivacyArray.splice(index, 1);
+      }
+    }
+
+    this.privacy = newPrivacyArray; // Assign the modified array back to this.privacy
+
+    this.updateCurrentUserPrivacy();
   }
 
   profileVisitsState(event) {
@@ -116,6 +135,10 @@ export class PrivacyPage implements OnInit {
 
     this.privacy = newPrivacyArray; // Assign the modified array back to this.privacy
 
+    this.updateCurrentUserPrivacy();
+  }
+
+  updateCurrentUserPrivacy() {
     const request = {
       userId: this.currentUserId,
       data: {

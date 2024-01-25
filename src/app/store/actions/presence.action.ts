@@ -6,7 +6,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export const updatePresenceAction = createAction(
   ActionTypes.UPDATE_PRESENCE,
-  props<{ currentUserId: string; request: { lastSeen: Date } }>()
+  props<{ request: { lastSeen: Date } }>()
 );
 
 export const updatePresenceSuccessAction = createAction(
