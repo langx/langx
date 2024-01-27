@@ -59,16 +59,6 @@ export class LoginPage implements OnInit {
     this.store.dispatch(isLoggedInAction());
     this.subscription = new Subscription();
 
-    // Redirect if logged in
-    this.subscription.add(
-      this.isLoggedIn$.subscribe((isLoggedIn) => {
-        // console.log('login.page isLoggedIn:', isLoggedIn);
-        if (isLoggedIn) {
-          this.router.navigateByUrl('/home');
-        }
-      })
-    );
-
     // Login Validation Error
     this.subscription.add(
       this.store
@@ -89,6 +79,20 @@ export class LoginPage implements OnInit {
           if (error && error.message)
             this.presentToast(error.message, 'warning');
         })
+    );
+  }
+
+  ionViewDidEnter() {
+    console.log('login.page ionViewDidEnter');
+    // Redirect if logged in
+    this.subscription.add(
+      this.isLoggedIn$.subscribe((isLoggedIn) => {
+        console.log('login.page isLoggedIn:', isLoggedIn);
+        if (isLoggedIn) {
+          this.router.navigateByUrl('/home');
+          console.log('login.page redirect to /home');
+        }
+      })
     );
   }
 
