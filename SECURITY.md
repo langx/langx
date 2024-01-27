@@ -2,20 +2,21 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+The following versions of our project are currently being supported with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| Angular 16.x.x   | :white_check_mark: |
+| Angular < 16.0   | :x:                |
+| TypeScript 5.x.x | :white_check_mark: |
+| TypeScript < 5.0 | :x:                |
+| npm 7.x.x        | :white_check_mark: |
+| npm < 7.0        | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a vulnerability in our project, please send an email to info@languageXchange.net. 
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+After reporting, you can expect to receive an update from us within a week. We will evaluate the reported vulnerability and determine whether it is applicable and severe. 
+
+If the vulnerability is accepted, we will work on a fix and release it as part of our next security update. If the vulnerability is declined, we will provide an explanation as to why it was not considered a valid vulnerability.
