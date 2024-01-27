@@ -88,7 +88,7 @@ export class NewPage implements OnInit {
     } else {
       this.id = id;
       this.secret = secret;
-      console.log(this.id, this.secret);
+      // console.log(id, secret);
     }
   }
 
