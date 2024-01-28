@@ -301,6 +301,17 @@ export class AuthEffect {
     { dispatch: false }
   );
 
+  redirectAfterIsLoggedInFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(isLoggedInFailureAction),
+        tap(() => {
+          this.router.navigateByUrl('/', { replaceUrl: true });
+        })
+      ),
+    { dispatch: false }
+  );
+
   verifyEmail$ = createEffect(() =>
     this.actions$.pipe(
       ofType(verifyEmailAction),
