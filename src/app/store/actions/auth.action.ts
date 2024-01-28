@@ -238,3 +238,6 @@ export const logoutFailureAction = createAction(
   ActionTypes.LOGOUT_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Clear Errors
+export const clearErrorsAction = createAction(ActionTypes.CLEAR_ERRORS);

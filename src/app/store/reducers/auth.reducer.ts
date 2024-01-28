@@ -50,7 +50,7 @@ import {
   deleteAccountAction,
   deleteAccountSuccessAction,
   deleteAccountFailureAction,
-
+  clearErrorsAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -939,6 +939,23 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       unauthorizedError: action.error,
+    })
+  ),
+
+  // Clear Errors Actions
+  on(
+    clearErrorsAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      registerValidationError: null,
+      loginValidationError: null,
+      unauthorizedError: null,
+      presenceError: null,
+      profileError: null,
+      editProfileError: null,
+      accountDetailError: null,
+      deleteAccountError: null,
     })
   )
 );

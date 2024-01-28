@@ -46,4 +46,5 @@ export enum ActionTypes {
   LOGOUT = '[Auth] Logout',
   LOGOUT_SUCCESS = '[Auth] Logout Success',
   LOGOUT_FAILURE = '[Auth] Logout Failure',
+  CLEAR_ERRORS = '[Auth] Clear Errors',
 }
