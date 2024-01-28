@@ -107,7 +107,7 @@ export class AuthEffect {
       this.actions$.pipe(
         ofType(loginSuccessAction),
         tap(() => {
-          this.router.navigateByUrl('/auth/success', { replaceUrl: true });
+          this.store.dispatch(isLoggedInAction());
         })
       ),
     { dispatch: false }
