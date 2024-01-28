@@ -33,7 +33,6 @@ export class LoginPage implements OnInit {
 
   subscription: Subscription;
   isLoading$: Observable<boolean>;
-  isLoggedIn$: Observable<boolean>;
 
   value: any = '';
 
@@ -57,7 +56,6 @@ export class LoginPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    this.store.dispatch(isLoggedInAction());
     this.subscription = new Subscription();
 
     // Login Validation Error
@@ -87,17 +85,7 @@ export class LoginPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    console.log('login.page ionViewDidEnter');
-    // Redirect if logged in
-    this.subscription.add(
-      this.isLoggedIn$.subscribe((isLoggedIn) => {
-        console.log('login.page isLoggedIn:', isLoggedIn);
-        if (isLoggedIn) {
-          this.router.navigateByUrl('/home');
-          console.log('login.page redirect to /home');
-        }
-      })
-    );
+    this.store.dispatch(isLoggedInAction());
   }
 
   ionViewWillLeave() {
@@ -112,7 +100,6 @@ export class LoginPage implements OnInit {
   initValues() {
     // Values from Store
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
   }
 
   initForm() {

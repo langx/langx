@@ -279,6 +279,28 @@ export class AuthEffect {
     )
   );
 
+  reditectAfterIsLoggedInSuccessCompleteRegistration$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(isLoggedInSuccessCompleteRegistrationAction),
+        tap(() => {
+          this.router.navigateByUrl('/signup/complete', { replaceUrl: true });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  redirectAfterIsLoggedInSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(isLoggedInSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/home', { replaceUrl: true });
+        })
+      ),
+    { dispatch: false }
+  );
+
   verifyEmail$ = createEffect(() =>
     this.actions$.pipe(
       ofType(verifyEmailAction),
