@@ -10,6 +10,7 @@ import { IntroComponent } from 'src/app/components/intro/intro.component';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import {
+  clearErrorsAction,
   isLoggedInAction,
   loginAction,
 } from 'src/app/store/actions/auth.action';
@@ -64,9 +65,10 @@ export class LoginPage implements OnInit {
       this.store
         .pipe(select(loginValidationErrorSelector))
         .subscribe((error: ErrorInterface) => {
-          if (error) {
+          if (error && error.message) {
             this.presentToast(error.message, 'danger');
             this.form.enable();
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -76,8 +78,10 @@ export class LoginPage implements OnInit {
       this.store
         .pipe(select(unauthorizedErrorSelector))
         .subscribe((error: ErrorInterface) => {
-          if (error && error.message)
+          if (error && error.message) {
             this.presentToast(error.message, 'warning');
+            this.store.dispatch(clearErrorsAction());
+          }
         })
     );
   }
