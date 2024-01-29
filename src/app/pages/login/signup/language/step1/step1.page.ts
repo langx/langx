@@ -7,8 +7,11 @@ import { Observable } from 'rxjs';
 import { Languages } from 'src/app/models/locale/Languages';
 import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
 import { selectLanguagesAction } from 'src/app/store/actions/auth.action';
-import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
+import {
+  isLoadingSelector,
+  selectedLanguagesSelector,
+} from 'src/app/store/selectors/auth.selector';
 
 @Component({
   selector: 'app-step1',
@@ -30,7 +33,9 @@ export class Step1Page implements OnInit {
     private toastController: ToastController
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
     this.initValues();
   }
 
@@ -38,6 +43,13 @@ export class Step1Page implements OnInit {
     // Data coming from store
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.languages$ = this.store.pipe(select(languagesSelector));
+
+    this.store
+      .pipe(select(selectedLanguagesSelector))
+      .subscribe((data) => {
+        this.motherLanguage = data?.motherLanguage;
+      })
+      .unsubscribe();
   }
 
   radioChecked(event) {
