@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -38,23 +37,12 @@ export class CompletePage implements OnInit, OnDestroy {
 
   constructor(
     private store: Store,
-    private router: Router,
     private toastController: ToastController
   ) {}
 
   ngOnInit() {
     this.initForm();
     this.initValues();
-  }
-
-  ionViewDidEnter() {
-    this.account$
-      .subscribe((account: Account | null) => {
-        if (!account) {
-          this.router.navigate(['/login']);
-        }
-      })
-      .unsubscribe();
   }
 
   ionViewWillLeave() {
