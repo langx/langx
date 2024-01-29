@@ -108,6 +108,7 @@ export class Step2Page implements OnInit {
       },
     };
     this.router.navigate(['/', 'signup', 'language', 'step3'], navData);
+    // console.log('navData going to step3', navData);
     console.log('step2 completed');
   }
 
