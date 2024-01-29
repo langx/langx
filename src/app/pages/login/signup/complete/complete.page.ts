@@ -110,7 +110,7 @@ export class CompletePage implements OnInit, OnDestroy {
   }
 
   async onSubmit() {
-    console.log('form.value:', this.form.value);
+    // console.log('form.value:', this.form.value);
 
     // Check form is valid
     if (!this.form.valid) {
