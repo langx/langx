@@ -20,6 +20,8 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
   styleUrls: ['./step2.page.scss'],
 })
 export class Step2Page implements OnInit {
+  MAXNUMBER_STUDYING = 5;
+
   public progress: number = 0.6;
   search: string;
 
@@ -40,7 +42,9 @@ export class Step2Page implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
+    this.resetValues();
     this.initValues();
+    this.updateDisabledStatus();
   }
 
   initValues() {
@@ -51,7 +55,8 @@ export class Step2Page implements OnInit {
       .pipe(select(selectedLanguagesSelector))
       .subscribe((data) => {
         this.motherLanguage = data?.motherLanguage;
-        this.studyLanguages = data?.studyLanguages || [];
+        this.studyLanguages =
+          data && data.studyLanguages ? [...data.studyLanguages] : [];
       })
       .unsubscribe();
 
@@ -65,18 +70,15 @@ export class Step2Page implements OnInit {
       .unsubscribe();
   }
 
-  MAXNUMBER_STUDYING = 5;
+  resetValues() {
+    this.motherLanguage = null;
+    this.studyLanguages = [];
+  }
+
   checkboxChange(event, langCode) {
     if (event.detail.checked) {
       if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
         this.studyLanguages.push(langCode);
-        if (this.studyLanguages.length == this.MAXNUMBER_STUDYING) {
-          for (const lang of this.languages) {
-            if (!this.studyLanguages.includes(lang.code)) {
-              this.disabledStatus[lang.code] = true;
-            }
-          }
-        }
       } else {
         this.presentToast(
           `You can only select ${this.MAXNUMBER_STUDYING} checkboxes.`,
@@ -87,14 +89,9 @@ export class Step2Page implements OnInit {
       this.studyLanguages = this.studyLanguages.filter(
         (item) => item !== langCode
       );
-      if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
-        for (const lang of this.languages) {
-          if (!this.studyLanguages.includes(lang.code)) {
-            this.disabledStatus[lang.code] = false;
-          }
-        }
-      }
     }
+
+    this.updateDisabledStatus();
   }
 
   onSubmit() {
@@ -121,6 +118,28 @@ export class Step2Page implements OnInit {
     this.router.navigate(['/', 'signup', 'language', 'step3']);
 
     // console.log('step2 completed');
+  }
+
+  //
+  // Utils
+  //
+
+  updateDisabledStatus() {
+    if (this.studyLanguages.length == this.MAXNUMBER_STUDYING) {
+      for (const lang of this.languages) {
+        if (!this.studyLanguages.includes(lang.code)) {
+          this.disabledStatus[lang.code] = true;
+        }
+      }
+    }
+
+    if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
+      for (const lang of this.languages) {
+        if (!this.studyLanguages.includes(lang.code)) {
+          this.disabledStatus[lang.code] = false;
+        }
+      }
+    }
   }
 
   //
