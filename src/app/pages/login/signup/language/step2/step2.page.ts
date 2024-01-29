@@ -34,7 +34,10 @@ export class Step2Page implements OnInit {
     private toastController: ToastController
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.studyLanguages = [];
     this.initValues();
   }
 
