@@ -11,10 +11,10 @@ export interface AuthStateInterface {
   currentUser: User | null;
   isLoggedIn: boolean | null;
   isCompletedRegistration: boolean;
+  isCompletedLanguage: boolean;
   languages: Language[] | null;
   identities: Models.Identity[] | null;
   sessions: Models.Session[] | null;
-  isCompletedLanguage: boolean;
   verifyEmailSuccess: boolean;
   verifyEmailConfirmationSuccess: boolean;
   verifyEmailError: ErrorInterface | null;
