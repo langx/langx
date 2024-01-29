@@ -14,7 +14,7 @@ import {
 } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
-  isLanguageDoneSelector,
+  isCompletedLanguageSelector,
   isLoadingSelector,
   registerValidationErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -34,7 +34,7 @@ export class Step3Page implements OnInit, OnDestroy {
 
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
-  isLanguageDone$: Observable<boolean>;
+  isCompletedLanguage$: Observable<boolean>;
 
   private subscriptions = new Subscription();
 
@@ -64,7 +64,7 @@ export class Step3Page implements OnInit, OnDestroy {
     // Init values From Store
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.isLanguageDone$ = this.store.pipe(select(isLanguageDoneSelector));
+    this.isCompletedLanguage$ = this.store.pipe(select(isCompletedLanguageSelector));
 
     // Present Toast if error
     this.subscriptions.add(
@@ -148,9 +148,9 @@ export class Step3Page implements OnInit, OnDestroy {
 
     // Subscribe to the store and wait for the language selection to be successful
     this.subscriptions.add(
-      this.isLanguageDone$.subscribe((isLanguageDone: boolean) => {
+      this.isCompletedLanguage$.subscribe((isCompletedLanguage: boolean) => {
         // Dispatch the second action
-        if (isLanguageDone) {
+        if (isCompletedLanguage) {
           this.store.dispatch(
             updateLanguageArrayAction({ id: userId, request: languageArray })
           );

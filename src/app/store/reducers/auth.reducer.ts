@@ -114,7 +114,7 @@ const initialState: AuthStateInterface = {
   languages: null,
   identities: null,
   sessions: null,
-  isLanguageDone: false,
+  isCompletedLanguage: false,
   verifyEmailSuccess: false,
   verifyEmailConfirmationSuccess: false,
   verifyEmailError: null,
@@ -231,7 +231,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: true,
       registerValidationError: null,
-      isLanguageDone: false,
+      isCompletedLanguage: false,
     })
   ),
   on(
@@ -240,7 +240,7 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       languages: action.payload,
-      isLanguageDone: true,
+      isCompletedLanguage: true,
     })
   ),
   on(
