@@ -20,6 +20,11 @@ export const currentUserSelector = createSelector(
   (authState: AuthStateInterface) => authState.currentUser
 );
 
+export const languagesSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.languages
+);
+
 export const isCompletedLanguageSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.isCompletedLanguage
