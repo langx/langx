@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
@@ -35,7 +34,6 @@ export class Step2Page implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private route: ActivatedRoute,
     private toastController: ToastController
   ) {}
 
