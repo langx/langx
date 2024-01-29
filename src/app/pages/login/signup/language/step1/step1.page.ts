@@ -43,9 +43,8 @@ export class Step1Page implements OnInit {
   }
 
   radioChecked(event) {
-    console.log(event.detail.value);
     this.motherLanguage = event.detail.value;
-    console.log(this.motherLanguage);
+    // console.log(this.motherLanguage);
   }
 
   onSubmit() {

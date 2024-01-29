@@ -1,7 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button
+        defaultHref="/signup/language/step1"
+        [disabled]="(isLoading$ | async)"
+      ></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
@@ -11,6 +14,7 @@
         slot="icon-only"
         shape="round"
         color="primary"
+        [disabled]="(isLoading$ | async)"
       >
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>
@@ -53,15 +57,14 @@
   <ion-row>
     <ion-col>
       <ion-button
-        *ngIf="!isLoading"
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         color="primary"
         expand="block"
       >
         Continue
-      </ion-button>
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+        </ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>
