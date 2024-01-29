@@ -134,8 +134,7 @@ export class Step3Page implements OnInit, OnDestroy {
     }
 
     const languages = this.motherLanguages.concat(this.studyLanguages);
-    // console.log('languages:', languages);
-    // this.completeLanguages(languages);
+    this.completeLanguages(languages);
   }
 
   completeLanguages(languages) {
