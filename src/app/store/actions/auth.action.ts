@@ -15,6 +15,7 @@ import { listSessionsResponseInterface } from 'src/app/models/types/responses/li
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
+import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
 
 // Login
 export const loginAction = createAction(
@@ -62,6 +63,12 @@ export const completeRegistrationSuccessAction = createAction(
 export const completeRegistrationFailureAction = createAction(
   ActionTypes.COMPLETE_REGISTRATION_FAILURE,
   props<{ error: ErrorInterface }>()
+);
+
+// Select Mother Language
+export const selectLanguagesAction = createAction(
+  ActionTypes.SELECT_LANGUAGES,
+  props<{ request: selectLanguagesInterface }>()
 );
 
 // Language Selection
