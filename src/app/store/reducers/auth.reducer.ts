@@ -114,7 +114,7 @@ const initialState: AuthStateInterface = {
   isLoggedIn: null,
   isCompletedRegistration: null,
   isCompletedLanguage: false,
-  languages: null,
+  selectedLanguages: null,
   identities: null,
   sessions: null,
   verifyEmailSuccess: false,
@@ -228,12 +228,12 @@ const authReducer = createReducer(
     })
   ),
 
-  // Select Mother Language Actions
+  // Selected Language Actions
   on(
     selectLanguagesAction,
     (state, action): AuthStateInterface => ({
       ...state,
-      languages: action.request,
+      selectedLanguages: action.request,
     })
   ),
   on(

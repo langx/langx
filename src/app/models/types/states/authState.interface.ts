@@ -12,7 +12,7 @@ export interface AuthStateInterface {
   isLoggedIn: boolean | null;
   isCompletedRegistration: boolean;
   isCompletedLanguage: boolean;
-  languages: selectLanguagesInterface | null;
+  selectedLanguages: selectLanguagesInterface | null;
   identities: Models.Identity[] | null;
   sessions: Models.Session[] | null;
   verifyEmailSuccess: boolean;
