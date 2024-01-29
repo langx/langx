@@ -52,6 +52,7 @@ import {
   deleteAccountFailureAction,
   clearErrorsAction,
   isLoggedInSuccessLanguageSelectionAction,
+  selectLanguagesAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -226,6 +227,15 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
+  // Select Mother Language Actions
+  on(
+    selectLanguagesAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      languages: action.request,
+    })
+  ),
   on(
     languageSelectionAction,
     (state): AuthStateInterface => ({
@@ -240,7 +250,6 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      languages: action.payload,
       isCompletedLanguage: true,
     })
   ),
