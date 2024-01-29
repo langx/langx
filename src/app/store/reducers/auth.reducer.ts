@@ -51,6 +51,8 @@ import {
   deleteAccountSuccessAction,
   deleteAccountFailureAction,
   clearErrorsAction,
+  isLoggedInSuccessLanguageSelectionAction,
+  selectLanguagesAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -111,10 +113,10 @@ const initialState: AuthStateInterface = {
   currentUser: null,
   isLoggedIn: null,
   isCompletedRegistration: null,
-  languages: null,
+  isCompletedLanguage: false,
+  selectedLanguages: null,
   identities: null,
   sessions: null,
-  isLanguageDone: false,
   verifyEmailSuccess: false,
   verifyEmailConfirmationSuccess: false,
   verifyEmailError: null,
@@ -225,13 +227,22 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
+  // Selected Language Actions
+  on(
+    selectLanguagesAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      selectedLanguages: action.request,
+    })
+  ),
   on(
     languageSelectionAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: true,
       registerValidationError: null,
-      isLanguageDone: false,
+      isCompletedLanguage: false,
     })
   ),
   on(
@@ -239,8 +250,7 @@ const authReducer = createReducer(
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,
-      languages: action.payload,
-      isLanguageDone: true,
+      isCompletedLanguage: true,
     })
   ),
   on(
@@ -292,6 +302,7 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: true,
       isCompletedRegistration: true,
+      isCompletedLanguage: true,
       account: action.payload?.account,
       // TODO: No need here to fill currentUser
       currentUser: action.payload?.currentUser,
@@ -304,6 +315,19 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: true,
       isCompletedRegistration: false,
+      account: action.payload?.account,
+      currentUser: action.payload?.currentUser,
+      unauthorizedError: action.error,
+    })
+  ),
+  on(
+    isLoggedInSuccessLanguageSelectionAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      isLoggedIn: true,
+      isCompletedRegistration: true,
+      isCompletedLanguage: false,
       account: action.payload?.account,
       currentUser: action.payload?.currentUser,
       unauthorizedError: action.error,

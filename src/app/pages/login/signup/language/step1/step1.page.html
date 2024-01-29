@@ -11,6 +11,7 @@
         slot="icon-only"
         shape="round"
         color="primary"
+        [disabled]="(isLoading$ | async)"
       >
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>
@@ -24,17 +25,19 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>Mother Language</ion-card-title>
-      <ion-card-subtitle>the language you speak at home</ion-card-subtitle>
+      <ion-card-subtitle
+        >Which language you speak at home ? 🏡
+      </ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
       <ion-list>
-        <ion-searchbar [(ngModel)]="term"></ion-searchbar>
+        <ion-searchbar [(ngModel)]="search"></ion-searchbar>
         <ion-row>
           <ion-col value="start">
             <ion-radio-group value="start" (ionChange)="radioChecked($event)">
               <ion-item
-                *ngFor="let lang of (languages$ | async)?.languages | customFilter: term"
+                *ngFor="let lang of (languages$ | async)?.languages | customFilter: search"
               >
                 <ion-radio value="{{lang.code}}" labelPlacement="start"
                   >{{lang.nativeName}}</ion-radio
@@ -50,14 +53,14 @@
   <ion-row>
     <ion-col>
       <ion-button
-        *ngIf="!isLoading"
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         color="primary"
         expand="block"
-        >Continue</ion-button
       >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        Continue
+        <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+        </ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>

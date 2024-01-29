@@ -20,9 +20,14 @@ export const currentUserSelector = createSelector(
   (authState: AuthStateInterface) => authState.currentUser
 );
 
-export const isLanguageDoneSelector = createSelector(
+export const selectedLanguagesSelector = createSelector(
   authFeatureSelector,
-  (authState: AuthStateInterface) => authState.isLanguageDone
+  (authState: AuthStateInterface) => authState.selectedLanguages
+);
+
+export const isCompletedLanguageSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.isCompletedLanguage
 );
 
 export const isLoggedInSelector = createSelector(

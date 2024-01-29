@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -14,9 +13,10 @@ import {
 } from 'src/app/store/actions/auth.action';
 import {
   accountSelector,
-  isLanguageDoneSelector,
+  isCompletedLanguageSelector,
   isLoadingSelector,
   registerValidationErrorSelector,
+  selectedLanguagesSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -25,26 +25,27 @@ import {
   styleUrls: ['./step3.page.scss'],
 })
 export class Step3Page implements OnInit, OnDestroy {
-  public progress: number = 1;
+  public progress: number = 0.9;
 
   languages: Language[];
 
   motherLanguages: Array<any> = [];
   studyLanguages: Array<any> = [];
+  motherLanguageString: string;
+  studyLanguagesStringArray: Array<string> = [];
 
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
-  isLanguageDone$: Observable<boolean>;
+  isCompletedLanguage$: Observable<boolean>;
 
   private subscriptions = new Subscription();
 
-  constructor(
-    private route: ActivatedRoute,
-    private toastController: ToastController,
-    private store: Store
-  ) {}
+  constructor(private toastController: ToastController, private store: Store) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.resetValues();
     this.initValues();
   }
 
@@ -64,7 +65,9 @@ export class Step3Page implements OnInit, OnDestroy {
     // Init values From Store
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.isLanguageDone$ = this.store.pipe(select(isLanguageDoneSelector));
+    this.isCompletedLanguage$ = this.store.pipe(
+      select(isCompletedLanguageSelector)
+    );
 
     // Present Toast if error
     this.subscriptions.add(
@@ -76,18 +79,15 @@ export class Step3Page implements OnInit, OnDestroy {
     );
 
     // Init Values From Step 2
-    const data: any = this.route.snapshot.queryParams;
-    console.log('navData coming from step2', data);
-    let studyLanguages: Array<string> = [];
-    let motherLanguage = data.motherLanguage;
+    this.store
+      .pipe(select(selectedLanguagesSelector))
+      .subscribe((data) => {
+        this.motherLanguageString = data?.motherLanguage;
+        this.studyLanguagesStringArray = data?.studyLanguages || [];
+      })
+      .unsubscribe();
 
-    if (typeof data.studyLanguages === 'string') {
-      studyLanguages.push(data.studyLanguages);
-    } else {
-      studyLanguages = data.studyLanguages;
-    }
-
-    studyLanguages.forEach((language) => {
+    this.studyLanguagesStringArray.forEach((language) => {
       this.studyLanguages.push({
         name: this.languages?.find((lang) => lang.code === language).name,
         nativeName: this.languages.find((lang) => lang.code === language)
@@ -100,14 +100,25 @@ export class Step3Page implements OnInit, OnDestroy {
 
     this.motherLanguages = [
       {
-        name: this.languages.find((lang) => lang.code === motherLanguage).name,
-        nativeName: this.languages.find((lang) => lang.code === motherLanguage)
-          .nativeName,
-        code: motherLanguage,
+        name: this.languages.find(
+          (lang) => lang.code === this.motherLanguageString
+        ).name,
+        nativeName: this.languages.find(
+          (lang) => lang.code === this.motherLanguageString
+        ).nativeName,
+        code: this.motherLanguageString,
         level: -1,
         motherLanguage: true,
       },
     ];
+  }
+
+  resetValues() {
+    this.languages = [];
+    this.motherLanguages = [];
+    this.studyLanguages = [];
+    this.motherLanguageString = null;
+    this.studyLanguagesStringArray = [];
   }
 
   radioChecked(event, item) {
@@ -148,9 +159,9 @@ export class Step3Page implements OnInit, OnDestroy {
 
     // Subscribe to the store and wait for the language selection to be successful
     this.subscriptions.add(
-      this.isLanguageDone$.subscribe((isLanguageDone: boolean) => {
+      this.isCompletedLanguage$.subscribe((isCompletedLanguage: boolean) => {
         // Dispatch the second action
-        if (isLanguageDone) {
+        if (isCompletedLanguage) {
           this.store.dispatch(
             updateLanguageArrayAction({ id: userId, request: languageArray })
           );

@@ -1,9 +1,9 @@
 import { Models } from 'appwrite';
 
-import { Account } from '../../Account';
-import { Language } from '../../Language';
-import { User } from '../../User';
-import { ErrorInterface } from '../errors/error.interface';
+import { Account } from 'src/app/models/Account';
+import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
 
 export interface AuthStateInterface {
   isLoading: boolean;
@@ -11,10 +11,10 @@ export interface AuthStateInterface {
   currentUser: User | null;
   isLoggedIn: boolean | null;
   isCompletedRegistration: boolean;
-  languages: Language[] | null;
+  isCompletedLanguage: boolean;
+  selectedLanguages: selectLanguagesInterface | null;
   identities: Models.Identity[] | null;
   sessions: Models.Session[] | null;
-  isLanguageDone: boolean;
   verifyEmailSuccess: boolean;
   verifyEmailConfirmationSuccess: boolean;
   verifyEmailError: ErrorInterface | null;

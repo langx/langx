@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { Language } from 'src/app/models/locale/Language';
 import { Languages } from 'src/app/models/locale/Languages';
+import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
+import { selectLanguagesAction } from 'src/app/store/actions/auth.action';
+import {
+  isLoadingSelector,
+  selectedLanguagesSelector,
+} from 'src/app/store/selectors/auth.selector';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
@@ -15,55 +20,68 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
   styleUrls: ['./step2.page.scss'],
 })
 export class Step2Page implements OnInit {
-  public progress: number = 0.66;
-  isLoading: boolean = false;
+  MAXNUMBER_STUDYING = 5;
+
+  public progress: number = 0.6;
   search: string;
 
+  isLoading$: Observable<boolean>;
   languages$: Observable<Languages> = null;
   languages: Language[];
 
   motherLanguage: string;
   studyLanguages: string[] = [];
   disabledStatus: { [key: string]: boolean } = {};
+  isCheckedStatus: { [key: string]: boolean } = {};
 
   constructor(
     private store: Store,
     private router: Router,
-    private route: ActivatedRoute,
     private toastController: ToastController
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.resetValues();
     this.initValues();
+    this.updateIsChecked();
+    this.updateDisabledStatus();
   }
 
   initValues() {
-    // Data coming from step1
-    const data: any = this.route.snapshot.queryParams;
-    console.log('navData coming from step1', data);
-    this.motherLanguage = data.motherLanguage;
-
     // Data coming from store
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
+    this.store
+      .pipe(select(selectedLanguagesSelector))
+      .subscribe((data) => {
+        this.motherLanguage = data?.motherLanguage;
+        this.studyLanguages =
+          data && data.studyLanguages ? [...data.studyLanguages] : [];
+      })
+      .unsubscribe();
+
     this.languages$ = this.store.pipe(select(languagesSelector));
     this.languages$
       .subscribe((data) => {
-        this.languages = data?.languages;
+        this.languages = data?.languages.filter(
+          (language) => language.code !== this.motherLanguage
+        );
       })
       .unsubscribe();
   }
 
-  MAXNUMBER_STUDYING = 5;
+  resetValues() {
+    this.motherLanguage = null;
+    this.studyLanguages = [];
+    this.disabledStatus = {};
+  }
+
   checkboxChange(event, langCode) {
     if (event.detail.checked) {
       if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
         this.studyLanguages.push(langCode);
-        if (this.studyLanguages.length == this.MAXNUMBER_STUDYING) {
-          for (const lang of this.languages) {
-            if (!this.studyLanguages.includes(lang.code)) {
-              this.disabledStatus[lang.code] = true;
-            }
-          }
-        }
       } else {
         this.presentToast(
           `You can only select ${this.MAXNUMBER_STUDYING} checkboxes.`,
@@ -74,14 +92,10 @@ export class Step2Page implements OnInit {
       this.studyLanguages = this.studyLanguages.filter(
         (item) => item !== langCode
       );
-      if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
-        for (const lang of this.languages) {
-          if (!this.studyLanguages.includes(lang.code)) {
-            this.disabledStatus[lang.code] = false;
-          }
-        }
-      }
     }
+
+    this.isCheckedStatus[langCode] = event.detail.checked;
+    this.updateDisabledStatus();
   }
 
   onSubmit() {
@@ -99,16 +113,47 @@ export class Step2Page implements OnInit {
   }
 
   step2Completed() {
-    this.isLoading = true;
-    const navData: NavigationExtras = {
-      queryParams: {
-        motherLanguage: this.motherLanguage,
-        studyLanguages: this.studyLanguages,
-      },
+    const request: selectLanguagesInterface = {
+      motherLanguage: this.motherLanguage,
+      studyLanguages: this.studyLanguages,
     };
-    this.router.navigate(['/', 'signup', 'language', 'step3'], navData);
-    this.isLoading = false;
-    console.log('step2 completed');
+
+    this.store.dispatch(selectLanguagesAction({ request }));
+    this.router.navigate(['/', 'signup', 'language', 'step3']);
+
+    // console.log('step2 completed');
+  }
+
+  //
+  // Utils
+  //
+
+  updateIsChecked() {
+    for (const lang of this.languages) {
+      if (this.studyLanguages.includes(lang.code)) {
+        this.isCheckedStatus[lang.code] = true;
+      } else {
+        this.isCheckedStatus[lang.code] = false;
+      }
+    }
+  }
+
+  updateDisabledStatus() {
+    if (this.studyLanguages.length == this.MAXNUMBER_STUDYING) {
+      for (const lang of this.languages) {
+        if (!this.studyLanguages.includes(lang.code)) {
+          this.disabledStatus[lang.code] = true;
+        }
+      }
+    }
+
+    if (this.studyLanguages.length < this.MAXNUMBER_STUDYING) {
+      for (const lang of this.languages) {
+        if (!this.studyLanguages.includes(lang.code)) {
+          this.disabledStatus[lang.code] = false;
+        }
+      }
+    }
   }
 
   //

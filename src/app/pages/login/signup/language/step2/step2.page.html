@@ -1,7 +1,10 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+      <ion-back-button
+        defaultHref="/signup/language/step1"
+        [disabled]="(isLoading$ | async)"
+      ></ion-back-button>
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button
@@ -11,6 +14,7 @@
         slot="icon-only"
         shape="round"
         color="primary"
+        [disabled]="(isLoading$ | async)"
       >
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>
@@ -24,7 +28,9 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>Study Languages</ion-card-title>
-      <ion-card-subtitle>the languages you want to learn</ion-card-subtitle>
+      <ion-card-subtitle>
+        Which language(s) that you Practice, Learn, Succeed? 🗣️
+      </ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
@@ -33,12 +39,13 @@
         <ion-row>
           <ion-col value="start">
             <ion-item
-              *ngFor="let lang of (languages$ | async)?.languages | customFilter: search"
+              *ngFor="let lang of languages | customFilter: search"
             >
               <ion-checkbox
                 (ionChange)="checkboxChange($event, lang.code)"
                 value="{{lang.code}}"
                 [disabled]="disabledStatus[lang.code]"
+                [checked]="isCheckedStatus[lang.code]"
                 labelPlacement="start"
               >
                 {{lang.name}}
@@ -53,15 +60,14 @@
   <ion-row>
     <ion-col>
       <ion-button
-        *ngIf="!isLoading"
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         color="primary"
         expand="block"
       >
         Continue
-      </ion-button>
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+        </ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>

@@ -15,6 +15,7 @@ import { listSessionsResponseInterface } from 'src/app/models/types/responses/li
 import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/requests/verifyEmailConfirmationRequest.interface';
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
+import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
 
 // Login
 export const loginAction = createAction(
@@ -64,6 +65,12 @@ export const completeRegistrationFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Select Mother Language
+export const selectLanguagesAction = createAction(
+  ActionTypes.SELECT_LANGUAGES,
+  props<{ request: selectLanguagesInterface }>()
+);
+
 // Language Selection
 export const languageSelectionAction = createAction(
   ActionTypes.LANGUAGE_SELECTION,
@@ -106,6 +113,11 @@ export const isLoggedInSuccessAction = createAction(
 
 export const isLoggedInSuccessCompleteRegistrationAction = createAction(
   ActionTypes.ISLOGGEDIN_SUCCESS_COMPLETE_REGISTRATION,
+  props<{ payload: isLoggedInResponseInterface; error: ErrorInterface }>()
+);
+
+export const isLoggedInSuccessLanguageSelectionAction = createAction(
+  ActionTypes.ISLOGGEDIN_SUCCESS_LANGUAGE_SELECTION,
   props<{ payload: isLoggedInResponseInterface; error: ErrorInterface }>()
 );
 

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SignupPage } from './signup.page';
-// import { AuthGuard } from 'src/app/guards/auth/auth.guard';
+import { AuthGuard } from 'src/app/guards/auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -13,15 +13,13 @@ const routes: Routes = [
     path: 'complete',
     loadChildren: () =>
       import('./complete/complete.module').then((m) => m.CompletePageModule),
-    // TODO: Take a look here
-    // canLoad: [AuthGuard],
+    canLoad: [AuthGuard],
   },
   {
     path: 'language',
     loadChildren: () =>
       import('./language/language.module').then((m) => m.LanguagePageModule),
-    // TODO: Take a look here
-    // canLoad: [AuthGuard],
+    canLoad: [AuthGuard],
   },
 ];
 

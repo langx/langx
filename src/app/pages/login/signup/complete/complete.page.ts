@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -27,7 +26,7 @@ import {
 export class CompletePage implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
-  public progress: number = 0.7;
+  public progress: number = 0.25;
   searchTerm: string;
 
   form: FormGroup;
@@ -38,7 +37,6 @@ export class CompletePage implements OnInit, OnDestroy {
 
   constructor(
     private store: Store,
-    private router: Router,
     private toastController: ToastController
   ) {}
 
@@ -112,7 +110,7 @@ export class CompletePage implements OnInit, OnDestroy {
   }
 
   async onSubmit() {
-    console.log('form.value:', this.form.value);
+    // console.log('form.value:', this.form.value);
 
     // Check form is valid
     if (!this.form.valid) {
@@ -136,13 +134,6 @@ export class CompletePage implements OnInit, OnDestroy {
   complete(form: FormGroup) {
     this.account$
       .subscribe((account: Account | null) => {
-        // TODO: If guard works fine for the complete page, this should not be needed
-        if (!account) {
-          this.router.navigate(['/login']);
-          this.presentToast('Please login or register again', 'danger');
-          return;
-        }
-
         const [day, month, year] = form.value.birthdate.split('/');
         const request: CompleteRegistrationRequestInterface = {
           name: nameParts(account?.name),

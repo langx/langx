@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, combineLatest, filter } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 
 import { isLoggedInAction } from 'src/app/store/actions/auth.action';
 import {
-  isCompletedRegistrationSelector,
   isLoadingSelector,
   isLoggedInSelector,
   unauthorizedErrorSelector,
@@ -51,33 +50,6 @@ export class SuccessPage implements OnInit {
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
-
-    // Redirect to the correct page
-    this.subscription.add(
-      combineLatest([
-        this.store.pipe(
-          select(isLoggedInSelector),
-          filter((isLoggedIn) => isLoggedIn !== null) // ignore values until isLoggedIn is not null
-        ),
-        this.store.pipe(
-          select(isCompletedRegistrationSelector),
-          filter((isCompletedRegistration) => isCompletedRegistration !== null)
-        ),
-      ]).subscribe(([isLoggedIn, isCompletedRegistration]) => {
-        // console.log('isLoggedIn', isLoggedIn);
-        // console.log('isCompletedRegistration', isCompletedRegistration);
-
-        setTimeout(() => {
-          if (!isLoggedIn) {
-            this.router.navigateByUrl('/login'), { replaceUrl: true };
-          } else if (!isCompletedRegistration) {
-            this.router.navigateByUrl('/signup/complete', { replaceUrl: true });
-          } else {
-            this.router.navigateByUrl('/home', { replaceUrl: true });
-          }
-        }, 3000);
-      })
-    );
 
     // Error Handling
     this.subscription.add(
