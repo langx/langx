@@ -52,7 +52,7 @@ export class Step2Page implements OnInit {
       .pipe(select(selectedLanguagesSelector))
       .subscribe((data) => {
         this.motherLanguage = data?.motherLanguage;
-        this.studyLanguages = data?.studyLanguages;
+        this.studyLanguages = data?.studyLanguages || [];
       })
       .unsubscribe();
 
