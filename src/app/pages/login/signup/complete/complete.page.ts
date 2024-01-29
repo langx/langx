@@ -47,6 +47,16 @@ export class CompletePage implements OnInit, OnDestroy {
     this.initValues();
   }
 
+  ionViewDidEnter() {
+    this.account$
+      .subscribe((account: Account | null) => {
+        if (!account) {
+          this.router.navigate(['/login']);
+        }
+      })
+      .unsubscribe();
+  }
+
   ionViewWillLeave() {
     this.form.reset();
   }
@@ -136,13 +146,6 @@ export class CompletePage implements OnInit, OnDestroy {
   complete(form: FormGroup) {
     this.account$
       .subscribe((account: Account | null) => {
-        // TODO: If guard works fine for the complete page, this should not be needed
-        if (!account) {
-          this.router.navigate(['/login']);
-          this.presentToast('Please login or register again', 'danger');
-          return;
-        }
-
         const [day, month, year] = form.value.birthdate.split('/');
         const request: CompleteRegistrationRequestInterface = {
           name: nameParts(account?.name),
