@@ -14,7 +14,7 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
   styleUrls: ['./step1.page.scss'],
 })
 export class Step1Page implements OnInit {
-  public progress: number = 0.33;
+  public progress: number = 0.4;
   isLoading: boolean = false;
   term: string;
 

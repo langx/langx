@@ -15,7 +15,7 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
   styleUrls: ['./step2.page.scss'],
 })
 export class Step2Page implements OnInit {
-  public progress: number = 0.66;
+  public progress: number = 0.6;
   isLoading: boolean = false;
   search: string;
 

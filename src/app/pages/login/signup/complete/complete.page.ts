@@ -27,7 +27,7 @@ import {
 export class CompletePage implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
 
-  public progress: number = 0.7;
+  public progress: number = 0.25;
   searchTerm: string;
 
   form: FormGroup;

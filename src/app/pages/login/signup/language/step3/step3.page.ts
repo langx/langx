@@ -25,7 +25,7 @@ import {
   styleUrls: ['./step3.page.scss'],
 })
 export class Step3Page implements OnInit, OnDestroy {
-  public progress: number = 1;
+  public progress: number = 0.9;
 
   languages: Language[];
 
