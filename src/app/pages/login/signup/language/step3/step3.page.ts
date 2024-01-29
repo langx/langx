@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -17,6 +16,7 @@ import {
   isCompletedLanguageSelector,
   isLoadingSelector,
   registerValidationErrorSelector,
+  selectedLanguagesSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -31,6 +31,8 @@ export class Step3Page implements OnInit, OnDestroy {
 
   motherLanguages: Array<any> = [];
   studyLanguages: Array<any> = [];
+  motherLanguageString: string;
+  studyLanguagesStringArray: Array<string> = [];
 
   account$: Observable<Account | null>;
   isLoading$: Observable<boolean>;
@@ -38,17 +40,12 @@ export class Step3Page implements OnInit, OnDestroy {
 
   private subscriptions = new Subscription();
 
-  constructor(
-    private route: ActivatedRoute,
-    private toastController: ToastController,
-    private store: Store
-  ) {}
+  constructor(private toastController: ToastController, private store: Store) {}
 
   ngOnInit() {}
 
   ionViewWillEnter() {
-    this.motherLanguages = [];
-    this.studyLanguages = [];
+    this.resetValues();
     this.initValues();
   }
 
@@ -82,18 +79,15 @@ export class Step3Page implements OnInit, OnDestroy {
     );
 
     // Init Values From Step 2
-    const data: any = this.route.snapshot.queryParams;
-    console.log('navData coming from step2', data);
-    let studyLanguages: Array<string> = [];
-    let motherLanguage = data.motherLanguage;
+    this.store
+      .pipe(select(selectedLanguagesSelector))
+      .subscribe((data) => {
+        this.motherLanguageString = data?.motherLanguage;
+        this.studyLanguagesStringArray = data?.studyLanguages || [];
+      })
+      .unsubscribe();
 
-    if (typeof data.studyLanguages === 'string') {
-      studyLanguages.push(data.studyLanguages);
-    } else {
-      studyLanguages = data.studyLanguages;
-    }
-
-    studyLanguages.forEach((language) => {
+    this.studyLanguagesStringArray.forEach((language) => {
       this.studyLanguages.push({
         name: this.languages?.find((lang) => lang.code === language).name,
         nativeName: this.languages.find((lang) => lang.code === language)
@@ -106,14 +100,25 @@ export class Step3Page implements OnInit, OnDestroy {
 
     this.motherLanguages = [
       {
-        name: this.languages.find((lang) => lang.code === motherLanguage).name,
-        nativeName: this.languages.find((lang) => lang.code === motherLanguage)
-          .nativeName,
-        code: motherLanguage,
+        name: this.languages.find(
+          (lang) => lang.code === this.motherLanguageString
+        ).name,
+        nativeName: this.languages.find(
+          (lang) => lang.code === this.motherLanguageString
+        ).nativeName,
+        code: this.motherLanguageString,
         level: -1,
         motherLanguage: true,
       },
     ];
+  }
+
+  resetValues() {
+    this.languages = [];
+    this.motherLanguages = [];
+    this.studyLanguages = [];
+    this.motherLanguageString = null;
+    this.studyLanguagesStringArray = [];
   }
 
   radioChecked(event, item) {
@@ -129,7 +134,8 @@ export class Step3Page implements OnInit, OnDestroy {
     }
 
     const languages = this.motherLanguages.concat(this.studyLanguages);
-    this.completeLanguages(languages);
+    // console.log('languages:', languages);
+    // this.completeLanguages(languages);
   }
 
   completeLanguages(languages) {
