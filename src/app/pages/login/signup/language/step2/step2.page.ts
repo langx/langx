@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { Language } from 'src/app/models/locale/Language';
 import { Languages } from 'src/app/models/locale/Languages';
 import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
+import { selectLanguagesAction } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
   selectedLanguagesSelector,
@@ -113,15 +114,15 @@ export class Step2Page implements OnInit {
   }
 
   step2Completed() {
-    const navData: NavigationExtras = {
-      queryParams: {
-        motherLanguage: this.motherLanguage,
-        studyLanguages: this.studyLanguages,
-      },
+    const request: selectLanguagesInterface = {
+      motherLanguage: this.motherLanguage,
+      studyLanguages: this.studyLanguages,
     };
-    this.router.navigate(['/', 'signup', 'language', 'step3'], navData);
-    // console.log('navData going to step3', navData);
-    console.log('step2 completed');
+
+    this.store.dispatch(selectLanguagesAction({ request }));
+    this.router.navigate(['/', 'signup', 'language', 'step3']);
+
+    // console.log('step2 completed');
   }
 
   //
