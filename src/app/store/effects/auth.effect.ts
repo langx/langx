@@ -44,6 +44,7 @@ import {
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
   isLoggedInSuccessCompleteRegistrationAction,
+  isLoggedInSuccessLanguageSelectionAction,
   languageSelectionAction,
   languageSelectionFailureAction,
   languageSelectionSuccessAction,
@@ -249,7 +250,23 @@ export class AuthEffect {
                   account: account,
                   currentUser: currentUser,
                 };
-                return isLoggedInSuccessAction({ payload });
+
+                // Check if currentUser.languages array is empty
+                if (
+                  currentUser.languages &&
+                  currentUser.languages.length === 0
+                ) {
+                  // Dispatch another action
+                  const error: ErrorInterface = {
+                    message: 'Language Selection is not completed yet.',
+                  };
+                  return isLoggedInSuccessLanguageSelectionAction({
+                    payload,
+                    error,
+                  });
+                } else {
+                  return isLoggedInSuccessAction({ payload });
+                }
               }),
               catchError(() => {
                 const payload: isLoggedInResponseInterface = {
@@ -285,6 +302,17 @@ export class AuthEffect {
         ofType(isLoggedInSuccessCompleteRegistrationAction),
         tap(() => {
           this.router.navigateByUrl('/signup/complete', { replaceUrl: true });
+        })
+      ),
+    { dispatch: false }
+  );
+
+  redirectAfterIsLoggedInSuccessLanguageSelection$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(isLoggedInSuccessLanguageSelectionAction),
+        tap(() => {
+          this.router.navigateByUrl('/signup/language', { replaceUrl: true });
         })
       ),
     { dispatch: false }

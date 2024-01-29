@@ -51,6 +51,7 @@ import {
   deleteAccountSuccessAction,
   deleteAccountFailureAction,
   clearErrorsAction,
+  isLoggedInSuccessLanguageSelectionAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -305,6 +306,19 @@ const authReducer = createReducer(
       isLoading: false,
       isLoggedIn: true,
       isCompletedRegistration: false,
+      account: action.payload?.account,
+      currentUser: action.payload?.currentUser,
+      unauthorizedError: action.error,
+    })
+  ),
+  on(
+    isLoggedInSuccessLanguageSelectionAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      isLoggedIn: true,
+      isCompletedRegistration: true,
+      isCompletedLanguage: false,
       account: action.payload?.account,
       currentUser: action.payload?.currentUser,
       unauthorizedError: action.error,

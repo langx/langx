@@ -109,6 +109,11 @@ export const isLoggedInSuccessCompleteRegistrationAction = createAction(
   props<{ payload: isLoggedInResponseInterface; error: ErrorInterface }>()
 );
 
+export const isLoggedInSuccessLanguageSelectionAction = createAction(
+  ActionTypes.ISLOGGEDIN_SUCCESS_LANGUAGE_SELECTION,
+  props<{ payload: isLoggedInResponseInterface; error: ErrorInterface }>()
+);
+
 export const isLoggedInFailureAction = createAction(
   ActionTypes.ISLOGGEDIN_FAILURE,
   props<{ error: ErrorInterface }>()
