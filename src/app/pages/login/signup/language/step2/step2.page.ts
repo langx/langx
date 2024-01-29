@@ -7,7 +7,11 @@ import { Observable } from 'rxjs';
 
 import { Language } from 'src/app/models/locale/Language';
 import { Languages } from 'src/app/models/locale/Languages';
-import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
+import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
+import {
+  isLoadingSelector,
+  selectedLanguagesSelector,
+} from 'src/app/store/selectors/auth.selector';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
@@ -37,22 +41,27 @@ export class Step2Page implements OnInit {
   ngOnInit() {}
 
   ionViewWillEnter() {
-    this.studyLanguages = [];
     this.initValues();
   }
 
   initValues() {
-    // Data coming from step1
-    const data: any = this.route.snapshot.queryParams;
-    console.log('navData coming from step1', data);
-    this.motherLanguage = data.motherLanguage;
-
     // Data coming from store
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+
+    this.store
+      .pipe(select(selectedLanguagesSelector))
+      .subscribe((data) => {
+        this.motherLanguage = data?.motherLanguage;
+        this.studyLanguages = data?.studyLanguages;
+      })
+      .unsubscribe();
+
     this.languages$ = this.store.pipe(select(languagesSelector));
     this.languages$
       .subscribe((data) => {
-        this.languages = data?.languages;
+        this.languages = data?.languages.filter(
+          (language) => language.code !== this.motherLanguage
+        );
       })
       .unsubscribe();
   }
