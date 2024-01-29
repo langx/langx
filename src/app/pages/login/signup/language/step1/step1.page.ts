@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { Language } from 'src/app/models/locale/Language';
 import { Languages } from 'src/app/models/locale/Languages';
+import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
+import { selectLanguagesAction } from 'src/app/store/actions/auth.action';
 import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
@@ -16,11 +17,10 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 })
 export class Step1Page implements OnInit {
   public progress: number = 0.4;
-  term: string;
+  search: string;
 
   isLoading$: Observable<boolean>;
   languages$: Observable<Languages> = null;
-  languages: Language[];
 
   motherLanguage: string;
 
@@ -38,16 +38,10 @@ export class Step1Page implements OnInit {
     // Data coming from store
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.languages$ = this.store.pipe(select(languagesSelector));
-    this.languages$
-      .subscribe((data) => {
-        this.languages = data?.languages;
-      })
-      .unsubscribe();
   }
 
   radioChecked(event) {
     this.motherLanguage = event.detail.value;
-    // console.log(this.motherLanguage);
   }
 
   onSubmit() {
@@ -60,14 +54,14 @@ export class Step1Page implements OnInit {
   }
 
   step1Completed() {
-    const navData: NavigationExtras = {
-      queryParams: {
-        motherLanguage: this.motherLanguage,
-      },
+    const request: selectLanguagesInterface = {
+      motherLanguage: this.motherLanguage,
     };
-    this.router.navigate(['/', 'signup', 'language', 'step2'], navData);
-    console.log('navData going to step2', navData);
-    console.log('step1 completed');
+
+    this.store.dispatch(selectLanguagesAction({ request }));
+    this.router.navigate(['/', 'signup', 'language', 'step2']);
+
+    // console.log('step1 completed');
   }
 
   //

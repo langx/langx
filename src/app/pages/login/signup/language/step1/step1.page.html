@@ -32,12 +32,12 @@
 
     <ion-card-content>
       <ion-list>
-        <ion-searchbar [(ngModel)]="term"></ion-searchbar>
+        <ion-searchbar [(ngModel)]="search"></ion-searchbar>
         <ion-row>
           <ion-col value="start">
             <ion-radio-group value="start" (ionChange)="radioChecked($event)">
               <ion-item
-                *ngFor="let lang of (languages$ | async)?.languages | customFilter: term"
+                *ngFor="let lang of (languages$ | async)?.languages | customFilter: search"
               >
                 <ion-radio value="{{lang.code}}" labelPlacement="start"
                   >{{lang.nativeName}}</ion-radio
