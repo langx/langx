@@ -11,6 +11,7 @@
         slot="icon-only"
         shape="round"
         color="primary"
+        [disabled]="(isLoading$ | async)"
       >
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>
@@ -24,7 +25,9 @@
   <ion-card>
     <ion-card-header>
       <ion-card-title>Mother Language</ion-card-title>
-      <ion-card-subtitle>Which language you speak at home ? 🏡 </ion-card-subtitle>
+      <ion-card-subtitle
+        >Which language you speak at home ? 🏡
+      </ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
@@ -50,14 +53,14 @@
   <ion-row>
     <ion-col>
       <ion-button
-        *ngIf="!isLoading"
+        [disabled]="(isLoading$ | async)"
         (click)="onSubmit()"
         color="primary"
         expand="block"
-        >Continue</ion-button
       >
-      <ion-button *ngIf="isLoading" color="primary" expand="block" disabled>
-        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        Continue
+        <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+        </ion-spinner>
       </ion-button>
     </ion-col>
   </ion-row>

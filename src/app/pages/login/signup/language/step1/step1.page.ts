@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 
 import { Language } from 'src/app/models/locale/Language';
 import { Languages } from 'src/app/models/locale/Languages';
+import { isLoadingSelector } from 'src/app/store/selectors/auth.selector';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 
 @Component({
@@ -15,9 +16,9 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 })
 export class Step1Page implements OnInit {
   public progress: number = 0.4;
-  isLoading: boolean = false;
   term: string;
 
+  isLoading$: Observable<boolean>;
   languages$: Observable<Languages> = null;
   languages: Language[];
 
@@ -34,6 +35,8 @@ export class Step1Page implements OnInit {
   }
 
   initValues() {
+    // Data coming from store
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.languages$ = this.store.pipe(select(languagesSelector));
     this.languages$
       .subscribe((data) => {
@@ -57,14 +60,13 @@ export class Step1Page implements OnInit {
   }
 
   step1Completed() {
-    this.isLoading = true;
     const navData: NavigationExtras = {
       queryParams: {
         motherLanguage: this.motherLanguage,
       },
     };
     this.router.navigate(['/', 'signup', 'language', 'step2'], navData);
-    this.isLoading = false;
+    console.log('navData going to step2', navData);
     console.log('step1 completed');
   }
 
