@@ -45,6 +45,7 @@
                 (ionChange)="checkboxChange($event, lang.code)"
                 value="{{lang.code}}"
                 [disabled]="disabledStatus[lang.code]"
+                [checked]="isCheckedStatus[lang.code]"
                 labelPlacement="start"
               >
                 {{lang.name}}

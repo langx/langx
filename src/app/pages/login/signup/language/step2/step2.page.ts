@@ -32,6 +32,7 @@ export class Step2Page implements OnInit {
   motherLanguage: string;
   studyLanguages: string[] = [];
   disabledStatus: { [key: string]: boolean } = {};
+  isCheckedStatus: { [key: string]: boolean } = {};
 
   constructor(
     private store: Store,
@@ -44,6 +45,7 @@ export class Step2Page implements OnInit {
   ionViewWillEnter() {
     this.resetValues();
     this.initValues();
+    this.updateIsChecked();
     this.updateDisabledStatus();
   }
 
@@ -73,6 +75,7 @@ export class Step2Page implements OnInit {
   resetValues() {
     this.motherLanguage = null;
     this.studyLanguages = [];
+    this.disabledStatus = {};
   }
 
   checkboxChange(event, langCode) {
@@ -91,6 +94,7 @@ export class Step2Page implements OnInit {
       );
     }
 
+    this.isCheckedStatus[langCode] = event.detail.checked;
     this.updateDisabledStatus();
   }
 
@@ -123,6 +127,16 @@ export class Step2Page implements OnInit {
   //
   // Utils
   //
+
+  updateIsChecked() {
+    for (const lang of this.languages) {
+      if (this.studyLanguages.includes(lang.code)) {
+        this.isCheckedStatus[lang.code] = true;
+      } else {
+        this.isCheckedStatus[lang.code] = false;
+      }
+    }
+  }
 
   updateDisabledStatus() {
     if (this.studyLanguages.length == this.MAXNUMBER_STUDYING) {
