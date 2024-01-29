@@ -44,7 +44,11 @@ export class Step3Page implements OnInit, OnDestroy {
     private store: Store
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    this.motherLanguages = [];
+    this.studyLanguages = [];
     this.initValues();
   }
 
@@ -64,7 +68,9 @@ export class Step3Page implements OnInit, OnDestroy {
     // Init values From Store
     this.account$ = this.store.pipe(select(accountSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.isCompletedLanguage$ = this.store.pipe(select(isCompletedLanguageSelector));
+    this.isCompletedLanguage$ = this.store.pipe(
+      select(isCompletedLanguageSelector)
+    );
 
     // Present Toast if error
     this.subscriptions.add(
