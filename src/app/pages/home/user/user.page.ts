@@ -18,7 +18,7 @@ import {
 } from '@ionic/angular';
 
 import { environment } from 'src/environments/environment';
-import { getAge, lastSeen } from 'src/app/extras/utils';
+import { getAge, lastSeen, lastSeenExt } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
@@ -260,6 +260,11 @@ export class UserPage implements OnInit {
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
+  }
+
+  lastSeenExt(d: any) {
+    if (!d) return null;
+    return lastSeenExt(d);
   }
 
   getAge(d: any) {

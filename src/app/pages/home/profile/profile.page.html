@@ -90,6 +90,12 @@
             'dd/MM/YYYY'}}</ion-label
           >
         </ion-item>
+        <ion-item>
+          <ion-icon name="time-outline"></ion-icon>
+          <ion-label>
+            Registered {{lastSeenExt((currentUser$ | async)?.$createdAt)}} ago
+          </ion-label>
+        </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>

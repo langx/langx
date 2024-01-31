@@ -8,7 +8,7 @@ import { IonModal, ModalController, ToastController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 // Component and utils Imports
-import { lastSeen, getAge } from 'src/app/extras/utils';
+import { lastSeen, getAge, lastSeenExt } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 // Interfaces Imports
@@ -201,6 +201,11 @@ export class ProfilePage implements OnInit {
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
+  }
+
+  lastSeenExt(d: any) {
+    if (!d) return null;
+    return lastSeenExt(d);
   }
 
   getAge(d: any) {
