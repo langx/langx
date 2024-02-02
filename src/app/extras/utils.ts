@@ -58,8 +58,10 @@ export function onlineStatus(date: Date) {
     return 'online';
   } else if (hours < 1) {
     return 'away';
-  } else {
+  } else if (hours < 24) {
     return 'offline';
+  } else {
+    return 'none';
   }
 }
 

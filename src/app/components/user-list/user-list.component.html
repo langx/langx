@@ -4,6 +4,8 @@
     <div class="emoji-indicator">
       <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>
       <small *ngIf="onlineStatus(item?.lastSeen) == 'away'">🟡</small>
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'offline'">🟠</small>
+      <!-- <small *ngIf="onlineStatus(item?.lastSeen) == 'none'">🔴</small> -->
     </div>
   </ion-thumbnail>
   <ion-label (click)="redirect()">
