@@ -27,7 +27,7 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Recommended For You</ion-card-subtitle>
+      <ion-card-title>Recently Active ⚡</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
@@ -35,7 +35,7 @@
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"
-            (onClick)="getRoom(user?.$id)"
+            (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
@@ -85,7 +85,7 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Recently Active</ion-card-subtitle>
+      <ion-card-title>New Users 👋</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
@@ -93,7 +93,7 @@
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"
-            (onClick)="getRoom(user?.$id)"
+            (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>

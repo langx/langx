@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
@@ -13,16 +12,12 @@ export class UserListComponent implements OnInit {
   @Input() item: User;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
-  constructor(private route: Router) {}
+  constructor() {}
 
   ngOnInit() {}
 
   redirect() {
     this.onClick.emit(this.item);
-  }
-
-  goProfile() {
-    this.route.navigateByUrl('/home/user/' + this.item.$id);
   }
 
   getStudyLanguages() {
