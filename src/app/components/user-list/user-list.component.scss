@@ -1,6 +1,18 @@
+.thumbnail-container {
+  position: relative;
+  display: inline-block;
+}
+
+.emoji-indicator {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  font-size: 15px;
+}
+
 ion-thumbnail {
   --size: 75px; // Increase this value to make the thumbnail bigger
   margin-top: 5px;
   margin-bottom: 5px;
-  --border-radius: 14px;
+  --border-radius: 10px;
 }

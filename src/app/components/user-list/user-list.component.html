@@ -1,20 +1,24 @@
 <ion-item>
-  <ion-thumbnail slot="start" (click)="goProfile()">
+  <ion-thumbnail class="thumbnail-container" (click)="goProfile()" slot="start">
     <img [src]="item?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+    <div class="emoji-indicator">
+      <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
+    </div>
   </ion-thumbnail>
   <ion-label (click)="redirect()">
     <h2>
-      <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
       {{ getFlagEmoji(item) }}
       {{ item?.name }}
     </h2>
     <p>
       <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
 
-      <ion-text *ngIf="!item?.aboutMe">No 'About Me' text provided yet.</ion-text>
+      <ion-text *ngIf="!item?.aboutMe"
+        >No 'About Me' text provided yet.</ion-text
+      >
     </p>
     <p>
-        <ion-text style="font-style: italic">
+      <ion-text style="font-style: italic">
         Learning:
         <span>
           {{ getStudyLanguages() }}
