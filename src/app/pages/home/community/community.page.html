@@ -34,7 +34,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (users$ | async)">
+        <ng-container *ngFor="let user of (users$ | async) | slice:0:3">
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"
@@ -44,6 +44,7 @@
         </ng-container>
       </ion-list>
 
+      <!-- TODO: Skeleton Desing -->
       <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
