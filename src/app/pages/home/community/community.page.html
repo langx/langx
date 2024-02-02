@@ -31,7 +31,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (users$ | async) | slice:0:3">
+        <ng-container *ngFor="let user of (usersByLastSeen$ | async) | slice:0:3">
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"
@@ -89,7 +89,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (users$ | async) | slice:0:3">
+        <ng-container *ngFor="let user of (usersByLastSeen$ | async) | slice:0:3">
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"

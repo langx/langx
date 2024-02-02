@@ -23,7 +23,7 @@ import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/s
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
   isLoadingSelector as isLoadingUserStateSelector,
-  usersSelector,
+  usersByLastSeenSelector,
   totalSelector,
   errorSelector,
 } from 'src/app/store/selectors/user.selector';
@@ -42,7 +42,7 @@ export class CommunityPage implements OnInit {
   currentUser$: Observable<User>;
   isLoadingUserState$: Observable<boolean>;
   isLoadingRoomState$: Observable<boolean>;
-  users$: Observable<User[] | null> = null;
+  usersByLastSeen$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
 
   constructor(
@@ -122,7 +122,7 @@ export class CommunityPage implements OnInit {
   initValues(): void {
     // Set values from selectors
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    this.users$ = this.store.pipe(select(usersSelector));
+    this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.total$ = this.store.pipe(select(totalSelector));
     this.isLoadingUserState$ = this.store.pipe(
       select(isLoadingUserStateSelector)

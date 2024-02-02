@@ -10,9 +10,9 @@ export const isLoadingSelector = createSelector(
   (userState: UserStateInterface) => userState.isLoading
 );
 
-export const usersSelector = createSelector(
+export const usersByLastSeenSelector = createSelector(
   userFeatureSelector,
-  (userState: UserStateInterface) => userState.users
+  (userState: UserStateInterface) => userState.usersByLastSeen
 );
 
 export const totalSelector = createSelector(

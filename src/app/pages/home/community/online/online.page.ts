@@ -14,7 +14,7 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import {
   totalSelector,
-  usersSelector,
+  usersByLastSeenSelector,
   isLoadingSelector,
 } from 'src/app/store/selectors/user.selector';
 
@@ -29,7 +29,7 @@ export class OnlinePage implements OnInit {
 
   isLoading$: Observable<boolean>;
   currentUser$: Observable<User>;
-  users$: Observable<User[] | null> = null;
+  usersByLastSeen$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
 
   constructor(
@@ -50,7 +50,7 @@ export class OnlinePage implements OnInit {
     // Set values from selectors
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    this.users$ = this.store.pipe(select(usersSelector));
+    this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.total$ = this.store.pipe(select(totalSelector));
   }
 
@@ -103,7 +103,7 @@ export class OnlinePage implements OnInit {
   loadMore(event) {
     // Offset is the number of users already loaded
     let offset: number = 0;
-    this.users$
+    this.usersByLastSeen$
       .subscribe((users) => {
         offset = users.length;
         this.total$

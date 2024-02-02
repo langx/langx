@@ -19,7 +19,7 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (users$ | async)">
+        <ng-container *ngFor="let user of (usersByLastSeen$ | async)">
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"

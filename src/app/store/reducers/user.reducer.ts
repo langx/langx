@@ -26,7 +26,7 @@ import {
 const initialState: UserStateInterface = {
   isLoading: false,
   total: null,
-  users: null,
+  usersByLastSeen: null,
   user: null,
   error: null,
   report: null,
@@ -48,7 +48,7 @@ const userReducer = createReducer(
       ...state,
       isLoading: false,
       total: action.payload?.total,
-      users: action.payload?.documents,
+      usersByLastSeen: action.payload?.documents,
     })
   ),
   on(
@@ -73,7 +73,7 @@ const userReducer = createReducer(
       ...state,
       isLoading: false,
       total: action.payload?.total,
-      users: [...state.users, ...action.payload?.documents],
+      usersByLastSeen: [...state.usersByLastSeen, ...action.payload?.documents],
     })
   ),
   on(
