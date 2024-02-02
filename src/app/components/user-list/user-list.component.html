@@ -2,7 +2,8 @@
   <ion-thumbnail class="thumbnail-container" (click)="goProfile()" slot="start">
     <img [src]="item?.profilePhoto" alt="" referrerpolicy="no-referrer" />
     <div class="emoji-indicator">
-      <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'away'">🟡</small>
     </div>
   </ion-thumbnail>
   <ion-label (click)="redirect()">
@@ -12,9 +13,8 @@
     </h2>
     <p>
       <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
-
-      <ion-text *ngIf="!item?.aboutMe"
-        >No 'About Me' text provided yet.</ion-text
+      <ion-text *ngIf="!item?.aboutMe">
+        No 'About Me' text provided yet.</ion-text
       >
     </p>
     <p>

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { lastSeen } from 'src/app/extras/utils';
+import { onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
 @Component({
@@ -44,15 +44,8 @@ export class UserListComponent implements OnInit {
     return String.fromCodePoint(...codePoints);
   }
 
-  messageTime(d: any) {
+  onlineStatus(d: any) {
     if (!d) return null;
-    let time = lastSeen(d);
-    if (time === 'online') time = 'now';
-    return time;
-  }
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
+    return onlineStatus(d);
   }
 }
