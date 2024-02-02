@@ -23,6 +23,10 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
+import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
   getUserByIdAction,
   reportUserAction,
@@ -66,6 +70,8 @@ export class UserPage implements OnInit {
   badges: string[] = [];
 
   reason: string;
+
+  rooms$: Observable<RoomExtendedInterface[] | null> = null;
 
   constructor(
     private store: Store,
@@ -161,6 +167,8 @@ export class UserPage implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('id') || null;
     this.user$ = this.store.pipe(select(userSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    this.rooms$ = this.store.pipe(select(roomsSelector));
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
@@ -285,6 +293,38 @@ export class UserPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //
+  // Get or Create Room
+  //
+
+  getRoom() {
+    let userId = this.userId;
+
+    this.rooms$
+      .subscribe((rooms) => {
+        this.currentUser$
+          .subscribe((user) => {
+            const currentUserId = user.$id;
+            if (rooms) {
+              const room = rooms.find(
+                (room) =>
+                  room.users.includes(currentUserId) &&
+                  room.users.includes(userId)
+              );
+              if (room) {
+                this.store.dispatch(activateRoomAction({ payload: room }));
+              } else {
+                this.store.dispatch(getRoomAction({ currentUserId, userId }));
+              }
+            } else {
+              this.store.dispatch(getRoomAction({ currentUserId, userId }));
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
   }
 
   //
