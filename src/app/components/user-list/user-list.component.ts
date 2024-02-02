@@ -36,6 +36,14 @@ export class UserListComponent implements OnInit {
   // Utils
   //
 
+  getFlagEmoji(item: User) {
+    const codePoints = item['countryCode']
+      .toUpperCase()
+      .split('')
+      .map((char) => 127397 + char.charCodeAt());
+    return String.fromCodePoint(...codePoints);
+  }
+
   messageTime(d: any) {
     if (!d) return null;
     let time = lastSeen(d);
