@@ -287,6 +287,10 @@ export class CommunityPage implements OnInit {
     this.router.navigateByUrl('/home/filters');
   }
 
+  getOnlinePage() {
+    this.router.navigateByUrl('/home/community/online');
+  }
+
   //
   // Present Toast
   //
