@@ -216,12 +216,16 @@ export class CommunityPage implements OnInit {
     this.router.navigateByUrl('/home/filters');
   }
 
+  getProfilePage(userId: string) {
+    this.router.navigateByUrl('/home/user/' + userId);
+  }
+
   getOnlinePage() {
     this.router.navigateByUrl('/home/community/online');
   }
 
-  getProfilePage(userId: string) {
-    this.router.navigateByUrl('/home/user/' + userId);
+  getNewUsersPage() {
+    this.router.navigateByUrl('/home/community/new');
   }
 
   //

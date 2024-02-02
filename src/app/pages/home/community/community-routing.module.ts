@@ -13,6 +13,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./online/online.module').then((m) => m.OnlinePageModule),
   },
+  {
+    path: 'new',
+    loadChildren: () => import('./new/new.module').then((m) => m.NewPageModule),
+  },
 ];
 
 @NgModule({
