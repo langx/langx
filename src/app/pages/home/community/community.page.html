@@ -21,9 +21,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> -->
 
   <ion-button (click)="getOnlinePage()">Online Page</ion-button>
 
@@ -48,7 +48,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoadingUserState$ | async)">
+      <!-- <ion-list *ngIf="(isLoadingUserState$ | async)">
         <ion-item *ngFor="let i of '0123456789'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -74,7 +74,7 @@
             </p>
           </ion-label>
         </ion-item>
-      </ion-list>
+      </ion-list> -->
 
       <!------------------>
       <!-- SKELETON end -->
@@ -82,7 +82,4 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 </ion-content>

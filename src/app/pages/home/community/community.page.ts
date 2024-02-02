@@ -237,40 +237,6 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  // Infinite Scroll
-  //
-
-  loadMore(event) {
-    // Offset is the number of users already loaded
-    let offset: number = 0;
-    this.users$
-      .subscribe((users) => {
-        offset = users.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < total) {
-              const filterData = this.filterData;
-              this.store.dispatch(
-                getUsersWithOffsetAction({
-                  request: {
-                    filterData,
-                    offset,
-                  },
-                })
-              );
-            } else {
-              console.log('All users loaded');
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
-
-    // this.getUsers(this.filterData);
-    event.target.complete();
-  }
-
-  //
   // Pull to refresh
   //
 
@@ -280,7 +246,7 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  // Filters
+  // Routes
   //
 
   getFiltersPage() {
