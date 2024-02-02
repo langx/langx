@@ -8,6 +8,11 @@ const routes: Routes = [
     path: '',
     component: CommunityPage,
   },
+  {
+    path: 'online',
+    loadChildren: () =>
+      import('./online/online.module').then((m) => m.OnlinePageModule),
+  },
 ];
 
 @NgModule({
