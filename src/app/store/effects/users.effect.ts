@@ -25,18 +25,20 @@ export class UsersEffects {
       ofType(getUsersAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
-        this.userService.listUsers(currentUser, request.filterData).pipe(
-          map((payload: listUsersResponseInterface) =>
-            getUsersSuccessAction({ payload })
-          ),
+        this.userService
+          .listUsersByLastSeen(currentUser, request.filterData)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersSuccessAction({ payload })
+            ),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getUsersFailureAction({ error }));
-          })
-        )
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersFailureAction({ error }));
+            })
+          )
       )
     )
   );
@@ -47,7 +49,7 @@ export class UsersEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.userService
-          .listUsers(currentUser, request.filterData, request.offset)
+          .listUsersByLastSeen(currentUser, request.filterData, request.offset)
           .pipe(
             map((payload: listUsersResponseInterface) =>
               getUsersWithOffsetSuccessAction({ payload })

@@ -39,7 +39,7 @@ export class UserService {
     );
   }
 
-  listUsers(
+  listUsersByLastSeen(
     currentUser: User,
     filterData: FilterDataInterface,
     offset?: number
