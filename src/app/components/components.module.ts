@@ -10,6 +10,7 @@ import { RoomListComponent } from './room-list/room-list.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.component';
 import { VisitListComponent } from './visit-list/visit-list.component';
+import { UserBoxComponent } from './user-box/user-box.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { VisitListComponent } from './visit-list/visit-list.component';
     SpinnerComponent,
     RoomListComponent,
     UserListComponent,
+    UserBoxComponent,
     VisitListComponent,
     BlockedUserListComponent,
   ],
@@ -30,6 +32,7 @@ import { VisitListComponent } from './visit-list/visit-list.component';
     SpinnerComponent,
     RoomListComponent,
     UserListComponent,
+    UserBoxComponent,
     VisitListComponent,
     BlockedUserListComponent,
   ],
