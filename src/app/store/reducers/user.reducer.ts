@@ -6,12 +6,12 @@ import {
   logoutSuccessAction,
 } from 'src/app/store/actions/auth.action';
 import {
-  getUsersAction,
-  getUsersSuccessAction,
-  getUsersFailureAction,
-  getUsersWithOffsetAction,
-  getUsersWithOffsetSuccessAction,
-  getUsersWithOffsetFailureAction,
+  getUsersByLastSeenAction,
+  getUsersByLastSeenSuccessAction,
+  getUsersByLastSeenFailureAction,
+  getUsersByLastSeenWithOffsetAction,
+  getUsersByLastSeenWithOffsetSuccessAction,
+  getUsersByLastSeenWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
   getUserByIdAction,
@@ -35,7 +35,7 @@ const initialState: UserStateInterface = {
 const userReducer = createReducer(
   initialState,
   on(
-    getUsersAction,
+    getUsersByLastSeenAction,
     (state): UserStateInterface => ({
       ...state,
       isLoading: true,
@@ -43,7 +43,7 @@ const userReducer = createReducer(
     })
   ),
   on(
-    getUsersSuccessAction,
+    getUsersByLastSeenSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
@@ -52,7 +52,7 @@ const userReducer = createReducer(
     })
   ),
   on(
-    getUsersFailureAction,
+    getUsersByLastSeenFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
@@ -60,7 +60,7 @@ const userReducer = createReducer(
     })
   ),
   on(
-    getUsersWithOffsetAction,
+    getUsersByLastSeenWithOffsetAction,
     (state): UserStateInterface => ({
       ...state,
       isLoading: true,
@@ -68,7 +68,7 @@ const userReducer = createReducer(
     })
   ),
   on(
-    getUsersWithOffsetSuccessAction,
+    getUsersByLastSeenWithOffsetSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
@@ -77,7 +77,7 @@ const userReducer = createReducer(
     })
   ),
   on(
-    getUsersWithOffsetFailureAction,
+    getUsersByLastSeenWithOffsetFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,

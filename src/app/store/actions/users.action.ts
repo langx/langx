@@ -6,24 +6,24 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 
 // Get Users Actions
-export const getUsersAction = createAction(
-  ActionTypes.GET_USERS,
+export const getUsersByLastSeenAction = createAction(
+  ActionTypes.GET_USERS_BY_LAST_SEEN,
   props<{ request: { filterData: FilterDataInterface } }>()
 );
 
-export const getUsersSuccessAction = createAction(
-  ActionTypes.GET_USERS_SUCCESS,
+export const getUsersByLastSeenSuccessAction = createAction(
+  ActionTypes.GET_USERS_BY_LAST_SEEN_SUCCESS,
   props<{ payload: listUsersResponseInterface }>()
 );
 
-export const getUsersFailureAction = createAction(
-  ActionTypes.GET_USERS_FAILURE,
+export const getUsersByLastSeenFailureAction = createAction(
+  ActionTypes.GET_USERS_BY_LAST_SEEN_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
 // Get Users With Offset Actions
-export const getUsersWithOffsetAction = createAction(
-  ActionTypes.GET_USERS_WITH_OFFSET,
+export const getUsersByLastSeenWithOffsetAction = createAction(
+  ActionTypes.GET_USERS_BY_LAST_SEEN_WITH_OFFSET,
   props<{
     request: {
       filterData: FilterDataInterface;
@@ -32,12 +32,12 @@ export const getUsersWithOffsetAction = createAction(
   }>()
 );
 
-export const getUsersWithOffsetSuccessAction = createAction(
-  ActionTypes.GET_USERS_WITH_OFFSET_SUCCESS,
+export const getUsersByLastSeenWithOffsetSuccessAction = createAction(
+  ActionTypes.GET_USERS_BY_LAST_SEEN_WITH_OFFSET_SUCCESS,
   props<{ payload: listUsersResponseInterface }>()
 );
 
-export const getUsersWithOffsetFailureAction = createAction(
-  ActionTypes.GET_USERS_WITH_OFFSET_FAILURE,
+export const getUsersByLastSeenWithOffsetFailureAction = createAction(
+  ActionTypes.GET_USERS_BY_LAST_SEEN_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );

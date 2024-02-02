@@ -10,33 +10,33 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
-  getUsersAction,
-  getUsersFailureAction,
-  getUsersSuccessAction,
-  getUsersWithOffsetAction,
-  getUsersWithOffsetFailureAction,
-  getUsersWithOffsetSuccessAction,
+  getUsersByLastSeenAction,
+  getUsersByLastSeenFailureAction,
+  getUsersByLastSeenSuccessAction,
+  getUsersByLastSeenWithOffsetAction,
+  getUsersByLastSeenWithOffsetFailureAction,
+  getUsersByLastSeenWithOffsetSuccessAction,
 } from 'src/app/store/actions/users.action';
 
 @Injectable()
 export class UsersEffects {
   getUsersByLastSeen$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getUsersAction),
+      ofType(getUsersByLastSeenAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.userService
           .listUsersByLastSeen(currentUser, request.filterData)
           .pipe(
             map((payload: listUsersResponseInterface) =>
-              getUsersSuccessAction({ payload })
+              getUsersByLastSeenSuccessAction({ payload })
             ),
 
             catchError((errorResponse: HttpErrorResponse) => {
               const error: ErrorInterface = {
                 message: errorResponse.message,
               };
-              return of(getUsersFailureAction({ error }));
+              return of(getUsersByLastSeenFailureAction({ error }));
             })
           )
       )
@@ -45,21 +45,21 @@ export class UsersEffects {
 
   getUsersByLastSeenWithOffset$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getUsersWithOffsetAction),
+      ofType(getUsersByLastSeenWithOffsetAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.userService
           .listUsersByLastSeen(currentUser, request.filterData, request.offset)
           .pipe(
             map((payload: listUsersResponseInterface) =>
-              getUsersWithOffsetSuccessAction({ payload })
+              getUsersByLastSeenWithOffsetSuccessAction({ payload })
             ),
 
             catchError((errorResponse: HttpErrorResponse) => {
               const error: ErrorInterface = {
                 message: errorResponse.message,
               };
-              return of(getUsersWithOffsetFailureAction({ error }));
+              return of(getUsersByLastSeenWithOffsetFailureAction({ error }));
             })
           )
       )

@@ -5,7 +5,10 @@ import { select, Store } from '@ngrx/store';
 
 import { User } from 'src/app/models/User';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { getUsersAction, getUsersWithOffsetAction } from 'src/app/store/actions/users.action';
+import {
+  getUsersByLastSeenAction,
+  getUsersByLastSeenWithOffsetAction,
+} from 'src/app/store/actions/users.action';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -57,7 +60,7 @@ export class OnlinePage implements OnInit {
 
   listUsers() {
     const filterData = this.filterData;
-    this.store.dispatch(getUsersAction({ request: { filterData } }));
+    this.store.dispatch(getUsersByLastSeenAction({ request: { filterData } }));
   }
 
   //
@@ -93,7 +96,7 @@ export class OnlinePage implements OnInit {
     if (event) event.target.complete();
   }
 
-    //
+  //
   // Infinite Scroll
   //
 
@@ -108,7 +111,7 @@ export class OnlinePage implements OnInit {
             if (offset < total) {
               const filterData = this.filterData;
               this.store.dispatch(
-                getUsersWithOffsetAction({
+                getUsersByLastSeenWithOffsetAction({
                   request: {
                     filterData,
                     offset,

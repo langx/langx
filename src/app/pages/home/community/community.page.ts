@@ -15,7 +15,7 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
-import { getUsersAction } from 'src/app/store/actions/users.action';
+import { getUsersByLastSeenAction } from 'src/app/store/actions/users.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -138,7 +138,7 @@ export class CommunityPage implements OnInit {
 
   listUsers() {
     const filterData = this.filterData;
-    this.store.dispatch(getUsersAction({ request: { filterData } }));
+    this.store.dispatch(getUsersByLastSeenAction({ request: { filterData } }));
   }
 
   //
