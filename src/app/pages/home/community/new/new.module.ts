@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { NewPageRoutingModule } from './new-routing.module';
 
 import { NewPage } from './new.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NewPageRoutingModule
+    NewPageRoutingModule,
+    ComponentsModule,
   ],
-  declarations: [NewPage]
+  declarations: [NewPage],
 })
 export class NewPageModule {}
