@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
@@ -22,10 +22,9 @@ import {
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { isLoadingSelector } from 'src/app/store/selectors/room.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
-  isLoadingSelector as isLoadingUserStateSelector,
+  isLoadingSelector,
   usersByLastSeenSelector,
   totalByLastSeenSelector,
   errorSelector,
@@ -56,8 +55,7 @@ export class CommunityPage implements OnInit {
     private router: Router,
     private filterService: FilterService,
     private storageService: StorageService,
-    private toastController: ToastController,
-    private loadingCtrl: LoadingController
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -97,18 +95,6 @@ export class CommunityPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.isLoadingOverlayActive
-      .pipe(
-        filter((isActive) => !isActive),
-        take(1)
-      )
-      .subscribe(async () => {
-        if (this.loadingOverlay) {
-          await this.loadingOverlay.dismiss();
-          this.loadingOverlay = undefined;
-        }
-      });
-
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
@@ -130,7 +116,7 @@ export class CommunityPage implements OnInit {
       select(totalByCreatedAtSelector)
     );
 
-    this.isLoading$ = this.store.pipe(select(isLoadingUserStateSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
   }
 
   //
@@ -241,29 +227,5 @@ export class CommunityPage implements OnInit {
     });
 
     await toast.present();
-  }
-
-  //
-  // Loading Controller
-  //
-
-  private loadingOverlay: HTMLIonLoadingElement;
-  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
-  async loadingController(isLoading: boolean) {
-    if (isLoading) {
-      if (!this.loadingOverlay) {
-        this.isLoadingOverlayActive.next(true);
-        this.loadingOverlay = await this.loadingCtrl.create({
-          message: 'Please wait...',
-        });
-        await this.loadingOverlay.present();
-        this.isLoadingOverlayActive.next(false);
-      }
-    } else if (this.loadingOverlay) {
-      this.isLoadingOverlayActive.next(true);
-      await this.loadingOverlay.dismiss();
-      this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive.next(false);
-    }
   }
 }
