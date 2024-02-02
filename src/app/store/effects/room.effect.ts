@@ -4,14 +4,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
+import { AxiosError } from 'axios';
 
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { AxiosError } from 'axios';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { RoomService } from 'src/app/services/chat/room.service';
-import { currentUserSelector } from '../selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   createRoomAction,
