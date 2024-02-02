@@ -17,4 +17,5 @@ export enum ActionTypes {
   UNARCHIVE_ROOM_SUCCESS = '[Room] Unarchive Room Success',
   UNARCHIVE_ROOM_FAILURE = '[Room] Unarchive Room Failure',
   UNARCHIVE_ROOM_INITIAL_STATE = '[Room] Unarchive Room Initial State',
+  CLEAR_ERRORS = '[Room] Clear Errors',
 }

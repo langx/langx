@@ -29,6 +29,7 @@ import {
   getRoomByIdFailureAction,
   getRoomByIdSuccessAction,
   createRoomInitialStateAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/room.action';
 import {
   findRoomAndAddMessageAction,
@@ -343,6 +344,15 @@ const roomReducer = createReducer(
     deleteAccountSuccessAction,
     (): RoomStateInterface => ({
       ...initialState,
+    })
+  ),
+
+  // Clear Error Reducer
+  on(
+    clearErrorsAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      error: null,
     })
   )
 );

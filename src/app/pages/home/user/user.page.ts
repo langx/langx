@@ -26,7 +26,10 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { roomsSelector } from 'src/app/store/selectors/room.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { getRoomAction } from 'src/app/store/actions/room.action';
+import {
+  getRoomAction,
+  clearErrorsAction,
+} from 'src/app/store/actions/room.action';
 import {
   isLoadingSelector as isLoadingRoomSelector,
   errorSelector as errorRoomSelector,
@@ -129,6 +132,7 @@ export class UserPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
