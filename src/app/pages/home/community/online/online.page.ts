@@ -40,7 +40,6 @@ export class OnlinePage implements OnInit {
     this.initValues();
 
     // Check Local Storage for filters
-    await this.checkLocalStorage();
     await this.checkFilter();
   }
 
@@ -75,40 +74,6 @@ export class OnlinePage implements OnInit {
         // List Users
         this.listUsers();
       });
-  }
-
-  // TODO: #246 Save filterData with JSON.stringify();
-  async checkLocalStorage() {
-    // Getting the filter data from Capacitor Preferences
-    let languagesString =
-      (await this.storageService.getValue('languages')) || [];
-    const gender = (await this.storageService.getValue('gender')) || null;
-    const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = (await this.storageService.getValue('minAge')) || null;
-    const maxAgeString = (await this.storageService.getValue('maxAge')) || null;
-
-    let minAge = Number(minAgeString) || null;
-    let maxAge = Number(maxAgeString) || null;
-
-    // TODO: Do better logic here
-    let languages: Array<any> = [];
-    if (languagesString) {
-      languages = languagesString.toLocaleString().split(',');
-      if (languages.length === 1 && languages[0] === '') {
-        languages = [];
-      }
-    }
-
-    let filterData: FilterDataInterface = {
-      languages: languages,
-      gender: gender,
-      country: country,
-      minAge: minAge,
-      maxAge: maxAge,
-    };
-
-    // console.log('checkLocalStorage', filterData);
-    this.filterService.setEvent(filterData);
   }
 
   //
