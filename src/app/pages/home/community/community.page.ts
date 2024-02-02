@@ -15,7 +15,10 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
-import { getUsersByLastSeenAction } from 'src/app/store/actions/users.action';
+import {
+  getUsersByCreatedAtAction,
+  getUsersByLastSeenAction,
+} from 'src/app/store/actions/users.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -134,9 +137,14 @@ export class CommunityPage implements OnInit {
   // Get Users
   //
 
-  listUsers() {
+  listUsersByLastSeen() {
     const filterData = this.filterData;
     this.store.dispatch(getUsersByLastSeenAction({ request: { filterData } }));
+  }
+
+  listUsersByCreatedAt() {
+    const filterData = this.filterData;
+    this.store.dispatch(getUsersByCreatedAtAction({ request: { filterData } }));
   }
 
   //
@@ -151,7 +159,8 @@ export class CommunityPage implements OnInit {
         // console.log('Subscribed filter: ', filterData);
 
         // List Users
-        this.listUsers();
+        this.listUsersByLastSeen();
+        this.listUsersByCreatedAt();
       });
   }
 
@@ -194,7 +203,8 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event) {
-    this.listUsers();
+    this.listUsersByLastSeen();
+    this.listUsersByCreatedAt();
     if (event) event.target.complete();
   }
 
