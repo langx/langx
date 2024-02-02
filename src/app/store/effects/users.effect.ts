@@ -20,7 +20,7 @@ import {
 
 @Injectable()
 export class UsersEffects {
-  getUsers$ = createEffect(() =>
+  getUsersByLastSeen$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
@@ -43,7 +43,7 @@ export class UsersEffects {
     )
   );
 
-  getUsersWithOffset$ = createEffect(() =>
+  getUsersByLastSeenWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersWithOffsetAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
