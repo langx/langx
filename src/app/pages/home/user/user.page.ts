@@ -28,6 +28,10 @@ import { roomsSelector } from 'src/app/store/selectors/room.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import { getRoomAction } from 'src/app/store/actions/room.action';
 import {
+  isLoadingSelector as isLoadingRoomSelector,
+  errorSelector as errorRoomSelector,
+} from 'src/app/store/selectors/room.selector';
+import {
   getUserByIdAction,
   reportUserAction,
   reportUserInitialStateAction,
@@ -35,7 +39,7 @@ import {
   blockUserInitialStateAction,
 } from 'src/app/store/actions/user.action';
 import {
-  errorSelector,
+  errorSelector as errorUserSelector,
   isLoadingSelector as isLoadingUserSelector,
   reportSelector,
   userSelector,
@@ -94,8 +98,9 @@ export class UserPage implements OnInit {
       combineLatest([
         this.store.pipe(select(isLoadingAuthSelector)),
         this.store.pipe(select(isLoadingUserSelector)),
-      ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
-        this.loadingController(isLoadingAuth || isLoadingUser);
+        this.store.pipe(select(isLoadingRoomSelector)),
+      ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
+        this.loadingController(isLoadingAuth || isLoadingUser || isLoadingRoom);
       })
     );
 
@@ -111,7 +116,16 @@ export class UserPage implements OnInit {
     );
     this.subscription.add(
       this.store
-        .pipe(select(errorSelector))
+        .pipe(select(errorUserSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+    this.subscription.add(
+      this.store
+        .pipe(select(errorRoomSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
