@@ -47,6 +47,27 @@ export class UserService {
     // Define queries
     const queries: any[] = [];
 
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    // THIS IS THE LINE THAT NEEDS TO BE CHANGED
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
+  private createExclusionQueries(currentUser: User): any[] {
+    const queries: any[] = [];
+
     // Query for users that are not the current user
     queries.push(Query.notEqual('$id', currentUser.$id));
 
@@ -57,8 +78,11 @@ export class UserService {
       });
     }
 
-    // Query for users descending by last seen
-    queries.push(Query.orderDesc('lastSeen'));
+    return queries;
+  }
+
+  private createFilterQueries(filterData: FilterDataInterface): any[] {
+    const queries: any[] = [];
 
     // Query for users with the selected gender filter
     if (filterData?.gender) {
@@ -88,13 +112,19 @@ export class UserService {
       queries.push(Query.search('languageArray', keywords));
     }
 
-    // Limit and offset
+    return queries;
+  }
+
+  private createPaginationQueries(offset?: number): any[] {
+    const queries: any[] = [];
+
+    // Limit query
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+
+    // Offset query
     if (offset) queries.push(Query.offset(offset));
 
-    return from(
-      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
-    );
+    return queries;
   }
 
   blockUser(currentUser: User, userId: string): Observable<User> {
