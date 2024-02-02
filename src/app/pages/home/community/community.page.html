@@ -25,12 +25,9 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-button (click)="getOnlinePage()">Online Page</ion-button>
-
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Recommended For You</ion-card-subtitle>
-      <ion-card-title> Language Mates </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
@@ -43,6 +40,9 @@
           </app-user-list>
         </ng-container>
       </ion-list>
+      <ion-button fill="clear" expand="block" (click)="getOnlinePage()">
+        See More
+      </ion-button>
 
       <!-- TODO: Skeleton Desing -->
       <!-------------------->
@@ -80,6 +80,27 @@
       <!------------------>
       <!-- SKELETON end -->
       <!------------------>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Recently Active</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ng-container *ngFor="let user of (users$ | async) | slice:0:3">
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getRoom(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+      <ion-button fill="clear" expand="block" (click)="getOnlinePage()">
+        See More
+      </ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>
