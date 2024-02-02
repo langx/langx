@@ -8,30 +8,19 @@ import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Service Imports
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
-import { activateRoomAction } from 'src/app/store/actions/message.action';
-import {
-  createRoomInitialStateAction,
-  getRoomAction,
-} from 'src/app/store/actions/room.action';
-import {
-  getUsersAction,
-  getUsersWithOffsetAction,
-} from 'src/app/store/actions/users.action';
+import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
+import { getUsersAction } from 'src/app/store/actions/users.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
-import {
-  createRoomErrorSelector,
-  roomsSelector,
-} from 'src/app/store/selectors/room.selector';
+import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
   isLoadingSelector as isLoadingUserStateSelector,
   usersSelector,
@@ -55,8 +44,6 @@ export class CommunityPage implements OnInit {
   isLoadingRoomState$: Observable<boolean>;
   users$: Observable<User[] | null> = null;
   total$: Observable<number | null> = null;
-
-  rooms$: Observable<RoomExtendedInterface[] | null> = null;
 
   constructor(
     private store: Store,
@@ -143,8 +130,6 @@ export class CommunityPage implements OnInit {
     this.isLoadingRoomState$ = this.store.pipe(
       select(isLoadingRoomStateSelector)
     );
-
-    this.rooms$ = this.store.pipe(select(roomsSelector));
   }
 
   //
@@ -204,36 +189,6 @@ export class CommunityPage implements OnInit {
 
     // console.log('checkLocalStorage', filterData);
     this.filterService.setEvent(filterData);
-  }
-
-  //
-  // Get or Create Room
-  //
-
-  getRoom(userId: string) {
-    this.rooms$
-      .subscribe((rooms) => {
-        this.currentUser$
-          .subscribe((user) => {
-            const currentUserId = user.$id;
-            if (rooms) {
-              const room = rooms.find(
-                (room) =>
-                  room.users.includes(currentUserId) &&
-                  room.users.includes(userId)
-              );
-              if (room) {
-                this.store.dispatch(activateRoomAction({ payload: room }));
-              } else {
-                this.store.dispatch(getRoomAction({ currentUserId, userId }));
-              }
-            } else {
-              this.store.dispatch(getRoomAction({ currentUserId, userId }));
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
   }
 
   //
