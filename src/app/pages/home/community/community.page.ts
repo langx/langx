@@ -19,13 +19,15 @@ import { getUsersByLastSeenAction } from 'src/app/store/actions/users.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
+import { isLoadingSelector } from 'src/app/store/selectors/room.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
   isLoadingSelector as isLoadingUserStateSelector,
   usersByLastSeenSelector,
   totalByLastSeenSelector,
   errorSelector,
+  usersByCreatedAtSelector,
+  totalByCreatedAtSelector,
 } from 'src/app/store/selectors/user.selector';
 
 @Component({
@@ -40,10 +42,11 @@ export class CommunityPage implements OnInit {
   filterData: FilterDataInterface;
 
   currentUser$: Observable<User>;
-  isLoadingUserState$: Observable<boolean>;
-  isLoadingRoomState$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
   usersByLastSeen$: Observable<User[] | null> = null;
   totalByLastSeenSelector$: Observable<number | null> = null;
+  usersByCreatedAt$: Observable<User[] | null> = null;
+  totalByCreatedAtSelector$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
@@ -65,13 +68,6 @@ export class CommunityPage implements OnInit {
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
-
-    // Loading
-    this.subscription.add(
-      this.isLoadingRoomState$.subscribe((isLoading) => {
-        this.loadingController(isLoading);
-      })
-    );
 
     // User Errors
     this.subscription.add(
@@ -123,13 +119,15 @@ export class CommunityPage implements OnInit {
     // Set values from selectors
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
-    this.totalByLastSeenSelector$ = this.store.pipe(select(totalByLastSeenSelector));
-    this.isLoadingUserState$ = this.store.pipe(
-      select(isLoadingUserStateSelector)
+    this.totalByLastSeenSelector$ = this.store.pipe(
+      select(totalByLastSeenSelector)
     );
-    this.isLoadingRoomState$ = this.store.pipe(
-      select(isLoadingRoomStateSelector)
+    this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
+    this.totalByCreatedAtSelector$ = this.store.pipe(
+      select(totalByCreatedAtSelector)
     );
+
+    this.isLoading$ = this.store.pipe(select(isLoadingUserStateSelector));
   }
 
   //
