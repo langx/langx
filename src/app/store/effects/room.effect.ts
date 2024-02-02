@@ -78,11 +78,16 @@ export class RoomEffects {
       switchMap(({ currentUserId, userId }) =>
         this.roomService.getRoom(currentUserId, userId).pipe(
           map((data: listRoomsResponseInterface) => {
-            if (data.total === 1) {
+            if (data.total === 0) {
+              return createRoomAction({ currentUserId, userId });
+            } else if (data.total === 1) {
               const payload: RoomExtendedInterface = data.documents[0];
               return getRoomSuccessAction({ payload });
             } else {
-              return createRoomAction({ currentUserId, userId });
+              const error: ErrorInterface = {
+                message: 'Room was not found and not created',
+              };
+              return getRoomFailureAction({ error });
             }
           }),
 
