@@ -13,10 +13,6 @@
   </ion-refresher>
 
   <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>Recommended For You</ion-card-subtitle>
-      <ion-card-title> Language Mates </ion-card-title>
-    </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let user of (usersByLastSeen$ | async)">
