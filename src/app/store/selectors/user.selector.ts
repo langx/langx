@@ -15,9 +15,19 @@ export const usersByLastSeenSelector = createSelector(
   (userState: UserStateInterface) => userState.usersByLastSeen
 );
 
-export const totalSelector = createSelector(
+export const totalByLastSeenSelector = createSelector(
   userFeatureSelector,
-  (userState: UserStateInterface) => userState.total
+  (userState: UserStateInterface) => userState.totalByLastSeen
+);
+
+export const usersByCreatedAtSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.usersByCreatedAt
+);
+
+export const totalByCreatedAtSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.totalByCreatedAt
 );
 
 export const errorSelector = createSelector(

@@ -65,6 +65,31 @@ export class UserService {
     );
   }
 
+  listUsersByCreatedAt(
+    currentUser: User,
+    filterData: FilterDataInterface,
+    offset?: number
+  ): Observable<listUsersResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    // Query for users descending by created at
+    queries.push(Query.orderDesc('$createdAt'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
   private createExclusionQueries(currentUser: User): any[] {
     const queries: any[] = [];
 

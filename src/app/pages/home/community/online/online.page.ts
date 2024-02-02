@@ -13,7 +13,7 @@ import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { FilterService } from 'src/app/services/filter/filter.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import {
-  totalSelector,
+  totalByLastSeenSelector,
   usersByLastSeenSelector,
   isLoadingSelector,
 } from 'src/app/store/selectors/user.selector';
@@ -30,7 +30,7 @@ export class OnlinePage implements OnInit {
   isLoading$: Observable<boolean>;
   currentUser$: Observable<User>;
   usersByLastSeen$: Observable<User[] | null> = null;
-  total$: Observable<number | null> = null;
+  totalByLastSeenSelector$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
@@ -51,7 +51,7 @@ export class OnlinePage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
-    this.total$ = this.store.pipe(select(totalSelector));
+    this.totalByLastSeenSelector$ = this.store.pipe(select(totalByLastSeenSelector));
   }
 
   //
@@ -106,7 +106,7 @@ export class OnlinePage implements OnInit {
     this.usersByLastSeen$
       .subscribe((users) => {
         offset = users.length;
-        this.total$
+        this.totalByLastSeenSelector$
           .subscribe((total) => {
             if (offset < total) {
               const filterData = this.filterData;

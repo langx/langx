@@ -10,6 +10,12 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
+  getUsersByCreatedAtAction,
+  getUsersByCreatedAtFailureAction,
+  getUsersByCreatedAtSuccessAction,
+  getUsersByCreatedAtWithOffsetAction,
+  getUsersByCreatedAtWithOffsetFailureAction,
+  getUsersByCreatedAtWithOffsetSuccessAction,
   getUsersByLastSeenAction,
   getUsersByLastSeenFailureAction,
   getUsersByLastSeenSuccessAction,
@@ -20,6 +26,7 @@ import {
 
 @Injectable()
 export class UsersEffects {
+  // Get Users By Last Seen Effects
   getUsersByLastSeen$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getUsersByLastSeenAction),
@@ -60,6 +67,53 @@ export class UsersEffects {
                 message: errorResponse.message,
               };
               return of(getUsersByLastSeenWithOffsetFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  // Get Users By Created At Effects
+  getUsersByCreatedAt$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByCreatedAtAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByCreatedAt(currentUser, request.filterData)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByCreatedAtSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByCreatedAtFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  getUsersByCreatedAtWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByCreatedAtWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByCreatedAt(currentUser, request.filterData, request.offset)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByCreatedAtWithOffsetSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByCreatedAtWithOffsetFailureAction({ error }));
             })
           )
       )

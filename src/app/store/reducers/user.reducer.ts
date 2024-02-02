@@ -12,6 +12,12 @@ import {
   getUsersByLastSeenWithOffsetAction,
   getUsersByLastSeenWithOffsetSuccessAction,
   getUsersByLastSeenWithOffsetFailureAction,
+  getUsersByCreatedAtAction,
+  getUsersByCreatedAtSuccessAction,
+  getUsersByCreatedAtFailureAction,
+  getUsersByCreatedAtWithOffsetAction,
+  getUsersByCreatedAtWithOffsetSuccessAction,
+  getUsersByCreatedAtWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
   getUserByIdAction,
@@ -25,8 +31,10 @@ import {
 
 const initialState: UserStateInterface = {
   isLoading: false,
-  total: null,
+  totalByLastSeen: null,
   usersByLastSeen: null,
+  totalByCreatedAt: null,
+  usersByCreatedAt: null,
   user: null,
   error: null,
   report: null,
@@ -34,6 +42,7 @@ const initialState: UserStateInterface = {
 
 const userReducer = createReducer(
   initialState,
+  // Get Users By Last Seen Reducers
   on(
     getUsersByLastSeenAction,
     (state): UserStateInterface => ({
@@ -47,7 +56,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
-      total: action.payload?.total,
+      totalByLastSeen: action.payload?.total,
       usersByLastSeen: action.payload?.documents,
     })
   ),
@@ -72,12 +81,67 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
-      total: action.payload?.total,
+      totalByLastSeen: action.payload?.total,
       usersByLastSeen: [...state.usersByLastSeen, ...action.payload?.documents],
     })
   ),
   on(
     getUsersByLastSeenWithOffsetFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Users By Created At Reducers
+  on(
+    getUsersByCreatedAtAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByCreatedAtSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      totalByCreatedAt: action.payload?.total,
+      usersByCreatedAt: action.payload?.documents,
+    })
+  ),
+  on(
+    getUsersByCreatedAtFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getUsersByCreatedAtWithOffsetAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByCreatedAtWithOffsetSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      totalByCreatedAt: action.payload?.total,
+      usersByCreatedAt: [
+        ...state.usersByCreatedAt,
+        ...action.payload?.documents,
+      ],
+    })
+  ),
+  on(
+    getUsersByCreatedAtWithOffsetFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
