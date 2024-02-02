@@ -11,7 +11,6 @@ import {
 } from 'src/app/store/actions/users.action';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { FilterService } from 'src/app/services/filter/filter.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
 import {
   totalByLastSeenSelector,
   usersByLastSeenSelector,
@@ -30,13 +29,12 @@ export class OnlinePage implements OnInit {
   isLoading$: Observable<boolean>;
   currentUser$: Observable<User>;
   usersByLastSeen$: Observable<User[] | null> = null;
-  totalByLastSeenSelector$: Observable<number | null> = null;
+  totalByLastSeen$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
     private router: Router,
-    private filterService: FilterService,
-    private storageService: StorageService
+    private filterService: FilterService
   ) {}
 
   async ngOnInit() {
@@ -51,7 +49,7 @@ export class OnlinePage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
-    this.totalByLastSeenSelector$ = this.store.pipe(select(totalByLastSeenSelector));
+    this.totalByLastSeen$ = this.store.pipe(select(totalByLastSeenSelector));
   }
 
   //
@@ -106,7 +104,7 @@ export class OnlinePage implements OnInit {
     this.usersByLastSeen$
       .subscribe((users) => {
         offset = users.length;
-        this.totalByLastSeenSelector$
+        this.totalByLastSeen$
           .subscribe((total) => {
             if (offset < total) {
               const filterData = this.filterData;
