@@ -12,7 +12,7 @@ import {
   getUsersByCreatedAtWithOffsetAction,
 } from 'src/app/store/actions/users.action';
 import {
-  isLoadingSelector,
+  isLoadingByCreatedAtSelector,
   totalByCreatedAtSelector,
   usersByCreatedAtSelector,
 } from 'src/app/store/selectors/user.selector';
@@ -46,8 +46,9 @@ export class NewPage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    this.isLoading$ = this.store.pipe(select(isLoadingByCreatedAtSelector));
     this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
     this.totalByCreatedAt$ = this.store.pipe(select(totalByCreatedAtSelector));
   }

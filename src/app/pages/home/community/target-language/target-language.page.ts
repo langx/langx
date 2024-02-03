@@ -12,9 +12,9 @@ import {
   getUsersByTargetLanguageWithOffsetAction,
 } from 'src/app/store/actions/users.action';
 import {
+  isLoadingByTargetLanguageSelector,
   totalByTargetLanguageSelector,
   usersByTargetLanguageSelector,
-  isLoadingSelector,
 } from 'src/app/store/selectors/user.selector';
 @Component({
   selector: 'app-target-language',
@@ -45,8 +45,11 @@ export class TargetLanguagePage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    this.isLoading$ = this.store.pipe(
+      select(isLoadingByTargetLanguageSelector)
+    );
     this.usersByTargetLanguage$ = this.store.pipe(
       select(usersByTargetLanguageSelector)
     );

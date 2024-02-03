@@ -14,7 +14,7 @@ import {
 import {
   totalByLastSeenSelector,
   usersByLastSeenSelector,
-  isLoadingSelector,
+  isLoadingByLastSeenSelector,
 } from 'src/app/store/selectors/user.selector';
 
 @Component({
@@ -46,8 +46,9 @@ export class OnlinePage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    this.isLoading$ = this.store.pipe(select(isLoadingByLastSeenSelector));
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.totalByLastSeen$ = this.store.pipe(select(totalByLastSeenSelector));
   }
