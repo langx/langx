@@ -171,7 +171,7 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-            <!-------------------->
+      <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
 
@@ -228,6 +228,35 @@
           <app-visit-list [item]="visit"></app-visit-list>
         </ng-container>
       </ion-list>
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ion-item *ngFor="let i of '01234'.split('')" detail>
+          <ion-thumbnail class="visitor-thumbnail" slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 30%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
       <ion-button
         fill="clear"
         expand="block"
