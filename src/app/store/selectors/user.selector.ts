@@ -10,6 +10,16 @@ export const isLoadingSelector = createSelector(
   (userState: UserStateInterface) => userState.isLoading
 );
 
+export const usersByTargetLanguageSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.usersByTargetLanguage
+);
+
+export const totalByTargetLanguageSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.totalByTargetLanguage
+);
+
 export const usersByLastSeenSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.usersByLastSeen
