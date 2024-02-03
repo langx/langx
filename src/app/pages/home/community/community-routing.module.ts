@@ -17,6 +17,10 @@ const routes: Routes = [
     path: 'new',
     loadChildren: () => import('./new/new.module').then((m) => m.NewPageModule),
   },
+  {
+    path: 'target-language',
+    loadChildren: () => import('./target-language/target-language.module').then( m => m.TargetLanguagePageModule)
+  },
 ];
 
 @NgModule({
