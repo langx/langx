@@ -5,6 +5,43 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 
+// Get Users By Target Language Actions
+export const getUsersByTargetLanguageAction = createAction(
+  ActionTypes.GET_USERS_BY_TARGET_LANGUAGE,
+  props<{ request: { filterData: FilterDataInterface } }>()
+);
+
+export const getUsersByTargetLanguageSuccessAction = createAction(
+  ActionTypes.GET_USERS_BY_TARGET_LANGUAGE_SUCCESS,
+  props<{ payload: listUsersResponseInterface }>()
+);
+
+export const getUsersByTargetLanguageFailureAction = createAction(
+  ActionTypes.GET_USERS_BY_TARGET_LANGUAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Get Users By Target Language With Offset Actions
+export const getUsersByTargetLanguageWithOffsetAction = createAction(
+  ActionTypes.GET_USERS_BY_TARGET_LANGUAGE_WITH_OFFSET,
+  props<{
+    request: {
+      filterData: FilterDataInterface;
+      offset: number;
+    };
+  }>()
+);
+
+export const getUsersByTargetLanguageWithOffsetSuccessAction = createAction(
+  ActionTypes.GET_USERS_BY_TARGET_LANGUAGE_WITH_OFFSET_SUCCESS,
+  props<{ payload: listUsersResponseInterface }>()
+);
+
+export const getUsersByTargetLanguageWithOffsetFailureAction = createAction(
+  ActionTypes.GET_USERS_BY_TARGET_LANGUAGE_WITH_OFFSET_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Get Users By Last Seen Actions
 export const getUsersByLastSeenAction = createAction(
   ActionTypes.GET_USERS_BY_LAST_SEEN,
