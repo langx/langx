@@ -39,6 +39,38 @@ export class UserService {
     );
   }
 
+  listUsersByTargetLanguage(
+    currentUser: User,
+    filterData: FilterDataInterface,
+    offset?: number
+  ): Observable<listUsersResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    // Query for users with the selected languages filter
+    if (currentUser?.languageArray.length > 0) {
+      const keywords = currentUser.languageArray.join(' ');
+      // OR Query for users with any of the selected languages
+      queries.push(Query.search('languageArray', keywords));
+    }
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
   listUsersByLastSeen(
     currentUser: User,
     filterData: FilterDataInterface,
@@ -50,7 +82,6 @@ export class UserService {
     // Add exclusion queries
     queries.push(...this.createExclusionQueries(currentUser));
 
-    // THIS IS THE LINE THAT NEEDS TO BE CHANGED
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
 
