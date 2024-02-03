@@ -233,9 +233,8 @@ export class UserService {
     // Query for users descending by last seen
     queries.push(Query.orderDesc('$updatedAt'));
 
-    // Limit and offset
-    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
-    if (offset) queries.push(Query.offset(offset));
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
 
     return from(
       this.api.listDocuments(environment.appwrite.VISITS_COLLECTION, queries)
