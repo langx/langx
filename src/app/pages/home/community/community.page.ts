@@ -27,13 +27,16 @@ import {
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
-  isLoadingSelector,
+  isLoadingByTargetLanguageSelector,
+  isLoadingByLastSeenSelector,
+  isLoadingByCreatedAtSelector,
   usersByLastSeenSelector,
   errorSelector,
   usersByCreatedAtSelector,
   usersByTargetLanguageSelector,
 } from 'src/app/store/selectors/user.selector';
 import {
+  isLoadingSelector,
   totalSelector,
   visitsSelector,
 } from 'src/app/store/selectors/visits.selector';
@@ -50,13 +53,16 @@ export class CommunityPage implements OnInit {
   filterData: FilterDataInterface;
 
   currentUser$: Observable<User>;
-  isLoading$: Observable<boolean>;
 
+  isLoadingByTargetLanguage$: Observable<boolean>;
+  isLoadingByLastSeen$: Observable<boolean>;
+  isLoadingByCreatedAt$: Observable<boolean>;
   usersByTargetLanguage$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
 
   // Visits
+  isLoadingVisits$: Observable<boolean>;
   visits$: Observable<Visit[] | null> = null;
   totalVisits$: Observable<number | null> = null;
 
@@ -116,9 +122,17 @@ export class CommunityPage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
+    this.isLoadingByTargetLanguage$ = this.store.pipe(
+      select(isLoadingByTargetLanguageSelector)
+    );
+    this.isLoadingByLastSeen$ = this.store.pipe(
+      select(isLoadingByLastSeenSelector)
+    );
+    this.isLoadingByCreatedAt$ = this.store.pipe(
+      select(isLoadingByCreatedAtSelector)
+    );
     this.usersByTargetLanguage$ = this.store.pipe(
       select(usersByTargetLanguageSelector)
     );
@@ -126,6 +140,7 @@ export class CommunityPage implements OnInit {
     this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
 
     // Visits
+    this.isLoadingVisits$ = this.store.pipe(select(isLoadingSelector));
     this.visits$ = this.store.pipe(select(visitsSelector));
     this.totalVisits$ = this.store.pipe(select(totalSelector));
   }

@@ -47,7 +47,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoading$ | async)">
+      <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -83,7 +83,7 @@
         fill="clear"
         expand="block"
         (click)="getTargetLanguagePage()"
-        [disabled]="(isLoading$ | async)"
+        [disabled]="(isLoadingByTargetLanguage$ | async)"
       >
         See More
       </ion-button>
@@ -111,7 +111,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoading$ | async)">
+      <ion-list *ngIf="(isLoadingByLastSeen$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -147,7 +147,7 @@
         fill="clear"
         expand="block"
         (click)="getOnlinePage()"
-        [disabled]="(isLoading$ | async)"
+        [disabled]="(isLoadingByLastSeen$ | async)"
       >
         See More
       </ion-button>
@@ -175,7 +175,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoading$ | async)">
+      <ion-list *ngIf="(isLoadingByCreatedAt$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -211,7 +211,7 @@
         fill="clear"
         expand="block"
         (click)="getNewUsersPage()"
-        [disabled]="(isLoading$ | async)"
+        [disabled]="(isLoadingByCreatedAt$ | async)"
       >
         See More
       </ion-button>
@@ -232,7 +232,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="!(isLoading$ | async)">
+      <ion-list *ngIf="(isLoadingVisits$ | async)">
         <ion-item *ngFor="let i of '01234'.split('')" detail>
           <ion-thumbnail class="visitor-thumbnail" slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -261,7 +261,7 @@
         fill="clear"
         expand="block"
         (click)="getVisitsPage()"
-        [disabled]="(isLoading$ | async)"
+        [disabled]="(isLoadingVisits$ | async)"
       >
         See More
       </ion-button>
