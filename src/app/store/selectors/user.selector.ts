@@ -10,6 +10,11 @@ export const isLoadingSelector = createSelector(
   (userState: UserStateInterface) => userState.isLoading
 );
 
+export const isLoadingByTargetLanguageSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.isLoadingByTargetLanguage
+);
+
 export const usersByTargetLanguageSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.usersByTargetLanguage
@@ -20,6 +25,11 @@ export const totalByTargetLanguageSelector = createSelector(
   (userState: UserStateInterface) => userState.totalByTargetLanguage
 );
 
+export const isLoadingByLastSeenSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.isLoadingByLastSeen
+);
+
 export const usersByLastSeenSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.usersByLastSeen
@@ -28,6 +38,11 @@ export const usersByLastSeenSelector = createSelector(
 export const totalByLastSeenSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.totalByLastSeen
+);
+
+export const isLoadingByCreatedAtSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.isLoadingByCreatedAt
 );
 
 export const usersByCreatedAtSelector = createSelector(
