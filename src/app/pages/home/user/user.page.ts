@@ -23,6 +23,17 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import { activateRoomAction } from 'src/app/store/actions/message.action';
+import {
+  getRoomAction,
+  clearErrorsAction,
+} from 'src/app/store/actions/room.action';
+import {
+  isLoadingSelector as isLoadingRoomSelector,
+  errorSelector as errorRoomSelector,
+} from 'src/app/store/selectors/room.selector';
 import {
   getUserByIdAction,
   reportUserAction,
@@ -31,7 +42,7 @@ import {
   blockUserInitialStateAction,
 } from 'src/app/store/actions/user.action';
 import {
-  errorSelector,
+  errorSelector as errorUserSelector,
   isLoadingSelector as isLoadingUserSelector,
   reportSelector,
   userSelector,
@@ -67,6 +78,8 @@ export class UserPage implements OnInit {
 
   reason: string;
 
+  rooms$: Observable<RoomExtendedInterface[] | null> = null;
+
   constructor(
     private store: Store,
     private router: Router,
@@ -88,8 +101,9 @@ export class UserPage implements OnInit {
       combineLatest([
         this.store.pipe(select(isLoadingAuthSelector)),
         this.store.pipe(select(isLoadingUserSelector)),
-      ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
-        this.loadingController(isLoadingAuth || isLoadingUser);
+        this.store.pipe(select(isLoadingRoomSelector)),
+      ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
+        this.loadingController(isLoadingAuth || isLoadingUser || isLoadingRoom);
       })
     );
 
@@ -105,10 +119,20 @@ export class UserPage implements OnInit {
     );
     this.subscription.add(
       this.store
-        .pipe(select(errorSelector))
+        .pipe(select(errorUserSelector))
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+          }
+        })
+    );
+    this.subscription.add(
+      this.store
+        .pipe(select(errorRoomSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -161,6 +185,8 @@ export class UserPage implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('id') || null;
     this.user$ = this.store.pipe(select(userSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    this.rooms$ = this.store.pipe(select(roomsSelector));
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
@@ -285,6 +311,38 @@ export class UserPage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  //
+  // Get or Create Room
+  //
+
+  getRoom() {
+    let userId = this.userId;
+
+    this.rooms$
+      .subscribe((rooms) => {
+        this.currentUser$
+          .subscribe((user) => {
+            const currentUserId = user.$id;
+            if (rooms) {
+              const room = rooms.find(
+                (room) =>
+                  room.users.includes(currentUserId) &&
+                  room.users.includes(userId)
+              );
+              if (room) {
+                this.store.dispatch(activateRoomAction({ payload: room }));
+              } else {
+                this.store.dispatch(getRoomAction({ currentUserId, userId }));
+              }
+            } else {
+              this.store.dispatch(getRoomAction({ currentUserId, userId }));
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
   }
 
   //

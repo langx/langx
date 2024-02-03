@@ -39,12 +39,89 @@ export class UserService {
     );
   }
 
-  listUsers(
+  listUsersByTargetLanguage(
     currentUser: User,
     filterData: FilterDataInterface,
     offset?: number
   ): Observable<listUsersResponseInterface> {
     // Define queries
+    const queries: any[] = [];
+
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    // Query for users with the selected languages filter
+    if (currentUser?.languageArray.length > 0) {
+      const keywords = currentUser.languageArray.join(' ');
+      // OR Query for users with any of the selected languages
+      queries.push(Query.search('languageArray', keywords));
+    }
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
+  listUsersByLastSeen(
+    currentUser: User,
+    filterData: FilterDataInterface,
+    offset?: number
+  ): Observable<listUsersResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
+  listUsersByCreatedAt(
+    currentUser: User,
+    filterData: FilterDataInterface,
+    offset?: number
+  ): Observable<listUsersResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    // Query for users descending by created at
+    queries.push(Query.orderDesc('$createdAt'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
+  private createExclusionQueries(currentUser: User): any[] {
     const queries: any[] = [];
 
     // Query for users that are not the current user
@@ -57,8 +134,11 @@ export class UserService {
       });
     }
 
-    // Query for users descending by last seen
-    queries.push(Query.orderDesc('lastSeen'));
+    return queries;
+  }
+
+  private createFilterQueries(filterData: FilterDataInterface): any[] {
+    const queries: any[] = [];
 
     // Query for users with the selected gender filter
     if (filterData?.gender) {
@@ -88,13 +168,19 @@ export class UserService {
       queries.push(Query.search('languageArray', keywords));
     }
 
-    // Limit and offset
+    return queries;
+  }
+
+  private createPaginationQueries(offset?: number): any[] {
+    const queries: any[] = [];
+
+    // Limit query
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+
+    // Offset query
     if (offset) queries.push(Query.offset(offset));
 
-    return from(
-      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
-    );
+    return queries;
   }
 
   blockUser(currentUser: User, userId: string): Observable<User> {

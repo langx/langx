@@ -1,9 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="home/profile"></ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Profile Visitors 👀</ion-title>
+    <ion-title>New Users 👋</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,18 +12,16 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <app-empty-screen *ngIf="(visits$ | async)?.length == 0" [model]="model">
-  </app-empty-screen>
-
-  <ion-card *ngIf="(visits$ | async)?.length > 0">
-    <ion-card-header>
-      <ion-card-subtitle>Recent Visitors to Your Profile</ion-card-subtitle>
-      <ion-card-title>Who visited your profile?</ion-card-title>
-    </ion-card-header>
+  <ion-card>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let visit of (visits$ | async)">
-          <app-visit-list [item]="visit"></app-visit-list>
+        <ng-container *ngFor="let user of (usersByCreatedAt$ | async)">
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getUserPage(user?.$id)"
+          >
+          </app-user-list>
         </ng-container>
       </ion-list>
 
@@ -32,7 +30,7 @@
       <!-------------------->
 
       <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '0123456789'.split('')" detail>
+        <ion-item *ngFor="let i of '0123456789'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
@@ -40,9 +38,15 @@
             <h3>
               <ion-skeleton-text
                 [animated]="true"
-                style="width: 60%"
+                style="width: 80%"
               ></ion-skeleton-text>
             </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </p>
             <p>
               <ion-skeleton-text
                 [animated]="true"

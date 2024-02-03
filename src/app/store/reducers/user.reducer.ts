@@ -6,12 +6,24 @@ import {
   logoutSuccessAction,
 } from 'src/app/store/actions/auth.action';
 import {
-  getUsersAction,
-  getUsersSuccessAction,
-  getUsersFailureAction,
-  getUsersWithOffsetAction,
-  getUsersWithOffsetSuccessAction,
-  getUsersWithOffsetFailureAction,
+  getUsersByLastSeenAction,
+  getUsersByLastSeenSuccessAction,
+  getUsersByLastSeenFailureAction,
+  getUsersByLastSeenWithOffsetAction,
+  getUsersByLastSeenWithOffsetSuccessAction,
+  getUsersByLastSeenWithOffsetFailureAction,
+  getUsersByCreatedAtAction,
+  getUsersByCreatedAtSuccessAction,
+  getUsersByCreatedAtFailureAction,
+  getUsersByCreatedAtWithOffsetAction,
+  getUsersByCreatedAtWithOffsetSuccessAction,
+  getUsersByCreatedAtWithOffsetFailureAction,
+  getUsersByTargetLanguageAction,
+  getUsersByTargetLanguageSuccessAction,
+  getUsersByTargetLanguageFailureAction,
+  getUsersByTargetLanguageWithOffsetAction,
+  getUsersByTargetLanguageWithOffsetSuccessAction,
+  getUsersByTargetLanguageWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
   getUserByIdAction,
@@ -25,8 +37,15 @@ import {
 
 const initialState: UserStateInterface = {
   isLoading: false,
-  total: null,
-  users: null,
+  isLoadingByTargetLanguage: false,
+  totalByTargetLanguage: null,
+  usersByTargetLanguage: null,
+  isLoadingByLastSeen: false,
+  totalByLastSeen: null,
+  usersByLastSeen: null,
+  isLoadingByCreatedAt: false,
+  totalByCreatedAt: null,
+  usersByCreatedAt: null,
   user: null,
   error: null,
   report: null,
@@ -34,53 +53,170 @@ const initialState: UserStateInterface = {
 
 const userReducer = createReducer(
   initialState,
+  // Get Users By Target Language Reducers
   on(
-    getUsersAction,
+    getUsersByTargetLanguageAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByTargetLanguage: true,
       error: null,
     })
   ),
   on(
-    getUsersSuccessAction,
+    getUsersByTargetLanguageSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
-      total: action.payload?.total,
-      users: action.payload?.documents,
+      isLoadingByTargetLanguage: false,
+      error: null,
+      totalByTargetLanguage: action.payload?.total,
+      usersByTargetLanguage: action.payload?.documents,
     })
   ),
   on(
-    getUsersFailureAction,
+    getUsersByTargetLanguageFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByTargetLanguage: false,
       error: action.error,
     })
   ),
   on(
-    getUsersWithOffsetAction,
+    getUsersByTargetLanguageWithOffsetAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByTargetLanguage: true,
       error: null,
     })
   ),
   on(
-    getUsersWithOffsetSuccessAction,
+    getUsersByTargetLanguageWithOffsetSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
-      total: action.payload?.total,
-      users: [...state.users, ...action.payload?.documents],
+      isLoadingByTargetLanguage: false,
+      error: null,
+      totalByTargetLanguage: action.payload?.total,
+      usersByTargetLanguage: [
+        ...state.usersByTargetLanguage,
+        ...action.payload?.documents,
+      ],
     })
   ),
   on(
-    getUsersWithOffsetFailureAction,
+    getUsersByTargetLanguageWithOffsetFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByTargetLanguage: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Users By Last Seen Reducers
+  on(
+    getUsersByLastSeenAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoadingByLastSeen: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByLastSeenSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByLastSeen: false,
+      error: null,
+      totalByLastSeen: action.payload?.total,
+      usersByLastSeen: action.payload?.documents,
+    })
+  ),
+  on(
+    getUsersByLastSeenFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByLastSeen: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getUsersByLastSeenWithOffsetAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoadingByLastSeen: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByLastSeenWithOffsetSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByLastSeen: false,
+      error: null,
+      totalByLastSeen: action.payload?.total,
+      usersByLastSeen: [...state.usersByLastSeen, ...action.payload?.documents],
+    })
+  ),
+  on(
+    getUsersByLastSeenWithOffsetFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByLastSeen: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Users By Created At Reducers
+  on(
+    getUsersByCreatedAtAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoadingByCreatedAt: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByCreatedAtSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCreatedAt: false,
+      error: null,
+      totalByCreatedAt: action.payload?.total,
+      usersByCreatedAt: action.payload?.documents,
+    })
+  ),
+  on(
+    getUsersByCreatedAtFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCreatedAt: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getUsersByCreatedAtWithOffsetAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoadingByCreatedAt: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByCreatedAtWithOffsetSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCreatedAt: false,
+      error: null,
+      totalByCreatedAt: action.payload?.total,
+      usersByCreatedAt: [
+        ...state.usersByCreatedAt,
+        ...action.payload?.documents,
+      ],
+    })
+  ),
+  on(
+    getUsersByCreatedAtWithOffsetFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCreatedAt: false,
       error: action.error,
     })
   ),
@@ -99,6 +235,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       user: action.payload,
     })
   ),
@@ -134,6 +271,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       report: action.payload,
     })
   ),

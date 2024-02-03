@@ -1,43 +1,45 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
+import { Visit } from 'src/app/models/Visit';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Service Imports
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
-import { activateRoomAction } from 'src/app/store/actions/message.action';
+import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
+import { getVisitsAction } from 'src/app/store/actions/visits.action';
 import {
-  createRoomInitialStateAction,
-  getRoomAction,
-} from 'src/app/store/actions/room.action';
-import {
-  getUsersAction,
-  getUsersWithOffsetAction,
+  getUsersByCreatedAtAction,
+  getUsersByLastSeenAction,
+  getUsersByTargetLanguageAction,
 } from 'src/app/store/actions/users.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { isLoadingSelector as isLoadingRoomStateSelector } from 'src/app/store/selectors/room.selector';
+import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
-  createRoomErrorSelector,
-  roomsSelector,
-} from 'src/app/store/selectors/room.selector';
-import {
-  isLoadingSelector as isLoadingUserStateSelector,
-  usersSelector,
-  totalSelector,
+  isLoadingByTargetLanguageSelector,
+  isLoadingByLastSeenSelector,
+  isLoadingByCreatedAtSelector,
+  usersByLastSeenSelector,
   errorSelector,
+  usersByCreatedAtSelector,
+  usersByTargetLanguageSelector,
 } from 'src/app/store/selectors/user.selector';
+import {
+  isLoadingSelector,
+  totalSelector,
+  visitsSelector,
+} from 'src/app/store/selectors/visits.selector';
 
 @Component({
   selector: 'app-community',
@@ -51,20 +53,25 @@ export class CommunityPage implements OnInit {
   filterData: FilterDataInterface;
 
   currentUser$: Observable<User>;
-  isLoadingUserState$: Observable<boolean>;
-  isLoadingRoomState$: Observable<boolean>;
-  users$: Observable<User[] | null> = null;
-  total$: Observable<number | null> = null;
 
-  rooms$: Observable<RoomExtendedInterface[] | null> = null;
+  isLoadingByTargetLanguage$: Observable<boolean>;
+  isLoadingByLastSeen$: Observable<boolean>;
+  isLoadingByCreatedAt$: Observable<boolean>;
+  usersByTargetLanguage$: Observable<User[] | null> = null;
+  usersByLastSeen$: Observable<User[] | null> = null;
+  usersByCreatedAt$: Observable<User[] | null> = null;
+
+  // Visits
+  isLoadingVisits$: Observable<boolean>;
+  visits$: Observable<Visit[] | null> = null;
+  totalVisits$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
     private router: Router,
     private filterService: FilterService,
     private storageService: StorageService,
-    private toastController: ToastController,
-    private loadingCtrl: LoadingController
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -78,13 +85,6 @@ export class CommunityPage implements OnInit {
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
-
-    // Loading
-    this.subscription.add(
-      this.isLoadingRoomState$.subscribe((isLoading) => {
-        this.loadingController(isLoading);
-      })
-    );
 
     // User Errors
     this.subscription.add(
@@ -111,18 +111,6 @@ export class CommunityPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.isLoadingOverlayActive
-      .pipe(
-        filter((isActive) => !isActive),
-        take(1)
-      )
-      .subscribe(async () => {
-        if (this.loadingOverlay) {
-          await this.loadingOverlay.dismiss();
-          this.loadingOverlay = undefined;
-        }
-      });
-
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
@@ -135,25 +123,58 @@ export class CommunityPage implements OnInit {
   initValues(): void {
     // Set values from selectors
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    this.users$ = this.store.pipe(select(usersSelector));
-    this.total$ = this.store.pipe(select(totalSelector));
-    this.isLoadingUserState$ = this.store.pipe(
-      select(isLoadingUserStateSelector)
-    );
-    this.isLoadingRoomState$ = this.store.pipe(
-      select(isLoadingRoomStateSelector)
-    );
 
-    this.rooms$ = this.store.pipe(select(roomsSelector));
+    this.isLoadingByTargetLanguage$ = this.store.pipe(
+      select(isLoadingByTargetLanguageSelector)
+    );
+    this.isLoadingByLastSeen$ = this.store.pipe(
+      select(isLoadingByLastSeenSelector)
+    );
+    this.isLoadingByCreatedAt$ = this.store.pipe(
+      select(isLoadingByCreatedAtSelector)
+    );
+    this.usersByTargetLanguage$ = this.store.pipe(
+      select(usersByTargetLanguageSelector)
+    );
+    this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
+    this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
+
+    // Visits
+    this.isLoadingVisits$ = this.store.pipe(select(isLoadingSelector));
+    this.visits$ = this.store.pipe(select(visitsSelector));
+    this.totalVisits$ = this.store.pipe(select(totalSelector));
   }
 
   //
   // Get Users
   //
 
-  listUsers() {
+  listUsersByTargetLanguage() {
     const filterData = this.filterData;
-    this.store.dispatch(getUsersAction({ request: { filterData } }));
+    this.store.dispatch(
+      getUsersByTargetLanguageAction({ request: { filterData } })
+    );
+  }
+
+  listUsersByLastSeen() {
+    const filterData = this.filterData;
+    this.store.dispatch(getUsersByLastSeenAction({ request: { filterData } }));
+  }
+
+  listUsersByCreatedAt() {
+    const filterData = this.filterData;
+    this.store.dispatch(getUsersByCreatedAtAction({ request: { filterData } }));
+  }
+
+  listVisits() {
+    this.store.dispatch(getVisitsAction());
+  }
+
+  listAllUsers() {
+    this.listUsersByTargetLanguage();
+    this.listUsersByLastSeen();
+    this.listUsersByCreatedAt();
+    this.listVisits();
   }
 
   //
@@ -168,7 +189,7 @@ export class CommunityPage implements OnInit {
         // console.log('Subscribed filter: ', filterData);
 
         // List Users
-        this.listUsers();
+        this.listAllUsers();
       });
   }
 
@@ -207,84 +228,41 @@ export class CommunityPage implements OnInit {
   }
 
   //
-  // Get or Create Room
-  //
-
-  getRoom(userId: string) {
-    this.rooms$
-      .subscribe((rooms) => {
-        this.currentUser$
-          .subscribe((user) => {
-            const currentUserId = user.$id;
-            if (rooms) {
-              const room = rooms.find(
-                (room) =>
-                  room.users.includes(currentUserId) &&
-                  room.users.includes(userId)
-              );
-              if (room) {
-                this.store.dispatch(activateRoomAction({ payload: room }));
-              } else {
-                this.store.dispatch(getRoomAction({ currentUserId, userId }));
-              }
-            } else {
-              this.store.dispatch(getRoomAction({ currentUserId, userId }));
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
-  }
-
-  //
-  // Infinite Scroll
-  //
-
-  loadMore(event) {
-    // Offset is the number of users already loaded
-    let offset: number = 0;
-    this.users$
-      .subscribe((users) => {
-        offset = users.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < total) {
-              const filterData = this.filterData;
-              this.store.dispatch(
-                getUsersWithOffsetAction({
-                  request: {
-                    filterData,
-                    offset,
-                  },
-                })
-              );
-            } else {
-              console.log('All users loaded');
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
-
-    // this.getUsers(this.filterData);
-    event.target.complete();
-  }
-
-  //
   // Pull to refresh
   //
 
   handleRefresh(event) {
-    this.listUsers();
+    // List Users
+    this.listAllUsers();
     if (event) event.target.complete();
   }
 
   //
-  // Filters
+  // Routes
   //
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
+  }
+
+  getProfilePage(userId: string) {
+    this.router.navigateByUrl('/home/user/' + userId);
+  }
+
+  getTargetLanguagePage() {
+    this.router.navigateByUrl('/home/community/target-language');
+  }
+
+  getOnlinePage() {
+    this.router.navigateByUrl('/home/community/online');
+  }
+
+  getNewUsersPage() {
+    this.router.navigateByUrl('/home/community/new');
+  }
+
+  getVisitsPage() {
+    this.router.navigateByUrl('/home/visitors');
   }
 
   //
@@ -300,29 +278,5 @@ export class CommunityPage implements OnInit {
     });
 
     await toast.present();
-  }
-
-  //
-  // Loading Controller
-  //
-
-  private loadingOverlay: HTMLIonLoadingElement;
-  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
-  async loadingController(isLoading: boolean) {
-    if (isLoading) {
-      if (!this.loadingOverlay) {
-        this.isLoadingOverlayActive.next(true);
-        this.loadingOverlay = await this.loadingCtrl.create({
-          message: 'Please wait...',
-        });
-        await this.loadingOverlay.present();
-        this.isLoadingOverlayActive.next(false);
-      }
-    } else if (this.loadingOverlay) {
-      this.isLoadingOverlayActive.next(true);
-      await this.loadingOverlay.dismiss();
-      this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive.next(false);
-    }
   }
 }

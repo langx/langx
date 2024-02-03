@@ -10,54 +10,169 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
-  getUsersAction,
-  getUsersFailureAction,
-  getUsersSuccessAction,
-  getUsersWithOffsetAction,
-  getUsersWithOffsetFailureAction,
-  getUsersWithOffsetSuccessAction,
+  getUsersByCreatedAtAction,
+  getUsersByCreatedAtFailureAction,
+  getUsersByCreatedAtSuccessAction,
+  getUsersByCreatedAtWithOffsetAction,
+  getUsersByCreatedAtWithOffsetFailureAction,
+  getUsersByCreatedAtWithOffsetSuccessAction,
+  getUsersByLastSeenAction,
+  getUsersByLastSeenFailureAction,
+  getUsersByLastSeenSuccessAction,
+  getUsersByLastSeenWithOffsetAction,
+  getUsersByLastSeenWithOffsetFailureAction,
+  getUsersByLastSeenWithOffsetSuccessAction,
+  getUsersByTargetLanguageAction,
+  getUsersByTargetLanguageFailureAction,
+  getUsersByTargetLanguageSuccessAction,
+  getUsersByTargetLanguageWithOffsetAction,
+  getUsersByTargetLanguageWithOffsetFailureAction,
+  getUsersByTargetLanguageWithOffsetSuccessAction,
 } from 'src/app/store/actions/users.action';
 
 @Injectable()
 export class UsersEffects {
-  getUsers$ = createEffect(() =>
+  // Get Users By Target Language Effects
+  getUsersByTargetLanguage$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getUsersAction),
-      withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([{ request }, currentUser]) =>
-        this.userService.listUsers(currentUser, request.filterData).pipe(
-          map((payload: listUsersResponseInterface) =>
-            getUsersSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(getUsersFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
-
-  getUsersWithOffset$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(getUsersWithOffsetAction),
+      ofType(getUsersByTargetLanguageAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.userService
-          .listUsers(currentUser, request.filterData, request.offset)
+          .listUsersByTargetLanguage(currentUser, request.filterData)
           .pipe(
             map((payload: listUsersResponseInterface) =>
-              getUsersWithOffsetSuccessAction({ payload })
+              getUsersByTargetLanguageSuccessAction({ payload })
             ),
 
             catchError((errorResponse: HttpErrorResponse) => {
               const error: ErrorInterface = {
                 message: errorResponse.message,
               };
-              return of(getUsersWithOffsetFailureAction({ error }));
+              return of(getUsersByTargetLanguageFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  getUsersByTargetLanguageWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByTargetLanguageWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByTargetLanguage(
+            currentUser,
+            request.filterData,
+            request.offset
+          )
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByTargetLanguageWithOffsetSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(
+                getUsersByTargetLanguageWithOffsetFailureAction({ error })
+              );
+            })
+          )
+      )
+    )
+  );
+
+  // Get Users By Last Seen Effects
+  getUsersByLastSeen$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByLastSeenAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByLastSeen(currentUser, request.filterData)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByLastSeenSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByLastSeenFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  getUsersByLastSeenWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByLastSeenWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByLastSeen(currentUser, request.filterData, request.offset)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByLastSeenWithOffsetSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByLastSeenWithOffsetFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  // Get Users By Created At Effects
+  getUsersByCreatedAt$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByCreatedAtAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByCreatedAt(currentUser, request.filterData)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByCreatedAtSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByCreatedAtFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  getUsersByCreatedAtWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByCreatedAtWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByCreatedAt(currentUser, request.filterData, request.offset)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByCreatedAtWithOffsetSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByCreatedAtWithOffsetFailureAction({ error }));
             })
           )
       )

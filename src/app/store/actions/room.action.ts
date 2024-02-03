@@ -98,3 +98,6 @@ export const unArchiveRoomFailureAction = createAction(
 export const unArchiveRoomInitialStateAction = createAction(
   ActionTypes.UNARCHIVE_ROOM_INITIAL_STATE
 );
+
+// Clear Errors
+export const clearErrorsAction = createAction(ActionTypes.CLEAR_ERRORS);

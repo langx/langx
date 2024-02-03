@@ -1,29 +1,50 @@
 <ion-item-sliding #slidingItem>
   <ion-item-options>
-    <ion-item-option *ngIf="!isArchived" (click)="archiveRoom(room)" color="primary"  expandable>
+    <ion-item-option
+      *ngIf="!isArchived"
+      (click)="archiveRoom(room)"
+      color="primary"
+      expandable
+    >
       Archive
     </ion-item-option>
-    <ion-item-option *ngIf="isArchived" (click)="unArchiveRoom(room)" color="primary" expandable>
+    <ion-item-option
+      *ngIf="isArchived"
+      (click)="unArchiveRoom(room)"
+      color="primary"
+      expandable
+    >
       Unarchive
     </ion-item-option>
   </ion-item-options>
   <ion-item (click)="getChat(room)">
     <ng-container *ngIf="room">
-      <ion-avatar slot="start">
+      <ion-thumbnail class="thumbnail-container" slot="start">
         <img
           [src]="room?.['userData']?.profilePhoto"
           alt=""
           referrerpolicy="no-referrer"
         />
-      </ion-avatar>
+        <div class="emoji-indicator">
+          <small *ngIf="onlineStatus(room?.['userData']?.lastSeen) == 'online'"
+            >🟢</small
+          >
+          <small *ngIf="onlineStatus(room?.['userData']?.lastSeen) == 'away'"
+            >🟡</small
+          >
+          <small *ngIf="onlineStatus(room?.['userData']?.lastSeen) == 'offline'"
+            >🟠</small
+          >
+          <!-- <small *ngIf="onlineStatus(room?.['userData']?.lastSeen) == 'none'">🔴</small> -->
+        </div>
+      </ion-thumbnail>
       <ion-label>
         <h2>
-          <small *ngIf="lastSeen(room?.['userData']?.lastSeen) == 'online'"
-            >🟢
-          </small>
           {{room?.['userData']?.name}}
         </h2>
-        <p>{{ getLastMessage(room)?.body }}</p>
+        <p>
+          <ion-text>{{ getLastMessage(room)?.body }}</ion-text>
+        </p>
       </ion-label>
       <div class="metadata-end-wrapper" slot="end">
         <ion-badge color="danger" *ngIf="getBadge(room) !== 0">

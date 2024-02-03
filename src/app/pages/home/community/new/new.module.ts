@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 import { IonicModule } from '@ionic/angular';
 
-import { VisitorsPageRoutingModule } from './visitors-routing.module';
-import { VisitorsPage } from './visitors.page';
+import { NewPageRoutingModule } from './new-routing.module';
 
+import { NewPage } from './new.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -13,9 +14,9 @@ import { ComponentsModule } from 'src/app/components/components.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    VisitorsPageRoutingModule,
+    NewPageRoutingModule,
     ComponentsModule,
   ],
-  declarations: [VisitorsPage],
+  declarations: [NewPage],
 })
-export class VisitorsPageModule {}
+export class NewPageModule {}

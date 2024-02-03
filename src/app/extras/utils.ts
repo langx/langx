@@ -48,6 +48,23 @@ export function lastSeenExt(date: Date) {
   }
 }
 
+export function onlineStatus(date: Date) {
+  let now = new Date();
+  let lastSeen = new Date(date);
+  let diff = now.getTime() - lastSeen.getTime();
+  let minutes = Math.floor(diff / 60000);
+  let hours = Math.floor(minutes / 60);
+  if (minutes < 2) {
+    return 'online';
+  } else if (hours < 1) {
+    return 'away';
+  } else if (hours < 24) {
+    return 'offline';
+  } else {
+    return 'none';
+  }
+}
+
 export function getAge(date: Date) {
   let now = new Date();
   let birthDate = new Date(date);

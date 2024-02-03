@@ -62,7 +62,7 @@ export class ProfilePage implements OnInit {
       detail: true,
     },
     {
-      title: 'Visitors',
+      title: 'Profile Visitors',
       url: 'visitors',
       icon: 'people-outline',
       detail: true,

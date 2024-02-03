@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { IonItemSliding } from '@ionic/angular';
 
-import { lastSeen } from 'src/app/extras/utils';
+import { lastSeen, onlineStatus } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
 
 @Component({
@@ -103,5 +103,10 @@ export class RoomListComponent implements OnInit {
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
+  }
+
+  onlineStatus(d: any) {
+    if (!d) return null;
+    return onlineStatus(d);
   }
 }

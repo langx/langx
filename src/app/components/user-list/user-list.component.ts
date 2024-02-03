@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
 
-import { lastSeen } from 'src/app/extras/utils';
+import { onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
 @Component({
@@ -13,16 +12,12 @@ export class UserListComponent implements OnInit {
   @Input() item: User;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
-  constructor(private route: Router) {}
+  constructor() {}
 
   ngOnInit() {}
 
   redirect() {
     this.onClick.emit(this.item);
-  }
-
-  goProfile() {
-    this.route.navigateByUrl('/home/user/' + this.item.$id);
   }
 
   getStudyLanguages() {
@@ -36,15 +31,16 @@ export class UserListComponent implements OnInit {
   // Utils
   //
 
-  messageTime(d: any) {
-    if (!d) return null;
-    let time = lastSeen(d);
-    if (time === 'online') time = 'now';
-    return time;
+  getFlagEmoji(item: User) {
+    const codePoints = item['countryCode']
+      .toUpperCase()
+      .split('')
+      .map((char) => 127397 + char.charCodeAt());
+    return String.fromCodePoint(...codePoints);
   }
 
-  lastSeen(d: any) {
+  onlineStatus(d: any) {
     if (!d) return null;
-    return lastSeen(d);
+    return onlineStatus(d);
   }
 }

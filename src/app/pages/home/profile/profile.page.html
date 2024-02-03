@@ -62,7 +62,43 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>About Me</ion-card-title>
+      <ion-card-title>More Photos 📸</ion-card-title>
+      <ion-card-subtitle></ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text *ngIf="otherPhotos?.length == 0">
+        Currently, no photos are available.
+      </ion-text>
+      <swiper-container
+        class="ion-padding"
+        [slidesPerView]="3.5"
+        [spaceBetween]="15"
+        [centeredSlides]="false"
+        initialSlide="0"
+        [pagination]="true"
+        pagination-dynamic-bullets="true"
+        keyboard="true"
+        mousewheel="true"
+      >
+        <swiper-slide *ngFor="let photo of otherPhotos; let i = index">
+          <!-- TODO: Test this following zoom feature on mobile-->
+          <div class="swiper-zoom-container">
+            <img
+              [src]="photo"
+              alt="Profile Picture"
+              tappable
+              (click)="openPreview(otherPhotos)"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+        </swiper-slide>
+      </swiper-container>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>About Me 👤</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-item lines="none">
@@ -102,8 +138,10 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Study Languages</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
+      <ion-card-title>Study Languages 📚</ion-card-title>
+      <ion-card-subtitle>
+        The language(s) that you Practice & Learn 🗣
+      </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list class="hasIcon" lines="none">
@@ -129,8 +167,8 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Mother Tongue</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
+      <ion-card-title>Mother Tongue 🗣️</ion-card-title>
+      <ion-card-subtitle>The language you speak at home 🏡 </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list class="hasIcon" lines="none">
@@ -145,44 +183,8 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Other Photos</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-text *ngIf="otherPhotos?.length == 0">
-        Currently, no photos are available.
-      </ion-text>
-      <swiper-container
-        class="ion-padding"
-        [slidesPerView]="3.5"
-        [spaceBetween]="15"
-        [centeredSlides]="false"
-        initialSlide="0"
-        [pagination]="true"
-        pagination-dynamic-bullets="true"
-        keyboard="true"
-        mousewheel="true"
-      >
-        <swiper-slide *ngFor="let photo of otherPhotos; let i = index">
-          <!-- TODO: Test this following zoom feature on mobile-->
-          <div class="swiper-zoom-container">
-            <img
-              [src]="photo"
-              alt="Profile Picture"
-              tappable
-              (click)="openPreview(otherPhotos)"
-              referrerpolicy="no-referrer"
-            />
-          </div>
-        </swiper-slide>
-      </swiper-container>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Badges</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
+      <ion-card-title>Badges 🏅</ion-card-title>
+      <ion-card-subtitle>Your Achievements 🏆</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-grid>
@@ -203,7 +205,7 @@
       <ion-list class="hasIcon" lines="none">
         <ion-item (click)="getVisitorsPage()" detail>
           <ion-icon name="people-outline"></ion-icon>
-          <ion-label>Who Visited?</ion-label>
+          <ion-label>Profile Visitors 👀</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -214,7 +216,7 @@
       <ion-list class="hasIcon" lines="none">
         <ion-item (click)="publicProfileView()" detail>
           <ion-icon name="eye-outline"></ion-icon>
-          <ion-label>View Profile as Public</ion-label>
+          <ion-label>View Profile as Public 👁️</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>

@@ -1,24 +1,32 @@
-<ion-item>
-  <ion-thumbnail slot="start" (click)="goProfile()">
+<ion-item (click)="redirect()">
+  <ion-thumbnail class="thumbnail-container" slot="start">
     <img [src]="item?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+    <div class="emoji-indicator">
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'away'">🟡</small>
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'offline'">🟠</small>
+      <!-- <small *ngIf="onlineStatus(item?.lastSeen) == 'none'">🔴</small> -->
+    </div>
   </ion-thumbnail>
-  <ion-label (click)="redirect()">
-    <!-- TODO: There is no item?.online -->
+  <ion-label>
     <h2>
-      <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
+      {{ getFlagEmoji(item) }}
       {{ item?.name }}
     </h2>
     <p>
       <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
-      <ion-text *ngIf="!item?.aboutMe" style="font-style: italic">
+      <ion-text *ngIf="!item?.aboutMe">
+        No 'About Me' text provided yet. 💬</ion-text
+      >
+    </p>
+    <p>
+      <ion-text style="font-style: italic">
         Learning:
         <span>
           {{ getStudyLanguages() }}
         </span>
       </ion-text>
     </p>
+    <p></p>
   </ion-label>
-  <div class="metadata-end-wrapper" slot="end">
-    <ion-note> {{ messageTime(item.lastSeen) }} </ion-note>
-  </div>
 </ion-item>

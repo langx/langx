@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { VisitorsPageRoutingModule } from './visitors-routing.module';
-import { VisitorsPage } from './visitors.page';
+import { OnlinePageRoutingModule } from './online-routing.module';
 
+import { OnlinePage } from './online.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
@@ -13,9 +13,9 @@ import { ComponentsModule } from 'src/app/components/components.module';
     CommonModule,
     FormsModule,
     IonicModule,
-    VisitorsPageRoutingModule,
+    OnlinePageRoutingModule,
     ComponentsModule,
   ],
-  declarations: [VisitorsPage],
+  declarations: [OnlinePage],
 })
-export class VisitorsPageModule {}
+export class OnlinePageModule {}

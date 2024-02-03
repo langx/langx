@@ -27,16 +27,17 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Recommended For You</ion-card-subtitle>
-      <ion-card-title> Language Mates </ion-card-title>
+      <ion-card-title>Language Mates 🗣️</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <ion-list>
-        <ng-container *ngFor="let user of (users$ | async)">
+      <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
+        <ng-container
+          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+        >
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"
-            (onClick)="getRoom(user?.$id)"
+            (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
@@ -46,24 +47,203 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoadingUserState$ | async)">
-        <ion-item *ngFor="let i of '0123456789'.split('')">
+      <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
           <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getTargetLanguagePage()"
+        [disabled]="(isLoadingByTargetLanguage$ | async)"
+      >
+        See More
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>New Users 👋</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="!(isLoadingByCreatedAt$ | async)">
+        <ng-container
+          *ngFor="let user of (usersByCreatedAt$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoadingByCreatedAt$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getNewUsersPage()"
+        [disabled]="(isLoadingByCreatedAt$ | async)"
+      >
+        See More
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Recently Active ⚡</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="!(isLoadingByLastSeen$ | async)">
+        <ng-container
+          *ngFor="let user of (usersByLastSeen$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoadingByLastSeen$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getOnlinePage()"
+        [disabled]="(isLoadingByLastSeen$ | async)"
+      >
+        See More
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="(totalVisits$ | async) > 0">
+    <ion-card-header>
+      <ion-card-title>Profile Visitors 👀</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="!(isLoadingVisits$ | async)">
+        <ng-container *ngFor="let visit of (visits$ | async) | slice:0:5">
+          <app-visit-list [item]="visit"></app-visit-list>
+        </ng-container>
+      </ion-list>
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoadingVisits$ | async)">
+        <ion-item *ngFor="let i of '01234'.split('')" detail>
+          <ion-thumbnail class="visitor-thumbnail" slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
           <ion-label>
             <h3>
               <ion-skeleton-text
                 [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
                 style="width: 60%"
               ></ion-skeleton-text>
-            </p>
+            </h3>
             <p>
               <ion-skeleton-text
                 [animated]="true"
@@ -77,10 +257,14 @@
       <!------------------>
       <!-- SKELETON end -->
       <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getVisitsPage()"
+        [disabled]="(isLoadingVisits$ | async)"
+      >
+        See More
+      </ion-button>
     </ion-card-content>
   </ion-card>
-
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 </ion-content>
