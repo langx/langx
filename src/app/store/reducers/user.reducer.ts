@@ -37,10 +37,13 @@ import {
 
 const initialState: UserStateInterface = {
   isLoading: false,
+  isLoadingByTargetLanguage: false,
   totalByTargetLanguage: null,
   usersByTargetLanguage: null,
+  isLoadingByLastSeen: false,
   totalByLastSeen: null,
   usersByLastSeen: null,
+  isLoadingByCreatedAt: false,
   totalByCreatedAt: null,
   usersByCreatedAt: null,
   user: null,
@@ -55,7 +58,7 @@ const userReducer = createReducer(
     getUsersByTargetLanguageAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByTargetLanguage: true,
       error: null,
     })
   ),
@@ -63,7 +66,7 @@ const userReducer = createReducer(
     getUsersByTargetLanguageSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByTargetLanguage: false,
       error: null,
       totalByTargetLanguage: action.payload?.total,
       usersByTargetLanguage: action.payload?.documents,
@@ -73,7 +76,7 @@ const userReducer = createReducer(
     getUsersByTargetLanguageFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByTargetLanguage: false,
       error: action.error,
     })
   ),
@@ -81,7 +84,7 @@ const userReducer = createReducer(
     getUsersByTargetLanguageWithOffsetAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByTargetLanguage: true,
       error: null,
     })
   ),
@@ -89,7 +92,7 @@ const userReducer = createReducer(
     getUsersByTargetLanguageWithOffsetSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByTargetLanguage: false,
       error: null,
       totalByTargetLanguage: action.payload?.total,
       usersByTargetLanguage: [
@@ -102,7 +105,7 @@ const userReducer = createReducer(
     getUsersByTargetLanguageWithOffsetFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByTargetLanguage: false,
       error: action.error,
     })
   ),
@@ -112,7 +115,7 @@ const userReducer = createReducer(
     getUsersByLastSeenAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByLastSeen: true,
       error: null,
     })
   ),
@@ -120,7 +123,7 @@ const userReducer = createReducer(
     getUsersByLastSeenSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByLastSeen: false,
       error: null,
       totalByLastSeen: action.payload?.total,
       usersByLastSeen: action.payload?.documents,
@@ -130,7 +133,7 @@ const userReducer = createReducer(
     getUsersByLastSeenFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByLastSeen: false,
       error: action.error,
     })
   ),
@@ -138,7 +141,7 @@ const userReducer = createReducer(
     getUsersByLastSeenWithOffsetAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByLastSeen: true,
       error: null,
     })
   ),
@@ -146,7 +149,7 @@ const userReducer = createReducer(
     getUsersByLastSeenWithOffsetSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByLastSeen: false,
       error: null,
       totalByLastSeen: action.payload?.total,
       usersByLastSeen: [...state.usersByLastSeen, ...action.payload?.documents],
@@ -156,7 +159,7 @@ const userReducer = createReducer(
     getUsersByLastSeenWithOffsetFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByLastSeen: false,
       error: action.error,
     })
   ),
@@ -166,7 +169,7 @@ const userReducer = createReducer(
     getUsersByCreatedAtAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByCreatedAt: true,
       error: null,
     })
   ),
@@ -174,7 +177,7 @@ const userReducer = createReducer(
     getUsersByCreatedAtSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByCreatedAt: false,
       error: null,
       totalByCreatedAt: action.payload?.total,
       usersByCreatedAt: action.payload?.documents,
@@ -184,7 +187,7 @@ const userReducer = createReducer(
     getUsersByCreatedAtFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByCreatedAt: false,
       error: action.error,
     })
   ),
@@ -192,7 +195,7 @@ const userReducer = createReducer(
     getUsersByCreatedAtWithOffsetAction,
     (state): UserStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingByCreatedAt: true,
       error: null,
     })
   ),
@@ -200,7 +203,7 @@ const userReducer = createReducer(
     getUsersByCreatedAtWithOffsetSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByCreatedAt: false,
       error: null,
       totalByCreatedAt: action.payload?.total,
       usersByCreatedAt: [
@@ -213,7 +216,7 @@ const userReducer = createReducer(
     getUsersByCreatedAtWithOffsetFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingByCreatedAt: false,
       error: action.error,
     })
   ),
