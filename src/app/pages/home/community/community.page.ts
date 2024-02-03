@@ -6,6 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
+import { Visit } from 'src/app/models/Visit';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
@@ -15,6 +16,7 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
+import { getVisitsAction } from 'src/app/store/actions/visits.action';
 import {
   getUsersByCreatedAtAction,
   getUsersByLastSeenAction,
@@ -31,6 +33,10 @@ import {
   usersByCreatedAtSelector,
   usersByTargetLanguageSelector,
 } from 'src/app/store/selectors/user.selector';
+import {
+  totalSelector,
+  visitsSelector,
+} from 'src/app/store/selectors/visits.selector';
 
 @Component({
   selector: 'app-community',
@@ -49,6 +55,10 @@ export class CommunityPage implements OnInit {
   usersByTargetLanguage$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
+
+  // Visits
+  visits$: Observable<Visit[] | null> = null;
+  totalVisits$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
@@ -114,6 +124,10 @@ export class CommunityPage implements OnInit {
     );
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
+
+    // Visits
+    this.visits$ = this.store.pipe(select(visitsSelector));
+    this.totalVisits$ = this.store.pipe(select(totalSelector));
   }
 
   //
@@ -137,10 +151,15 @@ export class CommunityPage implements OnInit {
     this.store.dispatch(getUsersByCreatedAtAction({ request: { filterData } }));
   }
 
+  listVisits() {
+    this.store.dispatch(getVisitsAction());
+  }
+
   listAllUsers() {
     this.listUsersByTargetLanguage();
     this.listUsersByLastSeen();
     this.listUsersByCreatedAt();
+    this.listVisits();
   }
 
   //
@@ -225,6 +244,10 @@ export class CommunityPage implements OnInit {
 
   getNewUsersPage() {
     this.router.navigateByUrl('/home/community/new');
+  }
+
+  getVisitsPage() {
+    this.router.navigateByUrl('/home/visitors');
   }
 
   //

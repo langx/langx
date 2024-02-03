@@ -130,4 +130,20 @@
       </ion-button>
     </ion-card-content>
   </ion-card>
+
+  <ion-card *ngIf="(totalVisits$ | async) > 0">
+    <ion-card-header>
+      <ion-card-title>Profile Visitors 👀</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ng-container *ngFor="let visit of (visits$ | async) | slice:0:5">
+          <app-visit-list [item]="visit"></app-visit-list>
+        </ng-container>
+      </ion-list>
+      <ion-button fill="clear" expand="block" (click)="getVisitsPage()">
+        See More
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
