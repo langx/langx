@@ -6,11 +6,11 @@ import { Observable } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { FilterService } from 'src/app/services/filter/filter.service';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getUsersByCreatedAtAction,
   getUsersByCreatedAtWithOffsetAction,
 } from 'src/app/store/actions/users.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   isLoadingSelector,
   totalByCreatedAtSelector,

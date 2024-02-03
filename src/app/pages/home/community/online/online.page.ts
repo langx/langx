@@ -4,13 +4,13 @@ import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 
 import { User } from 'src/app/models/User';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+import { FilterService } from 'src/app/services/filter/filter.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getUsersByLastSeenAction,
   getUsersByLastSeenWithOffsetAction,
 } from 'src/app/store/actions/users.action';
-import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
-import { FilterService } from 'src/app/services/filter/filter.service';
 import {
   totalByLastSeenSelector,
   usersByLastSeenSelector,
