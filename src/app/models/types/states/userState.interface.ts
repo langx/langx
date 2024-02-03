@@ -4,6 +4,8 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export interface UserStateInterface {
   isLoading: boolean;
+  totalByTargetLanguage: number;
+  usersByTargetLanguage: User[] | null;
   totalByLastSeen: number;
   usersByLastSeen: User[] | null;
   totalByCreatedAt: number;

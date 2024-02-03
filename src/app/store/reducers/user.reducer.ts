@@ -18,6 +18,12 @@ import {
   getUsersByCreatedAtWithOffsetAction,
   getUsersByCreatedAtWithOffsetSuccessAction,
   getUsersByCreatedAtWithOffsetFailureAction,
+  getUsersByTargetLanguageAction,
+  getUsersByTargetLanguageSuccessAction,
+  getUsersByTargetLanguageFailureAction,
+  getUsersByTargetLanguageWithOffsetAction,
+  getUsersByTargetLanguageWithOffsetSuccessAction,
+  getUsersByTargetLanguageWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
   getUserByIdAction,
@@ -31,6 +37,8 @@ import {
 
 const initialState: UserStateInterface = {
   isLoading: false,
+  totalByTargetLanguage: null,
+  usersByTargetLanguage: null,
   totalByLastSeen: null,
   usersByLastSeen: null,
   totalByCreatedAt: null,
@@ -42,6 +50,63 @@ const initialState: UserStateInterface = {
 
 const userReducer = createReducer(
   initialState,
+  // Get Users By Target Language Reducers
+  on(
+    getUsersByTargetLanguageAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByTargetLanguageSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: null,
+      totalByTargetLanguage: action.payload?.total,
+      usersByTargetLanguage: action.payload?.documents,
+    })
+  ),
+  on(
+    getUsersByTargetLanguageFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getUsersByTargetLanguageWithOffsetAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByTargetLanguageWithOffsetSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: null,
+      totalByTargetLanguage: action.payload?.total,
+      usersByTargetLanguage: [
+        ...state.usersByTargetLanguage,
+        ...action.payload?.documents,
+      ],
+    })
+  ),
+  on(
+    getUsersByTargetLanguageWithOffsetFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
   // Get Users By Last Seen Reducers
   on(
     getUsersByLastSeenAction,
@@ -56,6 +121,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       totalByLastSeen: action.payload?.total,
       usersByLastSeen: action.payload?.documents,
     })
@@ -81,6 +147,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       totalByLastSeen: action.payload?.total,
       usersByLastSeen: [...state.usersByLastSeen, ...action.payload?.documents],
     })
@@ -108,6 +175,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       totalByCreatedAt: action.payload?.total,
       usersByCreatedAt: action.payload?.documents,
     })
@@ -133,6 +201,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       totalByCreatedAt: action.payload?.total,
       usersByCreatedAt: [
         ...state.usersByCreatedAt,
@@ -163,6 +232,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       user: action.payload,
     })
   ),
@@ -198,6 +268,7 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoading: false,
+      error: null,
       report: action.payload,
     })
   ),
