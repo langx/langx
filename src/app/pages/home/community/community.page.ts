@@ -215,6 +215,10 @@ export class CommunityPage implements OnInit {
     this.router.navigateByUrl('/home/user/' + userId);
   }
 
+  getTargetLanguagePage() {
+    this.router.navigateByUrl('/home/community/target-language');
+  }
+
   getOnlinePage() {
     this.router.navigateByUrl('/home/community/online');
   }
