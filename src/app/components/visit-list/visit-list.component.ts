@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
-import { lastSeen, lastSeenExt } from 'src/app/extras/utils';
+import { lastSeen, lastSeenExt, onlineStatus } from 'src/app/extras/utils';
 import { Router } from '@angular/router';
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
@@ -39,5 +39,10 @@ export class VisitListComponent implements OnInit {
   lastSeen(d: any) {
     if (!d) return null;
     return lastSeen(d);
+  }
+
+  onlineStatus(d: any) {
+    if (!d) return null;
+    return onlineStatus(d);
   }
 }
