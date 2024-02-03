@@ -16,3 +16,10 @@ ion-modal {
   border-radius: 50%;
   background-color: var(--ion-color-danger);
 }
+
+ion-thumbnail {
+  --size: 75px; // Increase this value to make the thumbnail bigger
+  margin-top: 5px;
+  margin-bottom: 5px;
+  --border-radius: 10px;
+}

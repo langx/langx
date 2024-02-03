@@ -42,7 +42,49 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-      <ion-button fill="clear" expand="block" (click)="getTargetLanguagePage()">
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getTargetLanguagePage()"
+        [disabled]="(isLoading$ | async)"
+      >
         See More
       </ion-button>
     </ion-card-content>
@@ -65,46 +107,50 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-      <ion-button fill="clear" expand="block" (click)="getOnlinePage()">
-        See More
-      </ion-button>
-
-      <!-- TODO: Skeleton Desing -->
       <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoadingUserState$ | async)">
-        <ion-item *ngFor="let i of '0123456789'.split('')">
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
           </ion-thumbnail>
           <ion-label>
-            <h3>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
               <ion-skeleton-text
                 [animated]="true"
                 style="width: 80%"
               ></ion-skeleton-text>
-            </h3>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 60%"
-              ></ion-skeleton-text>
             </p>
             <p>
               <ion-skeleton-text
                 [animated]="true"
-                style="width: 30%"
+                style="width: 50%"
               ></ion-skeleton-text>
             </p>
+            <p></p>
           </ion-label>
         </ion-item>
-      </ion-list> -->
+      </ion-list>
 
       <!------------------>
       <!-- SKELETON end -->
       <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getOnlinePage()"
+        [disabled]="(isLoading$ | async)"
+      >
+        See More
+      </ion-button>
     </ion-card-content>
   </ion-card>
 
@@ -125,7 +171,48 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-      <ion-button fill="clear" expand="block" (click)="getNewUsersPage()">
+            <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getNewUsersPage()"
+        [disabled]="(isLoading$ | async)"
+      >
         See More
       </ion-button>
     </ion-card-content>
@@ -141,7 +228,12 @@
           <app-visit-list [item]="visit"></app-visit-list>
         </ng-container>
       </ion-list>
-      <ion-button fill="clear" expand="block" (click)="getVisitsPage()">
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getVisitsPage()"
+        [disabled]="(isLoading$ | async)"
+      >
         See More
       </ion-button>
     </ion-card-content>
