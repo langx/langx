@@ -18,6 +18,7 @@ import { createRoomInitialStateAction } from 'src/app/store/actions/room.action'
 import {
   getUsersByCreatedAtAction,
   getUsersByLastSeenAction,
+  getUsersByTargetLanguageAction,
 } from 'src/app/store/actions/users.action';
 
 // Selector Imports
@@ -26,10 +27,9 @@ import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
   isLoadingSelector,
   usersByLastSeenSelector,
-  totalByLastSeenSelector,
   errorSelector,
   usersByCreatedAtSelector,
-  totalByCreatedAtSelector,
+  usersByTargetLanguageSelector,
 } from 'src/app/store/selectors/user.selector';
 
 @Component({
@@ -45,10 +45,10 @@ export class CommunityPage implements OnInit {
 
   currentUser$: Observable<User>;
   isLoading$: Observable<boolean>;
+
+  usersByTargetLanguage$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
-  totalByLastSeenSelector$: Observable<number | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
-  totalByCreatedAtSelector$: Observable<number | null> = null;
 
   constructor(
     private store: Store,
@@ -106,22 +106,26 @@ export class CommunityPage implements OnInit {
 
   initValues(): void {
     // Set values from selectors
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
-    this.totalByLastSeenSelector$ = this.store.pipe(
-      select(totalByLastSeenSelector)
-    );
-    this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
-    this.totalByCreatedAtSelector$ = this.store.pipe(
-      select(totalByCreatedAtSelector)
-    );
-
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+
+    this.usersByTargetLanguage$ = this.store.pipe(
+      select(usersByTargetLanguageSelector)
+    );
+    this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
+    this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
   }
 
   //
   // Get Users
   //
+
+  listUsersByTargetLanguage() {
+    const filterData = this.filterData;
+    this.store.dispatch(
+      getUsersByTargetLanguageAction({ request: { filterData } })
+    );
+  }
 
   listUsersByLastSeen() {
     const filterData = this.filterData;
@@ -131,6 +135,12 @@ export class CommunityPage implements OnInit {
   listUsersByCreatedAt() {
     const filterData = this.filterData;
     this.store.dispatch(getUsersByCreatedAtAction({ request: { filterData } }));
+  }
+
+  listAllUsers() {
+    this.listUsersByTargetLanguage();
+    this.listUsersByLastSeen();
+    this.listUsersByCreatedAt();
   }
 
   //
@@ -145,8 +155,7 @@ export class CommunityPage implements OnInit {
         // console.log('Subscribed filter: ', filterData);
 
         // List Users
-        this.listUsersByLastSeen();
-        this.listUsersByCreatedAt();
+        this.listAllUsers();
       });
   }
 
@@ -189,8 +198,8 @@ export class CommunityPage implements OnInit {
   //
 
   handleRefresh(event) {
-    this.listUsersByLastSeen();
-    this.listUsersByCreatedAt();
+    // List Users
+    this.listAllUsers();
     if (event) event.target.complete();
   }
 
