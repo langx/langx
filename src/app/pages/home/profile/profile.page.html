@@ -43,8 +43,8 @@
         {{(currentUser$ | async)?.name}}
       </ion-card-title>
       <ion-card-subtitle>
-        {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} |
-        {{(currentUser$ | async)?.country}}
+        {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} | {{
+        getFlagEmoji(currentUser$ | async) }}
       </ion-card-subtitle>
       <ion-card-subtitle
         *ngIf="lastSeen((currentUser$ | async)?.lastSeen) != 'online'"

@@ -298,6 +298,14 @@ export class UserPage implements OnInit {
     return getAge(d);
   }
 
+  getFlagEmoji(item: User) {
+    const codePoints = item['countryCode']
+      .toUpperCase()
+      .split('')
+      .map((char) => 127397 + char.charCodeAt());
+    return String.fromCodePoint(...codePoints);
+  }
+
   //
   // Present Toast
   //
