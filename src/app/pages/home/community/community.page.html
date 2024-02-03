@@ -27,6 +27,29 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Language Mates 🗣️</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ng-container
+          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+      <ion-button fill="clear" expand="block" (click)="getTargetLanguagePage()">
+        See More
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Recently Active ⚡</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -91,7 +114,9 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (usersByCreatedAt$ | async) | slice:0:3">
+        <ng-container
+          *ngFor="let user of (usersByCreatedAt$ | async) | slice:0:3"
+        >
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"
