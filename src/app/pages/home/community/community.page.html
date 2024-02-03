@@ -92,70 +92,6 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Recently Active ⚡</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ng-container
-          *ngFor="let user of (usersByLastSeen$ | async) | slice:0:3"
-        >
-          <app-user-list
-            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-      </ion-list>
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoadingByLastSeen$ | async)">
-        <ion-item *ngFor="let i of '012'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-      <ion-button
-        fill="clear"
-        expand="block"
-        (click)="getOnlinePage()"
-        [disabled]="(isLoadingByLastSeen$ | async)"
-      >
-        See More
-      </ion-button>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
       <ion-card-title>New Users 👋</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -212,6 +148,70 @@
         expand="block"
         (click)="getNewUsersPage()"
         [disabled]="(isLoadingByCreatedAt$ | async)"
+      >
+        See More
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Recently Active ⚡</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ng-container
+          *ngFor="let user of (usersByLastSeen$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoadingByLastSeen$ | async)">
+        <ion-item *ngFor="let i of '012'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+      <ion-button
+        fill="clear"
+        expand="block"
+        (click)="getOnlinePage()"
+        [disabled]="(isLoadingByLastSeen$ | async)"
       >
         See More
       </ion-button>
