@@ -1,4 +1,10 @@
 export enum ActionTypes {
+  GET_USERS_BY_TARGET_LANGUAGE = '[Users] Get Users By Target Language',
+  GET_USERS_BY_TARGET_LANGUAGE_SUCCESS = '[Users] Get Users By Target Language Success',
+  GET_USERS_BY_TARGET_LANGUAGE_FAILURE = '[Users] Get Users By Target Language Failure',
+  GET_USERS_BY_TARGET_LANGUAGE_WITH_OFFSET = '[Users] Get Users By Target Language With Offset',
+  GET_USERS_BY_TARGET_LANGUAGE_WITH_OFFSET_SUCCESS = '[Users] Get Users By Target Language With Offset Success',
+  GET_USERS_BY_TARGET_LANGUAGE_WITH_OFFSET_FAILURE = '[Users] Get Users By Target Language With Offset Failure',
   GET_USERS_BY_LAST_SEEN = '[Users] Get Users By Last Seen',
   GET_USERS_BY_LAST_SEEN_SUCCESS = '[Users] Get Users By Last Seen Success',
   GET_USERS_BY_LAST_SEEN_FAILURE = '[Users] Get Users By Last Seen Failure',
