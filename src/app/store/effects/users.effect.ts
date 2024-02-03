@@ -22,10 +22,69 @@ import {
   getUsersByLastSeenWithOffsetAction,
   getUsersByLastSeenWithOffsetFailureAction,
   getUsersByLastSeenWithOffsetSuccessAction,
+  getUsersByTargetLanguageAction,
+  getUsersByTargetLanguageFailureAction,
+  getUsersByTargetLanguageSuccessAction,
+  getUsersByTargetLanguageWithOffsetAction,
+  getUsersByTargetLanguageWithOffsetFailureAction,
+  getUsersByTargetLanguageWithOffsetSuccessAction,
 } from 'src/app/store/actions/users.action';
 
 @Injectable()
 export class UsersEffects {
+  // Get Users By Target Language Effects
+  getUsersByTargetLanguage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByTargetLanguageAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByTargetLanguage(currentUser, request.filterData)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByTargetLanguageSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByTargetLanguageFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  getUsersByTargetLanguageWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByTargetLanguageWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByTargetLanguage(
+            currentUser,
+            request.filterData,
+            request.offset
+          )
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByTargetLanguageWithOffsetSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(
+                getUsersByTargetLanguageWithOffsetFailureAction({ error })
+              );
+            })
+          )
+      )
+    )
+  );
+
   // Get Users By Last Seen Effects
   getUsersByLastSeen$ = createEffect(() =>
     this.actions$.pipe(
