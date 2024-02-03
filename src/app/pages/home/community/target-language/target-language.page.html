@@ -1,13 +1,69 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>target-language</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Language Mates 🗣️</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">target-language</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        <ng-container *ngFor="let user of (usersByTargetLanguage$ | async)">
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getUserPage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '0123456789'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 30%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
