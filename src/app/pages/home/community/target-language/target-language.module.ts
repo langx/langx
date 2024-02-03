@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { TargetLanguagePageRoutingModule } from './target-language-routing.module';
 
 import { TargetLanguagePage } from './target-language.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TargetLanguagePageRoutingModule
+    TargetLanguagePageRoutingModule,
+    ComponentsModule,
   ],
-  declarations: [TargetLanguagePage]
+  declarations: [TargetLanguagePage],
 })
 export class TargetLanguagePageModule {}
