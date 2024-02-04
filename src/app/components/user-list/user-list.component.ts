@@ -32,6 +32,7 @@ export class UserListComponent implements OnInit {
   //
 
   getFlagEmoji(item: User) {
+    if (!item) return null;
     const codePoints = item['countryCode']
       .toUpperCase()
       .split('')
