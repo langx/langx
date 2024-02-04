@@ -1,9 +1,9 @@
 {
   "name": "languagexchange",
-  "version": "0.5",
+  "version": "0.5.1",
   "author": "languageXchange",
   "homepage": "https://languageXchange.net/",
-  "description": "A language exchange project",
+  "description": " Practice, Learn, Succeed! | An Open Sourced Language Exchange Project",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
