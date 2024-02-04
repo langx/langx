@@ -10,6 +10,12 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
+  getUsersByCompletedProfileAction,
+  getUsersByCompletedProfileFailureAction,
+  getUsersByCompletedProfileSuccessAction,
+  getUsersByCompletedProfileWithOffsetAction,
+  getUsersByCompletedProfileWithOffsetFailureAction,
+  getUsersByCompletedProfileWithOffsetSuccessAction,
   getUsersByCreatedAtAction,
   getUsersByCreatedAtFailureAction,
   getUsersByCreatedAtSuccessAction,
@@ -78,6 +84,59 @@ export class UsersEffects {
               };
               return of(
                 getUsersByTargetLanguageWithOffsetFailureAction({ error })
+              );
+            })
+          )
+      )
+    )
+  );
+
+  // Get Users By Completed Profile Effects
+  getUsersByCompletedProfile$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByCompletedProfileAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByCompletedProfile(currentUser, request.filterData)
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByCompletedProfileSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(getUsersByCompletedProfileFailureAction({ error }));
+            })
+          )
+      )
+    )
+  );
+
+  getUsersByCompletedProfileWithOffset$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getUsersByCompletedProfileWithOffsetAction),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) =>
+        this.userService
+          .listUsersByCompletedProfile(
+            currentUser,
+            request.filterData,
+            request.offset
+          )
+          .pipe(
+            map((payload: listUsersResponseInterface) =>
+              getUsersByCompletedProfileWithOffsetSuccessAction({ payload })
+            ),
+
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(
+                getUsersByCompletedProfileWithOffsetFailureAction({ error })
               );
             })
           )
