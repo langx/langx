@@ -114,7 +114,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)">
+      <ion-list *ngIf="(isLoadingByCompletedProfile$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
