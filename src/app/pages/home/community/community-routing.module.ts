@@ -21,6 +21,10 @@ const routes: Routes = [
     path: 'target-language',
     loadChildren: () => import('./target-language/target-language.module').then( m => m.TargetLanguagePageModule)
   },
+  {
+    path: 'enthusiasts',
+    loadChildren: () => import('./enthusiasts/enthusiasts.module').then( m => m.EnthusiastsPageModule)
+  },
 ];
 
 @NgModule({
