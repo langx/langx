@@ -84,13 +84,11 @@ export class UserService {
     // Add exclusion queries
     queries.push(...this.createExclusionQueries(currentUser));
 
+    // Query for users with completed profiles
     queries.push(Query.notEqual('aboutMe', ''));
-    // queries.push(
-    //   Query.equal(
-    //     'profilePhoto',
-    //     'https://db.languagexchange.net/v1/storage/buckets/6515f94d20becd47cb40/files/65be29312d3ef2e5fe92/view?project=650750d21e4a6a589be3'
-    //   )
-    // );
+    queries.push(
+      Query.notEqual('profilePhoto', environment.defaultAssets.PROFILE_PHOTO)
+    );
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
