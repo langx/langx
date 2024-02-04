@@ -27,7 +27,8 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Language Mates 🗣️</ion-card-title>
+      <ion-card-title>Language Mates</ion-card-title>
+      <ion-card-subtitle>🗣️ Recommended For You</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
@@ -92,7 +93,8 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>New Users 👋</ion-card-title>
+      <ion-card-title>New Users</ion-card-title>
+      <ion-card-subtitle>👋 Welcome to the Community</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoadingByCreatedAt$ | async)">
@@ -156,7 +158,8 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Recently Active ⚡</ion-card-title>
+      <ion-card-title>Recently Active</ion-card-title>
+      <ion-card-subtitle>⚡ Engaged Members</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoadingByLastSeen$ | async)">
@@ -220,7 +223,8 @@
 
   <ion-card *ngIf="(totalVisits$ | async) > 0">
     <ion-card-header>
-      <ion-card-title>Profile Visitors 👀</ion-card-title>
+      <ion-card-title>Profile Visitors</ion-card-title>
+      <ion-card-subtitle>👀 Recent Profile Views</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoadingVisits$ | async)">
