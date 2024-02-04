@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/community"></ion-back-button>
     </ion-buttons>
-    <ion-title>Language Mates 🎯</ion-title>
+    <ion-title>Enthusiasts ✅</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -15,7 +15,7 @@
   <ion-card>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let user of (usersByTargetLanguage$ | async)">
+        <ng-container *ngFor="let user of (usersByCompletedProfile$ | async)">
           <app-user-list
             *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
             [item]="user"

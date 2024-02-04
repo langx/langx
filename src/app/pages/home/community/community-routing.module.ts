@@ -19,7 +19,17 @@ const routes: Routes = [
   },
   {
     path: 'target-language',
-    loadChildren: () => import('./target-language/target-language.module').then( m => m.TargetLanguagePageModule)
+    loadChildren: () =>
+      import('./target-language/target-language.module').then(
+        (m) => m.TargetLanguagePageModule
+      ),
+  },
+  {
+    path: 'enthusiast',
+    loadChildren: () =>
+      import('./enthusiast/enthusiast.module').then(
+        (m) => m.EnthusiastPageModule
+      ),
   },
 ];
 

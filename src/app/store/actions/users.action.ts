@@ -42,6 +42,43 @@ export const getUsersByTargetLanguageWithOffsetFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Get Users By Completed Profile Actions
+export const getUsersByCompletedProfileAction = createAction(
+  ActionTypes.GET_USERS_BY_COMPLETED_PROFILE,
+  props<{ request: { filterData: FilterDataInterface } }>()
+);
+
+export const getUsersByCompletedProfileSuccessAction = createAction(
+  ActionTypes.GET_USERS_BY_COMPLETED_PROFILE_SUCCESS,
+  props<{ payload: listUsersResponseInterface }>()
+);
+
+export const getUsersByCompletedProfileFailureAction = createAction(
+  ActionTypes.GET_USERS_BY_COMPLETED_PROFILE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Get Users By Completed Profile With Offset Actions
+export const getUsersByCompletedProfileWithOffsetAction = createAction(
+  ActionTypes.GET_USERS_BY_COMPLETED_PROFILE_WITH_OFFSET,
+  props<{
+    request: {
+      filterData: FilterDataInterface;
+      offset: number;
+    };
+  }>()
+);
+
+export const getUsersByCompletedProfileWithOffsetSuccessAction = createAction(
+  ActionTypes.GET_USERS_BY_COMPLETED_PROFILE_WITH_OFFSET_SUCCESS,
+  props<{ payload: listUsersResponseInterface }>()
+);
+
+export const getUsersByCompletedProfileWithOffsetFailureAction = createAction(
+  ActionTypes.GET_USERS_BY_COMPLETED_PROFILE_WITH_OFFSET_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Get Users By Last Seen Actions
 export const getUsersByLastSeenAction = createAction(
   ActionTypes.GET_USERS_BY_LAST_SEEN,

@@ -18,6 +18,7 @@ import { FilterService } from 'src/app/services/filter/filter.service';
 import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
 import { getVisitsAction } from 'src/app/store/actions/visits.action';
 import {
+  getUsersByCompletedProfileAction,
   getUsersByCreatedAtAction,
   getUsersByLastSeenAction,
   getUsersByTargetLanguageAction,
@@ -34,6 +35,8 @@ import {
   errorSelector,
   usersByCreatedAtSelector,
   usersByTargetLanguageSelector,
+  isLoadingByCompletedProfileSelector,
+  usersByCompletedProfileSelector,
 } from 'src/app/store/selectors/user.selector';
 import {
   isLoadingSelector,
@@ -55,9 +58,11 @@ export class CommunityPage implements OnInit {
   currentUser$: Observable<User>;
 
   isLoadingByTargetLanguage$: Observable<boolean>;
+  isLoadingByCompletedProfile$: Observable<boolean>;
   isLoadingByLastSeen$: Observable<boolean>;
   isLoadingByCreatedAt$: Observable<boolean>;
   usersByTargetLanguage$: Observable<User[] | null> = null;
+  usersByCompletedProfile$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
 
@@ -127,6 +132,9 @@ export class CommunityPage implements OnInit {
     this.isLoadingByTargetLanguage$ = this.store.pipe(
       select(isLoadingByTargetLanguageSelector)
     );
+    this.isLoadingByCompletedProfile$ = this.store.pipe(
+      select(isLoadingByCompletedProfileSelector)
+    );
     this.isLoadingByLastSeen$ = this.store.pipe(
       select(isLoadingByLastSeenSelector)
     );
@@ -135,6 +143,9 @@ export class CommunityPage implements OnInit {
     );
     this.usersByTargetLanguage$ = this.store.pipe(
       select(usersByTargetLanguageSelector)
+    );
+    this.usersByCompletedProfile$ = this.store.pipe(
+      select(usersByCompletedProfileSelector)
     );
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
@@ -156,6 +167,13 @@ export class CommunityPage implements OnInit {
     );
   }
 
+  listUsersByCompletedProfile() {
+    const filterData = this.filterData;
+    this.store.dispatch(
+      getUsersByCompletedProfileAction({ request: { filterData } })
+    );
+  }
+
   listUsersByLastSeen() {
     const filterData = this.filterData;
     this.store.dispatch(getUsersByLastSeenAction({ request: { filterData } }));
@@ -172,6 +190,7 @@ export class CommunityPage implements OnInit {
 
   listAllUsers() {
     this.listUsersByTargetLanguage();
+    this.listUsersByCompletedProfile();
     this.listUsersByLastSeen();
     this.listUsersByCreatedAt();
     this.listVisits();
@@ -251,6 +270,10 @@ export class CommunityPage implements OnInit {
 
   getTargetLanguagePage() {
     this.router.navigateByUrl('/home/community/target-language');
+  }
+
+  getEnthusiastPage() {
+    this.router.navigateByUrl('/home/community/enthusiast');
   }
 
   getOnlinePage() {

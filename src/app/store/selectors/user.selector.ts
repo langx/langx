@@ -25,6 +25,21 @@ export const totalByTargetLanguageSelector = createSelector(
   (userState: UserStateInterface) => userState.totalByTargetLanguage
 );
 
+export const isLoadingByCompletedProfileSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.isLoadingByCompletedProfile
+);
+
+export const usersByCompletedProfileSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.usersByCompletedProfile
+);
+
+export const totalByCompletedProfileSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.totalByCompletedProfile
+);
+
 export const isLoadingByLastSeenSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.isLoadingByLastSeen

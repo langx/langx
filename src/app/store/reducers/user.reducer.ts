@@ -24,6 +24,12 @@ import {
   getUsersByTargetLanguageWithOffsetAction,
   getUsersByTargetLanguageWithOffsetSuccessAction,
   getUsersByTargetLanguageWithOffsetFailureAction,
+  getUsersByCompletedProfileAction,
+  getUsersByCompletedProfileSuccessAction,
+  getUsersByCompletedProfileFailureAction,
+  getUsersByCompletedProfileWithOffsetAction,
+  getUsersByCompletedProfileWithOffsetSuccessAction,
+  getUsersByCompletedProfileWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
   getUserByIdAction,
@@ -40,6 +46,9 @@ const initialState: UserStateInterface = {
   isLoadingByTargetLanguage: false,
   totalByTargetLanguage: null,
   usersByTargetLanguage: null,
+  isLoadingByCompletedProfile: false,
+  totalByCompletedProfile: null,
+  usersByCompletedProfile: null,
   isLoadingByLastSeen: false,
   totalByLastSeen: null,
   usersByLastSeen: null,
@@ -106,6 +115,63 @@ const userReducer = createReducer(
     (state, action): UserStateInterface => ({
       ...state,
       isLoadingByTargetLanguage: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Users By Completed Profile Reducers
+  on(
+    getUsersByCompletedProfileAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoadingByCompletedProfile: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByCompletedProfileSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCompletedProfile: false,
+      error: null,
+      totalByCompletedProfile: action.payload?.total,
+      usersByCompletedProfile: action.payload?.documents,
+    })
+  ),
+  on(
+    getUsersByCompletedProfileFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCompletedProfile: false,
+      error: action.error,
+    })
+  ),
+  on(
+    getUsersByCompletedProfileWithOffsetAction,
+    (state): UserStateInterface => ({
+      ...state,
+      isLoadingByCompletedProfile: true,
+      error: null,
+    })
+  ),
+  on(
+    getUsersByCompletedProfileWithOffsetSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCompletedProfile: false,
+      error: null,
+      totalByCompletedProfile: action.payload?.total,
+      usersByCompletedProfile: [
+        ...state.usersByCompletedProfile,
+        ...action.payload?.documents,
+      ],
+    })
+  ),
+  on(
+    getUsersByCompletedProfileWithOffsetFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isLoadingByCompletedProfile: false,
       error: action.error,
     })
   ),
