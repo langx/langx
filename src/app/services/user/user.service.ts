@@ -56,6 +56,8 @@ export class UserService {
       // OR Query for users with any of the selected languages
       queries.push(Query.search('languageArray', keywords));
     }
+    // Query for not equal same country
+    queries.push(Query.notEqual('countryCode', currentUser['countryCode']));
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
