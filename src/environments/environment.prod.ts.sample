@@ -62,4 +62,7 @@ export const environment = {
   opts: {
     PAGINATION_LIMIT: 25,
   },
+  defaultAssets: {
+    PROFILE_PHOTO: `${DB_URL}v1/storage/buckets/xxxxxxxxxxxxxxxxxxxx/files/xxxxxxxxxxxxxxxxxxxx/view?project=xxxxxxxxxxxxxxxxxxxx`,
+  },
 };
