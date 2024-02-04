@@ -7,6 +7,9 @@ export interface UserStateInterface {
   isLoadingByTargetLanguage: boolean;
   totalByTargetLanguage: number;
   usersByTargetLanguage: User[] | null;
+  isLoadingByCompletedProfile: boolean;
+  totalByCompletedProfile: number;
+  usersByCompletedProfile: User[] | null;
   isLoadingByLastSeen: boolean;
   totalByLastSeen: number;
   usersByLastSeen: User[] | null;
