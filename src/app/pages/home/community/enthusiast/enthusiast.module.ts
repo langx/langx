@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EnthusiastsPageRoutingModule } from './enthusiasts-routing.module';
+import { EnthusiastPageRoutingModule } from './enthusiast-routing.module';
 
-import { EnthusiastsPage } from './enthusiasts.page';
+import { EnthusiastPage } from './enthusiast.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    EnthusiastsPageRoutingModule
+    EnthusiastPageRoutingModule
   ],
-  declarations: [EnthusiastsPage]
+  declarations: [EnthusiastPage]
 })
-export class EnthusiastsPageModule {}
+export class EnthusiastPageModule {}
