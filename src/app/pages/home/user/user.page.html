@@ -21,8 +21,8 @@
         {{(user$ | async)?.name}}
       </ion-card-title>
       <ion-card-subtitle>
-        {{getAge((user$ | async)?.birthdate)}} | {{gender}} | {{
-        getFlagEmoji(user$ | async) }}
+        {{getAge((user$ | async)?.birthdate)}} | {{gender}} | {{(user$ |
+        async)?.country}} {{ getFlagEmoji(user$ | async) }}
       </ion-card-subtitle>
       <ion-card-subtitle
         *ngIf="lastSeen((user$ | async)?.lastSeen) != 'online'"
@@ -38,7 +38,7 @@
     </ion-card-header>
     <ion-card-content>
       <div class="ion-text-center">
-        <ion-button (click)="getRoom()" fill="solid"
+        <ion-button (click)="getRoom()" fill="solid" size="small"
           >Send A Message 🚀</ion-button
         >
       </div>
@@ -98,7 +98,10 @@
       <ion-list class="list-icon">
         <ion-item>
           <ion-icon name="flag-outline"></ion-icon>
-          <ion-label>{{(user$ | async)?.country}}</ion-label>
+          <ion-label
+            >{{(user$ | async)?.country}} {{ getFlagEmoji(user$ | async)
+            }}</ion-label
+          >
         </ion-item>
         <ion-item>
           <ion-icon name="male-female-outline"></ion-icon>
