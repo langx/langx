@@ -121,6 +121,52 @@ export class UserService {
     );
   }
 
+  //
+  // Visits
+  //
+
+  createVisitDoc(currentUserId: string, userId: string): Observable<any> {
+    if (currentUserId === userId) {
+      return of(null);
+    }
+
+    return from(
+      this.api.createDocument(
+        environment.appwrite.VISITS_COLLECTION,
+        ID.unique(),
+        {
+          from: currentUserId,
+          to: userId,
+        }
+      )
+    );
+  }
+
+  listVisits(
+    currentUserId: string,
+    offset?: number
+  ): Observable<listVisitsResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for users that are not the current user
+    queries.push(Query.equal('to', currentUserId));
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('$updatedAt'));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.VISITS_COLLECTION, queries)
+    );
+  }
+
+  //
+  // Block and Report User
+  //
+
   blockUser(currentUser: User, userId: string): Observable<User> {
     return from(
       this.api.updateDocument(
@@ -197,48 +243,6 @@ export class UserService {
       fileId
     );
     return of(url);
-  }
-
-  //
-  // Create Visit Doc
-  //
-
-  createVisitDoc(currentUserId: string, userId: string): Observable<any> {
-    if (currentUserId === userId) {
-      return of(null);
-    }
-
-    return from(
-      this.api.createDocument(
-        environment.appwrite.VISITS_COLLECTION,
-        ID.unique(),
-        {
-          from: currentUserId,
-          to: userId,
-        }
-      )
-    );
-  }
-
-  listVisits(
-    currentUserId: string,
-    offset?: number
-  ): Observable<listVisitsResponseInterface> {
-    // Define queries
-    const queries: any[] = [];
-
-    // Query for users that are not the current user
-    queries.push(Query.equal('to', currentUserId));
-
-    // Query for users descending by last seen
-    queries.push(Query.orderDesc('$updatedAt'));
-
-    // Add pagination queries
-    queries.push(...this.createPaginationQueries(offset));
-
-    return from(
-      this.api.listDocuments(environment.appwrite.VISITS_COLLECTION, queries)
-    );
   }
 
   //
