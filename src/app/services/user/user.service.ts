@@ -71,6 +71,39 @@ export class UserService {
     );
   }
 
+  listUsersByCompletedProfile(
+    currentUser: User,
+    filterData: FilterDataInterface,
+    offset?: number
+  ): Observable<listUsersResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Add exclusion queries
+    queries.push(...this.createExclusionQueries(currentUser));
+
+    queries.push(Query.notEqual('aboutMe', ''));
+    // queries.push(
+    //   Query.equal(
+    //     'profilePhoto',
+    //     'https://db.languagexchange.net/v1/storage/buckets/6515f94d20becd47cb40/files/65be29312d3ef2e5fe92/view?project=650750d21e4a6a589be3'
+    //   )
+    // );
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
   listUsersByLastSeen(
     currentUser: User,
     filterData: FilterDataInterface,
