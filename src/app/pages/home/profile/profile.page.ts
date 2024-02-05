@@ -141,7 +141,7 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  getAccountPage(page) {
+  getSettingPage(page) {
     if (page?.url == 'logout') {
       this.logout();
       this.dismissModal();
@@ -157,6 +157,10 @@ export class ProfilePage implements OnInit {
 
   editProfile() {
     this.router.navigate(['/', 'home', 'profile', 'edit']);
+  }
+
+  getAccountPage() {
+    this.router.navigate(['/', 'home', 'account']);
   }
 
   // TODO: #168 Start slideshow from selected photo
