@@ -68,7 +68,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
+  <ion-card *ngIf="(identities$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-title>Linked Accounts</ion-card-title>
     </ion-card-header>
@@ -143,6 +143,20 @@
         <ion-item>
           <ion-icon name="id-card-outline"></ion-icon>
           <ion-label>{{ (account$ | async)?.$id }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>App Version</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <ion-label>{{ appVersion }}</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>

@@ -2,13 +2,9 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/messages"></ion-back-button>
-      <ion-avatar
-        (click)="redirectUserProfile()"
-        style="width: 40px; height: 40px"
-        class="ion-margin-start"
-      >
+      <ion-thumbnail (click)="redirectUserProfile()" class="ion-margin-start">
         <img [src]="(user$ | async)?.profilePhoto" />
-      </ion-avatar>
+      </ion-thumbnail>
     </ion-buttons>
 
     <ion-title (click)="redirectUserProfile()">

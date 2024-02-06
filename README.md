@@ -32,12 +32,13 @@ This project is currently in development. The current version is 0.1.0. For more
 
 To check the status of the website, database and CDN, please visit the following link: https://status.languagexchange.net/
 
-## Technologies
+## Tech Stack
 
 - Language: [TypeScript](https://www.typescriptlang.org/)
+- Landing Page: [Svelte](https://svelte.dev/)
 - Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
 - Database: [Appwrite](https://appwrite.io/)
-- API: [Self-hosted](https://github.com/languagexchange/server)
+- API: [Expressjs, Nodejs](https://github.com/languagexchange/server)
 - Cloud Functions: [Appwrite](https://appwrite.io/)
 - Push Notification: [Firebase](https://firebase.google.com/)
 - Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)

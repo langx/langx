@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
+import { RateApp } from 'capacitor-rate-app';
 
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -40,6 +41,9 @@ export class BucketEffects {
               })
               .pipe(
                 map((userData: User) => {
+                  // Request a review
+                  RateApp.requestReview();
+
                   return uploadProfilePictureSuccessAction({
                     payload: userData,
                   });
