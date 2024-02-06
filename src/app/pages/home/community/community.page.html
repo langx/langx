@@ -25,7 +25,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card>
+  <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-title>Language Mates</ion-card-title>
       <ion-card-subtitle>🎯 Recommended For You</ion-card-subtitle>
