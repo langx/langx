@@ -287,6 +287,8 @@
     </ion-card-content>
   </ion-card>
 
+  <app-empty-screen *ngIf="(visits$ | async)?.length == 0" [model]="model">
+  </app-empty-screen>
   <ion-card *ngIf="(totalVisits$ | async) > 0">
     <ion-card-header>
       <ion-card-title>Profile Visitors</ion-card-title>

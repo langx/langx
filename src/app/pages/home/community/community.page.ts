@@ -70,6 +70,11 @@ export class CommunityPage implements OnInit {
   isLoadingVisits$: Observable<boolean>;
   visits$: Observable<Visit[] | null> = null;
   totalVisits$: Observable<number | null> = null;
+  model = {
+    icon: 'people-outline',
+    title: 'No Profile Visitors Yet',
+    color: 'warning',
+  };
 
   constructor(
     private store: Store,
