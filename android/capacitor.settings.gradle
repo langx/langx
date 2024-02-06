@@ -38,5 +38,8 @@ project(':capawesome-capacitor-badge').projectDir = new File('../node_modules/@c
 include ':capgo-inappbrowser'
 project(':capgo-inappbrowser').projectDir = new File('../node_modules/@capgo/inappbrowser/android')
 
+include ':capacitor-rate-app'
+project(':capacitor-rate-app').projectDir = new File('../node_modules/capacitor-rate-app/android')
+
 include ':capacitor-voice-recorder'
 project(':capacitor-voice-recorder').projectDir = new File('../node_modules/capacitor-voice-recorder/android')
