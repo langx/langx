@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { lastSeen } from 'src/app/extras/utils';
+import { messageTime } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
 
@@ -171,9 +171,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   messageTime(d: any) {
     if (!d) return null;
-    let time = lastSeen(d);
-    if (time === 'online') time = 'now';
-    return time;
+    return messageTime(d);
   }
 
   //

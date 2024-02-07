@@ -48,13 +48,32 @@ export function lastSeenExt(date: Date) {
   }
 }
 
+export function messageTime(date: Date) {
+  let now = new Date();
+  let messageDate = new Date(date);
+  let diff = now.getTime() - messageDate.getTime();
+  let minutes = Math.floor(diff / 60000);
+  let hours = Math.floor(minutes / 60);
+  let days = Math.floor(hours / 24);
+
+  let hoursFormat = messageDate.getHours().toString().padStart(2, '0');
+  let minutesFormat = messageDate.getMinutes().toString().padStart(2, '0');
+  let timeFormat = `${hoursFormat}:${minutesFormat}`;
+
+  if (days > 0) {
+    return days + 'd ' + timeFormat;
+  } else {
+    return timeFormat; // return only the time if the message was sent on the same day
+  }
+}
+
 export function onlineStatus(date: Date) {
   let now = new Date();
   let lastSeen = new Date(date);
   let diff = now.getTime() - lastSeen.getTime();
   let minutes = Math.floor(diff / 60000);
   let hours = Math.floor(minutes / 60);
-  if (minutes < 2) {
+  if (minutes < 5) {
     return 'online';
   } else if (hours < 1) {
     return 'away';

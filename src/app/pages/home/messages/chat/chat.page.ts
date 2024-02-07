@@ -177,17 +177,17 @@ export class ChatPage implements OnInit, OnDestroy {
       })
       .unsubscribe();
 
-    if (Capacitor.getPlatform() != 'web') {
+    if (Capacitor.getPlatform() !== 'web') {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
         // console.log('keyboard did show with height:', info.keyboardHeight);
         this.content.scrollToBottom(300);
       });
 
-      Keyboard.addListener('keyboardDidHide', () => {
-        // console.log('keyboard did hide');
-        this.content.scrollToBottom(300);
-      });
+      // Keyboard.addListener('keyboardDidHide', () => {
+      //   // console.log('keyboard did hide');
+      //   this.content.scrollToBottom(300);
+      // });
     }
   }
 
@@ -300,9 +300,6 @@ export class ChatPage implements OnInit, OnDestroy {
           this.form.reset();
           this.audioUrl = null;
           this.imageUrl = null;
-
-          // Scroll to bottom
-          this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -343,9 +340,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.imageUrl = null;
-
-          // Scroll to bottom
-          this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -369,9 +363,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.audioUrl = null;
-
-          // Scroll to bottom
-          this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -517,7 +508,7 @@ export class ChatPage implements OnInit, OnDestroy {
   private async getCameraPhoto() {
     return await Camera.getPhoto({
       quality: 100,
-      allowEditing: true,
+      // allowEditing: true,
       source: CameraSource.Prompt,
       resultType: CameraResultType.DataUrl,
     }).catch((error) => {
