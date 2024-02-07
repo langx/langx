@@ -184,10 +184,10 @@ export class ChatPage implements OnInit, OnDestroy {
         this.content.scrollToBottom(300);
       });
 
-      Keyboard.addListener('keyboardDidHide', () => {
-        // console.log('keyboard did hide');
-        this.content.scrollToBottom(300);
-      });
+      // Keyboard.addListener('keyboardDidHide', () => {
+      //   // console.log('keyboard did hide');
+      //   this.content.scrollToBottom(300);
+      // });
     }
   }
 
