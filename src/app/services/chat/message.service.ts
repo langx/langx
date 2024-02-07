@@ -33,6 +33,7 @@ export class MessageService {
     // Set x-appwrite-user-id header
     axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
 
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
     // Set x-appwrite-jwt header
     return from(
       this.authService.createJWT().then((result) => {
