@@ -508,7 +508,7 @@ export class ChatPage implements OnInit, OnDestroy {
   private async getCameraPhoto() {
     return await Camera.getPhoto({
       quality: 100,
-      allowEditing: true,
+      // allowEditing: true,
       source: CameraSource.Prompt,
       resultType: CameraResultType.DataUrl,
     }).catch((error) => {
