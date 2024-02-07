@@ -177,7 +177,7 @@ export class ChatPage implements OnInit, OnDestroy {
       })
       .unsubscribe();
 
-    if (Capacitor.getPlatform() != 'web') {
+    if (Capacitor.getPlatform() !== 'web') {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
         // console.log('keyboard did show with height:', info.keyboardHeight);
