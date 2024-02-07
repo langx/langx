@@ -15,6 +15,7 @@ img {
   float: left;
   float: inline-start;
   max-width: 80%;
+  min-height: 55px;
 }
 
 .message-main-sender {
@@ -22,6 +23,7 @@ img {
   float: right;
   float: inline-end;
   max-width: 80%;
+  min-height: 55px;
 }
 
 .message-text {
