@@ -105,7 +105,7 @@
         <ion-textarea
           [autoGrow]="true"
           readonly="true"
-          placeholder="You can edit here your profile description."
+          placeholder="No 'About Me' text provided yet. 💬"
           [value]="(currentUser$ | async)?.aboutMe"
         ></ion-textarea>
       </ion-item>
@@ -142,7 +142,9 @@
         <ion-item *ngIf="!(account$ | async)?.emailVerification">
           <ion-icon name="shield-outline" color="danger"></ion-icon>
           <ion-label> Unverified User </ion-label>
-          <ion-button (click)="getAccountPage()" size="small" fill="clear">Edit</ion-button>
+          <ion-button (click)="getAccountPage()" size="small" fill="clear"
+            >Edit</ion-button
+          >
         </ion-item>
       </ion-list>
     </ion-card-content>
