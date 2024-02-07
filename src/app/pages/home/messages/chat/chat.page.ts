@@ -300,9 +300,6 @@ export class ChatPage implements OnInit, OnDestroy {
           this.form.reset();
           this.audioUrl = null;
           this.imageUrl = null;
-
-          // Scroll to bottom
-          // this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -343,9 +340,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.imageUrl = null;
-
-          // Scroll to bottom
-          // this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -369,9 +363,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.audioUrl = null;
-
-          // Scroll to bottom
-          // this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
