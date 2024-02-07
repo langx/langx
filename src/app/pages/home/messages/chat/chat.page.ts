@@ -302,7 +302,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.imageUrl = null;
 
           // Scroll to bottom
-          this.content.scrollToBottom(300);
+          // this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -345,7 +345,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.imageUrl = null;
 
           // Scroll to bottom
-          this.content.scrollToBottom(300);
+          // this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
@@ -371,7 +371,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.audioUrl = null;
 
           // Scroll to bottom
-          this.content.scrollToBottom(300);
+          // this.content.scrollToBottom(300);
         }
       })
       .unsubscribe();
