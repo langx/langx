@@ -1,5 +1,5 @@
 img {
-  max-width: 300px;
+  width: auto;
   height: auto;
 }
 
@@ -14,14 +14,14 @@ img {
   padding: 5px !important;
   float: right;
   float: inline-end;
-  max-width: 80%;
+  max-width: 400px;
+  min-height: 55px;
 }
 
 .message-text {
   display: contents;
   margin: 0 !important;
   padding: 5px !important;
-  //font-weight: 300;
   font-size: 15px;
   padding-bottom: 0 !important;
   word-wrap: break-word;
@@ -48,4 +48,5 @@ img {
   font-size: 12px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   word-wrap: break-word;
+  text-align: right;
 }
