@@ -230,8 +230,6 @@ export class ChatPage implements OnInit, OnDestroy {
                 // Wait for the view to update then scroll to bottom
                 setTimeout(() => {
                   this.content.scrollToBottom(300);
-                  // After the first load, set the flag to false
-                  this.isFirstLoad = false;
                 }, 0);
               }
             })
@@ -430,6 +428,13 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   loadMore(event) {
+    // If it's the first load, do nothing and return
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+      event.target.complete();
+      return;
+    }
+
     // Offset is the number of messages that we already have
     let offset: number = 0;
 
