@@ -11,7 +11,7 @@ languageXchange is an application built with Angular and Ionic that helps users 
 
 - [Project Overview](#languageXchange)
 - [Status](#status)
-- [Technologies](#tech-stack)
+- [Tech Stack](#tech-stack)
 - [Links](#links)
 - [Installation](#installation)
   - [Cloud Functions](#cloud-functions)
