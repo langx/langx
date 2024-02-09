@@ -61,7 +61,7 @@ export class AccountPage implements OnInit {
     this.initValues();
 
     if (Capacitor.getPlatform() === 'web') {
-      this.appVersion = 'Web App';
+      this.appVersion = 'Web App (pwa)';
     } else {
       const info = await App.getInfo();
       this.appVersion = `v${info.version}`;
