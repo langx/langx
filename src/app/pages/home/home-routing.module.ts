@@ -67,9 +67,11 @@ const routes: Routes = [
     redirectTo: 'community',
   },
   {
-    path: 'profile/edit',
+    path: 'edit',
     loadChildren: () =>
-      import('./profile/edit/edit.module').then((m) => m.EditPageModule),
+      import('./profile/settings/edit/edit.module').then(
+        (m) => m.EditPageModule
+      ),
   },
   {
     path: 'account',

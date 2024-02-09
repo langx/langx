@@ -38,6 +38,13 @@ export class ProfilePage implements OnInit {
 
   public appPages = [
     {
+      title: 'Edit Profile',
+      url: 'edit',
+      icon: 'create-outline',
+      detail: true,
+      new: true,
+    },
+    {
       title: 'Account',
       url: 'account',
       icon: 'person-circle-outline',
@@ -156,7 +163,7 @@ export class ProfilePage implements OnInit {
   }
 
   editProfile() {
-    this.router.navigate(['/', 'home', 'profile', 'edit']);
+    this.router.navigate(['/', 'home', 'edit']);
   }
 
   getAccountPage() {
