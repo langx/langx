@@ -5,13 +5,13 @@
 [![GitHub issues](https://img.shields.io/github/issues/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/issues)
 [![GitHub license](https://img.shields.io/github/license/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/blob/main/LICENSE)
 
-languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses Appwrite for the back-end. For a detailed list of technologies used, please refer to the [Technologies](#technologies) section.
+languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses Appwrite for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
 
 ## Table of Contents
 
 - [Project Overview](#languageXchange)
 - [Status](#status)
-- [Technologies](#technologies)
+- [Technologies](#tech-stack)
 - [Links](#links)
 - [Installation](#installation)
   - [Cloud Functions](#cloud-functions)
