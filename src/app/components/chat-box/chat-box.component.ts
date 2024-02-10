@@ -205,7 +205,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
         string: text,
       })
         .then(() => {
-          this.presentToast('Copied!', 'light');
+          this.presentToast('Copied!');
         })
         .catch((e) => {
           console.error('Error copying text to clipboard', 'danger');
