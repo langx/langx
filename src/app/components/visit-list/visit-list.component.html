@@ -2,15 +2,9 @@
   <ion-thumbnail class="thumbnail-container" slot="start">
     <img [src]="user?.profilePhoto" alt="" referrerpolicy="no-referrer" />
     <div class="emoji-indicator">
-      <small *ngIf="onlineStatus(user?.lastSeen) == 'online'"
-        >🟢</small
-      >
-      <small *ngIf="onlineStatus(user?.lastSeen) == 'away'"
-        >🟡</small
-      >
-      <small *ngIf="onlineStatus(user?.lastSeen) == 'offline'"
-        >🟠</small
-      >
+      <small *ngIf="onlineStatus(user?.lastSeen) == 'online'">🟢</small>
+      <small *ngIf="onlineStatus(user?.lastSeen) == 'away'">🟡</small>
+      <small *ngIf="onlineStatus(user?.lastSeen) == 'offline'">🟠</small>
       <!-- <small *ngIf="onlineStatus(user?.lastSeen) == 'none'">🔴</small> -->
     </div>
   </ion-thumbnail>
@@ -19,7 +13,7 @@
       {{ user?.name }}
     </h2>
     <p>
-      <ion-text> {{ messageTime(item?.$createdAt) }} </ion-text>
+      <ion-text> {{ exactDateAndTime(item?.$createdAt) }} </ion-text>
     </p>
   </ion-label>
 </ion-item>

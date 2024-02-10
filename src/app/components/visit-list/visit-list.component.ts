@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { lastSeen, lastSeenExt, onlineStatus } from 'src/app/extras/utils';
+import { lastSeen, exactDateAndTime, onlineStatus } from 'src/app/extras/utils';
 import { Router } from '@angular/router';
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
@@ -29,11 +29,9 @@ export class VisitListComponent implements OnInit {
   // Utils
   //
 
-  messageTime(d: any) {
+  exactDateAndTime(d: any) {
     if (!d) return null;
-    let time = lastSeenExt(d);
-    if (time === 'online') return (time = 'now');
-    return time + ' ago';
+    return exactDateAndTime(d);
   }
 
   lastSeen(d: any) {
