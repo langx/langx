@@ -38,17 +38,17 @@ export class ProfilePage implements OnInit {
 
   public appPages = [
     {
+      title: 'Account',
+      url: 'account',
+      icon: 'person-circle-outline',
+      detail: true,
+    },
+    {
       title: 'Edit Profile',
       url: 'edit',
       icon: 'create-outline',
       detail: true,
       new: true,
-    },
-    {
-      title: 'Account',
-      url: 'account',
-      icon: 'person-circle-outline',
-      detail: true,
     },
     {
       title: 'Notifications',
