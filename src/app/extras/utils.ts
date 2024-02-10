@@ -67,6 +67,35 @@ export function messageTime(date: Date) {
   }
 }
 
+export function exactDateAndTime(date: Date) {
+  let messageDate = new Date(date);
+  let currentDate = new Date();
+
+  let dayFormat = messageDate.getDate().toString().padStart(2, '0');
+  let monthFormat = (messageDate.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based in JavaScript
+  let yearFormat = messageDate.getFullYear();
+
+  let hoursFormat = messageDate.getHours().toString().padStart(2, '0');
+  let minutesFormat = messageDate.getMinutes().toString().padStart(2, '0');
+
+  let dateFormat = `${dayFormat}.${monthFormat}.${yearFormat}`;
+  let timeFormat = `${hoursFormat}:${minutesFormat}`;
+
+  // If the message date is less than a day old, return the time difference in hours or minutes
+  let timeDifference = currentDate.getTime() - messageDate.getTime();
+  if (timeDifference < 24 * 60 * 60 * 1000) {
+    let hours = Math.floor(timeDifference / (1000 * 60 * 60));
+    let minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    if (hours > 0) {
+      return `${hours} hours ago`;
+    } else {
+      return `${minutes} minutes ago`;
+    }
+  }
+
+  return `${dateFormat} ${timeFormat}`;
+}
+
 export function onlineStatus(date: Date) {
   let now = new Date();
   let lastSeen = new Date(date);
