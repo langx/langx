@@ -334,6 +334,15 @@ export class UserPage implements OnInit {
         this.currentUser$
           .subscribe((user) => {
             const currentUserId = user.$id;
+
+            if (currentUserId === userId) {
+              this.presentToast(
+                "You can't send a message to yourself.",
+                'danger'
+              );
+              return;
+            }
+
             if (rooms) {
               const room = rooms.find(
                 (room) =>
