@@ -5,7 +5,9 @@
       <div class="receiver">
         <div class="message-text" (click)="writeToClipboard(msg?.body)">
           <!-- Text message -->
-          <span *ngIf="msg?.type == 'body'">{{ msg?.body }}</span>
+          <span class="selectable" *ngIf="msg?.type == 'body'">
+            {{ msg?.body }}
+          </span>
 
           <!-- Image message -->
           <img
@@ -75,7 +77,9 @@
       <div class="sender">
         <div class="message-text" (click)="writeToClipboard(msg?.body)">
           <!-- Text message -->
-          <span *ngIf="msg?.type == 'body'">{{ msg?.body }}</span>
+          <span class="selectable" *ngIf="msg?.type == 'body'">
+            {{ msg?.body }}
+          </span>
 
           <!-- Image message -->
           <img

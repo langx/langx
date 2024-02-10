@@ -46,6 +46,13 @@ img {
   padding: 5px !important;
 }
 
+.selectable {
+  user-select: text;
+  -webkit-user-select: text; /* For Safari and Chrome */
+  -moz-user-select: text; /* For Firefox */
+  -ms-user-select: text; /* For IE10+/Edge */
+}
+
 .receiver {
   position: relative;
   width: auto !important;
