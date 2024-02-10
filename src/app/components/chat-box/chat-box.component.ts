@@ -192,10 +192,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     modal.present();
   }
 
-  test() {
-    console.log('test');
-  }
-
   //
   // Utils for clipboard
   //
