@@ -3,7 +3,7 @@
   "version": "0.5.5",
   "author": "languageXchange",
   "homepage": "https://languageXchange.net/",
-  "description": " Practice, Learn, Succeed! | An Open Sourced Language Exchange Project",
+  "description": " Practice, Learn, Succeed! | Free and Open Sourced Language Exchange Project",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
