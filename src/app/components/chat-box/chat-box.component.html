@@ -3,7 +3,7 @@
   <div class="message-body">
     <div class="message-main-receiver">
       <div class="receiver">
-        <div class="message-text">
+        <div class="message-text" (click)="writeToClipboard(msg?.body)">
           <!-- Text message -->
           <span *ngIf="msg?.type == 'body'">{{ msg?.body }}</span>
 
@@ -73,7 +73,7 @@
   <div class="message-body">
     <div class="message-main-sender">
       <div class="sender">
-        <div class="message-text">
+        <div class="message-text" (click)="writeToClipboard(msg?.body)">
           <!-- Text message -->
           <span *ngIf="msg?.type == 'body'">{{ msg?.body }}</span>
 

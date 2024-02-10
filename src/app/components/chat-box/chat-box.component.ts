@@ -1,6 +1,8 @@
 import { Store } from '@ngrx/store';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
+import { Capacitor } from '@capacitor/core';
+import { Clipboard } from '@capacitor/clipboard';
 import {
   Component,
   Input,
@@ -35,6 +37,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private store: Store,
     private modalCtrl: ModalController,
+    private toastController: ToastController,
     private el: ElementRef
   ) {}
 
@@ -191,5 +194,37 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   test() {
     console.log('test');
+  }
+
+  //
+  // Utils for clipboard
+  //
+  writeToClipboard(text: string) {
+    if (Capacitor.getPlatform() !== 'web') {
+      Clipboard.write({
+        string: text,
+      })
+        .then(() => {
+          this.presentToast('Copied!', 'light');
+        })
+        .catch((e) => {
+          console.error('Error copying text to clipboard', 'danger');
+        });
+    }
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 300,
+      position: 'top',
+    });
+
+    await toast.present();
   }
 }
