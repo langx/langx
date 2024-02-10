@@ -811,6 +811,10 @@ export class ChatPage implements OnInit, OnDestroy {
   typingFocus() {
     this.isTyping = true;
     this.onTypingStatusChange();
+
+    if (Capacitor.getPlatform() === 'web') {
+      this.content.scrollToBottom(300);
+    }
   }
 
   typingBlur() {
