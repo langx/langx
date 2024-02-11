@@ -308,21 +308,6 @@ export class UserPage implements OnInit {
   }
 
   //
-  // Present Toast
-  //
-
-  async presentToast(msg: string, color?: string) {
-    const toast = await this.toastController.create({
-      message: msg,
-      color: color || 'primary',
-      duration: 1500,
-      position: 'bottom',
-    });
-
-    await toast.present();
-  }
-
-  //
   // Get or Create Room
   //
 
@@ -361,6 +346,21 @@ export class UserPage implements OnInit {
           .unsubscribe();
       })
       .unsubscribe();
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1500,
+      position: 'bottom',
+    });
+
+    await toast.present();
   }
 
   //
