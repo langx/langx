@@ -114,8 +114,8 @@ export class VerifyEmailPage implements OnInit {
     const toast = await this.toastController.create({
       message: msg,
       color: color || 'primary',
-      duration: 3000,
-      position: 'bottom',
+      duration: 2000,
+      position: 'top',
     });
 
     await toast.present();

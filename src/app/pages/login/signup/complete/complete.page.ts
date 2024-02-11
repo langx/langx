@@ -165,8 +165,8 @@ export class CompletePage implements OnInit, OnDestroy {
     const toast = await this.toastController.create({
       message: msg,
       color: color || 'primary',
-      duration: 1500,
-      position: 'bottom',
+      duration: 1000,
+      position: 'top',
     });
 
     await toast.present();
