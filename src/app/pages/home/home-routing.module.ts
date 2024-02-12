@@ -115,12 +115,18 @@ const routes: Routes = [
         (m) => m.PrivacyPageModule
       ),
   },
-
   {
     path: 'visitors',
     loadChildren: () =>
       import('./profile/settings/visitors/visitors.module').then(
         (m) => m.VisitorsPageModule
+      ),
+  },
+  {
+    path: 'contributors',
+    loadChildren: () =>
+      import('./profile/settings/contributors/contributors.module').then(
+        (m) => m.ContributorsPageModule
       ),
   },
 ];
