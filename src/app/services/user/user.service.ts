@@ -197,6 +197,28 @@ export class UserService {
   }
 
   //
+  // Contributors
+  //
+
+  listContributors(offset?: number): Observable<listVisitsResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for users that are not the current user
+    queries.push(Query.notEqual('contributors', '[]'));
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
+  }
+
+  //
   // Block and Report User
   //
 
