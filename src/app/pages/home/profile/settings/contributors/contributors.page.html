@@ -21,25 +21,22 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
-          <ng-container
-            *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
+          <app-user-list
+            [item]="user"
+            *ngIf="user?.contributors.includes('codebase')"
+            (onClick)="getProfilePage(user?.$id)"
           >
-            <app-user-list
-              *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
-              [item]="user"
-              (onClick)="getProfilePage(user?.$id)"
-            >
-            </app-user-list>
-          </ng-container>
-        </ion-list> -->
+          </app-user-list>
+        </ng-container>
+      </ion-list>
 
       <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
-      <ion-list>
+      <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '01'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -81,25 +78,22 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
-        <ng-container
-          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
-        >
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            *ngIf="user?.contributors.includes('marketing')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
-      </ion-list> -->
+      </ion-list>
 
       <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
-      <ion-list>
+      <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '01'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -141,25 +135,22 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
-        <ng-container
-          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
-        >
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            *ngIf="user?.contributors.includes('accessibility')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
-      </ion-list> -->
+      </ion-list>
 
       <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
-      <ion-list>
+      <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '01'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -201,25 +192,22 @@
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
-        <ng-container
-          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
-        >
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            *ngIf="user?.contributors.includes('tester')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
-      </ion-list> -->
+      </ion-list>
 
       <!-------------------->
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
-      <ion-list>
+      <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '01'.split('')">
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
