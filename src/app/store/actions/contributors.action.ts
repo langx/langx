@@ -7,7 +7,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 // Get Contributors Actions
 export const getContributorsAction = createAction(ActionTypes.GET_CONTRIBUTORS);
 
-export const getContributorssSuccessAction = createAction(
+export const getContributorsSuccessAction = createAction(
   ActionTypes.GET_CONTRIBUTORS_SUCCESS,
   props<{ payload: User[] }>()
 );
