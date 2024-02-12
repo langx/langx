@@ -7,7 +7,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [fullscreen]="true">
+<ion-content
+  *ngIf="isLoading"
+  class="ion-padding ion-margin"
+  style="text-align: center"
+>
+  <ion-spinner name="dots"></ion-spinner>
+</ion-content>
+<ion-content class="ion-padding" [fullscreen]="true" *ngIf="!isLoading">
   <ion-card>
     <ion-card-header id="profile-pic">
       <img

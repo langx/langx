@@ -2,20 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
-import {
-  BehaviorSubject,
-  Observable,
-  Subscription,
-  combineLatest,
-  filter,
-  take,
-} from 'rxjs';
-import {
-  IonModal,
-  LoadingController,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { IonModal, ModalController, ToastController } from '@ionic/angular';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { getAge, lastSeen, lastSeenExt } from 'src/app/extras/utils';
@@ -63,6 +51,8 @@ export class UserPage implements OnInit {
   @ViewChild('reportUserModal') reportUserModal: IonModal;
   @ViewChild('blockUserModal') blockUserModal: IonModal;
 
+  isLoading: boolean;
+
   subscription: Subscription;
 
   userId: string;
@@ -85,8 +75,7 @@ export class UserPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
-    private toastController: ToastController,
-    private loadingCtrl: LoadingController
+    private toastController: ToastController
   ) {}
 
   async ngOnInit() {
@@ -103,7 +92,7 @@ export class UserPage implements OnInit {
         this.store.pipe(select(isLoadingUserSelector)),
         this.store.pipe(select(isLoadingRoomSelector)),
       ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
-        this.loadingController(isLoadingAuth || isLoadingUser || isLoadingRoom);
+        this.isLoading = isLoadingAuth || isLoadingUser || isLoadingRoom;
       })
     );
 
@@ -165,18 +154,6 @@ export class UserPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.isLoadingOverlayActive
-      .pipe(
-        filter((isActive) => !isActive),
-        take(1)
-      )
-      .subscribe(async () => {
-        if (this.loadingOverlay) {
-          await this.loadingOverlay.dismiss();
-          this.loadingOverlay = undefined;
-        }
-      });
-
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
   }
@@ -361,29 +338,5 @@ export class UserPage implements OnInit {
     });
 
     await toast.present();
-  }
-
-  //
-  // Loading Controller
-  //
-
-  private loadingOverlay: HTMLIonLoadingElement;
-  private isLoadingOverlayActive = new BehaviorSubject<boolean>(false);
-  async loadingController(isLoading: boolean) {
-    if (isLoading) {
-      if (!this.loadingOverlay) {
-        this.isLoadingOverlayActive.next(true);
-        this.loadingOverlay = await this.loadingCtrl.create({
-          message: 'Please wait...',
-        });
-        await this.loadingOverlay.present();
-        this.isLoadingOverlayActive.next(false);
-      }
-    } else if (this.loadingOverlay) {
-      this.isLoadingOverlayActive.next(true);
-      await this.loadingOverlay.dismiss();
-      this.loadingOverlay = undefined;
-      this.isLoadingOverlayActive.next(false);
-    }
   }
 }
