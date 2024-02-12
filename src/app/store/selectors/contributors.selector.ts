@@ -3,7 +3,7 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ContributorsStateInterface } from 'src/app/models/types/states/contributorsState.interface';
 
 export const contributorsFeatureSelector =
-  createFeatureSelector<ContributorsStateInterface>('visit');
+  createFeatureSelector<ContributorsStateInterface>('contributor');
 
 export const isLoadingSelector = createSelector(
   contributorsFeatureSelector,
