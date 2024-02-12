@@ -47,6 +47,7 @@ img {
 }
 
 .selectable {
+  white-space: pre-wrap;
   user-select: text;
   -webkit-user-select: text; /* For Safari and Chrome */
   -moz-user-select: text; /* For Firefox */
