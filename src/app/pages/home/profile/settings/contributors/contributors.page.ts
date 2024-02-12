@@ -1,7 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastController } from '@ionic/angular';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
 import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { getContributorsAction } from 'src/app/store/actions/contributors.action';
+import {
+  errorSelector,
+  isLoadingSelector,
+  usersSelector,
+} from 'src/app/store/selectors/contributors.selector';
 
 @Component({
   selector: 'app-contributors',
@@ -13,7 +22,6 @@ export class ContributorsPage implements OnInit {
 
   isLoading$: Observable<boolean> = null;
   users$: Observable<User[] | null> = null;
-  total$: Observable<number | null> = null;
 
   model = {
     icon: 'people-outline',
@@ -21,7 +29,66 @@ export class ContributorsPage implements OnInit {
     color: 'warning',
   };
 
-  constructor() {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.initValues();
+    // Get all chat Rooms
+    this.listContributors();
+  }
+
+  ionViewWillEnter() {
+    this.subscription = new Subscription();
+
+    // User Errors
+    this.subscription.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            // TODO: Clear error message if it will be shown
+          }
+        })
+    );
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from all subscriptions
+    this.subscription.unsubscribe();
+  }
+
+  initValues() {
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.users$ = this.store.pipe(select(usersSelector));
+  }
+
+  listContributors() {
+    // Dispatch action to get all contributors
+    this.store.dispatch(getContributorsAction());
+  }
+
+  //
+  // Pull to refresh
+  //
+
+  handleRefresh(event) {
+    this.listContributors();
+    if (event) event.target.complete();
+  }
+
+  //
+  // Present Toast
+  //
+
+  async presentToast(msg: string, color?: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      color: color || 'primary',
+      duration: 1000,
+      position: 'top',
+    });
+
+    await toast.present();
+  }
 }
