@@ -33,6 +33,7 @@ img {
   font-size: 15px;
   padding-bottom: 0 !important;
   word-wrap: break-word;
+  white-space: pre-line;
 }
 
 .message-time {
@@ -47,7 +48,6 @@ img {
 }
 
 .selectable {
-  white-space: pre-wrap;
   user-select: text;
   -webkit-user-select: text; /* For Safari and Chrome */
   -moz-user-select: text; /* For Firefox */
