@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+
+import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-contributors',
@@ -6,10 +9,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./contributors.page.scss'],
 })
 export class ContributorsPage implements OnInit {
+  subscription: Subscription;
 
-  constructor() { }
+  isLoading$: Observable<boolean> = null;
+  users$: Observable<User[] | null> = null;
+  total$: Observable<number | null> = null;
 
-  ngOnInit() {
-  }
+  model = {
+    icon: 'people-outline',
+    title: 'No Contributors Yet',
+    color: 'warning',
+  };
 
+  constructor() {}
+
+  ngOnInit() {}
 }
