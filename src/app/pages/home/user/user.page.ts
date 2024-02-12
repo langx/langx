@@ -3,14 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
-import {
-  BehaviorSubject,
-  Observable,
-  Subscription,
-  combineLatest,
-  filter,
-  take,
-} from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { getAge, lastSeen, lastSeenExt } from 'src/app/extras/utils';
