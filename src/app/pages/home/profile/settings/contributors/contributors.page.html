@@ -1,13 +1,256 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>contributors</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="home/profile"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Contributors 😊</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">contributors</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher> -->
+
+  <!-- <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0"> -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Codebase</ion-card-title>
+      <ion-card-subtitle>
+        ✨ You can also make a difference!
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
+          <ng-container
+            *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+          >
+            <app-user-list
+              *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+              [item]="user"
+              (onClick)="getProfilePage(user?.$id)"
+            >
+            </app-user-list>
+          </ng-container>
+        </ion-list> -->
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
+      <ion-list>
+        <ion-item *ngFor="let i of '01'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Marketing</ion-card-title>
+      <ion-card-subtitle>
+        ✨ You can also make a difference!
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
+        <ng-container
+          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list> -->
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
+      <ion-list>
+        <ion-item *ngFor="let i of '01'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Accesibility</ion-card-title>
+      <ion-card-subtitle>
+        ✨ You can also make a difference!
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
+        <ng-container
+          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list> -->
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
+      <ion-list>
+        <ion-item *ngFor="let i of '01'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Tester</ion-card-title>
+      <ion-card-subtitle>
+        ✨ You can also make a difference!
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <!-- <ion-list *ngIf="!(isLoadingByTargetLanguage$ | async)">
+        <ng-container
+          *ngFor="let user of (usersByTargetLanguage$ | async) | slice:0:3"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+      </ion-list> -->
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <!-- <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)"> -->
+      <ion-list>
+        <ion-item *ngFor="let i of '01'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
