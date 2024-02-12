@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -29,7 +30,11 @@ export class ContributorsPage implements OnInit {
     color: 'warning',
   };
 
-  constructor(private store: Store, private toastController: ToastController) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
     this.initValues();
@@ -66,6 +71,14 @@ export class ContributorsPage implements OnInit {
   listContributors() {
     // Dispatch action to get all contributors
     this.store.dispatch(getContributorsAction());
+  }
+
+  //
+  // Routes
+  //
+
+  getProfilePage(userId: string) {
+    this.router.navigateByUrl('/home/user/' + userId);
   }
 
   //
