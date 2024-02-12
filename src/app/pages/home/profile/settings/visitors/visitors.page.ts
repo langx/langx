@@ -55,6 +55,7 @@ export class VisitorsPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // TODO: Clear error message if it will be shown
           }
         })
     );

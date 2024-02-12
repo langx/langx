@@ -69,8 +69,8 @@ export class ProfilePage implements OnInit {
       detail: true,
     },
     {
-      title: 'Profile Visitors',
-      url: 'visitors',
+      title: 'Contributors',
+      url: 'contributors',
       icon: 'people-outline',
       detail: true,
       new: true,
