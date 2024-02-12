@@ -1,4 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { Clipboard } from '@capacitor/clipboard';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { ToastController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
@@ -104,6 +106,23 @@ export class PreChatBoxComponent implements OnInit {
 
   isPlaying(): boolean {
     return this.audioRef ? !this.audioRef.paused : false;
+  }
+
+  //
+  // Utils for clipboard
+  //
+  writeToClipboard(text: string) {
+    if (Capacitor.getPlatform() !== 'web') {
+      Clipboard.write({
+        string: text,
+      })
+        .then(() => {
+          this.presentToast('Copied!');
+        })
+        .catch((e) => {
+          console.error('Error copying text to clipboard', 'danger');
+        });
+    }
   }
 
   //

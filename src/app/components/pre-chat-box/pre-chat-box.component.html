@@ -2,9 +2,11 @@
   <div class="message-body">
     <div class="message-main-sender">
       <div class="sender">
-        <div class="message-text">
+        <div class="message-text" (click)="writeToClipboard(tempMsg?.body)">
           <!-- Text message -->
-          <span *ngIf="tempMsg?.type == 'body'">{{ tempMsg?.body }}</span>
+          <span class="selectable" *ngIf="tempMsg?.type == 'body'">{{
+            tempMsg?.body
+          }}</span>
 
           <!-- Image message -->
           <img
