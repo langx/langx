@@ -14,7 +14,7 @@ img {
   padding: 5px !important;
   float: right;
   float: inline-end;
-  max-width: 400px;
+  max-width: 80%;
   min-height: 55px;
 }
 
@@ -25,6 +25,7 @@ img {
   font-size: 15px;
   padding-bottom: 0 !important;
   word-wrap: break-word;
+  white-space: pre-line;
 }
 
 .message-time {
@@ -36,6 +37,13 @@ img {
   text-align: right;
   float: right;
   padding: 5px !important;
+}
+
+.selectable {
+  user-select: text;
+  -webkit-user-select: text; /* For Safari and Chrome */
+  -moz-user-select: text; /* For Firefox */
+  -ms-user-select: text; /* For IE10+/Edge */
 }
 
 .sender {
