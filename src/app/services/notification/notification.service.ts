@@ -30,11 +30,9 @@ import {
   providedIn: 'root',
 })
 export class NotificationService {
-  listenerFn: Function;
-
   constructor(private store: Store, private api: ApiService) {}
 
-  listen() {
+  connect() {
     let channels = [];
 
     // channel for rooms
@@ -57,7 +55,8 @@ export class NotificationService {
     channels.push(messagesCollection);
 
     const client = this.api.client$();
-    this.listenerFn = client.subscribe(channels, (response) => {
+    return client.subscribe(channels, (response) => {
+      // console.log('Notification Service started');
       // check if the response is a new message
       response.events.forEach((event) => {
         switch (event) {
@@ -126,13 +125,6 @@ export class NotificationService {
         }
       });
     });
-    return this.listenerFn;
-  }
-
-  unsubscribe() {
-    if (this.listenerFn) {
-      this.listenerFn();
-    }
   }
 
   updatePresence(

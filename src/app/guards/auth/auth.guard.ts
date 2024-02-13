@@ -35,8 +35,6 @@ export class AuthGuard implements CanLoad {
           if (!isLoggedIn) {
             observer.next(this.router.parseUrl(''));
           } else {
-            // Notification Service
-            this.startListener();
             observer.next(true);
           }
           observer.complete();
@@ -46,12 +44,5 @@ export class AuthGuard implements CanLoad {
 
   navigate(url: string) {
     this.router.navigateByUrl(url, { replaceUrl: true });
-  }
-
-  startListener() {
-    if (!this.notification.listenerFn) {
-      this.notification.listen();
-      // console.log('Notification Service started');
-    }
   }
 }
