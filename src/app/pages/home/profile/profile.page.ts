@@ -225,7 +225,7 @@ export class ProfilePage implements OnInit {
   }
 
   getFlagEmoji(item: User) {
-    if (!item) return null;
+    if (!item || !item['countryCode']) return '';
     const codePoints = item['countryCode']
       .toUpperCase()
       .split('')
