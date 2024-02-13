@@ -19,6 +19,8 @@ import {
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
+  listenerFn: any;
+
   presencePing$: Subscription;
 
   totalUnseen$: Observable<number>;
@@ -36,13 +38,22 @@ export class HomePage implements OnInit {
     this.initValues();
     this.presencePing();
 
+    // Start listening to notifications
+    this.startListener();
+
     // Init Badge
     await this.checkBadgeSeen();
     await this.initBadge();
   }
 
   ngOnDestroy() {
-    this.unsubscribeListener();
+    this.unsubscribeListener(); // Stop presence ping
+  }
+
+  startListener() {
+    if (!this.listenerFn) {
+      this.listenerFn = this.notification.connect();
+    }
   }
 
   initValues() {
@@ -51,13 +62,12 @@ export class HomePage implements OnInit {
   }
 
   unsubscribeListener() {
-    // Stop listening to notifications
-    this.notification.unsubscribe();
-    // console.log('Notification Service stopped');
-
     // Stop presence ping
     this.presencePing$.unsubscribe();
     // console.log('Presence Service stopped');
+
+    // HARD RELOAD
+    location.reload();
   }
 
   //
