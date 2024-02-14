@@ -94,7 +94,7 @@ export class ProfilePage implements OnInit {
   gender: string = null;
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
-  badges: string[] = [];
+  badges: Object[] = [];
 
   constructor(
     private store: Store,
@@ -147,9 +147,14 @@ export class ProfilePage implements OnInit {
 
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
-      this.badges = user?.badges.map(
-        (badge) => `/assets/image/badges/${badge}.png`
-      );
+      this.badges = user?.badges.map((badge) => {
+        const name = badge
+          .split('-')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+
+        return { name: name, url: `/assets/image/badges/${badge}.png` };
+      });
     });
   }
 
