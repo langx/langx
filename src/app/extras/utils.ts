@@ -1,4 +1,5 @@
 import { FormControl } from '@angular/forms';
+import { User } from '../models/User';
 
 export function lastSeen(date: Date) {
   let now = new Date();
@@ -158,4 +159,13 @@ export function dateValidator(control: FormControl) {
   }
 
   return null;
+}
+
+export function getFlagEmoji(item: User) {
+  if (!item || !item['countryCode']) return '';
+  const codePoints = item['countryCode']
+    .toUpperCase()
+    .split('')
+    .map((char) => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { onlineStatus } from 'src/app/extras/utils';
+import { getFlagEmoji, onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
 @Component({
@@ -32,12 +32,7 @@ export class UserListComponent implements OnInit {
   //
 
   getFlagEmoji(item: User) {
-    if (!item || !item['countryCode']) return '';
-    const codePoints = item['countryCode']
-      .toUpperCase()
-      .split('')
-      .map((char) => 127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
+    return getFlagEmoji(item);
   }
 
   onlineStatus(d: any) {

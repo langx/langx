@@ -276,12 +276,7 @@ export class UserPage implements OnInit {
   }
 
   getFlagEmoji(item: User) {
-    if (!item || !item['countryCode']) return '';
-    const codePoints = item['countryCode']
-      .toUpperCase()
-      .split('')
-      .map((char) => 127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
+    return this.getFlagEmoji(item);
   }
 
   //

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { IonItemSliding } from '@ionic/angular';
 
-import { lastSeen, onlineStatus } from 'src/app/extras/utils';
+import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 
@@ -89,12 +89,7 @@ export class RoomListComponent implements OnInit {
   //
 
   getFlagEmoji(item: User) {
-    if (!item || !item['countryCode']) return '';
-    const codePoints = item['countryCode']
-      .toUpperCase()
-      .split('')
-      .map((char) => 127397 + char.charCodeAt());
-    return String.fromCodePoint(...codePoints);
+    return getFlagEmoji(item);
   }
 
   getBadge(room): number {
