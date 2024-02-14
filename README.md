@@ -28,7 +28,7 @@ languageXchange is an application built with Angular and Ionic that helps users 
 
 ## Status
 
-This project is currently in development. The current version is 0.1.0. For more information, please refer to the project's GitHub repository.
+This project is currently in Beta phase v0.X.x For more information, please refer to the project's GitHub repository.
 
 To check the status of the website, database and CDN, please visit the following link: https://status.languagexchange.net/
 
