@@ -1,9 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-
-import { lastSeen, exactDateAndTime, onlineStatus } from 'src/app/extras/utils';
 import { Router } from '@angular/router';
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
+import {
+  lastSeen,
+  exactDateAndTime,
+  onlineStatus,
+  getFlagEmoji,
+} from 'src/app/extras/utils';
 
 @Component({
   selector: 'app-visit-list',
@@ -42,5 +46,9 @@ export class VisitListComponent implements OnInit {
   onlineStatus(d: any) {
     if (!d) return null;
     return onlineStatus(d);
+  }
+
+  getFlagEmoji(item: User) {
+    return getFlagEmoji(item);
   }
 }
