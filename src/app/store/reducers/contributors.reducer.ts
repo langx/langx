@@ -6,6 +6,10 @@ import {
   getContributorsSuccessAction,
   getContributorsFailureAction,
 } from 'src/app/store/actions/contributors.action';
+import {
+  deleteAccountSuccessAction,
+  logoutSuccessAction,
+} from '../actions/auth.action';
 
 const initialState: ContributorsStateInterface = {
   isLoading: false,
@@ -41,6 +45,15 @@ const contributorsReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+
+  // Set initialState after Logout/Delete Success Action
+  on(
+    logoutSuccessAction,
+    deleteAccountSuccessAction,
+    (): ContributorsStateInterface => ({
+      ...initialState,
     })
   )
 );

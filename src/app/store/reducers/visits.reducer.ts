@@ -9,6 +9,10 @@ import {
   getVisitsWithOffsetFailureAction,
   getVisitsWithOffsetSuccessAction,
 } from 'src/app/store/actions/visits.action';
+import {
+  deleteAccountSuccessAction,
+  logoutSuccessAction,
+} from '../actions/auth.action';
 
 const initialState: VisitsStateInterface = {
   isLoading: false,
@@ -71,6 +75,15 @@ const visitsReducer = createReducer(
       ...state,
       isLoading: false,
       error: action.error,
+    })
+  ),
+
+  // Set initialState after Logout/Delete Success Action
+  on(
+    logoutSuccessAction,
+    deleteAccountSuccessAction,
+    (): VisitsStateInterface => ({
+      ...initialState,
     })
   )
 );
