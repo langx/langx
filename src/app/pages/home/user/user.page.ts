@@ -5,8 +5,13 @@ import { Browser } from '@capacitor/browser';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 
+import {
+  getAge,
+  getFlagEmoji,
+  lastSeen,
+  lastSeenExt,
+} from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
-import { getAge, getFlagEmoji, lastSeen, lastSeenExt } from 'src/app/extras/utils';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
@@ -64,7 +69,7 @@ export class UserPage implements OnInit {
   gender: string = null;
   profilePhoto: URL = null;
   otherPhotos: URL[] = [];
-  badges: string[] = [];
+  badges: Object[] = [];
 
   reason: string;
 
@@ -187,9 +192,14 @@ export class UserPage implements OnInit {
 
       this.profilePhoto = user?.profilePhoto;
       this.otherPhotos = user?.otherPhotos;
-      this.badges = user?.badges.map(
-        (badge) => `/assets/image/badges/${badge}.png`
-      );
+      this.badges = user?.badges.map((badge) => {
+        const name = badge
+          .split('-')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+
+        return { name: name, url: `/assets/image/badges/${badge}.png` };
+      });
     });
   }
 

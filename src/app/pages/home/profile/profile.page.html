@@ -203,10 +203,14 @@
     <ion-card-content>
       <ion-grid>
         <ion-row justify-content-center>
-          <ion-col size="3" *ngFor="let photo of badges">
+          <ion-col
+            size="3"
+            *ngFor="let badge of badges"
+            class="ion-margin-horizontal"
+          >
             <ion-card-content class="badge-content">
-              <img [src]="photo" class="badge-image" />
-              <p class="badge-text ion-padding-top">Early Adopter</p>
+              <img [src]="badge['url']" class="badge-image" />
+              <p class="badge-text ion-padding-top">{{badge['name']}}</p>
             </ion-card-content>
           </ion-col>
         </ion-row>
