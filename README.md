@@ -23,7 +23,7 @@ languageXchange is an application built with Angular and Ionic that helps users 
 - [Contributing](#contributing)
 - [Security](#security)
   - [Paths](#paths)
-  - [GoogleService-info.plist and google-services.json](#googleservice-infoplist-and-google-servicesjson)
+  - [Google Services](#google-services)
 - [License](#license)
 
 ## Status
@@ -229,7 +229,9 @@ We welcome contributions to the project! For detailed instructions on how to con
 
 - `ios/App/App/GoogleService-info.plist`
 
-### GoogleService-info.plist and google-services.json
+### Google Services
+
+#### GoogleService-info.plist and google-services.json
 
 `google-services.json` is a configuration file that contains information about a Firebase project, such as the project's API key, database URL, and storage bucket. It is used by Android apps to connect to Firebase services, such as Firebase Authentication, Firebase Realtime Database, and Firebase Cloud Messaging.
 
@@ -247,4 +249,4 @@ For more information on how to secure your Firebase project, please refer to the
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](./LICENSE) file for details.
