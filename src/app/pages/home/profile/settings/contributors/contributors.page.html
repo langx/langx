@@ -72,14 +72,14 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Marketing</ion-card-title>
+      <ion-card-title>Digital Marketing</ion-card-title>
       <ion-card-subtitle> 🚀 Spread the open-source app! </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoading$ | async)">
         <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="user?.contributors.includes('marketing')"
+            *ngIf="user?.contributors.includes('digital-marketing')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
