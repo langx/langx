@@ -103,7 +103,7 @@ export function onlineStatus(date: Date) {
   let diff = now.getTime() - lastSeen.getTime();
   let minutes = Math.floor(diff / 60000);
   let hours = Math.floor(minutes / 60);
-  if (minutes < 15) {
+  if (minutes < 30) {
     return 'online';
   } else if (hours < 3) {
     return 'away';
