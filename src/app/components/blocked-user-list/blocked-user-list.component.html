@@ -3,6 +3,7 @@
     <img [src]="item?.profilePhoto" alt="" referrerpolicy="no-referrer" />
   </ion-thumbnail>
   <ion-label>
+    <!-- TODO: #454 Fix here with util.js function-->
     <!-- TODO: There is no item?.online -->
     <h2>
       <small *ngIf="lastSeen(item?.lastSeen) == 'online'">🟢 </small>
