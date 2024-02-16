@@ -85,11 +85,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       this.replyToMessage$ = this.messageService.getMessageById(
         this.msg.replyTo
       );
-      this.replyToMessage$
-        .subscribe((replyToMessage) => {
-          console.log('Reply to message:', replyToMessage);
-        })
-        .unsubscribe();
     }
 
     // Check if the message is an audio

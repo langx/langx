@@ -11,9 +11,21 @@
         <!-- <small>Reply: {{ replyTo }}</small> -->
         <div class="receiver">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
-            <ion-row class="reply-text reply-text-receiver ion-margin-bottom" *ngIf="replyTo">
+            <ion-row
+              class="reply-text reply-text-receiver ion-margin-bottom"
+              *ngIf="replyTo"
+            >
               <ion-col>
-                <small>> {{ (replyToMessage$ | async)?.body }}</small>
+                <small *ngIf="replyToMessage$ | async as replyToMessage">
+                  <ng-container [ngSwitch]="replyToMessage.type">
+                    <span *ngSwitchCase="'text'">
+                      > {{ replyToMessage.body }}
+                    </span>
+                    <span *ngSwitchCase="'image'"> > 📷 Image </span>
+                    <span *ngSwitchCase="'audio'"> > 🔊 Audio </span>
+                    <span *ngSwitchDefault>> {{ replyToMessage.body }}</span>
+                  </ng-container>
+                </small>
               </ion-col>
             </ion-row>
             <!-- Text message -->
@@ -98,9 +110,21 @@
         </span>
         <div class="sender">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
-            <ion-row class="reply-text reply-text-sender ion-margin-bottom" *ngIf="replyTo">
+            <ion-row
+              class="reply-text reply-text-sender ion-margin-bottom"
+              *ngIf="replyTo"
+            >
               <ion-col>
-                <small>> {{ (replyToMessage$ | async)?.body }}</small>
+                <small *ngIf="replyToMessage$ | async as replyToMessage">
+                  <ng-container [ngSwitch]="replyToMessage.type">
+                    <span *ngSwitchCase="'text'">
+                      > {{ replyToMessage.body }}
+                    </span>
+                    <span *ngSwitchCase="'image'"> > 📷 Image </span>
+                    <span *ngSwitchCase="'audio'"> > 🔊 Audio </span>
+                    <span *ngSwitchDefault>> {{ replyToMessage.body }}</span>
+                  </ng-container>
+                </small>
               </ion-col>
             </ion-row>
             <!-- Text message -->
