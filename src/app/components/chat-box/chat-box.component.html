@@ -8,12 +8,14 @@
   <ion-item *ngIf="msg?.sender != current_user_id" lines="none">
     <div class="message-body">
       <div class="message-main-receiver">
-        <span *ngIf="replyTo">
-          <!-- <small>Reply: {{ replyTo }}</small> -->
-          <small>{{ (replyToMessage$ | async)?.body }}</small>
-        </span>
+        <!-- <small>Reply: {{ replyTo }}</small> -->
         <div class="receiver">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
+            <ion-row class="reply-text ion-margin-bottom" *ngIf="replyTo">
+              <ion-col>
+                <small>> {{ (replyToMessage$ | async)?.body }}</small>
+              </ion-col>
+            </ion-row>
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
               {{ msg?.body }}
@@ -93,10 +95,14 @@
       <div class="message-main-sender">
         <span *ngIf="replyTo">
           <!-- <small>Reply: {{ replyTo }}</small> -->
-          <small>{{ (replyToMessage$ | async)?.body }}</small>
         </span>
         <div class="sender">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
+            <ion-row class="reply-text ion-margin-bottom" *ngIf="replyTo">
+              <ion-col>
+                <small>> {{ (replyToMessage$ | async)?.body }}</small>
+              </ion-col>
+            </ion-row>
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
               {{ msg?.body }}
