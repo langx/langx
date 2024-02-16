@@ -11,7 +11,7 @@
         <!-- <small>Reply: {{ replyTo }}</small> -->
         <div class="receiver">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
-            <ion-row class="reply-text ion-margin-bottom" *ngIf="replyTo">
+            <ion-row class="reply-text reply-text-receiver ion-margin-bottom" *ngIf="replyTo">
               <ion-col>
                 <small>> {{ (replyToMessage$ | async)?.body }}</small>
               </ion-col>
@@ -98,7 +98,7 @@
         </span>
         <div class="sender">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
-            <ion-row class="reply-text ion-margin-bottom" *ngIf="replyTo">
+            <ion-row class="reply-text reply-text-sender ion-margin-bottom" *ngIf="replyTo">
               <ion-col>
                 <small>> {{ (replyToMessage$ | async)?.body }}</small>
               </ion-col>
