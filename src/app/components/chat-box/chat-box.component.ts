@@ -40,6 +40,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   private observer: IntersectionObserver;
 
   msg: Message = null;
+  replyTo: string = null;
 
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
@@ -70,6 +71,11 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async initValues() {
     this.msg = { ...this.chat };
+
+    // Check if the message has replyTo
+    if (this.msg.replyTo) {
+      this.replyTo = this.msg.replyTo;
+    }
 
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
