@@ -8,8 +8,8 @@
   <ion-item *ngIf="msg?.sender != current_user_id" lines="none">
     <div class="message-body">
       <div class="message-main-receiver">
-        <span *ngIf="msg?.reply">
-          <small>Reply: {{ msg?.reply }}</small>
+        <span *ngIf="msg?.replyTo">
+          <small>Reply: {{ msg?.replyTo }}</small>
         </span>
         <div class="receiver">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
@@ -90,8 +90,8 @@
   <ion-item *ngIf="msg?.sender == current_user_id" lines="none">
     <div class="message-body">
       <div class="message-main-sender">
-        <span *ngIf="msg?.reply">
-          <small>Reply: {{ msg?.reply }}</small>
+        <span *ngIf="msg?.replyTo">
+          <small>Reply: {{ msg?.replyTo }}</small>
         </span>
         <div class="sender">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
