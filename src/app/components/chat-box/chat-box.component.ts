@@ -210,6 +210,14 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
+  // Reply
+  //
+
+  reply(msg: Message) {
+    console.log('Replying to:', msg);
+  }
+
+  //
   // Present Toast
   //
 
