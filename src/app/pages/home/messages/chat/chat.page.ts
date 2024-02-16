@@ -197,36 +197,43 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   initMessagesUntilLastReplyTo() {
-    this.messages$.pipe(take(1)).subscribe((messages) => {
-      let offset = 0;
-      if (messages && messages.length > 0) {
-        offset = messages.length;
-        const replyToIds = messages
-          .filter((message) => message.replyTo)
-          .map((message) => message.replyTo);
-        const messageIds = messages.map((message) => message.$id);
-        const missingReplyToIds = replyToIds.filter(
-          (id) => !messageIds.includes(id)
-        );
+    this.subscriptions.add(
+      this.messages$.subscribe((messages) => {
+        let offset = 0;
+        console.log('Messages:', messages?.length);
+        if (messages && messages.length > 0) {
+          offset = messages.length;
+          const replyToIds = messages
+            .filter((message) => message.replyTo)
+            .map((message) => message.replyTo);
+          const messageIds = messages.map((message) => message.$id);
+          const missingReplyToIds = replyToIds.filter(
+            (id) => !messageIds.includes(id)
+          );
 
-        if (missingReplyToIds.length > 0) {
-          this.total$.pipe(take(1)).subscribe((total) => {
-            if (offset < total) {
-              this.store.dispatch(
-                getMessagesWithOffsetAction({
-                  roomId: this.roomId,
-                  offset: offset,
-                })
-              );
-            } else {
-              console.log('All messages loaded');
-            }
-          });
+          console.log('Missing ReplyToIds:', missingReplyToIds);
+
+          if (missingReplyToIds.length > 0) {
+            this.total$
+              .subscribe((total) => {
+                if (offset < total) {
+                  this.store.dispatch(
+                    getMessagesWithOffsetAction({
+                      roomId: this.roomId,
+                      offset: offset,
+                    })
+                  );
+                } else {
+                  console.log('All messages loaded');
+                }
+              })
+              .unsubscribe();
+          }
+        } else {
+          console.log('All messages loaded');
         }
-      } else {
-        console.log('All messages loaded');
-      }
-    });
+      })
+    );
   }
 
   initForm() {
