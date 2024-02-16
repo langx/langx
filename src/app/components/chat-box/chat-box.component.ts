@@ -1,4 +1,5 @@
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
@@ -19,11 +20,11 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { messageTime } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
-import { messagesSelector } from 'src/app/store/selectors/message.selector';
 
 @Component({
   selector: 'app-chat-box',
@@ -42,7 +43,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   msg: Message = null;
   replyTo: string = null;
-  replyToMessage: Message = null;
+  replyToMessage$: Observable<Message>;
 
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
@@ -50,6 +51,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private store: Store,
+    private messageService: MessageService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private el: ElementRef
@@ -76,14 +78,16 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Check if the message has replyTo
     if (this.msg.replyTo) {
+      // Set the replyTo message id
       this.replyTo = this.msg.replyTo;
-      this.store
-        .pipe(select(messagesSelector))
-        .subscribe((messages) => {
-          const replyToMessage = messages.find((m) => m.$id === this.replyTo);
-          if (replyToMessage) {
-            this.replyToMessage = replyToMessage;
-          }
+
+      // Get the replyTo message
+      this.replyToMessage$ = this.messageService.getMessageById(
+        this.msg.replyTo
+      );
+      this.replyToMessage$
+        .subscribe((replyToMessage) => {
+          console.log('Reply to message:', replyToMessage);
         })
         .unsubscribe();
     }
