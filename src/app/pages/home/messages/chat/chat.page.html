@@ -64,6 +64,8 @@
                 <span *ngIf="replyMessage?.type == 'body'">
                   {{ replyMessage?.body }}
                 </span>
+                <span *ngIf="replyMessage?.type == 'image'"> 📷 Image </span>
+                <span *ngIf="replyMessage?.type == 'audio'"> 🔊 Audio </span>
               </div>
             </div>
           </div>
