@@ -112,6 +112,9 @@ export class ChatPage implements OnInit, OnDestroy {
   audioId: string;
   private audioIdTemp: string;
 
+  // Reply Variables
+  replyMessage: Message;
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -371,6 +374,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   onReply(message: Message) {
+    this.replyMessage = message;
     console.log('Replying to:', message);
   }
 
