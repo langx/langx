@@ -376,7 +376,6 @@ export class ChatPage implements OnInit, OnDestroy {
   onReply(message: Message) {
     this.replyMessage = message;
     this.content.scrollToBottom(300);
-    console.log('Replying to:', message);
   }
 
   //
