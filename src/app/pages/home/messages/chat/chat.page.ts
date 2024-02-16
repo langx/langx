@@ -126,7 +126,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.initValues();
-    this.initMessagesUntilLastReplyTo();
+    // this.initMessagesUntilLastReplyTo();
 
     this.initForm();
   }
