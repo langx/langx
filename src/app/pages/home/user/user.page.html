@@ -3,7 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="home"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ (user$ | async)?.name }}</ion-title>
+    <ion-title *ngIf="!isLoading">{{ (user$ | async)?.name }}</ion-title>
+    <ion-title *ngIf="isLoading">
+      <ion-spinner name="dots"></ion-spinner>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
