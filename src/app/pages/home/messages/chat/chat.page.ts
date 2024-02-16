@@ -301,6 +301,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.form.reset();
           this.audioUrl = null;
           this.imageUrl = null;
+          this.replyMessage = null;
         }
       })
       .unsubscribe();
@@ -341,6 +342,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.imageUrl = null;
+          this.replyMessage = null;
         }
       })
       .unsubscribe();
@@ -364,6 +366,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.audioUrl = null;
+          this.replyMessage = null;
         }
       })
       .unsubscribe();
@@ -487,6 +490,7 @@ export class ChatPage implements OnInit, OnDestroy {
       to: user.$id,
       type: 'body',
       body: this.form.value.body,
+      reply: this.replyMessage?.$id || null,
     };
     return request;
   }
@@ -498,6 +502,7 @@ export class ChatPage implements OnInit, OnDestroy {
       to: user.$id,
       type: 'image',
       image: this.imageUrl,
+      reply: this.replyMessage?.$id || null,
     };
     return request;
   }
@@ -509,6 +514,7 @@ export class ChatPage implements OnInit, OnDestroy {
       to: user.$id,
       type: 'audio',
       audio: this.audioUrl,
+      reply: this.replyMessage?.$id || null,
     };
     this.audioIdTemp = null;
     return request;
