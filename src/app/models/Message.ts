@@ -6,6 +6,7 @@ export type Message = Models.Document & {
   to: string;
   roomId: string;
   type: string;
+  reply?: string;
   body?: string;
   image?: URL;
   audio?: URL;
