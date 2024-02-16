@@ -35,6 +35,7 @@
         <app-chat-box
           [chat]="msg"
           [current_user_id]="(currentUser$ | async).$id"
+          (onReply)="onReply(msg)"
         >
         </app-chat-box>
       </ion-item-group>

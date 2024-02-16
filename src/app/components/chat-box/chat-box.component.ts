@@ -10,6 +10,8 @@ import {
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
@@ -25,6 +27,7 @@ import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
 export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() chat: Message;
   @Input() current_user_id: string;
+  @Output() onReply: EventEmitter<any> = new EventEmitter();
 
   private observer: IntersectionObserver;
 
@@ -214,7 +217,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   //
 
   reply(msg: Message) {
-    console.log('Replying to:', msg);
+    this.onReply.emit(msg);
   }
 
   //

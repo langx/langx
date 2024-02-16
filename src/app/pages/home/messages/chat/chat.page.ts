@@ -367,6 +367,14 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
+  // onReply
+  //
+
+  onReply(message: Message) {
+    console.log('Replying to:', message);
+  }
+
+  //
   // Select Image
   //
 
