@@ -11,7 +11,42 @@ ion-infinite-scroll-content {
 }
 
 ion-thumbnail {
-  width: 35px; 
+  width: 35px;
   height: 35px;
   --border-radius: 10px;
+}
+
+.message-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: auto;
+}
+
+.message-main {
+  float: left;
+  float: inline-start;
+  max-width: 80%;
+}
+
+.message-text {
+  display: contents;
+  margin: 0 !important;
+  padding: 5px !important;
+  font-size: 15px;
+  padding-bottom: 0 !important;
+  word-wrap: break-word;
+  white-space: pre-line;
+}
+
+.replyClass {
+  position: relative;
+  width: auto !important;
+  padding: 10px !important;
+  border-radius: 10px 10px 10px 0;
+  background: var(--ion-color-primary-shade) !important;
+  color: var(--ion-color-primary-contrast) !important;
+  font-size: 12px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  word-wrap: break-word;
 }
