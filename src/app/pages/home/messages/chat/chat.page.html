@@ -52,10 +52,11 @@
   </ion-list>
 </ion-content>
 
-<ion-footer (click)="footerClick()">
+<ion-footer>
   <ion-toolbar>
     <form [formGroup]="form" (ngSubmit)="submitForm()">
-      <ion-item>
+      <ion-item *ngIf="replyMessage?.$id"> {{replyMessage?.body}} </ion-item>
+      <ion-item (click)="footerClick()">
         <ion-textarea
           #myTextArea
           *ngIf="!isRecording && !audioId"
