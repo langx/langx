@@ -10,6 +10,8 @@
       <div class="message-main-receiver">
         <span *ngIf="replyTo">
           <small>Reply: {{ replyTo }}</small>
+          <br />
+          <small>{{ replyToMessage?.body }}</small>
         </span>
         <div class="receiver">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
@@ -92,6 +94,8 @@
       <div class="message-main-sender">
         <span *ngIf="replyTo">
           <small>Reply: {{ replyTo }}</small>
+          <br />
+          <small>{{ replyToMessage?.body }}</small>
         </span>
         <div class="sender">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
