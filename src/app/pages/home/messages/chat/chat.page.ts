@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from } from 'rxjs';
+import { Observable, Subscription, from, take } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
@@ -126,6 +126,8 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.initValues();
+    this.initMessagesUntilLastReplyTo();
+
     this.initForm();
   }
 
@@ -192,6 +194,39 @@ export class ChatPage implements OnInit, OnDestroy {
       //   this.content.scrollToBottom(300);
       // });
     }
+  }
+
+  initMessagesUntilLastReplyTo() {
+    this.messages$.pipe(take(1)).subscribe((messages) => {
+      let offset = 0;
+      if (messages && messages.length > 0) {
+        offset = messages.length;
+        const replyToIds = messages
+          .filter((message) => message.replyTo)
+          .map((message) => message.replyTo);
+        const messageIds = messages.map((message) => message.$id);
+        const missingReplyToIds = replyToIds.filter(
+          (id) => !messageIds.includes(id)
+        );
+
+        if (missingReplyToIds.length > 0) {
+          this.total$.pipe(take(1)).subscribe((total) => {
+            if (offset < total) {
+              this.store.dispatch(
+                getMessagesWithOffsetAction({
+                  roomId: this.roomId,
+                  offset: offset,
+                })
+              );
+            } else {
+              console.log('All messages loaded');
+            }
+          });
+        }
+      } else {
+        console.log('All messages loaded');
+      }
+    });
   }
 
   initForm() {
@@ -378,6 +413,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   onReply(message: Message) {
     this.replyMessage = message;
+    // console.log('Replying to:', this.replyMessage.$id);
     setTimeout(() => {
       this.content.scrollToBottom(300);
     }, 100);
