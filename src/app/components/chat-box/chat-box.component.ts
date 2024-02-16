@@ -1,8 +1,12 @@
 import { Store } from '@ngrx/store';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import { ModalController, ToastController } from '@ionic/angular';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
+import {
+  IonItemSliding,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import {
   Component,
   Input,
@@ -12,6 +16,7 @@ import {
   OnDestroy,
   Output,
   EventEmitter,
+  ViewChild,
 } from '@angular/core';
 
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
@@ -25,6 +30,9 @@ import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
   styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('itemSlidingSender') itemSlidingSender: IonItemSliding;
+  @ViewChild('itemSlidingReveiver') itemSlidingReveiver: IonItemSliding;
+
   @Input() chat: Message;
   @Input() current_user_id: string;
   @Output() onReply: EventEmitter<any> = new EventEmitter();
@@ -218,6 +226,8 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   reply(msg: Message) {
     this.onReply.emit(msg);
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
   }
 
   //

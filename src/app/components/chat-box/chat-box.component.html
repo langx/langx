@@ -1,5 +1,5 @@
 <!-- Receiver -->
-<ion-item-sliding>
+<ion-item-sliding #itemSlidingReveiver>
   <ion-item-options side="start">
     <ion-item-option (click)="reply(msg)" color="primary">
       Reply
@@ -78,7 +78,7 @@
 </ion-item-sliding>
 
 <!-- Sender -->
-<ion-item-sliding>
+<ion-item-sliding #itemSlidingSender>
   <ion-item-options side="end">
     <ion-item-option (click)="reply(msg)" color="primary">
       Reply
