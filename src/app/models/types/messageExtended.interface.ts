@@ -7,7 +7,6 @@ export interface MessageExtendedInterface extends Models.Document {
   to: string;
   roomId: Room;
   replyTo?: string;
-  replyToMessage?: MessageExtendedInterface;
   type: string;
   body?: string;
   image?: URL;
