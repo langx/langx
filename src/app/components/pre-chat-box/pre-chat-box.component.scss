@@ -58,3 +58,18 @@ img {
   word-wrap: break-word;
   text-align: right;
 }
+
+.reply-text {
+  border-radius: 10px;
+  padding: 5px !important;
+  font-size: 15px;
+  padding-bottom: 0 !important;
+  word-wrap: break-word;
+  white-space: pre-line;
+  text-align: left;
+}
+
+.reply-text-sender {
+  background: var(--ion-color-primary-shade) !important;
+  color: var(--ion-color-primary-contrast);
+}
