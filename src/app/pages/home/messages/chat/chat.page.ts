@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from } from 'rxjs';
+import { Observable, Subscription, from, take } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
@@ -111,6 +111,9 @@ export class ChatPage implements OnInit, OnDestroy {
   audioUrl: URL;
   audioId: string;
   private audioIdTemp: string;
+
+  // Reply Variables
+  replyMessage: Message;
 
   constructor(
     private store: Store,
@@ -298,6 +301,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.form.reset();
           this.audioUrl = null;
           this.imageUrl = null;
+          this.replyMessage = null;
         }
       })
       .unsubscribe();
@@ -338,6 +342,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.imageUrl = null;
+          this.replyMessage = null;
         }
       })
       .unsubscribe();
@@ -361,9 +366,22 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.audioUrl = null;
+          this.replyMessage = null;
         }
       })
       .unsubscribe();
+  }
+
+  //
+  // onReply
+  //
+
+  onReply(message: Message) {
+    this.replyMessage = message;
+    // console.log('Replying to:', this.replyMessage.$id);
+    setTimeout(() => {
+      this.myTextArea.setFocus();
+    }, 100);
   }
 
   //
@@ -475,6 +493,7 @@ export class ChatPage implements OnInit, OnDestroy {
       to: user.$id,
       type: 'body',
       body: this.form.value.body,
+      replyTo: this.replyMessage?.$id || null,
     };
     return request;
   }
@@ -486,6 +505,7 @@ export class ChatPage implements OnInit, OnDestroy {
       to: user.$id,
       type: 'image',
       image: this.imageUrl,
+      replyTo: this.replyMessage?.$id || null,
     };
     return request;
   }
@@ -497,6 +517,7 @@ export class ChatPage implements OnInit, OnDestroy {
       to: user.$id,
       type: 'audio',
       audio: this.audioUrl,
+      replyTo: this.replyMessage?.$id || null,
     };
     this.audioIdTemp = null;
     return request;

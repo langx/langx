@@ -3,13 +3,15 @@ import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { ToastController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
+import { Message } from 'src/app/models/Message';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import {
   removeMessageFromTempMessagesAction,
   resendMessageFromTempMessagesAction,
 } from 'src/app/store/actions/message.action';
+import { messagesSelector } from 'src/app/store/selectors/message.selector';
 
 @Component({
   selector: 'app-pre-chat-box',
@@ -22,6 +24,9 @@ export class PreChatBoxComponent implements OnInit {
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
 
+  replyTo: string = null;
+  replyToMessage: Message;
+
   constructor(private store: Store, private toastController: ToastController) {}
 
   async ngOnInit() {
@@ -30,6 +35,22 @@ export class PreChatBoxComponent implements OnInit {
   }
 
   async initValues() {
+    // Check if the message has replyTo
+    if (this.tempMsg.replyTo) {
+      // Set the replyTo message id
+      this.replyTo = this.tempMsg.replyTo;
+
+      // Get the replyTo message
+      this.store
+        .pipe(select(messagesSelector))
+        .subscribe((messages) => {
+          this.replyToMessage = messages.find(
+            (msg) => msg?.$id === this.replyTo
+          );
+        })
+        .unsubscribe();
+    }
+
     // Check if the message is an audio
     if (this.tempMsg.type === 'audio') {
       this.audioId = this.tempMsg?.$id;

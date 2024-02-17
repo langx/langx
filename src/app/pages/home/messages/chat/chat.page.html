@@ -35,6 +35,7 @@
         <app-chat-box
           [chat]="msg"
           [current_user_id]="(currentUser$ | async).$id"
+          (onReply)="onReply(msg)"
         >
         </app-chat-box>
       </ion-item-group>
@@ -51,10 +52,28 @@
   </ion-list>
 </ion-content>
 
-<ion-footer (click)="footerClick()">
+<ion-footer>
   <ion-toolbar>
     <form [formGroup]="form" (ngSubmit)="submitForm()">
-      <ion-item>
+      <ion-item *ngIf="replyMessage?.$id">
+        <div class="message-body">
+          <div class="message-main">
+            <div class="replyClass">
+              <div class="message-text">
+                <!-- Text message -->
+                <small>
+                  <span *ngIf="replyMessage?.type == 'body'">
+                    > {{ replyMessage?.body }}
+                  </span>
+                  <span *ngIf="replyMessage?.type == 'image'"> 📷 Image </span>
+                  <span *ngIf="replyMessage?.type == 'audio'"> 🔊 Audio </span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-item>
+      <ion-item (click)="footerClick()">
         <ion-textarea
           #myTextArea
           *ngIf="!isRecording && !audioId"

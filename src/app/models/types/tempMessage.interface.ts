@@ -4,6 +4,7 @@ export interface tempMessageInterface {
   $id: string;
   to: string;
   roomId: string;
+  replyTo?: string;
   type: string;
   body?: string;
   image?: URL;

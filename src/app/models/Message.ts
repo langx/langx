@@ -5,6 +5,7 @@ export type Message = Models.Document & {
   seen: boolean | false;
   to: string;
   roomId: string;
+  replyTo?: string;
   type: string;
   body?: string;
   image?: URL;

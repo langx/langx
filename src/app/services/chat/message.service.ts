@@ -25,6 +25,13 @@ export class MessageService {
     private storageService: StorageService
   ) {}
 
+  // Get message by id
+  getMessageById(messageId: string): Observable<Message | null> {
+    return from(
+      this.api.getDocument(environment.appwrite.MESSAGES_COLLECTION, messageId)
+    );
+  }
+
   // Create a message
   createMessage(
     request: createMessageRequestInterface,

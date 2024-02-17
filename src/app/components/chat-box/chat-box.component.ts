@@ -1,8 +1,13 @@
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
+import { Observable, of, take } from 'rxjs';
 import { Directory, Filesystem } from '@capacitor/filesystem';
-import { ModalController, ToastController } from '@ionic/angular';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
+import {
+  IonItemSliding,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import {
   Component,
   Input,
@@ -10,12 +15,17 @@ import {
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  Output,
+  EventEmitter,
+  ViewChild,
 } from '@angular/core';
 
+import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { messageTime } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
+import { messagesSelector } from 'src/app/store/selectors/message.selector';
 
 @Component({
   selector: 'app-chat-box',
@@ -23,12 +33,18 @@ import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
   styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('itemSlidingSender') itemSlidingSender: IonItemSliding;
+  @ViewChild('itemSlidingReveiver') itemSlidingReveiver: IonItemSliding;
+
   @Input() chat: Message;
   @Input() current_user_id: string;
+  @Output() onReply: EventEmitter<any> = new EventEmitter();
 
   private observer: IntersectionObserver;
 
   msg: Message = null;
+  replyTo: string = null;
+  replyToMessage$: Observable<Message>;
 
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
@@ -36,6 +52,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private store: Store,
+    private messageService: MessageService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private el: ElementRef
@@ -59,6 +76,23 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async initValues() {
     this.msg = { ...this.chat };
+
+    // Check if the message has replyTo
+    if (this.msg.replyTo) {
+      // Set the replyTo message id
+      this.replyTo = this.msg.replyTo;
+
+      // Get the replyTo message
+      this.store.pipe(select(messagesSelector), take(1)).subscribe((messages) => {
+        const replyToMessage = messages ? messages.find((m) => m.$id === this.replyTo) : null;
+
+        if (replyToMessage) {
+          this.replyToMessage$ = of(replyToMessage);
+        } else {
+          this.replyToMessage$ = this.messageService.getMessageById(this.msg.replyTo);
+        }
+      });
+    }
 
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
@@ -207,6 +241,16 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
           console.error('Error copying text to clipboard', 'danger');
         });
     }
+  }
+
+  //
+  // Reply
+  //
+
+  reply(msg: Message) {
+    this.onReply.emit(msg);
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
   }
 
   //

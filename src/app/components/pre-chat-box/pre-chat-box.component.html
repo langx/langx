@@ -3,6 +3,25 @@
     <div class="message-main-sender">
       <div class="sender">
         <div class="message-text" (click)="writeToClipboard(tempMsg?.body)">
+          <!-- Reply Message -->
+          <ion-row
+            class="reply-text reply-text-sender ion-margin-bottom"
+            *ngIf="replyTo"
+          >
+            <ion-col>
+              <small *ngIf="replyToMessage">
+                <ng-container [ngSwitch]="replyToMessage?.type">
+                  <span *ngSwitchCase="'text'">
+                    > {{ replyToMessage?.body }}
+                  </span>
+                  <span *ngSwitchCase="'image'"> > 📷 Image </span>
+                  <span *ngSwitchCase="'audio'"> > 🔊 Audio </span>
+                  <span *ngSwitchDefault>> {{ replyToMessage?.body }}</span>
+                </ng-container>
+              </small>
+            </ion-col>
+          </ion-row>
+
           <!-- Text message -->
           <span class="selectable" *ngIf="tempMsg?.type == 'body'">{{
             tempMsg?.body
