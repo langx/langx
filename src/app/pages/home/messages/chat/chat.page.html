@@ -61,11 +61,13 @@
             <div class="replyClass">
               <div class="message-text">
                 <!-- Text message -->
-                <span *ngIf="replyMessage?.type == 'body'">
-                  > {{ replyMessage?.body }}
-                </span>
-                <span *ngIf="replyMessage?.type == 'image'"> 📷 Image </span>
-                <span *ngIf="replyMessage?.type == 'audio'"> 🔊 Audio </span>
+                <small>
+                  <span *ngIf="replyMessage?.type == 'body'">
+                    > {{ replyMessage?.body }}
+                  </span>
+                  <span *ngIf="replyMessage?.type == 'image'"> 📷 Image </span>
+                  <span *ngIf="replyMessage?.type == 'audio'"> 🔊 Audio </span>
+                </small>
               </div>
             </div>
           </div>
