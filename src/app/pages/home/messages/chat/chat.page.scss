@@ -21,6 +21,9 @@ ion-thumbnail {
   padding: 0 !important;
   width: 100%;
   height: auto;
+  border-radius: 10px;
+  background: var(--ion-color-light-shade) !important;
+  color: var(--ion-color-light-contrast) !important;
 }
 
 .message-main {
@@ -43,9 +46,6 @@ ion-thumbnail {
   position: relative;
   width: auto !important;
   padding: 10px !important;
-  border-radius: 10px 10px 10px 0;
-  background: var(--ion-color-primary) !important;
-  color: var(--ion-color-primary-contrast) !important;
   font-size: 12px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   word-wrap: break-word;
