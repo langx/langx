@@ -1,5 +1,5 @@
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Observable, of, take } from 'rxjs';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
@@ -25,6 +25,7 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 import { messageTime } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
+import { messagesSelector } from 'src/app/store/selectors/message.selector';
 
 @Component({
   selector: 'app-chat-box',
@@ -82,9 +83,15 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       this.replyTo = this.msg.replyTo;
 
       // Get the replyTo message
-      this.replyToMessage$ = this.messageService.getMessageById(
-        this.msg.replyTo
-      );
+      this.store.pipe(select(messagesSelector), take(1)).subscribe((messages) => {
+        const replyToMessage = messages ? messages.find((m) => m.$id === this.replyTo) : null;
+
+        if (replyToMessage) {
+          this.replyToMessage$ = of(replyToMessage);
+        } else {
+          this.replyToMessage$ = this.messageService.getMessageById(this.msg.replyTo);
+        }
+      });
     }
 
     // Check if the message is an audio
