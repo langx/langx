@@ -380,7 +380,7 @@ export class ChatPage implements OnInit, OnDestroy {
     this.replyMessage = message;
     // console.log('Replying to:', this.replyMessage.$id);
     setTimeout(() => {
-      this.content.scrollToBottom(300);
+      this.myTextArea.setFocus();
     }, 100);
   }
 
