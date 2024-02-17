@@ -10,13 +10,13 @@
           >
             <ion-col>
               <small *ngIf="replyToMessage">
-                <ng-container [ngSwitch]="replyToMessage.type">
+                <ng-container [ngSwitch]="replyToMessage?.type">
                   <span *ngSwitchCase="'text'">
-                    > {{ replyToMessage.body }}
+                    > {{ replyToMessage?.body }}
                   </span>
                   <span *ngSwitchCase="'image'"> > 📷 Image </span>
                   <span *ngSwitchCase="'audio'"> > 🔊 Audio </span>
-                  <span *ngSwitchDefault>> {{ replyToMessage.body }}</span>
+                  <span *ngSwitchDefault>> {{ replyToMessage?.body }}</span>
                 </ng-container>
               </small>
             </ion-col>
