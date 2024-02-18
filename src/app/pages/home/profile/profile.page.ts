@@ -80,6 +80,12 @@ export class ProfilePage implements OnInit {
       detail: true,
       new: true,
     },
+    {
+      title: 'About Us',
+      url: 'about-us',
+      icon: 'information-circle-outline',
+      detail: true,
+    },
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];
 
