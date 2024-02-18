@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -27,6 +27,8 @@ export class ContributorsPage implements OnInit {
   model = {
     icon: 'people-outline',
     title: 'No Contributors Yet',
+    subTitle:
+      "If you're interested in, please reach out to our user relations.",
     color: 'warning',
   };
 
@@ -88,6 +90,18 @@ export class ContributorsPage implements OnInit {
   handleRefresh(event) {
     this.listContributors();
     if (event) event.target.complete();
+  }
+
+  //
+  // Utils
+  //
+
+  isEmpty(contributeType: string): Observable<boolean> {
+    return this.users$.pipe(
+      map(
+        (users) => !users.some((user) => user.contributors.includes('design'))
+      )
+    );
   }
 
   //
