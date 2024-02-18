@@ -32,26 +32,31 @@ export class PrivacyPage implements OnInit {
     {
       title: 'Privacy Policy',
       url: environment.ext.PRIVACY_POLICY_URL,
+      icon: 'lock-closed-outline',
       detail: true,
     },
     {
       title: 'Terms & Conditions',
       url: environment.ext.TERMS_AND_CONDITIONS_URL,
+      icon: 'reader-outline',
       detail: true,
     },
     {
       title: 'Cookie Policy',
       url: environment.ext.COOKIES_POLICY_URL,
+      icon: 'document-text-outline',
       detail: true,
     },
     {
       title: 'Data Deletion',
       url: environment.ext.DATA_DELETION_URL,
+      icon: 'trash-bin-outline',
       detail: true,
     },
     {
       title: 'Security Page',
       url: environment.ext.SECURITY_PAGE,
+      icon: 'shield-checkmark-outline',
       detail: true,
     },
   ];

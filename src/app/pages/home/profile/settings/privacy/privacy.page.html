@@ -50,6 +50,7 @@
           (click)="openLegacyPage(item)"
           [detail]="item?.detail"
         >
+          <ion-icon name="{{item?.icon}}"></ion-icon>
           <ion-text>{{item?.title}}</ion-text>
         </ion-item>
       </ion-list>
