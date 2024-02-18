@@ -162,16 +162,4 @@ export class PrivacyPage implements OnInit {
   async openLegacyPage(page: any) {
     await Browser.open({ url: page.url });
   }
-
-  async openStatusPage() {
-    await Browser.open({ url: environment.ext.STATUS_PAGE });
-  }
-
-  async openLandingPage() {
-    await Browser.open({ url: environment.ext.WEBSITE_URL });
-  }
-
-  async openGithubPage() {
-    await Browser.open({ url: environment.ext.GITHUB_URL });
-  }
 }
