@@ -62,6 +62,7 @@ export const environment = {
     CODE_OF_CONDUCT: `${GITHUB_URL}your_repo/blob/main/CODE_OF_CONDUCT.md`,
     CONTRIBUTING: `${GITHUB_URL}your_repo/blob/main/CONTRIBUTING.md`,
     SECURITY_PAGE: `${GITHUB_URL}your_repo/blob/main/SECURITY.md`,
+    ISSUES: `${GITHUB_URL}your_repo/issues`,
   },
   opts: {
     PAGINATION_LIMIT: 25,

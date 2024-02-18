@@ -33,6 +33,12 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: 'Issues',
+      url: environment.ext.ISSUES,
+      icon: 'bug-outline',
+      detail: true,
+    },
+    {
       title: 'Contributing Page',
       url: environment.ext.CONTRIBUTING,
       icon: 'git-branch-outline',
