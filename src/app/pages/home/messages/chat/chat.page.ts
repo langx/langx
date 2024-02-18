@@ -384,6 +384,10 @@ export class ChatPage implements OnInit, OnDestroy {
     }, 100);
   }
 
+  unlinkReply() {
+    this.replyMessage = null;
+  }
+
   //
   // Select Image
   //
