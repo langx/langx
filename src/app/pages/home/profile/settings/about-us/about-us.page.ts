@@ -27,7 +27,7 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Github Page',
+      title: 'Github',
       url: environment.ext.GITHUB_URL,
       icon: 'logo-github',
       detail: true,
@@ -39,13 +39,13 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Contributing Page',
+      title: 'Contributing',
       url: environment.ext.CONTRIBUTING,
       icon: 'git-branch-outline',
       detail: true,
     },
     {
-      title: 'Security Page',
+      title: 'Security',
       url: environment.ext.SECURITY_PAGE,
       icon: 'shield-checkmark-outline',
       detail: true,
