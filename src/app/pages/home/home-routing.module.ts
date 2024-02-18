@@ -129,6 +129,13 @@ const routes: Routes = [
         (m) => m.ContributorsPageModule
       ),
   },
+  {
+    path: 'about-us',
+    loadChildren: () =>
+      import('./profile/settings/about-us/about-us.module').then(
+        (m) => m.AboutUsPageModule
+      ),
+  },
 ];
 
 @NgModule({

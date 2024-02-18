@@ -41,25 +41,6 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>About Us</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item (click)="openLandingPage()" detail>
-          <ion-label>Landing Page</ion-label>
-        </ion-item>
-        <ion-item (click)="openGithubPage()" detail>
-          <ion-label>Github Page</ion-label>
-        </ion-item>
-        <ion-item (click)="openStatusPage()" detail>
-          <ion-label>🟢 Status Page</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
       <ion-card-title>Legal Information</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -69,6 +50,7 @@
           (click)="openLegacyPage(item)"
           [detail]="item?.detail"
         >
+          <ion-icon name="{{item?.icon}}"></ion-icon>
           <ion-text>{{item?.title}}</ion-text>
         </ion-item>
       </ion-list>

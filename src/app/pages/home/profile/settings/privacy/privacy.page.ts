@@ -31,22 +31,32 @@ export class PrivacyPage implements OnInit {
   public legacyPages = [
     {
       title: 'Privacy Policy',
-      url: environment.web.PRIVACY_POLICY_URL,
+      url: environment.ext.PRIVACY_POLICY_URL,
+      icon: 'lock-closed-outline',
       detail: true,
     },
     {
       title: 'Terms & Conditions',
-      url: environment.web.TERMS_AND_CONDITIONS_URL,
+      url: environment.ext.TERMS_AND_CONDITIONS_URL,
+      icon: 'reader-outline',
       detail: true,
     },
     {
       title: 'Cookie Policy',
-      url: environment.web.COOKIES_POLICY_URL,
+      url: environment.ext.COOKIES_POLICY_URL,
+      icon: 'document-text-outline',
       detail: true,
     },
     {
       title: 'Data Deletion',
-      url: environment.web.DATA_DELETION_URL,
+      url: environment.ext.DATA_DELETION_URL,
+      icon: 'trash-bin-outline',
+      detail: true,
+    },
+    {
+      title: 'Security Page',
+      url: environment.ext.SECURITY_PAGE,
+      icon: 'shield-checkmark-outline',
       detail: true,
     },
   ];
@@ -161,17 +171,5 @@ export class PrivacyPage implements OnInit {
   // External links
   async openLegacyPage(page: any) {
     await Browser.open({ url: page.url });
-  }
-
-  async openStatusPage() {
-    await Browser.open({ url: environment.ext.STATUS_PAGE });
-  }
-
-  async openLandingPage() {
-    await Browser.open({ url: environment.ext.WEBSITE_URL });
-  }
-
-  async openGithubPage() {
-    await Browser.open({ url: environment.ext.GITHUB_URL });
   }
 }

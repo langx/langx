@@ -124,7 +124,7 @@ export class SignupPage implements OnInit {
   //
 
   async openTermsAndConditionsLink() {
-    await Browser.open({ url: environment.web.TERMS_AND_CONDITIONS_URL });
+    await Browser.open({ url: environment.ext.TERMS_AND_CONDITIONS_URL });
   }
 
   showPassword() {

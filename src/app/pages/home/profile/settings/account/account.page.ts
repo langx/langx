@@ -5,8 +5,6 @@ import { Router } from '@angular/router';
 import { Models } from 'appwrite';
 import { Browser } from '@capacitor/browser';
 import { IonModal, ToastController } from '@ionic/angular';
-import { Capacitor } from '@capacitor/core';
-import { App } from '@capacitor/app';
 
 import { lastSeen } from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
@@ -37,7 +35,6 @@ import {
 })
 export class AccountPage implements OnInit {
   @ViewChild(IonModal) modal: IonModal;
-  appVersion: string;
 
   subscription: Subscription;
 
@@ -57,15 +54,8 @@ export class AccountPage implements OnInit {
     private toastController: ToastController
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.initValues();
-
-    if (Capacitor.getPlatform() === 'web') {
-      this.appVersion = 'Web App (pwa)';
-    } else {
-      const info = await App.getInfo();
-      this.appVersion = `v${info.version}`;
-    }
   }
 
   ionViewWillEnter() {
@@ -146,7 +136,7 @@ export class AccountPage implements OnInit {
   }
 
   async openDataDeletionLink() {
-    await Browser.open({ url: environment.web.DATA_DELETION_URL });
+    await Browser.open({ url: environment.ext.DATA_DELETION_URL });
   }
 
   // Delete account
