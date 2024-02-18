@@ -15,18 +15,30 @@ export class AboutUsPage implements OnInit {
 
   public aboutUsPages = [
     {
-      title: '🏠 Landing Page',
+      title: 'Landing Page',
       url: environment.ext.WEBSITE_URL,
+      icon: 'globe-outline',
       detail: true,
     },
     {
-      title: '👨‍💻 Github Page',
+      title: 'Github Page',
       url: environment.ext.GITHUB_URL,
+      icon: 'logo-github',
       detail: true,
     },
     {
       title: '🟢 Status Page',
       url: environment.ext.STATUS_PAGE,
+      icon: 'server-outline',
+      detail: true,
+    },
+  ];
+
+  public releasesPages = [
+    {
+      title: 'Release Notes',
+      url: environment.ext.RELEASES_URL,
+      icon: 'book-outline',
       detail: true,
     },
   ];
@@ -42,7 +54,7 @@ export class AboutUsPage implements OnInit {
     }
   }
 
-  async openAboutUsPage(page: any) {
+  async openPage(page: any) {
     await Browser.open({ url: page.url });
   }
 }
