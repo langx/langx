@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
+
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -8,6 +11,8 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./about-us.page.scss'],
 })
 export class AboutUsPage implements OnInit {
+  appVersion: string;
+
   public aboutUsPages = [
     {
       title: '🏠 Landing Page',
@@ -28,7 +33,14 @@ export class AboutUsPage implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  async ngOnInit() {
+    if (Capacitor.getPlatform() === 'web') {
+      this.appVersion = 'Web App (pwa)';
+    } else {
+      const info = await App.getInfo();
+      this.appVersion = `v${info.version}`;
+    }
+  }
 
   async openAboutUsPage(page: any) {
     await Browser.open({ url: page.url });
