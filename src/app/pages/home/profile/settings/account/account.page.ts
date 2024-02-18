@@ -136,7 +136,7 @@ export class AccountPage implements OnInit {
   }
 
   async openDataDeletionLink() {
-    await Browser.open({ url: environment.web.DATA_DELETION_URL });
+    await Browser.open({ url: environment.ext.DATA_DELETION_URL });
   }
 
   // Delete account

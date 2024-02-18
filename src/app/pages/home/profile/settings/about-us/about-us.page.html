@@ -43,6 +43,24 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
+  
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Licenses</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item
+          *ngFor="let item of licenses"
+          (click)="openPage(item)"
+          [detail]="item?.detail"
+        >
+          <ion-icon name="{{item?.icon}}"></ion-icon>
+          <ion-label>{{item?.title}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
   <ion-card>
     <ion-card-header>

@@ -21,15 +21,27 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: '🟢 Status Page',
+      url: environment.ext.STATUS_PAGE,
+      icon: 'server-outline',
+      detail: true,
+    },
+    {
       title: 'Github Page',
       url: environment.ext.GITHUB_URL,
       icon: 'logo-github',
       detail: true,
     },
     {
-      title: '🟢 Status Page',
-      url: environment.ext.STATUS_PAGE,
-      icon: 'server-outline',
+      title: 'Contributing Page',
+      url: environment.ext.CONTRIBUTING,
+      icon: 'git-branch-outline',
+      detail: true,
+    },
+    {
+      title: 'Security Page',
+      url: environment.ext.SECURITY_PAGE,
+      icon: 'shield-checkmark-outline',
       detail: true,
     },
   ];
@@ -38,7 +50,28 @@ export class AboutUsPage implements OnInit {
     {
       title: 'Release Notes',
       url: environment.ext.RELEASES_URL,
-      icon: 'book-outline',
+      icon: 'document-text-outline',
+      detail: true,
+    },
+  ];
+
+  public licenses = [
+    {
+      title: 'BSD-3-Clause License',
+      url: environment.ext.BSD3_LICENSE_URL,
+      icon: 'file-tray-stacked-outline',
+      detail: true,
+    },
+    {
+      title: 'MIT License',
+      url: environment.ext.MIT_LICENSE_URL,
+      icon: 'file-tray-stacked-outline',
+      detail: true,
+    },
+    {
+      title: 'Code of Conduct',
+      url: environment.ext.CODE_OF_CONDUCT,
+      icon: 'heart-outline',
       detail: true,
     },
   ];

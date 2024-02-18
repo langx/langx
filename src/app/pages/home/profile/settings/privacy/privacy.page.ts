@@ -31,22 +31,27 @@ export class PrivacyPage implements OnInit {
   public legacyPages = [
     {
       title: 'Privacy Policy',
-      url: environment.web.PRIVACY_POLICY_URL,
+      url: environment.ext.PRIVACY_POLICY_URL,
       detail: true,
     },
     {
       title: 'Terms & Conditions',
-      url: environment.web.TERMS_AND_CONDITIONS_URL,
+      url: environment.ext.TERMS_AND_CONDITIONS_URL,
       detail: true,
     },
     {
       title: 'Cookie Policy',
-      url: environment.web.COOKIES_POLICY_URL,
+      url: environment.ext.COOKIES_POLICY_URL,
       detail: true,
     },
     {
       title: 'Data Deletion',
-      url: environment.web.DATA_DELETION_URL,
+      url: environment.ext.DATA_DELETION_URL,
+      detail: true,
+    },
+    {
+      title: 'Security Page',
+      url: environment.ext.SECURITY_PAGE,
       detail: true,
     },
   ];
