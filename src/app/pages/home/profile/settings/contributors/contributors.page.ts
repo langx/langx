@@ -96,10 +96,11 @@ export class ContributorsPage implements OnInit {
   // Utils
   //
 
-  isEmpty(contributeType: string): Observable<boolean> {
+  isEmpty$(contributeType: string): Observable<boolean> {
     return this.users$.pipe(
       map(
-        (users) => !users.some((user) => user.contributors.includes('design'))
+        (users) =>
+          !users.some((user) => user.contributors.includes(contributeType))
       )
     );
   }

@@ -29,6 +29,8 @@
           >
           </app-user-list>
         </ng-container>
+        <app-empty-screen *ngIf="isEmpty$('codebase') | async" [model]="model">
+        </app-empty-screen>
       </ion-list>
 
       <!-------------------->
@@ -85,10 +87,7 @@
           >
           </app-user-list>
         </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty('design')"
-          [model]="model"
-        >
+        <app-empty-screen *ngIf="isEmpty$('design') | async" [model]="model">
         </app-empty-screen>
       </ion-list>
 
@@ -202,6 +201,8 @@
           >
           </app-user-list>
         </ng-container>
+        <app-empty-screen *ngIf="isEmpty$('growth-hacker') | async" [model]="model">
+        </app-empty-screen>
       </ion-list>
 
       <!-------------------->
@@ -318,6 +319,8 @@
           >
           </app-user-list>
         </ng-container>
+        <app-empty-screen *ngIf="isEmpty$('user-relations') | async" [model]="model">
+        </app-empty-screen>
       </ion-list>
 
       <!-------------------->
@@ -374,6 +377,8 @@
           >
           </app-user-list>
         </ng-container>
+        <app-empty-screen *ngIf="isEmpty$('tester') | async" [model]="model">
+        </app-empty-screen>
       </ion-list>
 
       <!-------------------->
