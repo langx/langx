@@ -58,6 +58,7 @@ export const environment = {
     WEBSITE_URL: WEBSITE_URL,
     STATUS_PAGE: STATUS_PAGE,
     GITHUB_URL: GITHUB_URL,
+    RELEASES_URL: `${GITHUB_URL}your_repo/releases`,
   },
   opts: {
     PAGINATION_LIMIT: 25,
