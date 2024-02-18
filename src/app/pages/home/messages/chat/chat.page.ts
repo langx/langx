@@ -308,7 +308,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   onEnter(event: any) {
-    if (!event.shiftKey) {
+    if (!event.shiftKey && Capacitor.getPlatform() === 'web') {
       event.preventDefault();
       // Call your form submit method here
       this.submitForm();
