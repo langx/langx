@@ -35,3 +35,5 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+_If you want speed up process of this issue, please send 🚀 as a reaction._

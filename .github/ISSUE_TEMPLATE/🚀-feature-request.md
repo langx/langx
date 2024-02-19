@@ -17,3 +17,5 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
+
+_If you want speed up process of this issue, please send 🚀 as a reaction._
