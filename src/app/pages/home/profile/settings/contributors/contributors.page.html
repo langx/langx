@@ -191,21 +191,21 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Visual Storyteller</ion-card-title>
+      <ion-card-title>Storyteller</ion-card-title>
       <ion-card-subtitle> 🎬 Crafting Stories with Video</ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoading$ | async)">
         <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="user?.contributors.includes('visual-storyteller')"
+            *ngIf="user?.contributors.includes('storyteller')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
         <app-empty-screen
-          *ngIf="isEmpty$('visual-storyteller') | async"
+          *ngIf="isEmpty$('storyteller') | async"
           [model]="model"
         >
         </app-empty-screen>
