@@ -218,6 +218,14 @@ export class UserPage implements OnInit {
   // Report User
   //
 
+  async openReportUserModal() {
+    try {
+      await this.reportUserModal.present();
+    } catch (error) {
+      console.error('Error opening report user modal:', error);
+    }
+  }
+
   reportUser(reason: string) {
     if (!reason) {
       this.presentToast('Please enter a reason.', 'danger');
@@ -231,7 +239,7 @@ export class UserPage implements OnInit {
     this.currentUser$
       .subscribe((currentUser) => {
         if (currentUser.$id === this.userId) {
-          this.presentToast('You cannot block yourself.', 'danger');
+          this.presentToast('You cannot report yourself.', 'danger');
         } else {
           const request = { userId: this.userId, reason: reason };
           // Dispatch the action to update current user
@@ -244,6 +252,14 @@ export class UserPage implements OnInit {
   //
   // Block User
   //
+
+  async openBlockUserModal() {
+    try {
+      await this.blockUserModal.present();
+    } catch (error) {
+      console.error('Error opening block user modal:', error);
+    }
+  }
 
   blockUser() {
     this.blockUserModal.dismiss();
