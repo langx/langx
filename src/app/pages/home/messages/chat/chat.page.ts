@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from, take } from 'rxjs';
+import { Observable, Subscription, from } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
