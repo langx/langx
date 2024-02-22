@@ -1,5 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
+import { deletedUser } from 'src/app/extras/deletedUser';
 import { VisitsStateInterface } from 'src/app/models/types/states/visitsState.interface';
 import {
   getVisitsAction,
@@ -33,15 +34,25 @@ const visitsReducer = createReducer(
       error: null,
     })
   ),
-  on(
-    getVisitsSuccessAction,
-    (state, action): VisitsStateInterface => ({
+  on(getVisitsSuccessAction, (state, action): VisitsStateInterface => {
+    // Map through the documents and add deletedUser if from is null
+    const visits = action.payload.documents.map((document) => {
+      if (document.from === null) {
+        return {
+          ...document,
+          from: deletedUser,
+        };
+      }
+      return document;
+    });
+
+    return {
       ...state,
       isLoading: false,
       total: action.payload.total,
-      visits: action.payload.documents,
-    })
-  ),
+      visits: visits,
+    };
+  }),
   on(
     getVisitsFailureAction,
     (state, action): VisitsStateInterface => ({
