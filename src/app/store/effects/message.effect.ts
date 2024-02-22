@@ -55,8 +55,15 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(createMessageAction),
       withLatestFrom(this.store.select(currentUserSelector)),
-      mergeMap(([{ request }, currentUser]) =>
-        this.messagesService.createMessage(request, currentUser.$id).pipe(
+      mergeMap(([{ request }, currentUser]) => {
+        if (request.to === 'deleted-user') {
+          const error: ErrorInterface = {
+            message: 'Cannot send message to deleted user',
+          };
+          return of(createMessageFailureAction({ error, payload: request }));
+        }
+
+        return this.messagesService.createMessage(request, currentUser.$id).pipe(
           map((payload: Message) => createMessageSuccessAction({ payload })),
 
           catchError((errorResponse: AxiosError) => {
@@ -66,8 +73,8 @@ export class MessageEffects {
             };
             return of(createMessageFailureAction({ error, payload: request }));
           })
-        )
-      )
+        );
+      })
     )
   );
 
