@@ -34,7 +34,7 @@ import {
   styleUrls: ['./account.page.scss'],
 })
 export class AccountPage implements OnInit {
-  @ViewChild(IonModal) modal: IonModal;
+  @ViewChild('deleteUserModal') deleteUserModal: IonModal;
 
   subscription: Subscription;
 
@@ -139,9 +139,17 @@ export class AccountPage implements OnInit {
     await Browser.open({ url: environment.ext.DATA_DELETION_URL });
   }
 
+  async openDeleteUserModal() {
+    try {
+      await this.deleteUserModal.present();
+    } catch (error) {
+      console.error('Error opening block user modal:', error);
+    }
+  }
+
   // Delete account
   deleteAccount() {
-    this.modal.dismiss();
+    this.deleteUserModal.dismiss();
     this.store.dispatch(deleteAccountAction());
   }
 
