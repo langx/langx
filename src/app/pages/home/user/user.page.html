@@ -205,16 +205,16 @@
     <ion-card-content>
       <ion-list lines="none" class="list-icon">
         <!-- Report User -->
-        <ion-item id="report-user-modal" detail>
+        <ion-item detail (click)="openReportUserModal()">
           <ion-icon color="medium" name="alert-circle-outline"></ion-icon>
           <ion-label>Report User</ion-label>
         </ion-item>
 
         <!-- Block User -->
         <ion-item
-          id="block-user-modal"
-          [class.ion-hide]="(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
           detail
+          (click)="openBlockUserModal()"
+          [class.ion-hide]="(currentUser$ | async)?.blockedUsers.includes((user$ | async)?.$id)"
         >
           <ion-icon color="danger" name="ban-outline"></ion-icon>
           <ion-label>Block User</ion-label>
@@ -240,12 +240,7 @@
   </ion-card>
 </ion-content>
 
-<ion-modal
-  #reportUserModal
-  trigger="report-user-modal"
-  [initialBreakpoint]="1"
-  [breakpoints]="[0, 1]"
->
+<ion-modal #reportUserModal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -286,12 +281,7 @@
   </ng-template>
 </ion-modal>
 
-<ion-modal
-  #blockUserModal
-  trigger="block-user-modal"
-  [initialBreakpoint]="1"
-  [breakpoints]="[0, 1]"
->
+<ion-modal #blockUserModal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
   <ng-template>
     <ion-header>
       <ion-toolbar>
