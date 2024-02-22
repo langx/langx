@@ -540,7 +540,7 @@ export class AuthEffect {
     this.actions$.pipe(
       ofType(deleteAccountAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([action, currentUser]) => {
+      switchMap(([_, currentUser]) => {
         return this.authService.deleteAccount(currentUser?.$id).pipe(
           map((payload) => {
             return deleteAccountSuccessAction({ payload });
