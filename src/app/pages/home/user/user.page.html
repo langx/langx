@@ -185,11 +185,11 @@
     </ion-card-header>
     <ion-card-content>
       <ion-grid>
-        <ion-row justify-content-center>
+        <ion-row>
           <ion-col
-            size="3"
+            size="4"
             *ngFor="let badge of badges"
-            class="ion-margin-horizontal"
+            class="ion-justify-content-center"
           >
             <ion-card-content class="badge-content">
               <img [src]="badge['url']" class="badge-image" />
