@@ -160,7 +160,9 @@
         </ion-item> -->
         <ion-item>
           <ion-icon name="trash-outline" color="medium"></ion-icon>
-          <ion-label color="medium" (click)="openDeleteUserModal()">Delete Account </ion-label>
+          <ion-label color="medium" (click)="openDeleteUserModal()"
+            >Delete Account
+          </ion-label>
         </ion-item>
         <ion-row>
           <ion-col size="12" class="alignItems">
@@ -178,11 +180,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-modal
-    #deleteUserModal
-    [initialBreakpoint]="1"
-    [breakpoints]="[0, 1]"
-  >
+  <ion-modal #deleteUserModal [initialBreakpoint]="1" [breakpoints]="[0, 1]">
     <ng-template>
       <ion-header>
         <ion-toolbar>
@@ -198,8 +196,8 @@
           <ul style="font-size: larger">
             <li>This action is irreversible.</li>
             <li>All data will be permanently removed.</li>
-            <li>Your email will not be reused.</li>
             <li>Data recovery will not be possible.</li>
+            <li>Your email will not be reused.</li>
           </ul>
           <ion-button (click)="deleteUserModal.dismiss()" color="primary">
             Cancel
