@@ -10,6 +10,7 @@ export const GITHUB_URL = "<GITHUB_URL>";
 export const environment = {
   production: true,
   bundleId: "<BUNDLE_ID>",
+  iosId: 'id0000000000',
   appwrite: {
     APP_ENDPOINT: `${DB_URL}v1`,
     APP_PROJECT: "<APP_PROJECT>",
