@@ -25,7 +25,7 @@ export class AboutUsPage implements OnInit {
     {
       title: 'Our Sponsors',
       url: 'sponsors',
-      icon: 'heart-outline',
+      icon: 'heart',
       detail: true,
     },
   ];
