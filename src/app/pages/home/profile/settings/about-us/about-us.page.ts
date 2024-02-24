@@ -22,6 +22,12 @@ export class AboutUsPage implements OnInit {
       icon: 'people-outline',
       detail: true,
     },
+    {
+      title: 'Our Sponsors',
+      url: 'sponsors',
+      icon: 'heart-outline',
+      detail: true,
+    },
   ];
 
   public sponsorPages = [
