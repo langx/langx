@@ -53,7 +53,6 @@ export class ProfilePage implements OnInit {
       url: 'edit',
       icon: 'create-outline',
       detail: true,
-      new: true,
     },
     {
       title: 'Notifications',
@@ -76,7 +75,7 @@ export class ProfilePage implements OnInit {
     {
       title: 'Our Kitchen',
       url: 'about-us',
-      icon: 'restaurant-outline',
+      icon: 'code-slash-outline',
       detail: true,
       new: true,
     },
