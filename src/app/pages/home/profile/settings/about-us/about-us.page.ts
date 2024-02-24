@@ -30,7 +30,7 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: '🟢 Status Page',
+      title: 'Status Page 🟢',
       url: environment.ext.STATUS_PAGE,
       icon: 'server-outline',
       detail: true,
