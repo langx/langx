@@ -13,7 +13,7 @@ import {
 
 @Injectable()
 export class ContributorsEffects {
-  getVisits$ = createEffect(() =>
+  getContributors$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getContributorsAction),
       switchMap(() => {
