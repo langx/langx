@@ -21,7 +21,7 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Rate and Review Us ⭐️',
+      title: 'Rate Us ⭐️',
       url: environment.ext.SPONSOR,
       icon: 'star-outline',
       detail: true,
