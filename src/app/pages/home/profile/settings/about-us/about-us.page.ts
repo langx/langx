@@ -20,6 +20,12 @@ export class AboutUsPage implements OnInit {
       icon: 'heart-outline',
       detail: true,
     },
+    {
+      title: 'Rate and Review Us ⭐️',
+      url: environment.ext.SPONSOR,
+      icon: 'star-outline',
+      detail: true,
+    },
   ];
 
   public aboutUsPages = [
