@@ -70,12 +70,6 @@ export class AboutUsPage implements OnInit {
       icon: 'server-outline',
       detail: true,
     },
-    {
-      title: 'Security',
-      url: environment.ext.SECURITY_PAGE,
-      icon: 'shield-checkmark-outline',
-      detail: true,
-    },
   ];
 
   public releasesPages = [
@@ -104,6 +98,12 @@ export class AboutUsPage implements OnInit {
       title: 'Code of Conduct',
       url: environment.ext.CODE_OF_CONDUCT,
       icon: 'heart-outline',
+      detail: true,
+    },
+    {
+      title: 'Security',
+      url: environment.ext.SECURITY_PAGE,
+      icon: 'shield-checkmark-outline',
       detail: true,
     },
   ];
