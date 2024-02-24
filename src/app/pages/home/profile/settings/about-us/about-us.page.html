@@ -10,6 +10,24 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Be Our Sponsor</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item
+          *ngFor="let item of sponsorPages"
+          (click)="openPage(item)"
+          [detail]="item?.detail"
+        >
+          <ion-icon name="{{item?.icon}}"></ion-icon>
+          <ion-label>{{item?.title}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>About Us</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -43,7 +61,7 @@
       </ion-list>
     </ion-card-content>
   </ion-card>
-  
+
   <ion-card>
     <ion-card-header>
       <ion-card-title>Licenses</ion-card-title>

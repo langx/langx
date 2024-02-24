@@ -13,6 +13,15 @@ import { environment } from 'src/environments/environment';
 export class AboutUsPage implements OnInit {
   appVersion: string;
 
+  public sponsorPages = [
+    {
+      title: 'Be Our Sponsor ❤️',
+      url: environment.ext.SPONSOR,
+      icon: 'heart-outline',
+      detail: true,
+    },
+  ];
+
   public aboutUsPages = [
     {
       title: 'Landing Page',
