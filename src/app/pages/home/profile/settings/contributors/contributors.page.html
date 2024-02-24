@@ -133,64 +133,6 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Design</ion-card-title>
-      <ion-card-subtitle> 🎨 Branding and Rebranding </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('design')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen *ngIf="isEmpty$('design') | async" [model]="model">
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
       <ion-card-title>Storyteller</ion-card-title>
       <ion-card-subtitle> 🎬 Crafting Stories with Video</ion-card-subtitle>
     </ion-card-header>
@@ -252,21 +194,81 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Social Media</ion-card-title>
-      <ion-card-subtitle> 📣 Amplifying Our Voice </ion-card-subtitle>
+      <ion-card-title>Design</ion-card-title>
+      <ion-card-subtitle> 🎨 Branding and Rebranding </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoading$ | async)">
         <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="user?.contributors.includes('social-media')"
+            *ngIf="user?.contributors.includes('design')"
+            [item]="user"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+        <app-empty-screen *ngIf="isEmpty$('design') | async" [model]="model">
+        </app-empty-screen>
+      </ion-list>
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '01'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>User Relations</ion-card-title>
+      <ion-card-subtitle>
+        🤝 Building Bridges with Our Users
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
+          <app-user-list
+            *ngIf="user?.contributors.includes('user-relations')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
         <app-empty-screen
-          *ngIf="isEmpty$('social-media') | async"
+          *ngIf="isEmpty$('user-relations') | async"
           [model]="model"
         >
         </app-empty-screen>
@@ -495,23 +497,21 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>User Relations</ion-card-title>
-      <ion-card-subtitle>
-        🤝 Building Bridges with Our Users
-      </ion-card-subtitle>
+      <ion-card-title>Social Media</ion-card-title>
+      <ion-card-subtitle> 📣 Amplifying Our Voice </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-list *ngIf="!(isLoading$ | async)">
         <ng-container *ngFor="let user of (users$ | async)">
           <app-user-list
-            *ngIf="user?.contributors.includes('user-relations')"
+            *ngIf="user?.contributors.includes('social-media')"
             [item]="user"
             (onClick)="getProfilePage(user?.$id)"
           >
           </app-user-list>
         </ng-container>
         <app-empty-screen
-          *ngIf="isEmpty$('user-relations') | async"
+          *ngIf="isEmpty$('social-media') | async"
           [model]="model"
         >
         </app-empty-screen>
