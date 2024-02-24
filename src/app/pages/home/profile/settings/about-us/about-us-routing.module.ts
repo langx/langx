@@ -6,8 +6,8 @@ import { AboutUsPage } from './about-us.page';
 const routes: Routes = [
   {
     path: '',
-    component: AboutUsPage
-  }
+    component: AboutUsPage,
+  },
 ];
 
 @NgModule({
