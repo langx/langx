@@ -123,6 +123,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'about-us',
+    loadChildren: () =>
+      import('./profile/settings/about-us/about-us.module').then(
+        (m) => m.AboutUsPageModule
+      ),
+  },
+  {
     path: 'contributors',
     loadChildren: () =>
       import('./profile/settings/contributors/contributors.module').then(
@@ -130,10 +137,10 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'about-us',
+    path: 'sponsors',
     loadChildren: () =>
-      import('./profile/settings/about-us/about-us.module').then(
-        (m) => m.AboutUsPageModule
+      import('./profile/settings/sponsors/sponsors.module').then(
+        (m) => m.SponsorsPageModule
       ),
   },
 ];
