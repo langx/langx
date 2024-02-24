@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Browser } from '@capacitor/browser';
+import { NativeMarket } from '@capacitor-community/native-market';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
 
@@ -18,12 +19,6 @@ export class AboutUsPage implements OnInit {
       title: 'Be Our Sponsor ❤️',
       url: environment.ext.SPONSOR,
       icon: 'heart-outline',
-      detail: true,
-    },
-    {
-      title: 'Rate Us ⭐️',
-      url: environment.ext.SPONSOR,
-      icon: 'star-outline',
       detail: true,
     },
   ];
@@ -110,5 +105,23 @@ export class AboutUsPage implements OnInit {
 
   async openPage(page: any) {
     await Browser.open({ url: page.url });
+  }
+
+  async openAppStore() {
+    let appId;
+    if (Capacitor.getPlatform() === 'android') {
+      appId = environment.bundleId;
+    } else if (Capacitor.getPlatform() === 'ios') {
+      appId = environment.iosId;
+    } else {
+      return;
+    }
+    NativeMarket.openStoreListing({
+      appId: appId,
+    });
+  }
+
+  isNativePlatform() {
+    return Capacitor.getPlatform() !== 'web';
   }
 }

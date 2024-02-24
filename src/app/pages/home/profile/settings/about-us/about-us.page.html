@@ -23,6 +23,10 @@
           <ion-icon name="{{item?.icon}}"></ion-icon>
           <ion-label>{{item?.title}}</ion-label>
         </ion-item>
+        <ion-item (click)="openAppStore()" *ngIf="isNativePlatform()">
+          <ion-icon name="star-outline"></ion-icon>
+          <ion-label>Rate Us</ion-label>
+        </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
