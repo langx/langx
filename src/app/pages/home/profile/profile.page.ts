@@ -74,17 +74,11 @@ export class ProfilePage implements OnInit {
       detail: true,
     },
     {
-      title: 'Contributors',
-      url: 'contributors',
-      icon: 'people-outline',
+      title: 'Our Kitchen',
+      url: 'about-us',
+      icon: 'restaurant-outline',
       detail: true,
       new: true,
-    },
-    {
-      title: 'About Us',
-      url: 'about-us',
-      icon: 'information-circle-outline',
-      detail: true,
     },
     { title: 'Logout', url: 'logout', icon: 'log-out-outline', detail: false },
   ];

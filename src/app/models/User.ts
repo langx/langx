@@ -22,4 +22,5 @@ export type User = Models.Document & {
   archivedRooms?: string[];
   privacy?: string[];
   contributors?: string[];
+  sponsor: boolean;
 };

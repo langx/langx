@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Browser } from '@capacitor/browser';
+import { Router } from '@angular/router';
+import { NativeMarket } from '@capacitor-community/native-market';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
 
@@ -13,6 +15,21 @@ import { environment } from 'src/environments/environment';
 export class AboutUsPage implements OnInit {
   appVersion: string;
 
+  public contributorsPages = [
+    {
+      title: 'Contributors',
+      url: 'contributors',
+      icon: 'people-outline',
+      detail: true,
+    },
+    {
+      title: 'Our Sponsors',
+      url: 'sponsors',
+      icon: 'heart',
+      detail: true,
+    },
+  ];
+
   public sponsorPages = [
     {
       title: 'Be Our Sponsor ❤️',
@@ -24,15 +41,9 @@ export class AboutUsPage implements OnInit {
 
   public aboutUsPages = [
     {
-      title: 'Landing Page',
+      title: 'Website',
       url: environment.ext.WEBSITE_URL,
       icon: 'globe-outline',
-      detail: true,
-    },
-    {
-      title: 'Status Page 🟢',
-      url: environment.ext.STATUS_PAGE,
-      icon: 'server-outline',
       detail: true,
     },
     {
@@ -54,9 +65,9 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Security',
-      url: environment.ext.SECURITY_PAGE,
-      icon: 'shield-checkmark-outline',
+      title: 'Status Page 🟢',
+      url: environment.ext.STATUS_PAGE,
+      icon: 'server-outline',
       detail: true,
     },
   ];
@@ -89,9 +100,15 @@ export class AboutUsPage implements OnInit {
       icon: 'heart-outline',
       detail: true,
     },
+    {
+      title: 'Security',
+      url: environment.ext.SECURITY_PAGE,
+      icon: 'shield-checkmark-outline',
+      detail: true,
+    },
   ];
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   async ngOnInit() {
     if (Capacitor.getPlatform() === 'web') {
@@ -104,5 +121,27 @@ export class AboutUsPage implements OnInit {
 
   async openPage(page: any) {
     await Browser.open({ url: page.url });
+  }
+
+  async openAppStore() {
+    let appId: string;
+    if (Capacitor.getPlatform() === 'android') {
+      appId = environment.bundleId;
+    } else if (Capacitor.getPlatform() === 'ios') {
+      appId = environment.iosId;
+    } else {
+      return;
+    }
+    NativeMarket.openStoreListing({
+      appId: appId,
+    });
+  }
+
+  isNativePlatform() {
+    return Capacitor.getPlatform() !== 'web';
+  }
+
+  getContributorsPage(page) {
+    this.router.navigate(['/', 'home', page?.url]);
   }
 }

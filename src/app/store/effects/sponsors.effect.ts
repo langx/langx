@@ -6,27 +6,27 @@ import { catchError, map, of, switchMap } from 'rxjs';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { UserService } from 'src/app/services/user/user.service';
 import {
-  getContributorsAction,
-  getContributorsFailureAction,
-  getContributorsSuccessAction,
-} from 'src/app/store/actions/contributors.action';
+  getSponsorsAction,
+  getSponsorsSuccessAction,
+  getSponsorsFailureAction,
+} from 'src/app/store/actions/sponsors.action';
 
 @Injectable()
-export class ContributorsEffects {
-  getContributors$ = createEffect(() =>
+export class SponsorsEffects {
+  getSponsors$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(getContributorsAction),
+      ofType(getSponsorsAction),
       switchMap(() => {
-        return this.userService.listContributors().pipe(
+        return this.userService.listSponsors().pipe(
           map((payload: any) => {
-            return getContributorsSuccessAction({ payload });
+            return getSponsorsSuccessAction({ payload });
           }),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
             };
-            return of(getContributorsFailureAction({ error }));
+            return of(getSponsorsFailureAction({ error }));
           })
         );
       })

@@ -9,7 +9,7 @@ import {
 import {
   deleteAccountSuccessAction,
   logoutSuccessAction,
-} from '../actions/auth.action';
+} from 'src/app/store/actions/auth.action';
 
 const initialState: ContributorsStateInterface = {
   isLoading: false,
