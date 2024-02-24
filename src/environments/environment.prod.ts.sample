@@ -63,6 +63,7 @@ export const environment = {
     CONTRIBUTING: `${GITHUB_URL}your_repo/blob/main/CONTRIBUTING.md`,
     SECURITY_PAGE: `${GITHUB_URL}your_repo/blob/main/SECURITY.md`,
     ISSUES: `${GITHUB_URL}your_repo/issues`,
+    SPONSOR: `https://github.com/sponsors/languageXchange`,
   },
   opts: {
     PAGINATION_LIMIT: 25,
