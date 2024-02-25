@@ -392,6 +392,14 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
+  // onDelete
+  //
+
+  onDelete(message: Message) {
+    console.log('Deleting:', message.$id);
+  }
+
+  //
   // Select Image
   //
 

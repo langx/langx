@@ -44,6 +44,7 @@
           [chat]="msg"
           [current_user_id]="(currentUser$ | async).$id"
           (onReply)="onReply(msg)"
+          (onDelete)="onDelete(msg)"
         >
         </app-chat-box>
       </ion-item-group>
