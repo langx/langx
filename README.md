@@ -37,10 +37,11 @@ To check the status of the website, database and CDN, and all clients which are 
 - Language: [TypeScript](https://www.typescriptlang.org/)
 - Landing Page: [Svelte](https://svelte.dev/)
 - Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
+- Native: [Capacitor](https://capacitorjs.com/)
 - Database: [Appwrite](https://appwrite.io/)
 - API: [Expressjs, Nodejs](https://github.com/languagexchange/server)
 - Cloud Functions: [Appwrite](https://appwrite.io/)
-- Push Notification: [Firebase](https://firebase.google.com/)
+- Push Notification: [Firebase Cloud Messaging](https://firebase.google.com/)
 - Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)
 - Analytics: [Google Analytics](https://analytics.google.com/analytics/web/)
 
