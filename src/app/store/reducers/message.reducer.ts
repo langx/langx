@@ -36,6 +36,9 @@ import {
   resendMessageFromTempMessagesAction,
   resendMessageFromTempMessagesSuccessAction,
   resendMessageFromTempMessagesFailureAction,
+  deleteMessageAction,
+  deleteMessageSuccessAction,
+  deleteMessageFailureAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -132,6 +135,37 @@ const messageReducer = createReducer(
       },
     };
   }),
+
+  // Delete Message Reducers
+  on(
+    deleteMessageAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(deleteMessageSuccessAction, (state, action): MessageStateInterface => {
+    const updatedMessages = state.room.messages.filter(
+      (msg) => msg.$id !== action.payload.$id
+    );
+    return {
+      ...state,
+      isLoading: false,
+      room: {
+        ...state.room,
+        messages: updatedMessages,
+      },
+    };
+  }),
+  on(
+    deleteMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
 
   // Update Message Reducers
   on(
