@@ -39,6 +39,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() chat: Message;
   @Input() current_user_id: string;
   @Output() onReply: EventEmitter<any> = new EventEmitter();
+  @Output() onDelete: EventEmitter<any> = new EventEmitter();
 
   private observer: IntersectionObserver;
 
@@ -83,15 +84,21 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       this.replyTo = this.msg.replyTo;
 
       // Get the replyTo message
-      this.store.pipe(select(messagesSelector), take(1)).subscribe((messages) => {
-        const replyToMessage = messages ? messages.find((m) => m.$id === this.replyTo) : null;
+      this.store
+        .pipe(select(messagesSelector), take(1))
+        .subscribe((messages) => {
+          const replyToMessage = messages
+            ? messages.find((m) => m.$id === this.replyTo)
+            : null;
 
-        if (replyToMessage) {
-          this.replyToMessage$ = of(replyToMessage);
-        } else {
-          this.replyToMessage$ = this.messageService.getMessageById(this.msg.replyTo);
-        }
-      });
+          if (replyToMessage) {
+            this.replyToMessage$ = of(replyToMessage);
+          } else {
+            this.replyToMessage$ = this.messageService.getMessageById(
+              this.msg.replyTo
+            );
+          }
+        });
     }
 
     // Check if the message is an audio
@@ -249,6 +256,16 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   reply(msg: Message) {
     this.onReply.emit(msg);
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+  }
+
+  //
+  // Delete
+  //
+
+  delete(msg: Message) {
+    this.onDelete.emit(msg);
     this.itemSlidingSender.close();
     this.itemSlidingReveiver.close();
   }
