@@ -99,6 +99,9 @@
           (ionBlur)="typingBlur()"
           autoGrow="true"
           (keydown.enter)="onEnter($event)"
+          maxlength="500"
+          (ionInput)="checkCounter()"
+          [counter]="isCounterShow"
         >
         </ion-textarea>
         <ion-text

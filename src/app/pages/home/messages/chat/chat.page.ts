@@ -115,6 +115,9 @@ export class ChatPage implements OnInit, OnDestroy {
   // Reply Variables
   replyMessage: Message;
 
+  // Counter Variables
+  isCounterShow: boolean = false;
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -863,6 +866,10 @@ export class ChatPage implements OnInit, OnDestroy {
     const isWhitespace = (control.value || '').trim().length === 0;
     const isValid = !isWhitespace;
     return isValid ? null : { whitespace: true };
+  }
+
+  checkCounter() {
+    this.isCounterShow = this.form.controls['body'].value.length > 400;
   }
 
   //
