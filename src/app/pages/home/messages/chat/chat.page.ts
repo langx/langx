@@ -51,6 +51,7 @@ import {
   createMessageAction,
   getMessagesWithOffsetAction,
   deactivateRoomAction,
+  deleteMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
   audioUrlSelector,
@@ -396,7 +397,8 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   onDelete(message: Message) {
-    console.log('Deleting:', message.$id);
+    // console.log('Deleting:', message.$id);
+    this.store.dispatch(deleteMessageAction({ request: message }));
   }
 
   //
