@@ -7,6 +7,10 @@ export enum ActionTypes {
   CREATE_MESSAGE_SUCCESS = '[Message] Create Message Success',
   CREATE_MESSAGE_FAILURE = '[Message] Create Message Failure',
 
+  DELETE_MESSAGE = '[Message] Delete Message',
+  DELETE_MESSAGE_SUCCESS = '[Message] Delete Message Success',
+  DELETE_MESSAGE_FAILURE = '[Message] Delete Message Failure',
+
   ACTIVATE_ROOM = '[Message] Activate Room',
   DEACTIVATE_ROOM = '[Message] Deactivate Room',
 
