@@ -18,6 +18,9 @@ import {
   createMessageAction,
   createMessageFailureAction,
   createMessageSuccessAction,
+  deleteMessageAction,
+  deleteMessageFailureAction,
+  deleteMessageSuccessAction,
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
@@ -63,17 +66,21 @@ export class MessageEffects {
           return of(createMessageFailureAction({ error, payload: request }));
         }
 
-        return this.messagesService.createMessage(request, currentUser.$id).pipe(
-          map((payload: Message) => createMessageSuccessAction({ payload })),
+        return this.messagesService
+          .createMessage(request, currentUser.$id)
+          .pipe(
+            map((payload: Message) => createMessageSuccessAction({ payload })),
 
-          catchError((errorResponse: AxiosError) => {
-            console.log(errorResponse?.response?.data);
-            const error: ErrorInterface = {
-              message: errorResponse?.response?.data['message'],
-            };
-            return of(createMessageFailureAction({ error, payload: request }));
-          })
-        );
+            catchError((errorResponse: AxiosError) => {
+              console.log(errorResponse?.response?.data);
+              const error: ErrorInterface = {
+                message: errorResponse?.response?.data['message'],
+              };
+              return of(
+                createMessageFailureAction({ error, payload: request })
+              );
+            })
+          );
       })
     )
   );
@@ -134,6 +141,27 @@ export class MessageEffects {
             })
           );
       })
+    )
+  );
+
+  deleteMessage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteMessageAction),
+      mergeMap(({ request }) =>
+        this.messagesService.deleteMessage(request).pipe(
+          map((payload: Message) =>
+            deleteMessageSuccessAction({
+              payload: { ...payload, $id: request.$id },
+            })
+          ),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(deleteMessageFailureAction({ error }));
+          })
+        )
+      )
     )
   );
 
