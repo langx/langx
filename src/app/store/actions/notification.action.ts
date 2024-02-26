@@ -51,6 +51,16 @@ export const findActiveRoomAndUpdateMessageSeenAction = createAction(
   props<{ payload: MessageExtendedInterface }>()
 );
 
+export const findRoomAndDeleteMessageAction = createAction(
+  ActionTypes.FIND_ROOM_AND_DELETE_MESSAGE,
+  props<{ payload: MessageExtendedInterface }>()
+);
+
+export const findActiveRoomAndDeleteMessageAction = createAction(
+  ActionTypes.FIND_ACTIVE_ROOM_AND_DELETE_MESSAGE,
+  props<{ payload: MessageExtendedInterface }>()
+);
+
 export const totalUnseenMessagesAction = createAction(
   ActionTypes.TOTAL_UNSEEN_MESSAGES
 );
