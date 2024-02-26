@@ -9,6 +9,7 @@ import {
 } from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
+  findActiveRoomAndDeleteMessageAction,
   findActiveRoomAndUpdateMessageSeenAction,
   findAndUpdateActiveRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
@@ -165,6 +166,27 @@ const messageReducer = createReducer(
       isLoading: false,
       error: action.error,
     })
+  ),
+  on(
+    findActiveRoomAndDeleteMessageAction,
+    (state, action): MessageStateInterface => {
+      // Check if there is any room in the state
+      if (!state.room) return { ...state };
+
+      // Check if the message belongs to the active room
+      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+
+      const updatedMessages = state.room.messages.filter(
+        (msg) => msg.$id !== action.payload.$id
+      );
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          messages: updatedMessages,
+        },
+      };
+    }
   ),
 
   // Update Message Reducers
