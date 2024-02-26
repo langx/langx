@@ -38,6 +38,7 @@ import {
   findOrAddRoomSuccessAction,
   findOrAddRoomFailureAction,
   findRoomAndUpdateMessageSeenAction,
+  findRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
 
 const initialState: RoomStateInterface = {
@@ -294,6 +295,31 @@ const roomReducer = createReducer(
       return { ...state, rooms: sortedRooms };
     }
   ),
+
+  // Find Room And Delete Message Reducer
+  on(findRoomAndDeleteMessageAction, (state, action): RoomStateInterface => {
+    // Create a new array with the updated room
+    const updatedRooms = state.rooms?.map((room) => {
+      const updatedMessages = room.messages?.filter(
+        (message) => message.$id !== action.payload.$id
+      );
+
+      return room.$id === action.payload.roomId.$id
+        ? {
+            ...room,
+            messages: updatedMessages,
+          }
+        : room;
+    });
+
+    // Sort rooms by $updatedAt in descending order
+    const sortedRooms = updatedRooms?.sort(
+      (a, b) =>
+        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+    );
+    // Return the new state
+    return { ...state, rooms: sortedRooms };
+  }),
 
   // Find Or Add Room Reducer
   on(
