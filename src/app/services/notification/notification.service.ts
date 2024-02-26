@@ -24,6 +24,8 @@ import {
   findOrAddRoomAction,
   totalUnseenMessagesAction,
   findRoomAndUpdateMessageSeenAction,
+  findRoomAndDeleteMessageAction,
+  findActiveRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
 
 @Injectable({
@@ -90,6 +92,17 @@ export class NotificationService {
             break;
           case `${messagesCollection}.*.delete`:
             // console.log('[NOTIFICATION] message deleted', response.payload);
+            const deletedMessage = response.payload as MessageExtendedInterface;
+            this.store.dispatch(
+              findRoomAndDeleteMessageAction({
+                payload: deletedMessage,
+              })
+            );
+            this.store.dispatch(
+              findActiveRoomAndDeleteMessageAction({
+                payload: deletedMessage,
+              })
+            );
             break;
           case `${roomsCollection}.*.create`:
             // console.log('[NOTIFICATION] room created', response.payload);

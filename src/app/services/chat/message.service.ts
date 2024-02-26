@@ -14,6 +14,7 @@ import { Message } from 'src/app/models/Message';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { deleteMessageRequestInterface } from 'src/app/models/types/requests/deleteMessageRequest.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -70,6 +71,15 @@ export class MessageService {
         {
           seen: message.seen,
         }
+      )
+    );
+  }
+
+  deleteMessage(request: deleteMessageRequestInterface): Observable<Message> {
+    return from(
+      this.api.deleteDocument(
+        environment.appwrite.MESSAGES_COLLECTION,
+        request.$id
       )
     );
   }

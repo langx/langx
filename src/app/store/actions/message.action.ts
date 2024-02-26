@@ -5,6 +5,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { deleteMessageRequestInterface } from 'src/app/models/types/requests/deleteMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 
@@ -39,6 +40,22 @@ export const createMessageSuccessAction = createAction(
 export const createMessageFailureAction = createAction(
   ActionTypes.CREATE_MESSAGE_FAILURE,
   props<{ error: ErrorInterface; payload: createMessageRequestInterface }>()
+);
+
+// Delete Message Actions
+export const deleteMessageAction = createAction(
+  ActionTypes.DELETE_MESSAGE,
+  props<{ request: deleteMessageRequestInterface }>()
+);
+
+export const deleteMessageSuccessAction = createAction(
+  ActionTypes.DELETE_MESSAGE_SUCCESS,
+  props<{ payload: Message }>()
+);
+
+export const deleteMessageFailureAction = createAction(
+  ActionTypes.DELETE_MESSAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
 );
 
 // Activate/Deactivate Room Actions

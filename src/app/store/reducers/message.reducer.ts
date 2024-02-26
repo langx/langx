@@ -9,6 +9,7 @@ import {
 } from 'src/app/store/actions/auth.action';
 import {
   findActiveRoomAndAddMessageAction,
+  findActiveRoomAndDeleteMessageAction,
   findActiveRoomAndUpdateMessageSeenAction,
   findAndUpdateActiveRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
@@ -36,6 +37,9 @@ import {
   resendMessageFromTempMessagesAction,
   resendMessageFromTempMessagesSuccessAction,
   resendMessageFromTempMessagesFailureAction,
+  deleteMessageAction,
+  deleteMessageSuccessAction,
+  deleteMessageFailureAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -132,6 +136,58 @@ const messageReducer = createReducer(
       },
     };
   }),
+
+  // Delete Message Reducers
+  on(
+    deleteMessageAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(deleteMessageSuccessAction, (state, action): MessageStateInterface => {
+    const updatedMessages = state.room.messages.filter(
+      (msg) => msg.$id !== action.payload.$id
+    );
+    return {
+      ...state,
+      isLoading: false,
+      room: {
+        ...state.room,
+        messages: updatedMessages,
+      },
+    };
+  }),
+  on(
+    deleteMessageFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+  on(
+    findActiveRoomAndDeleteMessageAction,
+    (state, action): MessageStateInterface => {
+      // Check if there is any room in the state
+      if (!state.room) return { ...state };
+
+      // Check if the message belongs to the active room
+      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+
+      const updatedMessages = state.room.messages.filter(
+        (msg) => msg.$id !== action.payload.$id
+      );
+      return {
+        ...state,
+        room: {
+          ...state.room,
+          messages: updatedMessages,
+        },
+      };
+    }
+  ),
 
   // Update Message Reducers
   on(
