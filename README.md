@@ -2,6 +2,7 @@
 
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
 [![GitHub release](https://img.shields.io/github/release/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/releases)
+[![GitHub contributors](https://img.shields.io/github/contributors/languageXchange/languageXchange.svg)]
 [![GitHub issues](https://img.shields.io/github/issues/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/issues)
 [![GitHub license](https://img.shields.io/github/license/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/blob/main/LICENSE)
 
@@ -24,6 +25,9 @@ languageXchange is an application built with Angular and Ionic that helps users 
 - [Security](#security)
   - [Paths](#paths)
   - [Google Services](#google-services)
+- [Stats](#stats)
+  - [Stargazers](#stargazers)
+  - [Contributors](#contributors)
 - [License](#license)
 
 ## Status
@@ -247,6 +251,18 @@ It is also important to keep your Firebase project's API key and other sensitive
 For more information on how to secure your Firebase project, please refer to the following resources:
 
 - [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
+
+## Stats
+
+### Stargazers
+
+[![Stargazers over time](https://starchart.cc/languageXchange/languageXchange.svg)](https://starchart.cc/languageXchange/languageXchange)
+
+### Contributors
+
+[![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=languageXchange/languageXchange)](https://git-contributor.com?chart=contributorOverTime&repo=languageXchange/languageXchange)
+
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=languageXchange/languageXchange)](https://github.com/languageXchange/languageXchange/graphs/contributors)
 
 ## License
 
