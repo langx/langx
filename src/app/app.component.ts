@@ -2,6 +2,8 @@ import { Component, NgZone } from '@angular/core';
 import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
+import { BundleInfo, CapacitorUpdater } from '@capgo/capacitor-updater';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { Store } from '@ngrx/store';
 
 import { environment } from 'src/environments/environment';
@@ -35,6 +37,9 @@ export class AppComponent {
   async initValues() {
     // Check theme
     await this.checkTheme();
+
+    // Init App Update
+    this.initAppUpdate();
 
     // Init Deep Link
     this.initDeepLink();
@@ -77,6 +82,44 @@ export class AppComponent {
 
   toggleDarkTheme(shouldAdd: boolean) {
     document.body.classList.toggle('dark', shouldAdd);
+  }
+
+  //
+  // App Update
+  //
+
+  initAppUpdate() {
+    CapacitorUpdater.notifyAppReady();
+
+    let data: BundleInfo | null = null;
+
+    App.addListener('appStateChange', async (state: any) => {
+      console.log('appStateChange', state);
+      if (state.isActive) {
+        console.log('getLatest');
+        // Do the download during user active app time to prevent failed download
+        const latest = await CapacitorUpdater.getLatest();
+        console.log('latest', latest);
+        if (latest.url) {
+          data = await CapacitorUpdater.download({
+            url: latest.url,
+            version: latest.version,
+          });
+          console.log('download', data);
+        }
+      }
+      if (!state.isActive && data) {
+        console.log('set');
+        // Do the switch when user leave app or when you want
+        SplashScreen.show();
+        try {
+          await CapacitorUpdater.set({ id: data.id });
+        } catch (err) {
+          console.log(err);
+          SplashScreen.hide(); // in case the set fail, otherwise the new app will have to hide it
+        }
+      }
+    });
   }
 
   //
