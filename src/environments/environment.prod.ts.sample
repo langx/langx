@@ -47,7 +47,6 @@ export const environment = {
   api: {
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
-    USER_BLOCK_API_URL: `${API_URL}api/user/block`,
   },
   ext: {
     STATUS_PAGE: STATUS_PAGE,
