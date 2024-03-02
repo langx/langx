@@ -25,7 +25,7 @@ jobs:
 
       - name: Send Discord Notification
         env:
-          DISCORD_GITHUB_RELEASES_WEBHOOK: ${{ secrets.DISCORD_GITHUB_RELEASES_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_GITHUB_RELEASES_WEBHOOK }}
           RELEASE_NOTES: ${{ env.release_notes }}
           RELEASE_URL: ${{ env.release_url }}
           RELEASE_VERSION: ${{ env.release_version }}
@@ -33,4 +33,4 @@ jobs:
         run: |
           SUBTITLE="Release version: $RELEASE_VERSION, Repo: $REPO_NAME"
           PAYLOAD=$(jq -n --arg rn "$RELEASE_NOTES" --arg url "$RELEASE_URL" --arg st "$SUBTITLE" '{content: ($st + "\n\n" + $rn + "\n\n" + $url)}')
-          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_GITHUB_RELEASES_WEBHOOK
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_WEBHOOK
