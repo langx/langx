@@ -7,6 +7,10 @@ import 'hammerjs';
 
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
+import { CapacitorUpdater } from '@capgo/capacitor-updater';
+
+CapacitorUpdater.notifyAppReady();
+
 if (environment.production) {
   enableProdMode();
 }
