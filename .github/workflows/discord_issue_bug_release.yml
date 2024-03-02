@@ -2,7 +2,7 @@ name: Discord Notification on Issue Creation
 
 on:
   issues:
-    types: [opened, labeled]
+    types: [labeled]
 
 jobs:
   send-notification:
