@@ -2,7 +2,7 @@
 
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
 [![GitHub release](https://img.shields.io/github/release/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/releases)
-[![GitHub contributors](https://img.shields.io/github/contributors/languageXchange/languageXchange.svg)]
+[![GitHub contributors](https://img.shields.io/github/contributors/languageXchange/languageXchange.svg)](https://github.com/langaugeXchange/languageXchange/graphs/contributors)
 [![GitHub issues](https://img.shields.io/github/issues/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/issues)
 [![GitHub license](https://img.shields.io/github/license/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/blob/main/LICENSE)
 
