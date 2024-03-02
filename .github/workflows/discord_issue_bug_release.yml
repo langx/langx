@@ -15,11 +15,9 @@ jobs:
         run: |
           API_RESPONSE=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.issue.number }})
           echo "API Response: $API_RESPONSE"
-          ISSUE_BODY=$(echo "$API_RESPONSE" | jq -r '.body' | tr -d '\n')
           ISSUE_URL=$(echo "$API_RESPONSE" | jq -r '.html_url')
           ISSUE_TITLE=$(echo "$API_RESPONSE" | jq -r '.title')
           REPO_NAME="${{ github.repository }}"
-          echo "issue_body=$ISSUE_BODY" >> $GITHUB_ENV
           echo "issue_url=$ISSUE_URL" >> $GITHUB_ENV
           echo "issue_title=$ISSUE_TITLE" >> $GITHUB_ENV
           echo "repo_name=$REPO_NAME" >> $GITHUB_ENV
@@ -27,11 +25,10 @@ jobs:
       - name: Send Discord Github Issues
         env:
           DISCORD_GITHUB_ISSUES_WEBHOOK: ${{ secrets.DISCORD_GITHUB_ISSUES_WEBHOOK }}
-          ISSUE_BODY: ${{ env.issue_body }}
           ISSUE_URL: ${{ env.issue_url }}
           ISSUE_TITLE: ${{ env.issue_title }}
           REPO_NAME: ${{ env.repo_name }}
         run: |
           SUBTITLE="New issue in Repo: $REPO_NAME, Title: $ISSUE_TITLE"
-          PAYLOAD=$(jq -n --arg ib "$ISSUE_BODY" --arg url "$ISSUE_URL" --arg st "$SUBTITLE" '{content: ($st + "\n\n" + $ib + "\n\n" + $url)}')
+          PAYLOAD=$(jq -n --arg url "$ISSUE_URL" --arg st "$SUBTITLE" '{content: ($st + "\n\n" + $url)}')
           curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_GITHUB_ISSUES_WEBHOOK
