@@ -19,7 +19,14 @@ const config: CapacitorConfig = {
       autoClear: false,
     },
     CapacitorUpdater: {
-      autoUpdate: false,
+      autoUpdate: true,
+      appReadyTimeout: 1000, // (1 second)
+      responseTimeout: 10, // (10 second)
+      autoDeleteFailed: false,
+      autoDeletePrevious: false,
+      resetWhenUpdate: false,
+      updateUrl: 'https://api.languagexchange.net/api/update/auto_update',
+      statsUrl: 'https://api.languagexchange.net/api/update/stats',
     },
   },
 };
