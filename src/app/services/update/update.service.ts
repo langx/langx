@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { NativeMarket } from '@capacitor-community/native-market';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
-import { InAppBrowser } from '@capgo/inappbrowser';
 import { AlertController } from '@ionic/angular';
 
 import { environment } from 'src/environments/environment';
@@ -35,29 +34,21 @@ export class UpdateService {
   constructor(private AlertController: AlertController) {}
 
   checkForUpdates() {
-    console.log('checkForUpdates');
+    // console.log('checkForUpdates');
     this.checkUpdate();
   }
-
-  // async checkMaintenance() {
-  //   const response = await fetch(this.maintenanceEndpoint);
-  //   const data = await response.json();
-  //   if (data.enabled) {
-  //     this.showMaintenance(data.msg_maintenace);
-  //   }
-  // }
 
   async checkUpdate() {
     const platform = Capacitor.getPlatform();
 
     if (platform === 'web') {
-      console.log('checkUpdate', 'web');
+      // console.log('checkUpdate', 'web');
       return;
     } else if (platform === 'android') {
-      console.log('checkUpdate', 'android');
+      // console.log('checkUpdate', 'android');
       await this.checkPlatformUpdate('/android');
     } else if (platform === 'ios') {
-      console.log('checkUpdate', 'ios');
+      // console.log('checkUpdate', 'ios');
       await this.checkPlatformUpdate('/ios');
     } else {
       return;
@@ -68,9 +59,30 @@ export class UpdateService {
     let endpoint = this.updateEndpoint + platformPath;
     const response = await fetch(endpoint);
     const data = (await response.json()) as AppUpdate;
-    console.log('checkUpdate', data);
+    // console.log('checkUpdate', data);
     if (data.maintenance_enabled) {
       this.showMaintenance(data);
+    } else {
+      const currentVersion = await App.getInfo();
+      // console.log('currentVersion', currentVersion.version);
+      // console.log('data.latest', data.latest);
+      if (currentVersion.version !== data.latest) {
+        // Check if it's a major update
+        const currentVersionNumbers = currentVersion.version
+          .split('.')
+          .map(Number);
+        const latestVersionNumbers = data.latest.split('.').map(Number);
+
+        if (latestVersionNumbers[0] > currentVersionNumbers[0]) {
+          // Handle major update
+          // console.log('Major update available');
+          this.showMajorUpdate(data);
+        } else {
+          // Handle minor or patch update
+          // console.log('Minor or patch update available');
+          this.showMinorUpdate(data);
+        }
+      }
     }
   }
 
@@ -84,30 +96,60 @@ export class UpdateService {
     await alert.present();
   }
 
-  async showUpdate(data: AppUpdate) {
+  async showMajorUpdate(data: AppUpdate) {
     console.log('showUpdate', data);
-    // const alert = await this.AlertController.create({
-    //   header: data.msg_major_update.title,
-    //   message: data.msg_major_update.message,
-    //   buttons: [
-    //     {
-    //       text: data.msg_major_update.button,
-    //       handler: () => {
-    //         this.openMarket();
-    //       },
-    //     },
-    //   ],
-    // });
-    // await alert.present();
+
+    const alert = await this.AlertController.create({
+      header: data.major_update_msg.title,
+      message: data.major_update_msg.message,
+      buttons: [
+        {
+          text: data.major_update_msg.button,
+          handler: () => {
+            this.openAppStore();
+            this.checkForUpdates();
+          },
+        },
+      ],
+      backdropDismiss: false, // prevent alert from being dismissed
+    });
+    await alert.present();
   }
 
-  async openMarket() {
-    console.log('Open market');
-    // if (Capacitor.getPlatform() === 'web') {
-    //   window.open('https://play.google.com/store/apps/details?id=com.example.app');
-    // } else {
-    //   const market = new NativeMarket();
-    //   market.open();
-    // }
+  async showMinorUpdate(data: AppUpdate) {
+    console.log('showUpdate', data);
+
+    const alert = await this.AlertController.create({
+      header: data.minor_update_msg.title,
+      message: data.minor_update_msg.message,
+      buttons: [
+        {
+          text: data.minor_update_msg.button,
+          handler: () => {
+            this.openAppStore();
+            this.checkForUpdates();
+          },
+        },
+        {
+          text: 'Later',
+          role: 'cancel',
+        },
+      ],
+    });
+    await alert.present();
+  }
+
+  async openAppStore() {
+    let appId: string;
+    if (Capacitor.getPlatform() === 'android') {
+      appId = environment.bundleId;
+    } else if (Capacitor.getPlatform() === 'ios') {
+      appId = environment.iosId;
+    } else {
+      return;
+    }
+    NativeMarket.openStoreListing({
+      appId: appId,
+    });
   }
 }
