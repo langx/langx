@@ -1,6 +1,7 @@
 # languageXchange | Practice, Learn, Succeed!
 
 [![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
+[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/CpDZ3kg2rJ)
 [![GitHub release](https://img.shields.io/github/release/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/releases)
 [![GitHub contributors](https://img.shields.io/github/contributors/languageXchange/languageXchange.svg)](https://github.com/langaugeXchange/languageXchange/graphs/contributors)
 [![GitHub issues](https://img.shields.io/github/issues/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/issues)
