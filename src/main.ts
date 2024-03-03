@@ -41,17 +41,17 @@ App.addListener('appStateChange', async (state: any) => {
           });
           console.log('download', data);
 
-          if (!state.isActive && data) {
-            console.log('set');
-            // Do the switch when user leave app or when you want
-            SplashScreen.show();
-            try {
-              await CapacitorUpdater.set({ id: data.id });
-            } catch (err) {
-              console.log(err);
-              SplashScreen.hide(); // in case the set fail, otherwise the new app will have to hide it
-            }
-          }
+          // if (!state.isActive && data) {
+          //   console.log('set');
+          //   // Do the switch when user leave app or when you want
+          //   SplashScreen.show();
+          //   try {
+          //     await CapacitorUpdater.set({ id: data.id });
+          //   } catch (err) {
+          //     console.log(err);
+          //     SplashScreen.hide(); // in case the set fail, otherwise the new app will have to hide it
+          //   }
+          // }
         } catch (downloadError) {
           console.error('Error downloading the latest update:', downloadError);
         }
