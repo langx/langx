@@ -5,6 +5,7 @@ import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Store } from '@ngrx/store';
 
 import { environment } from 'src/environments/environment';
+import { UpdateService } from './services/update/update.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import {
@@ -22,6 +23,7 @@ register();
 export class AppComponent {
   constructor(
     private store: Store,
+    private updateService: UpdateService,
     private storageService: StorageService,
     private fcmService: FcmService,
     private router: Router,
@@ -38,6 +40,9 @@ export class AppComponent {
 
     // Init Deep Link
     this.initDeepLink();
+
+    // Check for updates
+    this.updateService.checkForUpdates();
 
     // Init Locale
     this.store.dispatch(listCountriesAction());
