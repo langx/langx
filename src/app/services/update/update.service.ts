@@ -75,12 +75,18 @@ export class UpdateService {
 
         if (latestVersionNumbers[0] > currentVersionNumbers[0]) {
           // Handle major update
-          // console.log('Major update available');
           this.showMajorUpdate(data);
-        } else {
-          // Handle minor or patch update
-          // console.log('Minor or patch update available');
-          this.showMinorUpdate(data);
+        } else if (latestVersionNumbers[0] === currentVersionNumbers[0]) {
+          if (latestVersionNumbers[1] > currentVersionNumbers[1]) {
+            // Handle minor update
+            this.showMinorUpdate(data);
+          } else if (
+            latestVersionNumbers[1] === currentVersionNumbers[1] &&
+            latestVersionNumbers[2] > currentVersionNumbers[2]
+          ) {
+            // Handle patch update
+            this.showMinorUpdate(data);
+          }
         }
       }
     }
