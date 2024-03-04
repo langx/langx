@@ -405,19 +405,33 @@ export class ChatPage implements OnInit, OnDestroy {
   // Select Image
   //
 
+  // async selectImage() {
+  //   try {
+  //     await this.requestCameraPermissions();
+
+  //     const image = await this.getCameraPhoto();
+
+  //     if (!image) return;
+
+  //     const modal = await this.createImageCropModal(image);
+
+  //     await modal.onDidDismiss().then(async (data) => {
+  //       await this.handleModalDismiss(data);
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
+
   async selectImage() {
     try {
       await this.requestCameraPermissions();
 
-      const image = await this.getCameraPhoto();
+      const photo = await this.getCameraPhoto();
 
-      if (!image) return;
+      if (!photo) return;
 
-      const modal = await this.createImageCropModal(image);
-
-      await modal.onDidDismiss().then(async (data) => {
-        await this.handleModalDismiss(data);
-      });
+      await this.handleImage(photo.dataUrl);
     } catch (e) {
       console.log(e);
     }
@@ -559,33 +573,30 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
-  private async createImageCropModal(image) {
-    const modal = await this.modalCtrl.create({
-      component: ImageCropComponent,
-      componentProps: {
-        image: image,
-      },
+  // private async createImageCropModal(image) {
+  //   const modal = await this.modalCtrl.create({
+  //     component: ImageCropComponent,
+  //     componentProps: {
+  //       image: image,
+  //     },
+  //   });
+  //   modal.present();
+  //   return modal;
+  // }
+
+  async handleImage(imageData: string) {
+    let blob: Blob = this.dataURLtoBlob(imageData);
+
+    blob = await this.checkFileSize(blob);
+
+    let file = new File([blob], this.roomId, {
+      type: blob.type,
     });
-    modal.present();
-    return modal;
-  }
 
-  private async handleModalDismiss(data) {
-    if (data?.data) {
-      let blob: Blob = this.dataURLtoBlob(data.data);
-      // console.log(`Original size: ${blob.size}`);
+    this.uploadImage(file);
 
-      blob = await this.checkFileSize(blob);
-      // console.log(`Final size: ${blob.size}`);
-
-      let file = new File([blob], this.roomId, {
-        type: blob.type,
-      });
-
-      this.uploadImage(file);
-    } else {
-      this.presentToast('Image not selected properly.', 'danger');
-    }
+    // Hide Keyboard here
+    Keyboard.hide();
   }
 
   private uploadImage(file) {
