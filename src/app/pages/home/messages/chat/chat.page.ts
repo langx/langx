@@ -569,10 +569,6 @@ export class ChatPage implements OnInit, OnDestroy {
       type: blob.type,
     });
 
-    this.uploadImage(file);
-  }
-
-  private uploadImage(file) {
     this.store.dispatch(
       uploadImageForMessageAction({
         request: file,
