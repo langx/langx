@@ -88,9 +88,10 @@
           class="ion-padding-start ion-float-right"
         ></ion-icon>
       </ion-item>
-      <ion-item (click)="footerClick()">
+      <ion-item>
         <ion-textarea
           #myTextArea
+          (click)="textAreaClick()"
           *ngIf="!isRecording && !audioId"
           placeholder="Type your message..."
           type="text"

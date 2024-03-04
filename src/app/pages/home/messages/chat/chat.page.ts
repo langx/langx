@@ -133,7 +133,7 @@ export class ChatPage implements OnInit, OnDestroy {
     this.initForm();
   }
 
-  footerClick() {
+  textAreaClick() {
     this.myTextArea.setFocus();
   }
 
