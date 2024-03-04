@@ -99,6 +99,15 @@ export class ChatPage implements OnInit, OnDestroy {
 
   // Image Variables
   imageUrl: URL;
+  isLoadingImage: boolean = false;
+  isLoadingImageMsg: tempMessageInterface = {
+    $id: null,
+    to: null,
+    roomId: null,
+    error: null,
+    type: 'body',
+    body: ' 📷 Image uploading ..',
+  };
 
   // Audio Variables
   isRecording: boolean = false;
@@ -180,7 +189,9 @@ export class ChatPage implements OnInit, OnDestroy {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
         // console.log('keyboard did show with height:', info.keyboardHeight);
-        this.content.scrollToBottom(300);
+        setTimeout(() => {
+          this.content.scrollToBottom(300);
+        }, 100);
       });
 
       // Keyboard.addListener('keyboardDidHide', () => {
@@ -212,7 +223,7 @@ export class ChatPage implements OnInit, OnDestroy {
               if (isAtBottom || this.isFirstLoad) {
                 setTimeout(() => {
                   this.content.scrollToBottom(300);
-                }, 0);
+                }, 100);
               }
             })
           );
@@ -339,6 +350,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.store.dispatch(createMessageAction({ request }));
 
           // Reset the variable
+          this.isLoadingImage = false;
           this.imageUrl = null;
           this.replyMessage = null;
         }
@@ -574,6 +586,12 @@ export class ChatPage implements OnInit, OnDestroy {
         request: file,
       })
     );
+
+    // Show Image Uploading
+    this.isLoadingImage = true;
+    setTimeout(() => {
+      this.content.scrollToBottom(300);
+    }, 100);
   }
 
   private dataURLtoBlob(dataurl: any) {
@@ -831,7 +849,9 @@ export class ChatPage implements OnInit, OnDestroy {
     this.onTypingStatusChange();
 
     if (Capacitor.getPlatform() === 'web') {
-      this.content.scrollToBottom(300);
+      setTimeout(() => {
+        this.content.scrollToBottom(300);
+      }, 100);
     }
   }
 
