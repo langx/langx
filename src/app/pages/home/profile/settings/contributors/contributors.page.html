@@ -27,7 +27,11 @@
           >
           </app-user-list>
         </ng-container>
-        <app-empty-screen *ngIf="isEmpty$('codebase') | async" [model]="model">
+        <app-empty-screen
+          *ngIf="isEmpty$('codebase') | async"
+          [model]="model"
+          (click)="scrollToBottom()"
+        >
         </app-empty-screen>
       </ion-list>
 
@@ -88,6 +92,7 @@
         <app-empty-screen
           *ngIf="isEmpty$('digital-marketing') | async"
           [model]="model"
+          (click)="scrollToBottom()"
         >
         </app-empty-screen>
       </ion-list>
@@ -149,6 +154,7 @@
         <app-empty-screen
           *ngIf="isEmpty$('storyteller') | async"
           [model]="model"
+          (click)="scrollToBottom()"
         >
         </app-empty-screen>
       </ion-list>
@@ -207,7 +213,11 @@
           >
           </app-user-list>
         </ng-container>
-        <app-empty-screen *ngIf="isEmpty$('design') | async" [model]="model">
+        <app-empty-screen
+          *ngIf="isEmpty$('design') | async"
+          [model]="model"
+          (click)="scrollToBottom()"
+        >
         </app-empty-screen>
       </ion-list>
 
@@ -270,6 +280,7 @@
         <app-empty-screen
           *ngIf="isEmpty$('accessibility') | async"
           [model]="model"
+          (click)="scrollToBottom()"
         >
         </app-empty-screen>
       </ion-list>
@@ -333,6 +344,7 @@
         <app-empty-screen
           *ngIf="isEmpty$('user-relations') | async"
           [model]="model"
+          (click)="scrollToBottom()"
         >
         </app-empty-screen>
       </ion-list>
@@ -394,6 +406,7 @@
         <app-empty-screen
           *ngIf="isEmpty$('growth-hacker') | async"
           [model]="model"
+          (click)="scrollToBottom()"
         >
         </app-empty-screen>
       </ion-list>
@@ -452,7 +465,11 @@
           >
           </app-user-list>
         </ng-container>
-        <app-empty-screen *ngIf="isEmpty$('website') | async" [model]="model">
+        <app-empty-screen
+          *ngIf="isEmpty$('website') | async"
+          [model]="model"
+          (click)="scrollToBottom()"
+        >
         </app-empty-screen>
       </ion-list>
 
@@ -513,6 +530,7 @@
         <app-empty-screen
           *ngIf="isEmpty$('social-media') | async"
           [model]="model"
+          (click)="scrollToBottom()"
         >
         </app-empty-screen>
       </ion-list>
@@ -571,7 +589,11 @@
           >
           </app-user-list>
         </ng-container>
-        <app-empty-screen *ngIf="isEmpty$('tester') | async" [model]="model">
+        <app-empty-screen
+          *ngIf="isEmpty$('tester') | async"
+          [model]="model"
+          (click)="scrollToBottom()"
+        >
         </app-empty-screen>
       </ion-list>
 

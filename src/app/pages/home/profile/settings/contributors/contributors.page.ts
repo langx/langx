@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
-import { ToastController } from '@ionic/angular';
+import { IonContent, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, map } from 'rxjs';
 
@@ -22,6 +22,8 @@ import {
   styleUrls: ['./contributors.page.scss'],
 })
 export class ContributorsPage implements OnInit {
+  @ViewChild(IonContent) content: IonContent;
+
   subscription: Subscription;
 
   isLoading$: Observable<boolean> = null;
@@ -32,7 +34,7 @@ export class ContributorsPage implements OnInit {
     icon: 'people-outline',
     title: 'No Contributors Yet',
     subTitle:
-      "If you're interested in, please reach out to our user relations.",
+      "If you're interested, please join our team using the link at the bottom of this page.",
     color: 'warning',
   };
 
@@ -112,6 +114,10 @@ export class ContributorsPage implements OnInit {
           !users.some((user) => user.contributors.includes(contributeType))
       )
     );
+  }
+
+  scrollToBottom() {
+    this.content.scrollToBottom(300);
   }
 
   //
