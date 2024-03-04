@@ -567,9 +567,6 @@ export class ChatPage implements OnInit, OnDestroy {
     });
 
     this.uploadImage(file);
-
-    // Hide Keyboard here
-    Keyboard.hide();
   }
 
   private uploadImage(file) {
