@@ -48,6 +48,7 @@ import {
   getMessagesWithOffsetAction,
   deactivateRoomAction,
   deleteMessageAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/message.action';
 import {
   audioUrlSelector,
@@ -265,6 +266,8 @@ export class ChatPage implements OnInit, OnDestroy {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // Reset Error State
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
