@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, map } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { getContributorsAction } from 'src/app/store/actions/contributors.action';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   errorSelector,
   isLoadingSelector,
@@ -22,6 +25,7 @@ export class ContributorsPage implements OnInit {
   subscription: Subscription;
 
   isLoading$: Observable<boolean> = null;
+  currentUser$: Observable<User> = null;
   users$: Observable<User[] | null> = null;
 
   model = {
@@ -68,6 +72,7 @@ export class ContributorsPage implements OnInit {
   initValues() {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.users$ = this.store.pipe(select(usersSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
   listContributors() {
@@ -81,6 +86,10 @@ export class ContributorsPage implements OnInit {
 
   getProfilePage(userId: string) {
     this.router.navigateByUrl('/home/user/' + userId);
+  }
+
+  async openDiscordPage() {
+    await Browser.open({ url: environment.ext.socialMedia.discord });
   }
 
   //
