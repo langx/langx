@@ -22,12 +22,8 @@ import {
   GestureDetail,
   IonContent,
   IonTextarea,
-  ModalController,
   ToastController,
 } from '@ionic/angular';
-
-// Component Imports
-import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -123,7 +119,6 @@ export class ChatPage implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
-    private modalCtrl: ModalController,
     private toastController: ToastController,
     private gestureCtrl: GestureController
   ) {}
@@ -400,24 +395,6 @@ export class ChatPage implements OnInit, OnDestroy {
   //
   // Select Image
   //
-
-  // async selectImage() {
-  //   try {
-  //     await this.requestCameraPermissions();
-
-  //     const image = await this.getCameraPhoto();
-
-  //     if (!image) return;
-
-  //     const modal = await this.createImageCropModal(image);
-
-  //     await modal.onDidDismiss().then(async (data) => {
-  //       await this.handleModalDismiss(data);
-  //     });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }
 
   async selectImage() {
     try {
