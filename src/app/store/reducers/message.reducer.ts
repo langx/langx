@@ -40,6 +40,7 @@ import {
   deleteMessageAction,
   deleteMessageSuccessAction,
   deleteMessageFailureAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/message.action';
 
 const initialState: MessageStateInterface = {
@@ -453,6 +454,16 @@ const messageReducer = createReducer(
     deleteAccountSuccessAction,
     (): MessageStateInterface => ({
       ...initialState,
+    })
+  ),
+
+  // Clear Errors Actions
+  on(
+    clearErrorsAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: null,
     })
   )
 );

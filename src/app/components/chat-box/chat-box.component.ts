@@ -223,7 +223,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   //
 
   async openPreview(image) {
-    console.log(image);
+    // console.log(image);
     const modal = await this.modalCtrl.create({
       component: PreviewPhotoComponent,
       componentProps: {

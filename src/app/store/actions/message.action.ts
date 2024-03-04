@@ -106,3 +106,6 @@ export const resendMessageFromTempMessagesFailureAction = createAction(
   ActionTypes.RESEND_MESSAGE_FROM_TEMP_MESSAGES_FAILURE,
   props<{ error: ErrorInterface; payload: tempMessageInterface }>()
 );
+
+// Clear Errors Actions\
+export const clearErrorsAction = createAction(ActionTypes.CLEAR_ERRORS);

@@ -22,12 +22,8 @@ import {
   GestureDetail,
   IonContent,
   IonTextarea,
-  ModalController,
   ToastController,
 } from '@ionic/angular';
-
-// Component Imports
-import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -52,6 +48,7 @@ import {
   getMessagesWithOffsetAction,
   deactivateRoomAction,
   deleteMessageAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/message.action';
 import {
   audioUrlSelector,
@@ -102,6 +99,15 @@ export class ChatPage implements OnInit, OnDestroy {
 
   // Image Variables
   imageUrl: URL;
+  isLoadingImage: boolean = false;
+  isLoadingImageMsg: tempMessageInterface = {
+    $id: null,
+    to: null,
+    roomId: null,
+    error: null,
+    type: 'body',
+    body: ' 📷 Image uploading ..',
+  };
 
   // Audio Variables
   isRecording: boolean = false;
@@ -123,7 +129,6 @@ export class ChatPage implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
-    private modalCtrl: ModalController,
     private toastController: ToastController,
     private gestureCtrl: GestureController
   ) {}
@@ -131,10 +136,6 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
-  }
-
-  footerClick() {
-    this.myTextArea.setFocus();
   }
 
   ngAfterViewInit() {
@@ -188,7 +189,9 @@ export class ChatPage implements OnInit, OnDestroy {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
         // console.log('keyboard did show with height:', info.keyboardHeight);
-        this.content.scrollToBottom(300);
+        setTimeout(() => {
+          this.content.scrollToBottom(300);
+        }, 100);
       });
 
       // Keyboard.addListener('keyboardDidHide', () => {
@@ -220,7 +223,7 @@ export class ChatPage implements OnInit, OnDestroy {
               if (isAtBottom || this.isFirstLoad) {
                 setTimeout(() => {
                   this.content.scrollToBottom(300);
-                }, 0);
+                }, 100);
               }
             })
           );
@@ -274,6 +277,8 @@ export class ChatPage implements OnInit, OnDestroy {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // Reset Error State
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -345,6 +350,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.store.dispatch(createMessageAction({ request }));
 
           // Reset the variable
+          this.isLoadingImage = false;
           this.imageUrl = null;
           this.replyMessage = null;
         }
@@ -409,15 +415,11 @@ export class ChatPage implements OnInit, OnDestroy {
     try {
       await this.requestCameraPermissions();
 
-      const image = await this.getCameraPhoto();
+      const photo = await this.getCameraPhoto();
 
-      if (!image) return;
+      if (!photo) return;
 
-      const modal = await this.createImageCropModal(image);
-
-      await modal.onDidDismiss().then(async (data) => {
-        await this.handleModalDismiss(data);
-      });
+      await this.handleImage(photo.dataUrl);
     } catch (e) {
       console.log(e);
     }
@@ -559,41 +561,37 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
-  private async createImageCropModal(image) {
-    const modal = await this.modalCtrl.create({
-      component: ImageCropComponent,
-      componentProps: {
-        image: image,
-      },
+  // private async createImageCropModal(image) {
+  //   const modal = await this.modalCtrl.create({
+  //     component: ImageCropComponent,
+  //     componentProps: {
+  //       image: image,
+  //     },
+  //   });
+  //   modal.present();
+  //   return modal;
+  // }
+
+  async handleImage(imageData: string) {
+    let blob: Blob = this.dataURLtoBlob(imageData);
+
+    blob = await this.checkFileSize(blob);
+
+    let file = new File([blob], this.roomId, {
+      type: blob.type,
     });
-    modal.present();
-    return modal;
-  }
 
-  private async handleModalDismiss(data) {
-    if (data?.data) {
-      let blob: Blob = this.dataURLtoBlob(data.data);
-      // console.log(`Original size: ${blob.size}`);
-
-      blob = await this.checkFileSize(blob);
-      // console.log(`Final size: ${blob.size}`);
-
-      let file = new File([blob], this.roomId, {
-        type: blob.type,
-      });
-
-      this.uploadImage(file);
-    } else {
-      this.presentToast('Image not selected properly.', 'danger');
-    }
-  }
-
-  private uploadImage(file) {
     this.store.dispatch(
       uploadImageForMessageAction({
         request: file,
       })
     );
+
+    // Show Image Uploading
+    this.isLoadingImage = true;
+    setTimeout(() => {
+      this.content.scrollToBottom(300);
+    }, 100);
   }
 
   private dataURLtoBlob(dataurl: any) {
@@ -851,7 +849,9 @@ export class ChatPage implements OnInit, OnDestroy {
     this.onTypingStatusChange();
 
     if (Capacitor.getPlatform() === 'web') {
-      this.content.scrollToBottom(300);
+      setTimeout(() => {
+        this.content.scrollToBottom(300);
+      }, 100);
     }
   }
 

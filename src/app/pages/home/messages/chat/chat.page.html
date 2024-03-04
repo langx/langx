@@ -57,6 +57,7 @@
           <app-pre-chat-box [tempMsg]="tempMsg"></app-pre-chat-box>
         </ion-item-group>
       </div>
+      <app-pre-chat-box *ngIf="isLoadingImage" [tempMsg]="isLoadingImageMsg"></app-pre-chat-box>
     </div>
   </ion-list>
 </ion-content>
@@ -88,7 +89,7 @@
           class="ion-padding-start ion-float-right"
         ></ion-icon>
       </ion-item>
-      <ion-item (click)="footerClick()">
+      <ion-item>
         <ion-textarea
           #myTextArea
           *ngIf="!isRecording && !audioId"

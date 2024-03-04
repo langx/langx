@@ -23,4 +23,6 @@ export enum ActionTypes {
   RESEND_MESSAGE_FROM_TEMP_MESSAGES = '[Message] Resend From Temp Messages',
   RESEND_MESSAGE_FROM_TEMP_MESSAGES_SUCCESS = '[Message] Resend From Temp Messages Success',
   RESEND_MESSAGE_FROM_TEMP_MESSAGES_FAILURE = '[Message] Resend From Temp Messages Failure',
+
+  CLEAR_ERRORS = '[Message] Clear Errors',
 }
