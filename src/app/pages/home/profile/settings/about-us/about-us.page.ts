@@ -65,6 +65,12 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: 'Release Notes',
+      url: environment.ext.RELEASES_URL,
+      icon: 'document-text-outline',
+      detail: true,
+    },
+    {
       title: 'Status Page 🟢',
       url: environment.ext.STATUS_PAGE,
       icon: 'server-outline',
@@ -72,11 +78,53 @@ export class AboutUsPage implements OnInit {
     },
   ];
 
-  public releasesPages = [
+  public socialMediaPages = [
     {
-      title: 'Release Notes',
-      url: environment.ext.RELEASES_URL,
-      icon: 'document-text-outline',
+      title: 'Instagram',
+      url: environment.ext.socialMedia.instagram,
+      icon: 'logo-instagram',
+      detail: true,
+    },
+    {
+      title: 'Twitter',
+      url: environment.ext.socialMedia.twitter,
+      icon: 'logo-twitter',
+      detail: true,
+    },
+    {
+      title: 'TikTok',
+      url: environment.ext.socialMedia.tiktok,
+      icon: 'logo-tiktok',
+      detail: true,
+    },
+    {
+      title: 'Facebook',
+      url: environment.ext.socialMedia.facebook,
+      icon: 'logo-facebook',
+      detail: true,
+    },
+    {
+      title: 'YouTube',
+      url: environment.ext.socialMedia.youtube,
+      icon: 'logo-youtube',
+      detail: true,
+    },
+    {
+      title: 'Bluesky',
+      url: environment.ext.socialMedia.bluesky,
+      icon: 'logo-twitter',
+      detail: true,
+    },
+    {
+      title: 'LinkedIn',
+      url: environment.ext.socialMedia.linkedin,
+      icon: 'logo-linkedin',
+      detail: true,
+    },
+    {
+      title: 'Discord',
+      url: environment.ext.socialMedia.discord,
+      icon: 'logo-discord',
       detail: true,
     },
   ];
