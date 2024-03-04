@@ -133,10 +133,6 @@ export class ChatPage implements OnInit, OnDestroy {
     this.initForm();
   }
 
-  textAreaClick() {
-    this.myTextArea.setFocus();
-  }
-
   ngAfterViewInit() {
     this.initValuesAfterViewInit();
     this.enableLongPress();
