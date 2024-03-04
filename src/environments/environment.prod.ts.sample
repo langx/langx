@@ -65,6 +65,16 @@ export const environment = {
     SECURITY_PAGE: `${GITHUB_URL}your_repo/blob/main/SECURITY.md`,
     ISSUES: `${GITHUB_URL}your_repo/issues`,
     SPONSOR: `https://github.com/sponsors/languageXchange`,
+    socialMedia: {
+      instagram: '',
+      facebook: '',
+      twitter: '',
+      tiktok: '',
+      youtube: '',
+      discord: '',
+      bluesky: '',
+      linkedin: '',
+    },
   },
   opts: {
     PAGINATION_LIMIT: 25,
