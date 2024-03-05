@@ -283,6 +283,15 @@ export class UserPage implements OnInit {
   }
 
   //
+  // Day Streaks
+  //
+
+  openLeaderboard() {
+    this.router.navigate(['/', 'home', 'leaderboard']);
+    console.log('Open Leaderboard');
+  }
+
+  //
   // Utils
   //
 
