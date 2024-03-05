@@ -76,7 +76,7 @@ export default async ({ req, res, log, error }) => {
       const diffInDays = Math.round(
         (today.valueOf() - lastActiveDate.valueOf()) / (1000 * 60 * 60 * 24)
       );
-      let streakCount = parseInt(req.body.streakCount) || 0;
+      let streakCount = parseInt(userStreakDoc.daystreak);
       let newStreakCount = streakCount;
 
       if (diffInDays === 1) {
