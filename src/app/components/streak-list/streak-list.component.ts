@@ -11,6 +11,7 @@ import { User } from 'src/app/models/User';
 })
 export class StreakListComponent implements OnInit {
   @Input() item: Streak;
+  @Input() order: number;
 
   user: User;
 

@@ -1,4 +1,5 @@
-<ion-item (click)="goProfile()" detail>
+<ion-item (click)="goProfile()">
+  <h1 slot="start">{{ order }}.</h1>
   <ion-thumbnail class="thumbnail-container" slot="start">
     <img [src]="user?.profilePhoto" alt="" referrerpolicy="no-referrer" />
     <div class="emoji-indicator">
@@ -13,8 +14,13 @@
       {{ getFlagEmoji(user) }}
       {{ user?.name }}
     </h2>
-    <p>
-      <ion-text> {{ exactDateAndTime(item?.$createdAt) }} </ion-text>
-    </p>
+    <!-- <p>
+      <ion-text> {{ user?.aboutMe }} </ion-text>
+    </p> -->
   </ion-label>
+  <div class="metadata-end-wrapper" slot="end">
+    <ion-badge color="warning">
+      {{ item["daystreak"] }}
+    </ion-badge>
+  </div>
 </ion-item>
