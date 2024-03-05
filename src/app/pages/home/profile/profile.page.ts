@@ -215,6 +215,22 @@ export class ProfilePage implements OnInit {
   }
 
   //
+  // Day Streaks
+  //
+
+  getDayStreaks() {
+    return 0;
+  }
+
+  getLeaderBoardOrder() {
+    return 0;
+  }
+
+  openLeaderboard() {
+    console.log('Open Leaderboard');
+  }
+
+  //
   // Utils
   //
 

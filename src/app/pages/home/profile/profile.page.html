@@ -103,14 +103,17 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item lines="none">
+        <ion-item lines="none" (click)="openLeaderboard()" detail>
           <ion-thumbnail slot="start">
             <img
               alt="Do not break the chain"
               src="/assets/image/badges/chain.png"
             />
           </ion-thumbnail>
-          <ion-label><h1>100</h1></ion-label>
+          <ion-label><h1>{{getDayStreaks()}}</h1></ion-label>
+          <div class="metadata-end-wrapper" slot="end">
+            <ion-note>#{{getLeaderBoardOrder()}}</ion-note>
+          </div>
         </ion-item>
       </ion-list>
     </ion-card-content>
