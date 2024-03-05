@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { LeaderboardPageRoutingModule } from './leaderboard-routing.module';
 
 import { LeaderboardPage } from './leaderboard.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { LeaderboardPage } from './leaderboard.page';
     FormsModule,
     IonicModule,
     LeaderboardPageRoutingModule,
+    ComponentsModule,
   ],
   declarations: [LeaderboardPage],
 })
