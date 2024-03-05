@@ -1,5 +1,8 @@
 import { Client, Databases } from 'node-appwrite';
 
+// event triggers
+// databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update
+
 export default async ({ req, res, log, error }) => {
   // Init SDK
   const client = new Client()
@@ -9,25 +12,27 @@ export default async ({ req, res, log, error }) => {
 
   const db = new Databases(client);
 
-  const userDoc = await db.getDocument(
-    process.env.APP_DATABASE,
-    process.env.USERS_COLLECTION,
-    req.body.to
-  );
+  log('Day streaks function called');
+  log(req.body.name, req.body.$id);
 
   try {
     // Calculate streak
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let lastActiveDate = new Date(userDoc.lastSeen);
+    let lastActiveDate = new Date(req.body.lastSeen);
     lastActiveDate.setHours(0, 0, 0, 0);
 
     const diffInDays = Math.round(
       (today.valueOf() - lastActiveDate.valueOf()) / (1000 * 60 * 60 * 24)
     );
-    let streakCount = userDoc.streakCount || 0;
+    let streakCount = parseInt(req.body.streakCount) || 0;
     let newStreakCount = streakCount;
+
+    log(typeof streakCount);
+    log(streakCount);
+    log(typeof newStreakCount);
+    log(newStreakCount);
 
     if (diffInDays === 1) {
       newStreakCount++;
@@ -39,9 +44,10 @@ export default async ({ req, res, log, error }) => {
       await db.updateDocument(
         process.env.APP_DATABASE,
         process.env.USERS_COLLECTION,
-        req.body.to,
+        req.body.$id,
         {
           streakCount: newStreakCount,
+          lastSeen: new Date().toISOString(),
         }
       );
     }
