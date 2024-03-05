@@ -1,4 +1,4 @@
-import { Client, Databases } from 'node-appwrite';
+import { Client, Databases, Query } from 'node-appwrite';
 
 // event triggers
 // databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update
@@ -16,49 +16,98 @@ export default async ({ req, res, log, error }) => {
   log(req.body.name, req.body.$id);
 
   try {
-    // Calculate streak
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    let lastActiveDate = new Date(req.body.lastSeen);
-    lastActiveDate.setHours(0, 0, 0, 0);
-
-    const diffInDays = Math.round(
-      (today.valueOf() - lastActiveDate.valueOf()) / (1000 * 60 * 60 * 24)
+    // Try to find the user in STREAKS_COLLECTION
+    log('Searching for user in STREAKS_COLLECTION...');
+    const userStreaks = await db.listDocuments(
+      process.env.APP_DATABASE,
+      process.env.STREAKS_COLLECTION,
+      [Query.equal('$id', req.body.$id)]
     );
-    let streakCount = parseInt(req.body.streakCount) || 0;
-    let newStreakCount = streakCount;
 
-    log(typeof streakCount);
-    log(streakCount);
-    log(typeof newStreakCount);
-    log(newStreakCount);
+    log(userStreaks);
 
-    if (diffInDays === 1) {
-      newStreakCount++;
-    } else if (diffInDays > 1) {
-      newStreakCount = 1;
-    }
-
-    if (newStreakCount !== streakCount) {
-      await db.updateDocument(
+    if (userStreaks.total === 0) {
+      // User not found in STREAKS_COLLECTION
+      log('User not found, creating new document...');
+      await db.createDocument(
         process.env.APP_DATABASE,
-        process.env.USERS_COLLECTION,
+        process.env.STREAKS_COLLECTION,
         req.body.$id,
-        {
-          streakCount: newStreakCount,
-          lastSeen: new Date().toISOString(),
-        }
+        { daystreak: 1, userId: req.body.$id }
       );
-    }
+      log('New document created for user.');
+      return res.json({
+        ok: true,
+        error: 'User is just created in STREAKS_COLLECTION',
+      });
+    } else {
+      // User found, userStreaks.documents[0] contains the user's document
+      log('User found in STREAKS_COLLECTION.');
+      const userStreakDoc = userStreaks.documents[0];
+      // Continue with your logic...
 
-    return res.json({
-      ok: true,
-      $id: req.body.to,
-      lastActiveDate: today.toISOString(),
-      streakCount: newStreakCount,
-    });
+      // Calculate streak
+      log('Calculating streak...');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let lastActiveDate = new Date(req.body.lastSeen);
+      lastActiveDate.setHours(0, 0, 0, 0);
+      log('lastActiveDate');
+      log(lastActiveDate);
+
+      let lastStreakUpdated = new Date(userStreakDoc.$updatedAt);
+      lastStreakUpdated.setHours(0, 0, 0, 0);
+      log('lastStreakUpdated');
+      log(lastStreakUpdated);
+
+      log('Checking if streak already updated today...');
+
+      if (today.valueOf() === lastStreakUpdated.valueOf()) {
+        error('Streak already updated today.');
+        return res.json({
+          ok: false,
+          error: 'Streak already updated today',
+        });
+      }
+
+      log('Streak not updated today.');
+
+      const diffInDays = Math.round(
+        (today.valueOf() - lastActiveDate.valueOf()) / (1000 * 60 * 60 * 24)
+      );
+      let streakCount = parseInt(req.body.streakCount) || 0;
+      let newStreakCount = streakCount;
+
+      if (diffInDays === 1) {
+        newStreakCount++;
+      } else if (diffInDays > 1) {
+        newStreakCount = 1;
+      }
+
+      if (newStreakCount !== streakCount) {
+        log('Updating streak count...');
+        await db.updateDocument(
+          process.env.APP_DATABASE,
+          process.env.STREAKS_COLLECTION,
+          req.body.$id,
+          {
+            daystreak: newStreakCount,
+          }
+        );
+        log('Streak count updated.');
+      }
+
+      log('Streak calculation completed.');
+      return res.json({
+        ok: true,
+        $id: req.body.$id,
+        name: req.body.name,
+        daystreak: newStreakCount,
+      });
+    }
   } catch (err) {
+    log('Error occurred while searching for user: ', err.message);
     return res.json({ ok: false, error: err.message }, 400);
   }
 };
