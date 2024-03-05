@@ -17,6 +17,9 @@
       <ion-card-title>How It Works?</ion-card-title>
     </ion-card-header>
     <ion-card-content>
+      <p style="font-size: larger">
+        Building a chain plays an important role in learning languages 😎
+      </p>
       <ul style="font-size: larger">
         <li>Stay online at least one time a day.</li>
         <li>Only one increment (+1) allowed per day.</li>
@@ -27,12 +30,15 @@
 
   <ion-card *ngIf="(streaks$ | async)?.length > 0">
     <ion-card-header>
-      <ion-card-subtitle>Recent Visitors to Your Profile</ion-card-subtitle>
-      <ion-card-title>Who visited your profile?</ion-card-title>
+      <ion-card-subtitle> Don't break the chain 🔥 </ion-card-subtitle>
+      <ion-card-title>Leaderboard 🏆</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let streak of (streaks$ | async)">
+          <ol>
+            <li>{{streak['daystreak']}}, {{streak.userId.name}}</li>
+          </ol>
           <!-- <app-visit-list [item]="streak"></app-visit-list> -->
         </ng-container>
       </ion-list>
@@ -41,7 +47,7 @@
       <!-- SKELETON start -->
       <!-------------------->
 
-      <!-- <ion-list *ngIf="(isLoading$ | async)">
+      <ion-list *ngIf="(isLoading$ | async)">
         <ion-item *ngFor="let i of '0123456789'.split('')" detail>
           <ion-thumbnail slot="start">
             <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -61,7 +67,7 @@
             </p>
           </ion-label>
         </ion-item>
-      </ion-list> -->
+      </ion-list>
 
       <!------------------>
       <!-- SKELETON end -->
