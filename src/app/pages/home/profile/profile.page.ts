@@ -227,6 +227,7 @@ export class ProfilePage implements OnInit {
   }
 
   openLeaderboard() {
+    this.router.navigate(['/', 'home', 'leaderboard']);
     console.log('Open Leaderboard');
   }
 
