@@ -110,9 +110,11 @@
               src="/assets/image/badges/chain.png"
             />
           </ion-thumbnail>
-          <ion-label><h1>{{getDayStreaks()}}</h1></ion-label>
+          <ion-label>
+            <h1>{{(currentUser$ | async)?.streaks['daystreak']}}</h1>
+          </ion-label>
           <div class="metadata-end-wrapper" slot="end">
-            <ion-note>#{{getLeaderBoardOrder()}}</ion-note>
+            <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
           </div>
         </ion-item>
       </ion-list>
