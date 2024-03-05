@@ -1,5 +1,6 @@
 import { Models } from 'appwrite';
 import { Language } from './Language';
+import { Streak } from './Streaks';
 
 export type User = Models.Document & {
   name: string;
@@ -23,4 +24,5 @@ export type User = Models.Document & {
   privacy?: string[];
   contributors?: string[];
   sponsor: boolean;
+  streaks: Streak;
 };

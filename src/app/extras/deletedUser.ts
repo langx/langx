@@ -17,4 +17,5 @@ export const deletedUser: User = {
   $collectionId: null,
   $permissions: null,
   sponsor: false,
+  streaks: null,
 };
