@@ -1,10 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
 import { Streak } from 'src/app/models/Streaks';
 import { User } from 'src/app/models/User';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import {
+  getStreaksAction,
+  getStreaksWithOffsetAction,
+} from 'src/app/store/actions/streaks.action';
+import {
+  errorSelector,
+  isLoadingSelector,
+  streaksSelector,
+  totalSelector,
+} from 'src/app/store/selectors/streaks.selector';
 
 @Component({
   selector: 'app-leaderboard',
@@ -23,41 +34,41 @@ export class LeaderboardPage implements OnInit {
 
   ngOnInit() {
     this.initValues();
-    // Get all chat Rooms
-    this.listVisits();
+    // Get all Streaks
+    this.listStreaks();
   }
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
     // User Errors
-    // this.subscription.add(
-    //   this.store
-    //     .pipe(select(errorSelector))
-    //     .subscribe((error: ErrorInterface) => {
-    //       if (error) {
-    //         this.presentToast(error.message, 'danger');
-    //         // TODO: Clear error message if it will be shown
-    //       }
-    //     })
-    // );
+    this.subscription.add(
+      this.store
+        .pipe(select(errorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            // TODO: Clear error message if it will be shown
+          }
+        })
+    );
   }
 
   ionViewWillLeave() {
     // Unsubscribe from all subscriptions
-    // this.subscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   initValues() {
-    // this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    // this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    // this.streaks$ = this.store.pipe(select(streaksSelector));
-    // this.total$ = this.store.pipe(select(totalSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.streaks$ = this.store.pipe(select(streaksSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
   }
 
-  listVisits() {
+  listStreaks() {
     // Dispatch action to get all visits
-    // this.store.dispatch(getVisitsAction());
+    this.store.dispatch(getStreaksAction());
   }
 
   //
@@ -66,30 +77,30 @@ export class LeaderboardPage implements OnInit {
 
   loadMore(event) {
     // Offset is the number of users already loaded
-    // let offset: number = 0;
-    // this.visits$
-    //   .subscribe((visits) => {
-    //     offset = visits.length;
-    //     this.total$
-    //       .subscribe((total) => {
-    //         if (offset < total) {
-    //           // console.log('offset', offset);
-    //           // console.log('total', total);
-    //           this.store.dispatch(
-    //             getVisitsWithOffsetAction({
-    //               request: {
-    //                 offset,
-    //               },
-    //             })
-    //           );
-    //         } else {
-    //           console.log('All visits loaded');
-    //         }
-    //       })
-    //       .unsubscribe();
-    //   })
-    //   .unsubscribe();
-    // event.target.complete();
+    let offset: number = 0;
+    this.streaks$
+      .subscribe((visits) => {
+        offset = visits.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              // console.log('offset', offset);
+              // console.log('total', total);
+              this.store.dispatch(
+                getStreaksWithOffsetAction({
+                  request: {
+                    offset,
+                  },
+                })
+              );
+            } else {
+              console.log('All streaks loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+    event.target.complete();
   }
 
   //
@@ -97,7 +108,7 @@ export class LeaderboardPage implements OnInit {
   //
 
   handleRefresh(event) {
-    this.listVisits();
+    this.listStreaks();
     if (event) event.target.complete();
   }
 
