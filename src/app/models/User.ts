@@ -24,5 +24,5 @@ export type User = Models.Document & {
   privacy?: string[];
   contributors?: string[];
   sponsor: boolean;
-  streaks: Streak;
+  streaks?: Streak;
 };
