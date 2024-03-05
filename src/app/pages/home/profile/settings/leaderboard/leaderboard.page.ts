@@ -6,6 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Streak } from 'src/app/models/Streaks';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getStreaksAction,
   getStreaksWithOffsetAction,
