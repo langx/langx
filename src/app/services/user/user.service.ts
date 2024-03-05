@@ -14,6 +14,7 @@ import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 import { listVisitsResponseInterface } from 'src/app/models/types/responses/listVisitsResponse.interface';
+import { listStreaksResponseInterface } from 'src/app/models/types/responses/listStreaksResponse.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -193,6 +194,25 @@ export class UserService {
 
     return from(
       this.api.listDocuments(environment.appwrite.VISITS_COLLECTION, queries)
+    );
+  }
+
+  //
+  // List Streaks
+  //
+
+  listStreaks(offset?: number): Observable<listStreaksResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('daystreak'));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.STREAKS_COLLECTION, queries)
     );
   }
 

@@ -215,6 +215,15 @@ export class ProfilePage implements OnInit {
   }
 
   //
+  // Day Streaks
+  //
+
+  openLeaderboard() {
+    this.router.navigate(['/', 'home', 'leaderboard']);
+    console.log('Open Leaderboard');
+  }
+
+  //
   // Utils
   //
 

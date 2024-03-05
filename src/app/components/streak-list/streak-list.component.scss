@@ -1,0 +1,24 @@
+.thumbnail-container {
+  position: relative;
+  display: inline-block;
+}
+
+.emoji-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 10px;
+}
+
+ion-thumbnail {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  --border-radius: 10px;
+}
+
+ion-badge {
+  --padding-end: 15px;
+  --padding-start: 15px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+}

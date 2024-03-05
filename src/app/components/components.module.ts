@@ -10,6 +10,7 @@ import { RoomListComponent } from './room-list/room-list.component';
 import { UserListComponent } from './user-list/user-list.component';
 import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.component';
 import { VisitListComponent } from './visit-list/visit-list.component';
+import { StreakListComponent } from './streak-list/streak-list.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { VisitListComponent } from './visit-list/visit-list.component';
     RoomListComponent,
     UserListComponent,
     VisitListComponent,
+    StreakListComponent,
     BlockedUserListComponent,
   ],
   imports: [CommonModule, IonicModule],
@@ -31,6 +33,7 @@ import { VisitListComponent } from './visit-list/visit-list.component';
     RoomListComponent,
     UserListComponent,
     VisitListComponent,
+    StreakListComponent,
     BlockedUserListComponent,
   ],
 })

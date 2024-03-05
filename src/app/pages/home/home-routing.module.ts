@@ -123,6 +123,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'leaderboard',
+    loadChildren: () =>
+      import('./profile/settings/leaderboard/leaderboard.module').then(
+        (m) => m.LeaderboardPageModule
+      ),
+  },
+  {
     path: 'about-us',
     loadChildren: () =>
       import('./profile/settings/about-us/about-us.module').then(
