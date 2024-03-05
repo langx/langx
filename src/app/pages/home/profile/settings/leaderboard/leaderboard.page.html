@@ -36,10 +36,10 @@
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let streak of (streaks$ | async)">
-          <ol>
+          <!-- <ol>
             <li>{{streak['daystreak']}}, {{streak.userId.name}}</li>
-          </ol>
-          <!-- <app-visit-list [item]="streak"></app-visit-list> -->
+          </ol> -->
+          <app-streak-list [item]="streak"></app-streak-list>
         </ng-container>
       </ion-list>
 
