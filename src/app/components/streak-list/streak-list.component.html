@@ -1,1 +1,20 @@
-<p>streak-list works!</p>
+<ion-item (click)="goProfile()" detail>
+  <ion-thumbnail class="thumbnail-container" slot="start">
+    <img [src]="user?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+    <div class="emoji-indicator">
+      <small *ngIf="onlineStatus(user?.lastSeen) == 'online'">🟢</small>
+      <small *ngIf="onlineStatus(user?.lastSeen) == 'away'">🟡</small>
+      <small *ngIf="onlineStatus(user?.lastSeen) == 'offline'">🟠</small>
+      <!-- <small *ngIf="onlineStatus(user?.lastSeen) == 'none'">🔴</small> -->
+    </div>
+  </ion-thumbnail>
+  <ion-label>
+    <h2>
+      {{ getFlagEmoji(user) }}
+      {{ user?.name }}
+    </h2>
+    <p>
+      <ion-text> {{ exactDateAndTime(item?.$createdAt) }} </ion-text>
+    </p>
+  </ion-label>
+</ion-item>
