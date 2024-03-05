@@ -218,14 +218,6 @@ export class ProfilePage implements OnInit {
   // Day Streaks
   //
 
-  getDayStreaks() {
-    return 0;
-  }
-
-  getLeaderBoardOrder() {
-    return 0;
-  }
-
   openLeaderboard() {
     this.router.navigate(['/', 'home', 'leaderboard']);
     console.log('Open Leaderboard');
