@@ -37,7 +37,7 @@ const visitsReducer = createReducer(
   on(getVisitsSuccessAction, (state, action): VisitsStateInterface => {
     // Map through the documents and add deletedUser if from is null
     const visits = action.payload.documents.map((document) => {
-      if (document.from === null) {
+      if (!document.from || document.from === null) {
         return {
           ...document,
           from: deletedUser,
@@ -73,12 +73,25 @@ const visitsReducer = createReducer(
   ),
   on(
     getVisitsWithOffsetSuccessAction,
-    (state, action): VisitsStateInterface => ({
-      ...state,
-      isLoading: false,
-      total: action.payload.total,
-      visits: [...state.visits, ...action.payload.documents],
-    })
+    (state, action): VisitsStateInterface => {
+      // Map through the documents and add deletedUser if from is null
+      const visits = action.payload.documents.map((document) => {
+        if (!document.from || document.from === null) {
+          return {
+            ...document,
+            from: deletedUser,
+          };
+        }
+        return document;
+      });
+
+      return {
+        ...state,
+        isLoading: false,
+        total: action.payload.total,
+        visits: [...state.visits, ...visits],
+      };
+    }
   ),
   on(
     getVisitsWithOffsetFailureAction,
