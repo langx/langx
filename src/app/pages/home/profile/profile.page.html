@@ -111,7 +111,10 @@
             />
           </ion-thumbnail>
           <ion-label>
-            <h1>{{(currentUser$ | async)?.streaks['daystreak']}}</h1>
+            <h1 *ngIf="(currentUser$ | async)?.streaks">
+              {{(currentUser$ | async)?.streaks['daystreak']}}
+            </h1>
+            <p *ngIf="!(currentUser$ | async)?.streaks">No streaks available</p>
           </ion-label>
           <div class="metadata-end-wrapper" slot="end">
             <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
