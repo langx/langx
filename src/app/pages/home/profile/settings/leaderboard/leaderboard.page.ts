@@ -84,7 +84,7 @@ export class LeaderboardPage implements OnInit {
         offset = visits.length;
         this.total$
           .subscribe((total) => {
-            if (offset < total) {
+            if (offset < 100) {
               // console.log('offset', offset);
               // console.log('total', total);
               this.store.dispatch(
