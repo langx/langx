@@ -61,6 +61,9 @@ export default async ({ req, res, log, error }) => {
       log('lastStreakUpdated');
       log(lastStreakUpdated);
 
+      log('today:');
+      log(today);
+
       log('Checking if streak already updated today...');
 
       if (today.valueOf() === lastStreakUpdated.valueOf()) {
@@ -76,14 +79,27 @@ export default async ({ req, res, log, error }) => {
       const diffInDays = Math.round(
         (today.valueOf() - lastActiveDate.valueOf()) / (1000 * 60 * 60 * 24)
       );
+
+      log('lastActiveDate.valueOf():');
+      log(lastActiveDate.valueOf());
+
+      log('today.valueOf():');
+      log(today.valueOf());
+
       let streakCount = parseInt(userStreakDoc.daystreak);
       let newStreakCount = streakCount;
 
-      if (diffInDays === 1) {
+      log('diffInDays:');
+      log(diffInDays);
+      if (diffInDays <= 1) {
         newStreakCount++;
       } else if (diffInDays > 1) {
         newStreakCount = 1;
       }
+      log('newStreakCount:');
+      log(newStreakCount);
+      log('streakCount:');
+      log(streakCount);
 
       if (newStreakCount !== streakCount) {
         log('Updating streak count...');
