@@ -19,3 +19,13 @@ ion-thumbnail {
 ion-badge {
   margin-right: 10px;
 }
+
+.item {
+  position: relative;
+
+  .your-turn {
+    position: absolute;
+    top: 2px;
+    right: 0;
+  }
+}
