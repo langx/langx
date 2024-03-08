@@ -45,12 +45,17 @@
           <ion-text>{{ getLastMessage(room)?.body }}</ion-text>
         </p>
       </ion-label>
+
       <div slot="end">
+        <ion-badge class="your-turn">
+          <small>your-turn</small>
+        </ion-badge>
         <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
           {{ getBadge(room) }}
         </ion-badge>
         <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
       </div>
+      <ion-note> </ion-note>
     </ng-container>
   </ion-item>
 </ion-item-sliding>
