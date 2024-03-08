@@ -152,40 +152,6 @@ export default async ({ req, res, log, error }) => {
   }
 
   try {
-    if (pwaExists) {
-      // Check user is allowed notifications in user.notifications.includes('pwa')
-      if (
-        !toUserDoc ||
-        !toUserDoc.notifications ||
-        !toUserDoc.notifications.includes('pwa')
-      ) {
-        log('user is not allowed pwa notification in settings');
-        return res.json({
-          ok: false,
-          error: 'User is disabled pwa notifications in settings',
-        });
-      }
-
-      const response = await sendPushNotification({
-        notification: notification,
-        data: {
-          roomId: roomId,
-        },
-        // Add PWA-specific options here
-        token: prefs['pwa'],
-      });
-      log(`Successfully sent PWA message: ${response}`);
-    }
-
-    // Uncomment this when production ready, check user is online or not
-    // const now = new Date();
-    // const lastSeen = new Date(toUserDoc.lastSeen);
-    // if (now - lastSeen < 1000 * 60 * 1) {
-    //   log(`User is still online: ${toUserDoc.name}`);
-    //   return res.json({ ok: false, error: 'User is still online' }, 400);
-    // }
-
-    // Check user is allowed notifications in user.notifications.includes('pwa')
     if (
       !toUserDoc ||
       !toUserDoc.notifications ||
@@ -228,6 +194,41 @@ export default async ({ req, res, log, error }) => {
       });
       log(`Successfully sent Android message: ${response}`);
     }
+
+    if (pwaExists) {
+      // Check user is allowed notifications in user.notifications.includes('pwa')
+      if (
+        !toUserDoc ||
+        !toUserDoc.notifications ||
+        !toUserDoc.notifications.includes('pwa')
+      ) {
+        log('user is not allowed pwa notification in settings');
+        return res.json({
+          ok: false,
+          error: 'User is disabled pwa notifications in settings',
+        });
+      }
+
+      const response = await sendPushNotification({
+        notification: notification,
+        data: {
+          roomId: roomId,
+        },
+        // Add PWA-specific options here
+        token: prefs['pwa'],
+      });
+      log(`Successfully sent PWA message: ${response}`);
+    }
+
+    // Uncomment this when production ready, check user is online or not
+    // const now = new Date();
+    // const lastSeen = new Date(toUserDoc.lastSeen);
+    // if (now - lastSeen < 1000 * 60 * 1) {
+    //   log(`User is still online: ${toUserDoc.name}`);
+    //   return res.json({ ok: false, error: 'User is still online' }, 400);
+    // }
+
+    // Check user is allowed notifications in user.notifications.includes('pwa')
 
     return res.json({ ok: true });
   } catch (e) {
