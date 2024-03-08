@@ -42,15 +42,20 @@
           {{room?.['userData']?.name}}
         </h2>
         <p>
-          <ion-text>{{ getLastMessage(room)?.body }}</ion-text>
+          <ion-text>{{ lastMessage?.body }}</ion-text>
         </p>
       </ion-label>
-      <div class="metadata-end-wrapper" slot="end">
+
+      <div slot="end">
+        <ion-badge class="your-turn" *ngIf="lastMessage?.yourTurn">
+          <small>your-turn</small>
+        </ion-badge>
         <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
           {{ getBadge(room) }}
         </ion-badge>
         <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
       </div>
+      <ion-note> </ion-note>
     </ng-container>
   </ion-item>
 </ion-item-sliding>

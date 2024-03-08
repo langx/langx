@@ -12,6 +12,11 @@ import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 
+interface LastMessage {
+  body: string | null;
+  time: string | null;
+  yourTurn: boolean;
+}
 @Component({
   selector: 'app-room-list',
   templateUrl: './room-list.component.html',
@@ -28,29 +33,38 @@ export class RoomListComponent implements OnInit {
   @Output() onArchive: EventEmitter<any> = new EventEmitter();
   @Output() onUnarchive: EventEmitter<any> = new EventEmitter();
 
+  lastMessage: LastMessage = {
+    body: null,
+    time: null,
+    yourTurn: false,
+  };
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getLastMessage(this.room);
+  }
 
   getLastMessage(room) {
-    let lastMessage = {
-      body: null,
-      time: null,
-    };
+    const lastMessage = room.messages[room.messages.length - 1];
 
-    const type = room.messages[room.messages.length - 1]?.type || null;
-    lastMessage.time =
-      room.messages[room.messages.length - 1]?.$updatedAt || null;
+    const type = lastMessage?.type || null;
+    this.lastMessage.time = lastMessage?.$updatedAt || null;
+
+    // Check if the last message is from the current user
+    if (lastMessage?.to === this.currentUserId) {
+      this.lastMessage.yourTurn = true;
+    }
 
     switch (type) {
       case 'body':
-        lastMessage.body = room.messages[room.messages.length - 1].body;
+        this.lastMessage.body = lastMessage.body;
         break;
       case 'image':
-        lastMessage.body = '📷 Image';
+        this.lastMessage.body = '📷 Image';
         break;
       case 'audio':
-        lastMessage.body = '🎵 Audio';
+        this.lastMessage.body = '🎵 Audio';
         break;
       // case 'video':
       //   lastMessage.body = '🎥 Video';
@@ -59,11 +73,11 @@ export class RoomListComponent implements OnInit {
       //   lastMessage.body = '📁 File';
       //   break;
       default:
-        lastMessage.body = 'Say Hi! 👋';
+        this.lastMessage.body = 'Say Hi! 👋';
         break;
     }
 
-    return lastMessage;
+    // return lastMessage;
   }
 
   getChat(room) {
