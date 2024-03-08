@@ -66,8 +66,16 @@ export class HomePage implements OnInit {
     this.presencePing$.unsubscribe();
     // console.log('Presence Service stopped');
 
+    // Stop listening to notifications
+    if (this.listenerFn) {
+      this.listenerFn();
+      this.listenerFn = null;
+      console.log('Notification listener stopped');
+    }
+
+
     // HARD RELOAD
-    location.reload();
+    // location.reload();
   }
 
   //
