@@ -42,12 +42,12 @@
           {{room?.['userData']?.name}}
         </h2>
         <p>
-          <ion-text>{{ getLastMessage(room)?.body }}</ion-text>
+          <ion-text>{{ lastMessage?.body }}</ion-text>
         </p>
       </ion-label>
 
       <div slot="end">
-        <ion-badge class="your-turn">
+        <ion-badge class="your-turn" *ngIf="lastMessage?.yourTurn">
           <small>your-turn</small>
         </ion-badge>
         <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
