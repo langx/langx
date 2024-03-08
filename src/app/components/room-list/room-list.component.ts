@@ -46,18 +46,19 @@ export class RoomListComponent implements OnInit {
   }
 
   getLastMessage(room) {
-    const type = room.messages[room.messages.length - 1]?.type || null;
-    this.lastMessage.time =
-      room.messages[room.messages.length - 1]?.$updatedAt || null;
+    const lastMessage = room.messages[room.messages.length - 1];
+
+    const type = lastMessage?.type || null;
+    this.lastMessage.time = lastMessage?.$updatedAt || null;
 
     // Check if the last message is from the current user
-    if (room.messages[room.messages.length - 1]?.to === this.currentUserId) {
+    if (lastMessage?.to === this.currentUserId) {
       this.lastMessage.yourTurn = true;
     }
 
     switch (type) {
       case 'body':
-        this.lastMessage.body = room.messages[room.messages.length - 1].body;
+        this.lastMessage.body = lastMessage.body;
         break;
       case 'image':
         this.lastMessage.body = '📷 Image';
