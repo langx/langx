@@ -45,7 +45,7 @@
           <ion-text>{{ getLastMessage(room)?.body }}</ion-text>
         </p>
       </ion-label>
-      <div class="metadata-end-wrapper" slot="end">
+      <div slot="end">
         <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
           {{ getBadge(room) }}
         </ion-badge>
