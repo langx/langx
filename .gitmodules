@@ -1,3 +1,0 @@
-[submodule "src/app/extras/sdk"]
-	path = src/app/extras/sdk
-	url = https://github.com/languageXchange/sdk
