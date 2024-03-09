@@ -2,12 +2,15 @@ import { Component, NgZone } from '@angular/core';
 import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
 import { environment } from 'src/environments/environment';
 import { UpdateService } from './services/update/update.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
+
+import { currentUserSelector } from './store/selectors/auth.selector';
+import { getRoomsAction } from './store/actions/rooms.action';
 import {
   listCountriesAction,
   listLanguagesAction,
@@ -37,6 +40,9 @@ export class AppComponent {
   async initValues() {
     // Check theme
     await this.checkTheme();
+
+    // Init App State Change
+    this.initAppStateChange();
 
     // Init Deep Link
     this.initDeepLink();
@@ -82,6 +88,28 @@ export class AppComponent {
 
   toggleDarkTheme(shouldAdd: boolean) {
     document.body.classList.toggle('dark', shouldAdd);
+  }
+
+  //
+  // App State Change
+  //
+
+  initAppStateChange() {
+    App.addListener('appStateChange', (state) => {
+      // state.isActive contains the active state
+      console.log('App state changed. New state:', state);
+
+      // List rooms
+      this.store
+        .pipe(select(currentUserSelector))
+        .subscribe((user) => {
+          if (user) {
+            console.log('List rooms called from app state change');
+            this.store.dispatch(getRoomsAction());
+          }
+        })
+        .unsubscribe();
+    });
   }
 
   //
