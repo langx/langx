@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ID, Models } from 'appwrite';
+// import { ID, Models } from 'appwrite';
+import { ID, Models } from 'src/app/extras/sdk/src';
 import { BehaviorSubject, concatMap, from, tap, Observable, of } from 'rxjs';
 
 // Environment and services Imports

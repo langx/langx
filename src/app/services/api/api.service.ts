@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Client, Databases, Account, Locale } from 'appwrite';
+// import { Client, Databases, Account, Locale } from 'appwrite';
+import { Client, Databases, Account, Locale } from 'src/app/extras/sdk/src';
 
 import { environment } from 'src/environments/environment';
 

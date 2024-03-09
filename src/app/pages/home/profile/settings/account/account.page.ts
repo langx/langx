@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Models } from 'appwrite';
+// import { Models } from 'appwrite';
+import { Models } from 'src/app/extras/sdk/src';
 import { Browser } from '@capacitor/browser';
 import { IonModal, ToastController } from '@ionic/angular';
 
