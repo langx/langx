@@ -1,4 +1,5 @@
-import { Models } from 'appwrite';
+// import { Models } from 'appwrite';
+import { Models } from 'src/app/extras/sdk/src';
 import { Language } from './Language';
 import { Streak } from './Streaks';
 
