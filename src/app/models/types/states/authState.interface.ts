@@ -1,4 +1,5 @@
-import { Models } from 'appwrite';
+// import { Models } from 'appwrite';
+import { Models } from 'src/app/extras/sdk/src';
 
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';

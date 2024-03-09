@@ -1,4 +1,5 @@
-import { Models } from 'appwrite';
+// import { Models } from 'appwrite';
+import { Models } from 'src/app/extras/sdk/src';
 import { Room } from 'src/app/models/Room';
 
 export interface MessageExtendedInterface extends Models.Document {

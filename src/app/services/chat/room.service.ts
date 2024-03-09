@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Query } from 'appwrite';
+// import { Query } from 'appwrite';
+import { Query } from 'src/app/extras/sdk/src';
 import axios from 'axios';
 import {
   Observable,
