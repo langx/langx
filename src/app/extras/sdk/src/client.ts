@@ -208,7 +208,7 @@ class Client {
             }
         },
         createSocket: () => {
-            if (this.realtime.channels.size < 1) return;
+            // if (this.realtime.channels.size < 1) return;
 
             const channels = new URLSearchParams();
             channels.set('project', this.config.project);
