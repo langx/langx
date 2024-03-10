@@ -167,6 +167,25 @@ export class LoginPage implements OnInit {
   }
 
   //
+  // Web3
+  //
+
+  async connectWallet() {
+    if ('solana' in window) {
+      let provider = (window as any).solana;
+      if (provider.isPhantom) {
+        console.log("Phantom is installed!");
+        // You can now use the provider
+        // Connect to the wallet
+        await provider.connect();
+      }
+    } else {
+      // If Phantom is not installed, redirect the user to the Phantom page
+      window.open('https://phantom.app/', '_blank');
+    }
+  }
+
+  //
   // Present Toast
   //
 
