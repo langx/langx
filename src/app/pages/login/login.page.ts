@@ -175,9 +175,10 @@ export class LoginPage implements OnInit {
       let provider = (window as any).solana;
       if (provider.isPhantom) {
         console.log("Phantom is installed!");
-        // You can now use the provider
         // Connect to the wallet
         await provider.connect();
+        // After connecting, log the wallet address to the console
+        console.log("Wallet address:", provider.publicKey.toString());
       }
     } else {
       // If Phantom is not installed, redirect the user to the Phantom page
