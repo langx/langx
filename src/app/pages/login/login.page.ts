@@ -39,6 +39,9 @@ export class LoginPage implements OnInit {
   introSeen: boolean = false;
   password_type: string = 'password';
 
+  // Web3 Public Key
+  publicKey: string = null;
+
   constructor(
     private store: Store,
     private router: Router,
@@ -174,11 +177,19 @@ export class LoginPage implements OnInit {
     if ('solana' in window) {
       let provider = (window as any).solana;
       if (provider.isPhantom) {
-        console.log("Phantom is installed!");
+        console.log('Phantom is installed!');
         // Connect to the wallet
         await provider.connect();
-        // After connecting, log the wallet address to the console
-        console.log("Wallet address:", provider.publicKey.toString());
+        // After connecting, check if publicKey is null
+        if (!this.publicKey) {
+          console.log('Wallet address:', provider.publicKey.toString());
+          this.publicKey = provider.publicKey.toString();
+        } else {
+          // If publicKey is null, disconnect from the wallet
+          await provider.disconnect();
+          this.publicKey = null;
+          console.log('Disconnected from wallet!');
+        }
       }
     } else {
       // If Phantom is not installed, redirect the user to the Phantom page

@@ -65,7 +65,10 @@
                 color="dark"
                 expand="block"
               >
-                Connect Wallet
+                <span *ngIf="!publicKey">Connect Wallet</span>
+                <span *ngIf="publicKey" style="text-transform: none">
+                  {{publicKey.slice(0, 15)}}...
+                </span>
                 <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
                 </ion-spinner>
               </ion-button>
