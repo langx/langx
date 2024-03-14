@@ -183,7 +183,21 @@ export class LoginPage implements OnInit {
         // After connecting, check if publicKey is null
         if (!this.publicKey) {
           console.log('Wallet address:', provider.publicKey.toString());
-          this.publicKey = provider.publicKey.toString();
+
+          // New code starts here
+          const message = new TextEncoder().encode(
+            'By signing this message, I acknowledge that I am the owner of this wallet.'
+          );
+          try {
+            const signedMessage = await provider.signMessage(message, 'utf8');
+            console.log('Signed message:', signedMessage.signature);
+            // Set the public key only if the message is successfully signed
+            this.publicKey = provider.publicKey.toString();
+            console.log('Wallet address:', this.publicKey);
+          } catch (error) {
+            console.error('Failed to sign the message:', error);
+          }
+          // New code ends here
         } else {
           // If publicKey is null, disconnect from the wallet
           await provider.disconnect();
