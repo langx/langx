@@ -16,7 +16,6 @@ import {
 } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
-  isLoggedInSelector,
   loginValidationErrorSelector,
   unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -38,6 +37,9 @@ export class LoginPage implements OnInit {
 
   introSeen: boolean = false;
   password_type: string = 'password';
+
+  // Web3 Public Key
+  publicKey: string = null;
 
   constructor(
     private store: Store,
@@ -165,6 +167,50 @@ export class LoginPage implements OnInit {
   showPassword() {
     this.password_type = this.password_type === 'text' ? 'password' : 'text';
   }
+
+  //
+  // Web3
+  //
+
+  /*
+  async connectWallet() {
+    if ('solana' in window) {
+      let provider = (window as any).solana;
+      if (provider.isPhantom) {
+        console.log('Phantom is installed!');
+        // Connect to the wallet
+        await provider.connect();
+        // After connecting, check if publicKey is null
+        if (!this.publicKey) {
+          console.log('Wallet address:', provider.publicKey.toString());
+
+          // New code starts here
+          const message = new TextEncoder().encode(
+            'By signing this message, I acknowledge that I am the owner of this wallet.'
+          );
+          try {
+            const signedMessage = await provider.signMessage(message, 'utf8');
+            console.log('Signed message:', signedMessage.signature);
+            // Set the public key only if the message is successfully signed
+            this.publicKey = provider.publicKey.toString();
+            console.log('Wallet address:', this.publicKey);
+          } catch (error) {
+            console.error('Failed to sign the message:', error);
+          }
+          // New code ends here
+        } else {
+          // If publicKey is null, disconnect from the wallet
+          await provider.disconnect();
+          this.publicKey = null;
+          console.log('Disconnected from wallet!');
+        }
+      }
+    } else {
+      // If Phantom is not installed, redirect the user to the Phantom page
+      window.open('https://phantom.app/', '_blank');
+    }
+  }
+  */
 
   //
   // Present Toast

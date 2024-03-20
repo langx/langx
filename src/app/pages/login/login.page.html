@@ -57,6 +57,23 @@
               </ion-button>
             </ion-col>
           </ion-row>
+          <!-- <ion-row>
+            <ion-col>
+              <ion-button
+                [disabled]="(isLoading$ | async)"
+                (click)="connectWallet()"
+                color="dark"
+                expand="block"
+              >
+                <span *ngIf="!publicKey">Connect Wallet</span>
+                <span *ngIf="publicKey" style="text-transform: none">
+                  {{publicKey.slice(0, 15)}}...
+                </span>
+                <ion-spinner *ngIf="(isLoading$ | async)" name="crescent">
+                </ion-spinner>
+              </ion-button>
+            </ion-col>
+          </ion-row> -->
           <i class="custom-col">
             <div>Not a member yet?</div>
             <ion-button fill="clear" routerLink="signup" color="primary">
