@@ -16,7 +16,6 @@ import {
 } from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
-  isLoggedInSelector,
   loginValidationErrorSelector,
   unauthorizedErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
