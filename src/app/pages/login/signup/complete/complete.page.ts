@@ -35,10 +35,7 @@ export class CompletePage implements OnInit, OnDestroy {
   countries$: Observable<Countries>;
   countyData: Country[];
 
-  constructor(
-    private store: Store,
-    private toastController: ToastController
-  ) {}
+  constructor(private store: Store, private toastController: ToastController) {}
 
   ngOnInit() {
     this.initForm();
