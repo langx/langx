@@ -173,6 +173,7 @@ export class LoginPage implements OnInit {
   // Web3
   //
 
+  /*
   async connectWallet() {
     if ('solana' in window) {
       let provider = (window as any).solana;
@@ -210,6 +211,7 @@ export class LoginPage implements OnInit {
       window.open('https://phantom.app/', '_blank');
     }
   }
+  */
 
   //
   // Present Toast
