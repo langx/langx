@@ -56,7 +56,7 @@ export class UserService {
     if (currentUser?.languageArray.length > 0) {
       const keywords = currentUser.languageArray.join(' ');
       // OR Query for users with any of the selected languages
-      queries.push(Query.search('languageArray', keywords));
+      queries.push(Query.contains('languageArray', keywords));
     }
     // Query for not equal same country
     queries.push(Query.notEqual('countryCode', currentUser['countryCode']));
@@ -387,7 +387,7 @@ export class UserService {
     if (filterData?.languages.length > 0) {
       const keywords = filterData.languages.join(' ');
       // OR Query for users with any of the selected languages
-      queries.push(Query.search('languageArray', keywords));
+      queries.push(Query.contains('languageArray', keywords));
     }
 
     return queries;
