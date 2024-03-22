@@ -82,11 +82,14 @@ export function exactDateAndTime(date: Date) {
   let dateFormat = `${dayFormat}.${monthFormat}.${yearFormat}`;
   let timeFormat = `${hoursFormat}:${minutesFormat}`;
 
-  // If the message date is less than a day old, return the time difference in hours or minutes
+  // Calculate the time difference in days, hours, and minutes
   let timeDifference = currentDate.getTime() - messageDate.getTime();
-  if (timeDifference < 24 * 60 * 60 * 1000) {
-    let hours = Math.floor(timeDifference / (1000 * 60 * 60));
-    let minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  let days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  let hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+
+  // If the time difference is less than a day, return the time difference in hours or minutes
+  if (days < 1) {
     if (hours > 0) {
       return `${hours} hours ago`;
     } else {
@@ -94,7 +97,13 @@ export function exactDateAndTime(date: Date) {
     }
   }
 
-  return `${dateFormat} ${timeFormat}`;
+  // If the time difference is exactly 1 day, return "1 day ago"
+  if (days === 1) {
+    return `1 day ago at ${timeFormat}`;
+  }
+
+  // If the time difference is more than a day, return the time difference in days
+  return `${days} days ago at ${timeFormat}`;
 }
 
 export function onlineStatus(date: Date) {
