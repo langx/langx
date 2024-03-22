@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // import { ID, Models } from 'appwrite';
-import { ID, Models } from 'src/app/extras/sdk/src';
+import { ID, Models, OAuthProvider } from 'src/app/extras/sdk/src';
 import { BehaviorSubject, concatMap, from, tap, Observable, of } from 'rxjs';
 
 // Environment and services Imports
@@ -12,6 +12,7 @@ import { Account } from 'src/app/models/Account';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
+import { Oauth2Component } from 'src/app/components/oauth2/oauth2.component';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,7 @@ export class AuthService {
   //
 
   login(data: LoginRequestInterface): Observable<Account> {
-    const authReq = this.api.account.createEmailSession(
+    const authReq = this.api.account.createEmailPasswordSession(
       data.email,
       data.password
     );
@@ -61,7 +62,7 @@ export class AuthService {
     );
     return from(promise).pipe(
       concatMap(() =>
-        this.api.account.createEmailSession(data.email, data.password)
+        this.api.account.createEmailPasswordSession(data.email, data.password)
       ),
       concatMap(() => this.api.account.get()),
       tap((user) => {
@@ -122,15 +123,15 @@ export class AuthService {
       this.api.account.updateRecovery(
         req.id,
         req.secret,
-        req.password,
-        req.password2
+        req.password
+        // req.password2
       )
     );
   }
 
   signInWithGoogle() {
     this.api.account.createOAuth2Session(
-      'google',
+      OAuthProvider.Google,
       environment.url.SUCCESS_OAUTH2,
       environment.url.FAILURE_OAUTH2
     );
@@ -138,7 +139,7 @@ export class AuthService {
 
   signInWithFacebook() {
     this.api.account.createOAuth2Session(
-      'facebook',
+      OAuthProvider.Facebook,
       environment.url.SUCCESS_OAUTH2,
       environment.url.FAILURE_OAUTH2
     );
@@ -146,7 +147,7 @@ export class AuthService {
 
   signInWithApple() {
     this.api.account.createOAuth2Session(
-      'apple',
+      OAuthProvider.Apple,
       environment.url.SUCCESS_OAUTH2,
       environment.url.FAILURE_OAUTH2
     );
