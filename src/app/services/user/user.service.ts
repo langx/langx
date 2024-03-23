@@ -225,8 +225,21 @@ export class UserService {
     // Define queries
     const queries: any[] = [];
 
-    // Query for users that are not the current user
-    queries.push(Query.notEqual('contributors', '[]'));
+    // Query for users that have at least one of the specified roles in the 'contributors' array
+    queries.push(
+      Query.contains('contributors', [
+        'moderator',
+        'codebase',
+        'marketing',
+        'storyteller',
+        'design',
+        'accessibility',
+        'user-relations',
+        'growth-hacker',
+        'website',
+        'tester',
+      ])
+    );
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
