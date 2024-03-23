@@ -2,6 +2,7 @@ import { Service } from '../service';
 import { AppwriteException, Client } from '../client';
 import type { Models } from '../models';
 import type { UploadProgress, Payload } from '../client';
+import { ExecutionMethod } from '../enums/execution-method';
 
 export class Functions extends Service {
 
@@ -11,7 +12,7 @@ export class Functions extends Service {
      }
 
     /**
-     * List Executions
+     * List executions
      *
      * Get a list of all the current user function execution logs. You can use the
      * query params to filter your results.
@@ -45,7 +46,7 @@ export class Functions extends Service {
     }
 
     /**
-     * Create Execution
+     * Create execution
      *
      * Trigger a function execution. The returned object will return you the
      * current execution status. You can ping the `Get Execution` endpoint to get
@@ -56,12 +57,12 @@ export class Functions extends Service {
      * @param {string} body
      * @param {boolean} async
      * @param {string} xpath
-     * @param {string} method
+     * @param {ExecutionMethod} method
      * @param {object} headers
      * @throws {AppwriteException}
      * @returns {Promise}
     */
-    async createExecution(functionId: string, body?: string, async?: boolean, xpath?: string, method?: string, headers?: object): Promise<Models.Execution> {
+    async createExecution(functionId: string, body?: string, async?: boolean, xpath?: string, method?: ExecutionMethod, headers?: object): Promise<Models.Execution> {
         if (typeof functionId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "functionId"');
         }
@@ -96,7 +97,7 @@ export class Functions extends Service {
     }
 
     /**
-     * Get Execution
+     * Get execution
      *
      * Get a function execution log by its unique ID.
      *
