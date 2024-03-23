@@ -228,8 +228,8 @@ export class UserService {
     // Query for users that have at least one of the specified roles in the 'contributors' array
     queries.push(
       Query.contains('contributors', [
-        'moderator',
         'codebase',
+        'moderator',
         'marketing',
         'storyteller',
         'design',
@@ -237,6 +237,7 @@ export class UserService {
         'user-relations',
         'growth-hacker',
         'website',
+        'social-media',
         'tester',
       ])
     );
