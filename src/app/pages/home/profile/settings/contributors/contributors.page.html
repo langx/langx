@@ -76,6 +76,68 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Moderator</ion-card-title>
+      <ion-card-subtitle> �️ Ensuring a Safe Environment </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
+          <app-user-list
+            [item]="user"
+            *ngIf="user?.contributors.includes('moderator')"
+            (onClick)="getProfilePage(user?.$id)"
+          >
+          </app-user-list>
+        </ng-container>
+        <app-empty-screen
+          *ngIf="isEmpty$('moderator') | async"
+          [model]="model"
+          (click)="scrollToBottom()"
+        >
+        </app-empty-screen>
+      </ion-list>
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '01'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Digital Marketing</ion-card-title>
       <ion-card-subtitle> 🚀 Spreading the Open-source App </ion-card-subtitle>
     </ion-card-header>
