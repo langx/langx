@@ -36,20 +36,20 @@ const visitsReducer = createReducer(
   ),
   on(getVisitsSuccessAction, (state, action): VisitsStateInterface => {
     // Map through the documents and add deletedUser if from is null
-    // const visits = action.payload.documents.map((document) => {
-    //   if (!document.from || document.from === null) {
-    //     return {
-    //       ...document,
-    //       from: deletedUser,
-    //     };
-    //   }
-    //   return document;
-    // });
+    const visits = action.payload.documents.map((document) => {
+      if (!document.from || document.from === null) {
+        return {
+          ...document,
+          from: deletedUser,
+        };
+      }
+      return document;
+    });
 
     // Filter the documents to exclude those where from is null
-    const visits = action.payload.documents.filter(
-      (document) => document.from && document.from !== null
-    );
+    // const visits = action.payload.documents.filter(
+    //   (document) => document.from && document.from !== null
+    // );
 
     return {
       ...state,
@@ -80,20 +80,20 @@ const visitsReducer = createReducer(
     getVisitsWithOffsetSuccessAction,
     (state, action): VisitsStateInterface => {
       // Map through the documents and add deletedUser if from is null
-      // const visits = action.payload.documents.map((document) => {
-      //   if (!document.from || document.from === null) {
-      //     return {
-      //       ...document,
-      //       from: deletedUser,
-      //     };
-      //   }
-      //   return document;
-      // });
+      const visits = action.payload.documents.map((document) => {
+        if (!document.from || document.from === null) {
+          return {
+            ...document,
+            from: deletedUser,
+          };
+        }
+        return document;
+      });
 
       // Filter the documents to exclude those where from is null
-      const visits = action.payload.documents.filter(
-        (document) => document.from && document.from !== null
-      );
+      // const visits = action.payload.documents.filter(
+      //   (document) => document.from && document.from !== null
+      // );
 
       return {
         ...state,
