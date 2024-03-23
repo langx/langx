@@ -79,7 +79,7 @@ export class UpdateService {
         } else if (latestVersionNumbers[0] === currentVersionNumbers[0]) {
           if (latestVersionNumbers[1] > currentVersionNumbers[1]) {
             // Handle minor update
-            this.showMinorUpdate(data);
+            this.showMajorUpdate(data);
           } else if (
             latestVersionNumbers[1] === currentVersionNumbers[1] &&
             latestVersionNumbers[2] > currentVersionNumbers[2]

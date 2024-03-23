@@ -2,6 +2,8 @@ import { Service } from '../service';
 import { AppwriteException, Client } from '../client';
 import type { Models } from '../models';
 import type { UploadProgress, Payload } from '../client';
+import { ImageGravity } from '../enums/image-gravity';
+import { ImageFormat } from '../enums/image-format';
 
 export class Storage extends Service {
 
@@ -11,7 +13,7 @@ export class Storage extends Service {
      }
 
     /**
-     * List Files
+     * List files
      *
      * Get a list of all the user files. You can use the query params to filter
      * your results.
@@ -45,12 +47,12 @@ export class Storage extends Service {
     }
 
     /**
-     * Create File
+     * Create file
      *
      * Create a new file. Before using this route, you should create a new bucket
      * resource using either a [server
-     * integration](/docs/server/storage#storageCreateBucket) API or directly from
-     * your Appwrite console.
+     * integration](https://appwrite.io/docs/server/storage#storageCreateBucket)
+     * API or directly from your Appwrite console.
      * 
      * Larger files should be uploaded using multiple requests with the
      * [content-range](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Range)
@@ -156,7 +158,7 @@ export class Storage extends Service {
     }
 
     /**
-     * Get File
+     * Get file
      *
      * Get a file by its unique ID. This endpoint response returns a JSON object
      * with the file metadata.
@@ -185,7 +187,7 @@ export class Storage extends Service {
     }
 
     /**
-     * Update File
+     * Update file
      *
      * Update a file by its unique ID. Only users with write permissions have
      * access to update this resource.
@@ -253,7 +255,7 @@ export class Storage extends Service {
     }
 
     /**
-     * Get File for Download
+     * Get file for download
      *
      * Get a file content by its unique ID. The endpoint response return with a
      * 'Content-Disposition: attachment' header that tells the browser to start
@@ -287,7 +289,7 @@ export class Storage extends Service {
     }
 
     /**
-     * Get File Preview
+     * Get file preview
      *
      * Get a file preview image. Currently, this method supports preview for image
      * files (jpg, png, and gif), other supported formats, like pdf, docs, slides,
@@ -299,7 +301,7 @@ export class Storage extends Service {
      * @param {string} fileId
      * @param {number} width
      * @param {number} height
-     * @param {string} gravity
+     * @param {ImageGravity} gravity
      * @param {number} quality
      * @param {number} borderWidth
      * @param {string} borderColor
@@ -307,11 +309,11 @@ export class Storage extends Service {
      * @param {number} opacity
      * @param {number} rotation
      * @param {string} background
-     * @param {string} output
+     * @param {ImageFormat} output
      * @throws {AppwriteException}
      * @returns {URL}
     */
-    getFilePreview(bucketId: string, fileId: string, width?: number, height?: number, gravity?: string, quality?: number, borderWidth?: number, borderColor?: string, borderRadius?: number, opacity?: number, rotation?: number, background?: string, output?: string): URL {
+    getFilePreview(bucketId: string, fileId: string, width?: number, height?: number, gravity?: ImageGravity, quality?: number, borderWidth?: number, borderColor?: string, borderRadius?: number, opacity?: number, rotation?: number, background?: string, output?: ImageFormat): URL {
         if (typeof bucketId === 'undefined') {
             throw new AppwriteException('Missing required parameter: "bucketId"');
         }
@@ -378,7 +380,7 @@ export class Storage extends Service {
     }
 
     /**
-     * Get File for View
+     * Get file for view
      *
      * Get a file content by its unique ID. This endpoint is similar to the
      * download method but returns with no  'Content-Disposition: attachment'

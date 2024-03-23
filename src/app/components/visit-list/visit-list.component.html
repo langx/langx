@@ -14,7 +14,7 @@
       {{ user?.name }}
     </h2>
     <p>
-      <ion-text *ngIf="user.$id !== 'deleted-user'">
+      <ion-text>
         {{ exactDateAndTime(item?.$createdAt) }}
       </ion-text>
     </p>

@@ -23,7 +23,10 @@
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let visit of (visits$ | async)">
-          <app-visit-list [item]="visit"></app-visit-list>
+          <app-visit-list
+            [item]="visit"
+            *ngIf="visit?.from?.$id !== 'deleted-user'"
+          ></app-visit-list>
         </ng-container>
       </ion-list>
 

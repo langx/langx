@@ -46,6 +46,11 @@ const visitsReducer = createReducer(
       return document;
     });
 
+    // Filter the documents to exclude those where from is null
+    // const visits = action.payload.documents.filter(
+    //   (document) => document.from && document.from !== null
+    // );
+
     return {
       ...state,
       isLoading: false,
@@ -84,6 +89,11 @@ const visitsReducer = createReducer(
         }
         return document;
       });
+
+      // Filter the documents to exclude those where from is null
+      // const visits = action.payload.documents.filter(
+      //   (document) => document.from && document.from !== null
+      // );
 
       return {
         ...state,

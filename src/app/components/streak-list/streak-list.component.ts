@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { exactDateAndTime, getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
+import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
 import { Streak } from 'src/app/models/Streaks';
 import { User } from 'src/app/models/User';
 
@@ -28,11 +28,6 @@ export class StreakListComponent implements OnInit {
   //
   // Utils
   //
-
-  exactDateAndTime(d: any) {
-    if (!d) return null;
-    return exactDateAndTime(d);
-  }
 
   lastSeen(d: any) {
     if (!d) return null;

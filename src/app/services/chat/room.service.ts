@@ -73,8 +73,8 @@ export class RoomService {
     const queries: any[] = [];
 
     // Query for rooms, user attribute that contain current user and userId
-    queries.push(Query.search('users', currentUserId));
-    queries.push(Query.search('users', userId));
+    queries.push(Query.contains('users', currentUserId));
+    queries.push(Query.contains('users', userId));
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
@@ -161,7 +161,7 @@ export class RoomService {
     const queries: any[] = [];
 
     // Query for rooms that contain the current user
-    queries.push(Query.search('users', currentUser.$id));
+    queries.push(Query.contains('users', currentUser.$id));
 
     // Query for rooms descending by $updatedAt
     queries.push(Query.orderDesc('$updatedAt'));

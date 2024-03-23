@@ -56,7 +56,7 @@ export class UserService {
     if (currentUser?.languageArray.length > 0) {
       const keywords = currentUser.languageArray.join(' ');
       // OR Query for users with any of the selected languages
-      queries.push(Query.search('languageArray', keywords));
+      queries.push(Query.contains('languageArray', keywords));
     }
     // Query for not equal same country
     queries.push(Query.notEqual('countryCode', currentUser['countryCode']));
@@ -225,8 +225,22 @@ export class UserService {
     // Define queries
     const queries: any[] = [];
 
-    // Query for users that are not the current user
-    queries.push(Query.notEqual('contributors', '[]'));
+    // Query for users that have at least one of the specified roles in the 'contributors' array
+    queries.push(
+      Query.contains('contributors', [
+        'codebase',
+        'moderator',
+        'marketing',
+        'storyteller',
+        'design',
+        'accessibility',
+        'user-relations',
+        'growth-hacker',
+        'website',
+        'social-media',
+        'tester',
+      ])
+    );
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
@@ -387,7 +401,7 @@ export class UserService {
     if (filterData?.languages.length > 0) {
       const keywords = filterData.languages.join(' ');
       // OR Query for users with any of the selected languages
-      queries.push(Query.search('languageArray', keywords));
+      queries.push(Query.contains('languageArray', keywords));
     }
 
     return queries;
