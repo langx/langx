@@ -1,4 +1,4 @@
-import { throwIfMissing, sendPushNotification } from './utils.js';
+import { throwIfMissing, sendPushNotification, getFlagEmoji } from './utils.js';
 
 import { Client, Users, Databases } from 'node-appwrite';
 
@@ -103,7 +103,7 @@ export default async ({ req, res, log, error }) => {
   log(`Sending message to user: ${req.body.to}`);
 
   let notification = {
-    title: senderUserDoc.name,
+    title: getFlagEmoji(senderUserDoc) + ' ' + senderUserDoc.name,
     body: 'visiting your profile.',
   };
 

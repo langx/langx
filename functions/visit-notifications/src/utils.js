@@ -32,3 +32,12 @@ export async function sendPushNotification(payload) {
   }
   return await admin.messaging().send(payload);
 }
+
+export function getFlagEmoji(item) {
+  if (!item || !item['countryCode']) return '';
+  const codePoints = item['countryCode']
+    .toUpperCase()
+    .split('')
+    .map((char) => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
