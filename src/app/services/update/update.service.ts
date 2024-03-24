@@ -43,6 +43,7 @@ export class UpdateService {
 
     if (platform === 'web') {
       // console.log('checkUpdate', 'web');
+      await this.checkPlatformUpdate('/web');
       return;
     } else if (platform === 'android') {
       // console.log('checkUpdate', 'android');
@@ -63,6 +64,8 @@ export class UpdateService {
     if (data.maintenance_enabled) {
       this.showMaintenance(data);
     } else {
+      if (platformPath === '/web') return;
+
       const currentVersion = await App.getInfo();
       // console.log('currentVersion', currentVersion.version);
       // console.log('data.latest', data.latest);
