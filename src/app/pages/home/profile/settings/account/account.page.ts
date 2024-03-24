@@ -96,10 +96,7 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
-            this.presentToast(
-              'Please send your request via email to info@languageXchange.net',
-              'danger'
-            );
+            this.presentErrorAlertAfterDelete();
             // Error Cleanup
             this.store.dispatch(clearErrorsAction());
           }
@@ -196,6 +193,17 @@ export class AccountPage implements OnInit {
           },
         },
       ],
+    });
+
+    await alert.present();
+  }
+
+  async presentErrorAlertAfterDelete() {
+    const alert = await this.alertController.create({
+      header: 'Information',
+      message:
+        'Please send your deletion request via email to info@languageXchange.net',
+      buttons: ['OK'],
     });
 
     await alert.present();
