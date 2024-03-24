@@ -41,5 +41,6 @@ export interface AuthStateInterface {
   presenceError: ErrorInterface | null;
   editProfileError: ErrorInterface | null;
   accountDetailError: ErrorInterface | null;
+  isLoadingDeleteAccount: boolean;
   deleteAccountError: ErrorInterface | null;
 }

@@ -142,6 +142,7 @@ const initialState: AuthStateInterface = {
   profileError: null,
   editProfileError: null,
   accountDetailError: null,
+  isLoadingDeleteAccount: false,
   deleteAccountError: null,
 };
 
@@ -757,7 +758,7 @@ const authReducer = createReducer(
     deleteAccountAction,
     (state): AuthStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoadingDeleteAccount: true,
     })
   ),
   on(
@@ -770,7 +771,7 @@ const authReducer = createReducer(
     deleteAccountFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
-      isLoading: false,
+      isLoadingDeleteAccount: false,
       deleteAccountError: action.error,
     })
   ),
