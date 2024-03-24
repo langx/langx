@@ -13,6 +13,7 @@ import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
+  clearErrorsAction,
   deleteAccountAction,
   listIdentitiesAction,
   listSessionsAction,
@@ -27,6 +28,8 @@ import {
   accountDetailErrorSelector,
   verifyEmailErrorSelector,
   verifyEmailSuccessSelector,
+  isLoadingDeleteAccountSelector,
+  deleteAccountErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -45,6 +48,7 @@ export class AccountPage implements OnInit {
   sessions$: Observable<Models.Session[]> = null;
   isLoading$: Observable<boolean> = null;
   verifyEmailSuccess$: Observable<boolean> = null;
+  isLoadingDeleteAccount$: Observable<boolean> = null;
 
   verifyButtonDisabled = false; // to control the button's state
   verifyButtonText = 'Verify'; // to hold the button's text
@@ -70,6 +74,8 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -79,6 +85,20 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
+          }
+        })
+    );
+    this.subscription.add(
+      this.store
+        .pipe(select(deleteAccountErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            this.presentErrorAlertAfterDelete();
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -90,6 +110,19 @@ export class AccountPage implements OnInit {
         .subscribe((verifyEmailSuccess: boolean) => {
           if (verifyEmailSuccess) {
             this.presentToast('Email has been successfully sent.', 'success');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
+          }
+        })
+    );
+
+    // isLoadingDeleteAccount
+    this.subscription.add(
+      this.store
+        .pipe(select(isLoadingDeleteAccountSelector))
+        .subscribe((isLoadingDeleteAccount: boolean) => {
+          if (isLoadingDeleteAccount) {
+            this.presentToast('Deleting account, please wait', 'warning');
           }
         })
     );
@@ -110,7 +143,7 @@ export class AccountPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector)); // TODO: Unused yet
   }
 
   verifyEmail() {
@@ -170,6 +203,17 @@ export class AccountPage implements OnInit {
           },
         },
       ],
+    });
+
+    await alert.present();
+  }
+
+  async presentErrorAlertAfterDelete() {
+    const alert = await this.alertController.create({
+      header: 'Information',
+      message:
+        'Please send your deletion request via email to info@languageXchange.net',
+      buttons: ['OK'],
     });
 
     await alert.present();

@@ -5,7 +5,10 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
-import { resetPasswordAction } from 'src/app/store/actions/auth.action';
+import {
+  clearErrorsAction,
+  resetPasswordAction,
+} from 'src/app/store/actions/auth.action';
 import {
   isLoadingSelector,
   resetPasswordErrorSelector,
@@ -40,6 +43,8 @@ export class ResetPasswordPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -52,6 +57,8 @@ export class ResetPasswordPage implements OnInit {
           this.form.reset();
           if (response) {
             this.presentToast('Email has been successfully sent.', 'success');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
