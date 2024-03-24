@@ -179,3 +179,13 @@ export const unArchiveRoomErrorSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.unArchiveRoomError
 );
+
+export const isLoadingDeleteAccountSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.isLoadingDeleteAccount
+);
+
+export const deleteAccountErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.deleteAccountError
+);
