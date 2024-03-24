@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 // import { Models } from 'appwrite';
 import { Models } from 'src/app/extras/sdk/src';
 import { Browser } from '@capacitor/browser';
-import { IonModal, ToastController } from '@ionic/angular';
+import { IonModal, ToastController, AlertController } from '@ionic/angular';
 
 import { lastSeen } from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
@@ -52,7 +52,8 @@ export class AccountPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
@@ -148,10 +149,30 @@ export class AccountPage implements OnInit {
     }
   }
 
-  // Delete account
-  deleteAccount() {
-    this.deleteUserModal.dismiss();
-    this.store.dispatch(deleteAccountAction());
+  async deleteAccount() {
+    const alert = await this.alertController.create({
+      header: 'Confirm!',
+      message: 'Are you sure you want to delete your account?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          },
+        },
+        {
+          text: 'Delete',
+          role: 'destructive', // Use 'destructive' role for danger color
+          handler: () => {
+            this.deleteUserModal.dismiss();
+            this.store.dispatch(deleteAccountAction());
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   //
