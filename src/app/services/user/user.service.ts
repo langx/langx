@@ -54,7 +54,7 @@ export class UserService {
 
     // Query for users with the selected languages filter
     if (currentUser?.languageArray.length > 0) {
-      const keywords = currentUser.languageArray.join(' ');
+      const keywords = currentUser.languageArray;
       // OR Query for users with any of the selected languages
       queries.push(Query.contains('languageArray', keywords));
     }
@@ -402,7 +402,7 @@ export class UserService {
 
     // Query for users with the selected languages filter
     if (filterData?.languages.length > 0) {
-      const keywords = filterData.languages.join(' ');
+      const keywords = filterData.languages;
       // OR Query for users with any of the selected languages
       queries.push(Query.contains('languageArray', keywords));
     }
