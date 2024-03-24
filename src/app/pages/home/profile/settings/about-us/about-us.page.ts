@@ -160,7 +160,8 @@ export class AboutUsPage implements OnInit {
 
   async ngOnInit() {
     if (Capacitor.getPlatform() === 'web') {
-      this.appVersion = 'Web App (pwa)';
+      // this.appVersion = 'Web App (pwa)';
+      this.appVersion = `v${environment.version}`;
     } else {
       const info = await App.getInfo();
       this.appVersion = `v${info.version}`;
