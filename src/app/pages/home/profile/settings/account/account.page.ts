@@ -27,6 +27,8 @@ import {
   accountDetailErrorSelector,
   verifyEmailErrorSelector,
   verifyEmailSuccessSelector,
+  isLoadingDeleteAccountSelector,
+  deleteAccountErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 @Component({
@@ -45,6 +47,7 @@ export class AccountPage implements OnInit {
   sessions$: Observable<Models.Session[]> = null;
   isLoading$: Observable<boolean> = null;
   verifyEmailSuccess$: Observable<boolean> = null;
+  isLoadingDeleteAccount$: Observable<boolean> = null;
 
   verifyButtonDisabled = false; // to control the button's state
   verifyButtonText = 'Verify'; // to hold the button's text
@@ -82,6 +85,19 @@ export class AccountPage implements OnInit {
           }
         })
     );
+    this.subscription.add(
+      this.store
+        .pipe(select(deleteAccountErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            this.presentToast(
+              'Please send your request via email to info@languageXchange.net',
+              'danger'
+            );
+          }
+        })
+    );
 
     // Present Toast if verifyEmailSuccess
     this.subscription.add(
@@ -111,6 +127,9 @@ export class AccountPage implements OnInit {
     this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoadingDeleteAccount$ = this.store.pipe(
+      select(isLoadingDeleteAccountSelector)
+    );
   }
 
   verifyEmail() {
