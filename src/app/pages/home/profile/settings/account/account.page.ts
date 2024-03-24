@@ -110,6 +110,8 @@ export class AccountPage implements OnInit {
         .subscribe((verifyEmailSuccess: boolean) => {
           if (verifyEmailSuccess) {
             this.presentToast('Email has been successfully sent.', 'success');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
