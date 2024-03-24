@@ -143,7 +143,7 @@ export class AccountPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
-    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector)); // TODO: Unused yet
   }
 
   verifyEmail() {
