@@ -73,6 +73,7 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // TODO: Add here error cleanup
           }
         })
     );
@@ -82,6 +83,7 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            // TODO: Add here error cleanup
           }
         })
     );
@@ -95,6 +97,7 @@ export class AccountPage implements OnInit {
               'Please send your request via email to info@languageXchange.net',
               'danger'
             );
+            // TODO: Add here error cleanup
           }
         })
     );
