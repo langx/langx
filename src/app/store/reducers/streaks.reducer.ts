@@ -36,21 +36,21 @@ const streaksReducer = createReducer(
   ),
   on(getStreaksSuccessAction, (state, action): StreaksStateInterface => {
     // Map through the documents and add deletedUser if from is null
-    const streaks = action.payload.documents.map((document) => {
-      if (!document.userId || document.userId === null) {
-        return {
-          ...document,
-          userId: deletedUser,
-        };
-      }
-      return document;
-    });
+    // const streaks = action.payload.documents.map((document) => {
+    //   if (!document.userId || document.userId === null) {
+    //     return {
+    //       ...document,
+    //       userId: deletedUser,
+    //     };
+    //   }
+    //   return document;
+    // });
 
     return {
       ...state,
       isLoading: false,
       total: action.payload.total,
-      streaks: streaks,
+      streaks: action.payload.documents,
     };
   }),
   on(
@@ -75,21 +75,21 @@ const streaksReducer = createReducer(
     getStreaksWithOffsetSuccessAction,
     (state, action): StreaksStateInterface => {
       // Map through the documents and add deletedUser if userId is null
-      const streaks = action.payload.documents.map((document) => {
-        if (!document.userId || document.userId === null) {
-          return {
-            ...document,
-            userId: deletedUser,
-          };
-        }
-        return document;
-      });
+      // const streaks = action.payload.documents.map((document) => {
+      //   if (!document.userId || document.userId === null) {
+      //     return {
+      //       ...document,
+      //       userId: deletedUser,
+      //     };
+      //   }
+      //   return document;
+      // });
 
       return {
         ...state,
         isLoading: false,
         total: action.payload.total,
-        streaks: [...state.streaks, ...streaks],
+        streaks: [...state.streaks, ...action.payload.documents],
       };
     }
   ),
