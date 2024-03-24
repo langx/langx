@@ -9,6 +9,7 @@ export const GITHUB_URL = "<GITHUB_URL>";
 
 export const environment = {
   production: true,
+  version: '1.0.0',
   bundleId: "<BUNDLE_ID>",
   iosId: 'id0000000000',
   appwrite: {
