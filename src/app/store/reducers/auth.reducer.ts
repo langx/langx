@@ -981,6 +981,8 @@ const authReducer = createReducer(
       editProfileError: null,
       accountDetailError: null,
       deleteAccountError: null,
+      verifyEmailSuccess: false,
+      resetPasswordSuccess: false,
     })
   )
 );
