@@ -115,6 +115,17 @@ export class AccountPage implements OnInit {
           }
         })
     );
+
+    // isLoadingDeleteAccount
+    this.subscription.add(
+      this.store
+        .pipe(select(isLoadingDeleteAccountSelector))
+        .subscribe((isLoadingDeleteAccount: boolean) => {
+          if (isLoadingDeleteAccount) {
+            this.presentToast('Deleting account, please wait', 'warning');
+          }
+        })
+    );
   }
 
   ionViewWillLeave() {
@@ -133,9 +144,6 @@ export class AccountPage implements OnInit {
     this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.isLoadingDeleteAccount$ = this.store.pipe(
-      select(isLoadingDeleteAccountSelector)
-    );
   }
 
   verifyEmail() {
