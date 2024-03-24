@@ -206,6 +206,9 @@ export class UserService {
     // Define queries
     const queries: any[] = [];
 
+    // Query for user is not deleted
+    queries.push(Query.isNotNull('userId'));
+
     // Query for users descending by last seen
     queries.push(Query.orderDesc('daystreak'));
 
