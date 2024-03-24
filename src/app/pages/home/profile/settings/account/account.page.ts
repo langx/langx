@@ -13,6 +13,7 @@ import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
+  clearErrorsAction,
   deleteAccountAction,
   listIdentitiesAction,
   listSessionsAction,
@@ -73,7 +74,8 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
-            // TODO: Add here error cleanup
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -83,7 +85,8 @@ export class AccountPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
-            // TODO: Add here error cleanup
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
@@ -97,7 +100,8 @@ export class AccountPage implements OnInit {
               'Please send your request via email to info@languageXchange.net',
               'danger'
             );
-            // TODO: Add here error cleanup
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
