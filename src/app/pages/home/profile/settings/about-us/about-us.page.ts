@@ -32,9 +32,21 @@ export class AboutUsPage implements OnInit {
 
   public sponsorPages = [
     {
+      title: 'Join us on Discord ❤️',
+      url: environment.ext.socialMedia.discord,
+      icon: 'logo-discord',
+      detail: true,
+    },
+    {
       title: 'Be Our Sponsor ❤️',
       url: environment.ext.SPONSOR,
       icon: 'heart-outline',
+      detail: true,
+    },
+    {
+      title: 'Follow us on X',
+      url: environment.ext.socialMedia.twitter,
+      icon: 'logo-twitter',
       detail: true,
     },
   ];
@@ -80,15 +92,27 @@ export class AboutUsPage implements OnInit {
 
   public socialMediaPages = [
     {
-      title: 'Instagram',
-      url: environment.ext.socialMedia.instagram,
-      icon: 'logo-instagram',
+      title: 'Discord',
+      url: environment.ext.socialMedia.discord,
+      icon: 'logo-discord',
       detail: true,
     },
     {
       title: 'Twitter',
       url: environment.ext.socialMedia.twitter,
       icon: 'logo-twitter',
+      detail: true,
+    },
+    {
+      title: 'Telegram',
+      url: environment.ext.socialMedia.telegram,
+      icon: 'paper-plane',
+      detail: true,
+    },
+    {
+      title: 'Instagram',
+      url: environment.ext.socialMedia.instagram,
+      icon: 'logo-instagram',
       detail: true,
     },
     {
@@ -119,12 +143,6 @@ export class AboutUsPage implements OnInit {
       title: 'LinkedIn',
       url: environment.ext.socialMedia.linkedin,
       icon: 'logo-linkedin',
-      detail: true,
-    },
-    {
-      title: 'Discord',
-      url: environment.ext.socialMedia.discord,
-      icon: 'logo-discord',
       detail: true,
     },
   ];

@@ -71,6 +71,7 @@ export const environment = {
       instagram: '',
       facebook: '',
       twitter: '',
+      telegram: '',
       tiktok: '',
       youtube: '',
       discord: '',
