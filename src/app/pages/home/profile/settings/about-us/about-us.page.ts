@@ -80,15 +80,21 @@ export class AboutUsPage implements OnInit {
 
   public socialMediaPages = [
     {
-      title: 'Instagram',
-      url: environment.ext.socialMedia.instagram,
-      icon: 'logo-instagram',
+      title: 'Discord',
+      url: environment.ext.socialMedia.discord,
+      icon: 'logo-discord',
       detail: true,
     },
     {
       title: 'Twitter',
       url: environment.ext.socialMedia.twitter,
       icon: 'logo-twitter',
+      detail: true,
+    },
+    {
+      title: 'Instagram',
+      url: environment.ext.socialMedia.instagram,
+      icon: 'logo-instagram',
       detail: true,
     },
     {
@@ -119,12 +125,6 @@ export class AboutUsPage implements OnInit {
       title: 'LinkedIn',
       url: environment.ext.socialMedia.linkedin,
       icon: 'logo-linkedin',
-      detail: true,
-    },
-    {
-      title: 'Discord',
-      url: environment.ext.socialMedia.discord,
-      icon: 'logo-discord',
       detail: true,
     },
   ];
