@@ -32,9 +32,21 @@ export class AboutUsPage implements OnInit {
 
   public sponsorPages = [
     {
+      title: 'Join us on Discord ❤️',
+      url: environment.ext.socialMedia.discord,
+      icon: 'logo-discord',
+      detail: true,
+    },
+    {
       title: 'Be Our Sponsor ❤️',
       url: environment.ext.SPONSOR,
       icon: 'heart-outline',
+      detail: true,
+    },
+    {
+      title: 'Follow us on X',
+      url: environment.ext.socialMedia.twitter,
+      icon: 'logo-twitter',
       detail: true,
     },
   ];
