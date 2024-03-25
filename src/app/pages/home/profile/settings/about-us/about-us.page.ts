@@ -92,6 +92,12 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: 'Telegram',
+      url: environment.ext.socialMedia.telegram,
+      icon: 'paper-plane',
+      detail: true,
+    },
+    {
       title: 'Instagram',
       url: environment.ext.socialMedia.instagram,
       icon: 'logo-instagram',
