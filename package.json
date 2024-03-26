@@ -4,6 +4,10 @@
   "author": "languageXchange",
   "homepage": "https://languageXchange.net/",
   "description": " Practice, Learn, Succeed! | Free and Open Sourced Language Exchange Project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/languageXchange/languageXchange.git"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -12,7 +16,6 @@
     "test": "ng test",
     "lint": "ng lint"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^16.0.0",
     "@angular/common": "^16.0.0",
