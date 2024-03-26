@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 // import { Models } from 'appwrite';
 import { Models } from 'src/app/extras/sdk/src';
 import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
+import { App } from '@capacitor/app';
 import { IonModal, ToastController, AlertController } from '@ionic/angular';
 
 import { lastSeen } from 'src/app/extras/utils';
@@ -40,6 +42,8 @@ import {
 export class AccountPage implements OnInit {
   @ViewChild('deleteUserModal') deleteUserModal: IonModal;
 
+  appVersion: string;
+
   subscription: Subscription;
 
   account$: Observable<Account | null> = null;
@@ -60,8 +64,8 @@ export class AccountPage implements OnInit {
     private alertController: AlertController
   ) {}
 
-  ngOnInit() {
-    this.initValues();
+  async ngOnInit() {
+    await this.initValues();
   }
 
   ionViewWillEnter() {
@@ -133,7 +137,7 @@ export class AccountPage implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  initValues() {
+  async initValues() {
     // Dispatch the action to list identities
     this.store.dispatch(listIdentitiesAction());
     this.store.dispatch(listSessionsAction());
@@ -144,6 +148,14 @@ export class AccountPage implements OnInit {
     this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector)); // TODO: Unused yet
+
+    if (Capacitor.getPlatform() === 'web') {
+      // this.appVersion = 'Web App (pwa)';
+      this.appVersion = `v${environment.version}`;
+    } else {
+      const info = await App.getInfo();
+      this.appVersion = `v${info.version}`;
+    }
   }
 
   verifyEmail() {

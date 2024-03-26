@@ -3,7 +3,6 @@ import { Browser } from '@capacitor/browser';
 import { Router } from '@angular/router';
 import { NativeMarket } from '@capacitor-community/native-market';
 import { Capacitor } from '@capacitor/core';
-import { App } from '@capacitor/app';
 
 import { environment } from 'src/environments/environment';
 
@@ -13,8 +12,6 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./about-us.page.scss'],
 })
 export class AboutUsPage implements OnInit {
-  appVersion: string;
-
   public contributorsPages = [
     {
       title: 'Contributors',
@@ -176,15 +173,7 @@ export class AboutUsPage implements OnInit {
 
   constructor(private router: Router) {}
 
-  async ngOnInit() {
-    if (Capacitor.getPlatform() === 'web') {
-      // this.appVersion = 'Web App (pwa)';
-      this.appVersion = `v${environment.version}`;
-    } else {
-      const info = await App.getInfo();
-      this.appVersion = `v${info.version}`;
-    }
-  }
+  ngOnInit() {}
 
   async openPage(page: any) {
     await Browser.open({ url: page.url });
