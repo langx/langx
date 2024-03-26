@@ -90,7 +90,7 @@ To install the project locally, follow these steps:
 3. Start the development server using the command `ionic serve`
 4. Open your web browser and navigate to `http://localhost:8100`
 
-That's it! You should now be able to see the project running locally on your machine. If you encounter any issues during the installation process, please refer to the project's documentation or open an issue on the project's GitHub repository.
+That's it! You should now be able to see the project running locally on your machine. If you encounter any issues during the installation process, please refer to the project's documentation or open an issue on the projects GitHub repository.
 
 ### Cloud Functions
 
