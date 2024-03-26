@@ -99,16 +99,17 @@ export class AppComponent {
       // state.isActive contains the active state
       console.log('App state changed. New state:', state);
 
+      // TODO: It has bug, pull up to page and it will call multiple times
       // List rooms
-      this.store
-        .pipe(select(currentUserSelector))
-        .subscribe((user) => {
-          if (user) {
-            console.log('List rooms called from app state change');
-            this.store.dispatch(getRoomsAction());
-          }
-        })
-        .unsubscribe();
+      // this.store
+      //   .pipe(select(currentUserSelector))
+      //   .subscribe((user) => {
+      //     if (user) {
+      //       console.log('List rooms called from app state change');
+      //       this.store.dispatch(getRoomsAction());
+      //     }
+      //   })
+      //   .unsubscribe();
     });
   }
 
