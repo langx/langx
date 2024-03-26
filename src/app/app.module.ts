@@ -24,6 +24,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     AppRoutingModule,
     IonicModule.forRoot(),
     StoreModule.forRoot({}),
+    // TODO: Delete next line after version 1.0, not to have devtools in production
     StoreDevtoolsModule.instrument({
       maxAge: 250,
       logOnly: environment.production,
