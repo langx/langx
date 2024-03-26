@@ -861,7 +861,12 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   onTypingStatusChange() {
-    // console.log('onTypingStatusChange', this.isTyping);
+    console.log('onTypingStatusChange', this.isTyping);
+  }
+
+  footerClicked(event: Event) {
+    // If the footer is clicked, set the focus back to the textarea
+    this.myTextArea.setFocus();
   }
 
   redirectUserProfile() {
