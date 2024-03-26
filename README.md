@@ -1,4 +1,4 @@
-<h1 align="center"> languageXchange | Practice, Learn, Succeed! </h1>
+ <h1 align="center"> languageXchange | Practice, Learn, Succeed!</h1>
 <p align="center">
   <a href="https://status.languageXchange.net/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
   <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://badgen.net/badge/icon/discord?icon=discord&label" alt="Discord"></a>
