@@ -1,13 +1,28 @@
-# languageXchange | Practice, Learn, Succeed!
-
-[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg)](https://status.languageXchange.net/)
-[![Discord](https://badgen.net/badge/icon/discord?icon=discord&label)](https://discord.gg/CpDZ3kg2rJ)
-[![GitHub release](https://img.shields.io/github/release/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/releases)
-[![GitHub contributors](https://img.shields.io/github/contributors/languageXchange/languageXchange.svg)](https://github.com/langaugeXchange/languageXchange/graphs/contributors)
-[![GitHub issues](https://img.shields.io/github/issues/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/issues)
-[![GitHub license](https://img.shields.io/github/license/languageXchange/languageXchange.svg)](https://github.com/languageXchange/languageXchange/blob/main/LICENSE)
-
-[![Join us on Discord](https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat)](https://discord.gg/CpDZ3kg2rJ)
+<h1 align="center"> languageXchange | Practice, Learn, Succeed!</h1>
+<p align="center">
+  <a href="https://status.languageXchange.net/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
+  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://badgen.net/badge/icon/discord?icon=discord&label" alt="Discord"></a>
+  <a href="https://github.com/languageXchange/languageXchange/releases" target="_blank"><img src="https://img.shields.io/github/release/languageXchange/languageXchange.svg" alt="GitHub release"></a>
+  <a href="https://github.com/badges/languageXchange/languageXchange" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/languageXchange/languageXchange" alt="Activity"></a>
+  <a href="https://github.com/langaugeXchange/languageXchange/graphs/contributors" target="_blank"><img src="https://img.shields.io/github/contributors/languageXchange/languageXchange.svg" alt="GitHub contributors"></a>
+  <a href="https://github.com/languageXchange/languageXchange/issues" target="_blank"><img src="https://img.shields.io/github/issues/languageXchange/languageXchange.svg" alt="GitHub issues"></a>
+  <a href="https://github.com/languageXchange/languageXchange/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/languageXchange/languageXchange.svg" alt="GitHub license"></a>
+</p>
+<p align="center">
+  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://img.shields.io/badge/-Discord-blue?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://x.com/languageXapp" target="_blank"><img src="https://img.shields.io/badge/-Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white" alt="Twitter"></a>
+  <a href="https://t.me/languageXapp" target="_blank"><img src="https://img.shields.io/badge/-Telegram-2CA5E0?style=flat-square&logo=telegram&logoColor=white" alt="Telegram"></a>
+  <a href="https://instagram.com/languageXapp" target="_blank"><img src="https://img.shields.io/badge/-Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white" alt="Instagram"></a>
+  <a href="https://tiktok.com/@languageXapp" target="_blank"><img src="https://img.shields.io/badge/-TikTok-000000?style=flat-square&logo=tiktok&logoColor=white" alt="TikTok"></a>
+  <a href="https://www.facebook.com/languageXapp" target="_blank"><img src="https://img.shields.io/badge/-Facebook-1877F2?style=flat-square&logo=facebook&logoColor=white" alt="Facebook"></a>
+  <a href="https://www.youtube.com/@languageXchange" target="_blank"><img src="https://img.shields.io/badge/-YouTube-FF0000?style=flat-square&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://bsky.app/profile/languagexapp.bsky.social" target="_blank"><img src="https://img.shields.io/badge/-Bluesky-1DA1F2?style=flat-square&logo=twitter&logoColor=white" alt="Bluesky"></a>
+  <a href="https://www.linkedin.com/products/new-chapter-technology-limited-liability-company-languagexchange-practice-learn-succeed/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+</p>
+<p align="center">
+  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
+  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat" alt="Join us on Discord"></a>
+</p>
 
 languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
 
