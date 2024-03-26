@@ -97,7 +97,7 @@ export class AppComponent {
   initAppStateChange() {
     App.addListener('appStateChange', (state) => {
       // state.isActive contains the active state
-      console.log('App state changed. New state:', state);
+      // console.log('App state changed. New state:', state);
 
       // TODO: It has bug, pull up to page and it will call multiple times
       // List rooms
