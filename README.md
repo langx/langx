@@ -24,9 +24,10 @@
   <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat" alt="Join us on Discord"></a>
 </p>
 <p align="center">
- <img href="https://languageXchange.net" alt="Featured Image" src="https://github.com/languageXchange/.github/blob/main/assets/featured_image.png" />
+  <a href="https://languageXchange.net" target="_blank">
+  <img alt="Featured Image" src="https://github.com/languageXchange/.github/blob/main/assets/featured_image.png" />
+  </a>
 </p>
-
 languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
 
 ## Table of Contents
