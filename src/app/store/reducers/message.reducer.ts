@@ -3,7 +3,6 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
-import { getRoomsSuccessAction } from '../actions/rooms.action';
 import {
   deleteAccountSuccessAction,
   logoutSuccessAction,
@@ -324,29 +323,6 @@ const messageReducer = createReducer(
       };
     }
   ),
-
-  // Find active room and update messages
-  on(getRoomsSuccessAction, (state, action): MessageStateInterface => {
-    // Check if there is any room in the state
-    if (!state.room) return { ...state };
-
-    // Find the room in the payload with the matching $id
-    const payloadRoom = action.payload.documents.find(
-      (doc) => doc.$id === state.room.$id
-    );
-
-    // If the room is not found in the payload, return the state as is
-    if (!payloadRoom) return { ...state };
-
-    // If the room is found in the payload, update the messages
-    return {
-      ...state,
-      room: {
-        ...state.room,
-        messages: payloadRoom.messages,
-      },
-    };
-  }),
 
   // Remove Message From Temp Messages Reducers
   on(
