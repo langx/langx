@@ -24,7 +24,6 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     AppRoutingModule,
     IonicModule.forRoot(),
     StoreModule.forRoot({}),
-    // TODO: Uncomment when v1.0
     StoreDevtoolsModule.instrument({
       maxAge: 250,
       logOnly: environment.production,
