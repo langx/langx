@@ -23,6 +23,9 @@
   <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
   <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat" alt="Join us on Discord"></a>
 </p>
+<p align="center">
+ <img href="https://languageXchange.net" alt="Featured Image" src="https://github.com/languageXchange/.github/blob/main/assets/featured_image.png" />
+</p>
 
 languageXchange is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
 
@@ -285,5 +288,3 @@ For more information on how to secure your Firebase project, please refer to the
 ## License
 
 This project is licensed under the BSD-3-Clause License - see the [LICENSE](./LICENSE) file for details.
-
-
