@@ -1,7 +1,6 @@
  <h1 align="center"> languageXchange | Practice, Learn, Succeed ! </h1>
 <p align="center">
   <a href="https://status.languageXchange.net/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
-  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://badgen.net/badge/icon/discord?icon=discord&label" alt="Discord"></a>
   <a href="https://github.com/languageXchange/languageXchange/releases" target="_blank"><img src="https://img.shields.io/github/release/languageXchange/languageXchange.svg" alt="GitHub release"></a>
   <a href="https://github.com/badges/languageXchange/languageXchange" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/languageXchange/languageXchange" alt="Activity"></a>
   <a href="https://github.com/langaugeXchange/languageXchange/graphs/contributors" target="_blank"><img src="https://img.shields.io/github/contributors/languageXchange/languageXchange.svg" alt="GitHub contributors"></a>
@@ -82,7 +81,7 @@ To check the status of the website, database and CDN, and all clients which are 
 
 To install the project locally, follow these steps:
 
-1. Clone the repository to your local machine using the command `git clone https://github.com/newchaptertech/languageXchange.git`
+1. Clone the repository to your local machine using the command `git clone https://github.com/languageXchange/languageXchange.git`
    - Navigate to the project directory using the command `cd languageXchange`
    - Install the Ionic CLI globally using the command `npm install -g @ionic/cli`
    - Install the project dependencies using the command `npm install`
