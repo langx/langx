@@ -276,6 +276,7 @@ For more information on how to secure your Firebase project, please refer to the
 
 ## Stats
 
+
 ### Stargazers
 
 [![Stargazers over time](https://starchart.cc/languageXchange/languageXchange.svg)](https://starchart.cc/languageXchange/languageXchange)
