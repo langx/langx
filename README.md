@@ -14,7 +14,7 @@
   <a href="https://instagram.com/languageXapp" target="_blank"><img src="https://img.shields.io/badge/-Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white" alt="Instagram"></a>
   <a href="https://tiktok.com/@languageXapp" target="_blank"><img src="https://img.shields.io/badge/-TikTok-000000?style=flat-square&logo=tiktok&logoColor=white" alt="TikTok"></a>
   <a href="https://www.facebook.com/languageXapp" target="_blank"><img src="https://img.shields.io/badge/-Facebook-1877F2?style=flat-square&logo=facebook&logoColor=white" alt="Facebook"></a>
-  <a href="https://www.youtube.com/@languageXchange" target="_blank"><img src="https://img.shields.io/badge/-YouTube-FF0000?style=flat-square&logo=youtube&logoColor=white" alt="YouTube"></a>
+  <a href="https://www.youtube.com/@languageXapp" target="_blank"><img src="https://img.shields.io/badge/-YouTube-FF0000?style=flat-square&logo=youtube&logoColor=white" alt="YouTube"></a>
   <a href="https://bsky.app/profile/languagexapp.bsky.social" target="_blank"><img src="https://img.shields.io/badge/-Bluesky-1DA1F2?style=flat-square&logo=twitter&logoColor=white" alt="Bluesky"></a>
   <a href="https://www.linkedin.com/products/new-chapter-technology-limited-liability-company-languagexchange-practice-learn-succeed/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 </p>
@@ -275,7 +275,6 @@ For more information on how to secure your Firebase project, please refer to the
 
 ## Stats
 
-
 ### Stargazers
 
 [![Stargazers over time](https://starchart.cc/languageXchange/languageXchange.svg?variant=adaptive)](https://starchart.cc/languageXchange/languageXchange)
@@ -289,6 +288,3 @@ For more information on how to secure your Firebase project, please refer to the
 ## License
 
 This project is licensed under the BSD-3-Clause License - see the [LICENSE](./LICENSE) file for details.
-
-
-
