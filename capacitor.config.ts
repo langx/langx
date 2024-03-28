@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'tech.newchapter.languageXchange',
-  appName: 'languageXchange',
+  appName: 'langX',
   webDir: 'www',
   server: {
     androidScheme: 'https',
@@ -25,8 +25,6 @@ const config: CapacitorConfig = {
       autoDeletePrevious: false,
       autoUpdate: false,
       resetWhenUpdate: false,
-      updateUrl: 'https://api.languagexchange.net/api/update/auto_update',
-      statsUrl: 'https://api.languagexchange.net/api/update/stats',
     },
   },
 };
