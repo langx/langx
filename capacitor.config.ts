@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'tech.newchapter.languageXchange',
-  appName: 'langX',
+  appName: 'LangX',
   webDir: 'www',
   server: {
     androidScheme: 'https',

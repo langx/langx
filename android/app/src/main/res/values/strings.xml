@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">langX</string>
-    <string name="title_activity_main">langX</string>
+    <string name="app_name">LangX</string>
+    <string name="title_activity_main">LangX</string>
     <string name="package_name">tech.newchapter.languageXchange</string>
     <string name="custom_url_scheme">tech.newchapter.languageXchange</string>
 </resources>

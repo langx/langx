@@ -1,4 +1,4 @@
- <h1 align="center"> langX | Practice, Learn, Succeed ! </h1>
+ <h1 align="center"> LangX | Practice, Learn, Succeed! </h1>
 <p align="center">
   <a href="https://status.languageXchange.net/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
   <a href="https://github.com/languageXchange/languageXchange/releases" target="_blank"><img src="https://img.shields.io/github/release/languageXchange/languageXchange.svg" alt="GitHub release"></a>
@@ -27,11 +27,11 @@
   <img alt="Featured Image" src="https://github.com/languageXchange/.github/blob/main/assets/featured_image.png" />
   </a>
 </p>
-langX is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
+LangX is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
 
 ## Table of Contents
 
-- [Project Overview](#langX--practice-learn-succeed)
+- [Project Overview](#LangX--practice-learn-succeed)
 - [Status](#status)
 - [Tech Stack](#tech-stack)
 - [Links](#links)

@@ -361,7 +361,7 @@
 				CURRENT_PROJECT_VERSION = 64;
 				DEVELOPMENT_TEAM = 8F63M4JH8P;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = langX;
+				INFOPLIST_KEY_CFBundleDisplayName = LangX;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -389,7 +389,7 @@
 				CURRENT_PROJECT_VERSION = 64;
 				DEVELOPMENT_TEAM = 8F63M4JH8P;
 				INFOPLIST_FILE = App/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = langX;
+				INFOPLIST_KEY_CFBundleDisplayName = LangX;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
