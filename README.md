@@ -65,7 +65,7 @@ To check the status of the website, database and CDN, and all clients which are 
 - Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
 - Native: [Capacitor](https://capacitorjs.com/)
 - Database: [Appwrite](https://appwrite.io/)
-- API: [Expressjs, Nodejs](https://github.com/languagexchange/server)
+- API: [Expressjs, Nodejs](https://github.com/langxapp/server)
 - Cloud Functions: [Appwrite](https://appwrite.io/)
 - Push Notification: [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging)
 - Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)
@@ -73,7 +73,7 @@ To check the status of the website, database and CDN, and all clients which are 
 
 ## Links
 
-- [App Landing Page](https://languagexchange.net/)
+- [App Landing Page](https://langx.io/)
 - [iOS App](https://apps.apple.com/us/app/languagexchange/id6474187141)
 - [Android App](https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange)
 - [Web App](https://app.languagexchange.net/)
@@ -82,8 +82,8 @@ To check the status of the website, database and CDN, and all clients which are 
 
 To install the project locally, follow these steps:
 
-1. Clone the repository to your local machine using the command `git clone https://github.com/languageXchange/languageXchange.git`
-   - Navigate to the project directory using the command `cd languageXchange`
+1. Clone the repository to your local machine using the command `git clone https://github.com/langxapp/langx.git`
+   - Navigate to the project directory using the command `cd langx`
    - Install the Ionic CLI globally using the command `npm install -g @ionic/cli`
    - Install the project dependencies using the command `npm install`
 2. Create a new Appwrite project and enable the Authentication and Database services.
@@ -278,13 +278,13 @@ For more information on how to secure your Firebase project, please refer to the
 
 ### Stargazers
 
-[![Stargazers over time](https://starchart.cc/languageXchange/languageXchange.svg?variant=adaptive)](https://starchart.cc/languageXchange/languageXchange)
+[![Stargazers over time](https://starchart.cc/langxapp/langx.svg?variant=adaptive)](https://starchart.cc/langxapp/langx)
 
 ### Contributors
 
-[![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=languageXchange/languageXchange)](https://git-contributor.com?chart=contributorOverTime&repo=languageXchange/languageXchange)
+[![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=langxapp/langx)](https://git-contributor.com?chart=contributorOverTime&repo=langxapp/langx)
 
-[![GitHub Contributors Image](https://contrib.rocks/image?repo=languageXchange/languageXchange)](https://github.com/languageXchange/languageXchange/graphs/contributors)
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=langxapp/langx)](https://github.com/langxapp/langx/graphs/contributors)
 
 ## License
 
