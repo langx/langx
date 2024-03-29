@@ -1,10 +1,10 @@
-# Contributing to languageXchange
+# Contributing to LangX 
 
-First off, thank you for considering contributing to languageXchange. It's people like you that make languageXchange such a great project.
+First off, thank you for considering contributing to LangX. It's people like you that make LangX such a great project.
 
 ## Where do I go from here?
 
-If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/languagexchange/languagexchange/issues) if there's something similar to what you've observed or want to suggest. If there isn't, feel free to open a new issue!
+If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/langxapp/langx/issues) if there's something similar to what you've observed or want to suggest. If there isn't, feel free to open a new issue!
 
 ## Fork & create a branch
 

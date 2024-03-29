@@ -1,12 +1,11 @@
 {
-  "name": "languagexchange",
+  "name": "langx",
   "version": "0.7.7",
-  "author": "languageXchange",
-  "homepage": "https://languageXchange.net/",
+  "homepage": "https://langx.io/",
   "description": "LangX | Practice, Learn, Succeed! Free and Open Sourced Language Exchange Project",
   "repository": {
     "type": "git",
-    "url": "https://github.com/languageXchange/languageXchange.git"
+    "url": "https://github.com/langxapp/langx.git"
   },
   "scripts": {
     "ng": "ng",
