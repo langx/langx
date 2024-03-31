@@ -19,8 +19,8 @@
   <a href="https://www.linkedin.com/products/new-chapter-technology-limited-liability-company-languagexchange-practice-learn-succeed/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 </p>
 <p align="center">
-  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
-  <a href="https://discord.gg/CpDZ3kg2rJ" target="_blank"><img src="https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat" alt="Join us on Discord"></a>
+  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
+  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat" alt="Join us on Discord"></a>
 </p>
 <p align="center">
   <a href="https://langx.io" target="_blank">
