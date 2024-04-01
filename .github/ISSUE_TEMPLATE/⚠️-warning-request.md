@@ -1,8 +1,8 @@
 ---
 name: "\U000026A0 Warning Request"
 about: Suggest an warning for this project to optimize the code
-title: "\U000026A0 [Warning] : "
-labels: warning
+title: "\U000026A0 : "
+labels: triage 
 
 ---
 
