@@ -7,7 +7,7 @@ on:
 jobs:
   send-notification:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'bug') || contains(github.event.issue.labels.*.name, 'feature')
+    if: contains(github.event.label.name, 'bug') || contains(github.event.label.name, 'feature')
 
     steps:
       - name: Fetch Issue Details
