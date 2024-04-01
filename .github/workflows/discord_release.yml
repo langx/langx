@@ -33,5 +33,5 @@ jobs:
           REPO_NAME: ${{ env.repo_name }}
         run: |
           SUBTITLE="🚀 **New Release :** $RELEASE_VERSION **Repository:** $REPO_NAME"
-          PAYLOAD=$(jq -n --arg rn "$RELEASE_NOTES" --arg url "<$RELEASE_URL>" --arg st "$SUBTITLE" '{content: ($st + "\n**Release notes:** " + $rn + "\n**More:** " + $url)}')
+          PAYLOAD=$(jq -n --arg rn "$RELEASE_NOTES" --arg url "<$RELEASE_URL>" --arg st "$SUBTITLE" '{content: ($st + "\n" + $rn + "\n**More:** " + $url)}')
           curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_WEBHOOK
