@@ -14,7 +14,8 @@ jobs:
         run: |
           API_RESPONSE=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ github.repository }}/releases/latest)
           echo "API Response: $API_RESPONSE"
-          RELEASE_NOTES=$(echo "$API_RESPONSE" | jq -r '.body' | tr -d '\n')
+          RELEASE_NOTES=$(echo "$API_RESPONSE" | jq -r '.body' | tr -d '\n' | cut -c 1-200)
+          RELEASE_NOTES="${RELEASE_NOTES}..."
           RELEASE_URL=$(echo "$API_RESPONSE" | jq -r '.html_url')
           RELEASE_VERSION=$(echo "$API_RESPONSE" | jq -r '.tag_name')
           REPO_NAME="${{ github.repository }}"
@@ -31,6 +32,6 @@ jobs:
           RELEASE_VERSION: ${{ env.release_version }}
           REPO_NAME: ${{ env.repo_name }}
         run: |
-          SUBTITLE="Release version: $RELEASE_VERSION, Repo: $REPO_NAME"
-          PAYLOAD=$(jq -n --arg rn "$RELEASE_NOTES" --arg url "$RELEASE_URL" --arg st "$SUBTITLE" '{content: ($st + "\n\n" + $rn + "\n\n" + $url)}')
+          SUBTITLE="🚀 **New Release :** $RELEASE_VERSION **Repository:** $REPO_NAME"
+          PAYLOAD=$(jq -n --arg rn "$RELEASE_NOTES" --arg url "<$RELEASE_URL>" --arg st "$SUBTITLE" '{content: ($st + "\n**Release notes:** " + $rn + "\n**More:** " + $url)}')
           curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_WEBHOOK
