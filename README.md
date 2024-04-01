@@ -20,7 +20,7 @@
 </p>
 <p align="center">
   <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
-  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://dcbadge.vercel.app/api/server/CpDZ3kg2rJ?style=flat" alt="Join us on Discord"></a>
+  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://dcbadge.vercel.app/api/server/2D3jW2YDgS?style=flat" alt="Join us on Discord"></a>
 </p>
 <p align="center">
   <a href="https://langx.io" target="_blank">
