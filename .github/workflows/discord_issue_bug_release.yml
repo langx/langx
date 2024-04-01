@@ -29,6 +29,6 @@ jobs:
           ISSUE_TITLE: ${{ env.issue_title }}
           REPO_NAME: ${{ env.repo_name }}
         run: |
-          SUBTITLE="**Issue titled:** '$ISSUE_TITLE'\n**In repository:** '$REPO_NAME'"
+          SUBTITLE="**Issue titled:** '$ISSUE_TITLE' **In repository:** '$REPO_NAME'"
           PAYLOAD=$(jq -n --arg url "<$ISSUE_URL>" --arg st "$SUBTITLE" '{content: ($st + "\nMore: " + $url)}')
           curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_WEBHOOK
