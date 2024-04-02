@@ -1,6 +1,10 @@
 import { Client, Databases } from 'node-appwrite';
 
+import { throwIfMissing } from './utils.js';
+
 export default async ({ req, res, log, error }) => {
+  log('Update User function called');
+
   // Init SDK
   const client = new Client()
     .setEndpoint(process.env.APP_ENDPOINT)
@@ -9,10 +13,14 @@ export default async ({ req, res, log, error }) => {
 
   const db = new Databases(client);
 
-  log('Update User function called');
-  log(req.body);
+  throwIfMissing(req, ['body']);
+  throwIfMissing(req.headers, ['x-appwrite-user-id', 'x-appwrite-user-jwt']);
+
+  log(req);
 
   try {
+    const body = JSON.parse(req.body);
+    log(body);
     return res.json({ ok: true, error: null });
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
