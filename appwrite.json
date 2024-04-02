@@ -1,6 +1,6 @@
 {
   "projectId": "650750d21e4a6a589be3",
-  "projectName": "languageXchange",
+  "projectName": "LangX",
   "functions": [
     {
       "$id": "push-notification-with-fcm",
