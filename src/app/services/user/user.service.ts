@@ -37,9 +37,11 @@ export class UserService {
 
   updateUserDoc(uid: string, data: any): Observable<User> {
     // TODO: Delete Test Function Call after testing
-    this.api.function.createExecution('update-user', 'v1').then((response) => {
-      console.log(response);
-    });
+    this.api.function
+      .createExecution('update-user', JSON.stringify(data))
+      .then((response) => {
+        console.log(response);
+      });
     return from(
       this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );
