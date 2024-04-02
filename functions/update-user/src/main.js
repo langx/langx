@@ -1,4 +1,4 @@
-import { Client, Databases } from 'node-appwrite';
+import { Client, Databases, Account } from 'node-appwrite';
 
 import { throwIfMissing } from './utils.js';
 
@@ -16,13 +16,28 @@ export default async ({ req, res, log, error }) => {
   throwIfMissing(req, ['body']);
   throwIfMissing(req.headers, ['x-appwrite-user-id', 'x-appwrite-user-jwt']);
 
-  log(req);
+  const user = req.headers['x-appwrite-user-id'];
+  const jwt = req.headers['x-appwrite-jwt'];
 
   try {
+    // Check JWT
+    const verifyUser = new Client()
+      .setEndpoint(env.APP_ENDPOINT)
+      .setProject(env.APP_PROJECT)
+      .setJWT(jwt);
+
+    const account = new Account(verifyUser);
+    const verifiedUser = await account.get();
+    // console.log(`user: ${JSON.stringify(user)}`);
+
+    if (verifiedUser.$id !== sender) {
+      return res.status(400).json({ ok: false, error: 'jwt is invalid' });
+    }
+    
     const body = JSON.parse(req.body);
     log(body);
     return res.json({ ok: true, error: null });
   } catch (err) {
-    return res.json({ ok: false, error: err.message }, 400);
+    return res.status(400).json({ ok: false, error: err.message });
   }
 };
