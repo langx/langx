@@ -13,7 +13,7 @@ export default async ({ req, res, log, error }) => {
   log(req.body);
 
   try {
-    res.json({ ok: true, error: null });
+    return res.json({ ok: true, error: null });
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
