@@ -29,14 +29,14 @@ export class BucketEffects {
   uploadProfilePicture$ = createEffect(() =>
     this.actions$.pipe(
       ofType(uploadProfilePictureAction),
-      switchMap(({ request, currentUserId }) => {
+      switchMap(({ request }) => {
         return this.userService.uploadFile(request).pipe(
           map((payload: URL) => {
             return payload;
           }),
           switchMap((payload) => {
             return this.userService
-              .updateUserDoc(currentUserId, {
+              .updateUserDoc({
                 profilePhoto: payload,
               })
               .pipe(
@@ -64,7 +64,7 @@ export class BucketEffects {
   uploadOtherPhotos$ = createEffect(() =>
     this.actions$.pipe(
       ofType(uploadOtherPhotosAction),
-      switchMap(({ request, currentUserId, otherPhotos }) => {
+      switchMap(({ request, otherPhotos }) => {
         return this.userService.uploadFile(request).pipe(
           map((payload: URL) => {
             return payload;
@@ -72,7 +72,7 @@ export class BucketEffects {
           switchMap((payload) => {
             const updatedOtherPhotos = [...otherPhotos, payload];
             return this.userService
-              .updateUserDoc(currentUserId, {
+              .updateUserDoc({
                 otherPhotos: updatedOtherPhotos,
               })
               .pipe(

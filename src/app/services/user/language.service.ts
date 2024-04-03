@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 // import { ID } from 'appwrite';
 import { ID } from 'src/app/extras/sdk/src';
 import { Observable, from, switchMap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import axios from 'axios';
 
 // Service and env Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
 import { UserService } from 'src/app/services/user/user.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
@@ -15,19 +18,55 @@ import { createLanguageRequestInterface } from 'src/app/models/types/requests/cr
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
 
+// Selector Imports
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+
 @Injectable({
   providedIn: 'root',
 })
 export class LanguageService {
-  constructor(private api: ApiService, private userService: UserService) {}
+  constructor(
+    private store: Store,
+    private api: ApiService,
+    private userService: UserService,
+    private authService: AuthService
+  ) {}
 
-  createLanguageDoc(data: any): Observable<any> {
+  createLanguageDoc(
+    data: createLanguageRequestInterface
+  ): Observable<Language> {
+    // return from(
+    //   this.api.createDocument(
+    //     environment.appwrite.LANGUAGES_COLLECTION,
+    //     ID.unique(),
+    //     data
+    //   )
+    // );
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(currentUserSelector))
+      .subscribe((user) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = user.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.createDocument(
-        environment.appwrite.LANGUAGES_COLLECTION,
-        ID.unique(),
-        data
-      )
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/language
+        return from(
+          axios.post(environment.api.LANGUAGE_API_URL, data).then((result) => {
+            console.log('result.data: ', result.data);
+            return result.data as Language;
+          })
+        );
+      })
     );
   }
 
@@ -59,7 +98,7 @@ export class LanguageService {
         const newLanguageArray = {
           languageArray: [...languageArray, payload.name],
         };
-        return this.userService.updateUserDoc(data.userId, newLanguageArray);
+        return this.userService.updateUserDoc(newLanguageArray);
       })
     );
   }
@@ -80,7 +119,7 @@ export class LanguageService {
             (language) => language !== request.name
           ),
         };
-        return this.userService.updateUserDoc(request.userId, newLanguageArray);
+        return this.userService.updateUserDoc(newLanguageArray);
       })
     );
   }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 // import { ID, Query } from 'appwrite';
 import { ID, Query } from 'src/app/extras/sdk/src';
 import { Observable, forkJoin, from, of, switchMap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 import axios from 'axios';
 
 // Environment and Services Imports
@@ -19,11 +20,15 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { listVisitsResponseInterface } from 'src/app/models/types/responses/listVisitsResponse.interface';
 import { listStreaksResponseInterface } from 'src/app/models/types/responses/listStreaksResponse.interface';
 
+// Selector Imports
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
+
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   constructor(
+    private store: Store,
     private api: ApiService,
     private authService: AuthService,
     private storage: StorageService
@@ -35,9 +40,15 @@ export class UserService {
     );
   }
 
-  createUserDoc(uid: string, data: any): Observable<User> {
+  // TODO: Add type for data
+  createUserDoc(data: any): Observable<User> {
     // Set x-appwrite-user-id header
-    axios.defaults.headers.common['x-appwrite-user-id'] = uid;
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
 
     // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
     // Set x-appwrite-jwt header
@@ -60,9 +71,15 @@ export class UserService {
     );
   }
 
-  updateUserDoc(uid: string, data: any): Observable<User> {
+  // TODO: Add type for data
+  updateUserDoc(data: any): Observable<User> {
     // Set x-appwrite-user-id header
-    axios.defaults.headers.common['x-appwrite-user-id'] = uid;
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
 
     // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
     // Set x-appwrite-jwt header

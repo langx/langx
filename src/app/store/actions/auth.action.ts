@@ -52,7 +52,7 @@ export const registerFailureAction = createAction(
 // Complete Registration
 export const completeRegistrationAction = createAction(
   ActionTypes.COMPLETE_REGISTRATION,
-  props<{ request: CompleteRegistrationRequestInterface; id: string }>()
+  props<{ request: CompleteRegistrationRequestInterface }>()
 );
 
 export const completeRegistrationSuccessAction = createAction(
@@ -89,8 +89,7 @@ export const languageSelectionFailureAction = createAction(
 
 export const updateLanguageArrayAction = createAction(
   ActionTypes.UPDATE_LANGUAGE_ARRAY,
-  // TODO: Create interface for this request
-  props<{ request: string[]; id: string }>()
+  props<{ request: string[] }>()
 );
 
 export const updateLanguageArraySuccessAction = createAction(

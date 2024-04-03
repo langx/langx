@@ -67,18 +67,16 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(updateCurrentUserAction),
       switchMap(({ request }) => {
-        return this.userService
-          .updateUserDoc(request.userId, request.data)
-          .pipe(
-            map((payload: User) => updateCurrentUserSuccessAction({ payload })),
+        return this.userService.updateUserDoc(request.data).pipe(
+          map((payload: User) => updateCurrentUserSuccessAction({ payload })),
 
-            catchError((errorResponse: HttpErrorResponse) => {
-              const error: ErrorInterface = {
-                message: errorResponse.message,
-              };
-              return of(updateCurrentUserFailureAction({ error }));
-            })
-          );
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(updateCurrentUserFailureAction({ error }));
+          })
+        );
       })
     )
   );

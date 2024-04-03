@@ -140,9 +140,7 @@ export class CompletePage implements OnInit, OnDestroy {
           gender: form.value.gender,
           lastSeen: new Date(),
         };
-        this.store.dispatch(
-          completeRegistrationAction({ request, id: account.$id })
-        );
+        this.store.dispatch(completeRegistrationAction({ request }));
       })
       .unsubscribe();
   }
