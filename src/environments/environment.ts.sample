@@ -50,6 +50,7 @@ export const environment = {
     UPDATE_API_URL: `${API_URL}api/update`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    UPDATE_USER_API_URL: `${API_URL}api/user`,
   },
   ext: {
     STATUS_PAGE: STATUS_PAGE,
