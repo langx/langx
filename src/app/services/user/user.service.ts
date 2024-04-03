@@ -36,8 +36,27 @@ export class UserService {
   }
 
   createUserDoc(uid: string, data: any): Observable<User> {
+    // Set x-appwrite-user-id header
+    axios.defaults.headers.common['x-appwrite-user-id'] = uid;
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.createDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/user
+        return from(
+          axios.post(environment.api.USER_API_URL, data).then((result) => {
+            console.log('result: ', result);
+            console.log('result.data: ', result.data);
+            return result.data as User;
+          })
+        );
+      })
     );
   }
 
@@ -56,19 +75,14 @@ export class UserService {
       switchMap(() => {
         // Call the /api/user
         return from(
-          axios
-            .patch(environment.api.UPDATE_USER_API_URL, data)
-            .then((result) => {
-              console.log('result: ', result);
-              console.log('result.data: ', result.data);
-              return result.data as User;
-            })
+          axios.patch(environment.api.USER_API_URL, data).then((result) => {
+            console.log('result: ', result);
+            console.log('result.data: ', result.data);
+            return result.data as User;
+          })
         );
       })
     );
-    // return from(
-    //   this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
-    // );
   }
 
   listUsersByTargetLanguage(
