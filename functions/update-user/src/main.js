@@ -17,9 +17,12 @@ export default async ({ req, res, log, error }) => {
   throwIfMissing(req.headers, ['x-appwrite-user-id', 'x-appwrite-user-jwt']);
 
   const user = req.headers['x-appwrite-user-id'];
-  const jwt = req.headers['x-appwrite-jwt'];
+  const jwt = req.headers['x-appwrite-user-jwt'];
+  log(`user: ${user}`);
+  log(`jwt: ${jwt}`);
 
   try {
+    log('Verifying JWT');
     // Check JWT
     const verifyUser = new Client()
       .setEndpoint(env.APP_ENDPOINT)
@@ -28,16 +31,16 @@ export default async ({ req, res, log, error }) => {
 
     const account = new Account(verifyUser);
     const verifiedUser = await account.get();
-    // console.log(`user: ${JSON.stringify(user)}`);
+    log(`user: ${JSON.stringify(verifiedUser)}`);
 
     if (verifiedUser.$id !== sender) {
-      return res.status(400).json({ ok: false, error: 'jwt is invalid' });
+      return res.json({ ok: false, error: 'jwt is invalid' }, 401);
     }
-    
+
     const body = JSON.parse(req.body);
     log(body);
     return res.json({ ok: true, error: null });
   } catch (err) {
-    return res.status(400).json({ ok: false, error: err.message });
+    return res.json({ ok: false, error: err.message }, 400);
   }
 };
