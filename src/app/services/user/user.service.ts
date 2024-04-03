@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 // import { ID, Query } from 'appwrite';
 import { ID, Query } from 'src/app/extras/sdk/src';
 import { Observable, forkJoin, from, of, switchMap } from 'rxjs';
+import axios from 'axios';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Interface Imports
@@ -21,7 +23,11 @@ import { listStreaksResponseInterface } from 'src/app/models/types/responses/lis
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private api: ApiService, private storage: StorageService) {}
+  constructor(
+    private api: ApiService,
+    private authService: AuthService,
+    private storage: StorageService
+  ) {}
 
   getUserDoc(uid: string): Observable<any> {
     return from(
@@ -36,21 +42,33 @@ export class UserService {
   }
 
   updateUserDoc(uid: string, data: any): Observable<User> {
-    // TODO: Delete Test Function Call after testing
-    this.api.function
-      .createExecution('update-user', JSON.stringify(data))
-      .then((response) => {
-        console.log('update-user', response);
-      });
-    this.api
-      .updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
-      .then((response) => {
-        console.log('updateDocument', response);
-      });
+    // Set x-appwrite-user-id header
+    axios.defaults.headers.common['x-appwrite-user-id'] = uid;
 
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/user
+        return from(
+          axios
+            .patch(environment.api.UPDATE_USER_API_URL, data)
+            .then((result) => {
+              console.log('result: ', result);
+              console.log('result.data: ', result.data);
+              return result.data as User;
+            })
+        );
+      })
     );
+    // return from(
+    //   this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+    // );
   }
 
   listUsersByTargetLanguage(
