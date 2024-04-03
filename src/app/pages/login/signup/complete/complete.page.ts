@@ -139,10 +139,6 @@ export class CompletePage implements OnInit, OnDestroy {
           countryCode: form.value.countryCode,
           gender: form.value.gender,
           lastSeen: new Date(),
-
-          // Add default notifications
-          notifications: ['email'],
-          notificationsArray: ['message', 'visit', 'update', 'promotion'],
         };
         this.store.dispatch(
           completeRegistrationAction({ request, id: account.$id })
