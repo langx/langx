@@ -40,8 +40,14 @@ export class UserService {
     this.api.function
       .createExecution('update-user', JSON.stringify(data))
       .then((response) => {
-        console.log(response);
+        console.log('update-user', response);
       });
+    this.api
+      .updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+      .then((response) => {
+        console.log('updateDocument', response);
+      });
+
     return from(
       this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
     );
