@@ -303,7 +303,7 @@ const messageReducer = createReducer(
       // Check if the message belongs to the active room
       if (state.room.$id !== action.payload.roomId.$id) return { ...state };
 
-      // Return the new state
+      // Create a new payload with roomId as a string
       const payload: Message = {
         ...action.payload,
         roomId: action.payload.roomId.$id,
@@ -314,8 +314,8 @@ const messageReducer = createReducer(
         room: {
           ...state.room,
           messages: state.room.messages.map((msg) => {
-            if (msg.$id === action.payload.$id) {
-              return { ...msg, seen: true };
+            if (msg.$id === payload.$id) {
+              return { ...msg, ...payload };
             }
             return msg;
           }),
