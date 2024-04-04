@@ -32,7 +32,10 @@
 
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
-              {{ msg?.body }}
+              <span *ngIf="!msg?.deleted">{{ msg?.body }}</span>
+              <small *ngIf="msg?.deleted">
+                <i>[deleted message]</i>
+              </small>
             </span>
 
             <!-- Image message -->
@@ -136,7 +139,10 @@
 
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
-              {{ msg?.body }}
+              <span *ngIf="!msg?.deleted">{{ msg?.body }}</span>
+              <small *ngIf="msg?.deleted">
+                <i>[deleted message]</i>
+              </small>
             </span>
 
             <!-- Image message -->
