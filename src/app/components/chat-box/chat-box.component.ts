@@ -39,6 +39,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() chat: Message;
   @Input() current_user_id: string;
   @Output() onReply: EventEmitter<any> = new EventEmitter();
+  @Output() onEdit: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
 
   private observer: IntersectionObserver;
@@ -261,6 +262,16 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
 
   reply(msg: Message) {
     this.onReply.emit(msg);
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+  }
+
+  //
+  // Reply
+  //
+
+  edit(msg: Message) {
+    this.onEdit.emit(msg);
     this.itemSlidingSender.close();
     this.itemSlidingReveiver.close();
   }
