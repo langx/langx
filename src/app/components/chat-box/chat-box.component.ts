@@ -202,9 +202,14 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   handleIntersect(entry) {
     if (entry.isIntersecting) {
       if (this.msg.to === this.current_user_id && this.msg.seen === false) {
-        this.msg.seen = true;
+        const request = {
+          id: this.msg.$id,
+          data: {
+            seen: true,
+          },
+        };
         // Dispatch action to update message seen status
-        this.store.dispatch(updateMessageSeenAction({ request: this.msg }));
+        this.store.dispatch(updateMessageSeenAction({ request }));
       }
     }
   }

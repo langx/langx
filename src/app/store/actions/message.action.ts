@@ -72,7 +72,7 @@ export const deactivateRoomAction = createAction(
 // Update Message Actions
 export const updateMessageSeenAction = createAction(
   ActionTypes.UPDATE_MESSAGE_SEEN,
-  props<{ request: Message }>()
+  props<{ request: { id: string; data: any } }>()
 );
 
 export const updateMessageSeenSuccessAction = createAction(

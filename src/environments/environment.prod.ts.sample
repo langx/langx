@@ -49,7 +49,7 @@ export const environment = {
   api: {
     UPDATE_API_URL: `${API_URL}api/update`,
     CREATE_ROOM_API_URL: `${API_URL}api/room`,
-    CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
+    MESSAGE: `${API_URL}api/message`,
     USER_API_URL: `${API_URL}api/user`,
     LANGUAGE_API_URL: `${API_URL}api/language`,
     VISIT_API_URL: `${API_URL}api/visit`,
