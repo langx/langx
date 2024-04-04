@@ -73,11 +73,13 @@ export class UserService {
 
   // TODO: Add type for data
   updateUserDoc(data: any): Observable<User> {
+    let currentUserId: string;
     // Set x-appwrite-user-id header
     this.store
       .pipe(select(accountSelector))
       .subscribe((account) => {
         axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+        currentUserId = account.$id;
       })
       .unsubscribe();
 
@@ -92,10 +94,12 @@ export class UserService {
       switchMap(() => {
         // Call the /api/user
         return from(
-          axios.patch(environment.api.USER_API_URL, data).then((result) => {
-            // console.log('result.data: ', result.data);
-            return result.data as User;
-          })
+          axios
+            .patch(`${environment.api.USER_API_URL}/${currentUserId}`, data)
+            .then((result) => {
+              // console.log('result.data: ', result.data);
+              return result.data as User;
+            })
         );
       })
     );
