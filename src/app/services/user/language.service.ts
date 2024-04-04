@@ -35,13 +35,6 @@ export class LanguageService {
   createLanguageDoc(
     data: createLanguageRequestInterface
   ): Observable<Language> {
-    // return from(
-    //   this.api.createDocument(
-    //     environment.appwrite.LANGUAGES_COLLECTION,
-    //     ID.unique(),
-    //     data
-    //   )
-    // );
     // Set x-appwrite-user-id header
     this.store
       .pipe(select(currentUserSelector))
