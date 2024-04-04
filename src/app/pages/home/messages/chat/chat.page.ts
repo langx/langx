@@ -409,6 +409,7 @@ export class ChatPage implements OnInit, OnDestroy {
     this.editMessage = message;
     // console.log('Replying to:', this.replyMessage.$id);
     setTimeout(() => {
+      this.myTextArea.value = message.body;
       this.myTextArea.setFocus();
     }, 100);
   }
