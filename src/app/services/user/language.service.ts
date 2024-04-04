@@ -66,12 +66,33 @@ export class LanguageService {
   updateLanguageDoc(
     request: updateLanguageRequestInterface
   ): Observable<Language> {
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(currentUserSelector))
+      .subscribe((user) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = user.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.updateDocument(
-        environment.appwrite.LANGUAGES_COLLECTION,
-        request.id,
-        request.data
-      )
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/language
+        return from(
+          axios
+            .patch(environment.api.LANGUAGE_API_URL, request)
+            .then((result) => {
+              console.log('result.data: ', result.data);
+              return result.data as Language;
+            })
+        );
+      })
     );
   }
 
