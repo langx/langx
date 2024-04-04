@@ -101,13 +101,7 @@ export class LanguageService {
     data: createLanguageRequestInterface,
     languageArray: string[]
   ): Observable<User> {
-    return from(
-      this.api.createDocument(
-        environment.appwrite.LANGUAGES_COLLECTION,
-        ID.unique(),
-        data
-      )
-    ).pipe(
+    return from(this.createLanguageDoc(data)).pipe(
       switchMap((payload: Language) => {
         const newLanguageArray = {
           languageArray: [...languageArray, payload.name],
