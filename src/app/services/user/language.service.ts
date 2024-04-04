@@ -54,7 +54,7 @@ export class LanguageService {
       switchMap(() => {
         // Call the /api/language
         return from(
-          axios.post(environment.api.LANGUAGE_API_URL, data).then((result) => {
+          axios.post(environment.api.LANGUAGE, data).then((result) => {
             console.log('result.data: ', result.data);
             return result.data as Language;
           })
@@ -87,7 +87,7 @@ export class LanguageService {
         return from(
           axios
             .patch(
-              `${environment.api.LANGUAGE_API_URL}/${request.id}`,
+              `${environment.api.LANGUAGE}/${request.id}`,
               request.data
             )
             .then((result) => {

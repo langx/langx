@@ -47,12 +47,12 @@ export const environment = {
     BADGES: `${PWA_URL}assets/image/badges`,
   },
   api: {
-    UPDATE_API_URL: `${API_URL}api/update`,
-    CREATE_ROOM_API_URL: `${API_URL}api/room`,
+    UPDATE: `${API_URL}api/update`,
+    ROOM: `${API_URL}api/room`,
     MESSAGE: `${API_URL}api/message`,
-    USER_API_URL: `${API_URL}api/user`,
-    LANGUAGE_API_URL: `${API_URL}api/language`,
-    VISIT_API_URL: `${API_URL}api/visit`,
+    USER: `${API_URL}api/user`,
+    LANGUAGE: `${API_URL}api/language`,
+    VISIT: `${API_URL}api/visit`,
   },
   ext: {
     STATUS_PAGE: STATUS_PAGE,

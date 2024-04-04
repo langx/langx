@@ -62,7 +62,7 @@ export class UserService {
       switchMap(() => {
         // Call the /api/user
         return from(
-          axios.post(environment.api.USER_API_URL, data).then((result) => {
+          axios.post(environment.api.USER, data).then((result) => {
             // console.log('result.data: ', result.data);
             return result.data as User;
           })
@@ -95,7 +95,7 @@ export class UserService {
         // Call the /api/user
         return from(
           axios
-            .patch(`${environment.api.USER_API_URL}/${currentUserId}`, data)
+            .patch(`${environment.api.USER}/${currentUserId}`, data)
             .then((result) => {
               // console.log('result.data: ', result.data);
               return result.data as User;
@@ -246,7 +246,7 @@ export class UserService {
         // Call the /api/user
         return from(
           axios
-            .post(environment.api.VISIT_API_URL, { to: to })
+            .post(environment.api.VISIT, { to: to })
             .then((result) => {
               // console.log('result.data: ', result.data);
               return result.data as Visit;
