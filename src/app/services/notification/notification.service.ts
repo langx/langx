@@ -75,7 +75,7 @@ export class NotificationService {
             this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
-            console.log('[NOTIFICATION] message updated', response.payload);
+            // console.log('[NOTIFICATION] message updated', response.payload);
             const updatedMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
               findRoomAndUpdateMessageAction({
