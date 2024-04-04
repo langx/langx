@@ -89,10 +89,14 @@ export class UserEffects {
         const user$ = this.userService.getUserDoc(userId);
         let visitor$;
 
-        if (currentUser?.privacy.includes('profileVisits')) {
+        if (
+          currentUser?.privacy.includes('profileVisits') ||
+          currentUser?.$id === userId
+        ) {
           visitor$ = of(null); // If 'profileVisits' is in the privacy settings, don't create a visit document
         } else {
-          visitor$ = this.userService.createVisitDoc(currentUser.$id, userId); // Otherwise, create a visit document
+          // console.log('creating visit doc');
+          visitor$ = this.userService.createVisitDoc(userId); // Otherwise, create a visit document
         }
 
         return forkJoin({ user: user$, visitor: visitor$ }).pipe(
