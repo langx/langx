@@ -93,7 +93,7 @@ export class UserEffects {
           currentUser?.privacy.includes('profileVisits') ||
           currentUser?.$id === userId
         ) {
-          visitor$ = of(null); // If 'profileVisits' is in the privacy settings, don't create a visit document
+          visitor$ = of(null);
         } else {
           // console.log('creating visit doc');
           visitor$ = this.userService.createVisitDoc(userId); // Otherwise, create a visit document
