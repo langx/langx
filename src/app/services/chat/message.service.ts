@@ -62,11 +62,9 @@ export class MessageService {
       switchMap(() => {
         // Call the /api/message
         return from(
-          axios
-            .post(environment.api.MESSAGE, request)
-            .then((result) => {
-              return result.data as Message;
-            })
+          axios.post(environment.api.MESSAGE, request).then((result) => {
+            return result.data as Message;
+          })
         );
       })
     );
@@ -100,14 +98,9 @@ export class MessageService {
       switchMap(() => {
         // Call the /api/message
         return from(
-          axios
-            .patch(
-              `${environment.api.MESSAGE}/${request.id}`,
-              request.data
-            )
-            .then((result) => {
-              return result.data as Message;
-            })
+          axios.patch(environment.api.MESSAGE, request).then((result) => {
+            return result.data as Message;
+          })
         );
       })
     );
