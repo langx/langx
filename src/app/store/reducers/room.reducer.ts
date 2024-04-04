@@ -37,7 +37,7 @@ import {
   findOrAddRoomAction,
   findOrAddRoomSuccessAction,
   findOrAddRoomFailureAction,
-  findRoomAndUpdateMessageSeenAction,
+  findRoomAndUpdateMessageAction,
   findRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
 
@@ -266,9 +266,9 @@ const roomReducer = createReducer(
     return { ...state, rooms: sortedRooms };
   }),
 
-  // Find And Update Room Message Seen Reducer
+  // Find And Update Room Message Reducer
   on(
-    findRoomAndUpdateMessageSeenAction,
+    findRoomAndUpdateMessageAction,
     (state, action): RoomStateInterface => {
       // Create a new array with the updated room
       const updatedRooms = state.rooms?.map((room) => {

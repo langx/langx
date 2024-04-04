@@ -20,10 +20,10 @@ import {
   findActiveRoomAndAddMessageAction,
   findAndUpdateRoomUpdatedAtAction,
   findAndUpdateActiveRoomUpdatedAtAction,
-  findActiveRoomAndUpdateMessageSeenAction,
+  findActiveRoomAndUpdateMessageAction,
   findOrAddRoomAction,
   totalUnseenMessagesAction,
-  findRoomAndUpdateMessageSeenAction,
+  findRoomAndUpdateMessageAction,
   findRoomAndDeleteMessageAction,
   findActiveRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
@@ -75,15 +75,15 @@ export class NotificationService {
             this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
-            // console.log('[NOTIFICATION] message updated', response.payload);
+            console.log('[NOTIFICATION] message updated', response.payload);
             const updatedMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
-              findRoomAndUpdateMessageSeenAction({
+              findRoomAndUpdateMessageAction({
                 payload: updatedMessage,
               })
             );
             this.store.dispatch(
-              findActiveRoomAndUpdateMessageSeenAction({
+              findActiveRoomAndUpdateMessageAction({
                 payload: updatedMessage,
               })
             );
