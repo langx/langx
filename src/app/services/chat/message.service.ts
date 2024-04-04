@@ -100,11 +100,32 @@ export class MessageService {
   }
 
   deleteMessage(request: deleteMessageRequestInterface): Observable<Message> {
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.deleteDocument(
-        environment.appwrite.MESSAGES_COLLECTION,
-        request.$id
-      )
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/message
+        return from(
+          axios
+            .delete(`${environment.api.MESSAGE}/${request.$id}`)
+            .then((result) => {
+              return result.data as Message;
+            })
+        );
+      })
     );
   }
 
