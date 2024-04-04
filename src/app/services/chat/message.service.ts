@@ -72,13 +72,6 @@ export class MessageService {
 
   // Update Message
   updateMessage(request: { id: string; data: any }): Observable<Message> {
-    // return from(
-    //   this.api.updateDocument(
-    //     environment.appwrite.MESSAGES_COLLECTION,
-    //     request.id,
-    //     request.data
-    //   )
-    // );
     // Set x-appwrite-user-id header
     this.store
       .pipe(select(accountSelector))
