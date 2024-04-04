@@ -62,8 +62,7 @@ export class UserService {
         // Call the /api/user
         return from(
           axios.post(environment.api.USER_API_URL, data).then((result) => {
-            console.log('result: ', result);
-            console.log('result.data: ', result.data);
+            // console.log('result.data: ', result.data);
             return result.data as User;
           })
         );
@@ -93,7 +92,6 @@ export class UserService {
         // Call the /api/user
         return from(
           axios.patch(environment.api.USER_API_URL, data).then((result) => {
-            // console.log('result: ', result);
             // console.log('result.data: ', result.data);
             return result.data as User;
           })
