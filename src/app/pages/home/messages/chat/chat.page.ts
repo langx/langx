@@ -299,6 +299,9 @@ export class ChatPage implements OnInit, OnDestroy {
           this.presentToast('Message exceeds 500 characters.', 'danger');
         } else if (!this.form.valid) {
           this.presentToast('Please type your message.', 'danger');
+        } else if (this.editMessage) {
+          this.presentToast('Editing is not supported yet.', 'danger');
+          // TODO: Update message implementation
         } else {
           request = this.createMessageWithText(user);
         }
