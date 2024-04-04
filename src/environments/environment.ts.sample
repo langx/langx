@@ -52,6 +52,7 @@ export const environment = {
     CREATE_MESSAGE_API_URL: `${API_URL}api/message`,
     USER_API_URL: `${API_URL}api/user`,
     LANGUAGE_API_URL: `${API_URL}api/language`,
+    VISIT_API_URL: `${API_URL}api/visit`,
   },
   ext: {
     STATUS_PAGE: STATUS_PAGE,
