@@ -47,9 +47,6 @@ export class AppComponent {
     // Init Deep Link
     this.initDeepLink();
 
-    // Check for updates
-    this.updateService.checkForUpdates();
-
     // Init Locale
     this.store.dispatch(listCountriesAction());
     this.store.dispatch(listLanguagesAction());
@@ -96,8 +93,12 @@ export class AppComponent {
 
   initAppStateChange() {
     App.addListener('appStateChange', (state) => {
-      // state.isActive contains the active state
       // console.log('App state changed. New state:', state);
+      // Check for updates
+      if (state.isActive) {
+        this.updateService.checkForUpdates();
+      }
+
       // TODO: It has bug, pull up to page and it will call multiple times
       // List rooms
       // this.store
