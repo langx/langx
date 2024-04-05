@@ -23,7 +23,7 @@ import {
 
 import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { messageTime } from 'src/app/extras/utils';
+import { messageTime, urlify } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { updateMessageAction } from 'src/app/store/actions/message.action';
@@ -80,45 +80,10 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.observer.disconnect();
   }
 
-  urlify(text: string): Array<{ type: string; content: string }> {
-    if (!text || text.length === 0) {
-      return [{ type: 'text', content: text }];
-    }
-
-    var urlRegex =
-      /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}\b([-a-z0-9@:%_+.~#?&//=]*))/g;
-    let segments = [];
-    let match;
-    let lastIndex = 0;
-
-    while ((match = urlRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        segments.push({
-          type: 'text',
-          content: text.slice(lastIndex, match.index),
-        });
-      }
-
-      let url = match[0];
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-      }
-      segments.push({ type: 'url', content: url });
-
-      lastIndex = urlRegex.lastIndex;
-    }
-
-    if (lastIndex < text.length) {
-      segments.push({ type: 'text', content: text.slice(lastIndex) });
-    }
-
-    return segments;
-  }
-
   async initValues() {
     this.msg = { ...this.chat };
 
-    this.messageSegments = this.urlify(this.msg?.body);
+    this.messageSegments = urlify(this.msg?.body);
 
     // Check if the message has replyTo
     if (this.msg.replyTo) {
