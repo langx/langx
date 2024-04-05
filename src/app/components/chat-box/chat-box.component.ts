@@ -151,6 +151,55 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
+  // Reply
+  //
+
+  reply(msg: Message) {
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+
+    // emit the message to the parent component
+    this.onReply.emit(msg);
+  }
+
+  //
+  // Edit
+  //
+
+  edit(msg: Message) {
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+
+    if (this.msg.type === 'audio') {
+      this.presentToast('You cannot edit an audio message', 'danger');
+      return;
+    }
+
+    if (this.msg.type === 'image') {
+      this.presentToast('You cannot edit an image message', 'danger');
+      return;
+    }
+
+    if (this.msg.deleted === true) {
+      this.presentToast('You cannot edit a deleted message', 'danger');
+      return;
+    }
+
+    // emit the message to the parent component
+    this.onEdit.emit(msg);
+  }
+
+  //
+  // Delete
+  //
+
+  delete(msg: Message) {
+    this.onDelete.emit(msg);
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+  }
+
+  //
   // Utils for audio
   //
 
@@ -257,15 +306,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
-  // Utils for time
-  //
-
-  messageTime(d: any) {
-    if (!d) return null;
-    return messageTime(d);
-  }
-
-  //
   // Utils for image preview
   //
 
@@ -298,60 +338,20 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
+  // Utils for time
+  //
+
+  messageTime(d: any) {
+    if (!d) return null;
+    return messageTime(d);
+  }
+
+  //
   // Utils for actions
   //
 
   async openPage(url: string) {
     await Browser.open({ url: url });
-  }
-
-  //
-  // Reply
-  //
-
-  reply(msg: Message) {
-    this.itemSlidingSender.close();
-    this.itemSlidingReveiver.close();
-
-    // emit the message to the parent component
-    this.onReply.emit(msg);
-  }
-
-  //
-  // Edit
-  //
-
-  edit(msg: Message) {
-    this.itemSlidingSender.close();
-    this.itemSlidingReveiver.close();
-
-    if (this.msg.type === 'audio') {
-      this.presentToast('You cannot edit an audio message', 'danger');
-      return;
-    }
-
-    if (this.msg.type === 'image') {
-      this.presentToast('You cannot edit an image message', 'danger');
-      return;
-    }
-
-    if (this.msg.deleted === true) {
-      this.presentToast('You cannot edit a deleted message', 'danger');
-      return;
-    }
-
-    // emit the message to the parent component
-    this.onEdit.emit(msg);
-  }
-
-  //
-  // Delete
-  //
-
-  delete(msg: Message) {
-    this.onDelete.emit(msg);
-    this.itemSlidingSender.close();
-    this.itemSlidingReveiver.close();
   }
 
   //
