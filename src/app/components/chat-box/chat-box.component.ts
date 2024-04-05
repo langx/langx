@@ -262,9 +262,11 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   //
 
   reply(msg: Message) {
-    this.onReply.emit(msg);
     this.itemSlidingSender.close();
     this.itemSlidingReveiver.close();
+
+    // emit the message to the parent component
+    this.onReply.emit(msg);
   }
 
   //
@@ -272,9 +274,26 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   //
 
   edit(msg: Message) {
-    this.onEdit.emit(msg);
     this.itemSlidingSender.close();
     this.itemSlidingReveiver.close();
+
+    if (this.msg.type === 'audio') {
+      this.presentToast('You cannot edit an audio message', 'danger');
+      return;
+    }
+
+    if (this.msg.type === 'image') {
+      this.presentToast('You cannot edit an image message', 'danger');
+      return;
+    }
+
+    if (this.msg.deleted === true) {
+      this.presentToast('You cannot edit a deleted message', 'danger');
+      return;
+    }
+
+    // emit the message to the parent component
+    this.onEdit.emit(msg);
   }
 
   //
