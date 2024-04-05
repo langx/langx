@@ -119,8 +119,9 @@ export class ChatPage implements OnInit, OnDestroy {
   audioId: string;
   private audioIdTemp: string;
 
-  // Reply Variables
+  // Reply and Edit Variables
   replyMessage: Message;
+  editMessage: Message;
 
   // Counter Variables
   isCounterShow: boolean = false;
@@ -298,6 +299,9 @@ export class ChatPage implements OnInit, OnDestroy {
           this.presentToast('Message exceeds 500 characters.', 'danger');
         } else if (!this.form.valid) {
           this.presentToast('Please type your message.', 'danger');
+        } else if (this.editMessage) {
+          this.presentToast('Editing is not supported yet.', 'danger');
+          // TODO: Update message implementation
         } else {
           request = this.createMessageWithText(user);
         }
@@ -387,6 +391,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   onReply(message: Message) {
+    this.editMessage = null;
     this.replyMessage = message;
     // console.log('Replying to:', this.replyMessage.$id);
     setTimeout(() => {
@@ -396,6 +401,24 @@ export class ChatPage implements OnInit, OnDestroy {
 
   unlinkReply() {
     this.replyMessage = null;
+  }
+
+  //
+  // onEdit
+  //
+
+  onEdit(message: Message) {
+    this.replyMessage = null;
+    this.editMessage = message;
+    // console.log('Replying to:', this.replyMessage.$id);
+    setTimeout(() => {
+      this.myTextArea.value = message.body;
+      this.myTextArea.setFocus();
+    }, 100);
+  }
+
+  unlinkEdit() {
+    this.editMessage = null;
   }
 
   //

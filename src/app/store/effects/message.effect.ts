@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { createEffect, ofType, Actions, act } from '@ngrx/effects';
+import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, mergeMap, of, switchMap, withLatestFrom } from 'rxjs';
-import { Store, select } from '@ngrx/store';
+import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -13,7 +13,6 @@ import { listMessagesResponseInterface } from 'src/app/models/types/responses/li
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 // Selector and Action Imports
-import { currentUserSelector } from '../selectors/auth.selector';
 import {
   createMessageAction,
   createMessageFailureAction,
@@ -57,8 +56,7 @@ export class MessageEffects {
   createMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createMessageAction),
-      withLatestFrom(this.store.select(currentUserSelector)),
-      mergeMap(([{ request }, currentUser]) => {
+      mergeMap(({ request }) => {
         if (request.to === 'deleted-user') {
           const error: ErrorInterface = {
             message: 'Cannot send message to deleted user',
@@ -66,21 +64,17 @@ export class MessageEffects {
           return of(createMessageFailureAction({ error, payload: request }));
         }
 
-        return this.messagesService
-          .createMessage(request, currentUser.$id)
-          .pipe(
-            map((payload: Message) => createMessageSuccessAction({ payload })),
+        return this.messagesService.createMessage(request).pipe(
+          map((payload: Message) => createMessageSuccessAction({ payload })),
 
-            catchError((errorResponse: AxiosError) => {
-              console.log(errorResponse?.response?.data);
-              const error: ErrorInterface = {
-                message: errorResponse?.response?.data['message'],
-              };
-              return of(
-                createMessageFailureAction({ error, payload: request })
-              );
-            })
-          );
+          catchError((errorResponse: AxiosError) => {
+            console.log(errorResponse?.response?.data);
+            const error: ErrorInterface = {
+              message: errorResponse?.response?.data['message'],
+            };
+            return of(createMessageFailureAction({ error, payload: request }));
+          })
+        );
       })
     )
   );
@@ -109,8 +103,7 @@ export class MessageEffects {
   resendMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(resendMessageFromTempMessagesAction),
-      withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      mergeMap(([action, currentUser]) => {
+      mergeMap((action) => {
         const newRequest: createMessageRequestInterface = {
           $id: action.request.$id,
           roomId: action.request.roomId,
@@ -121,25 +114,23 @@ export class MessageEffects {
           audio: action.request?.audio || null,
         };
 
-        return this.messagesService
-          .createMessage(newRequest, currentUser.$id)
-          .pipe(
-            map((payload: Message) =>
-              resendMessageFromTempMessagesSuccessAction({ payload })
-            ),
+        return this.messagesService.createMessage(newRequest).pipe(
+          map((payload: Message) =>
+            resendMessageFromTempMessagesSuccessAction({ payload })
+          ),
 
-            catchError((errorResponse: HttpErrorResponse) => {
-              const error: ErrorInterface = {
-                message: errorResponse.message,
-              };
-              return of(
-                resendMessageFromTempMessagesFailureAction({
-                  error,
-                  payload: action.request,
-                })
-              );
-            })
-          );
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(
+              resendMessageFromTempMessagesFailureAction({
+                error,
+                payload: action.request,
+              })
+            );
+          })
+        );
       })
     )
   );

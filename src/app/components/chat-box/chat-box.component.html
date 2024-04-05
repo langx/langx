@@ -32,7 +32,10 @@
 
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
-              {{ msg?.body }}
+              <span *ngIf="!msg?.deleted">{{ msg?.body }}</span>
+              <small *ngIf="msg?.deleted">
+                <i>[deleted message]</i>
+              </small>
             </span>
 
             <!-- Image message -->
@@ -103,6 +106,9 @@
     <ion-item-option (click)="reply(msg)" color="primary">
       Reply
     </ion-item-option>
+    <ion-item-option (click)="edit(msg)" color="secondary">
+      Edit
+    </ion-item-option>
     <ion-item-option (click)="delete(msg)" color="danger">
       <ion-icon slot="icon-only" name="trash"></ion-icon>
     </ion-item-option>
@@ -136,7 +142,10 @@
 
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
-              {{ msg?.body }}
+              <span *ngIf="!msg?.deleted">{{ msg?.body }}</span>
+              <small *ngIf="msg?.deleted">
+                <i>[deleted message]</i>
+              </small>
             </span>
 
             <!-- Image message -->

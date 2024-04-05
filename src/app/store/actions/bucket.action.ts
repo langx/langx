@@ -7,7 +7,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 // Upload Profile Picture
 export const uploadProfilePictureAction = createAction(
   ActionTypes.UPLOAD_PROFILE_PICTURE,
-  props<{ request: File; currentUserId: string }>()
+  props<{ request: File }>()
 );
 
 export const uploadProfilePictureSuccessAction = createAction(
@@ -23,7 +23,7 @@ export const uploadProfilePictureFailureAction = createAction(
 // Upload Other Photos
 export const uploadOtherPhotosAction = createAction(
   ActionTypes.UPLOAD_OTHER_PHOTOS,
-  props<{ request: File; currentUserId: string; otherPhotos: URL[] }>()
+  props<{ request: File; otherPhotos: URL[] }>()
 );
 
 export const uploadOtherPhotosSuccessAction = createAction(

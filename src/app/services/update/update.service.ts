@@ -29,7 +29,7 @@ interface AppUpdate {
   providedIn: 'root',
 })
 export class UpdateService {
-  updateEndpoint = environment.api.UPDATE_API_URL;
+  updateEndpoint = environment.api.UPDATE;
 
   constructor(private AlertController: AlertController) {}
 

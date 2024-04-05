@@ -139,17 +139,9 @@ export class Step3Page implements OnInit, OnDestroy {
 
   completeLanguages(languages) {
     let languageArray: string[] = [];
-    let userId: string;
-
-    this.account$
-      .subscribe((account: Account | null) => {
-        userId = account.$id;
-      })
-      .unsubscribe();
 
     // Add userId to each language and fill languageArray with language codes
     languages.forEach((lang) => {
-      lang.userId = userId;
       languageArray.push(lang.name);
     });
     console.log('languages:', languages);
@@ -163,7 +155,7 @@ export class Step3Page implements OnInit, OnDestroy {
         // Dispatch the second action
         if (isCompletedLanguage) {
           this.store.dispatch(
-            updateLanguageArrayAction({ id: userId, request: languageArray })
+            updateLanguageArrayAction({ request: languageArray })
           );
         }
       })

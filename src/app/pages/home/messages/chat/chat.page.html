@@ -44,6 +44,7 @@
           [chat]="msg"
           [current_user_id]="(currentUser$ | async).$id"
           (onReply)="onReply(msg)"
+          (onEdit)="onEdit(msg)"
           (onDelete)="onDelete(msg)"
         >
         </app-chat-box>
@@ -89,6 +90,31 @@
           name="close-circle-outline"
           color="danger"
           (click)="unlinkReply()"
+          class="ion-padding-start ion-float-right"
+        ></ion-icon>
+      </ion-item>
+      <ion-item *ngIf="editMessage?.$id">
+        <div class="message-body">
+          <div class="message-main">
+            <div class="editClass">
+              <div class="message-text">
+                <!-- Text message -->
+                <small>
+                  Edit:
+                  <span *ngIf="editMessage?.type == 'body'">
+                    {{ editMessage?.body }}
+                  </span>
+                  <span *ngIf="editMessage?.type == 'image'"> 📷 Image </span>
+                  <span *ngIf="editMessage?.type == 'audio'"> 🔊 Audio </span>
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ion-icon
+          name="close-circle-outline"
+          color="danger"
+          (click)="unlinkEdit()"
           class="ion-padding-start ion-float-right"
         ></ion-icon>
       </ion-item>

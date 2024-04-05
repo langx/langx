@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 // import { ID, Query } from 'appwrite';
 import { ID, Query } from 'src/app/extras/sdk/src';
 import { Observable, from, of, switchMap, tap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 import axios from 'axios';
 
 // Environment and Services Imports
@@ -17,11 +18,15 @@ import { listMessagesResponseInterface } from 'src/app/models/types/responses/li
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { deleteMessageRequestInterface } from 'src/app/models/types/requests/deleteMessageRequest.interface';
 
+// Selector Imports
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
+
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
   constructor(
+    private store: Store,
     private api: ApiService,
     private authService: AuthService,
     private storageService: StorageService
@@ -36,11 +41,44 @@ export class MessageService {
 
   // Create a message
   createMessage(
-    request: createMessageRequestInterface,
-    currentUserId: string
+    request: createMessageRequestInterface
   ): Observable<Message | null> {
     // Set x-appwrite-user-id header
-    axios.defaults.headers.common['x-appwrite-user-id'] = currentUserId;
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
+    return from(
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/message
+        return from(
+          axios.post(environment.api.MESSAGE, request).then((result) => {
+            return result.data as Message;
+          })
+        );
+      })
+    );
+  }
+
+  // Update Message
+  updateMessage(request: { id: string; data: any }): Observable<Message> {
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
 
     // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
     // Set x-appwrite-jwt header
@@ -54,7 +92,7 @@ export class MessageService {
         // Call the /api/message
         return from(
           axios
-            .post(environment.api.CREATE_MESSAGE_API_URL, request)
+            .patch(`${environment.api.MESSAGE}/${request.id}`, request.data)
             .then((result) => {
               return result.data as Message;
             })
@@ -63,25 +101,33 @@ export class MessageService {
     );
   }
 
-  // Update Message
-  updateMessage(message: Message): Observable<Message> {
-    return from(
-      this.api.updateDocument(
-        environment.appwrite.MESSAGES_COLLECTION,
-        message.$id,
-        {
-          seen: message.seen,
-        }
-      )
-    );
-  }
-
   deleteMessage(request: deleteMessageRequestInterface): Observable<Message> {
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.deleteDocument(
-        environment.appwrite.MESSAGES_COLLECTION,
-        request.$id
-      )
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/message
+        return from(
+          axios
+            .delete(`${environment.api.MESSAGE}/${request.$id}`)
+            .then((result) => {
+              return result.data as Message;
+            })
+        );
+      })
     );
   }
 

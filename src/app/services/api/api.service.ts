@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 // import { Client, Databases, Account, Locale } from 'appwrite';
-import { Client, Databases, Account, Locale } from 'src/app/extras/sdk/src';
+import {
+  Client,
+  Databases,
+  Account,
+  Functions,
+  Locale,
+} from 'src/app/extras/sdk/src';
 
 import { environment } from 'src/environments/environment';
 
@@ -11,6 +17,7 @@ export class ApiService {
   client: Client = new Client();
   database: Databases;
   account: Account;
+  function: Functions;
   locale: Locale;
 
   constructor() {
@@ -24,6 +31,7 @@ export class ApiService {
 
     this.database = new Databases(this.client);
     this.account = new Account(this.client);
+    this.function = new Functions(this.client);
     this.locale = new Locale(this.client);
   }
 

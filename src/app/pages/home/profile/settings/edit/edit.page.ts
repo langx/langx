@@ -191,7 +191,6 @@ export class EditPage implements OnInit {
             this.store.dispatch(
               uploadProfilePictureAction({
                 request: file,
-                currentUserId: this.currentUser.$id,
               })
             );
           }
@@ -199,7 +198,6 @@ export class EditPage implements OnInit {
             this.store.dispatch(
               uploadOtherPhotosAction({
                 request: file,
-                currentUserId: this.currentUser.$id,
                 otherPhotos: this.currentUser.otherPhotos,
               })
             );
@@ -302,7 +300,6 @@ export class EditPage implements OnInit {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
       let data: createLanguageRequestInterface = {
-        userId: this.currentUser.$id,
         name: selectedLanguage.name,
         nativeName: selectedLanguage.nativeName,
         code: selectedLanguage.code,

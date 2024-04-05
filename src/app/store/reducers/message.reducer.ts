@@ -10,7 +10,7 @@ import {
 import {
   findActiveRoomAndAddMessageAction,
   findActiveRoomAndDeleteMessageAction,
-  findActiveRoomAndUpdateMessageSeenAction,
+  findActiveRoomAndUpdateMessageAction,
   findAndUpdateActiveRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
 import {
@@ -147,19 +147,19 @@ const messageReducer = createReducer(
       error: null,
     })
   ),
-  on(deleteMessageSuccessAction, (state, action): MessageStateInterface => {
-    const updatedMessages = state.room.messages.filter(
-      (msg) => msg.$id !== action.payload.$id
-    );
-    return {
-      ...state,
-      isLoading: false,
-      room: {
-        ...state.room,
-        messages: updatedMessages,
-      },
-    };
-  }),
+  // on(deleteMessageSuccessAction, (state, action): MessageStateInterface => {
+  //   const updatedMessages = state.room.messages.filter(
+  //     (msg) => msg.$id !== action.payload.$id
+  //   );
+  //   return {
+  //     ...state,
+  //     isLoading: false,
+  //     room: {
+  //       ...state.room,
+  //       messages: updatedMessages,
+  //     },
+  //   };
+  // }),
   on(
     deleteMessageFailureAction,
     (state, action): MessageStateInterface => ({
@@ -295,7 +295,7 @@ const messageReducer = createReducer(
     }
   ),
   on(
-    findActiveRoomAndUpdateMessageSeenAction,
+    findActiveRoomAndUpdateMessageAction,
     (state, action): MessageStateInterface => {
       // Check if there is any room in the state
       if (!state.room) return { ...state };
@@ -303,7 +303,7 @@ const messageReducer = createReducer(
       // Check if the message belongs to the active room
       if (state.room.$id !== action.payload.roomId.$id) return { ...state };
 
-      // Return the new state
+      // Create a new payload with roomId as a string
       const payload: Message = {
         ...action.payload,
         roomId: action.payload.roomId.$id,
@@ -314,8 +314,8 @@ const messageReducer = createReducer(
         room: {
           ...state.room,
           messages: state.room.messages.map((msg) => {
-            if (msg.$id === action.payload.$id) {
-              return { ...msg, seen: true };
+            if (msg.$id === payload.$id) {
+              return { ...msg, ...payload };
             }
             return msg;
           }),

@@ -146,8 +146,8 @@ export class AuthEffect {
   completeRegistration$ = createEffect(() =>
     this.actions$.pipe(
       ofType(completeRegistrationAction),
-      switchMap(({ request, id }) => {
-        return this.userService.createUserDoc(id, request).pipe(
+      switchMap(({ request }) => {
+        return this.userService.createUserDoc(request).pipe(
           map((payload: User) =>
             completeRegistrationSuccessAction({ payload })
           ),
@@ -204,9 +204,9 @@ export class AuthEffect {
     this.actions$.pipe(
       ofType(updateLanguageArrayAction),
 
-      switchMap(({ request, id }) => {
+      switchMap(({ request }) => {
         return this.userService
-          .updateUserDoc(id, {
+          .updateUserDoc({
             languageArray: request,
           })
           .pipe(

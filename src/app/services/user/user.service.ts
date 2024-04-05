@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 // import { ID, Query } from 'appwrite';
 import { ID, Query } from 'src/app/extras/sdk/src';
 import { Observable, forkJoin, from, of, switchMap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import axios from 'axios';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
+import { Visit } from 'src/app/models/Visit';
 import { Report } from 'src/app/models/Report';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
@@ -17,11 +21,19 @@ import { listUsersResponseInterface } from 'src/app/models/types/responses/listU
 import { listVisitsResponseInterface } from 'src/app/models/types/responses/listVisitsResponse.interface';
 import { listStreaksResponseInterface } from 'src/app/models/types/responses/listStreaksResponse.interface';
 
+// Selector Imports
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
+
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  constructor(private api: ApiService, private storage: StorageService) {}
+  constructor(
+    private store: Store,
+    private api: ApiService,
+    private authService: AuthService,
+    private storage: StorageService
+  ) {}
 
   getUserDoc(uid: string): Observable<any> {
     return from(
@@ -29,15 +41,67 @@ export class UserService {
     );
   }
 
-  createUserDoc(uid: string, data: any): Observable<User> {
+  // TODO: Add type for data
+  createUserDoc(data: any): Observable<User> {
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.createDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/user
+        return from(
+          axios.post(environment.api.USER, data).then((result) => {
+            // console.log('result.data: ', result.data);
+            return result.data as User;
+          })
+        );
+      })
     );
   }
 
-  updateUserDoc(uid: string, data: any): Observable<User> {
+  // TODO: Add type for data
+  updateUserDoc(data: any): Observable<User> {
+    let currentUserId: string;
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+        currentUserId = account.$id;
+      })
+      .unsubscribe();
+
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.updateDocument(environment.appwrite.USERS_COLLECTION, uid, data)
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/user
+        return from(
+          axios
+            .patch(`${environment.api.USER}/${currentUserId}`, data)
+            .then((result) => {
+              // console.log('result.data: ', result.data);
+              return result.data as User;
+            })
+        );
+      })
     );
   }
 
@@ -160,20 +224,35 @@ export class UserService {
   // Visits
   //
 
-  createVisitDoc(currentUserId: string, userId: string): Observable<any> {
-    if (currentUserId === userId) {
-      return of(null);
-    }
+  // TODO: Add type for data
+  createVisitDoc(to: string): Observable<Visit> {
+    // Set x-appwrite-user-id header
+    this.store
+      .pipe(select(accountSelector))
+      .subscribe((account) => {
+        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+      })
+      .unsubscribe();
 
+    // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
+    // Set x-appwrite-jwt header
     return from(
-      this.api.createDocument(
-        environment.appwrite.VISITS_COLLECTION,
-        ID.unique(),
-        {
-          from: currentUserId,
-          to: userId,
-        }
-      )
+      this.authService.createJWT().then((result) => {
+        // console.log('result: ', result);
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/user
+        return from(
+          axios
+            .post(environment.api.VISIT, { to: to })
+            .then((result) => {
+              // console.log('result.data: ', result.data);
+              return result.data as Visit;
+            })
+        );
+      })
     );
   }
 

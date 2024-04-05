@@ -41,13 +41,13 @@ export const findActiveRoomAndAddMessageAction = createAction(
   props<{ payload: MessageExtendedInterface }>()
 );
 
-export const findRoomAndUpdateMessageSeenAction = createAction(
-  ActionTypes.FIND_ROOM_AND_UPDATE_MESSAGE_SEEN,
+export const findRoomAndUpdateMessageAction = createAction(
+  ActionTypes.FIND_ROOM_AND_UPDATE_MESSAGE,
   props<{ payload: MessageExtendedInterface }>()
 );
 
-export const findActiveRoomAndUpdateMessageSeenAction = createAction(
-  ActionTypes.FIND_ACTIVE_ROOM_AND_UPDATE_MESSAGE_SEEN,
+export const findActiveRoomAndUpdateMessageAction = createAction(
+  ActionTypes.FIND_ACTIVE_ROOM_AND_UPDATE_MESSAGE,
   props<{ payload: MessageExtendedInterface }>()
 );
 
