@@ -312,8 +312,17 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
-  // Utils for actions
+  // Utils for URL and Actions
   //
+
+  parseUrl(url: string): string {
+    const parsedUrl = new URL(url);
+    let result = parsedUrl.hostname;
+    if (parsedUrl.pathname !== '/') {
+      result += parsedUrl.pathname;
+    }
+    return result;
+  }
 
   async openPage(url: string) {
     await Browser.open({ url: url });
