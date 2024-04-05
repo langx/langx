@@ -5,6 +5,7 @@ import { Observable, from } from 'rxjs';
 // Environment and services Imports
 import { environment } from 'src/environments/environment';
 import { ApiService } from 'src/app/services/api/api.service';
+import { UserService } from '../user/user.service';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
@@ -32,7 +33,11 @@ import {
   providedIn: 'root',
 })
 export class NotificationService {
-  constructor(private store: Store, private api: ApiService) {}
+  constructor(
+    private store: Store,
+    private api: ApiService,
+    private userService: UserService
+  ) {}
 
   connect() {
     let channels = [];
@@ -140,18 +145,7 @@ export class NotificationService {
     });
   }
 
-  updatePresence(
-    currentUserId: string,
-    request: { lastSeen: Date }
-  ): Observable<User> {
-    return from(
-      this.api.updateDocument(
-        environment.appwrite.USERS_COLLECTION,
-        currentUserId,
-        {
-          lastSeen: request.lastSeen,
-        }
-      )
-    );
+  updatePresence(id: string, request: { lastSeen: Date }): Observable<User> {
+    return this.userService.updateUserDoc({ lastSeen: request.lastSeen });
   }
 }
