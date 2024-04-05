@@ -1,5 +1,6 @@
 import { Store, select } from '@ngrx/store';
 import { Observable, of, take } from 'rxjs';
+import { Browser } from '@capacitor/browser';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
@@ -49,6 +50,8 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   replyTo: string = null;
   replyToMessage$: Observable<Message>;
 
+  messageSegments: Array<{ type: string; content: string }> = [];
+
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
   isDownloaded: boolean = false;
@@ -77,8 +80,45 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     this.observer.disconnect();
   }
 
+  urlify(text: string): Array<{ type: string; content: string }> {
+    if (!text || text.length === 0) {
+      return [{ type: 'text', content: text }];
+    }
+
+    var urlRegex =
+      /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}\b([-a-z0-9@:%_+.~#?&//=]*))/g;
+    let segments = [];
+    let match;
+    let lastIndex = 0;
+
+    while ((match = urlRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        segments.push({
+          type: 'text',
+          content: text.slice(lastIndex, match.index),
+        });
+      }
+
+      let url = match[0];
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      segments.push({ type: 'url', content: url });
+
+      lastIndex = urlRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      segments.push({ type: 'text', content: text.slice(lastIndex) });
+    }
+
+    return segments;
+  }
+
   async initValues() {
     this.msg = { ...this.chat };
+
+    this.messageSegments = this.urlify(this.msg?.body);
 
     // Check if the message has replyTo
     if (this.msg.replyTo) {
@@ -255,6 +295,14 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
           console.error('Error copying text to clipboard', 'danger');
         });
     }
+  }
+
+  //
+  // Utils for actions
+  //
+
+  async openPage(url: string) {
+    await Browser.open({ url: url });
   }
 
   //
