@@ -7,16 +7,16 @@ export enum ActionTypes {
   CREATE_MESSAGE_SUCCESS = '[Message] Create Message Success',
   CREATE_MESSAGE_FAILURE = '[Message] Create Message Failure',
 
+  UPDATE_MESSAGE= '[Message] Update Message',
+  UPDATE_MESSAGE_SUCCESS = '[Message] Update Message Success',
+  UPDATE_MESSAGE_FAILURE = '[Message] Update Message Failure',
+
   DELETE_MESSAGE = '[Message] Delete Message',
   DELETE_MESSAGE_SUCCESS = '[Message] Delete Message Success',
   DELETE_MESSAGE_FAILURE = '[Message] Delete Message Failure',
 
   ACTIVATE_ROOM = '[Message] Activate Room',
   DEACTIVATE_ROOM = '[Message] Deactivate Room',
-
-  UPDATE_MESSAGE_SEEN = '[Message] Update Message Seen',
-  UPDATE_MESSAGE_SEEN_SUCCESS = '[Message] Update Message Seen Success',
-  UPDATE_MESSAGE_SEEN_FAILURE = '[Message] Update Message Seen Failure',
 
   REMOVE_MESSAGE_FROM_TEMP_MESSAGES = '[Message] Delete From Temp Messages',
 

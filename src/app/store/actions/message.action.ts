@@ -2,9 +2,10 @@ import { createAction, props } from '@ngrx/store';
 
 import { ActionTypes } from 'src/app/store/actions/types/message.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { Message } from 'src/app/models/Message';
+import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { deleteMessageRequestInterface } from 'src/app/models/types/requests/deleteMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
@@ -42,6 +43,22 @@ export const createMessageFailureAction = createAction(
   props<{ error: ErrorInterface; payload: createMessageRequestInterface }>()
 );
 
+// Update Message Actions
+export const updateMessageAction = createAction(
+  ActionTypes.UPDATE_MESSAGE,
+  props<{ request: updateMessageRequestInterface }>()
+);
+
+export const updateMessageSuccessAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_SUCCESS,
+  props<{ payload: Message }>()
+);
+
+export const updateMessageFailureAction = createAction(
+  ActionTypes.UPDATE_MESSAGE_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Delete Message Actions
 export const deleteMessageAction = createAction(
   ActionTypes.DELETE_MESSAGE,
@@ -67,22 +84,6 @@ export const activateRoomAction = createAction(
 export const deactivateRoomAction = createAction(
   ActionTypes.DEACTIVATE_ROOM,
   props<{ payload: RoomExtendedInterface }>()
-);
-
-// Update Message Actions
-export const updateMessageSeenAction = createAction(
-  ActionTypes.UPDATE_MESSAGE_SEEN,
-  props<{ request: { id: string; data: any } }>()
-);
-
-export const updateMessageSeenSuccessAction = createAction(
-  ActionTypes.UPDATE_MESSAGE_SEEN_SUCCESS,
-  props<{ payload: Message }>()
-);
-
-export const updateMessageSeenFailureAction = createAction(
-  ActionTypes.UPDATE_MESSAGE_SEEN_FAILURE,
-  props<{ error: ErrorInterface }>()
 );
 
 // Remove Message From Temp Messages Actions

@@ -24,7 +24,8 @@ import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { messageTime } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
-import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
+import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
+import { updateMessageAction } from 'src/app/store/actions/message.action';
 import { messagesSelector } from 'src/app/store/selectors/message.selector';
 
 @Component({
@@ -203,14 +204,14 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   handleIntersect(entry) {
     if (entry.isIntersecting) {
       if (this.msg.to === this.current_user_id && this.msg.seen === false) {
-        const request = {
-          id: this.msg.$id,
+        const request: updateMessageRequestInterface = {
+          $id: this.msg.$id,
           data: {
             seen: true,
           },
         };
         // Dispatch action to update message seen status
-        this.store.dispatch(updateMessageSeenAction({ request }));
+        this.store.dispatch(updateMessageAction({ request }));
       }
     }
   }

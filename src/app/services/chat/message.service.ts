@@ -16,6 +16,7 @@ import { Message } from 'src/app/models/Message';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { deleteMessageRequestInterface } from 'src/app/models/types/requests/deleteMessageRequest.interface';
 
 // Selector Imports
@@ -71,7 +72,7 @@ export class MessageService {
   }
 
   // Update Message
-  updateMessage(request: { id: string; data: any }): Observable<Message> {
+  updateMessage(request: updateMessageRequestInterface): Observable<Message> {
     // Set x-appwrite-user-id header
     this.store
       .pipe(select(accountSelector))
@@ -92,7 +93,7 @@ export class MessageService {
         // Call the /api/message
         return from(
           axios
-            .patch(`${environment.api.MESSAGE}/${request.id}`, request.data)
+            .patch(`${environment.api.MESSAGE}/${request.$id}`, request.data)
             .then((result) => {
               return result.data as Message;
             })
