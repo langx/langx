@@ -188,9 +188,7 @@ export function urlify(text: string): Array<{ type: string; content: string }> {
     return [{ type: 'text', content: text }];
   }
 
-  var urlRegex =
-    /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}\b([-a-z0-9@:%_+.~#?&//=]*))/g;
-  let segments = [];
+  var urlRegex = /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}([-a-z0-9@:%_+.~#?&//=]*)\b)/gi;  let segments = [];
   let match;
   let lastIndex = 0;
 

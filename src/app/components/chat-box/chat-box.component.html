@@ -40,8 +40,9 @@
                   <u
                     *ngIf="segment.type === 'url'"
                     (click)="openPage(segment.content)"
-                    >{{ segment.content }}</u
                   >
+                    {{ parseUrl(segment.content) }}
+                  </u>
                 </ng-container>
               </span>
               <small *ngIf="msg?.deleted">
@@ -161,8 +162,9 @@
                   <u
                     *ngIf="segment.type === 'url'"
                     (click)="openPage(segment.content)"
-                    >{{ segment.content }}</u
                   >
+                    {{ parseUrl(segment.content) }}
+                  </u>
                 </ng-container>
               </span>
               <small *ngIf="msg?.deleted">
