@@ -270,7 +270,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
-  // Reply
+  // Edit
   //
 
   edit(msg: Message) {
