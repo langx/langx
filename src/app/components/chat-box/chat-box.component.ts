@@ -24,7 +24,8 @@ import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { messageTime } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
-import { updateMessageSeenAction } from 'src/app/store/actions/message.action';
+import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
+import { updateMessageAction } from 'src/app/store/actions/message.action';
 import { messagesSelector } from 'src/app/store/selectors/message.selector';
 
 @Component({
@@ -203,14 +204,14 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   handleIntersect(entry) {
     if (entry.isIntersecting) {
       if (this.msg.to === this.current_user_id && this.msg.seen === false) {
-        const request = {
-          id: this.msg.$id,
+        const request: updateMessageRequestInterface = {
+          $id: this.msg.$id,
           data: {
             seen: true,
           },
         };
         // Dispatch action to update message seen status
-        this.store.dispatch(updateMessageSeenAction({ request }));
+        this.store.dispatch(updateMessageAction({ request }));
       }
     }
   }
@@ -261,9 +262,11 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   //
 
   reply(msg: Message) {
-    this.onReply.emit(msg);
     this.itemSlidingSender.close();
     this.itemSlidingReveiver.close();
+
+    // emit the message to the parent component
+    this.onReply.emit(msg);
   }
 
   //
@@ -271,9 +274,26 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   //
 
   edit(msg: Message) {
-    this.onEdit.emit(msg);
     this.itemSlidingSender.close();
     this.itemSlidingReveiver.close();
+
+    if (this.msg.type === 'audio') {
+      this.presentToast('You cannot edit an audio message', 'danger');
+      return;
+    }
+
+    if (this.msg.type === 'image') {
+      this.presentToast('You cannot edit an image message', 'danger');
+      return;
+    }
+
+    if (this.msg.deleted === true) {
+      this.presentToast('You cannot edit a deleted message', 'danger');
+      return;
+    }
+
+    // emit the message to the parent component
+    this.onEdit.emit(msg);
   }
 
   //

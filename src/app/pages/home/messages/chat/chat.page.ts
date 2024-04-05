@@ -32,6 +32,7 @@ import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
+import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Selector and Action Imports
@@ -49,6 +50,7 @@ import {
   deactivateRoomAction,
   deleteMessageAction,
   clearErrorsAction,
+  updateMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
   audioUrlSelector,
@@ -300,8 +302,7 @@ export class ChatPage implements OnInit, OnDestroy {
         } else if (!this.form.valid) {
           this.presentToast('Please type your message.', 'danger');
         } else if (this.editMessage) {
-          this.presentToast('Editing is not supported yet.', 'danger');
-          // TODO: Update message implementation
+          this.updateMessage();
         } else {
           request = this.createMessageWithText(user);
         }
@@ -309,13 +310,14 @@ export class ChatPage implements OnInit, OnDestroy {
         // Dispatch action to create message
         if (request) {
           this.store.dispatch(createMessageAction({ request }));
-
-          // Reset the form and the variables
-          this.form.reset();
-          this.audioUrl = null;
-          this.imageUrl = null;
-          this.replyMessage = null;
         }
+
+        // Reset the form and the variables
+        this.form.reset();
+        this.audioUrl = null;
+        this.imageUrl = null;
+        this.replyMessage = null;
+        this.editMessage = null;
       })
       .unsubscribe();
   }
@@ -563,6 +565,17 @@ export class ChatPage implements OnInit, OnDestroy {
     };
     this.audioIdTemp = null;
     return request;
+  }
+
+  updateMessage() {
+    const request: updateMessageRequestInterface = {
+      $id: this.editMessage.$id,
+      data: {
+        body: this.form.value.body,
+      },
+    };
+    this.store.dispatch(updateMessageAction({ request }));
+    // return request;
   }
 
   //

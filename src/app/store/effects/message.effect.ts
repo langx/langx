@@ -26,9 +26,9 @@ import {
   resendMessageFromTempMessagesAction,
   resendMessageFromTempMessagesFailureAction,
   resendMessageFromTempMessagesSuccessAction,
-  updateMessageSeenAction,
-  updateMessageSeenFailureAction,
-  updateMessageSeenSuccessAction,
+  updateMessageAction,
+  updateMessageFailureAction,
+  updateMessageSuccessAction,
 } from 'src/app/store/actions/message.action';
 
 @Injectable()
@@ -81,18 +81,18 @@ export class MessageEffects {
 
   updateMessage$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(updateMessageSeenAction),
+      ofType(updateMessageAction),
       mergeMap(({ request }) =>
         this.messagesService.updateMessage(request).pipe(
           map((payload: Message) =>
-            updateMessageSeenSuccessAction({ payload })
+            updateMessageSuccessAction({ payload })
           ),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
             };
-            return of(updateMessageSeenFailureAction({ error }));
+            return of(updateMessageFailureAction({ error }));
           })
         )
       )

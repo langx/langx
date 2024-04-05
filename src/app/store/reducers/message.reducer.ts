@@ -30,9 +30,9 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
-  updateMessageSeenAction,
-  updateMessageSeenSuccessAction,
-  updateMessageSeenFailureAction,
+  updateMessageAction,
+  updateMessageSuccessAction,
+  updateMessageFailureAction,
   removeMessageFromTempMessagesAction,
   resendMessageFromTempMessagesAction,
   resendMessageFromTempMessagesSuccessAction,
@@ -192,14 +192,14 @@ const messageReducer = createReducer(
 
   // Update Message Reducers
   on(
-    updateMessageSeenAction,
+    updateMessageAction,
     (state): MessageStateInterface => ({
       ...state,
       error: null,
     })
   ),
   on(
-    updateMessageSeenSuccessAction,
+    updateMessageSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
       // Only update after notification came, not here !
@@ -215,7 +215,7 @@ const messageReducer = createReducer(
     })
   ),
   on(
-    updateMessageSeenFailureAction,
+    updateMessageFailureAction,
     (state, action): MessageStateInterface => ({
       ...state,
       error: action.error,
