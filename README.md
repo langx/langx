@@ -15,7 +15,7 @@
   <a href="https://tiktok.com/@langxapp" target="_blank"><img src="https://img.shields.io/badge/-TikTok-000000?style=flat-square&logo=tiktok&logoColor=white" alt="TikTok"></a>
   <a href="https://www.facebook.com/langxapp" target="_blank"><img src="https://img.shields.io/badge/-Facebook-1877F2?style=flat-square&logo=facebook&logoColor=white" alt="Facebook"></a>
   <a href="https://www.youtube.com/@langxapp" target="_blank"><img src="https://img.shields.io/badge/-YouTube-FF0000?style=flat-square&logo=youtube&logoColor=white" alt="YouTube"></a>
-  <a href="https://bsky.app/profile/langx.io" target="_blank"><img src="https://img.shields.io/badge/-Bluesky-1DA1F2?style=flat-square&logo=twitter&logoColor=white" alt="Bluesky"></a>
+  <a href="https://bsky.app/profile/langx.io" target="_blank"><img src="https://img.shields.io/badge/-Bluesky-1DA1F2?style=flat-square&logo=bluesky&logoColor=white" alt="Bluesky"></a>
   <a href="https://www.linkedin.com/products/new-chapter-technology-limited-liability-company-languagexchange-practice-learn-succeed/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 </p>
 <p align="center">
