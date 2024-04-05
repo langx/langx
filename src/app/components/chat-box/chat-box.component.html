@@ -32,7 +32,18 @@
 
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
-              <span *ngIf="!msg?.deleted">{{ msg?.body }}</span>
+              <span *ngIf="!msg?.deleted">
+                <ng-container *ngFor="let segment of messageSegments">
+                  <span *ngIf="segment.type === 'text'">{{
+                    segment.content
+                  }}</span>
+                  <u
+                    *ngIf="segment.type === 'url'"
+                    (click)="openPage(segment.content)"
+                    >{{ segment.content }}</u
+                  >
+                </ng-container>
+              </span>
               <small *ngIf="msg?.deleted">
                 <i>[deleted message]</i>
               </small>
@@ -142,7 +153,18 @@
 
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
-              <span *ngIf="!msg?.deleted">{{ msg?.body }}</span>
+              <span *ngIf="!msg?.deleted">
+                <ng-container *ngFor="let segment of messageSegments">
+                  <span *ngIf="segment.type === 'text'">{{
+                    segment.content
+                  }}</span>
+                  <u
+                    *ngIf="segment.type === 'url'"
+                    (click)="openPage(segment.content)"
+                    >{{ segment.content }}</u
+                  >
+                </ng-container>
+              </span>
               <small *ngIf="msg?.deleted">
                 <i>[deleted message]</i>
               </small>

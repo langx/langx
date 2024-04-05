@@ -1,5 +1,6 @@
 import { Store, select } from '@ngrx/store';
 import { Observable, of, take } from 'rxjs';
+import { Browser } from '@capacitor/browser';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Clipboard } from '@capacitor/clipboard';
@@ -22,7 +23,7 @@ import {
 
 import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { messageTime } from 'src/app/extras/utils';
+import { messageTime, urlify } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { updateMessageAction } from 'src/app/store/actions/message.action';
@@ -48,6 +49,8 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   msg: Message = null;
   replyTo: string = null;
   replyToMessage$: Observable<Message>;
+
+  messageSegments: Array<{ type: string; content: string }> = [];
 
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
@@ -80,6 +83,8 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   async initValues() {
     this.msg = { ...this.chat };
 
+    this.messageSegments = urlify(this.msg?.body);
+
     // Check if the message has replyTo
     if (this.msg.replyTo) {
       // Set the replyTo message id
@@ -108,6 +113,55 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       this.audioId = this.msg?.$id;
       await this.readFiles(this.msg?.$id);
     }
+  }
+
+  //
+  // Reply
+  //
+
+  reply(msg: Message) {
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+
+    // emit the message to the parent component
+    this.onReply.emit(msg);
+  }
+
+  //
+  // Edit
+  //
+
+  edit(msg: Message) {
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
+
+    if (this.msg.type === 'audio') {
+      this.presentToast('You cannot edit an audio message', 'danger');
+      return;
+    }
+
+    if (this.msg.type === 'image') {
+      this.presentToast('You cannot edit an image message', 'danger');
+      return;
+    }
+
+    if (this.msg.deleted === true) {
+      this.presentToast('You cannot edit a deleted message', 'danger');
+      return;
+    }
+
+    // emit the message to the parent component
+    this.onEdit.emit(msg);
+  }
+
+  //
+  // Delete
+  //
+
+  delete(msg: Message) {
+    this.onDelete.emit(msg);
+    this.itemSlidingSender.close();
+    this.itemSlidingReveiver.close();
   }
 
   //
@@ -217,15 +271,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
-  // Utils for time
-  //
-
-  messageTime(d: any) {
-    if (!d) return null;
-    return messageTime(d);
-  }
-
-  //
   // Utils for image preview
   //
 
@@ -258,52 +303,20 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   //
-  // Reply
+  // Utils for time
   //
 
-  reply(msg: Message) {
-    this.itemSlidingSender.close();
-    this.itemSlidingReveiver.close();
-
-    // emit the message to the parent component
-    this.onReply.emit(msg);
+  messageTime(d: any) {
+    if (!d) return null;
+    return messageTime(d);
   }
 
   //
-  // Edit
+  // Utils for actions
   //
 
-  edit(msg: Message) {
-    this.itemSlidingSender.close();
-    this.itemSlidingReveiver.close();
-
-    if (this.msg.type === 'audio') {
-      this.presentToast('You cannot edit an audio message', 'danger');
-      return;
-    }
-
-    if (this.msg.type === 'image') {
-      this.presentToast('You cannot edit an image message', 'danger');
-      return;
-    }
-
-    if (this.msg.deleted === true) {
-      this.presentToast('You cannot edit a deleted message', 'danger');
-      return;
-    }
-
-    // emit the message to the parent component
-    this.onEdit.emit(msg);
-  }
-
-  //
-  // Delete
-  //
-
-  delete(msg: Message) {
-    this.onDelete.emit(msg);
-    this.itemSlidingSender.close();
-    this.itemSlidingReveiver.close();
+  async openPage(url: string) {
+    await Browser.open({ url: url });
   }
 
   //

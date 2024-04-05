@@ -182,3 +182,38 @@ export function getFlagEmoji(item: User) {
     .map((char) => 127397 + char.charCodeAt());
   return String.fromCodePoint(...codePoints);
 }
+
+export function urlify(text: string): Array<{ type: string; content: string }> {
+  if (!text || text.length === 0) {
+    return [{ type: 'text', content: text }];
+  }
+
+  var urlRegex =
+    /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}\b([-a-z0-9@:%_+.~#?&//=]*))/g;
+  let segments = [];
+  let match;
+  let lastIndex = 0;
+
+  while ((match = urlRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({
+        type: 'text',
+        content: text.slice(lastIndex, match.index),
+      });
+    }
+
+    let url = match[0];
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+    segments.push({ type: 'url', content: url });
+
+    lastIndex = urlRegex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    segments.push({ type: 'text', content: text.slice(lastIndex) });
+  }
+
+  return segments;
+}
