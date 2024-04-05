@@ -85,7 +85,9 @@ export function exactDateAndTime(date: Date) {
   // Calculate the time difference in days, hours, and minutes
   let timeDifference = currentDate.getTime() - messageDate.getTime();
   let days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-  let hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let hours = Math.floor(
+    (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
   let minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
 
   // If the time difference is less than a day, return the time difference in hours or minutes
