@@ -68,5 +68,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# VSCode
+.vscode
+
 # Notes.md
 Notes.md
