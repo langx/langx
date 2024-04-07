@@ -21,8 +21,8 @@
   <ion-card>
     <ion-card-header id="profile-pic">
       <img
-        [src]="(user$ | async)?.profilePhoto"
-        (click)="openPreview([profilePhoto])"
+        [src]="profilePic$ | async"
+        (click)="openPreview(profilePic$)"
         style="max-width: 200px"
         alt="Profile Picture"
         referrerpolicy="no-referrer"
@@ -61,7 +61,7 @@
       <ion-card-subtitle></ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-text *ngIf="otherPhotos?.length == 0">
+      <ion-text *ngIf="(otherPics$ | async)?.length == 0">
         Currently, no photos are available.
       </ion-text>
       <swiper-container
@@ -75,14 +75,14 @@
         mousewheel="true"
         [zoom]="true"
       >
-        <swiper-slide *ngFor="let photo of otherPhotos; let i = index">
+        <swiper-slide *ngFor="let photo of (otherPics$ | async); let i = index">
           <!-- #471 TODO: Test this following zoom feature on mobile-->
           <div class="swiper-zoom-container">
             <img
               [src]="photo"
               alt="Profile Picture"
               tappable
-              (click)="openPreview(otherPhotos)"
+              (click)="openPreview(otherPics$)"
               referrerpolicy="no-referrer"
             />
           </div>
