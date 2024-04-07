@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
 
 // Environment Imports
@@ -21,6 +21,9 @@ import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+// Services Imports
+import { UserService } from 'src/app/services/user/user.service';
 
 // Actions Imports
 import { getCurrentUserAction } from 'src/app/store/actions/user.action';
@@ -91,13 +94,14 @@ export class ProfilePage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
-  profilePhoto: URL = null;
-  otherPhotos: URL[] = [];
+  profilePic$: Observable<URL> = null;
+  otherPics$: Observable<URL[]> = of([]);
   badges: Object[] = [];
 
   constructor(
     private store: Store,
     private router: Router,
+    private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
@@ -144,8 +148,11 @@ export class ProfilePage implements OnInit {
           user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
       }
 
-      this.profilePhoto = user?.profilePhoto;
-      this.otherPhotos = user?.otherPhotos;
+      this.profilePic$ = this.getFileView(user?.profilePic);
+      this.otherPics$ = forkJoin(
+        (user?.otherPics || []).map((id) => this.getFileView(id))
+      );
+
       this.badges = user?.badges.map((badge) => {
         const name = badge
           .split('-')
@@ -179,16 +186,16 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/', 'home', 'account']);
   }
 
-  // TODO: #168 Start slideshow from selected photo
-  async openPreview(photos) {
-    console.log(photos);
-    const modal = await this.modalCtrl.create({
-      component: PreviewPhotoComponent,
-      componentProps: {
-        photos: photos,
-      },
+  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
+    photos$.subscribe(async (photos) => {
+      const modal = await this.modalCtrl.create({
+        component: PreviewPhotoComponent,
+        componentProps: {
+          photos: Array.isArray(photos) ? photos : [photos],
+        },
+      });
+      modal.present();
     });
-    modal.present();
   }
 
   dismissModal() {
@@ -244,6 +251,10 @@ export class ProfilePage implements OnInit {
 
   getFlagEmoji(item: User) {
     return getFlagEmoji(item);
+  }
+
+  getFileView(id: string) {
+    return this.userService.getFileView(id);
   }
 
   //

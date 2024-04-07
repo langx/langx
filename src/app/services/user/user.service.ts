@@ -425,11 +425,9 @@ export class UserService {
   }
 
   getFileView(fileId: string): Observable<URL> {
-    const url = this.storage.getFileView(
-      environment.appwrite.USER_BUCKET,
-      fileId
+    return of(
+      this.storage.getFileView(environment.appwrite.USER_BUCKET, fileId)
     );
-    return of(url);
   }
 
   //
