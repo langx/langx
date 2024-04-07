@@ -4,9 +4,6 @@ import { Router } from '@angular/router';
 import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
 
-// Environment Imports
-import { environment } from 'src/environments/environment';
-
 // Component and utils Imports
 import {
   lastSeen,
