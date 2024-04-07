@@ -27,4 +27,5 @@ export type User = Models.Document & {
   sponsor: boolean;
   streaks?: Streak;
   profilePic?: string;
+  otherPics?: string[];
 };
