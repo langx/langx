@@ -198,7 +198,6 @@ export class EditPage implements OnInit {
             this.store.dispatch(
               uploadOtherPhotosAction({
                 request: file,
-                otherPhotos: this.currentUser.otherPhotos,
               })
             );
           }

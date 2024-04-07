@@ -23,7 +23,7 @@ export const uploadProfilePictureFailureAction = createAction(
 // Upload Other Photos
 export const uploadOtherPhotosAction = createAction(
   ActionTypes.UPLOAD_OTHER_PHOTOS,
-  props<{ request: File; otherPhotos: URL[] }>()
+  props<{ request: File }>()
 );
 
 export const uploadOtherPhotosSuccessAction = createAction(
