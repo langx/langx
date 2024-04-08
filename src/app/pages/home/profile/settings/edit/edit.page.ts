@@ -4,7 +4,15 @@ import { Capacitor } from '@capacitor/core';
 import { Store, select } from '@ngrx/store';
 import Compressor from 'compressorjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  filter,
+  forkJoin,
+  of,
+  take,
+} from 'rxjs';
 import {
   IonInput,
   LoadingController,
@@ -19,6 +27,9 @@ import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
+
+// Service Imports
+import { UserService } from 'src/app/services/user/user.service';
 
 // Component Imports
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
@@ -61,8 +72,12 @@ export class EditPage implements OnInit {
   currentUserName: string = null;
   isEditCurrentUserName: boolean = false;
 
+  profilePic$: Observable<URL> = null;
+  otherPics$: Observable<URL[]> = of([]);
+
   constructor(
     private store: Store,
+    private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private loadingCtrl: LoadingController
@@ -109,6 +124,16 @@ export class EditPage implements OnInit {
           if (error && error.message)
             this.presentToast(error.message, 'danger');
         })
+    );
+
+    // Set currentUser photos
+    this.subscriptions.add(
+      this.currentUser$.subscribe((user) => {
+        this.profilePic$ = this.getFileView(user?.profilePic);
+        this.otherPics$ = forkJoin(
+          (user?.otherPics || []).map((id) => this.getFileView(id))
+        );
+      })
     );
   }
 
@@ -396,6 +421,10 @@ export class EditPage implements OnInit {
         },
       });
     });
+  }
+
+  getFileView(id: string) {
+    return this.userService.getUserFileView(id);
   }
 
   //
