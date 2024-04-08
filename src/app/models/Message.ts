@@ -9,8 +9,6 @@ export type Message = Models.Document & {
   replyTo?: string;
   type: string;
   body?: string;
-  image?: URL;
-  audio?: URL;
   deleted?: boolean | false;
   imageId?: string;
   audioId?: string;
