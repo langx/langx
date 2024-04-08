@@ -56,6 +56,9 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   audioId: string = null;
   isDownloaded: boolean = false;
 
+  imageURL$: Observable<URL> = null;
+  audioURL$: Observable<URL> = null;
+
   constructor(
     private store: Store,
     private messageService: MessageService,
@@ -106,8 +109,22 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
             );
           }
         });
+
+      // Check if the message is an image
+      if (this.msg.type === 'image') {
+        this.imageURL$ = this.messageService.getMessageImageView(
+          this.msg.imageId
+        );
+      }
+      // Check if the message is an audio
+      if (this.msg.type === 'audio') {
+        this.imageURL$ = this.messageService.getMessageAudioView(
+          this.msg.audioId
+        );
+      }
     }
 
+    // TODO: Refactor this!!
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
       this.audioId = this.msg?.$id;

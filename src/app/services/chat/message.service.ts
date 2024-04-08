@@ -172,7 +172,7 @@ export class MessageService {
     // );
   }
 
-  private getMessageImageView(fileId: string): Observable<URL> {
+  getMessageImageView(fileId: string): Observable<URL> {
     return of(
       this.storageService.getFileView(
         environment.appwrite.MESSAGE_BUCKET,
@@ -198,7 +198,7 @@ export class MessageService {
     // );
   }
 
-  private getMessageAudioView(fileId: string): Observable<URL> {
+  getMessageAudioView(fileId: string): Observable<URL> {
     return of(
       this.storageService.getFileView(environment.appwrite.AUDIO_BUCKET, fileId)
     );
