@@ -129,9 +129,11 @@ export class EditPage implements OnInit {
     // Set currentUser photos
     this.subscriptions.add(
       this.currentUser$.subscribe((user) => {
-        this.profilePic$ = this.getFileView(user?.profilePic);
+        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
         this.otherPics$ = forkJoin(
-          (user?.otherPics || []).map((id) => this.getFileView(id))
+          (user?.otherPics || []).map((id) =>
+            this.userService.getUserFileView(id)
+          )
         );
       })
     );
@@ -421,10 +423,6 @@ export class EditPage implements OnInit {
         },
       });
     });
-  }
-
-  getFileView(id: string) {
-    return this.userService.getUserFileView(id);
   }
 
   //

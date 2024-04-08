@@ -201,9 +201,11 @@ export class UserPage implements OnInit {
           user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
       }
 
-      this.profilePic$ = this.getFileView(user?.profilePic);
+      this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
       this.otherPics$ = forkJoin(
-        (user?.otherPics || []).map((id) => this.getFileView(id))
+        (user?.otherPics || []).map((id) =>
+          this.userService.getUserFileView(id)
+        )
       );
 
       this.badges = user?.badges.map((badge) => {
@@ -368,10 +370,6 @@ export class UserPage implements OnInit {
           .unsubscribe();
       })
       .unsubscribe();
-  }
-
-  getFileView(id: string) {
-    return this.userService.getUserFileView(id);
   }
 
   //
