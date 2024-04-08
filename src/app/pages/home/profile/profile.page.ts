@@ -119,6 +119,41 @@ export class ProfilePage implements OnInit {
             this.presentToast(error.message, 'danger');
         })
     );
+
+    // Set currentUser
+    this.subscription.add(
+      this.currentUser$.subscribe((user) => {
+        this.currentUserId = user?.$id;
+        this.studyLanguages = user?.languages.filter(
+          (lang) => !lang.motherLanguage
+        );
+        this.motherLanguages = user?.languages.filter(
+          (lang) => lang.motherLanguage
+        );
+
+        // Set readable gender
+        if (user?.gender === 'other') {
+          this.gender = 'Prefer Not To Say';
+        } else {
+          this.gender =
+            user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
+        }
+
+        this.profilePic$ = this.getFileView(user?.profilePic);
+        this.otherPics$ = forkJoin(
+          (user?.otherPics || []).map((id) => this.getFileView(id))
+        );
+
+        this.badges = user?.badges.map((badge) => {
+          const name = badge
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+
+          return { name: name, url: `/assets/image/badges/${badge}.png` };
+        });
+      })
+    );
   }
 
   ionViewWillLeave() {
@@ -129,39 +164,6 @@ export class ProfilePage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.account$ = this.store.pipe(select(accountSelector));
-
-    // Set currentUser
-    this.currentUser$.subscribe((user) => {
-      this.currentUserId = user?.$id;
-      this.studyLanguages = user?.languages.filter(
-        (lang) => !lang.motherLanguage
-      );
-      this.motherLanguages = user?.languages.filter(
-        (lang) => lang.motherLanguage
-      );
-
-      // Set readable gender
-      if (user?.gender === 'other') {
-        this.gender = 'Prefer Not To Say';
-      } else {
-        this.gender =
-          user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-      }
-
-      this.profilePic$ = this.getFileView(user?.profilePic);
-      this.otherPics$ = forkJoin(
-        (user?.otherPics || []).map((id) => this.getFileView(id))
-      );
-
-      this.badges = user?.badges.map((badge) => {
-        const name = badge
-          .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-
-        return { name: name, url: `/assets/image/badges/${badge}.png` };
-      });
-    });
   }
 
   getSettingPage(page) {
