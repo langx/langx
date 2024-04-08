@@ -12,4 +12,6 @@ export type Message = Models.Document & {
   image?: URL;
   audio?: URL;
   deleted?: boolean | false;
+  imageId?: string;
+  audioId?: string;
 };
