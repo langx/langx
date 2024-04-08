@@ -165,7 +165,6 @@ export class NotificationsPage implements OnInit {
 
   updateCurrentUser(data: any) {
     const request = {
-      userId: this.currentUser?.$id,
       data: data,
     };
 

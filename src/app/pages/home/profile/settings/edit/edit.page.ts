@@ -220,9 +220,7 @@ export class EditPage implements OnInit {
     );
 
     const request = {
-      userId: this.currentUser?.$id,
       data: {
-        $id: this.currentUser.$id,
         otherPhotos: newOtherPhotos,
       },
     };
@@ -236,7 +234,6 @@ export class EditPage implements OnInit {
 
   saveAboutMe() {
     const request = {
-      userId: this.currentUser?.$id,
       data: this.form.value,
     };
     this.store.dispatch(updateCurrentUserAction({ request }));
@@ -258,9 +255,7 @@ export class EditPage implements OnInit {
     }
 
     const request = {
-      userId: this.currentUser?.$id,
       data: {
-        $id: this.currentUser.$id,
         name: this.currentUserName,
       },
     };
