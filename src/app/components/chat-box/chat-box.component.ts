@@ -14,7 +14,6 @@ import {
   Input,
   OnInit,
   ElementRef,
-  AfterViewInit,
   Output,
   EventEmitter,
   ViewChild,
@@ -76,6 +75,19 @@ export class ChatBoxComponent implements OnInit {
       entries.forEach((entry) => this.handleIntersect(entry));
     });
     this.observer.observe(this.el.nativeElement);
+
+    // Check if the message is an image
+    if (this.msg.type === 'image') {
+      this.imageURL$ = this.messageService.getMessageImageView(
+        this.msg.imageId
+      );
+    }
+    // Check if the message is an audio
+    if (this.msg.type === 'audio') {
+      this.audioURL$ = this.messageService.getMessageAudioView(
+        this.msg.audioId
+      );
+    }
   }
 
   ngAfterViewLeave() {
@@ -108,19 +120,6 @@ export class ChatBoxComponent implements OnInit {
             );
           }
         });
-
-      // Check if the message is an image
-      if (this.msg.type === 'image') {
-        this.imageURL$ = this.messageService.getMessageImageView(
-          this.msg.imageId
-        );
-      }
-      // Check if the message is an audio
-      if (this.msg.type === 'audio') {
-        this.imageURL$ = this.messageService.getMessageAudioView(
-          this.msg.audioId
-        );
-      }
     }
 
     // Check if the message is an audio
@@ -128,14 +127,6 @@ export class ChatBoxComponent implements OnInit {
       this.audioId = this.msg?.$id;
       await this.readFiles(this.msg?.$id);
     }
-
-    // Get the image and audio URL
-    this.imageURL$ = this.messageService.getMessageImageView(
-      this.chat?.imageId
-    );
-    this.audioURL$ = this.messageService.getMessageAudioView(
-      this.chat?.audioId
-    );
   }
 
   //
@@ -208,6 +199,7 @@ export class ChatBoxComponent implements OnInit {
   // Download file from server
   async downloadFile() {
     this.audioURL$.subscribe(async (url) => {
+      // console.log('URL:', url);
       if (url) {
         const response = await fetch(url);
         const blob = await response.blob();
