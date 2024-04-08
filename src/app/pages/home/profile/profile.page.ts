@@ -111,11 +111,14 @@ export class ProfilePage implements OnInit {
     this.subscription = new Subscription();
 
     // Profile Error Handling
-    this.store
-      .pipe(select(profileErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'danger');
-      });
+    this.subscription.add(
+      this.store
+        .pipe(select(profileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'danger');
+        })
+    );
   }
 
   ionViewWillLeave() {
