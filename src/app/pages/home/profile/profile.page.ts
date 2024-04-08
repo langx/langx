@@ -110,16 +110,6 @@ export class ProfilePage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
-    // Profile Error Handling
-    this.subscription.add(
-      this.store
-        .pipe(select(profileErrorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error && error.message)
-            this.presentToast(error.message, 'danger');
-        })
-    );
-
     // Set currentUser
     this.subscription.add(
       this.currentUser$.subscribe((user) => {
@@ -155,6 +145,16 @@ export class ProfilePage implements OnInit {
           return { name: name, url: `/assets/image/badges/${badge}.png` };
         });
       })
+    );
+
+    // Profile Error Handling
+    this.subscription.add(
+      this.store
+        .pipe(select(profileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'danger');
+        })
     );
   }
 
