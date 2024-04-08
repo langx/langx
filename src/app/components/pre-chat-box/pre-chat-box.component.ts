@@ -4,6 +4,7 @@ import { Clipboard } from '@capacitor/clipboard';
 import { Directory, Filesystem } from '@capacitor/filesystem';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { Message } from 'src/app/models/Message';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
@@ -26,6 +27,9 @@ export class PreChatBoxComponent implements OnInit {
 
   replyTo: string = null;
   replyToMessage: Message;
+
+  imageURL$: Observable<URL> = null;
+  audioURL$: Observable<URL> = null;
 
   constructor(private store: Store, private toastController: ToastController) {}
 
