@@ -116,16 +116,6 @@ export class EditPage implements OnInit {
       })
     );
 
-    // Edit Profile Error Handling
-    this.subscriptions.add(
-      this.store
-        .pipe(select(editProfileErrorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error && error.message)
-            this.presentToast(error.message, 'danger');
-        })
-    );
-
     // Set currentUser photos
     this.subscriptions.add(
       this.currentUser$.subscribe((user) => {
@@ -136,6 +126,16 @@ export class EditPage implements OnInit {
           )
         );
       })
+    );
+
+    // Edit Profile Error Handling
+    this.subscriptions.add(
+      this.store
+        .pipe(select(editProfileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'danger');
+        })
     );
   }
 
