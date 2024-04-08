@@ -251,7 +251,7 @@ export class ProfilePage implements OnInit {
   }
 
   getFileView(id: string) {
-    return this.userService.getFileView(id);
+    return this.userService.getUserFileView(id);
   }
 
   //

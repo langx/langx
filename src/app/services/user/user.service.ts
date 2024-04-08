@@ -424,7 +424,7 @@ export class UserService {
     );
   }
 
-  getFileView(fileId: string): Observable<URL> {
+  getUserFileView(fileId: string): Observable<URL> {
     return of(
       this.storage.getFileView(environment.appwrite.USER_BUCKET, fileId)
     );
