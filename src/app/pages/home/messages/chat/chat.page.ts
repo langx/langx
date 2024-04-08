@@ -27,7 +27,6 @@ import {
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
-import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
@@ -35,8 +34,11 @@ import { createMessageRequestInterface } from 'src/app/models/types/requests/cre
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
+// Service Imports
+import { UserService } from 'src/app/services/user/user.service';
+
 // Selector and Action Imports
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   clearAudioUrlStateAction,
@@ -70,7 +72,7 @@ import {
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
 })
-export class ChatPage implements OnInit, OnDestroy {
+export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('recordButton', { read: ElementRef }) recordButton: ElementRef;
   @ViewChild('myTextArea', { static: false }) myTextArea: IonTextarea;
@@ -80,12 +82,14 @@ export class ChatPage implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   room$: Observable<RoomExtendedInterface | null>;
   user$: Observable<User | null>;
-  currentUser$: Observable<Account | null>;
+  currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   isLoading_offset$: Observable<boolean>;
   tempMessages$: Observable<tempMessageInterface[] | null>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
+
+  profilePic$: Observable<URL> = null;
 
   isTyping: boolean = false;
   roomId: string;
@@ -132,6 +136,7 @@ export class ChatPage implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
+    private userService: UserService,
     private toastController: ToastController,
     private gestureCtrl: GestureController
   ) {}
@@ -146,7 +151,8 @@ export class ChatPage implements OnInit, OnDestroy {
     this.enableLongPress();
   }
 
-  ngOnDestroy() {
+  // TODO: ngOnDestroy() {
+  ngAfterViewLeave() {
     this.subscriptions.unsubscribe();
 
     this.room$
@@ -163,7 +169,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     this.room$ = this.store.pipe(select(roomSelector));
     this.user$ = this.store.pipe(select(userDataSelector));
-    this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.tempMessages$ = this.store.pipe(select(tempMessagesSelector));
@@ -270,6 +276,13 @@ export class ChatPage implements OnInit, OnDestroy {
           this.submitAudio();
           this.store.dispatch(clearAudioUrlStateAction());
         }
+      })
+    );
+
+    // Set currentUser photos
+    this.subscriptions.add(
+      this.currentUser$.subscribe((user) => {
+        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
       })
     );
 

@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/messages"></ion-back-button>
       <ion-thumbnail (click)="redirectUserProfile()" class="ion-margin-start">
-        <img [src]="(user$ | async)?.profilePhoto" />
+        <img [src]="(profilePic$ | async)" />
       </ion-thumbnail>
     </ion-buttons>
 
