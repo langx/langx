@@ -77,9 +77,9 @@ export class UserPage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
+  badges: Object[] = [];
   profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
-  badges: Object[] = [];
 
   reason: string;
 
@@ -109,6 +109,44 @@ export class UserPage implements OnInit {
         this.store.pipe(select(isLoadingRoomSelector)),
       ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
         this.isLoading = isLoadingAuth || isLoadingUser || isLoadingRoom;
+      })
+    );
+
+    this.subscription.add(
+      // Set User
+      this.user$.subscribe((user) => {
+        if (user) {
+          this.studyLanguages = user.languages.filter(
+            (lang) => !lang.motherLanguage
+          );
+          this.motherLanguages = user.languages.filter(
+            (lang) => lang.motherLanguage
+          );
+
+          // Set readable gender
+          if (user.gender === 'other') {
+            this.gender = 'Prefer Not To Say';
+          } else {
+            this.gender =
+              user.gender.charAt(0).toUpperCase() + user.gender.slice(1);
+          }
+
+          this.profilePic$ = this.userService.getUserFileView(user.profilePic);
+          this.otherPics$ = forkJoin(
+            (user.otherPics || []).map((id) =>
+              this.userService.getUserFileView(id)
+            )
+          );
+
+          this.badges = user.badges.map((badge) => {
+            const name = badge
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+
+            return { name: name, url: `/assets/image/badges/${badge}.png` };
+          });
+        }
       })
     );
 
@@ -183,40 +221,6 @@ export class UserPage implements OnInit {
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
-
-    // Set User
-    this.user$.subscribe((user) => {
-      this.studyLanguages = user?.languages.filter(
-        (lang) => !lang.motherLanguage
-      );
-      this.motherLanguages = user?.languages.filter(
-        (lang) => lang.motherLanguage
-      );
-
-      // Set readable gender
-      if (user?.gender === 'other') {
-        this.gender = 'Prefer Not To Say';
-      } else {
-        this.gender =
-          user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-      }
-
-      this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
-      this.otherPics$ = forkJoin(
-        (user?.otherPics || []).map((id) =>
-          this.userService.getUserFileView(id)
-        )
-      );
-
-      this.badges = user?.badges.map((badge) => {
-        const name = badge
-          .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-
-        return { name: name, url: `/assets/image/badges/${badge}.png` };
-      });
-    });
   }
 
   async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
