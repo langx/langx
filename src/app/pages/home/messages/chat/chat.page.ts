@@ -49,9 +49,9 @@ import {
   updateMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
-  audioUrlSelector,
+  imageIdSelector,
+  audioIdSelector,
   errorSelector,
-  imageUrlSelector,
   isLoadingOffsetSelector,
   isLoadingSelector,
   messagesSelector,
@@ -98,7 +98,7 @@ export class ChatPage implements OnInit {
   };
 
   // Image Variables
-  imageUrl: URL;
+  imageId: string;
   isLoadingImage: boolean = false;
   isLoadingImageMsg: tempMessageInterface = {
     $id: null,
@@ -115,7 +115,6 @@ export class ChatPage implements OnInit {
   storedFileNames: FileInfo[] = [];
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
-  audioUrl: URL;
   audioId: string;
   private audioIdTemp: string;
 
@@ -252,10 +251,10 @@ export class ChatPage implements OnInit {
 
     // Uploaded Image URL to present
     this.subscriptions.add(
-      this.store.pipe(select(imageUrlSelector)).subscribe((id: string) => {
+      this.store.pipe(select(imageIdSelector)).subscribe((id: string) => {
         if (id) {
-          // this.imageUrl = id;
-          // this.submitImage();
+          this.imageId = id;
+          this.submitImage();
           this.store.dispatch(clearImageUrlStateAction());
         }
       })
@@ -263,10 +262,10 @@ export class ChatPage implements OnInit {
 
     // Uploaded Audio URL to present
     this.subscriptions.add(
-      this.store.pipe(select(audioUrlSelector)).subscribe((id: string) => {
+      this.store.pipe(select(audioIdSelector)).subscribe((id: string) => {
         if (id) {
-          // this.audioUrl = id;
-          // this.submitAudio();
+          this.audioId = id;
+          this.submitAudio();
           this.store.dispatch(clearAudioUrlStateAction());
         }
       })
@@ -320,8 +319,8 @@ export class ChatPage implements OnInit {
 
         // Reset the form and the variables
         this.form.reset();
-        this.audioUrl = null;
-        this.imageUrl = null;
+        this.audioId = null;
+        this.imageId = null;
         this.replyMessage = null;
         this.editMessage = null;
       })
@@ -351,7 +350,7 @@ export class ChatPage implements OnInit {
         let request: createMessageRequestInterface = null;
 
         // Fill the request with the proper data
-        if (this.imageUrl) {
+        if (this.imageId) {
           request = this.createMessageWithImage(user);
         } else {
           this.presentToast('Please try again.', 'danger');
@@ -363,7 +362,7 @@ export class ChatPage implements OnInit {
 
           // Reset the variable
           this.isLoadingImage = false;
-          this.imageUrl = null;
+          this.imageId = null;
           this.replyMessage = null;
         }
       })
@@ -376,7 +375,7 @@ export class ChatPage implements OnInit {
         let request: createMessageRequestInterface = null;
 
         // Fill the request with the proper data
-        if (this.audioUrl) {
+        if (this.audioId) {
           request = this.createMessageWithAudio(user);
         } else {
           this.presentToast('Please try again.', 'danger');
@@ -387,7 +386,7 @@ export class ChatPage implements OnInit {
           this.store.dispatch(createMessageAction({ request }));
 
           // Reset the variable
-          this.audioUrl = null;
+          this.audioId = null;
           this.replyMessage = null;
         }
       })
@@ -554,7 +553,7 @@ export class ChatPage implements OnInit {
       roomId: this.roomId,
       to: user.$id,
       type: 'image',
-      image: this.imageUrl,
+      imageId: this.imageId,
       replyTo: this.replyMessage?.$id || null,
     };
     return request;
@@ -566,7 +565,7 @@ export class ChatPage implements OnInit {
       roomId: this.roomId,
       to: user.$id,
       type: 'audio',
-      audio: this.audioUrl,
+      audioId: this.audioId,
       replyTo: this.replyMessage?.$id || null,
     };
     this.audioIdTemp = null;

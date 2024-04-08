@@ -84,9 +84,7 @@ export class MessageEffects {
       ofType(updateMessageAction),
       mergeMap(({ request }) =>
         this.messagesService.updateMessage(request).pipe(
-          map((payload: Message) =>
-            updateMessageSuccessAction({ payload })
-          ),
+          map((payload: Message) => updateMessageSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
@@ -110,8 +108,8 @@ export class MessageEffects {
           to: action.request.to,
           type: action.request.type,
           body: action.request?.body || null,
-          image: action.request?.image || null,
-          audio: action.request?.audio || null,
+          imageId: action.request?.imageId || null,
+          audioId: action.request?.audioId || null,
         };
 
         return this.messagesService.createMessage(newRequest).pipe(

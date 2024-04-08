@@ -7,7 +7,7 @@ export interface tempMessageInterface {
   replyTo?: string;
   type: string;
   body?: string;
-  image?: URL;
-  audio?: URL;
+  imageId?: string;
+  audioId?: string;
   error: ErrorInterface | null;
 }
