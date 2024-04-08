@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
+import { Models } from 'src/app/extras/sdk/src';
 import { ActionTypes } from 'src/app/store/actions/types/bucket.actiontypes';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -44,7 +45,7 @@ export const uploadImageForMessageAction = createAction(
 
 export const uploadImageForMessageSuccessAction = createAction(
   ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE_SUCCESS,
-  props<{ payload: URL }>()
+  props<{ payload: Models.File }>()
 );
 
 export const uploadImageForMessageFailureAction = createAction(
@@ -64,7 +65,7 @@ export const uploadAudioForMessageAction = createAction(
 
 export const uploadAudioForMessageSuccessAction = createAction(
   ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE_SUCCESS,
-  props<{ payload: URL }>()
+  props<{ payload: Models.File }>()
 );
 
 export const uploadAudioForMessageFailureAction = createAction(

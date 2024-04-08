@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // import { ID, Query } from 'appwrite';
-import { ID, Query } from 'src/app/extras/sdk/src';
+import { ID, Models, Query } from 'src/app/extras/sdk/src';
 import { Observable, from, of, switchMap, tap } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
@@ -159,47 +159,48 @@ export class MessageService {
   // Upload Image
   //
 
-  uploadImage(request: File): Observable<URL> {
+  uploadMessageImage(request: File): Observable<Models.File> {
     return from(
       this.storageService.createFile(
         environment.appwrite.MESSAGE_BUCKET,
         ID.unique(),
         request
       )
-    ).pipe(
-      switchMap((response: BucketFile) => this.getImageView(response.$id))
     );
+    // .pipe(
+    //   switchMap((response: BucketFile) => this.getImageView(response.$id))
+    // );
   }
 
-  private getImageView(fileId: string): Observable<URL> {
-    const url = this.storageService.getFileView(
-      environment.appwrite.MESSAGE_BUCKET,
-      fileId
+  private getMessageImageView(fileId: string): Observable<URL> {
+    return of(
+      this.storageService.getFileView(
+        environment.appwrite.MESSAGE_BUCKET,
+        fileId
+      )
     );
-    return of(url);
   }
 
   //
   // Upload Audio
   //
 
-  uploadAudio(request: File): Observable<URL> {
+  uploadMessageAudio(request: File): Observable<Models.File> {
     return from(
       this.storageService.createFile(
         environment.appwrite.AUDIO_BUCKET,
         ID.unique(),
         request
       )
-    ).pipe(
-      switchMap((response: BucketFile) => this.getAudioView(response.$id))
     );
+    // .pipe(
+    //   switchMap((response: BucketFile) => this.getAudioView(response.$id))
+    // );
   }
 
-  private getAudioView(fileId: string): Observable<URL> {
-    const url = this.storageService.getFileView(
-      environment.appwrite.AUDIO_BUCKET,
-      fileId
+  private getMessageAudioView(fileId: string): Observable<URL> {
+    return of(
+      this.storageService.getFileView(environment.appwrite.AUDIO_BUCKET, fileId)
     );
-    return of(url);
   }
 }

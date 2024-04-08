@@ -42,12 +42,12 @@ export const userDataSelector = createSelector(
 
 export const imageUrlSelector = createSelector(
   messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.imageUrl
+  (messageState: MessageStateInterface) => messageState.imageId
 );
 
 export const audioUrlSelector = createSelector(
   messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.audioUrl
+  (messageState: MessageStateInterface) => messageState.audioId
 );
 
 export const errorSelector = createSelector(

@@ -33,7 +33,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadProfilePictureAction),
       switchMap(({ request }) => {
-        return this.userService.uploadFile(request).pipe(
+        return this.userService.uploadUserFile(request).pipe(
           switchMap((payload) => {
             return this.userService
               .updateUserDoc({
@@ -66,7 +66,7 @@ export class BucketEffects {
       ofType(uploadOtherPhotosAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) => {
-        return this.userService.uploadFile(request).pipe(
+        return this.userService.uploadUserFile(request).pipe(
           switchMap((payload) => {
             const updatedOtherPics = [...currentUser?.otherPics, payload.$id];
             return this.userService
@@ -94,7 +94,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadImageForMessageAction),
       switchMap(({ request }) => {
-        return this.messageService.uploadImage(request).pipe(
+        return this.messageService.uploadMessageImage(request).pipe(
           map((payload) => {
             return uploadImageForMessageSuccessAction({ payload });
           }),
@@ -114,7 +114,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadAudioForMessageAction),
       switchMap(({ request }) => {
-        return this.messageService.uploadAudio(request).pipe(
+        return this.messageService.uploadMessageAudio(request).pipe(
           map((payload) => {
             return uploadAudioForMessageSuccessAction({ payload });
           }),

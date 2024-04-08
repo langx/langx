@@ -15,7 +15,6 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { Visit } from 'src/app/models/Visit';
 import { Report } from 'src/app/models/Report';
-import { BucketFile } from 'src/app/models/BucketFile';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { listUsersResponseInterface } from 'src/app/models/types/responses/listUsersResponse.interface';
 import { listVisitsResponseInterface } from 'src/app/models/types/responses/listVisitsResponse.interface';
@@ -32,7 +31,7 @@ export class UserService {
     private store: Store,
     private api: ApiService,
     private authService: AuthService,
-    private storage: StorageService
+    private storageService: StorageService
   ) {}
 
   getUserDoc(uid: string): Observable<any> {
@@ -414,9 +413,9 @@ export class UserService {
   // Upload Bucket
   //
 
-  uploadFile(request: File): Observable<Models.File> {
+  uploadUserFile(request: File): Observable<Models.File> {
     return from(
-      this.storage.createFile(
+      this.storageService.createFile(
         environment.appwrite.USER_BUCKET,
         ID.unique(),
         request
@@ -426,13 +425,7 @@ export class UserService {
 
   getUserFileView(fileId: string): Observable<URL> {
     return of(
-      this.storage.getFileView(environment.appwrite.USER_BUCKET, fileId)
-    );
-  }
-
-  getMessageFileView(fileId: string): Observable<URL> {
-    return of(
-      this.storage.getFileView(environment.appwrite.MESSAGE_BUCKET, fileId)
+      this.storageService.getFileView(environment.appwrite.USER_BUCKET, fileId)
     );
   }
 

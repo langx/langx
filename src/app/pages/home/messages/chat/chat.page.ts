@@ -252,10 +252,10 @@ export class ChatPage implements OnInit {
 
     // Uploaded Image URL to present
     this.subscriptions.add(
-      this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
-        if (url) {
-          this.imageUrl = url;
-          this.submitImage();
+      this.store.pipe(select(imageUrlSelector)).subscribe((id: string) => {
+        if (id) {
+          // this.imageUrl = id;
+          // this.submitImage();
           this.store.dispatch(clearImageUrlStateAction());
         }
       })
@@ -263,10 +263,10 @@ export class ChatPage implements OnInit {
 
     // Uploaded Audio URL to present
     this.subscriptions.add(
-      this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
-        if (url) {
-          this.audioUrl = url;
-          this.submitAudio();
+      this.store.pipe(select(audioUrlSelector)).subscribe((id: string) => {
+        if (id) {
+          // this.audioUrl = id;
+          // this.submitAudio();
           this.store.dispatch(clearAudioUrlStateAction());
         }
       })
