@@ -12,7 +12,7 @@ export type User = Models.Document & {
   languageArray?: string[];
   badges?: string[];
   // profilePhoto?: URL;
-  otherPhotos?: URL[];
+  // otherPhotos?: URL[];
   languages?: Language[];
   aboutMe?: string;
   lastSeen?: Date;
