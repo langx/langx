@@ -11,8 +11,6 @@ export type User = Models.Document & {
   birthdate: Date;
   languageArray?: string[];
   badges?: string[];
-  // profilePhoto?: URL;
-  // otherPhotos?: URL[];
   languages?: Language[];
   aboutMe?: string;
   lastSeen?: Date;
