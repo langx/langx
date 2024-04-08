@@ -430,6 +430,12 @@ export class UserService {
     );
   }
 
+  getMessageFileView(fileId: string): Observable<URL> {
+    return of(
+      this.storage.getFileView(environment.appwrite.MESSAGE_BUCKET, fileId)
+    );
+  }
+
   //
   // Private Functions
   //
