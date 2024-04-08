@@ -145,7 +145,6 @@ export class ChatPage implements OnInit {
     this.enableLongPress();
   }
 
-  // TODO: ngOnDestroy() {
   ngAfterViewLeave() {
     this.subscriptions.unsubscribe();
 
