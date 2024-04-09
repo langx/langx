@@ -86,6 +86,6 @@ export const environment = {
     PAGINATION_LIMIT: 25,
   },
   defaultAssets: {
-    PROFILE_PHOTO: `${DB_URL}v1/storage/buckets/xxxxxxxxxxxxxxxxxxxx/files/xxxxxxxxxxxxxxxxxxxx/view?project=xxxxxxxxxxxxxxxxxxxx`,
+    DEFAULT_PP_ID: `652d582c65bb47ac5de0`,
   },
 };

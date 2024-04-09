@@ -152,7 +152,7 @@ export class UserService {
     // Query for users with completed profiles
     queries.push(Query.notEqual('aboutMe', ''));
     queries.push(
-      Query.notEqual('profilePhoto', environment.defaultAssets.PROFILE_PHOTO)
+      Query.notEqual('profilePic', environment.defaultAssets.DEFAULT_PP_ID)
     );
 
     // Query for users descending by last seen
