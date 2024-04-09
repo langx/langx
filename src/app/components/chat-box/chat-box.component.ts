@@ -293,15 +293,18 @@ export class ChatBoxComponent implements OnInit {
   // Utils for image preview
   //
 
-  async openPreview(image) {
-    // console.log(image);
-    const modal = await this.modalCtrl.create({
-      component: PreviewPhotoComponent,
-      componentProps: {
-        photos: image,
-      },
+  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
+    photos$.subscribe(async (photos) => {
+      if (photos) {
+        const modal = await this.modalCtrl.create({
+          component: PreviewPhotoComponent,
+          componentProps: {
+            photos: Array.isArray(photos) ? photos : [photos],
+          },
+        });
+        modal.present();
+      }
     });
-    modal.present();
   }
 
   //
