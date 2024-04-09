@@ -120,6 +120,7 @@ const messageReducer = createReducer(
     };
   }),
   on(createMessageFailureAction, (state, action): MessageStateInterface => {
+    // TODO: Check $id instead of body
     const tempMessages = state.room.tempMessages
       ? state.room.tempMessages.map((msg) =>
           msg.body === action.payload.body
