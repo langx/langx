@@ -112,14 +112,12 @@ export class RoomService {
       switchMap(() => {
         // Call the /api/room
         return from(
-          axios
-            .post(environment.api.ROOM, body)
-            .then((result) => {
-              return {
-                documents: [result.data],
-                total: 1,
-              };
-            })
+          axios.post(environment.api.ROOM, body).then((result) => {
+            return {
+              documents: [result.data],
+              total: 1,
+            };
+          })
         ).pipe(
           switchMap((data: listRoomsResponseInterface) =>
             iif(
@@ -258,7 +256,6 @@ export class RoomService {
             userData: data as User,
             total: 0,
             messages: null,
-            tempMessages: null,
           };
           return roomWithUserData;
         }),
@@ -268,7 +265,6 @@ export class RoomService {
             userData: deletedUser,
             total: 0,
             messages: null,
-            tempMessages: null,
           })
         )
       );

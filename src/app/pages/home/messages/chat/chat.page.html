@@ -49,19 +49,6 @@
         >
         </app-chat-box>
       </ion-item-group>
-      <div *ngIf="(tempMessages$ | async)">
-        <ion-item-group
-          lines="none"
-          class="chats-group"
-          *ngFor="let tempMsg of (tempMessages$ | async)"
-        >
-          <app-pre-chat-box [tempMsg]="tempMsg"></app-pre-chat-box>
-        </ion-item-group>
-      </div>
-      <app-pre-chat-box
-        *ngIf="isLoadingImage"
-        [tempMsg]="isLoadingImageMsg"
-      ></app-pre-chat-box>
     </div>
   </ion-list>
 </ion-content>
