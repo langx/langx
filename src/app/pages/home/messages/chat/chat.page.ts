@@ -295,14 +295,14 @@ export class ChatPage implements OnInit {
         // Dispatch action to create message
         if (request) {
           this.dispatchCreateMessageAction(request);
-
-          // Reset the form and the variables
-          this.form.reset();
-          this.audioId = null;
-          this.imageId = null;
-          this.replyMessage = null;
-          this.editMessage = null;
         }
+
+        // Reset the form and the variables
+        this.form.reset();
+        this.audioId = null;
+        this.imageId = null;
+        this.replyMessage = null;
+        this.editMessage = null;
       })
       .unsubscribe();
   }
