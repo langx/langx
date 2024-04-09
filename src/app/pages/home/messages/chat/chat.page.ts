@@ -294,15 +294,15 @@ export class ChatPage implements OnInit {
 
         // Dispatch action to create message
         if (request) {
-          this.store.dispatch(createMessageAction({ request }));
-        }
+          this.dispatchCreateMessageAction(request);
 
-        // Reset the form and the variables
-        this.form.reset();
-        this.audioId = null;
-        this.imageId = null;
-        this.replyMessage = null;
-        this.editMessage = null;
+          // Reset the form and the variables
+          this.form.reset();
+          this.audioId = null;
+          this.imageId = null;
+          this.replyMessage = null;
+          this.editMessage = null;
+        }
       })
       .unsubscribe();
   }
@@ -338,7 +338,7 @@ export class ChatPage implements OnInit {
 
         // Dispatch action to create message
         if (request) {
-          this.store.dispatch(createMessageAction({ request }));
+          this.dispatchCreateMessageAction(request);
 
           // Reset the variable
           this.isLoadingImage = false;
@@ -363,11 +363,28 @@ export class ChatPage implements OnInit {
 
         // Dispatch action to create message
         if (request) {
-          this.store.dispatch(createMessageAction({ request }));
+          this.dispatchCreateMessageAction(request);
 
           // Reset the variable
           this.audioId = null;
           this.replyMessage = null;
+        }
+      })
+      .unsubscribe();
+  }
+
+  // Dispatch action to create message
+  dispatchCreateMessageAction(request) {
+    this.currentUser$
+      .subscribe((currentUser) => {
+        const currentUserId = currentUser.$id;
+        if (request) {
+          this.store.dispatch(
+            createMessageAction({
+              request,
+              currentUserId,
+            })
+          );
         }
       })
       .unsubscribe();

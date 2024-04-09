@@ -79,14 +79,39 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
-  on(
-    createMessageAction,
-    (state, action): MessageStateInterface => ({
+  on(createMessageAction, (state, action): MessageStateInterface => {
+    console.log(action.request);
+
+    // Create a new Message object from action.request
+    const newMessage: Message = {
+      // Assuming these are the properties of Message
+      $collectionId: null,
+      $createdAt: null,
+      $databaseId: null,
+      $permissions: null,
+      $updatedAt: null,
+      seen: false,
+      sender: action.currentUserId,
+      $id: action.request.$id,
+      to: action.request.to,
+      roomId: action.request.roomId,
+      replyTo: action.request.replyTo,
+      type: action.request.type,
+      body: action.request.body,
+      imageId: action.request.imageId,
+      audioId: action.request.audioId,
+    };
+
+    return {
       ...state,
       isLoading: true,
       error: null,
-    })
-  ),
+      room: {
+        ...state.room,
+        messages: [...(state.room.messages || []), newMessage],
+      },
+    };
+  }),
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
     // Check if a message with the same $id already exists
     const messageExists = state.room.messages?.some(
