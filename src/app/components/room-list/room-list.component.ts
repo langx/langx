@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import {
   Component,
   Input,
@@ -9,6 +10,8 @@ import {
 import { IonItemSliding } from '@ionic/angular';
 
 import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
+
+import { UserService } from 'src/app/services/user/user.service';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 
@@ -33,16 +36,21 @@ export class RoomListComponent implements OnInit {
   @Output() onArchive: EventEmitter<any> = new EventEmitter();
   @Output() onUnarchive: EventEmitter<any> = new EventEmitter();
 
+  profilePic$: Observable<URL> = null;
+
   lastMessage: LastMessage = {
     body: null,
     time: null,
     yourTurn: false,
   };
 
-  constructor() {}
+  constructor(private userService: UserService) {}
 
   ngOnInit() {
     this.getLastMessage(this.room);
+    this.profilePic$ = this.userService.getUserFileView(
+      this.room['userData'].profilePic
+    );
   }
 
   getLastMessage(room) {
