@@ -266,29 +266,43 @@ const roomReducer = createReducer(
     return { ...state, rooms: sortedRooms };
   }),
 
-  // Find And Update Room Message Reducer
   on(findRoomAndUpdateMessageAction, (state, action): RoomStateInterface => {
-    // Create a new array with the updated room
-    const updatedRooms = state.rooms?.map((room) => {
-      const updatedMessages = room.messages?.map((message) =>
-        message.$id === action.payload.$id
-          ? { ...message, ...action.payload, roomId: action.payload.roomId.$id }
-          : message
-      );
+    // Find the room with the matching roomId
+    const roomIndex = state.rooms?.findIndex(
+      (room) => room.$id === action.payload.roomId.$id
+    );
 
-      return room.$id === action.payload.roomId.$id
-        ? {
-            ...room,
-            messages: updatedMessages,
-          }
-        : room;
-    });
+    if (roomIndex === undefined || roomIndex === -1) {
+      // If the room is not found, return the state unchanged
+      return state;
+    }
+
+    // Create a new array with the updated message
+    const updatedMessages = state.rooms[roomIndex].messages?.map((message) =>
+      message.$id === action.payload.$id
+        ? { ...message, ...action.payload, roomId: action.payload.roomId.$id }
+        : message
+    );
+
+    // Create a new room with the updated messages
+    const updatedRoom = {
+      ...state.rooms[roomIndex],
+      messages: updatedMessages,
+    };
+
+    // Create a new array with the updated room
+    const updatedRooms = [
+      ...state.rooms.slice(0, roomIndex),
+      updatedRoom,
+      ...state.rooms.slice(roomIndex + 1),
+    ];
 
     // Sort rooms by $updatedAt in descending order
-    const sortedRooms = updatedRooms?.sort(
+    const sortedRooms = updatedRooms.sort(
       (a, b) =>
         new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
     );
+
     // Return the new state
     return { ...state, rooms: sortedRooms };
   }),
