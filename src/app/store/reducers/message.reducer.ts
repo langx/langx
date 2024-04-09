@@ -110,12 +110,21 @@ const messageReducer = createReducer(
         )
       : null;
 
+    // Check if a message with the same $id already exists
+    const messageExists = state.room.messages?.some(
+      (msg) => msg.$id === action.payload.$id
+    );
+
     return {
       ...state,
       isLoading: false,
       room: {
         ...state.room,
         tempMessages: tempMessages,
+        // If the message does not exist, add it to messages
+        messages: messageExists
+          ? state.room.messages
+          : [...(state.room.messages || []), action.payload],
       },
     };
   }),
@@ -269,30 +278,42 @@ const messageReducer = createReducer(
       if (
         state.room.messages &&
         state.room.messages.some((msg) => msg.$id === action.payload.$id)
-      )
-        return { ...state };
+      ) {
+        // If the message already exists, update it
+        return {
+          ...state,
+          room: {
+            ...state.room,
+            messages: state.room.messages.map((msg) =>
+              msg.$id === action.payload.$id
+                ? { ...action.payload, roomId: action.payload.roomId.$id }
+                : msg
+            ),
+          },
+        };
+      }
 
-      // Return the new state
+      // If the message does not exist, add it to the room
       const payload: Message = {
         ...action.payload,
         roomId: action.payload.roomId.$id,
       };
 
+      // Filter out the message with the same $id from tempMessages
+      const tempMessages = state.room.tempMessages
+        ? state.room.tempMessages.filter(
+            (msg) => msg?.$id !== action.payload?.$id
+          )
+        : null;
+
       return {
         ...state,
         room: {
           ...state.room,
+          tempMessages: tempMessages,
           messages: [...(state.room.messages || []), payload],
         },
       };
-
-      // Sort rooms by $updatedAt in descending order
-      // const sortedRooms = updatedRooms.sort(
-      //   (a, b) =>
-      //     new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
-      // );
-      // // Return the new state
-      // return { ...state, rooms: sortedRooms };
     }
   ),
   on(
