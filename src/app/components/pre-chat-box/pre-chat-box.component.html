@@ -30,7 +30,7 @@
           <!-- Image message -->
           <img
             *ngIf="tempMsg?.type == 'image'"
-            [src]="tempMsg?.image"
+            [src]="imageURL$ | async"
             alt="Image message"
             referrerpolicy="no-referrer"
           />

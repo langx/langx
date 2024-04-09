@@ -11,9 +11,7 @@ export type User = Models.Document & {
   birthdate: Date;
   languageArray?: string[];
   badges?: string[];
-  profilePhoto?: URL;
   languages?: Language[];
-  otherPhotos?: URL[];
   aboutMe?: string;
   lastSeen?: Date;
   totalUnseen?: number;
@@ -26,4 +24,6 @@ export type User = Models.Document & {
   contributors?: string[];
   sponsor: boolean;
   streaks?: Streak;
+  profilePic?: string;
+  otherPics?: string[];
 };

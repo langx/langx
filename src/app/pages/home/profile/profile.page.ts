@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, forkJoin, of } from 'rxjs';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
-
-// Environment Imports
-import { environment } from 'src/environments/environment';
 
 // Component and utils Imports
 import {
@@ -21,6 +18,9 @@ import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+// Services Imports
+import { UserService } from 'src/app/services/user/user.service';
 
 // Actions Imports
 import { getCurrentUserAction } from 'src/app/store/actions/user.action';
@@ -91,13 +91,14 @@ export class ProfilePage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
-  profilePhoto: URL = null;
-  otherPhotos: URL[] = [];
+  profilePic$: Observable<URL> = null;
+  otherPics$: Observable<URL[]> = of([]);
   badges: Object[] = [];
 
   constructor(
     private store: Store,
     private router: Router,
+    private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
@@ -109,12 +110,52 @@ export class ProfilePage implements OnInit {
   ionViewWillEnter() {
     this.subscription = new Subscription();
 
+    // Set currentUser
+    this.subscription.add(
+      this.currentUser$.subscribe((user) => {
+        this.currentUserId = user?.$id;
+        this.studyLanguages = user?.languages.filter(
+          (lang) => !lang.motherLanguage
+        );
+        this.motherLanguages = user?.languages.filter(
+          (lang) => lang.motherLanguage
+        );
+
+        // Set readable gender
+        if (user?.gender === 'other') {
+          this.gender = 'Prefer Not To Say';
+        } else {
+          this.gender =
+            user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
+        }
+
+        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
+        this.otherPics$ = forkJoin(
+          (user?.otherPics || []).map((id) =>
+            this.userService.getUserFileView(id)
+          )
+        );
+
+        this.badges = user?.badges.map((badge) => {
+          const name = badge
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+
+          return { name: name, url: `/assets/image/badges/${badge}.png` };
+        });
+      })
+    );
+
     // Profile Error Handling
-    this.store
-      .pipe(select(profileErrorSelector))
-      .subscribe((error: ErrorInterface) => {
-        if (error && error.message) this.presentToast(error.message, 'danger');
-      });
+    this.subscription.add(
+      this.store
+        .pipe(select(profileErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error && error.message)
+            this.presentToast(error.message, 'danger');
+        })
+    );
   }
 
   ionViewWillLeave() {
@@ -125,36 +166,6 @@ export class ProfilePage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.account$ = this.store.pipe(select(accountSelector));
-
-    // Set currentUser
-    this.currentUser$.subscribe((user) => {
-      this.currentUserId = user?.$id;
-      this.studyLanguages = user?.languages.filter(
-        (lang) => !lang.motherLanguage
-      );
-      this.motherLanguages = user?.languages.filter(
-        (lang) => lang.motherLanguage
-      );
-
-      // Set readable gender
-      if (user?.gender === 'other') {
-        this.gender = 'Prefer Not To Say';
-      } else {
-        this.gender =
-          user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-      }
-
-      this.profilePhoto = user?.profilePhoto;
-      this.otherPhotos = user?.otherPhotos;
-      this.badges = user?.badges.map((badge) => {
-        const name = badge
-          .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-
-        return { name: name, url: `/assets/image/badges/${badge}.png` };
-      });
-    });
   }
 
   getSettingPage(page) {
@@ -179,16 +190,16 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/', 'home', 'account']);
   }
 
-  // TODO: #168 Start slideshow from selected photo
-  async openPreview(photos) {
-    console.log(photos);
-    const modal = await this.modalCtrl.create({
-      component: PreviewPhotoComponent,
-      componentProps: {
-        photos: photos,
-      },
+  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
+    photos$.subscribe(async (photos) => {
+      const modal = await this.modalCtrl.create({
+        component: PreviewPhotoComponent,
+        componentProps: {
+          photos: Array.isArray(photos) ? photos : [photos],
+        },
+      });
+      modal.present();
     });
-    modal.present();
   }
 
   dismissModal() {

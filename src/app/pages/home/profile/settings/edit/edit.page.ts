@@ -4,7 +4,15 @@ import { Capacitor } from '@capacitor/core';
 import { Store, select } from '@ngrx/store';
 import Compressor from 'compressorjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription, filter, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  filter,
+  forkJoin,
+  of,
+  take,
+} from 'rxjs';
 import {
   IonInput,
   LoadingController,
@@ -19,6 +27,9 @@ import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
+
+// Service Imports
+import { UserService } from 'src/app/services/user/user.service';
 
 // Component Imports
 import { ImageCropComponent } from 'src/app/components/image-crop/image-crop.component';
@@ -61,8 +72,12 @@ export class EditPage implements OnInit {
   currentUserName: string = null;
   isEditCurrentUserName: boolean = false;
 
+  profilePic$: Observable<URL> = null;
+  otherPics$: Observable<URL[]> = of([]);
+
   constructor(
     private store: Store,
+    private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private loadingCtrl: LoadingController
@@ -98,6 +113,18 @@ export class EditPage implements OnInit {
     this.subscriptions.add(
       this.isLoading$.subscribe((isLoading) => {
         this.loadingController(isLoading);
+      })
+    );
+
+    // Set currentUser photos
+    this.subscriptions.add(
+      this.currentUser$.subscribe((user) => {
+        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
+        this.otherPics$ = forkJoin(
+          (user?.otherPics || []).map((id) =>
+            this.userService.getUserFileView(id)
+          )
+        );
       })
     );
 
@@ -198,7 +225,6 @@ export class EditPage implements OnInit {
             this.store.dispatch(
               uploadOtherPhotosAction({
                 request: file,
-                otherPhotos: this.currentUser.otherPhotos,
               })
             );
           }
@@ -216,15 +242,16 @@ export class EditPage implements OnInit {
   }
 
   async deleteOtherPhotos(image) {
-    const newOtherPhotos = this.currentUser.otherPhotos.filter(
+    // get image id from URL
+    image = image.href.split('/files/')[1].split('/view')[0];
+
+    const newOtherPics = this.currentUser.otherPics.filter(
       (item) => item !== image
     );
 
     const request = {
-      userId: this.currentUser?.$id,
       data: {
-        $id: this.currentUser.$id,
-        otherPhotos: newOtherPhotos,
+        otherPics: newOtherPics,
       },
     };
 
@@ -237,7 +264,6 @@ export class EditPage implements OnInit {
 
   saveAboutMe() {
     const request = {
-      userId: this.currentUser?.$id,
       data: this.form.value,
     };
     this.store.dispatch(updateCurrentUserAction({ request }));
@@ -259,9 +285,7 @@ export class EditPage implements OnInit {
     }
 
     const request = {
-      userId: this.currentUser?.$id,
       data: {
-        $id: this.currentUser.$id,
         name: this.currentUserName,
       },
     };

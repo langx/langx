@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
+import { Observable } from 'rxjs';
+
+import { UserService } from 'src/app/services/user/user.service';
 import { Streak } from 'src/app/models/Streaks';
 import { User } from 'src/app/models/User';
+import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
 
 @Component({
   selector: 'app-streak-list',
@@ -14,11 +17,13 @@ export class StreakListComponent implements OnInit {
   @Input() order: number;
 
   user: User;
+  profilePic$: Observable<URL> = null;
 
-  constructor(private route: Router) {}
+  constructor(private route: Router, private userService: UserService) {}
 
   ngOnInit() {
     this.user = this.item.userId;
+    this.profilePic$ = this.userService.getUserFileView(this.user?.profilePic);
   }
 
   goProfile() {

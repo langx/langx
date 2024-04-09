@@ -10,13 +10,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import {
   GestureController,
   GestureDetail,
@@ -27,7 +21,6 @@ import {
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
-import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
@@ -35,8 +28,11 @@ import { createMessageRequestInterface } from 'src/app/models/types/requests/cre
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
+// Service Imports
+import { UserService } from 'src/app/services/user/user.service';
+
 // Selector and Action Imports
-import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   clearAudioUrlStateAction,
@@ -53,9 +49,9 @@ import {
   updateMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
-  audioUrlSelector,
+  imageIdSelector,
+  audioIdSelector,
   errorSelector,
-  imageUrlSelector,
   isLoadingOffsetSelector,
   isLoadingSelector,
   messagesSelector,
@@ -70,7 +66,7 @@ import {
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
 })
-export class ChatPage implements OnInit, OnDestroy {
+export class ChatPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('recordButton', { read: ElementRef }) recordButton: ElementRef;
   @ViewChild('myTextArea', { static: false }) myTextArea: IonTextarea;
@@ -80,12 +76,14 @@ export class ChatPage implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   room$: Observable<RoomExtendedInterface | null>;
   user$: Observable<User | null>;
-  currentUser$: Observable<Account | null>;
+  currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   isLoading_offset$: Observable<boolean>;
   tempMessages$: Observable<tempMessageInterface[] | null>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
+
+  profilePic$: Observable<URL> = null;
 
   isTyping: boolean = false;
   roomId: string;
@@ -100,7 +98,7 @@ export class ChatPage implements OnInit, OnDestroy {
   };
 
   // Image Variables
-  imageUrl: URL;
+  imageId: string;
   isLoadingImage: boolean = false;
   isLoadingImageMsg: tempMessageInterface = {
     $id: null,
@@ -117,7 +115,6 @@ export class ChatPage implements OnInit, OnDestroy {
   storedFileNames: FileInfo[] = [];
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
-  audioUrl: URL;
   audioId: string;
   private audioIdTemp: string;
 
@@ -132,6 +129,7 @@ export class ChatPage implements OnInit, OnDestroy {
     private store: Store,
     private route: ActivatedRoute,
     private router: Router,
+    private userService: UserService,
     private toastController: ToastController,
     private gestureCtrl: GestureController
   ) {}
@@ -146,7 +144,7 @@ export class ChatPage implements OnInit, OnDestroy {
     this.enableLongPress();
   }
 
-  ngOnDestroy() {
+  ngAfterViewLeave() {
     this.subscriptions.unsubscribe();
 
     this.room$
@@ -163,7 +161,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     this.room$ = this.store.pipe(select(roomSelector));
     this.user$ = this.store.pipe(select(userDataSelector));
-    this.currentUser$ = this.store.pipe(select(accountSelector));
+    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.tempMessages$ = this.store.pipe(select(tempMessagesSelector));
@@ -253,9 +251,9 @@ export class ChatPage implements OnInit, OnDestroy {
 
     // Uploaded Image URL to present
     this.subscriptions.add(
-      this.store.pipe(select(imageUrlSelector)).subscribe((url: URL) => {
-        if (url) {
-          this.imageUrl = url;
+      this.store.pipe(select(imageIdSelector)).subscribe((id: string) => {
+        if (id) {
+          this.imageId = id;
           this.submitImage();
           this.store.dispatch(clearImageUrlStateAction());
         }
@@ -264,12 +262,19 @@ export class ChatPage implements OnInit, OnDestroy {
 
     // Uploaded Audio URL to present
     this.subscriptions.add(
-      this.store.pipe(select(audioUrlSelector)).subscribe((url: URL) => {
-        if (url) {
-          this.audioUrl = url;
+      this.store.pipe(select(audioIdSelector)).subscribe((id: string) => {
+        if (id) {
+          this.audioId = id;
           this.submitAudio();
           this.store.dispatch(clearAudioUrlStateAction());
         }
+      })
+    );
+
+    // Set User photos
+    this.subscriptions.add(
+      this.user$.subscribe((user) => {
+        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
       })
     );
 
@@ -314,8 +319,8 @@ export class ChatPage implements OnInit, OnDestroy {
 
         // Reset the form and the variables
         this.form.reset();
-        this.audioUrl = null;
-        this.imageUrl = null;
+        this.audioId = null;
+        this.imageId = null;
         this.replyMessage = null;
         this.editMessage = null;
       })
@@ -345,7 +350,7 @@ export class ChatPage implements OnInit, OnDestroy {
         let request: createMessageRequestInterface = null;
 
         // Fill the request with the proper data
-        if (this.imageUrl) {
+        if (this.imageId) {
           request = this.createMessageWithImage(user);
         } else {
           this.presentToast('Please try again.', 'danger');
@@ -357,7 +362,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
           // Reset the variable
           this.isLoadingImage = false;
-          this.imageUrl = null;
+          this.imageId = null;
           this.replyMessage = null;
         }
       })
@@ -370,7 +375,7 @@ export class ChatPage implements OnInit, OnDestroy {
         let request: createMessageRequestInterface = null;
 
         // Fill the request with the proper data
-        if (this.audioUrl) {
+        if (this.audioId) {
           request = this.createMessageWithAudio(user);
         } else {
           this.presentToast('Please try again.', 'danger');
@@ -381,7 +386,7 @@ export class ChatPage implements OnInit, OnDestroy {
           this.store.dispatch(createMessageAction({ request }));
 
           // Reset the variable
-          this.audioUrl = null;
+          this.audioId = null;
           this.replyMessage = null;
         }
       })
@@ -548,7 +553,7 @@ export class ChatPage implements OnInit, OnDestroy {
       roomId: this.roomId,
       to: user.$id,
       type: 'image',
-      image: this.imageUrl,
+      imageId: this.imageId,
       replyTo: this.replyMessage?.$id || null,
     };
     return request;
@@ -560,7 +565,7 @@ export class ChatPage implements OnInit, OnDestroy {
       roomId: this.roomId,
       to: user.$id,
       type: 'audio',
-      audio: this.audioUrl,
+      audioId: this.audioId,
       replyTo: this.replyMessage?.$id || null,
     };
     this.audioIdTemp = null;

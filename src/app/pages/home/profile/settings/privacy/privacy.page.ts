@@ -150,7 +150,6 @@ export class PrivacyPage implements OnInit {
 
   updateCurrentUserPrivacy() {
     const request = {
-      userId: this.currentUserId,
       data: {
         privacy: this.privacy,
       },

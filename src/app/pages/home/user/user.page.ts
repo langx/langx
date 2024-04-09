@@ -3,8 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
-import { Observable, Subscription, combineLatest } from 'rxjs';
+import { Observable, Subscription, combineLatest, forkJoin, of } from 'rxjs';
 
+// Component and utils Imports
 import {
   getAge,
   getFlagEmoji,
@@ -13,20 +14,22 @@ import {
 } from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
+
+// Interfaces Imports
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-import { roomsSelector } from 'src/app/store/selectors/room.selector';
+
+// Services Imports
+import { UserService } from 'src/app/services/user/user.service';
+
+// Actions Imports
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   getRoomAction,
   clearErrorsAction,
 } from 'src/app/store/actions/room.action';
-import {
-  isLoadingSelector as isLoadingRoomSelector,
-  errorSelector as errorRoomSelector,
-} from 'src/app/store/selectors/room.selector';
 import {
   getUserByIdAction,
   reportUserAction,
@@ -34,6 +37,13 @@ import {
   blockUserAction,
   blockUserInitialStateAction,
 } from 'src/app/store/actions/user.action';
+
+// Selectors Imports
+import { roomsSelector } from 'src/app/store/selectors/room.selector';
+import {
+  isLoadingSelector as isLoadingRoomSelector,
+  errorSelector as errorRoomSelector,
+} from 'src/app/store/selectors/room.selector';
 import {
   errorSelector as errorUserSelector,
   isLoadingSelector as isLoadingUserSelector,
@@ -67,9 +77,9 @@ export class UserPage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
-  profilePhoto: URL = null;
-  otherPhotos: URL[] = [];
   badges: Object[] = [];
+  profilePic$: Observable<URL> = null;
+  otherPics$: Observable<URL[]> = of([]);
 
   reason: string;
 
@@ -78,6 +88,7 @@ export class UserPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
+    private userService: UserService,
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
     private toastController: ToastController
@@ -98,6 +109,44 @@ export class UserPage implements OnInit {
         this.store.pipe(select(isLoadingRoomSelector)),
       ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
         this.isLoading = isLoadingAuth || isLoadingUser || isLoadingRoom;
+      })
+    );
+
+    this.subscription.add(
+      // Set User
+      this.user$.subscribe((user) => {
+        if (user) {
+          this.studyLanguages = user.languages.filter(
+            (lang) => !lang.motherLanguage
+          );
+          this.motherLanguages = user.languages.filter(
+            (lang) => lang.motherLanguage
+          );
+
+          // Set readable gender
+          if (user.gender === 'other') {
+            this.gender = 'Prefer Not To Say';
+          } else {
+            this.gender =
+              user.gender.charAt(0).toUpperCase() + user.gender.slice(1);
+          }
+
+          this.profilePic$ = this.userService.getUserFileView(user.profilePic);
+          this.otherPics$ = forkJoin(
+            (user.otherPics || []).map((id) =>
+              this.userService.getUserFileView(id)
+            )
+          );
+
+          this.badges = user.badges.map((badge) => {
+            const name = badge
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+
+            return { name: name, url: `/assets/image/badges/${badge}.png` };
+          });
+        }
       })
     );
 
@@ -172,46 +221,18 @@ export class UserPage implements OnInit {
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
-
-    // Set User
-    this.user$.subscribe((user) => {
-      this.studyLanguages = user?.languages.filter(
-        (lang) => !lang.motherLanguage
-      );
-      this.motherLanguages = user?.languages.filter(
-        (lang) => lang.motherLanguage
-      );
-
-      // Set readable gender
-      if (user?.gender === 'other') {
-        this.gender = 'Prefer Not To Say';
-      } else {
-        this.gender =
-          user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-      }
-
-      this.profilePhoto = user?.profilePhoto;
-      this.otherPhotos = user?.otherPhotos;
-      this.badges = user?.badges.map((badge) => {
-        const name = badge
-          .split('-')
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-
-        return { name: name, url: `/assets/image/badges/${badge}.png` };
-      });
-    });
   }
 
-  async openPreview(photos) {
-    console.log(photos);
-    const modal = await this.modalCtrl.create({
-      component: PreviewPhotoComponent,
-      componentProps: {
-        photos: photos,
-      },
+  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
+    photos$.subscribe(async (photos) => {
+      const modal = await this.modalCtrl.create({
+        component: PreviewPhotoComponent,
+        componentProps: {
+          photos: Array.isArray(photos) ? photos : [photos],
+        },
+      });
+      modal.present();
     });
-    modal.present();
   }
 
   //

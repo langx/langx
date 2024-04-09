@@ -5,6 +5,6 @@ export interface createMessageRequestInterface {
   replyTo?: string;
   type: string;
   body?: string;
-  image?: URL;
-  audio?: URL;
+  imageId?: string;
+  audioId?: string;
 }

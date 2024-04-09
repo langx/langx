@@ -76,7 +76,7 @@
         <ion-item lines="none">
           <ion-thumbnail slot="start">
             <img
-              [src]="(currentUser$ | async)?.profilePhoto"
+              [src]="profilePic$ | async"
               alt="Profile Picture"
               referrerpolicy="no-referrer"
             />
@@ -201,7 +201,7 @@
     <ion-card-content>
       <!-- TODO: Better design needed here-->
       <ion-list>
-        <ion-item *ngFor="let photo of (currentUser$ | async)?.otherPhotos">
+        <ion-item *ngFor="let photo of (otherPics$ | async)">
           <ion-thumbnail slot="start">
             <img
               [src]="photo"

@@ -260,7 +260,6 @@ export class FcmService {
           console.log('notifications :', notifications);
           // Dispatch updateCurrentUserAction
           const request = {
-            userId: currentUser?.$id,
             data: { notifications },
           };
 

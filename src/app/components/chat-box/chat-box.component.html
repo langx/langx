@@ -53,8 +53,8 @@
             <!-- Image message -->
             <img
               *ngIf="msg?.type == 'image'"
-              [src]="msg?.image"
-              (click)="openPreview([msg?.image])"
+              [src]="imageURL$ | async"
+              (click)="openPreview(imageURL$)"
               alt="Image message"
               referrerpolicy="no-referrer"
             />
@@ -175,8 +175,8 @@
             <!-- Image message -->
             <img
               *ngIf="msg?.type == 'image'"
-              [src]="msg?.image"
-              (click)="openPreview([msg?.image])"
+              [src]="imageURL$ | async"
+              (click)="openPreview(imageURL$)"
               alt="Image message"
               referrerpolicy="no-referrer"
             />

@@ -47,8 +47,8 @@ const initialState: MessageStateInterface = {
   isLoading: false,
   isLoading_offset: false,
   room: null,
-  imageUrl: null,
-  audioUrl: null,
+  imageId: null,
+  audioId: null,
   error: null,
 };
 
@@ -407,7 +407,7 @@ const messageReducer = createReducer(
     uploadImageForMessageSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      imageUrl: action.payload,
+      imageId: action.payload.$id,
     })
   ),
   on(
@@ -421,7 +421,7 @@ const messageReducer = createReducer(
     clearImageUrlStateAction,
     (state): MessageStateInterface => ({
       ...state,
-      imageUrl: null,
+      imageId: null,
     })
   ),
 
@@ -430,7 +430,7 @@ const messageReducer = createReducer(
     uploadAudioForMessageSuccessAction,
     (state, action): MessageStateInterface => ({
       ...state,
-      audioUrl: action.payload,
+      audioId: action.payload.$id,
     })
   ),
   on(
@@ -444,7 +444,7 @@ const messageReducer = createReducer(
     clearAudioUrlStateAction,
     (state): MessageStateInterface => ({
       ...state,
-      audioUrl: null,
+      audioId: null,
     })
   ),
 

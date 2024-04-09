@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 import { RateApp } from 'capacitor-rate-app';
 
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { UserService } from 'src/app/services/user/user.service';
 import { MessageService } from 'src/app/services/chat/message.service';
+
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
   uploadAudioForMessageAction,
@@ -30,14 +33,11 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadProfilePictureAction),
       switchMap(({ request }) => {
-        return this.userService.uploadFile(request).pipe(
-          map((payload: URL) => {
-            return payload;
-          }),
+        return this.userService.uploadUserFile(request).pipe(
           switchMap((payload) => {
             return this.userService
               .updateUserDoc({
-                profilePhoto: payload,
+                profilePic: payload.$id,
               })
               .pipe(
                 map((userData: User) => {
@@ -64,16 +64,14 @@ export class BucketEffects {
   uploadOtherPhotos$ = createEffect(() =>
     this.actions$.pipe(
       ofType(uploadOtherPhotosAction),
-      switchMap(({ request, otherPhotos }) => {
-        return this.userService.uploadFile(request).pipe(
-          map((payload: URL) => {
-            return payload;
-          }),
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
+        return this.userService.uploadUserFile(request).pipe(
           switchMap((payload) => {
-            const updatedOtherPhotos = [...otherPhotos, payload];
+            const updatedOtherPics = [...currentUser?.otherPics, payload.$id];
             return this.userService
               .updateUserDoc({
-                otherPhotos: updatedOtherPhotos,
+                otherPics: updatedOtherPics,
               })
               .pipe(
                 map((payload) => {
@@ -96,7 +94,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadImageForMessageAction),
       switchMap(({ request }) => {
-        return this.messageService.uploadImage(request).pipe(
+        return this.messageService.uploadMessageImage(request).pipe(
           map((payload) => {
             return uploadImageForMessageSuccessAction({ payload });
           }),
@@ -116,7 +114,7 @@ export class BucketEffects {
     this.actions$.pipe(
       ofType(uploadAudioForMessageAction),
       switchMap(({ request }) => {
-        return this.messageService.uploadAudio(request).pipe(
+        return this.messageService.uploadMessageAudio(request).pipe(
           map((payload) => {
             return uploadAudioForMessageSuccessAction({ payload });
           }),
@@ -133,6 +131,7 @@ export class BucketEffects {
   );
 
   constructor(
+    private store: Store,
     private actions$: Actions,
     private userService: UserService,
     private messageService: MessageService

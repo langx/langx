@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+
+import { UserService } from 'src/app/services/user/user.service';
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
 import {
@@ -18,11 +21,13 @@ export class VisitListComponent implements OnInit {
   @Input() item: Visit;
 
   user: User;
+  profilePic$: Observable<URL> = null;
 
-  constructor(private route: Router) {}
+  constructor(private route: Router, private userService: UserService) {}
 
   ngOnInit() {
     this.user = this.item.from;
+    this.profilePic$ = this.userService.getUserFileView(this.user?.profilePic);
   }
 
   goProfile() {

@@ -490,7 +490,7 @@ const authReducer = createReducer(
       isLoading: false,
       currentUser: {
         ...state.currentUser,
-        profilePhoto: action.payload.profilePhoto,
+        profilePic: action.payload.profilePic,
       },
     })
   ),
@@ -517,7 +517,7 @@ const authReducer = createReducer(
       isLoading: false,
       currentUser: {
         ...state.currentUser,
-        otherPhotos: action.payload.otherPhotos,
+        otherPics: action.payload.otherPics,
       },
     })
   ),

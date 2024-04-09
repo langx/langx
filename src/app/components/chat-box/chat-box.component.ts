@@ -14,11 +14,10 @@ import {
   Input,
   OnInit,
   ElementRef,
-  AfterViewInit,
-  OnDestroy,
   Output,
   EventEmitter,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -34,7 +33,7 @@ import { messagesSelector } from 'src/app/store/selectors/message.selector';
   templateUrl: './chat-box.component.html',
   styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ChatBoxComponent implements OnInit {
   @ViewChild('itemSlidingSender') itemSlidingSender: IonItemSliding;
   @ViewChild('itemSlidingReveiver') itemSlidingReveiver: IonItemSliding;
 
@@ -56,11 +55,15 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   audioId: string = null;
   isDownloaded: boolean = false;
 
+  imageURL$: Observable<URL> = null;
+  audioURL$: Observable<URL> = null;
+
   constructor(
     private store: Store,
     private messageService: MessageService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
+    private changeDetectorRef: ChangeDetectorRef,
     private el: ElementRef
   ) {}
 
@@ -74,9 +77,26 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
       entries.forEach((entry) => this.handleIntersect(entry));
     });
     this.observer.observe(this.el.nativeElement);
+
+    // Check if the message is an image
+    if (this.msg.type === 'image') {
+      this.imageURL$ = this.messageService.getMessageImageView(
+        this.msg.imageId
+      );
+      // Fix: ExpressionChangedAfterItHasBeenCheckedError
+      this.imageURL$.subscribe(() => {
+        this.changeDetectorRef.detectChanges();
+      });
+    }
+    // Check if the message is an audio
+    if (this.msg.type === 'audio') {
+      this.audioURL$ = this.messageService.getMessageAudioView(
+        this.msg.audioId
+      );
+    }
   }
 
-  ngOnDestroy() {
+  ngAfterViewLeave() {
     this.observer.disconnect();
   }
 
@@ -182,33 +202,38 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // TODO : Download file from server logic
+  // Download file from server
   async downloadFile() {
-    const response = await fetch(this.msg?.audio);
-    const blob = await response.blob();
+    this.audioURL$.subscribe(async (url) => {
+      // console.log('URL:', url);
+      if (url) {
+        const response = await fetch(url);
+        const blob = await response.blob();
 
-    // Create a new FileReader instance
-    const reader = new FileReader();
+        // Create a new FileReader instance
+        const reader = new FileReader();
 
-    const base64Audio = await new Promise((resolve) => {
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.readAsDataURL(blob);
+        const base64Audio = await new Promise((resolve) => {
+          reader.onloadend = () => {
+            resolve(reader.result);
+          };
+          reader.readAsDataURL(blob);
+        });
+
+        // TODO: Take a look here to see if we can use the base64Audio directly
+        const base64AudioString = base64Audio.toString();
+
+        const fileName = this.msg.$id;
+        await Filesystem.writeFile({
+          path: fileName,
+          data: base64AudioString,
+          directory: Directory.Data,
+        });
+
+        console.log('Download complete');
+        this.isDownloaded = true;
+      }
     });
-
-    // TODO: Take a look here to see if we can use the base64Audio directly
-    const base64AudioString = base64Audio.toString();
-
-    const fileName = this.msg.$id;
-    await Filesystem.writeFile({
-      path: fileName,
-      data: base64AudioString,
-      directory: Directory.Data,
-    });
-
-    console.log('Download complete');
-    this.isDownloaded = true;
   }
 
   async play(fileName: string) {
@@ -274,15 +299,18 @@ export class ChatBoxComponent implements OnInit, AfterViewInit, OnDestroy {
   // Utils for image preview
   //
 
-  async openPreview(image) {
-    // console.log(image);
-    const modal = await this.modalCtrl.create({
-      component: PreviewPhotoComponent,
-      componentProps: {
-        photos: image,
-      },
+  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
+    photos$.subscribe(async (photos) => {
+      if (photos) {
+        const modal = await this.modalCtrl.create({
+          component: PreviewPhotoComponent,
+          componentProps: {
+            photos: Array.isArray(photos) ? photos : [photos],
+          },
+        });
+        modal.present();
+      }
     });
-    modal.present();
   }
 
   //

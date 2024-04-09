@@ -1,7 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
 
 import { getFlagEmoji, onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
+
+// Services Imports
+import { UserService } from 'src/app/services/user/user.service';
 
 @Component({
   selector: 'app-user-list',
@@ -12,9 +16,13 @@ export class UserListComponent implements OnInit {
   @Input() item: User;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
-  constructor() {}
+  profilePic$: Observable<URL> = null;
 
-  ngOnInit() {}
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.profilePic$ = this.userService.getUserFileView(this.item?.profilePic);
+  }
 
   redirect() {
     this.onClick.emit(this.item);

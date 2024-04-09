@@ -1,6 +1,6 @@
 <ion-item (click)="goProfile()" detail>
   <ion-thumbnail class="thumbnail-container" slot="start">
-    <img [src]="user?.profilePhoto" alt="" referrerpolicy="no-referrer" />
+    <img [src]="profilePic$ | async" alt="" referrerpolicy="no-referrer" />
     <div class="emoji-indicator">
       <small *ngIf="onlineStatus(user?.lastSeen) == 'online'">🟢</small>
       <small *ngIf="onlineStatus(user?.lastSeen) == 'away'">🟡</small>

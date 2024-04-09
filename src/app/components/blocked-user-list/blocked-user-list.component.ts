@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
+import { UserService } from 'src/app/services/user/user.service';
 import { lastSeen } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
@@ -13,9 +15,13 @@ export class BlockedUserListComponent implements OnInit {
   @Input() item: User;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
-  constructor(private route: Router) {}
+  profilePic$: Observable<URL> = null;
 
-  ngOnInit() {}
+  constructor(private route: Router, private userService: UserService) {}
+
+  ngOnInit() {
+    this.profilePic$ = this.userService.getUserFileView(this.item?.profilePic);
+  }
 
   unBlock() {
     this.onClick.emit(this.item);
