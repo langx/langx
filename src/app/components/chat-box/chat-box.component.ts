@@ -17,6 +17,7 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -62,6 +63,7 @@ export class ChatBoxComponent implements OnInit {
     private messageService: MessageService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
+    private changeDetectorRef: ChangeDetectorRef,
     private el: ElementRef
   ) {}
 
@@ -81,6 +83,10 @@ export class ChatBoxComponent implements OnInit {
       this.imageURL$ = this.messageService.getMessageImageView(
         this.msg.imageId
       );
+      // Fix: ExpressionChangedAfterItHasBeenCheckedError
+      this.imageURL$.subscribe(() => {
+        this.changeDetectorRef.detectChanges();
+      });
     }
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
