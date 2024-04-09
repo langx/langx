@@ -86,6 +86,7 @@ export const environment = {
     PAGINATION_LIMIT: 25,
   },
   defaultAssets: {
-    DEFAULT_PP_ID: `652d582c65bb47ac5de0`,
+    PP_ID: '',
+    DELETED_PP_ID: '',
   },
 };
