@@ -48,7 +48,7 @@ export class RoomListComponent implements OnInit {
 
   ngOnInit() {
     this.getLastMessage(this.room);
-    this.profilePic$ = this.userService.getUserFileView(
+    this.profilePic$ = this.userService.getUserFilePreview(
       this.room['userData'].profilePic
     );
   }

@@ -23,7 +23,9 @@ export class StreakListComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.item.userId;
-    this.profilePic$ = this.userService.getUserFileView(this.user?.profilePic);
+    this.profilePic$ = this.userService.getUserFilePreview(
+      this.user?.profilePic
+    );
   }
 
   goProfile() {

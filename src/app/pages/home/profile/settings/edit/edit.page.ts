@@ -119,10 +119,12 @@ export class EditPage implements OnInit {
     // Set currentUser photos
     this.subscriptions.add(
       this.currentUser$.subscribe((user) => {
-        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
+        this.profilePic$ = this.userService.getUserFilePreview(
+          user?.profilePic
+        );
         this.otherPics$ = forkJoin(
           (user?.otherPics || []).map((id) =>
-            this.userService.getUserFileView(id)
+            this.userService.getUserFilePreview(id)
           )
         );
       })
