@@ -27,7 +27,9 @@ export class VisitListComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.item.from;
-    this.profilePic$ = this.userService.getUserFileView(this.user?.profilePic);
+    this.profilePic$ = this.userService.getUserFilePreview(
+      this.user?.profilePic
+    );
   }
 
   goProfile() {

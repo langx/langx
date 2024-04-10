@@ -427,6 +427,15 @@ export class UserService {
     );
   }
 
+  getUserFilePreview(fileId: string): Observable<URL> {
+    return of(
+      this.storageService.getFilePreview(
+        environment.appwrite.USER_BUCKET,
+        fileId
+      )
+    );
+  }
+
   //
   // Private Functions
   //

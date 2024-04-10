@@ -20,7 +20,9 @@ export class BlockedUserListComponent implements OnInit {
   constructor(private route: Router, private userService: UserService) {}
 
   ngOnInit() {
-    this.profilePic$ = this.userService.getUserFileView(this.item?.profilePic);
+    this.profilePic$ = this.userService.getUserFilePreview(
+      this.item?.profilePic
+    );
   }
 
   unBlock() {
