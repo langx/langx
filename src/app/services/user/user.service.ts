@@ -151,9 +151,7 @@ export class UserService {
 
     // Query for users with completed profiles
     queries.push(Query.notEqual('aboutMe', ''));
-    queries.push(
-      Query.notEqual('profilePhoto', environment.defaultAssets.PROFILE_PHOTO)
-    );
+    queries.push(Query.notEqual('profilePic', environment.defaultAssets.PP_ID));
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
@@ -426,6 +424,15 @@ export class UserService {
   getUserFileView(fileId: string): Observable<URL> {
     return of(
       this.storageService.getFileView(environment.appwrite.USER_BUCKET, fileId)
+    );
+  }
+
+  getUserFilePreview(fileId: string): Observable<URL> {
+    return of(
+      this.storageService.getFilePreview(
+        environment.appwrite.USER_BUCKET,
+        fileId
+      )
     );
   }
 

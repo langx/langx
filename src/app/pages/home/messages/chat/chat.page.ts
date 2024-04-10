@@ -254,7 +254,9 @@ export class ChatPage implements OnInit {
     // Set User photos
     this.subscriptions.add(
       this.user$.subscribe((user) => {
-        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
+        this.profilePic$ = this.userService.getUserFilePreview(
+          user?.profilePic
+        );
       })
     );
 

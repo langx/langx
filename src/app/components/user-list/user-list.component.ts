@@ -21,7 +21,9 @@ export class UserListComponent implements OnInit {
   constructor(private userService: UserService) {}
 
   ngOnInit() {
-    this.profilePic$ = this.userService.getUserFileView(this.item?.profilePic);
+    this.profilePic$ = this.userService.getUserFilePreview(
+      this.item?.profilePic
+    );
   }
 
   redirect() {
