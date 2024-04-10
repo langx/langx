@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 // import { Storage } from 'appwrite';
-import { Storage } from 'src/app/extras/sdk/src';
+import { ImageGravity, Storage } from 'src/app/extras/sdk/src';
 import { Preferences } from '@capacitor/preferences';
 
 import { ApiService } from 'src/app/services/api/api.service';
@@ -29,6 +29,17 @@ export class StorageService {
 
   getFileView(bucketId: string, fileId: string): URL {
     return this.storage.getFileView(bucketId, fileId);
+  }
+
+  getFilePreview(bucketId: string, fileId: string): URL {
+    return this.storage.getFilePreview(
+      bucketId,
+      fileId,
+      190,
+      190,
+      ImageGravity.Center,
+      45
+    );
   }
 
   getFileDownload(bucketId: string, fileId: string): URL {
