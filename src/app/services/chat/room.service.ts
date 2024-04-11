@@ -112,14 +112,12 @@ export class RoomService {
       switchMap(() => {
         // Call the /api/room
         return from(
-          axios
-            .post(environment.api.ROOM, body)
-            .then((result) => {
-              return {
-                documents: [result.data],
-                total: 1,
-              };
-            })
+          axios.post(environment.api.ROOM, body).then((result) => {
+            return {
+              documents: [result.data],
+              total: 1,
+            };
+          })
         ).pipe(
           switchMap((data: listRoomsResponseInterface) =>
             iif(
