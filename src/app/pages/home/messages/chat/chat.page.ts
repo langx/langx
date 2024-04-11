@@ -10,7 +10,13 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   GestureController,
   GestureDetail,
@@ -66,7 +72,7 @@ import {
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
 })
-export class ChatPage implements OnInit {
+export class ChatPage implements OnInit, OnDestroy {
   @ViewChild(IonContent) content: IonContent;
   @ViewChild('recordButton', { read: ElementRef }) recordButton: ElementRef;
   @ViewChild('myTextArea', { static: false }) myTextArea: IonTextarea;
@@ -144,7 +150,7 @@ export class ChatPage implements OnInit {
     this.enableLongPress();
   }
 
-  ngAfterViewLeave() {
+  ngOnDestroy() {
     this.subscriptions.unsubscribe();
 
     this.room$
@@ -167,24 +173,6 @@ export class ChatPage implements OnInit {
     this.tempMessages$ = this.store.pipe(select(tempMessagesSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-
-    // Check room$ and currentUser$ for null
-    this.room$
-      .subscribe((room) => {
-        if (!room) {
-          this.currentUser$
-            .subscribe((currentUser) => {
-              this.store.dispatch(
-                getRoomByIdAction({
-                  currentUserId: currentUser.$id,
-                  roomId: this.roomId,
-                })
-              );
-            })
-            .unsubscribe();
-        }
-      })
-      .unsubscribe();
 
     if (Capacitor.getPlatform() !== 'web') {
       // Scroll to bottom when keyboard is shown
@@ -215,6 +203,15 @@ export class ChatPage implements OnInit {
   }
 
   initValuesAfterViewInit() {
+    // Get the room
+    this.subscriptions.add(
+      this.room$.subscribe((room) => {
+        // console.log('Roomid:', room.$id);
+        // console.log('Room ID:', this.roomId);
+        this.roomId = room.$id;
+      })
+    );
+
     // To Scroll to bottom triggers
     this.subscriptions.add(
       this.tempMessages$.subscribe((msg) => {
