@@ -168,24 +168,6 @@ export class ChatPage implements OnInit {
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
-    // Check room$ and currentUser$ for null
-    this.room$
-      .subscribe((room) => {
-        if (!room) {
-          this.currentUser$
-            .subscribe((currentUser) => {
-              this.store.dispatch(
-                getRoomByIdAction({
-                  currentUserId: currentUser.$id,
-                  roomId: this.roomId,
-                })
-              );
-            })
-            .unsubscribe();
-        }
-      })
-      .unsubscribe();
-
     if (Capacitor.getPlatform() !== 'web') {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
@@ -215,6 +197,15 @@ export class ChatPage implements OnInit {
   }
 
   initValuesAfterViewInit() {
+    // Get the room
+    this.subscriptions.add(
+      this.room$.subscribe((room) => {
+        // console.log('Roomid:', room.$id);
+        // console.log('Room ID:', this.roomId);
+        this.roomId = room.$id;
+      })
+    );
+
     // To Scroll to bottom triggers
     this.subscriptions.add(
       this.tempMessages$.subscribe((msg) => {
