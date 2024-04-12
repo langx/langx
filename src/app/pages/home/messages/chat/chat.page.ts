@@ -598,17 +598,6 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
-  // private async createImageCropModal(image) {
-  //   const modal = await this.modalCtrl.create({
-  //     component: ImageCropComponent,
-  //     componentProps: {
-  //       image: image,
-  //     },
-  //   });
-  //   modal.present();
-  //   return modal;
-  // }
-
   async handleImage(imageData: string) {
     let blob: Blob = this.dataURLtoBlob(imageData);
 
