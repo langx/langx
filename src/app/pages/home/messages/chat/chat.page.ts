@@ -29,7 +29,6 @@ import {
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -62,7 +61,6 @@ import {
   isLoadingSelector,
   messagesSelector,
   roomSelector,
-  tempMessagesSelector,
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
@@ -85,7 +83,6 @@ export class ChatPage implements OnInit, OnDestroy {
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
   isLoading_offset$: Observable<boolean>;
-  tempMessages$: Observable<tempMessageInterface[] | null>;
   messages$: Observable<Message[] | null>;
   total$: Observable<number | null> = null;
 
@@ -106,7 +103,7 @@ export class ChatPage implements OnInit, OnDestroy {
   // Image Variables
   imageId: string;
   isLoadingImage: boolean = false;
-  isLoadingImageMsg: tempMessageInterface = {
+  isLoadingImageMsg = {
     $id: null,
     to: null,
     roomId: null,
@@ -170,7 +167,6 @@ export class ChatPage implements OnInit, OnDestroy {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
-    this.tempMessages$ = this.store.pipe(select(tempMessagesSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
 
@@ -213,22 +209,6 @@ export class ChatPage implements OnInit, OnDestroy {
     );
 
     // To Scroll to bottom triggers
-    this.subscriptions.add(
-      this.tempMessages$.subscribe((msg) => {
-        if (msg != null) {
-          this.subscriptions.add(
-            this.isUserAtBottom().subscribe((isAtBottom) => {
-              if (isAtBottom || this.isFirstLoad) {
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                }, 100);
-              }
-            })
-          );
-        }
-      })
-    );
-
     this.subscriptions.add(
       this.room$.subscribe((room) => {
         if (room != null) {
@@ -313,7 +293,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
         // Dispatch action to create message
         if (request) {
-          this.store.dispatch(createMessageAction({ request }));
+          this.dispatchCreateMessageAction(request);
         }
 
         // Reset the form and the variables
@@ -357,7 +337,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
         // Dispatch action to create message
         if (request) {
-          this.store.dispatch(createMessageAction({ request }));
+          this.dispatchCreateMessageAction(request);
 
           // Reset the variable
           this.isLoadingImage = false;
@@ -382,11 +362,28 @@ export class ChatPage implements OnInit, OnDestroy {
 
         // Dispatch action to create message
         if (request) {
-          this.store.dispatch(createMessageAction({ request }));
+          this.dispatchCreateMessageAction(request);
 
           // Reset the variable
           this.audioId = null;
           this.replyMessage = null;
+        }
+      })
+      .unsubscribe();
+  }
+
+  // Dispatch action to create message
+  dispatchCreateMessageAction(request) {
+    this.currentUser$
+      .subscribe((currentUser) => {
+        const currentUserId = currentUser.$id;
+        if (request) {
+          this.store.dispatch(
+            createMessageAction({
+              request,
+              currentUserId,
+            })
+          );
         }
       })
       .unsubscribe();

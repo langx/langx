@@ -18,6 +18,7 @@ import {
   EventEmitter,
   ViewChild,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -32,6 +33,7 @@ import { messagesSelector } from 'src/app/store/selectors/message.selector';
   selector: 'app-chat-box',
   templateUrl: './chat-box.component.html',
   styleUrls: ['./chat-box.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatBoxComponent implements OnInit {
   @ViewChild('itemSlidingSender') itemSlidingSender: IonItemSliding;

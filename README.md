@@ -23,6 +23,11 @@
   <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://dcbadge.vercel.app/api/server/2D3jW2YDgS?style=flat" alt="Join us on Discord"></a>
 </p>
 <p align="center">
+  <a href='https://apps.apple.com/app/languagexchange/id6474187141' target='_blank'><img src="https://github.com/langxapp/.github/blob/main/assets/ios.png" height="50"></a>
+  <a href='https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange' target='_blank'><img src="https://github.com/langxapp/.github/blob/main/assets/android.png" height="50"></a>
+  <a href='https://app.langx.io' target='_blank'><img src="https://github.com/langxapp/.github/blob/main/assets/pwa.png" height="50"></a>
+</p>
+<p align="center">
   <a href="https://langx.io" target="_blank">
   <img alt="Featured Image" src="https://github.com/langxapp/.github/blob/main/assets/featured_image.png" />
   </a>

@@ -2,7 +2,6 @@ import { Action, createReducer, on } from '@ngrx/store';
 
 import { Message } from 'src/app/models/Message';
 import { MessageStateInterface } from 'src/app/models/types/states/messageState.interface';
-import { tempMessageInterface } from 'src/app/models/types/tempMessage.interface';
 import {
   deleteAccountSuccessAction,
   logoutSuccessAction,
@@ -33,10 +32,6 @@ import {
   updateMessageAction,
   updateMessageSuccessAction,
   updateMessageFailureAction,
-  removeMessageFromTempMessagesAction,
-  resendMessageFromTempMessagesAction,
-  resendMessageFromTempMessagesSuccessAction,
-  resendMessageFromTempMessagesFailureAction,
   deleteMessageAction,
   deleteMessageSuccessAction,
   deleteMessageFailureAction,
@@ -84,59 +79,65 @@ const messageReducer = createReducer(
       error: action.error,
     })
   ),
-  on(
-    createMessageAction,
-    (state, action): MessageStateInterface => ({
+  on(createMessageAction, (state, action): MessageStateInterface => {
+    console.log(action.request);
+
+    // Create a new Message object from action.request
+    const newMessage: Message = {
+      // Assuming these are the properties of Message
+      $collectionId: null,
+      $createdAt: null,
+      $databaseId: null,
+      $permissions: null,
+      $updatedAt: null,
+      seen: false,
+      sender: action.currentUserId,
+      $id: action.request.$id,
+      to: action.request.to,
+      roomId: action.request.roomId,
+      replyTo: action.request.replyTo,
+      type: action.request.type,
+      body: action.request.body,
+      imageId: action.request.imageId,
+      audioId: action.request.audioId,
+    };
+
+    return {
       ...state,
       isLoading: true,
       error: null,
       room: {
         ...state.room,
-        tempMessages: [
-          ...(state.room?.tempMessages || []),
-          {
-            ...action.request,
-            error: null,
-          },
-        ],
+        messages: [...(state.room?.messages || []), newMessage],
       },
-    })
-  ),
+    };
+  }),
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
-    let tempMessages: tempMessageInterface[];
-    tempMessages = state.room?.tempMessages
-      ? state.room?.tempMessages.filter(
-          (msg) => msg?.$id !== action.payload?.$id
-        )
-      : null;
+    // Check if a message with the same $id already exists
+    const messageExists = state.room?.messages?.some(
+      (msg) => msg.$id === action.payload.$id
+    );
 
     return {
       ...state,
       isLoading: false,
       room: {
         ...state.room,
-        tempMessages: tempMessages,
+        // If the message does not exist, add it to messages
+        messages: messageExists
+          ? state.room.messages
+          : [...(state.room.messages || []), action.payload],
       },
     };
   }),
-  on(createMessageFailureAction, (state, action): MessageStateInterface => {
-    const tempMessages = state.room?.tempMessages
-      ? state.room?.tempMessages.map((msg) =>
-          msg.body === action.payload.body
-            ? { ...msg, error: action.error }
-            : msg
-        )
-      : null;
-    return {
+  on(
+    createMessageFailureAction,
+    (state, action): MessageStateInterface => ({
       ...state,
       isLoading: false,
       error: action.error,
-      room: {
-        ...state.room,
-        tempMessages: tempMessages,
-      },
-    };
-  }),
+    })
+  ),
 
   // Delete Message Reducers
   on(
@@ -268,10 +269,22 @@ const messageReducer = createReducer(
       if (
         state.room?.messages &&
         state.room?.messages.some((msg) => msg.$id === action.payload.$id)
-      )
-        return { ...state };
+      ) {
+        // If the message already exists, update it
+        return {
+          ...state,
+          room: {
+            ...state.room,
+            messages: state.room.messages.map((msg) =>
+              msg.$id === action.payload.$id
+                ? { ...action.payload, roomId: action.payload.roomId.$id }
+                : msg
+            ),
+          },
+        };
+      }
 
-      // Return the new state
+      // If the message does not exist, add it to the room
       const payload: Message = {
         ...action.payload,
         roomId: action.payload.roomId.$id,
@@ -284,14 +297,6 @@ const messageReducer = createReducer(
           messages: [...(state.room?.messages || []), payload],
         },
       };
-
-      // Sort rooms by $updatedAt in descending order
-      // const sortedRooms = updatedRooms.sort(
-      //   (a, b) =>
-      //     new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
-      // );
-      // // Return the new state
-      // return { ...state, rooms: sortedRooms };
     }
   ),
   on(
@@ -323,85 +328,7 @@ const messageReducer = createReducer(
       };
     }
   ),
-
-  // Remove Message From Temp Messages Reducers
-  on(
-    removeMessageFromTempMessagesAction,
-    (state, action): MessageStateInterface => {
-      const tempMessages = state.room?.tempMessages
-        ? state.room?.tempMessages.filter(
-            (msg) => msg.body !== action.payload.body
-          )
-        : null;
-      return {
-        ...state,
-        room: {
-          ...state.room,
-          tempMessages: tempMessages,
-        },
-      };
-    }
-  ),
-  on(
-    resendMessageFromTempMessagesAction,
-    (state, action): MessageStateInterface => {
-      const tempMessages = state.room?.tempMessages
-        ? state.room?.tempMessages.map((msg) =>
-            msg.body === action.request.body ? { ...msg, error: null } : msg
-          )
-        : null;
-      return {
-        ...state,
-        isLoading: true,
-        error: null,
-        room: {
-          ...state.room,
-          tempMessages: tempMessages,
-        },
-      };
-    }
-  ),
-  on(
-    resendMessageFromTempMessagesSuccessAction,
-    (state, action): MessageStateInterface => {
-      const tempMessages = state.room?.tempMessages
-        ? state.room?.tempMessages.filter(
-            (msg) => msg.body !== action.payload?.body
-          )
-        : null;
-      const updatedRoom = {
-        ...state.room,
-        messages: [...state.room?.messages, action.payload],
-        tempMessages: tempMessages,
-      };
-      return {
-        ...state,
-        room: updatedRoom,
-        isLoading: false,
-      };
-    }
-  ),
-  on(
-    resendMessageFromTempMessagesFailureAction,
-    (state, action): MessageStateInterface => {
-      const tempMessages = state.room?.tempMessages
-        ? state.room?.tempMessages.map((msg) =>
-            msg.body === action.payload?.body
-              ? { ...msg, error: action.error }
-              : msg
-          )
-        : null;
-      return {
-        ...state,
-        isLoading: false,
-        room: {
-          ...state.room,
-          tempMessages: tempMessages,
-        },
-      };
-    }
-  ),
-
+  
   // Image Upload For Message
   on(
     uploadImageForMessageSuccessAction,

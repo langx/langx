@@ -9,7 +9,6 @@ import { ChatPageRoutingModule } from './chat-routing.module';
 import { ChatPage } from './chat.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component';
-import { PreChatBoxComponent } from 'src/app/components/pre-chat-box/pre-chat-box.component';
 import { messageReducers } from 'src/app/store/reducers/message.reducer';
 import { MessageEffects } from 'src/app/store/effects/message.effect';
 
@@ -24,6 +23,6 @@ import { MessageEffects } from 'src/app/store/effects/message.effect';
     StoreModule.forFeature('message', messageReducers),
     EffectsModule.forFeature([MessageEffects]),
   ],
-  declarations: [ChatPage, ChatBoxComponent, PreChatBoxComponent],
+  declarations: [ChatPage, ChatBoxComponent],
 })
 export class ChatPageModule {}

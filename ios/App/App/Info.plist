@@ -35,13 +35,6 @@
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>languagexchange.net</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-			</dict>
 			<key>langx.io</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>

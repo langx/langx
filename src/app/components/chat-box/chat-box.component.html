@@ -131,7 +131,7 @@
         <span *ngIf="replyTo">
           <!-- <small>Reply: {{ replyTo }}</small> -->
         </span>
-        <div class="sender">
+        <div class="sender" [ngClass]="{ temp: !msg.$createdAt }">
           <div class="message-text" (click)="writeToClipboard(msg?.body)">
             <!-- Reply Message -->
             <ion-row

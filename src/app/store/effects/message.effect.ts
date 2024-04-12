@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, mergeMap, of, switchMap } from 'rxjs';
+import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 // Interface Imports
@@ -10,7 +10,6 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { AxiosError } from 'axios';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
-import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 
 // Selector and Action Imports
 import {
@@ -23,9 +22,6 @@ import {
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
-  resendMessageFromTempMessagesAction,
-  resendMessageFromTempMessagesFailureAction,
-  resendMessageFromTempMessagesSuccessAction,
   updateMessageAction,
   updateMessageFailureAction,
   updateMessageSuccessAction,
@@ -57,6 +53,7 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(createMessageAction),
       mergeMap(({ request }) => {
+        // console.log('request: ', request);
         if (request.to === 'deleted-user') {
           const error: ErrorInterface = {
             message: 'Cannot send message to deleted user',
@@ -65,6 +62,9 @@ export class MessageEffects {
         }
 
         return this.messagesService.createMessage(request).pipe(
+          // tap((payload: Message) => {
+          //   console.log('payload: ', payload);
+          // }),
           map((payload: Message) => createMessageSuccessAction({ payload })),
 
           catchError((errorResponse: AxiosError) => {
@@ -94,42 +94,6 @@ export class MessageEffects {
           })
         )
       )
-    )
-  );
-
-  // TODO: Use request directly instead of creating newRequest
-  resendMessage$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(resendMessageFromTempMessagesAction),
-      mergeMap((action) => {
-        const newRequest: createMessageRequestInterface = {
-          $id: action.request.$id,
-          roomId: action.request.roomId,
-          to: action.request.to,
-          type: action.request.type,
-          body: action.request?.body || null,
-          imageId: action.request?.imageId || null,
-          audioId: action.request?.audioId || null,
-        };
-
-        return this.messagesService.createMessage(newRequest).pipe(
-          map((payload: Message) =>
-            resendMessageFromTempMessagesSuccessAction({ payload })
-          ),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(
-              resendMessageFromTempMessagesFailureAction({
-                error,
-                payload: action.request,
-              })
-            );
-          })
-        );
-      })
     )
   );
 

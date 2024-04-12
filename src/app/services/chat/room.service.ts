@@ -242,7 +242,6 @@ export class RoomService {
             userData: data as User,
             total: 0,
             messages: null,
-            tempMessages: null,
           };
           return roomWithUserData;
         }),
@@ -252,7 +251,6 @@ export class RoomService {
             userData: deletedUser,
             total: 0,
             messages: null,
-            tempMessages: null,
           })
         )
       );
