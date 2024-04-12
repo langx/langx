@@ -194,8 +194,6 @@ export class ChatPage implements OnInit, OnDestroy {
     // Get the room
     this.subscriptions.add(
       this.room$.subscribe((room) => {
-        // console.log('Roomid:', room.$id);
-        // console.log('Room ID:', this.roomId);
         this.roomId = room.$id;
       })
     );
