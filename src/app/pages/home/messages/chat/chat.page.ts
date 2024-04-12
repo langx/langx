@@ -296,23 +296,6 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
   }
 
-  onEnter(event: any) {
-    if (!event.shiftKey && Capacitor.getPlatform() === 'web') {
-      event.preventDefault();
-      // Call your form submit method here
-      this.submitForm();
-    }
-  }
-
-  async handleAudioClick() {
-    this.form.reset();
-    // Upload audio if there is an audioId
-    if (this.audioId) {
-      await this.handleAudioUpload();
-      return;
-    }
-  }
-
   submitImage() {
     this.user$
       .subscribe((user) => {
@@ -376,6 +359,18 @@ export class ChatPage implements OnInit, OnDestroy {
         }
       })
       .unsubscribe();
+  }
+
+  //
+  // onEnter
+  //
+
+  onEnter(event: any) {
+    if (!event.shiftKey && Capacitor.getPlatform() === 'web') {
+      event.preventDefault();
+      // Call your form submit method here
+      this.submitForm();
+    }
   }
 
   //
@@ -494,6 +489,15 @@ export class ChatPage implements OnInit, OnDestroy {
     );
 
     longPress.enable();
+  }
+
+  async handleAudioClick() {
+    this.form.reset();
+    // Upload audio if there is an audioId
+    if (this.audioId) {
+      await this.handleAudioUpload();
+      return;
+    }
   }
 
   //
