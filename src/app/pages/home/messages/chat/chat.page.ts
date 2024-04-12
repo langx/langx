@@ -491,14 +491,14 @@ export class ChatPage implements OnInit, OnDestroy {
   async handleImage(imageData: string) {
     let blob: Blob = this.dataURLtoBlob(imageData);
     blob = await this.checkFileSize(blob);
-    let file = new File([blob], this.roomId, {
+    let request = new File([blob], this.roomId, {
       type: blob.type,
     });
 
     // TODO: Add createMessageRequestInterface for image
     this.store.dispatch(
       uploadImageForMessageAction({
-        request: file,
+        request,
       })
     );
 
