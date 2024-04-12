@@ -305,51 +305,47 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   submitImage() {
-    this.user$
-      .subscribe((user) => {
-        let request: createMessageRequestInterface = null;
+    this.user$.pipe(take(1)).subscribe((user) => {
+      let request: createMessageRequestInterface = null;
 
-        // Fill the request with the proper data
-        if (this.imageId) {
-          request = this.createMessageWithImage(user);
-        } else {
-          this.presentToast('Please try again.', 'danger');
-        }
+      // Fill the request with the proper data
+      if (this.imageId) {
+        request = this.createMessageWithImage(user);
+      } else {
+        this.presentToast('Please try again.', 'danger');
+      }
 
-        // Dispatch action to create message
-        if (request) {
-          this.dispatchCreateMessageAction(request);
+      // Dispatch action to create message
+      if (request) {
+        this.dispatchCreateMessageAction(request);
 
-          // Reset the variable
-          this.imageId = null;
-          this.replyMessage = null;
-        }
-      })
-      .unsubscribe();
+        // Reset the variable
+        this.imageId = null;
+        this.replyMessage = null;
+      }
+    });
   }
 
   submitAudio() {
-    this.user$
-      .subscribe((user) => {
-        let request: createMessageRequestInterface = null;
+    this.user$.pipe(take(1)).subscribe((user) => {
+      let request: createMessageRequestInterface = null;
 
-        // Fill the request with the proper data
-        if (this.audioId) {
-          request = this.createMessageWithAudio(user);
-        } else {
-          this.presentToast('Please try again.', 'danger');
-        }
+      // Fill the request with the proper data
+      if (this.audioId) {
+        request = this.createMessageWithAudio(user);
+      } else {
+        this.presentToast('Please try again.', 'danger');
+      }
 
-        // Dispatch action to create message
-        if (request) {
-          this.dispatchCreateMessageAction(request);
+      // Dispatch action to create message
+      if (request) {
+        this.dispatchCreateMessageAction(request);
 
-          // Reset the variable
-          this.audioId = null;
-          this.replyMessage = null;
-        }
-      })
-      .unsubscribe();
+        // Reset the variable
+        this.audioId = null;
+        this.replyMessage = null;
+      }
+    });
   }
 
   //
