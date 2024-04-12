@@ -876,6 +876,7 @@ export class ChatPage implements OnInit, OnDestroy {
     this.onTypingStatusChange();
   }
 
+  // TODO: #622
   onTypingStatusChange() {
     // console.log('onTypingStatusChange', this.isTyping);
   }
