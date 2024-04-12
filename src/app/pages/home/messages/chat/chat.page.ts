@@ -293,15 +293,15 @@ export class ChatPage implements OnInit, OnDestroy {
         const request: createMessageRequestInterface =
           this.createMessageWithText(user);
         this.dispatchCreateMessageAction(request);
-
-        // Reset the form and the variables
-        this.form.reset();
-        this.audioId = null;
-        this.imageId = null;
-        this.replyMessage = null;
-        this.editMessage = null;
       });
     }
+
+    // Reset the form and the variables
+    this.form.reset();
+    this.audioId = null;
+    this.imageId = null;
+    this.replyMessage = null;
+    this.editMessage = null;
   }
 
   submitImage() {
