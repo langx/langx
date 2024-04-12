@@ -102,15 +102,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
   // Image Variables
   imageId: string;
-  isLoadingImage: boolean = false;
-  isLoadingImageMsg = {
-    $id: null,
-    to: null,
-    roomId: null,
-    error: null,
-    type: 'body',
-    body: ' 📷 Image uploading ..',
-  };
 
   // Audio Variables
   isRecording: boolean = false;
@@ -340,7 +331,6 @@ export class ChatPage implements OnInit, OnDestroy {
           this.dispatchCreateMessageAction(request);
 
           // Reset the variable
-          this.isLoadingImage = false;
           this.imageId = null;
           this.replyMessage = null;
         }
@@ -614,7 +604,6 @@ export class ChatPage implements OnInit, OnDestroy {
     );
 
     // Show Image Uploading
-    this.isLoadingImage = true;
     setTimeout(() => {
       this.content.scrollToBottom(300);
     }, 100);
