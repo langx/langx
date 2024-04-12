@@ -499,6 +499,47 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
+  // Create Message Requests
+  //
+
+  createMessageWithText(user: User): createMessageRequestInterface {
+    const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'body',
+      body: this.form.value.body,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  createMessageWithImage(user: User) {
+    const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'image',
+      imageId: this.imageId,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  createMessageWithAudio(user: User) {
+    const request: createMessageRequestInterface = {
+      $id: this.audioIdTemp,
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'audio',
+      audioId: this.audioId,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    this.audioIdTemp = null;
+    return request;
+  }
+
+  //
   // Infinite Scroll
   //
 
@@ -537,47 +578,6 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
 
     event.target.complete();
-  }
-
-  //
-  // Utils for message
-  //
-
-  createMessageWithText(user: User): createMessageRequestInterface {
-    const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'body',
-      body: this.form.value.body,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    return request;
-  }
-
-  createMessageWithImage(user: User) {
-    const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'image',
-      imageId: this.imageId,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    return request;
-  }
-
-  createMessageWithAudio(user: User) {
-    const request: createMessageRequestInterface = {
-      $id: this.audioIdTemp,
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'audio',
-      audioId: this.audioId,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    this.audioIdTemp = null;
-    return request;
   }
 
   updateMessage() {
