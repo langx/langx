@@ -67,7 +67,7 @@ const messageReducer = createReducer(
       room: {
         ...state.room,
         total: action.payload?.total,
-        messages: [...action.payload?.documents, ...state.room.messages],
+        messages: [...action.payload?.documents, ...state.room?.messages],
       },
     })
   ),
@@ -108,13 +108,13 @@ const messageReducer = createReducer(
       error: null,
       room: {
         ...state.room,
-        messages: [...(state.room.messages || []), newMessage],
+        messages: [...(state.room?.messages || []), newMessage],
       },
     };
   }),
   on(createMessageSuccessAction, (state, action): MessageStateInterface => {
     // Check if a message with the same $id already exists
-    const messageExists = state.room.messages?.some(
+    const messageExists = state.room?.messages?.some(
       (msg) => msg.$id === action.payload.$id
     );
 
@@ -149,7 +149,7 @@ const messageReducer = createReducer(
     })
   ),
   // on(deleteMessageSuccessAction, (state, action): MessageStateInterface => {
-  //   const updatedMessages = state.room.messages.filter(
+  //   const updatedMessages = state.room?.messages.filter(
   //     (msg) => msg.$id !== action.payload.$id
   //   );
   //   return {
@@ -176,9 +176,9 @@ const messageReducer = createReducer(
       if (!state.room) return { ...state };
 
       // Check if the message belongs to the active room
-      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+      if (state.room?.$id !== action.payload.roomId.$id) return { ...state };
 
-      const updatedMessages = state.room.messages.filter(
+      const updatedMessages = state.room?.messages.filter(
         (msg) => msg.$id !== action.payload.$id
       );
       return {
@@ -206,7 +206,7 @@ const messageReducer = createReducer(
       // Only update after notification came, not here !
       room: {
         ...state.room,
-        messages: state.room.messages.map((msg) => {
+        messages: state.room?.messages.map((msg) => {
           if (msg.$id === action.payload.$id) {
             return { ...msg, seen: true };
           }
@@ -263,12 +263,12 @@ const messageReducer = createReducer(
       if (!state.room) return { ...state };
 
       // Check if the message belongs to the active room
-      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+      if (state.room?.$id !== action.payload.roomId.$id) return { ...state };
 
       // Check if the message already exists in the room
       if (
-        state.room.messages &&
-        state.room.messages.some((msg) => msg.$id === action.payload.$id)
+        state.room?.messages &&
+        state.room?.messages.some((msg) => msg.$id === action.payload.$id)
       ) {
         // If the message already exists, update it
         return {
@@ -294,7 +294,7 @@ const messageReducer = createReducer(
         ...state,
         room: {
           ...state.room,
-          messages: [...(state.room.messages || []), payload],
+          messages: [...(state.room?.messages || []), payload],
         },
       };
     }
@@ -306,7 +306,7 @@ const messageReducer = createReducer(
       if (!state.room) return { ...state };
 
       // Check if the message belongs to the active room
-      if (state.room.$id !== action.payload.roomId.$id) return { ...state };
+      if (state.room?.$id !== action.payload.roomId.$id) return { ...state };
 
       // Create a new payload with roomId as a string
       const payload: Message = {
@@ -318,7 +318,7 @@ const messageReducer = createReducer(
         ...state,
         room: {
           ...state.room,
-          messages: state.room.messages.map((msg) => {
+          messages: state.room?.messages.map((msg) => {
             if (msg.$id === payload.$id) {
               return { ...msg, ...payload };
             }
@@ -328,7 +328,7 @@ const messageReducer = createReducer(
       };
     }
   ),
-
+  
   // Image Upload For Message
   on(
     uploadImageForMessageSuccessAction,

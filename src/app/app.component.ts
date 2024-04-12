@@ -2,15 +2,13 @@ import { Component, NgZone } from '@angular/core';
 import { register } from 'swiper/element/bundle';
 import { Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
-import { Store, select } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 import { environment } from 'src/environments/environment';
 import { UpdateService } from './services/update/update.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 
-import { currentUserSelector } from './store/selectors/auth.selector';
-import { getRoomsAction } from './store/actions/rooms.action';
 import {
   listCountriesAction,
   listLanguagesAction,
@@ -43,6 +41,9 @@ export class AppComponent {
 
     // Init App State Change
     this.initAppStateChange();
+
+    // Check for updates
+    this.updateService.checkForUpdates();
 
     // Init Deep Link
     this.initDeepLink();

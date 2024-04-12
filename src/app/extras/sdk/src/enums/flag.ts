@@ -167,6 +167,7 @@ export enum Flag {
     Seychelles = 'sc',
     Syria = 'sy',
     Chad = 'td',
+    Taiwan = 'tw',
     Togo = 'tg',
     Thailand = 'th',
     Tajikistan = 'tj',
