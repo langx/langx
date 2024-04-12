@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from } from 'rxjs';
+import { Observable, Subscription, from, take } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
@@ -265,25 +265,34 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   submitForm() {
-    this.user$
-      .subscribe((user) => {
-        let request: createMessageRequestInterface = null;
+    // Check if the message is not empty
+    if (this.form.get('body').hasError('maxlength')) {
+      this.presentToast('Message exceeds 500 characters.', 'danger');
+      return;
+    }
 
-        // Fill the request with the proper data
-        if (this.form.get('body').hasError('maxlength')) {
-          this.presentToast('Message exceeds 500 characters.', 'danger');
-        } else if (!this.form.valid) {
-          this.presentToast('Please type your message.', 'danger');
-        } else if (this.editMessage) {
-          this.updateMessage();
-        } else {
-          request = this.createMessageWithText(user);
-        }
+    // Check if the message is not empty
+    if (!this.form.valid) {
+      this.presentToast('Please type your message.', 'danger');
+      return;
+    }
 
-        // Dispatch action to create message
-        if (request) {
-          this.dispatchCreateMessageAction(request);
-        }
+    // Check if the message is edit message
+    if (this.editMessage) {
+      // Update the message
+      const request: updateMessageRequestInterface = {
+        $id: this.editMessage.$id,
+        data: {
+          body: this.form.value.body,
+        },
+      };
+      this.store.dispatch(updateMessageAction({ request }));
+    } else {
+      // Create a new message
+      this.user$.pipe(take(1)).subscribe((user) => {
+        const request: createMessageRequestInterface =
+          this.createMessageWithText(user);
+        this.dispatchCreateMessageAction(request);
 
         // Reset the form and the variables
         this.form.reset();
@@ -291,8 +300,8 @@ export class ChatPage implements OnInit, OnDestroy {
         this.imageId = null;
         this.replyMessage = null;
         this.editMessage = null;
-      })
-      .unsubscribe();
+      });
+    }
   }
 
   submitImage() {
@@ -455,21 +464,6 @@ export class ChatPage implements OnInit, OnDestroy {
   onDelete(message: Message) {
     // console.log('Deleting:', message.$id);
     this.store.dispatch(deleteMessageAction({ request: message }));
-  }
-
-  //
-  // onUpdate
-  //
-
-  updateMessage() {
-    const request: updateMessageRequestInterface = {
-      $id: this.editMessage.$id,
-      data: {
-        body: this.form.value.body,
-      },
-    };
-    // Dispatch action to update message
-    this.store.dispatch(updateMessageAction({ request }));
   }
 
   //
