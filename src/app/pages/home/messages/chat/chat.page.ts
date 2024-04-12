@@ -344,6 +344,47 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
   }
 
+  //
+  // Create Message Requests
+  //
+
+  createMessageWithText(user: User): createMessageRequestInterface {
+    const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'body',
+      body: this.form.value.body,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  createMessageWithImage(user: User) {
+    const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'image',
+      imageId: this.imageId,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  createMessageWithAudio(user: User) {
+    const request: createMessageRequestInterface = {
+      $id: this.audioIdTemp,
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'audio',
+      audioId: this.audioId,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    this.audioIdTemp = null;
+    return request;
+  }
+
   // Dispatch action to create message
   dispatchCreateMessageAction(request) {
     this.currentUser$
@@ -415,6 +456,21 @@ export class ChatPage implements OnInit, OnDestroy {
   onDelete(message: Message) {
     // console.log('Deleting:', message.$id);
     this.store.dispatch(deleteMessageAction({ request: message }));
+  }
+
+  //
+  // onUpdate
+  //
+
+  updateMessage() {
+    const request: updateMessageRequestInterface = {
+      $id: this.editMessage.$id,
+      data: {
+        body: this.form.value.body,
+      },
+    };
+    // Dispatch action to update message
+    this.store.dispatch(updateMessageAction({ request }));
   }
 
   //
@@ -498,99 +554,6 @@ export class ChatPage implements OnInit, OnDestroy {
       await this.handleAudioUpload();
       return;
     }
-  }
-
-  //
-  // Create Message Requests
-  //
-
-  createMessageWithText(user: User): createMessageRequestInterface {
-    const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'body',
-      body: this.form.value.body,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    return request;
-  }
-
-  createMessageWithImage(user: User) {
-    const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'image',
-      imageId: this.imageId,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    return request;
-  }
-
-  createMessageWithAudio(user: User) {
-    const request: createMessageRequestInterface = {
-      $id: this.audioIdTemp,
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'audio',
-      audioId: this.audioId,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    this.audioIdTemp = null;
-    return request;
-  }
-
-  //
-  // Infinite Scroll
-  //
-
-  loadMore(event) {
-    // If it's the first load, do nothing and return
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      event.target.complete();
-      return;
-    }
-
-    // Offset is the number of messages that we already have
-    let offset: number = 0;
-
-    this.messages$
-      .subscribe((messages) => {
-        if (messages) {
-          offset = messages.length;
-          this.total$
-            .subscribe((total) => {
-              if (offset < total) {
-                this.store.dispatch(
-                  getMessagesWithOffsetAction({
-                    roomId: this.roomId,
-                    offset: offset,
-                  })
-                );
-              } else {
-                event.target.disabled = true;
-                console.log('All messages loaded');
-              }
-            })
-            .unsubscribe();
-        }
-      })
-      .unsubscribe();
-
-    event.target.complete();
-  }
-
-  updateMessage() {
-    const request: updateMessageRequestInterface = {
-      $id: this.editMessage.$id,
-      data: {
-        body: this.form.value.body,
-      },
-    };
-    this.store.dispatch(updateMessageAction({ request }));
-    // return request;
   }
 
   //
@@ -838,6 +801,47 @@ export class ChatPage implements OnInit, OnDestroy {
 
   changeColor(color: string) {
     this.iconColorOfMic = color;
+  }
+
+  //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // If it's the first load, do nothing and return
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+      event.target.complete();
+      return;
+    }
+
+    // Offset is the number of messages that we already have
+    let offset: number = 0;
+
+    this.messages$
+      .subscribe((messages) => {
+        if (messages) {
+          offset = messages.length;
+          this.total$
+            .subscribe((total) => {
+              if (offset < total) {
+                this.store.dispatch(
+                  getMessagesWithOffsetAction({
+                    roomId: this.roomId,
+                    offset: offset,
+                  })
+                );
+              } else {
+                event.target.disabled = true;
+                console.log('All messages loaded');
+              }
+            })
+            .unsubscribe();
+        }
+      })
+      .unsubscribe();
+
+    event.target.complete();
   }
 
   //
