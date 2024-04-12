@@ -38,7 +38,6 @@ import { UserService } from 'src/app/services/user/user.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { getRoomByIdAction } from 'src/app/store/actions/room.action';
 import {
   clearAudioUrlStateAction,
   uploadAudioForMessageAction,
