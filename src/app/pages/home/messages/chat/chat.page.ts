@@ -442,6 +442,27 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
+  async handleImage(imageData: string) {
+    let blob: Blob = this.dataURLtoBlob(imageData);
+
+    blob = await this.checkFileSize(blob);
+
+    let file = new File([blob], this.roomId, {
+      type: blob.type,
+    });
+
+    this.store.dispatch(
+      uploadImageForMessageAction({
+        request: file,
+      })
+    );
+
+    // Show Image Uploading
+    setTimeout(() => {
+      this.content.scrollToBottom(300);
+    }, 100);
+  }
+
   //
   // Record Audio
   //
@@ -587,27 +608,6 @@ export class ChatPage implements OnInit, OnDestroy {
     }).catch((error) => {
       console.log(error);
     });
-  }
-
-  async handleImage(imageData: string) {
-    let blob: Blob = this.dataURLtoBlob(imageData);
-
-    blob = await this.checkFileSize(blob);
-
-    let file = new File([blob], this.roomId, {
-      type: blob.type,
-    });
-
-    this.store.dispatch(
-      uploadImageForMessageAction({
-        request: file,
-      })
-    );
-
-    // Show Image Uploading
-    setTimeout(() => {
-      this.content.scrollToBottom(300);
-    }, 100);
   }
 
   private dataURLtoBlob(dataurl: any) {
