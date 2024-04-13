@@ -83,19 +83,36 @@ export class ChatBoxComponent implements OnInit {
 
     // Check if the message is an image
     if (this.msg.type === 'image') {
-      this.imageURL$ = this.messageService.getMessageImageView(
-        this.msg.imageId
-      );
-      // Fix: ExpressionChangedAfterItHasBeenCheckedError
-      this.imageURL$.subscribe(() => {
+      if (this.msg.imageId) {
+        this.imageURL$ = this.messageService.getMessageImageView(
+          this.msg.imageId
+        );
+        // Fixing ExpressionChangedAfterItHasBeenCheckedError
+        this.imageURL$.subscribe(() => {
+          this.changeDetectorRef.detectChanges();
+        });
+      } else {
+        // Use a placeholder image URL
+        this.msg.type = 'body';
+        this.msg.body = '📷 Image Message';
+        this.messageSegments = urlify(this.msg?.body);
         this.changeDetectorRef.detectChanges();
-      });
+      }
     }
+
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
-      this.audioURL$ = this.messageService.getMessageAudioView(
-        this.msg.audioId
-      );
+      if (this.msg.audioId) {
+        this.audioURL$ = this.messageService.getMessageAudioView(
+          this.msg.audioId
+        );
+      } else {
+        // Use a placeholder audio URL
+        this.msg.type = 'body';
+        this.msg.body = '🎵 Audio Message';
+        this.messageSegments = urlify(this.msg?.body);
+        this.changeDetectorRef.detectChanges();
+      }
     }
   }
 
@@ -106,7 +123,9 @@ export class ChatBoxComponent implements OnInit {
   async initValues() {
     this.msg = { ...this.chat };
 
-    this.messageSegments = urlify(this.msg?.body);
+    if (this.msg && this.msg.type === 'body') {
+      this.messageSegments = urlify(this.msg?.body);
+    }
 
     // Check if the message has replyTo
     if (this.msg.replyTo) {
