@@ -47,6 +47,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 
+    <!-- Insight Tag (tracker.js) -->
+    <script>
+      (function () {
+        window.counterscale = {
+          q: [["set", "siteId", "app"], ["trackPageview"]],
+        };
+      })();
+    </script>
+    <script
+      id="counterscale-script"
+      src="https://insight.langx.io/tracker.js"
+      defer
+    ></script>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NXJ5MSWDQ4"></script>
     <script>
