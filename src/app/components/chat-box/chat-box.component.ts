@@ -56,6 +56,7 @@ export class ChatBoxComponent implements OnInit {
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
   isDownloaded: boolean = false;
+  isPlaying: boolean = false;
 
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
@@ -198,6 +199,7 @@ export class ChatBoxComponent implements OnInit {
       });
       this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
       this.isDownloaded = true;
+      this.changeDetectorRef.detectChanges();
     } catch (e) {
       // Download file from server
       this.downloadFile();
@@ -234,6 +236,7 @@ export class ChatBoxComponent implements OnInit {
 
         console.log('Download complete');
         this.isDownloaded = true;
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
@@ -254,8 +257,10 @@ export class ChatBoxComponent implements OnInit {
     };
     this.audioRef.onended = () => {
       this.audioRef = null;
+      this.updateIsPlaying();
     };
     this.audioRef.load();
+    this.updateIsPlaying();
     return this.audioRef.play();
   }
 
@@ -263,19 +268,17 @@ export class ChatBoxComponent implements OnInit {
     if (this.audioRef) {
       this.audioRef.pause();
       this.audioRef.currentTime = 0;
+      this.updateIsPlaying();
     }
+  }
+
+  private updateIsPlaying() {
+    this.isPlaying = !this.isPlaying;
+    this.changeDetectorRef.detectChanges();
   }
 
   async togglePlayStop() {
-    if (this.isPlaying()) {
-      this.stop();
-    } else {
-      await this.play(this.audioId);
-    }
-  }
-
-  isPlaying(): boolean {
-    return this.audioRef ? !this.audioRef.paused : false;
+    this.isPlaying ? this.stop() : await this.play(this.audioId);
   }
 
   //
