@@ -13,12 +13,6 @@ import { MessageService } from 'src/app/services/chat/message.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 import {
-  uploadAudioForMessageAction,
-  uploadAudioForMessageFailureAction,
-  uploadAudioForMessageSuccessAction,
-  uploadImageForMessageAction,
-  uploadImageForMessageFailureAction,
-  uploadImageForMessageSuccessAction,
   uploadOtherPhotosAction,
   uploadOtherPhotosFailureAction,
   uploadOtherPhotosSuccessAction,
@@ -86,46 +80,6 @@ export class BucketEffects {
           message: errorResponse.message,
         };
         return of(uploadOtherPhotosFailureAction({ error }));
-      })
-    )
-  );
-
-  uploadImageForMessage$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(uploadImageForMessageAction),
-      switchMap(({ request }) => {
-        return this.messageService.uploadMessageImage(request).pipe(
-          map((payload) => {
-            return uploadImageForMessageSuccessAction({ payload });
-          }),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(uploadImageForMessageFailureAction({ error }));
-          })
-        );
-      })
-    )
-  );
-
-  uploadAudioForMessage$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(uploadAudioForMessageAction),
-      switchMap(({ request }) => {
-        return this.messageService.uploadMessageAudio(request).pipe(
-          map((payload) => {
-            return uploadAudioForMessageSuccessAction({ payload });
-          }),
-
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(uploadAudioForMessageFailureAction({ error }));
-          })
-        );
       })
     )
   );

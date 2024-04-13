@@ -13,14 +13,6 @@ import {
   findAndUpdateActiveRoomUpdatedAtAction,
 } from 'src/app/store/actions/notification.action';
 import {
-  clearAudioUrlStateAction,
-  uploadAudioForMessageFailureAction,
-  uploadAudioForMessageSuccessAction,
-  clearImageUrlStateAction,
-  uploadImageForMessageFailureAction,
-  uploadImageForMessageSuccessAction,
-} from 'src/app/store/actions/bucket.action';
-import {
   activateRoomAction,
   deactivateRoomAction,
   createMessageAction,
@@ -42,8 +34,6 @@ const initialState: MessageStateInterface = {
   isLoading: false,
   isLoading_offset: false,
   room: null,
-  imageId: null,
-  audioId: null,
   error: null,
 };
 
@@ -80,8 +70,6 @@ const messageReducer = createReducer(
     })
   ),
   on(createMessageAction, (state, action): MessageStateInterface => {
-    console.log(action.request);
-
     // Create a new Message object from action.request
     const newMessage: Message = {
       // Assuming these are the properties of Message
@@ -327,52 +315,6 @@ const messageReducer = createReducer(
         },
       };
     }
-  ),
-  
-  // Image Upload For Message
-  on(
-    uploadImageForMessageSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      imageId: action.payload.$id,
-    })
-  ),
-  on(
-    uploadImageForMessageFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      error: action.error,
-    })
-  ),
-  on(
-    clearImageUrlStateAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      imageId: null,
-    })
-  ),
-
-  // Upload Audio For Message
-  on(
-    uploadAudioForMessageSuccessAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      audioId: action.payload.$id,
-    })
-  ),
-  on(
-    uploadAudioForMessageFailureAction,
-    (state, action): MessageStateInterface => ({
-      ...state,
-      error: action.error,
-    })
-  ),
-  on(
-    clearAudioUrlStateAction,
-    (state): MessageStateInterface => ({
-      ...state,
-      audioId: null,
-    })
   ),
 
   // Set initialState after Logout/Delete Success Action

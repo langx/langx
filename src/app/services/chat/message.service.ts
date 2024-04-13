@@ -167,9 +167,6 @@ export class MessageService {
         request
       )
     );
-    // .pipe(
-    //   switchMap((response: BucketFile) => this.getImageView(response.$id))
-    // );
   }
 
   getMessageImageView(fileId: string): Observable<URL> {
@@ -193,9 +190,6 @@ export class MessageService {
         request
       )
     );
-    // .pipe(
-    //   switchMap((response: BucketFile) => this.getAudioView(response.$id))
-    // );
   }
 
   getMessageAudioView(fileId: string): Observable<URL> {

@@ -5,7 +5,5 @@ export interface MessageStateInterface {
   isLoading: boolean;
   isLoading_offset: boolean;
   room: RoomExtendedInterface | null;
-  imageId: string | null;
-  audioId: string | null;
   error: ErrorInterface | null;
 }

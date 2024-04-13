@@ -55,7 +55,7 @@
               *ngIf="msg?.type == 'image'"
               [src]="imageURL$ | async"
               (click)="openPreview(imageURL$)"
-              alt="Image message"
+              alt="📷 Image message"
               referrerpolicy="no-referrer"
             />
 
@@ -69,8 +69,8 @@
                 >
                   <ion-icon
                     slot="icon-only"
-                    [name]="isPlaying() ? 'pause' : 'play'"
-                    [color]="isPlaying() ? 'danger' : 'success'"
+                    [name]="isPlaying ? 'pause' : 'play'"
+                    [color]="isPlaying ? 'danger' : 'success'"
                   ></ion-icon>
                 </ion-button>
 
@@ -177,7 +177,7 @@
               *ngIf="msg?.type == 'image'"
               [src]="imageURL$ | async"
               (click)="openPreview(imageURL$)"
-              alt="Image message"
+              alt="📷 Image message"
               referrerpolicy="no-referrer"
             />
 
@@ -191,8 +191,8 @@
                 >
                   <ion-icon
                     slot="icon-only"
-                    [name]="isPlaying() ? 'pause' : 'play'"
-                    [color]="isPlaying() ? 'danger' : 'success'"
+                    [name]="isPlaying ? 'pause' : 'play'"
+                    [color]="isPlaying ? 'danger' : 'success'"
                   ></ion-icon>
                 </ion-button>
                 <ion-button

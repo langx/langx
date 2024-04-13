@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 
-import { Models } from 'src/app/extras/sdk/src';
 import { ActionTypes } from 'src/app/store/actions/types/bucket.actiontypes';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -35,44 +34,4 @@ export const uploadOtherPhotosSuccessAction = createAction(
 export const uploadOtherPhotosFailureAction = createAction(
   ActionTypes.UPLOAD_OTHER_PHOTOS_FAILURE,
   props<{ error: ErrorInterface }>()
-);
-
-// Upload Image For Message
-export const uploadImageForMessageAction = createAction(
-  ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE,
-  props<{ request: File }>()
-);
-
-export const uploadImageForMessageSuccessAction = createAction(
-  ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE_SUCCESS,
-  props<{ payload: Models.File }>()
-);
-
-export const uploadImageForMessageFailureAction = createAction(
-  ActionTypes.UPLOAD_IMAGE_FOR_MESSAGE_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
-export const clearImageUrlStateAction = createAction(
-  ActionTypes.CLEAR_IMAGE_URL_STATE
-);
-
-// Upload Audio For Message
-export const uploadAudioForMessageAction = createAction(
-  ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE,
-  props<{ request: File }>()
-);
-
-export const uploadAudioForMessageSuccessAction = createAction(
-  ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE_SUCCESS,
-  props<{ payload: Models.File }>()
-);
-
-export const uploadAudioForMessageFailureAction = createAction(
-  ActionTypes.UPLOAD_AUDIO_FOR_MESSAGE_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
-export const clearAudioUrlStateAction = createAction(
-  ActionTypes.CLEAR_AUDIO_URL_STATE
 );

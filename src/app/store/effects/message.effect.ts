@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, mergeMap, of, switchMap, tap } from 'rxjs';
-import { Store } from '@ngrx/store';
+import { Observable, catchError, map, mergeMap, of, switchMap } from 'rxjs';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
+import { BucketFile } from 'src/app/models/BucketFile';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { AxiosError } from 'axios';
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -33,7 +33,7 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(getMessagesWithOffsetAction),
       switchMap(({ roomId, offset }) =>
-        this.messagesService.listMessages(roomId, offset).pipe(
+        this.messageService.listMessages(roomId, offset).pipe(
           map((payload: listMessagesResponseInterface) =>
             getMessagesWithOffsetSuccessAction({ payload })
           ),
@@ -52,8 +52,7 @@ export class MessageEffects {
   createMessage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createMessageAction),
-      mergeMap(({ request }) => {
-        // console.log('request: ', request);
+      mergeMap(({ messageType, request, file }) => {
         if (request.to === 'deleted-user') {
           const error: ErrorInterface = {
             message: 'Cannot send message to deleted user',
@@ -61,18 +60,52 @@ export class MessageEffects {
           return of(createMessageFailureAction({ error, payload: request }));
         }
 
-        return this.messagesService.createMessage(request).pipe(
-          // tap((payload: Message) => {
-          //   console.log('payload: ', payload);
-          // }),
-          map((payload: Message) => createMessageSuccessAction({ payload })),
+        // If there's no file and messageType is 'body', directly create the message
+        if (!file && messageType === 'body') {
+          return this.messageService.createMessage(request).pipe(
+            map((payload: Message) => createMessageSuccessAction({ payload })),
+            catchError((errorResponse: AxiosError) => {
+              const error: ErrorInterface = {
+                message: errorResponse?.response?.data['message'],
+              };
+              return of(
+                createMessageFailureAction({ error, payload: request })
+              );
+            })
+          );
+        }
 
-          catchError((errorResponse: AxiosError) => {
-            console.log(errorResponse?.response?.data);
-            const error: ErrorInterface = {
-              message: errorResponse?.response?.data['message'],
-            };
-            return of(createMessageFailureAction({ error, payload: request }));
+        let uploadObservable: Observable<BucketFile>;
+        let updatedRequest;
+        if (file) {
+          if (messageType === 'image') {
+            uploadObservable = this.messageService.uploadMessageImage(file);
+          } else if (messageType === 'audio') {
+            uploadObservable = this.messageService.uploadMessageAudio(file);
+          }
+        }
+
+        return uploadObservable.pipe(
+          switchMap((uploadResponse) => {
+            if (messageType === 'image') {
+              updatedRequest = { ...request, imageId: uploadResponse.$id };
+            } else if (messageType === 'audio') {
+              updatedRequest = { ...request, audioId: uploadResponse.$id };
+            }
+
+            return this.messageService.createMessage(updatedRequest).pipe(
+              map((payload: Message) =>
+                createMessageSuccessAction({ payload })
+              ),
+              catchError((errorResponse: AxiosError) => {
+                const error: ErrorInterface = {
+                  message: errorResponse?.response?.data['message'],
+                };
+                return of(
+                  createMessageFailureAction({ error, payload: updatedRequest })
+                );
+              })
+            );
           })
         );
       })
@@ -83,7 +116,7 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(updateMessageAction),
       mergeMap(({ request }) =>
-        this.messagesService.updateMessage(request).pipe(
+        this.messageService.updateMessage(request).pipe(
           map((payload: Message) => updateMessageSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
@@ -101,7 +134,7 @@ export class MessageEffects {
     this.actions$.pipe(
       ofType(deleteMessageAction),
       mergeMap(({ request }) =>
-        this.messagesService.deleteMessage(request).pipe(
+        this.messageService.deleteMessage(request).pipe(
           map((payload: Message) =>
             deleteMessageSuccessAction({
               payload: { ...payload, $id: request.$id },
@@ -120,7 +153,6 @@ export class MessageEffects {
 
   constructor(
     private actions$: Actions,
-    private store: Store,
-    private messagesService: MessageService
+    private messageService: MessageService
   ) {}
 }

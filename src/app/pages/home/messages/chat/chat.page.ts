@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from } from 'rxjs';
+import { Observable, Subscription, from, take } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
@@ -38,13 +38,6 @@ import { UserService } from 'src/app/services/user/user.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { getRoomByIdAction } from 'src/app/store/actions/room.action';
-import {
-  clearAudioUrlStateAction,
-  uploadAudioForMessageAction,
-  clearImageUrlStateAction,
-  uploadImageForMessageAction,
-} from 'src/app/store/actions/bucket.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -54,8 +47,6 @@ import {
   updateMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
-  imageIdSelector,
-  audioIdSelector,
   errorSelector,
   isLoadingOffsetSelector,
   isLoadingSelector,
@@ -91,6 +82,8 @@ export class ChatPage implements OnInit, OnDestroy {
   isTyping: boolean = false;
   roomId: string;
 
+  file: File;
+
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
 
@@ -100,18 +93,6 @@ export class ChatPage implements OnInit, OnDestroy {
     color: 'warning',
   };
 
-  // Image Variables
-  imageId: string;
-  isLoadingImage: boolean = false;
-  isLoadingImageMsg = {
-    $id: null,
-    to: null,
-    roomId: null,
-    error: null,
-    type: 'body',
-    body: ' 📷 Image uploading ..',
-  };
-
   // Audio Variables
   isRecording: boolean = false;
   micPermission: boolean = false;
@@ -119,7 +100,6 @@ export class ChatPage implements OnInit, OnDestroy {
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
   audioId: string;
-  private audioIdTemp: string;
 
   // Reply and Edit Variables
   replyMessage: Message;
@@ -160,6 +140,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   initValues() {
+    // TODO: Do we need it ?
     this.roomId = this.route.snapshot.paramMap.get('id') || null;
 
     this.room$ = this.store.pipe(select(roomSelector));
@@ -202,8 +183,6 @@ export class ChatPage implements OnInit, OnDestroy {
     // Get the room
     this.subscriptions.add(
       this.room$.subscribe((room) => {
-        // console.log('Roomid:', room.$id);
-        // console.log('Room ID:', this.roomId);
         this.roomId = room.$id;
       })
     );
@@ -222,28 +201,6 @@ export class ChatPage implements OnInit, OnDestroy {
               }
             })
           );
-        }
-      })
-    );
-
-    // Uploaded Image URL to present
-    this.subscriptions.add(
-      this.store.pipe(select(imageIdSelector)).subscribe((id: string) => {
-        if (id) {
-          this.imageId = id;
-          this.submitImage();
-          this.store.dispatch(clearImageUrlStateAction());
-        }
-      })
-    );
-
-    // Uploaded Audio URL to present
-    this.subscriptions.add(
-      this.store.pipe(select(audioIdSelector)).subscribe((id: string) => {
-        if (id) {
-          this.audioId = id;
-          this.submitAudio();
-          this.store.dispatch(clearAudioUrlStateAction());
         }
       })
     );
@@ -276,35 +233,151 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   submitForm() {
-    this.user$
-      .subscribe((user) => {
-        let request: createMessageRequestInterface = null;
+    // Check if the message is not empty
+    if (this.form.get('body').hasError('maxlength')) {
+      this.presentToast('Message exceeds 500 characters.', 'danger');
+      return;
+    }
 
-        // Fill the request with the proper data
-        if (this.form.get('body').hasError('maxlength')) {
-          this.presentToast('Message exceeds 500 characters.', 'danger');
-        } else if (!this.form.valid) {
-          this.presentToast('Please type your message.', 'danger');
-        } else if (this.editMessage) {
-          this.updateMessage();
-        } else {
-          request = this.createMessageWithText(user);
-        }
+    // Check if the message is not empty
+    if (!this.form.valid) {
+      this.presentToast('Please type your message.', 'danger');
+      return;
+    }
 
-        // Dispatch action to create message
-        if (request) {
-          this.dispatchCreateMessageAction(request);
-        }
+    // Check if the message is edit message
+    if (this.editMessage) {
+      // Update the message
+      const request: updateMessageRequestInterface = {
+        $id: this.editMessage.$id,
+        data: {
+          body: this.form.value.body,
+        },
+      };
+      this.store.dispatch(updateMessageAction({ request }));
+    } else {
+      // Create a new message
+      this.user$.pipe(take(1)).subscribe((user) => {
+        const request: createMessageRequestInterface =
+          this.createMessageWithText(user);
+        this.dispatchCreateMessageAction(request);
+      });
+    }
 
-        // Reset the form and the variables
-        this.form.reset();
-        this.audioId = null;
-        this.imageId = null;
-        this.replyMessage = null;
-        this.editMessage = null;
-      })
-      .unsubscribe();
+    // Scroll to bottom
+    setTimeout(() => {
+      this.content.scrollToBottom(300);
+    }, 100);
+
+    // Reset the form and the variables
+    this.form.reset();
+    this.audioId = null;
+    this.replyMessage = null;
+    this.editMessage = null;
   }
+
+  private submitImage(file: File) {
+    this.user$.pipe(take(1)).subscribe((user) => {
+      // Create a new message
+      const request: createMessageRequestInterface =
+        this.createMessageWithImage(user);
+
+      // Dispatch action to create message
+      this.dispatchCreateMessageAction(request, file); // Include file here
+
+      // Scroll to bottom
+      setTimeout(() => {
+        this.content.scrollToBottom(300);
+      }, 100);
+
+      // Reset the variable
+      this.replyMessage = null;
+    });
+  }
+
+  submitAudio(file: File) {
+    this.user$.pipe(take(1)).subscribe((user) => {
+      // Create a new message
+      const request: createMessageRequestInterface =
+        this.createMessageWithAudio(user);
+
+      // Dispatch action to create message
+      this.dispatchCreateMessageAction(request, file);
+
+      // Scroll to bottom
+      setTimeout(() => {
+        this.content.scrollToBottom(300);
+      }, 100);
+
+      // Reset the variable
+      this.audioId = null;
+      this.replyMessage = null;
+    });
+  }
+
+  //
+  // Create Message Requests
+  //
+
+  createMessageWithText(user: User): createMessageRequestInterface {
+    const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'body',
+      body: this.form.value.body,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  createMessageWithImage(user: User) {
+    const request: createMessageRequestInterface = {
+      $id: uuidv4().replace(/-/g, ''),
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'image',
+      imageId: null,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  createMessageWithAudio(user: User) {
+    const request: createMessageRequestInterface = {
+      $id: this.audioId,
+      roomId: this.roomId,
+      to: user.$id,
+      type: 'audio',
+      audioId: null,
+      replyTo: this.replyMessage?.$id || null,
+    };
+    return request;
+  }
+
+  // Dispatch action to create message
+  dispatchCreateMessageAction(
+    request: createMessageRequestInterface,
+    file?: File
+  ) {
+    this.currentUser$.pipe(take(1)).subscribe((currentUser) => {
+      const currentUserId = currentUser.$id;
+      if (request) {
+        this.store.dispatch(
+          createMessageAction({
+            messageType: request.type,
+            request,
+            currentUserId,
+            file: file ? file : null,
+          })
+        );
+      }
+    });
+  }
+
+  //
+  // onEnter
+  //
 
   onEnter(event: any) {
     if (!event.shiftKey && Capacitor.getPlatform() === 'web') {
@@ -312,81 +385,6 @@ export class ChatPage implements OnInit, OnDestroy {
       // Call your form submit method here
       this.submitForm();
     }
-  }
-
-  async handleAudioClick() {
-    this.form.reset();
-    // Upload audio if there is an audioId
-    if (this.audioId) {
-      await this.handleAudioUpload();
-      return;
-    }
-  }
-
-  submitImage() {
-    this.user$
-      .subscribe((user) => {
-        let request: createMessageRequestInterface = null;
-
-        // Fill the request with the proper data
-        if (this.imageId) {
-          request = this.createMessageWithImage(user);
-        } else {
-          this.presentToast('Please try again.', 'danger');
-        }
-
-        // Dispatch action to create message
-        if (request) {
-          this.dispatchCreateMessageAction(request);
-
-          // Reset the variable
-          this.isLoadingImage = false;
-          this.imageId = null;
-          this.replyMessage = null;
-        }
-      })
-      .unsubscribe();
-  }
-
-  submitAudio() {
-    this.user$
-      .subscribe((user) => {
-        let request: createMessageRequestInterface = null;
-
-        // Fill the request with the proper data
-        if (this.audioId) {
-          request = this.createMessageWithAudio(user);
-        } else {
-          this.presentToast('Please try again.', 'danger');
-        }
-
-        // Dispatch action to create message
-        if (request) {
-          this.dispatchCreateMessageAction(request);
-
-          // Reset the variable
-          this.audioId = null;
-          this.replyMessage = null;
-        }
-      })
-      .unsubscribe();
-  }
-
-  // Dispatch action to create message
-  dispatchCreateMessageAction(request) {
-    this.currentUser$
-      .subscribe((currentUser) => {
-        const currentUserId = currentUser.$id;
-        if (request) {
-          this.store.dispatch(
-            createMessageAction({
-              request,
-              currentUserId,
-            })
-          );
-        }
-      })
-      .unsubscribe();
   }
 
   //
@@ -440,13 +438,19 @@ export class ChatPage implements OnInit, OnDestroy {
   async selectImage() {
     try {
       await this.requestCameraPermissions();
-
       const photo = await this.getCameraPhoto();
-
       if (!photo) return;
 
-      await this.handleImage(photo.dataUrl);
+      let blob: Blob = this.dataURLtoBlob(photo.dataUrl);
+      blob = await this.checkFileSize(blob);
+      const file = new File([blob], this.roomId, {
+        type: blob.type,
+      });
+
+      // Submit the image
+      file ? this.submitImage(file) : this.presentToast('Please try again.');
     } catch (e) {
+      this.presentToast('Please try again.', 'danger');
       console.log(e);
     }
   }
@@ -486,97 +490,36 @@ export class ChatPage implements OnInit, OnDestroy {
     longPress.enable();
   }
 
-  //
-  // Infinite Scroll
-  //
+  async handleAudioClick() {
+    try {
+      this.form.reset();
 
-  loadMore(event) {
-    // If it's the first load, do nothing and return
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      event.target.complete();
-      return;
+      // Upload audio if there is an audioId
+      if (this.audioId) {
+        const fileName = this.audioId;
+        console.log('Audio file name:', fileName);
+
+        const audioFile = await Filesystem.readFile({
+          path: fileName,
+          directory: Directory.Data,
+        });
+
+        const base64Sound = audioFile.data;
+
+        // Convert base64 to blob using fetch API
+        const audioResponse = await fetch(
+          `data:audio/aac;base64,${base64Sound}`
+        );
+        const blob: Blob = await audioResponse.blob();
+
+        const file = new File([blob], fileName);
+
+        // Submit the audio
+        file ? this.submitAudio(file) : this.presentToast('Please try again.');
+      }
+    } catch (error) {
+      console.error('Error handling audio click:', error);
     }
-
-    // Offset is the number of messages that we already have
-    let offset: number = 0;
-
-    this.messages$
-      .subscribe((messages) => {
-        if (messages) {
-          offset = messages.length;
-          this.total$
-            .subscribe((total) => {
-              if (offset < total) {
-                this.store.dispatch(
-                  getMessagesWithOffsetAction({
-                    roomId: this.roomId,
-                    offset: offset,
-                  })
-                );
-              } else {
-                event.target.disabled = true;
-                console.log('All messages loaded');
-              }
-            })
-            .unsubscribe();
-        }
-      })
-      .unsubscribe();
-
-    event.target.complete();
-  }
-
-  //
-  // Utils for message
-  //
-
-  createMessageWithText(user: User): createMessageRequestInterface {
-    const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'body',
-      body: this.form.value.body,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    return request;
-  }
-
-  createMessageWithImage(user: User) {
-    const request: createMessageRequestInterface = {
-      $id: uuidv4().replace(/-/g, ''),
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'image',
-      imageId: this.imageId,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    return request;
-  }
-
-  createMessageWithAudio(user: User) {
-    const request: createMessageRequestInterface = {
-      $id: this.audioIdTemp,
-      roomId: this.roomId,
-      to: user.$id,
-      type: 'audio',
-      audioId: this.audioId,
-      replyTo: this.replyMessage?.$id || null,
-    };
-    this.audioIdTemp = null;
-    return request;
-  }
-
-  updateMessage() {
-    const request: updateMessageRequestInterface = {
-      $id: this.editMessage.$id,
-      data: {
-        body: this.form.value.body,
-      },
-    };
-    this.store.dispatch(updateMessageAction({ request }));
-    // return request;
   }
 
   //
@@ -596,39 +539,6 @@ export class ChatPage implements OnInit, OnDestroy {
     }).catch((error) => {
       console.log(error);
     });
-  }
-
-  // private async createImageCropModal(image) {
-  //   const modal = await this.modalCtrl.create({
-  //     component: ImageCropComponent,
-  //     componentProps: {
-  //       image: image,
-  //     },
-  //   });
-  //   modal.present();
-  //   return modal;
-  // }
-
-  async handleImage(imageData: string) {
-    let blob: Blob = this.dataURLtoBlob(imageData);
-
-    blob = await this.checkFileSize(blob);
-
-    let file = new File([blob], this.roomId, {
-      type: blob.type,
-    });
-
-    this.store.dispatch(
-      uploadImageForMessageAction({
-        request: file,
-      })
-    );
-
-    // Show Image Uploading
-    this.isLoadingImage = true;
-    setTimeout(() => {
-      this.content.scrollToBottom(300);
-    }, 100);
   }
 
   private dataURLtoBlob(dataurl: any) {
@@ -697,36 +607,6 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
-  private async handleAudioUpload() {
-    const fileName = this.audioId;
-
-    const audioFile = await Filesystem.readFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-
-    const base64Sound = audioFile.data;
-    // console.log('Base64 Audio:', base64Sound);
-
-    // Convert base64 to blob using fetch API
-    const response = await fetch(`data:audio/aac;base64,${base64Sound}`);
-    const blob: Blob = await response.blob();
-    // console.log('Blob', blob);
-
-    // console.log('fileName', fileName);
-    const file = new File([blob], fileName);
-
-    // Upload the file
-    this.store.dispatch(
-      uploadAudioForMessageAction({
-        request: file,
-      })
-    );
-
-    this.audioIdTemp = this.audioId;
-    this.audioId = null;
-  }
-
   private startRecording() {
     VoiceRecorder.startRecording().then(() => {
       this.isRecording = true;
@@ -777,10 +657,10 @@ export class ChatPage implements OnInit, OnDestroy {
         path: this.audioId,
         directory: Directory.Data,
       });
+      this.audioId = null;
     }
+
     this.loadFiles();
-    this.audioIdTemp = this.audioId;
-    this.audioId = null;
   }
 
   // async deleteAllRecordings() {
@@ -860,6 +740,47 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // If it's the first load, do nothing and return
+    if (this.isFirstLoad) {
+      this.isFirstLoad = false;
+      event.target.complete();
+      return;
+    }
+
+    // Offset is the number of messages that we already have
+    let offset: number = 0;
+
+    this.messages$
+      .subscribe((messages) => {
+        if (messages) {
+          offset = messages.length;
+          this.total$
+            .subscribe((total) => {
+              if (offset < total) {
+                this.store.dispatch(
+                  getMessagesWithOffsetAction({
+                    roomId: this.roomId,
+                    offset: offset,
+                  })
+                );
+              } else {
+                event.target.disabled = true;
+                console.log('All messages loaded');
+              }
+            })
+            .unsubscribe();
+        }
+      })
+      .unsubscribe();
+
+    event.target.complete();
+  }
+
+  //
   // Utils for scroll to bottom
   //
 
@@ -897,13 +818,14 @@ export class ChatPage implements OnInit, OnDestroy {
     this.onTypingStatusChange();
   }
 
+  // TODO: #622
   onTypingStatusChange() {
     // console.log('onTypingStatusChange', this.isTyping);
   }
 
   footerClicked(event: Event) {
     // If the footer is clicked, set the focus back to the textarea
-    this.myTextArea.setFocus();
+    !this.audioId ? this.myTextArea.setFocus() : null;
   }
 
   redirectUserProfile() {

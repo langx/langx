@@ -56,6 +56,7 @@ export class ChatBoxComponent implements OnInit {
   audioRef: HTMLAudioElement = null;
   audioId: string = null;
   isDownloaded: boolean = false;
+  isPlaying: boolean = false;
 
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
@@ -82,19 +83,36 @@ export class ChatBoxComponent implements OnInit {
 
     // Check if the message is an image
     if (this.msg.type === 'image') {
-      this.imageURL$ = this.messageService.getMessageImageView(
-        this.msg.imageId
-      );
-      // Fix: ExpressionChangedAfterItHasBeenCheckedError
-      this.imageURL$.subscribe(() => {
+      if (this.msg.imageId) {
+        this.imageURL$ = this.messageService.getMessageImageView(
+          this.msg.imageId
+        );
+        // Fixing ExpressionChangedAfterItHasBeenCheckedError
+        this.imageURL$.subscribe(() => {
+          this.changeDetectorRef.detectChanges();
+        });
+      } else {
+        // Use a placeholder image URL
+        this.msg.type = 'body';
+        this.msg.body = '📷 Image Message';
+        this.messageSegments = urlify(this.msg?.body);
         this.changeDetectorRef.detectChanges();
-      });
+      }
     }
+
     // Check if the message is an audio
     if (this.msg.type === 'audio') {
-      this.audioURL$ = this.messageService.getMessageAudioView(
-        this.msg.audioId
-      );
+      if (this.msg.audioId) {
+        this.audioURL$ = this.messageService.getMessageAudioView(
+          this.msg.audioId
+        );
+      } else {
+        // Use a placeholder audio URL
+        this.msg.type = 'body';
+        this.msg.body = '🎵 Audio Message';
+        this.messageSegments = urlify(this.msg?.body);
+        this.changeDetectorRef.detectChanges();
+      }
     }
   }
 
@@ -105,7 +123,9 @@ export class ChatBoxComponent implements OnInit {
   async initValues() {
     this.msg = { ...this.chat };
 
-    this.messageSegments = urlify(this.msg?.body);
+    if (this.msg && this.msg.type === 'body') {
+      this.messageSegments = urlify(this.msg?.body);
+    }
 
     // Check if the message has replyTo
     if (this.msg.replyTo) {
@@ -190,18 +210,44 @@ export class ChatBoxComponent implements OnInit {
   // Utils for audio
   //
 
-  private async readFiles(id: string) {
-    try {
-      const ret = await Filesystem.readFile({
-        path: id,
-        directory: Directory.Data,
-      });
-      this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
-      this.isDownloaded = true;
-    } catch (e) {
-      // Download file from server
-      this.downloadFile();
+  async play(fileName: string) {
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    // console.log('Audio file', audioFile);
+    const base64Sound = audioFile.data;
+    // console.log('Base64 Audio:', base64Sound);
+
+    // Play the audio file
+    this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
+    this.audioRef.oncanplaythrough = () => {
+      // console.log('Audio file duration', this.audioRef.duration);
+    };
+    this.audioRef.onended = () => {
+      this.audioRef = null;
+      this.updateIsPlaying();
+    };
+    this.audioRef.load();
+    this.updateIsPlaying();
+    return this.audioRef.play();
+  }
+
+  async stop() {
+    if (this.audioRef) {
+      this.audioRef.pause();
+      this.audioRef.currentTime = 0;
+      this.updateIsPlaying();
     }
+  }
+
+  async togglePlayStop() {
+    this.isPlaying ? this.stop() : await this.play(this.audioId);
+  }
+
+  private updateIsPlaying() {
+    this.isPlaying = !this.isPlaying;
+    this.changeDetectorRef.detectChanges();
   }
 
   // Download file from server
@@ -234,48 +280,24 @@ export class ChatBoxComponent implements OnInit {
 
         console.log('Download complete');
         this.isDownloaded = true;
+        this.changeDetectorRef.detectChanges();
       }
     });
   }
 
-  async play(fileName: string) {
-    const audioFile = await Filesystem.readFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-    // console.log('Audio file', audioFile);
-    const base64Sound = audioFile.data;
-    // console.log('Base64 Audio:', base64Sound);
-
-    // Play the audio file
-    this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
-    this.audioRef.oncanplaythrough = () => {
-      // console.log('Audio file duration', this.audioRef.duration);
-    };
-    this.audioRef.onended = () => {
-      this.audioRef = null;
-    };
-    this.audioRef.load();
-    return this.audioRef.play();
-  }
-
-  async stop() {
-    if (this.audioRef) {
-      this.audioRef.pause();
-      this.audioRef.currentTime = 0;
+  private async readFiles(id: string) {
+    try {
+      const ret = await Filesystem.readFile({
+        path: id,
+        directory: Directory.Data,
+      });
+      this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
+      this.isDownloaded = true;
+      this.changeDetectorRef.detectChanges();
+    } catch (e) {
+      // Download file from server
+      this.downloadFile();
     }
-  }
-
-  async togglePlayStop() {
-    if (this.isPlaying()) {
-      this.stop();
-    } else {
-      await this.play(this.audioId);
-    }
-  }
-
-  isPlaying(): boolean {
-    return this.audioRef ? !this.audioRef.paused : false;
   }
 
   //
