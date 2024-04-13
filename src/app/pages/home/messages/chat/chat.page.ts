@@ -659,6 +659,7 @@ export class ChatPage implements OnInit, OnDestroy {
       });
       this.audioId = null;
     }
+
     this.loadFiles();
   }
 
