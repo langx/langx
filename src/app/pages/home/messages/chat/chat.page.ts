@@ -38,12 +38,12 @@ import { UserService } from 'src/app/services/user/user.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import {
-  clearAudioUrlStateAction,
-  uploadAudioForMessageAction,
-  clearImageUrlStateAction,
-  uploadImageForMessageAction,
-} from 'src/app/store/actions/bucket.action';
+// import {
+//   clearAudioUrlStateAction,
+//   uploadAudioForMessageAction,
+//   clearImageUrlStateAction,
+//   uploadImageForMessageAction,
+// } from 'src/app/store/actions/bucket.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -53,8 +53,8 @@ import {
   updateMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
-  imageIdSelector,
-  audioIdSelector,
+  // imageIdSelector,
+  // audioIdSelector,
   errorSelector,
   isLoadingOffsetSelector,
   isLoadingSelector,
@@ -90,6 +90,8 @@ export class ChatPage implements OnInit, OnDestroy {
   isTyping: boolean = false;
   roomId: string;
 
+  file: File;
+
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
 
@@ -99,9 +101,6 @@ export class ChatPage implements OnInit, OnDestroy {
     color: 'warning',
   };
 
-  // Image Variables
-  imageId: string;
-
   // Audio Variables
   isRecording: boolean = false;
   micPermission: boolean = false;
@@ -109,7 +108,6 @@ export class ChatPage implements OnInit, OnDestroy {
   iconColorOfMic: string = 'medium';
   audioRef: HTMLAudioElement;
   audioId: string;
-  private audioIdTemp: string;
 
   // Reply and Edit Variables
   replyMessage: Message;
@@ -215,28 +213,6 @@ export class ChatPage implements OnInit, OnDestroy {
       })
     );
 
-    // Uploaded Image URL to present
-    this.subscriptions.add(
-      this.store.pipe(select(imageIdSelector)).subscribe((id: string) => {
-        if (id) {
-          this.imageId = id;
-          this.submitImage();
-          this.store.dispatch(clearImageUrlStateAction());
-        }
-      })
-    );
-
-    // Uploaded Audio URL to present
-    this.subscriptions.add(
-      this.store.pipe(select(audioIdSelector)).subscribe((id: string) => {
-        if (id) {
-          this.audioId = id;
-          this.submitAudio();
-          this.store.dispatch(clearAudioUrlStateAction());
-        }
-      })
-    );
-
     // Set User photos
     this.subscriptions.add(
       this.user$.subscribe((user) => {
@@ -296,55 +272,54 @@ export class ChatPage implements OnInit, OnDestroy {
       });
     }
 
+    // Scroll to bottom
+    setTimeout(() => {
+      this.content.scrollToBottom(300);
+    }, 100);
+
     // Reset the form and the variables
     this.form.reset();
     this.audioId = null;
-    this.imageId = null;
     this.replyMessage = null;
     this.editMessage = null;
   }
 
-  submitImage() {
+  private submitImage(file: File) {
     this.user$.pipe(take(1)).subscribe((user) => {
-      let request: createMessageRequestInterface = null;
-
-      // Fill the request with the proper data
-      if (this.imageId) {
-        request = this.createMessageWithImage(user);
-      } else {
-        this.presentToast('Please try again.', 'danger');
-      }
+      // Create a new message
+      const request: createMessageRequestInterface =
+        this.createMessageWithImage(user);
 
       // Dispatch action to create message
-      if (request) {
-        this.dispatchCreateMessageAction(request);
+      this.dispatchCreateMessageAction(request, file); // Include file here
 
-        // Reset the variable
-        this.imageId = null;
-        this.replyMessage = null;
-      }
+      // Scroll to bottom
+      setTimeout(() => {
+        this.content.scrollToBottom(300);
+      }, 100);
+
+      // Reset the variable
+      this.replyMessage = null;
     });
   }
 
-  submitAudio() {
+  submitAudio(file: File) {
     this.user$.pipe(take(1)).subscribe((user) => {
-      let request: createMessageRequestInterface = null;
-
-      // Fill the request with the proper data
-      if (this.audioId) {
-        request = this.createMessageWithAudio(user);
-      } else {
-        this.presentToast('Please try again.', 'danger');
-      }
+      // Create a new message
+      const request: createMessageRequestInterface =
+        this.createMessageWithAudio(user);
 
       // Dispatch action to create message
-      if (request) {
-        this.dispatchCreateMessageAction(request);
+      this.dispatchCreateMessageAction(request, file);
 
-        // Reset the variable
-        this.audioId = null;
-        this.replyMessage = null;
-      }
+      // Scroll to bottom
+      setTimeout(() => {
+        this.content.scrollToBottom(300);
+      }, 100);
+
+      // Reset the variable
+      this.audioId = null;
+      this.replyMessage = null;
     });
   }
 
@@ -370,7 +345,7 @@ export class ChatPage implements OnInit, OnDestroy {
       roomId: this.roomId,
       to: user.$id,
       type: 'image',
-      imageId: this.imageId,
+      imageId: null,
       replyTo: this.replyMessage?.$id || null,
     };
     return request;
@@ -378,32 +353,34 @@ export class ChatPage implements OnInit, OnDestroy {
 
   createMessageWithAudio(user: User) {
     const request: createMessageRequestInterface = {
-      $id: this.audioIdTemp,
+      $id: this.audioId,
       roomId: this.roomId,
       to: user.$id,
       type: 'audio',
-      audioId: this.audioId,
+      audioId: null,
       replyTo: this.replyMessage?.$id || null,
     };
-    this.audioIdTemp = null;
     return request;
   }
 
   // Dispatch action to create message
-  dispatchCreateMessageAction(request) {
-    this.currentUser$
-      .subscribe((currentUser) => {
-        const currentUserId = currentUser.$id;
-        if (request) {
-          this.store.dispatch(
-            createMessageAction({
-              request,
-              currentUserId,
-            })
-          );
-        }
-      })
-      .unsubscribe();
+  dispatchCreateMessageAction(
+    request: createMessageRequestInterface,
+    file?: File
+  ) {
+    this.currentUser$.pipe(take(1)).subscribe((currentUser) => {
+      const currentUserId = currentUser.$id;
+      if (request) {
+        this.store.dispatch(
+          createMessageAction({
+            messageType: request.type,
+            request,
+            currentUserId,
+            file: file ? file : null,
+          })
+        );
+      }
+    });
   }
 
   //
@@ -472,30 +449,18 @@ export class ChatPage implements OnInit, OnDestroy {
       const photo = await this.getCameraPhoto();
       if (!photo) return;
 
-      await this.handleImage(photo.dataUrl);
+      let blob: Blob = this.dataURLtoBlob(photo.dataUrl);
+      blob = await this.checkFileSize(blob);
+      const file = new File([blob], this.roomId, {
+        type: blob.type,
+      });
+
+      // Submit the image
+      file ? this.submitImage(file) : this.presentToast('Please try again.');
     } catch (e) {
+      this.presentToast('Please try again.', 'danger');
       console.log(e);
     }
-  }
-
-  async handleImage(imageData: string) {
-    let blob: Blob = this.dataURLtoBlob(imageData);
-    blob = await this.checkFileSize(blob);
-    let request = new File([blob], this.roomId, {
-      type: blob.type,
-    });
-
-    // TODO: Add createMessageRequestInterface for image
-    this.store.dispatch(
-      uploadImageForMessageAction({
-        request,
-      })
-    );
-
-    // Show Image Uploading
-    setTimeout(() => {
-      this.content.scrollToBottom(300);
-    }, 100);
   }
 
   //
@@ -534,11 +499,42 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   async handleAudioClick() {
-    this.form.reset();
-    // Upload audio if there is an audioId
-    if (this.audioId) {
-      await this.handleAudioUpload();
-      return;
+    try {
+      this.form.reset();
+
+      // Upload audio if there is an audioId
+      if (this.audioId) {
+        const fileName = this.audioId;
+        console.log('Audio file name:', fileName);
+
+        const audioFile = await Filesystem.readFile({
+          path: fileName,
+          directory: Directory.Data,
+        });
+
+        const base64Sound = audioFile.data;
+
+        // Convert base64 to blob using fetch API
+        const audioResponse = await fetch(
+          `data:audio/aac;base64,${base64Sound}`
+        );
+        const blob: Blob = await audioResponse.blob();
+
+        const file = new File([blob], fileName);
+
+        // Submit the audio
+        file ? this.submitAudio(file) : this.presentToast('Please try again.');
+
+        // Upload the file
+        // this.store.dispatch(
+        //   uploadAudioForMessageAction({
+        //     request: file,
+        //   })
+        // );
+        // this.audioId = null;
+      }
+    } catch (error) {
+      console.error('Error handling audio click:', error);
     }
   }
 
@@ -627,36 +623,6 @@ export class ChatPage implements OnInit, OnDestroy {
     }
   }
 
-  private async handleAudioUpload() {
-    const fileName = this.audioId;
-
-    const audioFile = await Filesystem.readFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-
-    const base64Sound = audioFile.data;
-    // console.log('Base64 Audio:', base64Sound);
-
-    // Convert base64 to blob using fetch API
-    const response = await fetch(`data:audio/aac;base64,${base64Sound}`);
-    const blob: Blob = await response.blob();
-    // console.log('Blob', blob);
-
-    // console.log('fileName', fileName);
-    const file = new File([blob], fileName);
-
-    // Upload the file
-    this.store.dispatch(
-      uploadAudioForMessageAction({
-        request: file,
-      })
-    );
-
-    this.audioIdTemp = this.audioId;
-    this.audioId = null;
-  }
-
   private startRecording() {
     VoiceRecorder.startRecording().then(() => {
       this.isRecording = true;
@@ -709,8 +675,6 @@ export class ChatPage implements OnInit, OnDestroy {
       });
     }
     this.loadFiles();
-    this.audioIdTemp = this.audioId;
-    this.audioId = null;
   }
 
   // async deleteAllRecordings() {
