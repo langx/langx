@@ -14,5 +14,4 @@ ext {
     androidxJunitVersion = '1.1.5'
     androidxEspressoCoreVersion = '3.5.1'
     cordovaAndroidVersion = '10.1.1'
-    firebaseAnalyticsVersion = '21.2.2'
 }
