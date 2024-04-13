@@ -823,7 +823,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   footerClicked(event: Event) {
     // If the footer is clicked, set the focus back to the textarea
-    this.myTextArea.setFocus();
+    !this.audioId ? this.myTextArea.setFocus() : null;
   }
 
   redirectUserProfile() {
