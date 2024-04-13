@@ -33,8 +33,6 @@ target 'App' do
   capacitor_pods
   # Add your Pods here
   pod 'Firebase/Messaging'
-  pod 'Firebase/Analytics'
-  # pod 'Firebase/AnalyticsWithoutAdIdSupport'
 end
 
 post_install do |installer|

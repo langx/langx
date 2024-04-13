@@ -34,7 +34,6 @@ export const environment = {
     storageBucket: "<STORAGE_BUCKET>",
     messagingSenderId: "<MESSAGING_SENDER_ID>",
     appId: "<APP_ID>",
-    measurementId: "<MEASUREMENT_ID>",
   },
   url: {
     HOMEPAGE_URL: PWA_URL,
