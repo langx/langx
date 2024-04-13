@@ -70,8 +70,6 @@ const messageReducer = createReducer(
     })
   ),
   on(createMessageAction, (state, action): MessageStateInterface => {
-    console.log(action.request);
-
     // Create a new Message object from action.request
     const newMessage: Message = {
       // Assuming these are the properties of Message
