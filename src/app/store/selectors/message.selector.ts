@@ -35,16 +35,6 @@ export const userDataSelector = createSelector(
   (messageState: MessageStateInterface) => messageState.room?.userData
 );
 
-export const imageIdSelector = createSelector(
-  messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.imageId
-);
-
-export const audioIdSelector = createSelector(
-  messageFeatureSelector,
-  (messageState: MessageStateInterface) => messageState.audioId
-);
-
 export const errorSelector = createSelector(
   messageFeatureSelector,
   (messageState: MessageStateInterface) => messageState.error
