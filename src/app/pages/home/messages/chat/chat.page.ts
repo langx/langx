@@ -38,12 +38,6 @@ import { UserService } from 'src/app/services/user/user.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-// import {
-//   clearAudioUrlStateAction,
-//   uploadAudioForMessageAction,
-//   clearImageUrlStateAction,
-//   uploadImageForMessageAction,
-// } from 'src/app/store/actions/bucket.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -53,8 +47,6 @@ import {
   updateMessageAction,
 } from 'src/app/store/actions/message.action';
 import {
-  // imageIdSelector,
-  // audioIdSelector,
   errorSelector,
   isLoadingOffsetSelector,
   isLoadingSelector,
@@ -524,14 +516,6 @@ export class ChatPage implements OnInit, OnDestroy {
 
         // Submit the audio
         file ? this.submitAudio(file) : this.presentToast('Please try again.');
-
-        // Upload the file
-        // this.store.dispatch(
-        //   uploadAudioForMessageAction({
-        //     request: file,
-        //   })
-        // );
-        // this.audioId = null;
       }
     } catch (error) {
       console.error('Error handling audio click:', error);
