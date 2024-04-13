@@ -191,19 +191,44 @@ export class ChatBoxComponent implements OnInit {
   // Utils for audio
   //
 
-  private async readFiles(id: string) {
-    try {
-      const ret = await Filesystem.readFile({
-        path: id,
-        directory: Directory.Data,
-      });
-      this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
-      this.isDownloaded = true;
-      this.changeDetectorRef.detectChanges();
-    } catch (e) {
-      // Download file from server
-      this.downloadFile();
+  async play(fileName: string) {
+    const audioFile = await Filesystem.readFile({
+      path: fileName,
+      directory: Directory.Data,
+    });
+    // console.log('Audio file', audioFile);
+    const base64Sound = audioFile.data;
+    // console.log('Base64 Audio:', base64Sound);
+
+    // Play the audio file
+    this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
+    this.audioRef.oncanplaythrough = () => {
+      // console.log('Audio file duration', this.audioRef.duration);
+    };
+    this.audioRef.onended = () => {
+      this.audioRef = null;
+      this.updateIsPlaying();
+    };
+    this.audioRef.load();
+    this.updateIsPlaying();
+    return this.audioRef.play();
+  }
+
+  async stop() {
+    if (this.audioRef) {
+      this.audioRef.pause();
+      this.audioRef.currentTime = 0;
+      this.updateIsPlaying();
     }
+  }
+
+  async togglePlayStop() {
+    this.isPlaying ? this.stop() : await this.play(this.audioId);
+  }
+
+  private updateIsPlaying() {
+    this.isPlaying = !this.isPlaying;
+    this.changeDetectorRef.detectChanges();
   }
 
   // Download file from server
@@ -241,44 +266,19 @@ export class ChatBoxComponent implements OnInit {
     });
   }
 
-  async play(fileName: string) {
-    const audioFile = await Filesystem.readFile({
-      path: fileName,
-      directory: Directory.Data,
-    });
-    // console.log('Audio file', audioFile);
-    const base64Sound = audioFile.data;
-    // console.log('Base64 Audio:', base64Sound);
-
-    // Play the audio file
-    this.audioRef = new Audio(`data:audio/aac;base64,${base64Sound}`);
-    this.audioRef.oncanplaythrough = () => {
-      // console.log('Audio file duration', this.audioRef.duration);
-    };
-    this.audioRef.onended = () => {
-      this.audioRef = null;
-      this.updateIsPlaying();
-    };
-    this.audioRef.load();
-    this.updateIsPlaying();
-    return this.audioRef.play();
-  }
-
-  async stop() {
-    if (this.audioRef) {
-      this.audioRef.pause();
-      this.audioRef.currentTime = 0;
-      this.updateIsPlaying();
+  private async readFiles(id: string) {
+    try {
+      const ret = await Filesystem.readFile({
+        path: id,
+        directory: Directory.Data,
+      });
+      this.audioRef = new Audio('data:audio/aac;base64,' + ret.data);
+      this.isDownloaded = true;
+      this.changeDetectorRef.detectChanges();
+    } catch (e) {
+      // Download file from server
+      this.downloadFile();
     }
-  }
-
-  private updateIsPlaying() {
-    this.isPlaying = !this.isPlaying;
-    this.changeDetectorRef.detectChanges();
-  }
-
-  async togglePlayStop() {
-    this.isPlaying ? this.stop() : await this.play(this.audioId);
   }
 
   //
