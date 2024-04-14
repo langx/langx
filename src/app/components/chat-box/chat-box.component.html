@@ -103,9 +103,7 @@
             </div>
           </div>
 
-          <span class="message-time">
-            {{ messageTime(msg?.$createdAt) }}
-          </span>
+          <app-timestamp [createdAt]="msg?.$createdAt"></app-timestamp>
         </div>
       </div>
     </div>
@@ -221,17 +219,10 @@
               </ion-buttons>
             </div>
 
-            <span class="message-time" *ngIf="msg?.$createdAt">
-              {{ messageTime(msg?.$createdAt) }}
-              <ion-icon *ngIf="!msg?.seen" name="checkmark-outline"></ion-icon>
-              <ion-icon
-                *ngIf="msg?.seen"
-                name="checkmark-circle-outline"
-              ></ion-icon>
-            </span>
-            <span class="message-time" *ngIf="!msg?.$createdAt">
-              <ion-icon name="cloud-upload-outline"></ion-icon>
-            </span>
+            <app-timestamp
+              [seen]="msg?.seen"
+              [createdAt]="msg?.$createdAt"
+            ></app-timestamp>
           </div>
         </div>
       </div>

@@ -23,7 +23,7 @@ import {
 
 import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { messageTime, urlify } from 'src/app/extras/utils';
+import { urlify } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { updateMessageAction } from 'src/app/store/actions/message.action';
@@ -352,15 +352,6 @@ export class ChatBoxComponent implements OnInit {
           console.error('Error copying text to clipboard', 'danger');
         });
     }
-  }
-
-  //
-  // Utils for time
-  //
-
-  messageTime(d: any) {
-    if (!d) return null;
-    return messageTime(d);
   }
 
   //
