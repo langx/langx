@@ -81,6 +81,29 @@ export class ChatBoxComponent implements OnInit, OnChanges {
     if (changes['chat']) {
       this.msg = { ...this.chat };
       this.changeDetectorRef.detectChanges();
+
+      // Check if the message is an image
+      if (this.msg.type === 'image') {
+        if (this.msg.imageId) {
+          this.imageURL$ = this.messageService.getMessageImageView(
+            this.msg.imageId
+          );
+          // Fixing ExpressionChangedAfterItHasBeenCheckedError
+          this.imageURL$.subscribe(() => {
+            console.log('Image URL here !');
+            this.changeDetectorRef.detectChanges();
+          });
+        }
+      }
+
+      // Check if the message is an audio
+      if (this.msg.type === 'audio') {
+        if (this.msg.audioId) {
+          this.audioURL$ = this.messageService.getMessageAudioView(
+            this.msg.audioId
+          );
+        }
+      }
     }
   }
 
@@ -91,35 +114,11 @@ export class ChatBoxComponent implements OnInit, OnChanges {
     });
     this.observer.observe(this.el.nativeElement);
 
-    // Check if the message is an image
     if (this.msg.type === 'image') {
-      if (this.msg.imageId) {
-        this.imageURL$ = this.messageService.getMessageImageView(
-          this.msg.imageId
-        );
-        // Fixing ExpressionChangedAfterItHasBeenCheckedError
-        this.imageURL$.subscribe(() => {
-          this.changeDetectorRef.detectChanges();
-        });
-      } else {
+      if (!this.msg.imageId) {
         // Use a placeholder image URL
         this.msg.type = 'body';
         this.msg.body = '📷 Image Message';
-        this.messageSegments = urlify(this.msg?.body);
-        this.changeDetectorRef.detectChanges();
-      }
-    }
-
-    // Check if the message is an audio
-    if (this.msg.type === 'audio') {
-      if (this.msg.audioId) {
-        this.audioURL$ = this.messageService.getMessageAudioView(
-          this.msg.audioId
-        );
-      } else {
-        // Use a placeholder audio URL
-        this.msg.type = 'body';
-        this.msg.body = '🎵 Audio Message';
         this.messageSegments = urlify(this.msg?.body);
         this.changeDetectorRef.detectChanges();
       }
