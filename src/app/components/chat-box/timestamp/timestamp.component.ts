@@ -21,8 +21,8 @@ export class TimestampComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['seen'] || changes['createdAt']) {
-      console.log('createdat:', changes['createdAt'].currentValue);
-      console.log('seen:', changes['seen'].currentValue);
+      // console.log('createdat:', changes['createdAt'].currentValue);
+      // console.log('seen:', changes['seen'].currentValue);
 
       // Trigger change detection manually
       this.cdr.detectChanges();
