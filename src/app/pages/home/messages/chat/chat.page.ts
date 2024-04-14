@@ -847,7 +847,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   trackByFn(index, item) {
-    return item.$id; // unique id corresponding to the item
+    return item.$id;
   }
 
   //
