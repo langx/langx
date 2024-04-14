@@ -420,6 +420,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   unlinkEdit() {
     this.editMessage = null;
+    this.myTextArea.value = '';
   }
 
   //
