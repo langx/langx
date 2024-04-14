@@ -38,7 +38,7 @@
       <ion-item-group
         lines="none"
         class="chats-group"
-        *ngFor="let msg of (messages$ | async)"
+        *ngFor="let msg of (messages$ | async); trackBy: trackByFn"
       >
         <app-chat-box
           [chat]="msg"

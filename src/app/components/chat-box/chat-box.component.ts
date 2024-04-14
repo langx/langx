@@ -19,11 +19,13 @@ import {
   ViewChild,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 
 import { MessageService } from 'src/app/services/chat/message.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { messageTime, urlify } from 'src/app/extras/utils';
+import { urlify } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
 import { updateMessageAction } from 'src/app/store/actions/message.action';
@@ -35,7 +37,7 @@ import { messagesSelector } from 'src/app/store/selectors/message.selector';
   styleUrls: ['./chat-box.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent implements OnInit, OnChanges {
   @ViewChild('itemSlidingSender') itemSlidingSender: IonItemSliding;
   @ViewChild('itemSlidingReveiver') itemSlidingReveiver: IonItemSliding;
 
@@ -72,6 +74,37 @@ export class ChatBoxComponent implements OnInit {
 
   async ngOnInit() {
     await this.initValues();
+    this.changeDetectorRef.detectChanges();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['chat']) {
+      this.msg = { ...this.chat };
+      this.changeDetectorRef.detectChanges();
+
+      // Check if the message is an image
+      if (this.msg.type === 'image') {
+        if (this.msg.imageId) {
+          this.imageURL$ = this.messageService.getMessageImageView(
+            this.msg.imageId
+          );
+          // Fixing ExpressionChangedAfterItHasBeenCheckedError
+          this.imageURL$.subscribe(() => {
+            console.log('Image URL here !');
+            this.changeDetectorRef.detectChanges();
+          });
+        }
+      }
+
+      // Check if the message is an audio
+      if (this.msg.type === 'audio') {
+        if (this.msg.audioId) {
+          this.audioURL$ = this.messageService.getMessageAudioView(
+            this.msg.audioId
+          );
+        }
+      }
+    }
   }
 
   ngAfterViewInit() {
@@ -81,35 +114,11 @@ export class ChatBoxComponent implements OnInit {
     });
     this.observer.observe(this.el.nativeElement);
 
-    // Check if the message is an image
     if (this.msg.type === 'image') {
-      if (this.msg.imageId) {
-        this.imageURL$ = this.messageService.getMessageImageView(
-          this.msg.imageId
-        );
-        // Fixing ExpressionChangedAfterItHasBeenCheckedError
-        this.imageURL$.subscribe(() => {
-          this.changeDetectorRef.detectChanges();
-        });
-      } else {
+      if (!this.msg.imageId) {
         // Use a placeholder image URL
         this.msg.type = 'body';
         this.msg.body = '📷 Image Message';
-        this.messageSegments = urlify(this.msg?.body);
-        this.changeDetectorRef.detectChanges();
-      }
-    }
-
-    // Check if the message is an audio
-    if (this.msg.type === 'audio') {
-      if (this.msg.audioId) {
-        this.audioURL$ = this.messageService.getMessageAudioView(
-          this.msg.audioId
-        );
-      } else {
-        // Use a placeholder audio URL
-        this.msg.type = 'body';
-        this.msg.body = '🎵 Audio Message';
         this.messageSegments = urlify(this.msg?.body);
         this.changeDetectorRef.detectChanges();
       }
@@ -352,15 +361,6 @@ export class ChatBoxComponent implements OnInit {
           console.error('Error copying text to clipboard', 'danger');
         });
     }
-  }
-
-  //
-  // Utils for time
-  //
-
-  messageTime(d: any) {
-    if (!d) return null;
-    return messageTime(d);
   }
 
   //

@@ -11,6 +11,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.component';
 import { VisitListComponent } from './visit-list/visit-list.component';
 import { StreakListComponent } from './streak-list/streak-list.component';
+import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { StreakListComponent } from './streak-list/streak-list.component';
     VisitListComponent,
     StreakListComponent,
     BlockedUserListComponent,
+    TimestampComponent,
   ],
   imports: [CommonModule, IonicModule],
   exports: [
@@ -35,6 +37,7 @@ import { StreakListComponent } from './streak-list/streak-list.component';
     VisitListComponent,
     StreakListComponent,
     BlockedUserListComponent,
+    TimestampComponent,
   ],
 })
 export class ComponentsModule {}
