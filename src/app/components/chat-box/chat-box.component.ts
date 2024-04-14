@@ -19,6 +19,8 @@ import {
   ViewChild,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
+  SimpleChanges,
+  OnChanges,
 } from '@angular/core';
 
 import { MessageService } from 'src/app/services/chat/message.service';
@@ -35,7 +37,7 @@ import { messagesSelector } from 'src/app/store/selectors/message.selector';
   styleUrls: ['./chat-box.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent implements OnInit, OnChanges {
   @ViewChild('itemSlidingSender') itemSlidingSender: IonItemSliding;
   @ViewChild('itemSlidingReveiver') itemSlidingReveiver: IonItemSliding;
 
@@ -72,6 +74,14 @@ export class ChatBoxComponent implements OnInit {
 
   async ngOnInit() {
     await this.initValues();
+    this.changeDetectorRef.detectChanges();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['chat']) {
+      this.msg = { ...this.chat };
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   ngAfterViewInit() {

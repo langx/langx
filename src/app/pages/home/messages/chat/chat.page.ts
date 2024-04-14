@@ -846,6 +846,10 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isCounterShow = this.form.controls['body'].value.length > 400;
   }
 
+  trackByFn(index, item) {
+    return item.$id; // unique id corresponding to the item
+  }
+
   //
   // Present Toast
   //
