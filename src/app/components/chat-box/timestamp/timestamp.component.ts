@@ -4,6 +4,7 @@ import {
   OnChanges,
   SimpleChanges,
   ChangeDetectorRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 import { messageTime } from 'src/app/extras/utils';
@@ -12,6 +13,7 @@ import { messageTime } from 'src/app/extras/utils';
   selector: 'app-timestamp',
   templateUrl: './timestamp.component.html',
   styleUrls: ['./timestamp.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimestampComponent implements OnChanges {
   @Input() seen: boolean;
@@ -21,10 +23,6 @@ export class TimestampComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['seen'] || changes['createdAt']) {
-      // console.log('createdat:', changes['createdAt'].currentValue);
-      // console.log('seen:', changes['seen'].currentValue);
-
-      // Trigger change detection manually
       this.cdr.detectChanges();
     }
   }
