@@ -14,7 +14,38 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Codebase</ion-card-title>
+      <ion-card-title>How to Contribute?</ion-card-title>
+      <ion-card-subtitle>
+        🤝 We welcome you to join our team!
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <p>🛡️ Ensuring a Safe Environment</p>
+      <p>🚀 Spreading the Open-source App</p>
+      <p>🎬 Crafting Stories with Video</p>
+      <p>🎨 Branding and Rebranding</p>
+      <p>🌐 Making It Accessible for Everyone</p>
+      <p>🤝 Building Bridges with Our Users</p>
+      <p>🚀 Making better SEO and ASO</p>
+      <p>🏠 Crafting Our Digital Home</p>
+      <p>📣 Amplifying Our Voice on Social Media</p>
+      <p>🔍 Helping Us Improve Features</p>
+      <p>✨ You can create new one</p>
+      <ion-list>
+        <ion-item (click)="openDiscordPage()">
+          <ion-icon name="logo-discord"></ion-icon>
+          <ion-label>Get Your Invitation Link</ion-label>
+        </ion-item>
+        <ng-container>
+          <app-user-list [item]="currentUser$ | async"> </app-user-list>
+        </ng-container>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Fundamentals</ion-card-title>
       <ion-card-subtitle> ✨ You can also Make a Difference </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
@@ -695,24 +726,6 @@
       <!------------------>
       <!-- SKELETON end -->
       <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Want to Contribute?</ion-card-title>
-      <ion-card-subtitle>🤝 We welcome you to join our team!</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item (click)="openDiscordPage()">
-          <ion-icon name="logo-discord"></ion-icon>
-          <ion-label>Get Your Invitation Link</ion-label>
-        </ion-item>
-        <ng-container>
-          <app-user-list [item]="currentUser$ | async"> </app-user-list>
-        </ng-container>
-      </ion-list>
     </ion-card-content>
   </ion-card>
 </ion-content>
