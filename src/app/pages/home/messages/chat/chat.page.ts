@@ -413,13 +413,18 @@ export class ChatPage implements OnInit, OnDestroy {
     this.editMessage = message;
     // console.log('Replying to:', this.replyMessage.$id);
     setTimeout(() => {
-      this.myTextArea.value = message.body;
+      this.form.patchValue({
+        body: message.body,
+      });
       this.myTextArea.setFocus();
     }, 100);
   }
 
   unlinkEdit() {
     this.editMessage = null;
+    this.form.patchValue({
+      body: '',
+    });
   }
 
   //
