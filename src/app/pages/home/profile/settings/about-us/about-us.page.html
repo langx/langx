@@ -55,12 +55,12 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Social Media</ion-card-title>
+      <ion-card-title>About Us</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ion-item
-          *ngFor="let item of socialMediaPages"
+          *ngFor="let item of aboutUsPages"
           (click)="openPage(item)"
           [detail]="item?.detail"
         >
@@ -73,12 +73,12 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>About Us</ion-card-title>
+      <ion-card-title>Social Media</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
         <ion-item
-          *ngFor="let item of aboutUsPages"
+          *ngFor="let item of socialMediaPages"
           (click)="openPage(item)"
           [detail]="item?.detail"
         >
