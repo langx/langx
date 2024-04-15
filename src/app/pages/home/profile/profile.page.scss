@@ -13,6 +13,10 @@ ion-card-header img {
   max-width: 300px;
 }
 
+.contributor {
+  border: 3px solid var(--ion-color-primary);
+}
+
 .hasIcon ion-icon {
   align-self: start;
   margin-top: 10px;

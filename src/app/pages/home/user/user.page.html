@@ -26,6 +26,7 @@
         style="max-width: 200px"
         alt="Profile Picture"
         referrerpolicy="no-referrer"
+        [class.contributor]="(user$ | async)?.contributors && (user$ | async)?.contributors.length > 0"
       />
       <ion-card-title class=".ion-text-center">
         {{(user$ | async)?.name}}

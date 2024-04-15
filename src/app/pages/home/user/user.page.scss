@@ -9,6 +9,10 @@ ion-card-header img {
   max-width: 300px;
 }
 
+.contributor {
+  border: 3px solid var(--ion-color-primary);
+}
+
 .list-icon ion-icon {
   align-self: start;
   margin-top: 10px;

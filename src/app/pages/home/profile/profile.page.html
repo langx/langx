@@ -37,6 +37,7 @@
         (click)="openPreview(profilePic$)"
         alt="Profile Picture"
         referrerpolicy="no-referrer"
+        [class.contributor]="(currentUser$ | async)?.contributors && (currentUser$ | async)?.contributors.length > 0"
       />
       <ion-card-title class=".ion-text-center">
         {{(currentUser$ | async)?.name}}
