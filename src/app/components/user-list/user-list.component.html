@@ -1,7 +1,7 @@
 <ion-item (click)="redirect()">
   <ion-thumbnail
     class="thumbnail-container"
-    [class.contributor]="item.contributors && item.contributors.length > 0"
+    [class.contributor]="item?.contributors && item?.contributors.length > 0"
     slot="start"
   >
     <img [src]="profilePic$ | async" alt="" referrerpolicy="no-referrer" />
