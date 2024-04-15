@@ -1,5 +1,9 @@
 <ion-item (click)="redirect()">
-  <ion-thumbnail class="thumbnail-container" slot="start">
+  <ion-thumbnail
+    class="thumbnail-container"
+    [class.contributor]="item.contributors && item.contributors.length > 0"
+    slot="start"
+  >
     <img [src]="profilePic$ | async" alt="" referrerpolicy="no-referrer" />
     <div class="emoji-indicator">
       <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>
