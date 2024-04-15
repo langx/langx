@@ -62,15 +62,15 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Github',
-      url: environment.ext.GITHUB_URL,
-      icon: 'logo-github',
-      detail: true,
-    },
-    {
       title: 'Backlog',
       url: environment.ext.BACKLOG,
       icon: 'code-slash-outline',
+      detail: true,
+    },
+    {
+      title: 'Github',
+      url: environment.ext.GITHUB_URL,
+      icon: 'logo-github',
       detail: true,
     },
     {
@@ -79,12 +79,12 @@ export class AboutUsPage implements OnInit {
       icon: 'bug-outline',
       detail: true,
     },
-    {
-      title: 'Contributing',
-      url: environment.ext.CONTRIBUTING,
-      icon: 'git-branch-outline',
-      detail: true,
-    },
+    // {
+    //   title: 'Contributing',
+    //   url: environment.ext.CONTRIBUTING,
+    //   icon: 'git-branch-outline',
+    //   detail: true,
+    // },
     {
       title: 'Release Notes',
       url: environment.ext.RELEASES_URL,
