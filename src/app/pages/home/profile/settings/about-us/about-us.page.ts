@@ -74,21 +74,21 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: 'Release Notes',
+      url: environment.ext.RELEASES_URL,
+      icon: 'document-text-outline',
+      detail: true,
+    },
+    {
       title: 'Issues',
       url: environment.ext.ISSUES,
       icon: 'bug-outline',
       detail: true,
     },
-    // {
-    //   title: 'Contributing',
-    //   url: environment.ext.CONTRIBUTING,
-    //   icon: 'git-branch-outline',
-    //   detail: true,
-    // },
     {
-      title: 'Release Notes',
-      url: environment.ext.RELEASES_URL,
-      icon: 'document-text-outline',
+      title: 'Contributing',
+      url: environment.ext.CONTRIBUTING,
+      icon: 'git-branch-outline',
       detail: true,
     },
     {
