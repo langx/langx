@@ -17,7 +17,11 @@
   </ion-item-options>
   <ion-item (click)="getChat(room)" class="item">
     <ng-container *ngIf="room">
-      <ion-thumbnail class="thumbnail-container" slot="start">
+      <ion-thumbnail
+        class="thumbnail-container"
+        [class.contributor]="room?.['userData']?.contributors && room?.['userData']?.contributors.length > 0"
+        slot="start"
+      >
         <img [src]="profilePic$ | async" alt="" referrerpolicy="no-referrer" />
         <div class="emoji-indicator">
           <small *ngIf="onlineStatus(room?.['userData']?.lastSeen) == 'online'"
