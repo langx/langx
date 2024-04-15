@@ -14,696 +14,23 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Codebase</ion-card-title>
-      <ion-card-subtitle> ✨ You can also Make a Difference </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            [item]="user"
-            *ngIf="user?.contributors.includes('codebase')"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('codebase') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Moderator</ion-card-title>
-      <ion-card-subtitle> 🛡️ Ensuring a Safe Environment </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            [item]="user"
-            *ngIf="user?.contributors.includes('moderator')"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('moderator') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Digital Marketing</ion-card-title>
-      <ion-card-subtitle> 🚀 Spreading the Open-source App </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('digital-marketing')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('digital-marketing') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Storyteller</ion-card-title>
-      <ion-card-subtitle> 🎬 Crafting Stories with Video</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('storyteller')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('storyteller') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Design</ion-card-title>
-      <ion-card-subtitle> 🎨 Branding and Rebranding </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('design')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('design') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Accessibility</ion-card-title>
+      <ion-card-title>How to Contribute?</ion-card-title>
       <ion-card-subtitle>
-        🌐 Making It Accessible for Everyone
+        🤝 We welcome you to join our team!
       </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('accessibility')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('accessibility') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>User Relations</ion-card-title>
-      <ion-card-subtitle>
-        🤝 Building Bridges with Our Users
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('user-relations')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('user-relations') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Growth Hacker</ion-card-title>
-      <ion-card-subtitle> 🚀 Master of SEO and ASO</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('growth-hacker')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('growth-hacker') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Website</ion-card-title>
-      <ion-card-subtitle> 🏠 Crafting Our Digital Home</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('website')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('website') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Social Media</ion-card-title>
-      <ion-card-subtitle> 📣 Amplifying Our Voice </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('social-media')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('social-media') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Tester</ion-card-title>
-      <ion-card-subtitle> 🔍 Helping Us Improve Features</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list *ngIf="!(isLoading$ | async)">
-        <ng-container *ngFor="let user of (users$ | async)">
-          <app-user-list
-            *ngIf="user?.contributors.includes('tester')"
-            [item]="user"
-            (onClick)="getProfilePage(user?.$id)"
-          >
-          </app-user-list>
-        </ng-container>
-        <app-empty-screen
-          *ngIf="isEmpty$('tester') | async"
-          [model]="model"
-          (click)="scrollToBottom()"
-        >
-        </app-empty-screen>
-      </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
-
-      <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '01'.split('')">
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
-          <ion-label>
-            <h2>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 40%"
-              ></ion-skeleton-text>
-            </h2>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 80%"
-              ></ion-skeleton-text>
-            </p>
-            <p>
-              <ion-skeleton-text
-                [animated]="true"
-                style="width: 50%"
-              ></ion-skeleton-text>
-            </p>
-            <p></p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Want to Contribute?</ion-card-title>
-      <ion-card-subtitle>🤝 We welcome you to join our team!</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
+      <p>🛡️ Ensuring a Safe Environment</p>
+      <p>🚀 Spreading the Open-source App</p>
+      <p>🎬 Crafting Stories with Video</p>
+      <p>🎨 Branding and Rebranding</p>
+      <p>🌐 Making It Accessible for Everyone</p>
+      <p>🤝 Building Bridges with Our Users</p>
+      <p>🚀 Making better SEO and ASO</p>
+      <p>🏠 Crafting Our Digital Home</p>
+      <p>📣 Amplifying Our Voice on Social Media</p>
+      <p>🔍 Helping Us Improve Features</p>
+      <p>✨ You can create new one</p>
       <ion-list>
         <ion-item (click)="openDiscordPage()">
           <ion-icon name="logo-discord"></ion-icon>
@@ -713,6 +40,58 @@
           <app-user-list [item]="currentUser$ | async"> </app-user-list>
         </ng-container>
       </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Fundamentals</ion-card-title>
+      <ion-card-subtitle> ✨ You can also Make a Difference </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ng-container *ngFor="let user of (users$ | async)">
+          <app-user-list [item]="user" (onClick)="getProfilePage(user?.$id)">
+          </app-user-list>
+        </ng-container>
+      </ion-list>
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '0123456789'.split('')">
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h2>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 40%"
+              ></ion-skeleton-text>
+            </h2>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 80%"
+              ></ion-skeleton-text>
+            </p>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 50%"
+              ></ion-skeleton-text>
+            </p>
+            <p></p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
     </ion-card-content>
   </ion-card>
 </ion-content>

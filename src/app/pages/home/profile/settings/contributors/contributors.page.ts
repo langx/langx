@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 import { IonContent, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, map } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
@@ -29,14 +29,6 @@ export class ContributorsPage implements OnInit {
   isLoading$: Observable<boolean> = null;
   currentUser$: Observable<User> = null;
   users$: Observable<User[] | null> = null;
-
-  model = {
-    icon: 'people-outline',
-    title: 'No Contributors Yet',
-    subTitle:
-      "If you're interested, please join our team using the link at the bottom of this page.",
-    color: 'warning',
-  };
 
   constructor(
     private store: Store,
@@ -101,23 +93,6 @@ export class ContributorsPage implements OnInit {
   handleRefresh(event) {
     this.listContributors();
     if (event) event.target.complete();
-  }
-
-  //
-  // Utils
-  //
-
-  isEmpty$(contributeType: string): Observable<boolean> {
-    return this.users$.pipe(
-      map(
-        (users) =>
-          !users.some((user) => user.contributors.includes(contributeType))
-      )
-    );
-  }
-
-  scrollToBottom() {
-    this.content.scrollToBottom(300);
   }
 
   //
