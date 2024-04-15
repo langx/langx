@@ -80,7 +80,12 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['chat']) {
       this.msg = { ...this.chat };
-      this.changeDetectorRef.detectChanges();
+      // Check if the message is a body
+      if (this.msg.type === 'body') {
+        this.messageSegments = urlify(this.msg?.body);
+        console.log('Chat:', this.msg.body);
+        this.changeDetectorRef.detectChanges();
+      }
 
       // Check if the message is an image
       if (this.msg.type === 'image') {
