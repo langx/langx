@@ -30,14 +30,6 @@ export class ContributorsPage implements OnInit {
   currentUser$: Observable<User> = null;
   users$: Observable<User[] | null> = null;
 
-  model = {
-    icon: 'people-outline',
-    title: 'No Contributors Yet',
-    subTitle:
-      "If you're interested, please join our team using the link at the bottom of this page.",
-    color: 'warning',
-  };
-
   constructor(
     private store: Store,
     private router: Router,
@@ -101,23 +93,6 @@ export class ContributorsPage implements OnInit {
   handleRefresh(event) {
     this.listContributors();
     if (event) event.target.complete();
-  }
-
-  //
-  // Utils
-  //
-
-  isEmpty$(contributeType: string): Observable<boolean> {
-    return this.users$.pipe(
-      map(
-        (users) =>
-          !users.some((user) => user.contributors.includes(contributeType))
-      )
-    );
-  }
-
-  scrollToBottom() {
-    this.content.scrollToBottom(300);
   }
 
   //
