@@ -29,7 +29,7 @@ export class AboutUsPage implements OnInit {
 
   public sponsorPages = [
     {
-      title: 'Join us on Discord ❤️',
+      title: 'Join us on Discord️',
       url: environment.ext.socialMedia.discord,
       icon: 'logo-discord',
       detail: true,
@@ -56,9 +56,21 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: 'Insights',
+      url: environment.ext.INSIGHT,
+      icon: 'stats-chart-outline',
+      detail: true,
+    },
+    {
       title: 'Github',
       url: environment.ext.GITHUB_URL,
       icon: 'logo-github',
+      detail: true,
+    },
+    {
+      title: 'Backlog',
+      url: environment.ext.BACKLOG,
+      icon: 'code-slash-outline',
       detail: true,
     },
     {
