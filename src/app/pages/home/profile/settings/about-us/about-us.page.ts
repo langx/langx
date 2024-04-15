@@ -97,6 +97,12 @@ export class AboutUsPage implements OnInit {
       icon: 'server-outline',
       detail: true,
     },
+    {
+      title: 'LangX Token',
+      url: environment.ext.TOKEN_WEBSITE,
+      icon: 'ellipse-outline',
+      detail: true,
+    },
   ];
 
   public socialMediaPages = [
