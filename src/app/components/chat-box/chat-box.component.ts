@@ -83,7 +83,6 @@ export class ChatBoxComponent implements OnInit, OnChanges {
       // Check if the message is a body
       if (this.msg.type === 'body') {
         this.messageSegments = urlify(this.msg?.body);
-        console.log('Chat:', this.msg.body);
         this.changeDetectorRef.detectChanges();
       }
 
