@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 import { IonContent, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, map } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
