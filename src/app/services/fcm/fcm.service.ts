@@ -137,14 +137,14 @@ export class FcmService {
     PushNotifications.addListener(
       'pushNotificationActionPerformed',
       async (notification: ActionPerformed) => {
-        console.log('Push action performed: ' + JSON.stringify(notification));
-        console.log(
-          'Action performed: ' + JSON.stringify(notification.notification)
-        );
+        // console.log('Push action performed: ' + JSON.stringify(notification));
+        // console.log(
+        //   'Action performed: ' + JSON.stringify(notification.notification)
+        // );
         const data = notification.notification.data;
         if (data.roomId) {
           // Redirect to chat page
-          this.router.navigate(['/', 'home', 'chat', data.roomId]);
+          this.router.navigate(['/', 'home', 'chat']);
         }
         if (data.userId) {
           // Redirect to profile page
