@@ -16,6 +16,10 @@ ion-thumbnail {
   --border-radius: 10px;
 }
 
+.contributor {
+  border: 1px solid var(--ion-color-primary);
+}
+
 ion-badge {
   --padding-end: 15px;
   --padding-start: 15px;
