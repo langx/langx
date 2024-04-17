@@ -18,6 +18,10 @@
   <ion-spinner name="dots"></ion-spinner>
 </ion-content>
 <ion-content class="ion-padding" [fullscreen]="true" *ngIf="!isLoading">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-card>
     <ion-card-header id="profile-pic">
       <img

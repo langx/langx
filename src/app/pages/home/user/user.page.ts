@@ -235,6 +235,13 @@ export class UserPage implements OnInit {
     });
   }
 
+  handleRefresh(event) {
+    this.store.dispatch(getUserByIdAction({ userId: this.userId }));
+    this.initValues();
+    event.target.complete();
+    // console.log('Async operation refresh has ended');
+  }
+
   //
   // Report User
   //
