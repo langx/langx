@@ -210,7 +210,7 @@ export class ProfilePage implements OnInit {
     this.store.dispatch(getCurrentUserAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
-    console.log('Async operation refresh has ended');
+    // console.log('Async operation refresh has ended');
   }
 
   //
