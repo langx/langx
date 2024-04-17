@@ -5,6 +5,7 @@
       alt=""
       referrerpolicy="no-referrer"
       [class.contributor]="item?.contributors && item?.contributors.length > 0"
+      [class.sponsor]="item?.sponsor"
     />
     <div class="emoji-indicator">
       <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>

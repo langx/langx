@@ -27,6 +27,7 @@
         alt="Profile Picture"
         referrerpolicy="no-referrer"
         [class.contributor]="(user$ | async)?.contributors && (user$ | async)?.contributors.length > 0"
+        [class.sponsor]="(user$ | async)?.sponsor"
       />
       <ion-card-title class=".ion-text-center">
         {{(user$ | async)?.name}}

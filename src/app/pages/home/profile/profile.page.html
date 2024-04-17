@@ -38,6 +38,7 @@
         alt="Profile Picture"
         referrerpolicy="no-referrer"
         [class.contributor]="(currentUser$ | async)?.contributors && (currentUser$ | async)?.contributors.length > 0"
+        [class.sponsor]="(currentUser$ | async)?.sponsor"
       />
       <ion-card-title class=".ion-text-center">
         {{(currentUser$ | async)?.name}}

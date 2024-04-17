@@ -23,6 +23,7 @@
           alt=""
           referrerpolicy="no-referrer"
           [class.contributor]="room?.['userData']?.contributors && room?.['userData']?.contributors.length > 0"
+          [class.sponsor]="room?.['userData']?.sponsor"
         />
         <div class="emoji-indicator">
           <small *ngIf="onlineStatus(room?.['userData']?.lastSeen) == 'online'"
