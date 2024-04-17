@@ -97,11 +97,24 @@ export class AboutUsPage implements OnInit {
       icon: 'server-outline',
       detail: true,
     },
+  ];
+
+  public tokenPages = [
     {
-      title: 'LangX Token',
-      url: environment.ext.TOKEN_WEBSITE,
+      title: 'Website',
+      url: environment.ext.token.WEBSITE,
       icon: 'ellipse-outline',
       detail: true,
+    },
+    // {
+    //   title: 'Whitepaper',
+    //   url: environment.ext.token.WHITEPAPER,
+    //   icon: 'document-text-outline',
+    // },
+    {
+      title: 'Twitter',
+      url: environment.ext.token.TWITTER,
+      icon: 'logo-twitter',
     },
   ];
 

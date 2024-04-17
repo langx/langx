@@ -73,6 +73,25 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>LangX Token</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item
+          *ngFor="let item of tokenPages"
+          (click)="openPage(item)"
+          [detail]="item?.detail"
+        >
+          <ion-icon name="{{item?.icon}}"></ion-icon>
+          <ion-label>{{item?.title}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Social Media</ion-card-title>
     </ion-card-header>
     <ion-card-content>
