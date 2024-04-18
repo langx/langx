@@ -76,6 +76,7 @@ export class UserPage implements OnInit {
   @ViewChild('blockUserModal') blockUserModal: IonModal;
 
   isLoading: boolean;
+  isLoadingRoom$: Observable<boolean>;
 
   subscription: Subscription;
 
@@ -115,9 +116,8 @@ export class UserPage implements OnInit {
       combineLatest([
         this.store.pipe(select(isLoadingAuthSelector)),
         this.store.pipe(select(isLoadingUserSelector)),
-        this.store.pipe(select(isLoadingRoomSelector)),
-      ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
-        this.isLoading = isLoadingAuth || isLoadingUser || isLoadingRoom;
+      ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
+        this.isLoading = isLoadingAuth || isLoadingUser;
       })
     );
 
@@ -227,6 +227,7 @@ export class UserPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
     this.rooms$ = this.store.pipe(select(roomsSelector));
+    this.isLoadingRoom$ = this.store.pipe(select(isLoadingRoomSelector));
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
