@@ -5,7 +5,10 @@
     </ion-buttons>
     <ion-title *ngIf="!isLoading">{{ (user$ | async)?.name }}</ion-title>
     <ion-title *ngIf="isLoading">
-      <ion-spinner name="dots"></ion-spinner>
+      <ion-skeleton-text
+        [animated]="true"
+        style="width: 30%"
+      ></ion-skeleton-text>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -15,9 +18,45 @@
   class="ion-padding ion-margin"
   style="text-align: center"
 >
-  <ion-spinner name="dots"></ion-spinner>
+  <ion-card>
+    <ion-card-header id="profile-pic">
+      <ion-card-subtitle
+        style="display: flex; justify-content: center; align-items: center"
+      >
+        <ion-skeleton-text
+          [animated]="true"
+          style="width: 200px; height: 200px"
+          class="ion-text-center"
+        ></ion-skeleton-text>
+      </ion-card-subtitle>
+      <ion-card-subtitle
+        style="display: flex; justify-content: center; align-items: center"
+      >
+        <ion-skeleton-text
+          [animated]="true"
+          style="width: 60%"
+        ></ion-skeleton-text>
+      </ion-card-subtitle>
+      <ion-card-subtitle
+        style="display: flex; justify-content: center; align-items: center"
+      >
+        <ion-skeleton-text
+          [animated]="true"
+          style="width: 60%"
+        ></ion-skeleton-text>
+      </ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content
+      style="display: flex; justify-content: center; align-items: center"
+    >
+    </ion-card-content>
+  </ion-card>
 </ion-content>
 <ion-content class="ion-padding" [fullscreen]="true" *ngIf="!isLoading">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <ion-card>
     <ion-card-header id="profile-pic">
       <img
@@ -29,7 +68,7 @@
         [class.contributor]="(user$ | async)?.contributors && (user$ | async)?.contributors.length > 0"
         [class.sponsor]="(user$ | async)?.sponsor"
       />
-      <ion-card-title class=".ion-text-center">
+      <ion-card-title class="ion-text-center">
         {{(user$ | async)?.name}}
       </ion-card-title>
       <ion-card-subtitle>
