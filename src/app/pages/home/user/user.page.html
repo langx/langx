@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title *ngIf="!isLoading">{{ (user$ | async)?.name }}</ion-title>
     <ion-title *ngIf="isLoading">
-      <ion-spinner name="dots"></ion-spinner>
+      <ion-skeleton-text [animated]="true" style="width: 30%"></ion-skeleton-text>
     </ion-title>
   </ion-toolbar>
 </ion-header>
