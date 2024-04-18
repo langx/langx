@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-// import { Storage } from 'appwrite';
-import { ImageGravity, Storage } from 'src/app/extras/sdk/src';
+import { ImageGravity, Storage } from 'appwrite';
 import { Preferences } from '@capacitor/preferences';
 
 import { ApiService } from 'src/app/services/api/api.service';

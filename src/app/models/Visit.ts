@@ -1,5 +1,4 @@
-// import { Models } from 'appwrite';
-import { Models } from 'src/app/extras/sdk/src';
+import { Models } from 'appwrite';
 import { User } from './User';
 
 export type Visit = Models.Document & {

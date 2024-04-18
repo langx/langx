@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-// import { ID, Query } from 'appwrite';
-import { ID, Models, Query } from 'src/app/extras/sdk/src';
+import { ID, Models, Query } from 'appwrite';
 import { Observable, from, of, switchMap, tap } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
