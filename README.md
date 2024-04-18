@@ -1,11 +1,11 @@
  <h1 align="center"> LangX | Practice, Learn, Succeed! </h1>
 <p align="center">
   <a href="https://status.langx.io/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
-  <a href="https://github.com/langxapp/langx/releases" target="_blank"><img src="https://img.shields.io/github/release/langxapp/langx.svg" alt="GitHub release"></a>
+  <a href="https://github.com/langx/langx/releases" target="_blank"><img src="https://img.shields.io/github/release/langxapp/langx.svg" alt="GitHub release"></a>
   <a href="https://github.com/badges/langxapp/langx" target="_blank"><img src="https://img.shields.io/github/commit-activity/m/langxapp/langx" alt="Activity"></a>
-  <a href="https://github.com/langxapp/langx/graphs/contributors" target="_blank"><img src="https://img.shields.io/github/contributors/langxapp/langx.svg" alt="GitHub contributors"></a>
-  <a href="https://github.com/langxapp/langx/issues" target="_blank"><img src="https://img.shields.io/github/issues/langxapp/langx.svg" alt="GitHub issues"></a>
-  <a href="https://github.com/langxapp/langx/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/langxapp/langx.svg" alt="GitHub license"></a>
+  <a href="https://github.com/langx/langx/graphs/contributors" target="_blank"><img src="https://img.shields.io/github/contributors/langxapp/langx.svg" alt="GitHub contributors"></a>
+  <a href="https://github.com/langx/langx/issues" target="_blank"><img src="https://img.shields.io/github/issues/langxapp/langx.svg" alt="GitHub issues"></a>
+  <a href="https://github.com/langx/langx/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/langxapp/langx.svg" alt="GitHub license"></a>
 </p>
 <p align="center">
   <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/badge/-Discord-blue?style=flat-square&logo=discord&logoColor=white" alt="Discord"></a>
@@ -23,13 +23,13 @@
   <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://dcbadge.vercel.app/api/server/2D3jW2YDgS?style=flat" alt="Join us on Discord"></a>
 </p>
 <p align="center">
-  <a href='https://apps.apple.com/app/languagexchange/id6474187141' target='_blank'><img src="https://github.com/langxapp/.github/blob/main/assets/ios.png" height="50"></a>
-  <a href='https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange' target='_blank'><img src="https://github.com/langxapp/.github/blob/main/assets/android.png" height="50"></a>
-  <a href='https://app.langx.io' target='_blank'><img src="https://github.com/langxapp/.github/blob/main/assets/pwa.png" height="50"></a>
+  <a href='https://apps.apple.com/app/languagexchange/id6474187141' target='_blank'><img src="https://github.com/langx/.github/blob/main/assets/ios.png" height="50"></a>
+  <a href='https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange' target='_blank'><img src="https://github.com/langx/.github/blob/main/assets/android.png" height="50"></a>
+  <a href='https://app.langx.io' target='_blank'><img src="https://github.com/langx/.github/blob/main/assets/pwa.png" height="50"></a>
 </p>
 <p align="center">
   <a href="https://langx.io" target="_blank">
-  <img alt="Featured Image" src="https://github.com/langxapp/.github/blob/main/assets/featured_image.png" />
+  <img alt="Featured Image" src="https://github.com/langx/.github/blob/main/assets/featured_image.png" />
   </a>
 </p>
 
@@ -70,7 +70,7 @@ To check the status of the website, database and CDN, and all clients which are 
 - Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
 - Native: [Capacitor](https://capacitorjs.com/)
 - Database: [Appwrite](https://appwrite.io/)
-- API: [Expressjs, Nodejs](https://github.com/langxapp/server)
+- API: [Expressjs, Nodejs](https://github.com/langx/api)
 - Cloud Functions: [Appwrite](https://appwrite.io/)
 - Push Notification: [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging)
 - Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)
@@ -87,7 +87,7 @@ To check the status of the website, database and CDN, and all clients which are 
 
 To install the project locally, follow these steps:
 
-1. Clone the repository to your local machine using the command `git clone https://github.com/langxapp/langx.git`
+1. Clone the repository to your local machine using the command `git clone https://github.com/langx/langx.git`
    - Navigate to the project directory using the command `cd langx`
    - Install the Ionic CLI globally using the command `npm install -g @ionic/cli`
    - Install the project dependencies using the command `npm install`
@@ -289,7 +289,7 @@ For more information on how to secure your Firebase project, please refer to the
 
 [![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=langxapp/langx)](https://git-contributor.com?chart=contributorOverTime&repo=langxapp/langx)
 
-[![GitHub Contributors Image](https://contrib.rocks/image?repo=langxapp/langx)](https://github.com/langxapp/langx/graphs/contributors)
+[![GitHub Contributors Image](https://contrib.rocks/image?repo=langxapp/langx)](https://github.com/langx/langx/graphs/contributors)
 
 ## License
 
