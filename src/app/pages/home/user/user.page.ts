@@ -3,7 +3,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
-import { Observable, Subscription, combineLatest, forkJoin, of } from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  combineLatest,
+  forkJoin,
+  map,
+  of,
+  switchMap,
+  take,
+} from 'rxjs';
 
 // Component and utils Imports
 import {
@@ -67,6 +76,7 @@ export class UserPage implements OnInit {
   @ViewChild('blockUserModal') blockUserModal: IonModal;
 
   isLoading: boolean;
+  isLoadingRoom$: Observable<boolean>;
 
   subscription: Subscription;
 
@@ -106,9 +116,8 @@ export class UserPage implements OnInit {
       combineLatest([
         this.store.pipe(select(isLoadingAuthSelector)),
         this.store.pipe(select(isLoadingUserSelector)),
-        this.store.pipe(select(isLoadingRoomSelector)),
-      ]).subscribe(([isLoadingAuth, isLoadingUser, isLoadingRoom]) => {
-        this.isLoading = isLoadingAuth || isLoadingUser || isLoadingRoom;
+      ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
+        this.isLoading = isLoadingAuth || isLoadingUser;
       })
     );
 
@@ -218,6 +227,7 @@ export class UserPage implements OnInit {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
     this.rooms$ = this.store.pipe(select(roomsSelector));
+    this.isLoadingRoom$ = this.store.pipe(select(isLoadingRoomSelector));
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
@@ -350,37 +360,37 @@ export class UserPage implements OnInit {
     let userId = this.userId;
 
     this.rooms$
-      .subscribe((rooms) => {
-        this.currentUser$
-          .subscribe((user) => {
-            const currentUserId = user.$id;
+      .pipe(
+        take(1),
+        switchMap((rooms) =>
+          this.currentUser$.pipe(
+            take(1),
+            map((user) => ({ rooms, user }))
+          )
+        )
+      )
+      .subscribe(({ rooms, user }) => {
+        const currentUserId = user.$id;
 
-            if (currentUserId === userId) {
-              this.presentToast(
-                "You can't send a message to yourself.",
-                'danger'
-              );
-              return;
-            }
+        if (currentUserId === userId) {
+          this.presentToast("You can't send a message to yourself.", 'danger');
+          return;
+        }
 
-            if (rooms) {
-              const room = rooms.find(
-                (room) =>
-                  room.users.includes(currentUserId) &&
-                  room.users.includes(userId)
-              );
-              if (room) {
-                this.store.dispatch(activateRoomAction({ payload: room }));
-              } else {
-                this.store.dispatch(getRoomAction({ currentUserId, userId }));
-              }
-            } else {
-              this.store.dispatch(getRoomAction({ currentUserId, userId }));
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
+        if (rooms) {
+          const room = rooms.find(
+            (room) =>
+              room.users.includes(currentUserId) && room.users.includes(userId)
+          );
+          if (room) {
+            this.store.dispatch(activateRoomAction({ payload: room }));
+          } else {
+            this.store.dispatch(getRoomAction({ currentUserId, userId }));
+          }
+        } else {
+          this.store.dispatch(getRoomAction({ currentUserId, userId }));
+        }
+      });
   }
 
   //

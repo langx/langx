@@ -89,7 +89,16 @@
     </ion-card-header>
     <ion-card-content>
       <div class="ion-text-center">
-        <ion-button (click)="getRoom()" fill="solid">
+        <ion-button
+          (click)="getRoom()"
+          [disabled]="(isLoadingRoom$ | async)"
+          fill="solid"
+        >
+          <ion-spinner
+            *ngIf="(isLoadingRoom$ | async)"
+            name="dots"
+            slot="start"
+          ></ion-spinner>
           Send A Message 🚀
         </ion-button>
       </div>
