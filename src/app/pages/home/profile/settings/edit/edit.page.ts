@@ -245,7 +245,7 @@ export class EditPage implements OnInit {
 
   async deleteOtherPhotos(image) {
     // get image id from URL
-    image = image.href.split('/files/')[1].split('/view')[0];
+    image = image.href.split('/files/')[1].split('/preview')[0];
 
     const newOtherPics = this.currentUser.otherPics.filter(
       (item) => item !== image
