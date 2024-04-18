@@ -106,11 +106,11 @@ export class AboutUsPage implements OnInit {
       icon: 'ellipse-outline',
       detail: true,
     },
-    // {
-    //   title: 'Whitepaper',
-    //   url: environment.ext.token.WHITEPAPER,
-    //   icon: 'document-text-outline',
-    // },
+    {
+      title: 'Whitepaper',
+      url: environment.ext.token.WHITEPAPER,
+      icon: 'document-text-outline',
+    },
     {
       title: 'Twitter',
       url: environment.ext.token.TWITTER,
