@@ -4,7 +4,7 @@ First off, thank you for considering contributing to LangX. It's people like you
 
 ## Where do I go from here?
 
-If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/langxapp/langx/issues) if there's something similar to what you've observed or want to suggest. If there isn't, feel free to open a new issue!
+If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/langx/langx/issues) if there's something similar to what you've observed or want to suggest. If there isn't, feel free to open a new issue!
 
 ## Fork & create a branch
 

@@ -5,7 +5,7 @@
   "description": "LangX | Practice, Learn, Succeed! Free and Open Sourced Language Exchange Project",
   "repository": {
     "type": "git",
-    "url": "https://github.com/langxapp/langx.git"
+    "url": "https://github.com/langx/langx.git"
   },
   "scripts": {
     "ng": "ng",
