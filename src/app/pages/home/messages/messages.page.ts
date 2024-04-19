@@ -100,6 +100,9 @@ export class MessagesPage implements OnInit {
         }
       })
     );
+
+    // Get all chat Rooms
+    this.listRooms();
   }
 
   ionViewWillLeave() {
