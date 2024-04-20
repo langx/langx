@@ -24,6 +24,7 @@ import {
 } from '@angular/core';
 
 import { MessageService } from 'src/app/services/chat/message.service';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 import { urlify } from 'src/app/extras/utils';
 import { Message } from 'src/app/models/Message';
@@ -66,6 +67,7 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   constructor(
     private store: Store,
     private messageService: MessageService,
+    private fcmService: FcmService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private changeDetectorRef: ChangeDetectorRef,
@@ -328,6 +330,9 @@ export class ChatBoxComponent implements OnInit, OnChanges {
         };
         // Dispatch action to update message seen status
         this.store.dispatch(updateMessageAction({ request }));
+
+        // Delete local notification if exists
+        this.fcmService.deleteNotificationById(this.msg.$id);
       }
     }
   }
