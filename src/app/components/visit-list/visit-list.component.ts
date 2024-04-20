@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user/user.service';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
+
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
 import {
@@ -28,6 +30,7 @@ export class VisitListComponent implements OnInit {
   constructor(
     private route: Router,
     private userService: UserService,
+    private fcmService: FcmService,
     private el: ElementRef
   ) {}
 
@@ -60,23 +63,10 @@ export class VisitListComponent implements OnInit {
 
   handleIntersect(entry) {
     if (entry.isIntersecting) {
-      console.log('Intersecting: ', this.item.from.$id);
+      // console.log('Intersecting: ', this.item.from.$id);
+      // Delete local notification if exists
+      this.fcmService.deleteNotificationById(this.item.$id);
     }
-    // if (entry.isIntersecting) {
-    //   if (this.msg.to === this.current_user_id && this.msg.seen === false) {
-    //     const request: updateMessageRequestInterface = {
-    //       $id: this.msg.$id,
-    //       data: {
-    //         seen: true,
-    //       },
-    //     };
-    //     // Dispatch action to update message seen status
-    //     this.store.dispatch(updateMessageAction({ request }));
-
-    //     // Delete local notification if exists
-    //     this.fcmService.deleteNotificationById(this.msg.$id);
-    //   }
-    // }
   }
 
   exactDateAndTime(d: any) {
