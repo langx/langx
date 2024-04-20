@@ -91,7 +91,7 @@ export class AppComponent {
 
   initAppStateChange() {
     App.addListener('appStateChange', (state) => {
-      // console.log('App state changed. New state:', state);
+      console.log('App state changed. New state:', state);
       // Check for updates
       if (state.isActive) {
         this.updateService.checkForUpdates();
