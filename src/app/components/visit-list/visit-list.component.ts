@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -20,10 +20,28 @@ import {
 export class VisitListComponent implements OnInit {
   @Input() item: Visit;
 
+  private observer: IntersectionObserver;
+
   user: User;
   profilePic$: Observable<URL> = null;
 
-  constructor(private route: Router, private userService: UserService) {}
+  constructor(
+    private route: Router,
+    private userService: UserService,
+    private el: ElementRef
+  ) {}
+
+  ngAfterViewInit() {
+    // This is for the seen action when the message is in view
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => this.handleIntersect(entry));
+    });
+    this.observer.observe(this.el.nativeElement);
+  }
+
+  ngAfterViewLeave() {
+    this.observer.disconnect();
+  }
 
   ngOnInit() {
     this.user = this.item.from;
@@ -39,6 +57,27 @@ export class VisitListComponent implements OnInit {
   //
   // Utils
   //
+
+  handleIntersect(entry) {
+    if (entry.isIntersecting) {
+      console.log('Intersecting: ', this.item.from.$id);
+    }
+    // if (entry.isIntersecting) {
+    //   if (this.msg.to === this.current_user_id && this.msg.seen === false) {
+    //     const request: updateMessageRequestInterface = {
+    //       $id: this.msg.$id,
+    //       data: {
+    //         seen: true,
+    //       },
+    //     };
+    //     // Dispatch action to update message seen status
+    //     this.store.dispatch(updateMessageAction({ request }));
+
+    //     // Delete local notification if exists
+    //     this.fcmService.deleteNotificationById(this.msg.$id);
+    //   }
+    // }
+  }
 
   exactDateAndTime(d: any) {
     if (!d) return null;
