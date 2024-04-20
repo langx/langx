@@ -154,12 +154,6 @@ export class FcmService {
     );
   }
 
-  // Example method for managing push notifications
-  async getDeliveredNotifications() {
-    const notificationList =
-      await PushNotifications.getDeliveredNotifications();
-  }
-
   async deleteNotificationById(dataId: string) {
     const notificationList =
       await PushNotifications.getDeliveredNotifications();
