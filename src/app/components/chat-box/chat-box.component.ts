@@ -332,7 +332,9 @@ export class ChatBoxComponent implements OnInit, OnChanges {
         this.store.dispatch(updateMessageAction({ request }));
 
         // Delete local notification if exists
-        this.fcmService.deleteNotificationById(this.msg.$id);
+        if (Capacitor.getPlatform() !== 'web') {
+          this.fcmService.deleteNotificationById(this.msg.$id);
+        }
       }
     }
   }

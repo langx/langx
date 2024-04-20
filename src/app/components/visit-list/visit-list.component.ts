@@ -13,6 +13,7 @@ import {
   onlineStatus,
   getFlagEmoji,
 } from 'src/app/extras/utils';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-visit-list',
@@ -65,7 +66,9 @@ export class VisitListComponent implements OnInit {
     if (entry.isIntersecting) {
       // console.log('Intersecting: ', this.item.from.$id);
       // Delete local notification if exists
-      this.fcmService.deleteNotificationById(this.item.$id);
+      if (Capacitor.getPlatform() !== 'web') {
+        this.fcmService.deleteNotificationById(this.item.$id);
+      }
     }
   }
 
