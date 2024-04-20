@@ -73,7 +73,6 @@ export class HomePage implements OnInit {
       console.log('Notification listener stopped');
     }
 
-
     // HARD RELOAD
     // location.reload();
   }
@@ -88,7 +87,7 @@ export class HomePage implements OnInit {
     this.dispatchUpdatePresence();
 
     // Create an Observable that emits a value every 60 seconds
-    this.presencePing$ = interval(59000)
+    this.presencePing$ = interval(5000)
       .pipe(tap(() => this.dispatchUpdatePresence()))
       .subscribe();
   }
