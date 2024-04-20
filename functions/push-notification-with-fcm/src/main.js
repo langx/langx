@@ -70,6 +70,14 @@ export default async ({ req, res, log, error }) => {
     );
   }
 
+  // Uncomment this when production ready, check user is online or not
+  const now = new Date();
+  const lastSeen = new Date(toUserDoc?.lastSeen);
+  if (now - lastSeen < 1000 * 5) {
+    log(`User is still online: ${toUserDoc.name}`);
+    return res.json({ ok: false, error: 'User is still online' }, 400);
+  }
+
   // Check if user is blocked or not
   log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
   if (toUserDoc?.blockedUsers.includes(req.body.sender)) {
@@ -219,16 +227,6 @@ export default async ({ req, res, log, error }) => {
       });
       log(`Successfully sent PWA message: ${response}`);
     }
-
-    // Uncomment this when production ready, check user is online or not
-    // const now = new Date();
-    // const lastSeen = new Date(toUserDoc.lastSeen);
-    // if (now - lastSeen < 1000 * 60 * 1) {
-    //   log(`User is still online: ${toUserDoc.name}`);
-    //   return res.json({ ok: false, error: 'User is still online' }, 400);
-    // }
-
-    // Check user is allowed notifications in user.notifications.includes('pwa')
 
     return res.json({ ok: true });
   } catch (e) {
