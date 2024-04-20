@@ -96,7 +96,7 @@ export class ChatBoxComponent implements OnInit, OnChanges {
           );
           // Fixing ExpressionChangedAfterItHasBeenCheckedError
           this.imageURL$.subscribe(() => {
-            console.log('Image URL here !');
+            // console.log('Image URL here !');
             this.changeDetectorRef.detectChanges();
           });
         }
