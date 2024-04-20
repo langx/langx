@@ -158,7 +158,24 @@ export class FcmService {
   async getDeliveredNotifications() {
     const notificationList =
       await PushNotifications.getDeliveredNotifications();
-    console.log('delivered notifications', notificationList);
+  }
+
+  async deleteNotificationById(dataId: string) {
+    const notificationList =
+      await PushNotifications.getDeliveredNotifications();
+
+    // Find the notification with the specified data.$id
+    const notification = notificationList.notifications.find(
+      (notification) => notification.data.$id === dataId
+    );
+
+    if (notification) {
+      // If the notification is found, delete it
+      await PushNotifications.removeDeliveredNotifications({
+        notifications: [notification],
+      });
+      // console.log(`Notification with data.$id ${dataId} has been deleted.`);
+    }
   }
 
   handleTokenForIOS(token: Token) {
