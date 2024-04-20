@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user/user.service';
+import { FcmService } from 'src/app/services/fcm/fcm.service';
+
 import { Visit } from 'src/app/models/Visit';
 import { User } from 'src/app/models/User';
 import {
@@ -20,10 +22,29 @@ import {
 export class VisitListComponent implements OnInit {
   @Input() item: Visit;
 
+  private observer: IntersectionObserver;
+
   user: User;
   profilePic$: Observable<URL> = null;
 
-  constructor(private route: Router, private userService: UserService) {}
+  constructor(
+    private route: Router,
+    private userService: UserService,
+    private fcmService: FcmService,
+    private el: ElementRef
+  ) {}
+
+  ngAfterViewInit() {
+    // This is for the seen action when the message is in view
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => this.handleIntersect(entry));
+    });
+    this.observer.observe(this.el.nativeElement);
+  }
+
+  ngAfterViewLeave() {
+    this.observer.disconnect();
+  }
 
   ngOnInit() {
     this.user = this.item.from;
@@ -39,6 +60,14 @@ export class VisitListComponent implements OnInit {
   //
   // Utils
   //
+
+  handleIntersect(entry) {
+    if (entry.isIntersecting) {
+      // console.log('Intersecting: ', this.item.from.$id);
+      // Delete local notification if exists
+      this.fcmService.deleteNotificationById(this.item.$id);
+    }
+  }
 
   exactDateAndTime(d: any) {
     if (!d) return null;

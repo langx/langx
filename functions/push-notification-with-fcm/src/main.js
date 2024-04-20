@@ -176,6 +176,7 @@ export default async ({ req, res, log, error }) => {
       const response = await sendPushNotification({
         notification: notification,
         data: {
+          $id: req.body.$id,
           roomId: roomId,
         },
         apns: {
