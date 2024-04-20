@@ -16,6 +16,8 @@
 		504EC3121FED79650016851F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 504EC3101FED79650016851F /* LaunchScreen.storyboard */; };
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		76D791412AE18684001083C5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 76D791402AE18684001083C5 /* GoogleService-Info.plist */; };
+		2EA9F22A2BD4347F00CAE2F3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2EA9F2292BD4347F00CAE2F3 /* PrivacyInfo.xcprivacy */; };
+		2EA9F22B2BD4347F00CAE2F3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 2EA9F2292BD4347F00CAE2F3 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
