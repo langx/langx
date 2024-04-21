@@ -55,7 +55,7 @@
         <!-------------------->
 
         <ion-list *ngIf="(isLoading$ | async)">
-          <ion-item *ngFor="let i of '0123456789'.split('')">
+          <ion-item *ngFor="let i of '01234567890123456789'.split('')">
             <ion-thumbnail slot="start">
               <ion-skeleton-text [animated]="true"></ion-skeleton-text>
             </ion-thumbnail>
