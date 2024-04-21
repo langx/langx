@@ -283,11 +283,11 @@ For more information on how to secure your Firebase project, please refer to the
 
 ### Stargazers
 
-[![Stargazers over time](https://starchart.cc/langx/langx.svg?variant=adaptive)](https://starchart.cc/langx/langx)
+[![Stargazers over time](https://starchart.cc/langx/langx.svg?variant=adaptive)](https://github.com/langx/langx/stargazers)
 
 ### Contributors
 
-[![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=langx/langx)](https://git-contributor.com?chart=contributorOverTime&repo=langx/langx)
+[![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=langx/langx)](https://github.com/langx/langx/graphs/contributors)
 
 [![GitHub Contributors Image](https://contrib.rocks/image?repo=langx/langx)](https://github.com/langx/langx/graphs/contributors)
 
