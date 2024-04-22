@@ -3,18 +3,16 @@ import { Router } from '@angular/router';
 import { Streak } from 'src/app/models/Streaks';
 
 @Component({
-  selector: 'app-streaks-card',
-  templateUrl: './streaks-card.component.html',
-  styleUrls: ['./streaks-card.component.scss'],
+  selector: 'app-streak-card',
+  templateUrl: './streak-card.component.html',
+  styleUrls: ['./streak-card.component.scss'],
 })
-export class StreaksCardComponent implements OnInit {
-  @Input() streaks: Streak;
+export class StreakCardComponent implements OnInit {
+  @Input() streak: Streak;
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    console.log(this.streaks);
-  }
+  ngOnInit() {}
 
   openLeaderboard() {
     this.router.navigate(['/', 'home', 'leaderboard']);

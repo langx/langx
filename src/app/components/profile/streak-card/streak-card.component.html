@@ -15,10 +15,10 @@
           />
         </ion-thumbnail>
         <ion-label>
-          <h1 *ngIf="streaks">
-            {{ streaks["daystreak"] }}
+          <h1 *ngIf="streak">
+            {{ streak["daystreak"] }}
           </h1>
-          <p *ngIf="!streaks">No streaks available</p>
+          <p *ngIf="!streak">No streaks available</p>
         </ion-label>
         <div class="metadata-end-wrapper" slot="end">
           <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->

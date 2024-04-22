@@ -8,7 +8,7 @@ import { OtherPhotosCardComponent } from 'src/app/components/profile/other-photo
 import { AboutmeCardComponent } from 'src/app/components/profile/aboutme-card/aboutme-card.component';
 import { LanguagesCardComponent } from 'src/app/components/profile/languages-card/languages-card.component';
 import { BadgesCardComponent } from './badges-card/badges-card.component';
-import { StreaksCardComponent } from './streaks-card/streaks-card.component';
+import { StreakCardComponent } from './streak-card/streak-card.component';
 
 // Pipes
 import { AppExtrasModule } from 'src/app/app.extras.module';
@@ -19,7 +19,7 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     AboutmeCardComponent,
     LanguagesCardComponent,
     BadgesCardComponent,
-    StreaksCardComponent,
+    StreakCardComponent,
   ],
   // declarations: [PpCardComponent, OtherPhotosCardComponent],
   imports: [CommonModule, IonicModule, AppExtrasModule],
@@ -28,7 +28,7 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     AboutmeCardComponent,
     LanguagesCardComponent,
     BadgesCardComponent,
-    StreaksCardComponent,
+    StreakCardComponent,
   ],
   // exports: [PpCardComponent, OtherPhotosCardComponent],
 })

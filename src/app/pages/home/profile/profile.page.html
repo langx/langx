@@ -36,9 +36,7 @@
     [otherPics]="(currentUser$ | async)?.otherPics"
   ></app-other-photos-card>
 
-  <app-streaks-card
-    [streaks]="(currentUser$ | async)?.streaks"
-  ></app-streaks-card>
+  <app-streak-card [streak]="(currentUser$ | async)?.streaks"></app-streak-card>
 
   <app-aboutme-card
     [currentUser]="currentUser$ | async"
