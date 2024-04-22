@@ -14,9 +14,18 @@ export class AboutmeCardComponent implements OnInit {
   @Input() currentUser: User;
   @Input() account: Account;
 
+  gender: string;
+
   constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Set others gender
+    if (this.currentUser?.gender === 'other') {
+      this.gender = 'Prefer Not To Say';
+    } else {
+      this.gender = this.currentUser?.gender;
+    }
+  }
 
   getAccountPage() {
     this.router.navigate(['/', 'home', 'account']);

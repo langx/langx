@@ -14,8 +14,7 @@
       {{ currentUser?.name }}
     </ion-card-title>
     <ion-card-subtitle>
-      {{ getAge(currentUser?.birthdate) }} |
-      {{ currentUser?.gender | capitalizeFirst }} |
+      {{ getAge(currentUser?.birthdate) }} | {{ gender | capitalizeFirst }} |
       {{ currentUser?.country }}
       {{ getFlagEmoji(currentUser) }}
     </ion-card-subtitle>

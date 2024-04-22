@@ -23,6 +23,7 @@ export class PpCardComponent implements OnInit {
   @ViewChild(IonModal) modal: IonModal;
 
   profilePic$: Observable<URL> = null;
+  gender: string;
 
   constructor(
     private userService: UserService,
@@ -33,6 +34,13 @@ export class PpCardComponent implements OnInit {
     this.profilePic$ = this.userService.getUserFileView(
       this.currentUser?.profilePic
     );
+
+    // Set others gender
+    if (this.currentUser?.gender === 'other') {
+      this.gender = 'Prefer Not To Say';
+    } else {
+      this.gender = this.currentUser?.gender;
+    }
   }
 
   async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
