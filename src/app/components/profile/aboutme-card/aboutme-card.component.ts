@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { getFlagEmoji, lastSeenExt } from 'src/app/extras/utils';
 
 import { User } from 'src/app/models/User';
 
@@ -13,4 +14,17 @@ export class AboutmeCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  //
+  // Utils
+  //
+
+  lastSeenExt(d: any) {
+    if (!d) return null;
+    return lastSeenExt(d);
+  }
+
+  getFlagEmoji(item: User) {
+    return getFlagEmoji(item);
+  }
 }
