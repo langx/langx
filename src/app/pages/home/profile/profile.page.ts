@@ -71,12 +71,9 @@ export class ProfilePage implements OnInit {
 
   subscription: Subscription;
 
+  currentUserId: string | null = null;
   currentUser$: Observable<User | null> = null;
   account$: Observable<Account | null> = null;
-
-  currentUserId: string | null = null;
-  gender: string = null;
-  badges: Object[] = [];
 
   constructor(
     private store: Store,
@@ -95,14 +92,6 @@ export class ProfilePage implements OnInit {
     this.subscription.add(
       this.currentUser$.subscribe((user) => {
         this.currentUserId = user?.$id;
-
-        // Set readable gender
-        if (user?.gender === 'other') {
-          this.gender = 'Prefer Not To Say';
-        } else {
-          this.gender =
-            user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-        }
       })
     );
 
@@ -153,7 +142,6 @@ export class ProfilePage implements OnInit {
     this.store.dispatch(getCurrentUserAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
-    // console.log('Async operation refresh has ended');
   }
 
   //
