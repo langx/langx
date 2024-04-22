@@ -18,6 +18,7 @@ import { PpCardComponent } from './profile/pp-card/pp-card.component';
 
 // Pipes
 import { AppExtrasModule } from '../app.extras.module';
+import { OtherPhotosCardComponent } from './profile/other-photos-card/other-photos-card.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { AppExtrasModule } from '../app.extras.module';
     BlockedUserListComponent,
     TimestampComponent,
     PpCardComponent,
+    OtherPhotosCardComponent,
   ],
   imports: [CommonModule, IonicModule, AppExtrasModule],
   exports: [
@@ -46,6 +48,7 @@ import { AppExtrasModule } from '../app.extras.module';
     BlockedUserListComponent,
     TimestampComponent,
     PpCardComponent,
+    OtherPhotosCardComponent,
   ],
 })
 export class ComponentsModule {}
