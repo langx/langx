@@ -206,28 +206,7 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/', 'home', 'leaderboard']);
   }
 
-  //
-  // Utils
-  //
 
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
-  }
-
-  lastSeenExt(d: any) {
-    if (!d) return null;
-    return lastSeenExt(d);
-  }
-
-  getAge(d: any) {
-    if (!d) return null;
-    return getAge(d);
-  }
-
-  getFlagEmoji(item: User) {
-    return getFlagEmoji(item);
-  }
 
   //
   // Present Toast
