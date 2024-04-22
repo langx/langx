@@ -64,7 +64,10 @@
     </ion-card-content>
   </ion-card>
 
-  <app-aboutme-card [currentUser]="currentUser$ | async"></app-aboutme-card>
+  <app-aboutme-card
+    [currentUser]="currentUser$ | async"
+    [account]="account$ | async"
+  ></app-aboutme-card>
 
   <ion-card>
     <ion-card-header>
