@@ -4,14 +4,6 @@ import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { IonModal, ToastController } from '@ionic/angular';
 
-// Component and utils Imports
-import {
-  lastSeen,
-  getAge,
-  lastSeenExt,
-  getFlagEmoji,
-} from 'src/app/extras/utils';
-
 // Interfaces Imports
 import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
@@ -205,8 +197,6 @@ export class ProfilePage implements OnInit {
   openLeaderboard() {
     this.router.navigate(['/', 'home', 'leaderboard']);
   }
-
-
 
   //
   // Present Toast
