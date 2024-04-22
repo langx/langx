@@ -69,7 +69,9 @@
     [account]="account$ | async"
   ></app-aboutme-card>
 
-  <app-languages-card></app-languages-card>
+  <app-languages-card
+    [languages]="(currentUser$ | async)?.languages"
+  ></app-languages-card>
 
   <ion-card>
     <ion-card-header>

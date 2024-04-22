@@ -6,7 +6,6 @@ import { IonModal, ToastController } from '@ionic/angular';
 
 // Interfaces Imports
 import { User } from 'src/app/models/User';
-import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
@@ -76,8 +75,6 @@ export class ProfilePage implements OnInit {
   account$: Observable<Account | null> = null;
 
   currentUserId: string | null = null;
-  studyLanguages: Language[] = [];
-  motherLanguages: Language[] = [];
   gender: string = null;
   badges: Object[] = [];
 
@@ -98,12 +95,6 @@ export class ProfilePage implements OnInit {
     this.subscription.add(
       this.currentUser$.subscribe((user) => {
         this.currentUserId = user?.$id;
-        this.studyLanguages = user?.languages.filter(
-          (lang) => !lang.motherLanguage
-        );
-        this.motherLanguages = user?.languages.filter(
-          (lang) => lang.motherLanguage
-        );
 
         // Set readable gender
         if (user?.gender === 'other') {
