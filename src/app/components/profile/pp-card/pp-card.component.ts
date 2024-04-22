@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+
+import { User } from 'src/app/models/User';
 
 @Component({
   selector: 'app-pp-card',
@@ -6,7 +8,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./pp-card.component.scss'],
 })
 export class PpCardComponent implements OnInit {
+  @Input() currentUser: User;
+
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.currentUser);
+  }
 }
