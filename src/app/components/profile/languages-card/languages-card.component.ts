@@ -15,8 +15,6 @@ export class LanguagesCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log(this.languages);
-
     this.studyLanguages = this.languages?.filter(
       (lang) => !lang.motherLanguage
     );
