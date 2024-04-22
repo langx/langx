@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { getFlagEmoji, lastSeenExt } from 'src/app/extras/utils';
+import { Router } from '@angular/router';
 
+import { getFlagEmoji, lastSeenExt } from 'src/app/extras/utils';
+import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 
 @Component({
@@ -10,10 +12,15 @@ import { User } from 'src/app/models/User';
 })
 export class AboutmeCardComponent implements OnInit {
   @Input() currentUser: User;
+  @Input() account: Account;
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   ngOnInit() {}
+
+  getAccountPage() {
+    this.router.navigate(['/', 'home', 'account']);
+  }
 
   //
   // Utils
