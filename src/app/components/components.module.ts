@@ -16,6 +16,9 @@ import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
 // Profile Components
 import { PpCardComponent } from './profile/pp-card/pp-card.component';
 
+// Pipes
+import { AppExtrasModule } from '../app.extras.module';
+
 @NgModule({
   declarations: [
     EmptyScreenComponent,
@@ -30,7 +33,7 @@ import { PpCardComponent } from './profile/pp-card/pp-card.component';
     TimestampComponent,
     PpCardComponent,
   ],
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, AppExtrasModule],
   exports: [
     EmptyScreenComponent,
     Oauth2Component,
