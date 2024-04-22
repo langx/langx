@@ -1,13 +1,15 @@
 <ion-card>
   <ion-card-header id="profile-pic">
-    <!-- <img
+    <img
       [src]="profilePic$ | async"
       (click)="openPreview(profilePic$)"
       alt="Profile Picture"
       referrerpolicy="no-referrer"
-      [class.contributor]="(currentUser$ | async)?.contributors && (currentUser$ | async)?.contributors.length > 0"
-      [class.sponsor]="(currentUser$ | async)?.sponsor"
-    /> -->
+      [class.contributor]="
+        currentUser?.contributors && currentUser?.contributors.length > 0
+      "
+      [class.sponsor]="currentUser?.sponsor"
+    />
     <ion-card-title class=".ion-text-center">
       {{ currentUser?.name }}
     </ion-card-title>

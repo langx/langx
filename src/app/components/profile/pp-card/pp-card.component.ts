@@ -1,4 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { IonModal, ModalController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 
 import {
   getAge,
@@ -8,6 +10,8 @@ import {
 } from 'src/app/extras/utils';
 
 import { User } from 'src/app/models/User';
+import { UserService } from 'src/app/services/user/user.service';
+import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 @Component({
   selector: 'app-pp-card',
@@ -16,11 +20,35 @@ import { User } from 'src/app/models/User';
 })
 export class PpCardComponent implements OnInit {
   @Input() currentUser: User;
+  @ViewChild(IonModal) modal: IonModal;
 
-  constructor() {}
+  profilePic$: Observable<URL> = null;
+
+  constructor(
+    private userService: UserService,
+    private modalCtrl: ModalController
+  ) {}
 
   ngOnInit() {
-    console.log(this.currentUser);
+    this.profilePic$ = this.userService.getUserFileView(
+      this.currentUser?.profilePic
+    );
+  }
+
+  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
+    photos$.subscribe(async (photos) => {
+      const modal = await this.modalCtrl.create({
+        component: PreviewPhotoComponent,
+        componentProps: {
+          photos: Array.isArray(photos) ? photos : [photos],
+        },
+      });
+      modal.present();
+    });
+  }
+
+  dismissModal() {
+    this.modal.dismiss();
   }
 
   //
