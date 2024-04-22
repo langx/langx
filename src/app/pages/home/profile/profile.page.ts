@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { IonModal, ModalController, ToastController } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 
 // Component and utils Imports
 import {
@@ -11,7 +11,6 @@ import {
   lastSeenExt,
   getFlagEmoji,
 } from 'src/app/extras/utils';
-import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 // Interfaces Imports
 import { User } from 'src/app/models/User';
@@ -93,7 +92,6 @@ export class ProfilePage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
 
@@ -175,18 +173,6 @@ export class ProfilePage implements OnInit {
 
   getAccountPage() {
     this.router.navigate(['/', 'home', 'account']);
-  }
-
-  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
-    photos$.subscribe(async (photos) => {
-      const modal = await this.modalCtrl.create({
-        component: PreviewPhotoComponent,
-        componentProps: {
-          photos: Array.isArray(photos) ? photos : [photos],
-        },
-      });
-      modal.present();
-    });
   }
 
   dismissModal() {
