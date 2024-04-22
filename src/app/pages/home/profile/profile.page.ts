@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable, Subscription, forkJoin, of } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
 
 // Component and utils Imports
@@ -18,9 +18,6 @@ import { User } from 'src/app/models/User';
 import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-
-// Services Imports
-import { UserService } from 'src/app/services/user/user.service';
 
 // Actions Imports
 import { getCurrentUserAction } from 'src/app/store/actions/user.action';
@@ -91,13 +88,11 @@ export class ProfilePage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
-  otherPics$: Observable<URL[]> = of([]);
   badges: Object[] = [];
 
   constructor(
     private store: Store,
     private router: Router,
-    private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
@@ -127,12 +122,6 @@ export class ProfilePage implements OnInit {
           this.gender =
             user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
         }
-
-        this.otherPics$ = forkJoin(
-          (user?.otherPics || []).map((id) =>
-            this.userService.getUserFileView(id)
-          )
-        );
 
         this.badges = user?.badges.map((badge) => {
           const name = badge
