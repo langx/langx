@@ -1,33 +1,30 @@
-<p>pp-card works!</p>
-
-<!-- <ion-card>
+<ion-card>
   <ion-card-header id="profile-pic">
-    <img
+    <!-- <img
       [src]="profilePic$ | async"
       (click)="openPreview(profilePic$)"
       alt="Profile Picture"
       referrerpolicy="no-referrer"
       [class.contributor]="(currentUser$ | async)?.contributors && (currentUser$ | async)?.contributors.length > 0"
       [class.sponsor]="(currentUser$ | async)?.sponsor"
-    />
+    /> -->
     <ion-card-title class=".ion-text-center">
-      {{(currentUser$ | async)?.name}}
+      {{ currentUser?.name }}
     </ion-card-title>
     <ion-card-subtitle>
-      {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} |
-      {{(currentUser$ | async)?.country}} {{ getFlagEmoji(currentUser$ |
-      async) }}
+      {{ getAge(currentUser?.birthdate) }} |
+      {{ currentUser?.gender | capitalizeFirst }} |
+      {{ currentUser?.country }}
+      {{ getFlagEmoji(currentUser) }}
+    </ion-card-subtitle>
+    <ion-card-subtitle *ngIf="lastSeen(currentUser?.lastSeen) != 'online'">
+      Active in {{ lastSeen(currentUser?.lastSeen) }} ago
     </ion-card-subtitle>
     <ion-card-subtitle
-      *ngIf="lastSeen((currentUser$ | async)?.lastSeen) != 'online'"
-    >
-      Active in {{lastSeen((currentUser$ | async)?.lastSeen)}} ago
-    </ion-card-subtitle>
-    <ion-card-subtitle
-      *ngIf="lastSeen((currentUser$ | async)?.lastSeen) === 'online'"
+      *ngIf="lastSeen(currentUser?.lastSeen) === 'online'"
       color="primary"
     >
       Online
     </ion-card-subtitle>
   </ion-card-header>
-</ion-card> -->
+</ion-card>
