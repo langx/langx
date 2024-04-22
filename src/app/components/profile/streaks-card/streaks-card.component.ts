@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Streak } from 'src/app/models/Streaks';
 
 @Component({
   selector: 'app-streaks-card',
@@ -6,7 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./streaks-card.component.scss'],
 })
 export class StreaksCardComponent implements OnInit {
-  constructor() {}
+  @Input() streaks: Streak;
 
-  ngOnInit() {}
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    console.log(this.streaks);
+  }
+
+  openLeaderboard() {
+    this.router.navigate(['/', 'home', 'leaderboard']);
+  }
 }
