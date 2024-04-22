@@ -163,10 +163,6 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/', 'home', 'edit']);
   }
 
-  getAccountPage() {
-    this.router.navigate(['/', 'home', 'account']);
-  }
-
   dismissModal() {
     this.modal.dismiss();
   }
