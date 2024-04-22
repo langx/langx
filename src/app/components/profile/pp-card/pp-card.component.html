@@ -1,1 +1,33 @@
 <p>pp-card works!</p>
+
+<!-- <ion-card>
+  <ion-card-header id="profile-pic">
+    <img
+      [src]="profilePic$ | async"
+      (click)="openPreview(profilePic$)"
+      alt="Profile Picture"
+      referrerpolicy="no-referrer"
+      [class.contributor]="(currentUser$ | async)?.contributors && (currentUser$ | async)?.contributors.length > 0"
+      [class.sponsor]="(currentUser$ | async)?.sponsor"
+    />
+    <ion-card-title class=".ion-text-center">
+      {{(currentUser$ | async)?.name}}
+    </ion-card-title>
+    <ion-card-subtitle>
+      {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} |
+      {{(currentUser$ | async)?.country}} {{ getFlagEmoji(currentUser$ |
+      async) }}
+    </ion-card-subtitle>
+    <ion-card-subtitle
+      *ngIf="lastSeen((currentUser$ | async)?.lastSeen) != 'online'"
+    >
+      Active in {{lastSeen((currentUser$ | async)?.lastSeen)}} ago
+    </ion-card-subtitle>
+    <ion-card-subtitle
+      *ngIf="lastSeen((currentUser$ | async)?.lastSeen) === 'online'"
+      color="primary"
+    >
+      Online
+    </ion-card-subtitle>
+  </ion-card-header>
+</ion-card> -->
