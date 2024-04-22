@@ -36,33 +36,9 @@
     [otherPics]="(currentUser$ | async)?.otherPics"
   ></app-other-photos-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>🔗 Day Streaks</ion-card-title>
-      <ion-card-subtitle> Don't break the chain 🔥 </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item lines="none" (click)="openLeaderboard()" detail>
-          <ion-thumbnail slot="start">
-            <img
-              alt="Do not break the chain"
-              src="/assets/image/badges/chain.png"
-            />
-          </ion-thumbnail>
-          <ion-label>
-            <h1 *ngIf="(currentUser$ | async)?.streaks">
-              {{(currentUser$ | async)?.streaks['daystreak']}}
-            </h1>
-            <p *ngIf="!(currentUser$ | async)?.streaks">No streaks available</p>
-          </ion-label>
-          <div class="metadata-end-wrapper" slot="end">
-            <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
-          </div>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <app-streaks-card
+    [streaks]="(currentUser$ | async)?.streaks"
+  ></app-streaks-card>
 
   <app-aboutme-card
     [currentUser]="currentUser$ | async"
