@@ -69,50 +69,7 @@
     [account]="account$ | async"
   ></app-aboutme-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>📚 Study</ion-card-title>
-      <ion-card-subtitle>
-        The language(s) that you Practice & Learn 🗣
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list class="hasIcon" lines="none">
-        <ion-item *ngFor="let lang of studyLanguages">
-          <ion-icon
-            *ngIf="lang.level == 1"
-            name="battery-dead-outline"
-          ></ion-icon>
-          <ion-icon
-            *ngIf="lang.level == 2"
-            name="battery-half-outline"
-          ></ion-icon>
-          <ion-icon
-            *ngIf="lang.level == 3"
-            name="battery-full-outline"
-          ></ion-icon>
-          <ion-label>{{lang.name}}</ion-label>
-          <ion-note>{{lang.nativeName}}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title> 🗣️ Mother</ion-card-title>
-      <ion-card-subtitle>The language you speak at home 🏡 </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list class="hasIcon" lines="none">
-        <ion-item *ngFor="let lang of motherLanguages">
-          <ion-icon name="language-outline"></ion-icon>
-          <ion-label>{{lang.name}}</ion-label>
-          <ion-note>{{lang.nativeName}}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <app-languages-card></app-languages-card>
 
   <ion-card>
     <ion-card-header>
