@@ -33,7 +33,6 @@ import { OtherPhotosCardComponent } from './profile/other-photos-card/other-phot
     BlockedUserListComponent,
     TimestampComponent,
     PpCardComponent,
-    OtherPhotosCardComponent,
   ],
   imports: [CommonModule, IonicModule, AppExtrasModule],
   exports: [
@@ -48,7 +47,6 @@ import { OtherPhotosCardComponent } from './profile/other-photos-card/other-phot
     BlockedUserListComponent,
     TimestampComponent,
     PpCardComponent,
-    OtherPhotosCardComponent,
   ],
 })
 export class ComponentsModule {}
