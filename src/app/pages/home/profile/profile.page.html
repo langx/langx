@@ -73,7 +73,7 @@
     [languages]="(currentUser$ | async)?.languages"
   ></app-languages-card>
 
-  <app-badges-card></app-badges-card>
+  <app-badges-card [badges]="(currentUser$ | async)?.badges"></app-badges-card>
 
   <ion-card>
     <ion-card-content>
