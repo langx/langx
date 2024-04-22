@@ -91,7 +91,6 @@ export class ProfilePage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   gender: string = null;
-  profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
   badges: Object[] = [];
 
@@ -129,7 +128,6 @@ export class ProfilePage implements OnInit {
             user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
         }
 
-        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
         this.otherPics$ = forkJoin(
           (user?.otherPics || []).map((id) =>
             this.userService.getUserFileView(id)
