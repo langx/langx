@@ -2,6 +2,13 @@ ion-modal {
   --height: auto;
 }
 
+.hasIcon ion-icon {
+  align-self: start;
+  margin-top: 10px;
+  margin-right: 29px;
+  color: var(--ion-color-primary);
+}
+
 swiper-container {
   --swiper-theme-color: var(--ion-color-primary);
 }
