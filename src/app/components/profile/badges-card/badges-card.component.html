@@ -1,1 +1,22 @@
-<p>badges-card works!</p>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>🏅 Badges</ion-card-title>
+    <ion-card-subtitle>Your Achievements 🏆</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col
+          size="4"
+          *ngFor="let badge of badgesList"
+          class="ion-justify-content-center"
+        >
+          <ion-card-content class="badge-content">
+            <img [src]="badge['url']" class="badge-image" />
+            <p class="badge-text ion-padding-top">{{ badge["name"] }}</p>
+          </ion-card-content>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+</ion-card>
