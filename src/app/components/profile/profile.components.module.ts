@@ -7,15 +7,26 @@ import { PpCardComponent } from 'src/app/components/profile/pp-card/pp-card.comp
 import { OtherPhotosCardComponent } from 'src/app/components/profile/other-photos-card/other-photos-card.component';
 import { AboutmeCardComponent } from 'src/app/components/profile/aboutme-card/aboutme-card.component';
 import { LanguagesCardComponent } from 'src/app/components/profile/languages-card/languages-card.component';
+import { BadgesCardComponent } from './badges-card/badges-card.component';
 
 // Pipes
 import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
-  declarations: [PpCardComponent, AboutmeCardComponent, LanguagesCardComponent],
+  declarations: [
+    PpCardComponent,
+    AboutmeCardComponent,
+    LanguagesCardComponent,
+    BadgesCardComponent,
+  ],
   // declarations: [PpCardComponent, OtherPhotosCardComponent],
   imports: [CommonModule, IonicModule, AppExtrasModule],
-  exports: [PpCardComponent, AboutmeCardComponent, LanguagesCardComponent],
+  exports: [
+    PpCardComponent,
+    AboutmeCardComponent,
+    LanguagesCardComponent,
+    BadgesCardComponent,
+  ],
   // exports: [PpCardComponent, OtherPhotosCardComponent],
 })
 export class ProfileComponentsModule {}
