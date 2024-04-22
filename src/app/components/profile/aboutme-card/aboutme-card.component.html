@@ -1,1 +1,52 @@
-<p>aboutme-card works!</p>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>👤 About Me</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-item lines="none">
+      <ion-textarea
+        [autoGrow]="true"
+        readonly="true"
+        placeholder="No 'About Me' text provided yet. 💬"
+        [value]="currentUser?.aboutMe"
+      ></ion-textarea>
+    </ion-item>
+
+    <ion-list class="hasIcon" lines="none">
+      <ion-item>
+        <ion-icon name="flag-outline"></ion-icon>
+        <!-- <ion-label>
+          {{ currentUser?.country }}
+          {{ getFlagEmoji(currentUser) }}
+        </ion-label> -->
+      </ion-item>
+      <ion-item>
+        <ion-icon name="male-female-outline"></ion-icon>
+        <ion-label>{{ currentUser?.gender | capitalizeFirst }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="calendar-number-outline"></ion-icon>
+        <ion-label>{{
+          currentUser?.birthdate | date : "dd/MM/YYYY"
+        }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="time-outline"></ion-icon>
+        <!-- <ion-label>
+          Registered {{ lastSeenExt(currentUser?.$createdAt) }} ago
+        </ion-label> -->
+      </ion-item>
+      <!-- <ion-item *ngIf="(account$ | async)?.emailVerification">
+        <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
+        <ion-label> Verified Email </ion-label>
+      </ion-item>
+      <ion-item *ngIf="!(account$ | async)?.emailVerification">
+        <ion-icon name="shield-outline" color="danger"></ion-icon>
+        <ion-label> Unverified User </ion-label>
+        <ion-button (click)="getAccountPage()" size="small" fill="clear"
+          >Edit</ion-button
+        >
+      </ion-item> -->
+    </ion-list>
+  </ion-card-content>
+</ion-card>

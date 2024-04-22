@@ -68,60 +68,6 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-title>👤 About Me</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item lines="none">
-        <ion-textarea
-          [autoGrow]="true"
-          readonly="true"
-          placeholder="No 'About Me' text provided yet. 💬"
-          [value]="(currentUser$ | async)?.aboutMe"
-        ></ion-textarea>
-      </ion-item>
-
-      <ion-list class="hasIcon" lines="none">
-        <ion-item>
-          <ion-icon name="flag-outline"></ion-icon>
-          <ion-label>
-            {{(currentUser$ | async)?.country}} {{ getFlagEmoji(currentUser$ |
-            async) }}
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon name="male-female-outline"></ion-icon>
-          <ion-label>{{gender}}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon name="calendar-number-outline"></ion-icon>
-          <ion-label
-            >{{(currentUser$ | async)?.birthdate | date:
-            'dd/MM/YYYY'}}</ion-label
-          >
-        </ion-item>
-        <ion-item>
-          <ion-icon name="time-outline"></ion-icon>
-          <ion-label>
-            Registered {{lastSeenExt((currentUser$ | async)?.$createdAt)}} ago
-          </ion-label>
-        </ion-item>
-        <ion-item *ngIf="(account$ | async)?.emailVerification">
-          <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
-          <ion-label> Verified Email </ion-label>
-        </ion-item>
-        <ion-item *ngIf="!(account$ | async)?.emailVerification">
-          <ion-icon name="shield-outline" color="danger"></ion-icon>
-          <ion-label> Unverified User </ion-label>
-          <ion-button (click)="getAccountPage()" size="small" fill="clear"
-            >Edit</ion-button
-          >
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
       <ion-card-title>📚 Study</ion-card-title>
       <ion-card-subtitle>
         The language(s) that you Practice & Learn 🗣
