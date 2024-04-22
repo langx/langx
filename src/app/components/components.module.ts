@@ -13,6 +13,9 @@ import { VisitListComponent } from './visit-list/visit-list.component';
 import { StreakListComponent } from './streak-list/streak-list.component';
 import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
 
+// Profile Components
+import { PpCardComponent } from './profile/pp-card/pp-card.component';
+
 @NgModule({
   declarations: [
     EmptyScreenComponent,
@@ -25,6 +28,7 @@ import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
     StreakListComponent,
     BlockedUserListComponent,
     TimestampComponent,
+    PpCardComponent,
   ],
   imports: [CommonModule, IonicModule],
   exports: [
@@ -38,6 +42,7 @@ import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
     StreakListComponent,
     BlockedUserListComponent,
     TimestampComponent,
+    PpCardComponent,
   ],
 })
 export class ComponentsModule {}
