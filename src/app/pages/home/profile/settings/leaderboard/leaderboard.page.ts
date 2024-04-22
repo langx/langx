@@ -3,7 +3,7 @@ import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
-import { Streak } from 'src/app/models/Streaks';
+import { Streak } from 'src/app/models/Streak';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';

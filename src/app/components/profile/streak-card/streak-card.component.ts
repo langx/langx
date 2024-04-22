@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Streak } from 'src/app/models/Streaks';
+import { Streak } from 'src/app/models/Streak';
 
 @Component({
   selector: 'app-streak-card',
