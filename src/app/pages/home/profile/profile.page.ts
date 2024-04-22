@@ -103,15 +103,6 @@ export class ProfilePage implements OnInit {
           this.gender =
             user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
         }
-
-        this.badges = user?.badges.map((badge) => {
-          const name = badge
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-
-          return { name: name, url: `/assets/image/badges/${badge}.png` };
-        });
       })
     );
 
