@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
 import { Store, select } from '@ngrx/store';
-import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
 import { IntroComponent } from 'src/app/components/intro/intro.component';
@@ -43,7 +42,6 @@ export class LoginPage implements OnInit {
 
   constructor(
     private store: Store,
-    private router: Router,
     private toastController: ToastController,
     private modalCtrl: ModalController
   ) {}
