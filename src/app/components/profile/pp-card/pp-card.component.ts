@@ -1,6 +1,14 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IonModal, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { isEqual } from 'lodash';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 
 import {
   getAge,
@@ -18,7 +26,7 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
   templateUrl: './pp-card.component.html',
   styleUrls: ['./pp-card.component.scss'],
 })
-export class PpCardComponent implements OnInit {
+export class PpCardComponent implements OnInit, OnChanges {
   @Input() currentUser: User;
   @ViewChild(IonModal) modal: IonModal;
 
@@ -40,6 +48,21 @@ export class PpCardComponent implements OnInit {
       this.gender = 'Prefer Not To Say';
     } else {
       this.gender = this.currentUser?.gender;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['currentUser'] &&
+      !isEqual(
+        changes['currentUser'].currentValue?.profilePic,
+        changes['currentUser'].previousValue?.profilePic
+      )
+    ) {
+      console.log('currentUser.profilePic has been changed');
+      this.profilePic$ = this.userService.getUserFileView(
+        this.currentUser?.profilePic
+      );
     }
   }
 
