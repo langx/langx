@@ -83,8 +83,6 @@ export class UserPage implements OnInit {
   user$: Observable<User>;
   currentUser$: Observable<User>;
 
-  gender: string = null;
-  profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
 
   reason: string;
@@ -121,15 +119,6 @@ export class UserPage implements OnInit {
       // Set User
       this.user$.subscribe((user) => {
         if (user) {
-          // Set readable gender
-          if (user.gender === 'other') {
-            this.gender = 'Prefer Not To Say';
-          } else {
-            this.gender =
-              user.gender.charAt(0).toUpperCase() + user.gender.slice(1);
-          }
-
-          this.profilePic$ = this.userService.getUserFileView(user.profilePic);
           this.otherPics$ = forkJoin(
             (user.otherPics || []).map((id) =>
               this.userService.getUserFileView(id)

@@ -57,36 +57,9 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <app-pp-card *ngIf="(user$ | async) as user" [user]="user"></app-pp-card>
+
   <ion-card>
-    <ion-card-header id="profile-pic">
-      <img
-        [src]="profilePic$ | async"
-        (click)="openPreview(profilePic$)"
-        style="max-width: 200px"
-        alt="Profile Picture"
-        referrerpolicy="no-referrer"
-        [class.contributor]="(user$ | async)?.contributors && (user$ | async)?.contributors.length > 0"
-        [class.sponsor]="(user$ | async)?.sponsor"
-      />
-      <ion-card-title class="ion-text-center">
-        {{(user$ | async)?.name}}
-      </ion-card-title>
-      <ion-card-subtitle>
-        {{getAge((user$ | async)?.birthdate)}} | {{gender}} | {{(user$ |
-        async)?.country}} {{ getFlagEmoji(user$ | async) }}
-      </ion-card-subtitle>
-      <ion-card-subtitle
-        *ngIf="lastSeen((user$ | async)?.lastSeen) != 'online'"
-      >
-        Active in {{lastSeen((user$ | async)?.lastSeen)}} ago
-      </ion-card-subtitle>
-      <ion-card-subtitle
-        *ngIf="lastSeen((user$ | async)?.lastSeen) === 'online'"
-        color="primary"
-      >
-        Online
-      </ion-card-subtitle>
-    </ion-card-header>
     <ion-card-content>
       <div class="ion-text-center">
         <ion-button
