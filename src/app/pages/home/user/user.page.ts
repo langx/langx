@@ -25,7 +25,6 @@ import { environment } from 'src/environments/environment';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 // Interfaces Imports
-import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -84,10 +83,7 @@ export class UserPage implements OnInit {
   user$: Observable<User>;
   currentUser$: Observable<User>;
 
-  studyLanguages: Language[] = [];
-  motherLanguages: Language[] = [];
   gender: string = null;
-  badges: Object[] = [];
   profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
 
@@ -125,13 +121,6 @@ export class UserPage implements OnInit {
       // Set User
       this.user$.subscribe((user) => {
         if (user) {
-          this.studyLanguages = user.languages.filter(
-            (lang) => !lang.motherLanguage
-          );
-          this.motherLanguages = user.languages.filter(
-            (lang) => lang.motherLanguage
-          );
-
           // Set readable gender
           if (user.gender === 'other') {
             this.gender = 'Prefer Not To Say';
@@ -146,15 +135,6 @@ export class UserPage implements OnInit {
               this.userService.getUserFileView(id)
             )
           );
-
-          this.badges = user.badges.map((badge) => {
-            const name = badge
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ');
-
-            return { name: name, url: `/assets/image/badges/${badge}.png` };
-          });
         }
       })
     );
@@ -222,7 +202,9 @@ export class UserPage implements OnInit {
   }
 
   initValues() {
+    // TODO: Do we need it ?
     this.userId = this.route.snapshot.paramMap.get('id') || null;
+
     this.user$ = this.store.pipe(select(userSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
