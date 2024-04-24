@@ -34,19 +34,14 @@
           Registered {{ lastSeenExt(user?.$createdAt) }} ago
         </ion-label>
       </ion-item>
-      <ion-item *ngIf="account?.emailVerification">
+      <ion-item *ngIf="account && account.emailVerification">
         <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
         <ion-label> Verified Email </ion-label>
       </ion-item>
-      <ion-item *ngIf="!account?.emailVerification">
+      <ion-item *ngIf="account && !account.emailVerification">
         <ion-icon name="shield-outline" color="danger"></ion-icon>
         <ion-label> Unverified User </ion-label>
-        <ion-button
-          *ngIf="account?.$id === user?.$id"
-          (click)="getAccountPage()"
-          size="small"
-          fill="clear"
-        >
+        <ion-button (click)="getAccountPage()" size="small" fill="clear">
           Edit
         </ion-button>
       </ion-item>
