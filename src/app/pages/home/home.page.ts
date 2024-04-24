@@ -87,7 +87,7 @@ export class HomePage implements OnInit {
     this.dispatchUpdatePresence();
 
     // Create an Observable that emits a value every 60 seconds
-    this.presencePing$ = interval(1000 * 4)
+    this.presencePing$ = interval(1000 * 59)
       .pipe(tap(() => this.dispatchUpdatePresence()))
       .subscribe();
   }
