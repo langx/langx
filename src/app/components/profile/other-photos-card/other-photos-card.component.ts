@@ -1,5 +1,6 @@
 import { IonModal, ModalController } from '@ionic/angular';
 import { Observable, forkJoin, of } from 'rxjs';
+import { isEqual } from 'lodash';
 import {
   Component,
   Input,
@@ -37,7 +38,13 @@ export class OtherPhotosCardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['otherPics']) {
+    if (
+      changes['otherPics'] &&
+      !isEqual(
+        changes['otherPics'].currentValue,
+        changes['otherPics'].previousValue
+      )
+    ) {
       this.otherPics$ = forkJoin(
         (this.otherPics || []).map((id) => this.userService.getUserFileView(id))
       );
