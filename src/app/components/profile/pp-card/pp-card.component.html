@@ -5,24 +5,22 @@
       (click)="openPreview(profilePic$)"
       alt="Profile Picture"
       referrerpolicy="no-referrer"
-      [class.contributor]="
-        currentUser?.contributors && currentUser?.contributors.length > 0
-      "
-      [class.sponsor]="currentUser?.sponsor"
+      [class.contributor]="user?.contributors && user?.contributors.length > 0"
+      [class.sponsor]="user?.sponsor"
     />
     <ion-card-title class=".ion-text-center">
-      {{ currentUser?.name }}
+      {{ user?.name }}
     </ion-card-title>
     <ion-card-subtitle>
-      {{ getAge(currentUser?.birthdate) }} | {{ gender | capitalizeFirst }} |
-      {{ currentUser?.country }}
-      {{ getFlagEmoji(currentUser) }}
+      {{ getAge(user?.birthdate) }} | {{ gender | capitalizeFirst }} |
+      {{ user?.country }}
+      {{ getFlagEmoji(user) }}
     </ion-card-subtitle>
-    <ion-card-subtitle *ngIf="lastSeen(currentUser?.lastSeen) != 'online'">
-      Active in {{ lastSeen(currentUser?.lastSeen) }} ago
+    <ion-card-subtitle *ngIf="lastSeen(user?.lastSeen) != 'online'">
+      Active in {{ lastSeen(user?.lastSeen) }} ago
     </ion-card-subtitle>
     <ion-card-subtitle
-      *ngIf="lastSeen(currentUser?.lastSeen) === 'online'"
+      *ngIf="lastSeen(user?.lastSeen) === 'online'"
       color="primary"
     >
       Online

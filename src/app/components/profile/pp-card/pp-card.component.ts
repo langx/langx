@@ -27,7 +27,7 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
   styleUrls: ['./pp-card.component.scss'],
 })
 export class PpCardComponent implements OnInit, OnChanges {
-  @Input() currentUser: User;
+  @Input() user: User;
   @ViewChild(IonModal) modal: IonModal;
 
   profilePic$: Observable<URL> = null;
@@ -39,29 +39,27 @@ export class PpCardComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit() {
-    this.profilePic$ = this.userService.getUserFileView(
-      this.currentUser?.profilePic
-    );
+    this.profilePic$ = this.userService.getUserFileView(this.user?.profilePic);
 
     // Set others gender
-    if (this.currentUser?.gender === 'other') {
+    if (this.user?.gender === 'other') {
       this.gender = 'Prefer Not To Say';
     } else {
-      this.gender = this.currentUser?.gender;
+      this.gender = this.user?.gender;
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (
-      changes['currentUser'] &&
+      changes['user'] &&
       !isEqual(
-        changes['currentUser'].currentValue?.profilePic,
-        changes['currentUser'].previousValue?.profilePic
+        changes['user'].currentValue?.profilePic,
+        changes['user'].previousValue?.profilePic
       )
     ) {
       // console.log('currentUser.profilePic has been changed');
       this.profilePic$ = this.userService.getUserFileView(
-        this.currentUser?.profilePic
+        this.user?.profilePic
       );
     }
   }
