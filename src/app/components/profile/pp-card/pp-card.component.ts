@@ -59,7 +59,7 @@ export class PpCardComponent implements OnInit, OnChanges {
         changes['currentUser'].previousValue?.profilePic
       )
     ) {
-      console.log('currentUser.profilePic has been changed');
+      // console.log('currentUser.profilePic has been changed');
       this.profilePic$ = this.userService.getUserFileView(
         this.currentUser?.profilePic
       );

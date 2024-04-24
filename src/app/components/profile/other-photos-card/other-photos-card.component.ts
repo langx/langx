@@ -34,7 +34,7 @@ export class OtherPhotosCardComponent implements OnInit, OnChanges {
     this.otherPics$ = forkJoin(
       (this.otherPics || []).map((id) => this.userService.getUserFileView(id))
     );
-    console.log('ProfilePage has been initialized');
+    // console.log('ProfilePage has been initialized');
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -45,6 +45,7 @@ export class OtherPhotosCardComponent implements OnInit, OnChanges {
         changes['otherPics'].previousValue
       )
     ) {
+      // console.log('ProfilePage has been changed');
       this.otherPics$ = forkJoin(
         (this.otherPics || []).map((id) => this.userService.getUserFileView(id))
       );
