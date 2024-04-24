@@ -71,12 +71,12 @@ export default async ({ req, res, log, error }) => {
   }
 
   // Uncomment this when production ready, check user is online or not
-  const now = new Date();
-  const lastSeen = new Date(toUserDoc?.lastSeen);
-  if (now - lastSeen < 1000 * 5) {
-    log(`User is still online: ${toUserDoc.name}`);
-    return res.json({ ok: false, error: 'User is still online' }, 400);
-  }
+  // const now = new Date();
+  // const lastSeen = new Date(toUserDoc?.lastSeen);
+  // if (now - lastSeen < 1000 * 5) {
+  //   log(`User is still online: ${toUserDoc.name}`);
+  //   return res.json({ ok: false, error: 'User is still online' }, 400);
+  // }
 
   // Check if user is blocked or not
   log(`Blocked Users: ${toUserDoc.blockedUsers} -- sender: ${req.body.sender}`);
