@@ -8,7 +8,7 @@
         [autoGrow]="true"
         readonly="true"
         placeholder="No 'About Me' text provided yet. 💬"
-        [value]="currentUser?.aboutMe"
+        [value]="user?.aboutMe"
       ></ion-textarea>
     </ion-item>
 
@@ -16,8 +16,8 @@
       <ion-item>
         <ion-icon name="flag-outline"></ion-icon>
         <ion-label>
-          {{ currentUser?.country }}
-          {{ getFlagEmoji(currentUser) }}
+          {{ user?.country }}
+          {{ getFlagEmoji(user) }}
         </ion-label>
       </ion-item>
       <ion-item>
@@ -26,14 +26,12 @@
       </ion-item>
       <ion-item>
         <ion-icon name="calendar-number-outline"></ion-icon>
-        <ion-label>{{
-          currentUser?.birthdate | date : "dd/MM/YYYY"
-        }}</ion-label>
+        <ion-label>{{ user?.birthdate | date : "dd/MM/YYYY" }}</ion-label>
       </ion-item>
       <ion-item>
         <ion-icon name="time-outline"></ion-icon>
         <ion-label>
-          Registered {{ lastSeenExt(currentUser?.$createdAt) }} ago
+          Registered {{ lastSeenExt(user?.$createdAt) }} ago
         </ion-label>
       </ion-item>
       <ion-item *ngIf="account?.emailVerification">
@@ -43,7 +41,12 @@
       <ion-item *ngIf="!account?.emailVerification">
         <ion-icon name="shield-outline" color="danger"></ion-icon>
         <ion-label> Unverified User </ion-label>
-        <ion-button (click)="getAccountPage()" size="small" fill="clear">
+        <ion-button
+          *ngIf="account?.$id === user?.$id"
+          (click)="getAccountPage()"
+          size="small"
+          fill="clear"
+        >
           Edit
         </ion-button>
       </ion-item>

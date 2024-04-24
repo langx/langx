@@ -39,7 +39,7 @@
   <app-streak-card [streak]="(currentUser$ | async)?.streaks"></app-streak-card>
 
   <app-aboutme-card
-    [currentUser]="currentUser$ | async"
+    [user]="currentUser$ | async"
     [account]="account$ | async"
   ></app-aboutme-card>
 

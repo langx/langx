@@ -11,7 +11,7 @@ import { User } from 'src/app/models/User';
   styleUrls: ['./aboutme-card.component.scss'],
 })
 export class AboutmeCardComponent implements OnInit {
-  @Input() currentUser: User;
+  @Input() user: User;
   @Input() account: Account;
 
   gender: string;
@@ -20,10 +20,10 @@ export class AboutmeCardComponent implements OnInit {
 
   ngOnInit() {
     // Set others gender
-    if (this.currentUser?.gender === 'other') {
+    if (this.user?.gender === 'other') {
       this.gender = 'Prefer Not To Say';
     } else {
-      this.gender = this.currentUser?.gender;
+      this.gender = this.user?.gender;
     }
   }
 
