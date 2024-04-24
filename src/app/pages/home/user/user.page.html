@@ -169,47 +169,10 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>👤 About Me</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item lines="none">
-        <ion-textarea
-          [autoGrow]="true"
-          readonly="true"
-          rows="3"
-          placeholder="There is no biography yet that user updated."
-          [value]="(user$ | async)?.aboutMe"
-        ></ion-textarea>
-      </ion-item>
-      <ion-list class="list-icon">
-        <ion-item>
-          <ion-icon name="flag-outline"></ion-icon>
-          <ion-label
-            >{{(user$ | async)?.country}} {{ getFlagEmoji(user$ | async)
-            }}</ion-label
-          >
-        </ion-item>
-        <ion-item>
-          <ion-icon name="male-female-outline"></ion-icon>
-          <ion-label>{{gender}}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon name="calendar-number-outline"></ion-icon>
-          <ion-label
-            >{{getAge((user$ | async)?.birthdate)}} years old</ion-label
-          >
-        </ion-item>
-        <ion-item>
-          <ion-icon name="time-outline"></ion-icon>
-          <ion-label>
-            Registered {{lastSeenExt((user$ | async)?.$createdAt)}} ago
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <app-aboutme-card
+    *ngIf="(user$ | async) as user"
+    [user]="user"
+  ></app-aboutme-card>
 
   <ion-card>
     <ion-card-header>
