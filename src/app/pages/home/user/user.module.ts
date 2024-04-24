@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { UserPageRoutingModule } from './user-routing.module';
 import { UserPage } from './user.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { ProfileComponentsModule } from 'src/app/components/profile/profile.components.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     IonicModule,
     UserPageRoutingModule,
     ComponentsModule,
+    ProfileComponentsModule,
   ],
   declarations: [UserPage],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
