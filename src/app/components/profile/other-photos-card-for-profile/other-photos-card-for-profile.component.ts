@@ -15,11 +15,11 @@ import { UserService } from 'src/app/services/user/user.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 @Component({
-  selector: 'app-other-photos-card',
-  templateUrl: './other-photos-card.component.html',
-  styleUrls: ['./other-photos-card.component.scss'],
+  selector: 'app-other-photos-card-for-profile',
+  templateUrl: './other-photos-card-for-profile.component.html',
+  styleUrls: ['./other-photos-card-for-profile.component.scss'],
 })
-export class OtherPhotosCardComponent implements OnInit, OnChanges {
+export class OtherPhotosCardForProfileComponent implements OnInit, OnChanges {
   @Input() otherPics: string[];
   @ViewChild(IonModal) modal: IonModal;
 

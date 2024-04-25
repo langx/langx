@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { OtherPhotosCardComponent } from './other-photos-card.component';
+import { OtherPhotosCardForProfileComponent } from './other-photos-card-for-profile.component';
 
-describe('OtherPhotosCardComponent', () => {
-  let component: OtherPhotosCardComponent;
-  let fixture: ComponentFixture<OtherPhotosCardComponent>;
+describe('OtherPhotosCardForProfileComponent', () => {
+  let component: OtherPhotosCardForProfileComponent;
+  let fixture: ComponentFixture<OtherPhotosCardForProfileComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [OtherPhotosCardComponent],
+      declarations: [OtherPhotosCardForProfileComponent],
       imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(OtherPhotosCardComponent);
+    fixture = TestBed.createComponent(OtherPhotosCardForProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
