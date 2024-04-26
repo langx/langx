@@ -26,4 +26,12 @@
       Online
     </ion-card-subtitle>
   </ion-card-header>
+  <ion-card-content *ngIf="msgButton">
+    <div class="ion-text-center">
+      <ion-button (click)="getRoom()" [disabled]="isLoading" fill="solid">
+        <ion-spinner *ngIf="isLoading" name="dots" slot="start"></ion-spinner>
+        Send A Message 🚀
+      </ion-button>
+    </div>
+  </ion-card-content>
 </ion-card>

@@ -57,61 +57,13 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <app-pp-card *ngIf="(user$ | async) as user" [user]="user"></app-pp-card>
-
-  <ion-card>
-    <ion-card-content>
-      <div class="ion-text-center">
-        <ion-button
-          (click)="getRoom()"
-          [disabled]="(isLoadingRoom$ | async)"
-          fill="solid"
-        >
-          <ion-spinner
-            *ngIf="(isLoadingRoom$ | async)"
-            name="dots"
-            slot="start"
-          ></ion-spinner>
-          Send A Message 🚀
-        </ion-button>
-      </div>
-    </ion-card-content>
-  </ion-card>
-
-  <!-- <ion-card>
-    <ion-card-header>
-      <ion-card-title>📸 More Photos</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-text *ngIf="(otherPics$ | async)?.length === null">
-        Currently, no photos are available.
-      </ion-text>
-      <swiper-container
-        [slidesPerView]="3.5"
-        [spaceBetween]="15"
-        [centeredSlides]="false"
-        initialSlide="0"
-        [pagination]="true"
-        pagination-dynamic-bullets="true"
-        keyboard="true"
-        mousewheel="true"
-        [zoom]="true"
-      >
-        <swiper-slide *ngFor="let photo of (otherPics$ | async); let i = index">
-          <div class="swiper-zoom-container">
-            <img
-              [src]="photo"
-              alt="Profile Picture"
-              tappable
-              (click)="openPreview(otherPics$)"
-              referrerpolicy="no-referrer"
-            />
-          </div>
-        </swiper-slide>
-      </swiper-container>
-    </ion-card-content>
-  </ion-card> -->
+  <app-pp-card
+    *ngIf="(user$ | async) as user"
+    [user]="user"
+    [isLoading]="isLoadingRoom$ | async"
+    [msgButton]="true"
+    (onClick)="getRoom()"
+  ></app-pp-card>
 
   <app-other-photos-card-for-user
     [otherPics]="(user$ | async)?.otherPics"

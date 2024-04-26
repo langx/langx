@@ -3,9 +3,11 @@ import { Observable } from 'rxjs';
 import { isEqual } from 'lodash';
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -28,6 +30,10 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
 })
 export class PpCardComponent implements OnInit, OnChanges {
   @Input() user: User;
+  @Input() isLoading?: boolean;
+  @Input() msgButton?: boolean;
+  @Output() onClick?: EventEmitter<any> = new EventEmitter();
+
   @ViewChild(IonModal) modal: IonModal;
 
   profilePic$: Observable<URL> = null;
@@ -78,6 +84,11 @@ export class PpCardComponent implements OnInit, OnChanges {
 
   dismissModal() {
     this.modal.dismiss();
+  }
+
+  //
+  getRoom() {
+    this.onClick.emit();
   }
 
   //
