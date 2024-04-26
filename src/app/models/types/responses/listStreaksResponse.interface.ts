@@ -1,4 +1,4 @@
-import { Streak } from '../../Streaks';
+import { Streak } from '../../Streak';
 
 export interface listStreaksResponseInterface {
   total: number;

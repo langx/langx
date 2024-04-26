@@ -1,4 +1,4 @@
-import { Streak } from 'src/app/models/Streaks';
+import { Streak } from 'src/app/models/Streak';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 export interface StreaksStateInterface {

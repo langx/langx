@@ -30,223 +30,24 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card>
-    <ion-card-header id="profile-pic">
-      <img
-        [src]="profilePic$ | async"
-        (click)="openPreview(profilePic$)"
-        alt="Profile Picture"
-        referrerpolicy="no-referrer"
-        [class.contributor]="(currentUser$ | async)?.contributors && (currentUser$ | async)?.contributors.length > 0"
-        [class.sponsor]="(currentUser$ | async)?.sponsor"
-      />
-      <ion-card-title class=".ion-text-center">
-        {{(currentUser$ | async)?.name}}
-      </ion-card-title>
-      <ion-card-subtitle>
-        {{getAge((currentUser$ | async)?.birthdate)}} | {{gender}} |
-        {{(currentUser$ | async)?.country}} {{ getFlagEmoji(currentUser$ |
-        async) }}
-      </ion-card-subtitle>
-      <ion-card-subtitle
-        *ngIf="lastSeen((currentUser$ | async)?.lastSeen) != 'online'"
-      >
-        Active in {{lastSeen((currentUser$ | async)?.lastSeen)}} ago
-      </ion-card-subtitle>
-      <ion-card-subtitle
-        *ngIf="lastSeen((currentUser$ | async)?.lastSeen) === 'online'"
-        color="primary"
-      >
-        Online
-      </ion-card-subtitle>
-    </ion-card-header>
-  </ion-card>
+  <app-pp-card [user]="currentUser$ | async"></app-pp-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>📸 More Photos</ion-card-title>
-      <ion-card-subtitle></ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-text *ngIf="(otherPics$ | async)?.length == 0">
-        Currently, no photos are available.
-      </ion-text>
-      <swiper-container
-        class="ion-padding"
-        [slidesPerView]="3.5"
-        [spaceBetween]="15"
-        [centeredSlides]="false"
-        initialSlide="0"
-        [pagination]="true"
-        pagination-dynamic-bullets="true"
-        keyboard="true"
-        mousewheel="true"
-      >
-        <swiper-slide *ngFor="let photo of (otherPics$ | async); let i = index">
-          <!-- #471 TODO : Test this following zoom feature on mobile-->
-          <div class="swiper-zoom-container">
-            <img
-              [src]="photo"
-              alt="Profile Picture"
-              tappable
-              (click)="openPreview(otherPics$)"
-              referrerpolicy="no-referrer"
-            />
-          </div>
-        </swiper-slide>
-      </swiper-container>
-    </ion-card-content>
-  </ion-card>
+  <app-other-photos-card-for-profile
+    [otherPics]="(currentUser$ | async)?.otherPics"
+  ></app-other-photos-card-for-profile>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>🔗 Day Streaks</ion-card-title>
-      <ion-card-subtitle> Don't break the chain 🔥 </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item lines="none" (click)="openLeaderboard()" detail>
-          <ion-thumbnail slot="start">
-            <img
-              alt="Do not break the chain"
-              src="/assets/image/badges/chain.png"
-            />
-          </ion-thumbnail>
-          <ion-label>
-            <h1 *ngIf="(currentUser$ | async)?.streaks">
-              {{(currentUser$ | async)?.streaks['daystreak']}}
-            </h1>
-            <p *ngIf="!(currentUser$ | async)?.streaks">No streaks available</p>
-          </ion-label>
-          <div class="metadata-end-wrapper" slot="end">
-            <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
-          </div>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <app-streak-card [streak]="(currentUser$ | async)?.streaks"></app-streak-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>👤 About Me</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item lines="none">
-        <ion-textarea
-          [autoGrow]="true"
-          readonly="true"
-          placeholder="No 'About Me' text provided yet. 💬"
-          [value]="(currentUser$ | async)?.aboutMe"
-        ></ion-textarea>
-      </ion-item>
+  <app-aboutme-card
+    [user]="currentUser$ | async"
+    [account]="account$ | async"
+  ></app-aboutme-card>
 
-      <ion-list class="hasIcon" lines="none">
-        <ion-item>
-          <ion-icon name="flag-outline"></ion-icon>
-          <ion-label>
-            {{(currentUser$ | async)?.country}} {{ getFlagEmoji(currentUser$ |
-            async) }}
-          </ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon name="male-female-outline"></ion-icon>
-          <ion-label>{{gender}}</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-icon name="calendar-number-outline"></ion-icon>
-          <ion-label
-            >{{(currentUser$ | async)?.birthdate | date:
-            'dd/MM/YYYY'}}</ion-label
-          >
-        </ion-item>
-        <ion-item>
-          <ion-icon name="time-outline"></ion-icon>
-          <ion-label>
-            Registered {{lastSeenExt((currentUser$ | async)?.$createdAt)}} ago
-          </ion-label>
-        </ion-item>
-        <ion-item *ngIf="(account$ | async)?.emailVerification">
-          <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
-          <ion-label> Verified Email </ion-label>
-        </ion-item>
-        <ion-item *ngIf="!(account$ | async)?.emailVerification">
-          <ion-icon name="shield-outline" color="danger"></ion-icon>
-          <ion-label> Unverified User </ion-label>
-          <ion-button (click)="getAccountPage()" size="small" fill="clear"
-            >Edit</ion-button
-          >
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+  <app-languages-card
+    [languages]="(currentUser$ | async)?.languages"
+  ></app-languages-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>📚 Study</ion-card-title>
-      <ion-card-subtitle>
-        The language(s) that you Practice & Learn 🗣
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list class="hasIcon" lines="none">
-        <ion-item *ngFor="let lang of studyLanguages">
-          <ion-icon
-            *ngIf="lang.level == 1"
-            name="battery-dead-outline"
-          ></ion-icon>
-          <ion-icon
-            *ngIf="lang.level == 2"
-            name="battery-half-outline"
-          ></ion-icon>
-          <ion-icon
-            *ngIf="lang.level == 3"
-            name="battery-full-outline"
-          ></ion-icon>
-          <ion-label>{{lang.name}}</ion-label>
-          <ion-note>{{lang.nativeName}}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title> 🗣️ Mother</ion-card-title>
-      <ion-card-subtitle>The language you speak at home 🏡 </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list class="hasIcon" lines="none">
-        <ion-item *ngFor="let lang of motherLanguages">
-          <ion-icon name="language-outline"></ion-icon>
-          <ion-label>{{lang.name}}</ion-label>
-          <ion-note>{{lang.nativeName}}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>🏅 Badges</ion-card-title>
-      <ion-card-subtitle>Your Achievements 🏆</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-grid>
-        <ion-row>
-          <ion-col
-            size="4"
-            *ngFor="let badge of badges"
-            class="ion-justify-content-center"
-          >
-            <ion-card-content class="badge-content">
-              <img [src]="badge['url']" class="badge-image" />
-              <p class="badge-text ion-padding-top">{{badge['name']}}</p>
-            </ion-card-content>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
+  <app-badges-card [badges]="(currentUser$ | async)?.badges"></app-badges-card>
 
   <ion-card>
     <ion-card-content>

@@ -2,36 +2,23 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
-import { IonModal, ModalController, ToastController } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import {
   Observable,
   Subscription,
   combineLatest,
-  forkJoin,
   map,
-  of,
   switchMap,
   take,
 } from 'rxjs';
 
 // Component and utils Imports
-import {
-  getAge,
-  getFlagEmoji,
-  lastSeen,
-  lastSeenExt,
-} from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
-import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 // Interfaces Imports
-import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-
-// Services Imports
-import { UserService } from 'src/app/services/user/user.service';
 
 // Actions Imports
 import { activateRoomAction } from 'src/app/store/actions/message.action';
@@ -84,13 +71,6 @@ export class UserPage implements OnInit {
   user$: Observable<User>;
   currentUser$: Observable<User>;
 
-  studyLanguages: Language[] = [];
-  motherLanguages: Language[] = [];
-  gender: string = null;
-  badges: Object[] = [];
-  profilePic$: Observable<URL> = null;
-  otherPics$: Observable<URL[]> = of([]);
-
   reason: string;
 
   rooms$: Observable<RoomExtendedInterface[] | null> = null;
@@ -98,9 +78,7 @@ export class UserPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private userService: UserService,
     private route: ActivatedRoute,
-    private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
 
@@ -118,44 +96,6 @@ export class UserPage implements OnInit {
         this.store.pipe(select(isLoadingUserSelector)),
       ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
         this.isLoading = isLoadingAuth || isLoadingUser;
-      })
-    );
-
-    this.subscription.add(
-      // Set User
-      this.user$.subscribe((user) => {
-        if (user) {
-          this.studyLanguages = user.languages.filter(
-            (lang) => !lang.motherLanguage
-          );
-          this.motherLanguages = user.languages.filter(
-            (lang) => lang.motherLanguage
-          );
-
-          // Set readable gender
-          if (user.gender === 'other') {
-            this.gender = 'Prefer Not To Say';
-          } else {
-            this.gender =
-              user.gender.charAt(0).toUpperCase() + user.gender.slice(1);
-          }
-
-          this.profilePic$ = this.userService.getUserFileView(user.profilePic);
-          this.otherPics$ = forkJoin(
-            (user.otherPics || []).map((id) =>
-              this.userService.getUserFileView(id)
-            )
-          );
-
-          this.badges = user.badges.map((badge) => {
-            const name = badge
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ');
-
-            return { name: name, url: `/assets/image/badges/${badge}.png` };
-          });
-        }
       })
     );
 
@@ -222,7 +162,9 @@ export class UserPage implements OnInit {
   }
 
   initValues() {
+    // TODO: Do we need it ?
     this.userId = this.route.snapshot.paramMap.get('id') || null;
+
     this.user$ = this.store.pipe(select(userSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
@@ -231,18 +173,6 @@ export class UserPage implements OnInit {
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
-  }
-
-  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
-    photos$.subscribe(async (photos) => {
-      const modal = await this.modalCtrl.create({
-        component: PreviewPhotoComponent,
-        componentProps: {
-          photos: Array.isArray(photos) ? photos : [photos],
-        },
-      });
-      modal.present();
-    });
   }
 
   handleRefresh(event) {
@@ -327,29 +257,6 @@ export class UserPage implements OnInit {
   openLeaderboard() {
     this.router.navigate(['/', 'home', 'leaderboard']);
     console.log('Open Leaderboard');
-  }
-
-  //
-  // Utils
-  //
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
-  }
-
-  lastSeenExt(d: any) {
-    if (!d) return null;
-    return lastSeenExt(d);
-  }
-
-  getAge(d: any) {
-    if (!d) return null;
-    return getAge(d);
-  }
-
-  getFlagEmoji(item: User) {
-    return getFlagEmoji(item);
   }
 
   //

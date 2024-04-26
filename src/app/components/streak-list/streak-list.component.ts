@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { UserService } from 'src/app/services/user/user.service';
-import { Streak } from 'src/app/models/Streaks';
+import { Streak } from 'src/app/models/Streak';
 import { User } from 'src/app/models/User';
 import { getFlagEmoji, lastSeen, onlineStatus } from 'src/app/extras/utils';
 

@@ -6,6 +6,8 @@ import { IonicModule } from '@ionic/angular';
 import { UserPageRoutingModule } from './user-routing.module';
 import { UserPage } from './user.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { ProfileComponentsModule } from 'src/app/components/profile/profile.components.module';
+import { OtherPhotosCardForUserComponent } from 'src/app/components/profile/other-photos-card-for-user/other-photos-card-for-user.component';
 
 @NgModule({
   imports: [
@@ -14,8 +16,9 @@ import { ComponentsModule } from 'src/app/components/components.module';
     IonicModule,
     UserPageRoutingModule,
     ComponentsModule,
+    ProfileComponentsModule,
   ],
-  declarations: [UserPage],
+  declarations: [UserPage, OtherPhotosCardForUserComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class UserPageModule {}

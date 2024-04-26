@@ -1,26 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Observable, Subscription, forkJoin, of } from 'rxjs';
-import { IonModal, ModalController, ToastController } from '@ionic/angular';
-
-// Component and utils Imports
-import {
-  lastSeen,
-  getAge,
-  lastSeenExt,
-  getFlagEmoji,
-} from 'src/app/extras/utils';
-import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
+import { Observable, Subscription } from 'rxjs';
+import { IonModal, ToastController } from '@ionic/angular';
 
 // Interfaces Imports
 import { User } from 'src/app/models/User';
-import { Language } from 'src/app/models/Language';
 import { Account } from 'src/app/models/Account';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-
-// Services Imports
-import { UserService } from 'src/app/services/user/user.service';
 
 // Actions Imports
 import { getCurrentUserAction } from 'src/app/store/actions/user.action';
@@ -84,22 +71,13 @@ export class ProfilePage implements OnInit {
 
   subscription: Subscription;
 
+  currentUserId: string | null = null;
   currentUser$: Observable<User | null> = null;
   account$: Observable<Account | null> = null;
-
-  currentUserId: string | null = null;
-  studyLanguages: Language[] = [];
-  motherLanguages: Language[] = [];
-  gender: string = null;
-  profilePic$: Observable<URL> = null;
-  otherPics$: Observable<URL[]> = of([]);
-  badges: Object[] = [];
 
   constructor(
     private store: Store,
     private router: Router,
-    private userService: UserService,
-    private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
 
@@ -114,36 +92,6 @@ export class ProfilePage implements OnInit {
     this.subscription.add(
       this.currentUser$.subscribe((user) => {
         this.currentUserId = user?.$id;
-        this.studyLanguages = user?.languages.filter(
-          (lang) => !lang.motherLanguage
-        );
-        this.motherLanguages = user?.languages.filter(
-          (lang) => lang.motherLanguage
-        );
-
-        // Set readable gender
-        if (user?.gender === 'other') {
-          this.gender = 'Prefer Not To Say';
-        } else {
-          this.gender =
-            user?.gender.charAt(0).toUpperCase() + user?.gender.slice(1);
-        }
-
-        this.profilePic$ = this.userService.getUserFileView(user?.profilePic);
-        this.otherPics$ = forkJoin(
-          (user?.otherPics || []).map((id) =>
-            this.userService.getUserFileView(id)
-          )
-        );
-
-        this.badges = user?.badges.map((badge) => {
-          const name = badge
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-
-          return { name: name, url: `/assets/image/badges/${badge}.png` };
-        });
       })
     );
 
@@ -186,22 +134,6 @@ export class ProfilePage implements OnInit {
     this.router.navigate(['/', 'home', 'edit']);
   }
 
-  getAccountPage() {
-    this.router.navigate(['/', 'home', 'account']);
-  }
-
-  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
-    photos$.subscribe(async (photos) => {
-      const modal = await this.modalCtrl.create({
-        component: PreviewPhotoComponent,
-        componentProps: {
-          photos: Array.isArray(photos) ? photos : [photos],
-        },
-      });
-      modal.present();
-    });
-  }
-
   dismissModal() {
     this.modal.dismiss();
   }
@@ -210,7 +142,6 @@ export class ProfilePage implements OnInit {
     this.store.dispatch(getCurrentUserAction({ userId: this.currentUserId }));
     this.initValues();
     event.target.complete();
-    // console.log('Async operation refresh has ended');
   }
 
   //
@@ -223,38 +154,6 @@ export class ProfilePage implements OnInit {
 
   getVisitorsPage() {
     this.router.navigate(['/', 'home', 'visitors']);
-  }
-
-  //
-  // Day Streaks
-  //
-
-  openLeaderboard() {
-    this.router.navigate(['/', 'home', 'leaderboard']);
-    console.log('Open Leaderboard');
-  }
-
-  //
-  // Utils
-  //
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
-  }
-
-  lastSeenExt(d: any) {
-    if (!d) return null;
-    return lastSeenExt(d);
-  }
-
-  getAge(d: any) {
-    if (!d) return null;
-    return getAge(d);
-  }
-
-  getFlagEmoji(item: User) {
-    return getFlagEmoji(item);
   }
 
   //
