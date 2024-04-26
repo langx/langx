@@ -78,7 +78,7 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
+  <!-- <ion-card>
     <ion-card-header>
       <ion-card-title>📸 More Photos</ion-card-title>
       <ion-card-subtitle></ion-card-subtitle>
@@ -99,7 +99,6 @@
         [zoom]="true"
       >
         <swiper-slide *ngFor="let photo of (otherPics$ | async); let i = index">
-          <!-- #471 TODO: Test this following zoom feature on mobile-->
           <div class="swiper-zoom-container">
             <img
               [src]="photo"
@@ -112,7 +111,11 @@
         </swiper-slide>
       </swiper-container>
     </ion-card-content>
-  </ion-card>
+  </ion-card> -->
+
+  <!-- <app-other-photos-card-for-profile
+    [otherPics]="(user$ | async)?.otherPics"
+  ></app-other-photos-card-for-profile> -->
 
   <app-streak-card [streak]="(user$ | async)?.streaks"></app-streak-card>
 

@@ -7,8 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { ProfilePageRoutingModule } from './profile-routing.module';
 
 import { ProfilePage } from './profile.page';
-import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-import { OtherPhotosCardForProfileComponent } from 'src/app/components/profile/other-photos-card-for-profile/other-photos-card-for-profile.component';
+// import { OtherPhotosCardForProfileComponent } from 'src/app/components/profile/other-photos-card-for-profile/other-photos-card-for-profile.component';
 import { ProfileComponentsModule } from 'src/app/components/profile/profile.components.module';
 
 @NgModule({
@@ -21,8 +20,7 @@ import { ProfileComponentsModule } from 'src/app/components/profile/profile.comp
   ],
   declarations: [
     ProfilePage,
-    PreviewPhotoComponent,
-    OtherPhotosCardForProfileComponent,
+    // OtherPhotosCardForProfileComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
