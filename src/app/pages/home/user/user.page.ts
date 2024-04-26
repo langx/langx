@@ -2,34 +2,23 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
-import { IonModal, ModalController, ToastController } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import {
   Observable,
   Subscription,
   combineLatest,
-  forkJoin,
   map,
-  of,
   switchMap,
   take,
 } from 'rxjs';
 
 // Component and utils Imports
-import {
-  getAge,
-  getFlagEmoji,
-  lastSeen,
-  lastSeenExt,
-} from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
 
 // Interfaces Imports
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
-
-// Services Imports
-import { UserService } from 'src/app/services/user/user.service';
 
 // Actions Imports
 import { activateRoomAction } from 'src/app/store/actions/message.action';
@@ -82,8 +71,6 @@ export class UserPage implements OnInit {
   user$: Observable<User>;
   currentUser$: Observable<User>;
 
-  otherPics$: Observable<URL[]> = of([]);
-
   reason: string;
 
   rooms$: Observable<RoomExtendedInterface[] | null> = null;
@@ -91,9 +78,7 @@ export class UserPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
-    private userService: UserService,
     private route: ActivatedRoute,
-    private modalCtrl: ModalController,
     private toastController: ToastController
   ) {}
 
@@ -111,19 +96,6 @@ export class UserPage implements OnInit {
         this.store.pipe(select(isLoadingUserSelector)),
       ]).subscribe(([isLoadingAuth, isLoadingUser]) => {
         this.isLoading = isLoadingAuth || isLoadingUser;
-      })
-    );
-
-    this.subscription.add(
-      // Set User
-      this.user$.subscribe((user) => {
-        if (user) {
-          this.otherPics$ = forkJoin(
-            (user.otherPics || []).map((id) =>
-              this.userService.getUserFileView(id)
-            )
-          );
-        }
       })
     );
 
@@ -285,29 +257,6 @@ export class UserPage implements OnInit {
   openLeaderboard() {
     this.router.navigate(['/', 'home', 'leaderboard']);
     console.log('Open Leaderboard');
-  }
-
-  //
-  // Utils
-  //
-
-  lastSeen(d: any) {
-    if (!d) return null;
-    return lastSeen(d);
-  }
-
-  lastSeenExt(d: any) {
-    if (!d) return null;
-    return lastSeenExt(d);
-  }
-
-  getAge(d: any) {
-    if (!d) return null;
-    return getAge(d);
-  }
-
-  getFlagEmoji(item: User) {
-    return getFlagEmoji(item);
   }
 
   //
