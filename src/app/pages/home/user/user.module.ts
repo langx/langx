@@ -7,8 +7,7 @@ import { UserPageRoutingModule } from './user-routing.module';
 import { UserPage } from './user.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { ProfileComponentsModule } from 'src/app/components/profile/profile.components.module';
-import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
-// import { OtherPhotosCardForProfileComponent } from 'src/app/components/profile/other-photos-card-for-profile/other-photos-card-for-profile.component';
+import { OtherPhotosCardForUserComponent } from 'src/app/components/profile/other-photos-card-for-user/other-photos-card-for-user.component';
 
 @NgModule({
   imports: [
@@ -19,7 +18,7 @@ import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-
     ComponentsModule,
     ProfileComponentsModule,
   ],
-  declarations: [UserPage, PreviewPhotoComponent],
+  declarations: [UserPage, OtherPhotosCardForUserComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class UserPageModule {}
