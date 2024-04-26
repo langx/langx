@@ -22,7 +22,6 @@ import {
   lastSeenExt,
 } from 'src/app/extras/utils';
 import { environment } from 'src/environments/environment';
-import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
 
 // Interfaces Imports
 import { User } from 'src/app/models/User';
@@ -202,18 +201,6 @@ export class UserPage implements OnInit {
 
     // Get User By userId
     this.store.dispatch(getUserByIdAction({ userId: this.userId }));
-  }
-
-  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
-    photos$.subscribe(async (photos) => {
-      const modal = await this.modalCtrl.create({
-        component: PreviewPhotoComponent,
-        componentProps: {
-          photos: Array.isArray(photos) ? photos : [photos],
-        },
-      });
-      modal.present();
-    });
   }
 
   handleRefresh(event) {
