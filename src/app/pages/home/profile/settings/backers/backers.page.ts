@@ -15,11 +15,11 @@ import {
 } from 'src/app/store/selectors/sponsors.selector';
 
 @Component({
-  selector: 'app-sponsors',
-  templateUrl: './sponsors.page.html',
-  styleUrls: ['./sponsors.page.scss'],
+  selector: 'app-backers',
+  templateUrl: './backers.page.html',
+  styleUrls: ['./backers.page.scss'],
 })
-export class SponsorsPage implements OnInit {
+export class BackersPage implements OnInit {
   subscription: Subscription;
 
   isLoading$: Observable<boolean> = null;
