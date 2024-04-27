@@ -30,6 +30,8 @@ import {
   clearErrorsAction,
 } from 'src/app/store/actions/message.action';
 
+import { getRoomsSuccessAction } from 'src/app/store/actions/rooms.action';
+
 const initialState: MessageStateInterface = {
   isLoading: false,
   isLoading_offset: false,
@@ -39,6 +41,31 @@ const initialState: MessageStateInterface = {
 
 const messageReducer = createReducer(
   initialState,
+
+  on(getRoomsSuccessAction, (state, action): MessageStateInterface => {
+    // Check if there is any room in the state
+    if (!state.room) return { ...state };
+
+    // Find the room with the same id as the current room
+    const updatedRoom = action.payload.documents.find(
+      (room) => room.$id === state.room.$id
+    );
+
+    // If an updated room is found, update the state
+    if (updatedRoom) {
+      return {
+        ...state,
+        room: {
+          ...updatedRoom,
+        },
+      };
+    }
+
+    // If no updated room is found, return the original state
+    return {
+      ...state,
+    };
+  }),
 
   // Get Messages With Offset Reducers
   on(
