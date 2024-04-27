@@ -1,11 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { isEqual } from 'lodash';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'app-badges-card',
   templateUrl: './badges-card.component.html',
   styleUrls: ['./badges-card.component.scss'],
 })
-export class BadgesCardComponent implements OnInit {
+export class BadgesCardComponent implements OnInit, OnChanges {
   @Input() badges: string[];
 
   badgesList: Object[] = [];
@@ -13,6 +20,19 @@ export class BadgesCardComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.initBadges();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes['badges'] &&
+      !isEqual(changes['badges'].currentValue, changes['badges'].previousValue)
+    ) {
+      this.initBadges();
+    }
+  }
+
+  initBadges() {
     this.badgesList = this.badges?.map((badge: string) => {
       const name = badge
         .split('-')
