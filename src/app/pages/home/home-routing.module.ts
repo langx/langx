@@ -144,7 +144,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'sponsors',
+    path: 'backers',
     loadChildren: () =>
       import('./profile/settings/backers/backers.module').then(
         (m) => m.BackersPageModule
