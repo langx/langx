@@ -249,12 +249,33 @@ const roomReducer = createReducer(
         roomId: action.payload.roomId.$id,
       };
 
-      return room.$id === action.payload.roomId.$id
-        ? {
-            ...room,
-            messages: [...(room.messages || []), payload],
-          }
-        : room;
+      if (room.$id === action.payload.roomId.$id) {
+        // Check if the message already exists in the room
+        const messageIndex = room.messages?.findIndex(
+          (message) => message.$id === payload.$id
+        );
+
+        let newMessages = room.messages || [];
+
+        if (messageIndex !== undefined && messageIndex > -1) {
+          // If the message exists, replace it
+          newMessages = [
+            ...newMessages.slice(0, messageIndex),
+            payload,
+            ...newMessages.slice(messageIndex + 1),
+          ];
+        } else {
+          // If the message does not exist, add it
+          newMessages = [...newMessages, payload];
+        }
+
+        return {
+          ...room,
+          messages: newMessages,
+        };
+      }
+
+      return room;
     });
 
     // Sort rooms by $updatedAt in descending order
@@ -262,6 +283,7 @@ const roomReducer = createReducer(
       (a, b) =>
         new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
     );
+
     // Return the new state
     return { ...state, rooms: sortedRooms };
   }),
