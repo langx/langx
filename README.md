@@ -75,7 +75,7 @@ To check the status of the website, database and CDN, and all clients which are 
 - Cloud Functions: [Appwrite](https://appwrite.io/)
 - Push Notification: [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging)
 - Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)
-- Analytics: [Counterscale](https://github.com/benvinegar/counterscale)
+- Analytics: [Plausible Community Ed.](https://github.com/langx/insight)
 
 ## Links
 
