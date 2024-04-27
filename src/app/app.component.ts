@@ -42,6 +42,9 @@ export class AppComponent {
     // Init App State Change
     this.initAppStateChange();
 
+    // Check for updates
+    this.updateService.checkForUpdates();
+
     // Init Deep Link
     this.initDeepLink();
 
