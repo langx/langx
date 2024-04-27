@@ -133,6 +133,9 @@ const messageReducer = createReducer(
       (msg) => msg.$id === action.payload.$id
     );
 
+    // Check if there is any room in the state
+    if (!state.room) return { ...state };
+
     return {
       ...state,
       isLoading: false,
