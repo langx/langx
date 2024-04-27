@@ -31,10 +31,7 @@ export class OtherPhotosCardForUserComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit() {
-    this.otherPics$ = forkJoin(
-      (this.otherPics || []).map((id) => this.userService.getUserFileView(id))
-    );
-    // console.log('UserPage has been initialized');
+    this.initOtherPics();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -45,11 +42,14 @@ export class OtherPhotosCardForUserComponent implements OnInit, OnChanges {
         changes['otherPics'].previousValue
       )
     ) {
-      // console.log('UserPage has been changed');
-      this.otherPics$ = forkJoin(
-        (this.otherPics || []).map((id) => this.userService.getUserFileView(id))
-      );
+      this.initOtherPics();
     }
+  }
+
+  initOtherPics() {
+    this.otherPics$ = forkJoin(
+      (this.otherPics || []).map((id) => this.userService.getUserFileView(id))
+    );
   }
 
   async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
