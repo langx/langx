@@ -20,8 +20,8 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Our Sponsors',
-      url: 'sponsors',
+      title: 'Our Backers',
+      url: 'backers',
       icon: 'heart',
       detail: true,
     },
@@ -35,7 +35,7 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Be Our Sponsor ❤️',
+      title: 'Be Our Backer ❤️',
       url: environment.ext.SPONSOR,
       icon: 'heart-outline',
       detail: true,

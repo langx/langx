@@ -5,8 +5,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 
-import { SponsorsPageRoutingModule } from './sponsors-routing.module';
-import { SponsorsPage } from './sponsors.page';
+import { BackersPageRoutingModule } from './backers-routing.module';
+import { BackersPage } from './backers.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { sponsorReducers } from 'src/app/store/reducers/sponsors.reducer';
 import { SponsorsEffects } from 'src/app/store/effects/sponsors.effect';
@@ -16,11 +16,11 @@ import { SponsorsEffects } from 'src/app/store/effects/sponsors.effect';
     CommonModule,
     FormsModule,
     IonicModule,
-    SponsorsPageRoutingModule,
+    BackersPageRoutingModule,
     ComponentsModule,
     StoreModule.forFeature('sponsor', sponsorReducers),
     EffectsModule.forFeature([SponsorsEffects]),
   ],
-  declarations: [SponsorsPage],
+  declarations: [BackersPage],
 })
-export class SponsorsPageModule {}
+export class BackersPageModule {}
