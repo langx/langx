@@ -8,7 +8,7 @@
   <a href="https://github.com/langx/langx/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/langx/langx.svg" alt="GitHub license"></a>
 </p>
 <p align="center">
-  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/badge/-Discord-blue?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/badge/-Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://reddit.com/r/langx" target="_blank"><img src="https://img.shields.io/badge/-Reddit-FF5700?style=flat&logo=reddit&logoColor=white" alt="Reddit"></a>
   <a href="https://x.com/langx_app" target="_blank"><img src="https://img.shields.io/badge/-Twitter-1DA1F2?style=flat&logo=twitter&logoColor=white" alt="Twitter"></a>
   <a href="https://t.me/langxapp" target="_blank"><img src="https://img.shields.io/badge/-Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram"></a>
