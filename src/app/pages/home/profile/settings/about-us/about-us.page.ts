@@ -126,6 +126,12 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
+      title: 'Reddit',
+      url: environment.ext.socialMedia.reddit,
+      icon: 'logo-reddit',
+      detail: true,
+    },
+    {
       title: 'Twitter',
       url: environment.ext.socialMedia.twitter,
       icon: 'logo-twitter',

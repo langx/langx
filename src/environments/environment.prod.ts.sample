@@ -84,6 +84,7 @@ export const environment = {
       tiktok: '',
       youtube: '',
       discord: '',
+      reddit: '',
       bluesky: '',
       linkedin: '',
     },
