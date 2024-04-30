@@ -101,7 +101,7 @@ export class AboutUsPage implements OnInit {
 
   public tokenPages = [
     {
-      title: 'Website',
+      title: 'Token Website',
       url: environment.ext.token.WEBSITE,
       icon: 'ellipse-outline',
       detail: true,
