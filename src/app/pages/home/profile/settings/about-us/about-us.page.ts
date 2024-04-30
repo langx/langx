@@ -107,8 +107,8 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Whitepaper',
-      url: environment.ext.token.WHITEPAPER,
+      title: 'Litepaper',
+      url: environment.ext.token.LITEPAPER,
       icon: 'document-text-outline',
     },
     {

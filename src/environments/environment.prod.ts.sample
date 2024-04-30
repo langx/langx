@@ -73,7 +73,7 @@ export const environment = {
     SPONSOR: `https://github.com/sponsors/languageXchange`,
     token: {
       WEBSITE: <TOKEN_WEBSITE>,
-      WHITEPAPER: <TOKEN_WHITEPAPER>,
+      LITEPAPER: <TOKEN_LITEPAPER>,
       TWITTER: <TOKEN_TWITTER>,
     },
     socialMedia: {
