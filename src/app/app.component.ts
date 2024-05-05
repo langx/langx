@@ -13,6 +13,7 @@ import {
   listCountriesAction,
   listLanguagesAction,
 } from 'src/app/store/actions/locale.action';
+import { getRoomsAction } from './store/actions/rooms.action';
 
 register();
 
@@ -98,6 +99,9 @@ export class AppComponent {
       // Check for updates
       if (state.isActive) {
         this.updateService.checkForUpdates();
+
+        // Get rooms when App State Becomes Active
+        this.store.dispatch(getRoomsAction());
       }
     });
   }
