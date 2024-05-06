@@ -11,7 +11,10 @@
           *ngFor="let badge of badgesList"
           class="ion-justify-content-center"
         >
-          <ion-card-content class="badge-content">
+          <ion-card-content
+            class="badge-content"
+            (click)="openPage(badge['pageURL'])"
+          >
             <img [src]="badge['url']" class="badge-image" />
             <p class="badge-text ion-padding-top">{{ badge["name"] }}</p>
           </ion-card-content>
