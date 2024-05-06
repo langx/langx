@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Browser } from '@capacitor/browser';
 import { Router } from '@angular/router';
+
+import { environment } from 'src/environments/environment';
 import { Streak } from 'src/app/models/Streak';
 
 @Component({
@@ -10,11 +13,18 @@ import { Streak } from 'src/app/models/Streak';
 export class StreakCardComponent implements OnInit {
   @Input() streak: Streak;
 
+  infoURL = environment.ext.token.LITEPAPER + '/litepaper/welcome/day-streaks';
+
   constructor(private router: Router) {}
 
   ngOnInit() {}
 
   openLeaderboard() {
     this.router.navigate(['/', 'home', 'leaderboard']);
+  }
+
+  async openPage(pageURL: any) {
+    console.log(pageURL);
+    await Browser.open({ url: pageURL });
   }
 }
