@@ -1,3 +1,4 @@
+import { Browser } from '@capacitor/browser';
 import { isEqual } from 'lodash';
 import {
   Component,
@@ -6,6 +7,8 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-badges-card',
@@ -39,7 +42,16 @@ export class BadgesCardComponent implements OnInit, OnChanges {
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
 
-      return { name, url: `/assets/image/badges/${badge}.png` };
+      return {
+        name,
+        url: `/assets/image/badges/${badge}.png`,
+        pageURL: `${environment.ext.token.LITEPAPER}/litepaper/welcome/badges#${badge}-badge`,
+      };
     });
+  }
+
+  async openPage(pageURL: any) {
+    console.log(pageURL);
+    await Browser.open({ url: pageURL });
   }
 }
