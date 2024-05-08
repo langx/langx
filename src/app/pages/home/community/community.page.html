@@ -55,6 +55,8 @@
         </ion-segment-button>
       </ion-segment>
     </ion-card-content>
+
+    <app-target-language></app-target-language>
   </ion-card>
 
   <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0">
