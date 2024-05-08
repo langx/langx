@@ -6,30 +6,36 @@ import { Observable } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { FilterService } from 'src/app/services/filter/filter.service';
+import {
+  getUsersByCompletedProfileAction,
+  getUsersByCompletedProfileWithOffsetAction,
+} from 'src/app/store/actions/users.action';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
-  getUsersByCreatedAtAction,
-  getUsersByCreatedAtWithOffsetAction,
-} from 'src/app/store/actions/users.action';
-import {
-  isLoadingByCreatedAtSelector,
-  totalByCreatedAtSelector,
-  usersByCreatedAtSelector,
+  isLoadingByCompletedProfileSelector,
+  totalByCompletedProfileSelector,
+  usersByCompletedProfileSelector,
 } from 'src/app/store/selectors/user.selector';
 
 @Component({
-  selector: 'app-new',
-  templateUrl: './new.page.html',
-  styleUrls: ['./new.page.scss'],
+  selector: 'app-enthusiast',
+  templateUrl: './enthusiast.component.html',
+  styleUrls: ['./enthusiast.component.scss'],
 })
-export class NewPage implements OnInit {
+export class EnthusiastComponent implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
   isLoading$: Observable<boolean>;
   currentUser$: Observable<User>;
-  usersByCreatedAt$: Observable<User[] | null> = null;
-  totalByCreatedAt$: Observable<number | null> = null;
+  usersByCompletedProfile$: Observable<User[] | null> = null;
+  totalByCompletedProfile$: Observable<number | null> = null;
+
+  noUser = {
+    icon: 'people-outline',
+    title: 'No Users Yet',
+    color: 'warning',
+  };
 
   constructor(
     private store: Store,
@@ -48,9 +54,15 @@ export class NewPage implements OnInit {
     // Set values from selectors
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
 
-    this.isLoading$ = this.store.pipe(select(isLoadingByCreatedAtSelector));
-    this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
-    this.totalByCreatedAt$ = this.store.pipe(select(totalByCreatedAtSelector));
+    this.isLoading$ = this.store.pipe(
+      select(isLoadingByCompletedProfileSelector)
+    );
+    this.usersByCompletedProfile$ = this.store.pipe(
+      select(usersByCompletedProfileSelector)
+    );
+    this.totalByCompletedProfile$ = this.store.pipe(
+      select(totalByCompletedProfileSelector)
+    );
   }
 
   //
@@ -59,7 +71,9 @@ export class NewPage implements OnInit {
 
   listUsers() {
     const filterData = this.filterData;
-    this.store.dispatch(getUsersByCreatedAtAction({ request: { filterData } }));
+    this.store.dispatch(
+      getUsersByCompletedProfileAction({ request: { filterData } })
+    );
   }
 
   //
@@ -87,30 +101,21 @@ export class NewPage implements OnInit {
   }
 
   //
-  // Pull to refresh
-  //
-
-  handleRefresh(event) {
-    this.listUsers();
-    if (event) event.target.complete();
-  }
-
-  //
   // Infinite Scroll
   //
 
   loadMore(event) {
     // Offset is the number of users already loaded
     let offset: number = 0;
-    this.usersByCreatedAt$
+    this.usersByCompletedProfile$
       .subscribe((users) => {
         offset = users.length;
-        this.totalByCreatedAt$
+        this.totalByCompletedProfile$
           .subscribe((total) => {
             if (offset < total) {
               const filterData = this.filterData;
               this.store.dispatch(
-                getUsersByCreatedAtWithOffsetAction({
+                getUsersByCompletedProfileWithOffsetAction({
                   request: {
                     filterData,
                     offset,

@@ -16,12 +16,13 @@ import {
   totalByTargetLanguageSelector,
   usersByTargetLanguageSelector,
 } from 'src/app/store/selectors/user.selector';
+
 @Component({
   selector: 'app-target-language',
-  templateUrl: './target-language.page.html',
-  styleUrls: ['./target-language.page.scss'],
+  templateUrl: './target-language.component.html',
+  styleUrls: ['./target-language.component.scss'],
 })
-export class TargetLanguagePage implements OnInit {
+export class TargetLanguageComponent implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
@@ -29,6 +30,12 @@ export class TargetLanguagePage implements OnInit {
   currentUser$: Observable<User>;
   usersByTargetLanguage$: Observable<User[] | null> = null;
   totalByTargetLanguage$: Observable<number | null> = null;
+
+  noUser = {
+    icon: 'people-outline',
+    title: 'No Users Yet',
+    color: 'warning',
+  };
 
   constructor(
     private store: Store,
@@ -91,15 +98,6 @@ export class TargetLanguagePage implements OnInit {
 
   getUserPage(id: string): void {
     this.router.navigate([`/home/user/${id}`]);
-  }
-
-  //
-  // Pull to refresh
-  //
-
-  handleRefresh(event) {
-    this.listUsers();
-    if (event) event.target.complete();
   }
 
   //

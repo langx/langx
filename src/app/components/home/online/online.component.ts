@@ -19,10 +19,10 @@ import {
 
 @Component({
   selector: 'app-online',
-  templateUrl: './online.page.html',
-  styleUrls: ['./online.page.scss'],
+  templateUrl: './online.component.html',
+  styleUrls: ['./online.component.scss'],
 })
-export class OnlinePage implements OnInit {
+export class OnlineComponent implements OnInit {
   filter$: any;
   filterData: FilterDataInterface;
 
@@ -30,6 +30,12 @@ export class OnlinePage implements OnInit {
   currentUser$: Observable<User>;
   usersByLastSeen$: Observable<User[] | null> = null;
   totalByLastSeen$: Observable<number | null> = null;
+
+  noUser = {
+    icon: 'people-outline',
+    title: 'No Users Yet',
+    color: 'warning',
+  };
 
   constructor(
     private store: Store,
@@ -84,15 +90,6 @@ export class OnlinePage implements OnInit {
 
   getUserPage(id: string): void {
     this.router.navigate([`/home/user/${id}`]);
-  }
-
-  //
-  // Pull to refresh
-  //
-
-  handleRefresh(event) {
-    this.listUsers();
-    if (event) event.target.complete();
   }
 
   //

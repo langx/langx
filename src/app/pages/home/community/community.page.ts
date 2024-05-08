@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
-import { Visit } from 'src/app/models/Visit';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
@@ -28,21 +27,12 @@ import {
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
-  isLoadingByTargetLanguageSelector,
-  isLoadingByLastSeenSelector,
-  isLoadingByCreatedAtSelector,
   usersByLastSeenSelector,
   errorSelector,
   usersByCreatedAtSelector,
   usersByTargetLanguageSelector,
-  isLoadingByCompletedProfileSelector,
   usersByCompletedProfileSelector,
 } from 'src/app/store/selectors/user.selector';
-import {
-  isLoadingSelector,
-  totalSelector,
-  visitsSelector,
-} from 'src/app/store/selectors/visits.selector';
 
 @Component({
   selector: 'app-community',
@@ -51,6 +41,8 @@ import {
 })
 export class CommunityPage implements OnInit {
   subscription: Subscription;
+
+  segment: string = 'usersByTargetLanguage';
 
   filter$: any;
   filterData: FilterDataInterface;
@@ -65,16 +57,6 @@ export class CommunityPage implements OnInit {
   usersByCompletedProfile$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
-
-  // Visits
-  isLoadingVisits$: Observable<boolean>;
-  visits$: Observable<Visit[] | null> = null;
-  totalVisits$: Observable<number | null> = null;
-  model = {
-    icon: 'people-outline',
-    title: 'No Profile Visitors Yet',
-    color: 'warning',
-  };
 
   constructor(
     private store: Store,
@@ -133,19 +115,6 @@ export class CommunityPage implements OnInit {
   initValues(): void {
     // Set values from selectors
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-
-    this.isLoadingByTargetLanguage$ = this.store.pipe(
-      select(isLoadingByTargetLanguageSelector)
-    );
-    this.isLoadingByCompletedProfile$ = this.store.pipe(
-      select(isLoadingByCompletedProfileSelector)
-    );
-    this.isLoadingByLastSeen$ = this.store.pipe(
-      select(isLoadingByLastSeenSelector)
-    );
-    this.isLoadingByCreatedAt$ = this.store.pipe(
-      select(isLoadingByCreatedAtSelector)
-    );
     this.usersByTargetLanguage$ = this.store.pipe(
       select(usersByTargetLanguageSelector)
     );
@@ -154,11 +123,15 @@ export class CommunityPage implements OnInit {
     );
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
+  }
 
-    // Visits
-    this.isLoadingVisits$ = this.store.pipe(select(isLoadingSelector));
-    this.visits$ = this.store.pipe(select(visitsSelector));
-    this.totalVisits$ = this.store.pipe(select(totalSelector));
+  //
+  // Segments
+  //
+
+  segmentChanged(event: any) {
+    // console.log('Segment changed', event.detail.value);
+    this.segment = event.detail.value;
   }
 
   //
@@ -267,30 +240,6 @@ export class CommunityPage implements OnInit {
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
-  }
-
-  getProfilePage(userId: string) {
-    this.router.navigateByUrl('/home/user/' + userId);
-  }
-
-  getTargetLanguagePage() {
-    this.router.navigateByUrl('/home/community/target-language');
-  }
-
-  getEnthusiastPage() {
-    this.router.navigateByUrl('/home/community/enthusiast');
-  }
-
-  getOnlinePage() {
-    this.router.navigateByUrl('/home/community/online');
-  }
-
-  getNewUsersPage() {
-    this.router.navigateByUrl('/home/community/new');
-  }
-
-  getVisitsPage() {
-    this.router.navigateByUrl('/home/visitors');
   }
 
   //

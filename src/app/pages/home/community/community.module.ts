@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { CommunityPageRoutingModule } from './community-routing.module';
 import { CommunityPage } from './community.page';
-import { ComponentsModule } from 'src/app/components/components.module';
+import { HomeComponentsModule } from 'src/app/components/home/home.components.module';
 
 @NgModule({
   imports: [
@@ -13,7 +13,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     CommunityPageRoutingModule,
-    ComponentsModule,
+    HomeComponentsModule,
   ],
   declarations: [CommunityPage],
 })
