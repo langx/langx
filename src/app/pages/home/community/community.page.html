@@ -56,9 +56,14 @@
       </ion-segment>
     </ion-card-content>
 
-    <app-target-language></app-target-language>
+    <ng-container [ngSwitch]="segment">
+      <app-target-language
+        *ngSwitchCase="'usersByTargetLanguage'"
+      ></app-target-language>
+      <!-- Add more components with *ngSwitchCase as needed -->
+    </ng-container>
   </ion-card>
-  
+
   <!-- <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-title>Language Mates</ion-card-title>
