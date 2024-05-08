@@ -147,7 +147,7 @@ export class CommunityPage implements OnInit {
   //
 
   segmentChanged(event: any) {
-    console.log('Segment changed', event.detail.value);
+    // console.log('Segment changed', event.detail.value);
     this.segment = event.detail.value;
   }
 
