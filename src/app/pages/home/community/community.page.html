@@ -58,8 +58,8 @@
 
     <app-target-language></app-target-language>
   </ion-card>
-
-  <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0">
+  
+  <!-- <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-title>Language Mates</ion-card-title>
       <ion-card-subtitle>🎯 Recommended For You</ion-card-subtitle>
@@ -77,10 +77,6 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
 
       <ion-list *ngIf="(isLoadingByTargetLanguage$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
@@ -111,9 +107,6 @@
         </ion-item>
       </ion-list>
 
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
       <ion-button
         fill="clear"
         expand="block"
@@ -144,9 +137,6 @@
         </ng-container>
       </ion-list>
 
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
 
       <ion-list *ngIf="(isLoadingByCompletedProfile$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
@@ -177,9 +167,6 @@
         </ion-item>
       </ion-list>
 
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
       <ion-button
         fill="clear"
         expand="block"
@@ -209,9 +196,6 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
 
       <ion-list *ngIf="(isLoadingByCreatedAt$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
@@ -242,9 +226,6 @@
         </ion-item>
       </ion-list>
 
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
       <ion-button
         fill="clear"
         expand="block"
@@ -274,9 +255,6 @@
           </app-user-list>
         </ng-container>
       </ion-list>
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
 
       <ion-list *ngIf="(isLoadingByLastSeen$ | async)">
         <ion-item *ngFor="let i of '012'.split('')">
@@ -307,9 +285,6 @@
         </ion-item>
       </ion-list>
 
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
       <ion-button
         fill="clear"
         expand="block"
@@ -337,9 +312,6 @@
           ></app-visit-list>
         </ng-container>
       </ion-list>
-      <!-------------------->
-      <!-- SKELETON start -->
-      <!-------------------->
 
       <ion-list *ngIf="(isLoadingVisits$ | async)">
         <ion-item *ngFor="let i of '01234'.split('')" detail>
@@ -363,9 +335,6 @@
         </ion-item>
       </ion-list>
 
-      <!------------------>
-      <!-- SKELETON end -->
-      <!------------------>
       <ion-button
         fill="clear"
         expand="block"
@@ -375,5 +344,5 @@
         See More
       </ion-button>
     </ion-card-content>
-  </ion-card>
+  </ion-card> -->
 </ion-content>
