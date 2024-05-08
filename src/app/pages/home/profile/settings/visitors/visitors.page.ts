@@ -3,7 +3,6 @@ import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
-import { User } from 'src/app/models/User';
 import { Visit } from 'src/app/models/Visit';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
