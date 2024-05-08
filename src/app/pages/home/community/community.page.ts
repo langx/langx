@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
-import { Visit } from 'src/app/models/Visit';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
@@ -38,11 +37,6 @@ import {
   isLoadingByCompletedProfileSelector,
   usersByCompletedProfileSelector,
 } from 'src/app/store/selectors/user.selector';
-import {
-  isLoadingSelector,
-  totalSelector,
-  visitsSelector,
-} from 'src/app/store/selectors/visits.selector';
 
 @Component({
   selector: 'app-community',
@@ -67,16 +61,6 @@ export class CommunityPage implements OnInit {
   usersByCompletedProfile$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
-
-  // Visits
-  isLoadingVisits$: Observable<boolean>;
-  visits$: Observable<Visit[] | null> = null;
-  totalVisits$: Observable<number | null> = null;
-  model = {
-    icon: 'people-outline',
-    title: 'No Profile Visitors Yet',
-    color: 'warning',
-  };
 
   constructor(
     private store: Store,
@@ -156,11 +140,6 @@ export class CommunityPage implements OnInit {
     );
     this.usersByLastSeen$ = this.store.pipe(select(usersByLastSeenSelector));
     this.usersByCreatedAt$ = this.store.pipe(select(usersByCreatedAtSelector));
-
-    // Visits
-    this.isLoadingVisits$ = this.store.pipe(select(isLoadingSelector));
-    this.visits$ = this.store.pipe(select(visitsSelector));
-    this.totalVisits$ = this.store.pipe(select(totalSelector));
   }
 
   //
@@ -298,10 +277,6 @@ export class CommunityPage implements OnInit {
 
   getNewUsersPage() {
     this.router.navigateByUrl('/home/community/new');
-  }
-
-  getVisitsPage() {
-    this.router.navigateByUrl('/home/visitors');
   }
 
   //
