@@ -27,24 +27,29 @@
 
   <ion-card>
     <ion-card-content>
-      <ion-segment [scrollable]="true" value="heart" color="primary">
-        <ion-segment-button value="home">
+      <ion-segment
+        [scrollable]="true"
+        value="heart"
+        color="primary"
+        (ionChange)="segmentChanged($event)"
+      >
+        <ion-segment-button value="usersByTargetLanguage">
           <ion-icon name="home-outline" color="primary"></ion-icon>
           <ion-label>For You</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="heart">
+        <ion-segment-button value="usersByCompletedProfile">
           <ion-icon name="checkbox-outline" color="success"></ion-icon>
           <ion-label>Enthusiasts</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="pin">
+        <ion-segment-button value="usersByCreatedAt">
           <ion-icon name="hand-left-outline" color="secondary"></ion-icon>
           <ion-label>New Users</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="star">
+        <ion-segment-button value="usersByLastSeen">
           <ion-icon name="battery-charging-outline" color="success"></ion-icon>
           <ion-label>Active</ion-label>
         </ion-segment-button>
-        <ion-segment-button value="call">
+        <ion-segment-button value="visitors">
           <ion-icon name="eye-outline" color="dark"></ion-icon>
           <ion-label>Visitors</ion-label>
         </ion-segment-button>

@@ -162,6 +162,14 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Segments
+  //
+
+  segmentChanged(event: any) {
+    console.log('Segment changed', event.detail.value);
+  }
+
+  //
   // Get Users
   //
 
