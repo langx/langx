@@ -21,10 +21,18 @@ export class VisitorsComponent implements OnInit {
   visits$: Observable<Visit[] | null> = null;
   total$: Observable<number | null> = null;
 
-  model = {
+  isAllDone: boolean = false;
+
+  noVisitors = {
     icon: 'people-outline',
     title: 'No Visitors Yet',
     color: 'warning',
+  };
+
+  allDone = {
+    icon: 'people-outline',
+    title: 'All visitors loaded',
+    color: 'primary',
   };
 
   constructor(private store: Store) {}
@@ -58,7 +66,8 @@ export class VisitorsComponent implements OnInit {
                 })
               );
             } else {
-              console.log('All visits loaded');
+              // console.log('All visits loaded');
+              this.isAllDone = true;
             }
           })
           .unsubscribe();

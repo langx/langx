@@ -1,4 +1,4 @@
-<app-empty-screen *ngIf="(visits$ | async)?.length == 0" [model]="model">
+<app-empty-screen *ngIf="(visits$ | async)?.length == 0" [model]="noVisitors">
 </app-empty-screen>
 <ion-card-header>
   <ion-card-title>Profile Visitors</ion-card-title>
@@ -36,6 +36,9 @@
     </ion-item>
   </ion-list>
 </ion-card-content>
+
+<app-empty-screen *ngIf="isAllDone" [model]="allDone">
+</app-empty-screen>
 
 <ion-infinite-scroll (ionInfinite)="loadMore($event)">
   <ion-infinite-scroll-content></ion-infinite-scroll-content>
