@@ -12,6 +12,7 @@ import { TargetLanguageComponent } from './target-language/target-language.compo
 import { EnthusiastComponent } from './enthusiast/enthusiast.component';
 import { NewComponent } from './new/new.component';
 import { OnlineComponent } from './online/online.component';
+import { VisitorsComponent } from './visitors/visitors.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { OnlineComponent } from './online/online.component';
     EnthusiastComponent,
     NewComponent,
     OnlineComponent,
+    VisitorsComponent,
   ],
   imports: [CommonModule, IonicModule, ComponentsModule, AppExtrasModule],
   exports: [
@@ -26,6 +28,7 @@ import { OnlineComponent } from './online/online.component';
     EnthusiastComponent,
     NewComponent,
     OnlineComponent,
+    VisitorsComponent,
   ],
 })
 export class HomeComponentsModule {}
