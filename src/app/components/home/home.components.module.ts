@@ -4,15 +4,16 @@ import { IonicModule } from '@ionic/angular';
 
 import { ComponentsModule } from '../components.module';
 
-// Home Components
-import { TargetLanguageComponent } from './target-language/target-language.component';
-
 // Pipes
 import { AppExtrasModule } from 'src/app/app.extras.module';
 
+// Home Components
+import { TargetLanguageComponent } from './target-language/target-language.component';
+import { EnthusiastComponent } from './enthusiast/enthusiast.component';
+
 @NgModule({
-  declarations: [TargetLanguageComponent],
+  declarations: [TargetLanguageComponent, EnthusiastComponent],
   imports: [CommonModule, IonicModule, ComponentsModule, AppExtrasModule],
-  exports: [TargetLanguageComponent],
+  exports: [TargetLanguageComponent, EnthusiastComponent],
 })
 export class HomeComponentsModule {}
