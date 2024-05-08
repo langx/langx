@@ -6,7 +6,6 @@ import { Observable, Subscription } from 'rxjs';
 import { User } from 'src/app/models/User';
 import { Visit } from 'src/app/models/Visit';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getVisitsAction,
   getVisitsWithOffsetAction,
@@ -26,7 +25,6 @@ import {
 export class VisitorsPage implements OnInit {
   subscription: Subscription;
 
-  currentUser$: Observable<User | null> = null;
   isLoading$: Observable<boolean> = null;
   visits$: Observable<Visit[] | null> = null;
   total$: Observable<number | null> = null;
@@ -67,7 +65,6 @@ export class VisitorsPage implements OnInit {
   }
 
   initValues() {
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.visits$ = this.store.pipe(select(visitsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
