@@ -27,14 +27,10 @@ import {
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
 import {
-  isLoadingByTargetLanguageSelector,
-  isLoadingByLastSeenSelector,
-  isLoadingByCreatedAtSelector,
   usersByLastSeenSelector,
   errorSelector,
   usersByCreatedAtSelector,
   usersByTargetLanguageSelector,
-  isLoadingByCompletedProfileSelector,
   usersByCompletedProfileSelector,
 } from 'src/app/store/selectors/user.selector';
 
@@ -119,19 +115,6 @@ export class CommunityPage implements OnInit {
   initValues(): void {
     // Set values from selectors
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-
-    this.isLoadingByTargetLanguage$ = this.store.pipe(
-      select(isLoadingByTargetLanguageSelector)
-    );
-    this.isLoadingByCompletedProfile$ = this.store.pipe(
-      select(isLoadingByCompletedProfileSelector)
-    );
-    this.isLoadingByLastSeen$ = this.store.pipe(
-      select(isLoadingByLastSeenSelector)
-    );
-    this.isLoadingByCreatedAt$ = this.store.pipe(
-      select(isLoadingByCreatedAtSelector)
-    );
     this.usersByTargetLanguage$ = this.store.pipe(
       select(usersByTargetLanguageSelector)
     );
@@ -257,26 +240,6 @@ export class CommunityPage implements OnInit {
 
   getFiltersPage() {
     this.router.navigateByUrl('/home/filters');
-  }
-
-  getProfilePage(userId: string) {
-    this.router.navigateByUrl('/home/user/' + userId);
-  }
-
-  getTargetLanguagePage() {
-    this.router.navigateByUrl('/home/community/target-language');
-  }
-
-  getEnthusiastPage() {
-    this.router.navigateByUrl('/home/community/enthusiast');
-  }
-
-  getOnlinePage() {
-    this.router.navigateByUrl('/home/community/online');
-  }
-
-  getNewUsersPage() {
-    this.router.navigateByUrl('/home/community/new');
   }
 
   //
