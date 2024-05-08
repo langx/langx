@@ -31,6 +31,12 @@ export class NewComponent implements OnInit {
   usersByCreatedAt$: Observable<User[] | null> = null;
   totalByCreatedAt$: Observable<number | null> = null;
 
+  noUser = {
+    icon: 'people-outline',
+    title: 'No Users Yet',
+    color: 'warning',
+  };
+
   constructor(
     private store: Store,
     private router: Router,

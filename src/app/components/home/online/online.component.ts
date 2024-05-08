@@ -31,6 +31,12 @@ export class OnlineComponent implements OnInit {
   usersByLastSeen$: Observable<User[] | null> = null;
   totalByLastSeen$: Observable<number | null> = null;
 
+  noUser = {
+    icon: 'people-outline',
+    title: 'No Users Yet',
+    color: 'warning',
+  };
+
   constructor(
     private store: Store,
     private router: Router,

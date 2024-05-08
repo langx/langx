@@ -12,6 +12,11 @@
       >
       </app-user-list>
     </ng-container>
+    <app-empty-screen
+      *ngIf="(usersByTargetLanguage$ | async)?.length == 0"
+      [model]="noUser"
+    >
+    </app-empty-screen>
   </ion-list>
 
   <!-------------------->
