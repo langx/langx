@@ -25,6 +25,33 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
+  <ion-card>
+    <ion-card-content>
+      <ion-segment [scrollable]="true" value="heart">
+        <ion-segment-button value="home">
+          <ion-icon name="home-outline" color="primary"></ion-icon>
+          <ion-label>For You</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="heart">
+          <ion-icon name="checkbox-outline" color="success"></ion-icon>
+          <ion-label>Enthusiasts</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="pin">
+          <ion-icon name="hand-left-outline" color="secondary"></ion-icon>
+          <ion-label>New Users</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="star">
+          <ion-icon name="battery-charging-outline" color="success"></ion-icon>
+          <ion-label>Active</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="call">
+          <ion-icon name="eye-outline" color="dark"></ion-icon>
+          <ion-label>Visitors</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-card-content>
+  </ion-card>
+
   <ion-card *ngIf="(usersByTargetLanguage$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-title>Language Mates</ion-card-title>
