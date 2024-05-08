@@ -95,15 +95,6 @@ export class TargetLanguageComponent implements OnInit {
   }
 
   //
-  // Pull to refresh
-  //
-
-  handleRefresh(event) {
-    this.listUsers();
-    if (event) event.target.complete();
-  }
-
-  //
   // Infinite Scroll
   //
 
