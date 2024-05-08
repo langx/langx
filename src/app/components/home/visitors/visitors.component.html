@@ -5,8 +5,8 @@
   <ion-card-subtitle>👀 Recent Profile Views</ion-card-subtitle>
 </ion-card-header>
 <ion-card-content>
-  <ion-list *ngIf="!(isLoadingVisits$ | async)">
-    <ng-container *ngFor="let visit of visits$ | async | slice : 0 : 25">
+  <ion-list>
+    <ng-container *ngFor="let visit of visits$ | async">
       <app-visit-list
         [item]="visit"
         *ngIf="visit?.from?.$id !== 'deleted-user'"
@@ -14,8 +14,8 @@
     </ng-container>
   </ion-list>
 
-  <ion-list *ngIf="isLoadingVisits$ | async">
-    <ion-item *ngFor="let i of '01234'.split('')" detail>
+  <ion-list *ngIf="isLoading$ | async">
+    <ion-item *ngFor="let i of '0123456789'.split('')" detail>
       <ion-thumbnail class="visitor-thumbnail" slot="start">
         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
       </ion-thumbnail>
@@ -35,13 +35,8 @@
       </ion-label>
     </ion-item>
   </ion-list>
-
-  <ion-button
-    fill="clear"
-    expand="block"
-    (click)="getVisitsPage()"
-    [disabled]="isLoadingVisits$ | async"
-  >
-    See More
-  </ion-button>
 </ion-card-content>
+
+<ion-infinite-scroll (ionInfinite)="loadMore($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { Visit } from 'src/app/models/Visit';
+import { getVisitsWithOffsetAction } from 'src/app/store/actions/visits.action';
 
 import {
   isLoadingSelector,
@@ -17,25 +17,54 @@ import {
   styleUrls: ['./visitors.component.scss'],
 })
 export class VisitorsComponent implements OnInit {
-  isLoadingVisits$: Observable<boolean>;
+  isLoading$: Observable<boolean> = null;
   visits$: Observable<Visit[] | null> = null;
-  totalVisits$: Observable<number | null> = null;
+  total$: Observable<number | null> = null;
+
   model = {
     icon: 'people-outline',
-    title: 'No Profile Visitors Yet',
+    title: 'No Visitors Yet',
     color: 'warning',
   };
 
-  constructor(private store: Store, private router: Router) {}
+  constructor(private store: Store) {}
 
   ngOnInit() {
-    // Visits
-    this.isLoadingVisits$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.visits$ = this.store.pipe(select(visitsSelector));
-    this.totalVisits$ = this.store.pipe(select(totalSelector));
+    this.total$ = this.store.pipe(select(totalSelector));
   }
 
-  getVisitsPage() {
-    this.router.navigateByUrl('/home/visitors');
+  //
+  // Infinite Scroll
+  //
+
+  loadMore(event) {
+    // Offset is the number of users already loaded
+    let offset: number = 0;
+    this.visits$
+      .subscribe((visits) => {
+        offset = visits.length;
+        this.total$
+          .subscribe((total) => {
+            if (offset < total) {
+              // console.log('offset', offset);
+              // console.log('total', total);
+              this.store.dispatch(
+                getVisitsWithOffsetAction({
+                  request: {
+                    offset,
+                  },
+                })
+              );
+            } else {
+              console.log('All visits loaded');
+            }
+          })
+          .unsubscribe();
+      })
+      .unsubscribe();
+
+    event.target.complete();
   }
 }
