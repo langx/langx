@@ -11,10 +11,21 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
 import { TargetLanguageComponent } from './target-language/target-language.component';
 import { EnthusiastComponent } from './enthusiast/enthusiast.component';
 import { NewComponent } from './new/new.component';
+import { OnlineComponent } from './online/online.component';
 
 @NgModule({
-  declarations: [TargetLanguageComponent, EnthusiastComponent, NewComponent],
+  declarations: [
+    TargetLanguageComponent,
+    EnthusiastComponent,
+    NewComponent,
+    OnlineComponent,
+  ],
   imports: [CommonModule, IonicModule, ComponentsModule, AppExtrasModule],
-  exports: [TargetLanguageComponent, EnthusiastComponent, NewComponent],
+  exports: [
+    TargetLanguageComponent,
+    EnthusiastComponent,
+    NewComponent,
+    OnlineComponent,
+  ],
 })
 export class HomeComponentsModule {}
