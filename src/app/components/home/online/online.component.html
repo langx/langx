@@ -3,53 +3,77 @@
   <ion-card-subtitle>⚡ Engaged Members</ion-card-subtitle>
 </ion-card-header>
 <ion-card-content>
-  <ion-list>
-    <ng-container *ngFor="let user of usersByLastSeen$ | async">
-      <app-user-list
-        *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
-        [item]="user"
-        (onClick)="getUserPage(user?.$id)"
-      >
-      </app-user-list>
-    </ng-container>
-    <app-empty-screen
-      *ngIf="(usersByLastSeen$ | async)?.length == 0"
-      [model]="noUser"
-    >
-    </app-empty-screen>
-  </ion-list>
-
+  <ion-grid>
+    <ion-row>
+      <ng-container *ngFor="let user of usersByLastSeen$ | async">
+        <ion-col
+          size="6"
+          sizeSm="4"
+          sizeMd="4"
+          sizeLg="3"
+          sizeXl="2"
+          style="padding: 10px"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getUserPage(user?.$id)"
+          >
+          </app-user-list>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <app-empty-screen
+          *ngIf="(usersByLastSeen$ | async)?.length == 0"
+          [model]="noUser"
+        >
+        </app-empty-screen>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <!-------------------->
   <!-- SKELETON start -->
   <!-------------------->
 
-  <ion-list *ngIf="isLoading$ | async">
-    <ion-item *ngFor="let i of '0123456789'.split('')">
-      <ion-thumbnail slot="start">
-        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-      </ion-thumbnail>
-      <ion-label>
-        <h3>
-          <ion-skeleton-text
-            [animated]="true"
-            style="width: 80%"
-          ></ion-skeleton-text>
-        </h3>
-        <p>
-          <ion-skeleton-text
-            [animated]="true"
-            style="width: 60%"
-          ></ion-skeleton-text>
-        </p>
-        <p>
-          <ion-skeleton-text
-            [animated]="true"
-            style="width: 30%"
-          ></ion-skeleton-text>
-        </p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-grid *ngIf="isLoading$ | async">
+    <ion-row>
+      <ng-container *ngFor="let i of '01234567890123456789'.split('')">
+        <ion-col
+          size="6"
+          sizeSm="4"
+          sizeMd="4"
+          sizeLg="3"
+          sizeXl="2"
+          style="padding: 10px"
+        >
+          <ion-card>
+            <ion-card-content>
+              <h3>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 80%"
+                ></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 60%"
+                ></ion-skeleton-text>
+              </p>
+              <p>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="width: 30%"
+                ></ion-skeleton-text>
+              </p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+  </ion-grid>
 
   <!------------------>
   <!-- SKELETON end -->
