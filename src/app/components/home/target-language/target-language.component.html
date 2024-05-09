@@ -3,22 +3,36 @@
   <ion-card-subtitle>🎯 Recommended For You</ion-card-subtitle>
 </ion-card-header>
 <ion-card-content>
-  <ion-list class="horizontal-list">
-    <ng-container *ngFor="let user of usersByTargetLanguage$ | async">
-      <app-user-list
-        *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
-        [item]="user"
-        (onClick)="getUserPage(user?.$id)"
-      >
-      </app-user-list>
-    </ng-container>
-    <app-empty-screen
-      *ngIf="(usersByTargetLanguage$ | async)?.length == 0"
-      [model]="noUser"
-    >
-    </app-empty-screen>
-  </ion-list>
-
+  <ion-grid>
+    <ion-row>
+      <ng-container *ngFor="let user of usersByTargetLanguage$ | async">
+        <ion-col
+          size="6"
+          sizeSm="4"
+          sizeMd="4"
+          sizeLg="3"
+          sizeXl="2"
+          style="padding: 10px"
+        >
+          <app-user-list
+            *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
+            [item]="user"
+            (onClick)="getUserPage(user?.$id)"
+          >
+          </app-user-list>
+        </ion-col>
+      </ng-container>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <app-empty-screen
+          *ngIf="(usersByTargetLanguage$ | async)?.length == 0"
+          [model]="noUser"
+        >
+        </app-empty-screen>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <!-------------------->
   <!-- SKELETON start -->
   <!-------------------->
