@@ -37,6 +37,14 @@ export class UserListComponent implements OnInit {
     return studyLanguages.join(', ');
   }
 
+  getMotherLanguages() {
+    let motherLanguages = this.item?.languages
+      .filter((language) => language?.motherLanguage)
+      .map((language) => language?.name);
+    console.log(motherLanguages);
+    return motherLanguages.join(', ');
+  }
+
   //
   // Utils
   //
