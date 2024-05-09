@@ -1,20 +1,53 @@
-.thumbnail-container {
+ion-thumbnail {
+  --size: 100%;
+  margin-bottom: 30px;
+  --border-radius: 20px;
   position: relative;
-  display: inline-block;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to top, var(--ion-color-dark), transparent);
+    z-index: 1; /* Add this line */
+  }
+}
+
+.thumbnail-text {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--ion-color-light);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0); /* Make this transparent */
+  // padding: 10px; /* Add padding as needed */
+  font-size: 0.5em; /* Adjust as needed */
+  width: 100%; /* Add this line */
+  white-space: nowrap; /* Add this line */
+  overflow: hidden; /* Add this line */
+  text-overflow: ellipsis; /* Add this line */
+  z-index: 2; /* Add this line */
 }
 
 .emoji-indicator {
   position: absolute;
-  bottom: 0px;
-  right: 3px;
+  top: 5px;
+  left: 10px;
   font-size: 15px;
+  z-index: 2;
 }
 
-ion-thumbnail {
-  --size: 75px; // Increase this value to make the thumbnail bigger
-  margin-top: 5px;
-  margin-bottom: 5px;
-  --border-radius: 10px;
+.badge-indicator {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 15px;
+  z-index: 2;
 }
 
 .contributor {

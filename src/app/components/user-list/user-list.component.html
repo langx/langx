@@ -1,4 +1,4 @@
-<ion-item (click)="redirect()">
+<!-- <ion-item (click)="redirect()">
   <ion-thumbnail class="thumbnail-container" slot="start">
     <img
       [src]="profilePic$ | async"
@@ -11,7 +11,7 @@
       <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>
       <small *ngIf="onlineStatus(item?.lastSeen) == 'away'">🟡</small>
       <small *ngIf="onlineStatus(item?.lastSeen) == 'offline'">🟠</small>
-      <!-- <small *ngIf="onlineStatus(item?.lastSeen) == 'none'">🔴</small> -->
+      <small *ngIf="onlineStatus(item?.lastSeen) == 'none'">🔴</small>
     </div>
   </ion-thumbnail>
   <ion-label>
@@ -35,4 +35,51 @@
     </p>
     <p></p>
   </ion-label>
-</ion-item>
+</ion-item> -->
+
+<!-- <ion-card class="music-card">
+  <ion-card-header> -->
+<ion-thumbnail slot="start">
+  <img
+    [src]="profilePic$ | async"
+    alt=""
+    referrerpolicy="no-referrer"
+    [class.contributor]="item?.contributors && item?.contributors.length > 0"
+    [class.sponsor]="item?.sponsor"
+  />
+  <div class="emoji-indicator">
+    <small *ngIf="onlineStatus(item?.lastSeen) == 'online'">🟢</small>
+    <small *ngIf="onlineStatus(item?.lastSeen) == 'away'">🟡</small>
+    <small *ngIf="onlineStatus(item?.lastSeen) == 'offline'">🟠</small>
+    <!-- <small *ngIf="onlineStatus(item?.lastSeen) == 'none'">🔴</small> -->
+  </div>
+  <div class="badge-indicator">
+    <ion-badge color="primary">70</ion-badge>
+  </div>
+  <div class="thumbnail-text">
+    <p>
+      {{ getFlagEmoji(item) }}
+      {{ item?.name }}
+    </p>
+    <!-- <p>
+      <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
+      <ion-text *ngIf="!item?.aboutMe">
+        No 'About Me' text provided yet. 💬
+      </ion-text>
+    </p> -->
+    <!-- <p>
+      <ion-text style="font-style: italic">
+        Learning:
+        <span>
+          {{ getStudyLanguages() }}
+        </span>
+      </ion-text>
+    </p> -->
+  </div>
+</ion-thumbnail>
+<!-- </ion-card-header>
+  <ion-card-content text-center>
+    <h2>29 #Strafford APTS</h2>
+    <p>Bon Iver — 22, A Million</p>
+  </ion-card-content>
+</ion-card> -->
