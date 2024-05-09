@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { getFlagEmoji, lastSeenExt } from 'src/app/extras/utils';
+import { getAge, getFlagEmoji, lastSeenExt } from 'src/app/extras/utils';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 
@@ -42,5 +42,9 @@ export class AboutmeCardComponent implements OnInit {
 
   getFlagEmoji(item: User) {
     return getFlagEmoji(item);
+  }
+
+  getAge(date: Date) {
+    return getAge(date);
   }
 }
