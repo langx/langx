@@ -1,5 +1,7 @@
 import { FormControl } from '@angular/forms';
+
 import { User } from '../models/User';
+import { language2Country } from './language2Country';
 
 export function lastSeen(date: Date) {
   let now = new Date();
@@ -177,6 +179,18 @@ export function dateValidator(control: FormControl) {
 export function getFlagEmoji(item: User) {
   if (!item || !item['countryCode']) return '';
   const codePoints = item['countryCode']
+    .toUpperCase()
+    .split('')
+    .map((char) => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
+
+export function getFlagEmoji2(languageCode) {
+  const countryCode = language2Country[languageCode];
+  if (!countryCode) {
+    return '🏳️'; // White flag emoji
+  }
+  const codePoints = countryCode
     .toUpperCase()
     .split('')
     .map((char) => 127397 + char.charCodeAt());
