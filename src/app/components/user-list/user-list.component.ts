@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { getFlagEmoji, onlineStatus } from 'src/app/extras/utils';
+import { getFlagEmoji2, onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
 // Services Imports
@@ -33,25 +33,22 @@ export class UserListComponent implements OnInit {
   getStudyLanguages() {
     let studyLanguages = this.item?.languages
       .filter((language) => !language?.motherLanguage)
-      .map((language) => language?.name);
-    return studyLanguages.join(', ');
+      .map((language) => language?.code);
+    const flags = studyLanguages.map((lang) => getFlagEmoji2(lang));
+    return flags;
   }
 
   getMotherLanguages() {
     let motherLanguages = this.item?.languages
       .filter((language) => language?.motherLanguage)
-      .map((language) => language?.name);
-    console.log(motherLanguages);
-    return motherLanguages.join(', ');
+      .map((language) => language?.code);
+    const flags = motherLanguages.map((lang) => getFlagEmoji2(lang));
+    return flags;
   }
 
   //
   // Utils
   //
-
-  getFlagEmoji(item: User) {
-    return getFlagEmoji(item);
-  }
 
   onlineStatus(d: any) {
     if (!d) return null;
