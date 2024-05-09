@@ -35,7 +35,7 @@ export class UserListComponent implements OnInit {
       .filter((language) => !language?.motherLanguage)
       .map((language) => language?.code);
     const flags = studyLanguages.map((lang) => getFlagEmoji2(lang));
-    return flags;
+    return flags.join(' ');
   }
 
   getMotherLanguages() {
@@ -43,7 +43,7 @@ export class UserListComponent implements OnInit {
       .filter((language) => language?.motherLanguage)
       .map((language) => language?.code);
     const flags = motherLanguages.map((lang) => getFlagEmoji2(lang));
-    return flags;
+    return flags.join(' ');
   }
 
   //
