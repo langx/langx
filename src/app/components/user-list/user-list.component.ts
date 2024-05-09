@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { getFlagEmoji2, onlineStatus } from 'src/app/extras/utils';
+import { getAge, getFlagEmoji2, onlineStatus } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
 // Services Imports
@@ -53,5 +53,9 @@ export class UserListComponent implements OnInit {
   onlineStatus(d: any) {
     if (!d) return null;
     return onlineStatus(d);
+  }
+
+  getAge(date: Date) {
+    return getAge(date);
   }
 }

@@ -13,7 +13,7 @@
     <!-- <small *ngIf="onlineStatus(item?.lastSeen) == 'none'">🔴</small> -->
   </div>
   <div class="badge-indicator">
-    <ion-badge color="primary">70</ion-badge>
+    <ion-badge color="primary">{{ getAge(item?.birthdate) }}</ion-badge>
   </div>
   <div class="thumbnail-text">
     <strong>
