@@ -3,7 +3,7 @@
   <ion-card-subtitle>🎯 Recommended For You</ion-card-subtitle>
 </ion-card-header>
 <ion-card-content>
-  <ion-list>
+  <ion-list class="horizontal-list">
     <ng-container *ngFor="let user of usersByTargetLanguage$ | async">
       <app-user-list
         *ngIf="!(currentUser$ | async)?.blockedUsers.includes(user?.$id)"
@@ -23,7 +23,7 @@
   <!-- SKELETON start -->
   <!-------------------->
 
-  <ion-list *ngIf="isLoading$ | async">
+  <!-- <ion-list *ngIf="isLoading$ | async">
     <ion-item *ngFor="let i of '0123456789'.split('')">
       <ion-thumbnail slot="start">
         <ion-skeleton-text [animated]="true"></ion-skeleton-text>
@@ -49,7 +49,7 @@
         </p>
       </ion-label>
     </ion-item>
-  </ion-list>
+  </ion-list> -->
 
   <!------------------>
   <!-- SKELETON end -->
