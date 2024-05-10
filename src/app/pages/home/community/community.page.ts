@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
@@ -61,6 +61,7 @@ export class CommunityPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
+    private cdr: ChangeDetectorRef,
     private filterService: FilterService,
     private storageService: StorageService,
     private toastController: ToastController
@@ -130,8 +131,8 @@ export class CommunityPage implements OnInit {
   //
 
   segmentChanged(event: any) {
-    // console.log('Segment changed', event.detail.value);
     this.segment = event.detail.value;
+    this.cdr.detectChanges();
   }
 
   //
