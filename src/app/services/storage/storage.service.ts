@@ -34,10 +34,10 @@ export class StorageService {
     return this.storage.getFilePreview(
       bucketId,
       fileId,
-      190,
-      190,
+      350,
+      350,
       ImageGravity.Center,
-      45
+      75
     );
   }
 
