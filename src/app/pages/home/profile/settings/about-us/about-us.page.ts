@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class AboutUsPage implements OnInit {
   public contributorsPages = [
     {
-      title: 'Contributors',
+      title: 'Fundamentals',
       url: 'contributors',
       icon: 'people-outline',
       detail: true,
