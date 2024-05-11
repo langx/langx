@@ -5,8 +5,8 @@ import { EffectsModule } from '@ngrx/effects';
 import { IonicModule } from '@ionic/angular';
 import { StoreModule } from '@ngrx/store';
 
-import { ContributorsPageRoutingModule } from './contributors-routing.module';
-import { ContributorsPage } from './contributors.page';
+import { FundamentalsPageRoutingModule } from './fundamentals-routing.module';
+import { FundamentalsPage } from './fundamentals.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { contributorsReducers } from 'src/app/store/reducers/contributors.reducer';
 import { ContributorsEffects } from 'src/app/store/effects/contributors.effect';
@@ -16,11 +16,11 @@ import { ContributorsEffects } from 'src/app/store/effects/contributors.effect';
     CommonModule,
     FormsModule,
     IonicModule,
-    ContributorsPageRoutingModule,
+    FundamentalsPageRoutingModule,
     ComponentsModule,
     StoreModule.forFeature('contributor', contributorsReducers),
     EffectsModule.forFeature([ContributorsEffects]),
   ],
-  declarations: [ContributorsPage],
+  declarations: [FundamentalsPage],
 })
-export class ContributorsPageModule {}
+export class FundamentalsPageModule {}

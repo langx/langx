@@ -137,10 +137,10 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'contributors',
+    path: 'fundamentals',
     loadChildren: () =>
-      import('./profile/settings/contributors/contributors.module').then(
-        (m) => m.ContributorsPageModule
+      import('./profile/settings/fundamentals/fundamentals.module').then(
+        (m) => m.FundamentalsPageModule
       ),
   },
   {

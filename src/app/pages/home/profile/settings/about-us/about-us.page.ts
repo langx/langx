@@ -15,7 +15,7 @@ export class AboutUsPage implements OnInit {
   public contributorsPages = [
     {
       title: 'Fundamentals',
-      url: 'contributors',
+      url: 'fundamentals',
       icon: 'people-outline',
       detail: true,
     },

@@ -17,11 +17,11 @@ import {
 } from 'src/app/store/selectors/contributors.selector';
 
 @Component({
-  selector: 'app-contributors',
-  templateUrl: './contributors.page.html',
-  styleUrls: ['./contributors.page.scss'],
+  selector: 'app-fundamentals',
+  templateUrl: './fundamentals.page.html',
+  styleUrls: ['./fundamentals.page.scss'],
 })
-export class ContributorsPage implements OnInit {
+export class FundamentalsPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
 
   subscription: Subscription;
