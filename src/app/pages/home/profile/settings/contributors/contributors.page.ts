@@ -30,6 +30,12 @@ export class ContributorsPage implements OnInit {
   currentUser$: Observable<User> = null;
   users$: Observable<User[] | null> = null;
 
+  noUser = {
+    icon: 'people-outline',
+    title: 'No Users Yet',
+    color: 'warning',
+  };
+
   constructor(
     private store: Store,
     private router: Router,
