@@ -74,8 +74,9 @@ To check the status of the website, database and CDN, and all clients which are 
 - API: [Expressjs, Nodejs](https://github.com/langx/api)
 - Cloud Functions: [Appwrite](https://appwrite.io/)
 - Push Notification: [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging)
-- Storage: [DigitalOcean Spaces](https://www.digitalocean.com/products/spaces/)
+- Storage: [Backblaze](https://www.backblaze.com/)
 - Analytics: [Plausible Community Ed.](https://github.com/langx/insight)
+- Litepaper: [Gitbook](https://www.gitbook.com/)
 
 ## Links
 
