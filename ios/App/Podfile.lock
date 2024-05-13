@@ -1,32 +1,32 @@
 PODS:
-  - Capacitor (5.5.1):
+  - Capacitor (6.0.0):
     - CapacitorCordova
-  - CapacitorApp (5.0.6):
+  - CapacitorApp (6.0.0):
     - Capacitor
-  - CapacitorBrowser (5.1.0):
+  - CapacitorBrowser (6.0.0):
     - Capacitor
-  - CapacitorCamera (5.0.7):
+  - CapacitorCamera (6.0.0):
     - Capacitor
-  - CapacitorClipboard (5.0.7):
+  - CapacitorClipboard (6.0.0):
     - Capacitor
-  - CapacitorCommunityNativeMarket (5.0.0):
+  - CapacitorCommunityNativeMarket (6.0.0):
     - Capacitor
-  - CapacitorCordova (5.5.1)
-  - CapacitorFilesystem (5.1.4):
+  - CapacitorCordova (6.0.0)
+  - CapacitorFilesystem (6.0.0):
     - Capacitor
-  - CapacitorHaptics (5.0.6):
+  - CapacitorHaptics (6.0.0):
     - Capacitor
-  - CapacitorKeyboard (5.0.6):
+  - CapacitorKeyboard (6.0.0):
     - Capacitor
-  - CapacitorPreferences (5.0.6):
+  - CapacitorPreferences (6.0.0):
     - Capacitor
-  - CapacitorPushNotifications (5.1.0):
+  - CapacitorPushNotifications (6.0.0):
     - Capacitor
   - CapacitorRateApp (4.0.3):
     - Capacitor
-  - CapacitorSplashScreen (5.0.6):
+  - CapacitorSplashScreen (6.0.0):
     - Capacitor
-  - CapacitorStatusBar (5.0.6):
+  - CapacitorStatusBar (6.0.0):
     - Capacitor
   - CapacitorVoiceRecorder (5.0.0):
     - Capacitor
@@ -159,21 +159,21 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capgo/inappbrowser"
 
 SPEC CHECKSUMS:
-  Capacitor: 9da0a2415e3b6098511f8b5ffdb578d91ee79f8f
-  CapacitorApp: 024e1b1bea5f883d79f6330d309bc441c88ad04a
-  CapacitorBrowser: 7a0fb6a1011abfaaf2dfedfd8248f942a8eda3d6
-  CapacitorCamera: 084b0b228bba7d00587910337b1c89e93b1d32ab
-  CapacitorClipboard: 45e5e25f2271f98712985d422776cdc5a779cca1
-  CapacitorCommunityNativeMarket: 70b329cac2db3aee51430c83cdbe63cfc7c250bd
-  CapacitorCordova: e128cc7688c070ca0bfa439898a5f609da8dbcfe
-  CapacitorFilesystem: af704badfbc69f6f8623d9ed313e5490e3723dcb
-  CapacitorHaptics: 1fffc1217c7e64a472d7845be50fb0c2f7d4204c
-  CapacitorKeyboard: b978154b024a5f65e044908e37d15b7de58b9d12
-  CapacitorPreferences: f03954bcb0ff09c792909e46bff88e3183c16b10
-  CapacitorPushNotifications: b31e326c6e4eb216a622041d6ca21a973f34943f
+  Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
+  CapacitorApp: 9d53aec7101f7b030a950c5bdc4df8612576b279
+  CapacitorBrowser: 7e1e2cdbb3e372f09f0bad0c4c21a6d187b679ad
+  CapacitorCamera: b61f125d92a0ef75d7becb7956fed7dd13187ee0
+  CapacitorClipboard: 80282f684154124b9019ebf401235b70b0cf4994
+  CapacitorCommunityNativeMarket: fca5eb9715ca0b5865e56529d7da65529593176f
+  CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
+  CapacitorFilesystem: 60e59ba274c234a979e7a3be2552feaadcee4263
+  CapacitorHaptics: 9ebc9363f0e9b8eb4295088a0b474530acf1859b
+  CapacitorKeyboard: deacbd09d8d1029c3681197fb05d206b721d5f73
+  CapacitorPreferences: c9b839a80baa72e4ed4bdb117618e1950d3046b5
+  CapacitorPushNotifications: e18636e8a96f1d70b4c669e21c730e995bf5e5c9
   CapacitorRateApp: 896df7ec6a237fea72d1955e0cb26394654b00db
-  CapacitorSplashScreen: 5fa2ab5e46cf5cc530cf16a51c80c7a986579ccd
-  CapacitorStatusBar: 565c0a1ebd79bb40d797606a8992b4a105885309
+  CapacitorSplashScreen: 5431ab8d19c1c6e95777d53bfaa7a36a6c3d94c7
+  CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
   CapacitorVoiceRecorder: 872ea857b497ce2c71afe3e4eb5de0a74290c0db
   CapawesomeCapacitorBadge: 2b9919ea79b85bdc5455143cf6607c9e25bec9ae
   CapgoInappbrowser: c09c59d07034b30da623d3e1e0fc7f603665bae2
