@@ -222,8 +222,7 @@ export class AccountPage implements OnInit {
   async presentErrorAlertAfterDelete() {
     const alert = await this.alertController.create({
       header: 'Information',
-      message:
-        'Please send your deletion request via email to info@languageXchange.net',
+      message: 'Please send your deletion request via email to hi@langx.io',
       buttons: ['OK'],
     });
 
