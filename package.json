@@ -42,7 +42,7 @@
     "@capacitor/push-notifications": "^6.0.0",
     "@capacitor/splash-screen": "^6.0.0",
     "@capacitor/status-bar": "^6.0.0",
-    "@capawesome/capacitor-badge": "^5.0.0",
+    "@capawesome/capacitor-badge": "^6.0.0",
     "@capgo/inappbrowser": "^1.3.3",
     "@ionic/angular": "^8.1.1",
     "@ionic/pwa-elements": "^3.2.2",
