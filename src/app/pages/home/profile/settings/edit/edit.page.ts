@@ -52,6 +52,7 @@ import {
   editProfileErrorSelector,
   isLoadingSelector,
 } from 'src/app/store/selectors/auth.selector';
+import { clearErrorsAction } from 'src/app/store/actions/auth.action';
 
 @Component({
   selector: 'app-edit',
@@ -135,8 +136,10 @@ export class EditPage implements OnInit {
       this.store
         .pipe(select(editProfileErrorSelector))
         .subscribe((error: ErrorInterface) => {
-          if (error && error.message)
+          if (error && error.message) {
             this.presentToast(error.message, 'danger');
+            this.store.dispatch(clearErrorsAction());
+          }
         })
     );
   }

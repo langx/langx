@@ -11,7 +11,10 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 // Actions Imports
 import { getCurrentUserAction } from 'src/app/store/actions/user.action';
-import { logoutAction } from 'src/app/store/actions/auth.action';
+import {
+  clearErrorsAction,
+  logoutAction,
+} from 'src/app/store/actions/auth.action';
 
 // Selectors Imports
 import {
@@ -100,8 +103,10 @@ export class ProfilePage implements OnInit {
       this.store
         .pipe(select(profileErrorSelector))
         .subscribe((error: ErrorInterface) => {
-          if (error && error.message)
+          if (error && error.message) {
             this.presentToast(error.message, 'danger');
+            this.store.dispatch(clearErrorsAction());
+          }
         })
     );
   }
