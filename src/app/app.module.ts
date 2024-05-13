@@ -28,7 +28,7 @@ import { AuthEffect } from 'src/app/store/effects/auth.effect';
     StoreDevtoolsModule.instrument({
       maxAge: 250,
       logOnly: environment.production,
-    }),
+    connectInZone: true}),
     EffectsModule.forRoot([]),
     StoreModule.forFeature('auth', authReducers),
     StoreModule.forFeature('locale', localeReducers),
