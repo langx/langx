@@ -16,17 +16,17 @@
     "lint": "ng lint"
   },
   "dependencies": {
-    "@angular/animations": "^16.0.0",
-    "@angular/common": "^16.0.0",
-    "@angular/compiler": "^16.0.0",
-    "@angular/core": "^16.0.0",
+    "@angular/animations": "^17.3.8",
+    "@angular/common": "^17.3.8",
+    "@angular/compiler": "^17.3.8",
+    "@angular/core": "^17.3.8",
     "@angular/fire": "^16.0.0",
-    "@angular/forms": "^16.0.0",
-    "@angular/platform-browser": "^16.0.0",
-    "@angular/platform-browser-dynamic": "^16.0.0",
+    "@angular/forms": "^17.3.8",
+    "@angular/platform-browser": "^17.3.8",
+    "@angular/platform-browser-dynamic": "^17.3.8",
     "@angular/pwa": "^16.0.0",
-    "@angular/router": "^16.0.0",
-    "@angular/service-worker": "^16.2.7",
+    "@angular/router": "^17.3.8",
+    "@angular/service-worker": "^17.3.8",
     "@capacitor-community/native-market": "^5.0.0",
     "@capacitor/android": "5.5.1",
     "@capacitor/app": "^5.0.6",
@@ -60,19 +60,18 @@
     "swiper": "^11.0.5",
     "tslib": "^2.3.0",
     "uuid": "^9.0.1",
-    "zone.js": "~0.13.0"
+    "zone.js": "~0.14.5"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^16.2.12",
+    "@angular-devkit/build-angular": "^17.3.7",
     "@angular-eslint/builder": "^16.0.0",
     "@angular-eslint/eslint-plugin": "^16.0.0",
     "@angular-eslint/eslint-plugin-template": "^16.0.0",
     "@angular-eslint/schematics": "^16.0.0",
     "@angular-eslint/template-parser": "^16.0.0",
-    "@angular/cli": "^16.0.0",
-    "@angular/compiler": "^16.0.0",
-    "@angular/compiler-cli": "^16.0.0",
-    "@angular/language-service": "^16.0.0",
+    "@angular/cli": "^17.3.7",
+    "@angular/compiler-cli": "^17.3.8",
+    "@angular/language-service": "^17.3.8",
     "@capacitor/assets": "^3.0.4",
     "@capacitor/cli": "^5.5.1",
     "@ionic/angular-toolkit": "^9.0.0",
@@ -94,7 +93,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "ts-node": "^8.3.0",
-    "typescript": "~5.0.2"
+    "typescript": "~5.4.5"
   },
   "resolutions": {
     "semver": ">=7.5.2"
