@@ -64,11 +64,9 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       preloadingStrategy: PreloadAllModules,
-      canceledNavigationResolution:
-        'replace' /* or 'computed' based on your requirement */,
-      paramsInheritanceStrategy:
-        'emptyOnly' /* or 'always' based on your requirement */,
-      urlUpdateStrategy: 'deferred' /* or 'eager' based on your requirement */,
+      canceledNavigationResolution: 'replace' /* or 'computed' */,
+      paramsInheritanceStrategy: 'emptyOnly' /* or 'always' */,
+      urlUpdateStrategy: 'deferred' /* or 'eager' */,
     }),
   ],
   exports: [RouterModule],
