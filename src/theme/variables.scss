@@ -199,6 +199,11 @@ body.dark {
   --ion-toolbar-border-color: var(--ion-color-step-250);
 }
 
+/* Apply Font Family to Bottom Tabs */
+ion-tab-bar {
+  font-family: var(--ion-font-family);
+}
+
 /*
  * Material Design Dark Theme
  * -------------------------------------------
