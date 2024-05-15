@@ -3,7 +3,7 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { RateApp } from 'capacitor-rate-app';
+import { InAppReview } from '@capacitor-community/in-app-review';
 
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
@@ -36,7 +36,7 @@ export class BucketEffects {
               .pipe(
                 map((userData: User) => {
                   // Request a review
-                  RateApp.requestReview();
+                  InAppReview.requestReview();
 
                   return uploadProfilePictureSuccessAction({
                     payload: userData,
