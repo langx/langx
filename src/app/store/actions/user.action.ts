@@ -129,3 +129,6 @@ export const getBlockedUsersFailureAction = createAction(
   ActionTypes.GET_BLOCKED_USERS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Clear Errors
+export const clearErrorsAction = createAction(ActionTypes.CLEAR_ERRORS);

@@ -16,6 +16,7 @@ import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   archiveRoomAction,
   archiveRoomInitialStateAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
@@ -89,6 +90,7 @@ export class MessagesPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );

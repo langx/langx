@@ -32,6 +32,7 @@ import {
   getUsersByCompletedProfileWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
+  clearErrorsAction,
   getUserByIdAction,
   getUserByIdFailureAction,
   getUserByIdSuccessAction,
@@ -354,6 +355,15 @@ const userReducer = createReducer(
     (state): UserStateInterface => ({
       ...state,
       report: null,
+    })
+  ),
+
+  // Clear Error Reducer
+  on(
+    clearErrorsAction,
+    (state): UserStateInterface => ({
+      ...state,
+      error: null,
     })
   )
 );
