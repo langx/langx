@@ -1,11 +1,19 @@
 {
-  "name": "langxapp",
+  "name": "@langx/langx",
   "version": "0.9.26",
-  "homepage": "https://langx.io/",
+  "homepage": "https://get.langx.io/",
   "description": "LangX | Practice, Learn, Succeed! Free and Open Sourced Language Exchange Project",
+  "author": "Xue <hi@langx.io>",
+  "keywords": [
+    "language, open-source, alternative, practice, culture, edtech, exchange, connect, learn, languages, tandem, languagelearning, language-exchange, langx, languageexchange, languagexchange, hellotalk "
+  ],
+  "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
     "url": "https://github.com/langx/langx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/langx/langx/issues"
   },
   "scripts": {
     "ng": "ng",
