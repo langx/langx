@@ -24,7 +24,7 @@ dependencies {
     implementation project(':capacitor-status-bar')
     implementation project(':capawesome-capacitor-badge')
     implementation project(':capgo-inappbrowser')
-    implementation project(':capacitor-voice-recorder')
+    implementation project(':langx-capacitor-voice-recorder')
 
 }
 

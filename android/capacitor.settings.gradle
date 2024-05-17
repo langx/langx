@@ -47,5 +47,5 @@ project(':capawesome-capacitor-badge').projectDir = new File('../node_modules/@c
 include ':capgo-inappbrowser'
 project(':capgo-inappbrowser').projectDir = new File('../node_modules/@capgo/inappbrowser/android')
 
-include ':capacitor-voice-recorder'
-project(':capacitor-voice-recorder').projectDir = new File('../node_modules/capacitor-voice-recorder/android')
+include ':langx-capacitor-voice-recorder'
+project(':langx-capacitor-voice-recorder').projectDir = new File('../node_modules/@langx/capacitor-voice-recorder/android')

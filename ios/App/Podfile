@@ -26,7 +26,7 @@ def capacitor_pods
   pod 'CapacitorStatusBar', :path => '../../node_modules/@capacitor/status-bar'
   pod 'CapawesomeCapacitorBadge', :path => '../../node_modules/@capawesome/capacitor-badge'
   pod 'CapgoInappbrowser', :path => '../../node_modules/@capgo/inappbrowser'
-  pod 'CapacitorVoiceRecorder', :path => '../../node_modules/capacitor-voice-recorder'
+  pod 'LangxCapacitorVoiceRecorder', :path => '../../node_modules/@langx/capacitor-voice-recorder'
 end
 
 target 'App' do
