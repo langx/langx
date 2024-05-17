@@ -36,33 +36,26 @@
 
 LangX is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
 
-## Table of Contents
+## Official Links
 
-- [Project Overview](#LangX--practice-learn-succeed)
-- [Status](#status)
-- [Tech Stack](#tech-stack)
-- [Links](#links)
-- [Installation](#installation)
-  - [Cloud Functions](#cloud-functions)
-- [Usage](#usage)
-- [Deep Linking](#deep-linking)
-  - [Android Deep Linking](#android-deep-linking)
-  - [iOS Universal Links](#ios-universal-links)
-- [Firebase Messaging Service Worker](#firebase-messaging-service-worker)
-- [Contributing](#contributing)
-- [Security](#security)
-  - [Paths](#paths)
-  - [Google Services](#google-services)
-- [Stats](#stats)
-  - [Stargazers](#stargazers)
-  - [Contributors](#contributors)
-- [License](#license)
+:tada: Hello Everyone! We're excited to announce that our official links here! We'd love for you to join us and give us a follow! Welcome aboard! :rocket:
 
-## Status
+**:computer: Website:** [https://langx.io/](https://langx.io/)
 
-This project is currently in Beta phase v0.9.x For more information, please refer to the project's GitHub repository.
+**:calling: Apps:** [https://get.langx.io](https://get.langx.io)
 
-To check the status of the website, database and CDN, and all clients which are [iOS](https://apps.apple.com/app/languagexchange/id6474187141), [Android](https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange), and [Web App](https://app.langx.io). please visit the following link: https://status.langx.io/
+:coin: **Token**
+
+- Website: [https://token.langx.io/](https://token.langx.io/)
+- Litepaper: [https://docs.langx.io](https://docs.langx.io)
+
+**:bar_chart: Insights:** [https://insight.langx.io](https://insight.langx.io)
+
+**:green_circle: Status :** [https://status.langx.io/](https://status.langx.io/)
+
+**:wrench: Backlog:** [https://backlog.langx.io/](https://backlog.langx.io/)
+
+**:envelope: Mail:** [hi@langx.io](mailto:hi@langx.io)
 
 ## Tech Stack
 
@@ -77,13 +70,6 @@ To check the status of the website, database and CDN, and all clients which are 
 - Storage: [Backblaze](https://www.backblaze.com/)
 - Analytics: [Plausible Community Ed.](https://github.com/langx/insight)
 - Litepaper: [Gitbook](https://www.gitbook.com/)
-
-## Links
-
-- [App Landing Page](https://langx.io/)
-- [iOS App](https://apps.apple.com/us/app/languagexchange/id6474187141)
-- [Android App](https://play.google.com/store/apps/details?id=tech.newchapter.languageXchange)
-- [Web App](https://app.langx.io/)
 
 ## Installation
 
