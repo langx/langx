@@ -5,7 +5,7 @@ import { Observable, Subscription, from, take } from 'rxjs';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
-import { RecordingData, VoiceRecorder } from 'capacitor-voice-recorder';
+import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { v4 as uuidv4 } from 'uuid';

@@ -28,8 +28,6 @@ PODS:
     - Capacitor
   - CapacitorStatusBar (6.0.0):
     - Capacitor
-  - CapacitorVoiceRecorder (5.0.0):
-    - Capacitor
   - CapawesomeCapacitorBadge (6.0.0):
     - Capacitor
   - CapgoInappbrowser (6.0.8):
@@ -80,6 +78,8 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.12.0):
     - GoogleUtilities/Logger
+  - LangxCapacitorVoiceRecorder (6.0.5):
+    - Capacitor
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
     - nanopb/encode (= 2.30909.1)
@@ -103,10 +103,10 @@ DEPENDENCIES:
   - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
   - "CapacitorSplashScreen (from `../../node_modules/@capacitor/splash-screen`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
-  - CapacitorVoiceRecorder (from `../../node_modules/capacitor-voice-recorder`)
   - "CapawesomeCapacitorBadge (from `../../node_modules/@capawesome/capacitor-badge`)"
   - "CapgoInappbrowser (from `../../node_modules/@capgo/inappbrowser`)"
   - Firebase/Messaging
+  - "LangxCapacitorVoiceRecorder (from `../../node_modules/@langx/capacitor-voice-recorder`)"
 
 SPEC REPOS:
   trunk:
@@ -151,12 +151,12 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/splash-screen"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
-  CapacitorVoiceRecorder:
-    :path: "../../node_modules/capacitor-voice-recorder"
   CapawesomeCapacitorBadge:
     :path: "../../node_modules/@capawesome/capacitor-badge"
   CapgoInappbrowser:
     :path: "../../node_modules/@capgo/inappbrowser"
+  LangxCapacitorVoiceRecorder:
+    :path: "../../node_modules/@langx/capacitor-voice-recorder"
 
 SPEC CHECKSUMS:
   Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
@@ -174,7 +174,6 @@ SPEC CHECKSUMS:
   CapacitorPushNotifications: e18636e8a96f1d70b4c669e21c730e995bf5e5c9
   CapacitorSplashScreen: 5431ab8d19c1c6e95777d53bfaa7a36a6c3d94c7
   CapacitorStatusBar: 2e4369f99166125435641b1908d05f561eaba6f6
-  CapacitorVoiceRecorder: 872ea857b497ce2c71afe3e4eb5de0a74290c0db
   CapawesomeCapacitorBadge: 3d0f281ad8e4a4f8db8c3d88b7622a7f4c413342
   CapgoInappbrowser: 30fa4af68835de2e10fb41d2eddce749b2fae0ba
   Firebase: 10c8cb12fb7ad2ae0c09ffc86cd9c1ab392a0031
@@ -184,9 +183,10 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 06c414a21b122396a26847c523d5c370f8325df5
   GoogleDataTransport: 57c22343ab29bc686febbf7cbb13bad167c2d8fe
   GoogleUtilities: 0759d1a57ebb953965c2dfe0ba4c82e95ccc2e34
+  LangxCapacitorVoiceRecorder: b1278175143b4d8da109dd17fb1c061462e691f5
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
 
-PODFILE CHECKSUM: fc5d9ffd4317fb4a51679e53ac3f9590ddbbc869
+PODFILE CHECKSUM: 0b28e15a17c89bac775f48c0387e17ff2f5f3d2d
 
 COCOAPODS: 1.15.2

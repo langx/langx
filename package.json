@@ -47,7 +47,7 @@
     "@capgo/inappbrowser": "^6.0.8",
     "@ionic/angular": "^8.1.1",
     "@ionic/pwa-elements": "^3.2.2",
-    "@langx/capacitor-voice-recorder": "^6.0.2",
+    "@langx/capacitor-voice-recorder": "^6.0.5",
     "@ngrx/effects": "^17.2.0",
     "@ngrx/store": "^17.2.0",
     "appwrite": "^14.0.1",
