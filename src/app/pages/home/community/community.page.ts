@@ -22,6 +22,7 @@ import {
   getUsersByLastSeenAction,
   getUsersByTargetLanguageAction,
 } from 'src/app/store/actions/users.action';
+import { clearErrorsAction } from 'src/app/store/actions/user.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -86,6 +87,7 @@ export class CommunityPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );
