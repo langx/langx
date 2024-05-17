@@ -1,9 +1,12 @@
 {
   "name": "@langx/langx",
   "version": "0.9.26",
-  "homepage": "https://get.langx.io/",
+  "homepage": "https://get.langx.io",
   "description": "LangX | Practice, Learn, Succeed! Free and Open Sourced Language Exchange Project",
-  "author": "Xue <hi@langx.io>",
+  "author": {
+    "name": "LangX",
+    "email": "hi@langx.io"
+  },
   "keywords": [
     "language, open-source, alternative, practice, culture, edtech, exchange, connect, learn, languages, tandem, languagelearning, language-exchange, langx, languageexchange, languagexchange, hellotalk "
   ],
