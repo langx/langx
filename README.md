@@ -8,7 +8,7 @@
   <a href="https://github.com/langx/langx/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/langx/langx.svg" alt="GitHub license"></a>
 </p>
 <p align="center">
-  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/badge/-Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://discord.langx.io" target="_blank"><img src="https://img.shields.io/badge/-Discord-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
   <a href="https://reddit.com/r/langx" target="_blank"><img src="https://img.shields.io/badge/-Reddit-FF5700?style=flat&logo=reddit&logoColor=white" alt="Reddit"></a>
   <a href="https://x.com/langx_app" target="_blank"><img src="https://img.shields.io/badge/-Twitter-1DA1F2?style=flat&logo=twitter&logoColor=white" alt="Twitter"></a>
   <a href="https://t.me/langxapp" target="_blank"><img src="https://img.shields.io/badge/-Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram"></a>
@@ -20,8 +20,8 @@
   <a href="https://www.linkedin.com/products/new-chapter-technology-limited-liability-company-languagexchange-practice-learn-succeed/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
 </p>
 <p align="center">
-  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
-  <a href="https://discord.com/invite/2D3jW2YDgS" target="_blank"><img src="https://dcbadge.vercel.app/api/server/2D3jW2YDgS?style=flat" alt="Join us on Discord"></a>
+  <a href="https://discord.langx.io" target="_blank"><img src="https://img.shields.io/discord/1211339989967970375?logo=discord" alt="chat on Discord"></a>
+  <a href="https://discord.langx.io" target="_blank"><img src="https://dcbadge.vercel.app/api/server/2D3jW2YDgS?style=flat" alt="Join us on Discord"></a>
 </p>
 <p align="center">
   <a href='https://apps.apple.com/app/languagexchange/id6474187141' target='_blank'><img src="https://github.com/langx/.github/blob/main/assets/ios.png" height="50"></a>
