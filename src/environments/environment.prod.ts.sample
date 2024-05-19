@@ -12,6 +12,7 @@ export const environment = {
   version: '1.0.0',
   bundleId: "<BUNDLE_ID>",
   iosId: 'id0000000000',
+  copilot: '<API_KEY>,
   appwrite: {
     APP_ENDPOINT: `${DB_URL}v1`,
     APP_PROJECT: "<APP_PROJECT>",
