@@ -179,14 +179,16 @@ export class ChatPage implements OnInit, OnDestroy {
       this.room$.subscribe((room) => {
         if (room != null) {
           this.subscriptions.add(
-            this.isUserAtBottom().subscribe((isAtBottom) => {
-              if (isAtBottom || this.isFirstLoad) {
-                // Wait for the view to update then scroll to bottom
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                }, 0);
-              }
-            })
+            this.isUserAtBottom()
+              .pipe(debounceTime(300))
+              .subscribe((isAtBottom) => {
+                if (isAtBottom || this.isFirstLoad) {
+                  // Wait for the view to update then scroll to bottom
+                  setTimeout(() => {
+                    this.content.scrollToBottom(300);
+                  }, 0);
+                }
+              })
           );
         }
       })
@@ -231,6 +233,7 @@ export class ChatPage implements OnInit, OnDestroy {
       });
     }
   }
+
   //
   // Form Submit
   //
@@ -793,7 +796,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   isUserAtBottom(): Observable<boolean> {
-    return from(this.checkIfUserAtBottom());
+    return from(this.checkIfUserAtBottom()).pipe(debounceTime(300)); // Throttle the calls
   }
 
   async checkIfUserAtBottom(): Promise<boolean> {
