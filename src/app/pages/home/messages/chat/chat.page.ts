@@ -1,15 +1,3 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from, take } from 'rxjs';
-import { Capacitor } from '@capacitor/core';
-import { Keyboard } from '@capacitor/keyboard';
-import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
-import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { v4 as uuidv4 } from 'uuid';
-import Compressor from 'compressorjs';
 import {
   Component,
   ElementRef,
@@ -24,6 +12,19 @@ import {
   IonTextarea,
   ToastController,
 } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription, from, debounceTime, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
+import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
+import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { v4 as uuidv4 } from 'uuid';
+import Compressor from 'compressorjs';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -120,6 +121,7 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
+    this.initKeyboardListeners();
   }
 
   ngAfterViewInit() {
@@ -150,21 +152,6 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-
-    if (Capacitor.getPlatform() !== 'web') {
-      // Scroll to bottom when keyboard is shown
-      Keyboard.addListener('keyboardDidShow', (info) => {
-        // console.log('keyboard did show with height:', info.keyboardHeight);
-        setTimeout(() => {
-          this.content.scrollToBottom(300);
-        }, 100);
-      });
-
-      // Keyboard.addListener('keyboardDidHide', () => {
-      //   // console.log('keyboard did hide');
-      //   this.content.scrollToBottom(300);
-      // });
-    }
   }
 
   initForm() {
@@ -228,6 +215,22 @@ export class ChatPage implements OnInit, OnDestroy {
     );
   }
 
+  initKeyboardListeners() {
+    if (Capacitor.getPlatform() !== 'web') {
+      // Scroll to bottom when keyboard is shown
+      Keyboard.addListener('keyboardDidShow', (info) => {
+        console.log('keyboard did show with height:', info.keyboardHeight);
+        setTimeout(() => {
+          this.content.scrollToBottom(300);
+        }, 100);
+      });
+
+      Keyboard.addListener('keyboardDidHide', () => {
+        console.log('keyboard did hide');
+        this.content.scrollToBottom(300);
+      });
+    }
+  }
   //
   // Form Submit
   //
