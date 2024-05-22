@@ -187,6 +187,7 @@ export class ChatPage implements OnInit, OnDestroy {
                   setTimeout(() => {
                     this.content.scrollToBottom(300);
                   }, 0);
+                  this.isFirstLoad = false; // Ensure this is only for the first load
                 }
               })
           );
@@ -272,7 +273,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     // Scroll to bottom
     setTimeout(() => {
-      this.content.scrollToBottom(300);
+      this.scrollToBottom();
     }, 100);
 
     // Reset the form and the variables
@@ -293,7 +294,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
       // Scroll to bottom
       setTimeout(() => {
-        this.content.scrollToBottom(300);
+        this.scrollToBottom();
       }, 100);
 
       // Reset the variable
@@ -312,13 +313,17 @@ export class ChatPage implements OnInit, OnDestroy {
 
       // Scroll to bottom
       setTimeout(() => {
-        this.content.scrollToBottom(300);
+        this.scrollToBottom();
       }, 100);
 
       // Reset the variable
       this.audioId = null;
       this.replyMessage = null;
     });
+  }
+
+  scrollToBottom() {
+    this.content.scrollToBottom(300);
   }
 
   //
@@ -763,14 +768,14 @@ export class ChatPage implements OnInit, OnDestroy {
     }
 
     // Offset is the number of messages that we already have
-    let offset: number = 0;
+    let offset = 0;
 
-    this.messages$
-      .subscribe((messages) => {
+    this.subscriptions.add(
+      this.messages$.pipe(take(1)).subscribe((messages) => {
         if (messages) {
           offset = messages.length;
-          this.total$
-            .subscribe((total) => {
+          this.subscriptions.add(
+            this.total$.pipe(take(1)).subscribe((total) => {
               if (offset < total) {
                 this.store.dispatch(
                   getMessagesWithOffsetAction({
@@ -778,17 +783,24 @@ export class ChatPage implements OnInit, OnDestroy {
                     offset: offset,
                   })
                 );
+
+                // Wait for the new messages to be added to the view
+                setTimeout(() => {
+                  console.log('Loaded more messages');
+                  event.target.complete(); // Mark infinite scroll as complete
+                }, 300); // Adjust timeout as necessary
               } else {
                 event.target.disabled = true;
                 console.log('All messages loaded');
+                event.target.complete();
               }
             })
-            .unsubscribe();
+          );
+        } else {
+          event.target.complete();
         }
       })
-      .unsubscribe();
-
-    event.target.complete();
+    );
   }
 
   //
