@@ -799,10 +799,17 @@ export class ChatPage implements OnInit, OnDestroy {
                     // Get the new content height
                     this.content.getScrollElement().then((newScrollElement) => {
                       const newContentHeight = newScrollElement.scrollHeight;
+                      // Calculate average message height
+                      const messageHeight =
+                        (newContentHeight - currentContentHeight) /
+                        (messages.length - offset);
+
                       // Adjust the scroll position to maintain the current view
+                      const scrollDifference =
+                        newContentHeight - currentContentHeight;
                       newScrollElement.scrollTop =
-                        currentScrollTop +
-                        (newContentHeight - currentContentHeight);
+                        currentScrollTop + scrollDifference;
+
                       event.target.complete(); // Mark infinite scroll as complete
                     });
                   }, 300); // Adjust timeout as necessary
