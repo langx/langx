@@ -109,6 +109,9 @@ export class ChatPage implements OnInit, OnDestroy {
   // Counter Variables
   isCounterShow: boolean = false;
 
+  // Add a flag to control infinite scroll
+  private enableInfiniteScroll: boolean = false;
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -186,7 +189,8 @@ export class ChatPage implements OnInit, OnDestroy {
                   // Wait for the view to update then scroll to bottom
                   setTimeout(() => {
                     this.content.scrollToBottom(300);
-                  }, 0);
+                    this.enableInfiniteScroll = true; // Enable infinite scroll after initial load
+                  }, 100);
                   this.isFirstLoad = false; // Ensure this is only for the first load
                 }
               })
@@ -760,6 +764,12 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   loadMore(event) {
+    // If infinite scroll is not enabled, do nothing and return
+    if (!this.enableInfiniteScroll) {
+      event.target.complete();
+      return;
+    }
+
     // If it's the first load, do nothing and return
     if (this.isFirstLoad) {
       this.isFirstLoad = false;
@@ -768,7 +778,7 @@ export class ChatPage implements OnInit, OnDestroy {
     }
 
     // Offset is the number of messages that we already have
-    let offset = 0;
+    let offset: number = 0;
 
     this.subscriptions.add(
       this.messages$.pipe(take(1)).subscribe((messages) => {
