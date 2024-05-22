@@ -26,14 +26,6 @@
   </ion-infinite-scroll>
 
   <ion-list>
-    <!-- Skeleton -->
-    <div class="ion-text-center">
-      <ion-spinner
-        *ngIf="(isLoading_offset$ | async)"
-        name="dots"
-      ></ion-spinner>
-    </div>
-
     <div class="message-container">
       <ion-item-group
         lines="none"
