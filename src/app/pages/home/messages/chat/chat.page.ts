@@ -109,6 +109,9 @@ export class ChatPage implements OnInit, OnDestroy {
   // Counter Variables
   isCounterShow: boolean = false;
 
+  // Add a flag to control infinite scroll
+  private enableInfiniteScroll: boolean = false;
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -186,7 +189,8 @@ export class ChatPage implements OnInit, OnDestroy {
                   // Wait for the view to update then scroll to bottom
                   setTimeout(() => {
                     this.content.scrollToBottom(300);
-                  }, 0);
+                    this.enableInfiniteScroll = true; // Enable infinite scroll after initial load
+                  }, 100);
                   this.isFirstLoad = false; // Ensure this is only for the first load
                 }
               })
@@ -760,47 +764,68 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   loadMore(event) {
-    // If it's the first load, do nothing and return
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
+    // If infinite scroll is not enabled, do nothing and return
+    if (!this.enableInfiniteScroll) {
       event.target.complete();
       return;
     }
 
     // Offset is the number of messages that we already have
-    let offset = 0;
+    let offset: number = 0;
 
-    this.subscriptions.add(
-      this.messages$.pipe(take(1)).subscribe((messages) => {
-        if (messages) {
-          offset = messages.length;
-          this.subscriptions.add(
-            this.total$.pipe(take(1)).subscribe((total) => {
-              if (offset < total) {
-                this.store.dispatch(
-                  getMessagesWithOffsetAction({
-                    roomId: this.roomId,
-                    offset: offset,
-                  })
-                );
+    // Get the current scroll element
+    this.content.getScrollElement().then((scrollElement) => {
+      // Save current scroll position and content height
+      const currentScrollTop = scrollElement.scrollTop;
+      const currentContentHeight = scrollElement.scrollHeight;
 
-                // Wait for the new messages to be added to the view
-                setTimeout(() => {
-                  console.log('Loaded more messages');
-                  event.target.complete(); // Mark infinite scroll as complete
-                }, 300); // Adjust timeout as necessary
-              } else {
-                event.target.disabled = true;
-                console.log('All messages loaded');
-                event.target.complete();
-              }
-            })
-          );
-        } else {
-          event.target.complete();
-        }
-      })
-    );
+      this.subscriptions.add(
+        this.messages$.pipe(take(1)).subscribe((messages) => {
+          if (messages) {
+            offset = messages.length;
+            this.subscriptions.add(
+              this.total$.pipe(take(1)).subscribe((total) => {
+                if (offset < total) {
+                  this.store.dispatch(
+                    getMessagesWithOffsetAction({
+                      roomId: this.roomId,
+                      offset: offset,
+                    })
+                  );
+
+                  // Wait for the new messages to be added to the view
+                  setTimeout(() => {
+                    console.log('Loaded more messages');
+                    // Get the new content height
+                    this.content.getScrollElement().then((newScrollElement) => {
+                      const newContentHeight = newScrollElement.scrollHeight;
+                      // Calculate average message height
+                      const messageHeight =
+                        (newContentHeight - currentContentHeight) /
+                        (messages.length - offset);
+
+                      // Adjust the scroll position to maintain the current view
+                      const scrollDifference =
+                        newContentHeight - currentContentHeight;
+                      newScrollElement.scrollTop =
+                        currentScrollTop + scrollDifference;
+
+                      event.target.complete(); // Mark infinite scroll as complete
+                    });
+                  }, 300); // Adjust timeout as necessary
+                } else {
+                  event.target.disabled = true;
+                  console.log('All messages loaded');
+                  event.target.complete();
+                }
+              })
+            );
+          } else {
+            event.target.complete();
+          }
+        })
+      );
+    });
   }
 
   //
