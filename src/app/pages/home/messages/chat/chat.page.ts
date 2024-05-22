@@ -770,13 +770,6 @@ export class ChatPage implements OnInit, OnDestroy {
       return;
     }
 
-    // If it's the first load, do nothing and return
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      event.target.complete();
-      return;
-    }
-
     // Offset is the number of messages that we already have
     let offset: number = 0;
 
