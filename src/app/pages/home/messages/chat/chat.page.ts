@@ -1,15 +1,3 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from, take } from 'rxjs';
-import { Capacitor } from '@capacitor/core';
-import { Keyboard } from '@capacitor/keyboard';
-import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
-import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { v4 as uuidv4 } from 'uuid';
-import Compressor from 'compressorjs';
 import {
   Component,
   ElementRef,
@@ -24,6 +12,19 @@ import {
   IonTextarea,
   ToastController,
 } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription, from, debounceTime, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
+import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
+import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { v4 as uuidv4 } from 'uuid';
+import Compressor from 'compressorjs';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -120,6 +121,7 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
+    this.initKeyboardListeners();
   }
 
   ngAfterViewInit() {
@@ -150,21 +152,6 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-
-    if (Capacitor.getPlatform() !== 'web') {
-      // Scroll to bottom when keyboard is shown
-      Keyboard.addListener('keyboardDidShow', (info) => {
-        // console.log('keyboard did show with height:', info.keyboardHeight);
-        setTimeout(() => {
-          this.content.scrollToBottom(300);
-        }, 100);
-      });
-
-      // Keyboard.addListener('keyboardDidHide', () => {
-      //   // console.log('keyboard did hide');
-      //   this.content.scrollToBottom(300);
-      // });
-    }
   }
 
   initForm() {
@@ -192,14 +179,17 @@ export class ChatPage implements OnInit, OnDestroy {
       this.room$.subscribe((room) => {
         if (room != null) {
           this.subscriptions.add(
-            this.isUserAtBottom().subscribe((isAtBottom) => {
-              if (isAtBottom || this.isFirstLoad) {
-                // Wait for the view to update then scroll to bottom
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                }, 0);
-              }
-            })
+            this.isUserAtBottom()
+              .pipe(debounceTime(300))
+              .subscribe((isAtBottom) => {
+                if (isAtBottom || this.isFirstLoad) {
+                  // Wait for the view to update then scroll to bottom
+                  setTimeout(() => {
+                    this.content.scrollToBottom(300);
+                  }, 0);
+                  this.isFirstLoad = false; // Ensure this is only for the first load
+                }
+              })
           );
         }
       })
@@ -226,6 +216,23 @@ export class ChatPage implements OnInit, OnDestroy {
           }
         })
     );
+  }
+
+  initKeyboardListeners() {
+    if (Capacitor.getPlatform() !== 'web') {
+      // Scroll to bottom when keyboard is shown
+      Keyboard.addListener('keyboardDidShow', (info) => {
+        console.log('keyboard did show with height:', info.keyboardHeight);
+        setTimeout(() => {
+          this.content.scrollToBottom(300);
+        }, 100);
+      });
+
+      Keyboard.addListener('keyboardDidHide', () => {
+        console.log('keyboard did hide');
+        this.content.scrollToBottom(300);
+      });
+    }
   }
 
   //
@@ -266,7 +273,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     // Scroll to bottom
     setTimeout(() => {
-      this.content.scrollToBottom(300);
+      this.scrollToBottom();
     }, 100);
 
     // Reset the form and the variables
@@ -287,7 +294,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
       // Scroll to bottom
       setTimeout(() => {
-        this.content.scrollToBottom(300);
+        this.scrollToBottom();
       }, 100);
 
       // Reset the variable
@@ -306,13 +313,17 @@ export class ChatPage implements OnInit, OnDestroy {
 
       // Scroll to bottom
       setTimeout(() => {
-        this.content.scrollToBottom(300);
+        this.scrollToBottom();
       }, 100);
 
       // Reset the variable
       this.audioId = null;
       this.replyMessage = null;
     });
+  }
+
+  scrollToBottom() {
+    this.content.scrollToBottom(300);
   }
 
   //
@@ -757,14 +768,14 @@ export class ChatPage implements OnInit, OnDestroy {
     }
 
     // Offset is the number of messages that we already have
-    let offset: number = 0;
+    let offset = 0;
 
-    this.messages$
-      .subscribe((messages) => {
+    this.subscriptions.add(
+      this.messages$.pipe(take(1)).subscribe((messages) => {
         if (messages) {
           offset = messages.length;
-          this.total$
-            .subscribe((total) => {
+          this.subscriptions.add(
+            this.total$.pipe(take(1)).subscribe((total) => {
               if (offset < total) {
                 this.store.dispatch(
                   getMessagesWithOffsetAction({
@@ -772,17 +783,24 @@ export class ChatPage implements OnInit, OnDestroy {
                     offset: offset,
                   })
                 );
+
+                // Wait for the new messages to be added to the view
+                setTimeout(() => {
+                  console.log('Loaded more messages');
+                  event.target.complete(); // Mark infinite scroll as complete
+                }, 300); // Adjust timeout as necessary
               } else {
                 event.target.disabled = true;
                 console.log('All messages loaded');
+                event.target.complete();
               }
             })
-            .unsubscribe();
+          );
+        } else {
+          event.target.complete();
         }
       })
-      .unsubscribe();
-
-    event.target.complete();
+    );
   }
 
   //
@@ -790,7 +808,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   isUserAtBottom(): Observable<boolean> {
-    return from(this.checkIfUserAtBottom());
+    return from(this.checkIfUserAtBottom()).pipe(debounceTime(300)); // Throttle the calls
   }
 
   async checkIfUserAtBottom(): Promise<boolean> {
