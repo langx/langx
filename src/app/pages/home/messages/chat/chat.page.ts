@@ -773,37 +773,52 @@ export class ChatPage implements OnInit, OnDestroy {
     // Offset is the number of messages that we already have
     let offset: number = 0;
 
-    this.subscriptions.add(
-      this.messages$.pipe(take(1)).subscribe((messages) => {
-        if (messages) {
-          offset = messages.length;
-          this.subscriptions.add(
-            this.total$.pipe(take(1)).subscribe((total) => {
-              if (offset < total) {
-                this.store.dispatch(
-                  getMessagesWithOffsetAction({
-                    roomId: this.roomId,
-                    offset: offset,
-                  })
-                );
+    // Get the current scroll element
+    this.content.getScrollElement().then((scrollElement) => {
+      // Save current scroll position and content height
+      const currentScrollTop = scrollElement.scrollTop;
+      const currentContentHeight = scrollElement.scrollHeight;
 
-                // Wait for the new messages to be added to the view
-                setTimeout(() => {
-                  console.log('Loaded more messages');
-                  event.target.complete(); // Mark infinite scroll as complete
-                }, 300); // Adjust timeout as necessary
-              } else {
-                event.target.disabled = true;
-                console.log('All messages loaded');
-                event.target.complete();
-              }
-            })
-          );
-        } else {
-          event.target.complete();
-        }
-      })
-    );
+      this.subscriptions.add(
+        this.messages$.pipe(take(1)).subscribe((messages) => {
+          if (messages) {
+            offset = messages.length;
+            this.subscriptions.add(
+              this.total$.pipe(take(1)).subscribe((total) => {
+                if (offset < total) {
+                  this.store.dispatch(
+                    getMessagesWithOffsetAction({
+                      roomId: this.roomId,
+                      offset: offset,
+                    })
+                  );
+
+                  // Wait for the new messages to be added to the view
+                  setTimeout(() => {
+                    console.log('Loaded more messages');
+                    // Get the new content height
+                    this.content.getScrollElement().then((newScrollElement) => {
+                      const newContentHeight = newScrollElement.scrollHeight;
+                      // Adjust the scroll position to maintain the current view
+                      newScrollElement.scrollTop =
+                        currentScrollTop +
+                        (newContentHeight - currentContentHeight);
+                      event.target.complete(); // Mark infinite scroll as complete
+                    });
+                  }, 300); // Adjust timeout as necessary
+                } else {
+                  event.target.disabled = true;
+                  console.log('All messages loaded');
+                  event.target.complete();
+                }
+              })
+            );
+          } else {
+            event.target.complete();
+          }
+        })
+      );
+    });
   }
 
   //
