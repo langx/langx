@@ -770,9 +770,6 @@ export class ChatPage implements OnInit, OnDestroy {
       return;
     }
 
-    // Offset is the number of messages that we already have
-    let offset: number = 0;
-
     // Get the current scroll element
     this.content.getScrollElement().then((scrollElement) => {
       // Save current scroll position and content height
@@ -782,7 +779,7 @@ export class ChatPage implements OnInit, OnDestroy {
       this.subscriptions.add(
         this.messages$.pipe(take(1)).subscribe((messages) => {
           if (messages) {
-            offset = messages.length;
+            const offset = messages.length;
             this.subscriptions.add(
               this.total$.pipe(take(1)).subscribe((total) => {
                 if (offset < total) {
@@ -795,27 +792,18 @@ export class ChatPage implements OnInit, OnDestroy {
 
                   // Wait for the new messages to be added to the view
                   setTimeout(() => {
-                    console.log('Loaded more messages');
-                    // Get the new content height
                     this.content.getScrollElement().then((newScrollElement) => {
                       const newContentHeight = newScrollElement.scrollHeight;
-                      // Calculate average message height
-                      const messageHeight =
-                        (newContentHeight - currentContentHeight) /
-                        (messages.length - offset);
-
-                      // Adjust the scroll position to maintain the current view
                       const scrollDifference =
                         newContentHeight - currentContentHeight;
                       newScrollElement.scrollTop =
                         currentScrollTop + scrollDifference;
 
-                      event.target.complete(); // Mark infinite scroll as complete
+                      event.target.complete();
                     });
-                  }, 300); // Adjust timeout as necessary
+                  }, 300);
                 } else {
                   event.target.disabled = true;
-                  console.log('All messages loaded');
                   event.target.complete();
                 }
               })
@@ -827,7 +815,6 @@ export class ChatPage implements OnInit, OnDestroy {
       );
     });
   }
-
   //
   // Utils for scroll to bottom
   //
