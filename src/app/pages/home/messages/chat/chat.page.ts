@@ -1,15 +1,3 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from, take } from 'rxjs';
-import { Capacitor } from '@capacitor/core';
-import { Keyboard } from '@capacitor/keyboard';
-import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
-import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
-import { v4 as uuidv4 } from 'uuid';
-import Compressor from 'compressorjs';
 import {
   Component,
   ElementRef,
@@ -24,6 +12,19 @@ import {
   IonTextarea,
   ToastController,
 } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription, from, debounceTime, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Capacitor } from '@capacitor/core';
+import { Keyboard } from '@capacitor/keyboard';
+import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
+import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { v4 as uuidv4 } from 'uuid';
+import Compressor from 'compressorjs';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
@@ -108,6 +109,9 @@ export class ChatPage implements OnInit, OnDestroy {
   // Counter Variables
   isCounterShow: boolean = false;
 
+  // Add a flag to control infinite scroll
+  private enableInfiniteScroll: boolean = false;
+
   constructor(
     private store: Store,
     private route: ActivatedRoute,
@@ -120,6 +124,7 @@ export class ChatPage implements OnInit, OnDestroy {
   async ngOnInit() {
     this.initValues();
     this.initForm();
+    this.initKeyboardListeners();
   }
 
   ngAfterViewInit() {
@@ -150,21 +155,6 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-
-    if (Capacitor.getPlatform() !== 'web') {
-      // Scroll to bottom when keyboard is shown
-      Keyboard.addListener('keyboardDidShow', (info) => {
-        // console.log('keyboard did show with height:', info.keyboardHeight);
-        setTimeout(() => {
-          this.content.scrollToBottom(300);
-        }, 100);
-      });
-
-      // Keyboard.addListener('keyboardDidHide', () => {
-      //   // console.log('keyboard did hide');
-      //   this.content.scrollToBottom(300);
-      // });
-    }
   }
 
   initForm() {
@@ -192,14 +182,18 @@ export class ChatPage implements OnInit, OnDestroy {
       this.room$.subscribe((room) => {
         if (room != null) {
           this.subscriptions.add(
-            this.isUserAtBottom().subscribe((isAtBottom) => {
-              if (isAtBottom || this.isFirstLoad) {
-                // Wait for the view to update then scroll to bottom
-                setTimeout(() => {
-                  this.content.scrollToBottom(300);
-                }, 0);
-              }
-            })
+            this.isUserAtBottom()
+              .pipe(debounceTime(300))
+              .subscribe((isAtBottom) => {
+                if (isAtBottom || this.isFirstLoad) {
+                  // Wait for the view to update then scroll to bottom
+                  setTimeout(() => {
+                    this.content.scrollToBottom(300);
+                    this.enableInfiniteScroll = true; // Enable infinite scroll after initial load
+                  }, 100);
+                  this.isFirstLoad = false; // Ensure this is only for the first load
+                }
+              })
           );
         }
       })
@@ -226,6 +220,23 @@ export class ChatPage implements OnInit, OnDestroy {
           }
         })
     );
+  }
+
+  initKeyboardListeners() {
+    if (Capacitor.getPlatform() !== 'web') {
+      // Scroll to bottom when keyboard is shown
+      Keyboard.addListener('keyboardDidShow', (info) => {
+        console.log('keyboard did show with height:', info.keyboardHeight);
+        setTimeout(() => {
+          this.content.scrollToBottom(300);
+        }, 100);
+      });
+
+      Keyboard.addListener('keyboardDidHide', () => {
+        console.log('keyboard did hide');
+        this.content.scrollToBottom(300);
+      });
+    }
   }
 
   //
@@ -266,7 +277,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     // Scroll to bottom
     setTimeout(() => {
-      this.content.scrollToBottom(300);
+      this.scrollToBottom();
     }, 100);
 
     // Reset the form and the variables
@@ -287,7 +298,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
       // Scroll to bottom
       setTimeout(() => {
-        this.content.scrollToBottom(300);
+        this.scrollToBottom();
       }, 100);
 
       // Reset the variable
@@ -306,13 +317,17 @@ export class ChatPage implements OnInit, OnDestroy {
 
       // Scroll to bottom
       setTimeout(() => {
-        this.content.scrollToBottom(300);
+        this.scrollToBottom();
       }, 100);
 
       // Reset the variable
       this.audioId = null;
       this.replyMessage = null;
     });
+  }
+
+  scrollToBottom() {
+    this.content.scrollToBottom(300);
   }
 
   //
@@ -749,48 +764,63 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   loadMore(event) {
-    // If it's the first load, do nothing and return
-    if (this.isFirstLoad) {
-      this.isFirstLoad = false;
+    // If infinite scroll is not enabled, do nothing and return
+    if (!this.enableInfiniteScroll) {
       event.target.complete();
       return;
     }
 
-    // Offset is the number of messages that we already have
-    let offset: number = 0;
+    // Get the current scroll element
+    this.content.getScrollElement().then((scrollElement) => {
+      // Save current scroll position and content height
+      const currentScrollTop = scrollElement.scrollTop;
+      const currentContentHeight = scrollElement.scrollHeight;
 
-    this.messages$
-      .subscribe((messages) => {
-        if (messages) {
-          offset = messages.length;
-          this.total$
-            .subscribe((total) => {
-              if (offset < total) {
-                this.store.dispatch(
-                  getMessagesWithOffsetAction({
-                    roomId: this.roomId,
-                    offset: offset,
-                  })
-                );
-              } else {
-                event.target.disabled = true;
-                console.log('All messages loaded');
-              }
-            })
-            .unsubscribe();
-        }
-      })
-      .unsubscribe();
+      this.subscriptions.add(
+        this.messages$.pipe(take(1)).subscribe((messages) => {
+          if (messages) {
+            const offset = messages.length;
+            this.subscriptions.add(
+              this.total$.pipe(take(1)).subscribe((total) => {
+                if (offset < total) {
+                  this.store.dispatch(
+                    getMessagesWithOffsetAction({
+                      roomId: this.roomId,
+                      offset: offset,
+                    })
+                  );
 
-    event.target.complete();
+                  // Wait for the new messages to be added to the view
+                  setTimeout(() => {
+                    this.content.getScrollElement().then((newScrollElement) => {
+                      const newContentHeight = newScrollElement.scrollHeight;
+                      const scrollDifference =
+                        newContentHeight - currentContentHeight;
+                      newScrollElement.scrollTop =
+                        currentScrollTop + scrollDifference;
+
+                      event.target.complete();
+                    });
+                  }, 300);
+                } else {
+                  event.target.disabled = true;
+                  event.target.complete();
+                }
+              })
+            );
+          } else {
+            event.target.complete();
+          }
+        })
+      );
+    });
   }
-
   //
   // Utils for scroll to bottom
   //
 
   isUserAtBottom(): Observable<boolean> {
-    return from(this.checkIfUserAtBottom());
+    return from(this.checkIfUserAtBottom()).pipe(debounceTime(300)); // Throttle the calls
   }
 
   async checkIfUserAtBottom(): Promise<boolean> {
