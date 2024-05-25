@@ -45,7 +45,7 @@ export class BadgesCardComponent implements OnInit, OnChanges {
       return {
         name,
         url: `/assets/image/badges/${badge}.png`,
-        pageURL: `${environment.ext.token.LITEPAPER}/litepaper/welcome/badges#${badge}-badge`,
+        pageURL: `${environment.ext.token.LITEPAPER}/litepaper/library/badges#${badge}-badge`,
       };
     });
   }
