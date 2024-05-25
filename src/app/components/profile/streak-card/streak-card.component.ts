@@ -13,7 +13,7 @@ import { Streak } from 'src/app/models/Streak';
 export class StreakCardComponent implements OnInit {
   @Input() streak: Streak;
 
-  infoURL = environment.ext.token.LITEPAPER + '/litepaper/library/day-streaks';
+  infoURL = environment.ext.token.LITEPAPER + '/litepaper/welcome/day-streaks';
 
   constructor(private router: Router) {}
 
