@@ -6,8 +6,8 @@ The following versions of our project are currently being supported with securit
 
 | Version          | Supported          |
 | ---------------- | ------------------ |
-| Angular 16.x.x   | :white_check_mark: |
-| Angular < 16.0   | :x:                |
+| Angular 17.x.x   | :white_check_mark: |
+| Angular < 17.0   | :x:                |
 | TypeScript 5.x.x | :white_check_mark: |
 | TypeScript < 5.0 | :x:                |
 | npm 7.x.x        | :white_check_mark: |
