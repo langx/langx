@@ -6,6 +6,14 @@
         <img [src]="(profilePic$ | async)" />
       </ion-thumbnail>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-toggle
+        aria-label="Secondary toggle"
+        color="secondary"
+        slot="end"
+        [checked]="true"
+      ></ion-toggle>
+    </ion-buttons>
 
     <ion-title (click)="redirectUserProfile()">
       {{(user$ | async)?.name}}
