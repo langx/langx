@@ -124,6 +124,13 @@ export class CompletePage implements OnInit, OnDestroy {
       return;
     }
 
+    // Check gender is valid
+    const allowedGenders = ['male', 'female', 'other'];
+    if (!allowedGenders.includes(this.form.value.gender)) {
+      this.presentToast('Please select a valid gender', 'danger');
+      return;
+    }
+
     // Complete registration
     this.complete(this.form);
   }
