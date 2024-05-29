@@ -11,11 +11,11 @@
         aria-label="Secondary toggle"
         label-placement="start"
         color="secondary"
-        [checked]="true"
+        [checked]="false"
+        (ionChange)="copilotToggle($event)"
       >
         🤖
       </ion-toggle>
-      <!-- TODO: Make this emoji svg -->
     </ion-buttons>
 
     <ion-title (click)="redirectUserProfile()">

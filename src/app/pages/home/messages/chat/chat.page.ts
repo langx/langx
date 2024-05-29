@@ -240,6 +240,15 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   //
+  // Copilot
+  //
+
+  copilotToggle(event: any) {
+    console.log('Copilot Toggle changed:', event.detail.checked);
+    // Add your code here to handle the toggle change event
+  }
+
+  //
   // Form Submit
   //
 
