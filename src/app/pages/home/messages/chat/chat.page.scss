@@ -60,3 +60,7 @@ ion-thumbnail {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   word-wrap: break-word;
 }
+
+ion-toggle::part(label) {
+  font-size: 2rem; /* Adjust the size as needed */
+}
