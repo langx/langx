@@ -1,9 +1,11 @@
 import { createAction, props } from '@ngrx/store';
 
 import { User } from 'src/app/models/User';
+import { Room } from 'src/app/models/Room';
 import { ActionTypes } from 'src/app/store/actions/types/room.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 
 // Get Room By Id Actions
 export const getRoomByIdAction = createAction(
@@ -62,12 +64,12 @@ export const createRoomInitialStateAction = createAction(
 // Update Room Actions
 export const updateRoomAction = createAction(
   ActionTypes.UPDATE_ROOM,
-  props<{ request: { data: any } }>()
+  props<{ request: updateRoomRequestInterface }>()
 );
 
 export const updateRoomSuccessAction = createAction(
   ActionTypes.UPDATE_ROOM_SUCCESS,
-  props<{ payload: RoomExtendedInterface }>()
+  props<{ payload: Room }>()
 );
 
 export const updateRoomFailureAction = createAction(
