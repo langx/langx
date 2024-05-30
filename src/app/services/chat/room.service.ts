@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
+import { Store, select } from '@ngrx/store';
 import axios from 'axios';
 import {
   Observable,
@@ -10,6 +11,7 @@ import {
   map,
   of,
   switchMap,
+  take,
 } from 'rxjs';
 
 import { deletedUser } from 'src/app/extras/deletedUser';
@@ -26,12 +28,17 @@ import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
+
+// Selector Imports
+import { accountSelector } from 'src/app/store/selectors/auth.selector';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoomService {
   constructor(
+    private store: Store,
     private api: ApiService,
     private authService: AuthService,
     private userService: UserService,
@@ -145,6 +152,36 @@ export class RoomService {
           switchMap((roomWithUserData) =>
             this.fillRoomWithMessages(roomWithUserData)
           )
+        );
+      })
+    );
+  }
+
+  // Update the room with the new data
+  updateRoom(
+    request: updateRoomRequestInterface
+  ): Observable<RoomExtendedInterface> {
+    // Set x-appwrite-user-id header
+    this.store.pipe(select(accountSelector), take(1)).subscribe((account) => {
+      axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+    });
+
+    console.log('request', request);
+    // Set x-appwrite-jwt header
+    return from(
+      this.authService.createJWT().then((result) => {
+        axios.defaults.headers.common['x-appwrite-jwt'] = result?.jwt;
+      })
+    ).pipe(
+      switchMap(() => {
+        // Call the /api/room
+        return from(
+          axios
+            .put(`${environment.api.ROOM}/${request?.roomId}`, request.data)
+            .then((result) => {
+              console.log('result.data: ', result.data); // Added console log here
+              return result.data;
+            })
         );
       })
     );
