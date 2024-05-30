@@ -19,10 +19,10 @@ import {
   debounceTime,
   combineLatest,
   take,
-  BehaviorSubject,
   of,
   tap,
   switchMap,
+  withLatestFrom,
 } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -39,6 +39,7 @@ import Compressor from 'compressorjs';
 // Interface Imports
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
+import { Room } from 'src/app/models/Room';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
@@ -97,7 +98,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   file: File;
 
-  toggleCopilot$ = new BehaviorSubject<boolean>(false);
+  copilotEnabled: boolean = false;
 
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
@@ -210,9 +211,7 @@ export class ChatPage implements OnInit, OnDestroy {
                   }
 
                   // Update Copilot Toggle
-                  this.toggleCopilot$.next(
-                    room.copilot.includes(currentUser.$id)
-                  );
+                  this.copilotEnabled = room.copilot.includes(currentUser.$id);
                 })
               );
             }
@@ -234,14 +233,32 @@ export class ChatPage implements OnInit, OnDestroy {
     // Present Toast if error
     this.subscriptions.add(
       this.store
-        .pipe(select(errorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error) {
-            this.presentToast(error.message, 'danger');
-            // Reset Error State
-            this.store.dispatch(clearErrorsAction());
+        .pipe(
+          select(errorSelector),
+          withLatestFrom(
+            this.store.pipe(select(roomSelector)),
+            this.currentUser$
+          )
+        )
+        .subscribe(
+          ([error, room, currentUser]: [ErrorInterface, Room, User]) => {
+            console.log('Error:', error);
+            console.log('Room:', room?.copilot);
+            console.log('Current User:', currentUser?.$id);
+
+            if (error) {
+              // Toggle Copilot
+              this.copilotEnabled = room.copilot.includes(currentUser.$id);
+              console.log('Copilot Toggle:', this.copilotEnabled);
+
+              // Present Toast
+              this.presentToast(error.message, 'danger');
+
+              // Reset Error State
+              this.store.dispatch(clearErrorsAction());
+            }
           }
-        })
+        )
     );
 
     // this.subscriptions.add(

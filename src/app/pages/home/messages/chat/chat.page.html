@@ -8,10 +8,9 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-toggle
-        aria-label="Secondary toggle"
         label-placement="start"
         color="secondary"
-        [checked]="toggleCopilot$ | async"
+        [(ngModel)]="copilotEnabled"
         (ionChange)="copilotToggle($event)"
         [disabled]="isLoading$ | async"
       >
