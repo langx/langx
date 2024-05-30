@@ -7,6 +7,7 @@ import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 
 import { User } from 'src/app/models/User';
+import { Room } from 'src/app/models/Room';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
@@ -29,6 +30,9 @@ import {
   unArchiveRoomAction,
   unArchiveRoomSuccessAction,
   unArchiveRoomFailureAction,
+  updateRoomAction,
+  updateRoomSuccessAction,
+  updateRoomFailureAction,
 } from 'src/app/store/actions/room.action';
 
 @Injectable()
@@ -125,6 +129,36 @@ export class RoomEffects {
               message: errorResponse?.response?.data['message'],
             };
             return of(createRoomFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  updateRoom$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(updateRoomAction),
+      switchMap(({ request }) =>
+        this.roomService.updateRoom(request).pipe(
+          map((payload: Room) => {
+            console.log('data: ', payload);
+            //   if (data.total === 1) {
+            //     const payload: RoomExtendedInterface = data.documents[0];
+            //     return updateRoomSuccessAction({ payload });
+            //   } else {
+            //     const error: ErrorInterface = {
+            //       message: 'Room was not updated',
+            //     };
+            //     return updateRoomFailureAction({ error });
+            //   }
+            // }),
+            return updateRoomSuccessAction({ payload });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(updateRoomFailureAction({ error }));
           })
         )
       )
