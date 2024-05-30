@@ -165,8 +165,6 @@ export class RoomService {
     this.store.pipe(select(accountSelector), take(1)).subscribe((account) => {
       axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
     });
-
-    console.log('request', request);
     // Set x-appwrite-jwt header
     return from(
       this.authService.createJWT().then((result) => {
@@ -179,7 +177,7 @@ export class RoomService {
           axios
             .put(`${environment.api.ROOM}/${request?.roomId}`, request.data)
             .then((result) => {
-              console.log('result.data: ', result.data); // Added console log here
+              // console.log('result.data: ', result.data);
               return result.data;
             })
         );

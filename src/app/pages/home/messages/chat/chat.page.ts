@@ -242,10 +242,6 @@ export class ChatPage implements OnInit, OnDestroy {
         )
         .subscribe(
           ([error, room, currentUser]: [ErrorInterface, Room, User]) => {
-            console.log('Error:', error);
-            console.log('Room:', room?.copilot);
-            console.log('Current User:', currentUser?.$id);
-
             if (error) {
               // Toggle Copilot
               this.copilotEnabled = room.copilot.includes(currentUser.$id);
@@ -260,14 +256,6 @@ export class ChatPage implements OnInit, OnDestroy {
           }
         )
     );
-
-    // this.subscriptions.add(
-    //   combineLatest([this.room$, this.user$]).subscribe(([room, user]) => {
-    //     if (room && user) {
-    //       this.toggleCopilot$.next(room.copilot.includes(user.$id));
-    //     }
-    //   })
-    // );
   }
 
   initKeyboardListeners() {
@@ -292,8 +280,6 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   copilotToggle(event: any) {
-    console.log('Copilot Toggle changed:', event.detail.checked);
-
     this.user$.pipe(take(1)).subscribe((user) => {
       this.room$.pipe(take(1)).subscribe((room) => {
         const request: updateRoomRequestInterface = {
