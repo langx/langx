@@ -19,6 +19,10 @@ import {
   debounceTime,
   combineLatest,
   take,
+  BehaviorSubject,
+  of,
+  tap,
+  switchMap,
 } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -93,7 +97,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   file: File;
 
-  defaultChecked: boolean = false;
+  toggleCopilot$ = new BehaviorSubject<boolean>(false);
 
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
@@ -165,14 +169,6 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-
-    combineLatest([this.room$, this.user$])
-      .pipe(take(1))
-      .subscribe(([room, user]) => {
-        if (room && user) {
-          this.defaultChecked = room.copilot.includes(user.$id);
-        }
-      });
   }
 
   initForm() {
@@ -195,26 +191,35 @@ export class ChatPage implements OnInit, OnDestroy {
       })
     );
 
-    // To Scroll to bottom triggers
     this.subscriptions.add(
-      this.room$.subscribe((room) => {
-        if (room != null) {
-          this.subscriptions.add(
-            this.isUserAtBottom()
-              .pipe(debounceTime(300))
-              .subscribe((isAtBottom) => {
-                if (isAtBottom || this.isFirstLoad) {
-                  // Wait for the view to update then scroll to bottom
-                  setTimeout(() => {
-                    this.content.scrollToBottom(300);
-                    this.enableInfiniteScroll = true; // Enable infinite scroll after initial load
-                  }, 100);
-                  this.isFirstLoad = false; // Ensure this is only for the first load
-                }
-              })
-          );
-        }
-      })
+      this.room$
+        .pipe(
+          switchMap((room) => {
+            if (room != null) {
+              return combineLatest([
+                this.isUserAtBottom().pipe(debounceTime(300)),
+                this.currentUser$,
+              ]).pipe(
+                tap(([isAtBottom, currentUser]) => {
+                  if (isAtBottom || this.isFirstLoad) {
+                    setTimeout(() => {
+                      this.content.scrollToBottom(300);
+                      this.enableInfiniteScroll = true;
+                    }, 100);
+                    this.isFirstLoad = false;
+                  }
+
+                  // Update Copilot Toggle
+                  this.toggleCopilot$.next(
+                    room.copilot.includes(currentUser.$id)
+                  );
+                })
+              );
+            }
+            return of(null);
+          })
+        )
+        .subscribe()
     );
 
     // Set User photos
@@ -238,6 +243,14 @@ export class ChatPage implements OnInit, OnDestroy {
           }
         })
     );
+
+    // this.subscriptions.add(
+    //   combineLatest([this.room$, this.user$]).subscribe(([room, user]) => {
+    //     if (room && user) {
+    //       this.toggleCopilot$.next(room.copilot.includes(user.$id));
+    //     }
+    //   })
+    // );
   }
 
   initKeyboardListeners() {
