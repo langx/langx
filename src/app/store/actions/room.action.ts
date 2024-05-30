@@ -59,6 +59,26 @@ export const createRoomInitialStateAction = createAction(
   ActionTypes.CREATE_ROOM_INITIAL_STATE
 );
 
+// Update Room Actions
+export const updateRoomAction = createAction(
+  ActionTypes.UPDATE_ROOM,
+  props<{ request: { data: any } }>()
+);
+
+export const updateRoomSuccessAction = createAction(
+  ActionTypes.UPDATE_ROOM_SUCCESS,
+  props<{ payload: RoomExtendedInterface }>()
+);
+
+export const updateRoomFailureAction = createAction(
+  ActionTypes.UPDATE_ROOM_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+export const updateRoomInitialStateAction = createAction(
+  ActionTypes.UPDATE_ROOM_INITIAL_STATE
+);
+
 // Archive Room Actions
 export const archiveRoomAction = createAction(
   ActionTypes.ARCHIVE_ROOM,
