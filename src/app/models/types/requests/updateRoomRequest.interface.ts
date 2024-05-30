@@ -1,6 +1,6 @@
 export interface updateRoomRequestInterface {
-  $id: string;
+  roomId: string;
   data: {
-    copilot: string[];
+    copilot: boolean;
   };
 }
