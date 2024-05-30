@@ -12,7 +12,6 @@ export enum ActionTypes {
   UPDATE_ROOM = '[Room] Update Room',
   UPDATE_ROOM_SUCCESS = '[Room] Update Room Success',
   UPDATE_ROOM_FAILURE = '[Room] Update Room Failure',
-  UPDATE_ROOM_INITIAL_STATE = '[Room] Update Room Initial State',
   ARCHIVE_ROOM = '[Room] Archive Room',
   ARCHIVE_ROOM_SUCCESS = '[Room] Archive Room Success',
   ARCHIVE_ROOM_FAILURE = '[Room] Archive Room Failure',

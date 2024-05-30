@@ -77,10 +77,6 @@ export const updateRoomFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-export const updateRoomInitialStateAction = createAction(
-  ActionTypes.UPDATE_ROOM_INITIAL_STATE
-);
-
 // Archive Room Actions
 export const archiveRoomAction = createAction(
   ActionTypes.ARCHIVE_ROOM,
