@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ID, Models, Query } from 'appwrite';
-import { Observable, from, of, switchMap, tap } from 'rxjs';
+import { Observable, from, of, switchMap, take, tap } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
 
@@ -12,7 +12,6 @@ import { StorageService } from '../storage/storage.service';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
-import { BucketFile } from 'src/app/models/BucketFile';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
@@ -73,12 +72,9 @@ export class MessageService {
   // Update Message
   updateMessage(request: updateMessageRequestInterface): Observable<Message> {
     // Set x-appwrite-user-id header
-    this.store
-      .pipe(select(accountSelector))
-      .subscribe((account) => {
-        axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
-      })
-      .unsubscribe();
+    this.store.pipe(select(accountSelector), take(1)).subscribe((account) => {
+      axios.defaults.headers.common['x-appwrite-user-id'] = account.$id;
+    });
 
     // TODO: #425 🐛 [BUG] : Rate limit for /account/jwt
     // Set x-appwrite-jwt header
