@@ -141,17 +141,6 @@ export class RoomEffects {
       switchMap(({ request }) =>
         this.roomService.updateRoom(request).pipe(
           map((payload: Room) => {
-            console.log('data: ', payload);
-            //   if (data.total === 1) {
-            //     const payload: RoomExtendedInterface = data.documents[0];
-            //     return updateRoomSuccessAction({ payload });
-            //   } else {
-            //     const error: ErrorInterface = {
-            //       message: 'Room was not updated',
-            //     };
-            //     return updateRoomFailureAction({ error });
-            //   }
-            // }),
             return updateRoomSuccessAction({ payload });
           }),
           catchError((errorResponse: HttpErrorResponse) => {
