@@ -11,8 +11,9 @@
         aria-label="Secondary toggle"
         label-placement="start"
         color="secondary"
-        [checked]="false"
+        [checked]="defaultChecked"
         (ionChange)="copilotToggle($event)"
+        [disabled]="isLoading$ | async"
       >
         🤖
       </ion-toggle>

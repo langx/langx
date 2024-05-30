@@ -12,11 +12,17 @@ import {
   IonTextarea,
   ToastController,
 } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  Observable,
+  Subscription,
+  from,
+  debounceTime,
+  combineLatest,
+  take,
+} from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from, debounceTime, of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
@@ -32,6 +38,7 @@ import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Service Imports
@@ -39,6 +46,7 @@ import { UserService } from 'src/app/services/user/user.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { updateRoomAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -84,6 +92,8 @@ export class ChatPage implements OnInit, OnDestroy {
   roomId: string;
 
   file: File;
+
+  defaultChecked: boolean = false;
 
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
@@ -155,6 +165,14 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    combineLatest([this.room$, this.user$])
+      .pipe(take(1))
+      .subscribe(([room, user]) => {
+        if (room && user) {
+          this.defaultChecked = room.copilot.includes(user.$id);
+        }
+      });
   }
 
   initForm() {
@@ -245,8 +263,16 @@ export class ChatPage implements OnInit, OnDestroy {
 
   copilotToggle(event: any) {
     console.log('Copilot Toggle changed:', event.detail.checked);
-    // Add your code here to handle the toggle change event
-    // TODO: Save in related room document.
+
+    this.user$.pipe(take(1)).subscribe((user) => {
+      this.room$.pipe(take(1)).subscribe((room) => {
+        const request: updateRoomRequestInterface = {
+          roomId: this.roomId,
+          data: { copilot: event.detail.checked },
+        };
+        this.store.dispatch(updateRoomAction({ request }));
+      });
+    });
   }
 
   //
