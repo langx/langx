@@ -92,7 +92,7 @@ export class MessageService {
         // Call the /api/message
         return from(
           axios
-            .patch(`${environment.api.MESSAGE}/${request.$id}`, request.data)
+            .put(`${environment.api.MESSAGE}/${request.$id}`, request.data)
             .then((result) => {
               return result.data as Message;
             })
