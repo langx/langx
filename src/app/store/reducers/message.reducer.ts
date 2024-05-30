@@ -250,7 +250,7 @@ const messageReducer = createReducer(
         // If it matches, return a new state with the updated room
         return {
           ...state,
-          room: { ...state.room, $updatedAt: action.payload.$updatedAt },
+          room: { ...state.room, ...action.payload },
         };
       }
       return state;
