@@ -28,6 +28,7 @@ import {
   deleteMessageSuccessAction,
   deleteMessageFailureAction,
   clearErrorsAction,
+  attachCopilotAction,
 } from 'src/app/store/actions/message.action';
 
 import { getRoomsSuccessAction } from 'src/app/store/actions/rooms.action';
@@ -291,6 +292,28 @@ const messageReducer = createReducer(
       return state;
     }
   ),
+
+  on(attachCopilotAction, (state, action): MessageStateInterface => {
+    console.log(action.payload.messageId); // Added console log here
+    return {
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room?.messages.map((message) =>
+          message.$id === action.payload.messageId['$id']
+            ? {
+                ...message,
+                copilot: {
+                  ...action.payload,
+                  roomId: action.payload.roomId['$id'],
+                  messageId: action.payload.messageId['$id'],
+                },
+              }
+            : message
+        ),
+      },
+    };
+  }),
 
   // Activate Room Reducers
   on(
