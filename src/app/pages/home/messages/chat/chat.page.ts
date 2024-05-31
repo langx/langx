@@ -211,7 +211,7 @@ export class ChatPage implements OnInit, OnDestroy {
                   }
 
                   // Update Copilot Toggle
-                  this.copilotEnabled = room.copilot.includes(currentUser.$id);
+                  this.copilotEnabled = room?.copilot.includes(currentUser.$id);
                 })
               );
             }
