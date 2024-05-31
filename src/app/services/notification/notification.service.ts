@@ -56,10 +56,17 @@ export class NotificationService {
       '.collections.' +
       environment.appwrite.MESSAGES_COLLECTION +
       '.documents';
+    const copilotCollection =
+      'databases.' +
+      environment.appwrite.APP_DATABASE +
+      '.collections.' +
+      environment.appwrite.COPILOT_COLLECTION +
+      '.documents';
 
     // add channels to array
     channels.push(roomsCollection);
     channels.push(messagesCollection);
+    channels.push(copilotCollection);
 
     const client = this.api.client$();
     return client.subscribe(channels, (response) => {
@@ -137,6 +144,9 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.delete`:
             // console.log('[NOTIFICATION] room deleted', response.payload);
+            break;
+          case `${copilotCollection}.*.create`:
+            console.log('[NOTIFICATION] copilot created', response.payload);
             break;
           default:
             break;
