@@ -1,5 +1,7 @@
 import { Models } from 'appwrite';
 
+import { Copilot } from './Copilot';
+
 export type Message = Models.Document & {
   sender: string;
   seen: boolean | false;
@@ -11,4 +13,5 @@ export type Message = Models.Document & {
   deleted?: boolean | false;
   imageId?: string;
   audioId?: string;
+  copilot?: Copilot;
 };
