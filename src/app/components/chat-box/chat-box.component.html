@@ -158,7 +158,8 @@
                     segment.content
                   }}</span>
                   <small *ngIf="isCopilotAssisted">
-                    <br />🤖{{ msg?.copilot?.correction }}
+                    <br />🤖 {{ msg?.copilot?.explanation }} <br />✔️
+                    {{ msg?.copilot?.correction }}
                   </small>
                   <u
                     *ngIf="segment.type === 'url'"
