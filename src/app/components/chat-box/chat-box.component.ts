@@ -64,6 +64,8 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
 
+  isCopilotAssisted: boolean = false;
+
   constructor(
     private store: Store,
     private messageService: MessageService,
@@ -85,6 +87,13 @@ export class ChatBoxComponent implements OnInit, OnChanges {
       // Check if the message is a body
       if (this.msg.type === 'body') {
         this.messageSegments = urlify(this.msg?.body);
+
+        if (this.msg.copilot?.correction !== undefined) {
+          this.isCopilotAssisted = true;
+        } else {
+          this.isCopilotAssisted = false;
+        }
+
         this.changeDetectorRef.detectChanges();
       }
 
