@@ -148,7 +148,7 @@ export class NotificationService {
             // console.log('[NOTIFICATION] room deleted', response.payload);
             break;
           case `${copilotCollection}.*.create`:
-            console.log('[NOTIFICATION] copilot created', response.payload);
+            // console.log('[NOTIFICATION] copilot created', response.payload);
             const copilot = response.payload as Copilot;
             this.store.dispatch(attachCopilotAction({ payload: copilot }));
             break;
