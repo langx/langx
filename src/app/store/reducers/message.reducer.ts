@@ -293,9 +293,9 @@ const messageReducer = createReducer(
     }
   ),
 
-  on(attachCopilotAction, (state, action): MessageStateInterface => {
-    console.log(action.payload.messageId); // Added console log here
-    return {
+  on(
+    attachCopilotAction,
+    (state, action): MessageStateInterface => ({
       ...state,
       room: {
         ...state.room,
@@ -312,8 +312,8 @@ const messageReducer = createReducer(
             : message
         ),
       },
-    };
-  }),
+    })
+  ),
 
   // Activate Room Reducers
   on(
