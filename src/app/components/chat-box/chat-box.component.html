@@ -157,6 +157,9 @@
                   <span *ngIf="segment.type === 'text'">{{
                     segment.content
                   }}</span>
+                  <small *ngIf="isCopilotAssisted">
+                    <br />🤖{{ msg?.copilot?.correction }}
+                  </small>
                   <u
                     *ngIf="segment.type === 'url'"
                     (click)="openPage(segment.content)"
