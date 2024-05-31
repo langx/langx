@@ -10,6 +10,7 @@ import { UserService } from '../user/user.service';
 // Interface Imports
 import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
+import { Copilot } from 'src/app/models/Copilot';
 import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
 
 // Selector Imports
@@ -28,6 +29,7 @@ import {
   findRoomAndDeleteMessageAction,
   findActiveRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
+import { attachCopilotAction } from 'src/app/store/actions/message.action';
 
 @Injectable({
   providedIn: 'root',
@@ -147,6 +149,8 @@ export class NotificationService {
             break;
           case `${copilotCollection}.*.create`:
             console.log('[NOTIFICATION] copilot created', response.payload);
+            const copilot = response.payload as Copilot;
+            this.store.dispatch(attachCopilotAction({ payload: copilot }));
             break;
           default:
             break;
