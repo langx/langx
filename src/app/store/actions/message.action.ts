@@ -3,6 +3,7 @@ import { createAction, props } from '@ngrx/store';
 import { ActionTypes } from 'src/app/store/actions/types/message.actiontypes';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { Message } from 'src/app/models/Message';
+import { Copilot } from 'src/app/models/Copilot';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
@@ -77,6 +78,12 @@ export const deleteMessageSuccessAction = createAction(
 export const deleteMessageFailureAction = createAction(
   ActionTypes.DELETE_MESSAGE_FAILURE,
   props<{ error: ErrorInterface }>()
+);
+
+// Attach Copilot Actions
+export const attachCopilotAction = createAction(
+  ActionTypes.ATTACH_COPILOT,
+  props<{ payload: Copilot }>()
 );
 
 // Activate/Deactivate Room Actions
