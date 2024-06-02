@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ID, Models, Query } from 'appwrite';
-import { Observable, from, of, switchMap, take, tap } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
+import {
+  Observable,
+  forkJoin,
+  from,
+  map,
+  of,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';
@@ -19,6 +28,7 @@ import { deleteMessageRequestInterface } from 'src/app/models/types/requests/del
 
 // Selector Imports
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
+import { Copilot } from 'src/app/models/Copilot';
 
 @Injectable({
   providedIn: 'root',
@@ -132,22 +142,76 @@ export class MessageService {
     roomId: string,
     offset?: number
   ): Observable<listMessagesResponseInterface> {
-    // Define queries
-    const queries: any[] = [];
+    // Define queries for messages collection
+    const messagesQueries: any[] = [];
 
     // Query for messages that equal to roomId
-    queries.push(Query.equal('roomId', roomId));
+    messagesQueries.push(Query.equal('roomId', roomId));
 
     // Query for messages that order by createdAt
-    queries.push(Query.orderDesc('$createdAt'));
+    messagesQueries.push(Query.orderDesc('$createdAt'));
 
     // Limit and offset
-    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
-    if (offset) queries.push(Query.offset(offset));
+    messagesQueries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) messagesQueries.push(Query.offset(offset));
 
-    return from(
-      this.api.listDocuments(environment.appwrite.MESSAGES_COLLECTION, queries)
-    ).pipe(tap((response) => response.documents.reverse()));
+    // Query for copilot collection
+    const copilotQueries: any[] = [];
+
+    // Query for messages that equal to roomId
+    copilotQueries.push(Query.equal('roomId', roomId));
+
+    // Query for messages that order by createdAt
+    copilotQueries.push(Query.orderDesc('$createdAt'));
+
+    // Limit and offset
+    copilotQueries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+    if (offset) copilotQueries.push(Query.offset(offset));
+
+    // Fetch messages and copilot documents
+    const messagesObservable = from(
+      this.api.listDocuments(
+        environment.appwrite.MESSAGES_COLLECTION,
+        messagesQueries
+      )
+    ).pipe(map((response) => response.documents as Message[]));
+
+    const copilotObservable = from(
+      this.api.listDocuments(
+        environment.appwrite.COPILOT_COLLECTION,
+        copilotQueries
+      )
+    ).pipe(map((response) => response.documents));
+
+    // Combine the observables
+    return forkJoin([messagesObservable, copilotObservable]).pipe(
+      map(([messages, copilots]) => {
+        // Create a map to quickly find copilot by messageId
+        const copilotMap = new Map<string, Copilot>();
+        copilots.forEach((copilot) => {
+          const messageId = copilot.messageId?.$id;
+          if (messageId) {
+            copilotMap.set(messageId, copilot);
+          }
+        });
+
+        // Merge messages with their corresponding copilot
+        const mergedDocuments = messages
+          .map((message) => {
+            const copilot = copilotMap.get(message.$id) || null;
+            return {
+              ...message,
+              copilot: copilot,
+            };
+          })
+          .reverse();
+
+        return {
+          total: mergedDocuments.length,
+          documents: mergedDocuments,
+        };
+      })
+    );
   }
 
   //
