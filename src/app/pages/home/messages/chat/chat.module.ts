@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
@@ -25,5 +25,6 @@ import { CopilotInstructionsComponent } from 'src/app/components/copilot-instruc
     EffectsModule.forFeature([MessageEffects]),
   ],
   declarations: [ChatPage, ChatBoxComponent, CopilotInstructionsComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ChatPageModule {}
