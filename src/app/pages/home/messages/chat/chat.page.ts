@@ -293,6 +293,14 @@ export class ChatPage implements OnInit, OnDestroy {
 
   onConfirm(message: Message) {
     console.log('onConfirm:, message', message.$id);
+    // Update the message
+    const request: updateMessageRequestInterface = {
+      $id: message.$id,
+      data: {
+        body: message.copilot?.correction,
+      },
+    };
+    this.store.dispatch(updateMessageAction({ request }));
   }
 
   onIgnore(message: Message) {
