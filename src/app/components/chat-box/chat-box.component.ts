@@ -401,6 +401,13 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   }
 
   //
+  // Copilot
+  //
+
+  confirmCopilotCorrection() {}
+  ignoreCopilotCorrection() {}
+
+  //
   // Present Toast
   //
 
