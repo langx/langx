@@ -25,6 +25,10 @@ interface AppUpdate {
   };
 }
 
+interface CopilotUpdate {
+  maintenance_enabled: boolean;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -34,7 +38,6 @@ export class UpdateService {
   constructor(private AlertController: AlertController) {}
 
   checkForUpdates() {
-    // console.log('checkForUpdates');
     this.checkUpdate();
   }
 
@@ -54,6 +57,17 @@ export class UpdateService {
     } else {
       return;
     }
+  }
+
+  async checkCopilotMaintenance(): Promise<boolean> {
+    const endpoint = `${this.updateEndpoint}/copilot`;
+    const response = await fetch(endpoint);
+    const data = (await response.json()) as CopilotUpdate;
+
+    if (data.maintenance_enabled) {
+      return true;
+    }
+    return false;
   }
 
   async checkPlatformUpdate(platformPath: string) {
@@ -101,6 +115,21 @@ export class UpdateService {
       header: data.maintenace_msg.title,
       message: data.maintenace_msg.message,
       backdropDismiss: false, // prevent alert from being dismissed
+    });
+    await alert.present();
+  }
+
+  async showCopilotMaintenance() {
+    const alert = await this.AlertController.create({
+      header: 'Maintenance Mode',
+      message:
+        'Copilot is currently under maintenance. Please try again later.',
+      buttons: [
+        {
+          text: 'Ok',
+          role: 'cancel',
+        },
+      ],
     });
     await alert.present();
   }

@@ -48,6 +48,7 @@ import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interfa
 
 // Service Imports
 import { UserService } from 'src/app/services/user/user.service';
+import { UpdateService } from 'src/app/services/update/update.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -133,6 +134,7 @@ export class ChatPage implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private userService: UserService,
+    private updateService: UpdateService,
     private toastController: ToastController,
     private gestureCtrl: GestureController
   ) {}
@@ -202,7 +204,7 @@ export class ChatPage implements OnInit, OnDestroy {
                 this.isUserAtBottom().pipe(debounceTime(300)),
                 this.currentUser$,
               ]).pipe(
-                tap(([isAtBottom, currentUser]) => {
+                tap(async ([isAtBottom, currentUser]) => {
                   if (isAtBottom || this.isFirstLoad) {
                     setTimeout(() => {
                       this.content.scrollToBottom(300);
@@ -211,8 +213,17 @@ export class ChatPage implements OnInit, OnDestroy {
                     this.isFirstLoad = false;
                   }
 
-                  // Update Copilot Toggle
-                  this.copilotEnabled = room?.copilot.includes(currentUser.$id);
+                  // Check Copilot Maintenance Mode
+                  const copilotMaintenance =
+                    await this.updateService.checkCopilotMaintenance();
+                  if (copilotMaintenance) {
+                    this.copilotEnabled = false;
+                  } else {
+                    // Update Copilot Toggle
+                    this.copilotEnabled = room?.copilot.includes(
+                      currentUser.$id
+                    );
+                  }
                 })
               );
             }
@@ -282,7 +293,20 @@ export class ChatPage implements OnInit, OnDestroy {
 
   copilotToggle(event: any) {
     this.user$.pipe(take(1)).subscribe((user) => {
-      this.room$.pipe(take(1)).subscribe((room) => {
+      this.room$.pipe(take(1)).subscribe(async (room) => {
+        // Check if the user is trying to activate Copilot
+        if (event.detail.checked) {
+          const copilotMaintenance =
+            await this.updateService.checkCopilotMaintenance();
+          if (copilotMaintenance) {
+            // If maintenance mode is enabled, show the alert and return early
+            await this.updateService.showCopilotMaintenance();
+            // Update Copilot Toggle
+            this.copilotEnabled = false;
+            return;
+          }
+        }
+
         const request: updateRoomRequestInterface = {
           roomId: this.roomId,
           data: { copilot: event.detail.checked },
