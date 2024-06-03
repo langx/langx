@@ -34,6 +34,7 @@ import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Preferences } from '@capacitor/preferences';
 import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
 
@@ -73,7 +74,6 @@ import {
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
 import { CopilotInstructionsComponent } from 'src/app/components/copilot-instructions/copilot-instructions.component';
-import { Preferences } from '@capacitor/preferences';
 
 @Component({
   selector: 'app-chat',
