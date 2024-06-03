@@ -214,6 +214,19 @@ export class MessageService {
     );
   }
 
+  detachCopilot(copilot: Copilot): Observable<Copilot> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.COPILOT_COLLECTION,
+        copilot.$id,
+        {
+          roomId: null,
+          messageId: null,
+        }
+      )
+    );
+  }
+
   //
   // Upload Image
   //
