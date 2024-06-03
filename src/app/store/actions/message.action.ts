@@ -80,10 +80,25 @@ export const deleteMessageFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
-// Attach Copilot Actions
+// Copilot Actions
 export const attachCopilotAction = createAction(
   ActionTypes.ATTACH_COPILOT,
   props<{ payload: Copilot }>()
+);
+
+export const detachCopilotAction = createAction(
+  ActionTypes.DETACH_COPILOT,
+  props<{ payload: Copilot }>()
+);
+
+export const detachCopilotSuccessAction = createAction(
+  ActionTypes.DETACH_COPILOT_SUCCESS,
+  props<{ payload: Copilot }>()
+);
+
+export const detachCopilotFailureAction = createAction(
+  ActionTypes.DETACH_COPILOT_FAILURE,
+  props<{ error: ErrorInterface }>()
 );
 
 // Activate/Deactivate Room Actions

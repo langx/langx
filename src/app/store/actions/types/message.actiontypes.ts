@@ -16,6 +16,9 @@ export enum ActionTypes {
   DELETE_MESSAGE_FAILURE = '[Message] Delete Message Failure',
 
   ATTACH_COPILOT = '[Message] Attach Copilot',
+  DETACH_COPILOT = '[Message] Detach Copilot',
+  DETACH_COPILOT_SUCCESS = '[Message] Detach Copilot Success Message',
+  DETACH_COPILOT_FAILURE = '[Message] Detach Copilot Failure Message',
 
   ACTIVATE_ROOM = '[Message] Activate Room',
   DEACTIVATE_ROOM = '[Message] Deactivate Room',
