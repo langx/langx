@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-copilot-instructions',
   templateUrl: './copilot-instructions.component.html',
   styleUrls: ['./copilot-instructions.component.scss'],
 })
-export class CopilotInstructionsComponent  implements OnInit {
+export class CopilotInstructionsComponent implements OnInit {
+  @Input() onFinish: () => void;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {}
 
+  close() {
+    this.onFinish();
+  }
 }
