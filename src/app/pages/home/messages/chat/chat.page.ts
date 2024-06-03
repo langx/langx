@@ -285,13 +285,19 @@ export class ChatPage implements OnInit, OnDestroy {
   copilotToggle(event: any) {
     this.user$.pipe(take(1)).subscribe((user) => {
       this.room$.pipe(take(1)).subscribe(async (room) => {
-        // Check Copilot Maintenance Mode Firstly
-        const copilotMaintenance =
-          await this.updateService.checkCopilotMaintenance();
-        if (copilotMaintenance) {
-          // If maintenance mode is enabled, show the alert and return early
-          await this.updateService.showCopilotMaintenance();
-          return;
+        // Check if the user is trying to activate Copilot
+        if (event.detail.checked) {
+          const copilotMaintenance =
+            await this.updateService.checkCopilotMaintenance();
+          if (copilotMaintenance) {
+            // If maintenance mode is enabled, show the alert and return early
+            await this.updateService.showCopilotMaintenance();
+            // Update Copilot Toggle
+            this.currentUser$.pipe(take(1)).subscribe(async (currentUser) => {
+              this.copilotEnabled = room?.copilot.includes(currentUser.$id);
+            });
+            return;
+          }
         }
 
         const request: updateRoomRequestInterface = {
