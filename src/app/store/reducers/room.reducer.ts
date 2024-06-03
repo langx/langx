@@ -226,9 +226,7 @@ const roomReducer = createReducer(
   on(findAndUpdateRoomUpdatedAtAction, (state, action): RoomStateInterface => {
     // Create a new array with the updated room
     const updatedRooms = state.rooms?.map((room) =>
-      room.$id === action.payload.$id
-        ? { ...room, $updatedAt: action.payload.$updatedAt }
-        : room
+      room.$id === action.payload.$id ? { ...room, ...action.payload } : room
     );
 
     // Sort rooms by $updatedAt in descending order

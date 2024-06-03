@@ -10,6 +10,7 @@ import { UserService } from '../user/user.service';
 // Interface Imports
 import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
+import { Copilot } from 'src/app/models/Copilot';
 import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.interface';
 
 // Selector Imports
@@ -28,6 +29,7 @@ import {
   findRoomAndDeleteMessageAction,
   findActiveRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
+import { attachCopilotAction } from 'src/app/store/actions/message.action';
 
 @Injectable({
   providedIn: 'root',
@@ -56,10 +58,17 @@ export class NotificationService {
       '.collections.' +
       environment.appwrite.MESSAGES_COLLECTION +
       '.documents';
+    const copilotCollection =
+      'databases.' +
+      environment.appwrite.APP_DATABASE +
+      '.collections.' +
+      environment.appwrite.COPILOT_COLLECTION +
+      '.documents';
 
     // add channels to array
     channels.push(roomsCollection);
     channels.push(messagesCollection);
+    channels.push(copilotCollection);
 
     const client = this.api.client$();
     return client.subscribe(channels, (response) => {
@@ -137,6 +146,11 @@ export class NotificationService {
             break;
           case `${roomsCollection}.*.delete`:
             // console.log('[NOTIFICATION] room deleted', response.payload);
+            break;
+          case `${copilotCollection}.*.create`:
+            // console.log('[NOTIFICATION] copilot created', response.payload);
+            const copilot = response.payload as Copilot;
+            this.store.dispatch(attachCopilotAction({ payload: copilot }));
             break;
           default:
             break;

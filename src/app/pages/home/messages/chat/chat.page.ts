@@ -12,11 +12,21 @@ import {
   IonTextarea,
   ToastController,
 } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  Observable,
+  Subscription,
+  from,
+  debounceTime,
+  combineLatest,
+  take,
+  of,
+  tap,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, from, debounceTime, of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { Keyboard } from '@capacitor/keyboard';
 import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
@@ -29,9 +39,11 @@ import Compressor from 'compressorjs';
 // Interface Imports
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
+import { Room } from 'src/app/models/Room';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { createMessageRequestInterface } from 'src/app/models/types/requests/createMessageRequest.interface';
 import { updateMessageRequestInterface } from 'src/app/models/types/requests/updateMessageRequest.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 
 // Service Imports
@@ -39,6 +51,7 @@ import { UserService } from 'src/app/services/user/user.service';
 
 // Selector and Action Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import { updateRoomAction } from 'src/app/store/actions/room.action';
 import {
   createMessageAction,
   getMessagesWithOffsetAction,
@@ -46,6 +59,7 @@ import {
   deleteMessageAction,
   clearErrorsAction,
   updateMessageAction,
+  detachCopilotAction,
 } from 'src/app/store/actions/message.action';
 import {
   errorSelector,
@@ -84,6 +98,8 @@ export class ChatPage implements OnInit, OnDestroy {
   roomId: string;
 
   file: File;
+
+  copilotEnabled: boolean = false;
 
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
@@ -177,26 +193,33 @@ export class ChatPage implements OnInit, OnDestroy {
       })
     );
 
-    // To Scroll to bottom triggers
     this.subscriptions.add(
-      this.room$.subscribe((room) => {
-        if (room != null) {
-          this.subscriptions.add(
-            this.isUserAtBottom()
-              .pipe(debounceTime(300))
-              .subscribe((isAtBottom) => {
-                if (isAtBottom || this.isFirstLoad) {
-                  // Wait for the view to update then scroll to bottom
-                  setTimeout(() => {
-                    this.content.scrollToBottom(300);
-                    this.enableInfiniteScroll = true; // Enable infinite scroll after initial load
-                  }, 100);
-                  this.isFirstLoad = false; // Ensure this is only for the first load
-                }
-              })
-          );
-        }
-      })
+      this.room$
+        .pipe(
+          switchMap((room) => {
+            if (room != null) {
+              return combineLatest([
+                this.isUserAtBottom().pipe(debounceTime(300)),
+                this.currentUser$,
+              ]).pipe(
+                tap(([isAtBottom, currentUser]) => {
+                  if (isAtBottom || this.isFirstLoad) {
+                    setTimeout(() => {
+                      this.content.scrollToBottom(300);
+                      this.enableInfiniteScroll = true;
+                    }, 100);
+                    this.isFirstLoad = false;
+                  }
+
+                  // Update Copilot Toggle
+                  this.copilotEnabled = room?.copilot.includes(currentUser.$id);
+                })
+              );
+            }
+            return of(null);
+          })
+        )
+        .subscribe()
     );
 
     // Set User photos
@@ -211,14 +234,28 @@ export class ChatPage implements OnInit, OnDestroy {
     // Present Toast if error
     this.subscriptions.add(
       this.store
-        .pipe(select(errorSelector))
-        .subscribe((error: ErrorInterface) => {
-          if (error) {
-            this.presentToast(error.message, 'danger');
-            // Reset Error State
-            this.store.dispatch(clearErrorsAction());
+        .pipe(
+          select(errorSelector),
+          withLatestFrom(
+            this.store.pipe(select(roomSelector)),
+            this.currentUser$
+          )
+        )
+        .subscribe(
+          ([error, room, currentUser]: [ErrorInterface, Room, User]) => {
+            if (error) {
+              // Toggle Copilot
+              this.copilotEnabled = room.copilot.includes(currentUser.$id);
+              console.log('Copilot Toggle:', this.copilotEnabled);
+
+              // Present Toast
+              this.presentToast(error.message, 'danger');
+
+              // Reset Error State
+              this.store.dispatch(clearErrorsAction());
+            }
           }
-        })
+        )
     );
   }
 
@@ -237,6 +274,40 @@ export class ChatPage implements OnInit, OnDestroy {
         this.content.scrollToBottom(300);
       });
     }
+  }
+
+  //
+  // Copilot
+  //
+
+  copilotToggle(event: any) {
+    this.user$.pipe(take(1)).subscribe((user) => {
+      this.room$.pipe(take(1)).subscribe((room) => {
+        const request: updateRoomRequestInterface = {
+          roomId: this.roomId,
+          data: { copilot: event.detail.checked },
+        };
+        this.store.dispatch(updateRoomAction({ request }));
+      });
+    });
+  }
+
+  onConfirm(message: Message) {
+    const request: updateMessageRequestInterface = {
+      $id: message.$id,
+      data: {
+        body: message.copilot?.correction,
+      },
+    };
+    this.store.dispatch(updateMessageAction({ request }));
+
+    const payload = message?.copilot;
+    this.store.dispatch(detachCopilotAction({ payload }));
+  }
+
+  onIgnore(message: Message) {
+    const payload = message?.copilot;
+    this.store.dispatch(detachCopilotAction({ payload }));
   }
 
   //
@@ -860,7 +931,9 @@ export class ChatPage implements OnInit, OnDestroy {
 
   footerClicked(event: Event) {
     // If the footer is clicked, set the focus back to the textarea
-    !this.audioId ? this.myTextArea.setFocus() : null;
+    if (!this.audioId) {
+      this.myTextArea.setFocus();
+    }
   }
 
   redirectUserProfile() {

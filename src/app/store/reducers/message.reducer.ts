@@ -28,9 +28,17 @@ import {
   deleteMessageSuccessAction,
   deleteMessageFailureAction,
   clearErrorsAction,
+  attachCopilotAction,
+  detachCopilotSuccessAction,
+  detachCopilotFailureAction,
 } from 'src/app/store/actions/message.action';
 
 import { getRoomsSuccessAction } from 'src/app/store/actions/rooms.action';
+import {
+  updateRoomAction,
+  updateRoomFailureAction,
+  updateRoomSuccessAction,
+} from 'src/app/store/actions/room.action';
 
 const initialState: MessageStateInterface = {
   isLoading: false,
@@ -66,6 +74,36 @@ const messageReducer = createReducer(
       ...state,
     };
   }),
+
+  // Update Room Reducers
+  on(
+    updateRoomAction,
+    (state): MessageStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(updateRoomSuccessAction, (state, action): MessageStateInterface => {
+    // Check if the room id matches the action payload id
+    if (state.room?.$id === action.payload.$id) {
+      // If it matches, return a new state with the updated room
+      return {
+        ...state,
+        room: { ...state.room, ...action.payload },
+        isLoading: false,
+      };
+    }
+    return { ...state, isLoading: false };
+  }),
+  on(
+    updateRoomFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
 
   // Get Messages With Offset Reducers
   on(
@@ -250,11 +288,57 @@ const messageReducer = createReducer(
         // If it matches, return a new state with the updated room
         return {
           ...state,
-          room: { ...state.room, $updatedAt: action.payload.$updatedAt },
+          room: { ...state.room, ...action.payload },
         };
       }
       return state;
     }
+  ),
+
+  on(
+    attachCopilotAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room?.messages.map((message) =>
+          message.$id === action.payload.messageId['$id']
+            ? {
+                ...message,
+                copilot: {
+                  ...action.payload,
+                  roomId: action.payload.roomId['$id'],
+                  messageId: action.payload.messageId['$id'],
+                },
+              }
+            : message
+        ),
+      },
+    })
+  ),
+  on(detachCopilotSuccessAction, (state, action): MessageStateInterface => {
+    console.log(action); // Added console log here
+    return {
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room?.messages.map((message) =>
+          message.$id === action.payload.messageId
+            ? {
+                ...message,
+                copilot: null,
+              }
+            : message
+        ),
+      },
+    };
+  }),
+  on(
+    detachCopilotFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
+    })
   ),
 
   // Activate Room Reducers

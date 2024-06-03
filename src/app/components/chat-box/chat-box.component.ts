@@ -47,6 +47,8 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   @Output() onReply: EventEmitter<any> = new EventEmitter();
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
+  @Output() onConfirm: EventEmitter<any> = new EventEmitter();
+  @Output() onIgnore: EventEmitter<any> = new EventEmitter();
 
   private observer: IntersectionObserver;
 
@@ -63,6 +65,8 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
+
+  isCopilotAssisted: boolean = false;
 
   constructor(
     private store: Store,
@@ -85,6 +89,13 @@ export class ChatBoxComponent implements OnInit, OnChanges {
       // Check if the message is a body
       if (this.msg.type === 'body') {
         this.messageSegments = urlify(this.msg?.body);
+
+        if (this.msg.copilot?.correction !== undefined) {
+          this.isCopilotAssisted = true;
+        } else {
+          this.isCopilotAssisted = false;
+        }
+
         this.changeDetectorRef.detectChanges();
       }
 
@@ -389,6 +400,17 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   async openPage(url: string) {
     await Browser.open({ url: url });
+  }
+
+  //
+  // Copilot
+  //
+
+  confirmCopilotCorrection(msg: Message) {
+    this.onConfirm.emit(msg);
+  }
+  ignoreCopilotCorrection(msg: Message) {
+    this.onIgnore.emit(msg);
   }
 
   //

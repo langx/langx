@@ -164,6 +164,35 @@
                     {{ parseUrl(segment.content) }}
                   </u>
                 </ng-container>
+                <ng-container>
+                  <!-- Copilot Assisted Section -->
+                  <small *ngIf="isCopilotAssisted">
+                    <br />🤖 {{ msg?.copilot?.explanation }} <br />✔️
+                    {{ msg?.copilot?.correction }}
+                    <div class="copilotButtons">
+                      <ion-buttons slot="end">
+                        <ion-button
+                          (click)="confirmCopilotCorrection(msg)"
+                          slot="icon-only"
+                          color="success-contrast"
+                          size="small"
+                          shape="round"
+                        >
+                          <ion-icon name="checkmark-circle-outline"></ion-icon>
+                        </ion-button>
+                        <ion-button
+                          (click)="ignoreCopilotCorrection(msg)"
+                          slot="icon-only"
+                          color="danger"
+                          size="small"
+                          shape="round"
+                        >
+                          <ion-icon name="close-circle-outline"></ion-icon>
+                        </ion-button>
+                      </ion-buttons>
+                    </div>
+                  </small>
+                </ng-container>
               </span>
               <small *ngIf="msg?.deleted">
                 <i>[deleted message]</i>

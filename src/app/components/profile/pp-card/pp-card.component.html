@@ -16,8 +16,8 @@
       {{ user?.country }}
       {{ getFlagEmoji(user) }}
     </ion-card-subtitle>
-    <ion-card-subtitle *ngIf="lastSeen(user?.lastSeen) != 'online'">
-      Active in {{ lastSeen(user?.lastSeen) }} ago
+    <ion-card-subtitle *ngIf="lastSeen(user?.lastSeen) !== 'online'">
+      Active {{ lastSeen(user?.lastSeen) }} ago
     </ion-card-subtitle>
     <ion-card-subtitle
       *ngIf="lastSeen(user?.lastSeen) === 'online'"
