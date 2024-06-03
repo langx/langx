@@ -1020,7 +1020,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   async setCopilotInstructionsSeen(value: boolean) {
     await Preferences.set({
-      key: 'early-adopter',
+      key: 'copilotInstructionsSeen',
       value: JSON.stringify(value),
     });
     this.copilotInstructionsSeen = value;
