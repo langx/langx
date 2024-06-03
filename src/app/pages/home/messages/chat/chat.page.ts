@@ -10,6 +10,7 @@ import {
   GestureDetail,
   IonContent,
   IonTextarea,
+  ModalController,
   ToastController,
 } from '@ionic/angular';
 import {
@@ -33,6 +34,7 @@ import { Filesystem, Directory, FileInfo } from '@capacitor/filesystem';
 import { RecordingData, VoiceRecorder } from '@langx/capacitor-voice-recorder';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { Preferences } from '@capacitor/preferences';
 import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
 
@@ -71,6 +73,7 @@ import {
   totalSelector,
   userDataSelector,
 } from 'src/app/store/selectors/message.selector';
+import { CopilotInstructionsComponent } from 'src/app/components/copilot-instructions/copilot-instructions.component';
 
 @Component({
   selector: 'app-chat',
@@ -101,6 +104,7 @@ export class ChatPage implements OnInit, OnDestroy {
   file: File;
 
   copilotEnabled: boolean = false;
+  copilotInstructionsSeen: boolean = false;
 
   // Add a flag to indicate whether it's the first load
   private isFirstLoad: boolean = true;
@@ -136,6 +140,7 @@ export class ChatPage implements OnInit, OnDestroy {
     private userService: UserService,
     private updateService: UpdateService,
     private toastController: ToastController,
+    private modalCtrl: ModalController,
     private gestureCtrl: GestureController
   ) {}
 
@@ -162,7 +167,7 @@ export class ChatPage implements OnInit, OnDestroy {
       .unsubscribe();
   }
 
-  initValues() {
+  async initValues() {
     // TODO: Do we need it ?
     this.roomId = this.route.snapshot.paramMap.get('id') || null;
 
@@ -173,6 +178,10 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isLoading_offset$ = this.store.pipe(select(isLoadingOffsetSelector));
     this.messages$ = this.store.pipe(select(messagesSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+
+    // Init Badge
+    await this.checkCopilotInstructionsSeen();
+    await this.initCopilotInstructions();
   }
 
   initForm() {
@@ -980,6 +989,41 @@ export class ChatPage implements OnInit, OnDestroy {
 
   trackByFn(index, item) {
     return item.$id;
+  }
+
+  //
+  // Copilot Instructions
+  //
+
+  async initCopilotInstructions() {
+    if (this.copilotInstructionsSeen) return;
+    const modal = await this.modalCtrl.create({
+      component: CopilotInstructionsComponent,
+      componentProps: {
+        onFinish: async () => {
+          await this.setCopilotInstructionsSeen(true);
+          modal.dismiss();
+        },
+      },
+    });
+
+    return await modal.present();
+  }
+
+  async checkCopilotInstructionsSeen() {
+    await Preferences.get({ key: 'copilotInstructionsSeen' }).then((res) => {
+      res && res.value
+        ? (this.copilotInstructionsSeen = JSON.parse(res.value))
+        : (this.copilotInstructionsSeen = false);
+    });
+  }
+
+  async setCopilotInstructionsSeen(value: boolean) {
+    await Preferences.set({
+      key: 'copilotInstructionsSeen',
+      value: JSON.stringify(value),
+    });
+    this.copilotInstructionsSeen = value;
   }
 
   //
