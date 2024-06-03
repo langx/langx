@@ -19,6 +19,9 @@ import {
   deleteMessageAction,
   deleteMessageFailureAction,
   deleteMessageSuccessAction,
+  detachCopilotAction,
+  detachCopilotFailureAction,
+  detachCopilotSuccessAction,
   getMessagesWithOffsetAction,
   getMessagesWithOffsetFailureAction,
   getMessagesWithOffsetSuccessAction,
@@ -124,6 +127,23 @@ export class MessageEffects {
               message: errorResponse.message,
             };
             return of(updateMessageFailureAction({ error }));
+          })
+        )
+      )
+    )
+  );
+
+  detachCopilot$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(detachCopilotAction),
+      mergeMap(({ payload }) =>
+        this.messageService.detachCopilot(payload).pipe(
+          map(() => detachCopilotSuccessAction({ payload })),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(detachCopilotFailureAction({ error }));
           })
         )
       )
