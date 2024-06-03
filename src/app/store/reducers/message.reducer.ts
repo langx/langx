@@ -29,6 +29,8 @@ import {
   deleteMessageFailureAction,
   clearErrorsAction,
   attachCopilotAction,
+  detachCopilotSuccessAction,
+  detachCopilotFailureAction,
 } from 'src/app/store/actions/message.action';
 
 import { getRoomsSuccessAction } from 'src/app/store/actions/rooms.action';
@@ -312,6 +314,30 @@ const messageReducer = createReducer(
             : message
         ),
       },
+    })
+  ),
+  on(detachCopilotSuccessAction, (state, action): MessageStateInterface => {
+    console.log(action); // Added console log here
+    return {
+      ...state,
+      room: {
+        ...state.room,
+        messages: state.room?.messages.map((message) =>
+          message.$id === action.payload.messageId
+            ? {
+                ...message,
+                copilot: null,
+              }
+            : message
+        ),
+      },
+    };
+  }),
+  on(
+    detachCopilotFailureAction,
+    (state, action): MessageStateInterface => ({
+      ...state,
+      error: action.error,
     })
   ),
 
