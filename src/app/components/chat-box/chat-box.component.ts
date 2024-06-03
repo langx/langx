@@ -47,6 +47,8 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   @Output() onReply: EventEmitter<any> = new EventEmitter();
   @Output() onEdit: EventEmitter<any> = new EventEmitter();
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
+  @Output() onConfirm: EventEmitter<any> = new EventEmitter();
+  @Output() onIgnore: EventEmitter<any> = new EventEmitter();
 
   private observer: IntersectionObserver;
 
@@ -404,8 +406,12 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   // Copilot
   //
 
-  confirmCopilotCorrection() {}
-  ignoreCopilotCorrection() {}
+  confirmCopilotCorrection(msg: Message) {
+    this.onConfirm.emit(msg);
+  }
+  ignoreCopilotCorrection(msg: Message) {
+    this.onIgnore.emit(msg);
+  }
 
   //
   // Present Toast

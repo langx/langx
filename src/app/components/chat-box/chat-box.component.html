@@ -172,7 +172,7 @@
                     <div class="copilotButtons">
                       <ion-buttons slot="end">
                         <ion-button
-                          (click)="confirmCopilotCorrection()"
+                          (click)="confirmCopilotCorrection(msg)"
                           slot="icon-only"
                           color="success-contrast"
                           size="small"
@@ -181,7 +181,7 @@
                           <ion-icon name="checkmark-circle-outline"></ion-icon>
                         </ion-button>
                         <ion-button
-                          (click)="ignoreCopilotCorrection()"
+                          (click)="ignoreCopilotCorrection(msg)"
                           slot="icon-only"
                           color="danger"
                           size="small"

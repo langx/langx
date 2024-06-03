@@ -291,6 +291,14 @@ export class ChatPage implements OnInit, OnDestroy {
     });
   }
 
+  onConfirm(message: Message) {
+    console.log('onConfirm:, message', message.$id);
+  }
+
+  onIgnore(message: Message) {
+    console.log('onIgnore:, message', message.$id);
+  }
+
   //
   // Form Submit
   //
