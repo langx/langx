@@ -204,7 +204,7 @@ export class ChatPage implements OnInit, OnDestroy {
                 this.isUserAtBottom().pipe(debounceTime(300)),
                 this.currentUser$,
               ]).pipe(
-                tap(([isAtBottom, currentUser]) => {
+                tap(async ([isAtBottom, currentUser]) => {
                   if (isAtBottom || this.isFirstLoad) {
                     setTimeout(() => {
                       this.content.scrollToBottom(300);
@@ -213,8 +213,17 @@ export class ChatPage implements OnInit, OnDestroy {
                     this.isFirstLoad = false;
                   }
 
-                  // Update Copilot Toggle
-                  this.copilotEnabled = room?.copilot.includes(currentUser.$id);
+                  // Check Copilot Maintenance Mode
+                  const copilotMaintenance =
+                    await this.updateService.checkCopilotMaintenance();
+                  if (copilotMaintenance) {
+                    this.copilotEnabled = false;
+                  } else {
+                    // Update Copilot Toggle
+                    this.copilotEnabled = room?.copilot.includes(
+                      currentUser.$id
+                    );
+                  }
                 })
               );
             }
@@ -293,9 +302,7 @@ export class ChatPage implements OnInit, OnDestroy {
             // If maintenance mode is enabled, show the alert and return early
             await this.updateService.showCopilotMaintenance();
             // Update Copilot Toggle
-            this.currentUser$.pipe(take(1)).subscribe(async (currentUser) => {
-              this.copilotEnabled = room?.copilot.includes(currentUser.$id);
-            });
+            this.copilotEnabled = false;
             return;
           }
         }
