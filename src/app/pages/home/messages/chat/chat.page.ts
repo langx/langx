@@ -59,6 +59,7 @@ import {
   deleteMessageAction,
   clearErrorsAction,
   updateMessageAction,
+  detachCopilotAction,
 } from 'src/app/store/actions/message.action';
 import {
   errorSelector,
@@ -292,8 +293,6 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   onConfirm(message: Message) {
-    console.log('onConfirm:, message', message.$id);
-    // Update the message
     const request: updateMessageRequestInterface = {
       $id: message.$id,
       data: {
@@ -301,10 +300,14 @@ export class ChatPage implements OnInit, OnDestroy {
       },
     };
     this.store.dispatch(updateMessageAction({ request }));
+
+    const payload = message?.copilot;
+    this.store.dispatch(detachCopilotAction({ payload }));
   }
 
   onIgnore(message: Message) {
-    console.log('onIgnore:, message', message.$id);
+    const payload = message?.copilot;
+    this.store.dispatch(detachCopilotAction({ payload }));
   }
 
   //
