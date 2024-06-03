@@ -11,6 +11,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { ChatBoxComponent } from 'src/app/components/chat-box/chat-box.component';
 import { messageReducers } from 'src/app/store/reducers/message.reducer';
 import { MessageEffects } from 'src/app/store/effects/message.effect';
+import { CopilotInstructionsComponent } from 'src/app/components/copilot-instructions/copilot-instructions.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,6 @@ import { MessageEffects } from 'src/app/store/effects/message.effect';
     StoreModule.forFeature('message', messageReducers),
     EffectsModule.forFeature([MessageEffects]),
   ],
-  declarations: [ChatPage, ChatBoxComponent],
+  declarations: [ChatPage, ChatBoxComponent, CopilotInstructionsComponent],
 })
 export class ChatPageModule {}
