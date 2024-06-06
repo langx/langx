@@ -86,7 +86,7 @@
       "runtime": "node-18.0",
       "execute": [],
       "events": [],
-      "schedule": "0 0 * * *",
+      "schedule": "*/1 * * * *",
       "timeout": 15,
       "enabled": true,
       "logging": true,

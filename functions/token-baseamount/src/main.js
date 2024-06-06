@@ -3,6 +3,9 @@ import { Client, Databases, Query } from 'node-appwrite';
 // Cronjobs, every 24 hours
 // "schedule": "0 0 * * *",
 
+// Cronjobs, every minute
+// "schedule": "*/1 * * * *",
+
 async function processDocuments(db, offset = 0) {
   let queries = [
     Query.or([
@@ -41,7 +44,8 @@ async function processDocuments(db, offset = 0) {
       process.env.APP_DATABASE,
       process.env.TOKEN_COLLECTION,
       doc.$id,
-      { baseAmount: doc.baseAmount, text: 0, image: 0, audio: 0, onlineMin: 1 }
+      { baseAmount: doc.baseAmount }
+      // { baseAmount: doc.baseAmount, text: 0, image: 0, audio: 0, onlineMin: 1 }
     );
   }
 
