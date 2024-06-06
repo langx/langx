@@ -36,65 +36,67 @@ export default async ({ req, res, log, error }) => {
             process.env.TOKEN_COLLECTION,
             req.body.$id,
             {
-              baseAmount: 0,
+              lastSeen: req.body.lastSeen,
             }
           );
-          log(test);
+          log('New document created for user.');
           return res.json({
             ok: true,
-            message: 'User is just created in token collection.',
+            message: 'New document created for user.',
           });
-        } else {
-          // User found, tokenDocs.documents[0] contains the user's document
-          log('User found in token collection.');
-          const tokenDoc = tokenDocs.documents[0];
-          let updatedDoc = {};
+        }
+        // User found, tokenDocs.documents[0] contains the user's document
+        log('User found in token collection.');
+        const tokenDoc = tokenDocs.documents[0];
+        let updatedDoc = {};
 
-          //
-          // Calculate lastSeen
-          //
-          let lastActiveDate = new Date(req.body.lastSeen);
-          const today = new Date();
-          const diffInSeconds = Math.abs(today - lastActiveDate) / 1000;
-          if (diffInSeconds >= 30 && diffInSeconds <= 90) {
-            updatedDoc.onlineMin = tokenDoc.onlineMin + 1;
-            log('onlineMin ++');
+        //
+        // Calculate lastSeen
+        //
+        let lastActiveDate = new Date(req.body.lastSeen);
+        const lastSeenFromTokenDoc = new Date(tokenDoc.lastSeen);
+        const diffInSeconds =
+          Math.abs(lastActiveDate - lastSeenFromTokenDoc) / 1000;
+        log(`diffInSeconds: ${diffInSeconds}`);
+        if (diffInSeconds >= 30 && diffInSeconds <= 90) {
+          updatedDoc.onlineMin = tokenDoc.onlineMin + 1;
+          log('onlineMin ++');
+          updatedDoc.lastSeen = req.body.lastSeen;
+        }
+
+        //
+        // Calculate Badges
+        //
+        let badgesBonus = 1;
+
+        // Check if badges exist in the request body
+        if (req.body.badges) {
+          log(req.body.badges);
+          // Add other badges bonuses
+          if (req.body.badges.includes('fundamental')) badgesBonus *= 3;
+          if (req.body.badges.includes('sponsor')) badgesBonus *= 2;
+          if (req.body.badges.includes('early-adopter')) badgesBonus *= 1.5;
+          if (req.body.badges.includes('pioneer')) badgesBonus *= 1.2;
+          if (req.body.badges.includes('teacher')) badgesBonus *= 1.1;
+          if (req.body.badges.includes('creator')) badgesBonus *= 1.1;
+
+          // Limit the maximum bonus to 10
+          badgesBonus = Math.min(10, badgesBonus);
+
+          if (tokenDoc.badges !== badgesBonus) {
+            updatedDoc.badges = badgesBonus;
           }
+        }
 
-          //
-          // Calculate Badges
-          //
-          let badgesBonus = 1;
+        log(`updatedDoc: ${JSON.stringify(updatedDoc)}`);
 
-          // Check if badges exist in the request body
-          if (req.body.badges) {
-            log(req.body.badges);
-            // Add other badges bonuses
-            if (req.body.badges.includes('fundamental')) badgesBonus *= 3;
-            if (req.body.badges.includes('sponsor')) badgesBonus *= 2;
-            if (req.body.badges.includes('early-adopter')) badgesBonus *= 1.5;
-            if (req.body.badges.includes('pioneer')) badgesBonus *= 1.2;
-            if (req.body.badges.includes('teacher')) badgesBonus *= 1.1;
-            if (req.body.badges.includes('creator')) badgesBonus *= 1.1;
-
-            // Limit the maximum bonus to 10
-            badgesBonus = Math.min(10, badgesBonus);
-
-            if (tokenDoc.badges !== badgesBonus) {
-              updatedDoc.badges = badgesBonus;
-            }
-          }
-
-          log(`updatedDoc: ${JSON.stringify(updatedDoc)}`);
-
-          if (Object.keys(updatedDoc).length !== 0) {
-            db.updateDocument(
-              process.env.APP_DATABASE,
-              process.env.TOKEN_COLLECTION,
-              tokenDoc.$id,
-              updatedDoc
-            );
-          }
+        if (Object.keys(updatedDoc).length !== 0) {
+          db.updateDocument(
+            process.env.APP_DATABASE,
+            process.env.TOKEN_COLLECTION,
+            tokenDoc.$id,
+            updatedDoc
+          );
         }
         return res.json({ ok: true });
       case process.env.MESSAGES_COLLECTION:
