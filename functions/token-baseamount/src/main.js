@@ -1,7 +1,51 @@
 import { Client, Databases, Query } from 'node-appwrite';
 
-// Cronjobs, every 1 minute
-// "schedule": "*/1 * * * *",
+async function processDocuments(db, offset = 0) {
+  let queries = [
+    Query.or([
+      Query.greaterThan('text', 0),
+      Query.greaterThan('image', 0),
+      Query.greaterThan('audio', 0),
+    ]),
+    Query.orderDesc('streak'),
+    Query.offset(offset),
+    Query.limit(5),
+  ];
+
+  const result = await db.listDocuments(
+    process.env.APP_DATABASE,
+    process.env.TOKEN_COLLECTION,
+    queries
+  );
+
+  // Make a calculation for the base amount
+  for (let doc of result.documents) {
+    let imageMessages = doc.image > 5 ? 5 : doc.image;
+    let voiceMessages = doc.audio > 10 ? 10 : doc.audio;
+    let textMessages = doc.text > 100 ? 100 : doc.text;
+    let onlineTime = doc.onlineMin > 120 ? 120 : doc.onlineMin;
+    let streak = doc.streak > 30 ? 30 : doc.streak;
+    const badgesBonus = doc.badges;
+
+    doc.baseAmount =
+      (imageMessages * 200 + voiceMessages * 100 + textMessages * 10) *
+      (onlineTime / 120) *
+      (streak / 10) *
+      badgesBonus;
+
+    await db.updateDocument(
+      process.env.APP_DATABASE,
+      process.env.TOKEN_COLLECTION,
+      doc.$id,
+      { baseAmount: doc.baseAmount }
+    );
+  }
+
+  // If there are more documents to process, call the function recursively with the new offset
+  if (offset + result.documents.length < result.total) {
+    await processDocuments(db, offset + result.documents.length);
+  }
+}
 
 export default async ({ req, res, log, error }) => {
   try {
@@ -16,48 +60,9 @@ export default async ({ req, res, log, error }) => {
 
     const db = new Databases(client);
 
-    let queries = [
-      Query.or([
-        Query.greaterThan('text', 0),
-        Query.greaterThan('image', 0),
-        Query.greaterThan('audio', 0),
-      ]),
-      Query.orderDesc('streak'),
-      Query.limit(5),
-    ];
+    await processDocuments(db);
 
-    const result = await db.listDocuments(
-      process.env.APP_DATABASE,
-      process.env.TOKEN_COLLECTION,
-      queries
-    );
-
-    // Make a calculation for the base amount
-    result.documents.forEach(async (doc) => {
-      let imageMessages = doc.image > 5 ? 5 : doc.image;
-      let voiceMessages = doc.audio > 10 ? 10 : doc.audio;
-      let textMessages = doc.text > 100 ? 100 : doc.text;
-      let onlineTime = doc.onlineMin > 120 ? 120 : doc.onlineMin;
-      let streak = doc.streak > 30 ? 30 : doc.streak;
-      const badgesBonus = doc.badges;
-
-      doc.baseAmount =
-        (imageMessages * 200 + voiceMessages * 100 + textMessages * 10) *
-        (onlineTime / 120) *
-        (streak / 10) *
-        badgesBonus;
-
-      // Update the document with the new baseAmount
-      await db.updateDocument(
-        process.env.APP_DATABASE,
-        process.env.TOKEN_COLLECTION,
-        doc.$id,
-        { baseAmount: doc.baseAmount }
-      );
-
-      log(`doc: ${JSON.stringify(doc)}`);
-    });
-    log(`result: ${JSON.stringify(result)}`);
+    log(`All documents processed.`);
     return res.json({ ok: true });
   } catch (err) {
     log('Error occurred while searching for user: ', err.message);
