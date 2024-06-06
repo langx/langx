@@ -19,7 +19,7 @@ export class TokenDistributionComponent implements OnInit {
   ngOnInit() {}
 
   openLeaderboard() {
-    this.router.navigate(['/', 'home', 'leaderboard']);
+    this.router.navigate(['/', 'home', 'token-details']);
   }
 
   async openPage(pageURL: any) {
