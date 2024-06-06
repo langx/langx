@@ -40,11 +40,14 @@ async function processDocuments(
     let streak = doc.streak > 30 ? 30 : doc.streak;
     const badgesBonus = doc.badges;
 
-    doc.baseAmount =
-      (imageMessages * 200 + voiceMessages * 100 + textMessages * 10) *
-      (onlineTime / 120) *
-      (streak / 10) *
-      badgesBonus;
+    doc.baseAmount = parseFloat(
+      (
+        (imageMessages * 200 + voiceMessages * 100 + textMessages * 10) *
+        (onlineTime / 120) *
+        (streak / 10) *
+        badgesBonus
+      ).toFixed(2)
+    );
 
     totalBaseAmount += doc.baseAmount;
 
@@ -71,8 +74,11 @@ async function processDocuments(
   } else {
     // All documents have been processed, now update each document in the allDocs array with the distribution percentage
     for (let doc of allDocs) {
-      let distributionPercentage = doc.baseAmount / totalBaseAmount;
+      let distributionPercentage = parseFloat(
+        (doc.baseAmount / totalBaseAmount).toFixed(4)
+      );
       // console.log(`${doc.$id} - ${doc.baseAmount} - ${distributionPercentage}`);
+
       await db.updateDocument(
         process.env.APP_DATABASE,
         process.env.TOKEN_COLLECTION,
