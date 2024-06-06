@@ -125,6 +125,25 @@ export default async ({ req, res, log, error }) => {
         let updatedDocFromMessage = {};
         log(tokenDocfromMessage);
 
+        //
+        // Check Message Type
+        //
+
+        switch (req.body.type) {
+          case 'body':
+            log('Message Type: Body');
+            break;
+          case 'image':
+            log('Message Type: Image');
+            break;
+          case 'audio':
+            log('Message Type: Audio');
+            break;
+          default:
+            log('Unknown Message Type');
+            return res.json({ ok: true });
+        }
+
         return res.json({ ok: true });
       default:
         log('Unknown Collection');
