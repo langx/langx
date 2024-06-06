@@ -79,6 +79,21 @@
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/token-distribution"
+    },
+    {
+      "$id": "token-baseamount",
+      "name": "token-baseamount",
+      "runtime": "node-18.0",
+      "execute": [],
+      "events": [],
+      "schedule": "*/1 * * * *",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/token-baseamount"
     }
   ]
 }
