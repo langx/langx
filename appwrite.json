@@ -7,7 +7,9 @@
       "name": "push-notification-with-fcm",
       "runtime": "node-18.0",
       "execute": [],
-      "events": [],
+      "events": [
+        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create"
+      ],
       "schedule": "",
       "timeout": 15,
       "enabled": true,
