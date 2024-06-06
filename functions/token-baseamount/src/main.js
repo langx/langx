@@ -13,7 +13,7 @@ export default async ({ req, res, log, error }) => {
 
   const db = new Databases(client);
 
-  log('Token Baseamount function called');
+  // log('Token Baseamount function called');
 
   try {
     let tokenDocs = await db.listDocuments(
@@ -41,15 +41,14 @@ export default async ({ req, res, log, error }) => {
       );
     }
 
-    log(tokenDocs);
+    const tokenDoc = tokenDocs.documents[0];
+    let updatedDoc = {};
+    log(tokenDoc);
 
     switch (req.body.$collectionId) {
       case process.env.USERS_COLLECTION:
         log('Users Collection Triggered');
         // log(req.body);
-
-        const tokenDoc = tokenDocs.documents[0];
-        let updatedDoc = {};
 
         //
         // Calculate lastSeen
@@ -108,6 +107,7 @@ export default async ({ req, res, log, error }) => {
         return res.json({ ok: true });
       case process.env.MESSAGES_COLLECTION:
         log('Messages Collection Triggered');
+        log(req.body);
 
         return res.json({ ok: true });
       default:
