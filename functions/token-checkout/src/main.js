@@ -22,7 +22,6 @@ async function processDocuments(
     ]),
     Query.orderDesc('streak'),
     Query.offset(offset),
-    Query.limit(5),
   ];
 
   const result = await db.listDocuments(
