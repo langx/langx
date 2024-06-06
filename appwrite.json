@@ -7,7 +7,9 @@
       "name": "push-notification-with-fcm",
       "runtime": "node-18.0",
       "execute": [],
-      "events": [],
+      "events": [
+        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create"
+      ],
       "schedule": "",
       "timeout": 15,
       "enabled": true,
@@ -61,6 +63,39 @@
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/day-streaks"
+    },
+    {
+      "$id": "token-distribution",
+      "name": "token-distribution",
+      "runtime": "node-18.0",
+      "execute": [],
+      "events": [
+        "databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update",
+        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create"
+      ],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/token-distribution"
+    },
+    {
+      "$id": "token-checkout",
+      "name": "token-checkout",
+      "runtime": "node-18.0",
+      "execute": [],
+      "events": [],
+      "schedule": "0 0 * * *",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/token-checkout"
     }
   ]
 }
