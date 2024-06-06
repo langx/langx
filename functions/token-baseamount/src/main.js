@@ -32,6 +32,31 @@ export default async ({ req, res, log, error }) => {
       queries
     );
 
+    // Make a calculation for the base amount
+    result.documents.forEach(async (doc) => {
+      let imageMessages = doc.image > 5 ? 5 : doc.image;
+      let voiceMessages = doc.audio > 10 ? 10 : doc.audio;
+      let textMessages = doc.text > 100 ? 100 : doc.text;
+      let onlineTime = doc.onlineMin > 120 ? 120 : doc.onlineMin;
+      let streak = doc.streak > 30 ? 30 : doc.streak;
+      const badgesBonus = doc.badges;
+
+      doc.baseAmount =
+        (imageMessages * 200 + voiceMessages * 100 + textMessages * 10) *
+        (onlineTime / 120) *
+        (streak / 10) *
+        badgesBonus;
+
+      // Update the document with the new baseAmount
+      await db.updateDocument(
+        process.env.APP_DATABASE,
+        process.env.TOKEN_COLLECTION,
+        doc.$id,
+        { baseAmount: doc.baseAmount }
+      );
+
+      log(`doc: ${JSON.stringify(doc)}`);
+    });
     log(`result: ${JSON.stringify(result)}`);
     return res.json({ ok: true });
   } catch (err) {
