@@ -16,39 +16,38 @@ export default async ({ req, res, log, error }) => {
   // log('Token Baseamount function called');
 
   try {
-    let tokenDocs = await db.listDocuments(
-      process.env.APP_DATABASE,
-      process.env.TOKEN_COLLECTION,
-      [Query.equal('$id', req.body.$id)]
-    );
-
-    if (tokenDocs.total === 0) {
-      // Create new token document for user
-      const test = await db.createDocument(
-        process.env.APP_DATABASE,
-        process.env.TOKEN_COLLECTION,
-        req.body.$id,
-        {
-          lastSeen: req.body.lastSeen,
-          streak: req.body.streaks.daystreak,
-        }
-      );
-      log('New document created for user.');
-      tokenDocs = await db.listDocuments(
-        process.env.APP_DATABASE,
-        process.env.TOKEN_COLLECTION,
-        [Query.equal('$id', req.body.$id)]
-      );
-    }
-
-    const tokenDoc = tokenDocs.documents[0];
-    let updatedDoc = {};
-    log(tokenDoc);
-
     switch (req.body.$collectionId) {
       case process.env.USERS_COLLECTION:
         log('Users Collection Triggered');
         // log(req.body);
+        let tokenDocs = await db.listDocuments(
+          process.env.APP_DATABASE,
+          process.env.TOKEN_COLLECTION,
+          [Query.equal('$id', req.body.$id)]
+        );
+
+        if (tokenDocs.total === 0) {
+          // Create new token document for user
+          const test = await db.createDocument(
+            process.env.APP_DATABASE,
+            process.env.TOKEN_COLLECTION,
+            req.body.$id,
+            {
+              lastSeen: req.body.lastSeen,
+              streak: req.body.streaks.daystreak,
+            }
+          );
+          log('New document created for user.');
+          tokenDocs = await db.listDocuments(
+            process.env.APP_DATABASE,
+            process.env.TOKEN_COLLECTION,
+            [Query.equal('$id', req.body.$id)]
+          );
+        }
+
+        const tokenDoc = tokenDocs.documents[0];
+        let updatedDoc = {};
+        log(tokenDoc);
 
         //
         // Calculate lastSeen
@@ -112,7 +111,7 @@ export default async ({ req, res, log, error }) => {
         return res.json({ ok: true });
       default:
         log('Unknown Collection');
-        break;
+        return res.json({ ok: true });
     }
   } catch (err) {
     log('Error occurred while searching for user: ', err.message);
