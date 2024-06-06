@@ -3,7 +3,6 @@ import { Client, Databases, Query } from 'node-appwrite';
 // Event Triggers
 // + Messages Collection: databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create
 // + Users Collection:    databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update
-// + Streaks Collection:  databases.650750f16cd0c482bb83.collections.65e73985ef5ac00c186b.documents.*.update
 
 export default async ({ req, res, log, error }) => {
   // Init SDK
@@ -108,9 +107,6 @@ export default async ({ req, res, log, error }) => {
         return res.json({ ok: true });
       case process.env.MESSAGES_COLLECTION:
         log('Messages Collection Triggered');
-        return res.json({ ok: true });
-      case process.env.STREAKS_COLLECTION:
-        log('Streaks Collection Triggered');
         return res.json({ ok: true });
       default:
         log('Unknown Collection');
