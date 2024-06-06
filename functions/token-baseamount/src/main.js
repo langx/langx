@@ -1,5 +1,8 @@
 import { Client, Databases, Query } from 'node-appwrite';
 
+// Cronjobs, every 24 hours
+// "schedule": "0 0 * * *",
+
 async function processDocuments(db, offset = 0) {
   let queries = [
     Query.or([
@@ -33,11 +36,12 @@ async function processDocuments(db, offset = 0) {
       (streak / 10) *
       badgesBonus;
 
+    // Update the document with the new baseAmount and reset all values
     await db.updateDocument(
       process.env.APP_DATABASE,
       process.env.TOKEN_COLLECTION,
       doc.$id,
-      { baseAmount: doc.baseAmount }
+      { baseAmount: doc.baseAmount, text: 0, image: 0, audio: 0, onlineMin: 1 }
     );
   }
 
