@@ -1,7 +1,9 @@
 import { Client, Databases, Query } from 'node-appwrite';
 
-// event triggers
-// databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update
+// Event Triggers
+// + messages collection: databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create
+// + users collection: databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update
+// + streaks collection: databases.650750f16cd0c482bb83.collections.65e73985ef5ac00c186b.documents.*.update
 
 export default async ({ req, res, log, error }) => {
   // Init SDK
@@ -13,6 +15,22 @@ export default async ({ req, res, log, error }) => {
   const db = new Databases(client);
 
   log('Token Baseamount function called');
+  log(req);
+
+  switch (req.body.$collectionId) {
+    case process.env.USERS_COLLECTION:
+      log('Users Collection Triggered');
+      break;
+    case process.env.MESSAGES_COLLECTION:
+      log('Messages Collection Triggered');
+      break;
+    case process.env.STREAKS_COLLECTION:
+      log('Streaks Collection Triggered');
+      break;
+    default:
+      log('Unknown Collection');
+      break;
+  }
 
   try {
     return res.json({ ok: true });
