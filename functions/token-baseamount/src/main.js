@@ -45,22 +45,22 @@ export default async ({ req, res, log, error }) => {
           );
         }
 
-        const tokenDocfromUser = tokenDocsFromUser.documents[0];
-        let updatedDoc = {};
-        log(tokenDocfromUser);
+        const tokenDocFromUser = tokenDocsFromUser.documents[0];
+        let updatedDocFromUser = {};
+        log(tokenDocFromUser);
 
         //
         // Calculate lastSeen
         //
         let lastActiveDate = new Date(req.body.lastSeen);
-        const lastSeenFromTokenDoc = new Date(tokenDocfromUser.lastSeen);
+        const lastSeenFromTokenDoc = new Date(tokenDocFromUser.lastSeen);
         const diffInSeconds =
           Math.abs(lastActiveDate - lastSeenFromTokenDoc) / 1000;
         log(`diffInSeconds: ${diffInSeconds}`);
         if (diffInSeconds >= 30 && diffInSeconds <= 90) {
-          updatedDoc.onlineMin = tokenDocfromUser.onlineMin + 1;
+          updatedDocFromUser.onlineMin = tokenDocFromUser.onlineMin + 1;
           log('onlineMin ++');
-          updatedDoc.lastSeen = req.body.lastSeen;
+          updatedDocFromUser.lastSeen = req.body.lastSeen;
         }
 
         //
@@ -81,32 +81,49 @@ export default async ({ req, res, log, error }) => {
           // Limit the maximum bonus to 10
           badgesBonus = Math.min(10, badgesBonus);
 
-          if (tokenDocfromUser.badges !== badgesBonus) {
-            updatedDoc.badges = badgesBonus;
+          if (tokenDocFromUser.badges !== badgesBonus) {
+            updatedDocFromUser.badges = badgesBonus;
           }
         }
 
         //
         // Check Day Streaks
         //
-        if (req.body.streaks.daystreak !== tokenDocfromUser.streak) {
-          updatedDoc.streak = req.body.streaks.daystreak;
+        if (req.body.streaks.daystreak !== tokenDocFromUser.streak) {
+          updatedDocFromUser.streak = req.body.streaks.daystreak;
         }
 
-        log(`updatedDoc: ${JSON.stringify(updatedDoc)}`);
+        log(`updatedDoc: ${JSON.stringify(updatedDocFromUser)}`);
 
-        if (Object.keys(updatedDoc).length !== 0) {
+        if (Object.keys(updatedDocFromUser).length !== 0) {
           db.updateDocument(
             process.env.APP_DATABASE,
             process.env.TOKEN_COLLECTION,
-            tokenDocfromUser.$id,
-            updatedDoc
+            tokenDocFromUser.$id,
+            updatedDocFromUser
           );
         }
         return res.json({ ok: true });
       case process.env.MESSAGES_COLLECTION:
         log('Messages Collection Triggered');
         log(req.body);
+
+        let tokenDocsFromMessage = await db.listDocuments(
+          process.env.APP_DATABASE,
+          process.env.TOKEN_COLLECTION,
+          [Query.equal('$id', req.body.$id)]
+        );
+
+        if (tokenDocsFromMessage.total === 0) {
+          return res.json({
+            ok: false,
+            error: 'Token document not found from Message Collection Trigger',
+          });
+        }
+
+        const tokenDocfromMessage = tokenDocsFromUser.documents[0];
+        let updatedDocFromMessage = {};
+        log(tokenDocfromMessage);
 
         return res.json({ ok: true });
       default:
