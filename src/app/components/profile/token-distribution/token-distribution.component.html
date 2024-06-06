@@ -1,1 +1,37 @@
-<p>token-distribution works!</p>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+      <ion-row>
+        <ion-col size="10">🪙 Testnet Token</ion-col>
+        <ion-col size="2">
+          <ion-card-subtitle>
+            <ion-button size="small" (click)="openPage(infoURL)">
+              <ion-icon name="information-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-card-subtitle>
+        </ion-col>
+      </ion-row>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item lines="none" (click)="openLeaderboard()" detail>
+        <ion-thumbnail slot="start">
+          <img
+            alt="Do not break the chain"
+            src="/assets/image/badges/chain.png"
+          />
+        </ion-thumbnail>
+        <ion-label>
+          <h1 *ngIf="balance">
+            {{ balance }}
+          </h1>
+          <p *ngIf="!balance">No balance available</p>
+        </ion-label>
+        <div class="metadata-end-wrapper" slot="end">
+          <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
