@@ -63,8 +63,8 @@
       "path": "functions/day-streaks"
     },
     {
-      "$id": "token-baseamount",
-      "name": "token-baseamount",
+      "$id": "token-distribution",
+      "name": "token-distribution",
       "runtime": "node-18.0",
       "execute": [],
       "events": [
@@ -78,7 +78,7 @@
       "entrypoint": "src/main.js",
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
-      "path": "functions/token-baseamount"
+      "path": "functions/token-distribution"
     }
   ]
 }
