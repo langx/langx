@@ -28,7 +28,7 @@ export default async ({ req, res, log, error }) => {
     switch (req.body.$collectionId) {
       case process.env.USERS_COLLECTION:
         log('Users Collection Triggered');
-        log(req.body);
+        // log(req.body);
         if (tokenDocs.total === 0) {
           // Create new token document for user
           const test = await db.createDocument(
