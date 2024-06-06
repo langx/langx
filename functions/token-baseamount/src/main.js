@@ -20,13 +20,13 @@ export default async ({ req, res, log, error }) => {
       case process.env.USERS_COLLECTION:
         log('Users Collection Triggered');
         // log(req.body);
-        let tokenDocs = await db.listDocuments(
+        let tokenDocsFromUser = await db.listDocuments(
           process.env.APP_DATABASE,
           process.env.TOKEN_COLLECTION,
           [Query.equal('$id', req.body.$id)]
         );
 
-        if (tokenDocs.total === 0) {
+        if (tokenDocsFromUser.total === 0) {
           // Create new token document for user
           const test = await db.createDocument(
             process.env.APP_DATABASE,
@@ -38,27 +38,27 @@ export default async ({ req, res, log, error }) => {
             }
           );
           log('New document created for user.');
-          tokenDocs = await db.listDocuments(
+          tokenDocsFromUser = await db.listDocuments(
             process.env.APP_DATABASE,
             process.env.TOKEN_COLLECTION,
             [Query.equal('$id', req.body.$id)]
           );
         }
 
-        const tokenDoc = tokenDocs.documents[0];
+        const tokenDocfromUser = tokenDocsFromUser.documents[0];
         let updatedDoc = {};
-        log(tokenDoc);
+        log(tokenDocfromUser);
 
         //
         // Calculate lastSeen
         //
         let lastActiveDate = new Date(req.body.lastSeen);
-        const lastSeenFromTokenDoc = new Date(tokenDoc.lastSeen);
+        const lastSeenFromTokenDoc = new Date(tokenDocfromUser.lastSeen);
         const diffInSeconds =
           Math.abs(lastActiveDate - lastSeenFromTokenDoc) / 1000;
         log(`diffInSeconds: ${diffInSeconds}`);
         if (diffInSeconds >= 30 && diffInSeconds <= 90) {
-          updatedDoc.onlineMin = tokenDoc.onlineMin + 1;
+          updatedDoc.onlineMin = tokenDocfromUser.onlineMin + 1;
           log('onlineMin ++');
           updatedDoc.lastSeen = req.body.lastSeen;
         }
@@ -81,7 +81,7 @@ export default async ({ req, res, log, error }) => {
           // Limit the maximum bonus to 10
           badgesBonus = Math.min(10, badgesBonus);
 
-          if (tokenDoc.badges !== badgesBonus) {
+          if (tokenDocfromUser.badges !== badgesBonus) {
             updatedDoc.badges = badgesBonus;
           }
         }
@@ -89,7 +89,7 @@ export default async ({ req, res, log, error }) => {
         //
         // Check Day Streaks
         //
-        if (req.body.streaks.daystreak !== tokenDoc.streak) {
+        if (req.body.streaks.daystreak !== tokenDocfromUser.streak) {
           updatedDoc.streak = req.body.streaks.daystreak;
         }
 
@@ -99,7 +99,7 @@ export default async ({ req, res, log, error }) => {
           db.updateDocument(
             process.env.APP_DATABASE,
             process.env.TOKEN_COLLECTION,
-            tokenDoc.$id,
+            tokenDocfromUser.$id,
             updatedDoc
           );
         }
