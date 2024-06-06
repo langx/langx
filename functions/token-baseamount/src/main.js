@@ -17,25 +17,31 @@ export default async ({ req, res, log, error }) => {
   log('Token Baseamount function called');
   log(req);
 
-  switch (req.body.$collectionId) {
-    case process.env.USERS_COLLECTION:
-      log('Users Collection Triggered');
-      break;
-    case process.env.MESSAGES_COLLECTION:
-      log('Messages Collection Triggered');
-      break;
-    case process.env.STREAKS_COLLECTION:
-      log('Streaks Collection Triggered');
-      break;
-    default:
-      log('Unknown Collection');
-      break;
-  }
-
   try {
-    return res.json({ ok: true });
+    const tokenDoc = await db.listtDocuments(
+      process.env.APP_DATABASE,
+      process.env.TOKEN_COLLECTION,
+      req.body.$id
+    );
+
+    log(tokenDoc);
   } catch (err) {
     log('Error occurred while searching for user: ', err.message);
     return res.json({ ok: false, error: err.message }, 400);
+  }
+
+  switch (req.body.$collectionId) {
+    case process.env.USERS_COLLECTION:
+      log('Users Collection Triggered');
+      return res.json({ ok: true });
+    case process.env.MESSAGES_COLLECTION:
+      log('Messages Collection Triggered');
+      return res.json({ ok: true });
+    case process.env.STREAKS_COLLECTION:
+      log('Streaks Collection Triggered');
+      return res.json({ ok: true });
+    default:
+      log('Unknown Collection');
+      break;
   }
 };
