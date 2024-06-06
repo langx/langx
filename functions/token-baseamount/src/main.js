@@ -17,30 +17,85 @@ export default async ({ req, res, log, error }) => {
   log('Token Baseamount function called');
 
   try {
-    const tokenDoc = await db.listDocuments(
+    const tokenDocs = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.TOKEN_COLLECTION,
-      req.body.$id
+      [Query.equal('$id', req.body.$id)]
     );
 
-    log(tokenDoc);
+    log(tokenDocs);
 
     switch (req.body.$collectionId) {
       case process.env.USERS_COLLECTION:
         log('Users Collection Triggered');
         log(req.body);
-        if (tokenDoc.length === 0) {
-          await db.createDocument(
+        if (tokenDocs.total === 0) {
+          // Create new token document for user
+          const test = await db.createDocument(
             process.env.APP_DATABASE,
             process.env.TOKEN_COLLECTION,
             req.body.$id,
-
             {
-              $id: req.body.$id,
+              baseAmount: 0,
             }
           );
+          log(test);
+          return res.json({
+            ok: true,
+            message: 'User is just created in token collection.',
+          });
+        } else {
+          // User found, tokenDocs.documents[0] contains the user's document
+          log('User found in token collection.');
+          const tokenDoc = tokenDocs.documents[0];
+          let updatedDoc = {};
+
+          //
+          // Calculate lastSeen
+          //
+          let lastActiveDate = new Date(req.body.lastSeen);
+          const today = new Date();
+          const diffInSeconds = Math.abs(today - lastActiveDate) / 1000;
+          if (diffInSeconds >= 30 && diffInSeconds <= 90) {
+            updatedDoc.onlineMin = tokenDoc.onlineMin + 1;
+            log('onlineMin ++');
+          }
+
+          //
+          // Calculate Badges
+          //
+          let badgesBonus = 1;
+
+          // Check if badges exist in the request body
+          if (req.body.badges) {
+            log(req.body.badges);
+            // Add other badges bonuses
+            if (req.body.badges.includes('fundamental')) badgesBonus *= 3;
+            if (req.body.badges.includes('sponsor')) badgesBonus *= 2;
+            if (req.body.badges.includes('early-adopter')) badgesBonus *= 1.5;
+            if (req.body.badges.includes('pioneer')) badgesBonus *= 1.2;
+            if (req.body.badges.includes('teacher')) badgesBonus *= 1.1;
+            if (req.body.badges.includes('creator')) badgesBonus *= 1.1;
+
+            // Limit the maximum bonus to 10
+            badgesBonus = Math.min(10, badgesBonus);
+
+            if (tokenDoc.badges !== badgesBonus) {
+              updatedDoc.badges = badgesBonus;
+            }
+          }
+
+          log(`updatedDoc: ${JSON.stringify(updatedDoc)}`);
+
+          if (Object.keys(updatedDoc).length !== 0) {
+            db.updateDocument(
+              process.env.APP_DATABASE,
+              process.env.TOKEN_COLLECTION,
+              tokenDoc.$id,
+              updatedDoc
+            );
+          }
         }
-        log('New document created for user in token collection.');
         return res.json({ ok: true });
       case process.env.MESSAGES_COLLECTION:
         log('Messages Collection Triggered');
