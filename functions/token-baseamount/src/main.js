@@ -121,7 +121,7 @@ export default async ({ req, res, log, error }) => {
           });
         }
 
-        const tokenDocfromMessage = tokenDocsFromUser.documents[0];
+        const tokenDocfromMessage = tokenDocsFromMessage.documents[0];
         let updatedDocFromMessage = {};
         log(tokenDocfromMessage);
 
