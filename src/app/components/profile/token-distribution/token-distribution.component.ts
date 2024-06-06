@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 
@@ -10,9 +10,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./token-distribution.component.scss'],
 })
 export class TokenDistributionComponent implements OnInit {
-  @Input() balance: number;
+  balance: number = 10;
 
-  infoURL = environment.ext.token.LITEPAPER + '/litepaper/library/day-streaks';
+  infoURL = environment.ext.token.LITEPAPER + '/litepaper/token/distibution';
 
   constructor(private router: Router) {}
 
