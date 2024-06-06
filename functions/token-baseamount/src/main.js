@@ -23,6 +23,7 @@ export default async ({ req, res, log, error }) => {
         Query.greaterThan('audio', 0),
       ]),
       Query.orderDesc('streak'),
+      Query.limit(5),
     ];
 
     const result = await db.listDocuments(
