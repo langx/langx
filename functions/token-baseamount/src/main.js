@@ -132,16 +132,30 @@ export default async ({ req, res, log, error }) => {
         switch (req.body.type) {
           case 'body':
             log('Message Type: Body');
+            updatedDocFromMessage.text = tokenDocfromMessage.text + 1;
             break;
           case 'image':
             log('Message Type: Image');
+            updatedDocFromMessage.image = tokenDocfromMessage.image + 1;
             break;
           case 'audio':
+            updatedDocFromMessage.audio = tokenDocfromMessage.audio + 1;
             log('Message Type: Audio');
             break;
           default:
             log('Unknown Message Type');
             return res.json({ ok: true });
+        }
+
+        log(`updatedDocFromMessage: ${JSON.stringify(updatedDocFromMessage)}`);
+
+        if (Object.keys(updatedDocFromMessage).length !== 0) {
+          db.updateDocument(
+            process.env.APP_DATABASE,
+            process.env.TOKEN_COLLECTION,
+            tokenDocfromMessage.$id,
+            updatedDocFromMessage
+          );
         }
 
         return res.json({ ok: true });
