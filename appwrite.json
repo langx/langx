@@ -81,8 +81,8 @@
       "path": "functions/token-distribution"
     },
     {
-      "$id": "token-baseamount",
-      "name": "token-baseamount",
+      "$id": "token-checkout",
+      "name": "token-checkout",
       "runtime": "node-18.0",
       "execute": [],
       "events": [],
@@ -93,7 +93,7 @@
       "entrypoint": "src/main.js",
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
-      "path": "functions/token-baseamount"
+      "path": "functions/token-checkout"
     }
   ]
 }
