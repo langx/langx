@@ -1,12 +1,14 @@
-import { Client, Databases, Query } from 'node-appwrite';
+import { Client, Databases, Query, ID, Permission, Role } from 'node-appwrite';
 
 // Cronjobs, every 24 hours
 // "schedule": "0 0 * * *",
 
-// Cronjobs, every minute
-// "schedule": "*/1 * * * *",
+// Cronjobs, every 5 minute
+// "schedule": "*/5 * * * *",
 
 // { baseAmount: doc.baseAmount, text: 0, image: 0, audio: 0, onlineMin: 1 }
+
+const TEST_DAILY_TOKEN = 10000;
 
 async function processDocuments(
   db,
@@ -51,14 +53,6 @@ async function processDocuments(
 
     totalBaseAmount += doc.baseAmount;
 
-    // Update the document with the new baseAmount
-    await db.updateDocument(
-      process.env.APP_DATABASE,
-      process.env.TOKEN_COLLECTION,
-      doc.$id,
-      { baseAmount: doc.baseAmount }
-    );
-
     // Add the document to the allDocs array
     allDocs.push(doc);
   }
@@ -77,14 +71,72 @@ async function processDocuments(
       let distributionPercentage = parseFloat(
         (doc.baseAmount / totalBaseAmount).toFixed(4)
       );
-      console.log(`${doc.$id} - ${doc.baseAmount} - ${distributionPercentage}`);
+      // console.log(
+      //   `${doc.$id} - ${doc.baseAmount} - ${distributionPercentage} = ${
+      //     TEST_DAILY_TOKEN * distributionPercentage
+      //   }`
+      // );
 
-      await db.updateDocument(
+      // Create or update the document in wallet collections
+
+      const token = TEST_DAILY_TOKEN * distributionPercentage;
+
+      const walletDoc = await db.listDocuments(
         process.env.APP_DATABASE,
-        process.env.TOKEN_COLLECTION,
-        doc.$id,
-        { distribution: distributionPercentage }
+        process.env.WALLET_COLLECTION,
+        [Query.equal('$id', doc.$id)]
       );
+
+      if (walletDoc.total === 0) {
+        // Create new document
+        await db.createDocument(
+          process.env.APP_DATABASE,
+          process.env.WALLET_COLLECTION,
+          doc.$id,
+          {
+            balance: token,
+          },
+          [Permission.read(Role.user(doc.$id))]
+        );
+      } else {
+        // Update existing document
+        await db.updateDocument(
+          process.env.APP_DATABASE,
+          process.env.WALLET_COLLECTION,
+          doc.$id,
+          {
+            balance: walletDoc.documents[0].balance + token,
+          }
+        );
+      }
+
+      await db.createDocument(
+        process.env.APP_DATABASE,
+        process.env.CHECKOUT_COLLECTION,
+        ID.unique(),
+        {
+          userId: doc.$id,
+          amount: token,
+          distribution: distributionPercentage,
+          baseAmount: doc.baseAmount,
+          text: doc.text,
+          image: doc.image,
+          audio: doc.audio,
+          streak: doc.streak,
+          badges: doc.badges,
+          onlineMin: doc.onlineMin,
+          date: new Date().toISOString(),
+        },
+        [Permission.read(Role.user(doc.$id))]
+      );
+
+      // Reset the tokenDoc after checking out
+      // await db.updateDocument(
+      //   process.env.APP_DATABASE,
+      //   process.env.TOKEN_COLLECTION,
+      //   doc.$id,
+      //   { baseAmount: doc.baseAmount, distribution: distributionPercentage }
+      // );
     }
   }
 }
