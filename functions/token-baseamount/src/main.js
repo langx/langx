@@ -16,11 +16,30 @@ export default async ({ req, res, log, error }) => {
   log('Token Baseamount function called');
 
   try {
-    const tokenDocs = await db.listDocuments(
+    let tokenDocs = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.TOKEN_COLLECTION,
       [Query.equal('$id', req.body.$id)]
     );
+
+    if (tokenDocs.total === 0) {
+      // Create new token document for user
+      const test = await db.createDocument(
+        process.env.APP_DATABASE,
+        process.env.TOKEN_COLLECTION,
+        req.body.$id,
+        {
+          lastSeen: req.body.lastSeen,
+          streak: req.body.streaks.daystreak,
+        }
+      );
+      log('New document created for user.');
+      tokenDocs = await db.listDocuments(
+        process.env.APP_DATABASE,
+        process.env.TOKEN_COLLECTION,
+        [Query.equal('$id', req.body.$id)]
+      );
+    }
 
     log(tokenDocs);
 
@@ -28,25 +47,7 @@ export default async ({ req, res, log, error }) => {
       case process.env.USERS_COLLECTION:
         log('Users Collection Triggered');
         // log(req.body);
-        if (tokenDocs.total === 0) {
-          // Create new token document for user
-          const test = await db.createDocument(
-            process.env.APP_DATABASE,
-            process.env.TOKEN_COLLECTION,
-            req.body.$id,
-            {
-              lastSeen: req.body.lastSeen,
-              streak: req.body.streaks.daystreak,
-            }
-          );
-          log('New document created for user.');
-          return res.json({
-            ok: true,
-            message: 'New document created for user.',
-          });
-        }
-        // User found, tokenDocs.documents[0] contains the user's document
-        log('User found in token collection.');
+
         const tokenDoc = tokenDocs.documents[0];
         let updatedDoc = {};
 
@@ -107,6 +108,7 @@ export default async ({ req, res, log, error }) => {
         return res.json({ ok: true });
       case process.env.MESSAGES_COLLECTION:
         log('Messages Collection Triggered');
+
         return res.json({ ok: true });
       default:
         log('Unknown Collection');
