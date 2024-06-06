@@ -5,17 +5,6 @@ import { Client, Databases, Query } from 'node-appwrite';
 // + Users Collection:    databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.update
 // + Streaks Collection:  databases.650750f16cd0c482bb83.collections.65e73985ef5ac00c186b.documents.*.update
 
-/**
- * @typedef {Object} Token
- * @property {number} [image]
- * @property {number} [audio]
- * @property {number} [text]
- * @property {number} [onlineMin]
- * @property {number} [streak]
- * @property {number} [badges]
- * @property {number} [baseAmount]
- */
-
 export default async ({ req, res, log, error }) => {
   // Init SDK
   const client = new Client()
