@@ -6,8 +6,6 @@ import { Client, Databases, Query, ID, Permission, Role } from 'node-appwrite';
 // Cronjobs, every 5 minute
 // "schedule": "*/5 * * * *",
 
-// { baseAmount: doc.baseAmount, text: 0, image: 0, audio: 0, onlineMin: 1 }
-
 const TEST_DAILY_TOKEN = 10000;
 
 async function processDocuments(
@@ -131,12 +129,12 @@ async function processDocuments(
       );
 
       // Reset the tokenDoc after checking out
-      // await db.updateDocument(
-      //   process.env.APP_DATABASE,
-      //   process.env.TOKEN_COLLECTION,
-      //   doc.$id,
-      //   { baseAmount: doc.baseAmount, distribution: distributionPercentage }
-      // );
+      await db.updateDocument(
+        process.env.APP_DATABASE,
+        process.env.TOKEN_COLLECTION,
+        doc.$id,
+        { text: 0, image: 0, audio: 0, onlineMin: 1 }
+      );
     }
   }
 }
