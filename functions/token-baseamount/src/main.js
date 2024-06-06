@@ -93,7 +93,7 @@ export default async ({ req, res, log, error }) => {
           updatedDocFromUser.streak = req.body.streaks.daystreak;
         }
 
-        log(`updatedDoc: ${JSON.stringify(updatedDocFromUser)}`);
+        log(`updatedDocFromUser: ${JSON.stringify(updatedDocFromUser)}`);
 
         if (Object.keys(updatedDocFromUser).length !== 0) {
           db.updateDocument(
@@ -111,7 +111,7 @@ export default async ({ req, res, log, error }) => {
         let tokenDocsFromMessage = await db.listDocuments(
           process.env.APP_DATABASE,
           process.env.TOKEN_COLLECTION,
-          [Query.equal('$id', req.body.$id)]
+          [Query.equal('$id', req.body.sender)]
         );
 
         if (tokenDocsFromMessage.total === 0) {
