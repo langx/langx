@@ -77,7 +77,7 @@ async function processDocuments(
       let distributionPercentage = parseFloat(
         (doc.baseAmount / totalBaseAmount).toFixed(4)
       );
-      // console.log(`${doc.$id} - ${doc.baseAmount} - ${distributionPercentage}`);
+      console.log(`${doc.$id} - ${doc.baseAmount} - ${distributionPercentage}`);
 
       await db.updateDocument(
         process.env.APP_DATABASE,
