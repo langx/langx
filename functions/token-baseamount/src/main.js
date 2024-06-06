@@ -37,6 +37,7 @@ export default async ({ req, res, log, error }) => {
             req.body.$id,
             {
               lastSeen: req.body.lastSeen,
+              streak: req.body.streaks.daystreak,
             }
           );
           log('New document created for user.');
@@ -69,7 +70,6 @@ export default async ({ req, res, log, error }) => {
         //
         let badgesBonus = 1;
 
-        // Check if badges exist in the request body
         if (req.body.badges) {
           log(req.body.badges);
           // Add other badges bonuses
@@ -86,6 +86,13 @@ export default async ({ req, res, log, error }) => {
           if (tokenDoc.badges !== badgesBonus) {
             updatedDoc.badges = badgesBonus;
           }
+        }
+
+        //
+        // Check Day Streaks
+        //
+        if (req.body.streaks.daystreak !== tokenDoc.streak) {
+          updatedDoc.streak = req.body.streaks.daystreak;
         }
 
         log(`updatedDoc: ${JSON.stringify(updatedDoc)}`);
