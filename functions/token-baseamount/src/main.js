@@ -18,7 +18,7 @@ export default async ({ req, res, log, error }) => {
   log(req);
 
   try {
-    const tokenDoc = await db.listtDocuments(
+    const tokenDoc = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.TOKEN_COLLECTION,
       req.body.$id
