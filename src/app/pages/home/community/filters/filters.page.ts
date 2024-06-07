@@ -182,6 +182,29 @@ export class FiltersPage implements OnInit, OnDestroy {
     else return false;
   }
 
+  studyLanguageChecked(event, langName) {
+    if (event.detail.checked) {
+      if (!this.filterData.studyLanguages) this.filterData.studyLanguages = [];
+      this.filterData.studyLanguages.push(langName);
+    } else {
+      this.filterData.studyLanguages = this.filterData.studyLanguages.filter(
+        (item) => item !== langName
+      );
+    }
+    console.log(this.filterData);
+  }
+
+  isCheckedStudyLanguage(langName) {
+    if (!this.filterData.studyLanguages) return false;
+    else if (this.filterData.studyLanguages.length == 0) return false;
+    else if (
+      this.filterData.studyLanguages.length > 0 &&
+      this.filterData.studyLanguages.includes(langName)
+    )
+      return true;
+    else return false;
+  }
+
   //
   // COUNTRY Methods
   //
