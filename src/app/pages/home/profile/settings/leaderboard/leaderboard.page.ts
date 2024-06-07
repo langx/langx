@@ -10,6 +10,7 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getStreaksAction,
   getStreaksWithOffsetAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/streaks.action';
 import {
   errorSelector,
@@ -49,7 +50,7 @@ export class LeaderboardPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
-            // TODO: Clear error message if it will be shown
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );

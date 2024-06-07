@@ -1,8 +1,8 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
-import { deletedUser } from 'src/app/extras/deletedUser';
 import { StreaksStateInterface } from 'src/app/models/types/states/streaksState.interface';
 import {
+  clearErrorsAction,
   getStreaksAction,
   getStreaksFailureAction,
   getStreaksSuccessAction,
@@ -34,25 +34,15 @@ const streaksReducer = createReducer(
       error: null,
     })
   ),
-  on(getStreaksSuccessAction, (state, action): StreaksStateInterface => {
-    // Map through the documents and add deletedUser if from is null
-    // const streaks = action.payload.documents.map((document) => {
-    //   if (!document.userId || document.userId === null) {
-    //     return {
-    //       ...document,
-    //       userId: deletedUser,
-    //     };
-    //   }
-    //   return document;
-    // });
-
-    return {
+  on(
+    getStreaksSuccessAction,
+    (state, action): StreaksStateInterface => ({
       ...state,
       isLoading: false,
       total: action.payload.total,
       streaks: action.payload.documents,
-    };
-  }),
+    })
+  ),
   on(
     getStreaksFailureAction,
     (state, action): StreaksStateInterface => ({
@@ -73,25 +63,12 @@ const streaksReducer = createReducer(
   ),
   on(
     getStreaksWithOffsetSuccessAction,
-    (state, action): StreaksStateInterface => {
-      // Map through the documents and add deletedUser if userId is null
-      // const streaks = action.payload.documents.map((document) => {
-      //   if (!document.userId || document.userId === null) {
-      //     return {
-      //       ...document,
-      //       userId: deletedUser,
-      //     };
-      //   }
-      //   return document;
-      // });
-
-      return {
-        ...state,
-        isLoading: false,
-        total: action.payload.total,
-        streaks: [...state.streaks, ...action.payload.documents],
-      };
-    }
+    (state, action): StreaksStateInterface => ({
+      ...state,
+      isLoading: false,
+      total: action.payload.total,
+      streaks: [...state.streaks, ...action.payload.documents],
+    })
   ),
   on(
     getStreaksWithOffsetFailureAction,
@@ -108,6 +85,15 @@ const streaksReducer = createReducer(
     deleteAccountSuccessAction,
     (): StreaksStateInterface => ({
       ...initialState,
+    })
+  ),
+
+  // Clear Errors Actions
+  on(
+    clearErrorsAction,
+    (state): StreaksStateInterface => ({
+      ...state,
+      isLoading: false,
     })
   )
 );
