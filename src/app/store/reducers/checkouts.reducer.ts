@@ -9,6 +9,7 @@ import {
   getCheckoutsWithOffsetAction,
   getCheckoutsWithOffsetSuccessAction,
   getCheckoutsWithOffsetFailureAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/checkouts.action';
 import {
   deleteAccountSuccessAction,
@@ -85,6 +86,16 @@ const checkoutsReducer = createReducer(
     deleteAccountSuccessAction,
     (): CheckoutsStateInterface => ({
       ...initialState,
+    })
+  ),
+
+  // Clear Errors Actions
+  on(
+    clearErrorsAction,
+    (state): CheckoutsStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: null,
     })
   )
 );

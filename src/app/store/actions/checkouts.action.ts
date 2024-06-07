@@ -32,3 +32,6 @@ export const getCheckoutsWithOffsetFailureAction = createAction(
   ActionTypes.GET_CHECKOUTS_WITH_OFFSET_FAILURE,
   props<{ error: ErrorInterface }>()
 );
+
+// Clear Errors Actions\
+export const clearErrorsAction = createAction(ActionTypes.CLEAR_ERRORS);

@@ -18,6 +18,7 @@ import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getCheckoutsAction,
   getCheckoutsWithOffsetAction,
+  clearErrorsAction,
 } from 'src/app/store/actions/checkouts.action';
 
 @Component({
@@ -55,7 +56,7 @@ export class TokenDetailsPage implements OnInit {
         .subscribe((error: ErrorInterface) => {
           if (error) {
             this.presentToast(error.message, 'danger');
-            // TODO: Clear error message if it will be shown
+            this.store.dispatch(clearErrorsAction());
           }
         })
     );

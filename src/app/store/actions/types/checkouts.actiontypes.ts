@@ -5,4 +5,6 @@ export enum ActionTypes {
   GET_CHECKOUTS_WITH_OFFSET = '[Checkouts] Get Checkouts With Offset',
   GET_CHECKOUTS_WITH_OFFSET_SUCCESS = '[Checkouts] Get Checkouts With Offset Success',
   GET_CHECKOUTS_WITH_OFFSET_FAILURE = '[Checkouts] Get Checkouts With Offset Failure',
+
+  CLEAR_ERRORS = '[Checkouts] Clear Errors',
 }
