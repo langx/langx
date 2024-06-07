@@ -14,12 +14,43 @@ import { listCheckoutsResponseInterface } from 'src/app/models/types/responses/l
 export class TokenService {
   constructor(private api: ApiService) {}
 
-  listCheckouts(currentUser: User): Observable<listCheckoutsResponseInterface> {
+  //
+  // List Checkouts
+  //
+
+  listCheckouts(
+    currentUser: User,
+    offset?: number
+  ): Observable<listCheckoutsResponseInterface> {
+    // Define queries
+    const queries: any[] = [];
+
+    // Query for user is not deleted
+    queries.push(Query.equal('$id', currentUser.$id));
+
+    // Query for users descending by last seen
+    queries.push(Query.orderAsc('$createdAt'));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
     return from(
-      this.api.listDocuments(environment.appwrite.WALLET_COLLECTION, [
-        Query.equal('$id', currentUser.$id),
-        Query.orderAsc('$createdAt'),
-      ])
+      this.api.listDocuments(environment.appwrite.WALLET_COLLECTION, queries)
     );
+  }
+
+  //
+  // Utils
+  //
+
+  private createPaginationQueries(offset?: number): any[] {
+    const queries: any[] = [];
+
+    // Limit query
+    queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
+
+    // Offset query
+    if (offset) queries.push(Query.offset(offset));
+
+    return queries;
   }
 }
