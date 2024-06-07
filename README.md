@@ -62,6 +62,7 @@ LangX is an application built with Angular and Ionic that helps users exchange d
 - Language: [TypeScript](https://www.typescriptlang.org/)
 - Landing Page: [Svelte](https://svelte.dev/)
 - Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
+- State Management: [NgRx](https://ngrx.io/)
 - Native: [Capacitor](https://capacitorjs.com/)
 - Database: [Appwrite](https://appwrite.io/)
 - API: [Expressjs, Nodejs](https://github.com/langx/api)
