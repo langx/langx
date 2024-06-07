@@ -73,7 +73,12 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   async checkStorage() {
     // Check localStorage
-    const languagesString = await this.storageService.getValue('languages');
+    const motherLanguagesString = await this.storageService.getValue(
+      'motherLanguages'
+    );
+    const studyLanguagesString = await this.storageService.getValue(
+      'motherLanguages'
+    );
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
     const minAgeString = await this.storageService.getValue('minAge');
@@ -85,9 +90,11 @@ export class FiltersPage implements OnInit, OnDestroy {
     // TODO: Seperate here mother language and study languages.
     let motherLanguages: Array<any> = [];
     let studyLanguages: Array<any> = [];
-    if (languagesString) {
-      motherLanguages = languagesString.toLocaleString().split(',');
-      studyLanguages = languagesString.toLocaleString().split(',');
+    if (motherLanguagesString) {
+      motherLanguages = motherLanguagesString.toLocaleString().split(',');
+    }
+    if (studyLanguagesString) {
+      studyLanguages = studyLanguagesString.toLocaleString().split(',');
     }
 
     this.filterData.motherLanguages = motherLanguages;
