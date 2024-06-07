@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Browser } from '@capacitor/browser';
 import { ToastController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
@@ -89,30 +89,20 @@ export class TokenDetailsPage implements OnInit {
   //
 
   loadMore(event) {
-    // Offset is the number of users already loaded
-    let offset: number = 0;
-    this.checkouts$
-      .subscribe((visits) => {
-        offset = visits.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < 100) {
-              // console.log('offset', offset);
-              // console.log('total', total);
-              this.store.dispatch(
-                getCheckoutsWithOffsetAction({
-                  request: {
-                    offset,
-                  },
-                })
-              );
-            } else {
-              console.log('All checkouts loaded');
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
+    this.checkouts$.pipe(take(1)).subscribe((checkouts) => {
+      const offset = checkouts.length;
+      this.total$.pipe(take(1)).subscribe((total) => {
+        if (offset < total) {
+          this.store.dispatch(
+            getCheckoutsWithOffsetAction({
+              request: {
+                offset,
+              },
+            })
+          );
+        }
+      });
+    });
     event.target.complete();
   }
 
