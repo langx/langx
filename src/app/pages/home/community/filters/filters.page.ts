@@ -159,10 +159,8 @@ export class FiltersPage implements OnInit, OnDestroy {
   // LANGUAGE Methods
   //
 
-  getStudyLanguages(): Observable<Language[]> {
-    return this.currentUser$.pipe(
-      map((user) => user.languages.filter((lang) => !lang.motherLanguage))
-    );
+  getLanguages(): Observable<Language[]> {
+    return this.currentUser$.pipe(map((user) => user.languages));
   }
 
   motherLanguageChecked(event, langName) {
