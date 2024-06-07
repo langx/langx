@@ -26,7 +26,7 @@ export class TokenService {
     const queries: any[] = [];
 
     // Query for user is not deleted
-    queries.push(Query.equal('$id', currentUser.$id));
+    queries.push(Query.equal('userId', currentUser.$id));
 
     // Query for users descending by last seen
     queries.push(Query.orderAsc('$createdAt'));
@@ -34,7 +34,7 @@ export class TokenService {
     // Add pagination queries
     queries.push(...this.createPaginationQueries(offset));
     return from(
-      this.api.listDocuments(environment.appwrite.WALLET_COLLECTION, queries)
+      this.api.listDocuments(environment.appwrite.CHECKOUT_COLLECTION, queries)
     );
   }
 
