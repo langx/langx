@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 
 import { Streak } from 'src/app/models/Streak';
 import { User } from 'src/app/models/User';
@@ -78,30 +78,22 @@ export class LeaderboardPage implements OnInit {
   //
 
   loadMore(event) {
-    // Offset is the number of users already loaded
-    let offset: number = 0;
-    this.streaks$
-      .subscribe((visits) => {
-        offset = visits.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < 100) {
-              // console.log('offset', offset);
-              // console.log('total', total);
-              this.store.dispatch(
-                getStreaksWithOffsetAction({
-                  request: {
-                    offset,
-                  },
-                })
-              );
-            } else {
-              console.log('All streaks loaded');
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
+    this.streaks$.pipe(take(1)).subscribe((visits) => {
+      const offset = visits.length;
+      this.total$.pipe(take(1)).subscribe((total) => {
+        if (offset < 100) {
+          this.store.dispatch(
+            getStreaksWithOffsetAction({
+              request: {
+                offset,
+              },
+            })
+          );
+        } else {
+          console.log('All streaks loaded');
+        }
+      });
+    });
     event.target.complete();
   }
 
