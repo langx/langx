@@ -29,7 +29,7 @@ export class TokenService {
     queries.push(Query.equal('userId', currentUser.$id));
 
     // Query for users descending by last seen
-    queries.push(Query.orderAsc('$createdAt'));
+    queries.push(Query.orderDesc('$createdAt'));
 
     // Add pagination queries
     queries.push(...this.createPaginationQueries(offset));
