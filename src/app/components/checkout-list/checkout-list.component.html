@@ -1,1 +1,14 @@
-<p>checkout-list works!</p>
+<ion-item *ngIf="item">
+  <ion-thumbnail slot="start">
+    <img
+      src="/assets/image/token.png"
+      alt="Token Distribution Checkout Details"
+    />
+  </ion-thumbnail>
+  <ion-label>
+    <h3>Date: {{ item.date }}</h3>
+    <p>Base Amount: {{ item.baseAmount }}</p>
+    <p>Distribution: {{ getDistributionPercentage(item.distribution) }}</p>
+    <p>Amount: {{ item.amount }}</p>
+  </ion-label>
+</ion-item>
