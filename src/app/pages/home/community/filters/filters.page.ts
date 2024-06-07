@@ -141,7 +141,8 @@ export class FiltersPage implements OnInit, OnDestroy {
   }
 
   removeLocalStorage() {
-    this.storageService.removeValue('languages');
+    this.storageService.removeValue('motherLanguages');
+    this.storageService.removeValue('studyLanguages');
     this.storageService.removeValue('gender');
     this.storageService.removeValue('country');
     this.storageService.removeValue('minAge');
