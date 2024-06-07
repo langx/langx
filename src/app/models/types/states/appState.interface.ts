@@ -1,5 +1,6 @@
 // TODO: Not used yet, but will be used in the future
 import { AuthStateInterface } from './authState.interface';
+import { CheckoutsStateInterface } from './checkoutsState.interface';
 import { ContributorsStateInterface } from './contributorsState.interface';
 import { LocaleStateInterface } from './localeState.interface';
 import { MessageStateInterface } from './messageState.interface';
@@ -16,5 +17,6 @@ export interface AppStateInterface {
   locale: LocaleStateInterface;
   visits: VisitsStateInterface;
   contributors: ContributorsStateInterface;
+  checkouts: CheckoutsStateInterface;
   wallet: WalletStateInterface;
 }
