@@ -21,7 +21,7 @@
         </ion-thumbnail>
         <ion-label>
           <h1 *ngIf="(wallet$ | async)?.balance">
-            {{ (wallet$ | async)?.balance }}
+            {{ (wallet$ | async)?.balance | bigNumbers }}
           </h1>
           <p *ngIf="!(wallet$ | async)?.balance">No balance available</p>
         </ion-label>
