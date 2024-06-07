@@ -12,6 +12,7 @@ import { BlockedUserListComponent } from './blocked-user-list/blocked-user-list.
 import { VisitListComponent } from './visit-list/visit-list.component';
 import { StreakListComponent } from './streak-list/streak-list.component';
 import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
+import { CheckoutListComponent } from './checkout-list/checkout-list.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
     UserListComponent,
     VisitListComponent,
     StreakListComponent,
+    CheckoutListComponent,
     BlockedUserListComponent,
     TimestampComponent,
   ],
@@ -36,6 +38,7 @@ import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
     UserListComponent,
     VisitListComponent,
     StreakListComponent,
+    CheckoutListComponent,
     BlockedUserListComponent,
     TimestampComponent,
   ],
