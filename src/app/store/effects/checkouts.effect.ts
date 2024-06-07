@@ -19,8 +19,8 @@ import {
 } from 'src/app/store/actions/checkouts.action';
 
 @Injectable()
-export class StreaksEffects {
-  getStreaks$ = createEffect(() =>
+export class CheckoutsEffects {
+  getCheckouts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getCheckoutsAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
@@ -41,7 +41,7 @@ export class StreaksEffects {
     )
   );
 
-  getStreakWithOffset$ = createEffect(() =>
+  getCheckoutsWithOffset$ = createEffect(() =>
     this.actions$.pipe(
       ofType(getCheckoutsWithOffsetAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
