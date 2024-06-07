@@ -167,9 +167,8 @@ export class FiltersPage implements OnInit, OnDestroy {
   }
 
   motherLanguageChecked(event, langName) {
+    this.filterData.motherLanguages = this.filterData.motherLanguages || [];
     if (event.detail.checked) {
-      if (!this.filterData.motherLanguages)
-        this.filterData.motherLanguages = [];
       this.filterData.motherLanguages.push(langName);
     } else {
       this.filterData.motherLanguages = this.filterData.motherLanguages.filter(
@@ -180,19 +179,15 @@ export class FiltersPage implements OnInit, OnDestroy {
   }
 
   isCheckedMotherLanguage(langName) {
-    if (!this.filterData.motherLanguages) return false;
-    else if (this.filterData.motherLanguages.length == 0) return false;
-    else if (
-      this.filterData.motherLanguages.length > 0 &&
+    return (
+      this.filterData.motherLanguages &&
       this.filterData.motherLanguages.includes(langName)
-    )
-      return true;
-    else return false;
+    );
   }
 
   studyLanguageChecked(event, langName) {
+    this.filterData.studyLanguages = this.filterData.studyLanguages || [];
     if (event.detail.checked) {
-      if (!this.filterData.studyLanguages) this.filterData.studyLanguages = [];
       this.filterData.studyLanguages.push(langName);
     } else {
       this.filterData.studyLanguages = this.filterData.studyLanguages.filter(
@@ -201,16 +196,11 @@ export class FiltersPage implements OnInit, OnDestroy {
     }
     console.log(this.filterData);
   }
-
   isCheckedStudyLanguage(langName) {
-    if (!this.filterData.studyLanguages) return false;
-    else if (this.filterData.studyLanguages.length == 0) return false;
-    else if (
-      this.filterData.studyLanguages.length > 0 &&
+    return (
+      this.filterData.studyLanguages &&
       this.filterData.studyLanguages.includes(langName)
-    )
-      return true;
-    else return false;
+    );
   }
 
   //
