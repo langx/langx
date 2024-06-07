@@ -36,12 +36,13 @@
 
     <ion-card-content class="hasIcon">
       <ion-item *ngFor="let lang of (getLanguages() | async)">
-        <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline">
+        <ion-icon *ngIf="lang.level === -1" name="language-outline"> </ion-icon>
+        <ion-icon *ngIf="lang.level === 1" name="battery-dead-outline">
         </ion-icon>
-        <ion-icon *ngIf="lang.level == 2" name="battery-half-outline">
+        <ion-icon *ngIf="lang.level === 2" name="battery-half-outline">
         </ion-icon>
         <ion-icon
-          *ngIf="lang.level == 3"
+          *ngIf="lang.level === 3"
           name="battery-full-outline"
         ></ion-icon>
         <ion-checkbox
@@ -63,12 +64,13 @@
 
     <ion-card-content class="hasIcon">
       <ion-item *ngFor="let lang of (getLanguages() | async)">
-        <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline">
+        <ion-icon *ngIf="lang.level === -1" name="language-outline"> </ion-icon>
+        <ion-icon *ngIf="lang.level === 1" name="battery-dead-outline">
         </ion-icon>
-        <ion-icon *ngIf="lang.level == 2" name="battery-half-outline">
+        <ion-icon *ngIf="lang.level === 2" name="battery-half-outline">
         </ion-icon>
         <ion-icon
-          *ngIf="lang.level == 3"
+          *ngIf="lang.level === 3"
           name="battery-full-outline"
         ></ion-icon>
         <ion-checkbox
