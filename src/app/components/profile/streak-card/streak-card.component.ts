@@ -24,7 +24,7 @@ export class StreakCardComponent implements OnInit {
   }
 
   async openPage(pageURL: any) {
-    console.log(pageURL);
+    // console.log(pageURL);
     await Browser.open({ url: pageURL });
   }
 }

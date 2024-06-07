@@ -1,0 +1,18 @@
+<ion-item *ngIf="item">
+  <ion-thumbnail slot="start">
+    <img
+      src="/assets/image/token.png"
+      alt="Token Distribution Checkout Details"
+    />
+  </ion-thumbnail>
+  <ion-label>
+    <h2><b>Amount:</b> {{ item.amount }}</h2>
+    <p><b>Base Amount:</b> {{ item.baseAmount }}</p>
+    <p><b>Distribution:</b> {{ getPercentage(item.distribution) }}</p>
+    <p>
+      <ion-badge color="warning">
+        {{ exactDateAndTime(item.date) }}
+      </ion-badge>
+    </p>
+  </ion-label>
+</ion-item>

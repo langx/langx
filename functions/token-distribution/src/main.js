@@ -60,8 +60,9 @@ export default async ({ req, res, log, error }) => {
         if (diffInSeconds >= 30 && diffInSeconds <= 90) {
           updatedDocFromUser.onlineMin = tokenDocFromUser.onlineMin + 1;
           log('onlineMin ++');
-          updatedDocFromUser.lastSeen = req.body.lastSeen;
         }
+        // Update lastSeen
+        updatedDocFromUser.lastSeen = req.body.lastSeen;
 
         //
         // Calculate Badges

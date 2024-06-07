@@ -8,6 +8,7 @@ import { AboutmeCardComponent } from 'src/app/components/profile/aboutme-card/ab
 import { LanguagesCardComponent } from 'src/app/components/profile/languages-card/languages-card.component';
 import { BadgesCardComponent } from './badges-card/badges-card.component';
 import { StreakCardComponent } from './streak-card/streak-card.component';
+import { TokenDistributionComponent } from './token-distribution/token-distribution.component';
 
 // Pipes
 import { AppExtrasModule } from 'src/app/app.extras.module';
@@ -19,6 +20,7 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     LanguagesCardComponent,
     BadgesCardComponent,
     StreakCardComponent,
+    TokenDistributionComponent,
   ],
   imports: [CommonModule, IonicModule, AppExtrasModule],
   exports: [
@@ -27,6 +29,7 @@ import { AppExtrasModule } from 'src/app/app.extras.module';
     LanguagesCardComponent,
     BadgesCardComponent,
     StreakCardComponent,
+    TokenDistributionComponent,
   ],
 })
 export class ProfileComponentsModule {}

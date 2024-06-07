@@ -1,35 +1,41 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
+import { Browser } from '@capacitor/browser';
+import { ToastController } from '@ionic/angular';
 import { Observable, Subscription, take } from 'rxjs';
 
-import { Streak } from 'src/app/models/Streak';
+import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
+import { Checkout } from 'src/app/models/Checkout';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import {
-  getStreaksAction,
-  getStreaksWithOffsetAction,
-  clearErrorsAction,
-} from 'src/app/store/actions/streaks.action';
 import {
   errorSelector,
   isLoadingSelector,
-  streaksSelector,
   totalSelector,
-} from 'src/app/store/selectors/streaks.selector';
+  checkoutsSelector,
+} from 'src/app/store/selectors/checkouts.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  getCheckoutsAction,
+  getCheckoutsWithOffsetAction,
+  clearErrorsAction,
+} from 'src/app/store/actions/checkouts.action';
 
 @Component({
-  selector: 'app-leaderboard',
-  templateUrl: './leaderboard.page.html',
-  styleUrls: ['./leaderboard.page.scss'],
+  selector: 'app-token-details',
+  templateUrl: './token-details.page.html',
+  styleUrls: ['./token-details.page.scss'],
 })
-export class LeaderboardPage implements OnInit {
+export class TokenDetailsPage implements OnInit {
+  infoURL =
+    environment.ext.token.LITEPAPER + '/litepaper/token/distibution#formula';
+  twitter = environment.ext.token.TWITTER;
+
   subscription: Subscription;
 
   currentUser$: Observable<User | null> = null;
   isLoading$: Observable<boolean> = null;
-  streaks$: Observable<Streak[] | null> = null;
+  checkouts$: Observable<Checkout[] | null> = null;
   total$: Observable<number | null> = null;
 
   constructor(private store: Store, private toastController: ToastController) {}
@@ -37,7 +43,7 @@ export class LeaderboardPage implements OnInit {
   ngOnInit() {
     this.initValues();
     // Get all Streaks
-    this.listStreaks();
+    this.listCheckouts();
   }
 
   ionViewWillEnter() {
@@ -64,13 +70,18 @@ export class LeaderboardPage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.streaks$ = this.store.pipe(select(streaksSelector));
+    this.checkouts$ = this.store.pipe(select(checkoutsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
   }
 
-  listStreaks() {
+  listCheckouts() {
     // Dispatch action to get all visits
-    this.store.dispatch(getStreaksAction());
+    this.store.dispatch(getCheckoutsAction());
+  }
+
+  async openPage(pageURL: any) {
+    // console.log(pageURL);
+    await Browser.open({ url: pageURL });
   }
 
   //
@@ -78,19 +89,17 @@ export class LeaderboardPage implements OnInit {
   //
 
   loadMore(event) {
-    this.streaks$.pipe(take(1)).subscribe((visits) => {
-      const offset = visits.length;
+    this.checkouts$.pipe(take(1)).subscribe((checkouts) => {
+      const offset = checkouts.length;
       this.total$.pipe(take(1)).subscribe((total) => {
-        if (offset < 100) {
+        if (offset < total) {
           this.store.dispatch(
-            getStreaksWithOffsetAction({
+            getCheckoutsWithOffsetAction({
               request: {
                 offset,
               },
             })
           );
-        } else {
-          console.log('All streaks loaded');
         }
       });
     });
@@ -102,7 +111,8 @@ export class LeaderboardPage implements OnInit {
   //
 
   handleRefresh(event) {
-    this.listStreaks();
+    this.listCheckouts();
+    console.log('refresh token details');
     if (event) event.target.complete();
   }
 

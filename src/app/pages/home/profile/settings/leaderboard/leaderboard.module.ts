@@ -1,3 +1,5 @@
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,9 +10,7 @@ import { LeaderboardPageRoutingModule } from './leaderboard-routing.module';
 
 import { LeaderboardPage } from './leaderboard.page';
 import { ComponentsModule } from 'src/app/components/components.module';
-import { StoreModule } from '@ngrx/store';
 import { streaksReducers } from 'src/app/store/reducers/streaks.reducer';
-import { EffectsModule } from '@ngrx/effects';
 import { StreaksEffects } from 'src/app/store/effects/streaks.effect';
 
 @NgModule({

@@ -130,6 +130,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'token-details',
+    loadChildren: () =>
+      import('./profile/settings/token-details/token-details.module').then(
+        (m) => m.TokenDetailsPageModule
+      ),
+  },
+  {
     path: 'about-us',
     loadChildren: () =>
       import('./profile/settings/about-us/about-us.module').then(

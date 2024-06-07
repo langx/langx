@@ -3,8 +3,9 @@ import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, of, switchMap } from 'rxjs';
 
-import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { UserService } from 'src/app/services/user/user.service';
+import { listStreaksResponseInterface } from 'src/app/models/types/responses/listStreaksResponse.interface';
+import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   getStreaksAction,
   getStreaksFailureAction,
@@ -21,7 +22,7 @@ export class StreaksEffects {
       ofType(getStreaksAction),
       switchMap(() => {
         return this.userService.listStreaks().pipe(
-          map((payload: any) => {
+          map((payload: listStreaksResponseInterface) => {
             return getStreaksSuccessAction({ payload });
           }),
 
@@ -41,7 +42,7 @@ export class StreaksEffects {
       ofType(getStreaksWithOffsetAction),
       switchMap(({ request }) => {
         return this.userService.listStreaks(request.offset).pipe(
-          map((payload: any) => {
+          map((payload: listStreaksResponseInterface) => {
             return getStreaksWithOffsetSuccessAction({ payload });
           }),
 

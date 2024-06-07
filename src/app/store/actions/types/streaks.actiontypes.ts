@@ -5,4 +5,6 @@ export enum ActionTypes {
   GET_STREAKS_WITH_OFFSET = '[Streaks] Get Visits With Offset',
   GET_STREAKS_WITH_OFFSET_SUCCESS = '[Streaks] Get Visits With Offset Success',
   GET_STREAKS_WITH_OFFSET_FAILURE = '[Streaks] Get Visits With Offset Failure',
+
+  CLEAR_ERRORS = '[Streaks] Clear Errors',
 }
