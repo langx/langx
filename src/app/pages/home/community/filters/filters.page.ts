@@ -34,7 +34,8 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   // Filters data
   filterData: FilterDataInterface = {
-    languages: [],
+    motherLanguages: [],
+    studyLanguages: [],
     gender: null,
     country: null,
     minAge: null,
@@ -81,12 +82,16 @@ export class FiltersPage implements OnInit, OnDestroy {
     let minAge = Number(minAgeString) || null;
     let maxAge = Number(maxAgeString) || null;
 
-    let languages: Array<any> = [];
+    // TODO: Seperate here mother language and study languages.
+    let motherLanguages: Array<any> = [];
+    let studyLanguages: Array<any> = [];
     if (languagesString) {
-      languages = languagesString.toLocaleString().split(',');
+      motherLanguages = languagesString.toLocaleString().split(',');
+      studyLanguages = languagesString.toLocaleString().split(',');
     }
 
-    this.filterData.languages = languages;
+    this.filterData.motherLanguages = motherLanguages;
+    this.filterData.studyLanguages = studyLanguages;
     this.filterData.gender = gender;
     this.filterData.country = country;
     this.filterData.minAge = minAge;
@@ -105,14 +110,23 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   // TODO: #246 Save filterData with JSON.stringify();
   setLocalStorage(filterData: FilterDataInterface) {
-    if (!filterData.languages) filterData.languages = [];
-    if (filterData.languages.length > 0) {
+    if (!filterData.motherLanguages) filterData.motherLanguages = [];
+    if (!filterData.studyLanguages) filterData.studyLanguages = [];
+    if (filterData.motherLanguages.length > 0) {
       this.storageService.setValue(
-        'languages',
-        filterData.languages.toString()
+        'motherLanguages',
+        filterData.motherLanguages.toString()
       );
     } else {
-      this.storageService.removeValue('languages');
+      this.storageService.removeValue('motherLanguages');
+    }
+    if (filterData.studyLanguages.length > 0) {
+      this.storageService.setValue(
+        'studyLanguages',
+        filterData.studyLanguages.toString()
+      );
+    } else {
+      this.storageService.removeValue('studyLanguages');
     }
     if (filterData.gender) {
       this.storageService.setValue('gender', filterData.gender);
@@ -144,24 +158,25 @@ export class FiltersPage implements OnInit, OnDestroy {
     );
   }
 
-  languageChecked(event, langName) {
+  motherLanguageChecked(event, langName) {
     if (event.detail.checked) {
-      if (!this.filterData.languages) this.filterData.languages = [];
-      this.filterData.languages.push(langName);
+      if (!this.filterData.motherLanguages)
+        this.filterData.motherLanguages = [];
+      this.filterData.motherLanguages.push(langName);
     } else {
-      this.filterData.languages = this.filterData.languages.filter(
+      this.filterData.motherLanguages = this.filterData.motherLanguages.filter(
         (item) => item !== langName
       );
     }
     console.log(this.filterData);
   }
 
-  isCheckedLanguage(langName) {
-    if (!this.filterData.languages) return false;
-    else if (this.filterData.languages.length == 0) return false;
+  isCheckedMotherLanguage(langName) {
+    if (!this.filterData.motherLanguages) return false;
+    else if (this.filterData.motherLanguages.length == 0) return false;
     else if (
-      this.filterData.languages.length > 0 &&
-      this.filterData.languages.includes(langName)
+      this.filterData.motherLanguages.length > 0 &&
+      this.filterData.motherLanguages.includes(langName)
     )
       return true;
     else return false;
@@ -230,7 +245,8 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   resetFilter() {
     this.filterData = {
-      languages: [],
+      motherLanguages: [],
+      studyLanguages: [],
       gender: null,
       country: null,
       minAge: null,

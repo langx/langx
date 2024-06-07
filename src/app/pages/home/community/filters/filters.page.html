@@ -31,7 +31,7 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Languages</ion-card-title>
+      <ion-card-title>Mother Language</ion-card-title>
     </ion-card-header>
 
     <ion-card-content class="hasIcon">
@@ -47,8 +47,35 @@
         <ion-checkbox
           labelPlacement="start"
           color="primary"
-          [checked]="isCheckedLanguage(lang?.name)"
-          (ionChange)="languageChecked($event, lang?.name)"
+          [checked]="isCheckedMotherLanguage(lang?.name)"
+          (ionChange)="motherLanguageChecked($event, lang?.name)"
+        >
+          {{ lang?.name }}
+        </ion-checkbox>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Study Language</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content class="hasIcon">
+      <ion-item *ngFor="let lang of (getStudyLanguages() | async)">
+        <ion-icon *ngIf="lang.level == 1" name="battery-dead-outline">
+        </ion-icon>
+        <ion-icon *ngIf="lang.level == 2" name="battery-half-outline">
+        </ion-icon>
+        <ion-icon
+          *ngIf="lang.level == 3"
+          name="battery-full-outline"
+        ></ion-icon>
+        <ion-checkbox
+          labelPlacement="start"
+          color="primary"
+          [checked]="isCheckedMotherLanguage(lang?.name)"
+          (ionChange)="motherLanguageChecked($event, lang?.name)"
         >
           {{ lang?.name }}
         </ion-checkbox>

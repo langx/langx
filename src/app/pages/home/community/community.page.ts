@@ -207,16 +207,26 @@ export class CommunityPage implements OnInit {
     let maxAge = Number(maxAgeString) || null;
 
     // TODO: Do better logic here
-    let languages: Array<any> = [];
+    let motherLanguages: Array<any> = [];
     if (languagesString) {
-      languages = languagesString.toLocaleString().split(',');
-      if (languages.length === 1 && languages[0] === '') {
-        languages = [];
+      motherLanguages = languagesString.toLocaleString().split(',');
+      if (motherLanguages.length === 1 && motherLanguages[0] === '') {
+        motherLanguages = [];
+      }
+    }
+
+    // TODO: Do better logic here
+    let studyLanguages: Array<any> = [];
+    if (languagesString) {
+      studyLanguages = languagesString.toLocaleString().split(',');
+      if (studyLanguages.length === 1 && studyLanguages[0] === '') {
+        studyLanguages = [];
       }
     }
 
     let filterData: FilterDataInterface = {
-      languages: languages,
+      motherLanguages: motherLanguages,
+      studyLanguages: studyLanguages,
       gender: gender,
       country: country,
       minAge: minAge,
