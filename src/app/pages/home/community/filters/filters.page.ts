@@ -76,7 +76,7 @@ export class FiltersPage implements OnInit, OnDestroy {
       'motherLanguages'
     );
     const studyLanguagesString = await this.storageService.getValue(
-      'motherLanguages'
+      'studyLanguages'
     );
     const gender = (await this.storageService.getValue('gender')) || null;
     const country = (await this.storageService.getValue('country')) || null;
