@@ -6,9 +6,13 @@
     />
   </ion-thumbnail>
   <ion-label>
-    <h3>Date: {{ item.date }}</h3>
-    <p>Base Amount: {{ item.baseAmount }}</p>
-    <p>Distribution: {{ getDistributionPercentage(item.distribution) }}</p>
-    <p>Amount: {{ item.amount }}</p>
+    <h2><b>Amount:</b> {{ item.amount }}</h2>
+    <p><b>Base Amount:</b> {{ item.baseAmount }}</p>
+    <p><b>Distribution:</b> {{ getPercentage(item.distribution) }}</p>
+    <p>
+      <ion-badge color="warning">
+        {{ exactDateAndTime(item.date) }}
+      </ion-badge>
+    </p>
   </ion-label>
 </ion-item>
