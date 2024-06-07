@@ -20,10 +20,10 @@
           <img alt="Do not break the chain" src="/assets/image/token.png" />
         </ion-thumbnail>
         <ion-label>
-          <h1 *ngIf="balance">
-            {{ balance }}
+          <h1 *ngIf="(wallet$ | async)?.balance">
+            {{ (wallet$ | async)?.balance }}
           </h1>
-          <p *ngIf="!balance">No balance available</p>
+          <p *ngIf="!(wallet$ | async)?.balance">No balance available</p>
         </ion-label>
         <div class="metadata-end-wrapper" slot="end">
           <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
