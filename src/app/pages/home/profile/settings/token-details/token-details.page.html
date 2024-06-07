@@ -36,4 +36,51 @@
       </ul>
     </ion-card-content>
   </ion-card>
+
+  <ion-card *ngIf="(checkouts$ | async)?.length > 0">
+    <ion-card-header>
+      <ion-card-subtitle>Consistency is Key 🔑</ion-card-subtitle>
+      <ion-card-title>Daily Checkouts 📆</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list *ngFor="let checkout of (checkouts$ | async); let i = index">
+        <h1>{{checkout?.$id}}</h1>
+        <!-- <app-streak-list [item]="streak" [order]="i+1"></app-streak-list> -->
+      </ion-list>
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="!(isLoading$ | async)">
+        <ion-item *ngFor="let i of '0123456789'.split('')" detail>
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 30%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
