@@ -22,7 +22,6 @@ import { countriesSelector } from 'src/app/store/selectors/locale.selector';
 export class FiltersPage implements OnInit, OnDestroy {
   searchTerm: string;
 
-  // TODO: Useless
   isLoading: boolean = false;
 
   private subscriptions = new Subscription();
