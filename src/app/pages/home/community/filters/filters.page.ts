@@ -252,6 +252,7 @@ export class FiltersPage implements OnInit, OnDestroy {
       minAge: null,
       maxAge: null,
     };
+    // TODO: Remove following console.log
     console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();
