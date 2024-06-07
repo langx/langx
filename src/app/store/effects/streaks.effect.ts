@@ -13,6 +13,7 @@ import {
   getStreaksWithOffsetFailureAction,
   getStreaksWithOffsetSuccessAction,
 } from 'src/app/store/actions/streaks.action';
+import { listStreaksResponseInterface } from 'src/app/models/types/responses/listStreaksResponse.interface';
 
 @Injectable()
 export class StreaksEffects {
@@ -21,7 +22,7 @@ export class StreaksEffects {
       ofType(getStreaksAction),
       switchMap(() => {
         return this.userService.listStreaks().pipe(
-          map((payload: any) => {
+          map((payload: listStreaksResponseInterface) => {
             return getStreaksSuccessAction({ payload });
           }),
 
@@ -41,7 +42,7 @@ export class StreaksEffects {
       ofType(getStreaksWithOffsetAction),
       switchMap(({ request }) => {
         return this.userService.listStreaks(request.offset).pipe(
-          map((payload: any) => {
+          map((payload: listStreaksResponseInterface) => {
             return getStreaksWithOffsetSuccessAction({ payload });
           }),
 
