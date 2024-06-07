@@ -9,7 +9,7 @@ export const isLoadingSelector = createSelector(
   checkoutsFeatureSelector,
   (checkoutsState: CheckoutsStateInterface) => checkoutsState.isLoading
 );
-export const streaksSelector = createSelector(
+export const checkoutsSelector = createSelector(
   checkoutsFeatureSelector,
   (checkoutsState: CheckoutsStateInterface) => checkoutsState.checkouts
 );
