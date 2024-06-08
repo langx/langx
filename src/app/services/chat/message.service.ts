@@ -174,7 +174,12 @@ export class MessageService {
         environment.appwrite.MESSAGES_COLLECTION,
         messagesQueries
       )
-    ).pipe(map((response) => response.documents as Message[]));
+    ).pipe(
+      map((response) => ({
+        documents: response.documents as Message[],
+        total: response.total,
+      }))
+    );
 
     const copilotObservable = from(
       this.api.listDocuments(
@@ -185,7 +190,7 @@ export class MessageService {
 
     // Combine the observables
     return forkJoin([messagesObservable, copilotObservable]).pipe(
-      map(([messages, copilots]) => {
+      map(([messagesResponse, copilots]) => {
         // Create a map to quickly find copilot by messageId
         const copilotMap = new Map<string, Copilot>();
         copilots.forEach((copilot) => {
@@ -196,7 +201,7 @@ export class MessageService {
         });
 
         // Merge messages with their corresponding copilot
-        const mergedDocuments = messages
+        const mergedDocuments = messagesResponse.documents
           .map((message) => {
             const copilot = copilotMap.get(message.$id) || null;
             return {
@@ -207,7 +212,7 @@ export class MessageService {
           .reverse();
 
         return {
-          total: mergedDocuments.length,
+          total: messagesResponse.total,
           documents: mergedDocuments,
         };
       })
