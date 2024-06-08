@@ -307,8 +307,8 @@ const messageReducer = createReducer(
                 ...message,
                 copilot: {
                   ...action.payload,
-                  roomId: action.payload.roomId['$id'],
-                  messageId: action.payload.messageId['$id'],
+                  // roomId: action.payload.roomId['$id'],
+                  // messageId: action.payload.messageId['$id'],
                 },
               }
             : message
@@ -323,7 +323,7 @@ const messageReducer = createReducer(
       room: {
         ...state.room,
         messages: state.room?.messages.map((message) =>
-          message.$id === action.payload.messageId
+          message.$id === action.payload.messageId['$id']
             ? {
                 ...message,
                 copilot: null,
