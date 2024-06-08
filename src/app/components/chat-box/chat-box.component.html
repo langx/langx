@@ -10,7 +10,7 @@
       <div class="message-main-receiver">
         <!-- <small>Reply: {{ replyTo }}</small> -->
         <div class="receiver">
-          <div class="message-text" (click)="writeToClipboard(msg?.body)">
+          <div class="message-text">
             <!-- Reply Message -->
             <ion-row
               class="reply-text reply-text-receiver ion-margin-bottom"
@@ -33,17 +33,19 @@
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
               <span *ngIf="!msg?.deleted">
-                <ng-container *ngFor="let segment of messageSegments">
-                  <span *ngIf="segment.type === 'text'">{{
-                    segment.content
-                  }}</span>
-                  <u
-                    *ngIf="segment.type === 'url'"
-                    (click)="openPage(segment.content)"
-                  >
-                    {{ parseUrl(segment.content) }}
-                  </u>
-                </ng-container>
+                <div (click)="writeToClipboard(msg?.body)">
+                  <ng-container *ngFor="let segment of messageSegments">
+                    <span *ngIf="segment.type === 'text'">{{
+                      segment.content
+                    }}</span>
+                    <u
+                      *ngIf="segment.type === 'url'"
+                      (click)="openPage(segment.content)"
+                    >
+                      {{ parseUrl(segment.content) }}
+                    </u>
+                  </ng-container>
+                </div>
               </span>
               <small *ngIf="msg?.deleted">
                 <i>[deleted message]</i>
@@ -130,7 +132,7 @@
           <!-- <small>Reply: {{ replyTo }}</small> -->
         </span>
         <div class="sender" [ngClass]="{ temp: !msg.$createdAt }">
-          <div class="message-text" (click)="writeToClipboard(msg?.body)">
+          <div class="message-text">
             <!-- Reply Message -->
             <ion-row
               class="reply-text reply-text-sender ion-margin-bottom"
@@ -153,17 +155,19 @@
             <!-- Text message -->
             <span class="selectable" *ngIf="msg?.type == 'body'">
               <span *ngIf="!msg?.deleted">
-                <ng-container *ngFor="let segment of messageSegments">
-                  <span *ngIf="segment.type === 'text'">{{
-                    segment.content
-                  }}</span>
-                  <u
-                    *ngIf="segment.type === 'url'"
-                    (click)="openPage(segment.content)"
-                  >
-                    {{ parseUrl(segment.content) }}
-                  </u>
-                </ng-container>
+                <div (click)="writeToClipboard(msg?.body)">
+                  <ng-container *ngFor="let segment of messageSegments">
+                    <span *ngIf="segment.type === 'text'">{{
+                      segment.content
+                    }}</span>
+                    <u
+                      *ngIf="segment.type === 'url'"
+                      (click)="openPage(segment.content)"
+                    >
+                      {{ parseUrl(segment.content) }}
+                    </u>
+                  </ng-container>
+                </div>
                 <ng-container>
                   <!-- Copilot Assisted Section -->
                   <small *ngIf="isCopilotAssisted">
