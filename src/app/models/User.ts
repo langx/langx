@@ -9,8 +9,10 @@ export type User = Models.Document & {
   gender: string;
   birthdate: Date;
   languageArray?: string[];
-  badges?: string[];
+  motherLanguages?: string[];
+  studyLanguages?: string[];
   languages?: Language[];
+  badges?: string[];
   aboutMe?: string;
   lastSeen?: Date;
   totalUnseen?: number;
