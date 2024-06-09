@@ -66,9 +66,10 @@ export class LanguageEffects {
   deleteLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteLanguageAction),
-      switchMap(({ request }) => {
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
         return this.languageService
-          .deleteLanguageDocWithUpdatingLanguageArray(request)
+          .deleteLanguageDocWithUpdatingLanguageArray(request, currentUser)
           .pipe(
             map((payload: User) => deleteLanguageSuccessAction({ payload })),
 

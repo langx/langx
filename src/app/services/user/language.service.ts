@@ -103,28 +103,38 @@ export class LanguageService {
       switchMap((payload: Language) => {
         let newMotherLanguageArray = currentUser?.motherLanguages || [];
         let newStudyLanguageArray = currentUser?.studyLanguages || [];
+        let newLanguageArray = currentUser?.languageArray || [];
 
         // Check if the language is mother
         if (payload.motherLanguage) {
-          newMotherLanguageArray = [...newMotherLanguageArray, payload.name];
+          if (!newMotherLanguageArray.includes(payload.name)) {
+            newMotherLanguageArray = [...newMotherLanguageArray, payload.name];
+          }
         } else {
-          newStudyLanguageArray = [...newStudyLanguageArray, payload.name];
+          if (!newStudyLanguageArray.includes(payload.name)) {
+            newStudyLanguageArray = [...newStudyLanguageArray, payload.name];
+          }
         }
 
-        const newLanguageArray = {
-          languageArray: [...currentUser?.languageArray, payload.name],
+        if (!newLanguageArray.includes(payload.name)) {
+          newLanguageArray = [...newLanguageArray, payload.name];
+        }
+
+        const updatedLanguageArray = {
+          languageArray: newLanguageArray,
           motherLanguages: newMotherLanguageArray,
           studyLanguages: newStudyLanguageArray,
         };
 
-        return this.userService.updateUserDoc(newLanguageArray);
+        return this.userService.updateUserDoc(updatedLanguageArray);
       })
     );
   }
 
   // It is triggerred by edit.page.ts
   deleteLanguageDocWithUpdatingLanguageArray(
-    request: deleteLanguageRequestInterface
+    request: deleteLanguageRequestInterface,
+    currentUser: User
   ): Observable<User> {
     return from(
       this.api.deleteDocument(
@@ -133,12 +143,26 @@ export class LanguageService {
       )
     ).pipe(
       switchMap(() => {
-        const newLanguageArray = {
-          languageArray: request.languageArray.filter(
+        let newMotherLanguageArray =
+          currentUser?.motherLanguages.filter(
             (language) => language !== request.name
-          ),
+          ) || [];
+        let newStudyLanguageArray =
+          currentUser?.studyLanguages.filter(
+            (language) => language !== request.name
+          ) || [];
+        let newLanguageArray =
+          currentUser?.languageArray.filter(
+            (language) => language !== request.name
+          ) || [];
+
+        const updatedLanguageArray = {
+          languageArray: newLanguageArray,
+          motherLanguages: newMotherLanguageArray,
+          studyLanguages: newStudyLanguageArray,
         };
-        return this.userService.updateUserDoc(newLanguageArray);
+
+        return this.userService.updateUserDoc(updatedLanguageArray);
       })
     );
   }
