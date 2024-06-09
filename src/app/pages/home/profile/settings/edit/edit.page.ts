@@ -328,7 +328,7 @@ export class EditPage implements OnInit {
   async addLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
-      let data: createLanguageRequestInterface = {
+      let request: createLanguageRequestInterface = {
         name: selectedLanguage.name,
         nativeName: selectedLanguage.nativeName,
         code: selectedLanguage.code,
@@ -351,11 +351,7 @@ export class EditPage implements OnInit {
         return;
       }
 
-      this.store.dispatch(
-        createLanguageAction({
-          request: data,
-        })
-      );
+      this.store.dispatch(createLanguageAction({ request }));
     });
 
     const modal = await this.modalCtrl.create({
