@@ -475,12 +475,12 @@ export class UserService {
     if (filterData?.motherLanguages.length > 0) {
       const keywords = filterData.motherLanguages;
       // OR Query for users with any of the selected languages
-      queries.push(Query.contains('languageArray', keywords));
+      queries.push(Query.contains('motherLanguages', keywords));
     }
     if (filterData?.studyLanguages.length > 0) {
       const keywords = filterData.studyLanguages;
       // OR Query for users with any of the selected languages
-      queries.push(Query.contains('languageArray', keywords));
+      queries.push(Query.contains('studyLanguages', keywords));
     }
 
     return queries;
