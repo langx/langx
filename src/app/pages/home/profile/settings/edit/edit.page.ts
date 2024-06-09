@@ -337,7 +337,7 @@ export class EditPage implements OnInit {
       };
 
       // If it length is 6, then don't let the user to add one more study language.
-      if (this.currentUser.languages.length >= 6) {
+      if (this.currentUser.languages.length > 5) {
         this.presentToast(
           'You can add max 5 Study Languages. Please remove at least one and try again.',
           'danger'
