@@ -16,6 +16,7 @@ import { verifyEmailConfirmationRequestInterface } from 'src/app/models/types/re
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
 import { updatePasswordRequestInterface } from 'src/app/models/types/requests/updatePasswordRequest.interface';
 import { selectLanguagesInterface } from 'src/app/models/types/selectLanguages.interface';
+import { updateLanguageArrayRequestInterface } from 'src/app/models/types/requests/update.interface';
 
 // Login
 export const loginAction = createAction(
@@ -89,7 +90,7 @@ export const languageSelectionFailureAction = createAction(
 
 export const updateLanguageArrayAction = createAction(
   ActionTypes.UPDATE_LANGUAGE_ARRAY,
-  props<{ request: string[] }>()
+  props<{ request: updateLanguageArrayRequestInterface }>()
 );
 
 export const updateLanguageArraySuccessAction = createAction(

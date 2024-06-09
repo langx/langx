@@ -15,6 +15,7 @@ import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
+import { updateLanguageArrayRequestInterface } from 'src/app/models/types/requests/update.interface';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -120,7 +121,7 @@ export class LanguageService {
           newLanguageArray = [...newLanguageArray, payload.name];
         }
 
-        const updatedLanguageArray = {
+        const updatedLanguageArray: updateLanguageArrayRequestInterface = {
           languageArray: newLanguageArray,
           motherLanguages: newMotherLanguageArray,
           studyLanguages: newStudyLanguageArray,
