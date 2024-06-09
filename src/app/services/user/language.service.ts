@@ -97,13 +97,26 @@ export class LanguageService {
   // It is triggerred by edit.page.ts
   createLanguageDocWithUpdatingLanguageArray(
     data: createLanguageRequestInterface,
-    languageArray: string[]
+    currentUser: User
   ): Observable<User> {
     return from(this.createLanguageDoc(data)).pipe(
       switchMap((payload: Language) => {
+        let newMotherLanguageArray = currentUser?.motherLanguages || [];
+        let newStudyLanguageArray = currentUser?.studyLanguages || [];
+
+        // Check if the language is mother
+        if (payload.motherLanguage) {
+          newMotherLanguageArray = [...newMotherLanguageArray, payload.name];
+        } else {
+          newStudyLanguageArray = [...newStudyLanguageArray, payload.name];
+        }
+
         const newLanguageArray = {
-          languageArray: [...languageArray, payload.name],
+          languageArray: [...currentUser?.languageArray, payload.name],
+          motherLanguages: newMotherLanguageArray,
+          studyLanguages: newStudyLanguageArray,
         };
+
         return this.userService.updateUserDoc(newLanguageArray);
       })
     );

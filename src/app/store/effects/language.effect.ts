@@ -30,10 +30,7 @@ export class LanguageEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) => {
         return this.languageService
-          .createLanguageDocWithUpdatingLanguageArray(
-            request,
-            currentUser?.languageArray
-          )
+          .createLanguageDocWithUpdatingLanguageArray(request, currentUser)
           .pipe(
             map((payload: User) => createLanguageSuccessAction({ payload })),
 
