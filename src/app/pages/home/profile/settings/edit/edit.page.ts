@@ -354,7 +354,6 @@ export class EditPage implements OnInit {
       this.store.dispatch(
         createLanguageAction({
           request: data,
-          languageArray: this.currentUser.languageArray,
         })
       );
     });
