@@ -451,7 +451,6 @@ export class EditPage implements OnInit {
   //
   // Utils
   //
-
   private dataURLtoBlob(dataurl: any) {
     var arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
