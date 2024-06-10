@@ -67,8 +67,8 @@ export class AddLanguageComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.selectedLanguage.level) {
-      this.presentToast('Please select a level.', 'danger');
+    if (![0, 1, 2, 3, -1].includes(this.selectedLanguage.level)) {
+      this.presentToast('Please select a valid level.', 'danger');
       return;
     }
     this.onClick.emit(this.selectedLanguage);
