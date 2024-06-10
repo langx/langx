@@ -221,7 +221,7 @@ export class CommunityPage implements OnInit {
       };
     }
 
-    console.log('checkLocalStorage', this.filterData);
+    console.log('community.page: ', this.filterData);
   }
 
   //
