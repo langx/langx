@@ -31,6 +31,8 @@ export class FiltersPage implements OnInit, OnDestroy {
   countries$: Observable<Countries>;
   countyData: Country[];
 
+  onlyMyGenderToggleState: boolean = false;
+
   ionRangeDefault = { lower: 20, upper: 75 };
 
   // Filters data

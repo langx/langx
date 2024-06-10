@@ -105,9 +105,12 @@
     <ion-card-header>
       <ion-card-title>Gender</ion-card-title>
     </ion-card-header>
-
     <ion-card-content class="hasIcon">
-      <ion-item id="gender-modal-filter" detail="true">
+      <ion-item
+        id="gender-modal-filter"
+        detail="true"
+        [disabled]="onlyMyGenderToggleState"
+      >
         <ion-icon name="male-female-outline"></ion-icon>
         <ion-label>
           <h3 *ngIf="showGender();else noFilter">{{showGender()}}</h3>
@@ -116,7 +119,12 @@
       </ion-item>
       <ion-item>
         <ion-icon name="toggle-outline"></ion-icon>
-        <ion-toggle labelPlacement="start" color="primary">
+        <ion-toggle
+          [(ngModel)]="onlyMyGenderToggleState"
+          [disabled]="showGender()"
+          labelPlacement="start"
+          color="primary"
+        >
           Only My Gender
         </ion-toggle>
       </ion-item>
