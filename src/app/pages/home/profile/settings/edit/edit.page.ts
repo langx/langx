@@ -351,11 +351,15 @@ export class EditPage implements OnInit {
 
       // Check if the language is already added
       if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
-        this.presentToast('Language already added.', 'danger');
+        this.presentToast(
+          'This language has already been added to your study languages.',
+          'danger'
+        );
         return;
       }
 
-      this.store.dispatch(createLanguageAction({ request }));
+      console.log('add study lang', request);
+      // this.store.dispatch(createLanguageAction({ request }));
     });
 
     const modal = await this.modalCtrl.create({
@@ -387,7 +391,50 @@ export class EditPage implements OnInit {
   }
 
   async editMotherLanguages() {}
-  async addMotherLanguage() {}
+  async addMotherLanguage() {
+    const eventEmitter = new EventEmitter();
+    eventEmitter.subscribe((selectedLanguage) => {
+      let request: createLanguageRequestInterface = {
+        name: selectedLanguage.name,
+        nativeName: selectedLanguage.nativeName,
+        code: selectedLanguage.code,
+        level: -1,
+        motherLanguage: true,
+      };
+
+      // If it length is 6, then don't let the user to add one more study language.
+      if (this.currentUser.motherLanguages.length > 5) {
+        this.presentToast(
+          'You can add max 5 Study Languages. Please remove at least one and try again.',
+          'danger'
+        );
+        return;
+      }
+
+      // Check if the language is already added
+      if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
+        this.presentToast(
+          'This language has already been added to your mother languages.',
+          'danger'
+        );
+        return;
+      }
+
+      console.log('add mother lang', request);
+      // this.store.dispatch(createLanguageAction({ request }));
+    });
+
+    const modal = await this.modalCtrl.create({
+      component: AddLanguageComponent,
+      componentProps: {
+        languageArray: this.currentUser.languageArray,
+        motherLanguage: true,
+        onClick: eventEmitter,
+      },
+    });
+
+    modal.present();
+  }
   deleteMotherLanguage(language: Language): void {
     // If it length is 2, then don't let the user to delete last study language.
     if (this.currentUser.motherLanguages.length < 2) {
