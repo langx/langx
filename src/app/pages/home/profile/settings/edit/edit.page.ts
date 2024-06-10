@@ -381,13 +381,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    const request: deleteLanguageRequestInterface = {
-      id: language.$id,
-      name: language.name,
-      userId: this.currentUser.$id,
-    };
-
-    this.store.dispatch(deleteLanguageAction({ request }));
+    this.deleteLanguage(language);
   }
 
   async addMotherLanguage() {
@@ -442,6 +436,10 @@ export class EditPage implements OnInit {
       return;
     }
 
+    this.deleteLanguage(language);
+  }
+
+  deleteLanguage(language: Language): void {
     const request: deleteLanguageRequestInterface = {
       id: language.$id,
       name: language.name,
