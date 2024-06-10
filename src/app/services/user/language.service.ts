@@ -54,7 +54,6 @@ export class LanguageService {
         // Call the /api/language
         return from(
           axios.post(environment.api.LANGUAGE, data).then((result) => {
-            console.log('result.data: ', result.data);
             return result.data as Language;
           })
         );
