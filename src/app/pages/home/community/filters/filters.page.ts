@@ -78,7 +78,6 @@ export class FiltersPage implements OnInit, OnDestroy {
       // Parse the JSON string back into an object
       const filterData = JSON.parse(filterDataString);
 
-      // TODO: Seperate here mother language and study languages.
       let motherLanguages: Array<any> = filterData.motherLanguages || [];
       let studyLanguages: Array<any> = filterData.studyLanguages || [];
       let gender = filterData.gender || null;
@@ -94,7 +93,7 @@ export class FiltersPage implements OnInit, OnDestroy {
       this.filterData.maxAge = maxAge;
     }
 
-    // console.log('checkLocalStorage', this.filterData);
+    console.log('checkLocalStorage', this.filterData);
   }
   onSubmit() {
     this.setLocalStorage(this.filterData);
