@@ -109,19 +109,18 @@
       <ion-item
         id="gender-modal-filter"
         detail="true"
-        [disabled]="onlyMyGenderToggleState"
+        [disabled]="isGenderDisabled()"
       >
         <ion-icon name="male-female-outline"></ion-icon>
         <ion-label>
-          <h3 *ngIf="showGender();else noFilter">{{showGender()}}</h3>
+          <h3 *ngIf="showGender(); else noFilter">{{ showGender() }}</h3>
           <ng-template #noFilter><p>No Filter</p></ng-template>
         </ion-label>
       </ion-item>
       <ion-item>
         <ion-icon name="toggle-outline"></ion-icon>
         <ion-toggle
-          [(ngModel)]="onlyMyGenderToggleState"
-          [disabled]="showGender()"
+          [(ngModel)]="filterData.onlyMyGender"
           labelPlacement="start"
           color="primary"
           (ionChange)="onlyMyGenderToggleChange($event)"
