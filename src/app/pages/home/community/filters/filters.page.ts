@@ -195,7 +195,7 @@ export class FiltersPage implements OnInit, OnDestroy {
     if (event.detail.value) {
       this.filterData.gender = event.detail.value;
     }
-    console.log(this.filterData);
+    // console.log(this.filterData);
   }
 
   onlyMyGenderToggleChange(event) {
