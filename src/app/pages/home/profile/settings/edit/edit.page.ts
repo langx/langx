@@ -70,6 +70,7 @@ export class EditPage implements OnInit {
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
+  motherLanguages: Language[] = [];
   currentUserName: string = null;
   isEditCurrentUserName: boolean = false;
 
@@ -98,6 +99,9 @@ export class EditPage implements OnInit {
         this.currentUser = user;
         this.studyLanguages = user?.languages.filter(
           (lang) => !lang.motherLanguage
+        );
+        this.motherLanguages = user?.languages.filter(
+          (lang) => lang.motherLanguage
         );
 
         // Set default value for aboutMe and currentUserName
@@ -301,7 +305,7 @@ export class EditPage implements OnInit {
   // Edit Languages
   //
 
-  async editLanguages() {
+  async editStudyLanguages() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((item) => {
       const request: updateLanguageRequestInterface = {
@@ -325,7 +329,7 @@ export class EditPage implements OnInit {
     modal.present();
   }
 
-  async addLanguage() {
+  async addStudyLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
       let request: createLanguageRequestInterface = {
@@ -337,7 +341,7 @@ export class EditPage implements OnInit {
       };
 
       // If it length is 6, then don't let the user to add one more study language.
-      if (this.currentUser.languages.length > 5) {
+      if (this.currentUser.studyLanguages.length > 5) {
         this.presentToast(
           'You can add max 5 Study Languages. Please remove at least one and try again.',
           'danger'
@@ -347,7 +351,10 @@ export class EditPage implements OnInit {
 
       // Check if the language is already added
       if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
-        this.presentToast('Language already added.', 'danger');
+        this.presentToast(
+          'This language has already been added to your study languages.',
+          'danger'
+        );
         return;
       }
 
@@ -365,27 +372,81 @@ export class EditPage implements OnInit {
     modal.present();
   }
 
-  deleteLanguage(language) {
+  deleteStudyLanguage(language: Language): void {
     // If it length is 2, then don't let the user to delete last study language.
-    if (this.currentUser.languages.length <= 2) {
+    if (this.currentUser.studyLanguages.length < 2) {
       this.presentToast('At least one study language required.', 'danger');
       return;
     }
 
+    this.deleteLanguage(language);
+  }
+
+  async addMotherLanguage() {
+    const eventEmitter = new EventEmitter();
+    eventEmitter.subscribe((selectedLanguage) => {
+      let request: createLanguageRequestInterface = {
+        name: selectedLanguage.name,
+        nativeName: selectedLanguage.nativeName,
+        code: selectedLanguage.code,
+        level: selectedLanguage.level,
+        motherLanguage: true,
+      };
+
+      // If it length is 6, then don't let the user to add one more study language.
+      if (this.currentUser.motherLanguages.length > 5) {
+        this.presentToast(
+          'You can add max 5 Study Languages. Please remove at least one and try again.',
+          'danger'
+        );
+        return;
+      }
+
+      // Check if the language is already added
+      if (this.currentUser.languageArray.includes(selectedLanguage.name)) {
+        this.presentToast(
+          'This language has already been added to your mother languages.',
+          'danger'
+        );
+        return;
+      }
+
+      this.store.dispatch(createLanguageAction({ request }));
+    });
+
+    const modal = await this.modalCtrl.create({
+      component: AddLanguageComponent,
+      componentProps: {
+        languageArray: this.currentUser.languageArray,
+        motherLanguage: true,
+        onClick: eventEmitter,
+      },
+    });
+
+    modal.present();
+  }
+  deleteMotherLanguage(language: Language): void {
+    // If it length is 2, then don't let the user to delete last study language.
+    if (this.currentUser.motherLanguages.length < 2) {
+      this.presentToast('At least one mother language required.', 'danger');
+      return;
+    }
+
+    this.deleteLanguage(language);
+  }
+
+  deleteLanguage(language: Language): void {
     const request: deleteLanguageRequestInterface = {
       id: language.$id,
       name: language.name,
       userId: this.currentUser.$id,
-      languageArray: this.currentUser.languageArray,
     };
-
     this.store.dispatch(deleteLanguageAction({ request }));
   }
 
   //
   // Utils
   //
-
   private dataURLtoBlob(dataurl: any) {
     var arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],

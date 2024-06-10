@@ -133,10 +133,14 @@
           <ion-col>Study Languages</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button (click)="editLanguages()" size="small">
+              <ion-button (click)="editStudyLanguages()" size="small">
                 Edit
               </ion-button>
-              <ion-button (click)="addLanguage()" color="primary" size="small">
+              <ion-button
+                (click)="addStudyLanguage()"
+                color="primary"
+                size="small"
+              >
                 Add
               </ion-button>
             </ion-card-subtitle>
@@ -172,7 +176,48 @@
             slot="end"
             color="danger"
             size="small"
-            (click)="deleteLanguage(lang)"
+            (click)="deleteStudyLanguage(lang)"
+          ></ion-icon>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>Mother Languages</ion-col>
+          <ion-col>
+            <ion-card-subtitle>
+              <ion-button
+                (click)="addMotherLanguage()"
+                color="primary"
+                size="small"
+              >
+                Add
+              </ion-button>
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let lang of motherLanguages">
+          <ion-icon
+            name="language-outline"
+            slot="start"
+            color="primary"
+          ></ion-icon>
+          <ion-label>{{lang.name}}</ion-label>
+          <ion-note>{{lang.nativeName}}</ion-note>
+          <ion-icon
+            name="close-circle-outline"
+            slot="end"
+            color="danger"
+            size="small"
+            (click)="deleteMotherLanguage(lang)"
           ></ion-icon>
         </ion-item>
       </ion-list>
