@@ -51,7 +51,7 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.initValues();
-    await this.checkStorage();
+    await this.checkLocalStorage();
   }
 
   ngOnDestroy() {
@@ -70,7 +70,7 @@ export class FiltersPage implements OnInit, OnDestroy {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
-  async checkStorage() {
+  async checkLocalStorage() {
     // Check localStorage
     const filterDataString = await this.storageService.getValue('filterData');
 
@@ -78,19 +78,24 @@ export class FiltersPage implements OnInit, OnDestroy {
       // Parse the JSON string back into an object
       const filterData = JSON.parse(filterDataString);
 
-      let motherLanguages: Array<any> = filterData.motherLanguages || [];
-      let studyLanguages: Array<any> = filterData.studyLanguages || [];
-      let gender = filterData.gender || null;
-      let country = filterData.country || null;
-      let minAge = Number(filterData.minAge) || null;
-      let maxAge = Number(filterData.maxAge) || null;
+      // Use object destructuring to extract properties
+      const {
+        motherLanguages = [],
+        studyLanguages = [],
+        gender = null,
+        country = null,
+        minAge = null,
+        maxAge = null,
+      } = filterData;
 
-      this.filterData.motherLanguages = motherLanguages;
-      this.filterData.studyLanguages = studyLanguages;
-      this.filterData.gender = gender;
-      this.filterData.country = country;
-      this.filterData.minAge = minAge;
-      this.filterData.maxAge = maxAge;
+      this.filterData = {
+        motherLanguages,
+        studyLanguages,
+        gender,
+        country,
+        minAge: Number(minAge),
+        maxAge: Number(maxAge),
+      };
     }
 
     console.log('checkLocalStorage', this.filterData);
@@ -135,7 +140,6 @@ export class FiltersPage implements OnInit, OnDestroy {
         (item) => item !== langName
       );
     }
-    console.log(this.filterData);
   }
 
   isCheckedMotherLanguage(langName) {

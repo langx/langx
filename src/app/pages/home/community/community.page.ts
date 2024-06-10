@@ -195,46 +195,34 @@ export class CommunityPage implements OnInit {
 
   // TODO: #246 Save filterData with JSON.stringify();
   async checkLocalStorage() {
-    // Getting the filter data from Capacitor Preferences
-    let languagesString =
-      (await this.storageService.getValue('languages')) || [];
-    const gender = (await this.storageService.getValue('gender')) || null;
-    const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = (await this.storageService.getValue('minAge')) || null;
-    const maxAgeString = (await this.storageService.getValue('maxAge')) || null;
+    // Check localStorage
+    const filterDataString = await this.storageService.getValue('filterData');
 
-    let minAge = Number(minAgeString) || null;
-    let maxAge = Number(maxAgeString) || null;
+    if (filterDataString) {
+      // Parse the JSON string back into an object
+      const filterData = JSON.parse(filterDataString);
 
-    // TODO: Do better logic here
-    let motherLanguages: Array<any> = [];
-    if (languagesString) {
-      motherLanguages = languagesString.toLocaleString().split(',');
-      if (motherLanguages.length === 1 && motherLanguages[0] === '') {
-        motherLanguages = [];
-      }
+      // Use object destructuring to extract properties
+      const {
+        motherLanguages = [],
+        studyLanguages = [],
+        gender = null,
+        country = null,
+        minAge = null,
+        maxAge = null,
+      } = filterData;
+
+      this.filterData = {
+        motherLanguages,
+        studyLanguages,
+        gender,
+        country,
+        minAge: Number(minAge),
+        maxAge: Number(maxAge),
+      };
     }
 
-    // TODO: Do better logic here
-    let studyLanguages: Array<any> = [];
-    if (languagesString) {
-      studyLanguages = languagesString.toLocaleString().split(',');
-      if (studyLanguages.length === 1 && studyLanguages[0] === '') {
-        studyLanguages = [];
-      }
-    }
-
-    let filterData: FilterDataInterface = {
-      motherLanguages: motherLanguages,
-      studyLanguages: studyLanguages,
-      gender: gender,
-      country: country,
-      minAge: minAge,
-      maxAge: maxAge,
-    };
-
-    // console.log('checkLocalStorage', filterData);
-    this.filterService.setEvent(filterData);
+    console.log('checkLocalStorage', this.filterData);
   }
 
   //
