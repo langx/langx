@@ -130,8 +130,13 @@ export class Step3Page implements OnInit, OnDestroy {
   }
 
   async onSubmit() {
-    if (this.studyLanguages.find((lang) => lang.level === 0)) {
-      this.presentToast('Please select your level for all languages', 'danger');
+    if (
+      this.studyLanguages.find((lang) => ![0, 1, 2, 3, -1].includes(lang.level))
+    ) {
+      this.presentToast(
+        'Please select a valid level for all languages',
+        'danger'
+      );
       return;
     }
 
