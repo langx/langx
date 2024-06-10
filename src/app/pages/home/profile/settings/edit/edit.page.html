@@ -152,20 +152,26 @@
       <ion-list>
         <ion-item *ngFor="let lang of studyLanguages">
           <ion-icon
-            *ngIf="lang.level === 1"
+            *ngIf="lang.level === 0"
             name="battery-dead-outline"
             slot="start"
             color="primary"
           ></ion-icon>
           <ion-icon
-            *ngIf="lang.level === 2"
+            *ngIf="lang.level === 1"
             name="battery-half-outline"
             slot="start"
             color="primary"
           ></ion-icon>
           <ion-icon
-            *ngIf="lang.level === 3"
+            *ngIf="lang.level === 2"
             name="battery-full-outline"
+            slot="start"
+            color="primary"
+          ></ion-icon>
+          <ion-icon
+            *ngIf="lang.level === 3"
+            name="rocket-outline"
             slot="start"
             color="primary"
           ></ion-icon>
