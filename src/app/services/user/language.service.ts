@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ID } from 'appwrite';
 import { Observable, from, switchMap } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
@@ -85,10 +84,7 @@ export class LanguageService {
         // Call the /api/language
         return from(
           axios
-            .patch(
-              `${environment.api.LANGUAGE}/${request.id}`,
-              request.data
-            )
+            .patch(`${environment.api.LANGUAGE}/${request.id}`, request.data)
             .then((result) => {
               console.log('result.data: ', result.data);
               return result.data as Language;
