@@ -12,7 +12,7 @@ export const getFiltersSuccessAction = createAction(
   props<{ payload: FilterDataInterface }>()
 );
 
-export const getContributorsFailureAction = createAction(
+export const getFiltersFailureAction = createAction(
   ActionTypes.GET_FILTERS_FAILURE,
   props<{ error: ErrorInterface }>()
 );
