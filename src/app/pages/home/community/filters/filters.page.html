@@ -124,6 +124,7 @@
           [disabled]="showGender()"
           labelPlacement="start"
           color="primary"
+          (ionChange)="onlyMyGenderToggleChange($event)"
         >
           Only My Gender
         </ion-toggle>
