@@ -72,40 +72,30 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   async checkStorage() {
     // Check localStorage
-    const motherLanguagesString = await this.storageService.getValue(
-      'motherLanguages'
-    );
-    const studyLanguagesString = await this.storageService.getValue(
-      'studyLanguages'
-    );
-    const gender = (await this.storageService.getValue('gender')) || null;
-    const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = await this.storageService.getValue('minAge');
-    const maxAgeString = await this.storageService.getValue('maxAge');
+    const filterDataString = await this.storageService.getValue('filterData');
 
-    let minAge = Number(minAgeString) || null;
-    let maxAge = Number(maxAgeString) || null;
+    if (filterDataString) {
+      // Parse the JSON string back into an object
+      const filterData = JSON.parse(filterDataString);
 
-    // TODO: Seperate here mother language and study languages.
-    let motherLanguages: Array<any> = [];
-    let studyLanguages: Array<any> = [];
-    if (motherLanguagesString) {
-      motherLanguages = motherLanguagesString.toLocaleString().split(',');
+      // TODO: Seperate here mother language and study languages.
+      let motherLanguages: Array<any> = filterData.motherLanguages || [];
+      let studyLanguages: Array<any> = filterData.studyLanguages || [];
+      let gender = filterData.gender || null;
+      let country = filterData.country || null;
+      let minAge = Number(filterData.minAge) || null;
+      let maxAge = Number(filterData.maxAge) || null;
+
+      this.filterData.motherLanguages = motherLanguages;
+      this.filterData.studyLanguages = studyLanguages;
+      this.filterData.gender = gender;
+      this.filterData.country = country;
+      this.filterData.minAge = minAge;
+      this.filterData.maxAge = maxAge;
     }
-    if (studyLanguagesString) {
-      studyLanguages = studyLanguagesString.toLocaleString().split(',');
-    }
-
-    this.filterData.motherLanguages = motherLanguages;
-    this.filterData.studyLanguages = studyLanguages;
-    this.filterData.gender = gender;
-    this.filterData.country = country;
-    this.filterData.minAge = minAge;
-    this.filterData.maxAge = maxAge;
 
     // console.log('checkLocalStorage', this.filterData);
   }
-
   onSubmit() {
     this.setLocalStorage(this.filterData);
     this.filterService.setEvent(this.filterData);
@@ -114,45 +104,19 @@ export class FiltersPage implements OnInit, OnDestroy {
     this.router.navigateByUrl('/home/community');
   }
 
-  // TODO: #246 Save filterData with JSON.stringify();
   setLocalStorage(filterData: FilterDataInterface) {
     if (!filterData.motherLanguages) filterData.motherLanguages = [];
     if (!filterData.studyLanguages) filterData.studyLanguages = [];
-    if (filterData.motherLanguages.length > 0) {
-      this.storageService.setValue(
-        'motherLanguages',
-        filterData.motherLanguages.toString()
-      );
-    } else {
-      this.storageService.removeValue('motherLanguages');
-    }
-    if (filterData.studyLanguages.length > 0) {
-      this.storageService.setValue(
-        'studyLanguages',
-        filterData.studyLanguages.toString()
-      );
-    } else {
-      this.storageService.removeValue('studyLanguages');
-    }
-    if (filterData.gender) {
-      this.storageService.setValue('gender', filterData.gender);
-    }
-    if (filterData.country) {
-      this.storageService.setValue('country', filterData.country);
-    }
-    if (filterData.minAge && filterData.maxAge) {
-      this.storageService.setValue('minAge', filterData.minAge.toString());
-      this.storageService.setValue('maxAge', filterData.maxAge.toString());
-    }
+
+    // Convert filterData to a JSON string
+    const filterDataJson = JSON.stringify(filterData);
+
+    // Save the JSON string to local storage
+    this.storageService.setValue('filterData', filterDataJson);
   }
 
   removeLocalStorage() {
-    this.storageService.removeValue('motherLanguages');
-    this.storageService.removeValue('studyLanguages');
-    this.storageService.removeValue('gender');
-    this.storageService.removeValue('country');
-    this.storageService.removeValue('minAge');
-    this.storageService.removeValue('maxAge');
+    this.storageService.removeValue('filterData');
   }
 
   //
