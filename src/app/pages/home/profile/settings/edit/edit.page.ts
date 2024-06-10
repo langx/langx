@@ -369,7 +369,7 @@ export class EditPage implements OnInit {
     modal.present();
   }
 
-  deleteStudyLanguage(language) {
+  deleteStudyLanguage(language: Language): void {
     // If it length is 2, then don't let the user to delete last study language.
     if (this.currentUser.languages.length <= 2) {
       this.presentToast('At least one study language required.', 'danger');
