@@ -445,7 +445,6 @@ export class EditPage implements OnInit {
       name: language.name,
       userId: this.currentUser.$id,
     };
-
     this.store.dispatch(deleteLanguageAction({ request }));
   }
 
