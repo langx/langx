@@ -13,6 +13,7 @@ import { ComponentsModule } from 'src/app/components/components.module';
 import { userReducers } from 'src/app/store/reducers/user.reducer';
 import { roomReducers } from 'src/app/store/reducers/room.reducer';
 import { visitsReducers } from 'src/app/store/reducers/visits.reducer';
+import { filtersReducers } from 'src/app/store/reducers/filters.reducer';
 
 import { UserEffects } from 'src/app/store/effects/user.effect';
 import { UsersEffects } from 'src/app/store/effects/users.effect';
@@ -35,6 +36,7 @@ import { NewBadgeComponent } from 'src/app/components/new-badge/new-badge.compon
     StoreModule.forFeature('user', userReducers),
     StoreModule.forFeature('room', roomReducers),
     StoreModule.forFeature('visit', visitsReducers),
+    StoreModule.forFeature('filters', filtersReducers),
     EffectsModule.forFeature([
       UserEffects,
       UsersEffects,
