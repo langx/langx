@@ -3,11 +3,8 @@ import { Action, createReducer, on } from '@ngrx/store';
 import { FiltersStateInterface } from 'src/app/models/types/states/filtersState.interface';
 import {
   getFiltersAction,
-  getFiltersSuccessAction,
-  getFiltersFailureAction,
   setFiltersAction,
-  setFiltersSuccessAction,
-  setFiltersFailureAction,
+  clearFiltersAction,
 } from 'src/app/store/actions/filters.action';
 import {
   deleteAccountSuccessAction,
@@ -15,9 +12,7 @@ import {
 } from 'src/app/store/actions/auth.action';
 
 const initialState: FiltersStateInterface = {
-  isLoading: false,
   filterData: null,
-  error: null,
 };
 
 const filtersReducer = createReducer(
@@ -28,52 +23,18 @@ const filtersReducer = createReducer(
     getFiltersAction,
     (state): FiltersStateInterface => ({
       ...state,
-      isLoading: true,
-      error: null,
     })
   ),
-  on(
-    getFiltersSuccessAction,
-    (state, action): FiltersStateInterface => ({
-      ...state,
-      isLoading: false,
-      filterData: action.payload,
-    })
-  ),
-  on(
-    getFiltersFailureAction,
-    (state, action): FiltersStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
-
   // Set Filters Reducers
   on(
     setFiltersAction,
-    (state): FiltersStateInterface => ({
-      ...state,
-      isLoading: true,
-      error: null,
-    })
-  ),
-  on(
-    setFiltersSuccessAction,
     (state, action): FiltersStateInterface => ({
       ...state,
-      isLoading: false,
       filterData: action.payload,
     })
   ),
-  on(
-    setFiltersFailureAction,
-    (state, action): FiltersStateInterface => ({
-      ...state,
-      isLoading: false,
-      error: action.error,
-    })
-  ),
+  // Clear Filters Reducers
+  on(clearFiltersAction, (): FiltersStateInterface => initialState),
 
   // Set initialState after Logout/Delete Success Action
   on(

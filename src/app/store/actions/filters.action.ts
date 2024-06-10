@@ -7,28 +7,11 @@ import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 // Get Filters Actions
 export const getFiltersAction = createAction(ActionTypes.GET_FILTERS);
 
-export const getFiltersSuccessAction = createAction(
-  ActionTypes.GET_FILTERS_SUCCESS,
-  props<{ payload: FilterDataInterface }>()
-);
-
-export const getFiltersFailureAction = createAction(
-  ActionTypes.GET_FILTERS_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
-
 // Set Filters Actions
 export const setFiltersAction = createAction(
   ActionTypes.SET_FILTERS,
   props<{ payload: FilterDataInterface }>()
 );
 
-export const setFiltersSuccessAction = createAction(
-  ActionTypes.SET_FILTERS_SUCCESS,
-  props<{ payload: FilterDataInterface }>()
-);
-
-export const setFiltersFailureAction = createAction(
-  ActionTypes.SET_FILTERS_FAILURE,
-  props<{ error: ErrorInterface }>()
-);
+// Clear Filters Actions
+export const clearFiltersAction = createAction(ActionTypes.CLEAR_FILTERS);
