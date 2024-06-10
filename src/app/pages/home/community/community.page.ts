@@ -11,7 +11,6 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 // Service Imports
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
@@ -63,7 +62,6 @@ export class CommunityPage implements OnInit {
     private store: Store,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private filterService: FilterService,
     private storageService: StorageService,
     private toastController: ToastController
   ) {}
@@ -74,7 +72,9 @@ export class CommunityPage implements OnInit {
 
     // Check Local Storage for filters
     await this.checkLocalStorage();
-    await this.checkFilter();
+
+    // List Users
+    this.listAllUsers();
   }
 
   ionViewWillEnter() {
@@ -180,18 +180,6 @@ export class CommunityPage implements OnInit {
   //
   // Check Filter
   //
-
-  async checkFilter() {
-    this.filter$ = this.filterService
-      .getEvent()
-      .subscribe((filterData: FilterDataInterface) => {
-        this.filterData = filterData;
-        // console.log('Subscribed filter: ', filterData);
-
-        // List Users
-        this.listAllUsers();
-      });
-  }
 
   async checkLocalStorage() {
     // Check localStorage
