@@ -305,7 +305,7 @@ export class EditPage implements OnInit {
   // Edit Languages
   //
 
-  async editLanguages() {
+  async editStudyLanguages() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((item) => {
       const request: updateLanguageRequestInterface = {
@@ -329,7 +329,7 @@ export class EditPage implements OnInit {
     modal.present();
   }
 
-  async addLanguage() {
+  async addStudyLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
       let request: createLanguageRequestInterface = {
@@ -369,7 +369,7 @@ export class EditPage implements OnInit {
     modal.present();
   }
 
-  deleteLanguage(language) {
+  deleteStudyLanguage(language) {
     // If it length is 2, then don't let the user to delete last study language.
     if (this.currentUser.languages.length <= 2) {
       this.presentToast('At least one study language required.', 'danger');
@@ -385,6 +385,10 @@ export class EditPage implements OnInit {
 
     this.store.dispatch(deleteLanguageAction({ request }));
   }
+
+  async editMotherLanguages() {}
+  async addMotherLanguage() {}
+  deleteMotherLanguage(language) {}
 
   //
   // Utils

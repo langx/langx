@@ -133,10 +133,14 @@
           <ion-col>Study Languages</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button (click)="editLanguages()" size="small">
+              <ion-button (click)="editStudyLanguages()" size="small">
                 Edit
               </ion-button>
-              <ion-button (click)="addLanguage()" color="primary" size="small">
+              <ion-button
+                (click)="addStudyLanguage()"
+                color="primary"
+                size="small"
+              >
                 Add
               </ion-button>
             </ion-card-subtitle>
@@ -172,7 +176,7 @@
             slot="end"
             color="danger"
             size="small"
-            (click)="deleteLanguage(lang)"
+            (click)="deleteStudyLanguage(lang)"
           ></ion-icon>
         </ion-item>
       </ion-list>
@@ -186,10 +190,14 @@
           <ion-col>Mother Languages</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button (click)="editLanguages()" size="small">
+              <ion-button (click)="editMotherLanguages()" size="small">
                 Edit
               </ion-button>
-              <ion-button (click)="addLanguage()" color="primary" size="small">
+              <ion-button
+                (click)="addMotherLanguage()"
+                color="primary"
+                size="small"
+              >
                 Add
               </ion-button>
             </ion-card-subtitle>
@@ -212,7 +220,7 @@
             slot="end"
             color="danger"
             size="small"
-            (click)="deleteLanguage(lang)"
+            (click)="deleteMotherLanguage(lang)"
           ></ion-icon>
         </ion-item>
       </ion-list>
