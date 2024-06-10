@@ -5,14 +5,16 @@ import { Observable, Subscription, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
+
 import { User } from 'src/app/models/User';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { Language } from 'src/app/models/Language';
-import { FilterService } from 'src/app/services/filter/filter.service';
-import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { Countries } from 'src/app/models/locale/Countries';
 import { Country } from 'src/app/models/locale/Country';
+import { Language } from 'src/app/models/Language';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { countriesSelector } from 'src/app/store/selectors/locale.selector';
+import { setFiltersAction } from 'src/app/store/actions/filters.action';
 
 @Component({
   selector: 'app-filters',
@@ -22,7 +24,6 @@ import { countriesSelector } from 'src/app/store/selectors/locale.selector';
 export class FiltersPage implements OnInit, OnDestroy {
   searchTerm: string;
 
-  // TODO: Useless
   isLoading: boolean = false;
 
   private subscriptions = new Subscription();
@@ -34,7 +35,8 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   // Filters data
   filterData: FilterDataInterface = {
-    languages: [],
+    motherLanguages: [],
+    studyLanguages: [],
     gender: null,
     country: null,
     minAge: null,
@@ -45,13 +47,12 @@ export class FiltersPage implements OnInit, OnDestroy {
     private store: Store,
     private navCtrl: NavController,
     private router: Router,
-    private filterService: FilterService,
     private storageService: StorageService
   ) {}
 
   async ngOnInit() {
     this.initValues();
-    await this.checkStorage();
+    await this.checkLocalStorage();
   }
 
   ngOnDestroy() {
@@ -70,101 +71,102 @@ export class FiltersPage implements OnInit, OnDestroy {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
   }
 
-  async checkStorage() {
+  async checkLocalStorage() {
     // Check localStorage
-    const languagesString = await this.storageService.getValue('languages');
-    const gender = (await this.storageService.getValue('gender')) || null;
-    const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = await this.storageService.getValue('minAge');
-    const maxAgeString = await this.storageService.getValue('maxAge');
+    const filterDataString = await this.storageService.getValue('filterData');
 
-    let minAge = Number(minAgeString) || null;
-    let maxAge = Number(maxAgeString) || null;
+    if (filterDataString) {
+      // Parse the JSON string back into an object
+      const filterData = JSON.parse(filterDataString);
 
-    let languages: Array<any> = [];
-    if (languagesString) {
-      languages = languagesString.toLocaleString().split(',');
+      // Use object destructuring to extract properties
+      const {
+        motherLanguages = [],
+        studyLanguages = [],
+        gender = null,
+        country = null,
+        minAge = null,
+        maxAge = null,
+      } = filterData;
+
+      this.filterData = {
+        motherLanguages,
+        studyLanguages,
+        gender,
+        country,
+        minAge: Number(minAge),
+        maxAge: Number(maxAge),
+      };
     }
-
-    this.filterData.languages = languages;
-    this.filterData.gender = gender;
-    this.filterData.country = country;
-    this.filterData.minAge = minAge;
-    this.filterData.maxAge = maxAge;
-
-    // console.log('checkLocalStorage', this.filterData);
+    // console.log(`filters.page.ts:`, this.filterData);
   }
-
   onSubmit() {
     this.setLocalStorage(this.filterData);
-    this.filterService.setEvent(this.filterData);
 
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
   }
 
-  // TODO: #246 Save filterData with JSON.stringify();
   setLocalStorage(filterData: FilterDataInterface) {
-    if (!filterData.languages) filterData.languages = [];
-    if (filterData.languages.length > 0) {
-      this.storageService.setValue(
-        'languages',
-        filterData.languages.toString()
-      );
-    } else {
-      this.storageService.removeValue('languages');
-    }
-    if (filterData.gender) {
-      this.storageService.setValue('gender', filterData.gender);
-    }
-    if (filterData.country) {
-      this.storageService.setValue('country', filterData.country);
-    }
-    if (filterData.minAge && filterData.maxAge) {
-      this.storageService.setValue('minAge', filterData.minAge.toString());
-      this.storageService.setValue('maxAge', filterData.maxAge.toString());
-    }
+    if (!filterData.motherLanguages) filterData.motherLanguages = [];
+    if (!filterData.studyLanguages) filterData.studyLanguages = [];
+
+    // Convert filterData to a JSON string
+    const filterDataJson = JSON.stringify(filterData);
+
+    // Save the JSON string to local storage
+    this.storageService.setValue('filterData', filterDataJson);
+
+    // Save this json to store
+    this.store.dispatch(setFiltersAction({ payload: filterData }));
   }
 
   removeLocalStorage() {
-    this.storageService.removeValue('languages');
-    this.storageService.removeValue('gender');
-    this.storageService.removeValue('country');
-    this.storageService.removeValue('minAge');
-    this.storageService.removeValue('maxAge');
+    this.storageService.removeValue('filterData');
   }
 
   //
   // LANGUAGE Methods
   //
 
-  getStudyLanguages(): Observable<Language[]> {
-    return this.currentUser$.pipe(
-      map((user) => user.languages.filter((lang) => !lang.motherLanguage))
+  getLanguages(): Observable<Language[]> {
+    return this.currentUser$.pipe(map((user) => user.languages));
+  }
+
+  motherLanguageChecked(event, langName) {
+    this.filterData.motherLanguages = this.filterData.motherLanguages || [];
+    if (event.detail.checked) {
+      this.filterData.motherLanguages.push(langName);
+    } else {
+      this.filterData.motherLanguages = this.filterData.motherLanguages.filter(
+        (item) => item !== langName
+      );
+    }
+  }
+
+  isCheckedMotherLanguage(langName) {
+    return (
+      this.filterData.motherLanguages &&
+      this.filterData.motherLanguages.includes(langName)
     );
   }
 
-  languageChecked(event, langName) {
+  studyLanguageChecked(event, langName) {
+    this.filterData.studyLanguages = this.filterData.studyLanguages || [];
     if (event.detail.checked) {
-      if (!this.filterData.languages) this.filterData.languages = [];
-      this.filterData.languages.push(langName);
+      this.filterData.studyLanguages.push(langName);
     } else {
-      this.filterData.languages = this.filterData.languages.filter(
+      this.filterData.studyLanguages = this.filterData.studyLanguages.filter(
         (item) => item !== langName
       );
     }
     console.log(this.filterData);
   }
-
-  isCheckedLanguage(langName) {
-    if (!this.filterData.languages) return false;
-    else if (this.filterData.languages.length == 0) return false;
-    else if (
-      this.filterData.languages.length > 0 &&
-      this.filterData.languages.includes(langName)
-    )
-      return true;
-    else return false;
+  isCheckedStudyLanguage(langName) {
+    return (
+      this.filterData.studyLanguages &&
+      this.filterData.studyLanguages.includes(langName)
+    );
   }
 
   //
@@ -230,12 +232,14 @@ export class FiltersPage implements OnInit, OnDestroy {
 
   resetFilter() {
     this.filterData = {
-      languages: [],
+      motherLanguages: [],
+      studyLanguages: [],
       gender: null,
       country: null,
       minAge: null,
       maxAge: null,
     };
+    // TODO: Remove following console.log
     console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ID } from 'appwrite';
 import { Observable, from, switchMap } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
@@ -16,6 +15,7 @@ import { Language } from 'src/app/models/Language';
 import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
 import { deleteLanguageRequestInterface } from 'src/app/models/types/requests/deleteLanguageRequest.interface';
 import { updateLanguageRequestInterface } from 'src/app/models/types/requests/updateLanguageRequest.interface';
+import { updateLanguageArrayRequestInterface } from 'src/app/models/types/requests/update.interface';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
@@ -85,10 +85,7 @@ export class LanguageService {
         // Call the /api/language
         return from(
           axios
-            .patch(
-              `${environment.api.LANGUAGE}/${request.id}`,
-              request.data
-            )
+            .patch(`${environment.api.LANGUAGE}/${request.id}`, request.data)
             .then((result) => {
               console.log('result.data: ', result.data);
               return result.data as Language;
@@ -101,21 +98,44 @@ export class LanguageService {
   // It is triggerred by edit.page.ts
   createLanguageDocWithUpdatingLanguageArray(
     data: createLanguageRequestInterface,
-    languageArray: string[]
+    currentUser: User
   ): Observable<User> {
     return from(this.createLanguageDoc(data)).pipe(
       switchMap((payload: Language) => {
-        const newLanguageArray = {
-          languageArray: [...languageArray, payload.name],
+        let newMotherLanguageArray = currentUser?.motherLanguages || [];
+        let newStudyLanguageArray = currentUser?.studyLanguages || [];
+        let newLanguageArray = currentUser?.languageArray || [];
+
+        // Check if the language is mother
+        if (payload.motherLanguage) {
+          if (!newMotherLanguageArray.includes(payload.name)) {
+            newMotherLanguageArray = [...newMotherLanguageArray, payload.name];
+          }
+        } else {
+          if (!newStudyLanguageArray.includes(payload.name)) {
+            newStudyLanguageArray = [...newStudyLanguageArray, payload.name];
+          }
+        }
+
+        if (!newLanguageArray.includes(payload.name)) {
+          newLanguageArray = [...newLanguageArray, payload.name];
+        }
+
+        const updatedLanguageArray: updateLanguageArrayRequestInterface = {
+          languageArray: newLanguageArray,
+          motherLanguages: newMotherLanguageArray,
+          studyLanguages: newStudyLanguageArray,
         };
-        return this.userService.updateUserDoc(newLanguageArray);
+
+        return this.userService.updateUserDoc(updatedLanguageArray);
       })
     );
   }
 
   // It is triggerred by edit.page.ts
   deleteLanguageDocWithUpdatingLanguageArray(
-    request: deleteLanguageRequestInterface
+    request: deleteLanguageRequestInterface,
+    currentUser: User
   ): Observable<User> {
     return from(
       this.api.deleteDocument(
@@ -124,12 +144,26 @@ export class LanguageService {
       )
     ).pipe(
       switchMap(() => {
-        const newLanguageArray = {
-          languageArray: request.languageArray.filter(
+        let newMotherLanguageArray =
+          currentUser?.motherLanguages.filter(
             (language) => language !== request.name
-          ),
+          ) || [];
+        let newStudyLanguageArray =
+          currentUser?.studyLanguages.filter(
+            (language) => language !== request.name
+          ) || [];
+        let newLanguageArray =
+          currentUser?.languageArray.filter(
+            (language) => language !== request.name
+          ) || [];
+
+        const updatedLanguageArray = {
+          languageArray: newLanguageArray,
+          motherLanguages: newMotherLanguageArray,
+          studyLanguages: newStudyLanguageArray,
         };
-        return this.userService.updateUserDoc(newLanguageArray);
+
+        return this.userService.updateUserDoc(updatedLanguageArray);
       })
     );
   }

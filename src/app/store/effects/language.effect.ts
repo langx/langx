@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 
 import { LanguageService } from 'src/app/services/user/language.service';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { Language } from 'src/app/models/Language';
 import { User } from 'src/app/models/User';
 
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   createLanguageAction,
   createLanguageFailureAction,
@@ -25,9 +27,10 @@ export class LanguageEffects {
   createLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createLanguageAction),
-      switchMap(({ request, languageArray }) => {
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
         return this.languageService
-          .createLanguageDocWithUpdatingLanguageArray(request, languageArray)
+          .createLanguageDocWithUpdatingLanguageArray(request, currentUser)
           .pipe(
             map((payload: User) => createLanguageSuccessAction({ payload })),
 
@@ -63,9 +66,10 @@ export class LanguageEffects {
   deleteLanguage$ = createEffect(() =>
     this.actions$.pipe(
       ofType(deleteLanguageAction),
-      switchMap(({ request }) => {
+      withLatestFrom(this.store.pipe(select(currentUserSelector))),
+      switchMap(([{ request }, currentUser]) => {
         return this.languageService
-          .deleteLanguageDocWithUpdatingLanguageArray(request)
+          .deleteLanguageDocWithUpdatingLanguageArray(request, currentUser)
           .pipe(
             map((payload: User) => deleteLanguageSuccessAction({ payload })),
 
@@ -82,6 +86,7 @@ export class LanguageEffects {
 
   constructor(
     private actions$: Actions,
+    private store: Store,
     private languageService: LanguageService
   ) {}
 }

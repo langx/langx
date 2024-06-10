@@ -11,7 +11,6 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 
 // Service Imports
 import { StorageService } from 'src/app/services/storage/storage.service';
-import { FilterService } from 'src/app/services/filter/filter.service';
 
 // Action Imports
 import { createRoomInitialStateAction } from 'src/app/store/actions/room.action';
@@ -22,11 +21,13 @@ import {
   getUsersByLastSeenAction,
   getUsersByTargetLanguageAction,
 } from 'src/app/store/actions/users.action';
+import { setFiltersAction } from 'src/app/store/actions/filters.action';
 import { clearErrorsAction } from 'src/app/store/actions/user.action';
 
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
+import { filterDataSelector } from 'src/app/store/selectors/filters.selector';
 import {
   usersByLastSeenSelector,
   errorSelector,
@@ -45,7 +46,6 @@ export class CommunityPage implements OnInit {
 
   segment: string = 'usersByTargetLanguage';
 
-  filter$: any;
   filterData: FilterDataInterface;
 
   currentUser$: Observable<User>;
@@ -63,7 +63,6 @@ export class CommunityPage implements OnInit {
     private store: Store,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    private filterService: FilterService,
     private storageService: StorageService,
     private toastController: ToastController
   ) {}
@@ -74,11 +73,21 @@ export class CommunityPage implements OnInit {
 
     // Check Local Storage for filters
     await this.checkLocalStorage();
-    await this.checkFilter();
   }
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
+
+    // Filters
+    this.subscription.add(
+      this.store.pipe(select(filterDataSelector)).subscribe((filtersData) => {
+        // console.log('filterDataSelector', filtersData);
+        this.filterData = filtersData;
+
+        // List Users
+        this.listAllUsers();
+      })
+    );
 
     // User Errors
     this.subscription.add(
@@ -108,11 +117,6 @@ export class CommunityPage implements OnInit {
   ionViewWillLeave() {
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
-  }
-
-  ngOnDestroy() {
-    this.filter$.unsubscribe();
-    // console.log('filters unsubscribed');
   }
 
   initValues(): void {
@@ -181,50 +185,35 @@ export class CommunityPage implements OnInit {
   // Check Filter
   //
 
-  async checkFilter() {
-    this.filter$ = this.filterService
-      .getEvent()
-      .subscribe((filterData: FilterDataInterface) => {
-        this.filterData = filterData;
-        // console.log('Subscribed filter: ', filterData);
-
-        // List Users
-        this.listAllUsers();
-      });
-  }
-
-  // TODO: #246 Save filterData with JSON.stringify();
   async checkLocalStorage() {
-    // Getting the filter data from Capacitor Preferences
-    let languagesString =
-      (await this.storageService.getValue('languages')) || [];
-    const gender = (await this.storageService.getValue('gender')) || null;
-    const country = (await this.storageService.getValue('country')) || null;
-    const minAgeString = (await this.storageService.getValue('minAge')) || null;
-    const maxAgeString = (await this.storageService.getValue('maxAge')) || null;
+    // Check localStorage
+    const filterDataString = await this.storageService.getValue('filterData');
 
-    let minAge = Number(minAgeString) || null;
-    let maxAge = Number(maxAgeString) || null;
+    if (filterDataString) {
+      // Parse the JSON string back into an object
+      const filterData = JSON.parse(filterDataString);
 
-    // TODO: Do better logic here
-    let languages: Array<any> = [];
-    if (languagesString) {
-      languages = languagesString.toLocaleString().split(',');
-      if (languages.length === 1 && languages[0] === '') {
-        languages = [];
-      }
+      // Use object destructuring to extract properties
+      const {
+        motherLanguages = [],
+        studyLanguages = [],
+        gender = null,
+        country = null,
+        minAge = null,
+        maxAge = null,
+      } = filterData;
+
+      this.filterData = {
+        motherLanguages,
+        studyLanguages,
+        gender,
+        country,
+        minAge: Number(minAge),
+        maxAge: Number(maxAge),
+      };
+
+      this.store.dispatch(setFiltersAction({ payload: this.filterData }));
     }
-
-    let filterData: FilterDataInterface = {
-      languages: languages,
-      gender: gender,
-      country: country,
-      minAge: minAge,
-      maxAge: maxAge,
-    };
-
-    // console.log('checkLocalStorage', filterData);
-    this.filterService.setEvent(filterData);
   }
 
   //

@@ -5,7 +5,6 @@ import { select, Store } from '@ngrx/store';
 
 import { User } from 'src/app/models/User';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
-import { FilterService } from 'src/app/services/filter/filter.service';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getUsersByTargetLanguageAction,
@@ -23,7 +22,6 @@ import {
   styleUrls: ['./target-language.component.scss'],
 })
 export class TargetLanguageComponent implements OnInit {
-  filter$: any;
   filterData: FilterDataInterface;
 
   isLoading$: Observable<boolean>;
@@ -37,17 +35,10 @@ export class TargetLanguageComponent implements OnInit {
     color: 'warning',
   };
 
-  constructor(
-    private store: Store,
-    private router: Router,
-    private filterService: FilterService
-  ) {}
+  constructor(private store: Store, private router: Router) {}
 
   async ngOnInit() {
     this.initValues();
-
-    // Check Local Storage for filters
-    await this.checkFilter();
   }
 
   initValues(): void {
@@ -74,22 +65,6 @@ export class TargetLanguageComponent implements OnInit {
     this.store.dispatch(
       getUsersByTargetLanguageAction({ request: { filterData } })
     );
-  }
-
-  //
-  // Check Filter
-  //
-
-  async checkFilter() {
-    this.filter$ = this.filterService
-      .getEvent()
-      .subscribe((filterData: FilterDataInterface) => {
-        this.filterData = filterData;
-        // console.log('Subscribed filter: ', filterData);
-
-        // List Users
-        this.listUsers();
-      });
   }
 
   //

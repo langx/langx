@@ -11,7 +11,7 @@ import { updateLanguageRequestInterface } from 'src/app/models/types/requests/up
 // Create Language Actions
 export const createLanguageAction = createAction(
   ActionTypes.CREATE_LANGUAGE,
-  props<{ request: createLanguageRequestInterface; languageArray: string[] }>()
+  props<{ request: createLanguageRequestInterface }>()
 );
 
 export const createLanguageSuccessAction = createAction(

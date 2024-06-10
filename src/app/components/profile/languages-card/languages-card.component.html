@@ -9,15 +9,15 @@
     <ion-list class="hasIcon" lines="none">
       <ion-item *ngFor="let lang of studyLanguages">
         <ion-icon
-          *ngIf="lang.level == 1"
+          *ngIf="lang.level === 1"
           name="battery-dead-outline"
         ></ion-icon>
         <ion-icon
-          *ngIf="lang.level == 2"
+          *ngIf="lang.level === 2"
           name="battery-half-outline"
         ></ion-icon>
         <ion-icon
-          *ngIf="lang.level == 3"
+          *ngIf="lang.level === 3"
           name="battery-full-outline"
         ></ion-icon>
         <ion-label>{{ lang.name }}</ion-label>

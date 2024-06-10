@@ -328,7 +328,7 @@ export class EditPage implements OnInit {
   async addLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
-      let data: createLanguageRequestInterface = {
+      let request: createLanguageRequestInterface = {
         name: selectedLanguage.name,
         nativeName: selectedLanguage.nativeName,
         code: selectedLanguage.code,
@@ -337,7 +337,7 @@ export class EditPage implements OnInit {
       };
 
       // If it length is 6, then don't let the user to add one more study language.
-      if (this.currentUser.languages.length >= 6) {
+      if (this.currentUser.languages.length > 5) {
         this.presentToast(
           'You can add max 5 Study Languages. Please remove at least one and try again.',
           'danger'
@@ -351,12 +351,7 @@ export class EditPage implements OnInit {
         return;
       }
 
-      this.store.dispatch(
-        createLanguageAction({
-          request: data,
-          languageArray: this.currentUser.languageArray,
-        })
-      );
+      this.store.dispatch(createLanguageAction({ request }));
     });
 
     const modal = await this.modalCtrl.create({

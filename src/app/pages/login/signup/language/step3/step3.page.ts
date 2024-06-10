@@ -6,6 +6,8 @@ import { Observable, Subscription } from 'rxjs';
 import { Account } from 'src/app/models/Account';
 import { Language } from 'src/app/models/locale/Language';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { createLanguageRequestInterface } from 'src/app/models/types/requests/createLanguageRequest.interface';
+import { updateLanguageArrayRequestInterface } from 'src/app/models/types/requests/update.interface';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 import {
   languageSelectionAction,
@@ -139,12 +141,25 @@ export class Step3Page implements OnInit, OnDestroy {
 
   completeLanguages(languages) {
     let languageArray: string[] = [];
+    let motherLanguages: string[] = [];
+    let studyLanguages: string[] = [];
 
     // Add userId to each language and fill languageArray with language codes
-    languages.forEach((lang) => {
+    languages.forEach((lang: createLanguageRequestInterface) => {
       languageArray.push(lang.name);
+      if (lang.motherLanguage) {
+        motherLanguages.push(lang.name);
+      } else {
+        studyLanguages.push(lang.name);
+      }
     });
-    console.log('languages:', languages);
+    // console.log('languages:', languages);
+
+    const updateLanguageArrayRequest: updateLanguageArrayRequestInterface = {
+      languageArray: languageArray,
+      motherLanguages: motherLanguages,
+      studyLanguages: studyLanguages,
+    };
 
     // Dispatch the first action
     this.store.dispatch(languageSelectionAction({ request: languages }));
@@ -155,7 +170,7 @@ export class Step3Page implements OnInit, OnDestroy {
         // Dispatch the second action
         if (isCompletedLanguage) {
           this.store.dispatch(
-            updateLanguageArrayAction({ request: languageArray })
+            updateLanguageArrayAction({ request: updateLanguageArrayRequest })
           );
         }
       })

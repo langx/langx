@@ -177,7 +177,6 @@ export class AuthEffect {
   languageSelection$ = createEffect(() =>
     this.actions$.pipe(
       ofType(languageSelectionAction),
-
       switchMap(({ request }) => {
         const observables = request.map(
           (language: createLanguageRequestInterface) => {
@@ -203,24 +202,17 @@ export class AuthEffect {
   updateLanguageArray$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateLanguageArrayAction),
-
       switchMap(({ request }) => {
-        return this.userService
-          .updateUserDoc({
-            languageArray: request,
-          })
-          .pipe(
-            map((payload: User) =>
-              updateLanguageArraySuccessAction({ payload })
-            ),
+        return this.userService.updateUserDoc(request).pipe(
+          map((payload: User) => updateLanguageArraySuccessAction({ payload })),
 
-            catchError((errorResponse: HttpErrorResponse) => {
-              const error: ErrorInterface = {
-                message: errorResponse.message,
-              };
-              return of(updateLanguageArrayFailureAction({ error }));
-            })
-          );
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(updateLanguageArrayFailureAction({ error }));
+          })
+        );
       })
     )
   );

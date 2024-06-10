@@ -114,14 +114,13 @@ export class UserService {
     // Add exclusion queries
     queries.push(...this.createExclusionQueries(currentUser));
 
-    // Query for users with the selected languages filter
-    if (currentUser?.languageArray.length > 0) {
-      const keywords = currentUser.languageArray;
-      // OR Query for users with any of the selected languages
-      queries.push(Query.contains('languageArray', keywords));
-    }
-    // Query for not equal same country
-    queries.push(Query.notEqual('countryCode', currentUser['countryCode']));
+    // Query for Perfect Match
+    queries.push(
+      Query.contains('motherLanguages', currentUser?.studyLanguages)
+    );
+    queries.push(
+      Query.contains('studyLanguages', currentUser?.motherLanguages)
+    );
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
@@ -444,6 +443,13 @@ export class UserService {
       });
     }
 
+    // Query for users with the selected languages filter
+    if (currentUser?.languageArray.length > 0) {
+      const keywords = currentUser.languageArray;
+      // OR Query for users with any of the selected languages
+      queries.push(Query.contains('languageArray', keywords));
+    }
+
     return queries;
   }
 
@@ -472,10 +478,15 @@ export class UserService {
     }
 
     // Query for users with the selected languages filter
-    if (filterData?.languages.length > 0) {
-      const keywords = filterData.languages;
+    if (filterData?.motherLanguages.length > 0) {
+      const keywords = filterData.motherLanguages;
       // OR Query for users with any of the selected languages
-      queries.push(Query.contains('languageArray', keywords));
+      queries.push(Query.contains('motherLanguages', keywords));
+    }
+    if (filterData?.studyLanguages.length > 0) {
+      const keywords = filterData.studyLanguages;
+      // OR Query for users with any of the selected languages
+      queries.push(Query.contains('studyLanguages', keywords));
     }
 
     return queries;
