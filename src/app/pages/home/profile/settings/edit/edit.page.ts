@@ -70,6 +70,7 @@ export class EditPage implements OnInit {
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
+  motherLanguages: Language[] = [];
   currentUserName: string = null;
   isEditCurrentUserName: boolean = false;
 
@@ -98,6 +99,9 @@ export class EditPage implements OnInit {
         this.currentUser = user;
         this.studyLanguages = user?.languages.filter(
           (lang) => !lang.motherLanguage
+        );
+        this.motherLanguages = user?.languages.filter(
+          (lang) => lang.motherLanguage
         );
 
         // Set default value for aboutMe and currentUserName
