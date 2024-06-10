@@ -114,14 +114,26 @@ export class UserService {
     // Add exclusion queries
     queries.push(...this.createExclusionQueries(currentUser));
 
-    // Query for users with the selected languages filter
-    if (currentUser?.languageArray.length > 0) {
-      const keywords = currentUser.languageArray;
-      // OR Query for users with any of the selected languages
-      queries.push(Query.contains('languageArray', keywords));
-    }
-    // Query for not equal same country
-    queries.push(Query.notEqual('countryCode', currentUser['countryCode']));
+    // Query for Perfect Match
+    queries.push(
+      Query.contains('motherLanguages', currentUser?.studyLanguages)
+    );
+    queries.push(
+      Query.contains('studyLanguages', currentUser?.motherLanguages)
+    );
+
+    // Query for users descending by last seen
+    queries.push(Query.orderDesc('lastSeen'));
+
+    // Add filter data queries
+    queries.push(...this.createFilterQueries(filterData));
+
+    // Add pagination queries
+    queries.push(...this.createPaginationQueries(offset));
+
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
+    );
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
@@ -442,6 +454,13 @@ export class UserService {
       currentUser.blockedUsers.forEach((id) => {
         queries.push(Query.notEqual('$id', id));
       });
+    }
+
+    // Query for users with the selected languages filter
+    if (currentUser?.languageArray.length > 0) {
+      const keywords = currentUser.languageArray;
+      // OR Query for users with any of the selected languages
+      queries.push(Query.contains('languageArray', keywords));
     }
 
     return queries;
