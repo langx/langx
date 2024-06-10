@@ -21,6 +21,7 @@ import {
   getUsersByLastSeenAction,
   getUsersByTargetLanguageAction,
 } from 'src/app/store/actions/users.action';
+import { setFiltersAction } from 'src/app/store/actions/filters.action';
 import { clearErrorsAction } from 'src/app/store/actions/user.action';
 
 // Selector Imports
@@ -207,6 +208,8 @@ export class CommunityPage implements OnInit {
         minAge: Number(minAge),
         maxAge: Number(maxAge),
       };
+
+      this.store.dispatch(setFiltersAction({ payload: this.filterData }));
     }
 
     console.log('community.page: ', this.filterData);
