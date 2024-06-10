@@ -5,13 +5,16 @@ import { Observable, Subscription, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
+
 import { User } from 'src/app/models/User';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
-import { Language } from 'src/app/models/Language';
-import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { Countries } from 'src/app/models/locale/Countries';
 import { Country } from 'src/app/models/locale/Country';
+import { Language } from 'src/app/models/Language';
+import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
+
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { countriesSelector } from 'src/app/store/selectors/locale.selector';
+import { setFiltersAction } from 'src/app/store/actions/filters.action';
 
 @Component({
   selector: 'app-filters',
@@ -113,6 +116,9 @@ export class FiltersPage implements OnInit, OnDestroy {
 
     // Save the JSON string to local storage
     this.storageService.setValue('filterData', filterDataJson);
+
+    // Save this json to store
+    this.store.dispatch(setFiltersAction({ payload: filterData }));
   }
 
   removeLocalStorage() {
