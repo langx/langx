@@ -2,6 +2,7 @@
 import { AuthStateInterface } from './authState.interface';
 import { CheckoutsStateInterface } from './checkoutsState.interface';
 import { ContributorsStateInterface } from './contributorsState.interface';
+import { FiltersStateInterface } from './filtersState.interface';
 import { LocaleStateInterface } from './localeState.interface';
 import { MessageStateInterface } from './messageState.interface';
 import { RoomStateInterface } from './roomState.interface';
@@ -19,4 +20,5 @@ export interface AppStateInterface {
   contributors: ContributorsStateInterface;
   checkouts: CheckoutsStateInterface;
   wallet: WalletStateInterface;
+  filter: FiltersStateInterface;
 }
