@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { Observable, Subscription, map } from 'rxjs';
+import { Observable, Subscription, map, take } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { StorageService } from 'src/app/services/storage/storage.service';
@@ -31,6 +31,8 @@ export class FiltersPage implements OnInit, OnDestroy {
   countries$: Observable<Countries>;
   countyData: Country[];
 
+  onlyMyGenderToggleState: boolean = false;
+
   ionRangeDefault = { lower: 20, upper: 75 };
 
   // Filters data
@@ -38,6 +40,7 @@ export class FiltersPage implements OnInit, OnDestroy {
     motherLanguages: [],
     studyLanguages: [],
     gender: null,
+    onlyMyGender: false,
     country: null,
     minAge: null,
     maxAge: null,
@@ -84,6 +87,7 @@ export class FiltersPage implements OnInit, OnDestroy {
         motherLanguages = [],
         studyLanguages = [],
         gender = null,
+        onlyMyGender = false,
         country = null,
         minAge = null,
         maxAge = null,
@@ -93,6 +97,7 @@ export class FiltersPage implements OnInit, OnDestroy {
         motherLanguages,
         studyLanguages,
         gender,
+        onlyMyGender,
         country,
         minAge: Number(minAge),
         maxAge: Number(maxAge),
@@ -193,7 +198,21 @@ export class FiltersPage implements OnInit, OnDestroy {
     if (event.detail.value) {
       this.filterData.gender = event.detail.value;
     }
-    console.log(this.filterData);
+  }
+
+  onlyMyGenderToggleChange(event) {
+    this.filterData.onlyMyGender = event.detail.checked;
+    if (this.filterData.onlyMyGender) {
+      this.currentUser$.pipe(take(1)).subscribe((currentUser) => {
+        this.filterData.gender = currentUser.gender;
+      });
+    } else {
+      this.filterData.gender = null;
+    }
+  }
+
+  isGenderDisabled() {
+    return this.filterData.onlyMyGender;
   }
 
   showGender() {
@@ -203,7 +222,9 @@ export class FiltersPage implements OnInit, OnDestroy {
       return 'Female';
     } else if (this.filterData.gender == 'other') {
       return 'Prefer Not to Say';
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
   //
@@ -235,12 +256,11 @@ export class FiltersPage implements OnInit, OnDestroy {
       motherLanguages: [],
       studyLanguages: [],
       gender: null,
+      onlyMyGender: false,
       country: null,
       minAge: null,
       maxAge: null,
     };
-    // TODO: Remove following console.log
-    console.log(this.filterData);
     this.ionRangeDefault = { lower: 20, upper: 75 };
     this.removeLocalStorage();
   }
