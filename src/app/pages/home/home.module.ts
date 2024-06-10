@@ -36,7 +36,7 @@ import { NewBadgeComponent } from 'src/app/components/new-badge/new-badge.compon
     StoreModule.forFeature('user', userReducers),
     StoreModule.forFeature('room', roomReducers),
     StoreModule.forFeature('visit', visitsReducers),
-    StoreModule.forFeature('filters', filtersReducers),
+    StoreModule.forFeature('filter', filtersReducers),
     EffectsModule.forFeature([
       UserEffects,
       UsersEffects,
