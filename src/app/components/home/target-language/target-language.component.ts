@@ -22,7 +22,6 @@ import {
   styleUrls: ['./target-language.component.scss'],
 })
 export class TargetLanguageComponent implements OnInit {
-  filter$: any;
   filterData: FilterDataInterface;
 
   isLoading$: Observable<boolean>;

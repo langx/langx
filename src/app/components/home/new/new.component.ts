@@ -22,7 +22,6 @@ import {
   styleUrls: ['./new.component.scss'],
 })
 export class NewComponent implements OnInit {
-  filter$: any;
   filterData: FilterDataInterface;
 
   isLoading$: Observable<boolean>;

@@ -22,7 +22,6 @@ import {
   styleUrls: ['./online.component.scss'],
 })
 export class OnlineComponent implements OnInit {
-  filter$: any;
   filterData: FilterDataInterface;
 
   isLoading$: Observable<boolean>;

@@ -46,7 +46,6 @@ export class CommunityPage implements OnInit {
 
   segment: string = 'usersByTargetLanguage';
 
-  filter$: any;
   filterData: FilterDataInterface;
 
   currentUser$: Observable<User>;
@@ -118,11 +117,6 @@ export class CommunityPage implements OnInit {
   ionViewWillLeave() {
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
-  }
-
-  ngOnDestroy() {
-    this.filter$.unsubscribe();
-    // console.log('filters unsubscribed');
   }
 
   initValues(): void {

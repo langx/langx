@@ -22,7 +22,6 @@ import {
   styleUrls: ['./enthusiast.component.scss'],
 })
 export class EnthusiastComponent implements OnInit {
-  filter$: any;
   filterData: FilterDataInterface;
 
   isLoading$: Observable<boolean>;
