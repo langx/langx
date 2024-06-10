@@ -391,7 +391,7 @@ export class EditPage implements OnInit {
         name: selectedLanguage.name,
         nativeName: selectedLanguage.nativeName,
         code: selectedLanguage.code,
-        level: -1,
+        level: selectedLanguage.level,
         motherLanguage: true,
       };
 
