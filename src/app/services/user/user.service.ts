@@ -134,19 +134,6 @@ export class UserService {
     return from(
       this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
     );
-
-    // Query for users descending by last seen
-    queries.push(Query.orderDesc('lastSeen'));
-
-    // Add filter data queries
-    queries.push(...this.createFilterQueries(filterData));
-
-    // Add pagination queries
-    queries.push(...this.createPaginationQueries(offset));
-
-    return from(
-      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, queries)
-    );
   }
 
   listUsersByCompletedProfile(
