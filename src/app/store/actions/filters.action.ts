@@ -12,6 +12,3 @@ export const setFiltersAction = createAction(
   ActionTypes.SET_FILTERS,
   props<{ payload: FilterDataInterface }>()
 );
-
-// Clear Filters Actions
-export const clearFiltersAction = createAction(ActionTypes.CLEAR_FILTERS);
