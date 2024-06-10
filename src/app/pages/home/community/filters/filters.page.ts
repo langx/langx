@@ -8,7 +8,6 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { User } from 'src/app/models/User';
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { Language } from 'src/app/models/Language';
-import { FilterService } from 'src/app/services/filter/filter.service';
 import { FilterDataInterface } from 'src/app/models/types/filterData.interface';
 import { Countries } from 'src/app/models/locale/Countries';
 import { Country } from 'src/app/models/locale/Country';
@@ -45,7 +44,6 @@ export class FiltersPage implements OnInit, OnDestroy {
     private store: Store,
     private navCtrl: NavController,
     private router: Router,
-    private filterService: FilterService,
     private storageService: StorageService
   ) {}
 
@@ -101,7 +99,6 @@ export class FiltersPage implements OnInit, OnDestroy {
   }
   onSubmit() {
     this.setLocalStorage(this.filterData);
-    this.filterService.setEvent(this.filterData);
 
     this.navCtrl.setDirection('back');
     this.router.navigateByUrl('/home/community');
