@@ -358,8 +358,6 @@ export class EditPage implements OnInit {
         return;
       }
 
-      // TODO: Delete following console.log
-      console.log('add study lang', request);
       this.store.dispatch(createLanguageAction({ request }));
     });
 
@@ -413,8 +411,6 @@ export class EditPage implements OnInit {
         return;
       }
 
-      // TODO: Delete following console.log
-      console.log('add mother lang', request);
       this.store.dispatch(createLanguageAction({ request }));
     });
 
