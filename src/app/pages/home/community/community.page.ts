@@ -193,7 +193,6 @@ export class CommunityPage implements OnInit {
       });
   }
 
-  // TODO: #246 Save filterData with JSON.stringify();
   async checkLocalStorage() {
     // Check localStorage
     const filterDataString = await this.storageService.getValue('filterData');
