@@ -385,7 +385,6 @@ export class EditPage implements OnInit {
       id: language.$id,
       name: language.name,
       userId: this.currentUser.$id,
-      languageArray: this.currentUser.languageArray,
     };
 
     this.store.dispatch(deleteLanguageAction({ request }));
@@ -442,6 +441,14 @@ export class EditPage implements OnInit {
       this.presentToast('At least one mother language required.', 'danger');
       return;
     }
+
+    const request: deleteLanguageRequestInterface = {
+      id: language.$id,
+      name: language.name,
+      userId: this.currentUser.$id,
+    };
+
+    this.store.dispatch(deleteLanguageAction({ request }));
   }
 
   //
