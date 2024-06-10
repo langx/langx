@@ -12,6 +12,7 @@ import { languagesSelector } from 'src/app/store/selectors/locale.selector';
 })
 export class AddLanguageComponent implements OnInit {
   @Input() languageArray: any;
+  @Input() motherLanguage: boolean = false;
   @Output() onClick: EventEmitter<any> = new EventEmitter();
 
   languages: Language[];
@@ -31,6 +32,7 @@ export class AddLanguageComponent implements OnInit {
   ngOnInit() {
     this.initValues();
     this.filterLanuages();
+    console.log(this.motherLanguage);
   }
 
   initValues() {
@@ -54,7 +56,13 @@ export class AddLanguageComponent implements OnInit {
       this.presentToast('Please select a language.', 'danger');
       return;
     } else {
-      this.isShowLevels = true;
+      if (this.motherLanguage) {
+        this.selectedLanguage.level = -1;
+        this.onClick.emit(this.selectedLanguage);
+        this.close();
+      } else {
+        this.isShowLevels = true;
+      }
     }
   }
 
