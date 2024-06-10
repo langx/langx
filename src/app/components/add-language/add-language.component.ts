@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Observable } from 'rxjs';
 
 import { Language } from 'src/app/models/locale/Language';
 import { languagesSelector } from 'src/app/store/selectors/locale.selector';
