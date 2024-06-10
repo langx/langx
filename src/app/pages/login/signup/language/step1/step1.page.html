@@ -39,9 +39,9 @@
               <ion-item
                 *ngFor="let lang of (languages$ | async)?.languages | customFilter: search"
               >
-                <ion-radio value="{{lang.code}}" labelPlacement="start"
-                  >{{lang.nativeName}}</ion-radio
-                >
+                <ion-radio value="{{lang.code}}" labelPlacement="start">
+                  {{lang.name}}
+                </ion-radio>
               </ion-item>
             </ion-radio-group>
           </ion-col>
