@@ -82,15 +82,6 @@ const filtersReducer = createReducer(
     (): FiltersStateInterface => ({
       ...initialState,
     })
-  ),
-
-  // Set initialState after Logout/Delete Success Action
-  on(
-    logoutSuccessAction,
-    deleteAccountSuccessAction,
-    (): FiltersStateInterface => ({
-      ...initialState,
-    })
   )
 );
 
