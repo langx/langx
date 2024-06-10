@@ -203,7 +203,7 @@ export function urlify(text: string): Array<{ type: string; content: string }> {
   }
 
   var urlRegex =
-    /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,}([-a-z0-9@:%_+.~#?&//=]*)\b)/gi;
+    /(\b(https?:\/\/)?[a-z0-9]+([-.][a-z0-9]+)*\.(com|org|net|edu|gov|mil|int|co|io|info|biz|online|tech|xyz|app|site|club|dev|shop|store|media|tv|live|me|world|space|guru|today|news|digital|website|cloud|global|solutions|services|community|technology|systems|company|support|management|international|academy|school|email|finance|ventures|capital|partners|group|consulting|agency|events|gallery|marketing|design|photography|press|publishing)([-a-z0-9@:%_+.~#?&//=]*)?\b)/gi;
   let segments = [];
   let match;
   let lastIndex = 0;
