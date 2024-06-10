@@ -27,6 +27,7 @@ import { clearErrorsAction } from 'src/app/store/actions/user.action';
 // Selector Imports
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { createRoomErrorSelector } from 'src/app/store/selectors/room.selector';
+import { filterDataSelector } from 'src/app/store/selectors/filters.selector';
 import {
   usersByLastSeenSelector,
   errorSelector,
@@ -73,13 +74,20 @@ export class CommunityPage implements OnInit {
 
     // Check Local Storage for filters
     await this.checkLocalStorage();
-
-    // List Users
-    this.listAllUsers();
   }
 
   ionViewWillEnter() {
     this.subscription = new Subscription();
+
+    // Filters
+    this.subscription.add(
+      this.store.pipe(select(filterDataSelector)).subscribe((filtersData) => {
+        console.log('filterDataSelector', filtersData);
+        this.filterData = filtersData;
+        // List Users
+        this.listAllUsers();
+      })
+    );
 
     // User Errors
     this.subscription.add(
@@ -211,8 +219,6 @@ export class CommunityPage implements OnInit {
 
       this.store.dispatch(setFiltersAction({ payload: this.filterData }));
     }
-
-    console.log('community.page: ', this.filterData);
   }
 
   //

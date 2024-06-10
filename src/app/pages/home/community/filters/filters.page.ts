@@ -98,7 +98,7 @@ export class FiltersPage implements OnInit, OnDestroy {
         maxAge: Number(maxAge),
       };
     }
-    console.log(`filters.page.ts:`, this.filterData);
+    // console.log(`filters.page.ts:`, this.filterData);
   }
   onSubmit() {
     this.setLocalStorage(this.filterData);
