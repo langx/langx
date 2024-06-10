@@ -115,12 +115,16 @@ export class UserService {
     queries.push(...this.createExclusionQueries(currentUser));
 
     // Query for Perfect Match
-    queries.push(
-      Query.contains('motherLanguages', currentUser?.studyLanguages)
-    );
-    queries.push(
-      Query.contains('studyLanguages', currentUser?.motherLanguages)
-    );
+    if (currentUser?.studyLanguages?.length) {
+      queries.push(
+        Query.contains('motherLanguages', currentUser?.studyLanguages)
+      );
+    }
+    if (currentUser?.motherLanguages?.length) {
+      queries.push(
+        Query.contains('studyLanguages', currentUser?.motherLanguages)
+      );
+    }
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
