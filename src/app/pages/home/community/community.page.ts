@@ -82,8 +82,9 @@ export class CommunityPage implements OnInit {
     // Filters
     this.subscription.add(
       this.store.pipe(select(filterDataSelector)).subscribe((filtersData) => {
-        console.log('filterDataSelector', filtersData);
+        // console.log('filterDataSelector', filtersData);
         this.filterData = filtersData;
+
         // List Users
         this.listAllUsers();
       })
