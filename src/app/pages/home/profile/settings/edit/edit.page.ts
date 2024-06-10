@@ -390,7 +390,6 @@ export class EditPage implements OnInit {
     this.store.dispatch(deleteLanguageAction({ request }));
   }
 
-  async editMotherLanguages() {}
   async addMotherLanguage() {
     const eventEmitter = new EventEmitter();
     eventEmitter.subscribe((selectedLanguage) => {
