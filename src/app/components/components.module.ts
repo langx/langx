@@ -13,6 +13,7 @@ import { VisitListComponent } from './visit-list/visit-list.component';
 import { StreakListComponent } from './streak-list/streak-list.component';
 import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
 import { CheckoutListComponent } from './checkout-list/checkout-list.component';
+import { DetailedCheckoutModalComponent } from './detailed-checkout-modal/detailed-checkout-modal.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { CheckoutListComponent } from './checkout-list/checkout-list.component';
     CheckoutListComponent,
     BlockedUserListComponent,
     TimestampComponent,
+    DetailedCheckoutModalComponent,
   ],
   imports: [CommonModule, IonicModule],
   exports: [
@@ -41,6 +43,7 @@ import { CheckoutListComponent } from './checkout-list/checkout-list.component';
     CheckoutListComponent,
     BlockedUserListComponent,
     TimestampComponent,
+    DetailedCheckoutModalComponent,
   ],
 })
 export class ComponentsModule {}
