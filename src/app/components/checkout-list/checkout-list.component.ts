@@ -33,6 +33,10 @@ export class CheckoutListComponent implements OnInit {
     const { data } = await modal.onWillDismiss();
   }
 
+  //
+  // Utils
+  //
+
   getPercentage(distribution: number): string {
     return (distribution * 100).toFixed(2) + '%';
   }
