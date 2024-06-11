@@ -17,19 +17,22 @@ export class CheckoutListComponent implements OnInit {
 
   ngOnInit() {}
 
-  async openDetailModal() {
+  async openDetailModal(item: Checkout) {
     const modal = await this.modalController.create({
       component: DetailedCheckoutModalComponent,
       componentProps: {
-        // You can pass data to the modal component here
+        item,
       },
+      breakpoints: [0, 0.5, 1],
+      initialBreakpoint: 0.5,
+      backdropBreakpoint: 0.5,
     });
 
     await modal.present();
 
     const { data } = await modal.onWillDismiss();
-    console.log('Modal data:', data);
   }
+
   getPercentage(distribution: number): string {
     return (distribution * 100).toFixed(2) + '%';
   }
