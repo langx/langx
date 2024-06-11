@@ -72,12 +72,12 @@ export default async ({ req, res, log, error }) => {
         if (req.body.badges) {
           log(req.body.badges);
           // Add other badges bonuses
-          if (req.body.badges.includes('fundamental')) badgesBonus *= 3;
-          if (req.body.badges.includes('sponsor')) badgesBonus *= 2;
-          if (req.body.badges.includes('early-adopter')) badgesBonus *= 1.5;
-          if (req.body.badges.includes('pioneer')) badgesBonus *= 1.2;
-          if (req.body.badges.includes('teacher')) badgesBonus *= 1.1;
-          if (req.body.badges.includes('creator')) badgesBonus *= 1.1;
+          if (req.body.badges.includes('fundamental')) badgesBonus += 2;
+          if (req.body.badges.includes('sponsor')) badgesBonus += 1;
+          if (req.body.badges.includes('early-adopter')) badgesBonus += 0.5;
+          if (req.body.badges.includes('pioneer')) badgesBonus += 0.2;
+          if (req.body.badges.includes('teacher')) badgesBonus += 0.1;
+          if (req.body.badges.includes('creator')) badgesBonus += 0.1;
 
           // Limit the maximum bonus to 10
           badgesBonus = Math.min(10, badgesBonus);
