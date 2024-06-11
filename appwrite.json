@@ -89,7 +89,7 @@
       "execute": [],
       "events": [],
       "schedule": "0 0 * * *",
-      "timeout": 15,
+      "timeout": 59,
       "enabled": true,
       "logging": true,
       "entrypoint": "src/main.js",

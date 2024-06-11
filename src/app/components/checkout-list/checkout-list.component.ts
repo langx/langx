@@ -15,6 +15,10 @@ export class CheckoutListComponent implements OnInit {
 
   ngOnInit() {}
 
+  //
+  // Utils
+  //
+
   getPercentage(distribution: number): string {
     return (distribution * 100).toFixed(2) + '%';
   }

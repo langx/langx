@@ -122,6 +122,7 @@ async function processDocuments(
           streak: doc.streak,
           badges: doc.badges,
           onlineMin: doc.onlineMin,
+          totalAmount: TEST_DAILY_TOKEN,
           date: new Date().toISOString(),
         },
         [Permission.read(Role.user(doc.$id))]
