@@ -12,4 +12,5 @@ export type Checkout = Models.Document & {
   badges?: number;
   onlineMin?: number;
   date?: Date;
+  totalAmount?: number;
 };
