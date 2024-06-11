@@ -19,7 +19,6 @@ async function processDocuments(
       Query.greaterThan('text', 0),
       Query.greaterThan('image', 0),
       Query.greaterThan('audio', 0),
-      Query.greaterThan('onlineMin', 1),
     ]),
     Query.orderDesc('streak'),
     Query.offset(offset),
