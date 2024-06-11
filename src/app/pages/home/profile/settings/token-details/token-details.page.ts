@@ -6,8 +6,11 @@ import { Observable, Subscription, take } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
+import { Wallet } from 'src/app/models/Wallet';
 import { Checkout } from 'src/app/models/Checkout';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+import { walletSelector } from 'src/app/store/selectors/wallet.selector';
 import {
   errorSelector,
   isLoadingSelector,
@@ -37,6 +40,7 @@ export class TokenDetailsPage implements OnInit {
   isLoading$: Observable<boolean> = null;
   checkouts$: Observable<Checkout[] | null> = null;
   total$: Observable<number | null> = null;
+  wallet$: Observable<Wallet> = null;
 
   constructor(private store: Store, private toastController: ToastController) {}
 
@@ -72,6 +76,7 @@ export class TokenDetailsPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.checkouts$ = this.store.pipe(select(checkoutsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+    this.wallet$ = this.store.pipe(select(walletSelector));
   }
 
   listCheckouts() {

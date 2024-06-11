@@ -39,7 +39,7 @@
 
   <ion-card *ngIf="(checkouts$ | async)?.length > 0">
     <ion-card-header>
-      <ion-card-subtitle>Your Tokens 🪙</ion-card-subtitle>
+      <ion-card-subtitle>LangX Tokens 🪙</ion-card-subtitle>
       <ion-card-title>Web3 Wallet 💰</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -50,7 +50,7 @@
         </ion-row>
         <ion-row>
           <ion-col>Testnet</ion-col>
-          <ion-col>12312</ion-col>
+          <ion-col>{{(wallet$ | async)?.balance}}</ion-col>
         </ion-row>
         <ion-row>
           <ion-col>Mainnet</ion-col>
