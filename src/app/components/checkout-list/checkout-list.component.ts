@@ -15,6 +15,10 @@ export class CheckoutListComponent implements OnInit {
 
   ngOnInit() {}
 
+  openDetailModal() {
+    console.log('Open Detail Modal');
+  }
+
   getPercentage(distribution: number): string {
     return (distribution * 100).toFixed(2) + '%';
   }
