@@ -19,8 +19,8 @@
 <ion-modal
   #modal
   [trigger]="item.$id"
-  [initialBreakpoint]="0.5"
-  [breakpoints]="[0, 0.5, 1]"
+  [initialBreakpoint]="0.8"
+  [breakpoints]="[0, 0.8, 1]"
 >
   <ng-template>
     <ion-header>
@@ -35,46 +35,51 @@
     <ion-content>
       <ion-list>
         <ion-item>
-          <ion-label> <strong>Amount:</strong> {{ item.amount }} </ion-label>
+          <ion-label> <strong>Amount:</strong> {{ item?.amount }} </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Distribution:</strong> {{ item.distribution }}
+            <strong>Distribution:</strong> {{ item?.distribution }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Base Amount:</strong> {{ item.baseAmount }}
+            <strong>Base Amount:</strong> {{ item?.baseAmount }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Text Message:</strong> {{ item.text }}
+            <strong>Text Message:</strong> {{ item?.text }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Image Message:</strong> {{ item.image }}
+            <strong>Image Message:</strong> {{ item?.image }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Audio Message:</strong> {{ item.audio }}
+            <strong>Audio Message:</strong> {{ item?.audio }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Day Streak:</strong> {{ item.streak }}
+            <strong>Day Streak:</strong> {{ item?.streak }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Badges-Bonus:</strong> {{ item.badges }}
+            <strong>Badges-Bonus:</strong> {{ item?.badges }}
           </ion-label>
         </ion-item>
         <ion-item>
           <ion-label>
-            <strong>Online Minutes:</strong> {{ item.onlineMin }}
+            <strong>Online Minutes:</strong> {{ item?.onlineMin }}
+          </ion-label>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <strong>Total Daily Amount</strong> {{ item?.totalAmount }}
           </ion-label>
         </ion-item>
       </ion-list>
