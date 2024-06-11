@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-detailed-checkout-modal',
@@ -6,7 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./detailed-checkout-modal.component.scss'],
 })
 export class DetailedCheckoutModalComponent implements OnInit {
-  constructor() {}
+  @Input() data: any;
 
   ngOnInit() {}
+
+  constructor(private modalController: ModalController) {}
+
+  closeModal() {
+    this.modalController.dismiss({
+      dismissed: true,
+    });
+  }
 }
