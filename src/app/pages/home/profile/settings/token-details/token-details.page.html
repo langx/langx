@@ -39,6 +39,29 @@
 
   <ion-card *ngIf="(checkouts$ | async)?.length > 0">
     <ion-card-header>
+      <ion-card-subtitle>Your Tokens 🪙</ion-card-subtitle>
+      <ion-card-title>Web3 Wallet 💰</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row class="ion-text-bold">
+          <ion-col>Network</ion-col>
+          <ion-col>Amount</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Testnet</ion-col>
+          <ion-col>12312</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>Mainnet</ion-col>
+          <ion-col>0</ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="(checkouts$ | async)?.length > 0">
+    <ion-card-header>
       <ion-card-subtitle>Consistency is Key 🔑</ion-card-subtitle>
       <ion-card-title>Daily Checkouts 📆</ion-card-title>
     </ion-card-header>
