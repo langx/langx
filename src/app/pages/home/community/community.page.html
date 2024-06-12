@@ -1,8 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title *ngIf="!searchActive">Community</ion-title>
+    <ion-title [@toggleElement]="titleAnimationState">Community</ion-title>
     <ion-searchbar
-      *ngIf="searchActive"
+      [@toggleElement]="searchbarAnimationState"
       (ionInput)="filterItems($event)"
     ></ion-searchbar>
     <ion-buttons slot="end">
