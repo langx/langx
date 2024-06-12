@@ -59,6 +59,8 @@ export class CommunityPage implements OnInit {
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
 
+  searchActive: boolean = false;
+
   constructor(
     private store: Store,
     private router: Router,
@@ -179,6 +181,20 @@ export class CommunityPage implements OnInit {
     this.listUsersByLastSeen();
     this.listUsersByCreatedAt();
     this.listVisits();
+  }
+
+  //
+  // Search
+  //
+
+  toggleSearch() {
+    this.searchActive = !this.searchActive;
+  }
+
+  filterItems(event: any) {
+    const searchTerm = event.target.value;
+    // Add your filter logic here
+    console.log(searchTerm);
   }
 
   //

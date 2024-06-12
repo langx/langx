@@ -1,7 +1,21 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title>Community</ion-title>
+    <ion-title *ngIf="!searchActive">Community</ion-title>
+    <ion-searchbar
+      *ngIf="searchActive"
+      (ionInput)="filterItems($event)"
+    ></ion-searchbar>
     <ion-buttons slot="end">
+      <ion-button
+        (click)="toggleSearch()"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        class="icon-wrapper"
+      >
+        <ion-icon name="search-outline"></ion-icon>
+      </ion-button>
       <ion-button
         (click)="getFiltersPage()"
         expand="block"
