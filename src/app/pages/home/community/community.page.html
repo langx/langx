@@ -1,10 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar color="primary">
-    <ion-title [@toggleElement]="titleAnimationState">Community</ion-title>
-    <ion-searchbar
-      [@toggleElement]="searchbarAnimationState"
-      (ionInput)="filterItems($event)"
-    ></ion-searchbar>
+    <ion-title>Community</ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="toggleSearch()"
@@ -31,6 +27,12 @@
         ></div>
       </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar
+    color="primary"
+    [ngClass]="{'search-toolbar': true, 'shown': searchActive, 'hidden': !searchActive}"
+  >
+    <ion-searchbar (ionInput)="filterItems($event)"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 

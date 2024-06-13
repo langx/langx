@@ -27,3 +27,30 @@ ion-thumbnail {
 .visitor-thumbnail {
   --size: 56px;
 }
+
+// Search Bar
+
+ion-header {
+  position: relative;
+}
+
+.search-toolbar {
+  position: absolute;
+  top: 56px; /* Adjust based on the height of the first toolbar */
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+
+.search-toolbar.shown {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.search-toolbar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
