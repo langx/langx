@@ -220,6 +220,16 @@ export class CommunityPage implements OnInit {
         ...this.filterData,
         search: searchTerm,
       };
+
+      // Update Segment
+      let segmentEvent = {
+        detail: {
+          value: 'usersByCreatedAt',
+        },
+      };
+      this.segmentChanged(segmentEvent);
+
+      // List Users
       this.listAllUsers();
     }
   }
