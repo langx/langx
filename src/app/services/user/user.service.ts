@@ -460,37 +460,44 @@ export class UserService {
   private createFilterQueries(filterData: FilterDataInterface): any[] {
     const queries: any[] = [];
 
-    // Query for users with the selected gender filter
-    if (filterData?.gender) {
-      queries.push(Query.equal('gender', filterData?.gender));
-    }
+    // Query for users with the selected search filter
+    if (filterData?.search) {
+      queries.push(Query.search('name', filterData?.search));
+    } else {
+      // Query for users with the selected gender filter
+      if (filterData?.gender) {
+        queries.push(Query.equal('gender', filterData?.gender));
+      }
 
-    // Query for users with the selected country filter
-    if (filterData?.country) {
-      queries.push(Query.equal('countryCode', filterData?.country));
-    }
+      // Query for users with the selected country filter
+      if (filterData?.country) {
+        queries.push(Query.equal('countryCode', filterData?.country));
+      }
 
-    // Query for users with birthdates between the selected min and max ages
-    if (filterData?.minAge && filterData?.maxAge) {
-      const minDate = new Date();
-      minDate.setFullYear(minDate.getFullYear() - filterData?.maxAge);
-      const maxDate = new Date();
-      maxDate.setFullYear(maxDate.getFullYear() - filterData?.minAge);
+      // Query for users with birthdates between the selected min and max ages
+      if (filterData?.minAge && filterData?.maxAge) {
+        const minDate = new Date();
+        minDate.setFullYear(minDate.getFullYear() - filterData?.maxAge);
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - filterData?.minAge);
 
-      queries.push(Query.greaterThanEqual('birthdate', minDate.toISOString()));
-      queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
-    }
+        queries.push(
+          Query.greaterThanEqual('birthdate', minDate.toISOString())
+        );
+        queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
+      }
 
-    // Query for users with the selected languages filter
-    if (filterData?.motherLanguages.length > 0) {
-      const keywords = filterData.motherLanguages;
-      // OR Query for users with any of the selected languages
-      queries.push(Query.contains('motherLanguages', keywords));
-    }
-    if (filterData?.studyLanguages.length > 0) {
-      const keywords = filterData.studyLanguages;
-      // OR Query for users with any of the selected languages
-      queries.push(Query.contains('studyLanguages', keywords));
+      // Query for users with the selected languages filter
+      if (filterData?.motherLanguages.length > 0) {
+        const keywords = filterData.motherLanguages;
+        // OR Query for users with any of the selected languages
+        queries.push(Query.contains('motherLanguages', keywords));
+      }
+      if (filterData?.studyLanguages.length > 0) {
+        const keywords = filterData.studyLanguages;
+        // OR Query for users with any of the selected languages
+        queries.push(Query.contains('studyLanguages', keywords));
+      }
     }
 
     return queries;
