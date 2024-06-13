@@ -3,13 +3,6 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
 
 // Interface Imports
 import { User } from 'src/app/models/User';
@@ -47,26 +40,6 @@ import {
   selector: 'app-community',
   templateUrl: './community.page.html',
   styleUrls: ['./community.page.scss'],
-  animations: [
-    trigger('toggleElement', [
-      state(
-        'shown',
-        style({
-          opacity: 1,
-          display: 'block',
-        })
-      ),
-      state(
-        'hidden',
-        style({
-          opacity: 0,
-          display: 'none',
-        })
-      ),
-      transition('shown => hidden', [animate('300ms ease-out')]),
-      transition('hidden => shown', [animate('300ms ease-in')]),
-    ]),
-  ],
 })
 export class CommunityPage implements OnInit {
   subscription: Subscription;
@@ -218,12 +191,8 @@ export class CommunityPage implements OnInit {
     this.searchActive = !this.searchActive;
   }
 
-  get titleAnimationState() {
-    return this.searchActive ? 'hidden' : 'shown';
-  }
-
-  get searchbarAnimationState() {
-    return this.searchActive ? 'shown' : 'hidden';
+  get searchbarState() {
+    return this.searchActive ? 'in' : 'out';
   }
 
   filterItems(event: any) {
