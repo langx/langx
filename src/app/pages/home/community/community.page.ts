@@ -207,7 +207,11 @@ export class CommunityPage implements OnInit {
   filterItems(event: any) {
     if (event.detail.value) {
       const searchTerm = event.detail.value;
-      console.log(searchTerm);
+      this.filterData = {
+        ...this.filterData,
+        search: searchTerm,
+      };
+      this.listAllUsers();
     }
   }
 
@@ -242,6 +246,19 @@ export class CommunityPage implements OnInit {
         country,
         minAge: Number(minAge),
         maxAge: Number(maxAge),
+      };
+
+      this.store.dispatch(setFiltersAction({ payload: this.filterData }));
+    } else {
+      // Set default values
+      this.filterData = {
+        motherLanguages: [],
+        studyLanguages: [],
+        gender: null,
+        onlyMyGender: false,
+        country: null,
+        minAge: null,
+        maxAge: null,
       };
 
       this.store.dispatch(setFiltersAction({ payload: this.filterData }));
