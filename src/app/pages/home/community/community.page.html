@@ -32,7 +32,10 @@
     color="primary"
     [ngClass]="{'search-toolbar': true, 'shown': searchActive, 'hidden': !searchActive}"
   >
-    <ion-searchbar (ionInput)="filterItems($event)"></ion-searchbar>
+    <ion-searchbar
+      (ionInput)="filterItems($event)"
+      animated="true"
+    ></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
