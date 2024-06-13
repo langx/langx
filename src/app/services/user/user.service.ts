@@ -462,7 +462,18 @@ export class UserService {
 
     // Query for users with the selected search filter
     if (filterData?.search) {
-      queries.push(Query.search('name', filterData?.search));
+      // Assuming you have filterData.search containing the search term
+      const searchQuery = filterData?.search;
+
+      // Create individual queries for each attribute
+      const nameSearchQuery = Query.search('name', searchQuery);
+      const aboutMeSearchQuery = Query.search('aboutMe', searchQuery);
+
+      // Combine the queries using the logical OR operator
+      const combinedQuery = Query.or([nameSearchQuery, aboutMeSearchQuery]);
+
+      // Push the combined query to the queries array
+      queries.push(combinedQuery);
     } else {
       // Query for users with the selected gender filter
       if (filterData?.gender) {
