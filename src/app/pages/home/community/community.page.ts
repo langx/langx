@@ -198,15 +198,16 @@ export class CommunityPage implements OnInit {
     }
   }
 
-  filterItems(event: any) {
-    const searchTerm = event.target.value;
-    console.log(searchTerm);
-    // Add your filter logic here
-  }
-
   handleContentClick() {
     if (this.searchActive) {
       this.searchActive = false;
+    }
+  }
+
+  filterItems(event: any) {
+    if (event.detail.value) {
+      const searchTerm = event.detail.value;
+      console.log(searchTerm);
     }
   }
 
