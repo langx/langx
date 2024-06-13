@@ -6,4 +6,5 @@ export interface FilterDataInterface {
   country: string;
   minAge: number;
   maxAge: number;
+  search?: string;
 }
