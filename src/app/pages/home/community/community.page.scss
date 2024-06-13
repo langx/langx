@@ -54,3 +54,13 @@ ion-header {
   transform: translateY(-100%);
   opacity: 0;
 }
+
+.content-pulled {
+  transform: translateY(56px);
+  transition: transform 300ms ease-in-out;
+}
+
+.content-original {
+  transform: translateY(0);
+  transition: transform 300ms ease-in-out;
+}

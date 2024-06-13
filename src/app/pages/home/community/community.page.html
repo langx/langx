@@ -46,7 +46,11 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" (click)="handleContentClick()">
+<ion-content
+  [fullscreen]="true"
+  (click)="handleContentClick()"
+  [ngClass]="{'content-pulled': searchActive, 'content-original': !searchActive}"
+>
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
