@@ -200,6 +200,12 @@ export class CommunityPage implements OnInit {
     // Add your filter logic here
   }
 
+  handleContentClick() {
+    if (this.searchActive) {
+      this.searchActive = false;
+    }
+  }
+
   //
   // Check Filter
   //
