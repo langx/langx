@@ -59,6 +59,10 @@ LangX is an application built with Angular and Ionic that helps users exchange d
 
 ## Tech Stack
 
+- **NEW APP: [Flutter Repo](https://github.com/langx/langx-flutter)**
+
+---
+
 - Language: [TypeScript](https://www.typescriptlang.org/)
 - Landing Page: [Svelte](https://svelte.dev/)
 - Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
