@@ -200,6 +200,7 @@ export class CommunityPage implements OnInit {
 
   filterItems(event: any) {
     const searchTerm = event.target.value;
+    console.log(searchTerm);
     // Add your filter logic here
   }
 
