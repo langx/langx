@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { IonSearchbar, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
@@ -42,6 +42,8 @@ import {
   styleUrls: ['./community.page.scss'],
 })
 export class CommunityPage implements OnInit {
+  @ViewChild('searchbar', { static: false }) searchbar: IonSearchbar;
+
   subscription: Subscription;
 
   segment: string = 'usersByTargetLanguage';
@@ -187,12 +189,13 @@ export class CommunityPage implements OnInit {
   // Search
   //
 
-  toggleSearch() {
+  async toggleSearch(event: Event) {
+    event.stopPropagation();
     this.searchActive = !this.searchActive;
-  }
 
-  get searchbarState() {
-    return this.searchActive ? 'in' : 'out';
+    if (this.searchActive) {
+      await this.searchbar.setFocus();
+    }
   }
 
   filterItems(event: any) {

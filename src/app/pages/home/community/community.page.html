@@ -3,7 +3,7 @@
     <ion-title>Community</ion-title>
     <ion-buttons slot="end">
       <ion-button
-        (click)="toggleSearch()"
+        (click)="toggleSearch($event)"
         expand="block"
         size="large"
         slot="icon-only"
@@ -33,8 +33,10 @@
     [ngClass]="{'search-toolbar': true, 'shown': searchActive, 'hidden': !searchActive}"
   >
     <ion-searchbar
+      #searchbar
       (ionInput)="filterItems($event)"
-      animated="true"
+      animated="false"
+      clear-icon="trash-bin"
       color="primary"
       enterkeyhint="search"
       inputmode="search"
