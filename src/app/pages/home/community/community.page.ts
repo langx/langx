@@ -234,6 +234,15 @@ export class CommunityPage implements OnInit {
     }
   }
 
+  clearSearch() {
+    this.filterData = {
+      ...this.filterData,
+      search: null,
+    };
+    // List Users
+    this.listAllUsers();
+  }
+
   //
   // Check Filter
   //

@@ -39,6 +39,7 @@
     <ion-searchbar
       #searchbar
       (ionInput)="filterItems($event)"
+      (ionClear)="clearSearch()"
       [debounce]="1000"
       animated="false"
       clear-icon="trash-bin"
