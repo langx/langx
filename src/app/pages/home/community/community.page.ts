@@ -207,6 +207,15 @@ export class CommunityPage implements OnInit {
   filterItems(event: any) {
     if (event.detail.value) {
       const searchTerm = event.detail.value;
+      // console.log(searchTerm);
+      if (searchTerm.length < 3) {
+        this.filterData = {
+          ...this.filterData,
+          search: null,
+        };
+        this.listAllUsers();
+        return;
+      }
       this.filterData = {
         ...this.filterData,
         search: searchTerm,

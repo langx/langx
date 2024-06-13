@@ -11,6 +11,10 @@
         class="icon-wrapper"
       >
         <ion-icon name="search-outline"></ion-icon>
+        <div
+          class="red-dot"
+          *ngIf="filterData?.search && filterData?.search.length > 2"
+        ></div>
       </ion-button>
       <ion-button
         (click)="getFiltersPage()"
