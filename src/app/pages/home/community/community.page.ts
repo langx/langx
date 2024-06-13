@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { IonSearchbar, ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 
@@ -42,6 +42,8 @@ import {
   styleUrls: ['./community.page.scss'],
 })
 export class CommunityPage implements OnInit {
+  @ViewChild('searchbar', { static: false }) searchbar: IonSearchbar;
+
   subscription: Subscription;
 
   segment: string = 'usersByTargetLanguage';
@@ -58,6 +60,8 @@ export class CommunityPage implements OnInit {
   usersByCompletedProfile$: Observable<User[] | null> = null;
   usersByLastSeen$: Observable<User[] | null> = null;
   usersByCreatedAt$: Observable<User[] | null> = null;
+
+  searchActive: boolean = false;
 
   constructor(
     private store: Store,
@@ -182,6 +186,64 @@ export class CommunityPage implements OnInit {
   }
 
   //
+  // Search
+  //
+
+  async toggleSearch(event: Event) {
+    event.stopPropagation();
+    this.searchActive = !this.searchActive;
+
+    if (this.searchActive) {
+      await this.searchbar.setFocus();
+    }
+  }
+
+  handleContentClick() {
+    if (this.searchActive) {
+      this.searchActive = false;
+    }
+  }
+
+  filterItems(event: any) {
+    if (event.detail.value) {
+      const searchTerm = event.detail.value;
+      // console.log(searchTerm);
+      if (searchTerm.length < 3) {
+        this.filterData = {
+          ...this.filterData,
+          search: null,
+        };
+        this.listAllUsers();
+        return;
+      }
+      this.filterData = {
+        ...this.filterData,
+        search: searchTerm,
+      };
+
+      // Update Segment
+      let segmentEvent = {
+        detail: {
+          value: 'usersByCreatedAt',
+        },
+      };
+      this.segmentChanged(segmentEvent);
+
+      // List Users
+      this.listAllUsers();
+    }
+  }
+
+  clearSearch() {
+    this.filterData = {
+      ...this.filterData,
+      search: null,
+    };
+    // List Users
+    this.listAllUsers();
+  }
+
+  //
   // Check Filter
   //
 
@@ -212,6 +274,19 @@ export class CommunityPage implements OnInit {
         country,
         minAge: Number(minAge),
         maxAge: Number(maxAge),
+      };
+
+      this.store.dispatch(setFiltersAction({ payload: this.filterData }));
+    } else {
+      // Set default values
+      this.filterData = {
+        motherLanguages: [],
+        studyLanguages: [],
+        gender: null,
+        onlyMyGender: false,
+        country: null,
+        minAge: null,
+        maxAge: null,
       };
 
       this.store.dispatch(setFiltersAction({ payload: this.filterData }));

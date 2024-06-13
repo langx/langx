@@ -178,7 +178,7 @@ export class FiltersPage implements OnInit, OnDestroy {
   // COUNTRY Methods
   //
 
-  countryChange(event) {
+  countryChange(event: any) {
     if (event.detail.value) {
       this.filterData.country = event.detail.value;
     }

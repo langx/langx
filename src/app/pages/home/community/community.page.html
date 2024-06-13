@@ -3,6 +3,20 @@
     <ion-title>Community</ion-title>
     <ion-buttons slot="end">
       <ion-button
+        (click)="toggleSearch($event)"
+        expand="block"
+        size="large"
+        slot="icon-only"
+        shape="round"
+        class="icon-wrapper"
+      >
+        <ion-icon name="search-outline"></ion-icon>
+        <div
+          class="red-dot"
+          *ngIf="filterData?.search && filterData?.search.length > 2"
+        ></div>
+      </ion-button>
+      <ion-button
         (click)="getFiltersPage()"
         expand="block"
         size="large"
@@ -18,9 +32,30 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+  <ion-toolbar
+    color="primary"
+    [ngClass]="{'search-toolbar': true, 'shown': searchActive, 'hidden': !searchActive}"
+  >
+    <ion-searchbar
+      #searchbar
+      (ionInput)="filterItems($event)"
+      (ionClear)="clearSearch()"
+      [debounce]="1000"
+      animated="false"
+      clear-icon="trash-bin"
+      color="primary"
+      enterkeyhint="search"
+      inputmode="search"
+      input="search"
+    ></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content
+  [fullscreen]="true"
+  (click)="handleContentClick()"
+  [ngClass]="{'content-pulled': searchActive, 'content-original': !searchActive}"
+>
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -29,7 +64,7 @@
     <ion-card-content>
       <ion-segment
         [scrollable]="true"
-        value="usersByTargetLanguage"
+        [value]="segment"
         color="primary"
         (ionChange)="segmentChanged($event)"
       >

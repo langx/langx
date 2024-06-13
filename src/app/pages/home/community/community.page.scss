@@ -27,3 +27,40 @@ ion-thumbnail {
 .visitor-thumbnail {
   --size: 56px;
 }
+
+// Search Bar
+
+ion-header {
+  position: relative;
+}
+
+.search-toolbar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 300ms ease-in-out, opacity 300ms ease-in-out;
+}
+
+.search-toolbar.shown {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.search-toolbar.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.content-pulled {
+  transform: translateY(56px);
+  transition: transform 300ms ease-in-out;
+}
+
+.content-original {
+  transform: translateY(0);
+  transition: transform 300ms ease-in-out;
+}
