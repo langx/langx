@@ -742,7 +742,6 @@ const authReducer = createReducer(
     const newIdentities = state.identities?.filter(
       (identity) => identity.$id !== action.payload.$id
     );
-
     return {
       ...state,
       isLoading: false,
