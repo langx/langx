@@ -59,8 +59,6 @@ export class AccountPage implements OnInit {
   ];
   providerStatuses: ProviderStatus[] = [];
 
-  notConnectedProviders: string[] = [];
-
   appVersion: string;
 
   subscription: Subscription;
@@ -222,7 +220,6 @@ export class AccountPage implements OnInit {
   }
 
   connectIdentity(provider: string) {
-    console.log('connectIdentity: ', provider);
     switch (provider) {
       case OAuthProvider.Discord:
         this.OAuth2Service.signInWithDiscord();
