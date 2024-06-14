@@ -16,6 +16,7 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import {
   clearErrorsAction,
   deleteAccountAction,
+  deleteIdentityAction,
   listIdentitiesAction,
   listSessionsAction,
   verifyEmailAction,
@@ -175,6 +176,11 @@ export class AccountPage implements OnInit {
         clearInterval(intervalId);
       }
     }, 1000);
+  }
+
+  deleteIdentity(identity: Models.Identity) {
+    console.log('deleteIdentity', identity);
+    this.store.dispatch(deleteIdentityAction({ request: identity }));
   }
 
   updatePasswordPage() {

@@ -53,6 +53,9 @@ import {
   clearErrorsAction,
   isLoggedInSuccessLanguageSelectionAction,
   selectLanguagesAction,
+  deleteIdentityAction,
+  deleteIdentitySuccessAction,
+  deleteIdentityFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -721,6 +724,32 @@ const authReducer = createReducer(
   ),
   on(
     listIdentitiesFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      accountDetailError: action.error,
+    })
+  ),
+  // Delete Identity Actions
+  on(
+    deleteIdentityAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(deleteIdentitySuccessAction, (state, action): AuthStateInterface => {
+    const newIdentities = state.identities?.filter(
+      (identity) => identity.$id !== action.payload.$id
+    );
+    return {
+      ...state,
+      isLoading: false,
+      identities: newIdentities,
+    };
+  }),
+  on(
+    deleteIdentityFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isLoading: false,

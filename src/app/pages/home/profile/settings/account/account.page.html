@@ -80,9 +80,11 @@
             {{(item.provider.charAt(0) | uppercase) + item.provider.slice(1)}}
           </ion-label>
           <!-- TODO: #321 Delete Identity Functionality -->
-          <!-- <ion-item>
-            <ion-label><a href="#">Unlink</a></ion-label>
-          </ion-item> -->
+          <ion-item>
+            <ion-button (click)="deleteIdentity(item)" fill="outline">
+              Unlink
+            </ion-button>
+          </ion-item>
         </ion-item>
       </ion-list>
     </ion-card-content>

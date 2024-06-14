@@ -91,6 +91,10 @@ export class AuthService {
     return from(this.api.account.listIdentities());
   }
 
+  deleteIdentity(identity: Models.Identity): Observable<any> {
+    return from(this.api.account.deleteIdentity(identity.$id));
+  }
+
   listSessions(): Observable<Models.SessionList> {
     return from(this.api.account.listSessions());
   }
