@@ -23,7 +23,7 @@ export type User = Models.Document & {
   archivedRooms?: string[];
   privacy?: string[];
   contributors?: string[];
-  sponsor: boolean;
+  sponsor?: boolean;
   streaks?: Streak;
   profilePic?: string;
   otherPics?: string[];

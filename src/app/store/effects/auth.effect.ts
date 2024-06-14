@@ -40,6 +40,9 @@ import {
   deleteAccountAction,
   deleteAccountFailureAction,
   deleteAccountSuccessAction,
+  deleteIdentityAction,
+  deleteIdentityFailureAction,
+  deleteIdentitySuccessAction,
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
@@ -82,6 +85,7 @@ import {
   verifyEmailFailureAction,
   verifyEmailSuccessAction,
 } from 'src/app/store/actions/auth.action';
+import { Models } from 'appwrite';
 
 @Injectable()
 export class AuthEffect {
@@ -503,6 +507,25 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(listIdentitiesFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  deleteIdentity$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteIdentityAction),
+      switchMap(({ request }) => {
+        return this.authService.deleteIdentity(request).pipe(
+          map(() => {
+            return deleteIdentitySuccessAction({ payload: request });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(deleteIdentityFailureAction({ error }));
           })
         );
       })
