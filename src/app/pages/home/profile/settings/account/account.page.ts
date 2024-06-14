@@ -177,6 +177,10 @@ export class AccountPage implements OnInit {
     }, 1000);
   }
 
+  deleteIdentity(identity: Models.Identity) {
+    console.log('deleteIdentity', identity);
+  }
+
   updatePasswordPage() {
     this.router.navigateByUrl('/home/account/update-password');
   }
