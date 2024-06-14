@@ -217,7 +217,10 @@ export const listIdentitiesFailureAction = createAction(
 );
 
 // Delete Identity
-export const deleteIdentityAction = createAction(ActionTypes.DELETE_IDENTITY);
+export const deleteIdentityAction = createAction(
+  ActionTypes.DELETE_IDENTITY,
+  props<{ request: Models.Identity }>()
+);
 
 export const deleteIdentitySuccessAction = createAction(
   ActionTypes.DELETE_IDENTITY_SUCCESS,
