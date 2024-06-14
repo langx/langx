@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { Models } from 'appwrite';
 
 import { ActionTypes } from 'src/app/store/actions/types/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
@@ -212,6 +213,19 @@ export const listIdentitiesSuccessAction = createAction(
 
 export const listIdentitiesFailureAction = createAction(
   ActionTypes.LIST_IDENTITIES_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Delete Identity
+export const deleteIdentityAction = createAction(ActionTypes.DELETE_IDENTITY);
+
+export const deleteIdentitySuccessAction = createAction(
+  ActionTypes.DELETE_IDENTITY_SUCCESS,
+  props<{ payload: Models.Identity }>()
+);
+
+export const deleteIdentityFailureAction = createAction(
+  ActionTypes.DELETE_IDENTITY_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
