@@ -34,6 +34,12 @@ import {
   deleteAccountErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
+interface ProviderStatus {
+  provider: string;
+  connected: boolean;
+  id?: string;
+}
+
 @Component({
   selector: 'app-account',
   templateUrl: './account.page.html',
@@ -48,6 +54,8 @@ export class AccountPage implements OnInit {
     OAuthProvider.Facebook,
     OAuthProvider.Apple,
   ];
+  providerStatuses: ProviderStatus[] = [];
+
   notConnectedProviders: string[] = [];
 
   appVersion: string;
@@ -122,22 +130,19 @@ export class AccountPage implements OnInit {
       this.store
         .pipe(select(identitiesSelector))
         .subscribe((identities: Models.Identity[]) => {
-          this.identities = identities;
-          this.notConnectedProviders = this.allProviders;
-          if (this.identities) {
-            this.identities.forEach((identity) => {
-              this.notConnectedProviders = this.allProviders.filter(
-                (provider) => provider !== identity.provider
-              );
-            });
-          }
+          this.providerStatuses = this.allProviders.map((provider) => {
+            const identity = identities.find(
+              (identity) => identity.provider === provider
+            );
+            return {
+              provider,
+              connected: !!identity,
+              id: identity ? identity.$id : undefined,
+            };
+          });
 
           // Update UI
-          console.log(
-            identities.length,
-            this.notConnectedProviders,
-            this.allProviders
-          );
+          console.log(this.providerStatuses);
           this.cdr.detectChanges();
         })
     );
@@ -216,9 +221,9 @@ export class AccountPage implements OnInit {
     console.log('connectIdentity: ', provider);
   }
 
-  deleteIdentity(identity: Models.Identity) {
-    console.log('deleteIdentity', identity);
-    this.store.dispatch(deleteIdentityAction({ request: identity }));
+  deleteIdentity(identityId: string) {
+    console.log(identityId);
+    // this.store.dispatch(deleteIdentityAction({ request: identity }));
   }
 
   updatePasswordPage() {

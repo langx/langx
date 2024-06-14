@@ -64,21 +64,24 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
-        <ion-item *ngFor="let provider of notConnectedProviders">
-          <ion-icon name="logo-{{provider}}"></ion-icon>
-          <ion-label>
-            {{(provider.charAt(0) | uppercase) + provider.slice(1)}}
-          </ion-label>
-          <ion-button slot="end" (click)="connectIdentity(provider)">
-            Connect
-          </ion-button>
-        </ion-item>
-        <ion-item *ngFor="let item of identities">
-          <ion-icon name="logo-{{item?.provider}}"></ion-icon>
+        <ion-item *ngFor="let item of providerStatuses">
+          <ion-icon name="logo-{{item.provider}}"></ion-icon>
           <ion-label>
             {{(item.provider.charAt(0) | uppercase) + item.provider.slice(1)}}
           </ion-label>
-          <ion-button slot="end" (click)="deleteIdentity(item)" fill="outline">
+          <ion-button
+            *ngIf="!item.connected"
+            slot="end"
+            (click)="connectIdentity(item.provider)"
+          >
+            Connect
+          </ion-button>
+          <ion-button
+            *ngIf="item.connected"
+            slot="end"
+            (click)="deleteIdentity(item.id)"
+            fill="outline"
+          >
             Unlink
           </ion-button>
         </ion-item>
