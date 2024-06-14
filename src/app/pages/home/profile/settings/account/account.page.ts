@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Models } from 'appwrite';
+import { Models, OAuthProvider } from 'appwrite';
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
@@ -42,13 +42,20 @@ import {
 export class AccountPage implements OnInit {
   @ViewChild('deleteUserModal') deleteUserModal: IonModal;
 
+  allProviders: string[] = [
+    OAuthProvider.Discord,
+    OAuthProvider.Google,
+    OAuthProvider.Facebook,
+    OAuthProvider.Apple,
+  ];
+  notConnectedProviders: string[] = [];
+
   appVersion: string;
 
   subscription: Subscription;
 
   account$: Observable<Account | null> = null;
   currentUser$: Observable<User> = null;
-  identities$: Observable<Models.Identity[]> = null;
   sessions$: Observable<Models.Session[]> = null;
   isLoading$: Observable<boolean> = null;
   verifyEmailSuccess$: Observable<boolean> = null;
@@ -57,11 +64,14 @@ export class AccountPage implements OnInit {
   verifyButtonDisabled = false; // to control the button's state
   verifyButtonText = 'Verify'; // to hold the button's text
 
+  identities: Models.Identity[] = [];
+
   constructor(
     private store: Store,
     private router: Router,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -107,6 +117,31 @@ export class AccountPage implements OnInit {
         })
     );
 
+    // Identifiers
+    this.subscription.add(
+      this.store
+        .pipe(select(identitiesSelector))
+        .subscribe((identities: Models.Identity[]) => {
+          this.identities = identities;
+          this.notConnectedProviders = this.allProviders;
+          if (this.identities) {
+            this.identities.forEach((identity) => {
+              this.notConnectedProviders = this.allProviders.filter(
+                (provider) => provider !== identity.provider
+              );
+            });
+          }
+
+          // Update UI
+          console.log(
+            identities.length,
+            this.notConnectedProviders,
+            this.allProviders
+          );
+          this.cdr.detectChanges();
+        })
+    );
+
     // Present Toast if verifyEmailSuccess
     this.subscription.add(
       this.store
@@ -145,7 +180,6 @@ export class AccountPage implements OnInit {
     // Get Selectors
     this.account$ = this.store.pipe(select(accountSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector)); // TODO: Unused yet
 
@@ -176,6 +210,10 @@ export class AccountPage implements OnInit {
         clearInterval(intervalId);
       }
     }, 1000);
+  }
+
+  connectIdentity(provider: string) {
+    console.log('connectIdentity: ', provider);
   }
 
   deleteIdentity(identity: Models.Identity) {

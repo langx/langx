@@ -58,13 +58,22 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="(identities$ | async)?.length > 0">
+  <ion-card>
     <ion-card-header>
       <ion-card-title>Linked Accounts</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
-        <ion-item *ngFor="let item of identities$ | async">
+        <ion-item *ngFor="let provider of notConnectedProviders">
+          <ion-icon name="logo-{{provider}}"></ion-icon>
+          <ion-label>
+            {{(provider.charAt(0) | uppercase) + provider.slice(1)}}
+          </ion-label>
+          <ion-button slot="end" (click)="connectIdentity(provider)">
+            Connect
+          </ion-button>
+        </ion-item>
+        <ion-item *ngFor="let item of identities">
           <ion-icon name="logo-{{item?.provider}}"></ion-icon>
           <ion-label>
             {{(item.provider.charAt(0) | uppercase) + item.provider.slice(1)}}
