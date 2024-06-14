@@ -213,25 +213,28 @@ export class CommunityPage implements OnInit {
           ...this.filterData,
           search: null,
         };
-        this.listAllUsers();
-        return;
+      } else {
+        this.filterData = {
+          ...this.filterData,
+          search: searchTerm,
+        };
+        // Update Segment
+        let segmentEvent = {
+          detail: {
+            value: 'usersByCreatedAt',
+          },
+        };
+        this.segmentChanged(segmentEvent);
       }
+    } else {
       this.filterData = {
         ...this.filterData,
-        search: searchTerm,
+        search: null,
       };
-
-      // Update Segment
-      let segmentEvent = {
-        detail: {
-          value: 'usersByCreatedAt',
-        },
-      };
-      this.segmentChanged(segmentEvent);
-
-      // List Users
-      this.listAllUsers();
     }
+
+    // List Users
+    this.listAllUsers();
   }
 
   clearSearch() {
