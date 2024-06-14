@@ -13,6 +13,9 @@ import { environment } from 'src/environments/environment';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+import { OAuth2Service } from 'src/app/services/auth/oauth2.service';
+
 import {
   clearErrorsAction,
   deleteAccountAction,
@@ -77,6 +80,7 @@ export class AccountPage implements OnInit {
   constructor(
     private store: Store,
     private router: Router,
+    private OAuth2Service: OAuth2Service,
     private toastController: ToastController,
     private alertController: AlertController,
     private cdr: ChangeDetectorRef
@@ -219,6 +223,22 @@ export class AccountPage implements OnInit {
 
   connectIdentity(provider: string) {
     console.log('connectIdentity: ', provider);
+    switch (provider) {
+      case OAuthProvider.Discord:
+        this.OAuth2Service.signInWithDiscord();
+        break;
+      case OAuthProvider.Google:
+        this.OAuth2Service.signInWithGoogle();
+        break;
+      case OAuthProvider.Facebook:
+        this.OAuth2Service.signInWithFacebook();
+        break;
+      case OAuthProvider.Apple:
+        this.OAuth2Service.signInWithApple();
+        break;
+      default:
+        console.error('Unknown provider');
+    }
   }
 
   deleteIdentity($id: string) {
