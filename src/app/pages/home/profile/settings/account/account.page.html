@@ -10,27 +10,35 @@
 <ion-content [fullscreen]="true">
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Email</ion-card-title>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>Email</ion-col>
+          <ion-col>
+            <ion-card-subtitle>
+              <ion-button
+                *ngIf="!(account$ | async)?.emailVerification"
+                [disabled]="verifyButtonDisabled"
+                (click)="verifyEmail()"
+                size="small"
+              >
+                {{ verifyButtonText }}
+              </ion-button>
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list lines="none">
         <ion-item>
           <ion-icon name="mail-outline"></ion-icon>
           <ion-label>{{ (account$ | async)?.email }}</ion-label>
-          <ion-item slot="end" *ngIf="(account$ | async)?.emailVerification">
-            <ion-icon
-              name="shield-checkmark-outline"
-              color="success"
-            ></ion-icon>
-          </ion-item>
-          <ion-item *ngIf="!(account$ | async)?.emailVerification">
-            <ion-button
-              [disabled]="verifyButtonDisabled"
-              (click)="verifyEmail()"
-            >
-              {{ verifyButtonText }}
-            </ion-button>
-          </ion-item>
+          <ion-icon
+            *ngIf="(account$ | async)?.emailVerification"
+            name="shield-checkmark-outline"
+            color="success"
+            slot="end"
+          ></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
@@ -52,6 +60,37 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Linked Accounts</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item *ngFor="let item of providerStatuses">
+          <ion-icon name="logo-{{item.provider}}"></ion-icon>
+          <ion-label>
+            {{(item.provider.charAt(0) | uppercase) + item.provider.slice(1)}}
+          </ion-label>
+          <ion-button
+            *ngIf="!item.connected"
+            slot="end"
+            (click)="connectIdentity(item.provider)"
+          >
+            Connect
+          </ion-button>
+          <ion-button
+            *ngIf="item.connected"
+            slot="end"
+            (click)="deleteIdentity(item.id)"
+            fill="outline"
+          >
+            Unlink
+          </ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Last Seen</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -63,28 +102,6 @@
             }}
           </ion-label>
           <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card *ngIf="(identities$ | async)?.length > 0">
-    <ion-card-header>
-      <ion-card-title>Linked Accounts</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list lines="none">
-        <ion-item *ngFor="let item of identities$ | async">
-          <ion-icon name="logo-{{item?.provider}}"></ion-icon>
-          <ion-label>
-            {{(item.provider.charAt(0) | uppercase) + item.provider.slice(1)}}
-          </ion-label>
-          <!-- TODO: #321 Delete Identity Functionality -->
-          <ion-item>
-            <ion-button (click)="deleteIdentity(item)" fill="outline">
-              Unlink
-            </ion-button>
-          </ion-item>
         </ion-item>
       </ion-list>
     </ion-card-content>

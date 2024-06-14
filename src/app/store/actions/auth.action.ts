@@ -219,12 +219,12 @@ export const listIdentitiesFailureAction = createAction(
 // Delete Identity
 export const deleteIdentityAction = createAction(
   ActionTypes.DELETE_IDENTITY,
-  props<{ request: Models.Identity }>()
+  props<{ request: { $id: string } }>()
 );
 
 export const deleteIdentitySuccessAction = createAction(
   ActionTypes.DELETE_IDENTITY_SUCCESS,
-  props<{ payload: Models.Identity }>()
+  props<{ payload: { $id: string } }>()
 );
 
 export const deleteIdentityFailureAction = createAction(

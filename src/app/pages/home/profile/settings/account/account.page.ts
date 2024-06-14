@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { Models } from 'appwrite';
+import { Models, OAuthProvider } from 'appwrite';
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 import { App } from '@capacitor/app';
@@ -13,6 +13,9 @@ import { environment } from 'src/environments/environment';
 import { Account } from 'src/app/models/Account';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+
+import { OAuth2Service } from 'src/app/services/auth/oauth2.service';
+
 import {
   clearErrorsAction,
   deleteAccountAction,
@@ -34,6 +37,12 @@ import {
   deleteAccountErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
+interface ProviderStatus {
+  provider: string;
+  connected: boolean;
+  id?: string;
+}
+
 @Component({
   selector: 'app-account',
   templateUrl: './account.page.html',
@@ -42,13 +51,22 @@ import {
 export class AccountPage implements OnInit {
   @ViewChild('deleteUserModal') deleteUserModal: IonModal;
 
+  allProviders: string[] = [
+    OAuthProvider.Discord,
+    OAuthProvider.Google,
+    OAuthProvider.Facebook,
+    OAuthProvider.Apple,
+  ];
+  providerStatuses: ProviderStatus[] = [];
+
+  notConnectedProviders: string[] = [];
+
   appVersion: string;
 
   subscription: Subscription;
 
   account$: Observable<Account | null> = null;
   currentUser$: Observable<User> = null;
-  identities$: Observable<Models.Identity[]> = null;
   sessions$: Observable<Models.Session[]> = null;
   isLoading$: Observable<boolean> = null;
   verifyEmailSuccess$: Observable<boolean> = null;
@@ -57,11 +75,15 @@ export class AccountPage implements OnInit {
   verifyButtonDisabled = false; // to control the button's state
   verifyButtonText = 'Verify'; // to hold the button's text
 
+  identities: Models.Identity[] = [];
+
   constructor(
     private store: Store,
     private router: Router,
+    private OAuth2Service: OAuth2Service,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -107,6 +129,28 @@ export class AccountPage implements OnInit {
         })
     );
 
+    // Identifiers
+    this.subscription.add(
+      this.store
+        .pipe(select(identitiesSelector))
+        .subscribe((identities: Models.Identity[]) => {
+          this.providerStatuses = this.allProviders.map((provider) => {
+            const identity = identities.find(
+              (identity) => identity.provider === provider
+            );
+            return {
+              provider,
+              connected: !!identity,
+              id: identity ? identity.$id : undefined,
+            };
+          });
+
+          // Update UI
+          console.log(this.providerStatuses);
+          this.cdr.detectChanges();
+        })
+    );
+
     // Present Toast if verifyEmailSuccess
     this.subscription.add(
       this.store
@@ -145,7 +189,6 @@ export class AccountPage implements OnInit {
     // Get Selectors
     this.account$ = this.store.pipe(select(accountSelector));
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
-    this.identities$ = this.store.pipe(select(identitiesSelector));
     this.sessions$ = this.store.pipe(select(sessionsSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector)); // TODO: Unused yet
 
@@ -178,9 +221,28 @@ export class AccountPage implements OnInit {
     }, 1000);
   }
 
-  deleteIdentity(identity: Models.Identity) {
-    console.log('deleteIdentity', identity);
-    this.store.dispatch(deleteIdentityAction({ request: identity }));
+  connectIdentity(provider: string) {
+    console.log('connectIdentity: ', provider);
+    switch (provider) {
+      case OAuthProvider.Discord:
+        this.OAuth2Service.signInWithDiscord();
+        break;
+      case OAuthProvider.Google:
+        this.OAuth2Service.signInWithGoogle();
+        break;
+      case OAuthProvider.Facebook:
+        this.OAuth2Service.signInWithFacebook();
+        break;
+      case OAuthProvider.Apple:
+        this.OAuth2Service.signInWithApple();
+        break;
+      default:
+        console.error('Unknown provider');
+    }
+  }
+
+  deleteIdentity($id: string) {
+    this.store.dispatch(deleteIdentityAction({ request: { $id } }));
   }
 
   updatePasswordPage() {
