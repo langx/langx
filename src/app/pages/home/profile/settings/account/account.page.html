@@ -51,23 +51,6 @@
   </ion-card>
 
   <ion-card>
-    <ion-card-header>
-      <ion-card-title>Last Seen</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list lines="none">
-        <ion-item>
-          <ion-icon name="log-in-outline"></ion-icon>
-          <ion-label
-            >{{ (currentUser$ | async)?.lastSeen| date: 'dd/MM/yyyy, HH:mm:ss'
-            }}
-          </ion-label>
-          <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
   <ion-card *ngIf="(identities$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-title>Linked Accounts</ion-card-title>
@@ -85,6 +68,24 @@
               Unlink
             </ion-button>
           </ion-item>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Last Seen</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-icon name="log-in-outline"></ion-icon>
+          <ion-label
+            >{{ (currentUser$ | async)?.lastSeen| date: 'dd/MM/yyyy, HH:mm:ss'
+            }}
+          </ion-label>
+          <ion-note>{{ lastSeen((currentUser$ | async)?.lastSeen) }}</ion-note>
         </ion-item>
       </ion-list>
     </ion-card-content>
