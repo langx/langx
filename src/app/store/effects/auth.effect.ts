@@ -518,8 +518,8 @@ export class AuthEffect {
       ofType(deleteIdentityAction),
       switchMap(({ request }) => {
         return this.authService.deleteIdentity(request).pipe(
-          map((payload) => {
-            return deleteIdentitySuccessAction({ payload });
+          map(() => {
+            return deleteIdentitySuccessAction({ payload: request });
           }),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
