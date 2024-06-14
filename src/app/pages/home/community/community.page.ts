@@ -121,6 +121,10 @@ export class CommunityPage implements OnInit {
   ionViewWillLeave() {
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
+
+    // Reset Searchbar state
+    this.searchActive = false;
+    this.searchbar.value = '';
   }
 
   initValues(): void {
