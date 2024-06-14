@@ -20,6 +20,20 @@ export class Oauth2Component implements OnInit {
 
   ngOnInit() {}
 
+  signInWithDiscord() {
+    if (Capacitor.getPlatform() === 'web')
+      return this.authService.signInWithDiscord();
+
+    // For mobile
+    InAppBrowser.openWebView({
+      url: `${environment.url.AUTH_PROVIDER_URL}/discord`,
+      headers: this.HEADERS,
+      title: 'Sign in with Discord',
+      backgroundColor: BackgroundColor.WHITE,
+    });
+    this.addBrowserListeners();
+  }
+
   signInWithGoogle() {
     if (Capacitor.getPlatform() === 'web')
       return this.authService.signInWithGoogle();

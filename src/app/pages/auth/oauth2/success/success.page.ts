@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -40,7 +40,6 @@ export class SuccessPage implements OnInit {
   constructor(
     private store: Store,
     private route: ActivatedRoute,
-    private router: Router,
     private toastController: ToastController
   ) {}
 

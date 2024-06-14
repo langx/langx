@@ -128,6 +128,14 @@ export class AuthService {
     );
   }
 
+  signInWithDiscord() {
+    this.api.account.createOAuth2Session(
+      OAuthProvider.Discord,
+      environment.url.SUCCESS_OAUTH2,
+      environment.url.FAILURE_OAUTH2
+    );
+  }
+
   signInWithGoogle() {
     this.api.account.createOAuth2Session(
       OAuthProvider.Google,
