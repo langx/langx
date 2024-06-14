@@ -11,7 +11,6 @@ import { Account } from 'src/app/models/Account';
 import { RegisterRequestInterface } from 'src/app/models/types/requests/registerRequest.interface';
 import { LoginRequestInterface } from 'src/app/models/types/requests/loginRequest.interface';
 import { resetPasswordConfirmationRequestInterface } from 'src/app/models/types/requests/resetPasswordConfirmationRequest.interface';
-import { Oauth2Component } from 'src/app/components/oauth2/oauth2.component';
 
 @Injectable({
   providedIn: 'root',
@@ -91,8 +90,8 @@ export class AuthService {
     return from(this.api.account.listIdentities());
   }
 
-  deleteIdentity(identity: Models.Identity): Observable<any> {
-    return from(this.api.account.deleteIdentity(identity.$id));
+  deleteIdentity($id: string): Observable<any> {
+    return from(this.api.account.deleteIdentity($id));
   }
 
   listSessions(): Observable<Models.SessionList> {

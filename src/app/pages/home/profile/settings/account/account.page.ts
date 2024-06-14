@@ -221,9 +221,8 @@ export class AccountPage implements OnInit {
     console.log('connectIdentity: ', provider);
   }
 
-  deleteIdentity(identityId: string) {
-    console.log(identityId);
-    // this.store.dispatch(deleteIdentityAction({ request: identity }));
+  deleteIdentity($id: string) {
+    this.store.dispatch(deleteIdentityAction({ request: { $id } }));
   }
 
   updatePasswordPage() {

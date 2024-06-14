@@ -517,7 +517,7 @@ export class AuthEffect {
     this.actions$.pipe(
       ofType(deleteIdentityAction),
       switchMap(({ request }) => {
-        return this.authService.deleteIdentity(request).pipe(
+        return this.authService.deleteIdentity(request.$id).pipe(
           map(() => {
             return deleteIdentitySuccessAction({ payload: request });
           }),
