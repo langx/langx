@@ -69,11 +69,9 @@
           <ion-label>
             {{(item.provider.charAt(0) | uppercase) + item.provider.slice(1)}}
           </ion-label>
-          <ion-item>
-            <ion-button (click)="deleteIdentity(item)" fill="outline">
-              Unlink
-            </ion-button>
-          </ion-item>
+          <ion-button slot="end" (click)="deleteIdentity(item)" fill="outline">
+            Unlink
+          </ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>
