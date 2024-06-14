@@ -208,7 +208,7 @@ export class CommunityPage implements OnInit {
     if (event.detail.value) {
       const searchTerm = event.detail.value;
       // console.log(searchTerm);
-      if (searchTerm.length < 3) {
+      if (!searchTerm.trim()) {
         this.filterData = {
           ...this.filterData,
           search: null,
@@ -241,6 +241,10 @@ export class CommunityPage implements OnInit {
     };
     // List Users
     this.listAllUsers();
+  }
+
+  isSearchTermEmpty() {
+    return !this.filterData?.search?.trim();
   }
 
   //
