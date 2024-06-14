@@ -37,6 +37,9 @@ export class ProviderPage implements OnInit {
 
   signInWithProvider(provider: string) {
     switch (provider) {
+      case 'discord':
+        this.authService.signInWithDiscord();
+        break;
       case 'google':
         this.authService.signInWithGoogle();
         break;
