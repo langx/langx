@@ -121,6 +121,10 @@ export class CommunityPage implements OnInit {
   ionViewWillLeave() {
     // Unsubscribe from all subscriptions
     this.subscription.unsubscribe();
+
+    // Reset Searchbar state
+    this.searchActive = false;
+    this.searchbar.value = '';
   }
 
   initValues(): void {
@@ -208,30 +212,33 @@ export class CommunityPage implements OnInit {
     if (event.detail.value) {
       const searchTerm = event.detail.value;
       // console.log(searchTerm);
-      if (searchTerm.length < 3) {
+      if (!searchTerm.trim()) {
         this.filterData = {
           ...this.filterData,
           search: null,
         };
-        this.listAllUsers();
-        return;
+      } else {
+        this.filterData = {
+          ...this.filterData,
+          search: searchTerm,
+        };
+        // Update Segment
+        let segmentEvent = {
+          detail: {
+            value: 'usersByCreatedAt',
+          },
+        };
+        this.segmentChanged(segmentEvent);
       }
+    } else {
       this.filterData = {
         ...this.filterData,
-        search: searchTerm,
+        search: null,
       };
-
-      // Update Segment
-      let segmentEvent = {
-        detail: {
-          value: 'usersByCreatedAt',
-        },
-      };
-      this.segmentChanged(segmentEvent);
-
-      // List Users
-      this.listAllUsers();
     }
+
+    // List Users
+    this.listAllUsers();
   }
 
   clearSearch() {
@@ -241,6 +248,10 @@ export class CommunityPage implements OnInit {
     };
     // List Users
     this.listAllUsers();
+  }
+
+  isSearchTermEmpty() {
+    return !this.filterData?.search?.trim();
   }
 
   //
