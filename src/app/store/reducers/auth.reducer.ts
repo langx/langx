@@ -153,6 +153,9 @@ const initialState: AuthStateInterface = {
   accountDetailError: null,
   isLoadingDeleteAccount: false,
   deleteAccountError: null,
+  newBadges: null,
+  newRoles: null,
+  syncDiscordError: null,
 };
 
 const authReducer = createReducer(
@@ -801,7 +804,8 @@ const authReducer = createReducer(
     return {
       ...state,
       isLoading: false,
-      // sessions: action.payload?.sessions,
+      newBadges: action.payload?.newBadges || null,
+      newRoles: action.payload?.newRoles || null,
     };
   }),
   on(syncDiscordRolesFailureAction, (state, action): AuthStateInterface => {
@@ -809,7 +813,7 @@ const authReducer = createReducer(
     return {
       ...state,
       isLoading: false,
-      // registerValidationError: action.error,
+      syncDiscordError: action.error,
     };
   }),
 
@@ -1070,6 +1074,9 @@ const authReducer = createReducer(
       deleteAccountError: null,
       verifyEmailSuccess: false,
       resetPasswordSuccess: false,
+      newBadges: null,
+      newRoles: null,
+      syncDiscordError: null,
     })
   )
 );
