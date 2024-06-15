@@ -1,16 +1,23 @@
-import { Client, Databases } from 'node-appwrite';
+import { Client, Databases, Account } from 'node-appwrite';
 
-// execute permission
-// users
+// execute = ["users"]
 
 export default async ({ req, res, log, error }) => {
   // Init SDK
-  // const client = new Client()
-  //   .setEndpoint(process.env.APP_ENDPOINT)
-  //   .setProject(process.env.APP_PROJECT)
-  //   .setKey(process.env.API_KEY);
+  const client = new Client()
+    .setEndpoint(process.env.APP_ENDPOINT)
+    .setProject(process.env.APP_PROJECT)
+    .setJWT(req.headers['x-appwrite-user-jwt'] || '');
 
-  // const db = new Databases(client);
+  const admin = new Client()
+    .setEndpoint(process.env.APP_ENDPOINT)
+    .setProject(process.env.APP_PROJECT)
+    .setKey(process.env.APP_KEY);
+
+  const db = new Databases(client);
+  const account = new Account(client);
+
+  // const accountDoc = await account.get();
 
   // const userDoc = await db.getDocument(
   //   process.env.APP_DATABASE,
@@ -19,8 +26,15 @@ export default async ({ req, res, log, error }) => {
   // );
 
   try {
+    const identities = await account.listIdentities();
+    identities.identities.forEach((identity) => {
+      if (identity.provider === 'discord') {
+        log('Discord identity found');
+        log(identity);
+      }
+    });
     log(req.body);
-    return res.json({ ok: true });
+    return res.json({ newBadges: [] });
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
