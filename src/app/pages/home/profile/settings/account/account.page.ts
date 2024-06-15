@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Models, OAuthProvider } from 'appwrite';
@@ -37,6 +37,9 @@ import {
   verifyEmailSuccessSelector,
   isLoadingDeleteAccountSelector,
   deleteAccountErrorSelector,
+  newBadgesSelector,
+  newRolesSelector,
+  syncDiscordErrorSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 interface ProviderStatus {
@@ -153,6 +156,53 @@ export class AccountPage implements OnInit {
           // Update UI
           // console.log(this.providerStatuses);
           this.cdr.detectChanges();
+        })
+    );
+
+    // Sync Discord Roles and App Badges Error
+
+    // Sync Discord Roles and App Badges Error
+
+    this.subscription.add(
+      combineLatest([
+        this.store.pipe(select(syncDiscordErrorSelector)),
+        this.store.pipe(select(newBadgesSelector)),
+        this.store.pipe(select(newRolesSelector)),
+      ])
+        .pipe(
+          map(([error, newBadges, newRoles]) => ({
+            error,
+            newBadges,
+            newRoles,
+          }))
+        )
+        .subscribe(({ error, newBadges, newRoles }) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+          } else if (newBadges.length === 0 && newRoles.length === 0) {
+            this.presentToast('No new badges or roles to sync.', 'warning');
+          } else {
+            if (newBadges.length > 0) {
+              this.presentToast(
+                `${newBadges.join(', ')} Badges Added.`,
+                'success'
+              );
+              // Error Cleanup
+              this.store.dispatch(clearErrorsAction());
+            }
+            if (newRoles.length > 0) {
+              this.presentToast(
+                `${newRoles.join(', ')} Discord Role(s) Added.`,
+                'success'
+              );
+              // Error Cleanup
+              this.store.dispatch(clearErrorsAction());
+            }
+          }
+
+          // Error Cleanup
+          this.store.dispatch(clearErrorsAction());
+          this.isSyncing = false;
         })
     );
 
@@ -353,7 +403,7 @@ export class AccountPage implements OnInit {
     const toast = await this.toastController.create({
       message: msg,
       color: color || 'primary',
-      duration: 1000,
+      duration: 3000,
       position: 'top',
     });
 
