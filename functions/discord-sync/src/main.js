@@ -3,7 +3,6 @@ import { Client, Databases, Account } from 'node-appwrite';
 // execute = ["users"]
 
 const roles = {
-  moderator: '1211342347552563251',
   'early-adopter': '1212395552193515551',
   backer: '1222464830028386394',
   creator: '1232679338969792573',
