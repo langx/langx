@@ -81,7 +81,8 @@
             *ngIf="item.provider === 'discord' && item.connected"
             slot="end"
             color="success"
-            (click)="syncBadges(item?.id)"
+            [class.spin]="isSyncing"
+            (click)="!isSyncing && syncBadges(item?.id)"
           ></ion-icon>
           <ion-button
             *ngIf="item.connected"

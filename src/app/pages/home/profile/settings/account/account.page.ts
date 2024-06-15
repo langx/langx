@@ -76,6 +76,8 @@ export class AccountPage implements OnInit {
 
   identities: Models.Identity[] = [];
 
+  isSyncing: boolean = false;
+
   constructor(
     private store: Store,
     private router: Router,
@@ -258,6 +260,10 @@ export class AccountPage implements OnInit {
 
   syncBadges(identifierId: string) {
     console.log('Sync Badges', identifierId);
+    this.isSyncing = true;
+    setTimeout(() => {
+      this.isSyncing = false;
+    }, 3 * 1000); // 3 seconds
   }
 
   //
