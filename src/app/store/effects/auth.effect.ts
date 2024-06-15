@@ -43,6 +43,9 @@ import {
   deleteIdentityAction,
   deleteIdentityFailureAction,
   deleteIdentitySuccessAction,
+  deleteSessionAction,
+  deleteSessionFailureAction,
+  deleteSessionSuccessAction,
   isLoggedInAction,
   isLoggedInFailureAction,
   isLoggedInSuccessAction,
@@ -545,6 +548,25 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(listSessionsFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  deleteSession$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(deleteSessionAction),
+      switchMap(({ request }) => {
+        return this.authService.deleteSession(request.$id).pipe(
+          map(() => {
+            return deleteSessionSuccessAction({ payload: request });
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(deleteSessionFailureAction({ error }));
           })
         );
       })
