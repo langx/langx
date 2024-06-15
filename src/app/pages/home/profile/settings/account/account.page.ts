@@ -219,6 +219,10 @@ export class AccountPage implements OnInit {
     }, 1000);
   }
 
+  //
+  // Identities
+  //
+
   connectIdentity(provider: string) {
     switch (provider) {
       case OAuthProvider.Discord:
