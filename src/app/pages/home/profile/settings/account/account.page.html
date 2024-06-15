@@ -97,12 +97,15 @@
       <ion-list lines="none">
         <ion-item *ngFor="let item of sessions$ | async">
           <ion-icon name="logo-{{item?.deviceBrand}}"></ion-icon>
-          <ion-label> {{item?.ip}} </ion-label>
-          <ion-note>{{item?.countryName}}</ion-note>
-          <!-- TODO: #322 Delete Session Functionality -->
-          <!-- <ion-item>
-            <ion-label><a href="#">Delete</a></ion-label>
-          </ion-item> -->
+          <ion-label> {{item?.countryName}} </ion-label>
+          <ion-note>{{item?.ip}}</ion-note>
+          <ion-icon
+            name="close-circle-outline"
+            slot="end"
+            color="danger"
+            size="small"
+            (click)="deleteSession(item?.$id)"
+          ></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>

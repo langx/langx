@@ -242,6 +242,15 @@ export class AccountPage implements OnInit {
     this.store.dispatch(deleteIdentityAction({ request: { $id } }));
   }
 
+  //
+  // Sessions
+  //
+
+  deleteSession($id: string) {
+    console.log('deleteSession', $id);
+    //this.store.dispatch(deleteSessionAction({ request: { $id } }));
+  }
+
   updatePasswordPage() {
     this.router.navigateByUrl('/home/account/update-password');
   }
