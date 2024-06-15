@@ -27,10 +27,12 @@ export default async ({ req, res, log, error }) => {
     req.headers['x-appwrite-user-id']
   );
 
-  // const admin = new Client()
-  //   .setEndpoint(process.env.APP_ENDPOINT)
-  //   .setProject(process.env.APP_PROJECT)
-  //   .setKey(process.env.APP_KEY);
+  const admin = new Client()
+    .setEndpoint(process.env.APP_ENDPOINT)
+    .setProject(process.env.APP_PROJECT)
+    .setKey(process.env.APP_KEY);
+
+  const adminDB = new Databases(admin);
 
   try {
     const identities = await account.listIdentities();
@@ -91,6 +93,15 @@ export default async ({ req, res, log, error }) => {
       // Log the additions
       if (newRoles.length > 0) {
         log(`Added roles: ${newRoles.join(', ')}`);
+        userBadges.push(...newRoles);
+        // await adminDB.updateDocument(
+        //   process.env.APP_DATABASE,
+        //   process.env.USERS_COLLECTION,
+        //   req.headers['x-appwrite-user-id'],
+        //   {
+        //     badges: userBadges,
+        //   }
+        // );
       }
       if (newBadges.length > 0) {
         log(`Added badges: ${newBadges.join(', ')}`);
