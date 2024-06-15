@@ -12,14 +12,15 @@ export default async ({ req, res, log, error }) => {
 
   // const db = new Databases(client);
 
-  const userDoc = await db.getDocument(
-    process.env.APP_DATABASE,
-    process.env.USERS_COLLECTION,
-    req.body.to
-  );
+  // const userDoc = await db.getDocument(
+  //   process.env.APP_DATABASE,
+  //   process.env.USERS_COLLECTION,
+  //   req.body.to
+  // );
 
   try {
     log(req.body);
+    return res.json({ ok: true });
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
