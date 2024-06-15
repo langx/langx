@@ -305,9 +305,6 @@ export class AccountPage implements OnInit {
     this.isSyncing = true;
     // Dispatch the action to sync discord roles
     this.store.dispatch(syncDiscordRolesAction());
-    setTimeout(() => {
-      this.isSyncing = false;
-    }, 3 * 1000); // 3 seconds
   }
 
   //
