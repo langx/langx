@@ -80,6 +80,21 @@ export const identitiesSelector = createSelector(
   (authState: AuthStateInterface) => authState.identities
 );
 
+export const newBadgesSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.newBadges
+);
+
+export const newRolesSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.newRoles
+);
+
+export const syncDiscordErrorSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.syncDiscordError
+);
+
 export const sessionsSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.sessions
