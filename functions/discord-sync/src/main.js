@@ -78,6 +78,10 @@ export default async ({ req, res, log, error }) => {
         .filter(Boolean);
 
       const userBadges = userDoc.badges || [];
+      const filteredBadges = userBadges.filter((badge) =>
+        Object.keys(roles).includes(badge)
+      );
+
       log(`User roles: ${userRolesNames.join(', ')}`);
       log(`User badges ${userBadges.join(', ')}`);
 
@@ -86,7 +90,7 @@ export default async ({ req, res, log, error }) => {
         (role) => !userRolesNames.includes(role)
       );
       const newBadges = userRolesNames.filter(
-        (badge) => !userBadges.includes(badge)
+        (badge) => !filteredBadges.includes(badge)
       );
 
       // Add new roles to the user in Discord
