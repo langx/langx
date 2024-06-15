@@ -76,10 +76,27 @@ export default async ({ req, res, log, error }) => {
         })
         .filter(Boolean);
 
+      const userBadges = userDoc.badges || [];
       log(`User roles: ${userRolesNames.join(', ')}`);
-      log(`User badges ${userDoc.badges.join(', ')}`);
+      log(`User badges ${userBadges.join(', ')}`);
 
-      return res.json({ newBadges: [] });
+      // Calculate the additions
+      const newRoles = userBadges.filter(
+        (role) => !userRolesNames.includes(role)
+      );
+      const newBadges = userRolesNames.filter(
+        (badge) => !userBadges.includes(badge)
+      );
+
+      // Log the additions
+      if (newRoles.length > 0) {
+        log(`Added roles: ${newRoles.join(', ')}`);
+      }
+      if (newBadges.length > 0) {
+        log(`Added badges: ${newBadges.join(', ')}`);
+      }
+
+      return res.json({ newBadges, newRoles });
     } else {
       throw new Error('Discord identity not found');
     }
