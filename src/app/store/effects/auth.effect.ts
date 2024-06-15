@@ -543,9 +543,6 @@ export class AuthEffect {
       ofType(syncDiscordRolesAction),
       switchMap(() => {
         return this.authService.syncDiscordRoles().pipe(
-          tap((payload) => {
-            console.log(payload);
-          }),
           map((payload: Models.Execution) => {
             if (payload.status === 'completed') {
               let resultBody = JSON.parse(payload.responseBody);
