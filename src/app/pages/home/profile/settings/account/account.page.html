@@ -76,10 +76,17 @@
           >
             Connect
           </ion-button>
+          <ion-icon
+            name="sync-outline"
+            *ngIf="item.provider === 'discord' && item.connected"
+            slot="end"
+            color="success"
+            (click)="syncBadges(item?.id)"
+          ></ion-icon>
           <ion-button
             *ngIf="item.connected"
             slot="end"
-            (click)="deleteIdentity(item.id)"
+            (click)="deleteIdentity(item?.id)"
             fill="outline"
           >
             Disconnect

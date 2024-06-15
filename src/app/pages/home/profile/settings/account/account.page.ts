@@ -253,6 +253,14 @@ export class AccountPage implements OnInit {
   }
 
   //
+  // Sync Badges
+  //
+
+  syncBadges(identifierId: string) {
+    console.log('Sync Badges', identifierId);
+  }
+
+  //
   // Others and Delete Account
   //
 
