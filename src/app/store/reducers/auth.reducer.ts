@@ -56,6 +56,9 @@ import {
   deleteIdentityAction,
   deleteIdentitySuccessAction,
   deleteIdentityFailureAction,
+  deleteSessionAction,
+  deleteSessionSuccessAction,
+  deleteSessionFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -779,6 +782,33 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       registerValidationError: action.error,
+    })
+  ),
+
+  // Delete Session Actions
+  on(
+    deleteSessionAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(deleteSessionSuccessAction, (state, action): AuthStateInterface => {
+    const newSessions = state.sessions?.filter(
+      (session) => session.$id !== action.payload.$id
+    );
+    return {
+      ...state,
+      isLoading: false,
+      sessions: newSessions,
+    };
+  }),
+  on(
+    deleteSessionFailureAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      deleteAccountError: action.error,
     })
   ),
 
