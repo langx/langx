@@ -23,6 +23,7 @@ import {
   deleteSessionAction,
   listIdentitiesAction,
   listSessionsAction,
+  syncDiscordRolesAction,
   verifyEmailAction,
 } from 'src/app/store/actions/auth.action';
 import {
@@ -264,6 +265,8 @@ export class AccountPage implements OnInit {
   syncBadges(identifierId: string) {
     console.log('Sync Badges', identifierId);
     this.isSyncing = true;
+    // Dispatch the action to sync discord roles
+    this.store.dispatch(syncDiscordRolesAction({ request: { identifierId } }));
     setTimeout(() => {
       this.isSyncing = false;
     }, 3 * 1000); // 3 seconds
