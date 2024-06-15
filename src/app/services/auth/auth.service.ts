@@ -148,8 +148,7 @@ export class AuthService {
     this.api.account.createOAuth2Session(
       OAuthProvider.Discord,
       environment.url.SUCCESS_OAUTH2,
-      environment.url.FAILURE_OAUTH2,
-      ['guilds', 'guilds.members.read']
+      environment.url.FAILURE_OAUTH2
     );
   }
 
