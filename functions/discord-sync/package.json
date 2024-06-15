@@ -11,7 +11,7 @@
     "prettier": "^3.0.0"
   },
   "dependencies": {
-    "firebase-admin": "^12.0.0",
-    "node-appwrite": "^11.0.0"
+    "node-appwrite": "^11.0.0",
+    "node-fetch": "^3.3.2"
   }
 }
