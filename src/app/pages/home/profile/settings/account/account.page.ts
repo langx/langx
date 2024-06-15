@@ -136,9 +136,12 @@ export class AccountPage implements OnInit {
         .pipe(select(identitiesSelector))
         .subscribe((identities: Models.Identity[]) => {
           this.providerStatuses = this.allProviders.map((provider) => {
-            const identity = identities.find(
-              (identity) => identity.provider === provider
-            );
+            let identity: Models.Identity | undefined;
+            if (identities) {
+              identity = identities.find(
+                (identity) => identity.provider === provider
+              );
+            }
             return {
               provider,
               connected: !!identity,
