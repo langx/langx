@@ -52,6 +52,9 @@ export enum ActionTypes {
   LIST_SESSIONS = '[Auth] List Sessions',
   LIST_SESSIONS_SUCCESS = '[Auth] List Sessions Success',
   LIST_SESSIONS_FAILURE = '[Auth] List Sessions Failure',
+  DELETE_SESSION = '[Auth] Delete Session',
+  DELETE_SESSION_SUCCESS = '[Auth] Delete Session Success',
+  DELETE_SESSION_FAILURE = '[Auth] Delete Session Failure',
 
   DELETE_ACCOUNT = '[Auth] Delete Account',
   DELETE_ACCOUNT_SUCCESS = '[Auth] Delete Account Success',
