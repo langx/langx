@@ -84,14 +84,14 @@
             [class.spin]="isSyncing"
             (click)="!isSyncing && syncBadges(item?.id)"
           ></ion-icon>
-          <ion-button
+          <ion-icon
             *ngIf="item.connected"
+            name="close-circle-outline"
             slot="end"
+            color="danger"
+            size="small"
             (click)="deleteIdentity(item?.id)"
-            fill="outline"
-          >
-            Disconnect
-          </ion-button>
+          ></ion-icon>
         </ion-item>
       </ion-list>
     </ion-card-content>
