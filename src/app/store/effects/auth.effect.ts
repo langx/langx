@@ -541,8 +541,8 @@ export class AuthEffect {
   syncDiscordRoles$ = createEffect(() =>
     this.actions$.pipe(
       ofType(syncDiscordRolesAction),
-      switchMap(({ request }) => {
-        return this.authService.syncDiscordRoles(request.identifierId).pipe(
+      switchMap(() => {
+        return this.authService.syncDiscordRoles().pipe(
           tap((payload) => {
             console.log(payload);
           }),

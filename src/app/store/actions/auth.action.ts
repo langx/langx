@@ -232,14 +232,11 @@ export const deleteIdentityFailureAction = createAction(
 );
 
 // Sync Discord Roles
-export const syncDiscordRolesAction = createAction(
-  ActionTypes.SYNC_DISCORD,
-  props<{ request: { identifierId: string } }>()
-);
+export const syncDiscordRolesAction = createAction(ActionTypes.SYNC_DISCORD);
 
 export const syncDiscordRolesSuccessAction = createAction(
   ActionTypes.SYNC_DISCORD_SUCCESS,
-  props<{ payload: { newBadges: string[] } }>()
+  props<{ payload: { newBadges: string[]; newRoles: string[] } }>()
 );
 
 export const syncDiscordRolesFailureAction = createAction(
