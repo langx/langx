@@ -1,5 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { Models } from 'appwrite';
 
 import { ActionTypes } from 'src/app/store/actions/types/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
