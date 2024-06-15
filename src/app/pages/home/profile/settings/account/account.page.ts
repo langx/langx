@@ -20,6 +20,7 @@ import {
   clearErrorsAction,
   deleteAccountAction,
   deleteIdentityAction,
+  deleteSessionAction,
   listIdentitiesAction,
   listSessionsAction,
   verifyEmailAction,
@@ -220,7 +221,7 @@ export class AccountPage implements OnInit {
   }
 
   //
-  // Identities
+  // Identities and Sessions
   //
 
   connectIdentity(provider: string) {
@@ -246,14 +247,14 @@ export class AccountPage implements OnInit {
     this.store.dispatch(deleteIdentityAction({ request: { $id } }));
   }
 
-  //
-  // Sessions
-  //
-
   deleteSession($id: string) {
     console.log('deleteSession', $id);
-    //this.store.dispatch(deleteSessionAction({ request: { $id } }));
+    this.store.dispatch(deleteSessionAction({ request: { $id } }));
   }
+
+  //
+  // Others and Delete Account
+  //
 
   updatePasswordPage() {
     this.router.navigateByUrl('/home/account/update-password');
