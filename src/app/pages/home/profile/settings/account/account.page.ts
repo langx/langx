@@ -174,9 +174,12 @@ export class AccountPage implements OnInit {
               'success'
             );
           }
-          // Error Cleanup
-          this.store.dispatch(clearErrorsAction());
-          this.isSyncing = false;
+
+          if (updatedRolesAndBadges) {
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
+            this.isSyncing = false;
+          }
         })
     );
 
