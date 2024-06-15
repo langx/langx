@@ -163,9 +163,14 @@ export class AccountPage implements OnInit {
       this.store
         .pipe(select(syncDiscordRolesSelector))
         .subscribe((updatedRolesAndBadges) => {
-          if (updatedRolesAndBadges) {
+          if (updatedRolesAndBadges && updatedRolesAndBadges.length === 0) {
+            this.presentToast('No roles or badges to sync.', 'warning');
+          }
+          if (updatedRolesAndBadges && updatedRolesAndBadges.length > 0) {
             this.presentToast(
-              `${updatedRolesAndBadges.join(' ')} have been synced.`,
+              `${updatedRolesAndBadges
+                .map((item) => item.toUpperCase())
+                .join(', ')} have been synced.`,
               'success'
             );
           }
