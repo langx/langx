@@ -5,7 +5,7 @@ import { Client, Databases, Account } from 'node-appwrite';
 const roles = {
   moderator: '1211342347552563251',
   'early-adopter': '1212395552193515551',
-  sponsor: '1222464830028386394',
+  backer: '1222464830028386394',
   creator: '1232679338969792573',
   fundamental: '1223726462494838805',
   pioneer: '1220823209381728348',
@@ -97,22 +97,35 @@ export default async ({ req, res, log, error }) => {
         const roleIds = newRoles.map((badge) => roles[badge]);
         log(`Role Id's: ${roleIds.join(', ')}`);
 
-        for (const roleId of roleIds) {
-          const addRoleResponse = await fetch(
-            `https://discord.com/api/v9/guilds/${guildId}/members/${discordIdentity.providerUid}/roles/${roleId}`,
-            {
-              method: 'PUT',
-              headers: {
-                Authorization: `Bot ${discordBotToken}`,
-              },
-            }
-          );
-
-          if (!addRoleResponse.ok) {
-            throw new Error(
-              `Failed to add role ${roleId}: ${addRoleResponse.statusText}`
+        const rolePromises = roleIds.map(async (roleId) => {
+          try {
+            const response = await fetch(
+              `https://discord.com/api/v9/guilds/${guildId}/members/${discordIdentity.providerUid}/roles/${roleId}`,
+              {
+                method: 'PUT',
+                headers: {
+                  Authorization: `Bot ${discordBotToken}`,
+                },
+              }
             );
+
+            if (!response.ok) {
+              console.error(
+                `Failed to add role ${roleId}: ${response.statusText}`
+              );
+            }
+          } catch (error) {
+            console.error(`Error adding role ${roleId}: ${error.message}`);
           }
+        });
+
+        await Promise.all(rolePromises);
+        const results = await Promise.all(rolePromises);
+
+        const errors = results.filter((result) => result instanceof Error);
+        if (errors.length > 0) {
+          error(err.message);
+          return res.json({ ok: false, error: err.message }, 400);
         }
       }
 
