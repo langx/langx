@@ -104,7 +104,7 @@
       "execute": ["users"],
       "events": [],
       "schedule": "",
-      "timeout": 60,
+      "timeout": 30,
       "enabled": true,
       "logging": true,
       "entrypoint": "src/main.js",
