@@ -30,7 +30,7 @@ export default async ({ req, res, log, error }) => {
   const admin = new Client()
     .setEndpoint(process.env.APP_ENDPOINT)
     .setProject(process.env.APP_PROJECT)
-    .setKey(process.env.APP_KEY);
+    .setKey(process.env.API_KEY);
 
   const adminDB = new Databases(admin);
 
@@ -90,21 +90,47 @@ export default async ({ req, res, log, error }) => {
         (badge) => !userBadges.includes(badge)
       );
 
-      // Log the additions
+      // Add new roles to the user in Discord
       if (newRoles.length > 0) {
-        log(`Added roles: ${newRoles.join(', ')}`);
-        userBadges.push(...newRoles);
-        // await adminDB.updateDocument(
-        //   process.env.APP_DATABASE,
-        //   process.env.USERS_COLLECTION,
-        //   req.headers['x-appwrite-user-id'],
-        //   {
-        //     badges: userBadges,
-        //   }
-        // );
+        log(`Adding roles: ${newRoles.join(', ')}`);
+
+        const roleIds = newRoles.map((badge) => roles[badge]);
+        log(`Role Id's: ${roleIds.join(', ')}`);
+
+        for (const roleId of roleIds) {
+          const addRoleResponse = await fetch(
+            `https://discord.com/api/v9/guilds/${guildId}/members/${discordIdentity.providerUid}/roles/${roleId}`,
+            {
+              method: 'PUT',
+              headers: {
+                Authorization: `Bot ${discordBotToken}`,
+              },
+            }
+          );
+
+          if (!addRoleResponse.ok) {
+            throw new Error(
+              `Failed to add role ${roleId}: ${addRoleResponse.statusText}`
+            );
+          }
+        }
       }
+
+      // Add new badges to the user
       if (newBadges.length > 0) {
-        log(`Added badges: ${newBadges.join(', ')}`);
+        log(`Adding badges: ${newBadges.join(', ')}`);
+        newBadges.forEach((badge) => {
+          userBadges.push(badge);
+        });
+        log(`Updated badges: ${userBadges.join(', ')}`);
+        await adminDB.updateDocument(
+          process.env.APP_DATABASE,
+          process.env.USERS_COLLECTION,
+          req.headers['x-appwrite-user-id'],
+          {
+            badges: userBadges,
+          }
+        );
       }
 
       return res.json({ newBadges, newRoles });
