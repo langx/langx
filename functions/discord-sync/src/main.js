@@ -86,6 +86,7 @@ export default async ({ req, res, log, error }) => {
     log(`userBadges: ${filteredBadges}`);
     log(`newRoles: ${newRoles}`);
     log(`newBadges: ${newBadges}`);
+
     if (newRoles.length > 0) {
       const roleIds = newRoles.map((badge) => roles[badge]);
 
