@@ -245,6 +245,22 @@ export const listSessionsFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Delete Session
+export const deleteSessionAction = createAction(
+  ActionTypes.DELETE_SESSION,
+  props<{ request: { $id: string } }>()
+);
+
+export const deleteSessionSuccessAction = createAction(
+  ActionTypes.DELETE_SESSION_SUCCESS,
+  props<{ payload: { $id: string } }>()
+);
+
+export const deleteSessionFailureAction = createAction(
+  ActionTypes.DELETE_SESSION_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Delete Account
 export const deleteAccountAction = createAction(ActionTypes.DELETE_ACCOUNT);
 
