@@ -80,14 +80,9 @@ export const identitiesSelector = createSelector(
   (authState: AuthStateInterface) => authState.identities
 );
 
-export const newBadgesSelector = createSelector(
+export const syncDiscordRolesSelector = createSelector(
   authFeatureSelector,
-  (authState: AuthStateInterface) => authState.newBadges
-);
-
-export const newRolesSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.newRoles
+  (authState: AuthStateInterface) => authState.syncDiscordRoles
 );
 
 export const syncDiscordErrorSelector = createSelector(

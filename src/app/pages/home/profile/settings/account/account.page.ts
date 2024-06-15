@@ -37,9 +37,8 @@ import {
   verifyEmailSuccessSelector,
   isLoadingDeleteAccountSelector,
   deleteAccountErrorSelector,
-  newBadgesSelector,
-  newRolesSelector,
   syncDiscordErrorSelector,
+  syncDiscordRolesSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 interface ProviderStatus {
@@ -159,49 +158,33 @@ export class AccountPage implements OnInit {
         })
     );
 
-    // Sync Discord Roles and App Badges Error
-
-    // Sync Discord Roles and App Badges Error
-
+    // Sync Discord Roles and App Badges
     this.subscription.add(
-      combineLatest([
-        this.store.pipe(select(syncDiscordErrorSelector)),
-        this.store.pipe(select(newBadgesSelector)),
-        this.store.pipe(select(newRolesSelector)),
-      ])
-        .pipe(
-          map(([error, newBadges, newRoles]) => ({
-            error,
-            newBadges,
-            newRoles,
-          }))
-        )
-        .subscribe(({ error, newBadges, newRoles }) => {
-          if (error) {
-            this.presentToast(error.message, 'danger');
-          } else if (newBadges.length === 0 && newRoles.length === 0) {
-            this.presentToast('No new badges or roles to sync.', 'warning');
-          } else {
-            if (newBadges.length > 0) {
-              this.presentToast(
-                `${newBadges.join(', ')} Badges Added.`,
-                'success'
-              );
-              // Error Cleanup
-              this.store.dispatch(clearErrorsAction());
-            }
-            if (newRoles.length > 0) {
-              this.presentToast(
-                `${newRoles.join(', ')} Discord Role(s) Added.`,
-                'success'
-              );
-              // Error Cleanup
-              this.store.dispatch(clearErrorsAction());
-            }
+      this.store
+        .pipe(select(syncDiscordRolesSelector))
+        .subscribe((updatedRolesAndBadges) => {
+          if (updatedRolesAndBadges) {
+            this.presentToast(
+              `${updatedRolesAndBadges.join(' ')} have been synced.`,
+              'success'
+            );
           }
-
           // Error Cleanup
           this.store.dispatch(clearErrorsAction());
+          this.isSyncing = false;
+        })
+    );
+
+    // Sync Discord Roles and App Badges Error
+    this.subscription.add(
+      this.store
+        .pipe(select(syncDiscordErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
+          }
           this.isSyncing = false;
         })
     );

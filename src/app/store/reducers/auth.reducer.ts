@@ -153,8 +153,7 @@ const initialState: AuthStateInterface = {
   accountDetailError: null,
   isLoadingDeleteAccount: false,
   deleteAccountError: null,
-  newBadges: null,
-  newRoles: null,
+  syncDiscordRoles: null,
   syncDiscordError: null,
 };
 
@@ -800,12 +799,22 @@ const authReducer = createReducer(
     })
   ),
   on(syncDiscordRolesSuccessAction, (state, action): AuthStateInterface => {
-    console.log(action.payload);
+    // console.log(action.payload);
+    let syncDiscordRoles = [];
+    if (action.payload?.newBadges) {
+      action.payload.newBadges.forEach((badge) => {
+        syncDiscordRoles.push(badge);
+      });
+    }
+    if (action.payload?.newRoles) {
+      action.payload.newRoles.forEach((role) => {
+        syncDiscordRoles.push(role);
+      });
+    }
     return {
       ...state,
       isLoading: false,
-      newBadges: action.payload?.newBadges || null,
-      newRoles: action.payload?.newRoles || null,
+      syncDiscordRoles: syncDiscordRoles.length > 0 ? syncDiscordRoles : null,
     };
   }),
   on(syncDiscordRolesFailureAction, (state, action): AuthStateInterface => {
@@ -1074,8 +1083,7 @@ const authReducer = createReducer(
       deleteAccountError: null,
       verifyEmailSuccess: false,
       resetPasswordSuccess: false,
-      newBadges: null,
-      newRoles: null,
+      syncDiscordRoles: null,
       syncDiscordError: null,
     })
   )
