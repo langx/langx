@@ -59,6 +59,9 @@ import {
   deleteSessionAction,
   deleteSessionSuccessAction,
   deleteSessionFailureAction,
+  syncDiscordRolesAction,
+  syncDiscordRolesSuccessAction,
+  syncDiscordRolesFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -784,6 +787,31 @@ const authReducer = createReducer(
       registerValidationError: action.error,
     })
   ),
+
+  // Sync Discord Roles Actions
+  on(
+    syncDiscordRolesAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(syncDiscordRolesSuccessAction, (state, action): AuthStateInterface => {
+    console.log(action.payload);
+    return {
+      ...state,
+      isLoading: false,
+      // sessions: action.payload?.sessions,
+    };
+  }),
+  on(syncDiscordRolesFailureAction, (state, action): AuthStateInterface => {
+    console.log(action.error);
+    return {
+      ...state,
+      isLoading: false,
+      // registerValidationError: action.error,
+    };
+  }),
 
   // Delete Session Actions
   on(
