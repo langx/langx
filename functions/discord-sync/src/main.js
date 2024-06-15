@@ -32,10 +32,38 @@ export default async ({ req, res, log, error }) => {
     if (discordIdentity) {
       log('Discord identity found');
       log(discordIdentity);
-    }
 
-    return res.json({ newBadges: [] });
+      const guildId = process.env.DISCORD_GUILD_ID;
+      log(`Guild ID: ${guildId}`);
+      const discordBotToken = process.env.DISCORD_LANGX_BADGES;
+      log(`Bot token: ${discordBotToken}`);
+
+      // Fetch user roles from Discord
+      const response = await fetch(
+        `https://discord.com/api/v9/guilds/${guildId}/members/${discordIdentity.providerUid}`,
+        {
+          headers: {
+            Authorization: `Bot ${discordBotToken}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user roles: ${response.statusText}`);
+      }
+
+      const memberData = await response.json();
+      log(memberData);
+      const userRoles = memberData['roles'];
+
+      log(`User roles: ${userRoles}`);
+
+      return res.json({ newBadges: [] });
+    } else {
+      throw new Error('Discord identity not found');
+    }
   } catch (err) {
+    error(err.message);
     return res.json({ ok: false, error: err.message }, 400);
   }
 };
