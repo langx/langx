@@ -17,6 +17,9 @@ export enum ActionTypes {
   COMPLETE_REGISTRATION_SUCCESS = '[Auth] Complete Registration Success',
   COMPLETE_REGISTRATION_FAILURE = '[Auth] Complete Registration Failure',
 
+  SELECT_LANGUAGES = '[Auth] Select Languages',
+  LANGUAGE_SELECTION = '[Auth] Language Selection',
+
   LANGUAGE_SELECTION_SUCCESS = '[Auth] Language Selection Success',
   LANGUAGE_SELECTION_FAILURE = '[Auth] Language Selection Failure',
   UPDATE_LANGUAGE_ARRAY = '[Auth] Update Language Array',
