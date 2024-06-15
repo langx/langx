@@ -98,6 +98,10 @@ export class AuthService {
     return from(this.api.account.listSessions());
   }
 
+  deleteSession($id: string): Observable<any> {
+    return from(this.api.account.deleteSession($id));
+  }
+
   verifyEmail(): Observable<any> {
     return from(
       this.api.account.createVerification(environment.url.VERIFY_EMAIL)

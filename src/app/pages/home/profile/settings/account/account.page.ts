@@ -20,6 +20,7 @@ import {
   clearErrorsAction,
   deleteAccountAction,
   deleteIdentityAction,
+  deleteSessionAction,
   listIdentitiesAction,
   listSessionsAction,
   verifyEmailAction,
@@ -219,6 +220,10 @@ export class AccountPage implements OnInit {
     }, 1000);
   }
 
+  //
+  // Identities and Sessions
+  //
+
   connectIdentity(provider: string) {
     switch (provider) {
       case OAuthProvider.Discord:
@@ -241,6 +246,15 @@ export class AccountPage implements OnInit {
   deleteIdentity($id: string) {
     this.store.dispatch(deleteIdentityAction({ request: { $id } }));
   }
+
+  deleteSession($id: string) {
+    console.log('deleteSession', $id);
+    this.store.dispatch(deleteSessionAction({ request: { $id } }));
+  }
+
+  //
+  // Others and Delete Account
+  //
 
   updatePasswordPage() {
     this.router.navigateByUrl('/home/account/update-password');
