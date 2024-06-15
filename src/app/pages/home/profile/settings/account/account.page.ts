@@ -145,7 +145,7 @@ export class AccountPage implements OnInit {
           });
 
           // Update UI
-          console.log(this.providerStatuses);
+          // console.log(this.providerStatuses);
           this.cdr.detectChanges();
         })
     );
