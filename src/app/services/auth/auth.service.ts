@@ -95,7 +95,6 @@ export class AuthService {
   }
 
   syncDiscordRoles(identifierId: string): Observable<any> {
-    console.log('Sync Badges', identifierId);
     return from(
       this.api.function.createExecution(
         'discord-sync',
