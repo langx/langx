@@ -25,13 +25,15 @@ export default async ({ req, res, log, error }) => {
 
   try {
     const identities = await account.listIdentities();
-    identities.identities.forEach((identity) => {
-      if (identity.provider === 'discord') {
-        log('Discord identity found');
-        log(identity);
-      }
-    });
-    log(req.body);
+    const discordIdentity = identities.identities.find(
+      (identity) => identity.provider === 'discord'
+    );
+
+    if (discordIdentity) {
+      log('Discord identity found');
+      log(discordIdentity);
+    }
+
     return res.json({ newBadges: [] });
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
