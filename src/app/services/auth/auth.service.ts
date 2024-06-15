@@ -94,6 +94,11 @@ export class AuthService {
     return from(this.api.account.deleteIdentity($id));
   }
 
+  syncDiscordRoles(identifierId: string): Observable<any> {
+    console.log('Sync Badges', identifierId);
+    return from(this.api.function.createExecution('discord-sync'));
+  }
+
   listSessions(): Observable<Models.SessionList> {
     return from(this.api.account.listSessions());
   }
