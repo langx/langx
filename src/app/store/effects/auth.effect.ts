@@ -75,6 +75,9 @@ import {
   resetPasswordConfirmationSuccessAction,
   resetPasswordFailureAction,
   resetPasswordSuccessAction,
+  syncDiscordRolesAction,
+  syncDiscordRolesFailureAction,
+  syncDiscordRolesSuccessAction,
   updateLanguageArrayAction,
   updateLanguageArrayFailureAction,
   updateLanguageArraySuccessAction,
@@ -529,6 +532,36 @@ export class AuthEffect {
               message: errorResponse.message,
             };
             return of(deleteIdentityFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  syncDiscordRoles$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(syncDiscordRolesAction),
+      switchMap(({ request }) => {
+        return this.authService.syncDiscordRoles(request.identifierId).pipe(
+          tap((payload) => {
+            console.log(payload);
+          }),
+          map((payload: Models.Execution) => {
+            if (payload.status === 'completed') {
+              let resultBody = JSON.parse(payload.responseBody);
+              return syncDiscordRolesSuccessAction({ payload: resultBody });
+            } else {
+              const error: ErrorInterface = {
+                message: 'Something went wrong. Please try again.',
+              };
+              return syncDiscordRolesFailureAction({ error });
+            }
+          }),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(syncDiscordRolesFailureAction({ error }));
           })
         );
       })
