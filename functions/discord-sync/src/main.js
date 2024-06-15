@@ -86,7 +86,7 @@ export default async ({ req, res, log, error }) => {
       log(`User badges ${userBadges.join(', ')}`);
 
       // Calculate the additions
-      const newRoles = userBadges.filter(
+      const newRoles = filteredBadges.filter(
         (role) => !userRolesNames.includes(role)
       );
       const newBadges = userRolesNames.filter(
