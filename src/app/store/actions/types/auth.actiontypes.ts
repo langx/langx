@@ -52,6 +52,10 @@ export enum ActionTypes {
   DELETE_IDENTITY_SUCCESS = '[Auth] Delete Identity Success',
   DELETE_IDENTITY_FAILURE = '[Auth] Delete Identity Failure',
 
+  SYNC_DISCORD = '[Auth] Sync Discord Roles',
+  SYNC_DISCORD_SUCCESS = '[Auth] Sync Discord Roles Success',
+  SYNC_DISCORD_FAILURE = '[Auth] Sync Discord Roles Failure',
+
   LIST_SESSIONS = '[Auth] List Sessions',
   LIST_SESSIONS_SUCCESS = '[Auth] List Sessions Success',
   LIST_SESSIONS_FAILURE = '[Auth] List Sessions Failure',

@@ -42,4 +42,6 @@ export interface AuthStateInterface {
   accountDetailError: ErrorInterface | null;
   isLoadingDeleteAccount: boolean;
   deleteAccountError: ErrorInterface | null;
+  syncDiscordRoles: string[] | null;
+  syncDiscordError: ErrorInterface | null;
 }

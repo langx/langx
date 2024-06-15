@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { Models, OAuthProvider } from 'appwrite';
@@ -23,6 +23,7 @@ import {
   deleteSessionAction,
   listIdentitiesAction,
   listSessionsAction,
+  syncDiscordRolesAction,
   verifyEmailAction,
 } from 'src/app/store/actions/auth.action';
 import {
@@ -36,6 +37,8 @@ import {
   verifyEmailSuccessSelector,
   isLoadingDeleteAccountSelector,
   deleteAccountErrorSelector,
+  syncDiscordErrorSelector,
+  syncDiscordRolesSelector,
 } from 'src/app/store/selectors/auth.selector';
 
 interface ProviderStatus {
@@ -75,6 +78,8 @@ export class AccountPage implements OnInit {
   verifyButtonText = 'Verify'; // to hold the button's text
 
   identities: Models.Identity[] = [];
+
+  isSyncing: boolean = false;
 
   constructor(
     private store: Store,
@@ -134,9 +139,12 @@ export class AccountPage implements OnInit {
         .pipe(select(identitiesSelector))
         .subscribe((identities: Models.Identity[]) => {
           this.providerStatuses = this.allProviders.map((provider) => {
-            const identity = identities.find(
-              (identity) => identity.provider === provider
-            );
+            let identity: Models.Identity | undefined;
+            if (identities) {
+              identity = identities.find(
+                (identity) => identity.provider === provider
+              );
+            }
             return {
               provider,
               connected: !!identity,
@@ -145,8 +153,47 @@ export class AccountPage implements OnInit {
           });
 
           // Update UI
-          console.log(this.providerStatuses);
+          // console.log(this.providerStatuses);
           this.cdr.detectChanges();
+        })
+    );
+
+    // Sync Discord Roles and App Badges
+    this.subscription.add(
+      this.store
+        .pipe(select(syncDiscordRolesSelector))
+        .subscribe((updatedRolesAndBadges) => {
+          if (updatedRolesAndBadges && updatedRolesAndBadges.length === 0) {
+            this.presentToast('No roles or badges to sync.', 'warning');
+          }
+          if (updatedRolesAndBadges && updatedRolesAndBadges.length > 0) {
+            this.presentToast(
+              `${updatedRolesAndBadges
+                .map((item) => item.toUpperCase())
+                .join(', ')} have been synced.`,
+              'success'
+            );
+          }
+
+          if (updatedRolesAndBadges) {
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
+            this.isSyncing = false;
+          }
+        })
+    );
+
+    // Sync Discord Roles and App Badges Error
+    this.subscription.add(
+      this.store
+        .pipe(select(syncDiscordErrorSelector))
+        .subscribe((error: ErrorInterface) => {
+          if (error) {
+            this.presentToast(error.message, 'danger');
+            // Error Cleanup
+            this.store.dispatch(clearErrorsAction());
+          }
+          this.isSyncing = false;
         })
     );
 
@@ -253,6 +300,17 @@ export class AccountPage implements OnInit {
   }
 
   //
+  // Sync Badges
+  //
+
+  syncBadges(identifierId: string) {
+    console.log('Sync Badges', identifierId);
+    this.isSyncing = true;
+    // Dispatch the action to sync discord roles
+    this.store.dispatch(syncDiscordRolesAction());
+  }
+
+  //
   // Others and Delete Account
   //
 
@@ -333,7 +391,7 @@ export class AccountPage implements OnInit {
     const toast = await this.toastController.create({
       message: msg,
       color: color || 'primary',
-      duration: 1000,
+      duration: 3000,
       position: 'top',
     });
 

@@ -59,6 +59,9 @@ import {
   deleteSessionAction,
   deleteSessionSuccessAction,
   deleteSessionFailureAction,
+  syncDiscordRolesAction,
+  syncDiscordRolesSuccessAction,
+  syncDiscordRolesFailureAction,
 } from 'src/app/store/actions/auth.action';
 import {
   updatePresenceFailureAction,
@@ -150,6 +153,8 @@ const initialState: AuthStateInterface = {
   accountDetailError: null,
   isLoadingDeleteAccount: false,
   deleteAccountError: null,
+  syncDiscordRoles: null,
+  syncDiscordError: null,
 };
 
 const authReducer = createReducer(
@@ -785,6 +790,51 @@ const authReducer = createReducer(
     })
   ),
 
+  // Sync Discord Roles Actions
+  on(
+    syncDiscordRolesAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(syncDiscordRolesSuccessAction, (state, action): AuthStateInterface => {
+    // console.log(action.payload);
+    let syncDiscordRoles = [];
+    if (action.payload?.newBadges) {
+      action.payload.newBadges.forEach((badge) => {
+        syncDiscordRoles.push(badge);
+      });
+    }
+    if (action.payload?.newRoles) {
+      action.payload.newRoles.forEach((role) => {
+        syncDiscordRoles.push(role);
+      });
+    }
+    return {
+      ...state,
+      isLoading: false,
+      syncDiscordRoles: syncDiscordRoles.length > 0 ? syncDiscordRoles : [],
+      currentUser: {
+        ...state.currentUser,
+        badges: [
+          ...state.currentUser.badges,
+          ...(action.payload.newBadges.length > 0
+            ? action.payload.newBadges
+            : []),
+        ],
+      },
+    };
+  }),
+  on(syncDiscordRolesFailureAction, (state, action): AuthStateInterface => {
+    console.log(action.error);
+    return {
+      ...state,
+      isLoading: false,
+      syncDiscordError: action.error,
+    };
+  }),
+
   // Delete Session Actions
   on(
     deleteSessionAction,
@@ -1042,6 +1092,8 @@ const authReducer = createReducer(
       deleteAccountError: null,
       verifyEmailSuccess: false,
       resetPasswordSuccess: false,
+      syncDiscordRoles: null,
+      syncDiscordError: null,
     })
   )
 );

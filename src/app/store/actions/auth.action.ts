@@ -1,5 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { Models } from 'appwrite';
 
 import { ActionTypes } from 'src/app/store/actions/types/auth.actiontypes';
 import { Account } from 'src/app/models/Account';
@@ -229,6 +228,19 @@ export const deleteIdentitySuccessAction = createAction(
 
 export const deleteIdentityFailureAction = createAction(
   ActionTypes.DELETE_IDENTITY_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
+// Sync Discord Roles
+export const syncDiscordRolesAction = createAction(ActionTypes.SYNC_DISCORD);
+
+export const syncDiscordRolesSuccessAction = createAction(
+  ActionTypes.SYNC_DISCORD_SUCCESS,
+  props<{ payload: { newBadges: string[]; newRoles: string[] } }>()
+);
+
+export const syncDiscordRolesFailureAction = createAction(
+  ActionTypes.SYNC_DISCORD_FAILURE,
   props<{ error: ErrorInterface }>()
 );
 
