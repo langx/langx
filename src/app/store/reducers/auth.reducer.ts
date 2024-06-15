@@ -815,6 +815,15 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       syncDiscordRoles: syncDiscordRoles.length > 0 ? syncDiscordRoles : [],
+      currentUser: {
+        ...state.currentUser,
+        badges: [
+          ...state.currentUser.badges,
+          ...(action.payload.newBadges.length > 0
+            ? action.payload.newBadges
+            : []),
+        ],
+      },
     };
   }),
   on(syncDiscordRolesFailureAction, (state, action): AuthStateInterface => {
