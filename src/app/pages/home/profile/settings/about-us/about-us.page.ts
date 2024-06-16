@@ -35,8 +35,14 @@ export class AboutUsPage implements OnInit {
       detail: true,
     },
     {
-      title: 'Be Our Backer ❤️',
-      url: environment.ext.SPONSOR,
+      title: 'Be A Patron ❤️',
+      url: environment.ext.FUNDING.PATREON,
+      icon: 'heart',
+      detail: true,
+    },
+    {
+      title: 'Github Sponspor ❤️',
+      url: environment.ext.FUNDING.GITHUB,
       icon: 'heart-outline',
       detail: true,
     },
