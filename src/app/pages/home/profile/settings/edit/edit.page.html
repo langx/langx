@@ -15,18 +15,7 @@
           <ion-col>Display Name</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button
-                (click)="editCurrentUserName()"
-                [ngClass]="{'ion-hide': isEditCurrentUserName}"
-                size="small"
-              >
-                Edit
-              </ion-button>
-              <ion-button
-                (click)="saveCurrentUserName()"
-                [ngClass]="{'ion-hide': !isEditCurrentUserName}"
-                size="small"
-              >
+              <ion-button (click)="saveCurrentUserName()" size="small">
                 Save
               </ion-button>
             </ion-card-subtitle>
@@ -36,16 +25,14 @@
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ion-item [ngClass]="{'ion-hide': isEditCurrentUserName}" lines="none">
-          <ion-text>{{currentUserName}}</ion-text>
-        </ion-item>
-        <ion-item [ngClass]="{'ion-hide': !isEditCurrentUserName}">
+        <ion-item>
           <ion-input
             #currentUserNameInput
             [(ngModel)]="currentUserName"
             [placeholder]="currentUserName"
-            minlength="5"
+            minlength="3"
             maxlength="30"
+            [counter]="true"
           ></ion-input>
         </ion-item>
       </ion-list>

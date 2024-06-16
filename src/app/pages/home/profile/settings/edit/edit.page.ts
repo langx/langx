@@ -72,7 +72,6 @@ export class EditPage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   currentUserName: string = null;
-  isEditCurrentUserName: boolean = false;
 
   profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
@@ -278,18 +277,22 @@ export class EditPage implements OnInit {
     this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
-  editCurrentUserName() {
-    if (!this.isEditCurrentUserName) {
-      this.isEditCurrentUserName = true;
-      this.currentUserNameInput.setFocus();
-    } else {
-      this.isEditCurrentUserName = false;
-    }
-  }
-
   saveCurrentUserName() {
-    this.isEditCurrentUserName = false;
+    this.currentUserName = this.currentUserName.trim();
+
+    if (this.currentUserName.length < 3) {
+      this.presentToast(
+        'Username must be at least 3 characters long.',
+        'danger'
+      );
+      return;
+    }
+
     if (this.currentUserName == this.currentUser?.name) {
+      this.presentToast(
+        'Username must be different from the current one.',
+        'danger'
+      );
       return;
     }
 
