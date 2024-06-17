@@ -52,22 +52,19 @@
   <app-badges-card [badges]="(currentUser$ | async)?.badges"></app-badges-card>
 
   <ion-card>
+    <ion-card-header>
+      <ion-card-title>Others</ion-card-title>
+      <ion-card-subtitle>Profile Management Features</ion-card-subtitle>
+    </ion-card-header>
     <ion-card-content>
       <ion-list class="hasIcon" lines="none">
         <ion-item (click)="getVisitorsPage()" detail>
           <ion-icon name="people-outline"></ion-icon>
-          <ion-label>Profile Visitors 👀</ion-label>
+          <ion-label>Profile Visitors</ion-label>
         </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <ion-card-content>
-      <ion-list class="hasIcon" lines="none">
         <ion-item (click)="publicProfileView()" detail>
           <ion-icon name="eye-outline"></ion-icon>
-          <ion-label>View Profile as Public 👁️</ion-label>
+          <ion-label>View Profile as Public️</ion-label>
         </ion-item>
       </ion-list>
     </ion-card-content>
