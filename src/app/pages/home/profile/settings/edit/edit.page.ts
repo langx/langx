@@ -352,8 +352,6 @@ export class EditPage implements OnInit {
 
   onInputUsername(event) {
     this.username = event.target.value;
-    console.log(this.username);
-
     const request = {
       username: this.username,
     };

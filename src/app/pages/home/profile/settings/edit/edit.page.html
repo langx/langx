@@ -67,6 +67,7 @@
             maxlength="15"
             [counter]="true"
             debounce="1000"
+            pattern="^[a-zA-Z0-9_]*$"
           >
             <ion-icon
               *ngIf="isUsernameAvailable$ | async"
