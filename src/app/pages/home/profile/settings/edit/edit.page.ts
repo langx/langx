@@ -313,6 +313,11 @@ export class EditPage implements OnInit {
     console.log(this.username);
   }
 
+  onInputUsername(event) {
+    this.username = event.target.value;
+    console.log(this.username);
+  }
+
   //
   // Edit Languages
   //

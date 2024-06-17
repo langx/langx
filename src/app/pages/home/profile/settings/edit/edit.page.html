@@ -61,10 +61,12 @@
             #usernameInput
             [(ngModel)]="username"
             [placeholder]="username"
+            (ionInput)="onInputUsername($event)"
             label="@"
             minlength="3"
             maxlength="15"
             [counter]="true"
+            debounce="1000"
           ></ion-input>
         </ion-item>
       </ion-list>
