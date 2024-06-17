@@ -84,3 +84,8 @@ export const reportSelector = createSelector(
   userFeatureSelector,
   (userState: UserStateInterface) => userState.report
 );
+
+export const isUsernameAvailableSelector = createSelector(
+  userFeatureSelector,
+  (userState: UserStateInterface) => userState.isUsernameAvailable
+);
