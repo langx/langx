@@ -41,6 +41,9 @@ import {
   unBlockUserAction,
   unBlockUserFailureAction,
   unBlockUserSuccessAction,
+  checkUsernameAction,
+  checkUsernameSuccessAction,
+  checkUsernameFailureAction,
 } from 'src/app/store/actions/user.action';
 
 @Injectable()
@@ -198,6 +201,23 @@ export class UserEffects {
               message: errorResponse.message,
             };
             return of(getBlockedUsersFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  checkUsername$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(checkUsernameAction),
+      switchMap(({ request }) => {
+        return this.userService.checkUsername(request.username).pipe(
+          map(() => checkUsernameSuccessAction({ payload: true })),
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(checkUsernameFailureAction({ error }));
           })
         );
       })
