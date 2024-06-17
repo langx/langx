@@ -62,7 +62,7 @@ const initialState: UserStateInterface = {
   user: null,
   error: null,
   report: null,
-  isUsernameAvailable: false,
+  isUsernameAvailable: true,
 };
 
 const userReducer = createReducer(
@@ -368,13 +368,14 @@ const userReducer = createReducer(
     (state): UserStateInterface => ({
       ...state,
       error: null,
-      isUsernameAvailable: false,
+      isLoading: true,
     })
   ),
   on(
     checkUsernameSuccessAction,
     (state, action): UserStateInterface => ({
       ...state,
+      isLoading: false,
       isUsernameAvailable: action.payload,
     })
   ),
@@ -382,7 +383,7 @@ const userReducer = createReducer(
     checkUsernameFailureAction,
     (state, action): UserStateInterface => ({
       ...state,
-      isUsernameAvailable: false,
+      isLoading: false,
       error: action.error,
     })
   ),
@@ -393,6 +394,7 @@ const userReducer = createReducer(
     (state): UserStateInterface => ({
       ...state,
       error: null,
+      isUsernameAvailable: true,
     })
   )
 );
