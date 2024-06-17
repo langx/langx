@@ -37,7 +37,10 @@ import { EditLanguageComponent } from 'src/app/components/edit-language/edit-lan
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language.component';
 
 // Selector and Action Imports
-import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
+import {
+  checkUsernameAction,
+  updateCurrentUserAction,
+} from 'src/app/store/actions/user.action';
 import {
   uploadOtherPhotosAction,
   uploadProfilePictureAction,
@@ -316,6 +319,11 @@ export class EditPage implements OnInit {
   onInputUsername(event) {
     this.username = event.target.value;
     console.log(this.username);
+
+    const request = {
+      username: this.username,
+    };
+    this.store.dispatch(checkUsernameAction({ request }));
   }
 
   //
