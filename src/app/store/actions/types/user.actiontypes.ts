@@ -30,5 +30,9 @@ export enum ActionTypes {
   GET_BLOCKED_USERS_SUCCESS = '[User] Get Blocked Users Success',
   GET_BLOCKED_USERS_FAILURE = '[User] Get Blocked Users Failure',
 
+  CHECK_USERNAME = '[User] Check Username',
+  CHECK_USERNAME_SUCCESS = '[User] Check Username Success',
+  CHECK_USERNAME_FAILURE = '[User] Check Username Failure',
+
   CLEAR_ERRORS = '[Users] Clear Errors',
 }

@@ -130,5 +130,21 @@ export const getBlockedUsersFailureAction = createAction(
   props<{ error: ErrorInterface }>()
 );
 
+// Check Username
+export const checkUsernameAction = createAction(
+  ActionTypes.CHECK_USERNAME,
+  props<{ request: { username: string } }>()
+);
+
+export const checkUsernameSuccessAction = createAction(
+  ActionTypes.CHECK_USERNAME_SUCCESS,
+  props<{ payload: boolean }>()
+);
+
+export const checkUsernameFailureAction = createAction(
+  ActionTypes.CHECK_USERNAME_FAILURE,
+  props<{ error: ErrorInterface }>()
+);
+
 // Clear Errors
 export const clearErrorsAction = createAction(ActionTypes.CLEAR_ERRORS);
