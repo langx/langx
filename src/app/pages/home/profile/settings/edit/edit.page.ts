@@ -38,6 +38,10 @@ import { AddLanguageComponent } from 'src/app/components/add-language/add-langua
 
 // Selector and Action Imports
 import {
+  isLoadingSelector as isLoadingUserSelector,
+  isUsernameAvailableSelector,
+} from 'src/app/store/selectors/user.selector';
+import {
   checkUsernameAction,
   updateCurrentUserAction,
 } from 'src/app/store/actions/user.action';
@@ -71,11 +75,14 @@ export class EditPage implements OnInit {
   subscriptions: Subscription;
 
   isLoading$: Observable<boolean> = null;
+  isLoadingUser$: Observable<boolean> = null;
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   name: string = null;
+
+  isUsernameAvailable$: Observable<boolean> = null;
   username: string = null;
 
   profilePic$: Observable<URL> = null;
@@ -175,6 +182,10 @@ export class EditPage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoadingUser$ = this.store.pipe(select(isLoadingUserSelector));
+    this.isUsernameAvailable$ = this.store.pipe(
+      select(isUsernameAvailableSelector)
+    );
   }
 
   initForm() {
