@@ -67,7 +67,20 @@
             maxlength="15"
             [counter]="true"
             debounce="1000"
-          ></ion-input>
+          >
+            <ion-icon
+              slot="end"
+              name="checkmark-outline"
+              color="success"
+              aria-hidden="true"
+            ></ion-icon>
+            <ion-icon
+              slot="end"
+              name="alert-outline"
+              color="danger"
+              aria-hidden="true"
+            ></ion-icon>
+          </ion-input>
         </ion-item>
       </ion-list>
     </ion-card-content>
