@@ -212,7 +212,7 @@ export class UserEffects {
       ofType(checkUsernameAction),
       switchMap(({ request }) => {
         return this.userService.checkUsername(request.username).pipe(
-          map(() => checkUsernameSuccessAction({ payload: true })),
+          map((response) => checkUsernameSuccessAction({ payload: response })),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
