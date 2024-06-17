@@ -3,6 +3,7 @@ import { User } from 'src/app/models/User';
 
 export const deletedUser: User = {
   $id: 'deleted-user',
+  username: 'deleted-user',
   name: 'User Not Found',
   country: null,
   countyCode: null,

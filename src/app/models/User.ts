@@ -8,6 +8,7 @@ export type User = Models.Document & {
   countyCode: string;
   gender: string;
   birthdate: Date;
+  username: string;
   languageArray?: string[];
   motherLanguages?: string[];
   studyLanguages?: string[];
