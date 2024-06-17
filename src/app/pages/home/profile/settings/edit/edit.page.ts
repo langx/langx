@@ -61,7 +61,8 @@ import { clearErrorsAction } from 'src/app/store/actions/auth.action';
 })
 export class EditPage implements OnInit {
   @ViewChild('currentUserNameInput', { static: false })
-  currentUserNameInput: IonInput;
+  nameInput: IonInput;
+  usenameInput: IonInput;
 
   form: FormGroup;
   subscriptions: Subscription;
@@ -72,6 +73,7 @@ export class EditPage implements OnInit {
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
   name: string = null;
+  username: string = null;
 
   profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
@@ -109,6 +111,9 @@ export class EditPage implements OnInit {
         }
         if (!this.name) {
           this.name = user?.name;
+        }
+        if (!this.username) {
+          this.username = user?.username;
         }
       })
     );
@@ -302,6 +307,10 @@ export class EditPage implements OnInit {
       },
     };
     this.store.dispatch(updateCurrentUserAction({ request }));
+  }
+
+  updateUsername() {
+    console.log(this.username);
   }
 
   //

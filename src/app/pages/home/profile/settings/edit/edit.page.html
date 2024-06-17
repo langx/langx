@@ -27,11 +27,42 @@
       <ion-list>
         <ion-item>
           <ion-input
-            #currentUserNameInput
+            #nameInput
             [(ngModel)]="name"
             [placeholder]="name"
             minlength="3"
             maxlength="30"
+            [counter]="true"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-row>
+          <ion-col>Username</ion-col>
+          <ion-col>
+            <ion-card-subtitle>
+              <ion-button (click)="updateUsername()" size="small">
+                Save
+              </ion-button>
+            </ion-card-subtitle>
+          </ion-col>
+        </ion-row>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-input
+            #usernameInput
+            [(ngModel)]="username"
+            [placeholder]="username"
+            minlength="3"
+            maxlength="15"
             [counter]="true"
           ></ion-input>
         </ion-item>
