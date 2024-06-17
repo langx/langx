@@ -5,6 +5,8 @@ ion-thumbnail {
   --border-radius: 10px;
 }
 
-ion-card-subtitle {
-  text-align: end;
+.hasInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
