@@ -307,7 +307,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    if (this.name == this.currentUser?.name) {
+    if (this.name === this.currentUser?.name) {
       this.presentToast(
         'Username must be different from the current one.',
         'danger'
@@ -324,7 +324,30 @@ export class EditPage implements OnInit {
   }
 
   updateUsername() {
-    console.log(this.username);
+    this.username = this.username.trim();
+
+    if (this.username.length < 3) {
+      this.presentToast(
+        'Username must be at least 3 characters long.',
+        'danger'
+      );
+      return;
+    }
+
+    if (this.username === this.currentUser?.username) {
+      this.presentToast(
+        'Username must be different from the current one.',
+        'danger'
+      );
+      return;
+    }
+
+    const request = {
+      data: {
+        username: this.username,
+      },
+    };
+    this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
   onInputUsername(event) {
