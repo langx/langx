@@ -412,7 +412,7 @@ export class UserService {
       ])
     ).pipe(
       switchMap((response) => {
-        return of(response.documents.length === 0);
+        return of(response.total === 0);
       })
     );
   }
