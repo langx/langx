@@ -15,7 +15,7 @@
           <ion-col>Display Name</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button (click)="saveCurrentUserName()" size="small">
+              <ion-button (click)="updateName()" size="small">
                 Save
               </ion-button>
             </ion-card-subtitle>
@@ -28,8 +28,8 @@
         <ion-item>
           <ion-input
             #currentUserNameInput
-            [(ngModel)]="currentUserName"
-            [placeholder]="currentUserName"
+            [(ngModel)]="name"
+            [placeholder]="name"
             minlength="3"
             maxlength="30"
             [counter]="true"

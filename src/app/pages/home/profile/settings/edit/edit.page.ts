@@ -71,7 +71,7 @@ export class EditPage implements OnInit {
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
-  currentUserName: string = null;
+  name: string = null;
 
   profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
@@ -107,8 +107,8 @@ export class EditPage implements OnInit {
         if (!this.form.get('aboutMe').value) {
           this.form.get('aboutMe').setValue(user?.aboutMe);
         }
-        if (!this.currentUserName) {
-          this.currentUserName = user?.name;
+        if (!this.name) {
+          this.name = user?.name;
         }
       })
     );
@@ -277,10 +277,10 @@ export class EditPage implements OnInit {
     this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
-  saveCurrentUserName() {
-    this.currentUserName = this.currentUserName.trim();
+  updateName() {
+    this.name = this.name.trim();
 
-    if (this.currentUserName.length < 3) {
+    if (this.name.length < 3) {
       this.presentToast(
         'Username must be at least 3 characters long.',
         'danger'
@@ -288,7 +288,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    if (this.currentUserName == this.currentUser?.name) {
+    if (this.name == this.currentUser?.name) {
       this.presentToast(
         'Username must be different from the current one.',
         'danger'
@@ -298,7 +298,7 @@ export class EditPage implements OnInit {
 
     const request = {
       data: {
-        name: this.currentUserName,
+        name: this.name,
       },
     };
     this.store.dispatch(updateCurrentUserAction({ request }));
