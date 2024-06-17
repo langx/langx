@@ -211,6 +211,10 @@ export class UserEffects {
     this.actions$.pipe(
       ofType(checkUsernameAction),
       switchMap(({ request }) => {
+        const pattern = /^[a-zA-Z0-9_]*$/;
+        if (!pattern.test(request.username)) {
+          return of(checkUsernameSuccessAction({ payload: false }));
+        }
         return this.userService.checkUsername(request.username).pipe(
           map((response) => checkUsernameSuccessAction({ payload: response })),
           catchError((errorResponse: HttpErrorResponse) => {
