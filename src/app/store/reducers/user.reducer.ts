@@ -32,6 +32,9 @@ import {
   getUsersByCompletedProfileWithOffsetFailureAction,
 } from 'src/app/store/actions/users.action';
 import {
+  checkUsernameAction,
+  checkUsernameFailureAction,
+  checkUsernameSuccessAction,
   clearErrorsAction,
   getUserByIdAction,
   getUserByIdFailureAction,
@@ -59,6 +62,7 @@ const initialState: UserStateInterface = {
   user: null,
   error: null,
   report: null,
+  isUsernameAvailable: false,
 };
 
 const userReducer = createReducer(
@@ -355,6 +359,31 @@ const userReducer = createReducer(
     (state): UserStateInterface => ({
       ...state,
       report: null,
+    })
+  ),
+
+  // Check Username Reducers
+  on(
+    checkUsernameAction,
+    (state): UserStateInterface => ({
+      ...state,
+      error: null,
+      isUsernameAvailable: false,
+    })
+  ),
+  on(
+    checkUsernameSuccessAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isUsernameAvailable: action.payload,
+    })
+  ),
+  on(
+    checkUsernameFailureAction,
+    (state, action): UserStateInterface => ({
+      ...state,
+      isUsernameAvailable: false,
+      error: action.error,
     })
   ),
 
