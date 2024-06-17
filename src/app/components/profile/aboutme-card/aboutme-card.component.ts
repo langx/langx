@@ -31,6 +31,10 @@ export class AboutmeCardComponent implements OnInit {
     this.router.navigate(['/', 'home', 'account']);
   }
 
+  updateUsername() {
+    console.log('updateUsername');
+  }
+
   //
   // Utils
   //

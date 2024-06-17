@@ -38,6 +38,14 @@
       <ion-item>
         <ion-icon name="at-outline"></ion-icon>
         <ion-label> &#64;{{ user?.username }} </ion-label>
+        <ion-button
+          *ngIf="account"
+          (click)="updateUsername()"
+          size="small"
+          fill="clear"
+        >
+          Edit
+        </ion-button>
       </ion-item>
       <ion-item *ngIf="account && account.emailVerification">
         <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
