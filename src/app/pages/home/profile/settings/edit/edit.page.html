@@ -69,12 +69,14 @@
             debounce="1000"
           >
             <ion-icon
+              *ngIf="isUsernameAvailable$ | async"
               slot="end"
               name="checkmark-outline"
               color="success"
               aria-hidden="true"
             ></ion-icon>
             <ion-icon
+              *ngIf="!(isUsernameAvailable$ | async)"
               slot="end"
               name="alert-outline"
               color="danger"
