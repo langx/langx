@@ -402,6 +402,22 @@ export class UserService {
   }
 
   //
+  // Check Username
+  //
+
+  checkUsername(username: string): Observable<boolean> {
+    return from(
+      this.api.listDocuments(environment.appwrite.USERS_COLLECTION, [
+        Query.equal('username', username),
+      ])
+    ).pipe(
+      switchMap((response) => {
+        return of(response.documents.length === 0);
+      })
+    );
+  }
+
+  //
   // Upload Bucket
   //
 
