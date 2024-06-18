@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Browser } from '@capacitor/browser';
 import { ToastController } from '@ionic/angular';
 import { Observable, Subscription, take } from 'rxjs';
 
-import { environment } from 'src/environments/environment';
 import { User } from 'src/app/models/User';
 import { Wallet } from 'src/app/models/Wallet';
 import { Checkout } from 'src/app/models/Checkout';
@@ -30,10 +28,6 @@ import {
   styleUrls: ['./token-details.page.scss'],
 })
 export class TokenDetailsPage implements OnInit {
-  infoURL =
-    environment.ext.token.LITEPAPER + '/litepaper/token/distibution#formula';
-  twitter = environment.ext.token.TWITTER;
-
   subscription: Subscription;
 
   currentUser$: Observable<User | null> = null;
@@ -82,11 +76,6 @@ export class TokenDetailsPage implements OnInit {
   listCheckouts() {
     // Dispatch action to get all visits
     this.store.dispatch(getCheckoutsAction());
-  }
-
-  async openPage(pageURL: any) {
-    // console.log(pageURL);
-    await Browser.open({ url: pageURL });
   }
 
   //
