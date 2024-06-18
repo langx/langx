@@ -157,6 +157,13 @@ const routes: Routes = [
         (m) => m.BackersPageModule
       ),
   },
+  {
+    path: 'token-leaderboard',
+    loadChildren: () =>
+      import(
+        './profile/settings/token-leaderboard/token-leaderboard.module'
+      ).then((m) => m.TokenLeaderboardPageModule),
+  },
 ];
 
 @NgModule({
