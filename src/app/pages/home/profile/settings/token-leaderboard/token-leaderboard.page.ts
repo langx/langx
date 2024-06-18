@@ -2,10 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 import { Observable, Subscription } from 'rxjs';
 import { ToastController } from '@ionic/angular';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 
 import { environment } from 'src/environments/environment';
 import { Wallet } from 'src/app/models/Wallet';
+import { listWalletsAction } from 'src/app/store/actions/wallet.action';
+import {
+  isLoadingSelector,
+  leaderboardSelector,
+} from 'src/app/store/selectors/wallet.selector';
 
 @Component({
   selector: 'app-token-leaderboard',
@@ -53,14 +58,13 @@ export class TokenLeaderboardPage implements OnInit {
   }
 
   initValues() {
-    // this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    // this.streaks$ = this.store.pipe(select(streaksSelector));
-    // this.total$ = this.store.pipe(select(totalSelector));
+    this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.wallets$ = this.store.pipe(select(leaderboardSelector));
   }
 
   listWallets() {
     // Dispatch action to get all visits
-    // this.store.dispatch(getStreaksAction());
+    this.store.dispatch(listWalletsAction());
   }
 
   //
