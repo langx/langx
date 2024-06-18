@@ -9,9 +9,15 @@ export const isLoadingSelector = createSelector(
   walletFeatureSelector,
   (walletState: WalletStateInterface) => walletState.isLoading
 );
+
 export const walletSelector = createSelector(
   walletFeatureSelector,
   (walletState: WalletStateInterface) => walletState.wallet
+);
+
+export const leaderboardSelector = createSelector(
+  walletFeatureSelector,
+  (walletState: WalletStateInterface) => walletState.leaderboard
 );
 
 export const errorSelector = createSelector(
