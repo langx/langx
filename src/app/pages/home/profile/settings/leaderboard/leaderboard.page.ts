@@ -81,7 +81,7 @@ export class LeaderboardPage implements OnInit {
     this.streaks$.pipe(take(1)).subscribe((visits) => {
       const offset = visits.length;
       this.total$.pipe(take(1)).subscribe((total) => {
-        if (offset < 100) {
+        if (offset < 50) {
           this.store.dispatch(
             getStreaksWithOffsetAction({
               request: {
