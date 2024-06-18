@@ -64,7 +64,7 @@ const walletReducer = createReducer(
     listWalletsSuccessAction,
     (state, action): WalletStateInterface => ({
       ...state,
-      isLoading: true,
+      isLoading: false,
       leaderboard: action.payload.documents,
       error: null,
     })
