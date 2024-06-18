@@ -46,7 +46,11 @@
           <ion-col>Username</ion-col>
           <ion-col>
             <ion-card-subtitle>
-              <ion-button (click)="updateUsername()" size="small">
+              <ion-button
+                (click)="updateUsername()"
+                [disabled]="(isLoadingUser$ | async)"
+                size="small"
+              >
                 Save
               </ion-button>
             </ion-card-subtitle>
@@ -66,7 +70,7 @@
             minlength="3"
             maxlength="15"
             [counter]="true"
-            debounce="1000"
+            debounce="300"
             pattern="^[a-zA-Z0-9_]*$"
           >
             <ion-icon
