@@ -36,4 +36,49 @@
       </ul>
     </ion-card-content>
   </ion-card>
+
+  <ion-card *ngIf="(wallets$ | async)?.length > 0">
+    <ion-card-header>
+      <ion-card-subtitle> Top Token Holders 🏆 </ion-card-subtitle>
+      <ion-card-title>Token Leaderboard 🏆</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ng-container *ngFor="let wallet of (wallets$ | async); let i = index">
+          {{ wallet.$id }} {{ wallet.balance }}
+          <!-- <app-streak-list [item]="wallet" [order]="i+1"></app-streak-list> -->
+        </ng-container>
+      </ion-list>
+
+      <!-------------------->
+      <!-- SKELETON start -->
+      <!-------------------->
+
+      <ion-list *ngIf="(isLoading$ | async)">
+        <ion-item *ngFor="let i of '0123456789'.split('')" detail>
+          <ion-thumbnail slot="start">
+            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+          </ion-thumbnail>
+          <ion-label>
+            <h3>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 60%"
+              ></ion-skeleton-text>
+            </h3>
+            <p>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 30%"
+              ></ion-skeleton-text>
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <!------------------>
+      <!-- SKELETON end -->
+      <!------------------>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
