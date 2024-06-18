@@ -4,9 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, take } from 'rxjs';
 
 import { Streak } from 'src/app/models/Streak';
-import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   getStreaksAction,
   getStreaksWithOffsetAction,
@@ -27,7 +25,6 @@ import {
 export class LeaderboardPage implements OnInit {
   subscription: Subscription;
 
-  currentUser$: Observable<User | null> = null;
   isLoading$: Observable<boolean> = null;
   streaks$: Observable<Streak[] | null> = null;
   total$: Observable<number | null> = null;
@@ -62,7 +59,6 @@ export class LeaderboardPage implements OnInit {
   }
 
   initValues() {
-    this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.streaks$ = this.store.pipe(select(streaksSelector));
     this.total$ = this.store.pipe(select(totalSelector));
