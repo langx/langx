@@ -35,6 +35,10 @@
           Registered {{ lastSeenExt(user?.$createdAt) }} ago
         </ion-label>
       </ion-item>
+      <ion-item>
+        <ion-icon name="at-outline"></ion-icon>
+        <ion-label> &#64;{{ user?.username }} </ion-label>
+      </ion-item>
       <ion-item *ngIf="account && account.emailVerification">
         <ion-icon name="shield-checkmark-outline" color="success"></ion-icon>
         <ion-label> Verified Email </ion-label>

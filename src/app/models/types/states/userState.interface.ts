@@ -19,4 +19,5 @@ export interface UserStateInterface {
   user: User | null;
   error: ErrorInterface | null;
   report: Report | null;
+  isUsernameAvailable: boolean;
 }

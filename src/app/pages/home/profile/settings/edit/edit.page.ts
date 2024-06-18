@@ -37,7 +37,14 @@ import { EditLanguageComponent } from 'src/app/components/edit-language/edit-lan
 import { AddLanguageComponent } from 'src/app/components/add-language/add-language.component';
 
 // Selector and Action Imports
-import { updateCurrentUserAction } from 'src/app/store/actions/user.action';
+import {
+  isLoadingSelector as isLoadingUserSelector,
+  isUsernameAvailableSelector,
+} from 'src/app/store/selectors/user.selector';
+import {
+  checkUsernameAction,
+  updateCurrentUserAction,
+} from 'src/app/store/actions/user.action';
 import {
   uploadOtherPhotosAction,
   uploadProfilePictureAction,
@@ -61,17 +68,22 @@ import { clearErrorsAction } from 'src/app/store/actions/auth.action';
 })
 export class EditPage implements OnInit {
   @ViewChild('currentUserNameInput', { static: false })
-  currentUserNameInput: IonInput;
+  nameInput: IonInput;
+  usenameInput: IonInput;
 
   form: FormGroup;
   subscriptions: Subscription;
 
   isLoading$: Observable<boolean> = null;
+  isLoadingUser$: Observable<boolean> = null;
   currentUser$: Observable<User | null> = null;
   currentUser: User | null = null;
   studyLanguages: Language[] = [];
   motherLanguages: Language[] = [];
-  currentUserName: string = null;
+  name: string = null;
+
+  isUsernameAvailable$: Observable<boolean> = null;
+  username: string = null;
 
   profilePic$: Observable<URL> = null;
   otherPics$: Observable<URL[]> = of([]);
@@ -107,8 +119,11 @@ export class EditPage implements OnInit {
         if (!this.form.get('aboutMe').value) {
           this.form.get('aboutMe').setValue(user?.aboutMe);
         }
-        if (!this.currentUserName) {
-          this.currentUserName = user?.name;
+        if (!this.name) {
+          this.name = user?.name;
+        }
+        if (!this.username) {
+          this.username = user?.username;
         }
       })
     );
@@ -167,6 +182,10 @@ export class EditPage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
+    this.isLoadingUser$ = this.store.pipe(select(isLoadingUserSelector));
+    this.isUsernameAvailable$ = this.store.pipe(
+      select(isUsernameAvailableSelector)
+    );
   }
 
   initForm() {
@@ -277,10 +296,10 @@ export class EditPage implements OnInit {
     this.store.dispatch(updateCurrentUserAction({ request }));
   }
 
-  saveCurrentUserName() {
-    this.currentUserName = this.currentUserName.trim();
+  updateName() {
+    this.name = this.name.trim();
 
-    if (this.currentUserName.length < 3) {
+    if (this.name.length < 3) {
       this.presentToast(
         'Username must be at least 3 characters long.',
         'danger'
@@ -288,7 +307,7 @@ export class EditPage implements OnInit {
       return;
     }
 
-    if (this.currentUserName == this.currentUser?.name) {
+    if (this.name === this.currentUser?.name) {
       this.presentToast(
         'Username must be different from the current one.',
         'danger'
@@ -298,10 +317,45 @@ export class EditPage implements OnInit {
 
     const request = {
       data: {
-        name: this.currentUserName,
+        name: this.name,
       },
     };
     this.store.dispatch(updateCurrentUserAction({ request }));
+  }
+
+  updateUsername() {
+    this.username = this.username.trim();
+
+    if (this.username.length < 3) {
+      this.presentToast(
+        'Username must be at least 3 characters long.',
+        'danger'
+      );
+      return;
+    }
+
+    if (this.username === this.currentUser?.username) {
+      this.presentToast(
+        'Username must be different from the current one.',
+        'danger'
+      );
+      return;
+    }
+
+    const request = {
+      data: {
+        username: this.username,
+      },
+    };
+    this.store.dispatch(updateCurrentUserAction({ request }));
+  }
+
+  onInputUsername(event) {
+    this.username = event.target.value;
+    const request = {
+      username: this.username,
+    };
+    this.store.dispatch(checkUsernameAction({ request }));
   }
 
   //
