@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
 import { Observable, from } from 'rxjs';
+import axios from 'axios';
 
 import { User } from 'src/app/models/User';
 import { listWalletsResponseInterface } from 'src/app/models/types/responses/listWalletsResponse.interface';
@@ -23,9 +24,9 @@ export class WalletService {
 
   listWallets(): Observable<listWalletsResponseInterface> {
     return from(
-      this.api.listDocuments(environment.appwrite.WALLET_COLLECTION, [
-        Query.orderDesc('balance'),
-      ])
+      axios.get(`${environment.api.LEADERBOARD}/token`).then((result) => {
+        return result.data as listWalletsResponseInterface;
+      })
     );
   }
 }
