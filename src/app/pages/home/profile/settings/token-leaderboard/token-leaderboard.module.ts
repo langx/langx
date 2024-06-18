@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { TokenLeaderboardPageRoutingModule } from './token-leaderboard-routing.module';
 
 import { TokenLeaderboardPage } from './token-leaderboard.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { TokenLeaderboardPage } from './token-leaderboard.page';
     FormsModule,
     IonicModule,
     TokenLeaderboardPageRoutingModule,
+    ComponentsModule,
   ],
   declarations: [TokenLeaderboardPage],
 })
