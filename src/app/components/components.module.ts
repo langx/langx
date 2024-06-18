@@ -15,6 +15,9 @@ import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
 import { CheckoutListComponent } from './checkout-list/checkout-list.component';
 import { WalletListComponent } from './wallet-list/wallet-list.component';
 
+// Pipes
+import { AppExtrasModule } from 'src/app/app.extras.module';
+
 @NgModule({
   declarations: [
     EmptyScreenComponent,
@@ -30,7 +33,7 @@ import { WalletListComponent } from './wallet-list/wallet-list.component';
     BlockedUserListComponent,
     TimestampComponent,
   ],
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, AppExtrasModule],
   exports: [
     EmptyScreenComponent,
     Oauth2Component,
