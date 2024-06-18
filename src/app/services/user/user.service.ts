@@ -484,9 +484,14 @@ export class UserService {
       // Create individual queries for each attribute
       const nameSearchQuery = Query.search('name', `"${searchQuery}"`);
       const aboutMeSearchQuery = Query.search('aboutMe', `"${searchQuery}"`);
+      const usernameSearchQuery = Query.search('username', `"${searchQuery}"`);
 
       // Combine the queries using the logical OR operator
-      const combinedQuery = Query.or([nameSearchQuery, aboutMeSearchQuery]);
+      const combinedQuery = Query.or([
+        nameSearchQuery,
+        aboutMeSearchQuery,
+        usernameSearchQuery,
+      ]);
 
       // Push the combined query to the queries array
       queries.push(combinedQuery);
