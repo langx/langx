@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Store, select } from '@ngrx/store';
 import { catchError, map, of, switchMap, withLatestFrom } from 'rxjs';
 
-import { listWalletResponseInterface } from 'src/app/models/types/responses/listWalletResponse.interface';
+import { listWalletsResponseInterface } from 'src/app/models/types/responses/listWalletsResponse.interface';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { WalletService } from 'src/app/services/user/wallet.service';
 
@@ -13,6 +13,9 @@ import {
   getWalletAction,
   getWalletSuccessAction,
   getWalletFailureAction,
+  listWalletsFailureAction,
+  listWalletsSuccessAction,
+  listWalletsAction,
 } from 'src/app/store/actions/wallet.action';
 
 @Injectable()
@@ -22,8 +25,8 @@ export class WalletEffects {
       ofType(getWalletAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([_, currentUser]) => {
-        return this.walletService.listWallet(currentUser).pipe(
-          map((payload: listWalletResponseInterface) => {
+        return this.walletService.getWallet(currentUser).pipe(
+          map((payload: listWalletsResponseInterface) => {
             return getWalletSuccessAction({ payload: payload });
           }),
 
@@ -32,6 +35,26 @@ export class WalletEffects {
               message: errorResponse.message,
             };
             return of(getWalletFailureAction({ error }));
+          })
+        );
+      })
+    )
+  );
+
+  listWallets$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(listWalletsAction),
+      switchMap(() => {
+        return this.walletService.listWallets().pipe(
+          map((payload: listWalletsResponseInterface) => {
+            return listWalletsSuccessAction({ payload: payload });
+          }),
+
+          catchError((errorResponse: HttpErrorResponse) => {
+            const error: ErrorInterface = {
+              message: errorResponse.message,
+            };
+            return of(listWalletsFailureAction({ error }));
           })
         );
       })
