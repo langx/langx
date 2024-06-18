@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Wallet } from 'src/app/models/Wallet';
 
 @Component({
   selector: 'app-wallet-list',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./wallet-list.component.scss'],
 })
 export class WalletListComponent implements OnInit {
+  @Input() item: Wallet;
+  @Input() order: number;
+
   constructor() {}
 
   ngOnInit() {}
