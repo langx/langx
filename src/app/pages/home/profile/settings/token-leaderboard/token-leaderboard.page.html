@@ -45,8 +45,7 @@
     <ion-card-content>
       <ion-list>
         <ng-container *ngFor="let wallet of (wallets$ | async); let i = index">
-          {{ wallet.$id }} {{ wallet.balance }}
-          <!-- <app-streak-list [item]="wallet" [order]="i+1"></app-streak-list> -->
+          <app-wallet-list [item]="wallet" [order]="i+1"></app-wallet-list>
         </ng-container>
       </ion-list>
 
