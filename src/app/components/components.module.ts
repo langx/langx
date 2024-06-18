@@ -13,6 +13,10 @@ import { VisitListComponent } from './visit-list/visit-list.component';
 import { StreakListComponent } from './streak-list/streak-list.component';
 import { TimestampComponent } from './chat-box/timestamp/timestamp.component';
 import { CheckoutListComponent } from './checkout-list/checkout-list.component';
+import { WalletListComponent } from './wallet-list/wallet-list.component';
+
+// Pipes
+import { AppExtrasModule } from 'src/app/app.extras.module';
 
 @NgModule({
   declarations: [
@@ -24,11 +28,12 @@ import { CheckoutListComponent } from './checkout-list/checkout-list.component';
     UserListComponent,
     VisitListComponent,
     StreakListComponent,
+    WalletListComponent,
     CheckoutListComponent,
     BlockedUserListComponent,
     TimestampComponent,
   ],
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule, AppExtrasModule],
   exports: [
     EmptyScreenComponent,
     Oauth2Component,
@@ -38,6 +43,7 @@ import { CheckoutListComponent } from './checkout-list/checkout-list.component';
     UserListComponent,
     VisitListComponent,
     StreakListComponent,
+    WalletListComponent,
     CheckoutListComponent,
     BlockedUserListComponent,
     TimestampComponent,

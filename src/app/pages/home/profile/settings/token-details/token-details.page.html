@@ -12,31 +12,6 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>How It Works?</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p style="font-size: larger">
-        <a (click)="openPage(twitter)"><strong>#Learn2Earn</strong></a>
-        with LangX
-      </p>
-      <ul style="font-size: larger">
-        <li>
-          A fixed daily amount of 10,000 tokens is available on the testnet.
-        </li>
-        <li>
-          In the future, the Smart Contract will determine the distribution of
-          tokens each day.
-        </li>
-        <li>
-          Tokens are distributed based on your
-          <a (click)="openPage(infoURL)">in-app activity</a>.
-        </li>
-      </ul>
-    </ion-card-content>
-  </ion-card>
-
   <ion-card *ngIf="(checkouts$ | async)?.length > 0">
     <ion-card-header>
       <ion-card-subtitle>LangX Tokens 🪙</ion-card-subtitle>

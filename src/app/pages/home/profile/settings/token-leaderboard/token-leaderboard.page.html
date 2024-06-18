@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="home/profile"></ion-back-button>
     </ion-buttons>
-    <ion-title>Streaks Leaderboard 🏆</ion-title>
+    <ion-title>Token Leaderboard 🏆</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -18,24 +18,34 @@
     </ion-card-header>
     <ion-card-content>
       <p style="font-size: larger">
-        Building a chain plays an important role in learning languages 😎
+        <a (click)="openPage(twitter)"><strong>#Learn2Earn</strong></a>
+        with LangX
       </p>
       <ul style="font-size: larger">
-        <li>Stay online at least one time a day.</li>
-        <li>Recovery of lost streaks is not possible.</li>
+        <li>
+          A fixed daily amount of 10,000 tokens is available on the testnet.
+        </li>
+        <li>
+          In the future, the Smart Contract will determine the distribution of
+          tokens each day.
+        </li>
+        <li>
+          Tokens are distributed based on your
+          <a (click)="openPage(infoURL)">in-app activity</a>.
+        </li>
       </ul>
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="(streaks$ | async)?.length > 0">
+  <ion-card *ngIf="(wallets$ | async)?.length > 0">
     <ion-card-header>
-      <ion-card-subtitle> Don't break the chain 🔥 </ion-card-subtitle>
-      <ion-card-title>Leaderboard 🏆</ion-card-title>
+      <ion-card-subtitle> Top LangX Test Token Holders 🏆 </ion-card-subtitle>
+      <ion-card-title>Token Leaderboard 🏆</ion-card-title>
     </ion-card-header>
     <ion-card-content>
       <ion-list>
-        <ng-container *ngFor="let streak of (streaks$ | async); let i = index">
-          <app-streak-list [item]="streak" [order]="i+1"></app-streak-list>
+        <ng-container *ngFor="let wallet of (wallets$ | async); let i = index">
+          <app-wallet-list [item]="wallet" [order]="i+1"></app-wallet-list>
         </ng-container>
       </ion-list>
 
@@ -44,10 +54,7 @@
       <!-------------------->
 
       <ion-list *ngIf="(isLoading$ | async)">
-        <ion-item *ngFor="let i of '0123456789'.split('')" detail>
-          <ion-thumbnail slot="start">
-            <ion-skeleton-text [animated]="true"></ion-skeleton-text>
-          </ion-thumbnail>
+        <ion-item *ngFor="let i of '0123456789'.split('')">
           <ion-label>
             <h3>
               <ion-skeleton-text
@@ -70,8 +77,4 @@
       <!------------------>
     </ion-card-content>
   </ion-card>
-
-  <ion-infinite-scroll (ionInfinite)="loadMore($event)">
-    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 </ion-content>

@@ -55,6 +55,7 @@ export const environment = {
     USER: `${API_URL}api/user`,
     LANGUAGE: `${API_URL}api/language`,
     VISIT: `${API_URL}api/visit`,
+    LEADERBOARD: `${API_URL}api/leaderboard`,
   },
   ext: {
     STATUS_PAGE: STATUS_PAGE,

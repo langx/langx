@@ -6,6 +6,9 @@ import {
   getWalletAction,
   getWalletSuccessAction,
   getWalletFailureAction,
+  listWalletsAction,
+  listWalletsSuccessAction,
+  listWalletsFailureAction,
 } from 'src/app/store/actions/wallet.action';
 import {
   deleteAccountSuccessAction,
@@ -15,6 +18,7 @@ import {
 const initialState: WalletStateInterface = {
   isLoading: false,
   wallet: null,
+  leaderboard: null,
   error: null,
 };
 
@@ -40,6 +44,33 @@ const walletReducer = createReducer(
   }),
   on(
     getWalletFailureAction,
+    (state, action): WalletStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
+  // List Wallets Reducers
+  on(
+    listWalletsAction,
+    (state): WalletStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    listWalletsSuccessAction,
+    (state, action): WalletStateInterface => ({
+      ...state,
+      isLoading: false,
+      leaderboard: action.payload.documents,
+      error: null,
+    })
+  ),
+  on(
+    listWalletsFailureAction,
     (state, action): WalletStateInterface => ({
       ...state,
       isLoading: false,

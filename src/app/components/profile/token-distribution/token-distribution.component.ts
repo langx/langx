@@ -54,8 +54,12 @@ export class TokenDistributionComponent implements OnInit {
     this.wallet$ = this.store.pipe(select(walletSelector));
   }
 
-  openLeaderboard() {
+  openTokenDetails() {
     this.router.navigate(['/', 'home', 'token-details']);
+  }
+
+  openTokenLeaderboard() {
+    this.router.navigate(['/', 'home', 'token-leaderboard']);
   }
 
   async openPage(pageURL: any) {

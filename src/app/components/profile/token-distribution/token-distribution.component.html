@@ -10,7 +10,7 @@
   </ion-card-header>
   <ion-card-content>
     <ion-list>
-      <ion-item lines="none" (click)="openLeaderboard()" detail>
+      <ion-item lines="none" (click)="openTokenDetails()" detail>
         <ion-thumbnail slot="start">
           <img alt="Do not break the chain" src="/assets/image/token.png" />
         </ion-thumbnail>
@@ -23,6 +23,10 @@
         <div class="metadata-end-wrapper" slot="end">
           <!-- <ion-note>#{{getLeaderBoardOrder()}}</ion-note> -->
         </div>
+      </ion-item>
+      <ion-item class="hasIcon" (click)="openTokenLeaderboard()" detail>
+        <ion-icon name="trophy-outline"></ion-icon>
+        <ion-label>Leaderboard</ion-label>
       </ion-item>
     </ion-list>
   </ion-card-content>

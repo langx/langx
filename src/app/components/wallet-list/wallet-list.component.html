@@ -1,0 +1,12 @@
+<ion-item>
+  <h1 slot="start" style="min-width: 40px">{{ order }}.</h1>
+  <ion-label>
+    <h2>
+      <code>{{ item?.$id | slice : -10 }}</code>
+      <!-- <code>{{ item?.$id }}</code> -->
+    </h2>
+  </ion-label>
+  <div class="metadata-end-wrapper" slot="end">
+    <h1>{{ item?.balance | bigNumbers }}</h1>
+  </div>
+</ion-item>

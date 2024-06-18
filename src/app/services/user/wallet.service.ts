@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Query } from 'appwrite';
 import { Observable, from } from 'rxjs';
+import axios from 'axios';
 
 import { User } from 'src/app/models/User';
-import { listWalletResponseInterface } from 'src/app/models/types/responses/listWalletResponse.interface';
+import { listWalletsResponseInterface } from 'src/app/models/types/responses/listWalletsResponse.interface';
 import { ApiService } from 'src/app/services/api/api.service';
 import { environment } from 'src/environments/environment';
 
@@ -13,11 +14,19 @@ import { environment } from 'src/environments/environment';
 export class WalletService {
   constructor(private api: ApiService) {}
 
-  listWallet(currentUser: User): Observable<listWalletResponseInterface> {
+  getWallet(currentUser: User): Observable<listWalletsResponseInterface> {
     return from(
       this.api.listDocuments(environment.appwrite.WALLET_COLLECTION, [
         Query.equal('$id', currentUser.$id),
       ])
+    );
+  }
+
+  listWallets(): Observable<listWalletsResponseInterface> {
+    return from(
+      axios.get(`${environment.api.LEADERBOARD}/token`).then((result) => {
+        return result.data as listWalletsResponseInterface;
+      })
     );
   }
 }
