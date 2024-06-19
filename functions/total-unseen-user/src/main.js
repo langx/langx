@@ -1,8 +1,7 @@
 import { Client, Databases, Query } from 'node-appwrite';
 
 // "events": [
-//   "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create",
-//   "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.update"
+//   "databases.650750f16cd0c482bb83.collections.6507510fc71f989d5d1c.documents.*.update"
 // ],
 
 export default async ({ req, res, log, error }) => {
@@ -15,44 +14,45 @@ export default async ({ req, res, log, error }) => {
   const db = new Databases(client);
 
   try {
-    const listMessages = await db.listDocuments(
+    log(`Request: ${JSON.stringify(req.body)}`);
+    const user1 = req.body.users[0];
+    const user2 = req.body.users[1];
+    log(`Users: ${user1} and ${user2}`);
+
+    const listRoomsForUser1 = await db.listDocuments(
       process.env.APP_DATABASE,
-      process.env.MESSAGES_COLLECTION,
-      [
-        Query.equal('roomId', req.body.roomId.$id),
-        Query.orderDesc('$createdAt'),
-      ]
+      process.env.ROOMS_COLLECTION,
+      [Query.contains('users', user1), Query.orderDesc('$updatedAt')]
     );
 
-    log(`Request: ${JSON.stringify(req.body)}`);
-    log(`List Messages: ${JSON.stringify(listMessages)}`);
+    const listRoomsForUser2 = await db.listDocuments(
+      process.env.APP_DATABASE,
+      process.env.ROOMS_COLLECTION,
+      [Query.contains('users', user2), Query.orderDesc('$updatedAt')]
+    );
 
-    // define unseen
-    let unseen = [0, 0];
-
-    for (const message of listMessages.documents) {
-      if (!message.seen) {
-        if (message.to > message.sender) {
-          unseen[0] += 1;
-        } else {
-          unseen[1] += 1;
-        }
+    // Count unseen messages for user1
+    let unseenCountUser1 = 0;
+    listRoomsForUser1.documents.forEach((room) => {
+      if (room.users[0] === user1 && room.unseen[0] !== 0) {
+        unseenCountUser1 += room.unseen[0];
+      } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
+        unseenCountUser1 += room.unseen[1];
       }
-    }
+    });
 
-    log(`Before: ${JSON.stringify(req.body.roomId.unseen)}, After: ${unseen}`);
-    if (unseen.toString() !== req.body.roomId.unseen.toString()) {
-      log('Updating unseen');
-      const updatedRoom = await db.updateDocument(
-        process.env.APP_DATABASE,
-        process.env.ROOMS_COLLECTION,
-        req.body.roomId.$id,
-        {
-          unseen: unseen,
-        }
-      );
-      log(`Room Updated: ${JSON.stringify(updatedRoom)}`);
-    }
+    // Count unseen messages for user2
+    let unseenCountUser2 = 0;
+    listRoomsForUser2.documents.forEach((room) => {
+      if (room.users[0] === user2 && room.unseen[0] !== 0) {
+        unseenCountUser2 += room.unseen[0];
+      } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
+        unseenCountUser2 += room.unseen[1];
+      }
+    });
+
+    log(`Unseen count for User 1: ${unseenCountUser1}`);
+    log(`Unseen count for User 2: ${unseenCountUser2}`);
 
     return res.json({ ok: true });
   } catch (err) {
