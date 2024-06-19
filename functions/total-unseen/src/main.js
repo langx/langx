@@ -1,8 +1,9 @@
 import { Client, Databases } from 'node-appwrite';
 
-// event triggers
-// databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create
-// databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.update
+// "events": [
+//   "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create",
+//   "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.update"
+// ],
 
 export default async ({ req, res, log, error }) => {
   // Init SDK

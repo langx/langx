@@ -55,7 +55,7 @@
         <ion-badge color="danger" *ngIf="getBadge(room) !== 0">
           {{ getBadge(room) }}
         </ion-badge>
-        <ion-note> {{ messageTime(room?.$updatedAt) }} </ion-note>
+        <ion-note>{{ messageTime(lastMessage?.time) }}</ion-note>
       </div>
       <ion-note> </ion-note>
     </ng-container>
