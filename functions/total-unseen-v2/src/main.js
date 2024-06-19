@@ -26,38 +26,32 @@ export default async ({ req, res, log, error }) => {
     log(req);
     log(listMessages);
 
-    const user1 = req.body.sender;
-    const user2 = req.body.to;
-
-    if (user1 > user2) {
-      let unseen = {
-        [user1]: 0,
-        [user2]: 0,
-      };
-    } else {
-      let unseen = {
-        [user2]: 0,
-        [user1]: 0,
-      };
-    }
+    // define unseen
+    let unseen = [0, 0];
 
     listMessages.documents.forEach(async (message) => {
       if (!message.seen) {
-        unseen[message.to]++;
+        if (message.to > message.sender) {
+          unseen[0] += 1;
+        } else {
+          unseen[1] += 1;
+        }
       }
     });
 
-    if (JSON.stringify(unseen) !== req.body.unseen) {
+    log(`before: ${req.body.roomId.unseen}, after:${unseen}`);
+    if (unseen !== req.body.roomId.unseen) {
       log('Updating unseen');
+      log(req.body.roomId.$id);
       const updatedRoom = await db.updateDocument(
         process.env.APP_DATABASE,
         process.env.ROOMS_COLLECTION,
         req.body.roomId.$id,
         {
-          unseen: JSON.stringify(unseen),
+          unseen: unseen,
         }
       );
-      log(updatedRoom);
+      log(`Room Updated: ${updatedRoom}`);
     }
 
     return res.json({ ok: true });
