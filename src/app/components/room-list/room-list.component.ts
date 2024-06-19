@@ -57,7 +57,7 @@ export class RoomListComponent implements OnInit {
     const lastMessage = room.messages[room.messages.length - 1];
 
     const type = lastMessage?.type || null;
-    this.lastMessage.time = lastMessage?.$updatedAt || null;
+    this.lastMessage.time = lastMessage?.$createdAt || null;
 
     // Check if the last message is from the current user
     if (lastMessage?.to === this.currentUserId) {
