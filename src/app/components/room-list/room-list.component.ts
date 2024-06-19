@@ -115,9 +115,12 @@ export class RoomListComponent implements OnInit {
   }
 
   getBadge(room): number {
-    return room.messages.filter(
-      (message) => message.seen === false && message.to === this.currentUserId
-    ).length;
+    console.log(room.users);
+    if (room.users[0] === this.currentUserId) {
+      return room.unseen[0] || 0;
+    } else {
+      return room.unseen[1] || 0;
+    }
   }
 
   messageTime(d: any) {
