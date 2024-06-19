@@ -15,21 +15,6 @@ export default async ({ req, res, log, error }) => {
   const db = new Databases(client);
 
   try {
-    // get UserDoc First
-    const userDoc = await db.getDocument(
-      process.env.APP_DATABASE,
-      process.env.USERS_COLLECTION,
-      req.body.to
-    );
-
-    if (userDoc.archivedRooms.includes(req.body.roomId.$id)) {
-      throw new Error('Room is already archived');
-    }
-
-    if (userDoc.blockedUsers.includes(req.body.roomId.sender)) {
-      throw new Error('User is already blocked');
-    }
-
     const listMessages = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.MESSAGES_COLLECTION,
