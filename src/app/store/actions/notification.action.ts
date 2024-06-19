@@ -60,3 +60,12 @@ export const findActiveRoomAndDeleteMessageAction = createAction(
   ActionTypes.FIND_ACTIVE_ROOM_AND_DELETE_MESSAGE,
   props<{ payload: MessageExtendedInterface }>()
 );
+
+export const totalUnseenMessagesAction = createAction(
+  ActionTypes.TOTAL_UNSEEN_MESSAGES
+);
+
+export const totalUnseenMessagesSuccessAction = createAction(
+  ActionTypes.TOTAL_UNSEEN_MESSAGES_SUCCESS,
+  props<{ payload: { totalUnseen: number; totalUnseenArchived: number } }>()
+);
