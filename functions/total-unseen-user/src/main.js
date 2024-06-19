@@ -54,9 +54,32 @@ export default async ({ req, res, log, error }) => {
     log(`Unseen count for User 1: ${unseenCountUser1}`);
     log(`Unseen count for User 2: ${unseenCountUser2}`);
 
+    // Update user documents with totalUnseen attribute
+    await Promise.all([
+      updateUserTotalUnseen(db, user1, unseenCountUser1),
+      updateUserTotalUnseen(db, user2, unseenCountUser2),
+    ]);
+
     return res.json({ ok: true });
   } catch (err) {
     log(`Error: ${err.message}`);
     return res.json({ ok: false, error: err.message }, 400);
   }
 };
+
+async function updateUserTotalUnseen(db, userId, totalUnseen) {
+  try {
+    await db.updateDocument(
+      process.env.APP_DATABASE,
+      process.env.USERS_COLLECTION,
+      userId,
+      {
+        totalUnseen: totalUnseen,
+      }
+    );
+  } catch (err) {
+    throw new Error(
+      `Failed to update totalUnseen for User ${userId}: ${err.message}`
+    );
+  }
+}
