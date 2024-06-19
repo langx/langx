@@ -20,24 +20,6 @@
       "path": "functions/push-notification-with-fcm"
     },
     {
-      "$id": "total-unseen",
-      "name": "total-unseen",
-      "runtime": "node-18.0",
-      "execute": [],
-      "events": [
-        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create",
-        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.update"
-      ],
-      "schedule": "",
-      "timeout": 15,
-      "enabled": true,
-      "logging": true,
-      "entrypoint": "src/main.js",
-      "commands": "npm install",
-      "ignore": ["node_modules", ".npm"],
-      "path": "functions/total-unseen"
-    },
-    {
       "$id": "total-unseen-v2",
       "name": "total-unseen-v2",
       "runtime": "node-18.0",
