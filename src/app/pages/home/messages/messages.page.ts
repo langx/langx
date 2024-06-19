@@ -46,7 +46,7 @@ export class MessagesPage implements OnInit {
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
   filteredRooms$: Observable<Room[] | null> = null;
-  totalUnseenArchived$: Observable<number>;
+  totalUnseenArchived$: Observable<number> = null;
 
   currentUserId: string = null;
 
