@@ -29,10 +29,17 @@ export default async ({ req, res, log, error }) => {
     const user1 = req.body.sender;
     const user2 = req.body.to;
 
-    let unseen = {
-      [user1]: 0,
-      [user2]: 0,
-    };
+    if (user1 > user2) {
+      let unseen = {
+        [user1]: 0,
+        [user2]: 0,
+      };
+    } else {
+      let unseen = {
+        [user2]: 0,
+        [user1]: 0,
+      };
+    }
 
     listMessages.documents.forEach(async (message) => {
       if (!message.seen) {
