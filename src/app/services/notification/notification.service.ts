@@ -41,9 +41,16 @@ export class NotificationService {
     private userService: UserService
   ) {}
 
-  connect() {
+  connect(currentUserId: string) {
     let channels = [];
 
+    // channel for rooms
+    const usersCollection =
+      'databases.' +
+      environment.appwrite.APP_DATABASE +
+      '.collections.' +
+      environment.appwrite.USERS_COLLECTION +
+      '.documents';
     // channel for rooms
     const roomsCollection =
       'databases.' +
@@ -76,6 +83,11 @@ export class NotificationService {
       // check if the response is a new message
       response.events.forEach((event) => {
         switch (event) {
+          case `${usersCollection}.${currentUserId}.update`:
+            console.log('[NOTIFICATION] user updated', response.payload);
+            // const updatedUser = response.payload as User;
+            // this.store.dispatch(updateUserAction({ payload: updatedUser }));
+            break;
           case `${messagesCollection}.*.create`:
             // console.log('[NOTIFICATION] message created', response.payload);
             const createdMessage = response.payload as MessageExtendedInterface;
