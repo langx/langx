@@ -93,7 +93,7 @@ export class NotificationService {
             );
             break;
           case `${messagesCollection}.*.create`:
-            console.log('[NOTIFICATION] message created', response.payload);
+            // console.log('[NOTIFICATION] message created', response.payload);
             const createdMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
               findRoomAndAddMessageAction({ payload: createdMessage })
@@ -156,7 +156,7 @@ export class NotificationService {
               findAndUpdateActiveRoomUpdatedAtAction({ payload: updatedRoom })
             );
             // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction());
+            // this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${roomsCollection}.*.delete`:
             // console.log('[NOTIFICATION] room deleted', response.payload);
