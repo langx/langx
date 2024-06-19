@@ -43,7 +43,8 @@
       "runtime": "node-18.0",
       "execute": [],
       "events": [
-        "databases.650750f16cd0c482bb83.collections.6507510fc71f989d5d1c.documents.*.update"
+        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create",
+        "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.update"
       ],
       "schedule": "",
       "timeout": 15,

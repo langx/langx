@@ -1,4 +1,4 @@
-import { Client, Databases } from 'node-appwrite';
+import { Client, Databases, Query } from 'node-appwrite';
 
 // "events": [
 //   "databases.650750f16cd0c482bb83.collections.65075108a4025a4f5bd7.documents.*.create",
@@ -14,29 +14,46 @@ export default async ({ req, res, log, error }) => {
 
   const db = new Databases(client);
 
-  const userDoc = await db.getDocument(
-    process.env.APP_DATABASE,
-    process.env.USERS_COLLECTION,
-    req.body.to
-  );
-
   try {
-    let increment = req.body.seen ? -1 : 1;
-    let resultTotal = userDoc.totalUnseen + increment;
-    if (resultTotal < 0) resultTotal = 0;
-    await db.updateDocument(
+    const listMessages = await db.listDocuments(
       process.env.APP_DATABASE,
-      process.env.USERS_COLLECTION,
-      req.body.to,
-      {
-        totalUnseen: resultTotal,
-      }
+      process.env.MESSAGES_COLLECTION,
+      [
+        Query.equal('roomId', req.body.roomId.$id),
+        Query.orderDesc('$createdAt'),
+      ]
     );
-    return res.json({
-      ok: true,
-      $id: req.body.to,
-      totalUnseen: resultTotal,
+    log(req);
+    log(listMessages);
+
+    const user1 = req.body.sender;
+    const user2 = req.body.to;
+
+    let unseen = {
+      [user1]: 0,
+      [user2]: 0,
+    };
+
+    listMessages.documents.forEach(async (message) => {
+      if (!message.seen) {
+        unseen[message.to]++;
+      }
     });
+
+    if (JSON.stringify(unseen) !== req.body.unseen) {
+      log('Updating unseen');
+      const updatedRoom = await db.updateDocument(
+        process.env.APP_DATABASE,
+        process.env.ROOMS_COLLECTION,
+        req.body.roomId.$id,
+        {
+          unseen: JSON.stringify(unseen),
+        }
+      );
+      log(updatedRoom);
+    }
+
+    return res.json({ ok: true });
   } catch (err) {
     return res.json({ ok: false, error: err.message }, 400);
   }
