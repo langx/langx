@@ -23,13 +23,14 @@ export default async ({ req, res, log, error }) => {
         Query.orderDesc('$createdAt'),
       ]
     );
-    log(req);
-    log(listMessages);
+
+    log(`Request: ${JSON.stringify(req.body)}`);
+    log(`List Messages: ${JSON.stringify(listMessages)}`);
 
     // define unseen
     let unseen = [0, 0];
 
-    listMessages.documents.forEach(async (message) => {
+    for (const message of listMessages.documents) {
       if (!message.seen) {
         if (message.to > message.sender) {
           unseen[0] += 1;
@@ -37,9 +38,9 @@ export default async ({ req, res, log, error }) => {
           unseen[1] += 1;
         }
       }
-    });
+    }
 
-    log(`before: ${req.body.roomId.unseen}, after:${unseen}`);
+    log(`Before: ${JSON.stringify(req.body.roomId.unseen)}, After: ${unseen}`);
     if (unseen.toString() !== req.body.roomId.unseen.toString()) {
       log('Updating unseen');
       const updatedRoom = await db.updateDocument(
@@ -55,6 +56,7 @@ export default async ({ req, res, log, error }) => {
 
     return res.json({ ok: true });
   } catch (err) {
+    log(`Error: ${err.message}`);
     return res.json({ ok: false, error: err.message }, 400);
   }
 };
