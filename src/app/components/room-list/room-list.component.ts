@@ -114,7 +114,7 @@ export class RoomListComponent implements OnInit {
     return getFlagEmoji(item);
   }
 
-  getBadge(room): number {
+  getBadge(room: Room): number {
     console.log(room.users);
     if (room.users[0] === this.currentUserId) {
       return room.unseen[0] || 0;
