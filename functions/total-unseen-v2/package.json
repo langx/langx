@@ -11,6 +11,6 @@
     "prettier": "^3.0.0"
   },
   "dependencies": {
-    "node-appwrite": "^11.0.0"
+    "node-appwrite": "^13.0.0"
   }
 }
