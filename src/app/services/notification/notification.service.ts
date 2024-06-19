@@ -157,7 +157,7 @@ export class NotificationService {
     });
   }
 
-  updatePresence(id: string, request: { lastSeen: Date }): Observable<User> {
+  updatePresence(request: { lastSeen: Date }): Observable<User> {
     return this.userService.updateUserDoc({ lastSeen: request.lastSeen });
   }
 }

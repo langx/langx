@@ -27,19 +27,17 @@ export class PresenceEffects {
           return of(updatePresenceSuccessAction({ payload: currentUser }));
         } else {
           // Otherwise, update presence
-          return this.notificationService
-            .updatePresence(currentUser.$id, request)
-            .pipe(
-              map((payload: User) => {
-                return updatePresenceSuccessAction({ payload });
-              }),
-              catchError((errorResponse: HttpErrorResponse) => {
-                const error: ErrorInterface = {
-                  message: errorResponse.message,
-                };
-                return of(updatePresenceFailureAction({ error }));
-              })
-            );
+          return this.notificationService.updatePresence(request).pipe(
+            map((payload: User) => {
+              return updatePresenceSuccessAction({ payload });
+            }),
+            catchError((errorResponse: HttpErrorResponse) => {
+              const error: ErrorInterface = {
+                message: errorResponse.message,
+              };
+              return of(updatePresenceFailureAction({ error }));
+            })
+          );
         }
       })
     )
