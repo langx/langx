@@ -17,6 +17,8 @@ import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.i
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 // Action Imports
+import { updateCurrentUserSuccessAction } from 'src/app/store/actions/user.action';
+import { attachCopilotAction } from 'src/app/store/actions/message.action';
 import {
   findRoomAndAddMessageAction,
   findActiveRoomAndAddMessageAction,
@@ -29,7 +31,6 @@ import {
   findRoomAndDeleteMessageAction,
   findActiveRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
-import { attachCopilotAction } from 'src/app/store/actions/message.action';
 
 @Injectable({
   providedIn: 'root',
@@ -86,8 +87,10 @@ export class NotificationService {
         switch (event) {
           case `${usersCollection}.${currentUserId}.update`:
             console.log('[NOTIFICATION] user updated', response.payload);
-            // const updatedUser = response.payload as User;
-            // this.store.dispatch(updateUserAction({ payload: updatedUser }));
+            const updatedUser = response.payload as User;
+            this.store.dispatch(
+              updateCurrentUserSuccessAction({ payload: updatedUser })
+            );
             break;
           case `${messagesCollection}.*.create`:
             console.log('[NOTIFICATION] message created', response.payload);
