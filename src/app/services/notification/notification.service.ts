@@ -73,6 +73,7 @@ export class NotificationService {
       '.documents';
 
     // add channels to array
+    channels.push(usersCollection);
     channels.push(roomsCollection);
     channels.push(messagesCollection);
     channels.push(copilotCollection);
@@ -89,7 +90,7 @@ export class NotificationService {
             // this.store.dispatch(updateUserAction({ payload: updatedUser }));
             break;
           case `${messagesCollection}.*.create`:
-            // console.log('[NOTIFICATION] message created', response.payload);
+            console.log('[NOTIFICATION] message created', response.payload);
             const createdMessage = response.payload as MessageExtendedInterface;
             this.store.dispatch(
               findRoomAndAddMessageAction({ payload: createdMessage })
