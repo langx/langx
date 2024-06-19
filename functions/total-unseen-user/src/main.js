@@ -19,16 +19,46 @@ export default async ({ req, res, log, error }) => {
     const user2 = req.body.users[1];
     log(`Users: ${user1} and ${user2}`);
 
+    // Get user documents
+    const user1Doc = await db.getDocument(
+      process.env.APP_DATABASE,
+      process.env.USERS_COLLECTION,
+      user1
+    );
+    const user2Doc = await db.getDocument(
+      process.env.APP_DATABASE,
+      process.env.USERS_COLLECTION,
+      user2
+    );
+
+    // Init queries
+    let querry1 = [
+      Query.contains('users', user1),
+      Query.orderDesc('$updatedAt'),
+    ];
+    let querry2 = [
+      Query.contains('users', user2),
+      Query.orderDesc('$updatedAt'),
+    ];
+
+    // Exclude archived rooms
+    user1Doc.archivedRooms.forEach((roomId) => {
+      querry1.push(Query.notEqual('$id', roomId));
+    });
+    user2Doc.archivedRooms.forEach((roomId) => {
+      querry2.push(Query.notEqual('$id', roomId));
+    });
+
     const listRoomsForUser1 = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.ROOMS_COLLECTION,
-      [Query.contains('users', user1), Query.orderDesc('$updatedAt')]
+      querry1
     );
 
     const listRoomsForUser2 = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.ROOMS_COLLECTION,
-      [Query.contains('users', user2), Query.orderDesc('$updatedAt')]
+      querry2
     );
 
     // Count unseen messages for user1
