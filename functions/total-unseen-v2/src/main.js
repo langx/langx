@@ -40,9 +40,8 @@ export default async ({ req, res, log, error }) => {
     });
 
     log(`before: ${req.body.roomId.unseen}, after:${unseen}`);
-    if (unseen !== req.body.roomId.unseen) {
+    if (unseen.toString() !== req.body.roomId.unseen.toString()) {
       log('Updating unseen');
-      log(req.body.roomId.$id);
       const updatedRoom = await db.updateDocument(
         process.env.APP_DATABASE,
         process.env.ROOMS_COLLECTION,
@@ -51,7 +50,7 @@ export default async ({ req, res, log, error }) => {
           unseen: unseen,
         }
       );
-      log(`Room Updated: ${updatedRoom}`);
+      log(`Room Updated: ${JSON.stringify(updatedRoom)}`);
     }
 
     return res.json({ ok: true });
