@@ -27,6 +27,10 @@ import {
   getRoomsSuccessAction,
   getRoomsWithOffsetSuccessAction,
 } from 'src/app/store/actions/rooms.action';
+import {
+  archiveRoomSuccessAction,
+  unArchiveRoomSuccessAction,
+} from 'src/app/store/actions/room.action';
 
 @Injectable()
 export class NotificationEffects {
@@ -61,7 +65,9 @@ export class NotificationEffects {
       ofType(
         totalUnseenMessagesAction,
         getRoomsSuccessAction,
-        getRoomsWithOffsetSuccessAction
+        getRoomsWithOffsetSuccessAction,
+        archiveRoomSuccessAction,
+        unArchiveRoomSuccessAction
       ),
       withLatestFrom(
         this.store.pipe(select(currentUserSelector)),
