@@ -76,13 +76,14 @@ export class NotificationEffects {
                 !currentUser.blockedUsers.includes(room.userData.$id) &&
                 !currentUser.archivedRooms.includes(room.$id)
               ) {
-                const unseenMessagesInRoom = room.messages.reduce(
-                  (count, message) =>
-                    count +
-                    (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
-                  0
+                // Get the index of the current user in the room.users array
+                const userIndex = room.users.findIndex(
+                  (user) => user === currentUser.$id
                 );
-                return count + unseenMessagesInRoom;
+                // If the user is found in the room.users array, add the corresponding unseen count to the total
+                if (userIndex !== -1) {
+                  return count + room.unseen[userIndex];
+                }
               }
               return count;
             }, 0)
@@ -93,13 +94,14 @@ export class NotificationEffects {
           ? rooms.reduce((count, room) => {
               // Check if the room is archived
               if (currentUser.archivedRooms.includes(room.$id)) {
-                const unseenMessagesInRoom = room.messages.reduce(
-                  (count, message) =>
-                    count +
-                    (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
-                  0
+                // Get the index of the current user in the room.users array
+                const userIndex = room.users.findIndex(
+                  (user) => user === currentUser.$id
                 );
-                return count + unseenMessagesInRoom;
+                // If the user is found in the room.users array, add the corresponding unseen count to the total
+                if (userIndex !== -1) {
+                  return count + room.unseen[userIndex];
+                }
               }
               return count;
             }, 0)
