@@ -115,7 +115,6 @@ export class RoomListComponent implements OnInit {
   }
 
   getBadge(room: Room): number {
-    console.log(room.users);
     if (room.users[0] === this.currentUserId) {
       return room.unseen[0] || 0;
     } else {
