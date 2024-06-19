@@ -85,8 +85,6 @@ export class NotificationService {
             this.store.dispatch(
               findActiveRoomAndAddMessageAction({ payload: createdMessage })
             );
-            // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
             // console.log('[NOTIFICATION] message updated', response.payload);
@@ -101,8 +99,6 @@ export class NotificationService {
                 payload: updatedMessage,
               })
             );
-            // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.delete`:
             // console.log('[NOTIFICATION] message deleted', response.payload);
@@ -143,6 +139,8 @@ export class NotificationService {
             this.store.dispatch(
               findAndUpdateActiveRoomUpdatedAtAction({ payload: updatedRoom })
             );
+            // Dispatch the badge counter action for tab messages
+            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${roomsCollection}.*.delete`:
             // console.log('[NOTIFICATION] room deleted', response.payload);
