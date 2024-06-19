@@ -67,7 +67,7 @@ export class NotificationEffects {
         this.store.pipe(select(currentUserSelector)),
         this.store.pipe(select(roomsSelector))
       ),
-      map(([action, currentUser, rooms]) => {
+      map(([_, currentUser, rooms]) => {
         // Calculate the total number of unseen messages
         const totalUnseenMessages = rooms
           ? rooms.reduce((count, room) => {
