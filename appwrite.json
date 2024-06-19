@@ -38,6 +38,23 @@
       "path": "functions/total-unseen-v2"
     },
     {
+      "$id": "total-unseen-user",
+      "name": "total-unseen-user",
+      "runtime": "node-18.0",
+      "execute": [],
+      "events": [
+        "databases.650750f16cd0c482bb83.collections.6507510fc71f989d5d1c.documents.*.update"
+      ],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/total-unseen-user"
+    },
+    {
       "$id": "visit-notifications",
       "name": "visit-notifications",
       "runtime": "node-18.0",
