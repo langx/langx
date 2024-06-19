@@ -10,14 +10,6 @@
         slot="icon-only"
       >
         <ion-icon name="archive-outline"></ion-icon>
-        <ion-badge
-          id="notifications-badge"
-          size="small"
-          color="danger"
-          *ngIf="(totalUnseenArchived$ | async) !== 0 || (totalUnseenArchived$ | async) === null"
-        >
-          {{(totalUnseenArchived$ | async)}}
-        </ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

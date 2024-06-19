@@ -25,7 +25,6 @@ import {
 import {
   archiveRoomErrorSelector,
   currentUserSelector,
-  totalUnseenArchivedSelector,
 } from 'src/app/store/selectors/auth.selector';
 import {
   isLoadingSelector,
@@ -46,7 +45,6 @@ export class MessagesPage implements OnInit {
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
   filteredRooms$: Observable<Room[] | null> = null;
-  totalUnseenArchived$: Observable<number> = null;
 
   currentUserId: string = null;
 
@@ -117,9 +115,6 @@ export class MessagesPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
-    this.totalUnseenArchived$ = this.store.pipe(
-      select(totalUnseenArchivedSelector)
-    );
 
     this.filteredRooms$ = combineLatest([this.rooms$, this.currentUser$]).pipe(
       map(([rooms, currentUser]) => {
