@@ -85,7 +85,7 @@ export const archiveRoomAction = createAction(
 
 export const archiveRoomSuccessAction = createAction(
   ActionTypes.ARCHIVE_ROOM_SUCCESS,
-  props<{ payload: User }>()
+  props<{ payload: Room }>()
 );
 
 export const archiveRoomFailureAction = createAction(
@@ -105,7 +105,7 @@ export const unArchiveRoomAction = createAction(
 
 export const unArchiveRoomSuccessAction = createAction(
   ActionTypes.UNARCHIVE_ROOM_SUCCESS,
-  props<{ payload: User }>()
+  props<{ payload: Room }>()
 );
 
 export const unArchiveRoomFailureAction = createAction(

@@ -183,7 +183,7 @@ export class RoomEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.roomService.archiveRoom(currentUser, request.roomId).pipe(
-          map((payload: User) => archiveRoomSuccessAction({ payload })),
+          map((payload: Room) => archiveRoomSuccessAction({ payload })),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
@@ -202,7 +202,7 @@ export class RoomEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.roomService.unArchiveRoom(currentUser, request.roomId).pipe(
-          map((payload: User) => unArchiveRoomSuccessAction({ payload })),
+          map((payload: Room) => unArchiveRoomSuccessAction({ payload })),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
