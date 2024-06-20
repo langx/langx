@@ -22,7 +22,10 @@ import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  currentUserSelector,
+  totalUnseenArchivedSelector,
+} from 'src/app/store/selectors/auth.selector';
 import {
   isLoadingSelector,
   roomsSelector,
@@ -41,6 +44,7 @@ export class MessagesPage implements OnInit {
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
+  totalUnseenArchived$: Observable<number | null> = null;
   filteredRooms$: Observable<Room[] | null> = null;
 
   currentUserId: string = null;
@@ -104,6 +108,9 @@ export class MessagesPage implements OnInit {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
     this.rooms$ = this.store.pipe(select(roomsSelector));
     this.total$ = this.store.pipe(select(totalSelector));
+    this.totalUnseenArchived$ = this.store.pipe(
+      select(totalUnseenArchivedSelector)
+    );
 
     this.filteredRooms$ = combineLatest([this.rooms$, this.currentUser$]).pipe(
       map(([rooms, currentUser]) => {
