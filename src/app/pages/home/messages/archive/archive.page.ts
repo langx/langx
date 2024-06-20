@@ -6,19 +6,16 @@ import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
+
+// Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import {
-  unArchiveRoomAction,
-  unArchiveRoomInitialStateAction,
-} from 'src/app/store/actions/room.action';
+import { updateRoomAction } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
-import {
-  currentUserSelector,
-  unArchiveRoomErrorSelector,
-} from 'src/app/store/selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   errorSelector,
   isLoadingSelector,
@@ -67,14 +64,6 @@ export class ArchivePage implements OnInit {
             this.presentToast(error.message, 'danger');
           }
         })
-    );
-    this.subscription.add(
-      this.store.pipe(select(unArchiveRoomErrorSelector)).subscribe((error) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-          this.store.dispatch(unArchiveRoomInitialStateAction());
-        }
-      })
     );
   }
 
@@ -159,9 +148,11 @@ export class ArchivePage implements OnInit {
 
   unArchiveRoom(room: Room) {
     console.log('unArchiveRoom', room);
-    // Dispatch action
-    const request = { roomId: room.$id };
-    this.store.dispatch(unArchiveRoomAction({ request }));
+    const request: updateRoomRequestInterface = {
+      roomId: room.$id,
+      data: { archived: false },
+    };
+    this.store.dispatch(updateRoomAction({ request }));
   }
 
   //

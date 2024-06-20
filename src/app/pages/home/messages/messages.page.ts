@@ -9,23 +9,20 @@ import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 
 // Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
-  archiveRoomAction,
-  archiveRoomInitialStateAction,
   clearErrorsAction,
+  updateRoomAction,
 } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
-import {
-  archiveRoomErrorSelector,
-  currentUserSelector,
-} from 'src/app/store/selectors/auth.selector';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
   isLoadingSelector,
   roomsSelector,
@@ -91,14 +88,6 @@ export class MessagesPage implements OnInit {
             this.store.dispatch(clearErrorsAction());
           }
         })
-    );
-    this.subscription.add(
-      this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-          this.store.dispatch(archiveRoomInitialStateAction());
-        }
-      })
     );
 
     // Get all chat Rooms
@@ -189,9 +178,11 @@ export class MessagesPage implements OnInit {
   }
 
   archiveRoom(room: Room) {
-    // Dispatch action
-    const request = { roomId: room.$id };
-    this.store.dispatch(archiveRoomAction({ request }));
+    const request: updateRoomRequestInterface = {
+      roomId: room.$id,
+      data: { archived: true },
+    };
+    this.store.dispatch(updateRoomAction({ request }));
   }
 
   //

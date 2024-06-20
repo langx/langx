@@ -177,42 +177,42 @@ export class RoomEffects {
     { dispatch: false }
   );
 
-  archiveRoom$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(archiveRoomAction),
-      withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([{ request }, currentUser]) =>
-        this.roomService.archiveRoom(currentUser, request.roomId).pipe(
-          map((payload: Room) => archiveRoomSuccessAction({ payload })),
+  // archiveRoom$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(archiveRoomAction),
+  //     withLatestFrom(this.store.pipe(select(currentUserSelector))),
+  //     switchMap(([{ request }, currentUser]) =>
+  //       this.roomService.archiveRoom(currentUser, request.roomId).pipe(
+  //         map((payload: Room) => archiveRoomSuccessAction({ payload })),
 
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(archiveRoomFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
+  //         catchError((errorResponse: HttpErrorResponse) => {
+  //           const error: ErrorInterface = {
+  //             message: errorResponse.message,
+  //           };
+  //           return of(archiveRoomFailureAction({ error }));
+  //         })
+  //       )
+  //     )
+  //   )
+  // );
 
-  unArchivedRoom$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(unArchiveRoomAction),
-      withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([{ request }, currentUser]) =>
-        this.roomService.unArchiveRoom(currentUser, request.roomId).pipe(
-          map((payload: Room) => unArchiveRoomSuccessAction({ payload })),
-          catchError((errorResponse: HttpErrorResponse) => {
-            const error: ErrorInterface = {
-              message: errorResponse.message,
-            };
-            return of(unArchiveRoomFailureAction({ error }));
-          })
-        )
-      )
-    )
-  );
+  // unArchivedRoom$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(unArchiveRoomAction),
+  //     withLatestFrom(this.store.pipe(select(currentUserSelector))),
+  //     switchMap(([{ request }, currentUser]) =>
+  //       this.roomService.unArchiveRoom(currentUser, request.roomId).pipe(
+  //         map((payload: Room) => unArchiveRoomSuccessAction({ payload })),
+  //         catchError((errorResponse: HttpErrorResponse) => {
+  //           const error: ErrorInterface = {
+  //             message: errorResponse.message,
+  //           };
+  //           return of(unArchiveRoomFailureAction({ error }));
+  //         })
+  //       )
+  //     )
+  //   )
+  // );
 
   constructor(
     private actions$: Actions,
