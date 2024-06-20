@@ -155,8 +155,6 @@ export class NotificationService {
               findAndUpdateActiveRoomUpdatedAtAction({ payload: updatedRoom })
             );
             break;
-            // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction());
           case `${roomsCollection}.*.delete`:
             // console.log('[NOTIFICATION] room deleted', response.payload);
             break;
