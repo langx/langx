@@ -42,10 +42,8 @@ export default async ({ req, res, log, error }) => {
     ];
 
     // Exclude archived rooms
-    user1Doc.archivedRooms.forEach((roomId) => {
+    req.body.archived.forEach((roomId) => {
       querry1.push(Query.notEqual('$id', roomId));
-    });
-    user2Doc.archivedRooms.forEach((roomId) => {
       querry2.push(Query.notEqual('$id', roomId));
     });
 
