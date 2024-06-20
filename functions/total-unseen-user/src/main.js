@@ -41,16 +41,6 @@ export default async ({ req, res, log, error }) => {
       Query.orderDesc('$updatedAt'),
     ];
 
-    // Exclude if current room is archived
-    req.body.archived.forEach((userId) => {
-      if (userId === user1) {
-        querry1.push(Query.notEqual('$id', req.body.$id));
-      }
-      if (userId === user2) {
-        querry2.push(Query.notEqual('$id', req.body.$id));
-      }
-    });
-
     const listRoomsForUser1 = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.ROOMS_COLLECTION,
@@ -94,10 +84,57 @@ export default async ({ req, res, log, error }) => {
     log(`Unseen count for User 1: ${unseenCountUser1}`);
     log(`Unseen count for User 2: ${unseenCountUser2}`);
 
+    // Include for archived rooms
+    querry1.push(Query.contains('archived', req.body.$id));
+    querry2.push(Query.contains('archived', req.body.$id));
+
+    // List archived rooms
+    const listArchivedRoomsForUser1 = await db.listDocuments(
+      process.env.APP_DATABASE,
+      process.env.ROOMS_COLLECTION,
+      querry1
+    );
+
+    const listArchivedRoomsForUser2 = await db.listDocuments(
+      process.env.APP_DATABASE,
+      process.env.ROOMS_COLLECTION,
+      querry2
+    );
+
+    // Count unseen messages for user1 in archived rooms
+    let unseenArchivedCountUser1 = 0;
+    listArchivedRoomsForUser1.documents.forEach((room) => {
+      if (room.users[0] === user1 && room.unseen[0] !== 0) {
+        unseenArchivedCountUser1 += room.unseen[0];
+      } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
+        unseenArchivedCountUser1 += room.unseen[1];
+      }
+    });
+
+    // Count unseen messages for user2 in archived rooms
+    let unseenArchivedCountUser2 = 0;
+    listRoomsForUser2.documents.forEach((room) => {
+      if (room.users[0] === user2 && room.unseen[0] !== 0) {
+        unseenArchivedCountUser2 += room.unseen[0];
+      } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
+        unseenArchivedCountUser2 += room.unseen[1];
+      }
+    });
+
     // Update user documents with totalUnseen attribute
     await Promise.all([
-      updateUserTotalUnseen(db, user1, unseenCountUser1),
-      updateUserTotalUnseen(db, user2, unseenCountUser2),
+      updateUserTotalUnseen(
+        db,
+        user1,
+        unseenCountUser1,
+        unseenArchivedCountUser1
+      ),
+      updateUserTotalUnseen(
+        db,
+        user2,
+        unseenCountUser2,
+        unseenArchivedCountUser2
+      ),
     ]);
 
     return res.json({ ok: true });
@@ -107,7 +144,12 @@ export default async ({ req, res, log, error }) => {
   }
 };
 
-async function updateUserTotalUnseen(db, userId, totalUnseen) {
+async function updateUserTotalUnseen(
+  db,
+  userId,
+  totalUnseen,
+  totalUnseenArchived
+) {
   try {
     await db.updateDocument(
       process.env.APP_DATABASE,
@@ -115,6 +157,7 @@ async function updateUserTotalUnseen(db, userId, totalUnseen) {
       userId,
       {
         totalUnseen: totalUnseen,
+        totalUnseenArchived: totalUnseenArchived,
       }
     );
   } catch (err) {
