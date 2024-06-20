@@ -84,7 +84,7 @@ export class LanguageService {
         // Call the /api/language
         return from(
           axios
-            .patch(`${environment.api.LANGUAGE}/${request.id}`, request.data)
+            .put(`${environment.api.LANGUAGE}/${request.id}`, request.data)
             .then((result) => {
               console.log('result.data: ', result.data);
               return result.data as Language;
