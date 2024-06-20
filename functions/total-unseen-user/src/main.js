@@ -41,7 +41,7 @@ export default async ({ req, res, log, error }) => {
       Query.orderDesc('$updatedAt'),
     ];
 
-    // Exclude archived rooms
+    // Exclude if current room is archived
     req.body.archived.forEach((userId) => {
       if (userId === user1) {
         querry1.push(Query.notEqual('$id', req.body.$id));
