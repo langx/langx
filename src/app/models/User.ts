@@ -17,6 +17,7 @@ export type User = Models.Document & {
   aboutMe?: string;
   lastSeen?: Date;
   totalUnseen?: number;
+  totalUnseenArchived?: number;
   notifications?: string[];
   notificationsArray?: string[];
   blockedUsers?: string[];
