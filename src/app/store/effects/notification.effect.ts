@@ -12,7 +12,6 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomService } from 'src/app/services/chat/room.service';
 
 // Selector Imports
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { roomsSelector } from 'src/app/store/selectors/room.selector';
 
 // Action Imports
@@ -21,14 +20,6 @@ import {
   findOrAddRoomFailureAction,
   findOrAddRoomSuccessAction,
 } from 'src/app/store/actions/notification.action';
-import {
-  getRoomsSuccessAction,
-  getRoomsWithOffsetSuccessAction,
-} from 'src/app/store/actions/rooms.action';
-import {
-  archiveRoomSuccessAction,
-  unArchiveRoomSuccessAction,
-} from 'src/app/store/actions/room.action';
 
 @Injectable()
 export class NotificationEffects {

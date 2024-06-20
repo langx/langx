@@ -178,6 +178,7 @@ export class MessagesPage implements OnInit {
   }
 
   archiveRoom(room: Room) {
+    console.log('archiveRoom', room);
     const request: updateRoomRequestInterface = {
       roomId: room.$id,
       data: { archived: true },

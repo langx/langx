@@ -165,26 +165,6 @@ export const unBlockUserErrorSelector = createSelector(
   (authState: AuthStateInterface) => authState.unBlockUserError
 );
 
-export const archiveRoomSuccessSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.archiveRoomSuccess
-);
-
-export const archiveRoomErrorSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.archiveRoomError
-);
-
-export const unArchiveRoomSuccessSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.unArchiveRoomSuccess
-);
-
-export const unArchiveRoomErrorSelector = createSelector(
-  authFeatureSelector,
-  (authState: AuthStateInterface) => authState.unArchiveRoomError
-);
-
 export const isLoadingDeleteAccountSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.isLoadingDeleteAccount

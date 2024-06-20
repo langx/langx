@@ -6,13 +6,11 @@ import { Router } from '@angular/router';
 import { catchError, map, of, switchMap, tap, withLatestFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 
-import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { RoomService } from 'src/app/services/chat/room.service';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   createRoomAction,
@@ -24,12 +22,6 @@ import {
   getRoomAction,
   getRoomFailureAction,
   getRoomSuccessAction,
-  archiveRoomAction,
-  archiveRoomSuccessAction,
-  archiveRoomFailureAction,
-  unArchiveRoomAction,
-  unArchiveRoomSuccessAction,
-  unArchiveRoomFailureAction,
   updateRoomAction,
   updateRoomSuccessAction,
   updateRoomFailureAction,
@@ -176,43 +168,6 @@ export class RoomEffects {
       ),
     { dispatch: false }
   );
-
-  // archiveRoom$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(archiveRoomAction),
-  //     withLatestFrom(this.store.pipe(select(currentUserSelector))),
-  //     switchMap(([{ request }, currentUser]) =>
-  //       this.roomService.archiveRoom(currentUser, request.roomId).pipe(
-  //         map((payload: Room) => archiveRoomSuccessAction({ payload })),
-
-  //         catchError((errorResponse: HttpErrorResponse) => {
-  //           const error: ErrorInterface = {
-  //             message: errorResponse.message,
-  //           };
-  //           return of(archiveRoomFailureAction({ error }));
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
-
-  // unArchivedRoom$ = createEffect(() =>
-  //   this.actions$.pipe(
-  //     ofType(unArchiveRoomAction),
-  //     withLatestFrom(this.store.pipe(select(currentUserSelector))),
-  //     switchMap(([{ request }, currentUser]) =>
-  //       this.roomService.unArchiveRoom(currentUser, request.roomId).pipe(
-  //         map((payload: Room) => unArchiveRoomSuccessAction({ payload })),
-  //         catchError((errorResponse: HttpErrorResponse) => {
-  //           const error: ErrorInterface = {
-  //             message: errorResponse.message,
-  //           };
-  //           return of(unArchiveRoomFailureAction({ error }));
-  //         })
-  //       )
-  //     )
-  //   )
-  // );
 
   constructor(
     private actions$: Actions,
