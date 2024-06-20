@@ -17,6 +17,8 @@ import { MessageExtendedInterface } from 'src/app/models/types/messageExtended.i
 import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 // Action Imports
+import { updateCurrentUserSuccessAction } from 'src/app/store/actions/user.action';
+import { attachCopilotAction } from 'src/app/store/actions/message.action';
 import {
   findRoomAndAddMessageAction,
   findActiveRoomAndAddMessageAction,
@@ -24,12 +26,10 @@ import {
   findAndUpdateActiveRoomUpdatedAtAction,
   findActiveRoomAndUpdateMessageAction,
   findOrAddRoomAction,
-  totalUnseenMessagesAction,
   findRoomAndUpdateMessageAction,
   findRoomAndDeleteMessageAction,
   findActiveRoomAndDeleteMessageAction,
 } from 'src/app/store/actions/notification.action';
-import { attachCopilotAction } from 'src/app/store/actions/message.action';
 
 @Injectable({
   providedIn: 'root',
@@ -41,9 +41,16 @@ export class NotificationService {
     private userService: UserService
   ) {}
 
-  connect() {
+  connect(currentUserId: string) {
     let channels = [];
 
+    // channel for rooms
+    const usersCollection =
+      'databases.' +
+      environment.appwrite.APP_DATABASE +
+      '.collections.' +
+      environment.appwrite.USERS_COLLECTION +
+      '.documents';
     // channel for rooms
     const roomsCollection =
       'databases.' +
@@ -66,6 +73,7 @@ export class NotificationService {
       '.documents';
 
     // add channels to array
+    channels.push(usersCollection);
     channels.push(roomsCollection);
     channels.push(messagesCollection);
     channels.push(copilotCollection);
@@ -76,6 +84,13 @@ export class NotificationService {
       // check if the response is a new message
       response.events.forEach((event) => {
         switch (event) {
+          case `${usersCollection}.${currentUserId}.update`:
+            // console.log('[NOTIFICATION] user updated', response.payload);
+            const updatedUser = response.payload as User;
+            this.store.dispatch(
+              updateCurrentUserSuccessAction({ payload: updatedUser })
+            );
+            break;
           case `${messagesCollection}.*.create`:
             // console.log('[NOTIFICATION] message created', response.payload);
             const createdMessage = response.payload as MessageExtendedInterface;
@@ -85,8 +100,6 @@ export class NotificationService {
             this.store.dispatch(
               findActiveRoomAndAddMessageAction({ payload: createdMessage })
             );
-            // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.update`:
             // console.log('[NOTIFICATION] message updated', response.payload);
@@ -101,8 +114,6 @@ export class NotificationService {
                 payload: updatedMessage,
               })
             );
-            // Dispatch the badge counter action for tab messages
-            this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${messagesCollection}.*.delete`:
             // console.log('[NOTIFICATION] message deleted', response.payload);
@@ -159,7 +170,7 @@ export class NotificationService {
     });
   }
 
-  updatePresence(id: string, request: { lastSeen: Date }): Observable<User> {
+  updatePresence(request: { lastSeen: Date }): Observable<User> {
     return this.userService.updateUserDoc({ lastSeen: request.lastSeen });
   }
 }

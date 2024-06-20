@@ -10,6 +10,4 @@ export enum ActionTypes {
   FIND_ACTIVE_ROOM_AND_UPDATE_MESSAGE = '[Notification] Find Active Room And Update Message',
   FIND_ROOM_AND_DELETE_MESSAGE = '[Notification] Find Room And Delete Message',
   FIND_ACTIVE_ROOM_AND_DELETE_MESSAGE = '[Notification] Find Active Room And Delete Message',
-  TOTAL_UNSEEN_MESSAGES = '[Notification] Total Unseen Messages',
-  TOTAL_UNSEEN_MESSAGES_SUCCESS = '[Notification] Total Unseen Messages Success',
 }

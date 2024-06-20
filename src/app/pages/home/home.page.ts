@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription, interval, tap } from 'rxjs';
+import { Observable, Subscription, interval, take, tap } from 'rxjs';
 import { Preferences } from '@capacitor/preferences';
 import { ModalController } from '@ionic/angular';
 
@@ -10,6 +10,7 @@ import { Account } from 'src/app/models/Account';
 import { updatePresenceAction } from 'src/app/store/actions/presence.action';
 import {
   accountSelector,
+  currentUserSelector,
   totalUnseenSelector,
 } from 'src/app/store/selectors/auth.selector';
 
@@ -52,7 +53,13 @@ export class HomePage implements OnInit {
 
   startListener() {
     if (!this.listenerFn) {
-      this.listenerFn = this.notification.connect();
+      this.store
+        .pipe(select(currentUserSelector), take(1))
+        .subscribe((currentUser) => {
+          if (currentUser) {
+            this.listenerFn = this.notification.connect(currentUser.$id);
+          }
+        });
     }
   }
 

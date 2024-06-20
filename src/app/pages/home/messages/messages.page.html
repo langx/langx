@@ -14,9 +14,9 @@
           id="notifications-badge"
           size="small"
           color="danger"
-          *ngIf="(totalUnseenArchived$ | async) !== 0 || (totalUnseenArchived$ | async) === null"
+          *ngIf="(totalUnseenArchived$ | async) > 0"
         >
-          {{(totalUnseenArchived$ | async)}}
+          {{ totalUnseenArchived$ | async }}
         </ion-badge>
       </ion-button>
     </ion-buttons>

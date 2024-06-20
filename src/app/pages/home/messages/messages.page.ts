@@ -9,21 +9,20 @@ import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 
 // Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
-  archiveRoomAction,
-  archiveRoomInitialStateAction,
   clearErrorsAction,
+  updateRoomAction,
 } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
 import {
-  archiveRoomErrorSelector,
   currentUserSelector,
   totalUnseenArchivedSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -45,8 +44,8 @@ export class MessagesPage implements OnInit {
   isLoading$: Observable<boolean>;
   rooms$: Observable<Room[] | null>;
   total$: Observable<number | null> = null;
+  totalUnseenArchived$: Observable<number | null> = null;
   filteredRooms$: Observable<Room[] | null> = null;
-  totalUnseenArchived$: Observable<number>;
 
   currentUserId: string = null;
 
@@ -94,14 +93,6 @@ export class MessagesPage implements OnInit {
           }
         })
     );
-    this.subscription.add(
-      this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
-        if (error) {
-          this.presentToast(error.message, 'danger');
-          this.store.dispatch(archiveRoomInitialStateAction());
-        }
-      })
-    );
 
     // Get all chat Rooms
     this.listRooms();
@@ -129,7 +120,7 @@ export class MessagesPage implements OnInit {
         return rooms.filter(
           (room) =>
             !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
-            !currentUser.archivedRooms.includes(room?.$id)
+            !room?.['archived'].includes(currentUser?.$id)
         );
       })
     );
@@ -194,9 +185,12 @@ export class MessagesPage implements OnInit {
   }
 
   archiveRoom(room: Room) {
-    // Dispatch action
-    const request = { roomId: room.$id };
-    this.store.dispatch(archiveRoomAction({ request }));
+    console.log('archiveRoom', room);
+    const request: updateRoomRequestInterface = {
+      roomId: room.$id,
+      data: { archived: true },
+    };
+    this.store.dispatch(updateRoomAction({ request }));
   }
 
   //

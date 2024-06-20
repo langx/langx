@@ -1,6 +1,7 @@
 export interface updateRoomRequestInterface {
   roomId: string;
   data: {
-    copilot: boolean;
+    copilot?: boolean;
+    archived?: boolean;
   };
 }

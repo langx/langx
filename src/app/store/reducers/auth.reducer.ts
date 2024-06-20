@@ -1,7 +1,6 @@
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { AuthStateInterface } from 'src/app/models/types/states/authState.interface';
-import { totalUnseenMessagesSuccessAction } from 'src/app/store/actions/notification.action';
 import {
   completeRegistrationAction,
   completeRegistrationFailureAction,
@@ -105,16 +104,6 @@ import {
   uploadProfilePictureFailureAction,
   uploadProfilePictureSuccessAction,
 } from 'src/app/store/actions/bucket.action';
-import {
-  archiveRoomAction,
-  archiveRoomFailureAction,
-  archiveRoomInitialStateAction,
-  archiveRoomSuccessAction,
-  unArchiveRoomAction,
-  unArchiveRoomFailureAction,
-  unArchiveRoomInitialStateAction,
-  unArchiveRoomSuccessAction,
-} from 'src/app/store/actions/room.action';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -140,10 +129,6 @@ const initialState: AuthStateInterface = {
   unBlockUserError: null,
   blockedUsersData: null,
   blockedUsersError: null,
-  archiveRoomSuccess: false,
-  archiveRoomError: null,
-  unArchiveRoomSuccess: false,
-  unArchiveRoomError: null,
   registerValidationError: null,
   loginValidationError: null,
   unauthorizedError: null,
@@ -538,19 +523,6 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       editProfileError: action.error,
-    })
-  ),
-
-  // Total Unseen Messages Reducer
-  on(
-    totalUnseenMessagesSuccessAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      currentUser: {
-        ...state.currentUser,
-        totalUnseen: action.payload.totalUnseen,
-        totalUnseenArchived: action.payload.totalUnseenArchived,
-      },
     })
   ),
 
@@ -980,76 +952,6 @@ const authReducer = createReducer(
       ...state,
       isLoading: false,
       blockedUsersError: action.error,
-    })
-  ),
-
-  // Archive Room Actions
-  on(
-    archiveRoomAction,
-    (state): AuthStateInterface => ({
-      ...state,
-      isLoading: true,
-      archiveRoomError: null,
-    })
-  ),
-  on(
-    archiveRoomSuccessAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      currentUser: action.payload,
-      archiveRoomSuccess: true,
-    })
-  ),
-  on(
-    archiveRoomFailureAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      archiveRoomError: action.error,
-    })
-  ),
-  on(
-    archiveRoomInitialStateAction,
-    (state): AuthStateInterface => ({
-      ...state,
-      archiveRoomSuccess: false,
-      archiveRoomError: null,
-    })
-  ),
-
-  // UnArchive Room Actions
-  on(
-    unArchiveRoomAction,
-    (state): AuthStateInterface => ({
-      ...state,
-      isLoading: true,
-      unArchiveRoomError: null,
-    })
-  ),
-  on(
-    unArchiveRoomSuccessAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      currentUser: action.payload,
-      unArchiveRoomSuccess: true,
-    })
-  ),
-  on(
-    unArchiveRoomFailureAction,
-    (state, action): AuthStateInterface => ({
-      ...state,
-      isLoading: false,
-      unArchiveRoomError: action.error,
-    })
-  ),
-  on(
-    unArchiveRoomInitialStateAction,
-    (state): AuthStateInterface => ({
-      ...state,
-      unArchiveRoomSuccess: false,
-      unArchiveRoomError: null,
     })
   ),
 

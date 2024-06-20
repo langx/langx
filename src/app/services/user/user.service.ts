@@ -93,7 +93,7 @@ export class UserService {
         // Call the /api/user
         return from(
           axios
-            .patch(`${environment.api.USER}/${currentUserId}`, data)
+            .put(`${environment.api.USER}/${currentUserId}`, data)
             .then((result) => {
               // console.log('result.data: ', result.data);
               return result.data as User;

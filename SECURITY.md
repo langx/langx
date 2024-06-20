@@ -15,7 +15,7 @@ The following versions of our project are currently being supported with securit
 
 ## Reporting a Vulnerability
 
-If you discover a vulnerability in our project, please send an email to hi@langx.io.
+If you discover a vulnerability in our project, please send an email to <hi@langx.io>.
 
 After reporting, you can expect to receive an update from us within a week. We will evaluate the reported vulnerability and determine whether it is applicable and severe.
 

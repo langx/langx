@@ -57,7 +57,7 @@ export class RoomListComponent implements OnInit {
     const lastMessage = room.messages[room.messages.length - 1];
 
     const type = lastMessage?.type || null;
-    this.lastMessage.time = lastMessage?.$updatedAt || null;
+    this.lastMessage.time = lastMessage?.$createdAt || null;
 
     // Check if the last message is from the current user
     if (lastMessage?.to === this.currentUserId) {
@@ -114,10 +114,12 @@ export class RoomListComponent implements OnInit {
     return getFlagEmoji(item);
   }
 
-  getBadge(room): number {
-    return room.messages.filter(
-      (message) => message.seen === false && message.to === this.currentUserId
-    ).length;
+  getBadge(room: Room): number {
+    if (room.users[0] === this.currentUserId) {
+      return room.unseen[0] || 0;
+    } else {
+      return room.unseen[1] || 0;
+    }
   }
 
   messageTime(d: any) {

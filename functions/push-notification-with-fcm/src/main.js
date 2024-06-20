@@ -85,8 +85,8 @@ export default async ({ req, res, log, error }) => {
   }
   log('-- User is not blocked');
 
-  log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
-  if (toUserDoc?.archivedRooms.includes(roomId)) {
+  log(`Archived in Rooms: ${req.body.roomId?.archived} -- roomId: ${roomId}`);
+  if (req.body.roomId?.archived.includes(toUserDoc.$id)) {
     return res.json({ ok: false, error: 'You are archived by this user' }, 400);
   }
   log('-- User is not archived');

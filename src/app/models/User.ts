@@ -21,7 +21,6 @@ export type User = Models.Document & {
   notifications?: string[];
   notificationsArray?: string[];
   blockedUsers?: string[];
-  archivedRooms?: string[];
   privacy?: string[];
   contributors?: string[];
   sponsor?: boolean;

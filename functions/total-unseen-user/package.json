@@ -1,5 +1,5 @@
 {
-  "name": "total-unseen",
+  "name": "total-unseen-user",
   "version": "1.0.0",
   "description": "",
   "main": "src/main.js",
@@ -11,6 +11,6 @@
     "prettier": "^3.0.0"
   },
   "dependencies": {
-    "node-appwrite": "^11.0.0"
+    "node-appwrite": "^13.0.0"
   }
 }

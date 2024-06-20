@@ -225,18 +225,6 @@ export class RoomService {
     );
   }
 
-  archiveRoom(currentUser: User, roomId: string): Observable<User> {
-    const archivedRooms = [...currentUser?.archivedRooms, roomId];
-    return this.userService.updateUserDoc({ archivedRooms });
-  }
-
-  unArchiveRoom(currentUser: User, roomId: string): Observable<User> {
-    const archivedRooms = currentUser?.archivedRooms.filter(
-      (room) => room !== roomId
-    );
-    return this.userService.updateUserDoc({ archivedRooms });
-  }
-
   //
   // Utils
   //

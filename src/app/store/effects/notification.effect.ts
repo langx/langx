@@ -12,7 +12,6 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { RoomService } from 'src/app/services/chat/room.service';
 
 // Selector Imports
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { roomsSelector } from 'src/app/store/selectors/room.selector';
 
 // Action Imports
@@ -20,13 +19,7 @@ import {
   findOrAddRoomAction,
   findOrAddRoomFailureAction,
   findOrAddRoomSuccessAction,
-  totalUnseenMessagesAction,
-  totalUnseenMessagesSuccessAction,
 } from 'src/app/store/actions/notification.action';
-import {
-  getRoomsSuccessAction,
-  getRoomsWithOffsetSuccessAction,
-} from 'src/app/store/actions/rooms.action';
 
 @Injectable()
 export class NotificationEffects {
@@ -56,72 +49,13 @@ export class NotificationEffects {
     )
   );
 
-  totalUnseenMessages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(
-        totalUnseenMessagesAction,
-        getRoomsSuccessAction,
-        getRoomsWithOffsetSuccessAction
-      ),
-      withLatestFrom(
-        this.store.pipe(select(currentUserSelector)),
-        this.store.pipe(select(roomsSelector))
-      ),
-      map(([action, currentUser, rooms]) => {
-        // Calculate the total number of unseen messages
-        const totalUnseenMessages = rooms
-          ? rooms.reduce((count, room) => {
-              // Check if the room's user is not blocked by the current user and the room is not archived
-              if (
-                !currentUser.blockedUsers.includes(room.userData.$id) &&
-                !currentUser.archivedRooms.includes(room.$id)
-              ) {
-                const unseenMessagesInRoom = room.messages.reduce(
-                  (count, message) =>
-                    count +
-                    (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
-                  0
-                );
-                return count + unseenMessagesInRoom;
-              }
-              return count;
-            }, 0)
-          : currentUser.totalUnseen;
-
-        // Calculate the total number of unseen messages in archived rooms
-        const totalUnseenArchived = rooms
-          ? rooms.reduce((count, room) => {
-              // Check if the room is archived
-              if (currentUser.archivedRooms.includes(room.$id)) {
-                const unseenMessagesInRoom = room.messages.reduce(
-                  (count, message) =>
-                    count +
-                    (message['seen'] || message.to !== currentUser.$id ? 0 : 1),
-                  0
-                );
-                return count + unseenMessagesInRoom;
-              }
-              return count;
-            }, 0)
-          : 0;
-
-        // TODO: In future, Use Badge.get() instead of totalUnseenMessages
-        // Update to app badge count
-        if ('setAppBadge' in navigator) {
-          Badge.set({ count: totalUnseenMessages });
-        } else {
-          console.log('Badging API is not supported in this browser.');
-        }
-        return totalUnseenMessagesSuccessAction({
-          payload: {
-            totalUnseen: totalUnseenMessages,
-            totalUnseenArchived: totalUnseenArchived,
-          },
-        });
-      })
-    )
-  );
-
+  // TODO: #829 In future, Use Badge.get() instead of totalUnseenMessages
+  // Update to app badge count
+  // if ('setAppBadge' in navigator) {
+  //   Badge.set({ count: totalUnseenMessages });
+  // } else {
+  //   console.log('Badging API is not supported in this browser.');
+  // }
   constructor(
     private store: Store,
     private actions$: Actions,
