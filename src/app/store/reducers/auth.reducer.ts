@@ -1,3 +1,4 @@
+import { Badge } from '@capawesome/capacitor-badge';
 import { Action, createReducer, on } from '@ngrx/store';
 
 import { AuthStateInterface } from 'src/app/models/types/states/authState.interface';
@@ -104,6 +105,7 @@ import {
   uploadProfilePictureFailureAction,
   uploadProfilePictureSuccessAction,
 } from 'src/app/store/actions/bucket.action';
+import { Capacitor } from '@capacitor/core';
 
 const initialState: AuthStateInterface = {
   isLoading: false,
@@ -373,14 +375,17 @@ const authReducer = createReducer(
       isLoading: true,
     })
   ),
-  on(
-    updateCurrentUserSuccessAction,
-    (state, action): AuthStateInterface => ({
+  on(updateCurrentUserSuccessAction, (state, action): AuthStateInterface => {
+    // Set the badge count in the app icon
+    if (Capacitor.isNativePlatform()) {
+      Badge.set({ count: action.payload.totalUnseen });
+    }
+    return {
       ...state,
       isLoading: false,
       currentUser: action.payload,
-    })
-  ),
+    };
+  }),
   on(
     updateCurrentUserFailureAction,
     (state, action): AuthStateInterface => ({
