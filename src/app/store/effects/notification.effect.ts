@@ -20,8 +20,6 @@ import {
   findOrAddRoomAction,
   findOrAddRoomFailureAction,
   findOrAddRoomSuccessAction,
-  totalUnseenMessagesAction,
-  totalUnseenMessagesSuccessAction,
 } from 'src/app/store/actions/notification.action';
 import {
   getRoomsSuccessAction,
@@ -60,76 +58,13 @@ export class NotificationEffects {
     )
   );
 
-  totalUnseenMessages$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(
-        totalUnseenMessagesAction,
-        getRoomsSuccessAction,
-        getRoomsWithOffsetSuccessAction,
-        archiveRoomSuccessAction,
-        unArchiveRoomSuccessAction
-      ),
-      withLatestFrom(
-        this.store.pipe(select(currentUserSelector)),
-        this.store.pipe(select(roomsSelector))
-      ),
-      map(([_, currentUser, rooms]) => {
-        // Calculate the total number of unseen messages
-        const totalUnseenMessages = rooms
-          ? rooms.reduce((count, room) => {
-              // Check if the room's user is not blocked by the current user and the room is not archived
-              if (
-                !currentUser.blockedUsers.includes(room.userData.$id) &&
-                !currentUser.archivedRooms.includes(room.$id)
-              ) {
-                // Get the index of the current user in the room.users array
-                const userIndex = room.users.findIndex(
-                  (user) => user === currentUser.$id
-                );
-                // If the user is found in the room.users array, add the corresponding unseen count to the total
-                if (userIndex !== -1) {
-                  return count + room.unseen[userIndex];
-                }
-              }
-              return count;
-            }, 0)
-          : currentUser.totalUnseen;
-
-        // Calculate the total number of unseen messages in archived rooms
-        const totalUnseenArchived = rooms
-          ? rooms.reduce((count, room) => {
-              // Check if the room is archived
-              if (currentUser.archivedRooms.includes(room.$id)) {
-                // Get the index of the current user in the room.users array
-                const userIndex = room.users.findIndex(
-                  (user) => user === currentUser.$id
-                );
-                // If the user is found in the room.users array, add the corresponding unseen count to the total
-                if (userIndex !== -1) {
-                  return count + room.unseen[userIndex];
-                }
-              }
-              return count;
-            }, 0)
-          : 0;
-
-        // TODO: #829 In future, Use Badge.get() instead of totalUnseenMessages
-        // Update to app badge count
-        if ('setAppBadge' in navigator) {
-          Badge.set({ count: totalUnseenMessages });
-        } else {
-          console.log('Badging API is not supported in this browser.');
-        }
-        return totalUnseenMessagesSuccessAction({
-          payload: {
-            totalUnseen: totalUnseenMessages,
-            totalUnseenArchived: totalUnseenArchived,
-          },
-        });
-      })
-    )
-  );
-
+  // TODO: #829 In future, Use Badge.get() instead of totalUnseenMessages
+  // Update to app badge count
+  // if ('setAppBadge' in navigator) {
+  //   Badge.set({ count: totalUnseenMessages });
+  // } else {
+  //   console.log('Badging API is not supported in this browser.');
+  // }
   constructor(
     private store: Store,
     private actions$: Actions,

@@ -26,7 +26,6 @@ import {
   findAndUpdateActiveRoomUpdatedAtAction,
   findActiveRoomAndUpdateMessageAction,
   findOrAddRoomAction,
-  totalUnseenMessagesAction,
   findRoomAndUpdateMessageAction,
   findRoomAndDeleteMessageAction,
   findActiveRoomAndDeleteMessageAction,
@@ -155,8 +154,6 @@ export class NotificationService {
             this.store.dispatch(
               findAndUpdateActiveRoomUpdatedAtAction({ payload: updatedRoom })
             );
-            // Dispatch the badge counter action for tab messages
-            // this.store.dispatch(totalUnseenMessagesAction());
             break;
           case `${roomsCollection}.*.delete`:
             // console.log('[NOTIFICATION] room deleted', response.payload);
