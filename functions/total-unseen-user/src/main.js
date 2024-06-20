@@ -66,6 +66,10 @@ export default async ({ req, res, log, error }) => {
     // Count unseen messages for user1
     let unseenCountUser1 = 0;
     listRoomsForUser1.documents.forEach((room) => {
+      // Skip this room if it's archived by the user
+      if (room.archived.includes(user1)) {
+        return;
+      }
       if (room.users[0] === user1 && room.unseen[0] !== 0) {
         unseenCountUser1 += room.unseen[0];
       } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
@@ -76,6 +80,10 @@ export default async ({ req, res, log, error }) => {
     // Count unseen messages for user2
     let unseenCountUser2 = 0;
     listRoomsForUser2.documents.forEach((room) => {
+      // Skip this room if it's archived by the user
+      if (room.archived.includes(user2)) {
+        return;
+      }
       if (room.users[0] === user2 && room.unseen[0] !== 0) {
         unseenCountUser2 += room.unseen[0];
       } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
