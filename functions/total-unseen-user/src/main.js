@@ -42,9 +42,13 @@ export default async ({ req, res, log, error }) => {
     ];
 
     // Exclude archived rooms
-    req.body.archived.forEach((roomId) => {
-      querry1.push(Query.notEqual('$id', roomId));
-      querry2.push(Query.notEqual('$id', roomId));
+    req.body.archived.forEach((userId) => {
+      if (userId === user1) {
+        querry1.push(Query.notEqual('$id', roomId));
+      }
+      if (userId === user2) {
+        querry2.push(Query.notEqual('$id', roomId));
+      }
     });
 
     const listRoomsForUser1 = await db.listDocuments(
