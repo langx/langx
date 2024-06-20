@@ -85,7 +85,7 @@ export class NotificationService {
       response.events.forEach((event) => {
         switch (event) {
           case `${usersCollection}.${currentUserId}.update`:
-            console.log('[NOTIFICATION] user updated', response.payload);
+            // console.log('[NOTIFICATION] user updated', response.payload);
             const updatedUser = response.payload as User;
             this.store.dispatch(
               updateCurrentUserSuccessAction({ payload: updatedUser })
