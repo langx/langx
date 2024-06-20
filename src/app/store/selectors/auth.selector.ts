@@ -70,6 +70,11 @@ export const totalUnseenSelector = createSelector(
   (authState: AuthStateInterface) => authState.currentUser?.totalUnseen
 );
 
+export const totalUnseenArchivedSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.totalUnseenArchived
+);
+
 export const identitiesSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.identities
