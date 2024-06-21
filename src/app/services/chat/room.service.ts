@@ -199,12 +199,11 @@ export class RoomService {
       });
     }
 
-    // TODO: #340 Query for users that are not blocked by the current user
-    // if (currentUser?.blockedUsers) {
-    //   currentUser.blockedUsers.forEach((id) => {
-    //     queries.push(Query.notEqual('users', id));
-    //   });
-    // }
+    if (currentUser?.blockedUsers) {
+      currentUser.blockedUsers.forEach((id) => {
+        queries.push(Query.notEqual('users', id));
+      });
+    }
 
     // Query for rooms that contain the current user
     queries.push(Query.contains('users', currentUser.$id));
