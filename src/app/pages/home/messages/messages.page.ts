@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
@@ -76,6 +76,12 @@ export class MessagesPage implements OnInit {
     } else {
       this.fcmService.registerPush();
     }
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd && event.url === '/home/messages') {
+        this.listRooms();
+      }
+    });
   }
 
   registerPushForWeb() {
@@ -104,9 +110,6 @@ export class MessagesPage implements OnInit {
         }
       })
     );
-
-    // Get all chat Rooms
-    this.listRooms();
   }
 
   ionViewWillLeave() {
@@ -147,6 +150,7 @@ export class MessagesPage implements OnInit {
   }
 
   listRooms() {
+    // console.log('Listing rooms');
     this.store.dispatch(getRoomsAction());
   }
 
