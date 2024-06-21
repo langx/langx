@@ -195,13 +195,13 @@ export class RoomService {
     // Query for rooms that contain the current user
     queries.push(Query.contains('users', currentUser.$id));
 
-    // Query for rooms descending by $updatedAt
-    queries.push(Query.orderDesc('$updatedAt'));
-
     // Query for archived rooms if needed
     if (options?.archived) {
       queries.push(Query.contains('archived', currentUser.$id));
     }
+
+    // Query for rooms descending by $updatedAt
+    queries.push(Query.orderDesc('$updatedAt'));
 
     // TODO: #340 Query for users that are not blocked by the current user
     // if (currentUser?.blockedUsers) {
