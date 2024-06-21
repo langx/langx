@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, combineLatest, map } from 'rxjs';
@@ -49,7 +50,11 @@ export class ArchivePage implements OnInit {
     color: 'warning',
   };
 
-  constructor(private store: Store, private toastController: ToastController) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private toastController: ToastController
+  ) {}
 
   ngOnInit() {
     this.initValues();
@@ -75,6 +80,18 @@ export class ArchivePage implements OnInit {
         if (error) {
           this.presentToast(error.message, 'danger');
           this.store.dispatch(unArchiveRoomInitialStateAction());
+        }
+      })
+    );
+
+    // Router Event Listener
+    this.subscription.add(
+      this.router.events.subscribe((event) => {
+        if (
+          event instanceof NavigationEnd &&
+          event.url === '/home/messages/archive'
+        ) {
+          this.listRooms();
         }
       })
     );

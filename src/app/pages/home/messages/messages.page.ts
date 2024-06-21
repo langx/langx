@@ -75,12 +75,6 @@ export class MessagesPage implements OnInit {
     } else {
       this.fcmService.registerPush();
     }
-
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd && event.url === '/home/messages') {
-        this.listRooms();
-      }
-    });
   }
 
   registerPushForWeb() {
@@ -106,6 +100,15 @@ export class MessagesPage implements OnInit {
         if (error) {
           this.presentToast(error.message, 'danger');
           this.store.dispatch(archiveRoomInitialStateAction());
+        }
+      })
+    );
+
+    // Router Event Listener
+    this.subscription.add(
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationEnd && event.url === '/home/messages') {
+          this.listRooms();
         }
       })
     );
