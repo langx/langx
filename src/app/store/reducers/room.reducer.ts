@@ -45,6 +45,8 @@ const initialState: RoomStateInterface = {
   isLoading: false,
   total: null,
   rooms: null,
+  archivedRooms: null,
+  archivedTotal: null,
   error: null,
   createRoomError: null,
 };
