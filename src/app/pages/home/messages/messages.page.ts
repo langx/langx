@@ -9,7 +9,6 @@ import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 
 // Import Actions and Selectors
