@@ -85,13 +85,13 @@ export default async ({ req, res, log, error }) => {
   }
   log('-- User is not blocked');
 
-  log(`Archived in Rooms: ${req.body.roomId?.archived} -- roomId: ${roomId}`);
-  if (req.body.roomId?.archived.includes(toUserDoc.$id)) {
+  log(`Archived Rooms: ${toUserDoc.archivedRooms} -- roomId: ${roomId}`);
+  if (toUserDoc?.archivedRooms.includes(roomId)) {
     return res.json({ ok: false, error: 'You are archived by this user' }, 400);
   }
   log('-- User is not archived');
 
-  // Check token exists or not
+  // Check FCM token exists or not
 
   // Initialize flags
   let iosExists = false;

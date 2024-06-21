@@ -41,6 +41,14 @@ export default async ({ req, res, log, error }) => {
       Query.orderDesc('$updatedAt'),
     ];
 
+    // Push archived rooms to query
+    user1Doc.archivedRooms?.forEach((id) => {
+      querry1.push(Query.notEqual('$id', id));
+    });
+    user2Doc.archivedRooms?.forEach((id) => {
+      querry2.push(Query.notEqual('$id', id));
+    });
+
     const listRoomsForUser1 = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.ROOMS_COLLECTION,
@@ -56,10 +64,6 @@ export default async ({ req, res, log, error }) => {
     // Count unseen messages for user1
     let unseenCountUser1 = 0;
     listRoomsForUser1.documents.forEach((room) => {
-      // Skip this room if it's archived by the user
-      if (room.archived.includes(user1)) {
-        return;
-      }
       if (room.users[0] === user1 && room.unseen[0] !== 0) {
         unseenCountUser1 += room.unseen[0];
       } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
@@ -70,10 +74,6 @@ export default async ({ req, res, log, error }) => {
     // Count unseen messages for user2
     let unseenCountUser2 = 0;
     listRoomsForUser2.documents.forEach((room) => {
-      // Skip this room if it's archived by the user
-      if (room.archived.includes(user2)) {
-        return;
-      }
       if (room.users[0] === user2 && room.unseen[0] !== 0) {
         unseenCountUser2 += room.unseen[0];
       } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
@@ -84,21 +84,31 @@ export default async ({ req, res, log, error }) => {
     log(`Unseen count for User 1: ${unseenCountUser1}`);
     log(`Unseen count for User 2: ${unseenCountUser2}`);
 
+    // Init queries
+    let querry1archived = [
+      Query.contains('users', user1),
+      Query.orderDesc('$updatedAt'),
+    ];
+    let querry2archived = [
+      Query.contains('users', user2),
+      Query.orderDesc('$updatedAt'),
+    ];
+
     // Include for archived rooms
-    querry1.push(Query.contains('archived', req.body.$id));
-    querry2.push(Query.contains('archived', req.body.$id));
+    querry1archived.push(Query.contains('$id', user1Doc.archivedRooms));
+    querry2archived.push(Query.contains('$id', user2Doc.archivedRooms));
 
     // List archived rooms
     const listArchivedRoomsForUser1 = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.ROOMS_COLLECTION,
-      querry1
+      querry1archived
     );
 
     const listArchivedRoomsForUser2 = await db.listDocuments(
       process.env.APP_DATABASE,
       process.env.ROOMS_COLLECTION,
-      querry2
+      querry2archived
     );
 
     // Count unseen messages for user1 in archived rooms
@@ -113,13 +123,16 @@ export default async ({ req, res, log, error }) => {
 
     // Count unseen messages for user2 in archived rooms
     let unseenArchivedCountUser2 = 0;
-    listRoomsForUser2.documents.forEach((room) => {
+    listArchivedRoomsForUser2.documents.forEach((room) => {
       if (room.users[0] === user2 && room.unseen[0] !== 0) {
         unseenArchivedCountUser2 += room.unseen[0];
       } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
         unseenArchivedCountUser2 += room.unseen[1];
       }
     });
+
+    log(`Unseen count for User 1 Archived: ${unseenArchivedCountUser1}`);
+    log(`Unseen count for User 2 Archived: ${unseenArchivedCountUser2}`);
 
     // Update user documents with totalUnseen attribute
     await Promise.all([

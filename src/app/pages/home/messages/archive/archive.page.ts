@@ -10,17 +10,24 @@ import { updateRoomRequestInterface } from 'src/app/models/types/requests/update
 
 // Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { updateRoomAction } from 'src/app/store/actions/room.action';
 import {
-  getRoomsAction,
-  getRoomsWithOffsetAction,
+  unArchiveRoomAction,
+  unArchiveRoomInitialStateAction,
+  updateRoomAction,
+} from 'src/app/store/actions/room.action';
+import {
+  getArchivedRoomsAction,
+  getArchivedRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import {
+  currentUserSelector,
+  unArchiveRoomErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
+import {
+  archivedRoomsSelector,
+  archivedTotalSelector,
   errorSelector,
   isLoadingSelector,
-  roomsSelector,
-  totalSelector,
 } from 'src/app/store/selectors/room.selector';
 
 @Component({
@@ -32,8 +39,8 @@ export class ArchivePage implements OnInit {
   subscription: Subscription;
   currentUser$: Observable<User | null>;
   isLoading$: Observable<boolean>;
-  rooms$: Observable<Room[] | null>;
-  total$: Observable<number | null> = null;
+  archivedRooms$: Observable<Room[] | null>;
+  archivedTotal$: Observable<number | null> = null;
   filteredRooms$: Observable<Room[] | null> = null;
 
   currentUserId: string = null;
@@ -65,6 +72,14 @@ export class ArchivePage implements OnInit {
           }
         })
     );
+    this.subscription.add(
+      this.store.pipe(select(unArchiveRoomErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.store.dispatch(unArchiveRoomInitialStateAction());
+        }
+      })
+    );
   }
 
   ionViewWillLeave() {
@@ -75,18 +90,21 @@ export class ArchivePage implements OnInit {
   initValues() {
     this.currentUser$ = this.store.pipe(select(currentUserSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector));
-    this.rooms$ = this.store.pipe(select(roomsSelector));
-    this.total$ = this.store.pipe(select(totalSelector));
+    this.archivedRooms$ = this.store.pipe(select(archivedRoomsSelector));
+    this.archivedTotal$ = this.store.pipe(select(archivedTotalSelector));
 
-    this.filteredRooms$ = combineLatest([this.rooms$, this.currentUser$]).pipe(
-      map(([rooms, currentUser]) => {
-        if (!rooms) {
+    this.filteredRooms$ = combineLatest([
+      this.archivedRooms$,
+      this.currentUser$,
+    ]).pipe(
+      map(([archivedRooms, currentUser]) => {
+        if (!archivedRooms) {
           return null;
         }
-        return rooms.filter(
+        return archivedRooms.filter(
           (room) =>
             !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
-            room?.['archived'].includes(currentUser?.$id)
+            currentUser.archivedRooms.includes(room.$id)
         );
       })
     );
@@ -102,7 +120,7 @@ export class ArchivePage implements OnInit {
   }
 
   listRooms() {
-    this.store.dispatch(getRoomsAction());
+    this.store.dispatch(getArchivedRoomsAction());
   }
 
   getChat(room) {
@@ -112,7 +130,6 @@ export class ArchivePage implements OnInit {
   handleRefresh(event) {
     this.listRooms();
     event.target.complete();
-    console.log('Async operation refresh has ended');
   }
 
   //
@@ -123,20 +140,20 @@ export class ArchivePage implements OnInit {
     // Offset is the number of users already loaded
     let offset: number = 0;
 
-    this.rooms$
+    this.archivedRooms$
       .subscribe((users) => {
         if (!users) return;
         offset = users.length;
-        this.total$
+        this.archivedTotal$
           .subscribe((total) => {
             if (offset < total) {
               this.store.dispatch(
-                getRoomsWithOffsetAction({
+                getArchivedRoomsWithOffsetAction({
                   request: { offset },
                 })
               );
             } else {
-              console.log('All rooms loaded');
+              console.log('All archived rooms loaded');
             }
           })
           .unsubscribe();
@@ -147,12 +164,9 @@ export class ArchivePage implements OnInit {
   }
 
   unArchiveRoom(room: Room) {
-    console.log('unArchiveRoom', room);
-    const request: updateRoomRequestInterface = {
-      roomId: room.$id,
-      data: { archived: false },
-    };
-    this.store.dispatch(updateRoomAction({ request }));
+    // Dispatch action
+    const request = { roomId: room.$id };
+    this.store.dispatch(unArchiveRoomAction({ request }));
   }
 
   //

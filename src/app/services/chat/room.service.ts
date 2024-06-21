@@ -187,16 +187,19 @@ export class RoomService {
 
   listRooms(
     currentUser: User,
-    offset?: number
+    options?: { offset?: number; archived?: boolean }
   ): Observable<listRoomsResponseInterface> {
     // Define queries
     const queries: any[] = [];
 
-    // Query for rooms that contain the current user
-    queries.push(Query.contains('users', currentUser.$id));
-
-    // Query for rooms descending by $updatedAt
-    queries.push(Query.orderDesc('$updatedAt'));
+    // Query for archived rooms if needed
+    if (!options?.archived) {
+      currentUser.archivedRooms?.forEach((id) => {
+        queries.push(Query.notEqual('$id', id));
+      });
+    } else {
+      queries.push(Query.contains('$id', currentUser.archivedRooms));
+    }
 
     // TODO: #340 Query for users that are not blocked by the current user
     // if (currentUser?.blockedUsers) {
@@ -205,9 +208,15 @@ export class RoomService {
     //   });
     // }
 
+    // Query for rooms that contain the current user
+    queries.push(Query.contains('users', currentUser.$id));
+
+    // Query for rooms descending by $updatedAt
+    queries.push(Query.orderDesc('$updatedAt'));
+
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
-    if (offset) queries.push(Query.offset(offset));
+    if (options?.offset) queries.push(Query.offset(options?.offset));
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)
@@ -221,6 +230,32 @@ export class RoomService {
           ),
           of(data)
         )
+      )
+    );
+  }
+
+  archiveRoom(currentUser: User, roomId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          archivedRooms: [...currentUser?.archivedRooms, roomId],
+        }
+      )
+    );
+  }
+
+  unArchiveRoom(currentUser: User, roomId: string): Observable<User> {
+    return from(
+      this.api.updateDocument(
+        environment.appwrite.USERS_COLLECTION,
+        currentUser.$id,
+        {
+          archivedRooms: currentUser?.archivedRooms.filter(
+            (room) => room !== roomId
+          ),
+        }
       )
     );
   }

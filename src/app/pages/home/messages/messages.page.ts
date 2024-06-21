@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { Store, select } from '@ngrx/store';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { Observable, Subscription, combineLatest, map } from 'rxjs';
 
@@ -9,12 +9,13 @@ import { Observable, Subscription, combineLatest, map } from 'rxjs';
 import { Room } from 'src/app/models/Room';
 import { User } from 'src/app/models/User';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
-import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 
 // Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
+  archiveRoomAction,
+  archiveRoomInitialStateAction,
   clearErrorsAction,
   updateRoomAction,
 } from 'src/app/store/actions/room.action';
@@ -23,6 +24,7 @@ import {
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
 import {
+  archiveRoomErrorSelector,
   currentUserSelector,
   totalUnseenArchivedSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -73,6 +75,12 @@ export class MessagesPage implements OnInit {
     } else {
       this.fcmService.registerPush();
     }
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd && event.url === '/home/messages') {
+        this.listRooms();
+      }
+    });
   }
 
   registerPushForWeb() {
@@ -93,9 +101,14 @@ export class MessagesPage implements OnInit {
           }
         })
     );
-
-    // Get all chat Rooms
-    this.listRooms();
+    this.subscription.add(
+      this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.store.dispatch(archiveRoomInitialStateAction());
+        }
+      })
+    );
   }
 
   ionViewWillLeave() {
@@ -120,7 +133,7 @@ export class MessagesPage implements OnInit {
         return rooms.filter(
           (room) =>
             !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
-            !room?.['archived'].includes(currentUser?.$id)
+            !currentUser.archivedRooms.includes(room.$id)
         );
       })
     );
@@ -136,6 +149,7 @@ export class MessagesPage implements OnInit {
   }
 
   listRooms() {
+    // console.log('Listing rooms');
     this.store.dispatch(getRoomsAction());
   }
 
@@ -177,7 +191,6 @@ export class MessagesPage implements OnInit {
   handleRefresh(event) {
     this.listRooms();
     event.target.complete();
-    console.log('Async operation refresh has ended');
   }
 
   openArchiveChatPage() {
@@ -185,12 +198,9 @@ export class MessagesPage implements OnInit {
   }
 
   archiveRoom(room: Room) {
-    console.log('archiveRoom', room);
-    const request: updateRoomRequestInterface = {
-      roomId: room.$id,
-      data: { archived: true },
-    };
-    this.store.dispatch(updateRoomAction({ request }));
+    // Dispatch action
+    const request = { roomId: room.$id };
+    this.store.dispatch(archiveRoomAction({ request }));
   }
 
   //
