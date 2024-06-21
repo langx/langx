@@ -50,8 +50,17 @@ ion-modal {
 }
 
 ion-thumbnail {
-  --size: 75px; // Increase this value to make the thumbnail bigger
+  --size: 100px;
   margin-top: 5px;
   margin-bottom: 5px;
   --border-radius: 10px;
+}
+
+// For block modal
+.user-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 50%;
+  margin: auto;
 }

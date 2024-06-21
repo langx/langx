@@ -175,7 +175,9 @@
           Please confirm that the following user will be blocked:
         </p>
         <div class="ion-padding">
-          <app-user-list [item]="user$ | async"></app-user-list>
+          <div class="user-card">
+            <app-user-list [item]="user$ | async"></app-user-list>
+          </div>
         </div>
         <ul>
           <li>Hide this user's info, including messages, everywhere.</li>
