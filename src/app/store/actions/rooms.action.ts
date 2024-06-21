@@ -7,7 +7,7 @@ import { listRoomsResponseInterface } from 'src/app/models/types/responses/listR
 // Get Rooms Actions
 export const getRoomsAction = createAction(
   ActionTypes.GET_ROOMS,
-  props<{ archived?: boolean }>()
+  props<{ request?: { archived?: boolean } }>()
 );
 
 export const getRoomsSuccessAction = createAction(
@@ -23,7 +23,7 @@ export const getRoomsFailureAction = createAction(
 // Get Rooms With Offset Actions
 export const getRoomsWithOffsetAction = createAction(
   ActionTypes.GET_ROOMS_WITH_OFFSET,
-  props<{ request: { offset: number } }>()
+  props<{ request: { offset: number; archived?: boolean } }>()
 );
 
 export const getRoomsWithOffsetSuccessAction = createAction(
