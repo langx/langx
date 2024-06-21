@@ -15,6 +15,8 @@ import { FcmService } from 'src/app/services/fcm/fcm.service';
 // Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
+  archiveRoomAction,
+  archiveRoomInitialStateAction,
   clearErrorsAction,
   updateRoomAction,
 } from 'src/app/store/actions/room.action';
@@ -23,6 +25,7 @@ import {
   getRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
 import {
+  archiveRoomErrorSelector,
   currentUserSelector,
   totalUnseenArchivedSelector,
 } from 'src/app/store/selectors/auth.selector';
@@ -92,6 +95,14 @@ export class MessagesPage implements OnInit {
             this.store.dispatch(clearErrorsAction());
           }
         })
+    );
+    this.subscription.add(
+      this.store.pipe(select(archiveRoomErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.store.dispatch(archiveRoomInitialStateAction());
+        }
+      })
     );
 
     // Get all chat Rooms
@@ -184,12 +195,9 @@ export class MessagesPage implements OnInit {
   }
 
   archiveRoom(room: Room) {
-    console.log('archiveRoom', room);
-    const request: updateRoomRequestInterface = {
-      roomId: room.$id,
-      data: { archived: true },
-    };
-    this.store.dispatch(updateRoomAction({ request }));
+    // Dispatch action
+    const request = { roomId: room.$id };
+    this.store.dispatch(archiveRoomAction({ request }));
   }
 
   //

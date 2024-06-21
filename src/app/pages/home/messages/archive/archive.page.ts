@@ -10,12 +10,19 @@ import { updateRoomRequestInterface } from 'src/app/models/types/requests/update
 
 // Import Actions and Selectors
 import { activateRoomAction } from 'src/app/store/actions/message.action';
-import { updateRoomAction } from 'src/app/store/actions/room.action';
+import {
+  unArchiveRoomAction,
+  unArchiveRoomInitialStateAction,
+  updateRoomAction,
+} from 'src/app/store/actions/room.action';
 import {
   getArchivedRoomsAction,
   getArchivedRoomsWithOffsetAction,
 } from 'src/app/store/actions/rooms.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
+import {
+  currentUserSelector,
+  unArchiveRoomErrorSelector,
+} from 'src/app/store/selectors/auth.selector';
 import {
   archivedRoomsSelector,
   archivedTotalSelector,
@@ -64,6 +71,14 @@ export class ArchivePage implements OnInit {
             this.presentToast(error.message, 'danger');
           }
         })
+    );
+    this.subscription.add(
+      this.store.pipe(select(unArchiveRoomErrorSelector)).subscribe((error) => {
+        if (error) {
+          this.presentToast(error.message, 'danger');
+          this.store.dispatch(unArchiveRoomInitialStateAction());
+        }
+      })
     );
   }
 
@@ -150,11 +165,9 @@ export class ArchivePage implements OnInit {
 
   unArchiveRoom(room: Room) {
     console.log('unArchiveRoom', room);
-    const request: updateRoomRequestInterface = {
-      roomId: room.$id,
-      data: { archived: false },
-    };
-    this.store.dispatch(updateRoomAction({ request }));
+    // Dispatch action
+    const request = { roomId: room.$id };
+    this.store.dispatch(unArchiveRoomAction({ request }));
   }
 
   //
