@@ -196,6 +196,11 @@ export class RoomService {
     // Query for rooms that contain the current user
     queries.push(Query.contains('users', currentUser.$id));
 
+    // Query for archived rooms if needed
+    if (archived) {
+      queries.push(Query.contains('archived', currentUser.$id));
+    }
+
     // Query for rooms descending by $updatedAt
     queries.push(Query.orderDesc('$updatedAt'));
 
