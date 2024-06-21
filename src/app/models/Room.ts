@@ -5,4 +5,5 @@ export type Room = Models.Document & {
   copilot: string[];
   typing: boolean[];
   unseen: number[];
+  archived: string[];
 };

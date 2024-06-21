@@ -235,9 +235,6 @@ export class RoomService {
   }
 
   archiveRoom(currentUser: User, room: Room): Observable<User> {
-    // Trigger total-unseen-user function
-    // this.api.function.createExecution('total-unseen-user');
-
     return from(
       this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,

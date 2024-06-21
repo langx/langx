@@ -10,8 +10,10 @@ import { User } from 'src/app/models/User';
 import { Room } from 'src/app/models/Room';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
+import { updateRoomRequestInterface } from 'src/app/models/types/requests/updateRoomRequest.interface';
 import { RoomExtendedInterface } from 'src/app/models/types/roomExtended.interface';
 import { RoomService } from 'src/app/services/chat/room.service';
+import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 import { activateRoomAction } from 'src/app/store/actions/message.action';
 import {
   createRoomAction,
@@ -33,7 +35,6 @@ import {
   unArchiveRoomSuccessAction,
   unArchiveRoomFailureAction,
 } from 'src/app/store/actions/room.action';
-import { currentUserSelector } from 'src/app/store/selectors/auth.selector';
 
 @Injectable()
 export class RoomEffects {
@@ -183,8 +184,16 @@ export class RoomEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.roomService.archiveRoom(currentUser, request.room).pipe(
-          map((payload: User) => archiveRoomSuccessAction({ payload })),
-
+          switchMap((payload: User) => {
+            const updateRequest: updateRoomRequestInterface = {
+              roomId: request.room.$id,
+              data: { archived: true },
+            };
+            return of(
+              updateRoomAction({ request: updateRequest }),
+              archiveRoomSuccessAction({ payload })
+            );
+          }),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
@@ -202,7 +211,16 @@ export class RoomEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.roomService.unArchiveRoom(currentUser, request.room).pipe(
-          map((payload: User) => unArchiveRoomSuccessAction({ payload })),
+          switchMap((payload: User) => {
+            const updateRequest: updateRoomRequestInterface = {
+              roomId: request.room.$id,
+              data: { archived: false },
+            };
+            return of(
+              unArchiveRoomSuccessAction({ payload }),
+              updateRoomAction({ request: updateRequest })
+            );
+          }),
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
               message: errorResponse.message,
