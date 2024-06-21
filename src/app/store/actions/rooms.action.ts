@@ -5,7 +5,10 @@ import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { listRoomsResponseInterface } from 'src/app/models/types/responses/listRoomsResponse.interface';
 
 // Get Rooms Actions
-export const getRoomsAction = createAction(ActionTypes.GET_ROOMS);
+export const getRoomsAction = createAction(
+  ActionTypes.GET_ROOMS,
+  props<{ archived?: boolean }>()
+);
 
 export const getRoomsSuccessAction = createAction(
   ActionTypes.GET_ROOMS_SUCCESS,

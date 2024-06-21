@@ -136,7 +136,7 @@ export class MessagesPage implements OnInit {
   }
 
   listRooms() {
-    this.store.dispatch(getRoomsAction());
+    this.store.dispatch(getRoomsAction({}));
   }
 
   //
