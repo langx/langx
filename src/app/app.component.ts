@@ -101,7 +101,7 @@ export class AppComponent {
         this.updateService.checkForUpdates();
 
         // Get rooms when App State Becomes Active
-        this.store.dispatch(getRoomsAction({}));
+        this.store.dispatch(getRoomsAction());
       }
     });
   }

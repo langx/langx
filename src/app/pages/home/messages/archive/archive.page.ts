@@ -102,7 +102,7 @@ export class ArchivePage implements OnInit {
   }
 
   listRooms() {
-    this.store.dispatch(getRoomsAction({ request: { archived: true } }));
+    // this.store.dispatch(getRoomsAction());
   }
 
   getChat(room) {
