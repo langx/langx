@@ -201,11 +201,12 @@ export class RoomService {
       queries.push(Query.contains('$id', currentUser.archivedRooms));
     }
 
-    if (currentUser?.blockedUsers) {
-      currentUser.blockedUsers.forEach((id) => {
-        queries.push(Query.notEqual('users', id));
-      });
-    }
+    // TODO: #340 Query for users that are not blocked by the current user
+    // if (currentUser?.blockedUsers) {
+    //   currentUser.blockedUsers.forEach((id) => {
+    //     queries.push(Query.notEqual('users', id));
+    //   });
+    // }
 
     // Query for rooms that contain the current user
     queries.push(Query.contains('users', currentUser.$id));
