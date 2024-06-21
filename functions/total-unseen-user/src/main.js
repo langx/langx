@@ -31,6 +31,17 @@ export default async ({ req, res, log, error }) => {
       user2
     );
 
+    log(
+      `BEFORE: User 1: ${JSON.stringify(
+        user1Doc.totalUnseen
+      )}, ${JSON.stringify(user1Doc.totalUnseenArchived)}`
+    );
+    log(
+      `BEFORE: User 2: ${JSON.stringify(
+        user2Doc.totalUnseen
+      )}, ${JSON.stringify(user2Doc.totalUnseenArchived)}`
+    );
+
     // Init queries
     let querry1 = [
       Query.contains('users', user1),
