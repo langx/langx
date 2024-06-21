@@ -281,6 +281,9 @@ const roomReducer = createReducer(
       rooms: state.rooms.map((room) =>
         room.$id === action.payload.$id ? action.payload : room
       ),
+      archivedRooms: state.archivedRooms?.map((room) =>
+        room.$id === action.payload.$id ? action.payload : room
+      ),
     };
   }),
 
