@@ -20,6 +20,16 @@ export const totalSelector = createSelector(
   (roomState: RoomStateInterface) => roomState.total
 );
 
+export const archivedRoomsSelector = createSelector(
+  roomFeatureSelector,
+  (roomState: RoomStateInterface) => roomState.archivedRooms
+);
+
+export const archivedTotalSelector = createSelector(
+  roomFeatureSelector,
+  (roomState: RoomStateInterface) => roomState.archivedTotal
+);
+
 export const errorSelector = createSelector(
   roomFeatureSelector,
   (roomState: RoomStateInterface) => roomState.error
