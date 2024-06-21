@@ -1,6 +1,5 @@
 import { Client, Databases, Query } from 'node-appwrite';
 
-// "execute": ["users"],
 // "events": [
 //   "databases.650750f16cd0c482bb83.collections.6507510fc71f989d5d1c.documents.*.update"
 // ],

@@ -41,7 +41,7 @@
       "$id": "total-unseen-user",
       "name": "total-unseen-user",
       "runtime": "node-18.0",
-      "execute": ["users"],
+      "execute": [],
       "events": [
         "databases.650750f16cd0c482bb83.collections.6507510fc71f989d5d1c.documents.*.update"
       ],
