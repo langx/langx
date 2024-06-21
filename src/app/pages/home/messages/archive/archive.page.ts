@@ -102,9 +102,7 @@ export class ArchivePage implements OnInit {
           return null;
         }
         return archivedRooms.filter(
-          (room) =>
-            !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
-            currentUser.archivedRooms.includes(room.$id)
+          (room) => !currentUser.blockedUsers.includes(room?.['userData']?.$id)
         );
       })
     );

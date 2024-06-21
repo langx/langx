@@ -193,7 +193,7 @@ export class RoomService {
     const queries: any[] = [];
 
     // Query for archived rooms if needed
-    if (options?.archived) {
+    if (!options?.archived) {
       currentUser.archivedRooms?.forEach((id) => {
         queries.push(Query.notEqual('$id', id));
       });

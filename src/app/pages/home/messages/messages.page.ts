@@ -129,9 +129,7 @@ export class MessagesPage implements OnInit {
           return null;
         }
         return rooms.filter(
-          (room) =>
-            !currentUser.blockedUsers.includes(room?.['userData']?.$id) &&
-            !currentUser.archivedRooms.includes(room.$id)
+          (room) => !currentUser.blockedUsers.includes(room?.['userData']?.$id)
         );
       })
     );
