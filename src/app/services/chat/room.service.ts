@@ -234,26 +234,29 @@ export class RoomService {
     );
   }
 
-  archiveRoom(currentUser: User, roomId: string): Observable<User> {
+  archiveRoom(currentUser: User, room: Room): Observable<User> {
+    // Trigger total-unseen-user function
+    // this.api.function.createExecution('total-unseen-user');
+
     return from(
       this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,
         currentUser.$id,
         {
-          archivedRooms: [...currentUser?.archivedRooms, roomId],
+          archivedRooms: [...currentUser?.archivedRooms, room.$id],
         }
       )
     );
   }
 
-  unArchiveRoom(currentUser: User, roomId: string): Observable<User> {
+  unArchiveRoom(currentUser: User, room: Room): Observable<User> {
     return from(
       this.api.updateDocument(
         environment.appwrite.USERS_COLLECTION,
         currentUser.$id,
         {
           archivedRooms: currentUser?.archivedRooms.filter(
-            (room) => room !== roomId
+            (roomId) => roomId !== room.$id
           ),
         }
       )
