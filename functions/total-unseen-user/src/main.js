@@ -31,17 +31,6 @@ export default async ({ req, res, log, error }) => {
       user2
     );
 
-    log(
-      `BEFORE: User 1: ${JSON.stringify(
-        user1Doc.totalUnseen
-      )}, ${JSON.stringify(user1Doc.totalUnseenArchived)}`
-    );
-    log(
-      `BEFORE: User 2: ${JSON.stringify(
-        user2Doc.totalUnseen
-      )}, ${JSON.stringify(user2Doc.totalUnseenArchived)}`
-    );
-
     // Init queries
     let querry1 = [
       Query.contains('users', user1),
@@ -92,8 +81,8 @@ export default async ({ req, res, log, error }) => {
       }
     });
 
-    log(`Unseen count for User 1: ${unseenCountUser1}`);
-    log(`Unseen count for User 2: ${unseenCountUser2}`);
+    // log(`Unseen count for User 1: ${unseenCountUser1}`);
+    // log(`Unseen count for User 2: ${unseenCountUser2}`);
 
     // Init queries
     let querry1archived = [
@@ -148,24 +137,54 @@ export default async ({ req, res, log, error }) => {
       });
     }
 
-    log(`Unseen count for User 1 Archived: ${unseenArchivedCountUser1}`);
-    log(`Unseen count for User 2 Archived: ${unseenArchivedCountUser2}`);
+    // log(`Unseen count for User 1 Archived: ${unseenArchivedCountUser1}`);
+    // log(`Unseen count for User 2 Archived: ${unseenArchivedCountUser2}`);
+
+    log(`totalUnseen: User 1: ${user1Doc.totalUnseen}, ${unseenCountUser1}`);
+    log(`totalUnseen: User 2: ${user2Doc.totalUnseen}, ${unseenCountUser2}`);
+    log(
+      `totalUnseenArchived: User 1: ${user1Doc.totalUnseenArchived}, ${unseenArchivedCountUser1}`
+    );
+    log(
+      `totalUnseenArchived: User 2: ${user2Doc.totalUnseenArchived}, ${unseenArchivedCountUser2}`
+    );
 
     // Update user documents with totalUnseen attribute
-    await Promise.all([
-      updateUserTotalUnseen(
-        db,
-        user1,
-        unseenCountUser1,
-        unseenArchivedCountUser1
-      ),
-      updateUserTotalUnseen(
-        db,
-        user2,
-        unseenCountUser2,
-        unseenArchivedCountUser2
-      ),
-    ]);
+    let promises = [];
+
+    if (
+      user1Doc.totalUnseen !== unseenCountUser1 ||
+      user1Doc.totalUnseenArchived !== unseenArchivedCountUser1
+    ) {
+      log(`Updating totalUnseen for User 1`);
+      promises.push(
+        updateUserTotalUnseen(
+          db,
+          user1,
+          unseenCountUser1,
+          unseenArchivedCountUser1
+        )
+      );
+    }
+
+    if (
+      user2Doc.totalUnseen !== unseenCountUser2 ||
+      user2Doc.totalUnseenArchived !== unseenArchivedCountUser2
+    ) {
+      log(`Updating totalUnseen for User 2`);
+      promises.push(
+        updateUserTotalUnseen(
+          db,
+          user2,
+          unseenCountUser2,
+          unseenArchivedCountUser2
+        )
+      );
+    }
+
+    if (promises.length > 0) {
+      await Promise.all(promises);
+    }
 
     return res.json({ ok: true });
   } catch (err) {
