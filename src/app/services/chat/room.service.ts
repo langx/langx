@@ -187,21 +187,17 @@ export class RoomService {
 
   listRooms(
     currentUser: User,
-    options?: { archived?: boolean; offset?: number }
+    options?: { offset?: number; archived?: boolean }
   ): Observable<listRoomsResponseInterface> {
     // Define queries
     const queries: any[] = [];
 
-    // Query for rooms that contain the current user
-    queries.push(Query.contains('users', currentUser.$id));
-
     // Query for archived rooms if needed
     if (options?.archived) {
-      queries.push(Query.contains('archived', currentUser.$id));
+      currentUser.archivedRooms?.forEach((id) => {
+        queries.push(Query.notEqual('$id', id));
+      });
     }
-
-    // Query for rooms descending by $updatedAt
-    queries.push(Query.orderDesc('$updatedAt'));
 
     // TODO: #340 Query for users that are not blocked by the current user
     // if (currentUser?.blockedUsers) {
@@ -209,6 +205,12 @@ export class RoomService {
     //     queries.push(Query.notEqual('users', id));
     //   });
     // }
+
+    // Query for rooms that contain the current user
+    queries.push(Query.contains('users', currentUser.$id));
+
+    // Query for rooms descending by $updatedAt
+    queries.push(Query.orderDesc('$updatedAt'));
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
