@@ -85,8 +85,8 @@ export default async ({ req, res, log, error }) => {
     log(`Unseen count for User 2: ${unseenCountUser2}`);
 
     // Include for archived rooms
-    querry1.push(Query.contains('archived', req.body.$id));
-    querry2.push(Query.contains('archived', req.body.$id));
+    querry1.push(Query.contains('archived', user1));
+    querry2.push(Query.contains('archived', user2));
 
     // List archived rooms
     const listArchivedRoomsForUser1 = await db.listDocuments(
@@ -113,7 +113,7 @@ export default async ({ req, res, log, error }) => {
 
     // Count unseen messages for user2 in archived rooms
     let unseenArchivedCountUser2 = 0;
-    listRoomsForUser2.documents.forEach((room) => {
+    listArchivedRoomsForUser2.documents.forEach((room) => {
       if (room.users[0] === user2 && room.unseen[0] !== 0) {
         unseenArchivedCountUser2 += room.unseen[0];
       } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
