@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user/user.service';
-import { lastSeen } from 'src/app/extras/utils';
+import { getFlagEmoji2, lastSeen } from 'src/app/extras/utils';
 import { User } from 'src/app/models/User';
 
 @Component({
@@ -36,8 +36,17 @@ export class BlockedUserListComponent implements OnInit {
   getStudyLanguages() {
     let studyLanguages = this.item?.languages
       .filter((language) => !language?.motherLanguage)
-      .map((language) => language?.name);
-    return studyLanguages.join(', ');
+      .map((language) => language?.code);
+    const flags = studyLanguages.map((lang) => getFlagEmoji2(lang));
+    return flags.join(' ');
+  }
+
+  getMotherLanguages() {
+    let motherLanguages = this.item?.languages
+      .filter((language) => language?.motherLanguage)
+      .map((language) => language?.code);
+    const flags = motherLanguages.map((lang) => getFlagEmoji2(lang));
+    return flags.join(' ');
   }
 
   //
