@@ -177,7 +177,6 @@ export class MessagesPage implements OnInit {
   handleRefresh(event) {
     this.listRooms();
     event.target.complete();
-    console.log('Async operation refresh has ended');
   }
 
   openArchiveChatPage() {
