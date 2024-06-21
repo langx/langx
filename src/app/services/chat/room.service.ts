@@ -187,8 +187,7 @@ export class RoomService {
 
   listRooms(
     currentUser: User,
-    archived?: boolean,
-    offset?: number
+    options?: { archived?: boolean; offset?: number }
   ): Observable<listRoomsResponseInterface> {
     // Define queries
     const queries: any[] = [];
@@ -197,7 +196,7 @@ export class RoomService {
     queries.push(Query.contains('users', currentUser.$id));
 
     // Query for archived rooms if needed
-    if (archived) {
+    if (options?.archived) {
       queries.push(Query.contains('archived', currentUser.$id));
     }
 
@@ -213,7 +212,7 @@ export class RoomService {
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));
-    if (offset) queries.push(Query.offset(offset));
+    if (options?.offset) queries.push(Query.offset(options?.offset));
 
     return from(
       this.api.listDocuments(environment.appwrite.ROOMS_COLLECTION, queries)

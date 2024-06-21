@@ -23,11 +23,11 @@ export class RoomsEffects {
     this.actions$.pipe(
       ofType(getRoomsAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([{ request }, currentUser]) =>
-        this.roomService.listRooms(currentUser, request?.archived).pipe(
-          map((payload: listRoomsResponseInterface) =>
-            getRoomsSuccessAction({ payload })
-          ),
+      switchMap(([_, currentUser]) =>
+        this.roomService.listRooms(currentUser).pipe(
+          map((payload: listRoomsResponseInterface) => {
+            return getRoomsSuccessAction({ payload });
+          }),
 
           catchError((errorResponse: HttpErrorResponse) => {
             const error: ErrorInterface = {
@@ -46,7 +46,7 @@ export class RoomsEffects {
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
       switchMap(([{ request }, currentUser]) =>
         this.roomService
-          .listRooms(currentUser, request?.archived, request.offset)
+          .listRooms(currentUser, { offset: request.offset })
           .pipe(
             map((payload: listRoomsResponseInterface) =>
               // TODO: #248 Before dispatch getRoomsWithOffsetSuccessAction,
