@@ -10,12 +10,8 @@
       {{ item?.name }}
     </h2>
     <p>
-      <ion-text *ngIf="item?.aboutMe">{{ item?.aboutMe }}</ion-text>
-      <ion-text *ngIf="!item?.aboutMe" style="font-style: italic">
-        Learning:
-        <span>
-          {{ getStudyLanguages() }}
-        </span>
+      <ion-text>
+        <p>{{ getStudyLanguages() }} {{ getMotherLanguages() }}</p>
       </ion-text>
     </p>
   </ion-label>
