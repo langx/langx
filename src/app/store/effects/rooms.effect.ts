@@ -23,8 +23,11 @@ export class RoomsEffects {
     this.actions$.pipe(
       ofType(getRoomsAction),
       withLatestFrom(this.store.pipe(select(currentUserSelector))),
-      switchMap(([_, currentUser]) =>
-        this.roomService.listRooms(currentUser).pipe(
+      switchMap(([{ request }, currentUser]) => {
+        if (request?.archived) {
+          console.log('Request is archived:', request?.archived);
+        }
+        return this.roomService.listRooms(currentUser).pipe(
           map((payload: listRoomsResponseInterface) =>
             getRoomsSuccessAction({ payload })
           ),
@@ -35,8 +38,8 @@ export class RoomsEffects {
             };
             return of(getRoomsFailureAction({ error }));
           })
-        )
-      )
+        );
+      })
     )
   );
 
