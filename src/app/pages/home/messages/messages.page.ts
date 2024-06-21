@@ -199,7 +199,7 @@ export class MessagesPage implements OnInit {
 
   archiveRoom(room: Room) {
     // Dispatch action
-    const request = { roomId: room.$id };
+    const request = { room: room };
     this.store.dispatch(archiveRoomAction({ request }));
   }
 

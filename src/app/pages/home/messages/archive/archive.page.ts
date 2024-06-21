@@ -165,7 +165,7 @@ export class ArchivePage implements OnInit {
 
   unArchiveRoom(room: Room) {
     // Dispatch action
-    const request = { roomId: room.$id };
+    const request = { room: room };
     this.store.dispatch(unArchiveRoomAction({ request }));
   }
 

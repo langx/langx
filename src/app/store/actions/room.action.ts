@@ -80,7 +80,7 @@ export const updateRoomFailureAction = createAction(
 // Archive Room Actions
 export const archiveRoomAction = createAction(
   ActionTypes.ARCHIVE_ROOM,
-  props<{ request: { roomId: string } }>()
+  props<{ request: { room: Room } }>()
 );
 
 export const archiveRoomSuccessAction = createAction(
@@ -100,7 +100,7 @@ export const archiveRoomInitialStateAction = createAction(
 // Unarchive Room Actions
 export const unArchiveRoomAction = createAction(
   ActionTypes.UNARCHIVE_ROOM,
-  props<{ request: { roomId: string } }>()
+  props<{ request: { room: Room } }>()
 );
 
 export const unArchiveRoomSuccessAction = createAction(
