@@ -187,6 +187,7 @@ export class RoomService {
 
   listRooms(
     currentUser: User,
+    archived?: boolean,
     offset?: number
   ): Observable<listRoomsResponseInterface> {
     // Define queries
