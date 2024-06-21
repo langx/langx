@@ -94,42 +94,48 @@ export default async ({ req, res, log, error }) => {
       Query.orderDesc('$updatedAt'),
     ];
 
-    // Include for archived rooms
-    querry1archived.push(Query.contains('$id', user1Doc.archivedRooms));
-    querry2archived.push(Query.contains('$id', user2Doc.archivedRooms));
-
-    // List archived rooms
-    const listArchivedRoomsForUser1 = await db.listDocuments(
-      process.env.APP_DATABASE,
-      process.env.ROOMS_COLLECTION,
-      querry1archived
-    );
-
-    const listArchivedRoomsForUser2 = await db.listDocuments(
-      process.env.APP_DATABASE,
-      process.env.ROOMS_COLLECTION,
-      querry2archived
-    );
-
-    // Count unseen messages for user1 in archived rooms
     let unseenArchivedCountUser1 = 0;
-    listArchivedRoomsForUser1.documents.forEach((room) => {
-      if (room.users[0] === user1 && room.unseen[0] !== 0) {
-        unseenArchivedCountUser1 += room.unseen[0];
-      } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
-        unseenArchivedCountUser1 += room.unseen[1];
-      }
-    });
-
-    // Count unseen messages for user2 in archived rooms
     let unseenArchivedCountUser2 = 0;
-    listArchivedRoomsForUser2.documents.forEach((room) => {
-      if (room.users[0] === user2 && room.unseen[0] !== 0) {
-        unseenArchivedCountUser2 += room.unseen[0];
-      } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
-        unseenArchivedCountUser2 += room.unseen[1];
-      }
-    });
+
+    // Include for archived rooms
+    if (user1Doc.archivedRooms && user1Doc.archivedRooms.length > 0) {
+      querry1archived.push(Query.contains('$id', user1Doc.archivedRooms));
+
+      // List archived rooms
+      const listArchivedRoomsForUser1 = await db.listDocuments(
+        process.env.APP_DATABASE,
+        process.env.ROOMS_COLLECTION,
+        querry1archived
+      );
+
+      // Count unseen messages for user1 in archived rooms
+      listArchivedRoomsForUser1.documents.forEach((room) => {
+        if (room.users[0] === user1 && room.unseen[0] !== 0) {
+          unseenArchivedCountUser1 += room.unseen[0];
+        } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
+          unseenArchivedCountUser1 += room.unseen[1];
+        }
+      });
+    }
+
+    if (user2Doc.archivedRooms && user2Doc.archivedRooms.length > 0) {
+      querry2archived.push(Query.contains('$id', user2Doc.archivedRooms));
+
+      const listArchivedRoomsForUser2 = await db.listDocuments(
+        process.env.APP_DATABASE,
+        process.env.ROOMS_COLLECTION,
+        querry2archived
+      );
+
+      // Count unseen messages for user2 in archived rooms
+      listArchivedRoomsForUser2.documents.forEach((room) => {
+        if (room.users[0] === user2 && room.unseen[0] !== 0) {
+          unseenArchivedCountUser2 += room.unseen[0];
+        } else if (room.users[1] === user2 && room.unseen[1] !== 0) {
+          unseenArchivedCountUser2 += room.unseen[1];
+        }
+      });
+    }
 
     log(`Unseen count for User 1 Archived: ${unseenArchivedCountUser1}`);
     log(`Unseen count for User 2 Archived: ${unseenArchivedCountUser2}`);
