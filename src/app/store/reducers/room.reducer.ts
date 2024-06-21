@@ -11,6 +11,12 @@ import {
   logoutSuccessAction,
 } from 'src/app/store/actions/auth.action';
 import {
+  getArchivedRoomsAction,
+  getArchivedRoomsFailureAction,
+  getArchivedRoomsSuccessAction,
+  getArchivedRoomsWithOffsetAction,
+  getArchivedRoomsWithOffsetFailureAction,
+  getArchivedRoomsWithOffsetSuccessAction,
   getRoomsAction,
   getRoomsSuccessAction,
   getRoomsFailureAction,
@@ -100,6 +106,60 @@ const roomReducer = createReducer(
   ),
   on(
     getRoomsWithOffsetFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Archived Rooms Reducers
+  on(
+    getArchivedRoomsAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getArchivedRoomsSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      archivedTotal: action.payload?.total,
+      archivedRooms: action.payload?.documents,
+    })
+  ),
+  on(
+    getArchivedRoomsFailureAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      error: action.error,
+    })
+  ),
+
+  // Get Archived Rooms With Offset Reducers
+  on(
+    getArchivedRoomsWithOffsetAction,
+    (state): RoomStateInterface => ({
+      ...state,
+      isLoading: true,
+      error: null,
+    })
+  ),
+  on(
+    getArchivedRoomsWithOffsetSuccessAction,
+    (state, action): RoomStateInterface => ({
+      ...state,
+      isLoading: false,
+      archivedTotal: action.payload?.total,
+      archivedRooms: [...state.archivedRooms, ...action.payload?.documents],
+    })
+  ),
+  on(
+    getArchivedRoomsWithOffsetFailureAction,
     (state, action): RoomStateInterface => ({
       ...state,
       isLoading: false,
