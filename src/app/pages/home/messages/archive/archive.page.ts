@@ -122,25 +122,25 @@ export class ArchivePage implements OnInit {
     // Offset is the number of users already loaded
     let offset: number = 0;
 
-    this.rooms$
-      .subscribe((users) => {
-        if (!users) return;
-        offset = users.length;
-        this.total$
-          .subscribe((total) => {
-            if (offset < total) {
-              this.store.dispatch(
-                getRoomsWithOffsetAction({
-                  request: { offset },
-                })
-              );
-            } else {
-              console.log('All rooms loaded');
-            }
-          })
-          .unsubscribe();
-      })
-      .unsubscribe();
+    // this.rooms$
+    //   .subscribe((users) => {
+    //     if (!users) return;
+    //     offset = users.length;
+    //     this.total$
+    //       .subscribe((total) => {
+    //         if (offset < total) {
+    //           this.store.dispatch(
+    //             getRoomsWithOffsetAction({
+    //               request: { offset },
+    //             })
+    //           );
+    //         } else {
+    //           console.log('All rooms loaded');
+    //         }
+    //       })
+    //       .unsubscribe();
+    //   })
+    //   .unsubscribe();
 
     event.target.complete();
   }
