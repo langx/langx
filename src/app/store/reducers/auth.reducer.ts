@@ -391,7 +391,8 @@ const authReducer = createReducer(
   ),
   on(updateCurrentUserSuccessAction, (state, action): AuthStateInterface => {
     // Set the badge count in the app icon
-    if (!Capacitor.isNativePlatform()) {
+    if (Capacitor.isNativePlatform()) {
+      console.log('Not a native platform');
       Badge.set({ count: action.payload.totalUnseen });
     }
     return {
