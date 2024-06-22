@@ -86,7 +86,7 @@ export class SuccessPage implements OnInit {
     if (
       cookieFallback &&
       Object.keys(cookieFallback).length !== 0 &&
-      Capacitor.getPlatform() !== 'web'
+      Capacitor.isNativePlatform()
     ) {
       localStorage.setItem('cookieFallback', cookieValue);
     }

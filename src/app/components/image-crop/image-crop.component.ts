@@ -23,7 +23,7 @@ export class ImageCropComponent implements OnInit {
   transform: ImageTransform = {};
 
   // TODO: should be tested in mobile
-  isMobile = Capacitor.getPlatform() !== 'web';
+  isMobile = Capacitor.isNativePlatform();
 
   constructor(
     private modalCtrl: ModalController,

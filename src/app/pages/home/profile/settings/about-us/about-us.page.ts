@@ -237,7 +237,7 @@ export class AboutUsPage implements OnInit {
   }
 
   isNativePlatform() {
-    return Capacitor.getPlatform() !== 'web';
+    return Capacitor.isNativePlatform();
   }
 
   getContributorsPage(page) {

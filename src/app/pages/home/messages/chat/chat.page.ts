@@ -280,7 +280,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   initKeyboardListeners() {
-    if (Capacitor.getPlatform() !== 'web') {
+    if (Capacitor.isNativePlatform()) {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
         console.log('keyboard did show with height:', info.keyboardHeight);
@@ -651,7 +651,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   private async requestCameraPermissions() {
-    if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+    if (Capacitor.isNativePlatform()) await Camera.requestPermissions();
   }
 
   private async getCameraPhoto() {
@@ -712,7 +712,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   private async checkMicPermission() {
-    if (Capacitor.getPlatform() != 'web') {
+    if (Capacitor.isNativePlatform()) {
       this.micPermission = (
         await VoiceRecorder.hasAudioRecordingPermission()
       ).value;
