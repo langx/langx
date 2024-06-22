@@ -238,7 +238,7 @@ export class AccountPage implements OnInit {
     this.sessions$ = this.store.pipe(select(sessionsSelector));
     this.isLoading$ = this.store.pipe(select(isLoadingSelector)); // TODO: Unused yet
 
-    if (Capacitor.getPlatform() === 'web') {
+    if (!Capacitor.isNativePlatform()) {
       // this.appVersion = 'Web App (pwa)';
       this.appVersion = `v${environment.version}`;
     } else {

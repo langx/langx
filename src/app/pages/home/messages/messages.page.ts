@@ -70,7 +70,8 @@ export class MessagesPage implements OnInit {
     this.listRooms();
 
     // Trigger FCM registration
-    if (Capacitor.getPlatform() === 'web') {
+    
+    if (!Capacitor.isNativePlatform()) {
       this.registerPushForWeb();
     } else {
       this.fcmService.registerPush();
