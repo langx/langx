@@ -959,7 +959,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   // TODO: #622
   onTypingStatusChange() {
-    // console.log('onTypingStatusChange', this.isTyping);
+    console.log('onTypingStatusChange', this.isTyping);
   }
 
   footerClicked(event: Event) {
