@@ -3,5 +3,6 @@ export interface updateRoomRequestInterface {
   data: {
     copilot?: boolean;
     archived?: boolean;
+    typing?: boolean;
   };
 }
