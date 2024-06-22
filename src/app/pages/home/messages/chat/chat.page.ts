@@ -499,7 +499,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   onEnter(event: any) {
-    if (!event.shiftKey && Capacitor.getPlatform() === 'web') {
+    if (!event.shiftKey && Capacitor.isNativePlatform()) {
       event.preventDefault();
       // Call your form submit method here
       this.submitForm();
@@ -945,7 +945,7 @@ export class ChatPage implements OnInit, OnDestroy {
     this.isTyping = true;
     this.onTypingStatusChange();
 
-    if (Capacitor.getPlatform() === 'web') {
+    if (Capacitor.isNativePlatform()) {
       setTimeout(() => {
         this.content.scrollToBottom(300);
       }, 100);

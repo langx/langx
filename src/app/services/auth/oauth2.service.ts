@@ -17,7 +17,7 @@ export class OAuth2Service {
   constructor(private router: Router, private authService: AuthService) {}
 
   signInWithDiscord() {
-    if (Capacitor.getPlatform() === 'web')
+    if (Capacitor.isNativePlatform())
       return this.authService.signInWithDiscord();
 
     // For mobile
@@ -31,7 +31,7 @@ export class OAuth2Service {
   }
 
   signInWithGoogle() {
-    if (Capacitor.getPlatform() === 'web')
+    if (Capacitor.isNativePlatform())
       return this.authService.signInWithGoogle();
 
     // For mobile
@@ -45,7 +45,7 @@ export class OAuth2Service {
   }
 
   signInWithFacebook() {
-    if (Capacitor.getPlatform() === 'web')
+    if (Capacitor.isNativePlatform())
       return this.authService.signInWithFacebook();
 
     // For mobile
@@ -59,7 +59,7 @@ export class OAuth2Service {
   }
 
   signInWithApple() {
-    if (Capacitor.getPlatform() === 'web')
+    if (Capacitor.isNativePlatform())
       return this.authService.signInWithApple();
 
     // For mobile
