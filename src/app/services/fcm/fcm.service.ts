@@ -29,7 +29,7 @@ export class FcmService {
 
   async registerPush() {
     // TODO: #226 Web notification can also be implemented here
-    if (Capacitor.isNativePlatform()) {
+    if (!Capacitor.isNativePlatform()) {
       return;
     }
 
@@ -106,7 +106,7 @@ export class FcmService {
       await this.deleteTokenForAndroid();
     }
 
-    if (Capacitor.isNativePlatform()) {
+    if (!Capacitor.isNativePlatform()) {
       // this.deregisterPushForWeb();
       await this.deleteTokenForWeb();
     }
@@ -114,7 +114,7 @@ export class FcmService {
 
   listenerPush() {
     // TODO: #226 Web notification can also be implemented here
-    if (Capacitor.isNativePlatform()) {
+    if (!Capacitor.isNativePlatform()) {
       return;
     }
 

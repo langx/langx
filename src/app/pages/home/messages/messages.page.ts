@@ -71,7 +71,7 @@ export class MessagesPage implements OnInit {
 
     // Trigger FCM registration
     
-    if (Capacitor.isNativePlatform()) {
+    if (!Capacitor.isNativePlatform()) {
       this.registerPushForWeb();
     } else {
       this.fcmService.registerPush();
