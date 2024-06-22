@@ -24,6 +24,11 @@ import {
   tap,
   switchMap,
   withLatestFrom,
+  Subject,
+  interval,
+  takeWhile,
+  takeUntil,
+  startWith,
 } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -98,6 +103,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   profilePic$: Observable<URL> = null;
 
+  private stopTyping$ = new Subject<void>();
   isTyping: boolean = false;
   roomId: string;
 
@@ -957,9 +963,29 @@ export class ChatPage implements OnInit, OnDestroy {
     this.onTypingStatusChange();
   }
 
-  // TODO: #622
   onTypingStatusChange() {
-    console.log('onTypingStatusChange', this.isTyping);
+    if (this.isTyping) {
+      interval(5000)
+        .pipe(
+          startWith(0),
+          takeWhile(() => this.isTyping),
+          takeUntil(this.stopTyping$)
+        )
+        .subscribe(() => {
+          this.dispatchTypingRequest();
+        });
+    } else {
+      this.stopTyping$.next();
+      this.dispatchTypingRequest();
+    }
+  }
+
+  private dispatchTypingRequest() {
+    const request: updateRoomRequestInterface = {
+      roomId: this.roomId,
+      data: { typing: this.isTyping },
+    };
+    this.store.dispatch(updateRoomAction({ request }));
   }
 
   footerClicked(event: Event) {
