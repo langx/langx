@@ -236,27 +236,19 @@ export class RoomService {
 
   archiveRoom(currentUser: User, room: Room): Observable<User> {
     return from(
-      this.api.updateDocument(
-        environment.appwrite.USERS_COLLECTION,
-        currentUser.$id,
-        {
-          archivedRooms: [...currentUser?.archivedRooms, room.$id],
-        }
-      )
+      this.userService.updateUserDoc({
+        archivedRooms: [...currentUser?.archivedRooms, room.$id],
+      })
     );
   }
 
   unArchiveRoom(currentUser: User, room: Room): Observable<User> {
     return from(
-      this.api.updateDocument(
-        environment.appwrite.USERS_COLLECTION,
-        currentUser.$id,
-        {
-          archivedRooms: currentUser?.archivedRooms.filter(
-            (roomId) => roomId !== room.$id
-          ),
-        }
-      )
+      this.userService.updateUserDoc({
+        archivedRooms: currentUser?.archivedRooms.filter(
+          (roomId) => roomId !== room.$id
+        ),
+      })
     );
   }
 
