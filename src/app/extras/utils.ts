@@ -137,7 +137,7 @@ export function onlineStatusInChaRoom(date: Date) {
   let hours = Math.floor(minutes / 60);
   let days = Math.floor(hours / 24);
 
-  if (minutes < 6) {
+  if (minutes < 3) {
     return 'online';
   } else if (hours < 6) {
     return 'away';
