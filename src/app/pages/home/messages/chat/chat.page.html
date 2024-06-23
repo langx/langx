@@ -19,7 +19,8 @@
     </ion-buttons>
 
     <ion-title (click)="redirectUserProfile()">
-      {{(user$ | async)?.name}}
+      {{(user$ | async)?.name}} <br />
+      <ion-text *ngIf="isUserTyping" class="typing">typing</ion-text>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -54,7 +55,6 @@
         >
         </app-chat-box>
       </ion-item-group>
-      <app-typing *ngIf="isUserTyping"></app-typing>
     </div>
   </ion-list>
 </ion-content>

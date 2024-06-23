@@ -2,6 +2,12 @@ ion-content {
   --ion-background-color: var(--ion-item-background);
 }
 
+.typing {
+  font-style: italic;
+  font-size: small !important;
+  font-weight: 300 !important;
+}
+
 ion-infinite-scroll-content {
   min-height: 1px;
 }
