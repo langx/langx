@@ -53,8 +53,8 @@
           (onIgnore)="onIgnore(msg)"
         >
         </app-chat-box>
-        {{ isUserTyping }}
       </ion-item-group>
+      <app-typing *ngIf="isUserTyping"></app-typing>
     </div>
   </ion-list>
 </ion-content>
