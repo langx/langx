@@ -106,6 +106,7 @@ export class ChatPage implements OnInit, OnDestroy {
   private stopTyping$ = new Subject<void>();
   isTyping: boolean = false;
   roomId: string;
+  isUserTyping: boolean = false;
 
   file: File;
 
@@ -206,7 +207,20 @@ export class ChatPage implements OnInit, OnDestroy {
     // Get the room
     this.subscriptions.add(
       this.room$.subscribe((room) => {
-        this.roomId = room.$id;
+        if (room) {
+          this.roomId = room.$id;
+
+          // userTyping
+          const userTypingDate = new Date(
+            room.typing[room.users.indexOf(room.userData.$id)]
+          );
+          if (userTypingDate.getTime() > Date.now() - 6000) {
+            this.isUserTyping = true;
+          } else {
+            this.isUserTyping = false;
+          }
+          console.log('User Typing:', this.isUserTyping);
+        }
       })
     );
 
