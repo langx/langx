@@ -43,6 +43,9 @@ import { Preferences } from '@capacitor/preferences';
 import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
 
+// Utils Import
+import { onlineStatusInChaRoom } from 'src/app/extras/utils';
+
 // Interface Imports
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
@@ -107,6 +110,8 @@ export class ChatPage implements OnInit, OnDestroy {
   isTyping: boolean = false;
   roomId: string;
   isUserTyping: boolean = false;
+
+  onlineStatus: string = null;
 
   file: File;
 
@@ -277,9 +282,12 @@ export class ChatPage implements OnInit, OnDestroy {
     // Set User photos
     this.subscriptions.add(
       this.user$.subscribe((user) => {
-        this.profilePic$ = this.userService.getUserFilePreview(
-          user?.profilePic
-        );
+        if (user) {
+          this.onlineStatus = this.onlineStatusInChatRoom(user?.lastSeen);
+          this.profilePic$ = this.userService.getUserFilePreview(
+            user?.profilePic
+          );
+        }
       })
     );
 
@@ -1041,6 +1049,11 @@ export class ChatPage implements OnInit, OnDestroy {
 
   trackByFn(index, item) {
     return item.$id;
+  }
+
+  onlineStatusInChatRoom(d: any) {
+    if (!d) return null;
+    return onlineStatusInChaRoom(d);
   }
 
   //
