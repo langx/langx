@@ -219,7 +219,7 @@ export class ChatPage implements OnInit, OnDestroy {
           } else {
             this.isUserTyping = false;
           }
-          console.log('User Typing:', this.isUserTyping);
+          // console.log('User Typing:', this.isUserTyping);
         }
       })
     );
