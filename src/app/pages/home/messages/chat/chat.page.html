@@ -12,7 +12,6 @@
         color="secondary"
         [(ngModel)]="copilotEnabled"
         (ionChange)="copilotToggle($event)"
-        [disabled]="isLoading$ | async"
       >
         🤖
       </ion-toggle>
