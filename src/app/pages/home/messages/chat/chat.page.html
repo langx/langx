@@ -19,7 +19,10 @@
 
     <ion-title (click)="redirectUserProfile()">
       {{(user$ | async)?.name}} <br />
-      <ion-text *ngIf="isUserTyping" class="typing">typing</ion-text>
+      <ion-text *ngIf="isUserTyping" class="status">typing</ion-text>
+      <ion-text *ngIf="!isUserTyping && onlineStatus" class="status"
+        >{{onlineStatus}}</ion-text
+      >
     </ion-title>
   </ion-toolbar>
 </ion-header>

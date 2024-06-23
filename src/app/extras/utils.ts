@@ -129,6 +129,25 @@ export function onlineStatus(date: Date) {
   }
 }
 
+export function onlineStatusInChaRoom(date: Date) {
+  let now = new Date();
+  let lastSeen = new Date(date);
+  let diff = now.getTime() - lastSeen.getTime();
+  let minutes = Math.floor(diff / 60000);
+  let hours = Math.floor(minutes / 60);
+  let days = Math.floor(hours / 24);
+
+  if (minutes < 3) {
+    return 'online';
+  } else if (hours < 6) {
+    return 'away';
+  } else if (days < 1) {
+    return 'offline';
+  } else {
+    return null;
+  }
+}
+
 export function getAge(date: Date) {
   let now = new Date();
   let birthDate = new Date(date);

@@ -43,6 +43,9 @@ import { Preferences } from '@capacitor/preferences';
 import { v4 as uuidv4 } from 'uuid';
 import Compressor from 'compressorjs';
 
+// Utils Import
+import { onlineStatusInChaRoom } from 'src/app/extras/utils';
+
 // Interface Imports
 import { Message } from 'src/app/models/Message';
 import { User } from 'src/app/models/User';
@@ -107,6 +110,8 @@ export class ChatPage implements OnInit, OnDestroy {
   isTyping: boolean = false;
   roomId: string;
   isUserTyping: boolean = false;
+
+  onlineStatus: string = null;
 
   file: File;
 
@@ -204,22 +209,34 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   initValuesAfterViewInit() {
-    // Get the room
+    // Define a variable to hold the timeout reference
+    let typingTimeout: any = null;
+
     this.subscriptions.add(
       this.room$.subscribe((room) => {
         if (room) {
           this.roomId = room.$id;
 
-          // userTyping
           const userTypingDate = new Date(
             room.typing[room.users.indexOf(room.userData.$id)]
           );
+
+          // Clear any existing timeout to reset the isUserTyping status
+          if (typingTimeout) {
+            clearTimeout(typingTimeout);
+          }
+
+          // Check if the user is currently typing
           if (userTypingDate.getTime() > Date.now() - 6000) {
             this.isUserTyping = true;
+
+            // Reset the timeout to automatically set isUserTyping to false after 6000ms
+            typingTimeout = setTimeout(() => {
+              this.isUserTyping = false;
+            }, 6000);
           } else {
             this.isUserTyping = false;
           }
-          // console.log('User Typing:', this.isUserTyping);
         }
       })
     );
@@ -265,9 +282,12 @@ export class ChatPage implements OnInit, OnDestroy {
     // Set User photos
     this.subscriptions.add(
       this.user$.subscribe((user) => {
-        this.profilePic$ = this.userService.getUserFilePreview(
-          user?.profilePic
-        );
+        if (user) {
+          this.onlineStatus = this.onlineStatusInChatRoom(user?.lastSeen);
+          this.profilePic$ = this.userService.getUserFilePreview(
+            user?.profilePic
+          );
+        }
       })
     );
 
@@ -1029,6 +1049,11 @@ export class ChatPage implements OnInit, OnDestroy {
 
   trackByFn(index, item) {
     return item.$id;
+  }
+
+  onlineStatusInChatRoom(d: any) {
+    if (!d) return null;
+    return onlineStatusInChaRoom(d);
   }
 
   //
