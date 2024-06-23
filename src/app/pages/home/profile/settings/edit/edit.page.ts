@@ -203,7 +203,7 @@ export class EditPage implements OnInit {
 
   async selectImage(which: string) {
     try {
-      if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+      if (Capacitor.isNativePlatform()) await Camera.requestPermissions();
 
       // TODO: Capacitor pop up style is not good. It should be changed.
       const image = await Camera.getPhoto({

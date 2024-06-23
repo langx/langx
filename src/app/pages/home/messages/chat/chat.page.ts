@@ -24,6 +24,11 @@ import {
   tap,
   switchMap,
   withLatestFrom,
+  Subject,
+  interval,
+  takeWhile,
+  takeUntil,
+  startWith,
 } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -98,8 +103,10 @@ export class ChatPage implements OnInit, OnDestroy {
 
   profilePic$: Observable<URL> = null;
 
+  private stopTyping$ = new Subject<void>();
   isTyping: boolean = false;
   roomId: string;
+  isUserTyping: boolean = false;
 
   file: File;
 
@@ -200,7 +207,20 @@ export class ChatPage implements OnInit, OnDestroy {
     // Get the room
     this.subscriptions.add(
       this.room$.subscribe((room) => {
-        this.roomId = room.$id;
+        if (room) {
+          this.roomId = room.$id;
+
+          // userTyping
+          const userTypingDate = new Date(
+            room.typing[room.users.indexOf(room.userData.$id)]
+          );
+          if (userTypingDate.getTime() > Date.now() - 6000) {
+            this.isUserTyping = true;
+          } else {
+            this.isUserTyping = false;
+          }
+          console.log('User Typing:', this.isUserTyping);
+        }
       })
     );
 
@@ -280,7 +300,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   initKeyboardListeners() {
-    if (Capacitor.getPlatform() !== 'web') {
+    if (Capacitor.isNativePlatform()) {
       // Scroll to bottom when keyboard is shown
       Keyboard.addListener('keyboardDidShow', (info) => {
         console.log('keyboard did show with height:', info.keyboardHeight);
@@ -651,7 +671,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   private async requestCameraPermissions() {
-    if (Capacitor.getPlatform() != 'web') await Camera.requestPermissions();
+    if (Capacitor.isNativePlatform()) await Camera.requestPermissions();
   }
 
   private async getCameraPhoto() {
@@ -712,7 +732,7 @@ export class ChatPage implements OnInit, OnDestroy {
   //
 
   private async checkMicPermission() {
-    if (Capacitor.getPlatform() != 'web') {
+    if (Capacitor.isNativePlatform()) {
       this.micPermission = (
         await VoiceRecorder.hasAudioRecordingPermission()
       ).value;
@@ -957,9 +977,29 @@ export class ChatPage implements OnInit, OnDestroy {
     this.onTypingStatusChange();
   }
 
-  // TODO: #622
   onTypingStatusChange() {
-    // console.log('onTypingStatusChange', this.isTyping);
+    if (this.isTyping) {
+      interval(5000)
+        .pipe(
+          startWith(0),
+          takeWhile(() => this.isTyping),
+          takeUntil(this.stopTyping$)
+        )
+        .subscribe(() => {
+          this.dispatchTypingRequest();
+        });
+    } else {
+      this.stopTyping$.next();
+      this.dispatchTypingRequest();
+    }
+  }
+
+  private dispatchTypingRequest() {
+    const request: updateRoomRequestInterface = {
+      roomId: this.roomId,
+      data: { typing: this.isTyping },
+    };
+    this.store.dispatch(updateRoomAction({ request }));
   }
 
   footerClicked(event: Event) {

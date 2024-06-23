@@ -66,7 +66,7 @@ export class VisitListComponent implements OnInit {
     if (entry.isIntersecting) {
       // console.log('Intersecting: ', this.item.from.$id);
       // Delete local notification if exists
-      if (Capacitor.getPlatform() !== 'web') {
+      if (Capacitor.isNativePlatform()) {
         this.fcmService.deleteNotificationById(this.item.$id);
       }
     }

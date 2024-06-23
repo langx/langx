@@ -343,7 +343,7 @@ export class ChatBoxComponent implements OnInit, OnChanges {
         this.store.dispatch(updateMessageAction({ request }));
 
         // Delete local notification if exists
-        if (Capacitor.getPlatform() !== 'web') {
+        if (Capacitor.isNativePlatform()) {
           this.fcmService.deleteNotificationById(this.msg.$id);
         }
       }
@@ -372,7 +372,7 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   // Utils for clipboard
   //
   writeToClipboard(text: string) {
-    if (Capacitor.getPlatform() !== 'web') {
+    if (Capacitor.isNativePlatform()) {
       Clipboard.write({
         string: text,
       })
