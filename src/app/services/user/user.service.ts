@@ -22,6 +22,9 @@ import { listStreaksResponseInterface } from 'src/app/models/types/responses/lis
 // Selector Imports
 import { accountSelector } from 'src/app/store/selectors/auth.selector';
 
+// Utils Import
+import { getAge } from 'src/app/extras/utils';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -125,6 +128,33 @@ export class UserService {
         Query.contains('studyLanguages', currentUser?.motherLanguages)
       );
     }
+
+    // 🚀 : Add filter for ages at "For You" Section #854
+    const currentUserAge = getAge(currentUser.birthdate);
+    let minAge: number;
+    let maxAge: number;
+
+    if (currentUserAge < 20) {
+      minAge = Math.max(13, currentUserAge - 5);
+      maxAge = currentUserAge + 5;
+    } else if (currentUserAge < 30) {
+      minAge = currentUserAge - 7;
+      maxAge = currentUserAge + 7;
+    } else if (currentUserAge < 40) {
+      minAge = currentUserAge - 10;
+      maxAge = currentUserAge + 15;
+    } else {
+      minAge = currentUserAge - 15;
+      maxAge = currentUserAge + 50;
+    }
+
+    const minDate = new Date();
+    minDate.setFullYear(minDate.getFullYear() - maxAge);
+    const maxDate = new Date();
+    maxDate.setFullYear(maxDate.getFullYear() - minAge);
+
+    queries.push(Query.greaterThanEqual('birthdate', minDate.toISOString()));
+    queries.push(Query.lessThanEqual('birthdate', maxDate.toISOString()));
 
     // Query for users descending by last seen
     queries.push(Query.orderDesc('lastSeen'));
