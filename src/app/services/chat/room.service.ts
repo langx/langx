@@ -212,7 +212,7 @@ export class RoomService {
     queries.push(Query.contains('users', currentUser.$id));
 
     // Query for rooms descending by $updatedAt
-    queries.push(Query.orderDesc('$updatedAt'));
+    queries.push(Query.orderDesc('lastMessageUpdatedAt'));
 
     // Limit and offset
     queries.push(Query.limit(environment.opts.PAGINATION_LIMIT));

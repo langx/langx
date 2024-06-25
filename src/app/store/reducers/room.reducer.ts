@@ -297,7 +297,8 @@ const roomReducer = createReducer(
     // Sort rooms by $updatedAt in descending order
     const sortedRooms = updatedRooms?.sort(
       (a, b) =>
-        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+        new Date(b?.lastMessageUpdatedAt).getTime() -
+        new Date(a?.lastMessageUpdatedAt).getTime()
     );
     // Return the new state
     return { ...state, rooms: sortedRooms };
@@ -344,7 +345,8 @@ const roomReducer = createReducer(
     // Sort rooms by $updatedAt in descending order
     const sortedRooms = updatedRooms?.sort(
       (a, b) =>
-        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+        new Date(b?.lastMessageUpdatedAt).getTime() -
+        new Date(a?.lastMessageUpdatedAt).getTime()
     );
 
     // Return the new state
@@ -385,7 +387,8 @@ const roomReducer = createReducer(
     // Sort rooms by $updatedAt in descending order
     const sortedRooms = updatedRooms.sort(
       (a, b) =>
-        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+        new Date(b?.lastMessageUpdatedAt).getTime() -
+        new Date(a?.lastMessageUpdatedAt).getTime()
     );
 
     // Return the new state
@@ -411,7 +414,8 @@ const roomReducer = createReducer(
     // Sort rooms by $updatedAt in descending order
     const sortedRooms = updatedRooms?.sort(
       (a, b) =>
-        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+        new Date(b?.lastMessageUpdatedAt).getTime() -
+        new Date(a?.lastMessageUpdatedAt).getTime()
     );
     // Return the new state
     return { ...state, rooms: sortedRooms };
@@ -441,7 +445,8 @@ const roomReducer = createReducer(
     // Sort rooms by $updatedAt in descending order
     const sortedRooms = updatedRooms.sort(
       (a, b) =>
-        new Date(b.$updatedAt).getTime() - new Date(a.$updatedAt).getTime()
+        new Date(b?.lastMessageUpdatedAt).getTime() -
+        new Date(a?.lastMessageUpdatedAt).getTime()
     );
 
     // If the room doesn't exist, add the room to the state
