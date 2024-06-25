@@ -104,7 +104,7 @@ export default async ({ req, res, log, error }) => {
 
   let notification = {
     title: getFlagEmoji(senderUserDoc) + ' ' + senderUserDoc.name,
-    body: 'visiting your profile.',
+    body: 'is viewing your profile.',
   };
 
   try {
