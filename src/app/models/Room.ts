@@ -6,4 +6,5 @@ export type Room = Models.Document & {
   typing: Date[];
   unseen: number[];
   archived: string[];
+  lastMessageUpdatedAt: Date;
 };
