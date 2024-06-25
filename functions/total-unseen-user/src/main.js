@@ -34,11 +34,11 @@ export default async ({ req, res, log, error }) => {
     // Init queries
     let querry1 = [
       Query.contains('users', user1),
-      Query.orderDesc('$updatedAt'),
+      Query.orderDesc('lastMessageUpdatedAt'),
     ];
     let querry2 = [
       Query.contains('users', user2),
-      Query.orderDesc('$updatedAt'),
+      Query.orderDesc('lastMessageUpdatedAt'),
     ];
 
     // Push archived rooms to query
@@ -96,11 +96,11 @@ export default async ({ req, res, log, error }) => {
     // Init queries
     let querry1archived = [
       Query.contains('users', user1),
-      Query.orderDesc('$updatedAt'),
+      Query.orderDesc('lastMessageUpdatedAt'),
     ];
     let querry2archived = [
       Query.contains('users', user2),
-      Query.orderDesc('$updatedAt'),
+      Query.orderDesc('lastMessageUpdatedAt'),
     ];
 
     let unseenArchivedCountUser1 = 0;
