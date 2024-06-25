@@ -17,7 +17,6 @@ import {
   archiveRoomAction,
   archiveRoomInitialStateAction,
   clearErrorsAction,
-  updateRoomAction,
 } from 'src/app/store/actions/room.action';
 import {
   getRoomsAction,
