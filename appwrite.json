@@ -59,7 +59,9 @@
       "name": "visit-notifications",
       "runtime": "node-18.0",
       "execute": [],
-      "events": [],
+      "events": [
+        "databases.650750f16cd0c482bb83.collections.659dfb10b82eedbe1d6c.documents.*.create"
+      ],
       "schedule": "",
       "timeout": 15,
       "enabled": true,
