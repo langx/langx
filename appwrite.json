@@ -131,6 +131,23 @@
       "commands": "npm install",
       "ignore": ["node_modules", ".npm"],
       "path": "functions/discord-sync"
+    },
+    {
+      "$id": "delete-user",
+      "name": "delete-user",
+      "runtime": "node-18.0",
+      "execute": [],
+      "events": [
+        "databases.650750f16cd0c482bb83.collections.65103e2d3a6b4d9494c8.documents.*.delete"
+      ],
+      "schedule": "",
+      "timeout": 15,
+      "enabled": true,
+      "logging": true,
+      "entrypoint": "src/main.js",
+      "commands": "npm install",
+      "ignore": ["node_modules", ".npm"],
+      "path": "functions/delete-user"
     }
   ]
 }
