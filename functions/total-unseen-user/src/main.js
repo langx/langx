@@ -68,7 +68,10 @@ export default async ({ req, res, log, error }) => {
       if (room.users.some((user) => user1Doc.blockedUsers.includes(user))) {
         return;
       }
-
+      if (room.$permissions.length === 0) {
+        log(`there is no permissions`);
+        return;
+      }
       if (room.users[0] === user1 && room.unseen[0] !== 0) {
         unseenCountUser1 += room.unseen[0];
       } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
@@ -81,6 +84,10 @@ export default async ({ req, res, log, error }) => {
     listRoomsForUser2.documents.forEach((room) => {
       // Check if any user in room.users is blocked by user1
       if (room.users.some((user) => user2Doc.blockedUsers.includes(user))) {
+        return;
+      }
+      if (room.$permissions.length === 0) {
+        log(`there is no permissions`);
         return;
       }
       if (room.users[0] === user2 && room.unseen[0] !== 0) {
@@ -123,6 +130,10 @@ export default async ({ req, res, log, error }) => {
         if (room.users.some((user) => user1Doc.blockedUsers.includes(user))) {
           return;
         }
+        if (room.$permissions.length === 0) {
+          log(`there is no permissions`);
+          return;
+        }
         if (room.users[0] === user1 && room.unseen[0] !== 0) {
           unseenArchivedCountUser1 += room.unseen[0];
         } else if (room.users[1] === user1 && room.unseen[1] !== 0) {
@@ -144,6 +155,10 @@ export default async ({ req, res, log, error }) => {
       listArchivedRoomsForUser2.documents.forEach((room) => {
         // Check if any user in room.users is blocked by user1
         if (room.users.some((user) => user2Doc.blockedUsers.includes(user))) {
+          return;
+        }
+        if (room.$permissions.length === 0) {
+          log(`there is no permissions`);
           return;
         }
         if (room.users[0] === user2 && room.unseen[0] !== 0) {
