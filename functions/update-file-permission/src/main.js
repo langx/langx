@@ -1,4 +1,6 @@
-import { Client, Databases, Query } from 'node-appwrite';
+import { Client, Databases } from 'node-appwrite';
+
+import { throwIfMissing } from './utils.js';
 
 // Event Triggers
 // "events": [
@@ -16,6 +18,16 @@ export default async ({ req, res, log, error }) => {
   const db = new Databases(client);
 
   log('update-file-permission');
+
+  try {
+    log(req.body);
+    const requestBody = JSON.parse(req.body);
+    throwIfMissing(requestBody, ['to', 'fileId', 'type']);
+
+    return res.json({ ok: true });
+  } catch (err) {
+    return res.json({ ok: false, error: err.message }, 400);
+  }
 
   try {
     log(req.body);
