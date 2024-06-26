@@ -23,6 +23,7 @@ import {
   OnChanges,
 } from '@angular/core';
 
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
@@ -71,6 +72,7 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   constructor(
     private store: Store,
+    private authService: AuthService,
     private messageService: MessageService,
     private fcmService: FcmService,
     private modalCtrl: ModalController,
@@ -315,36 +317,119 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   // Download file from server
   async downloadFile() {
-    this.audioURL$.subscribe(async (url) => {
-      // console.log('URL:', url);
-      if (url) {
-        const response = await fetch(url);
-        const blob = await response.blob();
+    // Subscribe to the audio URL Observable
+    this.audioURL$.subscribe((url) => {
+      console.log('Audio URL here !', url);
+      if (Capacitor.isNativePlatform() && url) {
+        const cookie = localStorage.getItem('cookieFallback'); // Retrieve the cookie from localStorage
 
-        // Create a new FileReader instance
-        const reader = new FileReader();
+        // Check if the cookie exists for audio
+        if (cookie) {
+          // Assuming loadAudioWithAuth exists and works similarly to loadImageWithAuth
+          fetch(url, {
+            method: 'GET',
+            credentials: 'include', // Ensure cookies are included in the request
+            headers: {
+              'x-fallback-cookies': cookie, // Set the 'Cookie' header with the cookie string
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.blob();
+            })
+            .then(async (blob) => {
+              // Mark this callback as async
+              if (blob) {
+                // Create a new FileReader instance
+                const reader = new FileReader();
 
-        const base64Audio = await new Promise((resolve) => {
-          reader.onloadend = () => {
-            resolve(reader.result);
-          };
-          reader.readAsDataURL(blob);
+                const base64Audio = await new Promise((resolve) => {
+                  reader.onloadend = () => {
+                    resolve(reader.result);
+                  };
+                  reader.readAsDataURL(blob);
+                });
+
+                // TODO: Take a look here to see if we can use the base64Audio directly
+                const base64AudioString = base64Audio.toString();
+
+                const fileName = this.msg.$id;
+                await Filesystem.writeFile({
+                  path: fileName,
+                  data: base64AudioString,
+                  directory: Directory.Data,
+                });
+
+                console.log('Download complete');
+                this.isDownloaded = true;
+                this.changeDetectorRef.detectChanges();
+              }
+            })
+            .catch((error) => {
+              console.error(
+                'There was a problem with the fetch operation:',
+                error
+              );
+            });
+        } else {
+          console.error('Cookie not found in localStorage for audio');
+        }
+      } else {
+        this.authService.createJWT().then((jwt) => {
+          // console.log('result: ', result);
+
+          fetch(url, {
+            method: 'GET',
+            credentials: 'include', // Ensure cookies are included in the request
+            headers: {
+              'x-appwrite-jwt': jwt.jwt,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.blob();
+            })
+            .then(async (blob) => {
+              // Mark this callback as async
+              if (blob) {
+                // Create a new FileReader instance
+                const reader = new FileReader();
+
+                const base64Audio = await new Promise((resolve) => {
+                  reader.onloadend = () => {
+                    resolve(reader.result);
+                  };
+                  reader.readAsDataURL(blob);
+                });
+
+                // TODO: Take a look here to see if we can use the base64Audio directly
+                const base64AudioString = base64Audio.toString();
+
+                const fileName = this.msg.$id;
+                await Filesystem.writeFile({
+                  path: fileName,
+                  data: base64AudioString,
+                  directory: Directory.Data,
+                });
+
+                console.log('Download complete');
+                this.isDownloaded = true;
+                this.changeDetectorRef.detectChanges();
+              }
+            })
+            .catch((error) => {
+              console.error(
+                'There was a problem with the fetch operation:',
+                error
+              );
+            });
         });
-
-        // TODO: Take a look here to see if we can use the base64Audio directly
-        const base64AudioString = base64Audio.toString();
-
-        const fileName = this.msg.$id;
-        await Filesystem.writeFile({
-          path: fileName,
-          data: base64AudioString,
-          directory: Directory.Data,
-        });
-
-        console.log('Download complete');
-        this.isDownloaded = true;
-        this.changeDetectorRef.detectChanges();
       }
+      this.changeDetectorRef.detectChanges(); // Handle change detection
     });
   }
 
