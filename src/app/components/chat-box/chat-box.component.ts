@@ -65,6 +65,7 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
+  imageURL: string;
 
   isCopilotAssisted: boolean = false;
 
@@ -106,8 +107,20 @@ export class ChatBoxComponent implements OnInit, OnChanges {
             this.msg.imageId
           );
           // Fixing ExpressionChangedAfterItHasBeenCheckedError
-          this.imageURL$.subscribe(() => {
-            // console.log('Image URL here !');
+          this.imageURL$.subscribe((url) => {
+            console.log('Image URL here !', url);
+            if (Capacitor.isNativePlatform() && url) {
+              const cookie = localStorage.getItem('cookieFallback'); // Retrieve the cookie from localStorage
+
+              // Check if the cookie exists
+              if (cookie) {
+                this.loadImageWithAuth(url.href, cookie);
+              } else {
+                console.error('Cookie not found in localStorage');
+              }
+            } else {
+              this.imageURL = url.href;
+            }
             this.changeDetectorRef.detectChanges();
           });
         }
@@ -122,6 +135,30 @@ export class ChatBoxComponent implements OnInit, OnChanges {
         }
       }
     }
+  }
+
+  async loadImageWithAuth(url: string, cookie: string) {
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include', // Ensure cookies are included in the request
+      headers: {
+        'x-fallback-cookies': cookie, // Set the 'Cookie' header with the cookie string
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();
+      })
+      .then((imageBlob) => {
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        this.imageURL = imageObjectURL;
+        this.changeDetectorRef.detectChanges();
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   }
 
   ngAfterViewInit() {

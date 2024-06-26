@@ -55,7 +55,7 @@
             <!-- Image message -->
             <img
               *ngIf="msg?.type == 'image'"
-              [src]="imageURL$ | async"
+              [src]="imageURL"
               (click)="openPreview(imageURL$)"
               alt="📷 Image message"
               referrerpolicy="no-referrer"
@@ -206,7 +206,7 @@
             <!-- Image message -->
             <img
               *ngIf="msg?.type == 'image'"
-              [src]="imageURL$ | async"
+              [src]="imageURL"
               (click)="openPreview(imageURL$)"
               alt="📷 Image message"
               referrerpolicy="no-referrer"
