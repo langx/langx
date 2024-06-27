@@ -66,7 +66,8 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
-  imageURL: string;
+  loadedImageURL: string = null;
+  isLoadingImage: boolean = true;
 
   isCopilotAssisted: boolean = false;
 
@@ -121,9 +122,10 @@ export class ChatBoxComponent implements OnInit, OnChanges {
                 console.error('Cookie not found in localStorage');
               }
             } else {
-              this.imageURL = url.href;
+              this.loadedImageURL = url.href;
+              this.isLoadingImage = false;
+              this.changeDetectorRef.detectChanges();
             }
-            this.changeDetectorRef.detectChanges();
           });
         }
       }
@@ -155,7 +157,8 @@ export class ChatBoxComponent implements OnInit, OnChanges {
       })
       .then((imageBlob) => {
         const imageObjectURL = URL.createObjectURL(imageBlob);
-        this.imageURL = imageObjectURL;
+        this.loadedImageURL = imageObjectURL;
+        this.isLoadingImage = false;
         this.changeDetectorRef.detectChanges();
       })
       .catch((error) => {
@@ -476,18 +479,16 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   // Utils for image preview
   //
 
-  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
-    photos$.subscribe(async (photos) => {
-      if (photos) {
-        const modal = await this.modalCtrl.create({
-          component: PreviewPhotoComponent,
-          componentProps: {
-            photos: Array.isArray(photos) ? photos : [photos],
-          },
-        });
-        modal.present();
-      }
-    });
+  async openPreview(photos: string): Promise<void> {
+    if (photos) {
+      const modal = await this.modalCtrl.create({
+        component: PreviewPhotoComponent,
+        componentProps: {
+          photos: Array.isArray(photos) ? photos : [photos],
+        },
+      });
+      modal.present();
+    }
   }
 
   //

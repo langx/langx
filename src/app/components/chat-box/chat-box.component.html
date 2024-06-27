@@ -53,13 +53,16 @@
             </span>
 
             <!-- Image message -->
-            <img
-              *ngIf="msg?.type == 'image'"
-              [src]="imageURL"
-              (click)="openPreview(imageURL$)"
-              alt="📷 Image message"
-              referrerpolicy="no-referrer"
-            />
+            <div *ngIf="msg?.type === 'image'">
+              <ion-spinner *ngIf="isLoadingImage"></ion-spinner>
+              <img
+                *ngIf="!isLoadingImage"
+                [src]="loadedImageURL"
+                (click)="openPreview(loadedImageURL)"
+                alt="📷 Image message"
+                referrerpolicy="no-referrer"
+              />
+            </div>
 
             <!-- Audio message -->
             <div *ngIf="msg?.type == 'audio'">
@@ -204,13 +207,16 @@
             </span>
 
             <!-- Image message -->
-            <img
-              *ngIf="msg?.type == 'image'"
-              [src]="imageURL"
-              (click)="openPreview(imageURL$)"
-              alt="📷 Image message"
-              referrerpolicy="no-referrer"
-            />
+            <div *ngIf="msg?.type === 'image'">
+              <ion-spinner *ngIf="isLoadingImage"></ion-spinner>
+              <img
+                *ngIf="!isLoadingImage"
+                [src]="loadedImageURL"
+                (click)="openPreview(loadedImageURL)"
+                alt="📷 Image message"
+                referrerpolicy="no-referrer"
+              />
+            </div>
 
             <!-- Audio message -->
             <div *ngIf="msg?.type == 'audio'">
