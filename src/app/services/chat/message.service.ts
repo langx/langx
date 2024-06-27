@@ -2,16 +2,7 @@ import { Injectable } from '@angular/core';
 import { ID, Models, Query } from 'appwrite';
 import { Store, select } from '@ngrx/store';
 import axios from 'axios';
-import {
-  Observable,
-  forkJoin,
-  from,
-  map,
-  of,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs';
+import { Observable, forkJoin, from, map, of, switchMap, take } from 'rxjs';
 
 // Environment and Services Imports
 import { environment } from 'src/environments/environment';

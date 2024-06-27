@@ -1,15 +1,26 @@
 import { Injectable } from '@angular/core';
 import { createEffect, ofType, Actions } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Observable, catchError, map, mergeMap, of, switchMap } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  from,
+  map,
+  mergeMap,
+  of,
+  switchMap,
+} from 'rxjs';
 
 // Interface Imports
 import { Message } from 'src/app/models/Message';
 import { BucketFile } from 'src/app/models/BucketFile';
 import { ErrorInterface } from 'src/app/models/types/errors/error.interface';
 import { AxiosError } from 'axios';
-import { MessageService } from 'src/app/services/chat/message.service';
 import { listMessagesResponseInterface } from 'src/app/models/types/responses/listMessagesResponse.interface';
+
+// Service Imports
+import { ApiService } from 'src/app/services/api/api.service';
+import { MessageService } from 'src/app/services/chat/message.service';
 
 // Selector and Action Imports
 import {
@@ -90,22 +101,45 @@ export class MessageEffects {
 
         return uploadObservable.pipe(
           switchMap((uploadResponse) => {
-            if (messageType === 'image') {
-              updatedRequest = { ...request, imageId: uploadResponse.$id };
-            } else if (messageType === 'audio') {
-              updatedRequest = { ...request, audioId: uploadResponse.$id };
-            }
+            // Trigger bucket permission function here
+            return from(
+              this.api.function.createExecution(
+                'update-file-permission',
+                JSON.stringify({
+                  fileId: uploadResponse.$id,
+                  to: request.to,
+                  type: messageType,
+                })
+              )
+            ).pipe(
+              switchMap(() => {
+                if (messageType === 'image') {
+                  updatedRequest = {
+                    ...request,
+                    imageId: uploadResponse.$id,
+                  };
+                } else if (messageType === 'audio') {
+                  updatedRequest = {
+                    ...request,
+                    audioId: uploadResponse.$id,
+                  };
+                }
 
-            return this.messageService.createMessage(updatedRequest).pipe(
-              map((payload: Message) =>
-                createMessageSuccessAction({ payload })
-              ),
-              catchError((errorResponse: AxiosError) => {
-                const error: ErrorInterface = {
-                  message: errorResponse?.response?.data['message'],
-                };
-                return of(
-                  createMessageFailureAction({ error, payload: updatedRequest })
+                return this.messageService.createMessage(updatedRequest).pipe(
+                  map((payload: Message) =>
+                    createMessageSuccessAction({ payload })
+                  ),
+                  catchError((errorResponse: AxiosError) => {
+                    const error: ErrorInterface = {
+                      message: errorResponse?.response?.data['message'],
+                    };
+                    return of(
+                      createMessageFailureAction({
+                        error,
+                        payload: updatedRequest,
+                      })
+                    );
+                  })
                 );
               })
             );
@@ -173,6 +207,7 @@ export class MessageEffects {
 
   constructor(
     private actions$: Actions,
+    private api: ApiService,
     private messageService: MessageService
   ) {}
 }

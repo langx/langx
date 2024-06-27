@@ -6,6 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'www',
   server: {
     androidScheme: 'https',
+    iosScheme: 'https',
+    allowNavigation: ['langx.io'],
   },
   plugins: {
     SplashScreen: {
@@ -17,14 +19,6 @@ const config: CapacitorConfig = {
     Badge: {
       persist: true,
       autoClear: false,
-    },
-    CapacitorUpdater: {
-      appReadyTimeout: 1000, // (1 second)
-      responseTimeout: 10, // (10 second)
-      autoDeleteFailed: false,
-      autoDeletePrevious: false,
-      autoUpdate: false,
-      resetWhenUpdate: false,
     },
   },
 };

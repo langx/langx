@@ -23,6 +23,7 @@ import {
   OnChanges,
 } from '@angular/core';
 
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { MessageService } from 'src/app/services/chat/message.service';
 import { FcmService } from 'src/app/services/fcm/fcm.service';
 import { PreviewPhotoComponent } from 'src/app/components/preview-photo/preview-photo.component';
@@ -65,11 +66,14 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   imageURL$: Observable<URL> = null;
   audioURL$: Observable<URL> = null;
+  loadedImageURL: string = null;
+  isLoadingImage: boolean = true;
 
   isCopilotAssisted: boolean = false;
 
   constructor(
     private store: Store,
+    private authService: AuthService,
     private messageService: MessageService,
     private fcmService: FcmService,
     private modalCtrl: ModalController,
@@ -106,9 +110,22 @@ export class ChatBoxComponent implements OnInit, OnChanges {
             this.msg.imageId
           );
           // Fixing ExpressionChangedAfterItHasBeenCheckedError
-          this.imageURL$.subscribe(() => {
-            // console.log('Image URL here !');
-            this.changeDetectorRef.detectChanges();
+          this.imageURL$.subscribe((url) => {
+            console.log('Image URL here !', url);
+            if (Capacitor.isNativePlatform() && url) {
+              const cookie = localStorage.getItem('cookieFallback'); // Retrieve the cookie from localStorage
+
+              // Check if the cookie exists
+              if (cookie) {
+                this.loadImageWithAuth(url.href, cookie);
+              } else {
+                console.error('Cookie not found in localStorage');
+              }
+            } else {
+              this.loadedImageURL = url.href;
+              this.isLoadingImage = false;
+              this.changeDetectorRef.detectChanges();
+            }
           });
         }
       }
@@ -122,6 +139,31 @@ export class ChatBoxComponent implements OnInit, OnChanges {
         }
       }
     }
+  }
+
+  async loadImageWithAuth(url: string, cookie: string) {
+    fetch(url, {
+      method: 'GET',
+      credentials: 'include', // Ensure cookies are included in the request
+      headers: {
+        'x-fallback-cookies': cookie, // Set the 'Cookie' header with the cookie string
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.blob();
+      })
+      .then((imageBlob) => {
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        this.loadedImageURL = imageObjectURL;
+        this.isLoadingImage = false;
+        this.changeDetectorRef.detectChanges();
+      })
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   }
 
   ngAfterViewInit() {
@@ -278,36 +320,119 @@ export class ChatBoxComponent implements OnInit, OnChanges {
 
   // Download file from server
   async downloadFile() {
-    this.audioURL$.subscribe(async (url) => {
-      // console.log('URL:', url);
-      if (url) {
-        const response = await fetch(url);
-        const blob = await response.blob();
+    // Subscribe to the audio URL Observable
+    this.audioURL$.subscribe((url) => {
+      console.log('Audio URL here !', url);
+      if (Capacitor.isNativePlatform() && url) {
+        const cookie = localStorage.getItem('cookieFallback'); // Retrieve the cookie from localStorage
 
-        // Create a new FileReader instance
-        const reader = new FileReader();
+        // Check if the cookie exists for audio
+        if (cookie) {
+          // Assuming loadAudioWithAuth exists and works similarly to loadImageWithAuth
+          fetch(url, {
+            method: 'GET',
+            credentials: 'include', // Ensure cookies are included in the request
+            headers: {
+              'x-fallback-cookies': cookie, // Set the 'Cookie' header with the cookie string
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.blob();
+            })
+            .then(async (blob) => {
+              // Mark this callback as async
+              if (blob) {
+                // Create a new FileReader instance
+                const reader = new FileReader();
 
-        const base64Audio = await new Promise((resolve) => {
-          reader.onloadend = () => {
-            resolve(reader.result);
-          };
-          reader.readAsDataURL(blob);
+                const base64Audio = await new Promise((resolve) => {
+                  reader.onloadend = () => {
+                    resolve(reader.result);
+                  };
+                  reader.readAsDataURL(blob);
+                });
+
+                // TODO: Take a look here to see if we can use the base64Audio directly
+                const base64AudioString = base64Audio.toString();
+
+                const fileName = this.msg.$id;
+                await Filesystem.writeFile({
+                  path: fileName,
+                  data: base64AudioString,
+                  directory: Directory.Data,
+                });
+
+                console.log('Download complete');
+                this.isDownloaded = true;
+                this.changeDetectorRef.detectChanges();
+              }
+            })
+            .catch((error) => {
+              console.error(
+                'There was a problem with the fetch operation:',
+                error
+              );
+            });
+        } else {
+          console.error('Cookie not found in localStorage for audio');
+        }
+      } else {
+        this.authService.createJWT().then((jwt) => {
+          // console.log('result: ', result);
+
+          fetch(url, {
+            method: 'GET',
+            credentials: 'include', // Ensure cookies are included in the request
+            headers: {
+              'x-appwrite-jwt': jwt.jwt,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.blob();
+            })
+            .then(async (blob) => {
+              // Mark this callback as async
+              if (blob) {
+                // Create a new FileReader instance
+                const reader = new FileReader();
+
+                const base64Audio = await new Promise((resolve) => {
+                  reader.onloadend = () => {
+                    resolve(reader.result);
+                  };
+                  reader.readAsDataURL(blob);
+                });
+
+                // TODO: Take a look here to see if we can use the base64Audio directly
+                const base64AudioString = base64Audio.toString();
+
+                const fileName = this.msg.$id;
+                await Filesystem.writeFile({
+                  path: fileName,
+                  data: base64AudioString,
+                  directory: Directory.Data,
+                });
+
+                console.log('Download complete');
+                this.isDownloaded = true;
+                this.changeDetectorRef.detectChanges();
+              }
+            })
+            .catch((error) => {
+              console.error(
+                'There was a problem with the fetch operation:',
+                error
+              );
+            });
         });
-
-        // TODO: Take a look here to see if we can use the base64Audio directly
-        const base64AudioString = base64Audio.toString();
-
-        const fileName = this.msg.$id;
-        await Filesystem.writeFile({
-          path: fileName,
-          data: base64AudioString,
-          directory: Directory.Data,
-        });
-
-        console.log('Download complete');
-        this.isDownloaded = true;
-        this.changeDetectorRef.detectChanges();
       }
+      this.changeDetectorRef.detectChanges(); // Handle change detection
     });
   }
 
@@ -354,18 +479,16 @@ export class ChatBoxComponent implements OnInit, OnChanges {
   // Utils for image preview
   //
 
-  async openPreview(photos$: Observable<URL | URL[]>): Promise<void> {
-    photos$.subscribe(async (photos) => {
-      if (photos) {
-        const modal = await this.modalCtrl.create({
-          component: PreviewPhotoComponent,
-          componentProps: {
-            photos: Array.isArray(photos) ? photos : [photos],
-          },
-        });
-        modal.present();
-      }
-    });
+  async openPreview(photos: string): Promise<void> {
+    if (photos) {
+      const modal = await this.modalCtrl.create({
+        component: PreviewPhotoComponent,
+        componentProps: {
+          photos: Array.isArray(photos) ? photos : [photos],
+        },
+      });
+      modal.present();
+    }
   }
 
   //
