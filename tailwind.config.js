@@ -21,7 +21,7 @@ module.exports = {
       },
       fontFamily: {
         clight: ["Comfortaa-Light", "sans-serif"],
-        lregular: ["Comfortaa-Regular", "sans-serif"],
+        cregular: ["Comfortaa-Regular", "sans-serif"],
         cmedium: ["Comfortaa-Medium", "sans-serif"],
         csemibold: ["Comfortaa-SemiBold", "sans-serif"],
         cbold: ["Comfortaa-Bold", "sans-serif"],
