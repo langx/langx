@@ -13,25 +13,20 @@ const StyledImage = styled(Image);
 import icons from "@/constants/icons";
 import { ThemedText } from "@/components/ThemedText";
 
-type TabIconProps = {
+type TabItemProps = {
   icon: any;
   color: string;
   name: string;
   focused: boolean;
 };
 
-const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
+const TabItem: React.FC<TabItemProps> = ({ icon, color, name, focused }) => {
   return (
     <>
-      <ThemedView>
-        <StyledImage
-          source={icon}
-          resizeMode="contain"
-          tintColor={color}
-          className="w-6 h-6"
-        />
+      <ThemedView className="items-center justify-center gap-2 bg-transparent">
+        <TabBarIcon name={focused ? icon : `${icon}-outline`} color={color} />
         <ThemedText
-          className={`${focused ? "font-csemibold" : "font-cregular"} text-xs`}
+          className={`${focused ? "font-cbold" : "font-clight"} text-xs`}
         >
           {name}
         </ThemedText>
@@ -49,6 +44,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarStyle: { height: 60 },
       }}
     >
       <Tabs.Screen
@@ -56,16 +52,12 @@ export default function TabLayout() {
         options={{
           title: "Chats",
           tabBarIcon: ({ color, focused }) => (
-            <TabIcon
-              icon={icons.home}
+            <TabItem
+              icon="chatbubbles"
               color={color}
               name="Chats"
               focused={focused}
             />
-            // <TabBarIcon
-            //   name={focused ? "chatbubbles" : "chatbubbles-outline"}
-            //   color={color}
-            // />
           ),
         }}
       />
@@ -74,9 +66,11 @@ export default function TabLayout() {
         options={{
           title: "Community",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "compass" : "compass-outline"}
+            <TabItem
+              icon="compass"
               color={color}
+              name="Community"
+              focused={focused}
             />
           ),
         }}
@@ -86,9 +80,11 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "person" : "person-outline"}
+            <TabItem
+              icon="person"
               color={color}
+              name="Profile"
+              focused={focused}
             />
           ),
         }}
