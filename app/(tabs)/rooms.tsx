@@ -16,7 +16,7 @@ export default function RoomsScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Chas</ThemedText>
+        <ThemedText type="title">Chats</ThemedText>
       </ThemedView>
       <ThemedText>
         This app includes example code to help you get started.
