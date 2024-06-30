@@ -17,14 +17,16 @@ export default function HomeScreen() {
       }
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText className="font-pthin" type="title">
+        <ThemedText className="font-cbold" type="title">
           Welcome!
         </ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
+        <ThemedText className="font-cmedium" type="subtitle">
+          Step 1: Try it
+        </ThemedText>
+        <ThemedText className="font-llight">
           Edit{" "}
           <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
           to see changes. Press{" "}
