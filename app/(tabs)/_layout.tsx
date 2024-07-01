@@ -14,6 +14,12 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          // backgroundColor: "#161622",
+          // borderTopWidth: 1,
+          // borderTopColor: "#232533",
+          height: 84,
+        },
       }}
     >
       <Tabs.Screen
@@ -31,7 +37,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Community",
           tabBarIcon: ({ color, focused }) => (
