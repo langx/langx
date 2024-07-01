@@ -20,7 +20,7 @@ export function TabBarItem({ icon, color, label, focused }: TabItemProps) {
     <ThemedView className="items-center justify-center gap-1 bg-transparent">
       <TabBarIcon name={name} color={color} />
       <ThemedText
-        className={`${focused ? "font-semibold" : "font-light"} text-xs`}
+        className={`${focused ? "font-csemibold" : "font-clight"} text-xs`}
       >
         {label}
       </ThemedText>
