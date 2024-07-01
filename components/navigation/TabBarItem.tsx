@@ -17,9 +17,9 @@ export function TabBarItem({ icon, color, label, focused }: TabItemProps) {
     ? icon
     : (`${icon}-outline` as keyof typeof Ionicons.glyphMap);
   return (
-    <ThemedView>
+    <>
       <TabBarIcon name={name} color={color} />
       <ThemedText>{label}</ThemedText>
-    </ThemedView>
+    </>
   );
 }
