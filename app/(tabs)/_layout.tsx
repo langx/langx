@@ -1,13 +1,9 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Image } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { TabBarItem } from "@/components/navigation/TabBarItem";
-
-import { styled } from "nativewind";
-const StyledImage = styled(Image);
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,7 +14,6 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarStyle: { height: 60 },
       }}
     >
       <Tabs.Screen
