@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, View, StatusBar, Image } from "react-native";
+import { Text, Image } from "react-native";
 import { Link } from "expo-router";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -10,39 +10,30 @@ import images from "@/constants/images";
 
 const App = () => {
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView>
       {/* <Loader isLoading={loading} /> */}
 
-      <ThemedView className="w-full flex justify-center items-center px-4">
-        <Image
-          source={images.logo}
-          className="w-[130px] h-[10px]"
-          resizeMode="contain"
-        />
+      <ThemedView>
+        <ThemedText>
+          <Link href="/home">Home</Link>
+        </ThemedText>
+        <Image source={images.logo} resizeMode="contain" />
 
-        <Image
-          source={images.cards}
-          className="max-w-[380px] max-h-[500px] "
-          resizeMode="contain"
-        />
+        {/* <Image source={images.cards} resizeMode="contain" /> */}
 
-        <ThemedView className="relative mt-5">
-          <Text className="text-3xl text-white font-bold text-center">
+        <ThemedView>
+          <ThemedText>
             Discover Endless{"\n"}
-            Possibilities with <Text className="text-secondary-200">Aora</Text>
-          </Text>
+            Possibilities with <Text>Aora</Text>
+          </ThemedText>
 
-          <Image
-            source={images.path}
-            className="w-[136px] h-[15px] absolute -bottom-2 -right-8"
-            resizeMode="contain"
-          />
+          <Image source={images.path} resizeMode="contain" />
         </ThemedView>
 
-        <Text className="text-sm font-pregular text-gray-100 mt-7 text-center">
+        <ThemedText>
           Where Creativity Meets Innovation: Embark on a Journey of Limitless
           Exploration with Aora
-        </Text>
+        </ThemedText>
 
         {/* <CustomButton
             title="Continue with Email"
@@ -51,7 +42,7 @@ const App = () => {
           /> */}
       </ThemedView>
 
-      <StatusBar backgroundColor="#161622" style="light" />
+      {/* <StatusBar backgroundColor="#161622" style="light" /> */}
     </SafeAreaView>
   );
 };
