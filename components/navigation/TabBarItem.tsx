@@ -17,10 +17,10 @@ export function TabBarItem({ icon, color, label, focused }: TabItemProps) {
     ? icon
     : (`${icon}-outline` as keyof typeof Ionicons.glyphMap);
   return (
-    <ThemedView className="items-center justify-center gap-2 bg-transparent">
+    <ThemedView className="items-center justify-center gap-2">
       <TabBarIcon name={name} color={color} />
       <ThemedText
-        className={`${focused ? "font-csemibold" : "font-clight"} text-xs`}
+        className={`${focused ? "font-csemibold" : "font-clight"} text-sm`}
       >
         {label}
       </ThemedText>
