@@ -24,7 +24,6 @@ export function ThemedText({
 
   return (
     <StyledText
-      // className={className}
       className={className ? className : ""}
       style={[
         { color },
