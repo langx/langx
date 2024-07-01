@@ -21,7 +21,7 @@ export function ThemedText({
     <Text
       style={[
         { color },
-        type === "default" ? styles.default : styles.default,
+        styles.defaultFont,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
         type === "subtitle" ? styles.subtitle : undefined,
@@ -34,9 +34,7 @@ export function ThemedText({
 }
 
 const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
+  defaultFont: {
     fontFamily: "Lexend-Regular",
   },
   defaultSemiBold: {
