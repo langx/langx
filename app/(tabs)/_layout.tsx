@@ -1,4 +1,3 @@
-import React from "react";
 import { Tabs } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
@@ -7,17 +6,16 @@ import { TabBarItem } from "@/components/navigation/TabBarItem";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const theme = colorScheme ?? "light";
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors[theme].tint,
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          // backgroundColor: "#161622",
-          // borderTopWidth: 1,
-          // borderTopColor: "#232533",
+          backgroundColor: Colors[theme].background,
           height: 84,
         },
       }}
