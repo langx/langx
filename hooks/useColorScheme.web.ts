@@ -6,4 +6,37 @@
 // export function useColorScheme() {
 //   return 'light';
 // }
-export { useColorScheme } from "react-native";
+import { useEffect, useState } from "react";
+
+export function useColorScheme() {
+  // Function to get the current color scheme
+  const getColorScheme = () => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    return "light"; // Default to 'light' theme if window or matchMedia is not available
+  };
+
+  const [colorScheme, setColorScheme] = useState(getColorScheme());
+
+  useEffect(() => {
+    const handleChange = (event: MediaQueryListEvent) => {
+      setColorScheme(event.matches ? "dark" : "light");
+    };
+
+    const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    // Use addEventListener to attach the event listener
+    darkModeQuery.addEventListener("change", handleChange);
+
+    // Clean up
+    return () => {
+      // Use removeEventListener to detach the event listener
+      darkModeQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
+  return colorScheme;
+}
