@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "LangX",
-    "slug": "langx-practice-learn-succeed",
     "version": "0.20.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,14 +13,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.langx.app"
+      "bundleIdentifier": "tech.newchapter.languageXchange"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "io.langx.app"
+      "package": "tech.newchapter.languageXchange"
     },
     "web": {
       "bundler": "metro",
