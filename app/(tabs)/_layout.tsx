@@ -1,40 +1,63 @@
 import { Tabs } from "expo-router";
-import React from "react";
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { TabBarItem } from "@/components/navigation/TabBarItem";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const theme = colorScheme ?? "light";
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors[theme].tint,
         headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: Colors[theme].background,
+          height: 60,
+        },
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="rooms"
         options={{
-          title: "Home",
+          title: "Chats",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+            <TabBarItem
+              icon="chatbubbles"
               color={color}
+              label="Chats"
+              focused={focused}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="home"
         options={{
-          title: "Explore",
+          title: "Community",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+            <TabBarItem
+              icon="compass"
               color={color}
+              label="Community"
+              focused={focused}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarItem
+              icon="person"
+              color={color}
+              label="Profile"
+              focused={focused}
             />
           ),
         }}

@@ -1,11 +1,10 @@
 {
   "expo": {
-    "name": "langx-react-native",
-    "slug": "langx-react-native",
+    "name": "LangX",
     "version": "0.20.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "langx",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -30,7 +29,8 @@
     },
     "plugins": ["expo-router"],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "tsconfigPaths": true
     }
   }
 }
