@@ -1,7 +1,7 @@
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
-
 import { View } from "react-native";
+
 import { ThemedText } from "@/components/ThemedText";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 
@@ -17,11 +17,9 @@ export function TabBarItem({ icon, color, label, focused }: TabItemProps) {
     ? icon
     : (`${icon}-outline` as keyof typeof Ionicons.glyphMap);
   return (
-    <>
-      <View style={{ flexDirection: "column", alignItems: "center", gap: 5 }}>
-        <TabBarIcon name={name} color={color} />
-        <ThemedText>{label}</ThemedText>
-      </View>
-    </>
+    <View style={{ flexDirection: "column", alignItems: "center", gap: 5 }}>
+      <TabBarIcon name={name} color={color} />
+      <ThemedText>{label}</ThemedText>
+    </View>
   );
 }
