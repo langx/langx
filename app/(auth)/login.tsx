@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Image,
-  StyleSheet,
-  useColorScheme,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import { Link } from "expo-router";
+import { Image, StyleSheet, useColorScheme, ScrollView } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
