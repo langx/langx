@@ -16,16 +16,10 @@ import { ThemedView } from "@/components/ThemedView";
 const App = () => {
   const colorScheme = useColorScheme();
 
-  const containerStyle = {
-    ...styles.container,
-    backgroundColor:
-      colorScheme === "dark" ? Colors.dark.background : Colors.light.background,
-  };
-
   const openLink = () => {};
 
   return (
-    <ThemedView style={containerStyle}>
+    <ThemedView style={styles.container}>
       <Image
         source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
         style={styles.logo}
