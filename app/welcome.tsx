@@ -4,9 +4,9 @@ import { Image, StyleSheet, useColorScheme } from "react-native";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedButton } from "@/components/ThemedButton";
+import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedButton } from "@/components/atomic/ThemedButton";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();

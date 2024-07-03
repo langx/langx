@@ -10,8 +10,8 @@ import { Link } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/atomic/ThemedView";
 
 const App = () => {
   const colorScheme = useColorScheme();

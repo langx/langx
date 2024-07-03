@@ -11,8 +11,8 @@ import { Link } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedText } from "@/components/atomic/ThemedText";
 
 const Login = () => {
   const colorScheme = useColorScheme();
