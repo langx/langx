@@ -33,29 +33,31 @@ const App = () => {
         resizeMode="contain"
       />
 
+      <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
+
       <Image
         source={images.thumbnail}
         style={styles.welcomeImage}
         resizeMode="contain"
       />
 
-      <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
-
       <ThemedText style={styles.description}>
         Read our{" "}
-        <Text style={styles.link} onPress={openLink}>
+        <ThemedText style={styles.link} onPress={openLink}>
           Privacy Policy
-        </Text>
+        </ThemedText>
         . {'Tap "Agree & Continue" to accept the '}
-        <Text style={styles.link} onPress={openLink}>
+        <ThemedText style={styles.link} onPress={openLink}>
           Terms of Service
-        </Text>{" "}
+        </ThemedText>{" "}
         .
       </ThemedText>
 
       <Link href={"/home"} replace asChild>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Agree & Continue</Text>
+          <ThemedText type="link" style={styles.buttonText}>
+            Agree & Continue
+          </ThemedText>
         </TouchableOpacity>
       </Link>
     </SafeAreaView>
@@ -72,17 +74,17 @@ const styles = StyleSheet.create({
   logo: {
     width: "50%",
     height: 100,
-    marginBottom: 50,
-  },
-  welcomeImage: {
-    width: "100%",
   },
   headline: {
     textAlign: "center",
-    fontSize: 20,
+    fontSize: 16,
     fontFamily: "Comfortaa-Bold",
+  },
+  welcomeImage: {
+    width: "100%",
     marginVertical: 20,
   },
+
   description: {
     fontSize: 14,
     textAlign: "center",
