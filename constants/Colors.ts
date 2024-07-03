@@ -38,6 +38,7 @@ export const Colors = {
     grey4: grey4,
     grey5: grey5,
     greyOutline: greyOutline,
+    searchBg: searchBg,
   },
   dark: {
     primary: primary,
@@ -56,5 +57,6 @@ export const Colors = {
     grey4: grey4,
     grey5: grey5,
     greyOutline: greyOutline,
+    searchBg: searchBg,
   },
 };

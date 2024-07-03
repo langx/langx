@@ -21,7 +21,7 @@ export const globalStyles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor:
-      colorScheme === "dark" ? Colors.dark.light : Colors.light.light,
+      colorScheme === "dark" ? Colors.dark.white : Colors.light.white,
     marginLeft: 50,
   },
 });

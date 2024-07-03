@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   text: {
-    color: Colors.light.dark,
+    color: Colors.light.black,
     textAlign: "center",
     fontSize: 16,
   },

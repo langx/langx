@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     marginBottom: 80,
-    color: Colors.light.medium,
+    color: Colors.light.grey3,
   },
   link: {
     color: Colors.light.primary,
