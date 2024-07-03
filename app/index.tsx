@@ -46,7 +46,7 @@ const App = () => {
         .
       </ThemedText>
 
-      <Link href={"/login"} replace asChild>
+      <Link href={"/welcome"} replace asChild>
         <TouchableOpacity style={styles.button}>
           <ThemedText type="link" style={styles.buttonText}>
             Agree & Continue
