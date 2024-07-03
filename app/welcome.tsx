@@ -23,8 +23,10 @@ const Welcome = () => {
 
       <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
 
-      <ThemedButton title="aa" style={{ marginBottom: 10 }}></ThemedButton>
-      <ThemedButton title="aa"></ThemedButton>
+      <ThemedButton
+        title="Login with Email"
+        style={styles.button}
+      ></ThemedButton>
     </ThemedView>
   );
 };
@@ -46,15 +48,8 @@ const styles = StyleSheet.create({
     fontFamily: "Comfortaa-Bold",
     marginVertical: 20,
   },
-  welcomeImage: {
-    width: "100%",
-    marginVertical: 20,
-  },
-  description: {
-    fontSize: 14,
-    textAlign: "center",
-    marginBottom: 80,
-    color: Colors.light.grey3,
+  button: {
+    marginBottom: 10,
   },
 });
 
