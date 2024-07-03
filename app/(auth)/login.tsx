@@ -52,7 +52,9 @@ const Login = () => {
 
         <ThemedView>
           <ThemedText>Don't have an account?</ThemedText>
-          <Link href="/register">Signup</Link>
+          <Link href="/register">
+            <ThemedText>Register</ThemedText>
+          </Link>
         </ThemedView>
       </ScrollView>
     </ThemedView>
