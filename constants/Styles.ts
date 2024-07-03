@@ -2,12 +2,12 @@ import { StyleSheet, useColorScheme } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 
-const scheme = useColorScheme();
+const colorScheme = useColorScheme();
 
 export const globalStyles = StyleSheet.create({
   block: {
     backgroundColor:
-      scheme === "dark" ? Colors.dark.background : Colors.light.background,
+      colorScheme === "dark" ? Colors.dark.background : Colors.light.background,
     borderRadius: 10,
     marginHorizontal: 14,
     marginTop: 20,
@@ -20,7 +20,8 @@ export const globalStyles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: scheme === "dark" ? Colors.dark.light : Colors.light.light,
+    backgroundColor:
+      colorScheme === "dark" ? Colors.dark.light : Colors.light.light,
     marginLeft: 50,
   },
 });
