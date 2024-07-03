@@ -1,14 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, useColorScheme, ScrollView } from "react-native";
+import { Link } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedButton } from "@/components/atomic/ThemedButton";
+import ThemedFormField from "@/components/molecular/ThemedFormField";
 
 const Login = () => {
   const colorScheme = useColorScheme();
+
+  // const { setUser, setIsLogged } = useGlobalContext();
+  const [isSubmitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const submit = async () => {};
 
   const openLink = () => {};
   return (
@@ -21,6 +33,27 @@ const Login = () => {
         />
 
         <ThemedText style={styles.headline}>Log In</ThemedText>
+        <ThemedFormField
+          title="Email"
+          value={form.email}
+          placeholder="Enter your email"
+          handleChangeText={(e) => setForm({ ...form, email: e })}
+          keyboardType="email-address"
+        />
+
+        <ThemedFormField
+          title="Password"
+          value={form.password}
+          placeholder={"Enter your password"}
+          handleChangeText={(e) => setForm({ ...form, password: e })}
+        />
+
+        <ThemedButton title="Sign In" onPress={submit} />
+
+        <ThemedView>
+          <ThemedText>Don't have an account?</ThemedText>
+          <Link href="/register">Signup</Link>
+        </ThemedView>
       </ScrollView>
     </ThemedView>
   );
