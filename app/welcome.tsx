@@ -6,7 +6,7 @@ import images from "@/constants/images";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import ThemedButton from "@/components/atomic/ThemedButton";
+import { ThemedButton } from "@/components/ThemedButton";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();
@@ -23,21 +23,8 @@ const Welcome = () => {
 
       <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
 
-      <ThemedButton
-        title={"Continue with Email"}
-        handlePress={loginWithEmailAndPassword}
-        isLoading={false}
-      ></ThemedButton>
-      <ThemedButton
-        title={"Continue with Email"}
-        handlePress={loginWithEmailAndPassword}
-        isLoading={false}
-      ></ThemedButton>
-      <ThemedButton
-        title={"Continue with Email"}
-        handlePress={loginWithEmailAndPassword}
-        isLoading={false}
-      ></ThemedButton>
+      <ThemedButton title="aa" style={{ marginBottom: 10 }}></ThemedButton>
+      <ThemedButton title="aa"></ThemedButton>
     </ThemedView>
   );
 };
@@ -67,7 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     marginBottom: 80,
-    color: Colors.light.medium,
+    color: Colors.light.grey3,
   },
 });
 
