@@ -1,12 +1,18 @@
 import React from "react";
-import { Text, Image, StyleSheet, useColorScheme } from "react-native";
+import {
+  Text,
+  Image,
+  StyleSheet,
+  useColorScheme,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 
-import { ThemedText } from "@/components/ThemedText";
-
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+
+import { ThemedText } from "@/components/ThemedText";
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -17,44 +23,41 @@ const App = () => {
       colorScheme === "dark" ? Colors.dark.background : Colors.light.background,
   };
 
+  const openLink = () => {};
+
   return (
     <SafeAreaView style={containerStyle}>
-      {/* <Loader isLoading={loading} /> */}
-
       <Image
         source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
         style={styles.logo}
         resizeMode="contain"
       />
 
-      {/* <Image
-          source={images.cards}
-          width={10}
-          height={10}
-          resizeMode="repeat"
-        /> */}
+      <Image
+        source={images.thumbnail}
+        style={styles.welcomeImage}
+        resizeMode="contain"
+      />
 
-      <ThemedText>
-        <Link
-          href="/home"
-          style={{ fontSize: 20, fontFamily: "Comfortaa", paddingTop: 20 }}
-        >
-          Home
-        </Link>
+      <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
+
+      <ThemedText style={styles.description}>
+        Read our{" "}
+        <Text style={styles.link} onPress={openLink}>
+          Privacy Policy
+        </Text>
+        . {'Tap "Agree & Continue" to accept the '}
+        <Text style={styles.link} onPress={openLink}>
+          Terms of Service
+        </Text>{" "}
+        .
       </ThemedText>
 
-      <ThemedText style={{ textAlign: "center", paddingTop: 40 }}>
-        Where Creativity Meets Innovation: Embark on a Journey of Limitless
-        Exploration with Aora
-      </ThemedText>
-
-      {/* <CustomButton
-            title="Continue with Email"
-            handlePress={() => router.push("/sign-in")}
-            containerStyles="w-full mt-7"
-          /> */}
-
-      {/* <StatusBar backgroundColor="#161622" style="light" /> */}
+      <Link href={"/home"} replace asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Agree & Continue</Text>
+        </TouchableOpacity>
+      </Link>
     </SafeAreaView>
   );
 };
@@ -62,12 +65,41 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   logo: {
-    width: "100%",
+    width: "50%",
     height: 100,
+    marginBottom: 50,
+  },
+  welcomeImage: {
+    width: "100%",
+  },
+  headline: {
+    textAlign: "center",
+    fontSize: 20,
+    fontFamily: "Comfortaa-Bold",
+    marginVertical: 20,
+  },
+  description: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 80,
+    color: Colors.light.medium,
+  },
+  link: {
+    color: Colors.light.primary,
+  },
+  button: {
+    width: "100%",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: Colors.light.primary,
+    fontSize: 22,
+    fontWeight: "500",
   },
 });
 
