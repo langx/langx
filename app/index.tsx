@@ -1,15 +1,11 @@
 import React from "react";
-import {
-  Image,
-  StyleSheet,
-  useColorScheme,
-  TouchableOpacity,
-} from "react-native";
+import { Image, StyleSheet, useColorScheme, Pressable } from "react-native";
 import { Link } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 
@@ -35,23 +31,23 @@ const App = () => {
       />
 
       <ThemedText style={styles.description}>
-        Read our{" "}
-        <ThemedText style={styles.link} onPress={openLink}>
-          Privacy Policy
-        </ThemedText>
+        {"Read our "}
+        <ExternalLink href="https://docs.expo.dev/router/introduction">
+          <ThemedText style={styles.link}>Privacy Policy</ThemedText>
+        </ExternalLink>
         . {'Tap "Agree & Continue" to accept the '}
-        <ThemedText style={styles.link} onPress={openLink}>
-          Terms of Service
-        </ThemedText>{" "}
-        .
+        <ExternalLink href="https://docs.expo.dev/router/introduction">
+          <ThemedText style={styles.link}>Terms of Service</ThemedText>
+        </ExternalLink>
+        {"."}
       </ThemedText>
 
       <Link href={"/welcome"} replace asChild>
-        <TouchableOpacity style={styles.button}>
+        <Pressable style={styles.button}>
           <ThemedText type="link" style={styles.buttonText}>
             Agree & Continue
           </ThemedText>
-        </TouchableOpacity>
+        </Pressable>
       </Link>
     </ThemedView>
   );
