@@ -1,18 +1,17 @@
 import React from "react";
 import {
-  Text,
   Image,
   StyleSheet,
   useColorScheme,
   TouchableOpacity,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
 import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -26,7 +25,7 @@ const App = () => {
   const openLink = () => {};
 
   return (
-    <SafeAreaView style={containerStyle}>
+    <ThemedView style={containerStyle}>
       <Image
         source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
         style={styles.logo}
@@ -53,14 +52,14 @@ const App = () => {
         .
       </ThemedText>
 
-      <Link href={"/home"} replace asChild>
+      <Link href={"/login"} replace asChild>
         <TouchableOpacity style={styles.button}>
           <ThemedText type="link" style={styles.buttonText}>
             Agree & Continue
           </ThemedText>
         </TouchableOpacity>
       </Link>
-    </SafeAreaView>
+    </ThemedView>
   );
 };
 
