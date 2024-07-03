@@ -14,33 +14,26 @@ const App = () => {
     <SafeAreaView>
       {/* <Loader isLoading={loading} /> */}
 
-      <ThemedView style={style.container}>
+      <ThemedView style={styles.container}>
         <ThemedText>
           <Link href="/home">Home</Link>
         </ThemedText>
         <Image
           source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
-          style={{
-            width: 250,
-          }}
+          style={styles.logo}
           resizeMode="contain"
         />
 
-        <Image
+        {/* <Image
           source={images.cards}
           width={10}
           height={10}
           resizeMode="repeat"
-        />
+        /> */}
 
-        <ThemedView>
-          <ThemedText>
-            Discover Endless{"\n"}
-            Possibilities with <Text>Aora</Text>
-          </ThemedText>
-
-          <Image source={images.path} resizeMode="contain" />
-        </ThemedView>
+        <ThemedText>
+          Discover Endless{"\n"} Possibilities with <Text>Aora</Text>
+        </ThemedText>
 
         <ThemedText>
           Where Creativity Meets Innovation: Embark on a Journey of Limitless
@@ -59,9 +52,16 @@ const App = () => {
   );
 };
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
+    // flex: 1,
     padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logo: {
+    width: "100%",
+    height: 100,
   },
 });
 
