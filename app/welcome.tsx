@@ -1,5 +1,6 @@
 import React from "react";
 import { Image, StyleSheet, useColorScheme } from "react-native";
+import { Link } from "expo-router";
 
 import images from "@/constants/images";
 
@@ -9,8 +10,6 @@ import { ThemedButton } from "@/components/atomic/ThemedButton";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();
-
-  const loginWithEmailAndPassword = () => {};
 
   return (
     <ThemedView style={styles.container}>
@@ -22,10 +21,9 @@ const Welcome = () => {
 
       <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
 
-      <ThemedButton
-        title="Login with Email"
-        style={styles.button}
-      ></ThemedButton>
+      <Link href="/login" asChild>
+        <ThemedButton title="Login with Email" style={styles.button} />
+      </Link>
     </ThemedView>
   );
 };
