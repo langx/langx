@@ -1,14 +1,20 @@
 import React from "react";
-import { Button, Image, StyleSheet, useColorScheme } from "react-native";
-import { Link } from "expo-router";
+import { Image, StyleSheet, useColorScheme } from "react-native";
+import { useRouter } from "expo-router";
 
 import images from "@/constants/images";
 
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedButton } from "@/components/atomic/ThemedButton";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();
+  const router = useRouter();
+
+  const navigateToLogin = () => {
+    router.navigate("/login");
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -20,9 +26,12 @@ const Welcome = () => {
 
       <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
 
-      <Link href="/login">
-        <ThemedText>Login with Email</ThemedText>
-      </Link>
+      <ThemedButton
+        title="Login with Email"
+        onPress={() => {
+          navigateToLogin();
+        }}
+      ></ThemedButton>
     </ThemedView>
   );
 };
