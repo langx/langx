@@ -1,12 +1,11 @@
 import React from "react";
-import { Image, StyleSheet, useColorScheme } from "react-native";
+import { Button, Image, StyleSheet, useColorScheme } from "react-native";
 import { Link } from "expo-router";
 
 import images from "@/constants/images";
 
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedButton } from "@/components/atomic/ThemedButton";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();
@@ -21,8 +20,8 @@ const Welcome = () => {
 
       <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
 
-      <Link href="/login" asChild>
-        <ThemedButton title="Login with Email" style={styles.button} />
+      <Link href="/login">
+        <ThemedText>Login with Email</ThemedText>
       </Link>
     </ThemedView>
   );
@@ -44,9 +43,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Comfortaa-Bold",
     marginVertical: 20,
-  },
-  button: {
-    marginBottom: 10,
   },
 });
 
