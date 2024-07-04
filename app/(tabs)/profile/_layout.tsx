@@ -16,6 +16,7 @@ export default function RootLayout() {
         name="index"
         options={{
           headerShown: true,
+          headerBackVisible: false,
           headerStyle: { backgroundColor: Colors.light.primary },
           headerTitle: () => (
             <ThemedText
