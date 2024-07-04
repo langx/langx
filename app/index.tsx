@@ -10,8 +10,9 @@ import { ThemedView } from "@/components/atomic/ThemedView";
 
 import { useSelector, useDispatch, Provider } from "react-redux";
 import { setLoading, setUser } from "@/store/authSlice";
-import store, { RootState } from "@/store/store";
+import { RootState } from "@/store/store";
 import { getCurrentUser } from "@/services/appwrite";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -50,78 +51,89 @@ const App = () => {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <Image
-        source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
-        style={styles.logo}
-        resizeMode="contain"
-      />
+    <ParallaxScrollView
+      headerBackgroundColor={{
+        light: Colors.light.primary,
+        dark: Colors.dark.primary,
+      }}
+      headerImage={
+        <Image source={images.thumbnail} style={styles.featuredImage} />
+      }
+    >
+      <ThemedView style={styles.container}>
+        <Image
+          source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
+          style={styles.logo}
+          resizeMode="contain"
+        />
 
-      <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
+        <ThemedText style={styles.headline}>
+          Practice, Learn, Succeed!
+        </ThemedText>
 
-      <Image
-        source={images.thumbnail}
-        style={styles.welcomeImage}
-        resizeMode="contain"
-      />
+        <ThemedText style={styles.description}>
+          {"Read our "}
+          <ExternalLink href="https://langx.io/privacy-policy">
+            <ThemedText style={styles.link}>Privacy Policy</ThemedText>
+          </ExternalLink>
+          . {'Tap "Agree & Continue" to accept the '}
+          <ExternalLink href="https://langx.io/terms-conditions">
+            <ThemedText style={styles.link}>Terms of Service</ThemedText>
+          </ExternalLink>
+          {"."}
+        </ThemedText>
 
-      <ThemedText style={styles.description}>
-        {"Read our "}
-        <ExternalLink href="https://langx.io/privacy-policy">
-          <ThemedText style={styles.link}>Privacy Policy</ThemedText>
-        </ExternalLink>
-        . {'Tap "Agree & Continue" to accept the '}
-        <ExternalLink href="https://langx.io/terms-conditions">
-          <ThemedText style={styles.link}>Terms of Service</ThemedText>
-        </ExternalLink>
-        {"."}
-      </ThemedText>
-
-      <Link href={"/welcome"} replace asChild>
-        <Pressable style={styles.button}>
-          <ThemedText type="link" style={styles.buttonText}>
-            Agree & Continue
-          </ThemedText>
-        </Pressable>
-      </Link>
-    </ThemedView>
+        <Link href={"/welcome"} replace asChild>
+          <Pressable style={styles.button}>
+            <ThemedText type="link" style={styles.buttonText}>
+              Agree & Continue
+            </ThemedText>
+          </Pressable>
+        </Link>
+      </ThemedView>
+    </ParallaxScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    margin: 10,
     justifyContent: "center",
     alignItems: "center",
   },
+  featuredImage: {
+    objectFit: "cover",
+    height: "100%",
+    width: "100%",
+  },
   logo: {
-    width: "50%",
+    width: 200,
     height: 100,
+    margin: 10,
   },
   headline: {
     textAlign: "center",
     fontSize: 16,
     fontFamily: "Comfortaa-Bold",
-    marginVertical: 10,
+    margin: 10,
+    flex: 1,
   },
-  welcomeImage: {
-    width: "100%",
-    marginVertical: 20,
-  },
-
   description: {
+    flex: 1,
     fontSize: 14,
     textAlign: "center",
-    marginBottom: 80,
+    margin: 10,
     color: Colors.light.grey3,
   },
   link: {
     color: Colors.light.primary,
   },
   button: {
+    flex: 1,
     width: "100%",
     alignItems: "center",
+    margin: 50,
   },
   buttonText: {
     color: Colors.light.primary,
