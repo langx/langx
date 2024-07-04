@@ -43,9 +43,14 @@ export default function RootLayout() {
       <Stack.Screen
         name="settings"
         options={{
+          title: "Settings",
           headerShown: true,
           headerBackVisible: true,
-          headerBackTitleVisible: false,
+          headerLargeTitle: true,
+          headerShadowVisible: false,
+          headerBackTitleVisible: true,
+          headerBackButtonMenuEnabled: true,
+          headerBackTitle: "Back",
           headerTintColor:
             colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
           headerStyle: {
@@ -54,20 +59,23 @@ export default function RootLayout() {
                 ? Colors.dark.background
                 : Colors.light.background,
           },
-          headerTitle: () => (
-            <ThemedText
-              style={{
-                fontSize: 18,
-                fontFamily: "Lexend-Bold",
-                color:
-                  colorScheme === "dark"
-                    ? Colors.dark.black
-                    : Colors.light.black,
-              }}
-            >
-              Settings
-            </ThemedText>
-          ),
+          headerLargeTitleStyle: {
+            color:
+              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+            fontFamily: "Lexend-Bold",
+          },
+          headerBackTitleStyle: {
+            fontFamily: "Lexend-Bold",
+          },
+          headerTitleStyle: {
+            fontSize: 18,
+            fontFamily: "Lexend-Bold",
+            color:
+              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+          },
+          headerSearchBarOptions: {
+            placeholder: "Search",
+          },
         }}
       />
     </Stack>

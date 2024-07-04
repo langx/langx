@@ -97,7 +97,7 @@ const Settings = () => {
         flex: 1,
       }}
     >
-      <ScrollView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         <ThemedView style={defaultStyles.block}>
           <FlatList
             data={devices}
