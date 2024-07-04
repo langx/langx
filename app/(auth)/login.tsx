@@ -125,9 +125,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    width: "50%",
-    left: 0,
+    width: 200,
     height: 100,
+    left: 0,
   },
   headline: {
     fontSize: 26,
