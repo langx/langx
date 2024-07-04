@@ -24,10 +24,10 @@ export default function ProfileScreen() {
     setSubmitting(true);
     try {
       await logout();
-      console.log("logged out");
       dispatch(setUser(null));
       dispatch(setLoading(false));
       Alert.alert("Success", "User signed out successfully");
+      console.log("logged out");
       router.replace("/welcome");
     } catch (error) {
       Alert.alert("Error", error.message);

@@ -37,8 +37,6 @@ const App = () => {
     fetchData();
   }, [dispatch]);
 
-  console.log("isLogged", isLogged);
-  console.log("loading", loading);
   if (isLogged) {
     return <Redirect href="/home" />;
   }

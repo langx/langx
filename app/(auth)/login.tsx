@@ -43,7 +43,6 @@ const Login = () => {
     try {
       const session = await login(form.email, form.password);
       const result = await getCurrentUser();
-      console.log(session, result);
 
       dispatch(setUser(result));
       dispatch(setLoading(false));
