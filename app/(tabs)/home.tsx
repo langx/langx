@@ -2,8 +2,8 @@ import { Image, StyleSheet, Platform } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { HelloWave } from "@/components/HelloWave";
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/atomic/ThemedView";
 
 export default function CommunityScreen() {
   return (

@@ -1,13 +1,13 @@
 import React from "react";
 
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+import { Stack } from "expo-router";
 
 const AuthLayout = () => {
   return (
-    <ThemedView>
-      <ThemedText>AuthLayout</ThemedText>
-    </ThemedView>
+    <Stack>
+      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="register" options={{ headerShown: false }} />
+    </Stack>
   );
 };
 
