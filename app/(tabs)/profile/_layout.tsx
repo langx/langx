@@ -15,7 +15,7 @@ export default function RootLayout() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isSubmitting, setSubmitting] = useState(false);
-  const username = "useSelector"; // Replace with actual selector to get username
+  const username = "username";
 
   const signout = async () => {
     setSubmitting(true);
@@ -67,6 +67,7 @@ export default function RootLayout() {
         name="settings"
         options={{
           headerShown: true,
+          headerBackVisible: true,
           headerBackTitleVisible: false,
           headerTintColor: Colors.light.black,
           // headerStyle: { backgroundColor: Colors.light.primary },
