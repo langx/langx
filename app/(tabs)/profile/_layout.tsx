@@ -32,7 +32,7 @@ export default function RootLayout() {
           headerRight: () => (
             <Link href="profile/settings">
               <Ionicons
-                name="menu-outline"
+                name="cog-outline"
                 size={24}
                 color={Colors.light.black}
                 style={{ marginRight: 16 }}
