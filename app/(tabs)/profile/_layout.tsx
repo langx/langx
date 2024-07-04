@@ -21,7 +21,7 @@ export default function RootLayout() {
             <ThemedText
               style={{
                 fontSize: 18,
-                fontWeight: "bold",
+                fontFamily: "Lexend-Bold",
                 color: Colors.light.black,
               }}
             >
@@ -58,7 +58,7 @@ export default function RootLayout() {
             <ThemedText
               style={{
                 fontSize: 18,
-                fontWeight: "bold",
+                fontFamily: "Lexend-Bold",
                 color:
                   colorScheme === "dark"
                     ? Colors.dark.black
