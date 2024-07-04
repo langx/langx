@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const globalStyles = StyleSheet.create({
+export const defaultStyles = StyleSheet.create({
   block: {
     borderRadius: 10,
     marginHorizontal: 14,
