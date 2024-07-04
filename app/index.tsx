@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontFamily: "Comfortaa-Bold",
+    marginVertical: 10,
   },
   welcomeImage: {
     width: "100%",
