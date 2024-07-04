@@ -40,14 +40,13 @@ export default function RootLayout() {
             fontFamily: "Lexend-Bold",
             color: Colors.light.black,
           },
-          headerSearchBarOptions: {
-            placeholder: "Search",
-            textColor: Colors.light.black,
-            tintColor: Colors.light.black,
-            hintTextColor: Colors.light.black,
-            headerIconColor: Colors.light.black,
-            // inputType: "text",
-          },
+          // headerSearchBarOptions: {
+          //   placeholder: "Search",
+          //   textColor: Colors.light.black,
+          //   tintColor: Colors.light.black,
+          //   hintTextColor: Colors.light.black,
+          //   headerIconColor: Colors.light.black,
+          // },
         }}
       />
       <Stack.Screen
