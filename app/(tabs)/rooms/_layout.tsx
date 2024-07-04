@@ -32,15 +32,13 @@ export default function RootLayout() {
             </Link>
           ),
           headerLargeTitleStyle: {
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
             fontFamily: "Lexend-Bold",
+            color: Colors.light.black,
           },
           headerTitleStyle: {
             fontSize: 18,
             fontFamily: "Lexend-Bold",
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+            color: Colors.light.black,
           },
           headerSearchBarOptions: {
             placeholder: "Search",
