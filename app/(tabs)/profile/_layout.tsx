@@ -1,14 +1,15 @@
+import { useState } from "react";
 import { Stack } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Alert } from "react-native";
 import { useDispatch } from "react-redux";
 import { useRouter, Link } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { logout } from "@/services/appwrite";
 import { setLoading, setUser } from "@/store/authSlice";
+
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/atomic/ThemedText";
-import { useState } from "react";
 
 export default function RootLayout() {
   const dispatch = useDispatch();
@@ -66,7 +67,9 @@ export default function RootLayout() {
         name="settings"
         options={{
           headerShown: true,
-          headerStyle: { backgroundColor: Colors.light.primary },
+          headerBackTitleVisible: false,
+          headerTintColor: Colors.light.black,
+          // headerStyle: { backgroundColor: Colors.light.primary },
           headerTitle: () => (
             <ThemedText
               style={{
@@ -78,8 +81,6 @@ export default function RootLayout() {
               Settings
             </ThemedText>
           ),
-          headerBackTitleVisible: false,
-          headerTintColor: Colors.light.black,
         }}
       />
     </Stack>
