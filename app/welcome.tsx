@@ -28,6 +28,7 @@ const Welcome = () => {
 
       <ThemedButton
         title="Login with Email"
+        style={styles.button}
         onPress={() => {
           navigateToLogin();
         }}
@@ -39,19 +40,22 @@ const Welcome = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    margin: 20,
     justifyContent: "center",
     alignItems: "center",
   },
   logo: {
-    width: "50%",
+    width: 200,
     height: 100,
   },
   headline: {
     textAlign: "center",
     fontSize: 16,
     fontFamily: "Comfortaa-Bold",
-    marginVertical: 20,
+    margin: 20,
+  },
+  button: {
+    margin: 20,
   },
 });
 
