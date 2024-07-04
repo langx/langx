@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
@@ -29,8 +29,16 @@ const Settings = () => {
     }
   };
   return (
-    <ThemedView>
-      <ThemedText>Settings</ThemedText>
+    <ThemedView
+      style={{
+        flex: 1,
+      }}
+    >
+      <ScrollView>
+        <ThemedView>
+          <ThemedText>Settings</ThemedText>
+        </ThemedView>
+      </ScrollView>
     </ThemedView>
   );
 };

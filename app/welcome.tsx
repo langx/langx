@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, StyleSheet, useColorScheme } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 import images from "@/constants/images";
@@ -7,6 +7,7 @@ import images from "@/constants/images";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();

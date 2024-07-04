@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Image,
-  StyleSheet,
-  useColorScheme,
-  Pressable,
-  StatusBar,
-} from "react-native";
+import { Image, StyleSheet, Pressable, StatusBar } from "react-native";
 import { Link, Redirect } from "expo-router";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -18,6 +12,7 @@ import { ExternalLink } from "@/components/ExternalLink";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 const App = () => {
   const colorScheme = useColorScheme();

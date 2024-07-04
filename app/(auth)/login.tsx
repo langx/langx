@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  useColorScheme,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { Image, StyleSheet, ScrollView, Alert } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
@@ -18,6 +12,7 @@ import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
 import ThemedFormField from "@/components/molecular/ThemedFormField";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 import { setUser, setLoading } from "@/store/authSlice";
 

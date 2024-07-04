@@ -2,10 +2,12 @@ import { Stack } from "expo-router";
 import { Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/atomic/ThemedText";
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
   const username = "username";
 
   return (
@@ -44,14 +46,23 @@ export default function RootLayout() {
           headerShown: true,
           headerBackVisible: true,
           headerBackTitleVisible: false,
-          headerTintColor: Colors.light.black,
-          // headerStyle: { backgroundColor: Colors.light.primary },
+          headerTintColor:
+            colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+          headerStyle: {
+            backgroundColor:
+              colorScheme === "dark"
+                ? Colors.dark.background
+                : Colors.light.background,
+          },
           headerTitle: () => (
             <ThemedText
               style={{
                 fontSize: 18,
                 fontWeight: "bold",
-                color: Colors.light.black,
+                color:
+                  colorScheme === "dark"
+                    ? Colors.dark.black
+                    : Colors.light.black,
               }}
             >
               Settings

@@ -1,5 +1,5 @@
 import type { PropsWithChildren, ReactElement } from "react";
-import { StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedRef,
@@ -7,6 +7,7 @@ import Animated, {
   useScrollViewOffset,
 } from "react-native-reanimated";
 
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemedView } from "@/components/atomic/ThemedView";
 
 const HEADER_HEIGHT = 250;
