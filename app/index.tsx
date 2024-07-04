@@ -69,11 +69,11 @@ const App = () => {
 
       <ThemedText style={styles.description}>
         {"Read our "}
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
+        <ExternalLink href="https://langx.io/privacy-policy">
           <ThemedText style={styles.link}>Privacy Policy</ThemedText>
         </ExternalLink>
         . {'Tap "Agree & Continue" to accept the '}
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
+        <ExternalLink href="https://langx.io/terms-conditions">
           <ThemedText style={styles.link}>Terms of Service</ThemedText>
         </ExternalLink>
         {"."}
