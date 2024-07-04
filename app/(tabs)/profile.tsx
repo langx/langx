@@ -1,13 +1,40 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Image, Platform } from "react-native";
+import { StyleSheet, Image, Platform, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
+import { logout } from "@/services/appwrite";
 import { Collapsible } from "@/components/Collapsible";
 import { ExternalLink } from "@/components/ExternalLink";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedButton } from "@/components/atomic/ThemedButton";
+import { setLoading, setUser } from "@/store/authSlice";
 
 export default function ProfileScreen() {
+  const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const signout = async () => {
+    setSubmitting(true);
+    try {
+      await logout();
+      console.log("logged out");
+      dispatch(setUser(null));
+      dispatch(setLoading(false));
+      Alert.alert("Success", "User signed out successfully");
+      router.replace("/welcome");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
@@ -17,6 +44,7 @@ export default function ProfileScreen() {
     >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Explore</ThemedText>
+        <ThemedButton title="logout" onPress={signout}></ThemedButton>
       </ThemedView>
       <ThemedText>
         This app includes example code to help you get started.

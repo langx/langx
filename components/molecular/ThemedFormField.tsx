@@ -33,6 +33,7 @@ const FormField = ({
             <Image
               source={!showPassword ? icons.eye : icons.eyeHide}
               resizeMode="contain"
+              style={{ width: 20, height: 20 }}
             />
           </Pressable>
         )}

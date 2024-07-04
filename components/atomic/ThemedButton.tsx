@@ -17,6 +17,7 @@ export type ThemedButtonProps = {
   title: string;
   type?: "default" | "primary" | "secondary" | "link";
   onPress?: () => void;
+  isLoading?: boolean;
   style?: ViewStyle | ViewStyle[];
 };
 
@@ -27,6 +28,7 @@ export function ThemedButton({
   type = "default",
   style,
   onPress,
+  isLoading,
   ...rest
 }: ThemedButtonProps) {
   const color = Colors.light.black;
@@ -41,6 +43,7 @@ export function ThemedButton({
       { backgroundColor },
       ...(Array.isArray(style) ? style : [style]),
       state.pressed ? styles.pressed : undefined,
+      isLoading ? styles.loading : undefined,
     ];
   };
 
@@ -63,5 +66,8 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.8,
+  },
+  loading: {
+    opacity: 0.5,
   },
 });

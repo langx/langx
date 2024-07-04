@@ -1,23 +1,20 @@
-import { config } from "dotenv";
-config();
+import { Account, Client, Databases, ID, Query } from "react-native-appwrite";
 
 import {
-  Account,
-  Avatars,
-  Client,
-  Databases,
-  ID,
-  Query,
-} from "react-native-appwrite";
+  APP_PACKAGE_NAME,
+  APP_ENDPOINT,
+  APP_PROJECT,
+  APP_DATABASE,
+  USERS_COLLECTION,
+} from "@/constants/config";
 
 export const appwriteConfig = {
-  endpoint: process.env.APP_ENDPOINT,
-  platform: process.env.APP_PACKAGE_NAME,
-  projectId: process.env.APP_PROJECT,
-  databaseId: process.env.APP_DATABASE,
-  usersCollection: process.env.USERS_COLLECTION,
+  endpoint: APP_ENDPOINT,
+  platform: APP_PACKAGE_NAME,
+  projectId: APP_PROJECT,
+  databaseId: APP_DATABASE,
+  usersCollection: USERS_COLLECTION,
 };
-
 const client = new Client();
 
 client
@@ -26,7 +23,6 @@ client
   .setPlatform(appwriteConfig.platform);
 
 const account = new Account(client);
-const avatars = new Avatars(client);
 const databases = new Databases(client);
 
 // Register user
@@ -41,9 +37,7 @@ export async function createUser(email, password, username) {
 
     if (!newAccount) throw Error;
 
-    const avatarUrl = avatars.getInitials(username);
-
-    await signIn(email, password);
+    await login(email, password);
 
     const newUser = await databases.createDocument(
       appwriteConfig.databaseId,
@@ -52,7 +46,6 @@ export async function createUser(email, password, username) {
       {
         email: email,
         username: username,
-        avatar: avatarUrl,
       }
     );
 
@@ -63,7 +56,7 @@ export async function createUser(email, password, username) {
 }
 
 // Sign In
-export async function signIn(email, password) {
+export async function login(email, password) {
   try {
     const session = await account.createEmailPasswordSession(email, password);
 
@@ -106,7 +99,7 @@ export async function getCurrentUser() {
 }
 
 // Sign Out
-export async function signOut() {
+export async function logout() {
   try {
     const session = await account.deleteSession("current");
 

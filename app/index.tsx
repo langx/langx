@@ -1,18 +1,55 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Image, StyleSheet, useColorScheme, Pressable } from "react-native";
-import { Link } from "expo-router";
+import { Link, Redirect } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
-
 import { ExternalLink } from "@/components/ExternalLink";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 
+import { useSelector, useDispatch, Provider } from "react-redux";
+import { setLoading, setUser } from "@/store/authSlice";
+import store, { RootState } from "@/store/store";
+import { getCurrentUser } from "@/services/appwrite";
+
 const App = () => {
   const colorScheme = useColorScheme();
 
-  const openLink = () => {};
+  const dispatch = useDispatch();
+  const isLogged = useSelector((state: RootState) => state.auth.isLogged);
+  const loading = useSelector((state: RootState) => state.auth.loading);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(setLoading(true));
+      try {
+        const user = await getCurrentUser();
+        dispatch(setUser(user));
+      } catch (error) {
+        console.error(error);
+        dispatch(setUser(null));
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
+
+  console.log("isLogged", isLogged);
+  console.log("loading", loading);
+  if (isLogged) {
+    return <Redirect href="/home" />;
+  }
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.container}>
+        <ThemedText>Loading...</ThemedText>
+      </ThemedView>
+    );
+  }
 
   return (
     <ThemedView style={styles.container}>
