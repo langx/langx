@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, useSegments } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { Colors } from "@/constants/Colors";
@@ -8,6 +8,7 @@ import { TabBarItem } from "@/components/navigation/TabBarItem";
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
+  const segments = useSegments();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -19,6 +20,7 @@ export default function TabLayout() {
           tabBarStyle: {
             backgroundColor: Colors[theme].background,
             height: 60,
+            display: segments[2] === "[id]" ? "none" : "flex",
           },
         }}
       >

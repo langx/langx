@@ -12,7 +12,6 @@ import icons from "@/constants/icons";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const username = "username";
 
   const [isCopilotEnabled, setIsCopilotEnabled] = useState(false);
   const toggleSwitch = () =>
