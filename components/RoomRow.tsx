@@ -29,7 +29,7 @@ const RoomRow: FC<RoomRowProps> = ({
 }) => {
   return (
     <AppleStyleSwipeableRow>
-      <Link href={`/(tabs)/chats/${id}`} asChild>
+      <Link href={`/(tabs)/rooms/${id}`} asChild>
         <TouchableHighlight
           activeOpacity={0.8}
           underlayColor={Colors.light.grey3}
