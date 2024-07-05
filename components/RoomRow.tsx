@@ -32,7 +32,7 @@ const RoomRow: FC<RoomRowProps> = ({
       <Link href={`/(tabs)/rooms/${id}`} asChild>
         <TouchableHighlight
           activeOpacity={0.8}
-          underlayColor={Colors.light.grey3}
+          underlayColor={Colors.light.gray3}
         >
           <ThemedView
             style={{
@@ -55,7 +55,7 @@ const RoomRow: FC<RoomRowProps> = ({
                 style={{
                   fontSize: 16,
                   fontFamily: "Lexend-Light",
-                  color: Colors.light.grey3,
+                  color: Colors.light.gray3,
                 }}
               >
                 {msg.length > 40 ? `${msg.substring(0, 40)}...` : msg}
@@ -63,7 +63,7 @@ const RoomRow: FC<RoomRowProps> = ({
             </ThemedView>
             <ThemedText
               style={{
-                color: Colors.light.grey3,
+                color: Colors.light.gray3,
                 paddingRight: 20,
                 alignSelf: "flex-start",
               }}

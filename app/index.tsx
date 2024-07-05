@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     margin: 10,
-    color: Colors.light.grey3,
+    color: Colors.light.gray3,
   },
   link: {
     color: Colors.light.primary,

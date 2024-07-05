@@ -118,7 +118,7 @@ const Settings = () => {
                 <Ionicons
                   name="chevron-forward"
                   size={20}
-                  color={Colors.light.grey3}
+                  color={Colors.light.gray3}
                 />
               </ThemedView>
             )}
@@ -145,7 +145,7 @@ const Settings = () => {
                 <Ionicons
                   name="chevron-forward"
                   size={20}
-                  color={Colors.light.grey3}
+                  color={Colors.light.gray3}
                 />
               </ThemedView>
             )}
@@ -172,7 +172,7 @@ const Settings = () => {
                 <Ionicons
                   name="chevron-forward"
                   size={20}
-                  color={Colors.light.grey3}
+                  color={Colors.light.gray3}
                 />
               </ThemedView>
             )}

@@ -39,7 +39,7 @@ const ReplyMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
             </Text>
             <Text
               style={{
-                color: Colors.light.grey3,
+                color: Colors.light.gray3,
                 paddingLeft: 10,
                 paddingTop: 5,
               }}

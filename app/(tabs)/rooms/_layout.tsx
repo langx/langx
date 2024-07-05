@@ -141,11 +141,11 @@ export default function RootLayout() {
               <TouchableOpacity>
                 <Switch
                   trackColor={{
-                    false: Colors.light.grey3,
+                    false: Colors.light.gray3,
                     true: Colors.light.secondary,
                   }}
                   // thumbColor={isCopilotEnabled ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor={Colors.light.grey3}
+                  ios_backgroundColor={Colors.light.gray3}
                   onValueChange={toggleSwitch}
                   value={isCopilotEnabled}
                 />

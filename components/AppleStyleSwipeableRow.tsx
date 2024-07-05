@@ -54,8 +54,8 @@ export default class AppleStyleSwipeableRow extends Component<
         flexDirection: I18nManager.isRTL ? "row-reverse" : "row",
       }}
     >
-      {this.renderRightAction("More", "#C8C7CD", 192, progress)}
-      {this.renderRightAction("Archive", Colors.light.grey3, 128, progress)}
+      {this.renderRightAction("More", Colors.light.gray3, 192, progress)}
+      {this.renderRightAction("Archive", Colors.light.primary, 128, progress)}
     </View>
   );
 

@@ -52,7 +52,7 @@ const ChatMessageBox = ({
           <MaterialCommunityIcons
             name="reply-circle"
             size={26}
-            color={Colors.light.grey2}
+            color={Colors.light.gray2}
           />
         </View>
       </Animated.View>

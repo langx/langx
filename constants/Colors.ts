@@ -11,13 +11,13 @@ const warning = "#ffc409";
 const error = "#eb445a";
 const black = "#222428";
 const white = "#f4f5f8";
-const grey0 = "#393e42";
-const grey1 = "#43484d";
-const grey2 = "#5e6977";
-const grey3 = "#86939e";
-const grey4 = "#bdc6cf";
-const grey5 = "#e1e8ee";
-const greyOutline = "#bbb";
+const gray0 = "#393e42";
+const gray1 = "#43484d";
+const gray2 = "#5e6977";
+const gray3 = "#86939e";
+const gray4 = "#bdc6cf";
+const gray5 = "#e1e8ee";
+const grayOutline = "#bbb";
 const searchBg = "#303337";
 
 export const Colors = {
@@ -31,13 +31,13 @@ export const Colors = {
     black: black,
     white: white,
     background: white,
-    grey0: grey0,
-    grey1: grey1,
-    grey2: grey2,
-    grey3: grey3,
-    grey4: grey4,
-    grey5: grey5,
-    greyOutline: greyOutline,
+    gray0: gray0,
+    gray1: gray1,
+    gray2: gray2,
+    gray3: gray3,
+    gray4: gray4,
+    gray5: gray5,
+    grayOutline: grayOutline,
     searchBg: searchBg,
   },
   dark: {
@@ -50,13 +50,13 @@ export const Colors = {
     black: white,
     white: black,
     background: black,
-    grey0: grey5,
-    grey1: grey4,
-    grey2: grey3,
-    grey3: grey2,
-    grey4: grey1,
-    grey5: grey0,
-    greyOutline: greyOutline,
+    gray0: gray5,
+    gray1: gray4,
+    gray2: gray3,
+    gray3: gray2,
+    gray4: gray1,
+    gray5: gray0,
+    grayOutline: grayOutline,
     searchBg: searchBg,
   },
 };

@@ -75,7 +75,7 @@ const Room = () => {
         }}
         wrapperStyle={{
           left: {
-            backgroundColor: Colors[theme].grey5,
+            backgroundColor: Colors[theme].gray5,
           },
           right: {
             backgroundColor: Colors[theme].primary,
@@ -105,8 +105,8 @@ const Room = () => {
       <Time
         {...props}
         timeTextStyle={{
-          left: { color: Colors[theme].grey1 },
-          right: { color: Colors[theme].grey3 },
+          left: { color: Colors[theme].gray1 },
+          right: { color: Colors[theme].gray3 },
         }}
       />
     );
@@ -176,7 +176,7 @@ const Room = () => {
         renderSystemMessage={(props) => (
           <SystemMessage
             {...props}
-            textStyle={{ color: Colors[theme].grey2 }}
+            textStyle={{ color: Colors[theme].gray2 }}
           />
         )}
         bottomOffset={insets.bottom}
@@ -208,10 +208,10 @@ const Room = () => {
 const generateStyles = (theme) => {
   return StyleSheet.create({
     composer: {
-      backgroundColor: Colors[theme].grey5,
+      backgroundColor: Colors[theme].gray5,
       borderRadius: 18,
       borderWidth: 1,
-      borderColor: Colors[theme].grey4,
+      borderColor: Colors[theme].gray4,
       paddingHorizontal: 10,
       paddingTop: 8,
       fontSize: 16,
