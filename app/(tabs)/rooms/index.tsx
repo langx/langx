@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FlatList, ScrollView, StatusBar } from "react-native";
 
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { defaultStyles } from "@/constants/Styles";
 import chats from "@/assets/data/chats.json";
 import RoomRow from "@/components/RoomRow";
-import { Colors } from "@/constants/Colors";
+import { useFocusEffect } from "expo-router";
 
 export default function RoomsScreen() {
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setBarStyle("dark-content");
+
+      // This function is returned to revert the effect when the component is not focused
+      return () => StatusBar.setBarStyle("default");
+    }, [])
+  );
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar />
       <ThemedView
         style={{
           flex: 1,

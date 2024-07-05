@@ -6,8 +6,8 @@ import {
   SafeAreaView,
   StatusBar,
 } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { Link, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { setLoading, setUser } from "@/store/authSlice";
@@ -18,6 +18,15 @@ import { ThemedView } from "@/components/atomic/ThemedView";
 
 export default function ProfileScreen() {
   const router = useRouter();
+
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setBarStyle("dark-content");
+
+      // This function is returned to revert the effect when the component is not focused
+      return () => StatusBar.setBarStyle("default");
+    }, [])
+  );
 
   const dispatch = useDispatch();
   const [isSubmitting, setSubmitting] = useState(false);
@@ -40,7 +49,7 @@ export default function ProfileScreen() {
   };
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar />
       <ThemedView style={styles.container}>
         <ThemedText>aa</ThemedText>
       </ThemedView>
