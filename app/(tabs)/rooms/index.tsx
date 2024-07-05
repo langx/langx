@@ -6,7 +6,7 @@ import { ThemedView } from "@/components/atomic/ThemedView";
 import { defaultStyles } from "@/constants/Styles";
 import { Colors } from "@/constants/Colors";
 import chats from "@/assets/data/chats.json";
-import ChatRow from "@/components/ChatRow";
+import RoomRow from "@/components/RoomRow";
 
 export default function RoomsScreen() {
   return (
@@ -21,7 +21,7 @@ export default function RoomsScreen() {
       >
         <FlatList
           data={chats}
-          renderItem={({ item }) => <ChatRow {...item} />}
+          renderItem={({ item }) => <RoomRow {...item} />}
           keyExtractor={(item) => item.id.toString()}
           ItemSeparatorComponent={() => (
             <ThemedView style={[defaultStyles.separator, { marginLeft: 90 }]} />

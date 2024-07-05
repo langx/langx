@@ -8,7 +8,7 @@ import { Image, TouchableHighlight } from "react-native";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 
-export interface ChatRowProps {
+export interface RoomRowProps {
   id: string;
   from: string;
   date: string;
@@ -18,7 +18,7 @@ export interface ChatRowProps {
   unreadCount: number;
 }
 
-const ChatRow: FC<ChatRowProps> = ({
+const RoomRow: FC<RoomRowProps> = ({
   id,
   from,
   date,
@@ -70,4 +70,5 @@ const ChatRow: FC<ChatRowProps> = ({
     </AppleStyleSwipeableRow>
   );
 };
-export default ChatRow;
+
+export default RoomRow;
