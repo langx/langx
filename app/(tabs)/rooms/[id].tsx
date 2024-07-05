@@ -75,7 +75,7 @@ const Room = () => {
         }}
         wrapperStyle={{
           left: {
-            backgroundColor: Colors[theme].white,
+            backgroundColor: Colors[theme].grey5,
           },
           right: {
             backgroundColor: Colors[theme].primary,
@@ -112,8 +112,8 @@ const Room = () => {
       <Time
         {...props}
         timeTextStyle={{
-          left: { color: Colors[theme].grey3 },
-          right: { color: Colors[theme].grey1 },
+          left: { color: Colors[theme].grey1 },
+          right: { color: Colors[theme].grey3 },
         }}
       />
     );
@@ -173,38 +173,49 @@ const Room = () => {
   );
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={(messages: any) => onSend(messages)}
-      onInputTextChanged={setText}
-      user={{
-        _id: 1,
+    <ThemedView
+      style={{
+        flex: 1,
+        backgroundColor: Colors[theme].background,
+        marginBottom: insets.bottom,
       }}
-      renderSystemMessage={(props) => (
-        <SystemMessage {...props} textStyle={{ color: Colors[theme].grey2 }} />
-      )}
-      bottomOffset={insets.bottom}
-      renderAvatar={null}
-      maxComposerHeight={100}
-      textInputProps={styles.composer}
-      renderBubble={renderBubble}
-      renderSend={renderSend}
-      renderInputToolbar={renderInputToolbar}
-      renderChatFooter={() => (
-        <ReplyMessageBar
-          clearReply={() => setReplyMessage(null)}
-          message={replyMessage}
-        />
-      )}
-      onLongPress={(context, message) => setReplyMessage(message)}
-      renderMessage={(props) => (
-        <ChatMessageBox
-          {...props}
-          setReplyOnSwipeOpen={setReplyMessage}
-          updateRowRef={updateRowRef}
-        />
-      )}
-    />
+    >
+      <GiftedChat
+        messages={messages}
+        onSend={(messages: any) => onSend(messages)}
+        onInputTextChanged={setText}
+        user={{
+          _id: 1,
+        }}
+        renderSystemMessage={(props) => (
+          <SystemMessage
+            {...props}
+            textStyle={{ color: Colors[theme].grey2 }}
+          />
+        )}
+        bottomOffset={insets.bottom}
+        renderAvatar={null}
+        maxComposerHeight={100}
+        textInputProps={styles.composer}
+        renderBubble={renderBubble}
+        renderSend={renderSend}
+        renderInputToolbar={renderInputToolbar}
+        renderChatFooter={() => (
+          <ReplyMessageBar
+            clearReply={() => setReplyMessage(null)}
+            message={replyMessage}
+          />
+        )}
+        onLongPress={(context, message) => setReplyMessage(message)}
+        renderMessage={(props) => (
+          <ChatMessageBox
+            {...props}
+            setReplyOnSwipeOpen={setReplyMessage}
+            updateRowRef={updateRowRef}
+          />
+        )}
+      />
+    </ThemedView>
   );
 };
 
