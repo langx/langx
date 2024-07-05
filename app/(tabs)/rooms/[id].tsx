@@ -92,14 +92,7 @@ const Room = () => {
         {...props}
         containerStyle={{ backgroundColor: Colors[theme].background }}
         renderActions={() => (
-          <ThemedView
-            style={{
-              height: 44,
-              justifyContent: "center",
-              alignItems: "center",
-              left: 5,
-            }}
-          >
+          <ThemedView style={styles.addButton}>
             <Ionicons name="add" color={Colors[theme].primary} size={28} />
           </ThemedView>
         )}
@@ -121,16 +114,7 @@ const Room = () => {
 
   const renderSend = (props) => {
     return (
-      <ThemedView
-        style={{
-          height: 44,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 14,
-          paddingHorizontal: 14,
-        }}
-      >
+      <ThemedView style={styles.sendContainer}>
         {text === "" && (
           <>
             <Ionicons
@@ -171,6 +155,8 @@ const Room = () => {
     },
     [replyMessage]
   );
+
+  const styles = generateStyles(theme);
 
   return (
     <ThemedView
@@ -219,17 +205,33 @@ const Room = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  composer: {
-    backgroundColor: "#fff",
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: Colors.light.grey5,
-    paddingHorizontal: 10,
-    paddingTop: 8,
-    fontSize: 16,
-    marginVertical: 4,
-  },
-});
+const generateStyles = (theme) => {
+  return StyleSheet.create({
+    composer: {
+      backgroundColor: Colors[theme].grey5,
+      borderRadius: 18,
+      borderWidth: 1,
+      borderColor: Colors[theme].grey4,
+      paddingHorizontal: 10,
+      paddingTop: 8,
+      fontSize: 16,
+      marginVertical: 4,
+    },
+    sendContainer: {
+      height: 44,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 14,
+      paddingHorizontal: 14,
+    },
+    addButton: {
+      height: 44,
+      justifyContent: "center",
+      alignItems: "center",
+      left: 5,
+    },
+  });
+};
 
 export default Room;
