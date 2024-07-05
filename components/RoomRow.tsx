@@ -51,7 +51,13 @@ const RoomRow: FC<RoomRowProps> = ({
               <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
                 {from}
               </ThemedText>
-              <ThemedText style={{ fontSize: 16, color: Colors.light.grey3 }}>
+              <ThemedText
+                style={{
+                  fontSize: 16,
+                  fontFamily: "Lexend-Light",
+                  color: Colors.light.grey3,
+                }}
+              >
                 {msg.length > 40 ? `${msg.substring(0, 40)}...` : msg}
               </ThemedText>
             </ThemedView>
