@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 import { FlatList, ScrollView, StatusBar } from "react-native";
 
+import chats from "@/assets/data/chats.json";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { defaultStyles } from "@/constants/Styles";
-import chats from "@/assets/data/chats.json";
 import RoomRow from "@/components/RoomRow";
 import { useFocusEffect } from "expo-router";
 
