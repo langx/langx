@@ -1,11 +1,10 @@
-import { Colors } from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
 import React, { Component, PropsWithChildren } from "react";
 import { Animated, StyleSheet, Text, View, I18nManager } from "react-native";
-
+import { Ionicons } from "@expo/vector-icons";
 import { RectButton } from "react-native-gesture-handler";
-
 import Swipeable from "react-native-gesture-handler/Swipeable";
+
+import { Colors } from "@/constants/Colors";
 
 export default class AppleStyleSwipeableRow extends Component<
   PropsWithChildren<unknown>
@@ -90,11 +89,6 @@ export default class AppleStyleSwipeableRow extends Component<
 }
 
 const styles = StyleSheet.create({
-  leftAction: {
-    flex: 1,
-    backgroundColor: "#497AFC",
-    justifyContent: "center",
-  },
   actionText: {
     color: "white",
     fontSize: 16,
