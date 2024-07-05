@@ -1,5 +1,11 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, Alert, Pressable, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Alert,
+  Pressable,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -33,9 +39,12 @@ export default function ProfileScreen() {
     }
   };
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText>aa</ThemedText>
-    </ThemedView>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <ThemedView style={styles.container}>
+        <ThemedText>aa</ThemedText>
+      </ThemedView>
+    </>
   );
 }
 
