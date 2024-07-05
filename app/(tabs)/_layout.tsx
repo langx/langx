@@ -18,7 +18,7 @@ export default function TabLayout() {
           headerShown: false,
           tabBarShowLabel: false,
           tabBarStyle: {
-            backgroundColor: Colors[theme].background,
+            backgroundColor: Colors[theme].grey5,
             height: 60,
             display: segments[2] === "[id]" ? "none" : "flex",
           },
