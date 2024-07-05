@@ -32,7 +32,7 @@ const RoomRow: FC<RoomRowProps> = ({
       <Link href={`/(tabs)/chats/${id}`} asChild>
         <TouchableHighlight
           activeOpacity={0.8}
-          underlayColor={Colors.light.grey5}
+          underlayColor={Colors.light.grey3}
         >
           <ThemedView
             style={{
