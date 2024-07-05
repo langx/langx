@@ -1,12 +1,13 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { View, StyleSheet, Animated } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   GestureHandlerRootView,
   Swipeable,
 } from "react-native-gesture-handler";
 import { IMessage, Message, MessageProps } from "react-native-gifted-chat";
 import { isSameDay, isSameUser } from "react-native-gifted-chat/lib/utils";
+
 import { Colors } from "@/constants/Colors";
 
 type ChatMessageBoxProps = {
