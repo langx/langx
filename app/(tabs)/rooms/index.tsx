@@ -1,10 +1,8 @@
 import React from "react";
 import { FlatList, ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { defaultStyles } from "@/constants/Styles";
-import { Colors } from "@/constants/Colors";
 import chats from "@/assets/data/chats.json";
 import RoomRow from "@/components/RoomRow";
 
