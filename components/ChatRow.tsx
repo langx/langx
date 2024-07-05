@@ -1,4 +1,4 @@
-// import AppleStyleSwipeableRow from "@/components/AppleStyleSwipeableRow";
+import AppleStyleSwipeableRow from "@/components/AppleStyleSwipeableRow";
 import { Colors } from "@/constants/Colors";
 import { format } from "date-fns";
 import { Link } from "expo-router";
@@ -28,46 +28,46 @@ const ChatRow: FC<ChatRowProps> = ({
   unreadCount,
 }) => {
   return (
-    // <AppleStyleSwipeableRow>
-    <Link href={`/(tabs)/chats/${id}`} asChild>
-      <TouchableHighlight
-        activeOpacity={0.8}
-        underlayColor={Colors.light.grey5}
-      >
-        <ThemedView
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 14,
-            paddingLeft: 20,
-            paddingVertical: 10,
-          }}
+    <AppleStyleSwipeableRow>
+      <Link href={`/(tabs)/chats/${id}`} asChild>
+        <TouchableHighlight
+          activeOpacity={0.8}
+          underlayColor={Colors.light.grey5}
         >
-          <Image
-            source={{ uri: img }}
-            style={{ width: 50, height: 50, borderRadius: 50 }}
-          />
-          <ThemedView style={{ flex: 1 }}>
-            <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
-              {from}
-            </ThemedText>
-            <ThemedText style={{ fontSize: 16, color: Colors.light.grey3 }}>
-              {msg.length > 40 ? `${msg.substring(0, 40)}...` : msg}
-            </ThemedText>
-          </ThemedView>
-          <ThemedText
+          <ThemedView
             style={{
-              color: Colors.light.grey3,
-              paddingRight: 20,
-              alignSelf: "flex-start",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 14,
+              paddingLeft: 20,
+              paddingVertical: 10,
             }}
           >
-            {format(date, "MM.dd.yy")}
-          </ThemedText>
-        </ThemedView>
-      </TouchableHighlight>
-    </Link>
-    // </AppleStyleSwipeableRow>
+            <Image
+              source={{ uri: img }}
+              style={{ width: 50, height: 50, borderRadius: 50 }}
+            />
+            <ThemedView style={{ flex: 1 }}>
+              <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
+                {from}
+              </ThemedText>
+              <ThemedText style={{ fontSize: 16, color: Colors.light.grey3 }}>
+                {msg.length > 40 ? `${msg.substring(0, 40)}...` : msg}
+              </ThemedText>
+            </ThemedView>
+            <ThemedText
+              style={{
+                color: Colors.light.grey3,
+                paddingRight: 20,
+                alignSelf: "flex-start",
+              }}
+            >
+              {format(date, "MM.dd.yy")}
+            </ThemedText>
+          </ThemedView>
+        </TouchableHighlight>
+      </Link>
+    </AppleStyleSwipeableRow>
   );
 };
 export default ChatRow;
