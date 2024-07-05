@@ -66,6 +66,17 @@ export async function login(email, password) {
   }
 }
 
+// Sign In
+export async function createAnonymousSession() {
+  try {
+    const session = await account.createAnonymousSession();
+
+    return session;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 // Get Account
 export async function getAccount() {
   try {

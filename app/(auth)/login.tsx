@@ -4,17 +4,14 @@ import { Link, useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
 import { getCurrentUser, login } from "@/services/appwrite";
-
-import { Colors } from "@/constants/Colors";
-import images from "@/constants/images";
-
+import { setUser, setLoading } from "@/store/authSlice";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
 import ThemedFormField from "@/components/molecular/ThemedFormField";
 import { useColorScheme } from "@/hooks/useColorScheme";
-
-import { setUser, setLoading } from "@/store/authSlice";
+import { Colors } from "@/constants/Colors";
+import images from "@/constants/images";
 
 const Login = () => {
   const colorScheme = useColorScheme();
@@ -77,11 +74,13 @@ const Login = () => {
           handleChangeText={(e) => setForm({ ...form, password: e })}
         />
 
-        <ThemedButton
-          title="Log In"
-          onPress={submit}
-          isLoading={isSubmitting}
-        />
+        <ThemedView style={{ gap: 10 }}>
+          <ThemedButton
+            title="Log In"
+            onPress={submit}
+            isLoading={isSubmitting}
+          />
+        </ThemedView>
 
         <ThemedView
           style={{
