@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Stack } from "expo-router";
 import { Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Switch, TouchableOpacity, Image } from "react-native";
+import { Switch, Image, Pressable } from "react-native";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
@@ -138,7 +138,7 @@ export default function RootLayout() {
                 gap: 10,
               }}
             >
-              <TouchableOpacity>
+              <Pressable>
                 <Switch
                   trackColor={{
                     false: Colors.light.gray3,
@@ -149,7 +149,7 @@ export default function RootLayout() {
                   onValueChange={toggleSwitch}
                   value={isCopilotEnabled}
                 />
-              </TouchableOpacity>
+              </Pressable>
             </ThemedView>
           ),
         }}

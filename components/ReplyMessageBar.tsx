@@ -1,6 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
-import { View, TouchableOpacity, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { IMessage } from "react-native-gifted-chat";
 import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
 
@@ -64,13 +64,13 @@ const ReplyMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
               paddingRight: 10,
             }}
           >
-            <TouchableOpacity onPress={clearReply}>
+            <Pressable onPress={clearReply}>
               <Ionicons
                 name="close-circle-outline"
                 color={Colors[theme].error}
                 size={28}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </Animated.View>
       )}
