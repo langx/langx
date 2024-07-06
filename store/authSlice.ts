@@ -46,7 +46,6 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
       state.isLoggedIn = !!action.payload;
-      state.isGuestIn = !action.payload;
     },
     setGuest: (state, action) => {
       state.isGuestIn = !!action.payload;
