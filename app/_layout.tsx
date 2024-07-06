@@ -10,7 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { Provider, useDispatch, useSelector } from "react-redux";
 
-import store, { RootState } from "@/store/store";
+import store, { RootState, AppDispatch } from "@/store/store";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { fonts } from "@/constants/fonts";
 import { fetchAuthData } from "@/store/authSlice";
@@ -19,7 +19,7 @@ import { fetchAuthData } from "@/store/authSlice";
 SplashScreen.preventAutoHideAsync();
 
 const StackLayout = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const segments = useSegments();
   const router = useRouter();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
@@ -28,23 +28,27 @@ const StackLayout = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      console.log("isLoggedIn:", isLoggedIn);
-      console.log("isGuestIn:", isGuestIn);
+      // console.log("isLoggedIn:", isLoggedIn);
+      // console.log("isGuestIn:", isGuestIn);
       const inHomeGroup = segments.includes("(tabs)");
       if (!(isLoggedIn || isGuestIn) && inHomeGroup) {
         router.replace("/");
       }
-      console.log("segments:", segments);
+      // console.log("segments:", segments);
       const inAuthGroup = segments.includes("(auth)") || segments.length === 0;
       if ((isLoggedIn || isGuestIn) && inAuthGroup) {
         router.replace("/home");
       }
+
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 500);
     }
   }, [isLoggedIn, isGuestIn, isLoading]); // Added segments to the dependency array
 
   useEffect(() => {
     dispatch(fetchAuthData());
-    console.log("fetchAuthData dispatched");
+    // console.log("fetchAuthData dispatched");
   }, [dispatch]);
 
   return (
@@ -64,7 +68,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync();
+      // console.log("Fonts loaded");
     }
   }, [fontsLoaded, error]);
 
