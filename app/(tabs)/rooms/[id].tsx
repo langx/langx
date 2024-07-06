@@ -55,9 +55,9 @@ const Room = () => {
     ]);
   }, []);
 
-  const onSend = useCallback((messages = []) => {
+  const onSend = useCallback((newMessages = []) => {
     setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
+      GiftedChat.append(previousMessages, newMessages)
     );
   }, []);
 
