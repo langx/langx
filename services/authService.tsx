@@ -88,6 +88,17 @@ export async function getAccount() {
   }
 }
 
+// Get Current Session
+export async function getCurrentSession() {
+  try {
+    const currentSession = await account.getSession("current");
+
+    return currentSession;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 // Get Current User
 export async function getCurrentUser() {
   try {

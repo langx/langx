@@ -3,8 +3,8 @@ import { Image, StyleSheet, ScrollView, Alert } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
-import { getCurrentUser, login } from "@/services/appwrite";
-import { setUser, setLoading } from "@/store/authSlice";
+import { getCurrentUser, login } from "@/services/authService";
+import { setUser, setLoading, setError } from "@/store/authSlice";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
@@ -31,20 +31,21 @@ const Login = () => {
     }
 
     setSubmitting(true);
+    dispatch(setLoading(true));
 
     try {
-      const session = await login(form.email, form.password);
-      const result = await getCurrentUser();
-
-      dispatch(setUser(result));
-      dispatch(setLoading(false));
+      await login(form.email, form.password);
+      const user = await getCurrentUser();
+      dispatch(setUser(user));
 
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
+      dispatch(setError(error.message || "An error occurred"));
     } finally {
       setSubmitting(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -72,6 +73,7 @@ const Login = () => {
           value={form.password}
           placeholder="Enter your password"
           handleChangeText={(e) => setForm({ ...form, password: e })}
+          secureTextEntry
         />
 
         <ThemedView style={{ gap: 10 }}>
@@ -104,7 +106,7 @@ const Login = () => {
           }}
         >
           <ThemedText>Forget your password?</ThemedText>
-          <Link href="/register">
+          <Link href="/reset-password">
             <ThemedText type="link">Reset it</ThemedText>
           </Link>
         </ThemedView>

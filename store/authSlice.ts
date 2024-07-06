@@ -1,18 +1,43 @@
-// src/authSlice.ts
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+
 import { User } from "@/models/User";
+import { getCurrentUser, getCurrentSession } from "@/services/authService";
 
 interface AuthState {
-  isLogged: boolean;
+  isLoggedIn: boolean;
+  isGuestIn: boolean;
   user: User | null;
-  loading: boolean;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: AuthState = {
-  isLogged: false,
+  isLoggedIn: false,
+  isGuestIn: false,
   user: null,
-  loading: true,
+  isLoading: true,
+  error: null,
 };
+
+export const fetchAuthData = createAsyncThunk(
+  "auth/fetchAuthData",
+  async (_, { dispatch }) => {
+    try {
+      const user = await getCurrentUser();
+      if (user) {
+        dispatch(setUser(user));
+      } else {
+        const session = await getCurrentSession();
+        dispatch(setGuest(session));
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(setError(error.message || "An error occurred"));
+      dispatch(setUser(null));
+    } finally {
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -20,13 +45,37 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
-      state.isLogged = !!action.payload;
+      state.isLoggedIn = !!action.payload;
+      state.isGuestIn = !action.payload;
+    },
+    setGuest: (state, action) => {
+      state.isGuestIn = !!action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
-      state.loading = action.payload;
+      state.isLoading = action.payload;
     },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
+    setAuthInitialState: (state) => {
+      Object.assign(state, initialState);
+      state.isLoading = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchAuthData.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(fetchAuthData.fulfilled, (state) => {
+      state.isLoading = false;
+    });
+    builder.addCase(fetchAuthData.rejected, (state) => {
+      state.isLoading = false;
+      setError("An error occurred");
+    });
   },
 });
 
-export const { setUser, setLoading } = authSlice.actions;
+export const { setUser, setGuest, setLoading, setError, setAuthInitialState } =
+  authSlice.actions;
 export default authSlice.reducer;

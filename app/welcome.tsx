@@ -3,8 +3,8 @@ import { Alert, Image, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
-import { getCurrentUser, createAnonymousSession } from "@/services/appwrite";
-import { setLoading, setUser } from "@/store/authSlice";
+import { createAnonymousSession } from "@/services/authService";
+import { setSession } from "@/store/authSlice";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
@@ -27,10 +27,8 @@ const Welcome = () => {
 
     try {
       const session = await createAnonymousSession();
-      const result = await getCurrentUser();
 
-      dispatch(setUser(result));
-      dispatch(setLoading(false));
+      dispatch(setSession(session));
 
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
@@ -53,14 +51,14 @@ const Welcome = () => {
 
       <ThemedView style={{ gap: 10 }}>
         <ThemedButton
-          title="Login with Email"
+          title="Log In with Email"
           onPress={() => {
             navigateToLogin();
           }}
         ></ThemedButton>
 
         <ThemedButton
-          title="Try Demo"
+          title="Log In As a Guest"
           onPress={demo}
           isLoading={isSubmitting}
         />

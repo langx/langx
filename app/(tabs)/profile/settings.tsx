@@ -4,8 +4,8 @@ import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
-import { logout } from "@/services/appwrite";
-import { setLoading, setUser } from "@/store/authSlice";
+import { logout } from "@/services/authService";
+import { setAuthInitialState } from "@/store/authSlice";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { defaultStyles } from "@/constants/Styles";
@@ -80,8 +80,7 @@ const Settings = () => {
     setSubmitting(true);
     try {
       await logout();
-      dispatch(setUser(null));
-      dispatch(setLoading(false));
+      dispatch(setAuthInitialState());
       Alert.alert("Success", "User signed out successfully");
       console.log("logged out");
       router.replace("/welcome");
