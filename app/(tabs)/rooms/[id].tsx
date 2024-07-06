@@ -25,9 +25,9 @@ const Room = () => {
   const insets = useSafeAreaInsets();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [text, setText] = useState("");
-  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   const swipeableRowRef = useRef<Swipeable | null>(null);
+  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
     setMessages([
@@ -155,6 +155,13 @@ const Room = () => {
     },
     [replyMessage]
   );
+
+  useEffect(() => {
+    if (replyMessage && swipeableRowRef.current) {
+      swipeableRowRef.current.close();
+      swipeableRowRef.current = null;
+    }
+  }, [replyMessage]);
 
   const styles = generateStyles(theme);
 
