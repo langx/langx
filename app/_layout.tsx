@@ -44,7 +44,7 @@ const StackLayout = () => {
         SplashScreen.hideAsync();
       }, 500);
     }
-  }, [isLoggedIn, isGuestIn, isLoading]); // Added segments to the dependency array
+  }, [isLoggedIn, isGuestIn, isLoading]);
 
   useEffect(() => {
     dispatch(fetchAuthData());
