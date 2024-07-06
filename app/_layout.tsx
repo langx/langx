@@ -14,6 +14,8 @@ import store, { RootState, AppDispatch } from "@/store/store";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { fonts } from "@/constants/fonts";
 import { fetchAuthData } from "@/store/authSlice";
+import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/atomic/ThemedView";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -50,6 +52,21 @@ const StackLayout = () => {
     dispatch(fetchAuthData());
     // console.log("fetchAuthData dispatched");
   }, [dispatch]);
+
+  if (isLoading) {
+    return (
+      <ThemedView
+        style={{
+          flex: 1,
+          padding: 10,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ThemedText style={{ fontSize: 26 }}>Loading...</ThemedText>
+      </ThemedView>
+    );
+  }
 
   return (
     <Stack>
