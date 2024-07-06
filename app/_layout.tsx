@@ -13,10 +13,10 @@ import { Provider } from "react-redux";
 import store from "@/store/store";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
+import { fonts } from "@/constants/fonts";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-
-import { fonts } from "@/constants/fonts";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
