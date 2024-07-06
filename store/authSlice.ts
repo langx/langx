@@ -23,11 +23,15 @@ export const fetchAuthData = createAsyncThunk(
   "auth/fetchAuthData",
   async (_, { dispatch }) => {
     try {
-      const user = await getCurrentUser();
+      const [user, session] = await Promise.all([
+        getCurrentUser(),
+        getCurrentSession(),
+      ]);
+
       if (user) {
         dispatch(setUser(user));
-      } else {
-        const session = await getCurrentSession();
+      }
+      if (session) {
         dispatch(setGuest(session));
       }
     } catch (error) {
@@ -46,7 +50,6 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
       state.isLoggedIn = !!action.payload;
-      state.isGuestIn = !action.payload;
     },
     setGuest: (state, action) => {
       state.isGuestIn = !!action.payload;

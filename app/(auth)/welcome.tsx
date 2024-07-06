@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
 import { createAnonymousSession } from "@/services/authService";
-import { setSession } from "@/store/authSlice";
+import { setGuest } from "@/store/authSlice";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
@@ -28,8 +28,7 @@ const Welcome = () => {
     try {
       const session = await createAnonymousSession();
 
-      dispatch(setSession(session));
-
+      dispatch(setGuest(true));
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
     } catch (error) {

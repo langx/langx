@@ -1,10 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Image, StyleSheet, Pressable, StatusBar } from "react-native";
-import { Link, Redirect } from "expo-router";
-import { useSelector, useDispatch } from "react-redux";
+import { Link } from "expo-router";
 
-import { fetchAuthData } from "@/store/authSlice";
-import { RootState } from "@/store/store";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 import { ExternalLink } from "@/components/ExternalLink";
@@ -15,27 +12,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 const App = () => {
   const colorScheme = useColorScheme();
-
-  const dispatch = useDispatch();
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
-
-  useEffect(() => {
-    dispatch(fetchAuthData());
-  }, [dispatch]);
-
-  if (isLoggedIn || isGuestIn) {
-    return <Redirect href="/home" />;
-  }
-
-  if (isLoading) {
-    return (
-      <ThemedView style={styles.container}>
-        <ThemedText>Loading...</ThemedText>
-      </ThemedView>
-    );
-  }
 
   return (
     <>
