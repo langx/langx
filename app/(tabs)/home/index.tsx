@@ -1,9 +1,15 @@
-import { StyleSheet, FlatList, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  SafeAreaView,
+  ImageBackground,
+} from "react-native";
 
+import useDatabase from "@/hooks/useDatabase";
+import { listUsers } from "@/services/userService";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
-import { listUsers } from "@/services/userService";
-import useDatabase from "@/hooks/useDatabase";
+import images from "@/constants/images";
 
 export default function CommunityScreen() {
   const { data: users, refetch } = useDatabase(listUsers);
@@ -11,6 +17,7 @@ export default function CommunityScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         data={users}
+        numColumns={2}
         keyExtractor={(item) => item.$id}
         ListHeaderComponent={() => (
           <ThemedView style={styles.titleContainer}>
@@ -18,10 +25,18 @@ export default function CommunityScreen() {
           </ThemedView>
         )}
         renderItem={({ item }) => (
-          <ThemedView style={styles.titleContainer}>
-            <ThemedText style={{ fontSize: 26 }}>{item.name}</ThemedText>
-            <ThemedText style={{ fontSize: 16 }}>{item.$id}</ThemedText>
-          </ThemedView>
+          <ImageBackground
+            source={images.profile}
+            style={styles.card}
+            resizeMode="cover"
+            imageStyle={styles.imageBackground}
+          >
+            <ThemedView style={styles.textContainer}>
+              <ThemedText style={styles.name}>{item.name}</ThemedText>
+              <ThemedText style={styles.detail}>{item.country}</ThemedText>
+              <ThemedText style={styles.detail}>{item.username}</ThemedText>
+            </ThemedView>
+          </ImageBackground>
         )}
       ></FlatList>
     </SafeAreaView>
@@ -34,15 +49,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  card: {
+    flex: 1,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    overflow: "hidden",
+    minHeight: 200,
+    justifyContent: "flex-end",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
+  imageBackground: {
+    width: "100%",
+    height: "100%",
+  },
+  textContainer: {
+    width: "100%",
+    backgroundColor: "rgba(250, 250, 250, 0.7)",
+    padding: 8,
+    alignItems: "center",
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  detail: {
+    fontSize: 14,
   },
 });
