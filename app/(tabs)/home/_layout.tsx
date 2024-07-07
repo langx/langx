@@ -1,5 +1,4 @@
-import { Stack } from "expo-router";
-import { Link } from "expo-router";
+import { Stack, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
