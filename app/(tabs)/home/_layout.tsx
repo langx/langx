@@ -6,9 +6,8 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/atomic/ThemedText";
 
-export default function RootLayout() {
+export default function HomeLayout() {
   const colorScheme = useColorScheme();
-  const username = "username";
 
   return (
     <Stack>
@@ -16,17 +15,16 @@ export default function RootLayout() {
         name="index"
         options={{
           headerShown: true,
-          headerBackVisible: false,
           headerStyle: { backgroundColor: Colors.light.primary },
-          headerTitle: `@${username}`,
+          headerTitle: "Community",
           headerTitleStyle: {
             fontFamily: "Lexend-Bold",
             color: Colors.light.black,
           },
           headerRight: () => (
-            <Link href="profile/settings">
+            <Link href="home/filters">
               <Ionicons
-                name="cog-outline"
+                name="filter-outline"
                 size={24}
                 color={Colors.light.black}
                 style={{ marginRight: 16 }}

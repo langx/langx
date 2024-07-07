@@ -23,11 +23,13 @@ export default function RootLayout() {
         name="index"
         options={{
           headerShown: true,
-          headerBackVisible: false,
-          headerLargeTitle: true,
           headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.light.primary },
           headerTitle: "Chats",
+          headerTitleStyle: {
+            fontFamily: "Lexend-Bold",
+            color: Colors.light.black,
+          },
           headerRight: () => (
             <Link href="rooms/archive">
               <Ionicons
@@ -38,22 +40,6 @@ export default function RootLayout() {
               />
             </Link>
           ),
-          headerLargeTitleStyle: {
-            fontFamily: "Lexend-Bold",
-            color: Colors.light.black,
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontFamily: "Lexend-Bold",
-            color: Colors.light.black,
-          },
-          // headerSearchBarOptions: {
-          //   placeholder: "Search",
-          //   textColor: Colors.light.black,
-          //   tintColor: Colors.light.black,
-          //   hintTextColor: Colors.light.black,
-          //   headerIconColor: Colors.light.black,
-          // },
         }}
       />
       <Stack.Screen
