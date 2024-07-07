@@ -1,25 +1,41 @@
-import { Tabs } from "expo-router";
+import { useEffect } from "react";
+import { Platform } from "react-native";
+import { Tabs, useSegments } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { TabBarItem } from "@/components/navigation/TabBarItem";
+import { enableScreens } from "react-native-screens";
 
 const TabsLayout = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
 
+  const segments = useSegments();
+  const TabsRoutes = ["home", "rooms", "profile"];
+  const showTabs = segments.length === 2 && TabsRoutes.includes(segments[1]);
+
+  // Fix for react-native-screens issue on iOS
+  // https://github.com/react-navigation/react-navigation/issues/10432
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      enableScreens(false);
+    }
+  }, []);
+
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarActiveTintColor: Colors[theme].primary,
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
+          display: showTabs ? "flex" : "none",
           backgroundColor: Colors[theme].gray5,
           height: 60,
         },
-      }}
+      })}
     >
       <Tabs.Screen
         name="rooms"
