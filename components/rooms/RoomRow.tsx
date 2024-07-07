@@ -1,4 +1,4 @@
-import AppleStyleSwipeableRow from "@/components/AppleStyleSwipeableRow";
+import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
 import { Colors } from "@/constants/Colors";
 import { format } from "date-fns";
 import { Link } from "expo-router";

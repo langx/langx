@@ -18,7 +18,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import ChatMessageBox from "@/components/ChatMessageBox";
-import ReplyMessageBar from "@/components/ReplyMessageBar";
+import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";

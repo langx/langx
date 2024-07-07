@@ -4,7 +4,7 @@ import { FlatList, ScrollView, StatusBar } from "react-native";
 import chats from "@/assets/data/chats.json";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { defaultStyles } from "@/constants/Styles";
-import RoomRow from "@/components/RoomRow";
+import RoomRow from "@/components/rooms/RoomRow";
 import { useFocusEffect } from "expo-router";
 
 export default function RoomsScreen() {
