@@ -4,7 +4,6 @@ import { listDocuments } from "@/services/apiService";
 import { USERS_COLLECTION } from "@/constants/config";
 import { User } from "@/models/User";
 
-// Sign In
 export async function listUsers() {
   try {
     const users = await listDocuments(USERS_COLLECTION, [
