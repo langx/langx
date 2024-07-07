@@ -24,7 +24,7 @@ const Welcome = () => {
 
   const demo = async () => {
     setSubmitting(true);
-    dispatch(setLoading(true));
+    // dispatch(setLoading(true));
 
     try {
       const session = await createAnonymousSession();
@@ -36,7 +36,7 @@ const Welcome = () => {
       Alert.alert("Error", error.message);
     } finally {
       setSubmitting(false);
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
     }
   };
 

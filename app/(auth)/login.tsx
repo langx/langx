@@ -31,7 +31,7 @@ const Login = () => {
     }
 
     setSubmitting(true);
-    dispatch(setLoading(true));
+    // dispatch(setLoading(true));
 
     try {
       await login(form.email, form.password);
@@ -45,7 +45,7 @@ const Login = () => {
       dispatch(setError(error.message || "An error occurred"));
     } finally {
       setSubmitting(false);
-      dispatch(setLoading(false));
+      // dispatch(setLoading(false));
     }
   };
 
