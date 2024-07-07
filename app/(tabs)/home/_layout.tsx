@@ -33,44 +33,6 @@ export default function HomeLayout() {
           ),
         }}
       />
-      <Stack.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          headerShown: true,
-          headerBackVisible: true,
-          headerLargeTitle: true,
-          headerShadowVisible: false,
-          headerBackTitleVisible: true,
-          headerBackButtonMenuEnabled: true,
-          headerBackTitle: "Back",
-          headerTintColor:
-            colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          headerStyle: {
-            backgroundColor:
-              colorScheme === "dark"
-                ? Colors.dark.background
-                : Colors.light.background,
-          },
-          headerLargeTitleStyle: {
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-            fontFamily: "Lexend-Bold",
-          },
-          headerBackTitleStyle: {
-            fontFamily: "Lexend-Bold",
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontFamily: "Lexend-Bold",
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          },
-          headerSearchBarOptions: {
-            placeholder: "Search",
-          },
-        }}
-      />
     </Stack>
   );
 }
