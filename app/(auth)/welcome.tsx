@@ -3,12 +3,12 @@ import { Alert, Image, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { createAnonymousSession } from "@/services/authService";
-import { setGuest } from "@/store/authSlice";
+import { setGuest, setLoading } from "@/store/authSlice";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedButton } from "@/components/atomic/ThemedButton";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import images from "@/constants/images";
 
 const Welcome = () => {
@@ -24,17 +24,19 @@ const Welcome = () => {
 
   const demo = async () => {
     setSubmitting(true);
+    dispatch(setLoading(true));
 
     try {
       const session = await createAnonymousSession();
-
       dispatch(setGuest(true));
+
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
       setSubmitting(false);
+      dispatch(setLoading(false));
     }
   };
 
