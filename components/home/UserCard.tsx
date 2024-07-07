@@ -5,9 +5,10 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "@/components/atomic/ThemedText";
 
-import images from "@/constants/images";
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
+import { getFlagEmoji2 } from "@/constants/utils";
+import { Language } from "@/models/Language";
 
 const UserCard = ({ item, theme, loadingItem }) => {
   const [userImageUrl, setUserImageUrl] = useState("");
@@ -24,6 +25,22 @@ const UserCard = ({ item, theme, loadingItem }) => {
       }
     }
   }, [data]);
+
+  const getStudyLanguages = () => {
+    let studyLanguages = item.languages
+      .filter((language: Language) => !language.motherLanguage)
+      .map((language: Language) => language.code);
+    const flags = studyLanguages.map((lang: string) => getFlagEmoji2(lang));
+    return flags.join(" ");
+  };
+
+  const getMotherLanguages = () => {
+    let motherLanguages = item.languages
+      .filter((language: Language) => language.motherLanguage)
+      .map((language: Language) => language.code);
+    const flags = motherLanguages.map((lang: string) => getFlagEmoji2(lang));
+    return flags.join(" ");
+  };
 
   if (loading || loadingItem) {
     return (
@@ -49,13 +66,19 @@ const UserCard = ({ item, theme, loadingItem }) => {
           opacity: 0.8,
           padding: 8,
           alignItems: "center",
+          borderTopRightRadius: 8,
+          borderTopLeftRadius: 8,
         }}
       >
-        <ThemedText style={{ fontSize: 18, fontWeight: "bold", opacity: 1 }}>
+        <ThemedText style={{ fontSize: 14, fontWeight: "bold", opacity: 1 }}>
           {item.name}
         </ThemedText>
-        <ThemedText style={{ fontSize: 14 }}>{item.country}</ThemedText>
-        <ThemedText style={{ fontSize: 14 }}>{item.username}</ThemedText>
+        <ThemedText style={{ fontSize: 10 }}>
+          Studies: {getStudyLanguages()}
+        </ThemedText>
+        <ThemedText style={{ fontSize: 10 }}>
+          Speaks: {getMotherLanguages()}
+        </ThemedText>
       </ThemedView>
     </ImageBackground>
   );
@@ -71,7 +94,7 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: Colors.light.gray3,
     borderRadius: 8,
     overflow: "hidden",
     minHeight: 200,
