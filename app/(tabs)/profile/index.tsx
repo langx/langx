@@ -1,6 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StyleSheet, StatusBar } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 
 import { Colors } from "@/constants/Colors";
@@ -8,8 +8,6 @@ import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 
 export default function ProfileScreen() {
-  const router = useRouter();
-
   useFocusEffect(
     useCallback(() => {
       StatusBar.setBarStyle("dark-content");
