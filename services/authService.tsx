@@ -1,29 +1,6 @@
-import { Account, Client, Databases, ID, Query } from "react-native-appwrite";
-
-import {
-  APP_PACKAGE_NAME,
-  APP_ENDPOINT,
-  APP_PROJECT,
-  APP_DATABASE,
-  USERS_COLLECTION,
-} from "@/constants/config";
-
-export const appwriteConfig = {
-  endpoint: APP_ENDPOINT,
-  platform: APP_PACKAGE_NAME,
-  projectId: APP_PROJECT,
-  databaseId: APP_DATABASE,
-  usersCollection: USERS_COLLECTION,
-};
-const client = new Client();
-
-client
-  .setEndpoint(appwriteConfig.endpoint)
-  .setProject(appwriteConfig.projectId)
-  .setPlatform(appwriteConfig.platform);
-
-const account = new Account(client);
-const databases = new Databases(client);
+import { ID, Query } from "react-native-appwrite";
+import { account, createDocument, listDocuments } from "@/services/apiService";
+import { USERS_COLLECTION } from "@/constants/config";
 
 // Register user
 export async function createUser(email, password, username) {
@@ -39,15 +16,10 @@ export async function createUser(email, password, username) {
 
     await login(email, password);
 
-    const newUser = await databases.createDocument(
-      appwriteConfig.databaseId,
-      appwriteConfig.usersCollection,
-      newAccount.$id,
-      {
-        email: email,
-        username: username,
-      }
-    );
+    const newUser = await createDocument(USERS_COLLECTION, newAccount.$id, {
+      email: email,
+      username: username,
+    });
 
     return newUser;
   } catch (error) {
@@ -105,11 +77,9 @@ export async function getCurrentUser() {
     const currentAccount = await getAccount();
     if (!currentAccount) throw Error;
 
-    const currentUser = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.usersCollection,
-      [Query.equal("$id", currentAccount.$id)]
-    );
+    const currentUser = await listDocuments(USERS_COLLECTION, [
+      Query.equal("$id", currentAccount.$id),
+    ]);
 
     if (!currentUser) throw Error;
 
