@@ -31,6 +31,13 @@ export default function HomeLayout() {
               />
             </Link>
           ),
+          headerSearchBarOptions: {
+            placeholder: "Search",
+            textColor: Colors.light.black,
+            tintColor: Colors.light.black,
+            hintTextColor: Colors.light.black,
+            headerIconColor: Colors.light.black,
+          },
         }}
       />
       <Stack.Screen
