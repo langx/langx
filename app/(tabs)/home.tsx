@@ -4,6 +4,7 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { HelloWave } from "@/components/HelloWave";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
+import { Link } from "expo-router";
 
 export default function CommunityScreen() {
   return (
@@ -18,6 +19,9 @@ export default function CommunityScreen() {
     >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
+        <Link href="filters" style={{ marginTop: 4 }}>
+          <ThemedText type="link">Explore</ThemedText>
+        </Link>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
