@@ -6,35 +6,46 @@ import {
 } from "react-native";
 
 import useDatabase from "@/hooks/useDatabase";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { listUsers } from "@/services/userService";
 import { ThemedText } from "@/components/atomic/ThemedText";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import images from "@/constants/images";
+import { Colors } from "@/constants/Colors";
 
 export default function CommunityScreen() {
+  const theme = useColorScheme() === "dark" ? "dark" : "light";
   const { data: users, refetch } = useDatabase(listUsers);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FlatList
         data={users}
         numColumns={2}
         keyExtractor={(item) => item.$id}
-        ListHeaderComponent={() => (
-          <ThemedView style={styles.titleContainer}>
-            <ThemedText type="title">For You</ThemedText>
-          </ThemedView>
-        )}
         renderItem={({ item }) => (
           <ImageBackground
-            source={images.profile}
+            source={images.logoSmall}
             style={styles.card}
             resizeMode="cover"
             imageStyle={styles.imageBackground}
           >
-            <ThemedView style={styles.textContainer}>
-              <ThemedText style={styles.name}>{item.name}</ThemedText>
-              <ThemedText style={styles.detail}>{item.country}</ThemedText>
-              <ThemedText style={styles.detail}>{item.username}</ThemedText>
+            <ThemedView
+              style={{
+                width: "100%",
+                backgroundColor: Colors[theme].background,
+                opacity: 0.7,
+                padding: 8,
+                alignItems: "center",
+              }}
+            >
+              <ThemedText
+                style={{ fontSize: 18, fontWeight: "bold", opacity: 1 }}
+              >
+                {item.name}
+              </ThemedText>
+              <ThemedText style={{ fontSize: 14 }}>{item.country}</ThemedText>
+              <ThemedText style={{ fontSize: 14 }}>{item.username}</ThemedText>
             </ThemedView>
           </ImageBackground>
         )}
@@ -62,18 +73,5 @@ const styles = StyleSheet.create({
   imageBackground: {
     width: "100%",
     height: "100%",
-  },
-  textContainer: {
-    width: "100%",
-    backgroundColor: "rgba(250, 250, 250, 0.7)",
-    padding: 8,
-    alignItems: "center",
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  detail: {
-    fontSize: 14,
   },
 });
