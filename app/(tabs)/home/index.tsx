@@ -5,7 +5,7 @@ import {
   ImageBackground,
 } from "react-native";
 
-import useDatabase from "@/hooks/useDatabase";
+import { useDatabase } from "@/hooks/useDatabase";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { listUsers } from "@/services/userService";
 import { ThemedText } from "@/components/atomic/ThemedText";

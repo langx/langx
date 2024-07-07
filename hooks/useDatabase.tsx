@@ -1,7 +1,7 @@
 import { Alert } from "react-native";
 import { useEffect, useState } from "react";
 
-const useDatabase = (fn: Function) => {
+export function useDatabase(fn: Function) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +24,4 @@ const useDatabase = (fn: Function) => {
   const refetch = () => fetchData();
 
   return { data, loading, refetch };
-};
-
-export default useDatabase;
+}
