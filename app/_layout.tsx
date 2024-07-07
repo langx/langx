@@ -50,8 +50,12 @@ const StackLayout = () => {
 
   useEffect(() => {
     dispatch(fetchAuthData());
-    // console.log("fetchAuthData dispatched");
   }, [dispatch]);
+
+  // Debugging useSegments
+  useEffect(() => {
+    console.log(segments);
+  }, [segments]);
 
   if (isLoading) {
     return (
