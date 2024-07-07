@@ -19,9 +19,6 @@ export default function CommunityScreen() {
     >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
-        <Link href="filters" style={{ marginTop: 4 }}>
-          <ThemedText type="link">Explore</ThemedText>
-        </Link>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
