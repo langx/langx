@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -53,7 +53,12 @@ const Room = () => {
         },
       },
     ]);
+
+    // Fix for invisible messages loading for "web"
+    invisibleMessagesLoadingFix();
   }, []);
+
+  useEffect(() => {});
 
   const onSend = useCallback((newMessages = []) => {
     setMessages((previousMessages) =>
@@ -240,5 +245,21 @@ const generateStyles = (theme) => {
     },
   });
 };
+
+// Fix for invisible messages loading
+// https://github.com/FaridSafi/react-native-gifted-chat/issues/2448
+function invisibleMessagesLoadingFix() {
+  if (Platform.OS === "web") {
+    const gcLoadingContaineEl = document.querySelectorAll(
+      '[data-testid="GC_LOADING_CONTAINER"]'
+    )[0] as HTMLElement;
+    if (gcLoadingContaineEl) {
+      gcLoadingContaineEl.style.display = "none";
+      setTimeout(() => {
+        gcLoadingContaineEl.style.display = "flex";
+      }, 500);
+    }
+  }
+}
 
 export default Room;
