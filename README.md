@@ -77,7 +77,7 @@ LangX is an application built with **React Native** that helps users exchange di
 
 ### Other Freamworks
 
-- 🚧 [langx-flutter](https://github.com/langx/langx-flutter) @DH-555
+- 🚧 [langx-flutter](https://github.com/langx/langx-flutter)
 - 📦️ [langx-angular](https://github.com/langx/langx-angular) (Archived)
 
 ## Get started
