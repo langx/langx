@@ -1,5 +1,5 @@
 > [!NOTE]\
-> We are transitioning the application from **Angular** to **React Native**.
+> We are transitioning the application from **Angular** to **React Native**. This is not production-ready yet. Latest version is available at tag [v0.15](https://github.com/langx/langx/releases/tag/v0.15)
 
  <h1 align="center"> LangX | Practice, Learn, Succeed! </h1>
 <p align="center">
