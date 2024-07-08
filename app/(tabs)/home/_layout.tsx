@@ -32,6 +32,9 @@ export default function HomeLayout() {
           ),
           headerSearchBarOptions: {
             placeholder: "Search",
+            hideWhenScrolling: true,
+            hideNavigationBar: true,
+            shouldShowHintSearchIcon: true,
             textColor: Colors.light.black,
             tintColor: Colors.light.black,
             hintTextColor: Colors.light.black,
