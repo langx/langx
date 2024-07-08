@@ -1,0 +1,37 @@
+name: Discord Release Notes Notification
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  send-release-notes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch Release Notes
+        id: get_release_notes
+        run: |
+          API_RESPONSE=$(curl -s -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          echo "API Response: $API_RESPONSE"
+          RELEASE_NOTES=$(echo "$API_RESPONSE" | jq -r '.body' | tr -d '\n' | cut -c 1-200)
+          RELEASE_NOTES="${RELEASE_NOTES}..."
+          RELEASE_URL=$(echo "$API_RESPONSE" | jq -r '.html_url')
+          RELEASE_VERSION=$(echo "$API_RESPONSE" | jq -r '.tag_name')
+          REPO_NAME="${{ github.repository }}"
+          echo "release_notes=$RELEASE_NOTES" >> $GITHUB_ENV
+          echo "release_url=$RELEASE_URL" >> $GITHUB_ENV
+          echo "release_version=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "repo_name=$REPO_NAME" >> $GITHUB_ENV
+
+      - name: Send Discord Notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_GITHUB_RELEASES_WEBHOOK }}
+          RELEASE_NOTES: ${{ env.release_notes }}
+          RELEASE_URL: ${{ env.release_url }}
+          RELEASE_VERSION: ${{ env.release_version }}
+          REPO_NAME: ${{ env.repo_name }}
+        run: |
+          SUBTITLE="**New Release :** $RELEASE_VERSION **Repository:** $REPO_NAME"
+          PAYLOAD=$(jq -n --arg rn "$RELEASE_NOTES" --arg url "<$RELEASE_URL>" --arg st "$SUBTITLE" '{content: ($st + "\n" + $rn + "\n**More:** " + $url)}')
+          curl -H "Content-Type: application/json" -X POST -d "$PAYLOAD" $DISCORD_WEBHOOK
