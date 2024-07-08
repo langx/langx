@@ -1,3 +1,6 @@
+> [!NOTE]\
+> We are transitioning the application from **Angular** to **React Native**.
+
  <h1 align="center"> LangX | Practice, Learn, Succeed! </h1>
 <p align="center">
   <a href="https://status.langx.io/" target="_blank"><img src="https://uptime.betterstack.com/status-badges/v1/monitor/vrew.svg" alt="Better Stack Badge"></a>
@@ -34,20 +37,17 @@
   </a>
 </p>
 
-LangX is an application built with Angular and Ionic that helps users exchange different languages by connecting them with native speakers. Users can join chat rooms with other participants and practice their language skills in a fun and interactive way. The app is available on web, iOS, and Android platforms. It uses <a href="https://github.com/appwrite/appwrite/" target="_blank">@appwrite</a> for the back-end. For a detailed list of technologies used, please refer to the [Tech Stack](#tech-stack) section.
+LangX is an application built with **React Native** that helps users exchange different languages by connecting them with native speakers.
 
 ## Official Links
-
-:tada: Hello Everyone! We're excited to announce that our official links here! We'd love for you to join us and give us a follow! Welcome aboard! :rocket:
 
 **:computer: Website:** [https://langx.io/](https://langx.io/)
 
 **:calling: Apps:** [https://get.langx.io](https://get.langx.io)
 
-:coin: **Token**
+:coin: **Token Website:** [https://token.langx.io/](https://token.langx.io/)
 
-- Website: [https://token.langx.io/](https://token.langx.io/)
-- Litepaper: [https://docs.langx.io](https://docs.langx.io)
+:scroll: **Litepaper:** [https://docs.langx.io](https://docs.langx.io)
 
 **:bar_chart: Insights:** [https://insight.langx.io](https://insight.langx.io)
 
@@ -57,44 +57,70 @@ LangX is an application built with Angular and Ionic that helps users exchange d
 
 **:envelope: Mail:** [hi@langx.io](mailto:hi@langx.io)
 
-## Tech Stack
+---
 
-- **NEW APP: [Flutter Repo](https://github.com/langx/langx-flutter)**
+❤️ **Be A Patron:** https://backer.langx.io/
+❤️ **Github Sponspor:** https://github.com/sponsors/langx
+
+## Tech Stack
 
 ---
 
-- Language: [TypeScript](https://www.typescriptlang.org/)
-- Landing Page: [Svelte](https://svelte.dev/)
-- Framework: [Ionic Angular](https://ionicframework.com/docs/angular/overview)
-- State Management: [NgRx](https://ngrx.io/)
-- Native: [Capacitor](https://capacitorjs.com/)
-- Database: [Appwrite](https://appwrite.io/)
-- API: [Expressjs, Nodejs](https://github.com/langx/api)
-- Cloud Functions: [Appwrite](https://appwrite.io/)
-- Push Notification: [Firebase Cloud Messaging](https://firebase.google.com/products/cloud-messaging)
-- Storage: [Backblaze](https://www.backblaze.com/)
-- Analytics: [Plausible Community Ed.](https://github.com/langx/insight)
-- Litepaper: [Gitbook](https://www.gitbook.com/)
+- [React Native](https://reactnative.dev/)
+- [Redux](https://redux.js.org/)
+- [Appwrite](https://appwrite.io/)
 
-## Installation
+---
 
-To install the project locally, follow these steps:
+### Other Repositories
 
-1. Clone the repository to your local machine using the command `git clone https://github.com/langx/langx.git`
-   - Navigate to the project directory using the command `cd langx`
-   - Install the Ionic CLI globally using the command `npm install -g @ionic/cli`
-   - Install the project dependencies using the command `npm install`
-2. Create a new Appwrite project and enable the Authentication and Database services.
-   - In the Appwrite console, go to Project Settings and copy the Appwrite endpoint and project ID.
-   - Rename the `environment.ts.sample` file in the `src/environments` directory to `environment.ts`
-   - Rename the `environment.prod.ts.sample` file in the `src/environments` directory to `environment.prod.ts`
-   - Replace the placeholders in the `environment.ts.sample` file with your actual values. For example, replace `<API_URL>` with the actual URL of your API, `<DB_URL>` with your database URL, and so on. Make sure to replace all placeholders in the file.
-3. Start the development server using the command `ionic serve`
-4. Open your web browser and navigate to `http://localhost:8100`
+- 🟢 [website](https://github.com/langx/website) _Svelte_
+- 🟢 [token-website](https://github.com/langx/token-website) _HTML/CSS_
+- 🟢 [api](https://github.com/langx/token-api) _Expressjs, Nodejs_
+- 🟢 [copilot](https://github.com/langx/copilot) _Javascript_
+- 🟢 [docs](https://github.com/langx/docs)
+- 🟢 [insight](https://github.com/langx/insight)
+- 🟢 [branding](https://github.com/langx/branding)
+- 🚧 [langx-flutter (Community)](https://github.com/langx/langx-flutter)
+- 📦️ [langx-angular (Archived)](https://github.com/langx/langx-angular)
 
-That's it! You should now be able to see the project running locally on your machine. If you encounter any issues during the installation process, please refer to the project's documentation or open an issue on the projects GitHub repository.
+## Get started
 
-### Cloud Functions
+1. Install dependencies
+
+   ```bash
+   npm install
+   ```
+
+2. Start the app
+
+   ```bash
+    npx expo start
+   ```
+
+In the output, you'll find options to open the app in a
+
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Discord community](https://discord.langx.io): Join our Discord at **#codebase** channel and ask questions.
+
+<!-- ### Cloud Functions
 
 To push Appwrite Cloud Functions, follow these steps:
 
@@ -108,18 +134,6 @@ To push Appwrite Cloud Functions, follow these steps:
 8. Go to database function console and make sure that right permissions you set for related function.
 
 That's it! You should now be able to push your Appwrite Cloud Functions to Appwrite and use them in your app. If you encounter any issues during the process, please refer to the Appwrite documentation or open an issue on the Appwrite GitHub repository.
-
-## Usage
-
-To use the project, follow these steps:
-
-1. Open your web browser and navigate to the URL where the project is hosted.
-2. If you haven't already done so, create an account and log in to the app.
-3. Once you're logged in, you'll be taken to the home page where you can see a list of available language exchange sessions.
-4. To join a chat room, click on the user you're interested in to open private chat page.
-5. Once you've joined a chat room, you'll be able to chat with other participants and practice your language skills.
-
-That's it! You should now be able to use the project to practice your language skills with other users. If you encounter any issues during the usage process, please refer to the project's documentation or open an issue on the project's GitHub repository.
 
 ## Deep Linking
 
@@ -240,7 +254,7 @@ const messaging = firebase.messaging();
 
 This code initializes your Firebase application with your Firebase configuration. Replace the "xxxxxxx" with your actual Firebase configuration values.
 
-This line retrieves an instance of Firebase Messaging so that it can handle background messages.
+This line retrieves an instance of Firebase Messaging so that it can handle background messages. -->
 
 ## Contributing
 
@@ -248,6 +262,9 @@ We welcome contributions to the project! For detailed instructions on how to con
 
 ## Security
 
+If you discover a security vulnerability within this project, please send an e-mail to [hi@langx.io](mailto:hi@langx.io) All security vulnerabilities will be promptly addressed.
+
+<!--
 ### Paths
 
 - `android/app/google-services.json`
@@ -270,7 +287,7 @@ It is also important to keep your Firebase project's API key and other sensitive
 
 For more information on how to secure your Firebase project, please refer to the following resources:
 
-- [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects)
+- [Config Files Objects](https://firebase.google.com/docs/projects/learn-more#config-files-objects) -->
 
 ## Stats
 
