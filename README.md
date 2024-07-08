@@ -57,22 +57,15 @@ LangX is an application built with **React Native** that helps users exchange di
 
 **:envelope: Mail:** [hi@langx.io](mailto:hi@langx.io)
 
----
-
-❤️ **Be A Patron:** https://backer.langx.io/
-❤️ **Github Sponspor:** https://github.com/sponsors/langx
-
 ## Tech Stack
 
----
+### Main Repo
 
 - [React Native](https://reactnative.dev/)
 - [Redux](https://redux.js.org/)
 - [Appwrite](https://appwrite.io/)
 
----
-
-### Other Repositories
+### Other Repos
 
 - 🟢 [website](https://github.com/langx/website) _Svelte_
 - 🟢 [token-website](https://github.com/langx/token-website) _HTML/CSS_
@@ -81,8 +74,11 @@ LangX is an application built with **React Native** that helps users exchange di
 - 🟢 [docs](https://github.com/langx/docs)
 - 🟢 [insight](https://github.com/langx/insight)
 - 🟢 [branding](https://github.com/langx/branding)
-- 🚧 [langx-flutter (Community)](https://github.com/langx/langx-flutter)
-- 📦️ [langx-angular (Archived)](https://github.com/langx/langx-angular)
+
+### Other Freamworks
+
+- 🚧 [langx-flutter](https://github.com/langx/langx-flutter) @DH-555
+- 📦️ [langx-angular](https://github.com/langx/langx-angular) (Archived)
 
 ## Get started
 
@@ -300,6 +296,12 @@ For more information on how to secure your Firebase project, please refer to the
 [![GitHub Contributor Over Time](https://contributor-overtime-api.git-contributor.com/contributors-svg?chart=contributorOverTime&repo=langx/langx)](https://github.com/langx/langx/graphs/contributors)
 
 [![GitHub Contributors Image](https://contrib.rocks/image?repo=langx/langx)](https://github.com/langx/langx/graphs/contributors)
+
+## Support Us
+
+- **Be A Patron:** https://backer.langx.io/
+
+- **Github Sponspor:** https://github.com/sponsors/langx
 
 ## License
 
