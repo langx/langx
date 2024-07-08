@@ -10,5 +10,3 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
-
-_If you want speed up process of this issue, please send 🚀 as a reaction._

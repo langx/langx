@@ -50,6 +50,7 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -71,8 +72,18 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# VSCode
-.vscode
+# Expo
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+expo-env.d.ts
 
 # Notes.md
 Notes.md

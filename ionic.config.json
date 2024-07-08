@@ -1,8 +1,0 @@
-{
-  "name": "firestore-chat-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular",
-  "id": "435be63a"
-}
