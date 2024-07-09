@@ -68,10 +68,12 @@ export default function CommunityScreen() {
         renderItem={renderItem}
         key={numColumns}
         numColumns={numColumns}
+        ListHeaderComponent={
+          <ThemedView>
+            <ForYouSection users={users} />
+          </ThemedView>
+        }
       />
-      <ThemedView>
-        <ForYouSection users={users} />
-      </ThemedView>
     </ThemedView>
   );
 }

@@ -19,7 +19,7 @@ const UserCard = ({ item, loadingItem }) => {
   useEffect(() => {
     if (data) {
       try {
-        setUserImageUrl(data.toString()); // Assuming the data returned is the URL or can be converted to a string URL
+        setUserImageUrl(data.toString());
       } catch (error) {
         console.error("Failed to process user image URL", error);
       }
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.gray3,
     borderRadius: 8,
     overflow: "hidden",
-    height: 250,
+    height: 200,
     width: 150,
     justifyContent: "flex-end",
   },
