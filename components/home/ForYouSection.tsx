@@ -9,9 +9,24 @@ const ForYouSection = ({ users }) => {
   return (
     <ThemedView
       style={{
+        flexDirection: "row",
         flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
+      {/* Header Section */}
+      <ThemedText
+        style={{
+          // fontSize: 24,
+          flexShrink: 1,
+          transform: [{ rotate: "-90deg" }],
+        }}
+      >
+        For You
+      </ThemedText>
+
+      {/* List Section */}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         horizontal
@@ -20,12 +35,8 @@ const ForYouSection = ({ users }) => {
         renderItem={({ item }) => (
           <UserCard item={item} loadingItem={loading} />
         )}
-        ListHeaderComponent={
-          <ThemedView style={{ flex: 1, justifyContent: "center" }}>
-            <ThemedText style={{ textAlign: "center" }}>For You</ThemedText>
-          </ThemedView>
-        }
-      ></FlatList>
+        style={{ flex: 1 }}
+      />
     </ThemedView>
   );
 };
