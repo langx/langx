@@ -3,7 +3,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
-import { ThemedText } from "@/components/atomic/ThemedText";
 
 export default function HomeLayout() {
   const colorScheme = useColorScheme();
