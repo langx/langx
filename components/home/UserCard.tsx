@@ -10,7 +10,7 @@ import { getUserImage } from "@/services/bucketService";
 import { getFlagEmoji2 } from "@/constants/utils";
 import { Language } from "@/models/Language";
 
-const UserCard = ({ item, theme, loadingItem }) => {
+const UserCard = ({ item, loadingItem }) => {
   const [userImageUrl, setUserImageUrl] = useState("");
   const { data, loading, refetch } = useDatabase(() =>
     getUserImage(item.profilePic)
@@ -61,8 +61,6 @@ const UserCard = ({ item, theme, loadingItem }) => {
     >
       <ThemedView
         style={{
-          width: "100%",
-          backgroundColor: Colors[theme].background,
           opacity: 0.8,
           padding: 8,
           alignItems: "center",
@@ -97,7 +95,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.gray3,
     borderRadius: 8,
     overflow: "hidden",
-    minHeight: 200,
+    height: 250,
+    width: 150,
     justifyContent: "flex-end",
   },
   imageBackground: {
