@@ -8,7 +8,7 @@ export const getFlagEmoji = (country: string) => {
   return String.fromCodePoint(...codePoints);
 };
 
-export function getFlagEmoji2(languageCode) {
+export const getFlagEmoji2 = (languageCode: string) => {
   const countryCode = language2Country[languageCode];
   if (!countryCode) {
     return '🏳️'; // White flag emoji
@@ -21,7 +21,7 @@ export function getFlagEmoji2(languageCode) {
     .split('')
     .map((char) => 127397 + char.charCodeAt());
   return String.fromCodePoint(...codePoints);
-}
+};
 
 export const getAge = (birthdate: string) => {
   const birthDate = new Date(birthdate);
