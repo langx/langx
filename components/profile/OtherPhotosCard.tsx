@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
     textAlign: "center",
   },
   cardSubtitle: {

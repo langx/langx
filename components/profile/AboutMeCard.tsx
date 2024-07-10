@@ -3,78 +3,76 @@ import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getFlagEmoji, getAge, lastSeenExt } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
-
-const mockUser = {
-  aboutMe: "I love coding, traveling, and learning new languages.",
-  country: "US",
-  gender: "male",
-  birthdate: "1990-01-01",
-  $createdAt: "2020-01-01T00:00:00Z",
-};
+import { ThemedView } from "../themed/atomic/ThemedView";
+import { ThemedText } from "../themed/atomic/ThemedText";
 
 const AboutMeCard = ({ user, account }) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>About Me</Text>
-        <Text style={styles.cardSubtitle}>Personal Information</Text>
-      </View>
-      <View style={styles.cardContent}>
-        <View style={styles.item}>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedText style={styles.cardTitle}>About Me</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>
+          Personal Information
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
+        <ThemedView style={styles.item}>
           <Ionicons name="information-circle-outline" style={styles.icon} />
-          <Text style={styles.label}>{user.aboutMe}</Text>
-        </View>
-        <View style={styles.item}>
+          <ThemedText style={styles.label}>{user.aboutMe}</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.item}>
           <Ionicons name="flag-outline" style={styles.icon} />
-          <Text style={styles.label}>
+          <ThemedText style={styles.label}>
             {user.country} {getFlagEmoji(user.country)}
-          </Text>
-        </View>
-        <View style={styles.item}>
+          </ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.item}>
           <Ionicons name="male-female-outline" style={styles.icon} />
-          <Text style={styles.label}>
+          <ThemedText style={styles.label}>
             {user.gender.charAt(0).toUpperCase() + user.gender.slice(1)}
-          </Text>
-        </View>
-        <View style={styles.item}>
+          </ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.item}>
           <Ionicons name="calendar-number-outline" style={styles.icon} />
-          <Text style={styles.label}>{getAge(user.birthdate)} years old</Text>
-        </View>
-        <View style={styles.item}>
+          <ThemedText style={styles.label}>
+            {getAge(user.birthdate)} years old
+          </ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.item}>
           <Ionicons name="time-outline" style={styles.icon} />
-          <Text style={styles.label}>
+          <ThemedText style={styles.label}>
             Registered {lastSeenExt(user.$createdAt)} ago
-          </Text>
-        </View>
-        <View style={styles.item}>
+          </ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.item}>
           <Ionicons name="at-outline" style={styles.icon} />
-          <Text style={styles.label}>@{user.username}</Text>
-        </View>
+          <ThemedText style={styles.label}>@{user.username}</ThemedText>
+        </ThemedView>
         {account && account.emailVerification ? (
-          <View style={styles.item}>
+          <ThemedView style={styles.item}>
             <Ionicons
               name="shield-checkmark-outline"
               style={[styles.icon, { color: Colors.light.success }]}
             />
-            <Text style={styles.label}>Verified Email</Text>
-          </View>
+            <ThemedText style={styles.label}>Verified Email</ThemedText>
+          </ThemedView>
         ) : (
-          <View style={styles.item}>
+          <ThemedView style={styles.item}>
             <Ionicons
               name="shield-outline"
               style={[styles.icon, { color: Colors.light.error }]}
             />
-            <Text style={styles.label}>Unverified User</Text>
+            <ThemedText style={styles.label}>Unverified User</ThemedText>
             <Pressable
               style={styles.editButton}
               onPress={() => console.log("Edit Account")}
             >
               <Text style={styles.editButtonText}>Edit</Text>
             </Pressable>
-          </View>
+          </ThemedView>
         )}
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -85,9 +83,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -95,13 +90,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
     textAlign: "center",
   },
   cardSubtitle: {
     fontSize: 16,
     textAlign: "center",
-    color: "#555",
   },
   cardContent: {
     padding: 20,
@@ -121,7 +115,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     width: "100%",
     fontSize: 16,
-    color: "#555",
   },
   editButton: {
     marginLeft: 10,
