@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Pressable,
-  FlatList,
-} from "react-native";
-import { Colors } from "@/constants/Colors";
+import { StyleSheet, Image, Pressable, FlatList } from "react-native";
 import {
   backer,
   creator,
@@ -18,6 +10,9 @@ import {
   sponsor,
   teacher,
 } from "@/constants/badges";
+
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const mockBadges = [
   "backer",
@@ -72,17 +67,19 @@ const BadgesCard = ({ badges = mockBadges }) => {
       onPress={() => openPage(item.pageURL)}
     >
       <Image source={item.url} style={styles.badgeImage} />
-      <Text style={styles.badgeText}>{item.name}</Text>
+      <ThemedText style={styles.badgeText}>{item.name}</ThemedText>
     </Pressable>
   );
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>Badges</Text>
-        <Text style={styles.cardSubtitle}>The badges you've earned.</Text>
-      </View>
-      <View style={styles.cardContent}>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedText style={styles.cardTitle}>Badges</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>
+          The badges you've earned.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
         <FlatList
           data={badgesList}
           renderItem={renderBadgeItem}
@@ -90,8 +87,8 @@ const BadgesCard = ({ badges = mockBadges }) => {
           numColumns={3}
           columnWrapperStyle={styles.row}
         />
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -102,9 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -112,11 +106,10 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
   },
   cardSubtitle: {
     fontSize: 16,
-    color: "#555",
     marginTop: 5,
   },
   cardContent: {
