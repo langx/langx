@@ -9,8 +9,8 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
 const PPCard = ({ user }) => {
-  const isLoading = false;
-  const msgButton = true;
+  const isLoading = true;
+  const msgButton = false;
   return (
     <ThemedView style={styles.card}>
       <ThemedView style={styles.cardHeader}>
