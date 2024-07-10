@@ -67,7 +67,9 @@ const BadgesCard = ({ badges = mockBadges }) => {
       onPress={() => openPage(item.pageURL)}
     >
       <Image source={item.url} style={styles.badgeImage} />
-      <ThemedText style={styles.badgeText}>{item.name}</ThemedText>
+      <ThemedText style={styles.badgeText} numberOfLines={2}>
+        {item.name}
+      </ThemedText>
     </Pressable>
   );
 
@@ -133,5 +135,8 @@ const styles = StyleSheet.create({
   badgeText: {
     textAlign: "center",
     marginTop: 10,
+    fontSize: 14,
+    width: 60,
+    height: 40,
   },
 });
