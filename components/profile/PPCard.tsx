@@ -1,24 +1,19 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Pressable,
-  ActivityIndicator,
-} from "react-native";
+import { StyleSheet, Image, Pressable } from "react-native";
 
 import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
-
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
 const PPCard = ({ user }) => {
   const isLoading = false;
   const msgButton = true;
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
         <Pressable onPress={() => console.log("Preview profile picture")}>
           <Image
             source={images.profile}
@@ -30,35 +25,34 @@ const PPCard = ({ user }) => {
             accessibilityLabel="Profile Picture"
           />
         </Pressable>
-        <Text style={styles.cardTitle}>{user.name}</Text>
-        <Text style={styles.cardSubtitle}>
+        <ThemedText style={styles.cardTitle}>{user.name}</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>
           {getAge(user.birthdate)} |{" "}
           {user.gender.charAt(0).toUpperCase() + user.gender.slice(1)} |{" "}
           {user.country} {getFlagEmoji(user.country)}
-        </Text>
+        </ThemedText>
         {lastSeen(user.lastSeen) !== "online" ? (
-          <Text style={styles.cardSubtitle}>
+          <ThemedText style={styles.cardSubtitle}>
             Active {lastSeen(user.lastSeen)} ago
-          </Text>
+          </ThemedText>
         ) : (
-          <Text style={[styles.cardSubtitle, { color: Colors.light.primary }]}>
-            Online
-          </Text>
-        )}
-      </View>
-      {msgButton && (
-        <View style={styles.cardContent}>
-          <Pressable
-            style={styles.button}
-            onPress={() => console.log("Send a message")}
-            disabled={isLoading}
+          <ThemedText
+            style={[styles.cardSubtitle, { color: Colors.light.primary }]}
           >
-            {isLoading && <ActivityIndicator style={styles.spinner} />}
-            <Text style={styles.buttonText}>Send A Message 🚀</Text>
-          </Pressable>
-        </View>
+            Online
+          </ThemedText>
+        )}
+      </ThemedView>
+      {msgButton && (
+        <ThemedView style={styles.cardContent}>
+          <ThemedButton
+            title="Send A Message 🚀"
+            onPress={() => console.log("Button pressed")}
+            style={styles.button}
+          />
+        </ThemedView>
       )}
-    </View>
+    </ThemedView>
   );
 };
 
@@ -69,9 +63,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -93,13 +84,12 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
     textAlign: "center",
   },
   cardSubtitle: {
     fontSize: 16,
     textAlign: "center",
-    color: "#555",
   },
   cardContent: {
     padding: 20,
@@ -108,13 +98,6 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.light.primary,
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
   },
   spinner: {
     marginRight: 10,
