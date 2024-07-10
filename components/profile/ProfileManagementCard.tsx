@@ -27,7 +27,10 @@ const ProfileManagementCard = () => {
       </ThemedView>
       <ThemedView style={styles.cardContent}>
         <ThemedView style={styles.item}>
-          <Pressable onPress={getVisitorsPage} style={styles.row}>
+          <Pressable
+            onPress={getVisitorsPage}
+            style={[styles.row, styles.hasIcon]}
+          >
             <Ionicons
               name="people-outline"
               size={24}
@@ -44,7 +47,10 @@ const ProfileManagementCard = () => {
           </Pressable>
         </ThemedView>
         <ThemedView style={styles.item}>
-          <Pressable onPress={publicProfileView} style={styles.row}>
+          <Pressable
+            onPress={publicProfileView}
+            style={[styles.row, styles.hasIcon]}
+          >
             <Ionicons
               name="eye-outline"
               size={24}
@@ -100,6 +106,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
+  },
+  hasIcon: {
+    marginTop: 10,
   },
   label: {
     flex: 1,
