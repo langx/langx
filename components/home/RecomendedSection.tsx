@@ -4,8 +4,7 @@ import UserCard from "./UserCard";
 import { ThemedView } from "@/components/atomic/ThemedView";
 import { ThemedText } from "../atomic/ThemedText";
 
-const ForYouSection = ({ users }) => {
-  const loading = false;
+const ForYouSection = ({ users, loading }) => {
   return (
     <ThemedView
       style={{
