@@ -22,14 +22,7 @@ const AboutMeCard = ({ user, account }) => {
       <View style={styles.cardContent}>
         <View style={styles.item}>
           <Ionicons name="information-circle-outline" style={styles.icon} />
-          <TextInput
-            style={styles.textarea}
-            multiline
-            numberOfLines={4}
-            editable={false}
-            placeholder="No 'About Me' text provided yet. 💬"
-            value={user.aboutMe}
-          />
+          <Text style={styles.label}>{user.aboutMe}</Text>
         </View>
         <View style={styles.item}>
           <Ionicons name="flag-outline" style={styles.icon} />
@@ -124,16 +117,10 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
   },
   label: {
-    fontSize: 16,
-    color: "#555",
-  },
-  textarea: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    padding: 10,
-    backgroundColor: "#f9f9f9",
+    flexWrap: "wrap",
+    width: "100%",
+    fontSize: 16,
     color: "#555",
   },
   editButton: {
