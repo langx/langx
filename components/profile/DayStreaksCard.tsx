@@ -73,22 +73,23 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     padding: 20,
-  },
-  titleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   cardTitle: {
     fontSize: 24,
     fontFamily: "Lexend-Bold",
   },
-  infoButton: {
-    padding: 5,
-  },
   cardSubtitle: {
     fontSize: 16,
     marginTop: 5,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  infoButton: {
+    padding: 5,
   },
   cardContent: {
     padding: 20,
