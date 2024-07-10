@@ -58,6 +58,19 @@ const DayStreaksCard = ({ streak = mockStreak }) => {
           </ThemedView>
           <ThemedView style={styles.metadataEndWrapper}></ThemedView>
         </Pressable>
+
+        <Pressable
+          style={[styles.item, styles.hasIcon]}
+          onPress={openLeaderboard}
+        >
+          <Ionicons
+            name="trophy-outline"
+            size={24}
+            color={Colors.light.primary}
+            style={styles.icon}
+          />
+          <ThemedText style={styles.leaderboardLabel}>Leaderboard</ThemedText>
+        </Pressable>
       </ThemedView>
     </ThemedView>
   );
@@ -117,4 +130,13 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   metadataEndWrapper: {},
+  hasIcon: {
+    marginTop: 10,
+  },
+  icon: {
+    marginRight: 20,
+  },
+  leaderboardLabel: {
+    fontSize: 16,
+  },
 });
