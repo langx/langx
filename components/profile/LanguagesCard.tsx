@@ -56,10 +56,8 @@ const LanguagesCard = ({
   return (
     <ThemedView style={styles.card}>
       <ThemedView style={styles.cardHeader}>
-        <ThemedText style={styles.cardTitle}>Study Language(s)</ThemedText>
-        <ThemedText style={styles.cardSubtitle}>
-          The language(s) that you Practice & Learn
-        </ThemedText>
+        <ThemedText style={styles.cardTitle}>Study Language</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>Practice & Learn</ThemedText>
       </ThemedView>
       <ThemedView style={styles.cardContent}>
         <FlatList
@@ -69,9 +67,9 @@ const LanguagesCard = ({
         />
       </ThemedView>
       <ThemedView style={styles.cardHeader}>
-        <ThemedText style={styles.cardTitle}>Mother Tongue(s)</ThemedText>
+        <ThemedText style={styles.cardTitle}>Mother Tongue</ThemedText>
         <ThemedText style={styles.cardSubtitle}>
-          The language(s) you speak at home
+          Speaking Comfortably
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.cardContent}>
