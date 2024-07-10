@@ -2,10 +2,10 @@ import { FlatList } from "react-native";
 import UserCard from "./UserCard";
 
 import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "../atomic/ThemedText";
-import { ThemedButton } from "../atomic/ThemedButton";
+import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedButton } from "@/components/atomic/ThemedButton";
 
-const RecomendedSection = ({ users, loading }) => {
+const FeaturedSection = ({ users, loading }) => {
   return (
     <ThemedView
       style={{
@@ -26,7 +26,7 @@ const RecomendedSection = ({ users, loading }) => {
             margin: 10,
           }}
         >
-          For You
+          Enthusiastics
         </ThemedText>
         <ThemedButton
           title="More"
@@ -53,4 +53,4 @@ const RecomendedSection = ({ users, loading }) => {
   );
 };
 
-export default RecomendedSection;
+export default FeaturedSection;
