@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   thumbnail: {
-    width: 75,
-    height: 75,
+    width: 60,
+    height: 60,
     borderRadius: 10,
     marginRight: 20,
   },

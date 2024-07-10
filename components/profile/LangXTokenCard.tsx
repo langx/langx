@@ -62,6 +62,20 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
           </ThemedView>
           <ThemedView style={styles.metadataEndWrapper}></ThemedView>
         </Pressable>
+
+        <Pressable
+          style={[styles.item, styles.hasIcon]}
+          onPress={openTokenLeaderboard}
+        >
+          <Ionicons
+            name="analytics-outline"
+            size={24}
+            color={Colors.light.primary}
+            style={styles.icon}
+          />
+          <ThemedText style={styles.leaderboardLabel}>Checkouts</ThemedText>
+        </Pressable>
+
         <Pressable
           style={[styles.item, styles.hasIcon]}
           onPress={openTokenLeaderboard}
@@ -116,8 +130,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   thumbnail: {
-    width: 75,
-    height: 75,
+    width: 60,
+    height: 60,
     borderRadius: 10,
     marginRight: 20,
   },
