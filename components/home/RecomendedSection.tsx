@@ -1,4 +1,4 @@
-import { FlatList } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import UserCard from "./UserCard";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -12,14 +12,8 @@ const RecomendedSection = ({ users, loading }) => {
       }}
     >
       {/* Header Section */}
-      <ThemedView
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <ThemedText type="title">For You</ThemedText>
+      <ThemedView style={styles.card}>
+        <ThemedText style={styles.cardTitle}>For You</ThemedText>
         <ThemedButton
           title="More"
           onPress={() => console.log("Button pressed")}
@@ -46,3 +40,22 @@ const RecomendedSection = ({ users, loading }) => {
 };
 
 export default RecomendedSection;
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontFamily: "Lexend-Bold",
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+});

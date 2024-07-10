@@ -1,4 +1,4 @@
-import { FlatList } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import UserCard from "./UserCard";
 
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -13,14 +13,8 @@ const FeaturedSection = ({ users, loading }) => {
       }}
     >
       {/* Header Section */}
-      <ThemedView
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <ThemedText type="title">Enthusiastics</ThemedText>
+      <ThemedView style={styles.card}>
+        <ThemedText style={styles.cardTitle}>Enthusiastics</ThemedText>
         <ThemedButton
           title="More"
           onPress={() => console.log("Button pressed")}
@@ -47,3 +41,22 @@ const FeaturedSection = ({ users, loading }) => {
 };
 
 export default FeaturedSection;
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontFamily: "Lexend-Bold",
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+});

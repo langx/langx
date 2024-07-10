@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
@@ -16,10 +16,29 @@ export default function CommunityScreen() {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <RecomendedSection users={users} loading={loading} />
         <FeaturedSection users={users} loading={loading} />
-        <ThemedView>
-          <ThemedText type="title">Visitors</ThemedText>
+        <ThemedView style={styles.card}>
+          <ThemedText style={styles.cardTitle}>Visitors</ThemedText>
         </ThemedView>
       </ScrollView>
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontFamily: "Lexend-Bold",
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+});
