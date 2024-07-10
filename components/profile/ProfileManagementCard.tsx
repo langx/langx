@@ -1,7 +1,10 @@
 import React from "react";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const ProfileManagementCard = () => {
   const getVisitorsPage = () => {
@@ -15,13 +18,15 @@ const ProfileManagementCard = () => {
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>Others</Text>
-        <Text style={styles.cardSubtitle}>Profile Management Features</Text>
-      </View>
-      <View style={styles.cardContent}>
-        <View style={styles.item}>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedText style={styles.cardTitle}>Others</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>
+          Profile Management Features
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
+        <ThemedView style={styles.item}>
           <Pressable onPress={getVisitorsPage} style={styles.row}>
             <Ionicons
               name="people-outline"
@@ -29,7 +34,7 @@ const ProfileManagementCard = () => {
               color={Colors.light.primary}
               style={styles.icon}
             />
-            <Text style={styles.label}>Profile Visitors</Text>
+            <ThemedText style={styles.label}>Profile Visitors</ThemedText>
             <Ionicons
               name="chevron-forward-outline"
               size={24}
@@ -37,8 +42,8 @@ const ProfileManagementCard = () => {
               style={styles.detailIcon}
             />
           </Pressable>
-        </View>
-        <View style={styles.item}>
+        </ThemedView>
+        <ThemedView style={styles.item}>
           <Pressable onPress={publicProfileView} style={styles.row}>
             <Ionicons
               name="eye-outline"
@@ -46,7 +51,9 @@ const ProfileManagementCard = () => {
               color={Colors.light.primary}
               style={styles.icon}
             />
-            <Text style={styles.label}>View Profile as Public️</Text>
+            <ThemedText style={styles.label}>
+              View Profile as Public️
+            </ThemedText>
             <Ionicons
               name="chevron-forward-outline"
               size={24}
@@ -54,9 +61,9 @@ const ProfileManagementCard = () => {
               style={styles.detailIcon}
             />
           </Pressable>
-        </View>
-      </View>
-    </View>
+        </ThemedView>
+      </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -67,9 +74,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -77,11 +81,10 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
   },
   cardSubtitle: {
     fontSize: 16,
-    color: "#555",
     marginTop: 5,
   },
   cardContent: {
@@ -89,8 +92,6 @@ const styles = StyleSheet.create({
   },
   item: {
     paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
   },
   row: {
     flexDirection: "row",
@@ -103,7 +104,6 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
     fontSize: 16,
-    color: "#555",
   },
   detailIcon: {
     marginLeft: 10,
