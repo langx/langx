@@ -20,14 +20,7 @@ const RecomendedSection = ({ users, loading }) => {
           alignItems: "center",
         }}
       >
-        <ThemedText
-          style={{
-            fontSize: 24,
-            margin: 10,
-          }}
-        >
-          For You
-        </ThemedText>
+        <ThemedText type="title">For You</ThemedText>
         <ThemedButton
           title="More"
           onPress={() => console.log("Button pressed")}
