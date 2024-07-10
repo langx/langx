@@ -1,7 +1,10 @@
 import React from "react";
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import { StyleSheet, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const mockStudyLanguages = [
   { name: "Spanish", nativeName: "Español", level: 2 },
@@ -20,7 +23,7 @@ const LanguagesCard = ({
   motherLanguages = mockMotherLanguages,
 }) => {
   const renderStudyLanguageItem = ({ item }) => (
-    <View style={styles.item}>
+    <ThemedView style={styles.item}>
       <Ionicons
         name={
           item.level === 0
@@ -33,52 +36,52 @@ const LanguagesCard = ({
         }
         style={styles.icon}
       />
-      <View style={styles.labelContainer}>
-        <Text style={styles.label}>{item.name}</Text>
-        <Text style={styles.note}>{item.nativeName}</Text>
-      </View>
-    </View>
+      <ThemedView style={styles.labelContainer}>
+        <ThemedText style={styles.label}>{item.name}</ThemedText>
+        <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
+      </ThemedView>
+    </ThemedView>
   );
 
   const renderMotherLanguageItem = ({ item }) => (
-    <View style={styles.item}>
+    <ThemedView style={styles.item}>
       <Ionicons name="language-outline" style={styles.icon} />
-      <View style={styles.labelContainer}>
-        <Text style={styles.label}>{item.name}</Text>
-        <Text style={styles.note}>{item.nativeName}</Text>
-      </View>
-    </View>
+      <ThemedView style={styles.labelContainer}>
+        <ThemedText style={styles.label}>{item.name}</ThemedText>
+        <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
+      </ThemedView>
+    </ThemedView>
   );
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>Study Language(s)</Text>
-        <Text style={styles.cardSubtitle}>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedText style={styles.cardTitle}>Study Language(s)</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>
           The language(s) that you Practice & Learn
-        </Text>
-      </View>
-      <View style={styles.cardContent}>
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
         <FlatList
           data={studyLanguages}
           renderItem={renderStudyLanguageItem}
           keyExtractor={(item) => item.name}
         />
-      </View>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>Mother Tongue(s)</Text>
-        <Text style={styles.cardSubtitle}>
+      </ThemedView>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedText style={styles.cardTitle}>Mother Tongue(s)</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>
           The language(s) you speak at home
-        </Text>
-      </View>
-      <View style={styles.cardContent}>
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
         <FlatList
           data={motherLanguages}
           renderItem={renderMotherLanguageItem}
           keyExtractor={(item) => item.name}
         />
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -89,9 +92,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -99,11 +99,10 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
   },
   cardSubtitle: {
     fontSize: 16,
-    color: "#555",
     marginTop: 5,
   },
   cardContent: {
@@ -124,10 +123,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: "#555",
   },
   note: {
     fontSize: 14,
-    color: "#aaa",
+    color: Colors.light.gray3,
   },
 });
