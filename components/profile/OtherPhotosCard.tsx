@@ -1,64 +1,54 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Pressable,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Image, Pressable } from "react-native";
 import Swiper from "react-native-swiper";
 
 import images from "@/constants/images";
-
-const mockPhotos = [
-  "https://example.com/photo1.jpg",
-  "https://example.com/photo2.jpg",
-  "https://example.com/photo3.jpg",
-  "https://example.com/photo4.jpg",
-  "https://example.com/photo5.jpg",
-];
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { Colors } from "@/constants/Colors";
 
 const OtherPhotosCard = ({ user }) => {
   // const otherPics = user.otherPhotos;
-  const otherPics = mockPhotos;
+  const otherPics = [1, 2, 3, 4, 5];
   return (
-    <View style={styles.card}>
+    <ThemedView style={styles.card}>
       {otherPics.length > 0 && (
         <>
-          <View style={styles.cardHeader}>
-            <Text style={styles.cardTitle}>Other Photos</Text>
-            <Text style={styles.cardSubtitle}>Photos Collection</Text>
-          </View>
-          <View style={styles.cardContent}>
+          <ThemedView style={styles.cardHeader}>
+            <ThemedText style={styles.cardTitle}>Other Photos</ThemedText>
+            <ThemedText style={styles.cardSubtitle}>
+              Photos Collection
+            </ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.cardContent}>
             {otherPics.length === 0 ? (
-              <Text>Currently, no photos are available.</Text>
+              <ThemedText>Currently, no photos are available.</ThemedText>
             ) : (
               <Swiper
                 style={styles.wrapper}
                 showsButtons
                 loop
                 paginationStyle={styles.pagination}
-                activeDotColor="#000"
+                activeDotColor={Colors.light.primary}
+                dotColor={Colors.light.gray3}
               >
                 {otherPics.map((photo, index) => (
                   <Pressable
                     key={index}
                     onPress={() => console.log("Preview photo", index)}
                   >
-                    <View style={styles.slide}>
+                    <ThemedView style={styles.slide}>
                       {/* <Image source={{ uri: photo }} style={styles.image} /> */}
                       <Image source={images.profile} style={styles.image} />
-                    </View>
+                    </ThemedView>
                   </Pressable>
                 ))}
               </Swiper>
             )}
-          </View>
+          </ThemedView>
         </>
       )}
-    </View>
+    </ThemedView>
   );
 };
 
@@ -69,9 +59,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -85,7 +72,6 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: 16,
     textAlign: "center",
-    color: "#555",
   },
   cardContent: {
     padding: 20,
