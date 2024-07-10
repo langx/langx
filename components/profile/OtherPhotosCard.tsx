@@ -3,9 +3,10 @@ import { StyleSheet, Image, Pressable } from "react-native";
 import Swiper from "react-native-swiper";
 
 import images from "@/constants/images";
+import { Colors } from "@/constants/Colors";
+
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
-import { Colors } from "@/constants/Colors";
 
 const OtherPhotosCard = ({ user }) => {
   // const otherPics = user.otherPhotos;
