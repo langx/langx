@@ -103,7 +103,8 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 10,
+    paddingVertical: 10,
+    marginVertical: 5,
   },
   icon: {
     fontSize: 24,
