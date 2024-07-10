@@ -5,8 +5,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import PPCard from "@/components/profile/PPCard";
 import OtherPhotosCard from "@/components/profile/OtherPhotosCard";
-import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import AboutMeCard from "@/components/profile/AboutMeCard";
+import LangXTokenCard from "@/components/profile/LangXTokenCard";
+import DayStreaksCard from "@/components/profile/DayStreaksCard";
 
 const mockUser = {
   name: "John Doe",
@@ -30,6 +31,7 @@ export default function ProfileScreen() {
         <OtherPhotosCard user={mockUser}></OtherPhotosCard>
         <AboutMeCard user={mockUser} account={mockUser}></AboutMeCard>
         <LangXTokenCard></LangXTokenCard>
+        <DayStreaksCard></DayStreaksCard>
       </ThemedView>
     </ScrollView>
   );

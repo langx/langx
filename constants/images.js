@@ -7,6 +7,7 @@ import logo_dark from "../assets/images/logo-dark.png";
 import logoSmall from "../assets/images/logo-small.png";
 import empty from "../assets/images/empty.png";
 import token from "../assets/images/token.png";
+import chain from "../assets/images/chain.png";
 
 export default {
   profile,
@@ -18,4 +19,5 @@ export default {
   logoSmall,
   empty,
   token,
+  chain,
 };
