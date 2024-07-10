@@ -14,8 +14,8 @@ import store, { RootState, AppDispatch } from "@/store/store";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { fonts } from "@/constants/fonts";
 import { fetchAuthData } from "@/store/authSlice";
-import { ThemedText } from "@/components/atomic/ThemedText";
-import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

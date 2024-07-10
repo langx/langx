@@ -5,8 +5,8 @@ import { Link } from "expo-router";
 import { FC } from "react";
 import { Image, TouchableHighlight } from "react-native";
 
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 export interface RoomRowProps {
   id: string;

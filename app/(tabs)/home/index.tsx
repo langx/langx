@@ -3,8 +3,8 @@ import { ScrollView } from "react-native";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import RecomendedSection from "@/components/home/RecomendedSection";
 import FeaturedSection from "@/components/home/FeaturedSection";
 

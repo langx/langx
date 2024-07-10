@@ -2,7 +2,7 @@ import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { View } from "react-native";
 
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 
 type TabItemProps = {

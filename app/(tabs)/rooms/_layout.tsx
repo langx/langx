@@ -6,8 +6,8 @@ import { Switch, Image, Pressable } from "react-native";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import icons from "@/constants/icons";
 
 export default function RootLayout() {

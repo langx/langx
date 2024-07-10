@@ -16,7 +16,7 @@ import {
 import messagesData from "@/assets/data/messages.json";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
-import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 

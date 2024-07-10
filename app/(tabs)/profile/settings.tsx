@@ -6,8 +6,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { logout } from "@/services/authService";
 import { setAuthInitialState } from "@/store/authSlice";
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { defaultStyles } from "@/constants/Styles";
 import { Colors } from "@/constants/Colors";
 import BoxedIcon from "@/components/BoxedIcon";

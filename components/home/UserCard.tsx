@@ -2,8 +2,8 @@ import { StyleSheet, ImageBackground } from "react-native";
 import React, { useEffect, useState } from "react";
 
 import { Colors } from "@/constants/Colors";
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";

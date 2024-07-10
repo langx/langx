@@ -5,10 +5,10 @@ import { useDispatch } from "react-redux";
 
 import { getCurrentUser, login } from "@/services/authService";
 import { setUser, setLoading, setError } from "@/store/authSlice";
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
-import { ThemedButton } from "@/components/atomic/ThemedButton";
-import ThemedFormField from "@/components/molecular/ThemedFormField";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
+import ThemedFormField from "@/components/themed/molecular/ThemedFormField";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";

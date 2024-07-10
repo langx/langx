@@ -4,8 +4,8 @@ import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 
 import { Colors } from "@/constants/Colors";
-import { ThemedText } from "@/components/atomic/ThemedText";
-import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 export default function ProfileScreen() {
   useFocusEffect(

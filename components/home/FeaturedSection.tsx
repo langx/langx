@@ -1,9 +1,9 @@
 import { FlatList } from "react-native";
 import UserCard from "./UserCard";
 
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
-import { ThemedButton } from "@/components/atomic/ThemedButton";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
 const FeaturedSection = ({ users, loading }) => {
   return (

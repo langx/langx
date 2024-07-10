@@ -5,8 +5,8 @@ import { Link } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 import { ExternalLink } from "@/components/ExternalLink";
-import { ThemedText } from "@/components/atomic/ThemedText";
-import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { useColorScheme } from "@/hooks/useColorScheme";
 

@@ -3,8 +3,8 @@ import { TextInput, Image, Pressable } from "react-native";
 
 import icons from "@/constants/icons";
 
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedText } from "@/components/atomic/ThemedText";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 const FormField = ({
   title,

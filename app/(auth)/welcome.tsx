@@ -6,9 +6,9 @@ import { useDispatch } from "react-redux";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { createAnonymousSession } from "@/services/authService";
 import { setGuest, setLoading } from "@/store/authSlice";
-import { ThemedText } from "@/components/atomic/ThemedText";
-import { ThemedView } from "@/components/atomic/ThemedView";
-import { ThemedButton } from "@/components/atomic/ThemedButton";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import images from "@/constants/images";
 
 const Welcome = () => {

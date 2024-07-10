@@ -4,7 +4,7 @@ import { Dimensions, FlatList } from "react-native";
 import { useDatabase } from "@/hooks/useDatabase";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { listUsers } from "@/services/userService";
-import { ThemedView } from "@/components/atomic/ThemedView";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import UserCard from "@/components/home/UserCard";
 
 const breakpoints = {
