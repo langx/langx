@@ -1,8 +1,11 @@
 import React from "react";
-import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const mockStreak = {
   daystreak: 15,
@@ -18,10 +21,10 @@ const DayStreaksCard = ({ streak = mockStreak }) => {
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.cardTitle}>Day Streaks</Text>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText style={styles.cardTitle}>Day Streaks</ThemedText>
           <Pressable
             style={styles.infoButton}
             onPress={() => openPage("infoURL")}
@@ -32,27 +35,31 @@ const DayStreaksCard = ({ streak = mockStreak }) => {
               color={Colors.light.primary}
             />
           </Pressable>
-        </View>
-        <Text style={styles.cardSubtitle}>Your Progress in Streak</Text>
-      </View>
-      <View style={styles.cardContent}>
+        </ThemedView>
+        <ThemedText style={styles.cardSubtitle}>
+          Your Progress in Streak
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
         <Pressable style={styles.item} onPress={openLeaderboard}>
           <Image
             source={images.chain}
             style={styles.thumbnail}
             accessibilityLabel="Day Streaks Badge"
           />
-          <View style={styles.labelContainer}>
+          <ThemedView style={styles.labelContainer}>
             {streak ? (
-              <Text style={styles.balance}>{streak.daystreak}</Text>
+              <ThemedText style={styles.balance}>{streak.daystreak}</ThemedText>
             ) : (
-              <Text style={styles.noBalance}>No streaks available</Text>
+              <ThemedText style={styles.noBalance}>
+                No streaks available
+              </ThemedText>
             )}
-          </View>
-          <View style={styles.metadataEndWrapper}></View>
+          </ThemedView>
+          <ThemedView style={styles.metadataEndWrapper}></ThemedView>
         </Pressable>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -63,9 +70,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -77,14 +81,13 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
   },
   infoButton: {
     padding: 5,
   },
   cardSubtitle: {
     fontSize: 16,
-    color: "#555",
     marginTop: 5,
   },
   cardContent: {
