@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
@@ -21,32 +22,6 @@ const mockUser = {
   lastSeen: "2024-07-01T12:00:00Z",
   contributors: [1, 2, 3],
   sponsor: true,
-};
-
-const getAge = (birthdate: string) => {
-  const birthDate = new Date(birthdate);
-  const ageDiffMs = Date.now() - birthDate.getTime();
-  const ageDate = new Date(ageDiffMs);
-  return Math.abs(ageDate.getUTCFullYear() - 1970);
-};
-
-const lastSeen = (lastSeenDate: string) => {
-  const lastSeenTime = new Date(lastSeenDate).getTime();
-  const currentTime = new Date().getTime();
-  const diffMinutes = Math.floor((currentTime - lastSeenTime) / (1000 * 60));
-
-  if (diffMinutes < 1) return "just now";
-  if (diffMinutes < 60) return `${diffMinutes} minutes`;
-  if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)} hours`;
-  return `${Math.floor(diffMinutes / 1440)} days`;
-};
-
-const getFlagEmoji = (country: string) => {
-  const codePoints = country
-    .toUpperCase()
-    .split("")
-    .map((char) => 127397 + char.charCodeAt(0));
-  return String.fromCodePoint(...codePoints);
 };
 
 export default function ProfileCard() {
