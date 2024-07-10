@@ -22,7 +22,9 @@ const VisitorsSection = () => {
           />
         </Pressable>
       </ThemedView>
-      <ThemedText style={styles.cardSubtitle}>Completed Profiles</ThemedText>
+      <ThemedText style={styles.cardSubtitle}>
+        Recent Profile Visitors
+      </ThemedText>
     </ThemedView>
   );
 };
