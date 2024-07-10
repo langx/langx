@@ -1,6 +1,10 @@
 import React from "react";
+import { ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
 import PPCard from "@/components/profile/PPCard";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import OtherPhotosCard from "@/components/profile/OtherPhotosCard";
 
 const mockUser = {
   name: "John Doe",
@@ -14,5 +18,12 @@ const mockUser = {
 };
 
 export default function ProfileScreen() {
-  return <PPCard user={mockUser}></PPCard>;
+  return (
+    <ScrollView>
+      <ThemedView>
+        <PPCard user={mockUser}></PPCard>
+        <OtherPhotosCard user={mockUser}></OtherPhotosCard>
+      </ThemedView>
+    </ScrollView>
+  );
 }
