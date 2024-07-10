@@ -1,8 +1,11 @@
 import React from "react";
-import { StyleSheet, View, Text, Image, Pressable } from "react-native";
+import { StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const mockWallet = {
   balance: 12345.67,
@@ -22,10 +25,10 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
   };
 
   return (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.cardTitle}>LangX Token</Text>
+    <ThemedView style={styles.card}>
+      <ThemedView style={styles.cardHeader}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText style={styles.cardTitle}>LangX Token</ThemedText>
           <Pressable
             style={styles.infoButton}
             onPress={() => openPage("infoURL")}
@@ -36,24 +39,28 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
               color={Colors.light.primary}
             />
           </Pressable>
-        </View>
-        <Text style={styles.cardSubtitle}>Your LangX Token Balance</Text>
-      </View>
-      <View style={styles.cardContent}>
+        </ThemedView>
+        <ThemedText style={styles.cardSubtitle}>
+          Your LangX Token Balance
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.cardContent}>
         <Pressable style={styles.item} onPress={openTokenDetails}>
           <Image
             source={images.token}
             style={styles.thumbnail}
             accessibilityLabel="Token Image"
           />
-          <View style={styles.labelContainer}>
+          <ThemedView style={styles.labelContainer}>
             {wallet.balance ? (
-              <Text style={styles.balance}>{wallet.balance}</Text>
+              <ThemedText style={styles.balance}>{wallet.balance}</ThemedText>
             ) : (
-              <Text style={styles.noBalance}>No balance available</Text>
+              <ThemedText style={styles.noBalance}>
+                No balance available
+              </ThemedText>
             )}
-          </View>
-          <View style={styles.metadataEndWrapper}></View>
+          </ThemedView>
+          <ThemedView style={styles.metadataEndWrapper}></ThemedView>
         </Pressable>
         <Pressable
           style={[styles.item, styles.hasIcon]}
@@ -65,10 +72,10 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
             color={Colors.light.primary}
             style={styles.icon}
           />
-          <Text style={styles.leaderboardLabel}>Leaderboard</Text>
+          <ThemedText style={styles.leaderboardLabel}>Leaderboard</ThemedText>
         </Pressable>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
 
@@ -79,9 +86,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    backgroundColor: "#fff",
   },
   cardHeader: {
     padding: 20,
@@ -93,14 +97,13 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Lexend-Bold",
   },
   infoButton: {
     padding: 5,
   },
   cardSubtitle: {
     fontSize: 16,
-    color: "#555",
     marginTop: 5,
   },
   cardContent: {
@@ -126,7 +129,6 @@ const styles = StyleSheet.create({
   },
   noBalance: {
     fontSize: 16,
-    color: "#555",
   },
   metadataEndWrapper: {},
   hasIcon: {
@@ -137,6 +139,5 @@ const styles = StyleSheet.create({
   },
   leaderboardLabel: {
     fontSize: 16,
-    color: "#555",
   },
 });
