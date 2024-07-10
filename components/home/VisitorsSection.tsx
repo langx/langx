@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
 import React from "react";
+import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
