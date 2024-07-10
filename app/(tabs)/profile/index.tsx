@@ -8,6 +8,8 @@ import OtherPhotosCard from "@/components/profile/OtherPhotosCard";
 import AboutMeCard from "@/components/profile/AboutMeCard";
 import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
+import LanguagesCard from "@/components/profile/LanguagesCard";
+import BadgesCard from "@/components/profile/BadgesCard";
 
 const mockUser = {
   name: "John Doe",
@@ -30,6 +32,8 @@ export default function ProfileScreen() {
         <PPCard user={mockUser}></PPCard>
         <OtherPhotosCard user={mockUser}></OtherPhotosCard>
         <AboutMeCard user={mockUser} account={mockUser}></AboutMeCard>
+        <LanguagesCard></LanguagesCard>
+        <BadgesCard></BadgesCard>
         <LangXTokenCard></LangXTokenCard>
         <DayStreaksCard></DayStreaksCard>
       </ThemedView>
