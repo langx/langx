@@ -6,6 +6,7 @@ import logo_light from "../assets/images/logo-light.png";
 import logo_dark from "../assets/images/logo-dark.png";
 import logoSmall from "../assets/images/logo-small.png";
 import empty from "../assets/images/empty.png";
+import token from "../assets/images/token.png";
 
 export default {
   profile,
@@ -16,4 +17,5 @@ export default {
   logo_dark,
   logoSmall,
   empty,
+  token,
 };
