@@ -35,8 +35,8 @@ export default function ProfileScreen() {
         <AboutMeCard user={mockUser} account={mockUser}></AboutMeCard>
         <LanguagesCard></LanguagesCard>
         <BadgesCard></BadgesCard>
-        <DayStreaksCard></DayStreaksCard>
         <LangXTokenCard></LangXTokenCard>
+        <DayStreaksCard></DayStreaksCard>
         <ProfileManagementCard></ProfileManagementCard>
       </ThemedView>
     </ScrollView>
