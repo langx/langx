@@ -33,6 +33,6 @@ export const sampleUser: User = {
     longestStreak: 25,
     lastActivity: new Date('2024-07-01'),
   },
-  profilePic: 'profile.png',
+  profilePic: '652d582c65bb47ac5de0',
   otherPics: ['pic1URL', 'pic2URL', 'pic3URL'],
 };

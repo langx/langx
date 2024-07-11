@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, Pressable } from "react-native";
 
 import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
@@ -8,15 +8,30 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
+import { getUserImage } from "@/services/bucketService";
+
 const PPCard = ({ user }) => {
   const isLoading = true;
   const msgButton = false;
+
+  const [imageUri, setImageUri] = useState(null);
+  useEffect(() => {
+    const fetchImageUri = async () => {
+      if (user?.profilePic) {
+        const uri = await getUserImage(user.profilePic);
+        setImageUri(uri.toString());
+      }
+    };
+
+    fetchImageUri();
+  }, [user]);
+
   return (
     <ThemedView style={styles.card}>
       <ThemedView style={styles.cardHeader}>
         <Pressable onPress={() => console.log("Preview profile picture")}>
           <Image
-            source={images.profile}
+            source={{ uri: imageUri }}
             style={[
               styles.profilePic,
               user.contributors.length > 0 ? styles.contributor : {},
