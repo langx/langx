@@ -1,13 +1,16 @@
 import React from "react";
-import { StyleSheet, Image, View, ScrollView } from "react-native";
+import { StyleSheet, Image, Pressable, View, ScrollView } from "react-native";
 
 import images from "@/constants/images";
-import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const OtherPhotosCard = ({ user }) => {
   const otherPics = [1, 2, 3, 4, 5, 6];
+
+  const handleImagePress = (index) => {
+    console.log(`Image pressed: ${index}`);
+  };
 
   return (
     <ThemedView style={styles.card}>
@@ -25,11 +28,15 @@ const OtherPhotosCard = ({ user }) => {
             ) : (
               <View style={styles.grid}>
                 {otherPics.map((photo, index) => (
-                  <Image
+                  <Pressable
                     key={index}
-                    source={images.thumbnail}
-                    style={[styles.image, styles.gridItem]}
-                  />
+                    onPress={() => handleImagePress(index)}
+                  >
+                    <Image
+                      source={images.thumbnail}
+                      style={[styles.image, styles.gridItem]}
+                    />
+                  </Pressable>
                 ))}
               </View>
             )}
