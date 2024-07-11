@@ -5,7 +5,6 @@ import {
   Pressable,
   Modal,
   View,
-  TouchableOpacity,
   ScrollView,
 } from "react-native";
 import Swiper from "react-native-swiper";
@@ -19,7 +18,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 const OtherPhotosCard = ({ user }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const otherPics = [1, 2, 3, 4, 5, 6]; // Replace this with user.otherPhotos;
+  const otherPics = [1, 2, 3, 4, 5, 6];
 
   const openModal = (index) => {
     setCurrentIndex(index);
@@ -61,9 +60,9 @@ const OtherPhotosCard = ({ user }) => {
 
       <Modal visible={isModalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
-          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+          <Pressable style={styles.closeButton} onPress={closeModal}>
             <Ionicons name="close-outline" size={24} color="white" />
-          </TouchableOpacity>
+          </Pressable>
           <Swiper
             style={styles.modalSwiper}
             index={currentIndex}
