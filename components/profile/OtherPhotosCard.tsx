@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 import Swiper from "react-native-swiper";
+import { Ionicons } from "@expo/vector-icons";
+
 import images from "@/constants/images";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -60,7 +62,7 @@ const OtherPhotosCard = ({ user }) => {
       <Modal visible={isModalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            <ThemedText style={styles.closeButtonText}>×</ThemedText>
+            <Ionicons name="close-outline" size={24} color="white" />
           </TouchableOpacity>
           <Swiper
             style={styles.modalSwiper}
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "flex-start",
     padding: 10,
+    borderRadius: 10,
   },
   gridItem: {
     margin: 10,
@@ -136,9 +139,15 @@ const styles = StyleSheet.create({
     top: 50,
     right: 30,
     zIndex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   closeButtonText: {
-    fontSize: 50,
+    fontSize: 24,
     color: "white",
   },
   modalSwiper: {
