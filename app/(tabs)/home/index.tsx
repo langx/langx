@@ -31,7 +31,7 @@ export default function CommunityScreen() {
           />
         }
       >
-        <RecomendedSection users={users} loading={loading} refetch={refetch} />
+        <RecomendedSection users={users} loading={loading} />
         <FeaturedSection users={users} loading={loading} />
         <VisitorsSection></VisitorsSection>
       </ScrollView>

@@ -13,15 +13,16 @@ import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
-const RecomendedSection = ({ users, loading, refetch }) => {
+const RecomendedSection = ({ users, loading }) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const handleLoadMore = async () => {
     if (!isLoadingMore) {
       setIsLoadingMore(true);
-      console.log("End of list reached, loading more items...");
-      await refetch();
-      setIsLoadingMore(false);
+      setTimeout(() => {
+        console.log("Loading complete");
+        setIsLoadingMore(false);
+      }, 2000);
     }
   };
 
