@@ -6,7 +6,7 @@ import PPCard from "@/components/profile/PPCard";
 import AboutMeCard from "@/components/profile/AboutMeCard";
 import LanguagesCard from "@/components/profile/LanguagesCard";
 import ProfileManagementCard from "@/components/profile/ProfileManagementCard";
-import OtherPhotosCard from "@/components/profile/OtherPhotosCard";
+import PhotosGalleryCard from "@/components/profile/PhotosGalleryCard";
 import BadgesCard from "@/components/profile/BadgesCard";
 import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
@@ -28,7 +28,10 @@ const mockUser = {
 
 const components = [
   { component: <PPCard user={mockUser} />, key: "PPCard" },
-  { component: <OtherPhotosCard user={mockUser} />, key: "OtherPhotosCard" },
+  {
+    component: <PhotosGalleryCard user={mockUser} />,
+    key: "PhotosGalleryCard",
+  },
   {
     component: <AboutMeCard user={mockUser} account={mockUser} />,
     key: "AboutMeCard",

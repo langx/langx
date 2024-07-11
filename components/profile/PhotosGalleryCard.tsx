@@ -5,7 +5,7 @@ import images from "@/constants/images";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const OtherPhotosCard = ({ user }) => {
+const PhotosGalleryCard = ({ user }) => {
   const otherPics = [1, 2, 3, 4, 5, 6];
 
   const handleImagePress = (index) => {
@@ -17,10 +17,8 @@ const OtherPhotosCard = ({ user }) => {
       {otherPics.length > 0 && (
         <>
           <ThemedView style={styles.cardHeader}>
-            <ThemedText style={styles.cardTitle}>Other Photos</ThemedText>
-            <ThemedText style={styles.cardSubtitle}>
-              Photos Collection
-            </ThemedText>
+            <ThemedText style={styles.cardTitle}>Photos Gallery</ThemedText>
+            <ThemedText style={styles.cardSubtitle}>User Collection</ThemedText>
           </ThemedView>
           <ScrollView contentContainerStyle={styles.cardContent}>
             {otherPics.length === 0 ? (
@@ -47,7 +45,7 @@ const OtherPhotosCard = ({ user }) => {
   );
 };
 
-export default OtherPhotosCard;
+export default PhotosGalleryCard;
 
 const styles = StyleSheet.create({
   card: {
