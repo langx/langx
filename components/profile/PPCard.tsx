@@ -29,7 +29,7 @@ const PPCard = ({ user }) => {
         <ThemedText style={styles.cardSubtitle}>
           {getAge(user.birthdate)} |{" "}
           {user.gender.charAt(0).toUpperCase() + user.gender.slice(1)} |{" "}
-          {user.country} {getFlagEmoji(user.country)}
+          {user.country} {getFlagEmoji(user.countryCode)}
         </ThemedText>
         {lastSeen(user.lastSeen) !== "online" ? (
           <ThemedText style={styles.cardSubtitle}>

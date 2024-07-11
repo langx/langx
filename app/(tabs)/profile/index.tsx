@@ -10,30 +10,16 @@ import PhotosGalleryCard from "@/components/profile/PhotosGalleryCard";
 import BadgesCard from "@/components/profile/BadgesCard";
 import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
-
-const mockUser = {
-  name: "John Doe",
-  profilePic: "userimageURL",
-  birthdate: "1990-01-01",
-  aboutMe:
-    "I love coding, traveling, and learning new languages.I love coding, traveling, and learning new languages.I love coding, traveling, and learning new languages.I love coding, traveling, and learning new languages.",
-  gender: "male",
-  country: "US",
-  lastSeen: "2024-07-01T12:00:00Z",
-  contributors: [1, 2, 3],
-  sponsor: true,
-  username: "johndoe",
-  emailVerification: true,
-};
+import { sampleUser } from "@/constants/sampleUser";
 
 const components = [
-  { component: <PPCard user={mockUser} />, key: "PPCard" },
+  { component: <PPCard user={sampleUser} />, key: "PPCard" },
   {
-    component: <PhotosGalleryCard user={mockUser} />,
+    component: <PhotosGalleryCard user={sampleUser} />,
     key: "PhotosGalleryCard",
   },
   {
-    component: <AboutMeCard user={mockUser} account={mockUser} />,
+    component: <AboutMeCard user={sampleUser} account={sampleUser} />,
     key: "AboutMeCard",
   },
   { component: <LanguagesCard />, key: "LanguagesCard" },
