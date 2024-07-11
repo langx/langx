@@ -15,7 +15,8 @@ const mockUser = {
   name: "John Doe",
   profilePic: "userimageURL",
   birthdate: "1990-01-01",
-  aboutMe: "I love coding, traveling, and learning new languages.",
+  aboutMe:
+    "I love coding, traveling, and learning new languages.I love coding, traveling, and learning new languages.I love coding, traveling, and learning new languages.I love coding, traveling, and learning new languages.",
   gender: "male",
   country: "US",
   lastSeen: "2024-07-01T12:00:00Z",
