@@ -56,7 +56,6 @@ const DayStreaksCard = ({ streak = mockStreak }) => {
               </ThemedText>
             )}
           </ThemedView>
-          <ThemedView style={styles.metadataEndWrapper}></ThemedView>
         </Pressable>
 
         <Pressable
@@ -70,6 +69,12 @@ const DayStreaksCard = ({ streak = mockStreak }) => {
             style={styles.icon}
           />
           <ThemedText style={styles.leaderboardLabel}>Leaderboard</ThemedText>
+          <Ionicons
+            name="chevron-forward-outline"
+            size={24}
+            color={Colors.light.primary}
+            style={styles.detailIcon}
+          />
         </Pressable>
       </ThemedView>
     </ThemedView>
@@ -110,6 +115,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 10,
   },
   thumbnail: {
@@ -129,7 +135,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
   },
-  metadataEndWrapper: {},
   hasIcon: {
     marginTop: 10,
   },
@@ -138,5 +143,9 @@ const styles = StyleSheet.create({
   },
   leaderboardLabel: {
     fontSize: 16,
+    flex: 1,
+  },
+  detailIcon: {
+    marginLeft: 10,
   },
 });
