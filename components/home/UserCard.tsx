@@ -91,9 +91,7 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     margin: 10,
-    borderWidth: 1,
-    borderColor: Colors.light.gray3,
-    borderRadius: 8,
+    borderRadius: 10,
     overflow: "hidden",
     height: 200,
     width: 150,
