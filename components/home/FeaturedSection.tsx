@@ -1,18 +1,47 @@
-import { FlatList, Pressable, StyleSheet } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-
+import React, { useEffect, forwardRef, useImperativeHandle } from "react";
+import {
+  FlatList,
+  ActivityIndicator,
+  View,
+  StyleSheet,
+  Pressable,
+} from "react-native";
+import { useDatabase } from "@/hooks/useDatabase";
+import { listUsers } from "@/services/userService";
 import UserCard from "@/components/home/UserCard";
 import { Colors } from "@/constants/Colors";
-import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { Ionicons } from "@expo/vector-icons";
 
-const FeaturedSection = ({ users, loading }) => {
+const FeaturedSection = forwardRef((props, ref) => {
+  const {
+    data: users,
+    loading,
+    loadMore,
+    refetch,
+    hasMore,
+  } = useDatabase(listUsers);
+
+  useImperativeHandle(ref, () => ({
+    refetch,
+  }));
+
+  useEffect(() => {
+    loadMore(); // Initial load
+  }, []);
+
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </View>
+    );
+  };
+
   return (
-    <ThemedView
-      style={{
-        flex: 1,
-      }}
-    >
+    <ThemedView style={styles.card}>
       {/* Header Section */}
       <ThemedView style={styles.cardHeader}>
         <ThemedView style={styles.titleContainer}>
@@ -30,21 +59,19 @@ const FeaturedSection = ({ users, loading }) => {
         </ThemedView>
         <ThemedText style={styles.cardSubtitle}>Completed Profiles</ThemedText>
       </ThemedView>
-
-      {/* List Section */}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         horizontal
         data={users}
         keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => (
-          <UserCard item={item} loadingItem={loading} />
-        )}
-        style={{ flex: 1 }}
+        renderItem={({ item }) => <UserCard item={item} />}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
       />
     </ThemedView>
   );
-};
+});
 
 export default FeaturedSection;
 
@@ -72,10 +99,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 5,
   },
-  cardContent: {
-    padding: 20,
-  },
   infoButton: {
     padding: 5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
