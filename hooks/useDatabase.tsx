@@ -40,7 +40,10 @@ export function useDatabase(fn, initialOffset = 0) {
   }, [isLoadingMore, hasMore]);
 
   const refetch = () => {
+    setData([]);
     setOffset(0);
+    setHasMore(true);
+    setLoading(true);
     fetchData(0);
   };
 

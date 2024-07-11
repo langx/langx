@@ -1,33 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, forwardRef, useImperativeHandle } from "react";
 import {
   FlatList,
-  Pressable,
-  StyleSheet,
   ActivityIndicator,
   View,
+  StyleSheet,
+  Pressable,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-
+import { useDatabase } from "@/hooks/useDatabase";
+import { listUsers } from "@/services/userService";
 import UserCard from "@/components/home/UserCard";
 import { Colors } from "@/constants/Colors";
-import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { Ionicons } from "@expo/vector-icons";
 
-const RecomendedSection = ({ users, loading }) => {
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+const RecomendedSection = forwardRef((props, ref) => {
+  const {
+    data: users,
+    loading,
+    loadMore,
+    refetch,
+    hasMore,
+  } = useDatabase(listUsers);
 
-  const handleLoadMore = async () => {
-    if (!isLoadingMore) {
-      setIsLoadingMore(true);
-      setTimeout(() => {
-        console.log("Loading complete");
-        setIsLoadingMore(false);
-      }, 2000);
-    }
-  };
+  useImperativeHandle(ref, () => ({
+    refetch,
+  }));
+
+  useEffect(() => {
+    loadMore(); // Initial load
+  }, []);
 
   const renderFooter = () => {
-    if (!isLoadingMore) return null;
+    if (!hasMore) return null;
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.light.primary} />
@@ -52,10 +57,8 @@ const RecomendedSection = ({ users, loading }) => {
             />
           </Pressable>
         </ThemedView>
-        <ThemedText style={styles.cardSubtitle}>Recommendations</ThemedText>
+        <ThemedText style={styles.cardSubtitle}>Recommended Users</ThemedText>
       </ThemedView>
-
-      {/* List Section */}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         horizontal
@@ -64,14 +67,13 @@ const RecomendedSection = ({ users, loading }) => {
         renderItem={({ item }) => (
           <UserCard item={item} loadingItem={loading} />
         )}
-        style={{ flex: 1 }}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5} // Adjust this value as needed
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
       />
     </ThemedView>
   );
-};
+});
 
 export default RecomendedSection;
 
@@ -98,9 +100,6 @@ const styles = StyleSheet.create({
   cardSubtitle: {
     fontSize: 16,
     marginTop: 5,
-  },
-  cardContent: {
-    padding: 20,
   },
   infoButton: {
     padding: 5,
