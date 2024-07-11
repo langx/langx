@@ -10,7 +10,7 @@ import { getUserImage } from "@/services/bucketService";
 import { getFlagEmoji2 } from "@/constants/utils";
 import { Language } from "@/models/Language";
 
-const UserCard = ({ item, loadingItem }) => {
+const UserCard = ({ item }) => {
   const [userImageUrl, setUserImageUrl] = useState("");
   const { data, loading, refetch } = useDatabase(() =>
     getUserImage(item.profilePic)
@@ -42,7 +42,7 @@ const UserCard = ({ item, loadingItem }) => {
     return flags.join(" ");
   };
 
-  if (loading || loadingItem) {
+  if (loading) {
     return (
       <ThemedView style={styles.card}>
         <ThemedView style={styles.loading}>

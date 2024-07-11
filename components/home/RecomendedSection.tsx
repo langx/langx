@@ -64,9 +64,7 @@ const RecomendedSection = forwardRef((props, ref) => {
         horizontal
         data={users}
         keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => (
-          <UserCard item={item} loadingItem={loading} />
-        )}
+        renderItem={({ item }) => <UserCard item={item} />}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
