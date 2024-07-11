@@ -3,14 +3,12 @@ import {
   StyleSheet,
   Image,
   Pressable,
-  View,
   ActivityIndicator,
   ImageStyle,
 } from "react-native";
 
 import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
-import images from "@/constants/images";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
@@ -32,13 +30,13 @@ const PPCard = ({ user }) => {
     };
 
     fetchImageUri();
-  }, [user]);
+  }, [user?.profilePic]);
 
   return (
     <ThemedView style={styles.card}>
       <ThemedView style={styles.cardHeader}>
         <Pressable onPress={() => console.log("Preview profile picture")}>
-          <View style={styles.imageContainer}>
+          <ThemedView style={styles.imageContainer}>
             {isLoading && (
               <ActivityIndicator
                 style={styles.loadingIndicator}
@@ -59,7 +57,7 @@ const PPCard = ({ user }) => {
               onLoadStart={() => setIsLoading(true)}
               onLoadEnd={() => setIsLoading(false)}
             />
-          </View>
+          </ThemedView>
         </Pressable>
         <ThemedText style={styles.cardTitle}>{user.name}</ThemedText>
         <ThemedText style={styles.cardSubtitle}>
