@@ -1,4 +1,11 @@
-import { FlatList, Pressable, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  ActivityIndicator,
+  View,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import UserCard from "@/components/home/UserCard";
@@ -6,9 +13,25 @@ import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
-const RecomendedSection = ({ users, loading }) => {
-  const openPage = async (pageURL) => {
-    console.log(pageURL);
+const RecomendedSection = ({ users, loading, refetch }) => {
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const handleLoadMore = async () => {
+    if (!isLoadingMore) {
+      setIsLoadingMore(true);
+      console.log("End of list reached, loading more items...");
+      await refetch();
+      setIsLoadingMore(false);
+    }
+  };
+
+  const renderFooter = () => {
+    if (!isLoadingMore) return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </View>
+    );
   };
 
   return (
@@ -41,6 +64,9 @@ const RecomendedSection = ({ users, loading }) => {
           <UserCard item={item} loadingItem={loading} />
         )}
         style={{ flex: 1 }}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5} // Adjust this value as needed
+        ListFooterComponent={renderFooter}
       />
     </ThemedView>
   );
@@ -77,5 +103,10 @@ const styles = StyleSheet.create({
   },
   infoButton: {
     padding: 5,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
