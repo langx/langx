@@ -5,3 +5,5 @@ export const APP_DATABASE = "650750f16cd0c482bb83";
 export const USERS_COLLECTION = "65103e2d3a6b4d9494c8";
 
 export const USER_BUCKET = "6515f94d20becd47cb40";
+
+export const PAGINATION_LIMIT = 10;
