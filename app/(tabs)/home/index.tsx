@@ -35,7 +35,7 @@ export default function CommunityScreen() {
       >
         <RecomendedSection ref={recommendedSectionRef} />
         <FeaturedSection ref={featuredSectionRef} />
-        {/* <VisitorsSectsion ref={visitorsSectionRef} /> */}
+        <VisitorsSection ref={visitorsSectionRef} />
       </ScrollView>
     </ThemedView>
   );
