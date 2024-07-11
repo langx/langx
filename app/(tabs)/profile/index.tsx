@@ -11,25 +11,50 @@ import BadgesCard from "@/components/profile/BadgesCard";
 import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
 import { sampleUser } from "@/constants/sampleUser";
-
-const components = [
-  { component: <PPCard user={sampleUser} />, key: "PPCard" },
-  {
-    component: <PhotosGalleryCard user={sampleUser} />,
-    key: "PhotosGalleryCard",
-  },
-  {
-    component: <AboutMeCard user={sampleUser} account={sampleUser} />,
-    key: "AboutMeCard",
-  },
-  { component: <LanguagesCard />, key: "LanguagesCard" },
-  { component: <BadgesCard />, key: "BadgesCard" },
-  { component: <LangXTokenCard />, key: "LangXTokenCard" },
-  { component: <DayStreaksCard />, key: "DayStreaksCard" },
-  { component: <ProfileManagementCard />, key: "ProfileManagementCard" },
-];
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { User } from "@/models/User";
 
 const ProfileScreen = () => {
+  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  console.log("isLoggedIn:", isLoggedIn);
+  console.log("isGuestIn:", isGuestIn);
+  console.log("isLoading:", isLoading);
+  console.log("user:", user);
+
+  let activeUser: User;
+
+  if (isLoading) {
+    activeUser = null;
+  } else if (isLoggedIn) {
+    activeUser = user;
+  } else if (isGuestIn) {
+    activeUser = sampleUser;
+  } else {
+    activeUser = null;
+  }
+
+  const components = [
+    { component: <PPCard user={activeUser} />, key: "PPCard" },
+    {
+      component: <PhotosGalleryCard user={activeUser} />,
+      key: "PhotosGalleryCard",
+    },
+    {
+      component: <AboutMeCard user={activeUser} account={activeUser} />,
+      key: "AboutMeCard",
+    },
+    { component: <LanguagesCard />, key: "LanguagesCard" },
+    { component: <BadgesCard />, key: "BadgesCard" },
+    { component: <LangXTokenCard />, key: "LangXTokenCard" },
+    { component: <DayStreaksCard />, key: "DayStreaksCard" },
+    { component: <ProfileManagementCard />, key: "ProfileManagementCard" },
+  ];
+
   const renderItem = useCallback(
     ({ item }) => (
       <ThemedView style={styles.itemContainer}>{item.component}</ThemedView>
