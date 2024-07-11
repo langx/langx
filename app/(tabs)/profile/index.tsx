@@ -1,16 +1,15 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, FlatList } from "react-native";
 
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import PPCard from "@/components/profile/PPCard";
-import OtherPhotosCard from "@/components/profile/OtherPhotosCard";
 import AboutMeCard from "@/components/profile/AboutMeCard";
+import LanguagesCard from "@/components/profile/LanguagesCard";
+import ProfileManagementCard from "@/components/profile/ProfileManagementCard";
+import OtherPhotosCard from "@/components/profile/OtherPhotosCard";
+import BadgesCard from "@/components/profile/BadgesCard";
 import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
-import LanguagesCard from "@/components/profile/LanguagesCard";
-import BadgesCard from "@/components/profile/BadgesCard";
-import ProfileManagementCard from "@/components/profile/ProfileManagementCard";
 
 const mockUser = {
   name: "John Doe",
@@ -26,19 +25,40 @@ const mockUser = {
   emailVerification: true,
 };
 
-export default function ProfileScreen() {
-  return (
-    <ScrollView>
-      <ThemedView>
-        <PPCard user={mockUser}></PPCard>
-        <OtherPhotosCard user={mockUser}></OtherPhotosCard>
-        <AboutMeCard user={mockUser} account={mockUser}></AboutMeCard>
-        <LanguagesCard></LanguagesCard>
-        <BadgesCard></BadgesCard>
-        <LangXTokenCard></LangXTokenCard>
-        <DayStreaksCard></DayStreaksCard>
-        <ProfileManagementCard></ProfileManagementCard>
-      </ThemedView>
-    </ScrollView>
+const components = [
+  { component: <PPCard user={mockUser} />, key: "PPCard" },
+  { component: <OtherPhotosCard user={mockUser} />, key: "OtherPhotosCard" },
+  {
+    component: <AboutMeCard user={mockUser} account={mockUser} />,
+    key: "AboutMeCard",
+  },
+  { component: <LanguagesCard />, key: "LanguagesCard" },
+  { component: <BadgesCard />, key: "BadgesCard" },
+  { component: <LangXTokenCard />, key: "LangXTokenCard" },
+  { component: <DayStreaksCard />, key: "DayStreaksCard" },
+  { component: <ProfileManagementCard />, key: "ProfileManagementCard" },
+];
+
+const ProfileScreen = () => {
+  const renderItem = ({ item }) => (
+    <ThemedView style={styles.itemContainer}>{item.component}</ThemedView>
   );
-}
+
+  return (
+    <ThemedView>
+      <FlatList
+        data={components}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+      />
+    </ThemedView>
+  );
+};
+
+export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  itemContainer: {
+    marginBottom: 10,
+  },
+});
