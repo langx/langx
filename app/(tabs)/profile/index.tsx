@@ -45,7 +45,7 @@ const ProfileScreen = () => {
   );
 
   return (
-    <ThemedView>
+    <ThemedView style={styles.container}>
       <FlatList
         data={components}
         renderItem={renderItem}
@@ -58,6 +58,9 @@ const ProfileScreen = () => {
 export default ProfileScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   itemContainer: {
     marginBottom: 10,
   },
