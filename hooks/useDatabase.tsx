@@ -1,16 +1,25 @@
 import { Alert } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
-export function useDatabase(fn: Function, initialOffset: number = 0) {
+import { PAGINATION_LIMIT } from "@/constants/config";
+
+export function useDatabase(fn, initialOffset = 0) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(initialOffset);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchData = async (currentOffset: number) => {
+  const fetchData = async (currentOffset) => {
     setLoading(true);
     try {
       const res = await fn(currentOffset);
-      setData(res);
+      if (currentOffset === 0) {
+        setData(res);
+      } else {
+        setData((prevData) => [...prevData, ...res]);
+      }
+      setHasMore(res.length > 0);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -22,7 +31,18 @@ export function useDatabase(fn: Function, initialOffset: number = 0) {
     fetchData(offset);
   }, [offset]);
 
-  const refetch = () => fetchData(offset);
+  const loadMore = useCallback(() => {
+    if (!isLoadingMore && hasMore) {
+      setIsLoadingMore(true);
+      setOffset((prevOffset) => prevOffset + PAGINATION_LIMIT);
+      setIsLoadingMore(false);
+    }
+  }, [isLoadingMore, hasMore]);
 
-  return { data, loading, refetch, setOffset };
+  const refetch = () => {
+    setOffset(0);
+    fetchData(0);
+  };
+
+  return { data, loading, loadMore, refetch, setOffset, hasMore };
 }
