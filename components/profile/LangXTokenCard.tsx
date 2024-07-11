@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import images from "@/constants/images";
 
+import images from "@/constants/images";
+import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
@@ -60,7 +60,6 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
               </ThemedText>
             )}
           </ThemedView>
-          <ThemedView style={styles.metadataEndWrapper}></ThemedView>
         </Pressable>
 
         <Pressable
@@ -74,6 +73,12 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
             style={styles.icon}
           />
           <ThemedText style={styles.leaderboardLabel}>Checkouts</ThemedText>
+          <Ionicons
+            name="chevron-forward-outline"
+            size={24}
+            color={Colors.light.primary}
+            style={styles.detailIcon}
+          />
         </Pressable>
 
         <Pressable
@@ -87,6 +92,12 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
             style={styles.icon}
           />
           <ThemedText style={styles.leaderboardLabel}>Leaderboard</ThemedText>
+          <Ionicons
+            name="chevron-forward-outline"
+            size={24}
+            color={Colors.light.primary}
+            style={styles.detailIcon}
+          />
         </Pressable>
       </ThemedView>
     </ThemedView>
@@ -127,6 +138,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     paddingVertical: 10,
   },
   thumbnail: {
@@ -145,7 +157,6 @@ const styles = StyleSheet.create({
   noBalance: {
     fontSize: 16,
   },
-  metadataEndWrapper: {},
   hasIcon: {
     marginTop: 10,
   },
@@ -154,5 +165,9 @@ const styles = StyleSheet.create({
   },
   leaderboardLabel: {
     fontSize: 16,
+    flex: 1,
+  },
+  detailIcon: {
+    marginLeft: 10,
   },
 });

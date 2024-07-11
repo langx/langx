@@ -1,9 +1,9 @@
 import React from "react";
 import { StyleSheet, Image, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors";
-import images from "@/constants/images";
 
+import images from "@/constants/images";
+import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
