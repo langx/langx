@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Image, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  Pressable,
+  View,
+  ActivityIndicator,
+  ImageStyle,
+} from "react-native";
 
 import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
@@ -11,16 +18,17 @@ import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { getUserImage } from "@/services/bucketService";
 
 const PPCard = ({ user }) => {
-  const isLoading = true;
+  const [imageUri, setImageUri] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const msgButton = false;
 
-  const [imageUri, setImageUri] = useState(null);
   useEffect(() => {
     const fetchImageUri = async () => {
       if (user?.profilePic) {
         const uri = await getUserImage(user.profilePic);
         setImageUri(uri.toString());
       }
+      setIsLoading(false);
     };
 
     fetchImageUri();
@@ -30,15 +38,28 @@ const PPCard = ({ user }) => {
     <ThemedView style={styles.card}>
       <ThemedView style={styles.cardHeader}>
         <Pressable onPress={() => console.log("Preview profile picture")}>
-          <Image
-            source={{ uri: imageUri }}
-            style={[
-              styles.profilePic,
-              user.contributors.length > 0 ? styles.contributor : {},
-              user.sponsor ? styles.sponsor : {},
-            ]}
-            accessibilityLabel="Profile Picture"
-          />
+          <View style={styles.imageContainer}>
+            {isLoading && (
+              <ActivityIndicator
+                style={styles.loadingIndicator}
+                size="large"
+                color={Colors.light.primary}
+              />
+            )}
+            <Image
+              source={{ uri: imageUri }}
+              style={[
+                styles.profilePic as ImageStyle,
+                ...(user.contributors.length > 0
+                  ? [styles.contributor as ImageStyle]
+                  : []),
+                ...(user.sponsor ? [styles.sponsor as ImageStyle] : []),
+              ]}
+              accessibilityLabel="Profile Picture"
+              onLoadStart={() => setIsLoading(true)}
+              onLoadEnd={() => setIsLoading(false)}
+            />
+          </View>
         </Pressable>
         <ThemedText style={styles.cardTitle}>{user.name}</ThemedText>
         <ThemedText style={styles.cardSubtitle}>
@@ -83,11 +104,22 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
   },
-  profilePic: {
-    borderRadius: 10,
+  imageContainer: {
+    position: "relative",
     width: 200,
     height: 200,
     marginBottom: 10,
+  },
+  profilePic: {
+    borderRadius: 10,
+    width: "100%",
+    height: "100%",
+  },
+  loadingIndicator: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -12.5 }, { translateY: -12.5 }],
   },
   contributor: {
     borderWidth: 3,
