@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, FlatList } from "react-native";
 
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -44,8 +44,11 @@ const components = [
 ];
 
 const ProfileScreen = () => {
-  const renderItem = ({ item }) => (
-    <ThemedView style={styles.itemContainer}>{item.component}</ThemedView>
+  const renderItem = useCallback(
+    ({ item }) => (
+      <ThemedView style={styles.itemContainer}>{item.component}</ThemedView>
+    ),
+    []
   );
 
   return (
