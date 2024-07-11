@@ -22,7 +22,7 @@ const RecomendedSection = ({ users, loading }) => {
             onPress={() => console.log("Button pressed")}
           >
             <Ionicons
-              name="list-circle-outline"
+              name="ellipsis-horizontal-circle-outline"
               size={20}
               color={Colors.light.primary}
             />
