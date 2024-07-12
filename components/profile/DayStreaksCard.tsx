@@ -7,11 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const mockStreak = {
-  daystreak: 15,
-};
-
-const DayStreaksCard = ({ streak = mockStreak }) => {
+const DayStreaksCard = ({ streak }) => {
   const openPage = (url) => {
     console.log("Open page:", url);
   };
@@ -128,7 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   balance: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
   },
   noBalance: {

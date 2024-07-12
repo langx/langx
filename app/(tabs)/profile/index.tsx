@@ -66,7 +66,10 @@ const ProfileScreen = () => {
       ),
       key: "LangXTokenCard",
     },
-    { component: <DayStreaksCard />, key: "DayStreaksCard" },
+    {
+      component: <DayStreaksCard streak={activeUser?.streaks} />,
+      key: "DayStreaksCard",
+    },
     { component: <ProfileManagementCard />, key: "ProfileManagementCard" },
   ];
 

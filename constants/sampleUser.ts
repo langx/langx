@@ -95,7 +95,7 @@ export const sampleUser: User = {
   contributors: [],
   sponsor: false,
   streaks: {
-    dayStreak: 10,
+    daystreak: 10,
     userId: 'user123',
     lastActivity: new Date('2024-07-01'),
     $id: 'streak1',
