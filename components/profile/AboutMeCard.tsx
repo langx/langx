@@ -23,7 +23,7 @@ const AboutMeCard = ({ user, account }) => {
         <ThemedView style={styles.item}>
           <Ionicons name="flag-outline" style={styles.icon} />
           <ThemedText style={styles.label}>
-            {user.country} {getFlagEmoji(user.country)}
+            {user.country} {getFlagEmoji(user.countryCode)}
           </ThemedText>
         </ThemedView>
         <ThemedView style={styles.item}>
