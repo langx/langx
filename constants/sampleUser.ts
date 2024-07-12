@@ -1,12 +1,12 @@
 import { User } from '@/models/User';
 
 export const sampleUser: User = {
-  name: 'Jane Smith',
+  name: 'Guest User',
   country: 'Canada',
   countryCode: 'CA',
   gender: 'male',
   birthdate: new Date('1995-05-15'),
-  username: 'janesmith',
+  username: 'langx',
   languageArray: ['English', 'French'],
   motherLanguages: ['English'],
   studyLanguages: ['French', 'Spanish'],
@@ -34,5 +34,5 @@ export const sampleUser: User = {
     lastActivity: new Date('2024-07-01'),
   },
   profilePic: '652d582c65bb47ac5de0',
-  otherPics: ['pic1URL', 'pic2URL', 'pic3URL'],
+  otherPics: ['652d582c65bb47ac5de0', '652d582c65bb47ac5de0'],
 };
