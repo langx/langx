@@ -1,27 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
+import { Language } from "@/models/Language";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const mockStudyLanguages = [
-  { name: "Spanish", nativeName: "Español", level: 2 },
-  { name: "French", nativeName: "Français", level: 1 },
-  { name: "Japanese", nativeName: "日本語", level: 0 },
-  { name: "Chinese", nativeName: "中文", level: 3 },
-];
+interface LanguagesCardProps {
+  languages: Language[];
+}
 
-const mockMotherLanguages = [
-  { name: "English", nativeName: "English" },
-  { name: "Spanish", nativeName: "Español" },
-];
+const LanguagesCard: React.FC<LanguagesCardProps> = ({ languages }) => {
+  const [studyLanguages, setStudyLanguages] = useState<Language[]>([]);
+  const [motherLanguages, setMotherLanguages] = useState<Language[]>([]);
 
-const LanguagesCard = ({
-  studyLanguages = mockStudyLanguages,
-  motherLanguages = mockMotherLanguages,
-}) => {
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      const studyLangs =
+        languages?.filter((lang) => !lang.motherLanguage) ?? [];
+      const motherLangs =
+        languages?.filter((lang) => lang.motherLanguage) ?? [];
+      setStudyLanguages(studyLangs);
+      setMotherLanguages(motherLangs);
+    };
+
+    fetchLanguages();
+  }, [languages]);
+
   const renderStudyLanguageItem = ({ item }) => (
     <ThemedView style={styles.item}>
       <Ionicons
@@ -68,9 +74,7 @@ const LanguagesCard = ({
       </ThemedView>
       <ThemedView style={styles.cardHeader}>
         <ThemedText style={styles.cardTitle}>Mother Tongue</ThemedText>
-        <ThemedText style={styles.cardSubtitle}>
-          Speaking Comfortably
-        </ThemedText>
+        <ThemedText style={styles.cardSubtitle}>Speaking Fluently</ThemedText>
       </ThemedView>
       <ThemedView style={styles.cardContent}>
         <FlatList

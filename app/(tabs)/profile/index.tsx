@@ -53,7 +53,10 @@ const ProfileScreen = () => {
       component: <AboutMeCard user={activeUser} account={account} />,
       key: "AboutMeCard",
     },
-    { component: <LanguagesCard />, key: "LanguagesCard" },
+    {
+      component: <LanguagesCard languages={activeUser?.languages} />,
+      key: "LanguagesCard",
+    },
     { component: <BadgesCard />, key: "BadgesCard" },
     { component: <LangXTokenCard />, key: "LangXTokenCard" },
     { component: <DayStreaksCard />, key: "DayStreaksCard" },
