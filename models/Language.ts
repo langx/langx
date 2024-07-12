@@ -1,4 +1,4 @@
-import { Models } from 'appwrite';
+import { Models } from 'react-native-appwrite';
 
 export type Language = Models.Document & {
   code: string;

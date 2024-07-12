@@ -1,4 +1,4 @@
-import { Models } from 'appwrite';
+import { Models } from 'react-native-appwrite';
 import { User } from './User';
 
 export type Visit = Models.Document & {

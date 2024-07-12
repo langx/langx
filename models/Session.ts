@@ -1,3 +1,3 @@
 import { Models } from 'react-native-appwrite';
 
-export type BucketFile = Models.File & {};
+export type Session = Models.Session;

@@ -1,11 +1,11 @@
-import { Models } from 'appwrite';
+import { Models } from 'react-native-appwrite';
 import { Language } from './Language';
 import { Streak } from './Streak';
 
 export type User = Models.Document & {
   name: string;
   country: string;
-  countyCode: string;
+  countryCode: string;
   gender: string;
   birthdate: Date;
   username: string;

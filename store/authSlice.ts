@@ -2,6 +2,7 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { User } from '@/models/User';
 import { Account } from '@/models/Account';
+import { Session } from '@/models/Session';
 import {
   getCurrentUser,
   getCurrentSession,
@@ -30,11 +31,12 @@ export const fetchAuthData = createAsyncThunk(
   'auth/fetchAuthData',
   async (_, { dispatch }) => {
     try {
-      const [account, user, session] = await Promise.all([
-        getAccount(),
-        getCurrentUser(),
-        getCurrentSession(),
-      ]);
+      const [account, user, session]: [Account, User, Session] =
+        await Promise.all([
+          getAccount(),
+          getCurrentUser() as Promise<User>,
+          getCurrentSession(),
+        ]);
 
       if (account) {
         dispatch(setAccount(account));
