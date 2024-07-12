@@ -48,7 +48,7 @@ const PPCard = ({ user }) => {
               source={{ uri: imageUri }}
               style={[
                 styles.profilePic as ImageStyle,
-                ...(user.contributors.length > 0
+                ...(user.contributors?.length > 0
                   ? [styles.contributor as ImageStyle]
                   : []),
                 ...(user.sponsor ? [styles.sponsor as ImageStyle] : []),
