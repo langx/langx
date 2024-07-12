@@ -64,7 +64,9 @@ const LangXTokenCard = ({ userId, isGuestIn }) => {
           />
           <ThemedView style={styles.labelContainer}>
             {loading ? (
-              <ActivityIndicator size="small" color={Colors.light.primary} />
+              <ThemedText style={styles.balance}>
+                <ActivityIndicator size="small" color={Colors.light.primary} />
+              </ThemedText>
             ) : wallet.balance ? (
               <ThemedText style={styles.balance}>
                 {bigNumber(wallet.balance)}
