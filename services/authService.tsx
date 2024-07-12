@@ -1,6 +1,7 @@
 import { ID, Query } from "react-native-appwrite";
 import { account, createDocument, listDocuments } from "@/services/apiService";
 import { USERS_COLLECTION } from "@/constants/config";
+import { User } from "@/models/User";
 
 // Register user
 export async function createUser(email, password, username) {
@@ -83,9 +84,8 @@ export async function getCurrentUser() {
 
     if (!currentUser) throw Error;
 
-    return currentUser.documents[0];
+    return currentUser.documents[0] as User;
   } catch (error) {
-    console.log(error);
     return null;
   }
 }

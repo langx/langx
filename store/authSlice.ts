@@ -36,7 +36,7 @@ export const fetchAuthData = createAsyncThunk(
       const [account, user, session]: [Account, User, Session] =
         await Promise.all([
           getAccount(),
-          getCurrentUser() as Promise<User>,
+          getCurrentUser(),
           getCurrentSession(),
         ]);
 
