@@ -57,7 +57,10 @@ const ProfileScreen = () => {
       component: <LanguagesCard languages={activeUser?.languages} />,
       key: "LanguagesCard",
     },
-    { component: <BadgesCard />, key: "BadgesCard" },
+    {
+      component: <BadgesCard badges={activeUser?.badges} />,
+      key: "BadgesCard",
+    },
     { component: <LangXTokenCard />, key: "LangXTokenCard" },
     { component: <DayStreaksCard />, key: "DayStreaksCard" },
     { component: <ProfileManagementCard />, key: "ProfileManagementCard" },

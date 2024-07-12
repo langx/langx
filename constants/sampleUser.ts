@@ -74,7 +74,14 @@ export const sampleUser: User = {
       $collectionId: '6511599e2bf0bb1b4d2c',
     },
   ],
-  badges: ['polyglot', 'early_bird'],
+  badges: [
+    'backer',
+    'early-adopter',
+    'creator',
+    'fundamental',
+    'pioneer',
+    'teacher',
+  ],
   aboutMe:
     'Passionate about languages and cultures. Love to travel and meet new people.',
   lastSeen: new Date(new Date().getTime() - 60000),
