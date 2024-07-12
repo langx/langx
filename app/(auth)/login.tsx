@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, StyleSheet, ScrollView, Alert } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { useDispatch } from "react-redux";
 
 import {
@@ -20,7 +20,6 @@ import images from "@/constants/images";
 
 const Login = () => {
   const colorScheme = useColorScheme();
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const [isSubmitting, setSubmitting] = useState(false);
