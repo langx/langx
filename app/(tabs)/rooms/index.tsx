@@ -17,7 +17,7 @@ export default function RoomsScreen() {
     hasMore,
   } = useDatabase(listRooms);
 
-  console.log(rooms);
+  console.log(rooms?.length);
 
   return (
     <ThemedView

@@ -10,7 +10,7 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { Room } from "@/models/Room";
 
 const RoomRow: FC<{ room: Room }> = ({ room }) => {
-  console.log(room);
+  // console.log(room);
   return (
     <AppleStyleSwipeableRow>
       <Link href={`/(tabs)/rooms/${room.$id}`} asChild>
