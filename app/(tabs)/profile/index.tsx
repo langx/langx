@@ -36,6 +36,7 @@ const ProfileScreen = () => {
     } else if (isLoggedIn) {
       setActiveUser(user);
     } else if (isGuestIn) {
+      sampleUser.username = `${sampleUser.username}_${account.$id.slice(-4)}`;
       setActiveUser(sampleUser);
     } else {
       setActiveUser(null);
