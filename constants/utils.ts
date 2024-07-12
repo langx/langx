@@ -66,7 +66,6 @@ export function lastSeenExt(date: Date) {
 }
 
 export const bigNumber = (value: number) => {
-  console.log('isNaN', isNaN(value));
   if (isNaN(value)) return value;
 
   if (value >= 1000000000) {
@@ -76,9 +75,6 @@ export const bigNumber = (value: number) => {
     return (value / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
   }
   if (value >= 1000) {
-    console.log('valueeeee', value);
-    const a = (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-    console.log('a', a);
     return (value / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
   }
   return value;
