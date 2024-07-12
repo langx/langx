@@ -23,10 +23,10 @@ const ProfileScreen = () => {
   const account = useSelector((state: RootState) => state.auth.account);
   const user = useSelector((state: RootState) => state.auth.user);
 
-  console.log("isLoggedIn:", isLoggedIn);
-  console.log("isGuestIn:", isGuestIn);
-  console.log("isLoading:", isLoading);
-  console.log("user:", user);
+  // console.log("isLoggedIn:", isLoggedIn);
+  // console.log("isGuestIn:", isGuestIn);
+  // console.log("isLoading:", isLoading);
+  // console.log("user:", user);
 
   const [activeUser, setActiveUser] = useState<User | null>(null);
 
@@ -40,7 +40,6 @@ const ProfileScreen = () => {
     } else {
       setActiveUser(null);
     }
-    console.log("activeUser", activeUser);
   }, [isLoading]);
 
   const components = [
@@ -61,7 +60,12 @@ const ProfileScreen = () => {
       component: <BadgesCard badges={activeUser?.badges} />,
       key: "BadgesCard",
     },
-    { component: <LangXTokenCard />, key: "LangXTokenCard" },
+    {
+      component: (
+        <LangXTokenCard userId={activeUser?.$id} isGuestIn={isGuestIn} />
+      ),
+      key: "LangXTokenCard",
+    },
     { component: <DayStreaksCard />, key: "DayStreaksCard" },
     { component: <ProfileManagementCard />, key: "ProfileManagementCard" },
   ];

@@ -1,17 +1,27 @@
-import React from "react";
-import { StyleSheet, Image, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Image, Pressable, ActivityIndicator } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import images from "@/constants/images";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { useDatabase } from "@/hooks/useDatabase";
+import { getWallet } from "@/services/walletService";
+import { sampleWallet } from "@/constants/sampleWallet";
 
-const mockWallet = {
-  balance: 12345.67,
-};
+const LangXTokenCard = ({ userId, isGuestIn }) => {
+  const [wallet, setWallet] = useState({ balance: 0 });
+  const { data: realWallet, loading } = useDatabase(() => getWallet(userId), 0);
 
-const LangXTokenCard = ({ wallet = mockWallet }) => {
+  useEffect(() => {
+    if (isGuestIn) {
+      setWallet(sampleWallet);
+    } else if (realWallet) {
+      setWallet(realWallet[0] || { balance: 0 });
+    }
+  }, [isGuestIn, realWallet]);
+
   const openPage = (url) => {
     console.log("Open page:", url);
   };
@@ -52,7 +62,11 @@ const LangXTokenCard = ({ wallet = mockWallet }) => {
             accessibilityLabel="Token Image"
           />
           <ThemedView style={styles.labelContainer}>
-            {wallet.balance ? (
+            {loading ? (
+              <ThemedText style={styles.balance}>
+                <ActivityIndicator size="small" color={Colors.light.primary} />
+              </ThemedText>
+            ) : wallet.balance ? (
               <ThemedText style={styles.balance}>{wallet.balance}</ThemedText>
             ) : (
               <ThemedText style={styles.noBalance}>
