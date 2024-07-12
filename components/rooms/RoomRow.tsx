@@ -7,29 +7,13 @@ import { Image, TouchableHighlight } from "react-native";
 
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { Room } from "@/models/Room";
 
-export interface RoomRowProps {
-  id: string;
-  from: string;
-  date: string;
-  img: string;
-  msg: string;
-  read: boolean;
-  unreadCount: number;
-}
-
-const RoomRow: FC<RoomRowProps> = ({
-  id,
-  from,
-  date,
-  img,
-  msg,
-  read,
-  unreadCount,
-}) => {
+const RoomRow: FC<{ room: Room }> = ({ room }) => {
+  console.log(room);
   return (
     <AppleStyleSwipeableRow>
-      <Link href={`/(tabs)/rooms/${id}`} asChild>
+      <Link href={`/(tabs)/rooms/${room.$id}`} asChild>
         <TouchableHighlight
           activeOpacity={0.8}
           underlayColor={Colors.light.gray3}
@@ -43,7 +27,8 @@ const RoomRow: FC<RoomRowProps> = ({
               paddingVertical: 10,
             }}
           >
-            <Image
+            <ThemedText>{room.users}</ThemedText>
+            {/* <Image
               source={{ uri: img }}
               style={{ width: 50, height: 50, borderRadius: 50 }}
             />
@@ -69,7 +54,7 @@ const RoomRow: FC<RoomRowProps> = ({
               }}
             >
               {format(date, "MM.dd.yy")}
-            </ThemedText>
+            </ThemedText> */}
           </ThemedView>
         </TouchableHighlight>
       </Link>
