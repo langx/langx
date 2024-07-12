@@ -68,7 +68,6 @@ const RecomendedSection = forwardRef((props, ref) => {
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
-        style={{ height: 500 }}
       />
     </ThemedView>
   );
