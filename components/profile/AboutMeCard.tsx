@@ -1,10 +1,11 @@
 import React from "react";
-import { StyleSheet, Text, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { getFlagEmoji, getAge, lastSeenExt } from "@/constants/utils";
+
 import { Colors } from "@/constants/Colors";
-import { ThemedView } from "../themed/atomic/ThemedView";
-import { ThemedText } from "../themed/atomic/ThemedText";
+import { getFlagEmoji, getAge, lastSeenExt } from "@/constants/utils";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const AboutMeCard = ({ user, account }) => {
   return (
@@ -69,7 +70,7 @@ const AboutMeCard = ({ user, account }) => {
               style={styles.editButton}
               onPress={() => console.log("Edit Account")}
             >
-              <Text style={styles.editButtonText}>Edit</Text>
+              <ThemedText style={styles.editButtonText}>Edit</ThemedText>
             </Pressable>
           </ThemedView>
         )}
