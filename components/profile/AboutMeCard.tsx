@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, TextInput, Pressable } from "react-native";
+import { StyleSheet, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getFlagEmoji, getAge, lastSeenExt } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
