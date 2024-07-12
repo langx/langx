@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   note: {
+    fontFamily: "NotoSans-Regular",
     fontSize: 14,
     color: Colors.light.gray3,
   },
