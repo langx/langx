@@ -2,8 +2,8 @@ import { User } from '@/models/User';
 
 export const sampleUser: User = {
   $id: 'user123',
-  $createdAt: new Date('01-01-2024').toISOString(),
-  $updatedAt: new Date('01-01-2024').toISOString(),
+  $createdAt: new Date().toISOString(),
+  $updatedAt: new Date().toISOString(),
   $collectionId: 'users',
   $databaseId: 'db1',
   $permissions: [],
