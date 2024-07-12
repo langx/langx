@@ -46,7 +46,7 @@ const ProfileScreen = () => {
       key: "PhotosGalleryCard",
     },
     {
-      component: <AboutMeCard user={activeUser} account={activeUser} />,
+      component: <AboutMeCard user={activeUser} account={account} />,
       key: "AboutMeCard",
     },
     { component: <LanguagesCard />, key: "LanguagesCard" },
