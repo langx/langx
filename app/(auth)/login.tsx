@@ -49,7 +49,6 @@ const Login = () => {
       dispatch(setSession(session));
 
       Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
       dispatch(setError(error.message || "An error occurred"));

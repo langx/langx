@@ -46,7 +46,7 @@ const StackLayout = () => {
         SplashScreen.hideAsync();
       }, 500);
     }
-  }, [isLoggedIn, isGuestIn, isLoading]);
+  }, [isLoggedIn, isGuestIn]);
 
   useEffect(() => {
     dispatch(fetchAuthData());

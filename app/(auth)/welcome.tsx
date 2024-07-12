@@ -31,7 +31,6 @@ const Welcome = () => {
       const account = await getAccount();
       dispatch(setAccount(account));
       Alert.alert("Success", "User signed in successfully");
-      router.replace("/home");
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
