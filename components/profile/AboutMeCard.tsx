@@ -17,8 +17,10 @@ const AboutMeCard = ({ user, account }) => {
       </ThemedView>
       <ThemedView style={styles.cardContent}>
         <ThemedView style={styles.item}>
-          <Ionicons name="information-circle-outline" style={styles.icon} />
-          <ThemedText style={styles.label}>{user.aboutMe}</ThemedText>
+          {/* <Ionicons name="information-circle-outline" style={styles.icon} /> */}
+          <ThemedText style={[styles.label, styles.aboutMeText]}>
+            {user.aboutMe}
+          </ThemedText>
         </ThemedView>
         <ThemedView style={styles.item}>
           <Ionicons name="flag-outline" style={styles.icon} />
@@ -116,6 +118,11 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     width: "100%",
     fontSize: 16,
+  },
+  aboutMeText: {
+    textAlign: "center",
+    justifyContent: "center",
+    paddingBottom: 20,
   },
   editButton: {
     marginLeft: 10,
