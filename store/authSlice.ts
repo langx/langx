@@ -66,11 +66,10 @@ const authSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
-      state.isLoggedIn = !!action.payload;
     },
     setSession: (state, action: PayloadAction<Session | null>) => {
       state.session = action.payload;
-      !state.user ? (state.isGuestIn = true) : (state.isLoggedIn = false);
+      !state.user ? (state.isGuestIn = true) : (state.isLoggedIn = true);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
