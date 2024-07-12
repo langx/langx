@@ -9,6 +9,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { useDatabase } from "@/hooks/useDatabase";
 import { getWallet } from "@/services/walletService";
 import { sampleWallet } from "@/constants/sampleWallet";
+import { bigNumber } from "@/constants/utils";
 
 const LangXTokenCard = ({ userId, isGuestIn }) => {
   const [wallet, setWallet] = useState({ balance: 0 });
@@ -63,11 +64,11 @@ const LangXTokenCard = ({ userId, isGuestIn }) => {
           />
           <ThemedView style={styles.labelContainer}>
             {loading ? (
-              <ThemedText style={styles.balance}>
-                <ActivityIndicator size="small" color={Colors.light.primary} />
-              </ThemedText>
+              <ActivityIndicator size="small" color={Colors.light.primary} />
             ) : wallet.balance ? (
-              <ThemedText style={styles.balance}>{wallet.balance}</ThemedText>
+              <ThemedText style={styles.balance}>
+                {bigNumber(wallet.balance)}
+              </ThemedText>
             ) : (
               <ThemedText style={styles.noBalance}>
                 No balance available
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   balance: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
   },
   noBalance: {
