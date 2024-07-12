@@ -14,15 +14,6 @@ import {
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const mockBadges = [
-  "backer",
-  "early-adopter",
-  "creator",
-  "fundamental",
-  "pioneer",
-  "teacher",
-];
-
 // Mapping of badge names to imported images
 const badgeImages = {
   Backer: backer,
@@ -35,7 +26,7 @@ const badgeImages = {
   Teacher: teacher,
 };
 
-const BadgesCard = ({ badges = mockBadges }) => {
+const BadgesCard = ({ badges }) => {
   const [badgesList, setBadgesList] = useState([]);
 
   useEffect(() => {
