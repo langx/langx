@@ -14,6 +14,7 @@ interface AuthState {
   isGuestIn: boolean;
   user: User | null;
   account: Account | null;
+  session: Session | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -23,6 +24,7 @@ const initialState: AuthState = {
   isGuestIn: false,
   user: null,
   account: null,
+  session: null,
   isLoading: true,
   error: null,
 };
@@ -45,13 +47,12 @@ export const fetchAuthData = createAsyncThunk(
         dispatch(setUser(user));
       }
       if (session) {
-        dispatch(setGuest(session));
+        dispatch(setSession(session));
       }
     } catch (error) {
       console.error(error);
-      dispatch(setError(error.message || 'An error occurred'));
+      dispatch(setError((error as Error).message || 'An error occurred'));
       dispatch(setUser(null));
-    } finally {
     }
   }
 );
@@ -67,8 +68,9 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.isLoggedIn = !!action.payload;
     },
-    setGuest: (state, action) => {
-      state.isGuestIn = !!action.payload;
+    setSession: (state, action: PayloadAction<Session | null>) => {
+      state.session = action.payload;
+      !state.user ? (state.isGuestIn = true) : (state.isLoggedIn = false);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -82,23 +84,24 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAuthData.pending, (state) => {
-      state.isLoading = true;
-    });
-    builder.addCase(fetchAuthData.fulfilled, (state) => {
-      state.isLoading = false;
-    });
-    builder.addCase(fetchAuthData.rejected, (state) => {
-      state.isLoading = false;
-      setError('An error occurred');
-    });
+    builder
+      .addCase(fetchAuthData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAuthData.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(fetchAuthData.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'An error occurred';
+      });
   },
 });
 
 export const {
   setAccount,
   setUser,
-  setGuest,
+  setSession,
   setLoading,
   setError,
   setAuthInitialState,
