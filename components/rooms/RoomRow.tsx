@@ -54,7 +54,7 @@ const RoomRow: FC<RoomRowProps> = ({
               <ThemedText
                 style={{
                   fontSize: 16,
-                  fontFamily: "Lexend-Light",
+                  fontFamily: "NotoSans-Regular",
                   color: Colors.light.gray3,
                 }}
               >

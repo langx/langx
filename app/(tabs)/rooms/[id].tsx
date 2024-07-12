@@ -73,9 +73,11 @@ const Room = () => {
         textStyle={{
           left: {
             color: Colors[theme].black,
+            fontFamily: "NotoSans-Regular",
           },
           right: {
             color: Colors.light.black,
+            fontFamily: "NotoSans-Regular",
           },
         }}
         wrapperStyle={{
