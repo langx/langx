@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, ScrollView, Alert } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
-import { getCurrentUser, login } from "@/services/authService";
-import { setUser, setLoading, setError } from "@/store/authSlice";
+import {
+  getAccount,
+  getCurrentSession,
+  getCurrentUser,
+  login,
+} from "@/services/authService";
+import { setAccount, setError, setSession, setUser } from "@/store/authSlice";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
@@ -31,12 +36,17 @@ const Login = () => {
     }
 
     setSubmitting(true);
-    // dispatch(setLoading(true));
 
     try {
       await login(form.email, form.password);
-      const user = await getCurrentUser();
+      const [account, user, session] = await Promise.all([
+        getAccount(),
+        getCurrentUser(),
+        getCurrentSession(),
+      ]);
+      dispatch(setAccount(account));
       dispatch(setUser(user));
+      dispatch(setSession(session));
 
       Alert.alert("Success", "User signed in successfully");
       router.replace("/home");
@@ -45,7 +55,6 @@ const Login = () => {
       dispatch(setError(error.message || "An error occurred"));
     } finally {
       setSubmitting(false);
-      // dispatch(setLoading(false));
     }
   };
 

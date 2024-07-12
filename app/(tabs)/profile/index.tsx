@@ -1,9 +1,10 @@
-import React, { useCallback } from "react";
-import { StyleSheet, FlatList } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, FlatList, ActivityIndicator, View } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 import { User } from "@/models/User";
+import { Colors } from "@/constants/Colors";
 import { sampleUser } from "@/constants/sampleUser";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import PPCard from "@/components/profile/PPCard";
@@ -27,17 +28,20 @@ const ProfileScreen = () => {
   console.log("isLoading:", isLoading);
   console.log("user:", user);
 
-  let activeUser: User;
+  const [activeUser, setActiveUser] = useState<User | null>(null);
 
-  if (isLoading) {
-    activeUser = null;
-  } else if (isLoggedIn) {
-    activeUser = user;
-  } else if (isGuestIn) {
-    activeUser = sampleUser;
-  } else {
-    activeUser = null;
-  }
+  useEffect(() => {
+    if (isLoading) {
+      setActiveUser(null);
+    } else if (isLoggedIn) {
+      setActiveUser(user);
+    } else if (isGuestIn) {
+      setActiveUser(sampleUser);
+    } else {
+      setActiveUser(null);
+    }
+    console.log("activeUser", activeUser);
+  }, [isLoading]);
 
   const components = [
     { component: <PPCard user={activeUser} />, key: "PPCard" },
@@ -63,6 +67,14 @@ const ProfileScreen = () => {
     []
   );
 
+  if (activeUser === null) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </View>
+    );
+  }
+
   return (
     <ThemedView style={styles.container}>
       <FlatList
@@ -82,5 +94,10 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginBottom: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
