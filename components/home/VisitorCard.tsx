@@ -9,7 +9,7 @@ import { getUserImage } from "@/services/bucketService";
 import { getFlagEmoji2 } from "@/constants/utils";
 import { Language } from "@/models/Language";
 
-const UserCard = ({ item }) => {
+const VisitorCard = ({ item }) => {
   const [userImageUrl, setUserImageUrl] = useState("");
   const { data, loading, refetch } = useDatabase(() =>
     getUserImage(item.profilePic)
@@ -81,6 +81,8 @@ const UserCard = ({ item }) => {
   );
 };
 
+export default VisitorCard;
+
 const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
@@ -106,5 +108,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-export default UserCard;

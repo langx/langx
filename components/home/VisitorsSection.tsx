@@ -6,14 +6,14 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
-import { useDatabase } from "@/hooks/useDatabase";
-// import { listUsers } from "@/services/userService"; // Assuming you have a similar service for visitors
-// import VisitorCard from "@/components/home/VisitorCard"; // Assuming a VisitorCard component exists
-import { listUsers } from "@/services/userService";
+import { Ionicons } from "@expo/vector-icons";
+
 import { Colors } from "@/constants/Colors";
+import { useDatabase } from "@/hooks/useDatabase";
+import { listUsers } from "@/services/userService";
+import VisitorCard from "@/components/home/VisitorCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
 
 const VisitorsSection = forwardRef((props, ref) => {
   const {
@@ -62,16 +62,16 @@ const VisitorsSection = forwardRef((props, ref) => {
           Recent Profile Visitors
         </ThemedText>
       </ThemedView>
-      {/* <FlatList
-        // contentInsetAdjustmentBehavior="automatic"
+      <FlatList
+        contentInsetAdjustmentBehavior="automatic"
         horizontal
         data={visitors}
         keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => <UserCard item={item} />}
+        renderItem={({ item }) => <VisitorCard item={item} />}
         onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
-      /> */}
+      />
     </ThemedView>
   );
 });
