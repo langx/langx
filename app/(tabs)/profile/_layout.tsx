@@ -1,13 +1,31 @@
 import { Stack } from "expo-router";
 import { Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
+import { useEffect, useState } from "react";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const username = "username";
+
+  const [username, setUsername] = useState<string | null>(null);
+
+  const account = useSelector((state: RootState) => state.auth.account);
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  useEffect(() => {
+    if (account && user) {
+      setUsername(user.username);
+    } else if (account) {
+      const username = `langx_${account.$id.slice(-4)}`;
+      setUsername(username);
+    } else {
+      setUsername(null);
+    }
+  }, [account, user]);
 
   return (
     <Stack>
