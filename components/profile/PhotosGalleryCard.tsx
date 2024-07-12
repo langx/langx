@@ -72,10 +72,7 @@ const PhotosGalleryCard = ({ user }) => {
                     )}
                     <Image
                       source={{ uri }}
-                      style={[
-                        styles.image as ImageStyle,
-                        styles.gridItem as ImageStyle,
-                      ]}
+                      style={[styles.image as ImageStyle]}
                       onLoadEnd={() => handleLoadEnd(index)}
                     />
                   </ThemedView>
@@ -120,9 +117,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     padding: 10,
     borderRadius: 10,
-  },
-  gridItem: {
-    margin: 10,
   },
   imageContainer: {
     position: "relative",
