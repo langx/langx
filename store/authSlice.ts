@@ -1,12 +1,18 @@
-import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { User } from "@/models/User";
-import { getCurrentUser, getCurrentSession } from "@/services/authService";
+import { User } from '@/models/User';
+import { Account } from '@/models/Account';
+import {
+  getCurrentUser,
+  getCurrentSession,
+  getAccount,
+} from '@/services/authService';
 
 interface AuthState {
   isLoggedIn: boolean;
   isGuestIn: boolean;
   user: User | null;
+  account: Account | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -15,19 +21,24 @@ const initialState: AuthState = {
   isLoggedIn: false,
   isGuestIn: false,
   user: null,
+  account: null,
   isLoading: true,
   error: null,
 };
 
 export const fetchAuthData = createAsyncThunk(
-  "auth/fetchAuthData",
+  'auth/fetchAuthData',
   async (_, { dispatch }) => {
     try {
-      const [user, session] = await Promise.all([
+      const [account, user, session] = await Promise.all([
+        getAccount(),
         getCurrentUser(),
         getCurrentSession(),
       ]);
 
+      if (account) {
+        dispatch(setAccount(account));
+      }
       if (user) {
         dispatch(setUser(user));
       }
@@ -36,7 +47,7 @@ export const fetchAuthData = createAsyncThunk(
       }
     } catch (error) {
       console.error(error);
-      dispatch(setError(error.message || "An error occurred"));
+      dispatch(setError(error.message || 'An error occurred'));
       dispatch(setUser(null));
     } finally {
     }
@@ -44,9 +55,12 @@ export const fetchAuthData = createAsyncThunk(
 );
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
+    setAccount: (state, action: PayloadAction<Account | null>) => {
+      state.account = action.payload;
+    },
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
       state.isLoggedIn = !!action.payload;
@@ -74,11 +88,17 @@ const authSlice = createSlice({
     });
     builder.addCase(fetchAuthData.rejected, (state) => {
       state.isLoading = false;
-      setError("An error occurred");
+      setError('An error occurred');
     });
   },
 });
 
-export const { setUser, setGuest, setLoading, setError, setAuthInitialState } =
-  authSlice.actions;
+export const {
+  setAccount,
+  setUser,
+  setGuest,
+  setLoading,
+  setError,
+  setAuthInitialState,
+} = authSlice.actions;
 export default authSlice.reducer;
