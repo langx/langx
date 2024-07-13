@@ -1,4 +1,5 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   FlatList,
   ActivityIndicator,
@@ -6,13 +7,13 @@ import {
   StyleSheet,
   Pressable,
 } from "react-native";
+
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
-import UserCard from "@/components/home/UserCard";
 import { Colors } from "@/constants/Colors";
+import UserCard from "@/components/home/UserCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
 
 const RecomendedSection = forwardRef((props, ref) => {
   const {
