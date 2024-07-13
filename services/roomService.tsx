@@ -1,4 +1,5 @@
 import { Query } from "react-native-appwrite";
+
 import { listDocuments } from "@/services/apiService";
 import {
   ROOMS_COLLECTION,
@@ -6,9 +7,7 @@ import {
   MESSAGES_COLLECTION,
   PAGINATION_LIMIT,
 } from "@/constants/config";
-import { Room } from "@/models/Room";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
-import { sampleUser } from "@/constants/sampleUser";
 
 export async function listRooms(params: any) {
   const userId = params?.userId;
@@ -16,7 +15,7 @@ export async function listRooms(params: any) {
   const offset = params?.currentOffset;
   // console.log("userId", userId);
   // console.log("filterData", filterData);
-  console.log("offset", offset);
+  // console.log("offset", offset);
   try {
     const queries = [
       Query.orderDesc("lastMessageUpdatedAt"),
