@@ -39,6 +39,12 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     console.log("users", users?.length);
   }, [users]);
 
+  const onEndReached = () => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
+  };
+
   const renderFooter = () => {
     if (!hasMore) return null;
     return (
@@ -73,7 +79,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
         data={users}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => <UserCard item={item} />}
-        onEndReached={loadMore}
+        onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
       />
