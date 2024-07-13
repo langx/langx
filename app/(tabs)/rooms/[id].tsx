@@ -18,6 +18,7 @@ import {
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
 import { listMessages } from "@/services/messageService";
+import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
@@ -29,6 +30,18 @@ const Room = () => {
 
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
+
+  const {
+    data: roomData,
+    loading: roomLoading,
+    loadMore: loadMoreRooms,
+    refetch: refetchRooms,
+    hasMore: hasMoreRooms,
+  } = useDatabase(listRooms, { roomId: id });
+
+  useEffect(() => {
+    console.log("roomData:", roomData);
+  }, [roomData]);
 
   const {
     data: messagesData,
