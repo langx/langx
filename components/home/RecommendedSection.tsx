@@ -3,7 +3,6 @@ import { Ionicons } from "@expo/vector-icons";
 import {
   FlatList,
   ActivityIndicator,
-  View,
   StyleSheet,
   Pressable,
 } from "react-native";
@@ -48,9 +47,9 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
   const renderFooter = () => {
     if (!hasMore) return null;
     return (
-      <View style={styles.loadingContainer}>
+      <ThemedView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.light.primary} />
-      </View>
+      </ThemedView>
     );
   };
 
