@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack } from "expo-router";
-import { Link } from "expo-router";
+import { Stack, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Switch, Image, Pressable } from "react-native";
 import { useSelector } from "react-redux";
@@ -8,6 +7,7 @@ import { RootState } from "@/store/store";
 
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { Colors } from "@/constants/Colors";
+import { getFlagEmoji } from "@/constants/utils";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -27,11 +27,12 @@ export default function RootLayout() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!room) return;
       const data = await getUserImage(room?.userData?.profilePic);
       if (data) {
         try {
           setUserImageUrl(data.toString());
-          console.log("userImageUrl:", userImageUrl);
+          // console.log("userImageUrl:", userImageUrl);
         } catch (error) {
           console.error("Failed to process user image URL", error);
         }
@@ -96,9 +97,10 @@ export default function RootLayout() {
             >
               <Image
                 source={{ uri: userImageUrl }}
-                style={{ width: 30, height: 30, borderRadius: 30 }}
+                style={{ width: 35, height: 35, borderRadius: 35 }}
               />
-              <ThemedText style={{ fontSize: 16, fontWeight: "500" }}>
+              <ThemedText style={{ fontSize: 18 }}>
+                {getFlagEmoji(room?.userData?.countryCode)}{" "}
                 {room?.userData?.name}
               </ThemedText>
             </ThemedView>
