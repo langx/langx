@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import {
   GiftedChat,
   Bubble,
@@ -13,8 +15,6 @@ import {
   IMessage,
   Time,
 } from "react-native-gifted-chat";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { setRoom } from "@/store/roomSlice";
@@ -74,6 +74,11 @@ const Room = () => {
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
+    console.log("!!! ___ !!! room:", room.$id);
+    const currentUserId = room.users.find(
+      (userId) => userId !== room.userData.$id
+    );
+    console.log("!!! ___ !!! currentUserId:", currentUserId);
     setMessages([
       ...messagesData.map((message) => {
         return {
@@ -81,8 +86,9 @@ const Room = () => {
           text: message.body,
           createdAt: new Date(message.$createdAt),
           user: {
-            _id: message.from,
-            name: message.from ? "You" : "John Doe",
+            _id: message.sender === currentUserId ? 1 : 0,
+            name:
+              message.sender === currentUserId ? "You" : room?.userData?.name,
           },
         };
       }),
