@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Stack, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Switch, Image, Pressable } from "react-native";
+import { Switch, Image, Pressable, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -95,10 +95,14 @@ export default function RootLayout() {
                 alignItems: "center",
               }}
             >
-              <Image
-                source={{ uri: userImageUrl }}
-                style={{ width: 35, height: 35, borderRadius: 35 }}
-              />
+              {userImageUrl ? (
+                <Image
+                  source={{ uri: userImageUrl }}
+                  style={{ width: 35, height: 35, borderRadius: 35 }}
+                />
+              ) : (
+                <ActivityIndicator size="small" color={Colors.light.primary} />
+              )}
               <ThemedText style={{ fontSize: 18 }}>
                 {getFlagEmoji(room?.userData?.countryCode)}{" "}
                 {room?.userData?.name}
