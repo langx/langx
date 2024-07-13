@@ -3,6 +3,7 @@ import { Platform, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 import {
   GiftedChat,
   Bubble,
@@ -13,16 +14,34 @@ import {
   Time,
 } from "react-native-gifted-chat";
 
-import messagesData from "@/assets/data/messages.json";
+// import messagesData from "@/assets/data/messages.json";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useDatabase } from "@/hooks/useDatabase";
+import { listMessages } from "@/services/messageService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 
 const Room = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  // console.log("Room id:", id);
+
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
+
+  const {
+    data: messagesData,
+    loading,
+    loadMore,
+    refetch,
+    hasMore,
+  } = useDatabase(listMessages, { roomId: id });
+
+  useEffect(() => {
+    console.log("msgs:", messagesData?.length);
+  }, [messagesData]);
+
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [text, setText] = useState("");
 
@@ -30,12 +49,13 @@ const Room = () => {
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
+    // console.log("messagesData:", messagesData.length, messagesData[0]);
     setMessages([
       ...messagesData.map((message) => {
         return {
-          _id: message.id,
-          text: message.msg,
-          createdAt: new Date(message.date),
+          _id: message.$id,
+          text: message.body,
+          createdAt: new Date(message.$createdAt),
           user: {
             _id: message.from,
             name: message.from ? "You" : "John Doe",
@@ -56,7 +76,7 @@ const Room = () => {
 
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
-  }, []);
+  }, [messagesData]);
 
   useEffect(() => {});
 

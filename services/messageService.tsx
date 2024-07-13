@@ -7,13 +7,10 @@ import { MESSAGES_COLLECTION, PAGINATION_LIMIT } from "@/constants/config";
 export async function listMessages(params: any) {
   const roomId = params?.roomId;
   const offset = params?.currentOffset;
-  // console.log("roomId", roomId);
-  // console.log("offset", offset);
-  console.log("roomId", roomId);
   try {
     const queries = [
       Query.orderDesc("$createdAt"),
-      Query.equal("$id", roomId),
+      Query.equal("roomId", roomId),
       Query.limit(PAGINATION_LIMIT),
     ];
 
