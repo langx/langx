@@ -100,7 +100,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
               alignItems: "center",
               gap: 14,
               paddingLeft: 20,
-              paddingVertical: 10,
+              paddingVertical: 5,
             }}
           >
             <Image
@@ -118,10 +118,11 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
               </ThemedText>
               <ThemedText
                 style={{
+                  fontFamily: "Lexend-Light",
                   fontSize: 16,
                   color: Colors.light.gray3,
                   maxWidth: "100%",
-                  paddingTop: 5,
+                  paddingVertical: 5,
                 }}
                 numberOfLines={1}
               >
