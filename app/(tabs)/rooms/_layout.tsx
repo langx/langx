@@ -6,12 +6,12 @@ import { Switch, Image, Pressable } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-import icons from "@/constants/icons";
-import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,10 +23,22 @@ export default function RootLayout() {
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
+  const [userImageUrl, setUserImageUrl] = useState("");
 
-  // useEffect(() => {
-  //   console.log("room from store:", room?.$id);
-  // }, [room]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getUserImage(room?.userData?.profilePic);
+      if (data) {
+        try {
+          setUserImageUrl(data.toString());
+          console.log("userImageUrl:", userImageUrl);
+        } catch (error) {
+          console.error("Failed to process user image URL", error);
+        }
+      }
+    };
+    fetchData();
+  }, [room]);
 
   return (
     <Stack>
@@ -83,7 +95,7 @@ export default function RootLayout() {
               }}
             >
               <Image
-                source={icons.profile}
+                source={{ uri: userImageUrl }}
                 style={{ width: 30, height: 30, borderRadius: 30 }}
               />
               <ThemedText style={{ fontSize: 16, fontWeight: "500" }}>
