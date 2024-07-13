@@ -74,11 +74,11 @@ const Room = () => {
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
-    console.log("!!! ___ !!! room:", room.$id);
+    // console.log("!!! ___ !!! room:", room.$id);
     const currentUserId = room.users.find(
       (userId) => userId !== room.userData.$id
     );
-    console.log("!!! ___ !!! currentUserId:", currentUserId);
+    // console.log("!!! ___ !!! currentUserId:", currentUserId);
     setMessages([
       ...messagesData.map((message) => {
         return {
