@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -224,6 +224,7 @@ const Room = () => {
         onInputTextChanged={setText}
         user={{
           _id: 1,
+          name: "You",
         }}
         renderSystemMessage={(props) => (
           <SystemMessage
@@ -251,6 +252,13 @@ const Room = () => {
             setReplyOnSwipeOpen={setReplyMessage}
             updateRowRef={updateRowRef}
           />
+        )}
+        loadEarlier={true}
+        infiniteScroll={true}
+        isLoadingEarlier={loading}
+        onLoadEarlier={loadMore}
+        renderLoadEarlier={() => (
+          <ActivityIndicator size="large" color={Colors.light.primary} />
         )}
       />
     </ThemedView>
