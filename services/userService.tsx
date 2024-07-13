@@ -4,13 +4,13 @@ import { listDocuments } from "@/services/apiService";
 import { USERS_COLLECTION, PAGINATION_LIMIT } from "@/constants/config";
 import { User } from "@/models/User";
 
-export async function listUsers(
-  userId: string,
-  filterData?: any,
-  offset?: number
-): Promise<User[]> {
-  // console.log("userId", userId);
-  // console.log("filterData", filterData);
+export async function listUsers(params: any): Promise<User[]> {
+  const userId = params?.userId;
+  const filterData = params?.filterData || null;
+  const offset = params?.currentOffset || null;
+  console.log("userId", userId);
+  console.log("filterData", filterData);
+  console.log("offset", offset);
   try {
     const queries = [
       Query.orderDesc("$updatedAt"),

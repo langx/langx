@@ -28,11 +28,11 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers, currentUserId, filterData);
+  } = useDatabase(listUsers, { userId: currentUserId });
 
-  // useEffect(() => {
-  //   console.log("users", users?.length);
-  // }, [users]);
+  useEffect(() => {
+    console.log("users", users?.length);
+  }, [users]);
 
   useImperativeHandle(ref, () => ({
     refetch,

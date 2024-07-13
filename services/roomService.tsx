@@ -10,13 +10,13 @@ import { Room } from "@/models/Room";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { sampleUser } from "@/constants/sampleUser";
 
-export async function listRooms(
-  userId: string,
-  filterData?: any,
-  offset?: number
-) {
+export async function listRooms(params: any) {
+  const userId = params?.userId;
+  const filterData = params?.filterData;
+  const offset = params?.currentOffset;
   // console.log("userId", userId);
   // console.log("filterData", filterData);
+  console.log("offset", offset);
   try {
     const queries = [
       Query.orderDesc("lastMessageUpdatedAt"),

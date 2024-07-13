@@ -17,8 +17,6 @@ import RoomRow from "@/components/rooms/RoomRow";
 
 const RoomsScreen = () => {
   const user = useSelector((state: RootState) => state.auth.user);
-  const currentUserId = user?.$id;
-
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
@@ -27,7 +25,7 @@ const RoomsScreen = () => {
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listRooms, currentUserId);
+  } = useDatabase(listRooms, { userId: user?.$id });
 
   useEffect(() => {
     console.log("rooms:", rooms?.length);
