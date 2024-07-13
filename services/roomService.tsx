@@ -11,6 +11,7 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 
 export async function listRooms(params: any) {
   const userId = params?.userId;
+  const roomId = params?.roomId;
   const filterData = params?.filterData;
   const offset = params?.currentOffset;
   // console.log("userId", userId);
@@ -19,9 +20,16 @@ export async function listRooms(params: any) {
   try {
     const queries = [
       Query.orderDesc("lastMessageUpdatedAt"),
-      Query.contains("users", userId),
       Query.limit(PAGINATION_LIMIT),
     ];
+
+    if (userId) {
+      queries.push(Query.contains("users", userId));
+    }
+
+    if (roomId) {
+      queries.push(Query.equal("$id", roomId));
+    }
 
     if (offset) {
       queries.push(Query.offset(offset));
