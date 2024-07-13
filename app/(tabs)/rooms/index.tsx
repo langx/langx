@@ -42,7 +42,6 @@ export default function RoomsScreen() {
     >
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingBottom: 40 }}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
