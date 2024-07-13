@@ -1,12 +1,10 @@
 import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
-import { format } from "date-fns";
 import { Link } from "expo-router";
 import { FC, useEffect, useState } from "react";
 import { Image, TouchableHighlight, StyleSheet } from "react-native";
 
-import { Room } from "@/models/Room";
 import { Colors } from "@/constants/Colors";
-import { lastSeen } from "@/constants/utils";
+import { getFlagEmoji, lastSeen } from "@/constants/utils";
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -109,9 +107,9 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
               <ThemedText
                 style={{
                   fontSize: 18,
-                  fontWeight: "bold",
                 }}
               >
+                {getFlagEmoji(room?.userData?.countryCode)}{" "}
                 {room?.userData?.name}
               </ThemedText>
               <ThemedText
