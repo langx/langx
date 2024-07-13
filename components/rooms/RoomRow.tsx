@@ -1,5 +1,5 @@
 import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { FC, useEffect, useState } from "react";
 import { Image, TouchableHighlight, StyleSheet } from "react-native";
 
@@ -87,112 +87,114 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
     return time;
   }
 
+  const navigateToRoomById = () => {
+    router.navigate(`rooms/${room.$id}`);
+  };
+
   return (
     <AppleStyleSwipeableRow>
-      <Link href={`/(tabs)/rooms/${room.$id}`} asChild>
-        <TouchableHighlight
-          activeOpacity={0.8}
-          underlayColor={Colors.light.gray3}
+      <TouchableHighlight
+        activeOpacity={0.8}
+        underlayColor={Colors.light.gray3}
+        onPress={navigateToRoomById}
+      >
+        <ThemedView
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 14,
+            paddingLeft: 20,
+            paddingVertical: 5,
+          }}
         >
-          <ThemedView
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 14,
-              paddingLeft: 20,
-              paddingVertical: 5,
-            }}
-          >
-            <Image
-              source={{ uri: userImageUrl }}
-              style={{ width: 50, height: 50, borderRadius: 50 }}
-            />
-            <ThemedView style={{ flex: 1 }}>
-              <ThemedText
-                style={{
-                  fontSize: 18,
-                }}
-              >
-                {getFlagEmoji(room?.userData?.countryCode)}{" "}
-                {room?.userData?.name}
-              </ThemedText>
-              <ThemedText
-                style={{
-                  fontFamily: "Lexend-Light",
-                  fontSize: 16,
-                  color: Colors.light.gray3,
-                  maxWidth: "100%",
-                  paddingVertical: 5,
-                }}
-                numberOfLines={1}
-              >
-                {lastMessage.body}
-              </ThemedText>
-            </ThemedView>
-
-            <ThemedView>
-              <ThemedText
-                style={{
-                  color: Colors.light.gray3,
-                  paddingRight: 20,
-                  alignSelf: "flex-end",
-                }}
-              >
-                {messageTime(room?.lastMessageUpdatedAt)}
-              </ThemedText>
-              {lastMessage.yourTurn && (
-                <ThemedView
-                  style={{
-                    marginRight: 20,
-                    marginTop: 2,
-                    padding: 1,
-                    alignSelf: "flex-end",
-                    backgroundColor: Colors.light.primary,
-                    borderRadius: 5,
-                    overflow: "hidden",
-                  }}
-                >
-                  <ThemedText
-                    style={{
-                      fontSize: 10,
-                      color: Colors.light.black,
-                      padding: 2,
-                      textAlign: "center",
-                    }}
-                  >
-                    your-turn
-                  </ThemedText>
-                </ThemedView>
-              )}
-              {lastMessage.unseen > 0 && (
-                <ThemedView
-                  style={{
-                    marginRight: 20,
-                    marginTop: 2,
-                    padding: 1,
-                    alignSelf: "flex-end",
-                    backgroundColor: Colors.light.error,
-                    borderRadius: 5,
-                    overflow: "hidden",
-                  }}
-                >
-                  <ThemedText
-                    style={{
-                      fontSize: 10,
-                      color: Colors.light.white,
-                      padding: 3,
-                      minWidth: 15,
-                      textAlign: "center",
-                    }}
-                  >
-                    {lastMessage.unseen}
-                  </ThemedText>
-                </ThemedView>
-              )}
-            </ThemedView>
+          <Image
+            source={{ uri: userImageUrl }}
+            style={{ width: 50, height: 50, borderRadius: 50 }}
+          />
+          <ThemedView style={{ flex: 1 }}>
+            <ThemedText
+              style={{
+                fontSize: 18,
+              }}
+            >
+              {getFlagEmoji(room?.userData?.countryCode)} {room?.userData?.name}
+            </ThemedText>
+            <ThemedText
+              style={{
+                fontFamily: "Lexend-Light",
+                fontSize: 16,
+                color: Colors.light.gray3,
+                maxWidth: "100%",
+                paddingVertical: 5,
+              }}
+              numberOfLines={1}
+            >
+              {lastMessage.body}
+            </ThemedText>
           </ThemedView>
-        </TouchableHighlight>
-      </Link>
+
+          <ThemedView>
+            <ThemedText
+              style={{
+                color: Colors.light.gray3,
+                paddingRight: 20,
+                alignSelf: "flex-end",
+              }}
+            >
+              {messageTime(room?.lastMessageUpdatedAt)}
+            </ThemedText>
+            {lastMessage.yourTurn && (
+              <ThemedView
+                style={{
+                  marginRight: 20,
+                  marginTop: 2,
+                  padding: 1,
+                  alignSelf: "flex-end",
+                  backgroundColor: Colors.light.primary,
+                  borderRadius: 5,
+                  overflow: "hidden",
+                }}
+              >
+                <ThemedText
+                  style={{
+                    fontSize: 10,
+                    color: Colors.light.black,
+                    padding: 2,
+                    textAlign: "center",
+                  }}
+                >
+                  your-turn
+                </ThemedText>
+              </ThemedView>
+            )}
+            {lastMessage.unseen > 0 && (
+              <ThemedView
+                style={{
+                  marginRight: 20,
+                  marginTop: 2,
+                  padding: 1,
+                  alignSelf: "flex-end",
+                  backgroundColor: Colors.light.error,
+                  borderRadius: 5,
+                  overflow: "hidden",
+                }}
+              >
+                <ThemedText
+                  style={{
+                    fontSize: 10,
+                    color: Colors.light.white,
+                    padding: 3,
+                    minWidth: 15,
+                    textAlign: "center",
+                  }}
+                >
+                  {lastMessage.unseen}
+                </ThemedText>
+              </ThemedView>
+            )}
+          </ThemedView>
+        </ThemedView>
+      </TouchableHighlight>
     </AppleStyleSwipeableRow>
   );
 };
