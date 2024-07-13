@@ -44,9 +44,9 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
   }
 
   const getLastMessage = (room: RoomExtendedInterface): LastMessageBody => {
-    const currentUserId = room.users.filter((id: string) => {
-      id !== room?.userData?.$id;
-    })[0];
+    const currentUserId = room.users.find(
+      (id: string) => id !== room?.userData?.$id
+    );
     const lastMessage = room.messages[room.messages.length - 1];
     const type = lastMessage?.type || null;
     let lastMessageBody: LastMessageBody = {
@@ -125,15 +125,39 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
               </ThemedText>
             </ThemedView>
 
-            <ThemedText
-              style={{
-                color: Colors.light.gray3,
-                paddingRight: 20,
-                alignSelf: "flex-start",
-              }}
-            >
-              {messageTime(room?.lastMessageUpdatedAt)}
-            </ThemedText>
+            <ThemedView>
+              <ThemedText
+                style={{
+                  color: Colors.light.gray3,
+                  paddingRight: 20,
+                  alignSelf: "flex-end",
+                }}
+              >
+                {messageTime(room?.lastMessageUpdatedAt)}
+              </ThemedText>
+              {lastMessage.yourTurn && (
+                <ThemedView
+                  style={{
+                    marginRight: 20,
+                    padding: 1,
+                    alignSelf: "flex-end",
+                    backgroundColor: Colors.light.primary,
+                    borderRadius: 5,
+                    overflow: "hidden",
+                  }}
+                >
+                  <ThemedText
+                    style={{
+                      fontSize: 10,
+                      color: Colors.light.black,
+                      padding: 2,
+                    }}
+                  >
+                    your-turn
+                  </ThemedText>
+                </ThemedView>
+              )}
+            </ThemedView>
           </ThemedView>
         </TouchableHighlight>
       </Link>
