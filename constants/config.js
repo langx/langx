@@ -8,4 +8,4 @@ export const WALLET_COLLECTION = "66622b8a000b305b236c";
 
 export const USER_BUCKET = "6515f94d20becd47cb40";
 
-export const PAGINATION_LIMIT = 10;
+export const PAGINATION_LIMIT = 20;
