@@ -3,6 +3,7 @@ import { listDocuments } from "@/services/apiService";
 import {
   ROOMS_COLLECTION,
   USERS_COLLECTION,
+  MESSAGES_COLLECTION,
   PAGINATION_LIMIT,
 } from "@/constants/config";
 import { Room } from "@/models/Room";
@@ -35,16 +36,26 @@ export async function listRooms(
       return usersResponse.documents[0];
     };
 
+    const fetchMessagesData = async (roomId: string) => {
+      const messagesResponse = await listDocuments(MESSAGES_COLLECTION, [
+        Query.equal("roomId", roomId),
+        Query.orderDesc("$createdAt"),
+        Query.limit(1),
+      ]);
+      return messagesResponse.documents;
+    };
+
     const extendedRooms = (await Promise.all(
       (
         await listDocuments(ROOMS_COLLECTION, queries)
       ).documents.map(async (room) => {
         const sender = room.users.find((user: string) => user !== userId);
         const userData = await fetchUserData(sender);
+        const messages = await fetchMessagesData(room.$id);
         return {
           ...room,
           userData,
-          messages: [],
+          messages,
         };
       })
     )) as RoomExtendedInterface[];
