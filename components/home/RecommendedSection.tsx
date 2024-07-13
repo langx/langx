@@ -30,13 +30,13 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     hasMore,
   } = useDatabase(listUsers, currentUserId, filterData);
 
-  useImperativeHandle(ref, () => ({
-    refetch,
-  }));
-
   // useEffect(() => {
   //   console.log("users", users?.length);
   // }, [users]);
+
+  useImperativeHandle(ref, () => ({
+    refetch,
+  }));
 
   const onEndReached = () => {
     if (hasMore && !loading) {

@@ -29,6 +29,10 @@ export default function RoomsScreen() {
     hasMore,
   } = useDatabase(listRooms, currentUserId);
 
+  useEffect(() => {
+    console.log("rooms:", rooms?.length);
+  }, [rooms]);
+
   const onRefresh = async () => {
     setIsRefreshing(true);
     refetch();
@@ -49,10 +53,6 @@ export default function RoomsScreen() {
       </ThemedView>
     );
   };
-
-  useEffect(() => {
-    console.log("rooms:", rooms?.length);
-  }, [rooms]);
 
   return (
     <ThemedView style={{ flex: 1 }}>
