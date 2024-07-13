@@ -75,16 +75,16 @@ const Room = () => {
           },
         };
       }),
-      {
-        _id: 0,
-        system: true,
-        text: "New messages from John Doe",
-        createdAt: new Date(),
-        user: {
-          _id: 0,
-          name: "Bot",
-        },
-      },
+      // {
+      //   _id: 0,
+      //   system: true,
+      //   text: "New messages from John Doe",
+      //   createdAt: new Date(),
+      //   user: {
+      //     _id: 0,
+      //     name: "Bot",
+      //   },
+      // },
     ]);
 
     // Fix for invisible messages loading for "web"
