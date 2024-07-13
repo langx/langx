@@ -28,13 +28,14 @@ import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 
 const Room = () => {
+  const theme = useColorScheme() === "dark" ? "dark" : "light";
+  const insets = useSafeAreaInsets();
+  const dispatch = useDispatch();
+
   const { id } = useLocalSearchParams<{ id: string }>();
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
-
-  const theme = useColorScheme() === "dark" ? "dark" : "light";
-  const insets = useSafeAreaInsets();
 
   const {
     data: roomData,
@@ -44,19 +45,15 @@ const Room = () => {
     hasMore: hasMoreRooms,
   } = useDatabase(listRooms, { roomId: id });
 
-  const dispatch = useDispatch();
-
   // Fetch room data on component mount
   useEffect(() => {
     const fetchData = async () => {
-      if (!room) {
-        if (roomData && roomData.length > 0) {
-          dispatch(setRoom(roomData[0]));
-        }
+      if (!room && roomData && roomData.length > 0) {
+        dispatch(setRoom(roomData[0]));
       }
     };
     fetchData();
-  }, [roomData, dispatch]);
+  }, [roomData, room, dispatch]);
 
   const {
     data: messagesData,
