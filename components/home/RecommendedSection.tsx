@@ -35,9 +35,9 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     refetch,
   }));
 
-  useEffect(() => {
-    console.log("users", users?.length);
-  }, [users]);
+  // useEffect(() => {
+  //   console.log("users", users?.length);
+  // }, [users]);
 
   const onEndReached = () => {
     if (hasMore && !loading) {
