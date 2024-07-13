@@ -105,4 +105,5 @@ export const {
   setError,
   setAuthInitialState,
 } = authSlice.actions;
+
 export default authSlice.reducer;
