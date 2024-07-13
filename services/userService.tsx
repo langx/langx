@@ -14,7 +14,7 @@ export async function listUsers(
   try {
     const queries = [
       Query.orderDesc("$updatedAt"),
-      // Query.notEqual("$id", userId),
+      Query.notEqual("$id", userId),
       Query.limit(PAGINATION_LIMIT),
     ];
 
