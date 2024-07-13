@@ -76,8 +76,8 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
                   color: Colors.light.gray3,
                 }}
               >
-                {room?.messages.length > 40
-                  ? `${room?.messages[0].substring(0, 40)}...`
+                {room?.messages[0].body.length > 40
+                  ? `${room?.messages[0].body.substring(0, 40)}...`
                   : "No messages"}
               </ThemedText>
             </ThemedView>
