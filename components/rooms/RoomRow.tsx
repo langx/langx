@@ -6,6 +6,7 @@ import { Image, TouchableHighlight, StyleSheet } from "react-native";
 
 import { Room } from "@/models/Room";
 import { Colors } from "@/constants/Colors";
+import { lastSeen } from "@/constants/utils";
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -37,6 +38,13 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
     );
   }
 
+  function messageTime(d: any) {
+    if (!d) return null;
+    let time = lastSeen(d);
+    if (time === "online") time = "now";
+    return time;
+  }
+
   return (
     <AppleStyleSwipeableRow>
       <Link href={`/(tabs)/rooms/${room.$id}`} asChild>
@@ -61,18 +69,19 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
               <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
                 {room?.userData?.name}
               </ThemedText>
-              {/* <ThemedText
+              <ThemedText
                 style={{
                   fontSize: 16,
                   fontFamily: "NotoSans-Regular",
                   color: Colors.light.gray3,
                 }}
               >
-                {msg.length > 40 ? `${msg.substring(0, 40)}...` : msg}
-              </ThemedText> */}
+                {room?.messages.length > 40
+                  ? `${room?.messages[0].substring(0, 40)}...`
+                  : "No messages"}
+              </ThemedText>
             </ThemedView>
 
-            {/* 
             <ThemedText
               style={{
                 color: Colors.light.gray3,
@@ -80,8 +89,8 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
                 alignSelf: "flex-start",
               }}
             >
-              {format(date, "MM.dd.yy")}
-            </ThemedText> */}
+              {messageTime(room?.lastMessageUpdatedAt)}
+            </ThemedText>
           </ThemedView>
         </TouchableHighlight>
       </Link>
