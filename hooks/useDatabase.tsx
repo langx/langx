@@ -46,8 +46,6 @@ export function useDatabase(
 
   const refetch = () => {
     setOffset(0);
-    setHasMore(true);
-    setLoading(true);
     fetchData(0);
   };
 

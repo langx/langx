@@ -36,10 +36,6 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
   }));
 
   useEffect(() => {
-    loadMore();
-  }, []);
-
-  useEffect(() => {
     console.log("users", users?.length);
   }, [users]);
 
