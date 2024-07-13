@@ -5,7 +5,7 @@ import { PAGINATION_LIMIT } from "@/constants/config";
 
 export function useDatabase(
   fn: Function,
-  userId: string,
+  userId: string = null,
   filterData: Object = {},
   initialOffset: number = 0
 ) {
