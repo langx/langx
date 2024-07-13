@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -30,6 +36,21 @@ export default function RoomsScreen() {
     setIsRefreshing(false);
   };
 
+  const onEndReached = () => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
+  };
+
+  const renderFooter = () => {
+    if (!hasMore) return null;
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </ThemedView>
+    );
+  };
+
   useEffect(() => {
     console.log("rooms:", rooms?.length);
   }, [rooms]);
@@ -58,8 +79,18 @@ export default function RoomsScreen() {
             <ThemedView style={[defaultStyles.separator, { marginLeft: 90 }]} />
           )}
           scrollEnabled={false}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
         />
       </ScrollView>
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
