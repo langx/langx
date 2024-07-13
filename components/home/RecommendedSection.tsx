@@ -15,7 +15,11 @@ import UserCard from "@/components/home/UserCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const RecomendedSection = forwardRef((props, ref) => {
+interface RecommendedSectionProps {
+  currentUserId: string;
+}
+
+const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
   const {
     data: users,
     loading,
@@ -74,7 +78,7 @@ const RecomendedSection = forwardRef((props, ref) => {
   );
 });
 
-export default RecomendedSection;
+export default RecommendedSection;
 
 const styles = StyleSheet.create({
   card: {

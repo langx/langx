@@ -1,13 +1,16 @@
 import React, { useState, useRef } from "react";
 import { ScrollView, RefreshControl } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-import RecomendedSection from "@/components/home/RecomendedSection";
+import RecommendedSection from "@/components/home/RecommendedSection";
 import FeaturedSection from "@/components/home/FeaturedSection";
 import VisitorsSection from "@/components/home/VisitorsSection";
 
 export default function CommunityScreen() {
+  const user = useSelector((state: RootState) => state.auth.user);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const recommendedSectionRef = useRef(null);
   const featuredSectionRef = useRef(null);
@@ -33,7 +36,10 @@ export default function CommunityScreen() {
           />
         }
       >
-        <RecomendedSection ref={recommendedSectionRef} />
+        <RecommendedSection
+          currentUserId={user.$id}
+          ref={recommendedSectionRef}
+        />
         <FeaturedSection ref={featuredSectionRef} />
         <VisitorsSection ref={visitorsSectionRef} />
       </ScrollView>
