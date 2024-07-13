@@ -1,6 +1,7 @@
 import { language2Country } from '@/constants/language2Country';
 
 export const getFlagEmoji = (country: string) => {
+  if (!country) return;
   const codePoints = country
     .toUpperCase()
     .split('')
@@ -24,6 +25,7 @@ export const getFlagEmoji2 = (languageCode: string) => {
 };
 
 export const getAge = (birthdate: string) => {
+  if (!birthdate) return;
   const birthDate = new Date(birthdate);
   const ageDiffMs = Date.now() - birthDate.getTime();
   const ageDate = new Date(ageDiffMs);
