@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  ScrollView,
   StyleSheet,
 } from "react-native";
 import { useSelector } from "react-redux";
@@ -56,13 +55,14 @@ export default function RoomsScreen() {
   }, [rooms]);
 
   return (
-    <ThemedView
-      style={{
-        flex: 1,
-      }}
-    >
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
+    <ThemedView style={{ flex: 1 }}>
+      <FlatList
+        data={rooms}
+        renderItem={({ item: room }) => <RoomRow room={room} />}
+        keyExtractor={(item) => item.$id.toString()}
+        ItemSeparatorComponent={() => (
+          <ThemedView style={[defaultStyles.separator, { marginLeft: 90 }]} />
+        )}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
@@ -70,19 +70,10 @@ export default function RoomsScreen() {
             colors={[Colors.light.primary]}
           />
         }
-      >
-        <FlatList
-          data={rooms}
-          renderItem={({ item: room }) => <RoomRow room={room} />}
-          keyExtractor={(item) => item.$id.toString()}
-          ItemSeparatorComponent={() => (
-            <ThemedView style={[defaultStyles.separator, { marginLeft: 90 }]} />
-          )}
-          scrollEnabled={false}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.5}
-        />
-      </ScrollView>
+        ListFooterComponent={renderFooter}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+      />
     </ThemedView>
   );
 }
