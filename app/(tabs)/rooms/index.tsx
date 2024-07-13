@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -12,20 +12,19 @@ import RoomRow from "@/components/rooms/RoomRow";
 
 export default function RoomsScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
-  if (!user) {
-    return null;
-  }
-  console.log(user.$id);
+  const currentUserId = user?.$id;
+
   const {
     data: rooms,
     loading,
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listRooms);
+  } = useDatabase(listRooms, currentUserId);
 
-  console.log(rooms?.length);
-  // const rooms = [];
+  useEffect(() => {
+    console.log("rooms:", rooms?.length);
+  }, [rooms]);
 
   return (
     <ThemedView
