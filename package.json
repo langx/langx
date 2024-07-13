@@ -18,7 +18,6 @@
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.6",
-    "date-fns": "^3.6.0",
     "expo": "~51.0.17",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.7",

@@ -1,42 +1,55 @@
 import React, { useEffect, forwardRef, useImperativeHandle } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   FlatList,
   ActivityIndicator,
-  View,
   StyleSheet,
   Pressable,
 } from "react-native";
+
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
-import UserCard from "@/components/home/UserCard";
 import { Colors } from "@/constants/Colors";
+import UserCard from "@/components/home/UserCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
 
-const RecomendedSection = forwardRef((props, ref) => {
+interface RecommendedSectionProps {
+  currentUserId: string;
+  filterData?: any;
+}
+
+const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
+  const { currentUserId, filterData = {} } = props;
+
   const {
     data: users,
     loading,
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers);
+  } = useDatabase(listUsers, currentUserId, filterData);
+
+  // useEffect(() => {
+  //   console.log("users", users?.length);
+  // }, [users]);
 
   useImperativeHandle(ref, () => ({
     refetch,
   }));
 
-  useEffect(() => {
-    loadMore();
-  }, []);
+  const onEndReached = () => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
+  };
 
   const renderFooter = () => {
     if (!hasMore) return null;
     return (
-      <View style={styles.loadingContainer}>
+      <ThemedView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={Colors.light.primary} />
-      </View>
+      </ThemedView>
     );
   };
 
@@ -65,7 +78,7 @@ const RecomendedSection = forwardRef((props, ref) => {
         data={users}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => <UserCard item={item} />}
-        onEndReached={loadMore}
+        onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
       />
@@ -73,7 +86,7 @@ const RecomendedSection = forwardRef((props, ref) => {
   );
 });
 
-export default RecomendedSection;
+export default RecommendedSection;
 
 const styles = StyleSheet.create({
   card: {

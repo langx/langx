@@ -3,7 +3,12 @@ import { useEffect, useState, useCallback } from "react";
 
 import { PAGINATION_LIMIT } from "@/constants/config";
 
-export function useDatabase(fn, initialOffset = 0) {
+export function useDatabase(
+  fn: Function,
+  userId: string = null,
+  filterData: Object = {},
+  initialOffset: number = 0
+) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(initialOffset);
@@ -13,7 +18,7 @@ export function useDatabase(fn, initialOffset = 0) {
   const fetchData = async (currentOffset) => {
     setLoading(true);
     try {
-      const res = await fn(currentOffset);
+      const res = await fn(userId, filterData, currentOffset);
       if (currentOffset === 0) {
         setData(res);
       } else {
@@ -41,8 +46,6 @@ export function useDatabase(fn, initialOffset = 0) {
 
   const refetch = () => {
     setOffset(0);
-    setHasMore(true);
-    setLoading(true);
     fetchData(0);
   };
 
