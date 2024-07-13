@@ -1,10 +1,12 @@
 import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { FC, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Image, TouchableHighlight, StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import { getFlagEmoji, lastSeen } from "@/constants/utils";
+import { setRoom } from "@/store/roomSlice";
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -19,6 +21,8 @@ interface messageDetails {
 }
 
 const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
+  const dispatch = useDispatch();
+
   const [userImageUrl, setUserImageUrl] = useState("");
   const { data, loading, refetch } = useDatabase(() =>
     getUserImage(room?.userData?.profilePic)
@@ -88,6 +92,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
   }
 
   const navigateToRoomById = () => {
+    dispatch(setRoom(room));
     router.navigate(`rooms/${room.$id}`);
   };
 

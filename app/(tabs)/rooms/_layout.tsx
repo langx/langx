@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Stack } from "expo-router";
 import { Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Switch, Image, Pressable } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import icons from "@/constants/icons";
+import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,6 +19,14 @@ export default function RootLayout() {
   const [isCopilotEnabled, setIsCopilotEnabled] = useState(false);
   const toggleSwitch = () =>
     setIsCopilotEnabled((previousState) => !previousState);
+
+  const room: RoomExtendedInterface | null = useSelector(
+    (state: RootState) => state.room.room
+  );
+
+  // useEffect(() => {
+  //   console.log("room from store:", room?.$id);
+  // }, [room]);
 
   return (
     <Stack>
@@ -76,7 +87,7 @@ export default function RootLayout() {
                 style={{ width: 30, height: 30, borderRadius: 30 }}
               />
               <ThemedText style={{ fontSize: 16, fontWeight: "500" }}>
-                Simon Grimm
+                {room?.userData?.name}
               </ThemedText>
             </ThemedView>
           ),
