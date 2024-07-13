@@ -53,17 +53,15 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
               paddingVertical: 10,
             }}
           >
-            <ThemedText>{room.userData.$id}</ThemedText>
             <Image
               source={{ uri: userImageUrl }}
               style={{ width: 50, height: 50, borderRadius: 50 }}
             />
-            {/* 
             <ThemedView style={{ flex: 1 }}>
               <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
-                {from}
+                {room?.userData?.name}
               </ThemedText>
-              <ThemedText
+              {/* <ThemedText
                 style={{
                   fontSize: 16,
                   fontFamily: "NotoSans-Regular",
@@ -71,8 +69,10 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
                 }}
               >
                 {msg.length > 40 ? `${msg.substring(0, 40)}...` : msg}
-              </ThemedText>
+              </ThemedText> */}
             </ThemedView>
+
+            {/* 
             <ThemedText
               style={{
                 color: Colors.light.gray3,
