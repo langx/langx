@@ -17,16 +17,19 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 interface RecommendedSectionProps {
   currentUserId: string;
+  filterData?: any;
 }
 
 const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
+  const { currentUserId, filterData = {} } = props;
+
   const {
     data: users,
     loading,
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers);
+  } = useDatabase(listUsers, currentUserId, filterData);
 
   useImperativeHandle(ref, () => ({
     refetch,
@@ -35,6 +38,10 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
   useEffect(() => {
     loadMore();
   }, []);
+
+  useEffect(() => {
+    console.log("users", users?.length);
+  }, [users]);
 
   const renderFooter = () => {
     if (!hasMore) return null;
