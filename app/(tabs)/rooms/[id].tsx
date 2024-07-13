@@ -13,8 +13,11 @@ import {
   IMessage,
   Time,
 } from "react-native-gifted-chat";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-// import messagesData from "@/assets/data/messages.json";
+import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
+import { setRoom } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
 import { listMessages } from "@/services/messageService";
@@ -26,7 +29,9 @@ import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 
 const Room = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  // console.log("Room id:", id);
+  const room: RoomExtendedInterface | null = useSelector(
+    (state: RootState) => state.room.room
+  );
 
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
@@ -39,9 +44,19 @@ const Room = () => {
     hasMore: hasMoreRooms,
   } = useDatabase(listRooms, { roomId: id });
 
+  const dispatch = useDispatch();
+
+  // Fetch room data on component mount
   useEffect(() => {
-    console.log("roomData:", roomData);
-  }, [roomData]);
+    const fetchData = async () => {
+      if (!room) {
+        if (roomData && roomData.length > 0) {
+          dispatch(setRoom(roomData[0]));
+        }
+      }
+    };
+    fetchData();
+  }, [roomData, dispatch]);
 
   const {
     data: messagesData,
@@ -62,7 +77,6 @@ const Room = () => {
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
-    // console.log("messagesData:", messagesData.length, messagesData[0]);
     setMessages([
       ...messagesData.map((message) => {
         return {
@@ -75,23 +89,11 @@ const Room = () => {
           },
         };
       }),
-      // {
-      //   _id: 0,
-      //   system: true,
-      //   text: "New messages from John Doe",
-      //   createdAt: new Date(),
-      //   user: {
-      //     _id: 0,
-      //     name: "Bot",
-      //   },
-      // },
     ]);
 
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
   }, [messagesData]);
-
-  useEffect(() => {});
 
   const onSend = useCallback((newMessages = []) => {
     setMessages((previousMessages) =>
