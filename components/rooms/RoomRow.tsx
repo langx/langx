@@ -11,8 +11,15 @@ import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 
-const RoomRow: FC<{ room: Room }> = ({ room }) => {
+interface LastMessageBody {
+  time: string | null;
+  yourTurn?: boolean;
+  body: string;
+}
+
+const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
   const [userImageUrl, setUserImageUrl] = useState("");
   const { data, loading, refetch } = useDatabase(() =>
     getUserImage(room?.userData?.profilePic)
@@ -37,6 +44,39 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
       </ThemedView>
     );
   }
+
+  const getLastMessage = (room: RoomExtendedInterface): LastMessageBody => {
+    const currentUserId = room.users.filter((id: string) => {
+      id !== room?.userData?.$id;
+    })[0];
+    const lastMessage = room.messages[room.messages.length - 1];
+    const type = lastMessage?.type || null;
+    let lastMessageBody: LastMessageBody = {
+      time: lastMessage?.$createdAt || null,
+      body: "Say Hi! 👋", // Default value
+    };
+
+    if (lastMessage?.to === currentUserId) {
+      lastMessageBody.yourTurn = true;
+    }
+
+    switch (type) {
+      case "body":
+        lastMessageBody.body = lastMessage.body;
+        break;
+      case "image":
+        lastMessageBody.body = "📷 Image";
+        break;
+      case "audio":
+        lastMessageBody.body = "🎵 Audio";
+        break;
+      // Default case is already handled during initialization
+    }
+
+    return lastMessageBody;
+  };
+
+  const lastMessage = getLastMessage(room);
 
   function messageTime(d: any) {
     if (!d) return null;
@@ -66,19 +106,24 @@ const RoomRow: FC<{ room: Room }> = ({ room }) => {
               style={{ width: 50, height: 50, borderRadius: 50 }}
             />
             <ThemedView style={{ flex: 1 }}>
-              <ThemedText style={{ fontSize: 18, fontWeight: "bold" }}>
+              <ThemedText
+                style={{
+                  fontSize: 18,
+                  fontWeight: "bold",
+                }}
+              >
                 {room?.userData?.name}
               </ThemedText>
               <ThemedText
                 style={{
                   fontSize: 16,
-                  fontFamily: "NotoSans-Regular",
                   color: Colors.light.gray3,
+                  maxWidth: "100%",
+                  paddingTop: 5,
                 }}
+                numberOfLines={1}
               >
-                {room?.messages[0].body.length > 40
-                  ? `${room?.messages[0].body.substring(0, 40)}...`
-                  : "No messages"}
+                {lastMessage.body}
               </ThemedText>
             </ThemedView>
 
