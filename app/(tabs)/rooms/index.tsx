@@ -1,18 +1,20 @@
-import React, { useEffect } from "react";
-import { FlatList, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, RefreshControl, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-import chats from "@/assets/data/chats.json";
 import { useDatabase } from "@/hooks/useDatabase";
 import { listRooms } from "@/services/roomService";
-import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import RoomRow from "@/components/rooms/RoomRow";
 
 export default function RoomsScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
   const currentUserId = user?.$id;
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
     data: rooms,
@@ -21,6 +23,12 @@ export default function RoomsScreen() {
     refetch,
     hasMore,
   } = useDatabase(listRooms, currentUserId);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    refetch();
+    setIsRefreshing(false);
+  };
 
   useEffect(() => {
     console.log("rooms:", rooms?.length);
@@ -35,6 +43,13 @@ export default function RoomsScreen() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{ paddingBottom: 40 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={[Colors.light.primary]}
+          />
+        }
       >
         <FlatList
           data={rooms}
