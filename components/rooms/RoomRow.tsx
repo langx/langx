@@ -11,10 +11,11 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 
-interface LastMessageBody {
+interface messageDetails {
   time: string | null;
   yourTurn?: boolean;
   body: string;
+  unseen: number;
 }
 
 const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
@@ -43,35 +44,38 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
     );
   }
 
-  const getLastMessage = (room: RoomExtendedInterface): LastMessageBody => {
+  const getLastMessage = (room: RoomExtendedInterface): messageDetails => {
     const currentUserId = room.users.find(
       (id: string) => id !== room?.userData?.$id
     );
     const lastMessage = room.messages[room.messages.length - 1];
     const type = lastMessage?.type || null;
-    let lastMessageBody: LastMessageBody = {
+    let messageDetail: messageDetails = {
       time: lastMessage?.$createdAt || null,
       body: "Say Hi! 👋", // Default value
+      unseen: 0, // Default value
     };
 
     if (lastMessage?.to === currentUserId) {
-      lastMessageBody.yourTurn = true;
+      messageDetail.yourTurn = true;
     }
 
     switch (type) {
       case "body":
-        lastMessageBody.body = lastMessage.body;
+        messageDetail.body = lastMessage.body;
         break;
       case "image":
-        lastMessageBody.body = "📷 Image";
+        messageDetail.body = "📷 Image";
         break;
       case "audio":
-        lastMessageBody.body = "🎵 Audio";
+        messageDetail.body = "🎵 Audio";
         break;
-      // Default case is already handled during initialization
     }
 
-    return lastMessageBody;
+    const userIndex: number = room.users.indexOf(currentUserId);
+    messageDetail.unseen = room.unseen[userIndex];
+
+    return messageDetail;
   };
 
   const lastMessage = getLastMessage(room);
@@ -139,6 +143,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
                 <ThemedView
                   style={{
                     marginRight: 20,
+                    marginTop: 2,
                     padding: 1,
                     alignSelf: "flex-end",
                     backgroundColor: Colors.light.primary,
@@ -151,9 +156,35 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
                       fontSize: 10,
                       color: Colors.light.black,
                       padding: 2,
+                      textAlign: "center",
                     }}
                   >
                     your-turn
+                  </ThemedText>
+                </ThemedView>
+              )}
+              {lastMessage.unseen > 0 && (
+                <ThemedView
+                  style={{
+                    marginRight: 20,
+                    marginTop: 2,
+                    padding: 1,
+                    alignSelf: "flex-end",
+                    backgroundColor: Colors.light.error,
+                    borderRadius: 5,
+                    overflow: "hidden",
+                  }}
+                >
+                  <ThemedText
+                    style={{
+                      fontSize: 10,
+                      color: Colors.light.white,
+                      padding: 3,
+                      minWidth: 15,
+                      textAlign: "center",
+                    }}
+                  >
+                    {lastMessage.unseen}
                   </ThemedText>
                 </ThemedView>
               )}
