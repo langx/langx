@@ -65,7 +65,8 @@ const Room = () => {
 
   useEffect(() => {
     console.log("msgs:", messagesData?.length);
-  }, [messagesData]);
+    console.log("loading:", loading);
+  }, [messagesData, loading]);
 
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [text, setText] = useState("");
@@ -258,11 +259,15 @@ const Room = () => {
         loadEarlier={true}
         infiniteScroll={true}
         isLoadingEarlier={loading}
-        onLoadEarlier={loadMore}
+        onLoadEarlier={() => {
+          if (hasMore) loadMore();
+        }}
         // renderTicks={(message) => renderTicks({ currentMessage: message })}
-        renderLoadEarlier={() => (
-          <ActivityIndicator size="large" color={Colors.light.primary} />
-        )}
+        renderLoadEarlier={() =>
+          loading ? (
+            <ActivityIndicator size="large" color={Colors.light.primary} />
+          ) : null
+        }
       />
     </ThemedView>
   );
