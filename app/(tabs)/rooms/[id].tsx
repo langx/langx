@@ -75,7 +75,7 @@ const Room = () => {
 
   useEffect(() => {
     // console.log("!!! ___ !!! room:", room.$id);
-    const currentUserId = room.users.find(
+    const currentUserId = room?.users?.find(
       (userId) => userId !== room.userData.$id
     );
     // console.log("!!! ___ !!! currentUserId:", currentUserId);
@@ -90,6 +90,8 @@ const Room = () => {
             name:
               message.sender === currentUserId ? "You" : room?.userData?.name,
           },
+          sent: true,
+          received: message.seen,
         };
       }),
     ]);
@@ -257,6 +259,7 @@ const Room = () => {
         infiniteScroll={true}
         isLoadingEarlier={loading}
         onLoadEarlier={loadMore}
+        // renderTicks={(message) => renderTicks({ currentMessage: message })}
         renderLoadEarlier={() => (
           <ActivityIndicator size="large" color={Colors.light.primary} />
         )}
