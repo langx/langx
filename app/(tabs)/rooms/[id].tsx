@@ -20,6 +20,7 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 import { setRoom } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
+import { useRealtimeMessages } from "@/hooks/useRealtime";
 import { listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
@@ -36,6 +37,8 @@ const Room = () => {
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
+
+  useRealtimeMessages(id);
 
   const {
     data: roomData,
