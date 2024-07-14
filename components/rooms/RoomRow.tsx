@@ -2,7 +2,7 @@ import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
 import { router } from "expo-router";
 import { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Image, TouchableHighlight, StyleSheet } from "react-native";
+import { Image, Pressable, StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/Colors";
 import { getFlagEmoji, lastSeen } from "@/constants/utils";
@@ -98,7 +98,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
 
   return (
     <AppleStyleSwipeableRow>
-      <TouchableHighlight
+      <Pressable
         activeOpacity={0.8}
         underlayColor={Colors.light.gray3}
         onPress={navigateToRoomById}
@@ -199,7 +199,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
             )}
           </ThemedView>
         </ThemedView>
-      </TouchableHighlight>
+      </Pressable>
     </AppleStyleSwipeableRow>
   );
 };
