@@ -102,6 +102,9 @@ const Room = () => {
   }, [messagesData]);
 
   const onSend = useCallback((newMessages = []) => {
+    newMessages.forEach((message) => {
+      message.pending = true;
+    });
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, newMessages)
     );
@@ -223,7 +226,7 @@ const Room = () => {
     >
       <GiftedChat
         messages={messages}
-        onSend={(messages: any) => onSend(messages)}
+        onSend={(messages: IMessage[]) => onSend(messages)}
         onInputTextChanged={setText}
         user={{
           _id: 1,
