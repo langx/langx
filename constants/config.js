@@ -8,5 +8,6 @@ export const MESSAGES_COLLECTION = "65075108a4025a4f5bd7";
 export const WALLET_COLLECTION = "66622b8a000b305b236c";
 
 export const USER_BUCKET = "6515f94d20becd47cb40";
+export const MESSAGE_BUCKET = "655fedc46d24b615878a";
 
 export const PAGINATION_LIMIT = 20;

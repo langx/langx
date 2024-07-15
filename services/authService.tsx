@@ -61,6 +61,17 @@ export async function getAccount() {
   }
 }
 
+// Create JWT Session
+export async function createJWT() {
+  try {
+    const jwt = await account.createJWT();
+
+    return jwt;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 // Get Current Session
 export async function getCurrentSession() {
   try {

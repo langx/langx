@@ -5,10 +5,11 @@ import {
   RefreshControl,
   StyleSheet,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 import { useDatabase } from "@/hooks/useDatabase";
+import { setRooms } from "@/store/roomSlice";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
@@ -16,9 +17,8 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import RoomRow from "@/components/rooms/RoomRow";
 
 const RoomsScreen = () => {
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
-  const currentUserId = user?.$id;
-
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
@@ -27,10 +27,11 @@ const RoomsScreen = () => {
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listRooms, currentUserId);
+  } = useDatabase(listRooms, { userId: user?.$id });
 
   useEffect(() => {
     console.log("rooms:", rooms?.length);
+    if (rooms?.length > 0) dispatch(setRooms(rooms));
   }, [rooms]);
 
   const onRefresh = async () => {

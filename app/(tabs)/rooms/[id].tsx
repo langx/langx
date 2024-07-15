@@ -1,8 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { Platform, StyleSheet } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 import {
   GiftedChat,
   Bubble,
@@ -13,8 +16,12 @@ import {
   Time,
 } from "react-native-gifted-chat";
 
-import messagesData from "@/assets/data/messages.json";
+import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
+import { setRoom } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useDatabase } from "@/hooks/useDatabase";
+import { listMessages } from "@/services/messageService";
+import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
@@ -23,6 +30,45 @@ import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
+  const dispatch = useDispatch();
+
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const room: RoomExtendedInterface | null = useSelector(
+    (state: RootState) => state.room.room
+  );
+
+  const {
+    data: roomData,
+    loading: roomLoading,
+    loadMore: loadMoreRooms,
+    refetch: refetchRooms,
+    hasMore: hasMoreRooms,
+  } = useDatabase(listRooms, { roomId: id });
+
+  // Fetch room data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!room && roomData && roomData.length > 0) {
+        dispatch(setRoom(roomData[0]));
+      }
+    };
+    fetchData();
+  }, [roomData, room, dispatch]);
+
+  const {
+    data: messagesData,
+    loading,
+    loadMore,
+    refetch,
+    hasMore,
+  } = useDatabase(listMessages, { roomId: id });
+
+  useEffect(() => {
+    console.log("msgs:", messagesData?.length);
+    // console.log("loading:", loading);
+    // console.log("hasMore:", hasMore);
+  }, [messagesData, loading]);
+
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [text, setText] = useState("");
 
@@ -30,37 +76,38 @@ const Room = () => {
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
   useEffect(() => {
+    // console.log("!!! ___ !!! room:", room.$id);
+    const currentUserId = room?.users?.find(
+      (userId) => userId !== room.userData.$id
+    );
+    // console.log("!!! ___ !!! currentUserId:", currentUserId);
     setMessages([
       ...messagesData.map((message) => {
         return {
-          _id: message.id,
-          text: message.msg,
-          createdAt: new Date(message.date),
+          _id: message.$id,
+          text: message.type === "body" ? message.body : null,
+          image: message.type === "image" ? message.imageId : null,
+          audio: message.type === "audio" ? message.audioId : null,
+          createdAt: new Date(message.$createdAt),
           user: {
-            _id: message.from,
-            name: message.from ? "You" : "John Doe",
+            _id: message.sender === currentUserId ? 1 : 0,
+            name:
+              message.sender === currentUserId ? "You" : room?.userData?.name,
           },
+          sent: true,
+          received: message.seen,
         };
       }),
-      {
-        _id: 0,
-        system: true,
-        text: "New messages from John Doe",
-        createdAt: new Date(),
-        user: {
-          _id: 0,
-          name: "Bot",
-        },
-      },
     ]);
 
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
-  }, []);
-
-  useEffect(() => {});
+  }, [messagesData]);
 
   const onSend = useCallback((newMessages = []) => {
+    newMessages.forEach((message) => {
+      message.pending = true;
+    });
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, newMessages)
     );
@@ -182,10 +229,11 @@ const Room = () => {
     >
       <GiftedChat
         messages={messages}
-        onSend={(messages: any) => onSend(messages)}
+        onSend={(messages: IMessage[]) => onSend(messages)}
         onInputTextChanged={setText}
         user={{
           _id: 1,
+          name: "You",
         }}
         renderSystemMessage={(props) => (
           <SystemMessage
@@ -214,6 +262,18 @@ const Room = () => {
             updateRowRef={updateRowRef}
           />
         )}
+        loadEarlier={true}
+        infiniteScroll={true}
+        isLoadingEarlier={loading}
+        onLoadEarlier={() => {
+          if (hasMore) loadMore();
+        }}
+        // renderTicks={(message) => renderTicks({ currentMessage: message })}
+        renderLoadEarlier={() =>
+          loading ? (
+            <ActivityIndicator size="large" color={Colors.light.primary} />
+          ) : null
+        }
       />
     </ThemedView>
   );

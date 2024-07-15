@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, Animated } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Animated, Image } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   GestureHandlerRootView,
@@ -9,17 +9,48 @@ import { IMessage, Message, MessageProps } from "react-native-gifted-chat";
 import { isSameDay, isSameUser } from "react-native-gifted-chat/lib/utils";
 
 import { Colors } from "@/constants/Colors";
+import { createJWT } from "@/services/authService";
+import { getMessageImage } from "@/services/bucketService";
 
 type ChatMessageBoxProps = {
   setReplyOnSwipeOpen: (message: IMessage) => void;
   updateRowRef: (ref: any) => void;
 } & MessageProps<IMessage>;
 
+const fetchImageWithAuth = async (imageId: string) => {
+  const url = await getMessageImage(imageId);
+  const jwt = (await createJWT()).jwt;
+  const headers = {
+    method: "GET",
+    "x-appwrite-jwt": jwt,
+  };
+
+  const response = await fetch(url, {
+    method: "GET",
+    headers: headers,
+  });
+  // console.log("Response:", response);
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+};
+
 const ChatMessageBox = ({
   setReplyOnSwipeOpen,
   updateRowRef,
   ...props
 }: ChatMessageBoxProps) => {
+  const [updatedMessage, setUpdatedMessage] = useState(props.currentMessage);
+
+  useEffect(() => {
+    if (props.currentMessage.image) {
+      const fetchImage = async () => {
+        const uri = await fetchImageWithAuth(props.currentMessage.image);
+        setUpdatedMessage({ ...props.currentMessage, image: uri });
+      };
+      fetchImage();
+    }
+  }, [props.currentMessage]);
+
   const isNextMyMessage =
     props.currentMessage &&
     props.nextMessage &&
@@ -75,7 +106,7 @@ const ChatMessageBox = ({
         renderLeftActions={renderRightAction}
         onSwipeableWillOpen={onSwipeOpenAction}
       >
-        <Message {...props} />
+        <Message {...props} currentMessage={updatedMessage} />
       </Swipeable>
     </GestureHandlerRootView>
   );

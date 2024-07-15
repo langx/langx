@@ -1,21 +1,48 @@
-import { useState } from "react";
-import { Stack } from "expo-router";
-import { Link } from "expo-router";
+import { useEffect, useState } from "react";
+import { Stack, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Switch, Image, Pressable } from "react-native";
+import { Switch, Image, Pressable, ActivityIndicator } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
+import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { Colors } from "@/constants/Colors";
+import { getFlagEmoji } from "@/constants/utils";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { useRealtimeMessages } from "@/hooks/useRealtime";
+import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-import icons from "@/constants/icons";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
+  // useRealtimeMessages();
+
   const [isCopilotEnabled, setIsCopilotEnabled] = useState(false);
   const toggleSwitch = () =>
     setIsCopilotEnabled((previousState) => !previousState);
+
+  const room: RoomExtendedInterface | null = useSelector(
+    (state: RootState) => state.room.room
+  );
+  const [userImageUrl, setUserImageUrl] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!room) return;
+      const data = await getUserImage(room?.userData?.profilePic);
+      if (data) {
+        try {
+          setUserImageUrl(data.toString());
+          // console.log("userImageUrl:", userImageUrl);
+        } catch (error) {
+          console.error("Failed to process user image URL", error);
+        }
+      }
+    };
+    fetchData();
+  }, [room]);
 
   return (
     <Stack>
@@ -71,12 +98,17 @@ export default function RootLayout() {
                 alignItems: "center",
               }}
             >
-              <Image
-                source={icons.profile}
-                style={{ width: 30, height: 30, borderRadius: 30 }}
-              />
-              <ThemedText style={{ fontSize: 16, fontWeight: "500" }}>
-                Simon Grimm
+              {userImageUrl ? (
+                <Image
+                  source={{ uri: userImageUrl }}
+                  style={{ width: 35, height: 35, borderRadius: 35 }}
+                />
+              ) : (
+                <ActivityIndicator size="small" color={Colors.light.primary} />
+              )}
+              <ThemedText style={{ fontSize: 18 }}>
+                {getFlagEmoji(room?.userData?.countryCode)}{" "}
+                {room?.userData?.name}
               </ThemedText>
             </ThemedView>
           ),
