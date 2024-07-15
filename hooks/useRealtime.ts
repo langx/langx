@@ -35,12 +35,6 @@ export function useRealtime(currentUserId) {
             }
             // TODO: #873 Update other users
             break;
-          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
-            const createdMessage = response.payload;
-            // console.log('[NOTIFICATION] Created message:', createdMessage);
-            // dispatch(findRoomAndAddMessage(createdMessage));
-            // dispatch(findActiveRoomAndAddMessage(createdMessage));
-            break;
           case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
             const createdRoom = response.payload;
             // console.log('[NOTIFICATION] Created room:', createdRoom);
@@ -51,6 +45,12 @@ export function useRealtime(currentUserId) {
             // console.log('[NOTIFICATION] Updated room:', updatedRoom);
             // dispatch(findAndUpdateRoomUpdatedAt(updatedRoom));
             // dispatch(findAndUpdateActiveRoomUpdatedAt(updatedRoom));
+            break;
+          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
+            const createdMessage = response.payload;
+            // console.log('[NOTIFICATION] Created message:', createdMessage);
+            // dispatch(findRoomAndAddMessage(createdMessage));
+            // dispatch(findActiveRoomAndAddMessage(createdMessage));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.update`:
             const updatedMessage = response.payload;
