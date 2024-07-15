@@ -2,14 +2,22 @@ import { useEffect } from "react";
 import { Platform } from "react-native";
 import { Tabs, useSegments } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { enableScreens } from "react-native-screens";
+
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useRealtime } from "@/hooks/useRealtime";
 import { TabBarItem } from "@/components/navigation/TabBarItem";
-import { enableScreens } from "react-native-screens";
 
 const TabsLayout = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
+
+  // Start Realtime Websocket connection
+  const currentUser = useSelector((state: RootState) => state.auth.user);
+  if (currentUser) useRealtime(currentUser.$id);
 
   const segments = useSegments();
   const TabsRoutes = ["home", "rooms", "profile"];

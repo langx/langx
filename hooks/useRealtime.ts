@@ -8,67 +8,61 @@ import {
   MESSAGES_COLLECTION,
 } from '@/constants/config';
 import { client } from '@/services/apiService';
-// import { updateRooms } from '@/store/roomSlice';
 
-export function useRealtimeUsers() {
+export function useRealtime(currentUserId) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('USERS useRealtimeUser hook initialized');
+    console.log('Realtime updates hook initialized');
 
-    const unsubscribe = client.subscribe(
+    const channels = [
       `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents`,
-      (response) => {
-        console.log('USERS Database change detected:', response);
-        // dispatch(updateRooms(response.payload as RoomExtendedInterface));
-      }
-    );
-
-    return () => {
-      console.log('USERS Unsubscribing from database changes for messages');
-      unsubscribe();
-    };
-  }, [dispatch]);
-}
-
-export function useRealtimeRooms() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log('ROOMS useRealtimeRooms hook initialized');
-
-    const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents`,
-      (response) => {
-        console.log('ROOMS Database change detected:', response);
-        // dispatch(updateRooms(response.payload as RoomExtendedInterface));
-      }
-    );
-
-    return () => {
-      console.log('ROOMS Unsubscribing from database changes for rooms');
-      unsubscribe();
-    };
-  }, [dispatch]);
-}
-
-export function useRealtimeMessages() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log('MESSAGES useRealtimeMessages hook initialized');
-
-    const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents`,
-      (response) => {
-        console.log('MESSAGES Database change detected:', response);
-        // dispatch(updateRooms(response.payload as RoomExtendedInterface));
-      }
-    );
+    ];
+
+    const unsubscribe = client.subscribe(channels, (response) => {
+      console.log('Database change detected:', response);
+
+      response.events.forEach((event) => {
+        switch (event) {
+          case `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents.${currentUserId}.update`:
+            const updatedUser = response.payload;
+            // dispatch(updateCurrentUserSuccess(updatedUser));
+            break;
+          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
+            const createdMessage = response.payload;
+            // dispatch(findRoomAndAddMessage(createdMessage));
+            // dispatch(findActiveRoomAndAddMessage(createdMessage));
+            break;
+          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.update`:
+            const updatedMessage = response.payload;
+            // dispatch(findRoomAndUpdateMessage(updatedMessage));
+            // dispatch(findActiveRoomAndUpdateMessage(updatedMessage));
+            break;
+          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.delete`:
+            const deletedMessage = response.payload;
+            // dispatch(findRoomAndDeleteMessage(deletedMessage));
+            // dispatch(findActiveRoomAndDeleteMessage(deletedMessage));
+            break;
+          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
+            const createdRoom = response.payload;
+            // dispatch(findOrAddRoom({ room: createdRoom, currentUserId }));
+            break;
+          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.update`:
+            const updatedRoom = response.payload;
+            // dispatch(findAndUpdateRoomUpdatedAt(updatedRoom));
+            // dispatch(findAndUpdateActiveRoomUpdatedAt(updatedRoom));
+            break;
+          default:
+            break;
+        }
+      });
+    });
 
     return () => {
-      console.log('MESSAGES Unsubscribing from database changes for messages');
+      console.log('Unsubscribing from database changes');
       unsubscribe();
     };
-  }, [dispatch]);
+  }, [dispatch, currentUserId]);
 }
