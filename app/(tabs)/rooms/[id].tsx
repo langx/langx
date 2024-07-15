@@ -86,8 +86,8 @@ const Room = () => {
         return {
           _id: message.$id,
           text: message.type === "body" ? message.body : null,
-          image: message.type === "image" ? message.image : null,
-          audio: message.type === "audio" ? message.audio : null,
+          image: message.type === "image" ? message.imageId : null,
+          audio: message.type === "audio" ? message.audioId : null,
           createdAt: new Date(message.$createdAt),
           user: {
             _id: message.sender === currentUserId ? 1 : 0,
