@@ -10,22 +10,22 @@ import {
 import { client } from '@/services/apiService';
 // import { updateRooms } from '@/store/roomSlice';
 
-export function useRealtimeUser() {
+export function useRealtimeUsers() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('useRealtimeUser hook initialized');
+    console.log('USERS useRealtimeUser hook initialized');
 
     const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents`,
       (response) => {
-        console.log('Database change detected:', response);
+        console.log('USERS Database change detected:', response);
         // dispatch(updateRooms(response.payload as RoomExtendedInterface));
       }
     );
 
     return () => {
-      console.log('Unsubscribing from database changes for messages');
+      console.log('USERS Unsubscribing from database changes for messages');
       unsubscribe();
     };
   }, [dispatch]);
@@ -35,18 +35,18 @@ export function useRealtimeRooms() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('useRealtimeRooms hook initialized');
+    console.log('ROOMS useRealtimeRooms hook initialized');
 
     const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents`,
       (response) => {
-        console.log('Database change detected:', response);
+        console.log('ROOMS Database change detected:', response);
         // dispatch(updateRooms(response.payload as RoomExtendedInterface));
       }
     );
 
     return () => {
-      console.log('Unsubscribing from database changes for rooms');
+      console.log('ROOMS Unsubscribing from database changes for rooms');
       unsubscribe();
     };
   }, [dispatch]);
@@ -56,18 +56,18 @@ export function useRealtimeMessages() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('useRealtimeMessages hook initialized');
+    console.log('MESSAGES useRealtimeMessages hook initialized');
 
     const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents`,
       (response) => {
-        console.log('Database change detected:', response);
+        console.log('MESSAGES Database change detected:', response);
         // dispatch(updateRooms(response.payload as RoomExtendedInterface));
       }
     );
 
     return () => {
-      console.log('Unsubscribing from database changes for messages');
+      console.log('MESSAGES Unsubscribing from database changes for messages');
       unsubscribe();
     };
   }, [dispatch]);

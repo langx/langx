@@ -2,10 +2,13 @@ import { Stack, Link } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useRealtimeUsers } from "@/hooks/useRealtime";
 import { Colors } from "@/constants/Colors";
 
 export default function HomeLayout() {
   const colorScheme = useColorScheme();
+
+  // useRealtimeUsers();
 
   return (
     <Stack>

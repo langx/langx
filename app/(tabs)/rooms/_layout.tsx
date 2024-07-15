@@ -9,12 +9,15 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 import { Colors } from "@/constants/Colors";
 import { getFlagEmoji } from "@/constants/utils";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useRealtimeMessages } from "@/hooks/useRealtime";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
+  // useRealtimeMessages();
 
   const [isCopilotEnabled, setIsCopilotEnabled] = useState(false);
   const toggleSwitch = () =>
