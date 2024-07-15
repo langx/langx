@@ -20,7 +20,6 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 import { setRoom } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
-import { useRealtimeMessages } from "@/hooks/useRealtime";
 import { listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
@@ -37,8 +36,6 @@ const Room = () => {
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
-
-  useRealtimeMessages(id);
 
   const {
     data: roomData,
@@ -68,7 +65,8 @@ const Room = () => {
 
   useEffect(() => {
     console.log("msgs:", messagesData?.length);
-    console.log("loading:", loading);
+    // console.log("loading:", loading);
+    // console.log("hasMore:", hasMore);
   }, [messagesData, loading]);
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -88,6 +86,8 @@ const Room = () => {
         return {
           _id: message.$id,
           text: message.body,
+          // image:
+          //   "https://db.langx.io/v1/storage/buckets/6515f94d20becd47cb40/files/6669ec1400319731e5e8/view?project=650750d21e4a6a589be3",
           createdAt: new Date(message.$createdAt),
           user: {
             _id: message.sender === currentUserId ? 1 : 0,
