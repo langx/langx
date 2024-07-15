@@ -55,7 +55,8 @@
     "jest-expo": "~51.0.3",
     "react-native-dotenv": "^3.4.11",
     "react-test-renderer": "18.2.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "expo-atlas": "^0.3.0"
   },
   "private": true
 }
