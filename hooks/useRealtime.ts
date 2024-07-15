@@ -26,16 +26,31 @@ export function useRealtime(currentUserId) {
     const unsubscribe = client.subscribe(channels, (response) => {
       response.events.forEach((event) => {
         switch (event) {
-          case `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents.${currentUserId}.update`:
+          case `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents.*.update`:
             const updatedUser = response.payload as User;
-            console.log('[NOTIFICATION] Updated user');
-            dispatch(setUser(updatedUser));
+            if (updatedUser.$id === currentUserId) {
+              console.log('[NOTIFICATION] Updated current user');
+              dispatch(setUser(updatedUser));
+              break;
+            }
+            // Update other users
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
             const createdMessage = response.payload;
             // console.log('[NOTIFICATION] Created message:', createdMessage);
             // dispatch(findRoomAndAddMessage(createdMessage));
             // dispatch(findActiveRoomAndAddMessage(createdMessage));
+            break;
+          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
+            const createdRoom = response.payload;
+            // console.log('[NOTIFICATION] Created room:', createdRoom);
+            // dispatch(findOrAddRoom({ room: createdRoom, currentUserId }));
+            break;
+          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.update`:
+            const updatedRoom = response.payload;
+            // console.log('[NOTIFICATION] Updated room:', updatedRoom);
+            // dispatch(findAndUpdateRoomUpdatedAt(updatedRoom));
+            // dispatch(findAndUpdateActiveRoomUpdatedAt(updatedRoom));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.update`:
             const updatedMessage = response.payload;
@@ -48,17 +63,6 @@ export function useRealtime(currentUserId) {
             // console.log('[NOTIFICATION] Deleted message:', deletedMessage);
             // dispatch(findRoomAndDeleteMessage(deletedMessage));
             // dispatch(findActiveRoomAndDeleteMessage(deletedMessage));
-            break;
-          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
-            const createdRoom = response.payload;
-            // console.log('[NOTIFICATION] Created room:', createdRoom);
-            // dispatch(findOrAddRoom({ room: createdRoom, currentUserId }));
-            break;
-          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.update`:
-            const updatedRoom = response.payload;
-            // console.log('[NOTIFICATION] Updated room:', updatedRoom);
-            // dispatch(findAndUpdateRoomUpdatedAt(updatedRoom));
-            // dispatch(findAndUpdateActiveRoomUpdatedAt(updatedRoom));
             break;
           default:
             break;
