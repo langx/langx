@@ -25,8 +25,15 @@ const roomSlice = createSlice({
       state.rooms = action.payload;
     },
     updateRooms: (state, action: PayloadAction<Room>) => {
-      console.log('updateRooms Slice:', action.payload);
-      // state.rooms = [...state.rooms, ...action.payload];
+      const roomIndex = state.rooms.findIndex(
+        (room: RoomExtendedInterface) => room.$id === action.payload.$id
+      );
+      if (roomIndex !== -1) {
+        state.rooms[roomIndex] = {
+          ...state.rooms[roomIndex],
+          ...action.payload,
+        };
+      }
     },
     setRoom: (state, action: PayloadAction<RoomExtendedInterface | null>) => {
       state.room = action.payload;
