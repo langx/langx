@@ -120,9 +120,10 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
   return (
     <AppleStyleSwipeableRow>
       <Pressable
-        activeOpacity={0.8}
-        underlayColor={Colors.light.gray3}
         onPress={navigateToRoomById}
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.5 : 1,
+        })}
       >
         <ThemedView
           style={{
