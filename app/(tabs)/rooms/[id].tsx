@@ -85,9 +85,9 @@ const Room = () => {
       ...messagesData.map((message) => {
         return {
           _id: message.$id,
-          text: message.body,
-          // image:
-          //   "https://db.langx.io/v1/storage/buckets/6515f94d20becd47cb40/files/6669ec1400319731e5e8/view?project=650750d21e4a6a589be3",
+          text: message.type === "body" ? message.body : null,
+          image: message.type === "image" ? message.image : null,
+          audio: message.type === "audio" ? message.audio : null,
           createdAt: new Date(message.$createdAt),
           user: {
             _id: message.sender === currentUserId ? 1 : 0,
