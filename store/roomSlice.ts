@@ -4,7 +4,7 @@ import { RoomExtendedInterface } from '@/models/extended/RoomExtended.interface'
 import { Room } from '@/models/Room';
 
 interface RoomState {
-  rooms: RoomExtendedInterface[] | [];
+  rooms: RoomExtendedInterface[];
   room: RoomExtendedInterface | null;
   isLoading: boolean;
   error: string | null;
@@ -19,7 +19,7 @@ const initialState: RoomState = {
 
 const roomSlice = createSlice({
   name: 'room',
-  initialState,
+  initialState: initialState as RoomState,
   reducers: {
     setRooms: (state, action: PayloadAction<RoomExtendedInterface[]>) => {
       state.rooms = action.payload;
@@ -28,11 +28,27 @@ const roomSlice = createSlice({
       const roomIndex = state.rooms.findIndex(
         (room: RoomExtendedInterface) => room.$id === action.payload.$id
       );
+
       if (roomIndex !== -1) {
-        state.rooms[roomIndex] = {
-          ...state.rooms[roomIndex],
-          ...action.payload,
-        };
+        if (
+          action.payload.lastMessageUpdatedAt >
+          state.rooms[roomIndex].lastMessageUpdatedAt
+        ) {
+          const updatedRoom: RoomExtendedInterface = {
+            ...state.rooms[roomIndex],
+            ...action.payload,
+            userData: state.rooms[roomIndex].userData,
+            messages: state.rooms[roomIndex].messages,
+          };
+          state.rooms.splice(roomIndex, 1);
+          state.rooms.unshift(updatedRoom);
+        } else {
+          // If lastMessageUpdatedAt is not greater, just update the room with payload values
+          state.rooms[roomIndex] = {
+            ...state.rooms[roomIndex],
+            ...action.payload,
+          };
+        }
       }
     },
     setRoom: (state, action: PayloadAction<RoomExtendedInterface | null>) => {
