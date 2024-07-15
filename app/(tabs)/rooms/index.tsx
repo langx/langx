@@ -19,10 +19,12 @@ import RoomRow from "@/components/rooms/RoomRow";
 const RoomsScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
+  const [rooms, setRoomsState] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const roomsSelector = useSelector((state: RootState) => state.room.rooms);
 
   const {
-    data: rooms,
+    data: roomsData,
     loading,
     loadMore,
     refetch,
@@ -30,9 +32,17 @@ const RoomsScreen = () => {
   } = useDatabase(listRooms, { userId: user?.$id });
 
   useEffect(() => {
-    console.log("rooms:", rooms?.length);
-    if (rooms?.length > 0) dispatch(setRooms(rooms));
-  }, [rooms]);
+    console.log("roomsData:", roomsData?.length);
+    if (roomsData?.length > 0) {
+      dispatch(setRooms(roomsData));
+    }
+  }, [roomsData]);
+
+  useEffect(() => {
+    if (roomsSelector?.length > 0) {
+      setRoomsState(roomsSelector);
+    }
+  }, [roomsSelector]);
 
   const onRefresh = async () => {
     setIsRefreshing(true);

@@ -24,6 +24,12 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
   const dispatch = useDispatch();
 
   const [userImageUrl, setUserImageUrl] = useState("");
+  const [lastMessage, setLastMessage] = useState<messageDetails>({
+    time: null,
+    body: "Say Hi! 👋",
+    unseen: 0,
+  });
+
   const { data, loading, refetch } = useDatabase(() =>
     getUserImage(room?.userData?.profilePic)
   );
@@ -38,26 +44,20 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
     }
   }, [data]);
 
-  if (loading) {
-    return (
-      <ThemedView style={styles.card}>
-        <ThemedView style={styles.loading}>
-          <ThemedText>Loading...</ThemedText>
-        </ThemedView>
-      </ThemedView>
+  useEffect(() => {
+    const currentUserId = room.users.find((id) => id !== room?.userData?.$id);
+    const userIndex = room.users.indexOf(currentUserId);
+    const userTypingDate = new Date(
+      room.typing[room.users.indexOf(room.userData.$id)]
     );
-  }
 
-  const getLastMessage = (room: RoomExtendedInterface): messageDetails => {
-    const currentUserId = room.users.find(
-      (id: string) => id !== room?.userData?.$id
-    );
     const lastMessage = room.messages[room.messages.length - 1];
     const type = lastMessage?.type || null;
+
     let messageDetail: messageDetails = {
       time: lastMessage?.$createdAt || null,
-      body: "Say Hi! 👋", // Default value
-      unseen: 0, // Default value
+      body: "Say Hi! 👋",
+      unseen: room.unseen[userIndex],
     };
 
     if (lastMessage?.to === currentUserId) {
@@ -76,13 +76,34 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
         break;
     }
 
-    const userIndex: number = room.users.indexOf(currentUserId);
-    messageDetail.unseen = room.unseen[userIndex];
+    if (userTypingDate.getTime() > Date.now() - 6000) {
+      const lastBody = messageDetail.body;
+      messageDetail.body = "Typing...";
+      setLastMessage(messageDetail);
 
-    return messageDetail;
-  };
+      // Reset the message body after 6000ms
+      const timeoutId = setTimeout(() => {
+        setLastMessage((prevDetails) => ({
+          ...prevDetails,
+          body: lastBody,
+        }));
+      }, 6000);
 
-  const lastMessage = getLastMessage(room);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setLastMessage(messageDetail);
+    }
+  }, [room]);
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.card}>
+        <ThemedView style={styles.loading}>
+          <ThemedText>Loading...</ThemedText>
+        </ThemedView>
+      </ThemedView>
+    );
+  }
 
   function messageTime(d: any) {
     if (!d) return null;
