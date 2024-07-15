@@ -33,7 +33,7 @@ export function useRealtime(currentUserId) {
               dispatch(setUser(updatedUser));
               break;
             }
-            // Update other users
+            // TODO: #873 Update other users
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
             const createdMessage = response.payload;
