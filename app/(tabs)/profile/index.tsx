@@ -41,7 +41,7 @@ const ProfileScreen = () => {
     } else {
       setActiveUser(null);
     }
-  }, [isLoading]);
+  }, [isLoading, user]);
 
   const components = [
     { component: <PPCard user={activeUser} />, key: "PPCard" },
