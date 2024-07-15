@@ -51,7 +51,7 @@ const ReplyMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
                 paddingTop: 5,
               }}
             >
-              {message!.text.length > 40
+              {message!.text?.length > 40
                 ? message?.text.substring(0, 40) + "..."
                 : message?.text}
             </Text>
