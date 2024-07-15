@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RoomExtendedInterface } from '@/models/extended/RoomExtended.interface';
+import { Room } from '@/models/Room';
 
 interface RoomState {
   rooms: RoomExtendedInterface[] | [];
@@ -23,6 +24,10 @@ const roomSlice = createSlice({
     setRooms: (state, action: PayloadAction<RoomExtendedInterface[]>) => {
       state.rooms = action.payload;
     },
+    updateRooms: (state, action: PayloadAction<Room>) => {
+      console.log('updateRooms Slice:', action.payload);
+      // state.rooms = [...state.rooms, ...action.payload];
+    },
     setRoom: (state, action: PayloadAction<RoomExtendedInterface | null>) => {
       state.room = action.payload;
     },
@@ -38,7 +43,13 @@ const roomSlice = createSlice({
   },
 });
 
-export const { setRooms, setRoom, setLoading, setError, setRoomInitialState } =
-  roomSlice.actions;
+export const {
+  setRooms,
+  updateRooms,
+  setRoom,
+  setLoading,
+  setError,
+  setRoomInitialState,
+} = roomSlice.actions;
 
 export default roomSlice.reducer;

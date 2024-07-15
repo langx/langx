@@ -8,8 +8,11 @@ import {
   MESSAGES_COLLECTION,
 } from '@/constants/config';
 import { User } from '@/models/User';
-import { setUser } from '@/store/authSlice';
+import { Room } from '@/models/Room';
+import { Message } from '@/models/Message';
 import { client } from '@/services/apiService';
+import { setUser } from '@/store/authSlice';
+import { updateRooms } from '@/store/roomSlice';
 
 export function useRealtime(currentUserId) {
   const dispatch = useDispatch();
@@ -29,7 +32,7 @@ export function useRealtime(currentUserId) {
           case `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents.*.update`:
             const updatedUser = response.payload as User;
             if (updatedUser.$id === currentUserId) {
-              console.log('[NOTIFICATION] Updated current user');
+              console.log('[NOTIFICATION] Updated Current User');
               dispatch(setUser(updatedUser));
               break;
             }
@@ -37,30 +40,29 @@ export function useRealtime(currentUserId) {
             break;
           case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
             const createdRoom = response.payload;
-            // console.log('[NOTIFICATION] Created room:', createdRoom);
+            // console.log('[NOTIFICATION] Created room');
             // dispatch(findOrAddRoom({ room: createdRoom, currentUserId }));
             break;
           case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.update`:
-            const updatedRoom = response.payload;
-            // console.log('[NOTIFICATION] Updated room:', updatedRoom);
-            // dispatch(findAndUpdateRoomUpdatedAt(updatedRoom));
-            // dispatch(findAndUpdateActiveRoomUpdatedAt(updatedRoom));
+            const updatedRoom = response.payload as Room;
+            console.log('[NOTIFICATION] Room Updated');
+            dispatch(updateRooms(updatedRoom));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
             const createdMessage = response.payload;
-            // console.log('[NOTIFICATION] Created message:', createdMessage);
+            // console.log('[NOTIFICATION] Message Created');
             // dispatch(findRoomAndAddMessage(createdMessage));
             // dispatch(findActiveRoomAndAddMessage(createdMessage));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.update`:
             const updatedMessage = response.payload;
-            // console.log('[NOTIFICATION] Updated message:', updatedMessage);
+            // console.log('[NOTIFICATION] Message Updated');
             // dispatch(findRoomAndUpdateMessage(updatedMessage));
             // dispatch(findActiveRoomAndUpdateMessage(updatedMessage));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.delete`:
             const deletedMessage = response.payload;
-            // console.log('[NOTIFICATION] Deleted message:', deletedMessage);
+            // console.log('[NOTIFICATION] Message Deleted');
             // dispatch(findRoomAndDeleteMessage(deletedMessage));
             // dispatch(findActiveRoomAndDeleteMessage(deletedMessage));
             break;
