@@ -100,7 +100,7 @@ const roomSlice = createSlice({
           room.$id === action.payload.roomId['$id']
       );
       if (roomIndex !== -1) {
-        state.rooms[roomIndex].messages.push(action.payload);
+        state.rooms[roomIndex].messages.unshift(action.payload);
       }
     },
     updateMessage: (state, action: PayloadAction<Message>) => {

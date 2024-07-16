@@ -51,7 +51,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
       room.typing[room.users.indexOf(room.userData.$id)]
     );
 
-    const lastMessage = room.messages[room.messages.length - 1];
+    const lastMessage = room.messages[0];
     const type = lastMessage?.type || null;
 
     let messageDetail: messageDetails = {
