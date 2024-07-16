@@ -12,7 +12,7 @@ import { Room } from '@/models/Room';
 import { Message } from '@/models/Message';
 import { client } from '@/services/apiService';
 import { setUser } from '@/store/authSlice';
-import { updateRooms } from '@/store/roomSlice';
+import { updateRooms, createRoomThunk } from '@/store/roomSlice';
 
 export function useRealtime(currentUserId) {
   const dispatch = useDispatch();
@@ -39,9 +39,9 @@ export function useRealtime(currentUserId) {
             // TODO: #873 Update other users
             break;
           case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
-            const createdRoom = response.payload;
-            // console.log('[NOTIFICATION] Created room');
-            // dispatch(findOrAddRoom({ room: createdRoom, currentUserId }));
+            const createdRoom = response.payload as Room;
+            console.log('[NOTIFICATION] Created room');
+            dispatch(createRoomThunk(createdRoom));
             break;
           case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.update`:
             const updatedRoom = response.payload as Room;

@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RoomExtendedInterface } from '@/models/extended/RoomExtended.interface';
 import { Room } from '@/models/Room';
+import { extendRoom } from '@/services/roomService';
 
 interface RoomState {
   rooms: RoomExtendedInterface[];
@@ -17,12 +18,28 @@ const initialState: RoomState = {
   error: null,
 };
 
+export const createRoomThunk = createAsyncThunk(
+  'room/createRoomThunk',
+  async (room: Room, { dispatch }) => {
+    try {
+      const createdRoom = await extendRoom(room);
+      dispatch(createRoom(createdRoom));
+    } catch (error) {
+      console.error(error);
+      dispatch(setError((error as Error).message || 'An error occurred'));
+    }
+  }
+);
+
 const roomSlice = createSlice({
   name: 'room',
   initialState: initialState as RoomState,
   reducers: {
     setRooms: (state, action: PayloadAction<RoomExtendedInterface[]>) => {
       state.rooms = action.payload;
+    },
+    createRoom: (state, action: PayloadAction<RoomExtendedInterface>) => {
+      state.rooms.unshift(action.payload);
     },
     updateRooms: (state, action: PayloadAction<Room>) => {
       const roomIndex = state.rooms.findIndex(
@@ -43,7 +60,6 @@ const roomSlice = createSlice({
           state.rooms.splice(roomIndex, 1);
           state.rooms.unshift(updatedRoom);
         } else {
-          // If lastMessageUpdatedAt is not greater, just update the room with payload values
           state.rooms[roomIndex] = {
             ...state.rooms[roomIndex],
             ...action.payload,
@@ -64,10 +80,24 @@ const roomSlice = createSlice({
       Object.assign(state, initialState);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createRoomThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createRoomThunk.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(createRoomThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || 'An error occurred';
+      });
+  },
 });
 
 export const {
   setRooms,
+  createRoom,
   updateRooms,
   setRoom,
   setLoading,
