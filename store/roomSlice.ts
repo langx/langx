@@ -67,19 +67,25 @@ const roomSlice = createSlice({
           };
         }
       }
+
+      // TODO: Update room in state.room if it is the same room
     },
     setRoom: (state, action: PayloadAction<RoomExtendedInterface | null>) => {
       state.room = action.payload;
     },
     createMessage: (state, action: PayloadAction<Message>) => {
       console.log('createMessage payload', action.payload);
-      // if (state.room) {
-      //   state.room = {
-      //     ...state.room,
-      //     messages: [...state.room.messages, action.payload],
-      //     lastMessageUpdatedAt: action.payload.createdAt,
-      //   };
-      // }
+      // TODO: Test here
+      // Update the room if it is the same room
+      if (state.room) {
+        if (state.room.$id === action.payload.roomId['$id']) {
+          state.room = {
+            ...state.room,
+            messages: [...state.room.messages, action.payload],
+            lastMessageUpdatedAt: action.payload.createdAt,
+          };
+        }
+      }
 
       // Find the room in the rooms array and update messages
       const roomIndex = state.rooms.findIndex(
