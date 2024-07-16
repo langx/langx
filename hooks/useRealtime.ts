@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/store';
 
 import {
   APP_DATABASE,
@@ -15,7 +16,7 @@ import { setUser } from '@/store/authSlice';
 import { updateRooms, createRoomThunk } from '@/store/roomSlice';
 
 export function useRealtime(currentUserId) {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     console.log('Realtime updates hook initialized');
