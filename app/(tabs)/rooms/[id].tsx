@@ -31,16 +31,21 @@ const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
+  const { id } = useLocalSearchParams<{ id: string }>();
+
+  // Selectors
+  const room: RoomExtendedInterface | null = useSelector(
+    (state: RootState) => state.room.room
+  );
 
   // States
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isRoomSet, setIsRoomSet] = useState(false);
   const [text, setText] = useState("");
+  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
 
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const room: RoomExtendedInterface | null = useSelector(
-    (state: RootState) => state.room.room
-  );
+  // Refs
+  const swipeableRowRef = useRef<Swipeable | null>(null);
 
   const {
     data: roomData,
@@ -62,8 +67,8 @@ const Room = () => {
     if (roomData && roomData.length > 0) {
       if (room?.$id !== roomData[0]?.$id) {
         dispatch(setRoom(roomData[0]));
-        setIsRoomSet(true);
       }
+      setIsRoomSet(true);
     }
   }, [roomData]);
 
@@ -74,37 +79,34 @@ const Room = () => {
     }
   }, [isRoomSet, messagesData]);
 
-  const swipeableRowRef = useRef<Swipeable | null>(null);
-  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
-
   useEffect(() => {
     // console.log("!!! ___ !!! room:", room.$id);
     const currentUserId = room?.users?.find(
       (userId) => userId !== room.userData.$id
     );
-    // console.log("!!! ___ !!! currentUserId:", currentUserId);
-    setMessages([
-      ...messagesData.map((message) => {
-        return {
-          _id: message.$id,
-          text: message.type === "body" ? message.body : null,
-          image: message.type === "image" ? message.imageId : null,
-          audio: message.type === "audio" ? message.audioId : null,
-          createdAt: new Date(message.$createdAt),
-          user: {
-            _id: message.sender === currentUserId ? 1 : 0,
-            name:
-              message.sender === currentUserId ? "You" : room?.userData?.name,
-          },
-          sent: true,
-          received: message.seen,
-        };
-      }),
-    ]);
-
+    if (room?.messages) {
+      setMessages([
+        ...room.messages.map((message) => {
+          return {
+            _id: message.$id,
+            text: message.type === "body" ? message.body : null,
+            image: message.type === "image" ? message.imageId : null,
+            audio: message.type === "audio" ? message.audioId : null,
+            createdAt: new Date(message.$createdAt),
+            user: {
+              _id: message.sender === currentUserId ? 1 : 0,
+              name:
+                message.sender === currentUserId ? "You" : room?.userData?.name,
+            },
+            sent: true,
+            received: message.seen,
+          };
+        }),
+      ]);
+    }
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
-  }, [messagesData]);
+  }, [room]);
 
   const onSend = useCallback((newMessages = []) => {
     newMessages.forEach((message) => {
