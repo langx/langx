@@ -104,14 +104,25 @@ const roomSlice = createSlice({
       }
     },
     updateMessage: (state, action: PayloadAction<Message>) => {
-      console.log('updateMessage payload', action.payload);
-      // if (state.room) {
-      //   state.room = {
-      //     ...state.room,
-      //     messages: action.payload.messages,
-      //     lastMessageUpdatedAt: action.payload.lastMessageUpdatedAt,
-      //   };
-      // }
+      // console.log('updateMessage payload', action.payload);
+
+      // Find the room in the rooms array
+      const roomIndex = state.rooms.findIndex(
+        (room: RoomExtendedInterface) =>
+          room.$id === action.payload.roomId['$id']
+      );
+      if (roomIndex !== -1) {
+        // Find the message in the room's messages array
+        const messageIndex = state.rooms[roomIndex].messages.findIndex(
+          (message: Message) => message.$id === action.payload.$id
+        );
+        if (messageIndex !== -1) {
+          // Update the message if found
+          state.rooms[roomIndex].messages[messageIndex] = action.payload;
+        } else {
+          console.log('Message not found, unable to update');
+        }
+      }
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
