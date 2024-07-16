@@ -13,7 +13,12 @@ import { Room } from '@/models/Room';
 import { Message } from '@/models/Message';
 import { client } from '@/services/apiService';
 import { setUser } from '@/store/authSlice';
-import { updateRooms, createRoomThunk } from '@/store/roomSlice';
+import {
+  updateRooms,
+  createMessage,
+  updateMessage,
+  createRoomThunk,
+} from '@/store/roomSlice';
 
 export function useRealtime(currentUserId) {
   const dispatch: AppDispatch = useDispatch();
@@ -50,23 +55,19 @@ export function useRealtime(currentUserId) {
             dispatch(updateRooms(updatedRoom));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
-            const createdMessage = response.payload;
-            // console.log('[NOTIFICATION] Message Created');
-            // dispatch(findRoomAndAddMessage(createdMessage));
-            // dispatch(findActiveRoomAndAddMessage(createdMessage));
+            const createdMessage = response.payload as Message;
+            console.log('[NOTIFICATION] Message Created');
+            dispatch(createMessage(createdMessage));
             break;
           case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.update`:
-            const updatedMessage = response.payload;
-            // console.log('[NOTIFICATION] Message Updated');
-            // dispatch(findRoomAndUpdateMessage(updatedMessage));
-            // dispatch(findActiveRoomAndUpdateMessage(updatedMessage));
+            const updatedMessage = response.payload as Message;
+            console.log('[NOTIFICATION] Message Updated');
+            dispatch(updateMessage(updatedMessage));
             break;
-          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.delete`:
-            const deletedMessage = response.payload;
-            // console.log('[NOTIFICATION] Message Deleted');
-            // dispatch(findRoomAndDeleteMessage(deletedMessage));
-            // dispatch(findActiveRoomAndDeleteMessage(deletedMessage));
-            break;
+          // case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.delete`:
+          //   const deletedMessage = response.payload as Message;
+          //   console.log('[NOTIFICATION] Message Deleted');
+          //   break;
           default:
             break;
         }

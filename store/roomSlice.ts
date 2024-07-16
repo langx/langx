@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RoomExtendedInterface } from '@/models/extended/RoomExtended.interface';
 import { Room } from '@/models/Room';
+import { Message } from '@/models/Message';
+import { RoomExtendedInterface } from '@/models/extended/RoomExtended.interface';
 import { extendRoom } from '@/services/roomService';
 
 interface RoomState {
@@ -70,6 +71,35 @@ const roomSlice = createSlice({
     setRoom: (state, action: PayloadAction<RoomExtendedInterface | null>) => {
       state.room = action.payload;
     },
+    createMessage: (state, action: PayloadAction<Message>) => {
+      console.log('createMessage payload', action.payload);
+      // if (state.room) {
+      //   state.room = {
+      //     ...state.room,
+      //     messages: [...state.room.messages, action.payload],
+      //     lastMessageUpdatedAt: action.payload.createdAt,
+      //   };
+      // }
+
+      // Find the room in the rooms array and update messages
+      const roomIndex = state.rooms.findIndex(
+        (room: RoomExtendedInterface) =>
+          room.$id === action.payload.roomId['$id']
+      );
+      if (roomIndex !== -1) {
+        state.rooms[roomIndex].messages.push(action.payload);
+      }
+    },
+    updateMessage: (state, action: PayloadAction<Message>) => {
+      console.log('updateMessage payload', action.payload);
+      // if (state.room) {
+      //   state.room = {
+      //     ...state.room,
+      //     messages: action.payload.messages,
+      //     lastMessageUpdatedAt: action.payload.lastMessageUpdatedAt,
+      //   };
+      // }
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
@@ -100,6 +130,8 @@ export const {
   createRoom,
   updateRooms,
   setRoom,
+  createMessage,
+  updateMessage,
   setLoading,
   setError,
   setRoomInitialState,
