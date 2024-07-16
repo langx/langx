@@ -26,7 +26,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
   const [userImageUrl, setUserImageUrl] = useState("");
   const [lastMessage, setLastMessage] = useState<messageDetails>({
     time: null,
-    body: "Say Hi! 👋",
+    body: "Say Hi!",
     unseen: 0,
   });
 
@@ -56,7 +56,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
 
     let messageDetail: messageDetails = {
       time: lastMessage?.$createdAt || null,
-      body: "Say Hi! 👋",
+      body: "Say Hi!",
       unseen: room.unseen[userIndex],
     };
 
