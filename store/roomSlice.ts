@@ -73,15 +73,22 @@ const roomSlice = createSlice({
     setRoom: (state, action: PayloadAction<RoomExtendedInterface | null>) => {
       state.room = action.payload;
     },
+    setRoomMessages(state, action: PayloadAction<Message[]>) {
+      if (state.room) {
+        state.room = {
+          ...state.room,
+          messages: action.payload,
+        };
+      }
+    },
     createMessage: (state, action: PayloadAction<Message>) => {
       console.log('createMessage payload', action.payload);
-      // TODO: Test here
       // Update the room if it is the same room
       if (state.room) {
         if (state.room.$id === action.payload.roomId['$id']) {
           state.room = {
             ...state.room,
-            messages: [...state.room.messages, action.payload],
+            messages: [action.payload, ...state.room.messages],
             lastMessageUpdatedAt: action.payload.createdAt,
           };
         }
@@ -136,6 +143,7 @@ export const {
   createRoom,
   updateRooms,
   setRoom,
+  setRoomMessages,
   createMessage,
   updateMessage,
   setLoading,
