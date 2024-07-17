@@ -7,6 +7,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { v4 as uuidv4 } from "uuid";
+import ContextMenu from "react-native-context-menu-view";
 import {
   GiftedChat,
   Bubble,
@@ -138,28 +139,69 @@ const Room = () => {
 
   const renderBubble = (props) => {
     return (
-      <Bubble
-        {...props}
-        textStyle={{
-          left: {
-            color: Colors[theme].black,
-            fontFamily: "NotoSans-Regular",
-          },
-          right: {
-            color: Colors.light.black,
-            fontFamily: "NotoSans-Regular",
-          },
+      <ContextMenu
+        actions={[
+          { title: "Option 1" },
+          { title: "Option 2" },
+          { title: "Option 3" },
+        ]}
+        onPress={(e) => {
+          console.warn(
+            `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`
+          );
         }}
-        wrapperStyle={{
-          left: {
-            backgroundColor: Colors[theme].gray5,
-          },
-          right: {
-            backgroundColor: Colors[theme].primary,
-          },
-        }}
-        renderTime={renderCustomTime}
-      />
+      >
+        <Bubble
+          {...props}
+          textStyle={{
+            left: {
+              color: Colors[theme].black,
+              fontFamily: "NotoSans-Regular",
+            },
+            right: {
+              color: Colors.light.black,
+              fontFamily: "NotoSans-Regular",
+            },
+          }}
+          wrapperStyle={{
+            left: {
+              backgroundColor: Colors[theme].gray5,
+              padding: 0,
+              margin: 0,
+            },
+            right: {
+              backgroundColor: Colors[theme].primary,
+              padding: 0,
+              margin: 0,
+            },
+          }}
+          containerToPreviousStyle={{
+            left: {
+              marginBottom: 0,
+            },
+            right: {
+              marginBottom: 0,
+            },
+          }}
+          containerToNextStyle={{
+            left: {
+              marginBottom: 0,
+            },
+            right: {
+              marginBottom: 0,
+            },
+          }}
+          containerStyle={{
+            left: {
+              marginBottom: 0,
+            },
+            right: {
+              marginBottom: 0,
+            },
+          }}
+          renderTime={renderCustomTime}
+        />
+      </ContextMenu>
     );
   };
 
@@ -277,7 +319,7 @@ const Room = () => {
             message={replyMessage}
           />
         )}
-        onLongPress={(context, message) => setReplyMessage(message)}
+        onLongPress={() => {}}
         renderMessage={(props) => (
           <ChatMessageBox
             {...props}
