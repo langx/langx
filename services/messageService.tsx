@@ -33,26 +33,16 @@ export async function listMessages(params: any) {
 export async function createMessage({ currentUserId, jwt }) {
   console.log(currentUserId, jwt);
   try {
-    // const response = await axios.post(`${API_ENDPOINT}/message`, {
-    const response = await axios.get(`${API_ENDPOINT}`, {
-      // headers: {
-      //   'x-appwrite-user-id': currentUserId,
-      //   'x-appwrite-jwt': jwt,
-      // },
+    const response = await axios.post(`${API_ENDPOINT}/message`, {
+      headers: {
+        "x-appwrite-user-id": currentUserId,
+        "x-appwrite-jwt": jwt,
+      },
     });
-
     console.log("Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
     throw error;
   }
-  // const currentUserId = params?.currentUserId;
-  // const jwt = params?.jwt;
-
-  // console.log("currentUserId", currentUserId);
-  // console.log("jwt", jwt);
-
-  // axios.defaults.headers.common["x-appwrite-user-id"] = currentUserId;
-  // axios.defaults.headers.common["x-appwrite-jwt"] = jwt;
 }
