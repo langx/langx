@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store/store';
 
 import {
   APP_DATABASE,
@@ -7,68 +8,75 @@ import {
   ROOMS_COLLECTION,
   MESSAGES_COLLECTION,
 } from '@/constants/config';
+import { User } from '@/models/User';
+import { Room } from '@/models/Room';
+import { Message } from '@/models/Message';
 import { client } from '@/services/apiService';
-// import { updateRooms } from '@/store/roomSlice';
+import { setUser } from '@/store/authSlice';
+import {
+  updateRooms,
+  createMessage,
+  updateMessage,
+  createRoomThunk,
+} from '@/store/roomSlice';
 
-export function useRealtimeUsers() {
-  const dispatch = useDispatch();
+export function useRealtime(currentUserId) {
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    console.log('USERS useRealtimeUser hook initialized');
+    console.log('Realtime updates hook initialized');
 
-    const unsubscribe = client.subscribe(
+    const channels = [
       `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents`,
-      (response) => {
-        console.log('USERS Database change detected:', response);
-        // dispatch(updateRooms(response.payload as RoomExtendedInterface));
-      }
-    );
-
-    return () => {
-      console.log('USERS Unsubscribing from database changes for messages');
-      unsubscribe();
-    };
-  }, [dispatch]);
-}
-
-export function useRealtimeRooms() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log('ROOMS useRealtimeRooms hook initialized');
-
-    const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents`,
-      (response) => {
-        console.log('ROOMS Database change detected:', response);
-        // dispatch(updateRooms(response.payload as RoomExtendedInterface));
-      }
-    );
-
-    return () => {
-      console.log('ROOMS Unsubscribing from database changes for rooms');
-      unsubscribe();
-    };
-  }, [dispatch]);
-}
-
-export function useRealtimeMessages() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log('MESSAGES useRealtimeMessages hook initialized');
-
-    const unsubscribe = client.subscribe(
       `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents`,
-      (response) => {
-        console.log('MESSAGES Database change detected:', response);
-        // dispatch(updateRooms(response.payload as RoomExtendedInterface));
-      }
-    );
+    ];
+
+    const unsubscribe = client.subscribe(channels, (response) => {
+      response.events.forEach((event) => {
+        switch (event) {
+          case `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents.*.update`:
+            const updatedUser = response.payload as User;
+            if (updatedUser.$id === currentUserId) {
+              console.log('[NOTIFICATION] Updated Current User');
+              dispatch(setUser(updatedUser));
+              break;
+            }
+            // TODO: #873 Update other users
+            break;
+          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.create`:
+            const createdRoom = response.payload as Room;
+            console.log('[NOTIFICATION] Created room');
+            dispatch(createRoomThunk(createdRoom));
+            break;
+          case `databases.${APP_DATABASE}.collections.${ROOMS_COLLECTION}.documents.*.update`:
+            const updatedRoom = response.payload as Room;
+            console.log('[NOTIFICATION] Room Updated');
+            dispatch(updateRooms(updatedRoom));
+            break;
+          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.create`:
+            const createdMessage = response.payload as Message;
+            console.log('[NOTIFICATION] Message Created');
+            dispatch(createMessage(createdMessage));
+            break;
+          case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.update`:
+            const updatedMessage = response.payload as Message;
+            console.log('[NOTIFICATION] Message Updated');
+            dispatch(updateMessage(updatedMessage));
+            break;
+          // case `databases.${APP_DATABASE}.collections.${MESSAGES_COLLECTION}.documents.*.delete`:
+          //   const deletedMessage = response.payload as Message;
+          //   console.log('[NOTIFICATION] Message Deleted');
+          //   break;
+          default:
+            break;
+        }
+      });
+    });
 
     return () => {
-      console.log('MESSAGES Unsubscribing from database changes for messages');
+      console.log('Unsubscribing from database changes');
       unsubscribe();
     };
-  }, [dispatch]);
+  }, [dispatch, currentUserId]);
 }

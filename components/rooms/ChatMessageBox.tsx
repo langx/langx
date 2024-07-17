@@ -48,6 +48,8 @@ const ChatMessageBox = ({
         setUpdatedMessage({ ...props.currentMessage, image: uri });
       };
       fetchImage();
+    } else {
+      setUpdatedMessage({ ...props.currentMessage });
     }
   }, [props.currentMessage]);
 

@@ -17,7 +17,7 @@ import {
 } from "react-native-gifted-chat";
 
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
-import { setRoom } from "@/store/roomSlice";
+import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
 import { listMessages } from "@/services/messageService";
@@ -31,78 +31,78 @@ const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
   const dispatch = useDispatch();
-
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  // Selectors
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
 
+  // States
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [isRoomSet, setIsRoomSet] = useState(false);
+  const [text, setText] = useState("");
+  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
+
+  // Refs
+  const swipeableRowRef = useRef<Swipeable | null>(null);
+
   const {
     data: roomData,
     loading: roomLoading,
-    loadMore: loadMoreRooms,
-    refetch: refetchRooms,
-    hasMore: hasMoreRooms,
+    loadMore: roomsLoadMore,
+    refetch: roomsRefetch,
+    hasMore: roomsHasMore,
   } = useDatabase(listRooms, { roomId: id });
-
-  // Fetch room data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!room && roomData && roomData.length > 0) {
-        dispatch(setRoom(roomData[0]));
-      }
-    };
-    fetchData();
-  }, [roomData, room, dispatch]);
 
   const {
     data: messagesData,
-    loading,
-    loadMore,
-    refetch,
-    hasMore,
+    loading: messagesLoading,
+    loadMore: messagesLoadMore,
+    refetch: messagesRefetch,
+    hasMore: messagesHasMore,
   } = useDatabase(listMessages, { roomId: id });
 
   useEffect(() => {
-    console.log("msgs:", messagesData?.length);
-    // console.log("loading:", loading);
-    // console.log("hasMore:", hasMore);
-  }, [messagesData, loading]);
+    if (roomData && roomData.length > 0) {
+      if (room?.$id !== roomData[0]?.$id) {
+        dispatch(setRoom(roomData[0]));
+      }
+      setIsRoomSet(true);
+    }
+  }, [roomData]);
 
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [text, setText] = useState("");
-
-  const swipeableRowRef = useRef<Swipeable | null>(null);
-  const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
+  // Effect for setting messages, depends on isRoomSet
+  useEffect(() => {
+    if (isRoomSet && messagesData && messagesData.length > 0) {
+      dispatch(setRoomMessages(messagesData));
+    }
+  }, [isRoomSet, messagesData]);
 
   useEffect(() => {
-    // console.log("!!! ___ !!! room:", room.$id);
     const currentUserId = room?.users?.find(
       (userId) => userId !== room.userData.$id
     );
-    // console.log("!!! ___ !!! currentUserId:", currentUserId);
-    setMessages([
-      ...messagesData.map((message) => {
-        return {
-          _id: message.$id,
-          text: message.type === "body" ? message.body : null,
-          image: message.type === "image" ? message.imageId : null,
-          audio: message.type === "audio" ? message.audioId : null,
-          createdAt: new Date(message.$createdAt),
-          user: {
-            _id: message.sender === currentUserId ? 1 : 0,
-            name:
-              message.sender === currentUserId ? "You" : room?.userData?.name,
-          },
-          sent: true,
-          received: message.seen,
-        };
-      }),
-    ]);
+    if (room?.messages) {
+      const updatedMessages = room.messages.map((message) => ({
+        _id: message.$id,
+        text: message.type === "body" ? message.body : null,
+        image: message.type === "image" ? message.imageId : null,
+        audio: message.type === "audio" ? message.audioId : null,
+        createdAt: new Date(message.$createdAt),
+        user: {
+          _id: message.sender === currentUserId ? 1 : 0,
+          name: message.sender === currentUserId ? "You" : room?.userData?.name,
+        },
+        sent: true,
+        received: message.seen,
+      }));
 
+      setMessages([...updatedMessages]);
+    }
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
-  }, [messagesData]);
+  }, [room]);
 
   const onSend = useCallback((newMessages = []) => {
     newMessages.forEach((message) => {
@@ -264,13 +264,13 @@ const Room = () => {
         )}
         loadEarlier={true}
         infiniteScroll={true}
-        isLoadingEarlier={loading}
+        isLoadingEarlier={messagesLoading}
         onLoadEarlier={() => {
-          if (hasMore) loadMore();
+          if (messagesHasMore) messagesLoadMore();
         }}
         // renderTicks={(message) => renderTicks({ currentMessage: message })}
         renderLoadEarlier={() =>
-          loading ? (
+          messagesLoading ? (
             <ActivityIndicator size="large" color={Colors.light.primary} />
           ) : null
         }

@@ -80,6 +80,40 @@ export function lastSeenExt(date: Date) {
   }
 }
 
+export function onlineStatus(date: Date) {
+  let now = new Date();
+  let lastSeen = new Date(date);
+  let diff = now.getTime() - lastSeen.getTime();
+  let minutes = Math.floor(diff / 60000);
+  let hours = Math.floor(minutes / 60);
+  let days = Math.floor(hours / 24);
+
+  if (minutes < 60) {
+    return 'online';
+  } else if (hours < 24) {
+    return 'away';
+  } else {
+    return 'offline';
+  }
+}
+
+export function onlineStatusInChatRoom(date: Date) {
+  let now = new Date();
+  let lastSeen = new Date(date);
+  let diff = now.getTime() - lastSeen.getTime();
+  let minutes = Math.floor(diff / 60000);
+  let hours = Math.floor(minutes / 60);
+  let days = Math.floor(hours / 24);
+
+  if (minutes < 3) {
+    return 'online';
+  } else if (hours < 6) {
+    return 'away';
+  } else {
+    return 'offline';
+  }
+}
+
 export const bigNumber = (value: number) => {
   if (isNaN(value)) return value;
 
