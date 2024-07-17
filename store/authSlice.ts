@@ -1,12 +1,15 @@
+import { Models } from 'react-native-appwrite';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { User } from '@/models/User';
 import { Account } from '@/models/Account';
 import { Session } from '@/models/Session';
+import { Jwt } from '@/models/Jwt';
 import {
   getCurrentUser,
   getCurrentSession,
   getAccount,
+  createJWT,
 } from '@/services/authService';
 
 interface AuthState {
@@ -15,6 +18,7 @@ interface AuthState {
   user: User | null;
   account: Account | null;
   session: Session | null;
+  jwt: Jwt | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -25,6 +29,7 @@ const initialState: AuthState = {
   user: null,
   account: null,
   session: null,
+  jwt: null,
   isLoading: true,
   error: null,
 };
@@ -33,12 +38,17 @@ export const fetchAuthData = createAsyncThunk(
   'auth/fetchAuthData',
   async (_, { dispatch }) => {
     try {
-      const [account, user, session]: [Account, User, Session] =
-        await Promise.all([
-          getAccount(),
-          getCurrentUser(),
-          getCurrentSession(),
-        ]);
+      const [account, user, session, jwt]: [
+        Account,
+        User,
+        Session,
+        Models.Jwt
+      ] = await Promise.all([
+        getAccount(),
+        getCurrentUser(),
+        getCurrentSession(),
+        createJWT(),
+      ]);
 
       if (account) {
         dispatch(setAccount(account));
@@ -48,6 +58,11 @@ export const fetchAuthData = createAsyncThunk(
       }
       if (session) {
         dispatch(setSession(session));
+      }
+      if (jwt) {
+        const expirationDate = new Date(new Date().getTime() + 14 * 60000);
+        const newJwt: Jwt = { ...jwt, expirationDate };
+        dispatch(setJwt(newJwt));
       }
     } catch (error) {
       console.error(error);
@@ -67,9 +82,12 @@ const authSlice = createSlice({
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
     },
-    setSession: (state, action: PayloadAction<Session | null>) => {
+    setSession: (state, action: PayloadAction<Models.Session | null>) => {
       state.session = action.payload;
       !state.user ? (state.isGuestIn = true) : (state.isLoggedIn = true);
+    },
+    setJwt: (state, action: PayloadAction<Jwt | null>) => {
+      state.jwt = action.payload;
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -101,6 +119,7 @@ export const {
   setAccount,
   setUser,
   setSession,
+  setJwt,
   setLoading,
   setError,
   setAuthInitialState,
