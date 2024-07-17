@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { v4 as uuidv4 } from "uuid";
 import {
   GiftedChat,
   Bubble,
@@ -20,18 +21,23 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
-import { listMessages } from "@/services/messageService";
+import { useAuth } from "@/hooks/useJwt";
+import { createMessage, listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
+import { createMessageRequestInterface } from "@/models/requests/createMessageRequest.interface";
 
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
-  const dispatch = useDispatch();
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  // Hooks
+  const dispatch = useDispatch();
+  const { currentUser, jwt } = useAuth();
 
   // Selectors
   const room: RoomExtendedInterface | null = useSelector(
@@ -47,6 +53,7 @@ const Room = () => {
   // Refs
   const swipeableRowRef = useRef<Swipeable | null>(null);
 
+  // Room and Messages data
   const {
     data: roomData,
     loading: roomLoading,
@@ -104,14 +111,30 @@ const Room = () => {
     invisibleMessagesLoadingFix();
   }, [room]);
 
-  const onSend = useCallback((newMessages = []) => {
-    newMessages.forEach((message) => {
-      message.pending = true;
-    });
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
-  }, []);
+  // Send message
+  const onSend = useCallback(
+    (newMessages = []) => {
+      const currentUserId = currentUser.$id;
+      newMessages.forEach((message) => {
+        message.pending = true;
+        message._id = uuidv4().replace(/-/g, "");
+
+        const newMessage: createMessageRequestInterface = {
+          $id: message._id,
+          to: room.userData.$id,
+          body: message.text,
+          roomId: id,
+          type: "body",
+          replyTo: null,
+        };
+        createMessage({ newMessage, currentUserId, jwt });
+      });
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, newMessages)
+      );
+    },
+    [room]
+  );
 
   const renderBubble = (props) => {
     return (

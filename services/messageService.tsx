@@ -1,8 +1,13 @@
 import { Query } from "react-native-appwrite";
+import axios from "axios";
 
 import { Message } from "@/models/Message";
 import { listDocuments } from "@/services/apiService";
-import { MESSAGES_COLLECTION, PAGINATION_LIMIT } from "@/constants/config";
+import {
+  API_ENDPOINT,
+  MESSAGES_COLLECTION,
+  PAGINATION_LIMIT,
+} from "@/constants/config";
 
 export async function listMessages(params: any) {
   const roomId = params?.roomId;
@@ -22,5 +27,21 @@ export async function listMessages(params: any) {
     return messages.documents as Message[];
   } catch (error) {
     throw new Error(error.message);
+  }
+}
+
+export async function createMessage({ newMessage, currentUserId, jwt }) {
+  try {
+    const response = await axios.post(`${API_ENDPOINT}/message`, newMessage, {
+      headers: {
+        "x-appwrite-user-id": currentUserId,
+        "x-appwrite-jwt": jwt.jwt,
+      },
+    });
+    // console.log("Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
   }
 }
