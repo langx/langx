@@ -80,33 +80,39 @@ const Room = () => {
   }, [isRoomSet, messagesData]);
 
   useEffect(() => {
-    // console.log("!!! ___ !!! room:", room.$id);
     const currentUserId = room?.users?.find(
       (userId) => userId !== room.userData.$id
     );
     if (room?.messages) {
-      setMessages([
-        ...room.messages.map((message) => {
-          return {
-            _id: message.$id,
-            text: message.type === "body" ? message.body : null,
-            image: message.type === "image" ? message.imageId : null,
-            audio: message.type === "audio" ? message.audioId : null,
-            createdAt: new Date(message.$createdAt),
-            user: {
-              _id: message.sender === currentUserId ? 1 : 0,
-              name:
-                message.sender === currentUserId ? "You" : room?.userData?.name,
-            },
-            sent: true,
-            received: message.seen,
-          };
-        }),
-      ]);
+      const updatedMessages = room.messages.map((message) => ({
+        _id: message.$id,
+        text: message.type === "body" ? message.body : null,
+        image: message.type === "image" ? message.imageId : null,
+        audio: message.type === "audio" ? message.audioId : null,
+        createdAt: new Date(message.$createdAt),
+        user: {
+          _id: message.sender === currentUserId ? 1 : 0,
+          name: message.sender === currentUserId ? "You" : room?.userData?.name,
+        },
+        sent: true,
+        received: message.seen,
+      }));
+
+      console.log("Updated Messages:", updatedMessages);
+      setMessages([...updatedMessages]);
     }
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
   }, [room]);
+
+  // TODO: Delete this useEffect after testing
+  useEffect(() => {
+    messages.map((message: IMessage) => {
+      if (message._id === "601b7b6f18554c6687179ed77a0de93f") {
+        console.log("Found specific message:", message);
+      }
+    });
+  }, [messages]);
 
   const onSend = useCallback((newMessages = []) => {
     newMessages.forEach((message) => {
