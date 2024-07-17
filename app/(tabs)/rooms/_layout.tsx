@@ -7,9 +7,8 @@ import { RootState } from "@/store/store";
 
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { Colors } from "@/constants/Colors";
-import { getFlagEmoji } from "@/constants/utils";
+import { getFlagEmoji, onlineStatusInChatRoom } from "@/constants/utils";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useRealtimeMessages } from "@/hooks/useRealtime";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -99,17 +98,30 @@ export default function RootLayout() {
               }}
             >
               {userImageUrl ? (
-                <Image
-                  source={{ uri: userImageUrl }}
-                  style={{ width: 35, height: 35, borderRadius: 35 }}
-                />
+                <>
+                  <Image
+                    source={{ uri: userImageUrl }}
+                    style={{ width: 35, height: 35, borderRadius: 35 }}
+                  />
+                  <ThemedView
+                    style={{
+                      flexDirection: "column",
+                    }}
+                  >
+                    <ThemedText style={{ fontSize: 18 }}>
+                      {getFlagEmoji(room?.userData?.countryCode)}{" "}
+                      {room?.userData?.name}
+                    </ThemedText>
+                    <ThemedText
+                      style={{ fontSize: 12, color: Colors.light.gray3 }}
+                    >
+                      {onlineStatusInChatRoom(room?.userData?.lastSeen)}
+                    </ThemedText>
+                  </ThemedView>
+                </>
               ) : (
                 <ActivityIndicator size="small" color={Colors.light.primary} />
               )}
-              <ThemedText style={{ fontSize: 18 }}>
-                {getFlagEmoji(room?.userData?.countryCode)}{" "}
-                {room?.userData?.name}
-              </ThemedText>
             </ThemedView>
           ),
           headerRight: () => (
