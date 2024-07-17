@@ -60,9 +60,7 @@ export const fetchAuthData = createAsyncThunk(
         dispatch(setSession(session));
       }
       if (jwt) {
-        const expirationDate = new Date(new Date().getTime() + 14 * 60000);
-        const newJwt: Jwt = { ...jwt, expirationDate };
-        dispatch(setJwt(newJwt));
+        dispatch(setJwt(jwt));
       }
     } catch (error) {
       console.error(error);
