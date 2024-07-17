@@ -16,6 +16,7 @@ import {
   Time,
 } from "react-native-gifted-chat";
 
+import { User } from "@/models/User";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -34,11 +35,13 @@ const Room = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
 
   // Selectors
+  const currentUser: User = useSelector((state: RootState) => state.auth.user);
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
 
   // States
+  const [currentUserId, setCurrentUserId] = useState<string>(null);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isRoomSet, setIsRoomSet] = useState(false);
   const [text, setText] = useState("");
@@ -47,6 +50,14 @@ const Room = () => {
   // Refs
   const swipeableRowRef = useRef<Swipeable | null>(null);
 
+  // Set current user id
+  useEffect(() => {
+    if (currentUser) {
+      setCurrentUserId(currentUser.$id);
+    }
+  }, [currentUser]);
+
+  // Room and Messages data
   const {
     data: roomData,
     loading: roomLoading,
@@ -104,15 +115,19 @@ const Room = () => {
     invisibleMessagesLoadingFix();
   }, [room]);
 
-  const onSend = useCallback((newMessages = []) => {
-    newMessages.forEach((message) => {
-      message.pending = true;
-      createMessage("a");
-    });
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
-  }, []);
+  // Send message
+  const onSend = useCallback(
+    (newMessages = []) => {
+      newMessages.forEach((message) => {
+        message.pending = true;
+        createMessage(currentUserId);
+      });
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, newMessages)
+      );
+    },
+    [currentUserId]
+  );
 
   const renderBubble = (props) => {
     return (
