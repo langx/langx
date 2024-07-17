@@ -30,16 +30,15 @@ export async function listMessages(params: any) {
   }
 }
 
-export async function createMessage({ currentUserId, jwt }) {
-  console.log(currentUserId, jwt);
+export async function createMessage({ newMessage, currentUserId, jwt }) {
   try {
-    const response = await axios.post(`${API_ENDPOINT}/message`, {
+    const response = await axios.post(`${API_ENDPOINT}/message`, newMessage, {
       headers: {
         "x-appwrite-user-id": currentUserId,
-        "x-appwrite-jwt": jwt,
+        "x-appwrite-jwt": jwt.jwt,
       },
     });
-    console.log("Response:", response.data);
+    // console.log("Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);

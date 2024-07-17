@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { v4 as uuidv4 } from "uuid";
 import {
   GiftedChat,
   Bubble,
@@ -27,6 +28,7 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
+import { createMessageRequestInterface } from "@/models/requests/createMessageRequest.interface";
 
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
@@ -110,16 +112,29 @@ const Room = () => {
   }, [room]);
 
   // Send message
-  const onSend = useCallback((newMessages = []) => {
-    const currentUserId = currentUser.$id;
-    newMessages.forEach((message) => {
-      message.pending = true;
-      createMessage({ currentUserId, jwt });
-    });
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
-  }, []);
+  const onSend = useCallback(
+    (newMessages = []) => {
+      const currentUserId = currentUser.$id;
+      newMessages.forEach((message) => {
+        message.pending = true;
+        message._id = uuidv4().replace(/-/g, "");
+
+        const newMessage: createMessageRequestInterface = {
+          $id: message._id,
+          to: room.userData.$id,
+          body: message.text,
+          roomId: id,
+          type: "body",
+          replyTo: null,
+        };
+        createMessage({ newMessage, currentUserId, jwt });
+      });
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, newMessages)
+      );
+    },
+    [room]
+  );
 
   const renderBubble = (props) => {
     return (
