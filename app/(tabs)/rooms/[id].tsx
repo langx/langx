@@ -21,7 +21,7 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
-import { useAuth } from "@/hooks/useJwt";
+import { useAuth } from "@/hooks/useAuth";
 import { createMessage, listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
