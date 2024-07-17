@@ -20,7 +20,7 @@ import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface"
 import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
-import { listMessages } from "@/services/messageService";
+import { createMessage, listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -107,6 +107,7 @@ const Room = () => {
   const onSend = useCallback((newMessages = []) => {
     newMessages.forEach((message) => {
       message.pending = true;
+      createMessage("a");
     });
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, newMessages)
