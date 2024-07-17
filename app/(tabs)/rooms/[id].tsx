@@ -16,11 +16,11 @@ import {
   Time,
 } from "react-native-gifted-chat";
 
-import { User } from "@/models/User";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
+import { useAuth } from "@/hooks/useJwt";
 import { createMessage, listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
@@ -31,17 +31,18 @@ import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   const insets = useSafeAreaInsets();
-  const dispatch = useDispatch();
   const { id } = useLocalSearchParams<{ id: string }>();
 
+  // Hooks
+  const dispatch = useDispatch();
+  const { currentUser, jwt } = useAuth();
+
   // Selectors
-  const currentUser: User = useSelector((state: RootState) => state.auth.user);
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
   );
 
   // States
-  const [currentUserId, setCurrentUserId] = useState<string>(null);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isRoomSet, setIsRoomSet] = useState(false);
   const [text, setText] = useState("");
@@ -49,13 +50,6 @@ const Room = () => {
 
   // Refs
   const swipeableRowRef = useRef<Swipeable | null>(null);
-
-  // Set current user id
-  useEffect(() => {
-    if (currentUser) {
-      setCurrentUserId(currentUser.$id);
-    }
-  }, [currentUser]);
 
   // Room and Messages data
   const {
@@ -116,18 +110,16 @@ const Room = () => {
   }, [room]);
 
   // Send message
-  const onSend = useCallback(
-    (newMessages = []) => {
-      newMessages.forEach((message) => {
-        message.pending = true;
-        createMessage(currentUserId);
-      });
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, newMessages)
-      );
-    },
-    [currentUserId]
-  );
+  const onSend = useCallback((newMessages = []) => {
+    const currentUserId = currentUser.$id;
+    newMessages.forEach((message) => {
+      message.pending = true;
+      createMessage({ currentUserId, jwt });
+    });
+    setMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, newMessages)
+    );
+  }, []);
 
   const renderBubble = (props) => {
     return (

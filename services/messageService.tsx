@@ -30,8 +30,8 @@ export async function listMessages(params: any) {
   }
 }
 
-export async function createMessage(params: any) {
-  console.log(params);
+export async function createMessage({ currentUserId, jwt }) {
+  console.log(currentUserId, jwt);
   try {
     // const response = await axios.post(`${API_ENDPOINT}/message`, {
     const response = await axios.get(`${API_ENDPOINT}`, {
