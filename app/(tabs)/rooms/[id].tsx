@@ -98,21 +98,11 @@ const Room = () => {
         received: message.seen,
       }));
 
-      console.log("Updated Messages:", updatedMessages);
       setMessages([...updatedMessages]);
     }
     // Fix for invisible messages loading for "web"
     invisibleMessagesLoadingFix();
   }, [room]);
-
-  // TODO: Delete this useEffect after testing
-  useEffect(() => {
-    messages.map((message: IMessage) => {
-      if (message._id === "601b7b6f18554c6687179ed77a0de93f") {
-        console.log("Found specific message:", message);
-      }
-    });
-  }, [messages]);
 
   const onSend = useCallback((newMessages = []) => {
     newMessages.forEach((message) => {
