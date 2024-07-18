@@ -7,7 +7,6 @@ import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { v4 as uuidv4 } from "uuid";
-import ContextMenu from "react-native-context-menu-view";
 import {
   GiftedChat,
   Bubble,
@@ -19,6 +18,7 @@ import {
 } from "react-native-gifted-chat";
 
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
+import { createMessageRequestInterface } from "@/models/requests/createMessageRequest.interface";
 import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
@@ -27,9 +27,9 @@ import { createMessage, listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import ContextMenu from "@/components/themed/molecular/ContextMenu";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
-import { createMessageRequestInterface } from "@/models/requests/createMessageRequest.interface";
 
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
