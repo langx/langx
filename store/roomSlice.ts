@@ -82,7 +82,6 @@ const roomSlice = createSlice({
       }
     },
     createMessage: (state, action: PayloadAction<Message>) => {
-      console.log('createMessage payload', action.payload);
       // Update the room if it is the same room
       if (state.room) {
         if (state.room.$id === action.payload.roomId['$id']) {
