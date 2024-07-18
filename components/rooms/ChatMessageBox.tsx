@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Animated, Image } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import {
   GestureHandlerRootView,
   Swipeable,
@@ -83,8 +83,8 @@ const ChatMessageBox = ({
         ]}
       >
         <View style={styles.replyImageWrapper}>
-          <MaterialCommunityIcons
-            name="reply-circle"
+          <Ionicons
+            name="arrow-undo-circle-outline"
             size={26}
             color={Colors.light.gray2}
           />
