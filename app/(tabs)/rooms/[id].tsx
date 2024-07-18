@@ -148,10 +148,16 @@ const Room = () => {
           { title: "Edit", systemIcon: "pencil" },
           { title: "Copy", systemIcon: "doc.on.doc" },
         ]}
-        onPress={(e) => {
-          console.warn(
-            `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`
-          );
+        onPress={({ nativeEvent: { index } }) => {
+          if (index === 0) {
+            setReplyMessage(props.currentMessage);
+          }
+          if (index === 1) {
+            console.warn("Edit");
+          }
+          if (index === 2) {
+            console.warn("Copy");
+          }
         }}
         style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
       >
