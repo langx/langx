@@ -141,15 +141,19 @@ const Room = () => {
     return (
       <ContextMenu
         actions={[
-          { title: "Option 1" },
-          { title: "Option 2" },
-          { title: "Option 3" },
+          {
+            title: "Reply",
+            systemIcon: "arrowshape.turn.up.left",
+          },
+          { title: "Edit", systemIcon: "pencil" },
+          { title: "Copy", systemIcon: "doc.on.doc" },
         ]}
         onPress={(e) => {
           console.warn(
             `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`
           );
         }}
+        style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
       >
         <Bubble
           {...props}
@@ -168,41 +172,61 @@ const Room = () => {
               backgroundColor: Colors[theme].gray5,
               padding: 0,
               margin: 0,
+              borderRadius: 20,
             },
             right: {
               backgroundColor: Colors[theme].primary,
               padding: 0,
               margin: 0,
-            },
-          }}
-          containerToPreviousStyle={{
-            left: {
-              marginBottom: 0,
-            },
-            right: {
-              marginBottom: 0,
-            },
-          }}
-          containerToNextStyle={{
-            left: {
-              marginBottom: 0,
-            },
-            right: {
-              marginBottom: 0,
+              borderRadius: 20,
             },
           }}
           containerStyle={{
             left: {
-              marginBottom: 0,
+              margin: 0,
+              padding: 0,
             },
             right: {
-              marginBottom: 0,
+              margin: 0,
+              padding: 0,
             },
           }}
           renderTime={renderCustomTime}
+          renderTicks={renderTicks}
         />
       </ContextMenu>
     );
+  };
+
+  const renderTicks = (message: IMessage) => {
+    if (message.user._id === 1) {
+      if (message.received) {
+        return (
+          <Ionicons
+            name="checkmark-circle-outline"
+            style={{ paddingRight: 5, opacity: 0.8 }}
+            size={10}
+          />
+        );
+      } else if (message.pending) {
+        return (
+          <Ionicons
+            name="cloud-upload-outline"
+            style={{ paddingRight: 5, opacity: 0.8 }}
+            size={10}
+          />
+        );
+      } else if (message.sent) {
+        return (
+          <Ionicons
+            name="checkmark"
+            style={{ paddingRight: 5, opacity: 0.8 }}
+            size={10}
+          />
+        );
+      }
+    }
+    return null;
   };
 
   const renderInputToolbar = (props: any) => {
@@ -224,12 +248,24 @@ const Room = () => {
       <Time
         {...props}
         timeTextStyle={{
-          left: { color: Colors[theme].gray1 },
-          right: { color: Colors[theme].gray3 },
+          left: { color: Colors[theme].gray1, opacity: 0.8 },
+          right: { color: Colors.light.black, opacity: 0.8 },
         }}
       />
     );
   };
+
+  // const renderTicks = (props) => {
+  //   return (
+  //     <Time
+  //       {...props}
+  //       timeTextStyle={{
+  //         left: { color: Colors[theme].gray1 },
+  //         right: { color: Colors.light.black, opacity: 0.7 },
+  //       }}
+  //     />
+  //   );
+  // };
 
   const renderSend = (props) => {
     return (
@@ -333,7 +369,6 @@ const Room = () => {
         onLoadEarlier={() => {
           if (messagesHasMore) messagesLoadMore();
         }}
-        // renderTicks={(message) => renderTicks({ currentMessage: message })}
         renderLoadEarlier={() =>
           messagesLoading ? (
             <ActivityIndicator size="large" color={Colors.light.primary} />
