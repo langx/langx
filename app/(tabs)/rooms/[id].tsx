@@ -29,6 +29,7 @@ import { createMessage, listMessages } from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import ContextMenu from "@/components/themed/molecular/ContextMenu";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
@@ -106,6 +107,7 @@ const Room = () => {
         },
         sent: true,
         received: message.seen,
+        replyTo: message.replyTo,
       }));
 
       setMessages([...updatedMessages]);
@@ -121,6 +123,7 @@ const Room = () => {
       newMessages.forEach((message) => {
         message.pending = true;
         message._id = uuidv4().replace(/-/g, "");
+        message.replyTo = replyMessage ? replyMessage._id.toString() : null;
 
         const newMessage: createMessageRequestInterface = {
           $id: message._id,
@@ -128,91 +131,142 @@ const Room = () => {
           body: message.text,
           roomId: id,
           type: "body",
-          replyTo: null,
+          replyTo: replyMessage ? replyMessage._id.toString() : null,
         };
         createMessage({ newMessage, currentUserId, jwt });
       });
       setMessages((previousMessages) =>
         GiftedChat.append(previousMessages, newMessages)
       );
+      setReplyMessage(null);
     },
-    [room]
+    [room, replyMessage]
   );
 
   const renderBubble = (props) => {
+    const { currentMessage } = props;
+    const replyTo = currentMessage.replyTo
+      ? messages.find((m) => m._id === currentMessage.replyTo)
+      : null;
+
     return (
-      <ContextMenu
-        actions={[
-          {
-            title: "Reply",
-            systemIcon: "arrowshape.turn.up.left",
-            IonIcon: "arrow-undo-outline",
-          },
-          { title: "Edit", systemIcon: "pencil", IonIcon: "pencil-outline" },
-          { title: "Copy", systemIcon: "doc.on.doc", IonIcon: "copy-outline" },
-          {
-            title: "Delete",
-            systemIcon: "trash",
-            IonIcon: "trash-outline",
-            destructive: true,
-          },
-        ]}
-        onPress={({ nativeEvent: { index } }) => {
-          if (index === 0) {
-            setReplyMessage(props.currentMessage);
-          }
-          if (index === 1) {
-            console.warn("Edit");
-          }
-          if (index === 2) {
-            Clipboard.setString(props.currentMessage.text);
-          }
-          if (index === 3) {
-            console.warn("Delete");
-          }
-        }}
-        style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
-      >
-        <Bubble
-          {...props}
-          textStyle={{
-            left: {
-              color: Colors[theme].black,
-              fontFamily: "NotoSans-Regular",
+      <ThemedView>
+        {replyTo && (
+          <ThemedView
+            style={{
+              borderRadius: 15,
+              maxWidth: "85%",
+            }}
+          >
+            <ThemedView style={{ flexDirection: "row" }}>
+              <ThemedView
+                style={{
+                  height: "100%",
+                  width: 10,
+                  backgroundColor: Colors[theme].primary,
+                  borderTopLeftRadius: 15,
+                  borderBottomLeftRadius: 15,
+                }}
+              />
+              <ThemedView style={{ flexDirection: "column" }}>
+                <ThemedText
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingTop: 5,
+                    fontWeight: "700",
+                  }}
+                >
+                  {replyTo.user.name}
+                </ThemedText>
+                <ThemedText
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                  }}
+                >
+                  {replyTo.text}
+                </ThemedText>
+              </ThemedView>
+            </ThemedView>
+          </ThemedView>
+        )}
+        <ContextMenu
+          actions={[
+            {
+              title: "Reply",
+              systemIcon: "arrowshape.turn.up.left",
+              IonIcon: "arrow-undo-outline",
             },
-            right: {
-              color: Colors.light.black,
-              fontFamily: "NotoSans-Regular",
+            { title: "Edit", systemIcon: "pencil", IonIcon: "pencil-outline" },
+            {
+              title: "Copy",
+              systemIcon: "doc.on.doc",
+              IonIcon: "copy-outline",
             },
+            {
+              title: "Delete",
+              systemIcon: "trash",
+              IonIcon: "trash-outline",
+              destructive: true,
+            },
+          ]}
+          onPress={({ nativeEvent: { index } }) => {
+            if (index === 0) {
+              setReplyMessage(props.currentMessage);
+            }
+            if (index === 1) {
+              console.warn("Edit");
+            }
+            if (index === 2) {
+              Clipboard.setString(currentMessage.text);
+            }
+            if (index === 3) {
+              console.warn("Delete");
+            }
           }}
-          wrapperStyle={{
-            left: {
-              backgroundColor: Colors[theme].gray5,
-              padding: 0,
-              margin: 0,
-              borderRadius: 20,
-            },
-            right: {
-              backgroundColor: Colors[theme].primary,
-              padding: 0,
-              margin: 0,
-              borderRadius: 20,
-            },
-          }}
-          containerStyle={{
-            left: {
-              margin: 0,
-              padding: 0,
-            },
-            right: {
-              margin: 0,
-              padding: 0,
-            },
-          }}
-          renderTime={renderCustomTime}
-          renderTicks={renderTicks}
-        />
-      </ContextMenu>
+          style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
+        >
+          <Bubble
+            {...props}
+            textStyle={{
+              left: {
+                color: Colors[theme].black,
+                fontFamily: "NotoSans-Regular",
+              },
+              right: {
+                color: Colors.light.black,
+                fontFamily: "NotoSans-Regular",
+              },
+            }}
+            wrapperStyle={{
+              left: {
+                backgroundColor: Colors[theme].gray5,
+                padding: 0,
+                margin: 0,
+                borderRadius: 15,
+              },
+              right: {
+                backgroundColor: Colors[theme].primary,
+                padding: 0,
+                margin: 0,
+                borderRadius: 15,
+              },
+            }}
+            containerStyle={{
+              left: {
+                margin: 0,
+                padding: 0,
+              },
+              right: {
+                margin: 0,
+                padding: 0,
+              },
+            }}
+            renderTime={renderCustomTime}
+            renderTicks={renderTicks}
+          />
+        </ContextMenu>
+      </ThemedView>
     );
   };
 
