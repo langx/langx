@@ -7,6 +7,7 @@ import Clipboard from "@react-native-clipboard/clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import {
   GiftedChat,
