@@ -147,6 +147,11 @@ const Room = () => {
           },
           { title: "Edit", systemIcon: "pencil" },
           { title: "Copy", systemIcon: "doc.on.doc" },
+          {
+            title: "Delete",
+            systemIcon: "trash",
+            destructive: true,
+          },
         ]}
         onPress={({ nativeEvent: { index } }) => {
           if (index === 0) {
@@ -157,6 +162,9 @@ const Room = () => {
           }
           if (index === 2) {
             console.warn("Copy");
+          }
+          if (index === 3) {
+            console.warn("Delete");
           }
         }}
         style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
