@@ -3,6 +3,7 @@ import { ActivityIndicator, Platform, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Clipboard from "@react-native-clipboard/clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -161,7 +162,7 @@ const Room = () => {
             console.warn("Edit");
           }
           if (index === 2) {
-            console.warn("Copy");
+            Clipboard.setString(props.currentMessage.text);
           }
           if (index === 3) {
             console.warn("Delete");
