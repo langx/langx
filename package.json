@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@react-native-clipboard/clipboard": "^1.14.1",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.6",
     "axios": "^1.7.2",
