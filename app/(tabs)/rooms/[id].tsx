@@ -146,12 +146,14 @@ const Room = () => {
           {
             title: "Reply",
             systemIcon: "arrowshape.turn.up.left",
+            IonIcon: "arrow-undo-circle-outline",
           },
-          { title: "Edit", systemIcon: "pencil" },
-          { title: "Copy", systemIcon: "doc.on.doc" },
+          { title: "Edit", systemIcon: "pencil", IonIcon: "pencil-outline" },
+          { title: "Copy", systemIcon: "doc.on.doc", IonIcon: "copy-outline" },
           {
             title: "Delete",
             systemIcon: "trash",
+            IonIcon: "trash-outline",
             destructive: true,
           },
         ]}
