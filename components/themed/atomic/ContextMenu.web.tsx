@@ -1,57 +1,71 @@
 import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useColorScheme } from "@/hooks/useColorScheme.web";
+import { Colors } from "@/constants/Colors";
 
-const ContextMenuWeb = ({ children, options, onOptionSelect }) => {
-  const [visible, setVisible] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+const ContextMenuWeb = ({ children }) => {
+  const theme = useColorScheme() === "dark" ? "dark" : "light";
+  const [buttonVisible, setButtonVisible] = useState(false);
 
-  const handleContextMenu = (event) => {
-    event.preventDefault();
-    console.log("Context menu triggered at:", event.pageX, event.pageY); // Log the position
-    setPosition({ x: event.pageX, y: event.pageY });
-    setVisible(true);
+  const handleMouseEnter = () => {
+    setButtonVisible(true);
   };
 
-  const handleOptionSelect = (option) => {
-    console.log("Option selected:", option); // Log the selected option
-    onOptionSelect(option);
-    setVisible(false);
+  const handleMouseLeave = () => {
+    setButtonVisible(false);
   };
 
-  console.log("ContextMenu visibility:", visible); // Log visibility changes
+  const handleButtonClick = () => {
+    alert("Button clicked!");
+  };
 
   return (
-    <div onContextMenu={handleContextMenu} style={{ display: "inline-block" }}>
-      {children}
-      {visible && (
-        <ul
+    <div
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      style={{ display: "flex", alignItems: "center", position: "relative" }}
+    >
+      {buttonVisible && (
+        <div
           style={{
-            position: "absolute",
-            top: position.y,
-            left: position.x,
-            backgroundColor: "white",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            zIndex: 1000,
+            display: "flex",
+            gap: 5,
+            marginRight: 5,
           }}
-          onClick={() => setVisible(false)}
         >
-          {options.map((option, index) => (
-            <li
-              key={index}
-              onClick={() => handleOptionSelect(option)}
-              style={{
-                padding: "8px 12px",
-                cursor: "pointer",
-                borderBottom: "1px solid #ccc",
-              }}
-            >
-              {option.label}
-            </li>
-          ))}
-        </ul>
+          <button
+            onClick={handleButtonClick}
+            style={{
+              cursor: "pointer",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "16px",
+            }}
+          >
+            <Ionicons
+              name="ellipsis-vertical"
+              size={20}
+              color={Colors[theme].gray2}
+            />
+          </button>
+          <button
+            onClick={handleButtonClick}
+            style={{
+              cursor: "pointer",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "16px",
+            }}
+          >
+            <Ionicons
+              name="arrow-undo-circle-outline"
+              size={20}
+              color={Colors[theme].gray2}
+            />
+          </button>
+        </div>
       )}
+      {children}
     </div>
   );
 };
