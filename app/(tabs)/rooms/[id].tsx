@@ -146,7 +146,7 @@ const Room = () => {
           {
             title: "Reply",
             systemIcon: "arrowshape.turn.up.left",
-            IonIcon: "arrow-undo-circle-outline",
+            IonIcon: "arrow-undo-outline",
           },
           { title: "Edit", systemIcon: "pencil", IonIcon: "pencil-outline" },
           { title: "Copy", systemIcon: "doc.on.doc", IonIcon: "copy-outline" },

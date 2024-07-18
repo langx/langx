@@ -31,8 +31,8 @@ const ContextMenuWeb = ({ actions, onPress, children, style }) => {
       }}
     >
       {buttonVisible && (
-        <div style={{ display: "flex", gap: 5, marginRight: 5 }}>
-          {actions.map((action, index) => (
+        <div style={{ display: "flex", gap: 3, marginRight: 6 }}>
+          {[...actions].reverse().map((action, index) => (
             <button
               key={index}
               onClick={() => handleActionClick(index)}
@@ -40,7 +40,7 @@ const ContextMenuWeb = ({ actions, onPress, children, style }) => {
                 cursor: "pointer",
                 backgroundColor: "transparent",
                 border: "none",
-                fontSize: "16px",
+                fontSize: "14px",
               }}
             >
               <Ionicons
