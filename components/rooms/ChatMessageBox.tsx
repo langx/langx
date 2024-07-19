@@ -59,23 +59,19 @@ const ChatMessageBox = ({
     isSameUser(props.currentMessage, props.nextMessage) &&
     isSameDay(props.currentMessage, props.nextMessage);
 
-  const renderLeftAction = (
+  const renderAction = (
     progressAnimatedValue: Animated.AnimatedInterpolation<any>
   ) => {
     const size = progressAnimatedValue.interpolate({
       inputRange: [0, 1, 100],
       outputRange: [0, 1, 1],
     });
-    const trans = progressAnimatedValue.interpolate({
-      inputRange: [0, 1, 2],
-      outputRange: [0, 12, 20],
-    });
 
     return (
       <Animated.View
         style={[
           styles.container,
-          { transform: [{ scale: size }, { translateX: trans }] },
+          { transform: [{ scale: size }] },
           isNextMyMessage
             ? styles.defaultBottomOffset
             : styles.bottomOffsetNext,
@@ -105,7 +101,12 @@ const ChatMessageBox = ({
         ref={updateRowRef}
         friction={2}
         rightThreshold={40}
-        renderLeftActions={renderLeftAction}
+        renderLeftActions={
+          props.currentMessage.user._id === 1 ? null : renderAction
+        }
+        renderRightActions={
+          props.currentMessage.user._id === 0 ? null : renderAction
+        }
         onSwipeableWillOpen={onSwipeOpenAction}
       >
         <Message {...props} currentMessage={updatedMessage} />
