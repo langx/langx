@@ -126,6 +126,22 @@ const Room = () => {
     (newMessages = []) => {
       const currentUserId = currentUser.$id;
       newMessages.forEach((message) => {
+        if (editMessage) {
+          const messageId = editMessage._id;
+          updateMessage({
+            messageId,
+            updatedMessage: { body: message.text },
+            currentUserId,
+            jwt,
+          });
+          setMessages((previousMessages) =>
+            previousMessages.map((m) =>
+              m._id === messageId ? { ...m, text: message.text } : m
+            )
+          );
+          return;
+        }
+
         message.pending = true;
         message._id = uuidv4().replace(/-/g, "");
         message.replyTo = replyMessage ? replyMessage._id.toString() : null;
@@ -139,13 +155,17 @@ const Room = () => {
           replyTo: replyMessage ? replyMessage._id.toString() : null,
         };
         createMessage({ newMessage, currentUserId, jwt });
+
+        // Set the message as sent
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, message)
+        );
       });
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, newMessages)
-      );
+
       setReplyMessage(null);
+      setEditMessage(null);
     },
-    [room, replyMessage]
+    [room, replyMessage, editMessage]
   );
 
   const renderBubble = (props) => {
@@ -202,7 +222,11 @@ const Room = () => {
               systemIcon: "arrowshape.turn.up.left",
               IonIcon: "arrow-undo-outline",
             },
-            { title: "Edit", systemIcon: "pencil", IonIcon: "pencil-outline" },
+            {
+              title: "Edit",
+              systemIcon: "pencil",
+              IonIcon: "pencil-outline",
+            },
             {
               title: "Copy",
               systemIcon: "doc.on.doc",
@@ -220,17 +244,13 @@ const Room = () => {
             const currentUserId = currentUser.$id;
             if (index === 0) {
               setEditMessage(null);
-              setReplyMessage(props.currentMessage);
+              setReplyMessage(currentMessage);
             }
             if (index === 1) {
               setReplyMessage(null);
-              setEditMessage(props.currentMessage);
-              // updateMessage({
-              //   messageId,
-              //   updatedMessage: { body: "Edited" },
-              //   currentUserId,
-              //   jwt,
-              // });
+              setEditMessage(currentMessage);
+              console.log(currentMessage.text);
+              setText(currentMessage.text);
             }
             if (index === 2) {
               Clipboard.setString(currentMessage.text);
@@ -316,19 +336,22 @@ const Room = () => {
     return null;
   };
 
-  const renderInputToolbar = (props: any) => {
-    return (
-      <InputToolbar
-        {...props}
-        containerStyle={{ backgroundColor: Colors[theme].background }}
-        renderActions={() => (
-          <ThemedView style={styles.addButton}>
-            <Ionicons name="add" color={Colors[theme].primary} size={28} />
-          </ThemedView>
-        )}
-      />
-    );
-  };
+  const renderInputToolbar = useCallback(
+    (props: any) => {
+      return (
+        <InputToolbar
+          {...props}
+          containerStyle={{ backgroundColor: Colors[theme].background }}
+          renderActions={() => (
+            <ThemedView style={styles.addButton}>
+              <Ionicons name="add" color={Colors[theme].primary} size={28} />
+            </ThemedView>
+          )}
+        />
+      );
+    },
+    [theme, text]
+  );
 
   const renderCustomTime = (props) => {
     return (
@@ -421,7 +444,6 @@ const Room = () => {
         renderAvatar={null}
         maxComposerHeight={100}
         textInputProps={styles.composer}
-        text={editMessage ? editMessage.text : null}
         renderBubble={renderBubble}
         renderSend={renderSend}
         renderInputToolbar={renderInputToolbar}
@@ -441,7 +463,10 @@ const Room = () => {
         renderMessage={(props) => (
           <ChatMessageBox
             {...props}
-            setReplyOnSwipeOpen={setReplyMessage}
+            setReplyOnSwipeOpen={() => {
+              setReplyMessage(props.currentMessage);
+              setEditMessage(null);
+            }}
             updateRowRef={updateRowRef}
           />
         )}
