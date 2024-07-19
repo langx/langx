@@ -340,18 +340,6 @@ const Room = () => {
     );
   };
 
-  // const renderTicks = (props) => {
-  //   return (
-  //     <Time
-  //       {...props}
-  //       timeTextStyle={{
-  //         left: { color: Colors[theme].gray1 },
-  //         right: { color: Colors.light.black, opacity: 0.7 },
-  //       }}
-  //     />
-  //   );
-  // };
-
   const renderSend = (props) => {
     return (
       <ThemedView style={styles.sendContainer}>
