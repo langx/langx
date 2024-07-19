@@ -17,6 +17,7 @@ export const useAuth = () => {
         if (Date.now() >= exp * 1000) {
           try {
             const newJwt = await createJWT();
+            console.log('Renewed JWT:', newJwt);
             dispatch(setJwt(newJwt));
           } catch (error) {
             console.error('Failed to renew JWT', error);

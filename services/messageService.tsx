@@ -70,9 +70,6 @@ export async function updateMessage({
 }
 
 export async function deleteMessage({ messageId, currentUserId, jwt }) {
-  console.log("Message ID:", messageId);
-  console.log("Current User ID:", currentUserId);
-  console.log("JWT:", jwt);
   try {
     const response = await axios.delete(
       `${API_ENDPOINT}/message/${messageId}`,
