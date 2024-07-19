@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { ActivityIndicator, Platform, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -25,7 +25,12 @@ import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
 import { useAuth } from "@/hooks/useAuth";
-import { createMessage, listMessages } from "@/services/messageService";
+import {
+  createMessage,
+  deleteMessage,
+  listMessages,
+  updateMessage,
+} from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -33,6 +38,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import ContextMenu from "@/components/themed/molecular/ContextMenu";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
+import EditMessageBar from "@/components/rooms/EditMessageBar";
 
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
@@ -53,6 +59,7 @@ const Room = () => {
   const [isRoomSet, setIsRoomSet] = useState(false);
   const [text, setText] = useState("");
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
+  const [editMessage, setEditMessage] = useState<IMessage | null>(null);
 
   // Refs
   const swipeableRowRef = useRef<Swipeable | null>(null);
@@ -119,6 +126,22 @@ const Room = () => {
     (newMessages = []) => {
       const currentUserId = currentUser.$id;
       newMessages.forEach((message) => {
+        if (editMessage) {
+          const messageId = editMessage._id;
+          updateMessage({
+            messageId,
+            updatedMessage: { body: message.text },
+            currentUserId,
+            jwt,
+          });
+          setMessages((previousMessages) =>
+            previousMessages.map((m) =>
+              m._id === messageId ? { ...m, text: message.text } : m
+            )
+          );
+          return;
+        }
+
         message.pending = true;
         message._id = uuidv4().replace(/-/g, "");
         message.replyTo = replyMessage ? replyMessage._id.toString() : null;
@@ -132,13 +155,17 @@ const Room = () => {
           replyTo: replyMessage ? replyMessage._id.toString() : null,
         };
         createMessage({ newMessage, currentUserId, jwt });
+
+        // Set the message as sent
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, message)
+        );
       });
-      setMessages((previousMessages) =>
-        GiftedChat.append(previousMessages, newMessages)
-      );
+
       setReplyMessage(null);
+      setEditMessage(null);
     },
-    [room, replyMessage]
+    [room, replyMessage, editMessage]
   );
 
   const renderBubble = (props) => {
@@ -195,7 +222,11 @@ const Room = () => {
               systemIcon: "arrowshape.turn.up.left",
               IonIcon: "arrow-undo-outline",
             },
-            { title: "Edit", systemIcon: "pencil", IonIcon: "pencil-outline" },
+            {
+              title: "Edit",
+              systemIcon: "pencil",
+              IonIcon: "pencil-outline",
+            },
             {
               title: "Copy",
               systemIcon: "doc.on.doc",
@@ -209,17 +240,23 @@ const Room = () => {
             },
           ]}
           onPress={({ nativeEvent: { index } }) => {
+            const messageId = currentMessage._id;
+            const currentUserId = currentUser.$id;
             if (index === 0) {
-              setReplyMessage(props.currentMessage);
+              setEditMessage(null);
+              setReplyMessage(currentMessage);
             }
             if (index === 1) {
-              console.warn("Edit");
+              setReplyMessage(null);
+              setEditMessage(currentMessage);
+              console.log(currentMessage.text);
+              setText(currentMessage.text);
             }
             if (index === 2) {
               Clipboard.setString(currentMessage.text);
             }
             if (index === 3) {
-              console.warn("Delete");
+              deleteMessage({ messageId, currentUserId, jwt });
             }
           }}
           style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
@@ -299,19 +336,22 @@ const Room = () => {
     return null;
   };
 
-  const renderInputToolbar = (props: any) => {
-    return (
-      <InputToolbar
-        {...props}
-        containerStyle={{ backgroundColor: Colors[theme].background }}
-        renderActions={() => (
-          <ThemedView style={styles.addButton}>
-            <Ionicons name="add" color={Colors[theme].primary} size={28} />
-          </ThemedView>
-        )}
-      />
-    );
-  };
+  const renderInputToolbar = useCallback(
+    (props: any) => {
+      return (
+        <InputToolbar
+          {...props}
+          containerStyle={{ backgroundColor: Colors[theme].background }}
+          renderActions={() => (
+            <ThemedView style={styles.addButton}>
+              <Ionicons name="add" color={Colors[theme].primary} size={28} />
+            </ThemedView>
+          )}
+        />
+      );
+    },
+    [theme, text]
+  );
 
   const renderCustomTime = (props) => {
     return (
@@ -324,18 +364,6 @@ const Room = () => {
       />
     );
   };
-
-  // const renderTicks = (props) => {
-  //   return (
-  //     <Time
-  //       {...props}
-  //       timeTextStyle={{
-  //         left: { color: Colors[theme].gray1 },
-  //         right: { color: Colors.light.black, opacity: 0.7 },
-  //       }}
-  //     />
-  //   );
-  // };
 
   const renderSend = (props) => {
     return (
@@ -401,6 +429,7 @@ const Room = () => {
       <GiftedChat
         messages={messages}
         onSend={(messages: IMessage[]) => onSend(messages)}
+        text={text}
         onInputTextChanged={setText}
         user={{
           _id: 1,
@@ -420,16 +449,25 @@ const Room = () => {
         renderSend={renderSend}
         renderInputToolbar={renderInputToolbar}
         renderChatFooter={() => (
-          <ReplyMessageBar
-            clearReply={() => setReplyMessage(null)}
-            message={replyMessage}
-          />
+          <>
+            <ReplyMessageBar
+              clearReply={() => setReplyMessage(null)}
+              message={replyMessage}
+            />
+            <EditMessageBar
+              clearReply={() => setEditMessage(null)}
+              message={editMessage}
+            />
+          </>
         )}
         onLongPress={() => {}}
         renderMessage={(props) => (
           <ChatMessageBox
             {...props}
-            setReplyOnSwipeOpen={setReplyMessage}
+            setReplyOnSwipeOpen={() => {
+              setReplyMessage(props.currentMessage);
+              setEditMessage(null);
+            }}
             updateRowRef={updateRowRef}
           />
         )}
