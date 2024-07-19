@@ -34,6 +34,7 @@ const TabsLayout = () => {
           backgroundColor: Colors[theme].gray5,
           justifyContent: "center",
           alignItems: "center",
+          height: showTabs ? insets.bottom + 60 : 0,
         },
       })}
     >
