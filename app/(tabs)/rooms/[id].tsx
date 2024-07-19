@@ -25,7 +25,12 @@ import { setRoom, setRoomMessages } from "@/store/roomSlice";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useDatabase } from "@/hooks/useDatabase";
 import { useAuth } from "@/hooks/useAuth";
-import { createMessage, listMessages } from "@/services/messageService";
+import {
+  createMessage,
+  deleteMessage,
+  listMessages,
+  updateMessage,
+} from "@/services/messageService";
 import { listRooms } from "@/services/roomService";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -209,17 +214,24 @@ const Room = () => {
             },
           ]}
           onPress={({ nativeEvent: { index } }) => {
+            const messageId = currentMessage._id;
+            const currentUserId = currentUser.$id;
             if (index === 0) {
               setReplyMessage(props.currentMessage);
             }
             if (index === 1) {
-              console.warn("Edit");
+              updateMessage({
+                messageId,
+                updatedMessage: { body: "Edited" },
+                currentUserId,
+                jwt,
+              });
             }
             if (index === 2) {
               Clipboard.setString(currentMessage.text);
             }
             if (index === 3) {
-              console.warn("Delete");
+              deleteMessage({ messageId, currentUserId, jwt });
             }
           }}
           style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}

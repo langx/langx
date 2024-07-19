@@ -38,10 +38,54 @@ export async function createMessage({ newMessage, currentUserId, jwt }) {
         "x-appwrite-jwt": jwt.jwt,
       },
     });
-    // console.log("Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
+    throw error;
+  }
+}
+
+export async function updateMessage({
+  messageId,
+  updatedMessage,
+  currentUserId,
+  jwt,
+}) {
+  try {
+    const response = await axios.put(
+      `${API_ENDPOINT}/message/${messageId}`,
+      updatedMessage,
+      {
+        headers: {
+          "x-appwrite-user-id": currentUserId,
+          "x-appwrite-jwt": jwt.jwt,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error updating message:", error);
+    throw error;
+  }
+}
+
+export async function deleteMessage({ messageId, currentUserId, jwt }) {
+  console.log("Message ID:", messageId);
+  console.log("Current User ID:", currentUserId);
+  console.log("JWT:", jwt);
+  try {
+    const response = await axios.delete(
+      `${API_ENDPOINT}/message/${messageId}`,
+      {
+        headers: {
+          "x-appwrite-user-id": currentUserId,
+          "x-appwrite-jwt": jwt.jwt,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting message:", error);
     throw error;
   }
 }
