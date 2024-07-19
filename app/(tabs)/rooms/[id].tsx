@@ -82,13 +82,13 @@ const Room = () => {
   } = useDatabase(listMessages, { roomId: id });
 
   useEffect(() => {
-    if (roomData && roomData.length > 0) {
+    if (!roomLoading && roomData && roomData.length > 0) {
       if (room?.$id !== roomData[0]?.$id) {
         dispatch(setRoom(roomData[0]));
       }
       setIsRoomSet(true);
     }
-  }, [roomData]);
+  }, [roomData, roomLoading]);
 
   // Effect for setting messages, depends on isRoomSet
   useEffect(() => {
