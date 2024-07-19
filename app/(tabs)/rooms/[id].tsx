@@ -429,7 +429,7 @@ const Room = () => {
               message={replyMessage}
             />
             <EditMessageBar
-              clearReply={() => setReplyMessage(null)}
+              clearReply={() => setEditMessage(null)}
               message={editMessage}
             />
           </>
