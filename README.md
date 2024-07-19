@@ -85,7 +85,7 @@ LangX is an application built with **React Native** that helps users exchange di
 1. Install dependencies
 
    ```bash
-   npm install --legacy-peer-deps
+   npm install
    ```
 
 2. Start the app

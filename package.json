@@ -65,5 +65,7 @@
     "react-test-renderer": "18.2.0",
     "typescript": "~5.3.3"
   },
-  "private": true
+  "overrides": {
+    "react-native": "0.74.2"
+  }
 }
