@@ -59,7 +59,7 @@ const ChatMessageBox = ({
     isSameUser(props.currentMessage, props.nextMessage) &&
     isSameDay(props.currentMessage, props.nextMessage);
 
-  const renderRightAction = (
+  const renderLeftAction = (
     progressAnimatedValue: Animated.AnimatedInterpolation<any>
   ) => {
     const size = progressAnimatedValue.interpolate({
@@ -105,7 +105,7 @@ const ChatMessageBox = ({
         ref={updateRowRef}
         friction={2}
         rightThreshold={40}
-        renderLeftActions={renderRightAction}
+        renderLeftActions={renderLeftAction}
         onSwipeableWillOpen={onSwipeOpenAction}
       >
         <Message {...props} currentMessage={updatedMessage} />
