@@ -17,7 +17,13 @@ export function TabBarItem({ icon, color, label, focused }: TabItemProps) {
     ? icon
     : (`${icon}-outline` as keyof typeof Ionicons.glyphMap);
   return (
-    <View style={{ flexDirection: "column", alignItems: "center", gap: 5 }}>
+    <View
+      style={{
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 3,
+      }}
+    >
       <TabBarIcon name={name} color={color} />
       <ThemedText>{label}</ThemedText>
     </View>

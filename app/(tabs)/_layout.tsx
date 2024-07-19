@@ -1,10 +1,8 @@
-import { useEffect } from "react";
-import { Platform } from "react-native";
 import { Tabs, useSegments } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { enableScreens } from "react-native-screens";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -14,6 +12,7 @@ import { TabBarItem } from "@/components/navigation/TabBarItem";
 const TabsLayout = () => {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
+  const insets = useSafeAreaInsets();
 
   // Start Realtime Websocket connection
   const currentUser = useSelector((state: RootState) => state.auth.user);
@@ -22,14 +21,6 @@ const TabsLayout = () => {
   const segments = useSegments();
   const TabsRoutes = ["home", "rooms", "profile"];
   const showTabs = segments.length === 2 && TabsRoutes.includes(segments[1]);
-
-  // Fix for react-native-screens issue on iOS
-  // https://github.com/react-navigation/react-navigation/issues/10432
-  useEffect(() => {
-    if (Platform.OS === "ios") {
-      enableScreens(false);
-    }
-  }, []);
 
   return (
     <Tabs
@@ -41,7 +32,8 @@ const TabsLayout = () => {
         tabBarStyle: {
           display: showTabs ? "flex" : "none",
           backgroundColor: Colors[theme].gray5,
-          height: 60,
+          justifyContent: "center",
+          alignItems: "center",
         },
       })}
     >
