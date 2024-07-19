@@ -429,6 +429,7 @@ const Room = () => {
       <GiftedChat
         messages={messages}
         onSend={(messages: IMessage[]) => onSend(messages)}
+        text={text}
         onInputTextChanged={setText}
         user={{
           _id: 1,
