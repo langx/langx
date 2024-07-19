@@ -124,21 +124,22 @@ const Room = () => {
   // Send message
   const onSend = useCallback(
     (newMessages = []) => {
+      setText("");
       const currentUserId = currentUser.$id;
       newMessages.forEach((message) => {
         if (editMessage) {
-          const messageId = editMessage._id;
+          setMessages((previousMessages) =>
+            previousMessages.map((m) =>
+              m._id === editMessage._id ? { ...m, text: message.text } : m
+            )
+          );
+          // Send the update request
           updateMessage({
-            messageId,
+            messageId: editMessage._id,
             updatedMessage: { body: message.text },
             currentUserId,
             jwt,
           });
-          setMessages((previousMessages) =>
-            previousMessages.map((m) =>
-              m._id === messageId ? { ...m, text: message.text } : m
-            )
-          );
           return;
         }
 
@@ -146,6 +147,12 @@ const Room = () => {
         message._id = uuidv4().replace(/-/g, "");
         message.replyTo = replyMessage ? replyMessage._id.toString() : null;
 
+        // Set the message as sent
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, message)
+        );
+
+        // Send the create request
         const newMessage: createMessageRequestInterface = {
           $id: message._id,
           to: room.userData.$id,
@@ -155,13 +162,8 @@ const Room = () => {
           replyTo: replyMessage ? replyMessage._id.toString() : null,
         };
         createMessage({ newMessage, currentUserId, jwt });
-
-        // Set the message as sent
-        setMessages((previousMessages) =>
-          GiftedChat.append(previousMessages, message)
-        );
       });
-
+      // Clear the reply and edit message
       setReplyMessage(null);
       setEditMessage(null);
     },
@@ -179,11 +181,13 @@ const Room = () => {
         title: "Reply",
         systemIcon: "arrowshape.turn.up.left",
         IonIcon: "arrow-undo-outline",
+        destructive: false,
       },
       {
         title: "Copy",
         systemIcon: "doc.on.doc",
         IonIcon: "copy-outline",
+        destructive: false,
       },
     ];
 
@@ -194,6 +198,7 @@ const Room = () => {
           title: "Edit",
           systemIcon: "pencil",
           IonIcon: "pencil-outline",
+          destructive: false,
         },
         {
           title: "Delete",
@@ -255,7 +260,6 @@ const Room = () => {
                 // Edit option
                 setReplyMessage(null);
                 setEditMessage(currentMessage);
-                console.log(currentMessage.text);
                 setText(currentMessage.text);
               }
               if (index === contextMenuActions.length - 1) {
