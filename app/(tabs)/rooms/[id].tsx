@@ -38,6 +38,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import ContextMenu from "@/components/themed/molecular/ContextMenu";
 import ChatMessageBox from "@/components/rooms/ChatMessageBox";
 import ReplyMessageBar from "@/components/rooms/ReplyMessageBar";
+import EditMessageBar from "@/components/rooms/EditMessageBar";
 
 const Room = () => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
@@ -58,6 +59,7 @@ const Room = () => {
   const [isRoomSet, setIsRoomSet] = useState(false);
   const [text, setText] = useState("");
   const [replyMessage, setReplyMessage] = useState<IMessage | null>(null);
+  const [editMessage, setEditMessage] = useState<IMessage | null>(null);
 
   // Refs
   const swipeableRowRef = useRef<Swipeable | null>(null);
@@ -220,12 +222,13 @@ const Room = () => {
               setReplyMessage(props.currentMessage);
             }
             if (index === 1) {
-              updateMessage({
-                messageId,
-                updatedMessage: { body: "Edited" },
-                currentUserId,
-                jwt,
-              });
+              setEditMessage(props.currentMessage);
+              // updateMessage({
+              //   messageId,
+              //   updatedMessage: { body: "Edited" },
+              //   currentUserId,
+              //   jwt,
+              // });
             }
             if (index === 2) {
               Clipboard.setString(currentMessage.text);
@@ -432,10 +435,16 @@ const Room = () => {
         renderSend={renderSend}
         renderInputToolbar={renderInputToolbar}
         renderChatFooter={() => (
-          <ReplyMessageBar
-            clearReply={() => setReplyMessage(null)}
-            message={replyMessage}
-          />
+          <>
+            <ReplyMessageBar
+              clearReply={() => setReplyMessage(null)}
+              message={replyMessage}
+            />
+            <EditMessageBar
+              clearReply={() => setReplyMessage(null)}
+              message={editMessage}
+            />
+          </>
         )}
         onLongPress={() => {}}
         renderMessage={(props) => (
