@@ -112,8 +112,6 @@ const Room = () => {
 
       setMessages([...updatedMessages]);
     }
-    // Fix for invisible messages loading for "web"
-    invisibleMessagesLoadingFix();
   }, [room]);
 
   // Send message
@@ -479,21 +477,5 @@ const generateStyles = (theme) => {
     },
   });
 };
-
-// Fix for invisible messages loading
-// https://github.com/FaridSafi/react-native-gifted-chat/issues/2448
-function invisibleMessagesLoadingFix() {
-  if (Platform.OS === "web") {
-    const gcLoadingContaineEl = document.querySelectorAll(
-      '[data-testid="GC_LOADING_CONTAINER"]'
-    )[0] as HTMLElement;
-    if (gcLoadingContaineEl) {
-      gcLoadingContaineEl.style.display = "none";
-      setTimeout(() => {
-        gcLoadingContaineEl.style.display = "flex";
-      }, 500);
-    }
-  }
-}
 
 export default Room;
