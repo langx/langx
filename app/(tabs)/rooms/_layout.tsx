@@ -49,7 +49,6 @@ export default function RootLayout() {
         name="index"
         options={{
           headerShown: true,
-          headerShadowVisible: false,
           headerStyle: { backgroundColor: Colors.light.primary },
           headerTitle: "Chats",
           headerTitleStyle: {
