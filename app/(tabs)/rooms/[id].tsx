@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { ActivityIndicator, Platform, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -421,6 +421,7 @@ const Room = () => {
         renderAvatar={null}
         maxComposerHeight={100}
         textInputProps={styles.composer}
+        text={editMessage ? editMessage.text : null}
         renderBubble={renderBubble}
         renderSend={renderSend}
         renderInputToolbar={renderInputToolbar}
