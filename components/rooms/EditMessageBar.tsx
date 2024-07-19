@@ -11,7 +11,7 @@ type ReplyMessageBarProps = {
   message: IMessage | null;
 };
 
-const ReplyMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
+const EditMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
   return (
     <>
@@ -29,20 +29,20 @@ const ReplyMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
             style={{
               height: "100%",
               width: 6,
-              backgroundColor: Colors[theme].success,
+              backgroundColor: Colors[theme].primary,
             }}
           ></View>
           <View style={{ flexDirection: "column" }}>
             <Text
               style={{
-                color: Colors[theme].success,
+                color: Colors[theme].primary,
                 paddingLeft: 10,
                 paddingTop: 5,
                 fontWeight: "600",
                 fontSize: 15,
               }}
             >
-              {message?.user.name}
+              Edit
             </Text>
             <Text
               style={{
@@ -78,4 +78,4 @@ const ReplyMessageBar = ({ clearReply, message }: ReplyMessageBarProps) => {
   );
 };
 
-export default ReplyMessageBar;
+export default EditMessageBar;
