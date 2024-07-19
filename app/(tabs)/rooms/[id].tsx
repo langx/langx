@@ -219,9 +219,11 @@ const Room = () => {
             const messageId = currentMessage._id;
             const currentUserId = currentUser.$id;
             if (index === 0) {
+              setEditMessage(null);
               setReplyMessage(props.currentMessage);
             }
             if (index === 1) {
+              setReplyMessage(null);
               setEditMessage(props.currentMessage);
               // updateMessage({
               //   messageId,
