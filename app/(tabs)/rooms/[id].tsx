@@ -174,6 +174,36 @@ const Room = () => {
       ? messages.find((m) => m._id === currentMessage.replyTo)
       : null;
 
+    const contextMenuActions = [
+      {
+        title: "Reply",
+        systemIcon: "arrowshape.turn.up.left",
+        IonIcon: "arrow-undo-outline",
+      },
+      {
+        title: "Copy",
+        systemIcon: "doc.on.doc",
+        IonIcon: "copy-outline",
+      },
+    ];
+
+    // Add "Edit" and "Delete" options if the message is sent by user with user._id: 1
+    if (currentMessage.user._id === 1) {
+      contextMenuActions.push(
+        {
+          title: "Edit",
+          systemIcon: "pencil",
+          IonIcon: "pencil-outline",
+        },
+        {
+          title: "Delete",
+          systemIcon: "trash",
+          IonIcon: "trash-outline",
+          destructive: true,
+        }
+      );
+    }
+
     return (
       <ThemedView>
         {replyTo && (
@@ -216,47 +246,31 @@ const Room = () => {
           </ThemedView>
         )}
         <ContextMenu
-          actions={[
-            {
-              title: "Reply",
-              systemIcon: "arrowshape.turn.up.left",
-              IonIcon: "arrow-undo-outline",
-            },
-            {
-              title: "Edit",
-              systemIcon: "pencil",
-              IonIcon: "pencil-outline",
-            },
-            {
-              title: "Copy",
-              systemIcon: "doc.on.doc",
-              IonIcon: "copy-outline",
-            },
-            {
-              title: "Delete",
-              systemIcon: "trash",
-              IonIcon: "trash-outline",
-              destructive: true,
-            },
-          ]}
+          actions={contextMenuActions}
           onPress={({ nativeEvent: { index } }) => {
             const messageId = currentMessage._id;
             const currentUserId = currentUser.$id;
+            if (currentMessage.user._id === 1) {
+              if (index === contextMenuActions.length - 2) {
+                // Edit option
+                setReplyMessage(null);
+                setEditMessage(currentMessage);
+                console.log(currentMessage.text);
+                setText(currentMessage.text);
+              }
+              if (index === contextMenuActions.length - 1) {
+                // Delete option
+                deleteMessage({ messageId, currentUserId, jwt });
+              }
+            }
             if (index === 0) {
+              // Reply option
               setEditMessage(null);
               setReplyMessage(currentMessage);
             }
-            if (index === 1) {
-              setReplyMessage(null);
-              setEditMessage(currentMessage);
-              console.log(currentMessage.text);
-              setText(currentMessage.text);
-            }
-            if (index === 2) {
+            if (index === 1 || index === 2) {
+              // Copy option
               Clipboard.setString(currentMessage.text);
-            }
-            if (index === 3) {
-              deleteMessage({ messageId, currentUserId, jwt });
             }
           }}
           style={{ padding: 0, margin: 0, backgroundColor: "transparent" }}
