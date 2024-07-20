@@ -1,6 +1,14 @@
-import { useEffect, useState } from "react";
-import { Stack } from "expo-router";
-import { Switch, Image, Pressable, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Stack, router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  Switch,
+  Image,
+  Pressable,
+  ActivityIndicator,
+  Platform,
+  Alert,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -18,8 +26,10 @@ export default function RoomLayout() {
   // useRealtimeMessages();
 
   const [isCopilotEnabled, setIsCopilotEnabled] = useState(false);
-  const toggleSwitch = () =>
+  const toggleSwitch = () => {
     setIsCopilotEnabled((previousState) => !previousState);
+    Alert.alert("Copilot", "Copilot is under maintenance");
+  };
 
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
@@ -47,8 +57,7 @@ export default function RoomLayout() {
       <Stack.Screen
         name="[id]"
         options={{
-          title: "[id]",
-          headerBackVisible: true,
+          headerBackVisible: false,
           headerBackTitleVisible: false,
           headerTintColor:
             colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
@@ -64,15 +73,42 @@ export default function RoomLayout() {
             color:
               colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
           },
-          headerTitle: () => (
+          headerLeft: () => (
             <ThemedView
               style={{
                 flexDirection: "row",
-                width: 250,
+                // width: 250,
                 gap: 10,
                 alignItems: "center",
               }}
             >
+              <Pressable
+                onPress={() => {
+                  router.back();
+                }}
+              >
+                <ThemedView
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Ionicons
+                    name={
+                      Platform.OS === "android"
+                        ? "arrow-back-outline"
+                        : "chevron-back-outline"
+                    }
+                    size={24}
+                    color={
+                      colorScheme === "dark"
+                        ? Colors.dark.black
+                        : Colors.light.black
+                    }
+                  />
+                </ThemedView>
+              </Pressable>
               {userImageUrl ? (
                 <>
                   <Image
@@ -100,6 +136,9 @@ export default function RoomLayout() {
               )}
             </ThemedView>
           ),
+          headerTitle: () => (
+            <ThemedView style={{ display: "none" }}></ThemedView>
+          ),
           headerRight: () => (
             <ThemedView
               style={{
@@ -112,7 +151,6 @@ export default function RoomLayout() {
               <Pressable>
                 <Switch
                   trackColor={{
-                    false: Colors.light.gray3,
                     true: Colors.light.secondary,
                   }}
                   // thumbColor={isCopilotEnabled ? "#f5dd4b" : "#f4f3f4"}
