@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Stack, Link } from "expo-router";
+import { Stack, router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Switch, Image, Pressable, ActivityIndicator } from "react-native";
 import { useSelector } from "react-redux";
@@ -56,14 +56,13 @@ export default function RoomLayout() {
             color: Colors.light.black,
           },
           headerRight: () => (
-            <Link href="rooms/archive">
+            <Pressable onPress={() => router.push("(pages)/archive")}>
               <Ionicons
                 name="archive-outline"
                 size={24}
                 color={Colors.light.black}
-                style={{ marginRight: 16 }}
               />
-            </Link>
+            </Pressable>
           ),
         }}
       />
@@ -146,41 +145,6 @@ export default function RoomLayout() {
               </Pressable>
             </ThemedView>
           ),
-        }}
-      />
-      <Stack.Screen
-        name="archive"
-        options={{
-          title: "Archived Chats",
-          headerShown: true,
-          headerBackVisible: true,
-          headerLargeTitle: true,
-          headerShadowVisible: false,
-          headerBackTitleVisible: true,
-          headerBackButtonMenuEnabled: true,
-          headerBackTitle: "Back",
-          headerTintColor:
-            colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          headerStyle: {
-            backgroundColor:
-              colorScheme === "dark"
-                ? Colors.dark.background
-                : Colors.light.background,
-          },
-          headerLargeTitleStyle: {
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-            fontFamily: "Lexend-Bold",
-          },
-          headerBackTitleStyle: {
-            fontFamily: "Lexend-Bold",
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontFamily: "Lexend-Bold",
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          },
         }}
       />
     </Stack>
