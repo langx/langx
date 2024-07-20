@@ -77,8 +77,7 @@ export default function RoomLayout() {
             <ThemedView
               style={{
                 flexDirection: "row",
-                // width: 250,
-                gap: 10,
+                gap: 15,
                 alignItems: "center",
               }}
             >
