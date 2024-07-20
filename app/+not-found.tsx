@@ -1,18 +1,24 @@
-import { Link, Stack } from "expo-router";
+import { Link, Stack, router } from "expo-router";
 import { StyleSheet } from "react-native";
 
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { useEffect } from "react";
 
 export default function NotFoundScreen() {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.back();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
       <ThemedView style={styles.container}>
         <ThemedText type="title">This screen doesn't exist.</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
+        <ThemedText>You will be redirected.</ThemedText>
       </ThemedView>
     </>
   );
