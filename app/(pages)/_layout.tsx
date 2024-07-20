@@ -116,6 +116,7 @@ export default function PagesLayout() {
         }}
       />
       <Stack.Screen name="room" options={{ headerShown: false }} />
+      <Stack.Screen name="[username]" options={{ headerShown: false }} />
     </Stack>
   );
 }
