@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 
-export default function ModalLayout() {
+export default function PagesLayout() {
   const colorScheme = useColorScheme();
 
   return (
@@ -115,6 +115,7 @@ export default function ModalLayout() {
           },
         }}
       />
+      <Stack.Screen name="room" options={{ headerShown: false }} />
     </Stack>
   );
 }
