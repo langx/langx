@@ -51,38 +51,36 @@ const PhotosGalleryCard = ({ user }) => {
   };
 
   return (
-    <ThemedView style={styles.card}>
-      {otherPics.length > 0 && (
-        <>
-          <ThemedView style={styles.cardHeader}>
-            <ThemedText style={styles.cardTitle}>Photos Gallery</ThemedText>
-            <ThemedText style={styles.cardSubtitle}>User Collection</ThemedText>
-          </ThemedView>
-          <ScrollView contentContainerStyle={styles.cardContent}>
-            <ThemedView style={styles.grid}>
-              {imageUris.map((uri, index) => (
-                <Pressable key={index} onPress={() => handleImagePress(index)}>
-                  <ThemedView style={styles.imageContainer}>
-                    {loadingStates[index] && (
-                      <ActivityIndicator
-                        style={styles.loadingIndicator}
-                        size="large"
-                        color={Colors.light.primary}
-                      />
-                    )}
-                    <Image
-                      source={{ uri }}
-                      style={[styles.image as ImageStyle]}
-                      onLoadEnd={() => handleLoadEnd(index)}
+    otherPics.length > 0 && (
+      <ThemedView style={styles.card}>
+        <ThemedView style={styles.cardHeader}>
+          <ThemedText style={styles.cardTitle}>Photos Gallery</ThemedText>
+          <ThemedText style={styles.cardSubtitle}>User Collection</ThemedText>
+        </ThemedView>
+        <ScrollView contentContainerStyle={styles.cardContent}>
+          <ThemedView style={styles.grid}>
+            {imageUris.map((uri, index) => (
+              <Pressable key={index} onPress={() => handleImagePress(index)}>
+                <ThemedView style={styles.imageContainer}>
+                  {loadingStates[index] && (
+                    <ActivityIndicator
+                      style={styles.loadingIndicator}
+                      size="large"
+                      color={Colors.light.primary}
                     />
-                  </ThemedView>
-                </Pressable>
-              ))}
-            </ThemedView>
-          </ScrollView>
-        </>
-      )}
-    </ThemedView>
+                  )}
+                  <Image
+                    source={{ uri }}
+                    style={[styles.image as ImageStyle]}
+                    onLoadEnd={() => handleLoadEnd(index)}
+                  />
+                </ThemedView>
+              </Pressable>
+            ))}
+          </ThemedView>
+        </ScrollView>
+      </ThemedView>
+    )
   );
 };
 
