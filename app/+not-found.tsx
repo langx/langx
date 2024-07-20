@@ -1,4 +1,4 @@
-import { Link, Stack, router } from "expo-router";
+import { Stack } from "expo-router";
 import { StyleSheet } from "react-native";
 
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -6,13 +6,6 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { useEffect } from "react";
 
 export default function NotFoundScreen() {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.back();
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
