@@ -23,13 +23,7 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 export default function RoomLayout() {
   const colorScheme = useColorScheme();
 
-  // useRealtimeMessages();
-
   const [isCopilotEnabled, setIsCopilotEnabled] = useState(false);
-  const toggleSwitch = () => {
-    setIsCopilotEnabled((previousState) => !previousState);
-    Alert.alert("Copilot", "Copilot is under maintenance");
-  };
 
   const room: RoomExtendedInterface | null = useSelector(
     (state: RootState) => state.room.room
@@ -147,17 +141,19 @@ export default function RoomLayout() {
                 gap: 10,
               }}
             >
-              <Pressable>
-                <Switch
-                  trackColor={{
-                    true: Colors.light.secondary,
-                  }}
-                  // thumbColor={isCopilotEnabled ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor={Colors.light.gray3}
-                  onValueChange={toggleSwitch}
-                  value={isCopilotEnabled}
-                />
-              </Pressable>
+              <Switch
+                trackColor={{
+                  true: Colors.light.secondary,
+                }}
+                thumbColor={Colors.light.white}
+                ios_backgroundColor={Colors.light.gray3}
+                onValueChange={(newValue) => {
+                  setIsCopilotEnabled(newValue);
+                  if (newValue)
+                    Alert.alert("Copilot", "Copilot is under maintenance");
+                }}
+                value={isCopilotEnabled}
+              />
             </ThemedView>
           ),
         }}
