@@ -23,6 +23,7 @@ const PPCard = ({ user }) => {
   useEffect(() => {
     const fetchImageUri = async () => {
       if (user?.profilePic) {
+        console.log("Fetching image uri...", user.profilePic);
         const uri = await getUserImage(user.profilePic);
         setImageUri(uri.toString());
       }
@@ -44,19 +45,23 @@ const PPCard = ({ user }) => {
                 color={Colors.light.primary}
               />
             )}
-            <Image
-              source={{ uri: imageUri }}
-              style={[
-                styles.profilePic as ImageStyle,
-                ...(user.contributors?.length > 0
-                  ? [styles.contributor as ImageStyle]
-                  : []),
-                ...(user.sponsor ? [styles.sponsor as ImageStyle] : []),
-              ]}
-              accessibilityLabel="Profile Picture"
-              onLoadStart={() => setIsLoading(true)}
-              onLoadEnd={() => setIsLoading(false)}
-            />
+            {imageUri ? (
+              <Image
+                source={{ uri: imageUri }}
+                style={[
+                  styles.profilePic as ImageStyle,
+                  ...(user.contributors?.length > 0
+                    ? [styles.contributor as ImageStyle]
+                    : []),
+                  ...(user.sponsor ? [styles.sponsor as ImageStyle] : []),
+                ]}
+                accessibilityLabel="Profile Picture"
+                onLoadStart={() => setIsLoading(true)}
+                onLoadEnd={() => setIsLoading(false)}
+              />
+            ) : (
+              <ActivityIndicator size="large" />
+            )}
           </ThemedView>
         </Pressable>
         <ThemedText style={styles.cardTitle}>{user.name}</ThemedText>
