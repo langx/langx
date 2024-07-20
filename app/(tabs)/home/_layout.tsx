@@ -1,4 +1,5 @@
-import { Stack, Link } from "expo-router";
+import { Stack, router } from "expo-router";
+import { Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -6,8 +7,6 @@ import { Colors } from "@/constants/Colors";
 
 export default function HomeLayout() {
   const colorScheme = useColorScheme();
-
-  // useRealtimeUsers();
 
   return (
     <Stack>
@@ -22,14 +21,13 @@ export default function HomeLayout() {
             color: Colors.light.black,
           },
           headerRight: () => (
-            <Link href="home/filters">
+            <Pressable onPress={() => router.push("(pages)/filters")}>
               <Ionicons
                 name="filter-outline"
                 size={24}
                 color={Colors.light.black}
-                style={{ marginRight: 16 }}
               />
-            </Link>
+            </Pressable>
           ),
           headerSearchBarOptions: {
             placeholder: "Search",
@@ -40,41 +38,6 @@ export default function HomeLayout() {
             tintColor: Colors.light.black,
             hintTextColor: Colors.light.black,
             headerIconColor: Colors.light.black,
-          },
-        }}
-      />
-      <Stack.Screen
-        name="filters"
-        options={{
-          title: "Filters",
-          headerShown: true,
-          headerBackVisible: true,
-          headerLargeTitle: true,
-          headerShadowVisible: false,
-          headerBackTitleVisible: true,
-          headerBackButtonMenuEnabled: true,
-          headerBackTitle: "Back",
-          headerTintColor:
-            colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          headerStyle: {
-            backgroundColor:
-              colorScheme === "dark"
-                ? Colors.dark.background
-                : Colors.light.background,
-          },
-          headerLargeTitleStyle: {
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-            fontFamily: "Lexend-Bold",
-          },
-          headerBackTitleStyle: {
-            fontFamily: "Lexend-Bold",
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontFamily: "Lexend-Bold",
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
           },
         }}
       />

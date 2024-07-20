@@ -8,7 +8,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { useEffect, useState } from "react";
 
-export default function RootLayout() {
+export default function ProfileLayout() {
   const colorScheme = useColorScheme();
 
   const [username, setUsername] = useState<string | null>(null);

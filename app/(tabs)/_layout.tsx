@@ -1,4 +1,4 @@
-import { Tabs, useSegments } from "expo-router";
+import { Tabs } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -18,10 +18,6 @@ const TabsLayout = () => {
   const currentUser = useSelector((state: RootState) => state.auth.user);
   if (currentUser) useRealtime(currentUser.$id);
 
-  const segments = useSegments();
-  const TabsRoutes = ["home", "rooms", "profile"];
-  const showTabs = segments.length === 2 && TabsRoutes.includes(segments[1]);
-
   return (
     <Tabs
       screenOptions={({ route }) => ({
@@ -30,11 +26,10 @@ const TabsLayout = () => {
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
-          display: showTabs ? "flex" : "none",
           backgroundColor: Colors[theme].gray5,
           justifyContent: "center",
           alignItems: "center",
-          height: showTabs ? insets.bottom + 60 : 0,
+          height: insets.bottom + 60,
         },
       })}
     >

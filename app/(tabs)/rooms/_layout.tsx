@@ -13,7 +13,7 @@ import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
-export default function RootLayout() {
+export default function RoomLayout() {
   const colorScheme = useColorScheme();
 
   // useRealtimeMessages();
