@@ -57,13 +57,14 @@ const RoomsScreen = () => {
   };
 
   const renderFooter = useCallback(() => {
-    if (!hasMore) return null;
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
-      </ThemedView>
-    );
-  }, [hasMore]);
+    if (loading) {
+      return (
+        <ThemedView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </ThemedView>
+      );
+    }
+  }, [loading]);
 
   const renderItem = useCallback(
     ({ item: room }) => <RoomRow room={room} />,
