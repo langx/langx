@@ -15,6 +15,7 @@ import { RootState } from "@/store/store";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { Colors } from "@/constants/Colors";
 import { getFlagEmoji, onlineStatusInChatRoom } from "@/constants/utils";
+import icons from "@/constants/icons";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { getUserImage } from "@/services/bucketService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -137,10 +138,10 @@ export default function RoomLayout() {
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                paddingHorizontal: 5,
                 gap: 10,
               }}
             >
+              <Image source={icons.robot} style={{ width: 35, height: 35 }} />
               <Switch
                 trackColor={{
                   true: Colors.light.secondary,
