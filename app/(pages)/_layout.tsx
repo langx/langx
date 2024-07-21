@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
+import BackButtonForIOS from "@/components/BackButtonForIOS";
 
 export default function PagesLayout() {
   const colorScheme = useColorScheme();
@@ -40,6 +41,7 @@ export default function PagesLayout() {
             color:
               colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
           },
+          headerLeft: BackButtonForIOS,
         }}
       />
       <Stack.Screen
