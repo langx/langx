@@ -39,7 +39,7 @@ const BackButtonForIOS = () => {
                 colorScheme === "dark" ? Colors.dark.black : Colors.light.black
               }
             />
-            <ThemedText style={{ fontSize: 18, fontFamily: "Lexend-Bold" }}>
+            <ThemedText style={{ fontSize: 17, fontFamily: "Lexend-Bold" }}>
               Back
             </ThemedText>
           </ThemedView>

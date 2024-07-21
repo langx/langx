@@ -80,6 +80,7 @@ export default function PagesLayout() {
           headerSearchBarOptions: {
             placeholder: "Search",
           },
+          headerLeft: BackButtonForIOS,
         }}
       />
       <Stack.Screen
@@ -115,6 +116,7 @@ export default function PagesLayout() {
             color:
               colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
           },
+          headerLeft: BackButtonForIOS,
         }}
       />
       <Stack.Screen name="room" options={{ headerShown: false }} />
