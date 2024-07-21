@@ -40,7 +40,7 @@ export default function CommunityScreen() {
           currentUserId={user.$id}
           ref={recommendedSectionRef}
         />
-        {/* <FeaturedSection ref={featuredSectionRef} /> */}
+        <FeaturedSection currentUserId={user.$id} ref={featuredSectionRef} />
         {/* <VisitorsSection ref={visitorsSectionRef} /> */}
       </ScrollView>
     </ThemedView>

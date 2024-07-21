@@ -1,44 +1,63 @@
-import React, { useEffect, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+} from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   FlatList,
   ActivityIndicator,
-  View,
   StyleSheet,
   Pressable,
 } from "react-native";
+
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
-import UserCard from "@/components/home/UserCard";
 import { Colors } from "@/constants/Colors";
+import UserCard from "@/components/home/UserCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
-import { Ionicons } from "@expo/vector-icons";
 
-const FeaturedSection = forwardRef((props, ref) => {
+interface FeaturedSectionProps {
+  currentUserId: string;
+  filterData?: any;
+}
+
+const FeaturedSection = forwardRef((props: FeaturedSectionProps, ref) => {
+  const { currentUserId, filterData = {} } = props;
   const {
     data: users,
     loading,
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers);
+  } = useDatabase(listUsers, { userId: currentUserId });
+
+  useEffect(() => {
+    console.log("featured users:", users?.length);
+  }, [users]);
 
   useImperativeHandle(ref, () => ({
     refetch,
   }));
 
-  useEffect(() => {
-    loadMore(); // Initial load
-  }, []);
-
-  const renderFooter = () => {
-    if (!hasMore) return null;
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
-      </View>
-    );
+  const onEndReached = () => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
   };
+
+  const renderFooter = useCallback(() => {
+    if (!hasMore) return null;
+    if (loading) {
+      return (
+        <ThemedView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </ThemedView>
+      );
+    }
+  }, [hasMore, loading]);
 
   return (
     <ThemedView style={styles.card}>
@@ -65,7 +84,7 @@ const FeaturedSection = forwardRef((props, ref) => {
         data={users}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => <UserCard item={item} />}
-        onEndReached={loadMore}
+        onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
       />
@@ -106,5 +125,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  cardBody: {
+    height: "auto",
+    display: "flex",
   },
 });
