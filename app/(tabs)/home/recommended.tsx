@@ -60,11 +60,7 @@ export default function RecomendedScreen() {
   }, [screenWidth]);
 
   const renderItem = ({ item }) => {
-    return (
-      <>
-        <UserCard item={item} />
-      </>
-    );
+    return <UserCard item={item} />;
   };
 
   return (
