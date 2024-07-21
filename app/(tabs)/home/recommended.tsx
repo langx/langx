@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { listUsers } from "@/services/userService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import UserCard from "@/components/home/UserCard";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const breakpoints = {
   xs: 0,
@@ -76,7 +77,12 @@ export default function RecomendedScreen() {
   };
 
   const renderFooter = useCallback(() => {
-    if (!hasMore) return null;
+    if (!hasMore)
+      return (
+        <ThemedText style={{ justifyContent: "center", alignItems: "center" }}>
+          All items has been loaded
+        </ThemedText>
+      );
     if (loading) {
       return (
         <ThemedView style={styles.loadingContainer}>
@@ -92,11 +98,11 @@ export default function RecomendedScreen() {
         contentInsetAdjustmentBehavior="automatic"
         data={users}
         keyExtractor={(item) => item.$id.toString()}
-        renderItem={({ item }) => <UserCard item={item} />}
+        key={numColumns}
         numColumns={numColumns}
+        renderItem={({ item }) => <UserCard item={item} />}
         onEndReached={onEndReached}
         onEndReachedThreshold={0.5}
-        key={numColumns}
         ListFooterComponent={renderFooter}
       />
     </ThemedView>
