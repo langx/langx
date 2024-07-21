@@ -4,13 +4,14 @@ import React, {
   useImperativeHandle,
   useCallback,
 } from "react";
-import { Ionicons } from "@expo/vector-icons";
 import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
   Pressable,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
@@ -68,7 +69,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
           <ThemedText style={styles.cardTitle}>For You</ThemedText>
           <Pressable
             style={styles.infoButton}
-            onPress={() => console.log("Button pressed")}
+            onPress={() => router.push("(tabs)/home/recommended")}
           >
             <Ionicons
               name="ellipsis-horizontal-circle-outline"
