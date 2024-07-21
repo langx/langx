@@ -1,4 +1,5 @@
-import { Stack, Link } from "expo-router";
+import { Stack, router } from "expo-router";
+import { Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -6,8 +7,6 @@ import { Colors } from "@/constants/Colors";
 
 export default function HomeLayout() {
   const colorScheme = useColorScheme();
-
-  // useRealtimeUsers();
 
   return (
     <Stack>
@@ -22,14 +21,13 @@ export default function HomeLayout() {
             color: Colors.light.black,
           },
           headerRight: () => (
-            <Link href="home/filters">
+            <Pressable onPress={() => router.push("(pages)/filters")}>
               <Ionicons
                 name="filter-outline"
                 size={24}
                 color={Colors.light.black}
-                style={{ marginRight: 16 }}
               />
-            </Link>
+            </Pressable>
           ),
           headerSearchBarOptions: {
             placeholder: "Search",
@@ -44,9 +42,9 @@ export default function HomeLayout() {
         }}
       />
       <Stack.Screen
-        name="filters"
+        name="recommended"
         options={{
-          title: "Filters",
+          title: "For you",
           headerShown: true,
           headerBackVisible: true,
           headerLargeTitle: true,
@@ -78,7 +76,6 @@ export default function HomeLayout() {
           },
         }}
       />
-      <Stack.Screen name="recommended" />
     </Stack>
   );
 }

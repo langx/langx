@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 import { Colors } from "@/constants/Colors";
-
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type ThemedButtonProps = {

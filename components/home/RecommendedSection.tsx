@@ -1,11 +1,17 @@
-import React, { useEffect, forwardRef, useImperativeHandle } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import React, {
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+} from "react";
 import {
   FlatList,
   ActivityIndicator,
   StyleSheet,
   Pressable,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
@@ -31,7 +37,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
   } = useDatabase(listUsers, { userId: currentUserId });
 
   useEffect(() => {
-    console.log("users", users?.length);
+    console.log("recommended users:", users?.length);
   }, [users]);
 
   useImperativeHandle(ref, () => ({
@@ -44,14 +50,16 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     }
   };
 
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     if (!hasMore) return null;
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
-      </ThemedView>
-    );
-  };
+    if (loading) {
+      return (
+        <ThemedView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </ThemedView>
+      );
+    }
+  }, [hasMore, loading]);
 
   return (
     <ThemedView style={styles.card}>
@@ -61,7 +69,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
           <ThemedText style={styles.cardTitle}>For You</ThemedText>
           <Pressable
             style={styles.infoButton}
-            onPress={() => console.log("Button pressed")}
+            onPress={() => router.push("(tabs)/home/recommended")}
           >
             <Ionicons
               name="ellipsis-horizontal-circle-outline"

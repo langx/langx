@@ -29,6 +29,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.6",
     "expo-web-browser": "~13.0.3",
+    "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -47,7 +48,8 @@
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -7,8 +7,9 @@ import { RootState } from "@/store/store";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { useEffect, useState } from "react";
+import { Pressable } from "react-native";
 
-export default function RootLayout() {
+export default function ProfileLayout() {
   const colorScheme = useColorScheme();
 
   const [username, setUsername] = useState<string | null>(null);
@@ -41,53 +42,14 @@ export default function RootLayout() {
             color: Colors.light.black,
           },
           headerRight: () => (
-            <Link href="profile/settings">
+            <Pressable onPress={() => router.push("(pages)/settings")}>
               <Ionicons
                 name="cog-outline"
                 size={24}
                 color={Colors.light.black}
-                style={{ marginRight: 16 }}
               />
-            </Link>
+            </Pressable>
           ),
-        }}
-      />
-      <Stack.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          headerShown: true,
-          headerBackVisible: true,
-          headerLargeTitle: true,
-          headerShadowVisible: false,
-          headerBackTitleVisible: true,
-          headerBackButtonMenuEnabled: true,
-          headerBackTitle: "Back",
-          headerTintColor:
-            colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          headerStyle: {
-            backgroundColor:
-              colorScheme === "dark"
-                ? Colors.dark.background
-                : Colors.light.background,
-          },
-          headerLargeTitleStyle: {
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-            fontFamily: "Lexend-Bold",
-          },
-          headerBackTitleStyle: {
-            fontFamily: "Lexend-Bold",
-          },
-          headerTitleStyle: {
-            fontSize: 18,
-            fontFamily: "Lexend-Bold",
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
-          },
-          headerSearchBarOptions: {
-            placeholder: "Search",
-          },
         }}
       />
     </Stack>

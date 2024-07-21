@@ -1,4 +1,3 @@
-import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
 import { router } from "expo-router";
 import { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -9,6 +8,7 @@ import { getFlagEmoji, lastSeen } from "@/constants/utils";
 import { setRoom } from "@/store/roomSlice";
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
+import AppleStyleSwipeableRow from "@/components/rooms/AppleStyleSwipeableRow";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
@@ -114,7 +114,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
 
   const navigateToRoomById = () => {
     dispatch(setRoom(room));
-    router.navigate(`rooms/${room.$id}`);
+    router.push(`(pages)/room/${room.$id}`);
   };
 
   return (

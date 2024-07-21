@@ -1,10 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Dimensions, FlatList } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+} from "react-native";
 
+import { Colors } from "@/constants/Colors";
 import { useDatabase } from "@/hooks/useDatabase";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useAuth } from "@/hooks/useAuth";
 import { listUsers } from "@/services/userService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import UserCard from "@/components/home/UserCard";
 
 const breakpoints = {
@@ -27,7 +35,14 @@ const getNumColumns = (width) => {
 
 export default function RecomendedScreen() {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
-  const { data: users, loading, refetch } = useDatabase(listUsers);
+  const { currentUser } = useAuth();
+  const {
+    data: users,
+    loading,
+    loadMore,
+    refetch,
+    hasMore,
+  } = useDatabase(listUsers, { userId: currentUser.$id });
 
   const [screenWidth, setScreenWidth] = useState(
     Dimensions.get("window").width
@@ -51,13 +66,31 @@ export default function RecomendedScreen() {
     setNumColumns(getNumColumns(screenWidth));
   }, [screenWidth]);
 
-  const renderItem = ({ item }) => {
-    return (
-      <>
-        <UserCard item={item} loadingItem={loading} />
-      </>
-    );
+  useEffect(() => {
+    console.log("recommended page:", users?.length);
+  }, [users]);
+
+  const onEndReached = () => {
+    if (hasMore && !loading) {
+      loadMore();
+    }
   };
+
+  const renderFooter = useCallback(() => {
+    if (!hasMore)
+      return (
+        <ThemedText style={{ justifyContent: "center", alignItems: "center" }}>
+          All items has been loaded
+        </ThemedText>
+      );
+    if (loading) {
+      return (
+        <ThemedView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </ThemedView>
+      );
+    }
+  }, [hasMore, loading]);
 
   return (
     <ThemedView style={{ flex: 1 }}>
@@ -65,10 +98,21 @@ export default function RecomendedScreen() {
         contentInsetAdjustmentBehavior="automatic"
         data={users}
         keyExtractor={(item) => item.$id.toString()}
-        renderItem={renderItem}
         key={numColumns}
         numColumns={numColumns}
+        renderItem={({ item }) => <UserCard item={item} />}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
       />
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});

@@ -17,12 +17,14 @@ const AboutMeCard = ({ user, account }) => {
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.cardContent}>
-        <ThemedView style={styles.item}>
-          {/* <Ionicons name="information-circle-outline" style={styles.icon} /> */}
-          <ThemedText style={[styles.label, styles.aboutMeText]}>
-            {user.aboutMe}
-          </ThemedText>
-        </ThemedView>
+        {user.aboutMe ? (
+          <ThemedView style={styles.item}>
+            {/* <Ionicons name="information-circle-outline" style={styles.icon} /> */}
+            <ThemedText style={[styles.label, styles.aboutMeText]}>
+              {user.aboutMe}
+            </ThemedText>
+          </ThemedView>
+        ) : null}
         <ThemedView style={styles.item}>
           <Ionicons name="flag-outline" style={styles.icon} />
           <ThemedText style={styles.label}>
