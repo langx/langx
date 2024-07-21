@@ -47,6 +47,92 @@ export default function RoomLayout() {
     fetchData();
   }, [room]);
 
+  const headerLeft = () => (
+    <ThemedView
+      style={{
+        flexDirection: "row",
+        gap: 15,
+        alignItems: "center",
+      }}
+    >
+      <Pressable
+        onPress={() => {
+          router.back();
+        }}
+      >
+        <ThemedView
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Ionicons
+            name={
+              Platform.OS === "android"
+                ? "arrow-back-outline"
+                : "chevron-back-outline"
+            }
+            size={24}
+            color={
+              colorScheme === "dark" ? Colors.dark.black : Colors.light.black
+            }
+          />
+        </ThemedView>
+      </Pressable>
+      {userImageUrl ? (
+        <>
+          <Image
+            source={{ uri: userImageUrl }}
+            style={{ width: 35, height: 35, borderRadius: 35 }}
+          />
+          <ThemedView
+            style={{
+              flexDirection: "column",
+            }}
+          >
+            <ThemedText style={{ fontSize: 18 }}>
+              {getFlagEmoji(room?.userData?.countryCode)} {room?.userData?.name}
+            </ThemedText>
+            <ThemedText style={{ fontSize: 12, color: Colors.light.gray3 }}>
+              {onlineStatusInChatRoom(room?.userData?.lastSeen)}
+            </ThemedText>
+          </ThemedView>
+        </>
+      ) : (
+        <ActivityIndicator size="small" color={Colors.light.primary} />
+      )}
+    </ThemedView>
+  );
+
+  const headerTitle = () => (
+    <ThemedView style={{ display: "none" }}></ThemedView>
+  );
+
+  const headerRight = () => (
+    <ThemedView
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+      }}
+    >
+      <Image source={icons.robot} style={{ width: 35, height: 35 }} />
+      <Switch
+        trackColor={{
+          true: Colors.light.secondary,
+        }}
+        thumbColor={Colors.light.white}
+        ios_backgroundColor={Colors.light.gray3}
+        onValueChange={(newValue) => {
+          setIsCopilotEnabled(newValue);
+          if (newValue) Alert.alert("Copilot", "Copilot is under maintenance");
+        }}
+        value={isCopilotEnabled}
+      />
+    </ThemedView>
+  );
+
   return (
     <Stack>
       <Stack.Screen
@@ -68,95 +154,9 @@ export default function RoomLayout() {
             color:
               colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
           },
-          headerLeft: () => (
-            <ThemedView
-              style={{
-                flexDirection: "row",
-                gap: 15,
-                alignItems: "center",
-              }}
-            >
-              <Pressable
-                onPress={() => {
-                  router.back();
-                }}
-              >
-                <ThemedView
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Ionicons
-                    name={
-                      Platform.OS === "android"
-                        ? "arrow-back-outline"
-                        : "chevron-back-outline"
-                    }
-                    size={24}
-                    color={
-                      colorScheme === "dark"
-                        ? Colors.dark.black
-                        : Colors.light.black
-                    }
-                  />
-                </ThemedView>
-              </Pressable>
-              {userImageUrl ? (
-                <>
-                  <Image
-                    source={{ uri: userImageUrl }}
-                    style={{ width: 35, height: 35, borderRadius: 35 }}
-                  />
-                  <ThemedView
-                    style={{
-                      flexDirection: "column",
-                    }}
-                  >
-                    <ThemedText style={{ fontSize: 18 }}>
-                      {getFlagEmoji(room?.userData?.countryCode)}{" "}
-                      {room?.userData?.name}
-                    </ThemedText>
-                    <ThemedText
-                      style={{ fontSize: 12, color: Colors.light.gray3 }}
-                    >
-                      {onlineStatusInChatRoom(room?.userData?.lastSeen)}
-                    </ThemedText>
-                  </ThemedView>
-                </>
-              ) : (
-                <ActivityIndicator size="small" color={Colors.light.primary} />
-              )}
-            </ThemedView>
-          ),
-          headerTitle: () => (
-            <ThemedView style={{ display: "none" }}></ThemedView>
-          ),
-          headerRight: () => (
-            <ThemedView
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <Image source={icons.robot} style={{ width: 35, height: 35 }} />
-              <Switch
-                trackColor={{
-                  true: Colors.light.secondary,
-                }}
-                thumbColor={Colors.light.white}
-                ios_backgroundColor={Colors.light.gray3}
-                onValueChange={(newValue) => {
-                  setIsCopilotEnabled(newValue);
-                  if (newValue)
-                    Alert.alert("Copilot", "Copilot is under maintenance");
-                }}
-                value={isCopilotEnabled}
-              />
-            </ThemedView>
-          ),
+          headerLeft: headerLeft,
+          headerTitle: headerTitle,
+          headerRight: headerRight,
         }}
       />
     </Stack>
