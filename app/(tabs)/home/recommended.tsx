@@ -12,8 +12,8 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuth } from "@/hooks/useAuth";
 import { listUsers } from "@/services/userService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-import UserCard from "@/components/home/UserCard";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import UserCard from "@/components/home/UserCard";
 
 const breakpoints = {
   xs: 0,
