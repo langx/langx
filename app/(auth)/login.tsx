@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, ScrollView, Alert } from "react-native";
+import { Image, StyleSheet, ScrollView, Alert, TextInput } from "react-native";
 import { Link } from "expo-router";
 import { useDispatch } from "react-redux";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 import {
   getAccount,
@@ -13,29 +15,21 @@ import { setAccount, setError, setSession, setUser } from "@/store/authSlice";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
-import ThemedFormField from "@/components/themed/molecular/ThemedFormField";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 
-const Login = () => {
-  const colorScheme = useColorScheme();
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string().min(6, "Password too short!").required("Required"),
+});
+
+const LoginForm = () => {
   const dispatch = useDispatch();
-
   const [isSubmitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
 
-  const submit = async () => {
-    if (form.email === "" || form.password === "") {
-      Alert.alert("Error", "Please fill in all fields");
-      return;
-    }
-
+  const handleLogin = async (form: any) => {
     setSubmitting(true);
-
     try {
       await login(form.email, form.password);
       const [account, user, session] = await Promise.all([
@@ -55,6 +49,57 @@ const Login = () => {
       setSubmitting(false);
     }
   };
+  return (
+    <Formik
+      initialValues={{ email: "", password: "" }}
+      validationSchema={LoginSchema}
+      onSubmit={(values) => handleLogin(values)}
+    >
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+      }) => (
+        <ThemedView style={{ flex: 1 }}>
+          <ThemedText style={styles.text}>Email</ThemedText>
+          <TextInput
+            style={styles.text}
+            onChangeText={handleChange("email")}
+            onBlur={handleBlur("email")}
+            value={values.email}
+            placeholder="Email"
+          />
+          {errors.email && touched.email ? (
+            <ThemedText>{errors.email}</ThemedText>
+          ) : null}
+          <ThemedText style={styles.text}>Password</ThemedText>
+          <TextInput
+            style={styles.text}
+            onChangeText={handleChange("password")}
+            onBlur={handleBlur("password")}
+            value={values.password}
+            placeholder="Password"
+            secureTextEntry
+          />
+          {errors.password && touched.password ? (
+            <ThemedText>{errors.password}</ThemedText>
+          ) : null}
+          <ThemedButton
+            onPress={handleSubmit}
+            isLoading={isSubmitting}
+            title="Login"
+          />
+        </ThemedView>
+      )}
+    </Formik>
+  );
+};
+
+const Login = () => {
+  const colorScheme = useColorScheme();
 
   return (
     <ThemedView style={styles.container}>
@@ -66,30 +111,7 @@ const Login = () => {
         />
 
         <ThemedText style={styles.headline}>Log In</ThemedText>
-        <ThemedFormField
-          title="Email"
-          value={form.email}
-          placeholder="Enter your email"
-          handleChangeText={(e) => setForm({ ...form, email: e })}
-          keyboardType="email-address"
-          style={{ marginBottom: 20 }}
-        />
-
-        <ThemedFormField
-          title="Password"
-          value={form.password}
-          placeholder="Enter your password"
-          handleChangeText={(e) => setForm({ ...form, password: e })}
-          secureTextEntry
-        />
-
-        <ThemedView style={{ gap: 10 }}>
-          <ThemedButton
-            title="Log In"
-            onPress={submit}
-            isLoading={isSubmitting}
-          />
-        </ThemedView>
+        <LoginForm />
 
         <ThemedView
           style={{
@@ -136,6 +158,10 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: "Comfortaa-Bold",
     paddingVertical: 20,
+  },
+  text: {
+    fontSize: 16,
+    paddingVertical: 6,
   },
   welcomeImage: {
     width: "100%",
