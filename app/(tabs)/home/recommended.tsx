@@ -3,6 +3,7 @@ import { Dimensions, FlatList } from "react-native";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useAuth } from "@/hooks/useAuth";
 import { listUsers } from "@/services/userService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import UserCard from "@/components/home/UserCard";
@@ -27,7 +28,14 @@ const getNumColumns = (width) => {
 
 export default function RecomendedScreen() {
   const theme = useColorScheme() === "dark" ? "dark" : "light";
-  const { data: users, loading, refetch } = useDatabase(listUsers);
+  const { currentUser } = useAuth();
+  const {
+    data: users,
+    loading,
+    loadMore,
+    refetch,
+    hasMore,
+  } = useDatabase(listUsers, { userId: currentUser.$id });
 
   const [screenWidth, setScreenWidth] = useState(
     Dimensions.get("window").width
@@ -54,7 +62,7 @@ export default function RecomendedScreen() {
   const renderItem = ({ item }) => {
     return (
       <>
-        <UserCard item={item} loadingItem={loading} />
+        <UserCard item={item} />
       </>
     );
   };
