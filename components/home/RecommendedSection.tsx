@@ -1,4 +1,9 @@
-import React, { useEffect, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+} from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   FlatList,
@@ -31,7 +36,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
   } = useDatabase(listUsers, { userId: currentUserId });
 
   useEffect(() => {
-    console.log("users", users?.length);
+    console.log("recommended users:", users?.length);
   }, [users]);
 
   useImperativeHandle(ref, () => ({
@@ -44,14 +49,16 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     }
   };
 
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     if (!hasMore) return null;
-    return (
-      <ThemedView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
-      </ThemedView>
-    );
-  };
+    if (loading) {
+      return (
+        <ThemedView style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </ThemedView>
+      );
+    }
+  }, [hasMore, loading]);
 
   return (
     <ThemedView style={styles.card}>
