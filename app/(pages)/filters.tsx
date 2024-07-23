@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
 import GenderFilterSection from "@/components/home/filters/GenderFilterSection";
+import AgeFilterSection from "@/components/home/filters/AgeFilterSection";
 
 const Filters = () => {
   const { currentUser } = useAuth();
@@ -13,6 +14,7 @@ const Filters = () => {
   const [studyLanguages, setStudyLanguages] = useState([]);
   const [motherLanguages, setMotherLanguages] = useState([]);
   const [gender, setGender] = useState();
+  const [ageRange, setAgeRange] = useState([0, 100]);
 
   const components = [
     {
@@ -31,11 +33,17 @@ const Filters = () => {
       component: <GenderFilterSection gender={gender} setGender={setGender} />,
       key: "GenderFilterSection",
     },
+    {
+      component: (
+        <AgeFilterSection ageRange={ageRange} setAgeRange={setAgeRange} />
+      ),
+      key: "AgeFilterSection",
+    },
   ];
 
   useEffect(() => {
-    console.log("items", gender);
-  }, [gender]);
+    console.log("items", ageRange);
+  }, [ageRange]);
 
   const renderItem = useCallback(
     ({ item }) => (
