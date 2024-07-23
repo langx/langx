@@ -7,10 +7,13 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const LanguageFilterSection = ({ languages }) => {
-  const [studyLanguages, setStudyLanguages] = useState([]);
-  const [motherLanguages, setMotherLanguages] = useState([]);
-
+const LanguageFilterSection = ({
+  languages,
+  studyLanguages,
+  setStudyLanguages,
+  motherLanguages,
+  setMotherLanguages,
+}) => {
   const handleStudyLanguages = (item) => {
     setStudyLanguages((prevItems) => {
       const isChecked = prevItems.some((i) => i.$id === item.$id);
@@ -32,10 +35,6 @@ const LanguageFilterSection = ({ languages }) => {
       }
     });
   };
-
-  // useEffect(() => {
-  //   console.log("items", items);
-  // }, [items]);
 
   const renderStudyLanguageItem = ({ item }) => (
     <Pressable onPress={() => handleStudyLanguages(item)}>

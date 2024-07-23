@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -9,12 +9,27 @@ const Filters = () => {
   const { currentUser } = useAuth();
   const languages = currentUser?.languages;
 
+  const [studyLanguages, setStudyLanguages] = useState([]);
+  const [motherLanguages, setMotherLanguages] = useState([]);
+
   const components = [
     {
-      component: <LanguageFilterSection languages={languages} />,
+      component: (
+        <LanguageFilterSection
+          languages={languages}
+          studyLanguages={studyLanguages}
+          setStudyLanguages={setStudyLanguages}
+          motherLanguages={motherLanguages}
+          setMotherLanguages={setMotherLanguages}
+        />
+      ),
       key: "LanguagesFilterSection",
     },
   ];
+
+  // useEffect(() => {
+  //   console.log("items", studyLanguages);
+  // }, [studyLanguages]);
 
   const renderItem = useCallback(
     ({ item }) => (
