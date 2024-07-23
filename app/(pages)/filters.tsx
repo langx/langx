@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 
 import { useAuth } from "@/hooks/useAuth";
-import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
+import GenderFilterSection from "@/components/home/filters/GenderFilterSection";
 
 const Filters = () => {
   const { currentUser } = useAuth();
@@ -11,6 +12,7 @@ const Filters = () => {
 
   const [studyLanguages, setStudyLanguages] = useState([]);
   const [motherLanguages, setMotherLanguages] = useState([]);
+  const [gender, setGender] = useState([]);
 
   const components = [
     {
@@ -25,11 +27,21 @@ const Filters = () => {
       ),
       key: "LanguagesFilterSection",
     },
+    {
+      component: (
+        <GenderFilterSection
+          languages={languages}
+          gender={gender}
+          setGender={setGender}
+        />
+      ),
+      key: "GenderFilterSection",
+    },
   ];
 
   // useEffect(() => {
-  //   console.log("items", studyLanguages);
-  // }, [studyLanguages]);
+  //   console.log("items", gender);
+  // }, [gender]);
 
   const renderItem = useCallback(
     ({ item }) => (
