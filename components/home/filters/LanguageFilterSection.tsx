@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { CheckBox } from "react-native-elements";
 
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const LanguageFilterSection = ({ languages }) => {
+  const [items, setItems] = useState([]);
+
+  const handleCheck = (item) => {
+    setItems((prevItems) => {
+      const isChecked = prevItems.some((i) => i.$id === item.$id);
+      if (isChecked) {
+        return prevItems.filter((i) => i.$id !== item.$id);
+      } else {
+        return [...prevItems, item];
+      }
+    });
+  };
+
+  // useEffect(() => {
+  //   console.log("items", items);
+  // }, [items]);
+
   const renderLanguageItem = ({ item }) => (
     <ThemedView style={styles.item}>
       <Ionicons
@@ -24,6 +42,12 @@ const LanguageFilterSection = ({ languages }) => {
       <ThemedView style={styles.labelContainer}>
         <ThemedText style={styles.label}>{item.name}</ThemedText>
         <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
+      </ThemedView>
+      <ThemedView>
+        <CheckBox
+          checked={items.some((i) => i.$id === item.$id)}
+          onPress={() => handleCheck(item)}
+        />
       </ThemedView>
     </ThemedView>
   );
