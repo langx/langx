@@ -22,9 +22,9 @@ const Filters = () => {
   const initialState = {
     studyLanguages: [],
     motherLanguages: [],
-    gender: undefined,
-    isMatchMyGender: false,
-    country: undefined,
+    gender: null,
+    isMatchMyGender: null,
+    country: null,
     ageRange: [13, 100],
   };
 
@@ -124,8 +124,21 @@ const Filters = () => {
   }, []);
 
   useEffect(() => {
+    const isInitialState =
+      studyLanguages.length === 0 &&
+      motherLanguages.length === 0 &&
+      gender === null &&
+      (isMatchMyGender === null || isMatchMyGender === false) &&
+      country === null &&
+      ageRange[0] === 13 &&
+      ageRange[1] === 100;
+
     const saveFilters = async () => {
       try {
+        if (isInitialState) {
+          await AsyncStorage.removeItem("filters");
+          return;
+        }
         const filters = {
           studyLanguages,
           motherLanguages,
