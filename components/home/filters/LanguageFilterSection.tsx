@@ -91,6 +91,7 @@ const LanguageFilterSection = ({
           <CheckBox
             checked={motherLanguages.some((i) => i.$id === item.$id)}
             onPress={() => handleMotherLanguages(item)}
+            size={30}
             checkedColor={Colors.light.primary}
             uncheckedColor={Colors.light.gray4}
           />
@@ -104,7 +105,9 @@ const LanguageFilterSection = ({
       <ThemedView style={styles.card}>
         <ThemedView style={styles.cardHeader}>
           <ThemedText style={styles.cardTitle}>Study Language</ThemedText>
-          <ThemedText style={styles.cardSubtitle}>Practice & Learn</ThemedText>
+          <ThemedText style={styles.cardSubtitle}>
+            Filter by Study Languages
+          </ThemedText>
         </ThemedView>
         <ThemedView style={styles.cardContent}>
           <FlatList
@@ -114,8 +117,10 @@ const LanguageFilterSection = ({
           />
         </ThemedView>
         <ThemedView style={styles.cardHeader}>
-          <ThemedText style={styles.cardTitle}>Mother Tongue</ThemedText>
-          <ThemedText style={styles.cardSubtitle}>Speaking Fluently</ThemedText>
+          <ThemedText style={styles.cardTitle}>Mother Language</ThemedText>
+          <ThemedText style={styles.cardSubtitle}>
+            Filter by Native Languages
+          </ThemedText>
         </ThemedView>
         <ThemedView style={styles.cardContent}>
           <FlatList
