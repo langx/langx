@@ -18,6 +18,7 @@
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.14.1",
+    "@react-native-community/slider": "^4.5.2",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.6",
     "axios": "^1.7.2",
