@@ -1,5 +1,5 @@
-import React from "react";
-import { FlatList, Pressable, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { FlatList, Pressable, StyleSheet, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
 
@@ -9,32 +9,63 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const GenderFilterSection = ({ gender, setGender }) => {
   const genders = ["Male", "Female", "Prefer not to say"];
+  const [isMatchMyGender, setIsMatchMyGender] = useState(false);
+
+  const handleIsMatchMyGender = (value) => {
+    setIsMatchMyGender(value);
+    if (value) {
+      setGender(null);
+    }
+  };
 
   const renderGenderItem = ({ item }) => (
-    <Pressable onPress={() => setGender(item)}>
+    <Pressable onPress={() => setGender(item)} disabled={isMatchMyGender}>
+      <ThemedView style={{ opacity: isMatchMyGender ? 0.5 : 1 }}>
+        <ThemedView style={styles.item}>
+          <Ionicons
+            name={
+              item === "Male"
+                ? "man-outline"
+                : item === "Female"
+                ? "woman-outline"
+                : "male-female-outline"
+            }
+            style={styles.icon}
+          />
+          <ThemedView style={styles.labelContainer}>
+            <ThemedText style={styles.label}>{item}</ThemedText>
+          </ThemedView>
+          <ThemedView>
+            <CheckBox
+              checked={gender === item}
+              onPress={() => setGender(item)}
+              size={30}
+              checkedColor={Colors.light.primary}
+              uncheckedColor={Colors.light.gray4}
+              checkedIcon="dot-circle-o"
+              uncheckedIcon="circle-o"
+              disabled={isMatchMyGender}
+            />
+          </ThemedView>
+        </ThemedView>
+      </ThemedView>
+    </Pressable>
+  );
+
+  const renderHeader = () => (
+    <Pressable onPress={() => handleIsMatchMyGender(!isMatchMyGender)}>
       <ThemedView style={styles.item}>
-        <Ionicons
-          name={
-            item === "Male"
-              ? "man-outline"
-              : item === "Female"
-              ? "woman-outline"
-              : "male-female-outline"
-          }
-          style={styles.icon}
-        />
+        <Ionicons name={"toggle-outline"} style={styles.icon} />
         <ThemedView style={styles.labelContainer}>
-          <ThemedText style={styles.label}>{item}</ThemedText>
+          <ThemedText style={styles.label}>Match My Gender</ThemedText>
         </ThemedView>
         <ThemedView>
           <CheckBox
-            checked={gender === item}
-            onPress={() => setGender(item)}
+            checked={isMatchMyGender}
+            onPress={() => handleIsMatchMyGender(!isMatchMyGender)}
             size={30}
             checkedColor={Colors.light.primary}
             uncheckedColor={Colors.light.gray4}
-            checkedIcon="dot-circle-o"
-            uncheckedIcon="circle-o"
           />
         </ThemedView>
       </ThemedView>
@@ -51,7 +82,11 @@ const GenderFilterSection = ({ gender, setGender }) => {
           </ThemedText>
         </ThemedView>
         <ThemedView style={styles.cardContent}>
-          <FlatList data={genders} renderItem={renderGenderItem} />
+          <FlatList
+            data={genders}
+            renderItem={renderGenderItem}
+            ListHeaderComponent={renderHeader}
+          />
         </ThemedView>
       </ThemedView>
     </ThemedView>
