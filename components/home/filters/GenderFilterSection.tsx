@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
 
@@ -11,32 +11,34 @@ const GenderFilterSection = ({ languages, gender, setGender }) => {
   const genders = ["Male", "Female", "Prefer not to say"];
 
   const renderGenderItem = ({ item }) => (
-    <ThemedView style={styles.item}>
-      <Ionicons
-        name={
-          item === "Male"
-            ? "man-outline"
-            : item === "Female"
-            ? "woman-outline"
-            : "male-female-outline"
-        }
-        style={styles.icon}
-      />
-      <ThemedView style={styles.labelContainer}>
-        <ThemedText style={styles.label}>{item}</ThemedText>
-      </ThemedView>
-      <ThemedView>
-        <CheckBox
-          checked={gender === item}
-          onPress={() => setGender(item)}
-          size={30}
-          checkedColor={Colors.light.primary}
-          uncheckedColor={Colors.light.gray4}
-          checkedIcon="dot-circle-o"
-          uncheckedIcon="circle-o"
+    <Pressable onPress={() => setGender(item)}>
+      <ThemedView style={styles.item}>
+        <Ionicons
+          name={
+            item === "Male"
+              ? "man-outline"
+              : item === "Female"
+              ? "woman-outline"
+              : "male-female-outline"
+          }
+          style={styles.icon}
         />
+        <ThemedView style={styles.labelContainer}>
+          <ThemedText style={styles.label}>{item}</ThemedText>
+        </ThemedView>
+        <ThemedView>
+          <CheckBox
+            checked={gender === item}
+            onPress={() => setGender(item)}
+            size={30}
+            checkedColor={Colors.light.primary}
+            uncheckedColor={Colors.light.gray4}
+            checkedIcon="dot-circle-o"
+            uncheckedIcon="circle-o"
+          />
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </Pressable>
   );
 
   return (

@@ -12,7 +12,7 @@ const Filters = () => {
 
   const [studyLanguages, setStudyLanguages] = useState([]);
   const [motherLanguages, setMotherLanguages] = useState([]);
-  const [gender, setGender] = useState([]);
+  const [gender, setGender] = useState();
 
   const components = [
     {
@@ -39,9 +39,9 @@ const Filters = () => {
     },
   ];
 
-  // useEffect(() => {
-  //   console.log("items", gender);
-  // }, [gender]);
+  useEffect(() => {
+    console.log("items", gender);
+  }, [gender]);
 
   const renderItem = useCallback(
     ({ item }) => (
