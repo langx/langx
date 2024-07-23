@@ -25,7 +25,7 @@ const Filters = () => {
     gender: undefined,
     isMatchMyGender: false,
     country: undefined,
-    ageRange: [0, 100],
+    ageRange: [13, 100],
   };
 
   const [studyLanguages, setStudyLanguages] = useState(
@@ -113,7 +113,7 @@ const Filters = () => {
           setGender(gender);
           setIsMatchMyGender(isMatchMyGender || false);
           setCountry(country);
-          setAgeRange(ageRange || [0, 100]);
+          setAgeRange(ageRange || [13, 100]);
         }
       } catch (error) {
         console.error("Failed to load filters", error);

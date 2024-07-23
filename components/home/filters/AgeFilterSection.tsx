@@ -31,12 +31,12 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
     setAgeRange([minAge, maxAge]);
   }, [minAge, maxAge]);
 
-  const handleMinAge = (value: boolean) => {
+  const handleMinAge = (value) => {
     setMinAge(value);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const handleMaxAge = (value: boolean) => {
+  const handleMaxAge = (value) => {
     setMaxAge(value);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
@@ -61,7 +61,7 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
           <Slider
             value={minAge}
             onValueChange={handleMinAge}
-            minimumValue={0}
+            minimumValue={13}
             maximumValue={maxAge - 1}
             step={1}
             minimumTrackTintColor={Colors.light.gray3}
