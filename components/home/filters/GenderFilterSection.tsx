@@ -7,7 +7,7 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const GenderFilterSection = ({ languages, gender, setGender }) => {
+const GenderFilterSection = ({ gender, setGender }) => {
   const genders = ["Male", "Female", "Prefer not to say"];
 
   const renderGenderItem = ({ item }) => (

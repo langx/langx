@@ -28,13 +28,7 @@ const Filters = () => {
       key: "LanguagesFilterSection",
     },
     {
-      component: (
-        <GenderFilterSection
-          languages={languages}
-          gender={gender}
-          setGender={setGender}
-        />
-      ),
+      component: <GenderFilterSection gender={gender} setGender={setGender} />,
       key: "GenderFilterSection",
     },
   ];
