@@ -22,7 +22,6 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
     const timeoutId = setTimeout(() => {
       setMinAge(ageRange[0]);
       setMaxAge(ageRange[1]);
-      console.log("ageRange", ageRange);
     }, 300);
     setDebounceTimeout(timeoutId);
     return () => clearTimeout(timeoutId);
