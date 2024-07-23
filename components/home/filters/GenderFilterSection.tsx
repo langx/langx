@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, Pressable, StyleSheet, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
@@ -7,9 +7,13 @@ import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
-const GenderFilterSection = ({ gender, setGender }) => {
+const GenderFilterSection = ({
+  gender,
+  setGender,
+  isMatchMyGender,
+  setIsMatchMyGender,
+}) => {
   const genders = ["Male", "Female", "Prefer not to say"];
-  const [isMatchMyGender, setIsMatchMyGender] = useState(false);
 
   const handleIsMatchMyGender = (value) => {
     setIsMatchMyGender(value);

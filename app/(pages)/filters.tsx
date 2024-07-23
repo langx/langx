@@ -14,6 +14,7 @@ const Filters = () => {
   const [studyLanguages, setStudyLanguages] = useState([]);
   const [motherLanguages, setMotherLanguages] = useState([]);
   const [gender, setGender] = useState();
+  const [isMatchMyGender, setIsMatchMyGender] = useState(false);
   const [ageRange, setAgeRange] = useState([0, 100]);
 
   const components = [
@@ -30,7 +31,14 @@ const Filters = () => {
       key: "LanguagesFilterSection",
     },
     {
-      component: <GenderFilterSection gender={gender} setGender={setGender} />,
+      component: (
+        <GenderFilterSection
+          gender={gender}
+          setGender={setGender}
+          isMatchMyGender={isMatchMyGender}
+          setIsMatchMyGender={setIsMatchMyGender}
+        />
+      ),
       key: "GenderFilterSection",
     },
     {
