@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
-import { Slider } from "react-native-elements";
+import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/Colors";
@@ -12,10 +12,19 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
   const [maxAge, setMaxAge] = useState(ageRange[1]);
   const ageItems = ["Min Age", "Max Age"];
 
+  const [debounceTimeout, setDebounceTimeout] = useState(null);
+
   useEffect(() => {
-    setMinAge(ageRange[0]);
-    setMaxAge(ageRange[1]);
-    console.log("ageRange", ageRange);
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+    const timeoutId = setTimeout(() => {
+      setMinAge(ageRange[0]);
+      setMaxAge(ageRange[1]);
+      console.log("ageRange", ageRange);
+    }, 300);
+    setDebounceTimeout(timeoutId);
+    return () => clearTimeout(timeoutId);
   }, [ageRange]);
 
   useEffect(() => {
@@ -38,23 +47,40 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
         </ThemedView>
       </ThemedView>
       <ThemedView style={styles.sliderContainer}>
-        <Slider
-          value={item === "Min Age" ? minAge : maxAge}
-          onValueChange={(value) =>
-            item === "Min Age" ? setMinAge(value) : setMaxAge(value)
-          }
-          maximumValue={100}
-          minimumValue={0}
-          step={1}
-          allowTouchTrack
-          trackStyle={{ height: 5, backgroundColor: "transparent" }}
-          thumbStyle={{ height: 30, width: 30, backgroundColor: "transparent" }}
-          thumbProps={{
-            children: (
-              <Ionicons name="ellipse" size={30} color={Colors.light.primary} />
-            ),
-          }}
-        />
+        {item === "Min Age" && (
+          <Slider
+            value={minAge}
+            onValueChange={setMinAge}
+            minimumValue={0}
+            maximumValue={maxAge - 1}
+            step={1}
+            minimumTrackTintColor={Colors.light.gray3}
+            maximumTrackTintColor={Colors.light.primary}
+            // onHapticFeedback={() => {
+            //   ReactNativeHapticFeedback.trigger('impactLight', {
+            //     enableVibrateFallback: true,
+            //     ignoreAndroidSystemSettings: false,
+            //   });
+            // }}
+          />
+        )}
+        {item === "Max Age" && (
+          <Slider
+            value={maxAge}
+            onValueChange={setMaxAge}
+            minimumValue={minAge + 1}
+            maximumValue={100}
+            step={1}
+            minimumTrackTintColor={Colors.light.primary}
+            maximumTrackTintColor={Colors.light.gray3}
+            // onHapticFeedback={() => {
+            //   ReactNativeHapticFeedback.trigger('impactLight', {
+            //     enableVibrateFallback: true,
+            //     ignoreAndroidSystemSettings: false,
+            //   });
+            // }}
+          />
+        )}
       </ThemedView>
     </ThemedView>
   );
