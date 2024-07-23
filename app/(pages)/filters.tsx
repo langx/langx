@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useAuth } from "@/hooks/useAuth";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -20,6 +21,12 @@ const Filters = () => {
   const [ageRange, setAgeRange] = useState([0, 100]);
 
   const components = [
+    {
+      component: (
+        <CountryFilterSection country={country} setCountry={setCountry} />
+      ),
+      key: "CountryFilterSection",
+    },
     {
       component: (
         <LanguageFilterSection
@@ -45,12 +52,6 @@ const Filters = () => {
     },
     {
       component: (
-        <CountryFilterSection country={country} setCountry={setCountry} />
-      ),
-      key: "CountryFilterSection",
-    },
-    {
-      component: (
         <AgeFilterSection ageRange={ageRange} setAgeRange={setAgeRange} />
       ),
       key: "AgeFilterSection",
@@ -58,8 +59,62 @@ const Filters = () => {
   ];
 
   useEffect(() => {
-    console.log("items", ageRange);
-  }, [ageRange]);
+    // Load saved filters from AsyncStorage
+    const loadFilters = async () => {
+      try {
+        const savedFilters = await AsyncStorage.getItem("filters");
+        if (savedFilters) {
+          const {
+            studyLanguages,
+            motherLanguages,
+            gender,
+            isMatchMyGender,
+            country,
+            ageRange,
+          } = JSON.parse(savedFilters);
+
+          setStudyLanguages(studyLanguages || []);
+          setMotherLanguages(motherLanguages || []);
+          setGender(gender);
+          setIsMatchMyGender(isMatchMyGender || false);
+          setCountry(country);
+          setAgeRange(ageRange || [0, 100]);
+        }
+      } catch (error) {
+        console.error("Failed to load filters", error);
+      }
+    };
+
+    loadFilters();
+  }, []);
+
+  useEffect(() => {
+    // Save filters to AsyncStorage
+    const saveFilters = async () => {
+      try {
+        const filters = {
+          studyLanguages,
+          motherLanguages,
+          gender,
+          isMatchMyGender,
+          country,
+          ageRange,
+        };
+        await AsyncStorage.setItem("filters", JSON.stringify(filters));
+      } catch (error) {
+        console.error("Failed to save filters", error);
+      }
+    };
+
+    saveFilters();
+  }, [
+    studyLanguages,
+    motherLanguages,
+    gender,
+    isMatchMyGender,
+    country,
+    ageRange,
+  ]);
 
   const renderItem = useCallback(
     ({ item }) => (
