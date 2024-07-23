@@ -24,7 +24,7 @@ const LanguageFilterSection = ({
         return [...prevItems, item];
       }
     });
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const handleMotherLanguages = (item) => {
@@ -36,7 +36,7 @@ const LanguageFilterSection = ({
         return [...prevItems, item];
       }
     });
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const renderStudyLanguageItem = ({ item }) => (
