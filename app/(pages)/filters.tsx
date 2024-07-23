@@ -1,13 +1,17 @@
 import React, { useCallback } from "react";
 import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 
+import { useAuth } from "@/hooks/useAuth";
 import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 const Filters = () => {
+  const { currentUser } = useAuth();
+  const languages = currentUser?.languages;
+
   const components = [
     {
-      component: <LanguageFilterSection />,
+      component: <LanguageFilterSection languages={languages} />,
       key: "LanguagesFilterSection",
     },
   ];

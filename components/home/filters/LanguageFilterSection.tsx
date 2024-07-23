@@ -3,15 +3,10 @@ import { FlatList, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/Colors";
-import { useAuth } from "@/hooks/useAuth";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
-import { Language } from "@/models/Language";
 
-const LanguageFilterSection = () => {
-  const { currentUser } = useAuth();
-  const languages = currentUser?.languages;
-
+const LanguageFilterSection = ({ languages }) => {
   const renderLanguageItem = ({ item }) => (
     <ThemedView style={styles.item}>
       <Ionicons
