@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
 import GenderFilterSection from "@/components/home/filters/GenderFilterSection";
+import CountryFilterSection from "@/components/home/filters/CountryFilterSection";
 import AgeFilterSection from "@/components/home/filters/AgeFilterSection";
 
 const Filters = () => {
@@ -15,6 +16,7 @@ const Filters = () => {
   const [motherLanguages, setMotherLanguages] = useState([]);
   const [gender, setGender] = useState();
   const [isMatchMyGender, setIsMatchMyGender] = useState(false);
+  const [country, setCountry] = useState();
   const [ageRange, setAgeRange] = useState([0, 100]);
 
   const components = [
@@ -40,6 +42,12 @@ const Filters = () => {
         />
       ),
       key: "GenderFilterSection",
+    },
+    {
+      component: (
+        <CountryFilterSection country={country} setCountry={setCountry} />
+      ),
+      key: "CountryFilterSection",
     },
     {
       component: (
