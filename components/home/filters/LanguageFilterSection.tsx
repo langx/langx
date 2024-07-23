@@ -39,18 +39,7 @@ const LanguageFilterSection = ({
   const renderStudyLanguageItem = ({ item }) => (
     <Pressable onPress={() => handleStudyLanguages(item)}>
       <ThemedView style={styles.item}>
-        <Ionicons
-          name={
-            item.level === 0
-              ? "battery-dead-outline"
-              : item.level === 1
-              ? "battery-half-outline"
-              : item.level === 2
-              ? "battery-full-outline"
-              : "rocket-outline"
-          }
-          style={styles.icon}
-        />
+        <Ionicons name={"language-outline"} style={styles.icon} />
         <ThemedView style={styles.labelContainer}>
           <ThemedText style={styles.label}>{item.name}</ThemedText>
           <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
@@ -71,18 +60,7 @@ const LanguageFilterSection = ({
   const renderMotherLanguageItem = ({ item }) => (
     <Pressable onPress={() => handleMotherLanguages(item)}>
       <ThemedView style={styles.item}>
-        <Ionicons
-          name={
-            item.level === 0
-              ? "battery-dead-outline"
-              : item.level === 1
-              ? "battery-half-outline"
-              : item.level === 2
-              ? "battery-full-outline"
-              : "rocket-outline"
-          }
-          style={styles.icon}
-        />
+        <Ionicons name={"language-outline"} style={styles.icon} />
         <ThemedView style={styles.labelContainer}>
           <ThemedText style={styles.label}>{item.name}</ThemedText>
           <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
