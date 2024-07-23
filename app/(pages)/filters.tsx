@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Pressable } from "react-native";
 import { Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -87,6 +88,7 @@ const Filters = () => {
     setAgeRange(initialState.ageRange);
     try {
       await AsyncStorage.removeItem("filters");
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     } catch (error) {
       console.error("Failed to reset filters", error);
     }

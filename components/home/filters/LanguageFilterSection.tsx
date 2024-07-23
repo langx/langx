@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
+import * as Haptics from "expo-haptics";
 
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -23,6 +24,7 @@ const LanguageFilterSection = ({
         return [...prevItems, item];
       }
     });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
   };
 
   const handleMotherLanguages = (item) => {
@@ -34,6 +36,7 @@ const LanguageFilterSection = ({
         return [...prevItems, item];
       }
     });
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
   };
 
   const renderStudyLanguageItem = ({ item }) => (

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
+import * as Haptics from "expo-haptics";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -31,6 +32,16 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
     setAgeRange([minAge, maxAge]);
   }, [minAge, maxAge]);
 
+  const handleMinAge = (value: boolean) => {
+    setMinAge(value);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const handleMaxAge = (value: boolean) => {
+    setMaxAge(value);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
   const renderAgeItem = ({ item }) => (
     <ThemedView>
       <ThemedView style={styles.item}>
@@ -50,35 +61,23 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
         {item === "Min Age" && (
           <Slider
             value={minAge}
-            onValueChange={setMinAge}
+            onValueChange={handleMinAge}
             minimumValue={0}
             maximumValue={maxAge - 1}
             step={1}
             minimumTrackTintColor={Colors.light.gray3}
             maximumTrackTintColor={Colors.light.primary}
-            // onHapticFeedback={() => {
-            //   ReactNativeHapticFeedback.trigger('impactLight', {
-            //     enableVibrateFallback: true,
-            //     ignoreAndroidSystemSettings: false,
-            //   });
-            // }}
           />
         )}
         {item === "Max Age" && (
           <Slider
             value={maxAge}
-            onValueChange={setMaxAge}
+            onValueChange={handleMaxAge}
             minimumValue={minAge + 1}
             maximumValue={100}
             step={1}
             minimumTrackTintColor={Colors.light.primary}
             maximumTrackTintColor={Colors.light.gray3}
-            // onHapticFeedback={() => {
-            //   ReactNativeHapticFeedback.trigger('impactLight', {
-            //     enableVibrateFallback: true,
-            //     ignoreAndroidSystemSettings: false,
-            //   });
-            // }}
           />
         )}
       </ThemedView>

@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, Pressable, StyleSheet, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
+import * as Haptics from "expo-haptics";
 
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -15,11 +16,17 @@ const GenderFilterSection = ({
 }) => {
   const genders = ["Male", "Female", "Prefer not to say"];
 
+  const handleGender = (value) => {
+    setGender(value);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
   const handleIsMatchMyGender = (value) => {
     setIsMatchMyGender(value);
     if (value) {
       setGender(null);
     }
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const renderGenderItem = ({ item }) => (
@@ -42,7 +49,7 @@ const GenderFilterSection = ({
           <ThemedView>
             <CheckBox
               checked={gender === item}
-              onPress={() => setGender(item)}
+              onPress={() => handleGender(item)}
               size={30}
               checkedColor={Colors.light.primary}
               uncheckedColor={Colors.light.gray4}
