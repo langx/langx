@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
 
@@ -8,10 +8,22 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const LanguageFilterSection = ({ languages }) => {
-  const [items, setItems] = useState([]);
+  const [studyLanguages, setStudyLanguages] = useState([]);
+  const [motherLanguages, setMotherLanguages] = useState([]);
 
-  const handleCheck = (item) => {
-    setItems((prevItems) => {
+  const handleStudyLanguages = (item) => {
+    setStudyLanguages((prevItems) => {
+      const isChecked = prevItems.some((i) => i.$id === item.$id);
+      if (isChecked) {
+        return prevItems.filter((i) => i.$id !== item.$id);
+      } else {
+        return [...prevItems, item];
+      }
+    });
+  };
+
+  const handleMotherLanguages = (item) => {
+    setMotherLanguages((prevItems) => {
       const isChecked = prevItems.some((i) => i.$id === item.$id);
       if (isChecked) {
         return prevItems.filter((i) => i.$id !== item.$id);
@@ -25,31 +37,67 @@ const LanguageFilterSection = ({ languages }) => {
   //   console.log("items", items);
   // }, [items]);
 
-  const renderLanguageItem = ({ item }) => (
-    <ThemedView style={styles.item}>
-      <Ionicons
-        name={
-          item.level === 0
-            ? "battery-dead-outline"
-            : item.level === 1
-            ? "battery-half-outline"
-            : item.level === 2
-            ? "battery-full-outline"
-            : "rocket-outline"
-        }
-        style={styles.icon}
-      />
-      <ThemedView style={styles.labelContainer}>
-        <ThemedText style={styles.label}>{item.name}</ThemedText>
-        <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
-      </ThemedView>
-      <ThemedView>
-        <CheckBox
-          checked={items.some((i) => i.$id === item.$id)}
-          onPress={() => handleCheck(item)}
+  const renderStudyLanguageItem = ({ item }) => (
+    <Pressable onPress={() => handleStudyLanguages(item)}>
+      <ThemedView style={styles.item}>
+        <Ionicons
+          name={
+            item.level === 0
+              ? "battery-dead-outline"
+              : item.level === 1
+              ? "battery-half-outline"
+              : item.level === 2
+              ? "battery-full-outline"
+              : "rocket-outline"
+          }
+          style={styles.icon}
         />
+        <ThemedView style={styles.labelContainer}>
+          <ThemedText style={styles.label}>{item.name}</ThemedText>
+          <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
+        </ThemedView>
+        <ThemedView>
+          <CheckBox
+            checked={studyLanguages.some((i) => i.$id === item.$id)}
+            onPress={() => handleStudyLanguages(item)}
+            size={30}
+            checkedColor={Colors.light.primary}
+            uncheckedColor={Colors.light.gray4}
+          />
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </Pressable>
+  );
+
+  const renderMotherLanguageItem = ({ item }) => (
+    <Pressable onPress={() => handleMotherLanguages(item)}>
+      <ThemedView style={styles.item}>
+        <Ionicons
+          name={
+            item.level === 0
+              ? "battery-dead-outline"
+              : item.level === 1
+              ? "battery-half-outline"
+              : item.level === 2
+              ? "battery-full-outline"
+              : "rocket-outline"
+          }
+          style={styles.icon}
+        />
+        <ThemedView style={styles.labelContainer}>
+          <ThemedText style={styles.label}>{item.name}</ThemedText>
+          <ThemedText style={styles.note}>{item.nativeName}</ThemedText>
+        </ThemedView>
+        <ThemedView>
+          <CheckBox
+            checked={motherLanguages.some((i) => i.$id === item.$id)}
+            onPress={() => handleMotherLanguages(item)}
+            checkedColor={Colors.light.primary}
+            uncheckedColor={Colors.light.gray4}
+          />
+        </ThemedView>
+      </ThemedView>
+    </Pressable>
   );
 
   return (
@@ -62,7 +110,7 @@ const LanguageFilterSection = ({ languages }) => {
         <ThemedView style={styles.cardContent}>
           <FlatList
             data={languages}
-            renderItem={renderLanguageItem}
+            renderItem={renderStudyLanguageItem}
             keyExtractor={(item) => item.$id}
           />
         </ThemedView>
@@ -73,7 +121,7 @@ const LanguageFilterSection = ({ languages }) => {
         <ThemedView style={styles.cardContent}>
           <FlatList
             data={languages}
-            renderItem={renderLanguageItem}
+            renderItem={renderMotherLanguageItem}
             keyExtractor={(item) => item.$id}
           />
         </ThemedView>
