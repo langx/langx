@@ -32,7 +32,6 @@ const GenderFilterSection = ({ languages, gender, setGender }) => {
           size={30}
           checkedColor={Colors.light.primary}
           uncheckedColor={Colors.light.gray4}
-          // containerStyle={styles.radioButton}
           checkedIcon="dot-circle-o"
           uncheckedIcon="circle-o"
         />
@@ -95,10 +94,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-  },
-  radioButton: {
-    backgroundColor: "transparent",
-    borderWidth: 0,
   },
   note: {
     fontFamily: "NotoSans-Regular",
