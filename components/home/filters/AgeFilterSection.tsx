@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Slider } from "react-native-elements";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,15 +12,15 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
   const [maxAge, setMaxAge] = useState(ageRange[1]);
   const ageItems = ["Min Age", "Max Age"];
 
-  const handleMinAgeChange = (value) => {
-    setMinAge(value);
-    setAgeRange([value, maxAge]);
-  };
+  useEffect(() => {
+    setMinAge(ageRange[0]);
+    setMaxAge(ageRange[1]);
+    console.log("ageRange", ageRange);
+  }, [ageRange]);
 
-  const handleMaxAgeChange = (value) => {
-    setMaxAge(value);
-    setAgeRange([minAge, value]);
-  };
+  useEffect(() => {
+    setAgeRange([minAge, maxAge]);
+  }, [minAge, maxAge]);
 
   const renderAgeItem = ({ item }) => (
     <ThemedView>
@@ -40,8 +40,8 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
       <ThemedView style={styles.sliderContainer}>
         <Slider
           value={item === "Min Age" ? minAge : maxAge}
-          onValueChange={
-            item === "Min Age" ? handleMinAgeChange : handleMaxAgeChange
+          onValueChange={(value) =>
+            item === "Min Age" ? setMinAge(value) : setMaxAge(value)
           }
           maximumValue={100}
           minimumValue={0}
