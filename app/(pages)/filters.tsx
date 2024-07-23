@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { FlatList, StyleSheet } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet } from "react-native";
 
 import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -21,11 +21,13 @@ const Filters = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <FlatList
-        data={components}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
-      />
+      <SafeAreaView>
+        <FlatList
+          data={components}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.key}
+        />
+      </SafeAreaView>
     </ThemedView>
   );
 };
