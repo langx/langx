@@ -20,15 +20,6 @@ export default function HomeLayout() {
             fontFamily: "Lexend-Bold",
             color: Colors.light.black,
           },
-          headerRight: () => (
-            <Pressable onPress={() => router.push("(pages)/filters")}>
-              <Ionicons
-                name="filter-outline"
-                size={24}
-                color={Colors.light.black}
-              />
-            </Pressable>
-          ),
           headerSearchBarOptions: {
             placeholder: "Search",
             hideWhenScrolling: true,
