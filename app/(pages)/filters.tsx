@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Pressable } from "react-native";
+import { Stack } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import LanguageFilterSection from "@/components/home/filters/LanguageFilterSection";
 import GenderFilterSection from "@/components/home/filters/GenderFilterSection";
@@ -10,23 +14,33 @@ import CountryFilterSection from "@/components/home/filters/CountryFilterSection
 import AgeFilterSection from "@/components/home/filters/AgeFilterSection";
 
 const Filters = () => {
+  const theme = useColorScheme() ?? "light";
   const { currentUser } = useAuth();
   const languages = currentUser?.languages;
 
-  const [studyLanguages, setStudyLanguages] = useState([]);
-  const [motherLanguages, setMotherLanguages] = useState([]);
-  const [gender, setGender] = useState();
-  const [isMatchMyGender, setIsMatchMyGender] = useState(false);
-  const [country, setCountry] = useState();
-  const [ageRange, setAgeRange] = useState([0, 100]);
+  const initialState = {
+    studyLanguages: [],
+    motherLanguages: [],
+    gender: undefined,
+    isMatchMyGender: false,
+    country: undefined,
+    ageRange: [0, 100],
+  };
+
+  const [studyLanguages, setStudyLanguages] = useState(
+    initialState.studyLanguages
+  );
+  const [motherLanguages, setMotherLanguages] = useState(
+    initialState.motherLanguages
+  );
+  const [gender, setGender] = useState(initialState.gender);
+  const [isMatchMyGender, setIsMatchMyGender] = useState(
+    initialState.isMatchMyGender
+  );
+  const [country, setCountry] = useState(initialState.country);
+  const [ageRange, setAgeRange] = useState(initialState.ageRange);
 
   const components = [
-    {
-      component: (
-        <CountryFilterSection country={country} setCountry={setCountry} />
-      ),
-      key: "CountryFilterSection",
-    },
     {
       component: (
         <LanguageFilterSection
@@ -56,10 +70,29 @@ const Filters = () => {
       ),
       key: "AgeFilterSection",
     },
+    {
+      component: (
+        <CountryFilterSection country={country} setCountry={setCountry} />
+      ),
+      key: "CountryFilterSection",
+    },
   ];
 
+  const resetFilters = async () => {
+    setStudyLanguages(initialState.studyLanguages);
+    setMotherLanguages(initialState.motherLanguages);
+    setGender(initialState.gender);
+    setIsMatchMyGender(initialState.isMatchMyGender);
+    setCountry(initialState.country);
+    setAgeRange(initialState.ageRange);
+    try {
+      await AsyncStorage.removeItem("filters");
+    } catch (error) {
+      console.error("Failed to reset filters", error);
+    }
+  };
+
   useEffect(() => {
-    // Load saved filters from AsyncStorage
     const loadFilters = async () => {
       try {
         const savedFilters = await AsyncStorage.getItem("filters");
@@ -89,7 +122,6 @@ const Filters = () => {
   }, []);
 
   useEffect(() => {
-    // Save filters to AsyncStorage
     const saveFilters = async () => {
       try {
         const filters = {
@@ -123,16 +155,35 @@ const Filters = () => {
     []
   );
 
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView>
-        <FlatList
-          data={components}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.key}
+  const headerRight = () => {
+    return (
+      <Pressable onPress={resetFilters}>
+        <Ionicons
+          name="refresh-outline"
+          size={24}
+          color={Colors[theme].black}
         />
-      </SafeAreaView>
-    </ThemedView>
+      </Pressable>
+    );
+  };
+
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: headerRight,
+        }}
+      />
+      <ThemedView style={styles.container}>
+        <SafeAreaView>
+          <FlatList
+            data={components}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.key}
+          />
+        </SafeAreaView>
+      </ThemedView>
+    </>
   );
 };
 
