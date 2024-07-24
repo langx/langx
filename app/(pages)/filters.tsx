@@ -57,6 +57,7 @@ const Filters = () => {
     {
       component: (
         <GenderFilterSection
+          currentUserGender={currentUser.gender}
           gender={gender}
           setGender={setGender}
           isMatchMyGender={isMatchMyGender}

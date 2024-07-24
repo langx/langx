@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FlatList, Pressable, StyleSheet, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { CheckBox } from "react-native-elements";
@@ -9,12 +9,13 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const GenderFilterSection = ({
+  currentUserGender,
   gender,
   setGender,
   isMatchMyGender,
   setIsMatchMyGender,
 }) => {
-  const genders = ["Male", "Female", "Prefer not to say"];
+  const genders = ["male", "female", "other"];
 
   const handleGender = (value) => {
     setGender(value);
@@ -24,43 +25,54 @@ const GenderFilterSection = ({
   const handleIsMatchMyGender = (value) => {
     setIsMatchMyGender(value);
     if (value) {
+      setGender(currentUserGender);
+    } else {
       setGender(null);
     }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const renderGenderItem = ({ item }) => (
-    <Pressable onPress={() => setGender(item)} disabled={isMatchMyGender}>
-      <ThemedView style={{ opacity: isMatchMyGender ? 0.5 : 1 }}>
-        <ThemedView style={styles.item}>
-          <Ionicons
-            name={
-              item === "Male"
-                ? "man-outline"
-                : item === "Female"
-                ? "woman-outline"
-                : "male-female-outline"
-            }
-            style={styles.icon}
-          />
-          <ThemedView style={styles.labelContainer}>
-            <ThemedText style={styles.label}>{item}</ThemedText>
-          </ThemedView>
-          <ThemedView>
-            <CheckBox
-              checked={gender === item}
-              onPress={() => handleGender(item)}
-              size={30}
-              checkedColor={Colors.light.primary}
-              uncheckedColor={Colors.light.gray4}
-              checkedIcon="dot-circle-o"
-              uncheckedIcon="circle-o"
-              disabled={isMatchMyGender}
+  const renderGenderItem = useCallback(
+    ({ item }) => (
+      <Pressable onPress={() => setGender(item)} disabled={isMatchMyGender}>
+        <ThemedView style={{ opacity: isMatchMyGender ? 0.5 : 1 }}>
+          <ThemedView style={styles.item}>
+            <Ionicons
+              name={
+                item === "Male"
+                  ? "man-outline"
+                  : item === "Female"
+                  ? "woman-outline"
+                  : "male-female-outline"
+              }
+              style={styles.icon}
             />
+            <ThemedView style={styles.labelContainer}>
+              <ThemedText style={styles.label}>
+                {item === "male"
+                  ? "Male"
+                  : item === "female"
+                  ? "Female"
+                  : "Prefer not to say"}
+              </ThemedText>
+            </ThemedView>
+            <ThemedView>
+              <CheckBox
+                checked={gender === item}
+                onPress={() => handleGender(item)}
+                size={30}
+                checkedColor={Colors.light.primary}
+                uncheckedColor={Colors.light.gray4}
+                checkedIcon="dot-circle-o"
+                uncheckedIcon="circle-o"
+                disabled={isMatchMyGender}
+              />
+            </ThemedView>
           </ThemedView>
         </ThemedView>
-      </ThemedView>
-    </Pressable>
+      </Pressable>
+    ),
+    [gender]
   );
 
   const renderHeader = () => (
