@@ -17,11 +17,11 @@ const LanguageFilterSection = ({
 }) => {
   const handleStudyLanguages = (item) => {
     setStudyLanguages((prevItems) => {
-      const isChecked = prevItems.some((i) => i.$id === item.$id);
+      const isChecked = prevItems.some((i) => i === item.name);
       if (isChecked) {
-        return prevItems.filter((i) => i.$id !== item.$id);
+        return prevItems.filter((i) => i !== item.name);
       } else {
-        return [...prevItems, item];
+        return [...prevItems, item.name];
       }
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -29,11 +29,11 @@ const LanguageFilterSection = ({
 
   const handleMotherLanguages = (item) => {
     setMotherLanguages((prevItems) => {
-      const isChecked = prevItems.some((i) => i.$id === item.$id);
+      const isChecked = prevItems.some((i) => i === item.name);
       if (isChecked) {
-        return prevItems.filter((i) => i.$id !== item.$id);
+        return prevItems.filter((i) => i !== item.name);
       } else {
-        return [...prevItems, item];
+        return [...prevItems, item.name];
       }
     });
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -49,7 +49,7 @@ const LanguageFilterSection = ({
         </ThemedView>
         <ThemedView>
           <CheckBox
-            checked={studyLanguages.some((i) => i.$id === item.$id)}
+            checked={studyLanguages.some((i) => i === item.name)}
             onPress={() => handleStudyLanguages(item)}
             size={30}
             checkedColor={Colors.light.primary}
@@ -70,7 +70,7 @@ const LanguageFilterSection = ({
         </ThemedView>
         <ThemedView>
           <CheckBox
-            checked={motherLanguages.some((i) => i.$id === item.$id)}
+            checked={motherLanguages.some((i) => i === item.name)}
             onPress={() => handleMotherLanguages(item)}
             size={30}
             checkedColor={Colors.light.primary}
