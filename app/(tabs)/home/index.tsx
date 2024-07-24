@@ -67,8 +67,7 @@ export default function CommunityScreen() {
       isFirstRun.current = false;
       return;
     }
-
-    onRefresh();
+    if (filters) onRefresh();
   }, [filters]);
 
   // Search Functions
