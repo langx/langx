@@ -1,4 +1,6 @@
 import { Query } from "react-native-appwrite";
+import _ from "lodash";
+
 import { User } from "@/models/User";
 import { listDocuments } from "@/services/apiService";
 import { USERS_COLLECTION, PAGINATION_LIMIT } from "@/constants/config";
@@ -55,7 +57,11 @@ function createFilterQueries(filterData: FilterDataInterface): any[] {
   }
 
   // Query for users with birthdates between the selected min and max ages
-  if (filterData?.ageRange) {
+  if (
+    filterData?.ageRange &&
+    !_.isArray(filterData.ageRange) &&
+    !_.isEqual(filterData.ageRange, [13, 100])
+  ) {
     const minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - filterData?.ageRange[1]);
     const maxDate = new Date();
@@ -76,8 +82,6 @@ function createFilterQueries(filterData: FilterDataInterface): any[] {
     // OR Query for users with any of the selected languages
     queries.push(Query.contains("studyLanguages", keywords));
   }
-
-  console.log("---- queries", queries);
 
   return queries;
 }
