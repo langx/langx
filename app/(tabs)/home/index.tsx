@@ -4,6 +4,7 @@ import {
   RefreshControl,
   Pressable,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -16,8 +17,8 @@ import _ from "lodash";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import RecommendedSection from "@/components/home/RecommendedSection";
-import FeaturedSection from "@/components/home/FeaturedSection";
-import VisitorsSection from "@/components/home/VisitorsSection";
+// import FeaturedSection from "@/components/home/FeaturedSection";
+// import VisitorsSection from "@/components/home/VisitorsSection";
 
 export default function CommunityScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -25,6 +26,7 @@ export default function CommunityScreen() {
   const [filters, setFilters] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
   const [searchText, setSearchText] = useState(null);
+  const [loadingFilters, setLoadingFilters] = useState(true);
 
   const isFocused = useIsFocused();
 
@@ -49,12 +51,12 @@ export default function CommunityScreen() {
 
           if (!_.isEqual(filters, savedFilters)) {
             setFilters(savedFilters);
+            setIsFilter(true);
           }
-
-          // Set badge if filters are saved
-          savedFilters ? setIsFilter(true) : setIsFilter(false);
         } catch (error) {
           console.error("Failed to load filters", error);
+        } finally {
+          setLoadingFilters(false);
         }
       };
 
@@ -126,12 +128,18 @@ export default function CommunityScreen() {
             />
           }
         >
-          <RecommendedSection
-            currentUserId={user?.$id}
-            filterData={filters}
-            searchText={searchText}
-            ref={recommendedSectionRef}
-          />
+          {loadingFilters ? (
+            <RecommendedSection
+              currentUserId={user?.$id}
+              filterData={filters}
+              searchText={searchText}
+              ref={recommendedSectionRef}
+            />
+          ) : (
+            <ThemedView style={styles.centered}>
+              <ActivityIndicator size="large" color={Colors.light.primary} />
+            </ThemedView>
+          )}
           {/* <FeaturedSection currentUserId={user?.$id} ref={featuredSectionRef} /> */}
           {/* <VisitorsSection ref={visitorsSectionRef} /> */}
         </ScrollView>
@@ -151,5 +159,11 @@ const styles = StyleSheet.create({
     height: 12,
     justifyContent: "center",
     alignItems: "center",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
   },
 });
