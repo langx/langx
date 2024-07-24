@@ -74,12 +74,12 @@ export default function CommunityScreen() {
   // Search Functions
   const debouncedSearch = useCallback(
     _.debounce((text) => {
-      if (text !== "") {
+      if (text !== "" && text !== null && text !== undefined) {
         setSearchText(text);
-        onRefresh();
       } else {
         setSearchText(null);
       }
+      onRefresh();
     }, 300),
     []
   );
@@ -98,6 +98,8 @@ export default function CommunityScreen() {
         options={{
           headerSearchBarOptions: {
             onChangeText: onChangeSearch,
+            onCancelButtonPress: onChangeSearch,
+            // onClose: onChangeSearch,
           },
           headerRight: () => (
             <Pressable onPress={() => router.push("(pages)/filters")}>
