@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   ScrollView,
   RefreshControl,
@@ -70,10 +70,25 @@ export default function CommunityScreen() {
     onRefresh();
   }, [filters]);
 
+  // Search Functions
+  const debouncedSearch = useCallback(
+    _.debounce((text) => {
+      console.log("Search input:", text);
+    }, 300),
+    []
+  );
+
+  const onChangeSearch = (text) => {
+    debouncedSearch(text.nativeEvent.text);
+  };
+
   return (
     <>
       <Stack.Screen
         options={{
+          headerSearchBarOptions: {
+            onChangeText: onChangeSearch,
+          },
           headerRight: () => (
             <Pressable onPress={() => router.push("(pages)/filters")}>
               <Ionicons
