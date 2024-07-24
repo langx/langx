@@ -129,16 +129,16 @@ export default function CommunityScreen() {
           }
         >
           {loadingFilters ? (
+            <ThemedView style={styles.centered}>
+              <ActivityIndicator size="large" color={Colors.light.primary} />
+            </ThemedView>
+          ) : (
             <RecommendedSection
               currentUserId={user?.$id}
               filterData={filters}
               searchText={searchText}
               ref={recommendedSectionRef}
             />
-          ) : (
-            <ThemedView style={styles.centered}>
-              <ActivityIndicator size="large" color={Colors.light.primary} />
-            </ThemedView>
           )}
           {/* <FeaturedSection currentUserId={user?.$id} ref={featuredSectionRef} /> */}
           {/* <VisitorsSection ref={visitorsSectionRef} /> */}
