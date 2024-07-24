@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
   FlatList,
   StyleSheet,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import _ from "lodash";
 
 import { Colors } from "@/constants/Colors";
 import { useDatabase } from "@/hooks/useDatabase";
@@ -34,15 +36,45 @@ const getNumColumns = (width) => {
 };
 
 export default function RecomendedScreen() {
-  const theme = useColorScheme() === "dark" ? "dark" : "light";
+  const theme = useColorScheme() ?? "light";
   const { currentUser } = useAuth();
+
+  const [filters, setFilters] = useState(null);
+  const isFirstRun = useRef(true);
+
   const {
     data: users,
     loading,
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers, { userId: currentUser.$id });
+  } = useDatabase(listUsers, { userId: currentUser.$id, filterData: filters });
+
+  useEffect(() => {
+    const loadFilters = async () => {
+      try {
+        const savedFilters = await AsyncStorage.getItem("filters");
+
+        if (!_.isEqual(filters, savedFilters)) {
+          setFilters(savedFilters);
+        }
+      } catch (error) {
+        console.error("Failed to load filters", error);
+      }
+    };
+
+    loadFilters();
+  }, []);
+
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+    console.log("Filters changed", filters);
+
+    if (filters) refetch();
+  }, [filters]);
 
   const [screenWidth, setScreenWidth] = useState(
     Dimensions.get("window").width
