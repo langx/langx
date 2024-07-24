@@ -34,7 +34,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers, { userId: currentUserId });
+  } = useDatabase(listUsers, { userId: currentUserId, filterData });
 
   useEffect(() => {
     console.log("recommended users:", users?.length);

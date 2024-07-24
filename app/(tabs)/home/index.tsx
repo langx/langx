@@ -1,7 +1,17 @@
-import React, { useState, useRef } from "react";
-import { ScrollView, RefreshControl } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  ScrollView,
+  RefreshControl,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { router, Stack } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+import _ from "lodash";
 
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -12,9 +22,15 @@ import VisitorsSection from "@/components/home/VisitorsSection";
 export default function CommunityScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [filters, setFilters] = useState(null);
+  const [isFilter, setIsFilter] = useState(false);
+
+  const isFocused = useIsFocused();
+
   const recommendedSectionRef = useRef(null);
   const featuredSectionRef = useRef(null);
   const visitorsSectionRef = useRef(null);
+  const isFirstRun = useRef(true);
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -24,25 +40,86 @@ export default function CommunityScreen() {
     setIsRefreshing(false);
   };
 
-  return (
-    <ThemedView style={{ flex: 1 }}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-            colors={[Colors.light.primary]}
-          />
+  useEffect(() => {
+    if (isFocused) {
+      const loadFilters = async () => {
+        try {
+          const savedFilters = await AsyncStorage.getItem("filters");
+
+          if (!_.isEqual(filters, savedFilters)) {
+            setFilters(savedFilters);
+          }
+
+          // Set badge if filters are saved
+          savedFilters ? setIsFilter(true) : setIsFilter(false);
+        } catch (error) {
+          console.error("Failed to load filters", error);
         }
-      >
-        <RecommendedSection
-          currentUserId={user?.$id}
-          ref={recommendedSectionRef}
-        />
-        <FeaturedSection currentUserId={user?.$id} ref={featuredSectionRef} />
-        {/* <VisitorsSection ref={visitorsSectionRef} /> */}
-      </ScrollView>
-    </ThemedView>
+      };
+
+      loadFilters();
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
+
+    onRefresh();
+  }, [filters]);
+
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <Pressable onPress={() => router.push("(pages)/filters")}>
+              <Ionicons
+                name="filter-outline"
+                size={24}
+                color={Colors.light.black}
+              />
+              {isFilter && <ThemedView style={styles.badge}></ThemedView>}
+            </Pressable>
+          ),
+        }}
+      />
+      <ThemedView style={{ flex: 1 }}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={[Colors.light.primary]}
+            />
+          }
+        >
+          <RecommendedSection
+            currentUserId={user?.$id}
+            filterData={filters}
+            ref={recommendedSectionRef}
+          />
+          {/* <FeaturedSection currentUserId={user?.$id} ref={featuredSectionRef} /> */}
+          {/* <VisitorsSection ref={visitorsSectionRef} /> */}
+        </ScrollView>
+      </ThemedView>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  badge: {
+    position: "absolute",
+    right: -6,
+    top: -3,
+    backgroundColor: Colors.light.error,
+    borderRadius: 9,
+    width: 12,
+    height: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
