@@ -80,7 +80,7 @@ export default function CommunityScreen() {
         setSearchText(null);
       }
       onRefresh();
-    }, 300),
+    }, 500),
     []
   );
 
