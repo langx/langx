@@ -18,19 +18,34 @@ export async function listUsers(params: any): Promise<User[]> {
   const userId = params?.userId;
   const filterData = params?.filterData || null;
   const offset = params?.currentOffset || null;
+  const searchText = params?.searchText || null;
   console.log("----", filterData);
 
   try {
+    // Default queries
     const queries = [
       Query.orderDesc("$updatedAt"),
       Query.notEqual("$id", userId),
       Query.limit(PAGINATION_LIMIT),
     ];
 
+    // Offset Query
     if (offset) {
       queries.push(Query.offset(offset));
     }
 
+    // Search Query
+    if (searchText && searchText.length > 0) {
+      queries.push(
+        Query.or([
+          Query.search("name", `"${searchText}"`),
+          Query.search("aboutMe", `"${searchText}"`),
+          Query.search("username", `"${searchText}"`),
+        ])
+      );
+    }
+
+    // Filter Queries
     if (filterData) {
       const filterQueries = createFilterQueries(JSON.parse(filterData));
       queries.push(...filterQueries);

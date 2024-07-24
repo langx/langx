@@ -24,7 +24,7 @@ export default function CommunityScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filters, setFilters] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(null);
 
   const isFocused = useIsFocused();
 
@@ -74,7 +74,12 @@ export default function CommunityScreen() {
   // Search Functions
   const debouncedSearch = useCallback(
     _.debounce((text) => {
-      text !== "" ? setSearchText(text) : setSearchText("");
+      if (text !== "") {
+        setSearchText(text);
+        onRefresh();
+      } else {
+        setSearchText(null);
+      }
     }, 300),
     []
   );
@@ -83,9 +88,9 @@ export default function CommunityScreen() {
     debouncedSearch(text.nativeEvent.text);
   };
 
-  useEffect(() => {
-    console.log(searchText);
-  }, [searchText]);
+  // useEffect(() => {
+  //   console.log(searchText);
+  // }, [searchText]);
 
   return (
     <>
@@ -120,6 +125,7 @@ export default function CommunityScreen() {
           <RecommendedSection
             currentUserId={user?.$id}
             filterData={filters}
+            searchText={searchText}
             ref={recommendedSectionRef}
           />
           {/* <FeaturedSection currentUserId={user?.$id} ref={featuredSectionRef} /> */}

@@ -7,6 +7,7 @@ interface Params {
   userId?: string;
   roomId?: string;
   filterData?: Object;
+  searchText?: string;
   initialOffset?: number;
 }
 
