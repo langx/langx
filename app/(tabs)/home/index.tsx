@@ -1,5 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ScrollView, RefreshControl, Pressable } from "react-native";
+import {
+  ScrollView,
+  RefreshControl,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { router, Stack } from "expo-router";
@@ -18,6 +23,7 @@ export default function CommunityScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filters, setFilters] = useState(null);
+  const [isFilter, setIsFilter] = useState(false);
 
   const isFocused = useIsFocused();
 
@@ -43,6 +49,9 @@ export default function CommunityScreen() {
           if (!_.isEqual(filters, savedFilters)) {
             setFilters(savedFilters);
           }
+
+          // Set badge if filters are saved
+          savedFilters ? setIsFilter(true) : setIsFilter(false);
         } catch (error) {
           console.error("Failed to load filters", error);
         }
@@ -72,6 +81,7 @@ export default function CommunityScreen() {
                 size={24}
                 color={Colors.light.black}
               />
+              {isFilter && <ThemedView style={styles.badge}></ThemedView>}
             </Pressable>
           ),
         }}
@@ -99,3 +109,17 @@ export default function CommunityScreen() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  badge: {
+    position: "absolute",
+    right: -6,
+    top: -3,
+    backgroundColor: Colors.light.error,
+    borderRadius: 9,
+    width: 12,
+    height: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
