@@ -88,10 +88,6 @@ export default function CommunityScreen() {
     debouncedSearch(text.nativeEvent.text);
   };
 
-  // useEffect(() => {
-  //   console.log(searchText);
-  // }, [searchText]);
-
   return (
     <>
       <Stack.Screen
@@ -99,7 +95,14 @@ export default function CommunityScreen() {
           headerSearchBarOptions: {
             onChangeText: onChangeSearch,
             onCancelButtonPress: onChangeSearch,
-            // onClose: onChangeSearch,
+            placeholder: "",
+            hideWhenScrolling: true,
+            hideNavigationBar: true,
+            shouldShowHintSearchIcon: true,
+            textColor: Colors.light.black,
+            tintColor: Colors.light.black,
+            hintTextColor: Colors.light.black,
+            headerIconColor: Colors.light.black,
           },
           headerRight: () => (
             <Pressable onPress={() => router.push("(pages)/filters")}>
