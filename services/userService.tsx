@@ -1,4 +1,6 @@
 import { Query } from "react-native-appwrite";
+import _ from "lodash";
+
 import { User } from "@/models/User";
 import { listDocuments } from "@/services/apiService";
 import { USERS_COLLECTION, PAGINATION_LIMIT } from "@/constants/config";
@@ -16,19 +18,34 @@ export async function listUsers(params: any): Promise<User[]> {
   const userId = params?.userId;
   const filterData = params?.filterData || null;
   const offset = params?.currentOffset || null;
+  const searchText = params?.searchText || null;
   console.log("----", filterData);
 
   try {
+    // Default queries
     const queries = [
       Query.orderDesc("$updatedAt"),
       Query.notEqual("$id", userId),
       Query.limit(PAGINATION_LIMIT),
     ];
 
+    // Offset Query
     if (offset) {
       queries.push(Query.offset(offset));
     }
 
+    // Search Query
+    if (searchText && searchText.length > 0) {
+      queries.push(
+        Query.or([
+          Query.search("name", `"${searchText}"`),
+          Query.search("aboutMe", `"${searchText}"`),
+          Query.search("username", `"${searchText}"`),
+        ])
+      );
+    }
+
+    // Filter Queries
     if (filterData) {
       const filterQueries = createFilterQueries(JSON.parse(filterData));
       queries.push(...filterQueries);
@@ -55,7 +72,11 @@ function createFilterQueries(filterData: FilterDataInterface): any[] {
   }
 
   // Query for users with birthdates between the selected min and max ages
-  if (filterData?.ageRange) {
+  if (
+    filterData?.ageRange &&
+    !_.isArray(filterData.ageRange) &&
+    !_.isEqual(filterData.ageRange, [13, 100])
+  ) {
     const minDate = new Date();
     minDate.setFullYear(minDate.getFullYear() - filterData?.ageRange[1]);
     const maxDate = new Date();
@@ -76,8 +97,6 @@ function createFilterQueries(filterData: FilterDataInterface): any[] {
     // OR Query for users with any of the selected languages
     queries.push(Query.contains("studyLanguages", keywords));
   }
-
-  console.log("---- queries", queries);
 
   return queries;
 }

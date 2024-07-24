@@ -23,10 +23,11 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 interface RecommendedSectionProps {
   currentUserId: string;
   filterData?: any;
+  searchText?: string;
 }
 
 const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
-  const { currentUserId, filterData = {} } = props;
+  const { currentUserId, filterData = {}, searchText = "" } = props;
 
   const {
     data: users,
@@ -34,7 +35,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     loadMore,
     refetch,
     hasMore,
-  } = useDatabase(listUsers, { userId: currentUserId, filterData });
+  } = useDatabase(listUsers, { userId: currentUserId, filterData, searchText });
 
   useEffect(() => {
     console.log("recommended users:", users?.length);

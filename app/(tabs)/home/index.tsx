@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   ScrollView,
   RefreshControl,
@@ -24,6 +24,7 @@ export default function CommunityScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filters, setFilters] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
+  const [searchText, setSearchText] = useState(null);
 
   const isFocused = useIsFocused();
 
@@ -70,10 +71,39 @@ export default function CommunityScreen() {
     onRefresh();
   }, [filters]);
 
+  // Search Functions
+  const debouncedSearch = useCallback(
+    _.debounce((text) => {
+      if (text !== "" && text !== null && text !== undefined) {
+        setSearchText(text);
+      } else {
+        setSearchText(null);
+      }
+      onRefresh();
+    }, 500),
+    []
+  );
+
+  const onChangeSearch = (text) => {
+    debouncedSearch(text.nativeEvent.text);
+  };
+
   return (
     <>
       <Stack.Screen
         options={{
+          headerSearchBarOptions: {
+            onChangeText: onChangeSearch,
+            onCancelButtonPress: onChangeSearch,
+            placeholder: "",
+            hideWhenScrolling: true,
+            hideNavigationBar: true,
+            shouldShowHintSearchIcon: true,
+            textColor: Colors.light.black,
+            tintColor: Colors.light.black,
+            hintTextColor: Colors.light.black,
+            headerIconColor: Colors.light.black,
+          },
           headerRight: () => (
             <Pressable onPress={() => router.push("(pages)/filters")}>
               <Ionicons
@@ -100,6 +130,7 @@ export default function CommunityScreen() {
           <RecommendedSection
             currentUserId={user?.$id}
             filterData={filters}
+            searchText={searchText}
             ref={recommendedSectionRef}
           />
           {/* <FeaturedSection currentUserId={user?.$id} ref={featuredSectionRef} /> */}

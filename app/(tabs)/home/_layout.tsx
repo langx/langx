@@ -1,12 +1,10 @@
-import { Stack, router } from "expo-router";
-import { Pressable } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Stack } from "expo-router";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 
 export default function HomeLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useColorScheme() ?? "light";
 
   return (
     <Stack>
@@ -19,16 +17,6 @@ export default function HomeLayout() {
           headerTitleStyle: {
             fontFamily: "Lexend-Bold",
             color: Colors.light.black,
-          },
-          headerSearchBarOptions: {
-            placeholder: "Search",
-            hideWhenScrolling: true,
-            hideNavigationBar: true,
-            shouldShowHintSearchIcon: true,
-            textColor: Colors.light.black,
-            tintColor: Colors.light.black,
-            hintTextColor: Colors.light.black,
-            headerIconColor: Colors.light.black,
           },
         }}
       />
@@ -43,17 +31,12 @@ export default function HomeLayout() {
           headerBackTitleVisible: true,
           headerBackButtonMenuEnabled: true,
           headerBackTitle: "Back",
-          headerTintColor:
-            colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+          headerTintColor: Colors[theme].black,
           headerStyle: {
-            backgroundColor:
-              colorScheme === "dark"
-                ? Colors.dark.background
-                : Colors.light.background,
+            backgroundColor: Colors[theme].background,
           },
           headerLargeTitleStyle: {
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+            color: Colors[theme].black,
             fontFamily: "Lexend-Bold",
           },
           headerBackTitleStyle: {
@@ -62,8 +45,7 @@ export default function HomeLayout() {
           headerTitleStyle: {
             fontSize: 18,
             fontFamily: "Lexend-Bold",
-            color:
-              colorScheme === "dark" ? Colors.dark.black : Colors.light.black,
+            color: Colors[theme].black,
           },
         }}
       />
