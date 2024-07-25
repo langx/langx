@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
 import Slider from "@react-native-community/slider";
 import { Ionicons } from "@expo/vector-icons";
+import _ from "lodash";
 
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -13,23 +14,21 @@ const AgeFilterSection = ({ ageRange, setAgeRange }) => {
   const [maxAge, setMaxAge] = useState(ageRange[1]);
   const ageItems = ["Min Age", "Max Age"];
 
-  const [debounceTimeout, setDebounceTimeout] = useState(null);
+  const debouncedSetAgeRange = useCallback(
+    _.debounce((minAge, maxAge) => {
+      setAgeRange([minAge, maxAge]);
+    }, 300),
+    [setAgeRange]
+  );
 
   useEffect(() => {
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-    const timeoutId = setTimeout(() => {
-      setMinAge(ageRange[0]);
-      setMaxAge(ageRange[1]);
-    }, 300);
-    setDebounceTimeout(timeoutId);
-    return () => clearTimeout(timeoutId);
+    setMinAge(ageRange[0]);
+    setMaxAge(ageRange[1]);
   }, [ageRange]);
 
   useEffect(() => {
-    setAgeRange([minAge, maxAge]);
-  }, [minAge, maxAge]);
+    debouncedSetAgeRange(minAge, maxAge);
+  }, [minAge, maxAge, debouncedSetAgeRange]);
 
   const handleMinAge = (value) => {
     setMinAge(value);
