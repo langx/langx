@@ -33,7 +33,6 @@ export default function CommunityScreen() {
   const recommendedSectionRef = useRef(null);
   const featuredSectionRef = useRef(null);
   const visitorsSectionRef = useRef(null);
-  const isFirstRun = useRef(true);
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -48,15 +47,7 @@ export default function CommunityScreen() {
     if (isFocused) {
       loadFilters();
     }
-  }, [isFocused, loadFilters]);
-
-  useEffect(() => {
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      return;
-    }
-    if (filters) onRefresh();
-  }, [filters]);
+  }, [isFocused]);
 
   // Search Functions
   const debouncedSearch = useCallback(
