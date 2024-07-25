@@ -47,7 +47,7 @@ export async function listUsers(params: any): Promise<User[]> {
 
     // Filter Queries
     if (filterData) {
-      const filterQueries = createFilterQueries(JSON.parse(filterData));
+      const filterQueries = createFilterQueries(filterData);
       queries.push(...filterQueries);
     }
 
