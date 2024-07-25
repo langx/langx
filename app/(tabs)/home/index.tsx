@@ -22,14 +22,16 @@ import RecommendedSection from "@/components/home/RecommendedSection";
 
 export default function CommunityScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
+  const isFocused = useIsFocused();
+
+  // States
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [filters, setFilters] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
   const [searchText, setSearchText] = useState(null);
   const [loadingFilters, setLoadingFilters] = useState(true);
 
-  const isFocused = useIsFocused();
-
+  // Refs
   const recommendedSectionRef = useRef(null);
   const featuredSectionRef = useRef(null);
   const visitorsSectionRef = useRef(null);
