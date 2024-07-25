@@ -43,26 +43,28 @@ export default function CommunityScreen() {
     setIsRefreshing(false);
   };
 
+  const loadFilters = useCallback(async () => {
+    setLoadingFilters(true);
+    try {
+      const savedFilters = await AsyncStorage.getItem("filters");
+
+      if (!_.isEqual(filters, savedFilters)) {
+        setFilters(savedFilters);
+        setIsFilter(true);
+      }
+    } catch (error) {
+      console.error("Failed to load filters", error);
+    } finally {
+      setLoadingFilters(false);
+    }
+  }, [filters]);
+
+  // isFocused is used to load filters only when the screen is focused
   useEffect(() => {
     if (isFocused) {
-      const loadFilters = async () => {
-        try {
-          const savedFilters = await AsyncStorage.getItem("filters");
-
-          if (!_.isEqual(filters, savedFilters)) {
-            setFilters(savedFilters);
-            setIsFilter(true);
-          }
-        } catch (error) {
-          console.error("Failed to load filters", error);
-        } finally {
-          setLoadingFilters(false);
-        }
-      };
-
       loadFilters();
     }
-  }, [isFocused]);
+  }, [isFocused, loadFilters]);
 
   useEffect(() => {
     if (isFirstRun.current) {
