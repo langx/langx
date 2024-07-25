@@ -9,7 +9,6 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { router, Stack } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import _ from "lodash";
@@ -17,19 +16,18 @@ import _ from "lodash";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import RecommendedSection from "@/components/home/RecommendedSection";
-// import FeaturedSection from "@/components/home/FeaturedSection";
-// import VisitorsSection from "@/components/home/VisitorsSection";
+import { useFilters } from "@/hooks/useFilters";
 
 export default function CommunityScreen() {
   const user = useSelector((state: RootState) => state.auth.user);
   const isFocused = useIsFocused();
 
+  // Hooks
+  const { filters, loading, loadFilters } = useFilters("filters");
+
   // States
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [searchText, setSearchText] = useState(null);
-  const [filters, setFilters] = useState(null);
-  const [isFilter, setIsFilter] = useState(false);
-  const [loadingFilters, setLoadingFilters] = useState(true);
 
   // Refs
   const recommendedSectionRef = useRef(null);
@@ -44,23 +42,6 @@ export default function CommunityScreen() {
     visitorsSectionRef.current?.refetch();
     setIsRefreshing(false);
   };
-
-  const loadFilters = useCallback(async () => {
-    setLoadingFilters(true);
-    try {
-      const savedFilters = await AsyncStorage.getItem("filters");
-
-      if (!_.isEqual(filters, savedFilters)) {
-        setFilters(savedFilters);
-      }
-      // Badge icon
-      savedFilters ? setIsFilter(true) : setIsFilter(false);
-    } catch (error) {
-      console.error("Failed to load filters", error);
-    } finally {
-      setLoadingFilters(false);
-    }
-  }, [filters]);
 
   // isFocused is used to load filters only when the screen is focused
   useEffect(() => {
@@ -117,7 +98,7 @@ export default function CommunityScreen() {
                 size={24}
                 color={Colors.light.black}
               />
-              {isFilter && <ThemedView style={styles.badge}></ThemedView>}
+              {filters && <ThemedView style={styles.badge}></ThemedView>}
             </Pressable>
           ),
         }}
@@ -133,7 +114,7 @@ export default function CommunityScreen() {
             />
           }
         >
-          {loadingFilters ? (
+          {loading ? (
             <ThemedView style={styles.centered}>
               <ActivityIndicator size="large" color={Colors.light.primary} />
             </ThemedView>
