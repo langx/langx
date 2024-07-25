@@ -26,9 +26,9 @@ export default function CommunityScreen() {
 
   // States
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchText, setSearchText] = useState(null);
   const [filters, setFilters] = useState(null);
   const [isFilter, setIsFilter] = useState(false);
-  const [searchText, setSearchText] = useState(null);
   const [loadingFilters, setLoadingFilters] = useState(true);
 
   // Refs
