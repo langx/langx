@@ -74,7 +74,7 @@ function createFilterQueries(filterData: FilterDataInterface): any[] {
   // Query for users with birthdates between the selected min and max ages
   if (
     filterData?.ageRange &&
-    !_.isArray(filterData.ageRange) &&
+    _.isArray(filterData.ageRange) &&
     !_.isEqual(filterData.ageRange, [13, 100])
   ) {
     const minDate = new Date();
