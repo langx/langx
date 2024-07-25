@@ -50,8 +50,9 @@ export default function CommunityScreen() {
 
       if (!_.isEqual(filters, savedFilters)) {
         setFilters(savedFilters);
-        setIsFilter(true);
       }
+      // Badge icon
+      savedFilters ? setIsFilter(true) : setIsFilter(false);
     } catch (error) {
       console.error("Failed to load filters", error);
     } finally {
