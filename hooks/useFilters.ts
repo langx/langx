@@ -33,6 +33,18 @@ export function useFilters(FILTERS_KEY: string) {
     }
   }, []);
 
+  const removeFilters = useCallback(async () => {
+    setLoading(true);
+    try {
+      await AsyncStorage.removeItem(FILTERS_KEY);
+      setFilters(null);
+    } catch (error) {
+      console.error('Failed to remove filters', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     loadFilters();
   }, [loadFilters]);
@@ -42,5 +54,6 @@ export function useFilters(FILTERS_KEY: string) {
     loading,
     loadFilters,
     saveFilters,
+    removeFilters,
   };
 }
