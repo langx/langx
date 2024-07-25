@@ -15,10 +15,8 @@ import UserCard from "./UserCard";
 import { getNumColumns } from "@/constants/responsive";
 import { Colors } from "@/constants/Colors";
 
-const ListUserCard = () => {
+const ListUserCard = ({ filterData }) => {
   const { currentUser } = useAuth();
-  const filters = null;
-  // States
 
   const {
     data: users,
@@ -28,14 +26,14 @@ const ListUserCard = () => {
     hasMore,
   } = useDatabase(listUsers, {
     userId: currentUser.$id,
-    filterData: filters,
+    filterData,
   });
 
   const renderFooter = useCallback(() => {
     if (!hasMore)
       return (
         <ThemedText style={{ justifyContent: "center", alignItems: "center" }}>
-          All items has been loaded
+          All items have been loaded
         </ThemedText>
       );
     if (loading) {
