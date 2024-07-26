@@ -1,4 +1,5 @@
-import { StyleSheet, ImageBackground } from "react-native";
+import { StyleSheet, ImageBackground, Pressable } from "react-native";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -60,35 +61,39 @@ const UserCard = ({ item }) => {
   }
 
   return (
-    <ImageBackground
-      source={{ uri: userImageUrl }}
-      style={styles.card}
-      resizeMode="cover"
-      imageStyle={styles.imageBackground}
-    >
-      <ThemedView style={styles.emojiIndicator}>
-        <ThemedText style={{ fontSize: 10 }}>{renderStatusEmoji()}</ThemedText>
-      </ThemedView>
-      <ThemedView
-        style={{
-          opacity: 0.8,
-          padding: 8,
-          alignItems: "center",
-          borderTopRightRadius: 8,
-          borderTopLeftRadius: 8,
-        }}
+    <Pressable onPress={() => router.push(item?.username)}>
+      <ImageBackground
+        source={{ uri: userImageUrl }}
+        style={styles.card}
+        resizeMode="cover"
+        imageStyle={styles.imageBackground}
       >
-        <ThemedText style={{ fontSize: 14, fontWeight: "bold", opacity: 1 }}>
-          {item.name}
-        </ThemedText>
-        <ThemedText style={{ fontSize: 10 }}>
-          Studies: {getStudyLanguages()}
-        </ThemedText>
-        <ThemedText style={{ fontSize: 10 }}>
-          Speaks: {getMotherLanguages()}
-        </ThemedText>
-      </ThemedView>
-    </ImageBackground>
+        <ThemedView style={styles.emojiIndicator}>
+          <ThemedText style={{ fontSize: 10 }}>
+            {renderStatusEmoji()}
+          </ThemedText>
+        </ThemedView>
+        <ThemedView
+          style={{
+            opacity: 0.8,
+            padding: 8,
+            alignItems: "center",
+            borderTopRightRadius: 8,
+            borderTopLeftRadius: 8,
+          }}
+        >
+          <ThemedText style={{ fontSize: 14, fontWeight: "bold", opacity: 1 }}>
+            {item.name}
+          </ThemedText>
+          <ThemedText style={{ fontSize: 10 }}>
+            Studies: {getStudyLanguages()}
+          </ThemedText>
+          <ThemedText style={{ fontSize: 10 }}>
+            Speaks: {getMotherLanguages()}
+          </ThemedText>
+        </ThemedView>
+      </ImageBackground>
+    </Pressable>
   );
 };
 
