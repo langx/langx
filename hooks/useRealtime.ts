@@ -24,7 +24,10 @@ export function useRealtime(currentUserId: string) {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentUserId) {
+      console.log('[SKIPPED]: No user ID for Realtime updates.');
+      return;
+    }
     console.log('[STARTED]: Realtime updates hook.');
 
     const channels = [

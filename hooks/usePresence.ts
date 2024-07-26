@@ -5,7 +5,12 @@ import { updateUser } from '@/services/userService';
 
 export function usePresence(currentUserId: string, jwt: Jwt) {
   useEffect(() => {
-    if (!currentUserId || !jwt) return;
+    if (!currentUserId || !jwt) {
+      console.log(
+        '[SKIPPED]: No user ID or JWT provided for Presence updates.'
+      );
+      return;
+    }
 
     console.log('[STARTED]: User presence hook.');
     const updateUserPresence = () => {
