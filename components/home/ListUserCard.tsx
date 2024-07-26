@@ -1,21 +1,17 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
-  StyleSheet,
-} from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { useAuth } from "@/hooks/useAuth";
+import useResponsive from "@/hooks/useResponsive";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { listUsers } from "@/services/userService";
 import UserCard from "./UserCard";
-import { getNumColumns } from "@/constants/responsive";
 import { Colors } from "@/constants/Colors";
 
 const ListUserCard = ({ filterData }) => {
+  const numColumns = useResponsive();
   const { currentUser } = useAuth();
 
   const {
@@ -54,28 +50,6 @@ const ListUserCard = ({ filterData }) => {
       loadMore();
     }
   };
-
-  // Responsive layout
-  const [screenWidth, setScreenWidth] = useState(
-    Dimensions.get("window").width
-  );
-  const [numColumns, setNumColumns] = useState(getNumColumns(screenWidth));
-  useEffect(() => {
-    const updateLayout = () => {
-      const newWidth = Dimensions.get("window").width;
-      setScreenWidth(newWidth);
-      console.log("Screen width changed to", newWidth);
-    };
-
-    // Subscribe to dimension changes
-    const subscription = Dimensions.addEventListener("change", updateLayout);
-
-    // Return a cleanup function that removes the event listener
-    return () => subscription.remove();
-  }, []);
-  useEffect(() => {
-    setNumColumns(getNumColumns(screenWidth));
-  }, [screenWidth]);
 
   return (
     <FlatList
