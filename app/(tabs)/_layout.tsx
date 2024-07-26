@@ -34,7 +34,6 @@ export default function TabsLayout() {
           name="rooms"
           options={{
             title: "Chats",
-            href: "/rooms",
             tabBarIcon: ({ color, focused }) => (
               <TabBarItem
                 icon="chatbubbles"
@@ -50,7 +49,6 @@ export default function TabsLayout() {
           name="home"
           options={{
             title: "Community",
-            href: "/home",
             tabBarIcon: ({ color, focused }) => (
               <TabBarItem
                 icon="compass"
@@ -65,7 +63,6 @@ export default function TabsLayout() {
           name="profile"
           options={{
             title: "Profile",
-            href: "/profile",
             tabBarIcon: ({ color, focused }) => (
               <TabBarItem
                 icon="person"
