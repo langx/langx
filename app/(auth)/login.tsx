@@ -6,12 +6,19 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import {
+  createJWT,
   getAccount,
   getCurrentSession,
   getCurrentUser,
   login,
 } from "@/services/authService";
-import { setAccount, setError, setSession, setUser } from "@/store/authSlice";
+import {
+  setAccount,
+  setError,
+  setJwt,
+  setSession,
+  setUser,
+} from "@/store/authSlice";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
@@ -37,9 +44,11 @@ const LoginForm = () => {
         getCurrentUser(),
         getCurrentSession(),
       ]);
+      const jwt = await createJWT();
       dispatch(setAccount(account));
       dispatch(setUser(user));
       dispatch(setSession(session));
+      dispatch(setJwt(jwt));
 
       Alert.alert("Success", "User signed in successfully");
     } catch (error) {
