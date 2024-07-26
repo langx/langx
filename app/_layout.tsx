@@ -11,12 +11,12 @@ import "react-native-reanimated";
 import { Provider, useDispatch, useSelector } from "react-redux";
 
 import store, { RootState, AppDispatch } from "@/store/store";
+import { fetchAuthData } from "@/store/authSlice";
+import { fonts } from "@/constants/fonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useRealtime } from "@/hooks/useRealtime";
 import { usePresence } from "@/hooks/usePresence";
-import { fonts } from "@/constants/fonts";
-import { fetchAuthData } from "@/store/authSlice";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
@@ -27,9 +27,16 @@ const StackLayout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const segments = useSegments();
   const router = useRouter();
+
+  // Selectors
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+
+  // Hooks
+  const { currentUser, jwt } = useAuth();
+  useRealtime(currentUser?.$id);
+  usePresence(currentUser?.$id, jwt);
 
   useEffect(() => {
     if (!isLoading) {
@@ -54,11 +61,6 @@ const StackLayout = () => {
   useEffect(() => {
     dispatch(fetchAuthData());
   }, [dispatch]);
-
-  // Hooks
-  const { currentUser, jwt } = useAuth();
-  useRealtime(currentUser?.$id);
-  usePresence(currentUser?.$id, jwt);
 
   // Debugging useSegments
   // useEffect(() => {
