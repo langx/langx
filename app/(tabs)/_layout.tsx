@@ -7,15 +7,17 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuth } from "@/hooks/useAuth";
 import { useRealtime } from "@/hooks/useRealtime";
 import { TabBarItem } from "@/components/navigation/TabBarItem";
+import { usePresence } from "@/hooks/usePresence";
 
 export default function TabsLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
   const insets = useSafeAreaInsets();
 
-  // Start Realtime Websocket connection
+  // Hooks
   const { currentUser, jwt } = useAuth();
-  useRealtime(currentUser?.$id, jwt);
+  useRealtime(currentUser?.$id);
+  usePresence(currentUser?.$id, jwt);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
