@@ -6,7 +6,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
-import { getFlagEmoji2 } from "@/constants/utils";
+import { onlineStatus, getFlagEmoji2 } from "@/constants/utils";
 import { Language } from "@/models/Language";
 
 const UserCard = ({ item }) => {
@@ -41,6 +41,14 @@ const UserCard = ({ item }) => {
     return flags.join(" ");
   };
 
+  const renderStatusEmoji = () => {
+    const status = onlineStatus(item.lastSeen);
+    if (status === "online") return "🟢";
+    if (status === "away") return "🟡";
+    if (status === "offline") return "🟠";
+    return "🔴";
+  };
+
   if (loading) {
     return (
       <ThemedView style={styles.card}>
@@ -58,6 +66,9 @@ const UserCard = ({ item }) => {
       resizeMode="cover"
       imageStyle={styles.imageBackground}
     >
+      <ThemedView style={styles.emojiIndicator}>
+        <ThemedText style={{ fontSize: 10 }}>{renderStatusEmoji()}</ThemedText>
+      </ThemedView>
       <ThemedView
         style={{
           opacity: 0.8,
@@ -104,6 +115,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  emojiIndicator: {
+    position: "absolute",
+    backgroundColor: "transparent",
+    top: 5,
+    left: 10,
+    zIndex: 2,
   },
 });
 
