@@ -2,13 +2,14 @@ import { useEffect } from 'react';
 
 import { Jwt } from '@/models/Jwt';
 import { updateUser } from '@/services/userService';
+import { PRESENCE_INTERVAL } from '@/constants/config';
 
 export function usePresence(currentUserId: string, jwt: Jwt) {
   useEffect(() => {
     if (!currentUserId || !jwt) {
-      console.log(
-        '[SKIPPED]: No user ID or JWT provided for Presence updates.'
-      );
+      // console.log(
+      //   '[SKIPPED]: No user ID or JWT provided for Presence updates.'
+      // );
       return;
     }
 
@@ -17,7 +18,7 @@ export function usePresence(currentUserId: string, jwt: Jwt) {
       updateUser(currentUserId, jwt, { lastSeen: new Date().toISOString() });
     };
 
-    const intervalId = setInterval(updateUserPresence, 5 * 1000);
+    const intervalId = setInterval(updateUserPresence, PRESENCE_INTERVAL);
     return () => {
       console.log('[TERMINATED]: User presence hook.');
       clearInterval(intervalId);

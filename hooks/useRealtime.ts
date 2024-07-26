@@ -25,7 +25,7 @@ export function useRealtime(currentUserId: string) {
 
   useEffect(() => {
     if (!currentUserId) {
-      console.log('[SKIPPED]: No user ID for Realtime updates.');
+      // console.log('[SKIPPED]: No user ID for Realtime updates.');
       return;
     }
     console.log('[STARTED]: Realtime updates hook.');
