@@ -61,7 +61,10 @@ const UserCard = ({ item }) => {
   }
 
   return (
-    <Pressable onPress={() => router.push(item?.username)}>
+    <Pressable
+      onPress={() => router.push(item?.username)}
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
       <ImageBackground
         source={{ uri: userImageUrl }}
         style={styles.card}
