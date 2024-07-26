@@ -209,8 +209,18 @@ const Room = () => {
       );
     }
 
+    const handleLayout = () => {
+      if (currentMessage.user._id === 1 || currentMessage.received) return;
+      updateMessage({
+        messageId: currentMessage._id,
+        updatedMessage: { seen: true },
+        currentUserId: currentUser.$id,
+        jwt,
+      });
+    };
+
     return (
-      <ThemedView>
+      <ThemedView onLayout={handleLayout}>
         {replyTo && (
           <ThemedView
             style={{
