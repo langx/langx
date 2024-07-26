@@ -54,6 +54,25 @@ export const createDocument = async (
   }
 };
 
+export const updateDocument = async (
+  collectionId: string,
+  documentId: string,
+  data: Object
+) => {
+  try {
+    const updatedDocument = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      collectionId,
+      documentId,
+      data
+    );
+
+    return updatedDocument;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const listDocuments = async (
   collectionId: string,
   queries?: string[]
