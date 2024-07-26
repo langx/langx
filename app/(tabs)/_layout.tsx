@@ -4,12 +4,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useAuth } from "@/hooks/useAuth";
 import { TabBarItem } from "@/components/navigation/TabBarItem";
 
 export default function TabsLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
   const insets = useSafeAreaInsets();
+
+  const { currentUser } = useAuth();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -38,7 +41,7 @@ export default function TabsLayout() {
                 color={color}
                 label="Chats"
                 focused={focused}
-                counter={10}
+                counter={currentUser?.totalUnseen}
               />
             ),
           }}
