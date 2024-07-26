@@ -38,6 +38,7 @@ export default function TabsLayout() {
                 color={color}
                 label="Chats"
                 focused={focused}
+                counter={10}
               />
             ),
           }}
