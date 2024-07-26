@@ -70,6 +70,13 @@ export default function CommunityScreen() {
     <>
       <Stack.Screen
         options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitle: "Community",
+          headerTitleStyle: {
+            fontFamily: "Lexend-Bold",
+            color: Colors.light.black,
+          },
           headerSearchBarOptions: {
             onChangeText: onChangeSearch,
             onCancelButtonPress: onChangeSearch,
@@ -83,11 +90,12 @@ export default function CommunityScreen() {
             headerIconColor: Colors.light.black,
           },
           headerRight: () => (
-            <Pressable onPress={() => router.push("(pages)/filters")}>
+            <Pressable onPress={() => router.push("(home)/filters")}>
               <Ionicons
                 name="filter-outline"
                 size={24}
                 color={Colors.light.black}
+                style={{ marginRight: 15 }}
               />
               {filters && <ThemedView style={styles.badge}></ThemedView>}
             </Pressable>

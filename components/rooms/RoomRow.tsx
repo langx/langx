@@ -114,7 +114,7 @@ const RoomRow: FC<{ room: RoomExtendedInterface }> = ({ room }) => {
 
   const navigateToRoomById = () => {
     dispatch(setRoom(room));
-    router.push(`(pages)/room/${room.$id}`);
+    router.push(`(home)/room/${room.$id}`);
   };
 
   return (

@@ -35,8 +35,8 @@ const StackLayout = () => {
 
   // Hooks
   const { currentUser, jwt } = useAuth();
-  useRealtime(currentUser?.$id);
-  usePresence(currentUser?.$id, jwt);
+  // useRealtime(currentUser?.$id);
+  // usePresence(currentUser?.$id, jwt);
 
   useEffect(() => {
     if (!isLoading) {
@@ -49,7 +49,7 @@ const StackLayout = () => {
       // console.log("segments:", segments);
       const inAuthGroup = segments.includes("(auth)") || segments.length === 0;
       if ((isLoggedIn || isGuestIn) && inAuthGroup) {
-        router.replace("/home");
+        router.replace("/(home)");
       }
 
       setTimeout(() => {
@@ -63,9 +63,9 @@ const StackLayout = () => {
   }, [dispatch]);
 
   // Debugging useSegments
-  // useEffect(() => {
-  //   console.log(segments);
-  // }, [segments]);
+  useEffect(() => {
+    console.log(segments);
+  }, [segments]);
 
   if (isLoading) {
     return (
@@ -85,9 +85,8 @@ const StackLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(home)" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(pages)" options={{ headerShown: false }} />
       {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
       <Stack.Screen name="+not-found" options={{ headerBackTitle: "Back" }} />
     </Stack>
