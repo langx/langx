@@ -24,7 +24,7 @@ export const useAuth = () => {
             console.error('Failed to renew JWT', error);
           }
         }
-      } else {
+      } else if (currentUser) {
         try {
           const newJwt = await createJWT();
           dispatch(setJwt(newJwt));
