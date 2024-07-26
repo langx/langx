@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { RootState } from '@/store/store';
 import { setJwt } from '@/store/authSlice';
 import { createJWT } from '@/services/authService';
+
 export const useAuth = () => {
   const dispatch = useDispatch();
   const jwt = useSelector((state: RootState) => state.auth.jwt);
@@ -22,6 +23,13 @@ export const useAuth = () => {
           } catch (error) {
             console.error('Failed to renew JWT', error);
           }
+        }
+      } else {
+        try {
+          const newJwt = await createJWT();
+          dispatch(setJwt(newJwt));
+        } catch (error) {
+          console.error('Failed to create JWT', error);
         }
       }
     };
