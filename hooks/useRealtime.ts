@@ -10,8 +10,10 @@ import {
 } from '@/constants/config';
 import { User } from '@/models/User';
 import { Room } from '@/models/Room';
+import { Jwt } from '@/models/Jwt';
 import { Message } from '@/models/Message';
 import { client } from '@/services/apiService';
+import { updateUser } from '@/services/userService';
 import { setUser } from '@/store/authSlice';
 import {
   updateRooms,
@@ -20,11 +22,27 @@ import {
   createRoomThunk,
 } from '@/store/roomSlice';
 
-export function useRealtime(currentUserId) {
+export function useRealtime(currentUserId: string, jwt: Jwt) {
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    console.log('Realtime updates hook initialized');
+    if (!currentUserId || !jwt) return;
+
+    console.log('[STARTED]: User presence hook.');
+    const updateUserPresence = () => {
+      updateUser(currentUserId, jwt, { lastSeen: new Date().toISOString() });
+    };
+
+    const intervalId = setInterval(updateUserPresence, 5 * 1000);
+    return () => {
+      console.log('[TERMINATED]: User presence hook.');
+      clearInterval(intervalId);
+    };
+  }, [currentUserId, jwt]);
+
+  useEffect(() => {
+    if (!currentUserId) return;
+    console.log('[STARTED]: Realtime updates hook.');
 
     const channels = [
       `databases.${APP_DATABASE}.collections.${USERS_COLLECTION}.documents`,
@@ -75,7 +93,7 @@ export function useRealtime(currentUserId) {
     });
 
     return () => {
-      console.log('Unsubscribing from database changes');
+      console.log('[TERMINATED]: Realtime updates hook.');
       unsubscribe();
     };
   }, [dispatch, currentUserId]);

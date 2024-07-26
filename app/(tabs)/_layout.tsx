@@ -14,9 +14,8 @@ export default function TabsLayout() {
   const insets = useSafeAreaInsets();
 
   // Start Realtime Websocket connection
-  const { currentUser } = useAuth();
-  const currentUserId = currentUser?.$id;
-  useRealtime(currentUserId);
+  const { currentUser, jwt } = useAuth();
+  useRealtime(currentUser?.$id, jwt);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
