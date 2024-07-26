@@ -1,9 +1,15 @@
 import { Query } from "react-native-appwrite";
+import axios from "axios";
 import _ from "lodash";
 
 import { User } from "@/models/User";
+import { Jwt } from "@/models/Jwt";
 import { listDocuments } from "@/services/apiService";
-import { USERS_COLLECTION, PAGINATION_LIMIT } from "@/constants/config";
+import {
+  USERS_COLLECTION,
+  PAGINATION_LIMIT,
+  API_ENDPOINT,
+} from "@/constants/config";
 
 interface FilterDataInterface {
   gender?: string;
@@ -12,6 +18,26 @@ interface FilterDataInterface {
   motherLanguages?: string[];
   studyLanguages?: string[];
   isMatchMyGender?: boolean;
+}
+
+// Update Current User
+export async function updateUser(
+  userId: string,
+  jwt: Jwt,
+  data: any
+): Promise<User> {
+  try {
+    const response = await axios.put(`${API_ENDPOINT}/user/${userId}`, data, {
+      headers: {
+        "x-appwrite-user-id": userId,
+        "x-appwrite-jwt": jwt.jwt,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
 }
 
 export async function listUsers(params: any): Promise<User[]> {
