@@ -12,6 +12,9 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 
 import store, { RootState, AppDispatch } from "@/store/store";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { useAuth } from "@/hooks/useAuth";
+import { useRealtime } from "@/hooks/useRealtime";
+import { usePresence } from "@/hooks/usePresence";
 import { fonts } from "@/constants/fonts";
 import { fetchAuthData } from "@/store/authSlice";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -51,6 +54,11 @@ const StackLayout = () => {
   useEffect(() => {
     dispatch(fetchAuthData());
   }, [dispatch]);
+
+  // Hooks
+  const { currentUser, jwt } = useAuth();
+  useRealtime(currentUser?.$id);
+  usePresence(currentUser?.$id, jwt);
 
   // Debugging useSegments
   // useEffect(() => {

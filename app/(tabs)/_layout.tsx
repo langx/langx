@@ -4,20 +4,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useAuth } from "@/hooks/useAuth";
-import { useRealtime } from "@/hooks/useRealtime";
 import { TabBarItem } from "@/components/navigation/TabBarItem";
-import { usePresence } from "@/hooks/usePresence";
 
 export default function TabsLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme ?? "light";
   const insets = useSafeAreaInsets();
-
-  // Hooks
-  const { currentUser, jwt } = useAuth();
-  useRealtime(currentUser?.$id);
-  usePresence(currentUser?.$id, jwt);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -39,6 +31,7 @@ export default function TabsLayout() {
           name="rooms"
           options={{
             title: "Chats",
+            href: "/rooms",
             tabBarIcon: ({ color, focused }) => (
               <TabBarItem
                 icon="chatbubbles"
@@ -53,6 +46,7 @@ export default function TabsLayout() {
           name="home"
           options={{
             title: "Community",
+            href: "/home",
             tabBarIcon: ({ color, focused }) => (
               <TabBarItem
                 icon="compass"
@@ -67,6 +61,7 @@ export default function TabsLayout() {
           name="profile"
           options={{
             title: "Profile",
+            href: "/profile",
             tabBarIcon: ({ color, focused }) => (
               <TabBarItem
                 icon="person"
