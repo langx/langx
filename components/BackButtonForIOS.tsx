@@ -34,7 +34,7 @@ const BackButtonForIOS = () => {
           >
             <Ionicons
               name={"chevron-back-outline"}
-              size={24}
+              size={28}
               color={
                 colorScheme === "dark" ? Colors.dark.black : Colors.light.black
               }
