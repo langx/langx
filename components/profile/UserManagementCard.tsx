@@ -7,14 +7,12 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const ProfileManagementCard = () => {
-  const getVisitorsPage = () => {
-    console.log("Navigating to Visitors Page");
-    // Navigation logic to Visitors Page
+  const reportUserModal = () => {
+    console.log("reportUserModal");
   };
 
-  const publicProfileView = () => {
-    console.log("Viewing Profile as Public");
-    // Navigation logic to Public Profile View
+  const blockUserModal = () => {
+    console.log("blockUserModal");
   };
 
   return (
@@ -28,7 +26,7 @@ const ProfileManagementCard = () => {
       <ThemedView style={styles.cardContent}>
         <ThemedView style={styles.item}>
           <Pressable
-            onPress={getVisitorsPage}
+            onPress={reportUserModal}
             style={[styles.row, styles.hasIcon]}
           >
             <Ionicons
@@ -48,7 +46,7 @@ const ProfileManagementCard = () => {
         </ThemedView>
         <ThemedView style={styles.item}>
           <Pressable
-            onPress={publicProfileView}
+            onPress={blockUserModal}
             style={[styles.row, styles.hasIcon]}
           >
             <Ionicons
