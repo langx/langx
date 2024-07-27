@@ -14,9 +14,6 @@ import store, { RootState, AppDispatch } from "@/store/store";
 import { fetchAuthData } from "@/store/authSlice";
 import { fonts } from "@/constants/fonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useAuth } from "@/hooks/useAuth";
-import { useRealtime } from "@/hooks/useRealtime";
-import { usePresence } from "@/hooks/usePresence";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
@@ -33,25 +30,11 @@ const StackLayout = () => {
   const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
 
-  // Hooks
-  const { currentUser, jwt } = useAuth();
-  // useRealtime(currentUser?.$id);
-  // usePresence(currentUser?.$id, jwt);
-
   useEffect(() => {
     if (!isLoading) {
-      // console.log("isLoggedIn:", isLoggedIn);
-      // console.log("isGuestIn:", isGuestIn);
-      const inHomeGroup = segments.includes("(tabs)");
-      if (!(isLoggedIn || isGuestIn) && inHomeGroup) {
-        router.replace("/");
-      }
-      // console.log("segments:", segments);
-      const inAuthGroup = segments.includes("(auth)") || segments.length === 0;
-      if ((isLoggedIn || isGuestIn) && inAuthGroup) {
+      if (isLoggedIn || isGuestIn) {
         router.replace("/(home)");
       }
-
       setTimeout(() => {
         SplashScreen.hideAsync();
       }, 500);
@@ -63,9 +46,9 @@ const StackLayout = () => {
   }, [dispatch]);
 
   // Debugging useSegments
-  useEffect(() => {
-    console.log(segments);
-  }, [segments]);
+  // useEffect(() => {
+  //   console.log(segments);
+  // }, [segments]);
 
   if (isLoading) {
     return (
