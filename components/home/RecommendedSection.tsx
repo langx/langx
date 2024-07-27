@@ -70,7 +70,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
           <ThemedText style={styles.cardTitle}>For You</ThemedText>
           <Pressable
             style={styles.infoButton}
-            onPress={() => router.push("(tabs)/home/recommended")}
+            onPress={() => router.push("(home)/recommended")}
           >
             <Ionicons
               name="ellipsis-horizontal-circle-outline"
