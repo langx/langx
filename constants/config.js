@@ -1,4 +1,4 @@
-export const APP_ENDPOINT = "https://langx.io";
+export const APP_ENDPOINT = "https://app.langx.io";
 export const DB_ENDPOINT = "https://db.langx.io/v1";
 export const API_ENDPOINT = "https://api.langx.io/api";
 

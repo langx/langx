@@ -3,7 +3,12 @@ import { useEffect, useRef } from 'react';
 import { useSegments } from 'expo-router';
 import { PLAUSIBLE_API_URL, APP_ENDPOINT } from '@/constants/config';
 
-const DOMAIN = new URL(APP_ENDPOINT).hostname;
+const getRootDomain = (url: string): string => {
+  const hostname = new URL(url).hostname;
+  const parts = hostname.split('.');
+  const rootDomain = parts.slice(-2).join('.');
+  return hostname + ',' + rootDomain;
+};
 
 const getFullUrl = (segments) => {
   const filteredSegments = segments.filter(
@@ -17,7 +22,7 @@ const trackEvent = async (eventName, props = {}) => {
   const data = {
     name: eventName,
     url: APP_ENDPOINT,
-    domain: DOMAIN,
+    domain: getRootDomain(APP_ENDPOINT),
     ...props,
   };
 
