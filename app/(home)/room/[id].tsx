@@ -125,7 +125,7 @@ const Room = () => {
   const onSend = useCallback(
     (newMessages = []) => {
       setText("");
-      const currentUserId = currentUser.$id;
+      const currentUserId = currentUser?.$id;
       newMessages.forEach((message) => {
         if (editMessage) {
           setMessages((previousMessages) =>
@@ -214,7 +214,7 @@ const Room = () => {
       updateMessage({
         messageId: currentMessage._id,
         updatedMessage: { seen: true },
-        currentUserId: currentUser.$id,
+        currentUserId: currentUser?.$id,
         jwt,
       });
     };
@@ -264,7 +264,7 @@ const Room = () => {
           actions={contextMenuActions}
           onPress={({ nativeEvent: { index } }) => {
             const messageId = currentMessage._id;
-            const currentUserId = currentUser.$id;
+            const currentUserId = currentUser?.$id;
             if (currentMessage.user._id === 1) {
               if (index === contextMenuActions.length - 2) {
                 // Edit option

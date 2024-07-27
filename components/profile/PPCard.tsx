@@ -83,7 +83,7 @@ const PPCard = ({ user }) => {
           </ThemedText>
         )}
       </ThemedView>
-      {currentUser.$id !== user.$id && (
+      {currentUser?.$id !== user?.$id && (
         <ThemedView style={styles.cardContent}>
           <ThemedButton
             title="Send A Message"
