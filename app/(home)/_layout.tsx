@@ -137,12 +137,12 @@ export default function TabsLayout() {
           headerBackTitleVisible: true,
           headerBackButtonMenuEnabled: true,
           headerBackTitle: "Back",
-          headerTintColor: Colors[theme].black,
+          headerTintColor: Colors.light.black,
           headerStyle: {
-            backgroundColor: Colors[theme].background,
+            backgroundColor: Colors.light.primary,
           },
           headerLargeTitleStyle: {
-            color: Colors[theme].black,
+            color: Colors.light.black,
             fontFamily: "Lexend-Bold",
           },
           headerBackTitleStyle: {
@@ -151,7 +151,7 @@ export default function TabsLayout() {
           headerTitleStyle: {
             fontSize: 18,
             fontFamily: "Lexend-Bold",
-            color: Colors[theme].black,
+            color: Colors.light.black,
           },
         }}
       />
