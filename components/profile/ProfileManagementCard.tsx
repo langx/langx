@@ -1,20 +1,21 @@
 import React from "react";
 import { StyleSheet, Pressable } from "react-native";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
+import { useAuth } from "@/hooks/useAuth";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const ProfileManagementCard = () => {
+  const { currentUser } = useAuth();
   const getVisitorsPage = () => {
     console.log("Navigating to Visitors Page");
-    // Navigation logic to Visitors Page
   };
 
   const publicProfileView = () => {
-    console.log("Viewing Profile as Public");
-    // Navigation logic to Public Profile View
+    router.push(`(home)/${currentUser?.username}`);
   };
 
   return (
