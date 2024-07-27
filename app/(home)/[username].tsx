@@ -1,10 +1,18 @@
-import React from "react";
-import { Pressable, ActivityIndicator } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Pressable,
+  ActivityIndicator,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/Colors";
+import { getUserByUsername } from "@/services/userService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
+import PPCard from "@/components/profile/PPCard";
+import PhotosGalleryCard from "@/components/profile/PhotosGalleryCard";
 
 const StackLayout = ({ username }: { username: string }) => {
   return (
@@ -43,16 +51,83 @@ const StackLayout = ({ username }: { username: string }) => {
 const UserScreen = () => {
   const { username } = useLocalSearchParams<{ username: string }>();
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUserByUsername(username);
+      setUser(user);
+    };
+
+    fetchUser();
+  }, [username]);
+
+  const components = [
+    { component: <PPCard user={user} />, key: "PPCard" },
+    {
+      component: <PhotosGalleryCard user={user} />,
+      key: "PhotosGalleryCard",
+    },
+    // {
+    //   component: <AboutMeCard user={activeUser} account={account} />,
+    //   key: "AboutMeCard",
+    // },
+    // {
+    //   component: <LanguagesCard languages={activeUser?.languages} />,
+    //   key: "LanguagesCard",
+    // },
+    // {
+    //   component: <BadgesCard badges={activeUser?.badges} />,
+    //   key: "BadgesCard",
+    // },
+    // {
+    //   component: <DayStreaksCard streak={activeUser?.streaks} />,
+    //   key: "DayStreaksCard",
+    // },
+  ];
+
+  const renderItem = useCallback(
+    ({ item }) => (
+      <ThemedView style={styles.itemContainer}>{item.component}</ThemedView>
+    ),
+    []
+  );
+
   return (
     <>
       <StackLayout username={username} />
-      <ThemedView
-        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-      >
-        <ActivityIndicator size="large" color={Colors.light.primary} />
-      </ThemedView>
+      {user === null && (
+        <ThemedView
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color={Colors.light.primary} />
+        </ThemedView>
+      )}
+      {user && (
+        <ThemedView style={styles.container}>
+          <FlatList
+            data={components}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.key}
+          />
+        </ThemedView>
+      )}
     </>
   );
 };
 
 export default UserScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  itemContainer: {
+    marginBottom: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
