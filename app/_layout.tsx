@@ -32,12 +32,15 @@ const StackLayout = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      if (isLoggedIn || isGuestIn) {
-        router.replace("/(home)");
+      // TODO: We may add this check to (auth) layout
+      if (segments.length === 0) {
+        if (isLoggedIn || isGuestIn) {
+          router.replace("/(home)");
+        }
+        setTimeout(() => {
+          SplashScreen.hideAsync();
+        }, 500);
       }
-      setTimeout(() => {
-        SplashScreen.hideAsync();
-      }, 500);
     }
   }, [isLoggedIn, isGuestIn, isLoading]);
 
