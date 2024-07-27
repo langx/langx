@@ -21,7 +21,7 @@ const UserScreen = () => {
           headerBackButtonMenuEnabled: true,
           headerBackTitle: "Back",
           headerStyle: { backgroundColor: Colors.light.primary },
-          headerTintColor: Colors[theme].black,
+          headerTintColor: Colors.light.black,
           headerBackTitleStyle: {
             fontFamily: "Lexend-Bold",
           },
