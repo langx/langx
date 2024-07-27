@@ -19,12 +19,13 @@ import {
   setSession,
   setUser,
 } from "@/store/authSlice";
+import { Colors } from "@/constants/Colors";
+import images from "@/constants/images";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Colors } from "@/constants/Colors";
-import images from "@/constants/images";
+import OAuth2Login from "@/components/auth/OAuth2Login";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -78,6 +79,7 @@ const LoginForm = () => {
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Email</ThemedText>
           <TextInput
+            key="email"
             style={styles.text}
             onChangeText={handleChange("email")}
             onBlur={handleBlur("email")}
@@ -89,6 +91,7 @@ const LoginForm = () => {
           ) : null}
           <ThemedText style={styles.text}>Password</ThemedText>
           <TextInput
+            key="password"
             style={styles.text}
             onChangeText={handleChange("password")}
             onBlur={handleBlur("password")}
@@ -125,6 +128,8 @@ const Login = () => {
         <ThemedText style={styles.headline}>Log In</ThemedText>
         <LoginForm />
 
+        <OAuth2Login />
+
         <ThemedView
           style={{
             justifyContent: "center",
@@ -159,6 +164,8 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   logo: {
