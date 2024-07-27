@@ -9,16 +9,17 @@ import {
 
 import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
+import { useAuth } from "@/hooks/useAuth";
+import { getUserImage } from "@/services/bucketService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
-import { getUserImage } from "@/services/bucketService";
-
 const PPCard = ({ user }) => {
+  const { currentUser } = useAuth();
+
   const [imageUri, setImageUri] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const msgButton = false;
 
   useEffect(() => {
     const fetchImageUri = async () => {
@@ -82,10 +83,10 @@ const PPCard = ({ user }) => {
           </ThemedText>
         )}
       </ThemedView>
-      {msgButton && (
+      {currentUser.$id !== user.$id && (
         <ThemedView style={styles.cardContent}>
           <ThemedButton
-            title="Send A Message 🚀"
+            title="Send A Message"
             onPress={() => console.log("Button pressed")}
             style={styles.button}
           />
