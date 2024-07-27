@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, FlatList, Pressable, ScrollView, View } from "react-native";
+import { Alert, FlatList, Pressable, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
