@@ -14,6 +14,9 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import PPCard from "@/components/profile/PPCard";
 import PhotosGalleryCard from "@/components/profile/PhotosGalleryCard";
 import AboutMeCard from "@/components/profile/AboutMeCard";
+import LanguagesCard from "@/components/profile/LanguagesCard";
+import BadgesCard from "@/components/profile/BadgesCard";
+import DayStreaksCard from "@/components/profile/DayStreaksCard";
 
 const StackLayout = ({ username }: { username: string }) => {
   return (
@@ -73,18 +76,18 @@ const UserScreen = () => {
       component: <AboutMeCard user={user} account={null} />,
       key: "AboutMeCard",
     },
-    // {
-    //   component: <LanguagesCard languages={activeUser?.languages} />,
-    //   key: "LanguagesCard",
-    // },
-    // {
-    //   component: <BadgesCard badges={activeUser?.badges} />,
-    //   key: "BadgesCard",
-    // },
-    // {
-    //   component: <DayStreaksCard streak={activeUser?.streaks} />,
-    //   key: "DayStreaksCard",
-    // },
+    {
+      component: <LanguagesCard languages={user?.languages} />,
+      key: "LanguagesCard",
+    },
+    {
+      component: <BadgesCard badges={user?.badges} />,
+      key: "BadgesCard",
+    },
+    {
+      component: <DayStreaksCard streak={user?.streaks} />,
+      key: "DayStreaksCard",
+    },
   ];
 
   const renderItem = useCallback(
