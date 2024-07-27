@@ -39,15 +39,15 @@ const StackLayout = ({ username }: { username: string }) => {
           fontFamily: "Lexend-Bold",
           color: Colors.light.black,
         },
-        headerRight: () => (
-          <Pressable onPress={() => router.back()}>
-            <Ionicons
-              name="ellipsis-horizontal"
-              size={24}
-              color={Colors.light.black}
-            />
-          </Pressable>
-        ),
+        // headerRight: () => (
+        //   <Pressable onPress={() => router.back()}>
+        //     <Ionicons
+        //       name="ellipsis-horizontal"
+        //       size={24}
+        //       color={Colors.light.black}
+        //     />
+        //   </Pressable>
+        // ),
       }}
     />
   );
