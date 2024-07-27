@@ -5,8 +5,7 @@ import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
-const StackLayout = () => {
-  const { username } = useLocalSearchParams<{ username: string }>();
+const StackLayout = ({ username }: { username: string }) => {
   return (
     <Stack.Screen
       options={{
@@ -41,9 +40,11 @@ const StackLayout = () => {
 };
 
 const UserScreen = () => {
+  const { username } = useLocalSearchParams<{ username: string }>();
+
   return (
     <>
-      <StackLayout />
+      <StackLayout username={username} />
       <ThemedView
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
