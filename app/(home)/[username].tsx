@@ -1,12 +1,13 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { Pressable, ActivityIndicator } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 const UserScreen = () => {
+  const theme = useColorScheme() ?? "light";
   const { username } = useLocalSearchParams<{ username: string }>();
 
   return (
@@ -14,20 +15,27 @@ const UserScreen = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          headerBackVisible: false,
+          headerBackVisible: true,
+          headerShadowVisible: false,
+          headerBackTitleVisible: true,
+          headerBackButtonMenuEnabled: true,
+          headerBackTitle: "Back",
           headerStyle: { backgroundColor: Colors.light.primary },
+          headerTintColor: Colors[theme].black,
+          headerBackTitleStyle: {
+            fontFamily: "Lexend-Bold",
+          },
           headerTitle: `@${username}`,
           headerTitleStyle: {
             fontFamily: "Lexend-Bold",
             color: Colors.light.black,
           },
           headerRight: () => (
-            <Pressable onPress={() => router.push("(home)/settings")}>
+            <Pressable onPress={() => router.back()}>
               <Ionicons
-                name="cog-outline"
+                name="ellipsis-horizontal-outline"
                 size={24}
                 color={Colors.light.black}
-                style={{ marginRight: 15 }}
               />
             </Pressable>
           ),
@@ -36,10 +44,7 @@ const UserScreen = () => {
       <ThemedView
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <ThemedText type="title">{username}</ThemedText>
-        <Pressable onPress={() => router.back()}>
-          <ThemedText>Go back</ThemedText>
-        </Pressable>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
       </ThemedView>
     </>
   );
