@@ -1,8 +1,9 @@
 import React from "react";
 import { Pressable, ActivityIndicator } from "react-native";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
+
+import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 const StackLayout = ({ username }: { username: string }) => {
