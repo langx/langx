@@ -56,7 +56,6 @@ const ListUserCard = ({ filterData }) => {
       contentInsetAdjustmentBehavior="automatic"
       data={users}
       keyExtractor={(item) => item.$id.toString()}
-      key={numColumns}
       numColumns={numColumns}
       renderItem={({ item }) => <UserCard item={item} />}
       onEndReached={onEndReached}

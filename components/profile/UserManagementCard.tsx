@@ -1,21 +1,20 @@
 import React from "react";
 import { StyleSheet, Pressable } from "react-native";
-import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 
-import { useAuth } from "@/hooks/useAuth";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 const ProfileManagementCard = () => {
-  const { currentUser } = useAuth();
   const getVisitorsPage = () => {
     console.log("Navigating to Visitors Page");
+    // Navigation logic to Visitors Page
   };
 
   const publicProfileView = () => {
-    router.push(`(home)/${currentUser?.username}`);
+    console.log("Viewing Profile as Public");
+    // Navigation logic to Public Profile View
   };
 
   return (
@@ -33,12 +32,12 @@ const ProfileManagementCard = () => {
             style={[styles.row, styles.hasIcon]}
           >
             <Ionicons
-              name="people-outline"
+              name="alert-circle-outline"
               size={24}
-              color={Colors.light.primary}
+              color={Colors.light.gray3}
               style={styles.icon}
             />
-            <ThemedText style={styles.label}>Profile Visitors</ThemedText>
+            <ThemedText style={styles.label}>Report User</ThemedText>
             <Ionicons
               name="chevron-forward-outline"
               size={24}
@@ -53,14 +52,12 @@ const ProfileManagementCard = () => {
             style={[styles.row, styles.hasIcon]}
           >
             <Ionicons
-              name="eye-outline"
+              name="ban-outline"
               size={24}
-              color={Colors.light.primary}
+              color={Colors.light.error}
               style={styles.icon}
             />
-            <ThemedText style={styles.label}>
-              View Profile as Public️
-            </ThemedText>
+            <ThemedText style={styles.label}>Block User</ThemedText>
             <Ionicons
               name="chevron-forward-outline"
               size={24}

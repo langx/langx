@@ -13,12 +13,12 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+import { Colors } from "@/constants/Colors";
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
-import { Colors } from "@/constants/Colors";
-import UserCard from "@/components/home/UserCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import UserCard from "@/components/home/UserCard";
 
 interface RecommendedSectionProps {
   currentUserId: string;
@@ -70,7 +70,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
           <ThemedText style={styles.cardTitle}>For You</ThemedText>
           <Pressable
             style={styles.infoButton}
-            onPress={() => router.push("(tabs)/home/recommended")}
+            onPress={() => router.push("(home)/recommended")}
           >
             <Ionicons
               name="ellipsis-horizontal-circle-outline"
@@ -81,6 +81,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
         </ThemedView>
         <ThemedText style={styles.cardSubtitle}>Recommended Users</ThemedText>
       </ThemedView>
+      {/* Body Section */}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         horizontal

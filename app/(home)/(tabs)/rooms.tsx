@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   RefreshControl,
   StyleSheet,
 } from "react-native";
@@ -15,6 +16,8 @@ import { Colors } from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import RoomRow from "@/components/rooms/RoomRow";
+import { router, Stack } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 const RoomsScreen = () => {
   const dispatch = useDispatch();
@@ -76,24 +79,47 @@ const RoomsScreen = () => {
   );
 
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <FlatList
-        data={rooms}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.$id.toString()}
-        ItemSeparatorComponent={ItemSeparator}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-            colors={[Colors.light.primary]}
-          />
-        }
-        ListFooterComponent={renderFooter}
-        onEndReached={onEndReached}
-        onEndReachedThreshold={0.5}
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitle: "Chats",
+          headerTitleStyle: {
+            fontFamily: "Lexend-Bold",
+            color: Colors.light.black,
+          },
+          headerRight: () => (
+            <Pressable onPress={() => router.push("(home)/archive")}>
+              <Ionicons
+                name="archive-outline"
+                size={24}
+                color={Colors.light.black}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
+          ),
+        }}
       />
-    </ThemedView>
+      <ThemedView style={{ flex: 1 }}>
+        <FlatList
+          data={rooms}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.$id.toString()}
+          ItemSeparatorComponent={ItemSeparator}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={[Colors.light.primary]}
+            />
+          }
+          ListFooterComponent={renderFooter}
+          onEndReached={onEndReached}
+          onEndReachedThreshold={0.5}
+        />
+      </ThemedView>
+    </>
   );
 };
 

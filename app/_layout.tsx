@@ -14,9 +14,6 @@ import store, { RootState, AppDispatch } from "@/store/store";
 import { fetchAuthData } from "@/store/authSlice";
 import { fonts } from "@/constants/fonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { useAuth } from "@/hooks/useAuth";
-import { useRealtime } from "@/hooks/useRealtime";
-import { usePresence } from "@/hooks/usePresence";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
@@ -33,28 +30,17 @@ const StackLayout = () => {
   const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
 
-  // Hooks
-  const { currentUser, jwt } = useAuth();
-  useRealtime(currentUser?.$id);
-  usePresence(currentUser?.$id, jwt);
-
   useEffect(() => {
     if (!isLoading) {
-      // console.log("isLoggedIn:", isLoggedIn);
-      // console.log("isGuestIn:", isGuestIn);
-      const inHomeGroup = segments.includes("(tabs)");
-      if (!(isLoggedIn || isGuestIn) && inHomeGroup) {
-        router.replace("/");
+      // TODO: We may add this check to (auth) layout
+      if (segments.length === 0) {
+        if (isLoggedIn || isGuestIn) {
+          router.replace("/(home)");
+        }
+        setTimeout(() => {
+          SplashScreen.hideAsync();
+        }, 500);
       }
-      // console.log("segments:", segments);
-      const inAuthGroup = segments.includes("(auth)") || segments.length === 0;
-      if ((isLoggedIn || isGuestIn) && inAuthGroup) {
-        router.replace("/home");
-      }
-
-      setTimeout(() => {
-        SplashScreen.hideAsync();
-      }, 500);
     }
   }, [isLoggedIn, isGuestIn, isLoading]);
 
@@ -85,9 +71,8 @@ const StackLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(home)" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="(pages)" options={{ headerShown: false }} />
       {/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
       <Stack.Screen name="+not-found" options={{ headerBackTitle: "Back" }} />
     </Stack>

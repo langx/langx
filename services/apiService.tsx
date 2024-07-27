@@ -35,6 +35,20 @@ export const databases = new Databases(client);
 export const storage = new Storage(client);
 
 // DATABASE
+export const getDocument = async (collectionId: string, documentId: string) => {
+  try {
+    const document = await databases.getDocument(
+      appwriteConfig.databaseId,
+      collectionId,
+      documentId
+    );
+
+    return document;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const createDocument = async (
   collectionId: string,
   documentId: string,

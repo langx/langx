@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, FlatList, ActivityIndicator, View } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  View,
+  Pressable,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
@@ -15,6 +21,8 @@ import PhotosGalleryCard from "@/components/profile/PhotosGalleryCard";
 import BadgesCard from "@/components/profile/BadgesCard";
 import LangXTokenCard from "@/components/profile/LangXTokenCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
+import { Ionicons } from "@expo/vector-icons";
+import { router, Stack } from "expo-router";
 
 const ProfileScreen = () => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
@@ -90,13 +98,37 @@ const ProfileScreen = () => {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <FlatList
-        data={components}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerBackVisible: false,
+          headerStyle: { backgroundColor: Colors.light.primary },
+          headerTitle: `@${activeUser?.username}`,
+          headerTitleStyle: {
+            fontFamily: "Lexend-Bold",
+            color: Colors.light.black,
+          },
+          headerRight: () => (
+            <Pressable onPress={() => router.push("(home)/settings")}>
+              <Ionicons
+                name="cog-outline"
+                size={24}
+                color={Colors.light.black}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
+          ),
+        }}
       />
-    </ThemedView>
+      <ThemedView style={styles.container}>
+        <FlatList
+          data={components}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.key}
+        />
+      </ThemedView>
+    </>
   );
 };
 

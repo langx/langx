@@ -53,29 +53,31 @@ const AboutMeCard = ({ user, account }) => {
           <Ionicons name="at-outline" style={styles.icon} />
           <ThemedText style={styles.label}>@{user.username}</ThemedText>
         </ThemedView>
-        {account && account.emailVerification ? (
-          <ThemedView style={styles.item}>
-            <Ionicons
-              name="shield-checkmark-outline"
-              style={[styles.icon, { color: Colors.light.success }]}
-            />
-            <ThemedText style={styles.label}>Verified Email</ThemedText>
-          </ThemedView>
-        ) : (
-          <ThemedView style={styles.item}>
-            <Ionicons
-              name="shield-outline"
-              style={[styles.icon, { color: Colors.light.error }]}
-            />
-            <ThemedText style={styles.label}>Unverified User</ThemedText>
-            <Pressable
-              style={styles.editButton}
-              onPress={() => console.log("Edit Account")}
-            >
-              <ThemedText style={styles.editButtonText}>Edit</ThemedText>
-            </Pressable>
-          </ThemedView>
-        )}
+        {account ? (
+          account.emailVerification ? (
+            <ThemedView style={styles.item}>
+              <Ionicons
+                name="shield-checkmark-outline"
+                style={[styles.icon, { color: Colors.light.success }]}
+              />
+              <ThemedText style={styles.label}>Verified Email</ThemedText>
+            </ThemedView>
+          ) : (
+            <ThemedView style={styles.item}>
+              <Ionicons
+                name="shield-outline"
+                style={[styles.icon, { color: Colors.light.error }]}
+              />
+              <ThemedText style={styles.label}>Unverified User</ThemedText>
+              <Pressable
+                style={styles.editButton}
+                onPress={() => console.log("Edit Account")}
+              >
+                <ThemedText style={styles.editButtonText}>Edit</ThemedText>
+              </Pressable>
+            </ThemedView>
+          )
+        ) : null}
       </ThemedView>
     </ThemedView>
   );

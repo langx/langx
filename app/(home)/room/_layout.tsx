@@ -82,10 +82,12 @@ export default function RoomLayout() {
       </Pressable>
       {userImageUrl ? (
         <>
-          <Image
-            source={{ uri: userImageUrl }}
-            style={{ width: 35, height: 35, borderRadius: 35 }}
-          />
+          <Pressable onPress={() => router.push(room?.userData?.username)}>
+            <Image
+              source={{ uri: userImageUrl }}
+              style={{ width: 35, height: 35, borderRadius: 35 }}
+            />
+          </Pressable>
           <ThemedView
             style={{
               flexDirection: "column",
