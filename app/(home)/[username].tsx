@@ -13,6 +13,7 @@ import { getUserByUsername } from "@/services/userService";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import PPCard from "@/components/profile/PPCard";
 import PhotosGalleryCard from "@/components/profile/PhotosGalleryCard";
+import AboutMeCard from "@/components/profile/AboutMeCard";
 
 const StackLayout = ({ username }: { username: string }) => {
   return (
@@ -68,10 +69,10 @@ const UserScreen = () => {
       component: <PhotosGalleryCard user={user} />,
       key: "PhotosGalleryCard",
     },
-    // {
-    //   component: <AboutMeCard user={activeUser} account={account} />,
-    //   key: "AboutMeCard",
-    // },
+    {
+      component: <AboutMeCard user={user} account={null} />,
+      key: "AboutMeCard",
+    },
     // {
     //   component: <LanguagesCard languages={activeUser?.languages} />,
     //   key: "LanguagesCard",
