@@ -1,7 +1,9 @@
-export const APP_ENDPOINT = "https://db.langx.io/v1";
+export const APP_ENDPOINT = "https://langx.io";
+export const DB_ENDPOINT = "https://db.langx.io/v1";
 export const API_ENDPOINT = "https://api.langx.io/api";
 
 export const APP_PACKAGE_NAME = "tech.newchapter.languageXchange";
+export const PLAUSIBLE_API_URL = "https://insight.langx.io/api/event";
 
 export const APP_PROJECT = "650750d21e4a6a589be3";
 export const APP_DATABASE = "650750f16cd0c482bb83";
