@@ -136,7 +136,7 @@ export default function CommunityScreen() {
 const styles = StyleSheet.create({
   badge: {
     position: "absolute",
-    right: -6,
+    right: 10,
     top: -3,
     backgroundColor: Colors.light.error,
     borderRadius: 9,
