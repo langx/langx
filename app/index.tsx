@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     color: Colors.light.gray3,
   },
   link: {
-    color: Colors.light.primary,
+    color: Colors.light.secondary,
   },
   button: {
     flex: 1,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     margin: 50,
   },
   buttonText: {
-    color: Colors.light.primary,
+    color: Colors.light.secondary,
     fontSize: 22,
     fontWeight: "500",
   },
