@@ -106,11 +106,13 @@ export function onlineStatusInChatRoom(date: Date) {
   let days = Math.floor(hours / 24);
 
   if (minutes < 3) {
-    return 'online';
-  } else if (hours < 6) {
-    return 'away';
+    return 'Online';
+  } else if (minutes < 120) {
+    return `Online: ${minutes} minutes ago`;
+  } else if (hours < 24) {
+    return `Online: ${hours} hours ago`;
   } else {
-    return 'offline';
+    return `Online: ${days} days ago`;
   }
 }
 
