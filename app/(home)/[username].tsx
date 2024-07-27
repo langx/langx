@@ -4,10 +4,8 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 const UserScreen = () => {
-  const theme = useColorScheme() ?? "light";
   const { username } = useLocalSearchParams<{ username: string }>();
 
   return (
