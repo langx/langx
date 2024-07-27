@@ -84,6 +84,24 @@ export async function listUsers(params: any): Promise<User[]> {
   }
 }
 
+// Get User By Username
+export async function getUserByUsername(username: string): Promise<User> {
+  try {
+    const response = await listDocuments(USERS_COLLECTION, [
+      Query.equal("username", username),
+    ]);
+    if (response.total === 0) {
+      return null;
+    }
+    return response.documents[0] as User;
+  } catch (error) {
+    console.error("Error getting user:", error);
+    throw error;
+  }
+}
+
+// Utils
+
 function createFilterQueries(filterData: FilterDataInterface): any[] {
   const queries: any[] = [];
 
