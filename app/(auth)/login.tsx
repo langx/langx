@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Image, StyleSheet, ScrollView, Alert, TextInput } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -50,6 +50,9 @@ const LoginForm = () => {
       dispatch(setSession(session));
       dispatch(setJwt(jwt));
 
+      // router.back();
+      router.back();
+      router.push("/(home)/(tabs)");
       Alert.alert("Success", "User signed in successfully");
     } catch (error) {
       Alert.alert("Error", error.message);
