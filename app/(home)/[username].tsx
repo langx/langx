@@ -33,7 +33,7 @@ const UserScreen = () => {
           headerRight: () => (
             <Pressable onPress={() => router.back()}>
               <Ionicons
-                name="ellipsis-horizontal-outline"
+                name="ellipsis-horizontal"
                 size={24}
                 color={Colors.light.black}
               />
