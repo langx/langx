@@ -14,6 +14,7 @@ import store, { RootState, AppDispatch } from "@/store/store";
 import { fetchAuthData } from "@/store/authSlice";
 import { fonts } from "@/constants/fonts";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import usePlausible from "@/hooks/usePlausible";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
@@ -24,6 +25,7 @@ const StackLayout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const segments = useSegments();
   const router = useRouter();
+  usePlausible();
 
   // Selectors
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);

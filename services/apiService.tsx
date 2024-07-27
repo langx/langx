@@ -8,14 +8,14 @@ import {
 
 import {
   APP_PACKAGE_NAME,
-  APP_ENDPOINT,
+  DB_ENDPOINT,
   APP_PROJECT,
   APP_DATABASE,
   USERS_COLLECTION,
 } from "@/constants/config";
 
 const appwriteConfig = {
-  endpoint: APP_ENDPOINT,
+  endpoint: DB_ENDPOINT,
   platform: APP_PACKAGE_NAME,
   projectId: APP_PROJECT,
   databaseId: APP_DATABASE,
