@@ -81,6 +81,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
         </ThemedView>
         <ThemedText style={styles.cardSubtitle}>Recommended Users</ThemedText>
       </ThemedView>
+      {/* Body Section */}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         horizontal
