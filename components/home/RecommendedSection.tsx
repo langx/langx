@@ -13,12 +13,12 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
+import { Colors } from "@/constants/Colors";
 import { useDatabase } from "@/hooks/useDatabase";
 import { listUsers } from "@/services/userService";
-import { Colors } from "@/constants/Colors";
-import UserCard from "@/components/home/UserCard";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import UserCard from "@/components/home/UserCard";
 
 interface RecommendedSectionProps {
   currentUserId: string;
