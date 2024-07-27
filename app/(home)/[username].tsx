@@ -17,6 +17,7 @@ import AboutMeCard from "@/components/profile/AboutMeCard";
 import LanguagesCard from "@/components/profile/LanguagesCard";
 import BadgesCard from "@/components/profile/BadgesCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
+import UserManagementCard from "@/components/profile/UserManagementCard";
 
 const StackLayout = ({ username }: { username: string }) => {
   return (
@@ -87,6 +88,10 @@ const UserScreen = () => {
     {
       component: <DayStreaksCard streak={user?.streaks} />,
       key: "DayStreaksCard",
+    },
+    {
+      component: <UserManagementCard />,
+      key: "UserManagementCard",
     },
   ];
 
