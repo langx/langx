@@ -51,7 +51,7 @@ const Welcome = () => {
 
       <OAuth2Login />
 
-      <ThemedView style={{ gap: 10 }}>
+      <ThemedView style={{ gap: 10, marginTop: 15 }}>
         <ThemedButton
           title="Log In with Email"
           onPress={() => {
