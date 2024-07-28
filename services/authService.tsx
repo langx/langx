@@ -1,4 +1,4 @@
-import { ID, Query } from "react-native-appwrite";
+import { ID, OAuthProvider, Query } from "react-native-appwrite";
 import { account, createDocument, listDocuments } from "@/services/apiService";
 import { USERS_COLLECTION } from "@/constants/config";
 import { User } from "@/models/User";
@@ -39,7 +39,23 @@ export async function login(email, password) {
   }
 }
 
-// Sign In
+export async function loginWithProvider(provider: OAuthProvider) {
+  try {
+    const SUCCESS_OAUTH2 = `langx://(home)`;
+    const FAILURE_OAUTH2 = `langx://`;
+    const session = account.createOAuth2Session(
+      provider,
+      SUCCESS_OAUTH2,
+      FAILURE_OAUTH2
+    );
+
+    return session;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+// Sign In as Guest
 export async function createAnonymousSession() {
   try {
     const session = await account.createAnonymousSession();

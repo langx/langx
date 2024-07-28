@@ -1,6 +1,8 @@
 import { TouchableOpacity, StyleSheet } from "react-native";
+import { OAuthProvider } from "react-native-appwrite";
 import Svg, { Path } from "react-native-svg";
 
+import { loginWithProvider } from "@/services/authService";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
@@ -57,9 +59,9 @@ const FacebookSVG = () => (
 );
 
 const OAuth2Login = () => {
-  const signInWithProvider = (provider) => {
-    // Your sign-in logic here
+  const signInWithProvider = (provider: OAuthProvider) => {
     console.log(`Signing in with ${provider}`);
+    loginWithProvider(provider);
   };
 
   return (
@@ -67,7 +69,7 @@ const OAuth2Login = () => {
       <ThemedView style={styles.row}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => signInWithProvider("Discord")}
+          onPress={() => signInWithProvider(OAuthProvider.Discord)}
         >
           <ThemedView style={styles.icon}>
             <DiscordSVG />
@@ -76,7 +78,7 @@ const OAuth2Login = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => signInWithProvider("Google")}
+          onPress={() => signInWithProvider(OAuthProvider.Google)}
         >
           <ThemedView style={styles.icon}>
             <GoogleSVG />
@@ -85,7 +87,7 @@ const OAuth2Login = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => signInWithProvider("Facebook")}
+          onPress={() => signInWithProvider(OAuthProvider.Facebook)}
         >
           <ThemedView style={styles.icon}>
             <FacebookSVG />
@@ -94,7 +96,7 @@ const OAuth2Login = () => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => signInWithProvider("Apple")}
+          onPress={() => signInWithProvider(OAuthProvider.Apple)}
         >
           <ThemedView style={styles.icon}>
             <AppleSVG />
