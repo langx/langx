@@ -5,8 +5,7 @@ import {
   StyleSheet,
   FlatList,
 } from "react-native";
-import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Stack, useLocalSearchParams } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import { getUserByUsername } from "@/services/userService";
