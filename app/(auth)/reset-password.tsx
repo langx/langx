@@ -1,36 +1,31 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, ScrollView, TextInput } from "react-native";
-import { Link } from "expo-router";
+import { ScrollView, Image, StyleSheet, TextInput } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
-import useSignInUser from "@/hooks/useSingInUser";
-import { login } from "@/services/authService";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { resetPassword } from "@/services/authService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import OAuth2Login from "@/components/auth/OAuth2Login";
 
-const LoginSchema = Yup.object().shape({
+const ResetSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(6, "Password too short!").required("Required"),
 });
 
-const LoginForm = () => {
-  // Hooks
-  const signInUser = useSignInUser();
-
+const ResetForm = () => {
   // States
   const [isSubmitting, setSubmitting] = useState(false);
 
-  const handleLogin = async (form: any) => {
+  const handleReset = async (form: any) => {
     setSubmitting(true);
     try {
-      const session = await login(form.email, form.password);
-      signInUser(session);
+      console.log("Resetting password for:", form.email);
+      const response = await resetPassword(form.email);
+      console.log("Response:", response);
     } catch (error) {
       console.error("Error logging in:", error);
     } finally {
@@ -40,9 +35,9 @@ const LoginForm = () => {
 
   return (
     <Formik
-      initialValues={{ email: "", password: "" }}
-      validationSchema={LoginSchema}
-      onSubmit={(values) => handleLogin(values)}
+      initialValues={{ email: "" }}
+      validationSchema={ResetSchema}
+      onSubmit={(values) => handleReset(values)}
     >
       {({
         handleChange,
@@ -67,26 +62,11 @@ const LoginForm = () => {
               {errors.email}
             </ThemedText>
           ) : null}
-          <ThemedText style={styles.text}>Password</ThemedText>
-          <TextInput
-            key="password"
-            style={styles.text}
-            onChangeText={handleChange("password")}
-            onBlur={handleBlur("password")}
-            value={values.password}
-            placeholder="Password"
-            secureTextEntry
-          />
-          {errors.password && touched.password ? (
-            <ThemedText style={{ color: Colors.light.error }}>
-              {errors.password}
-            </ThemedText>
-          ) : null}
           <ThemedButton
             onPress={handleSubmit}
             style={styles.button}
             isLoading={isSubmitting}
-            title="Login"
+            title="Send Email"
           />
         </ThemedView>
       )}
@@ -94,9 +74,8 @@ const LoginForm = () => {
   );
 };
 
-const Login = () => {
+const ResetPassword = () => {
   const colorScheme = useColorScheme();
-
   return (
     <ThemedView style={styles.container}>
       <ScrollView>
@@ -106,41 +85,16 @@ const Login = () => {
           resizeMode="contain"
         />
 
-        <ThemedText style={styles.headline}>Log In</ThemedText>
-        <LoginForm />
+        <ThemedText style={styles.headline}>Reset Password</ThemedText>
 
+        <ResetForm />
         <OAuth2Login />
-
-        <ThemedView
-          style={{
-            justifyContent: "center",
-            flexDirection: "row",
-            gap: 2,
-            padding: 10,
-          }}
-        >
-          <ThemedText>Don't have an account?</ThemedText>
-          <Link href="/register">
-            <ThemedText type="link">Register</ThemedText>
-          </Link>
-        </ThemedView>
-        <ThemedView
-          style={{
-            justifyContent: "center",
-            flexDirection: "row",
-            gap: 2,
-            padding: 10,
-          }}
-        >
-          <ThemedText>Forget your password?</ThemedText>
-          <Link href="/(auth)/reset-password">
-            <ThemedText type="link">Reset it</ThemedText>
-          </Link>
-        </ThemedView>
       </ScrollView>
     </ThemedView>
   );
 };
+
+export default ResetPassword;
 
 const styles = StyleSheet.create({
   container: {
@@ -184,5 +138,3 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
 });
-
-export default Login;

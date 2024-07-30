@@ -83,7 +83,7 @@ const Settings = () => {
       dispatch(setAuthInitialState());
       Alert.alert("Success", "User signed out successfully");
       console.log("logged out");
-      router.replace("/welcome");
+      router.replace("/");
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
