@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Session } from '@/models/Session';
 
 import { createJWT, getAccount, getCurrentUser } from '@/services/authService';
 import {
@@ -17,7 +18,7 @@ const useSignInUser = () => {
   const router = useRouter();
 
   const signInUser = useCallback(
-    async (session) => {
+    async (session: Session) => {
       try {
         const [account, user] = await Promise.all([
           getAccount(),
