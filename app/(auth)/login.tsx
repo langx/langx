@@ -84,6 +84,7 @@ const LoginForm = () => {
           ) : null}
           <ThemedButton
             onPress={handleSubmit}
+            style={styles.button}
             isLoading={isSubmitting}
             title="Login"
           />
@@ -175,6 +176,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     alignItems: "center",
+    marginTop: 20,
   },
   buttonText: {
     color: Colors.light.primary,
