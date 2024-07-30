@@ -1,6 +1,6 @@
 import { ID, OAuthProvider, Query } from "react-native-appwrite";
 import { account, createDocument, listDocuments } from "@/services/apiService";
-import { USERS_COLLECTION } from "@/constants/config";
+import { NEW_PASSWORD_URL, USERS_COLLECTION } from "@/constants/config";
 import { User } from "@/models/User";
 
 // Register user
@@ -71,6 +71,17 @@ export async function createAnonymousSession() {
     const session = await account.createAnonymousSession();
 
     return session;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+// Reset Password
+export async function resetPassword(email: string) {
+  try {
+    const response = await account.createRecovery(email, NEW_PASSWORD_URL);
+
+    return response;
   } catch (error) {
     throw new Error(error);
   }
