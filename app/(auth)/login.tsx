@@ -1,26 +1,13 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, ScrollView, Alert, TextInput } from "react-native";
-import { Link, router } from "expo-router";
-import { useDispatch } from "react-redux";
+import { Image, StyleSheet, ScrollView, TextInput } from "react-native";
+import { Link } from "expo-router";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import {
-  createJWT,
-  getAccount,
-  getCurrentSession,
-  getCurrentUser,
-  login,
-} from "@/services/authService";
-import {
-  setAccount,
-  setError,
-  setJwt,
-  setSession,
-  setUser,
-} from "@/store/authSlice";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+import useSignInUser from "@/hooks/useSingInUser";
+import { login } from "@/services/authService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
@@ -33,31 +20,16 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
+  const signInUser = useSignInUser();
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleLogin = async (form: any) => {
     setSubmitting(true);
     try {
-      await login(form.email, form.password);
-      const [account, user, session] = await Promise.all([
-        getAccount(),
-        getCurrentUser(),
-        getCurrentSession(),
-      ]);
-      const jwt = await createJWT();
-      dispatch(setAccount(account));
-      dispatch(setUser(user));
-      dispatch(setSession(session));
-      dispatch(setJwt(jwt));
-
-      // router.back();
-      router.back();
-      router.push("/(home)/(tabs)");
-      Alert.alert("Success", "User signed in successfully");
+      const session = await login(form.email, form.password);
+      signInUser(session);
     } catch (error) {
-      Alert.alert("Error", error.message);
-      dispatch(setError(error.message || "An error occurred"));
+      console.error("Error logging in:", error);
     } finally {
       setSubmitting(false);
     }
