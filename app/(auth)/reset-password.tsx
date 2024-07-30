@@ -1,11 +1,13 @@
-import { View, Text } from "react-native";
 import React from "react";
+
+import { ThemedText } from "@/components/themed/atomic/ThemedText";
+import { ThemedView } from "@/components/themed/atomic/ThemedView";
 
 const ResetPassword = () => {
   return (
-    <View>
-      <Text>Reset Password</Text>
-    </View>
+    <ThemedView>
+      <ThemedText>Reset Password</ThemedText>
+    </ThemedView>
   );
 };
 
