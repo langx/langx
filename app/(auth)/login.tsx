@@ -63,7 +63,9 @@ const LoginForm = () => {
             placeholder="Email"
           />
           {errors.email && touched.email ? (
-            <ThemedText>{errors.email}</ThemedText>
+            <ThemedText style={{ color: Colors.light.error }}>
+              {errors.email}
+            </ThemedText>
           ) : null}
           <ThemedText style={styles.text}>Password</ThemedText>
           <TextInput
@@ -76,7 +78,9 @@ const LoginForm = () => {
             secureTextEntry
           />
           {errors.password && touched.password ? (
-            <ThemedText>{errors.password}</ThemedText>
+            <ThemedText style={{ color: Colors.light.error }}>
+              {errors.password}
+            </ThemedText>
           ) : null}
           <ThemedButton
             onPress={handleSubmit}
