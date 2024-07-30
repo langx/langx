@@ -1,7 +1,8 @@
 import { ID, OAuthProvider, Query } from "react-native-appwrite";
-import { account, createDocument, listDocuments } from "@/services/apiService";
-import { APP_ENDPOINT, USERS_COLLECTION } from "@/constants/config";
+
 import { User } from "@/models/User";
+import { APP_ENDPOINT, USERS_COLLECTION } from "@/constants/config";
+import { account, createDocument, listDocuments } from "@/services/apiService";
 
 // Register user
 export async function createUser(email, password, username) {
