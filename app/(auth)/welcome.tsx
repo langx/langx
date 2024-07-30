@@ -10,6 +10,7 @@ import { setSession, setAccount } from "@/store/authSlice";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
+import OAuth2Login from "@/components/auth/OAuth2Login";
 
 const Welcome = () => {
   const colorScheme = useColorScheme();
@@ -48,7 +49,9 @@ const Welcome = () => {
 
       <ThemedText style={styles.headline}>Practice, Learn, Succeed!</ThemedText>
 
-      <ThemedView style={{ gap: 10 }}>
+      <OAuth2Login />
+
+      <ThemedView style={{ gap: 10, marginTop: 15 }}>
         <ThemedButton
           title="Log In with Email"
           onPress={() => {
@@ -57,7 +60,7 @@ const Welcome = () => {
         ></ThemedButton>
 
         <ThemedButton
-          title="Log In As a Guest"
+          title="Try As a Guest"
           onPress={demo}
           isLoading={isSubmitting}
         />

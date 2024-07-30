@@ -1,0 +1,53 @@
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { Alert } from 'react-native';
+import { useRouter, useSegments } from 'expo-router';
+import { isEqual } from 'lodash';
+
+import { Session } from '@/models/Session';
+import { createJWT, getAccount, getCurrentUser } from '@/services/authService';
+import {
+  setAccount,
+  setError,
+  setJwt,
+  setSession,
+  setUser,
+} from '@/store/authSlice';
+
+const useSignInUser = () => {
+  const dispatch = useDispatch();
+  const segments = useSegments();
+  const router = useRouter();
+
+  const signInUser = useCallback(
+    async (session: Session) => {
+      try {
+        const [account, user] = await Promise.all([
+          getAccount(),
+          getCurrentUser(),
+        ]);
+        const jwt = await createJWT();
+        dispatch(setAccount(account));
+        dispatch(setUser(user));
+        dispatch(setSession(session));
+        dispatch(setJwt(jwt));
+
+        if (isEqual(segments, ['(auth)', 'login'])) {
+          router.back();
+        }
+
+        router.push('/(home)/(tabs)');
+        Alert.alert('Success', 'User signed in successfully');
+      } catch (error) {
+        dispatch(setError(error.message || 'An error occurred'));
+        console.error('Error signing in user:', error);
+        Alert.alert('Error', 'Failed to sign in user');
+      }
+    },
+    [dispatch, router]
+  );
+
+  return signInUser;
+};
+
+export default useSignInUser;

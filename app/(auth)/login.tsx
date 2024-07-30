@@ -1,30 +1,18 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, ScrollView, Alert, TextInput } from "react-native";
-import { Link, router } from "expo-router";
-import { useDispatch } from "react-redux";
+import { Image, StyleSheet, ScrollView, TextInput } from "react-native";
+import { Link } from "expo-router";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import {
-  createJWT,
-  getAccount,
-  getCurrentSession,
-  getCurrentUser,
-  login,
-} from "@/services/authService";
-import {
-  setAccount,
-  setError,
-  setJwt,
-  setSession,
-  setUser,
-} from "@/store/authSlice";
+import { Colors } from "@/constants/Colors";
+import images from "@/constants/images";
+import useSignInUser from "@/hooks/useSingInUser";
+import { login } from "@/services/authService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Colors } from "@/constants/Colors";
-import images from "@/constants/images";
+import OAuth2Login from "@/components/auth/OAuth2Login";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -32,35 +20,24 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginForm = () => {
-  const dispatch = useDispatch();
+  // Hooks
+  const signInUser = useSignInUser();
+
+  // States
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleLogin = async (form: any) => {
     setSubmitting(true);
     try {
-      await login(form.email, form.password);
-      const [account, user, session] = await Promise.all([
-        getAccount(),
-        getCurrentUser(),
-        getCurrentSession(),
-      ]);
-      const jwt = await createJWT();
-      dispatch(setAccount(account));
-      dispatch(setUser(user));
-      dispatch(setSession(session));
-      dispatch(setJwt(jwt));
-
-      // router.back();
-      router.back();
-      router.push("/(home)/(tabs)");
-      Alert.alert("Success", "User signed in successfully");
+      const session = await login(form.email, form.password);
+      signInUser(session);
     } catch (error) {
-      Alert.alert("Error", error.message);
-      dispatch(setError(error.message || "An error occurred"));
+      console.error("Error logging in:", error);
     } finally {
       setSubmitting(false);
     }
   };
+
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
@@ -78,6 +55,7 @@ const LoginForm = () => {
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Email</ThemedText>
           <TextInput
+            key="email"
             style={styles.text}
             onChangeText={handleChange("email")}
             onBlur={handleBlur("email")}
@@ -85,10 +63,13 @@ const LoginForm = () => {
             placeholder="Email"
           />
           {errors.email && touched.email ? (
-            <ThemedText>{errors.email}</ThemedText>
+            <ThemedText style={{ color: Colors.light.error }}>
+              {errors.email}
+            </ThemedText>
           ) : null}
           <ThemedText style={styles.text}>Password</ThemedText>
           <TextInput
+            key="password"
             style={styles.text}
             onChangeText={handleChange("password")}
             onBlur={handleBlur("password")}
@@ -97,7 +78,9 @@ const LoginForm = () => {
             secureTextEntry
           />
           {errors.password && touched.password ? (
-            <ThemedText>{errors.password}</ThemedText>
+            <ThemedText style={{ color: Colors.light.error }}>
+              {errors.password}
+            </ThemedText>
           ) : null}
           <ThemedButton
             onPress={handleSubmit}
@@ -124,6 +107,8 @@ const Login = () => {
 
         <ThemedText style={styles.headline}>Log In</ThemedText>
         <LoginForm />
+
+        <OAuth2Login />
 
         <ThemedView
           style={{
@@ -159,6 +144,8 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   logo: {
