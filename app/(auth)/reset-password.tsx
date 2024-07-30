@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { ScrollView, Image, StyleSheet, TextInput } from "react-native";
-import { Link } from "expo-router";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { resetPassword } from "@/services/authService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
+import OAuth2Login from "@/components/auth/OAuth2Login";
 
 const ResetSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -23,8 +24,8 @@ const ResetForm = () => {
     setSubmitting(true);
     try {
       console.log("Resetting password for:", form.email);
-      // const session = await login(form.email, form.password);
-      // signInUser(session);
+      const response = await resetPassword(form.email);
+      console.log("Response:", response);
     } catch (error) {
       console.error("Error logging in:", error);
     } finally {
@@ -63,8 +64,9 @@ const ResetForm = () => {
           ) : null}
           <ThemedButton
             onPress={handleSubmit}
+            style={styles.button}
             isLoading={isSubmitting}
-            title="Login"
+            title="Send Email"
           />
         </ThemedView>
       )}
@@ -84,7 +86,9 @@ const ResetPassword = () => {
         />
 
         <ThemedText style={styles.headline}>Reset Password</ThemedText>
+
         <ResetForm />
+        <OAuth2Login />
       </ScrollView>
     </ThemedView>
   );
@@ -95,9 +99,8 @@ export default ResetPassword;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
-    minWidth: "100%",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   logo: {
@@ -125,8 +128,9 @@ const styles = StyleSheet.create({
     color: Colors.light.gray3,
   },
   button: {
-    width: "80%",
+    width: "100%",
     alignItems: "center",
+    marginTop: 20,
   },
   buttonText: {
     color: Colors.light.primary,
