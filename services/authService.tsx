@@ -39,15 +39,26 @@ export async function login(email, password) {
   }
 }
 
-export async function loginWithProvider(provider: OAuthProvider) {
+export function createOAuth2Token(provider: OAuthProvider) {
   try {
-    const SUCCESS_OAUTH2 = `langx://(home)`;
-    const FAILURE_OAUTH2 = `langx://`;
-    const session = account.createOAuth2Session(
+    const SUCCESS_OAUTH2 = `langx://(auth)/success?provider=${provider}`;
+    const FAILURE_OAUTH2 = `langx://(auth)/failure?provider=${provider}`;
+    // const session = account.createOAuth2Session(
+    const token = account.createOAuth2Token(
       provider,
       SUCCESS_OAUTH2,
       FAILURE_OAUTH2
     );
+
+    return token;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export async function createSession(userId: string, secret: string) {
+  try {
+    const session = await account.createSession(userId, secret);
 
     return session;
   } catch (error) {
