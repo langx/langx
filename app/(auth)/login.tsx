@@ -132,7 +132,7 @@ const Login = () => {
           }}
         >
           <ThemedText>Forget your password?</ThemedText>
-          <Link href="/reset-password">
+          <Link href="/(auth)/reset-password">
             <ThemedText type="link">Reset it</ThemedText>
           </Link>
         </ThemedView>
