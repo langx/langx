@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Alert } from 'react-native';
-import { useRouter, useSegments } from 'expo-router';
-import { isEqual } from 'lodash';
+import { useRouter } from 'expo-router';
 
 import { Session } from '@/models/Session';
 import { createJWT, getAccount, getCurrentUser } from '@/services/authService';
@@ -16,7 +15,6 @@ import {
 
 const useSignInUser = () => {
   const dispatch = useDispatch();
-  const segments = useSegments();
   const router = useRouter();
 
   const signInUser = useCallback(
@@ -32,11 +30,7 @@ const useSignInUser = () => {
         dispatch(setSession(session));
         dispatch(setJwt(jwt));
 
-        if (isEqual(segments, ['(auth)', 'login'])) {
-          router.back();
-        }
-
-        router.push('/(home)/(tabs)');
+        router.replace('/(home)/(tabs)');
         Alert.alert('Success', 'User signed in successfully');
       } catch (error) {
         dispatch(setError(error.message || 'An error occurred'));
