@@ -50,7 +50,7 @@ const App = () => {
             {"."}
           </ThemedText>
 
-          <Link href={"/welcome"} replace asChild>
+          <Link href={"/(auth)"} asChild>
             <Pressable style={styles.button}>
               <ThemedText type="link" style={styles.buttonText}>
                 Agree & Continue
