@@ -43,7 +43,6 @@ export function createOAuth2Token(provider: OAuthProvider) {
   try {
     const SUCCESS_OAUTH2 = `langx://(auth)/success?provider=${provider}`;
     const FAILURE_OAUTH2 = `langx://(auth)/failure?provider=${provider}`;
-    // const session = account.createOAuth2Session(
     const token = account.createOAuth2Token(
       provider,
       SUCCESS_OAUTH2,
