@@ -11,7 +11,7 @@ const AuthLayout = () => {
         name="login"
         options={{
           headerTitle: "Login",
-          headerShown: true,
+          headerShown: false,
           headerBackVisible: true,
           headerShadowVisible: false,
           headerBackTitleVisible: true,
@@ -39,7 +39,7 @@ const AuthLayout = () => {
         name="register"
         options={{
           headerTitle: "Register",
-          headerShown: true,
+          headerShown: false,
           headerBackVisible: true,
           headerShadowVisible: false,
           headerBackTitleVisible: true,
@@ -66,8 +66,8 @@ const AuthLayout = () => {
       <Stack.Screen
         name="reset-password"
         options={{
+          headerShown: false,
           headerTitle: "Reset Password",
-          headerShown: true,
           headerBackVisible: true,
           headerShadowVisible: false,
           headerBackTitleVisible: true,
