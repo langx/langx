@@ -50,6 +50,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "^15.4.0",
     "react-native-swiper": "^1.6.0",
+    "react-native-toast-message": "^2.2.0",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
