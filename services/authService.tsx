@@ -29,7 +29,7 @@ export async function createUser(email, password, username) {
 }
 
 // Sign In
-export async function login(email, password) {
+export async function login(email: string, password: string) {
   try {
     const session = await account.createEmailPasswordSession(email, password);
 
