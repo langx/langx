@@ -9,10 +9,16 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import Toast, {
+  BaseToast,
+  ErrorToast,
+  ToastConfig,
+} from "react-native-toast-message";
 
 import store, { RootState, AppDispatch } from "@/store/store";
 import { fetchAuthData } from "@/store/authSlice";
 import { fonts } from "@/constants/fonts";
+import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import usePlausible from "@/hooks/usePlausible";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -84,7 +90,7 @@ const StackLayout = () => {
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useColorScheme() ?? "light";
   const [fontsLoaded, error] = useFonts(fonts);
 
   useEffect(() => {
@@ -97,10 +103,56 @@ export default function RootLayout() {
     return null;
   }
 
+  const toastConfig: ToastConfig = {
+    /*
+      Overwrite 'success' type,
+      by modifying the existing `BaseToast` component
+    */
+    success: (props) => (
+      <ThemedView>
+        <BaseToast
+          {...props}
+          style={{
+            borderLeftColor: Colors[theme].success,
+            backgroundColor: Colors[theme].background,
+          }}
+          contentContainerStyle={{ paddingHorizontal: 15 }}
+          text1Style={{
+            fontSize: 15,
+            fontWeight: "400",
+            fontFamily: "Lexend-Bold",
+            color: Colors[theme].black,
+          }}
+        />
+      </ThemedView>
+    ),
+    /*
+      Overwrite 'error' type,
+      by modifying the existing `ErrorToast` component
+    */
+    error: (props) => (
+      <ErrorToast
+        {...props}
+        style={{
+          borderLeftColor: Colors[theme].error,
+          backgroundColor: Colors[theme].background,
+        }}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        text1Style={{
+          fontSize: 15,
+          fontWeight: "400",
+          fontFamily: "Lexend-Bold",
+          color: Colors[theme].black,
+        }}
+      />
+    ),
+  };
+
   return (
     <Provider store={store}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={theme === "dark" ? DarkTheme : DefaultTheme}>
         <StackLayout />
+        <Toast config={toastConfig} />
       </ThemeProvider>
     </Provider>
   );
