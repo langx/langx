@@ -20,7 +20,10 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LoginForm = () => {
+  // Hooks
   const signInUser = useSignInUser();
+
+  // States
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleLogin = async (form: any) => {
@@ -34,6 +37,7 @@ const LoginForm = () => {
       setSubmitting(false);
     }
   };
+
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
