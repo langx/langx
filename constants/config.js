@@ -13,7 +13,6 @@ export const MESSAGE_BUCKET = "655fedc46d24b615878a";
 
 export const APP_PACKAGE_NAME = "tech.newchapter.languageXchange";
 export const PLAUSIBLE_API_URL = "https://insight.langx.io/api/event";
-export const NEW_PASSWORD_URL = "langx://(auth)/new-password";
 
 export const PAGINATION_LIMIT = 20;
 export const PRESENCE_INTERVAL = 59 * 1000;
