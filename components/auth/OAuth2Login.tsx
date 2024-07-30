@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { StyleSheet, Platform, Pressable } from "react-native";
 import { OAuthProvider } from "react-native-appwrite";
 import {
   openAuthSessionAsync,
@@ -77,41 +77,41 @@ const OAuth2Login = () => {
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.row}>
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={() => signInWithProvider(OAuthProvider.Discord)}
         >
           <ThemedView style={styles.icon}>
             <DiscordSVG />
           </ThemedView>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={() => signInWithProvider(OAuthProvider.Google)}
         >
           <ThemedView style={styles.icon}>
             <GoogleSVG />
           </ThemedView>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={() => signInWithProvider(OAuthProvider.Facebook)}
         >
           <ThemedView style={styles.icon}>
             <FacebookSVG />
           </ThemedView>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={() => signInWithProvider(OAuthProvider.Apple)}
         >
           <ThemedView style={styles.icon}>
             <AppleSVG theme={theme} />
           </ThemedView>
-        </TouchableOpacity>
+        </Pressable>
       </ThemedView>
     </ThemedView>
   );
