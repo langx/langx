@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { Image, StyleSheet, ScrollView, TextInput } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  Modal,
+  Button,
+  Pressable,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Link } from "expo-router";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import DatePicker from "react-native-date-picker";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -16,12 +25,13 @@ import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.string().min(1, "Invalid birthdate").required("Required"),
   gender: Yup.string().min(1, "Invalid gender").required("Required"),
-  country: Yup.string().min(8, "Invalid country").required("Required"),
+  country: Yup.string().min(1, "Invalid country").required("Required"),
 });
 
 const CompleteForm = () => {
-  // States
   const [isSubmitting, setSubmitting] = useState(false);
+  const [birthdate, setBirthdate] = useState(new Date());
+  const [open, setOpen] = useState(false);
 
   const handleComplete = async (form: any) => {
     setSubmitting(true);
@@ -53,6 +63,7 @@ const CompleteForm = () => {
         handleChange,
         handleBlur,
         handleSubmit,
+        setFieldValue,
         values,
         errors,
         touched,
@@ -60,18 +71,48 @@ const CompleteForm = () => {
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Birthdate</ThemedText>
           <TextInput
-            key="birthdate"
             style={styles.text}
-            onChangeText={handleChange("birthdate")}
-            onBlur={handleBlur("Birthdate")}
-            value={values.birthdate}
-            placeholder="Birthdate"
+            value={birthdate.toLocaleDateString("en-US", {
+              month: "2-digit",
+              day: "2-digit",
+              year: "numeric",
+            })}
+            editable={false}
+            placeholder="Select Birthdate"
           />
           {errors.birthdate && touched.birthdate ? (
             <ThemedText style={{ color: Colors.light.error }}>
               {errors.birthdate}
             </ThemedText>
           ) : null}
+
+          <Pressable onPress={() => setOpen(true)}>
+            <ThemedText style={styles.text}>Select Birthdate</ThemedText>
+          </Pressable>
+          <Modal visible={open} transparent={true} animationType="fade">
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalBox}>
+                <DatePicker
+                  date={birthdate}
+                  onDateChange={(date) => setBirthdate(date)}
+                  mode="date"
+                />
+                <Button
+                  title="Confirm"
+                  onPress={() => {
+                    setOpen(false);
+                    setFieldValue("birthdate", birthdate.toDateString());
+                  }}
+                />
+                <Button
+                  title="Cancel"
+                  onPress={() => setOpen(false)}
+                  color={Colors.light.error}
+                />
+              </View>
+            </View>
+          </Modal>
+
           <ThemedText style={styles.text}>Gender</ThemedText>
           <TextInput
             key="gender"
@@ -86,6 +127,7 @@ const CompleteForm = () => {
               {errors.gender}
             </ThemedText>
           ) : null}
+
           <ThemedText style={styles.text}>Country</ThemedText>
           <TextInput
             key="country"
@@ -101,6 +143,7 @@ const CompleteForm = () => {
               {errors.country}
             </ThemedText>
           ) : null}
+
           <ThemedButton
             onPress={handleSubmit}
             style={styles.button}
@@ -114,7 +157,6 @@ const CompleteForm = () => {
 };
 
 const Register = () => {
-  // Hooks
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
 
@@ -180,6 +222,19 @@ const styles = StyleSheet.create({
     color: Colors.light.primary,
     fontSize: 22,
     fontWeight: "500",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalBox: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 10,
+    alignItems: "center",
   },
 });
 
