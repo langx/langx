@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Image, StyleSheet, ScrollView, TextInput } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -7,22 +8,18 @@ import * as Yup from "yup";
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import useSignInUser from "@/hooks/useSingInUser";
 import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
 const CompleteSchema = Yup.object().shape({
-  name: Yup.string().min(3, "Name is too short").required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(8, "Password too short!").required("Required"),
+  birthdate: Yup.string().min(1, "Invalid birthdate").required("Required"),
+  gender: Yup.string().min(1, "Invalid gender").required("Required"),
+  country: Yup.string().min(8, "Invalid country").required("Required"),
 });
 
 const CompleteForm = () => {
-  // Hooks
-  const signInUser = useSignInUser();
-
   // States
   const [isSubmitting, setSubmitting] = useState(false);
 
@@ -48,7 +45,7 @@ const CompleteForm = () => {
 
   return (
     <Formik
-      initialValues={{ name: "", email: "", password: "" }}
+      initialValues={{ birthdate: "", gender: "", country: "" }}
       validationSchema={CompleteSchema}
       onSubmit={(values) => handleComplete(values)}
     >
@@ -61,54 +58,54 @@ const CompleteForm = () => {
         touched,
       }) => (
         <ThemedView style={{ flex: 1 }}>
-          <ThemedText style={styles.text}>Name</ThemedText>
+          <ThemedText style={styles.text}>Birthdate</ThemedText>
           <TextInput
-            key="name"
+            key="birthdate"
             style={styles.text}
-            onChangeText={handleChange("name")}
-            onBlur={handleBlur("name")}
-            value={values.name}
-            placeholder="Name"
+            onChangeText={handleChange("birthdate")}
+            onBlur={handleBlur("Birthdate")}
+            value={values.birthdate}
+            placeholder="Birthdate"
           />
-          {errors.name && touched.name ? (
+          {errors.birthdate && touched.birthdate ? (
             <ThemedText style={{ color: Colors.light.error }}>
-              {errors.name}
+              {errors.birthdate}
             </ThemedText>
           ) : null}
-          <ThemedText style={styles.text}>Email</ThemedText>
+          <ThemedText style={styles.text}>Gender</ThemedText>
           <TextInput
-            key="email"
+            key="gender"
             style={styles.text}
-            onChangeText={handleChange("email")}
-            onBlur={handleBlur("email")}
-            value={values.email}
-            placeholder="Email"
+            onChangeText={handleChange("gender")}
+            onBlur={handleBlur("gender")}
+            value={values.gender}
+            placeholder="Gender"
           />
-          {errors.email && touched.email ? (
+          {errors.gender && touched.gender ? (
             <ThemedText style={{ color: Colors.light.error }}>
-              {errors.email}
+              {errors.gender}
             </ThemedText>
           ) : null}
-          <ThemedText style={styles.text}>Password</ThemedText>
+          <ThemedText style={styles.text}>Country</ThemedText>
           <TextInput
-            key="password"
+            key="country"
             style={styles.text}
-            onChangeText={handleChange("password")}
-            onBlur={handleBlur("password")}
-            value={values.password}
-            placeholder="Password"
+            onChangeText={handleChange("country")}
+            onBlur={handleBlur("country")}
+            value={values.country}
+            placeholder="Country"
             secureTextEntry
           />
-          {errors.password && touched.password ? (
+          {errors.country && touched.country ? (
             <ThemedText style={{ color: Colors.light.error }}>
-              {errors.password}
+              {errors.country}
             </ThemedText>
           ) : null}
           <ThemedButton
             onPress={handleSubmit}
             style={styles.button}
             isLoading={isSubmitting}
-            title="Register"
+            title="Next"
           />
         </ThemedView>
       )}
@@ -117,10 +114,17 @@ const CompleteForm = () => {
 };
 
 const Register = () => {
+  // Hooks
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView
+      style={[
+        styles.container,
+        { paddingBottom: insets.bottom, paddingTop: insets.top },
+      ]}
+    >
       <ScrollView>
         <Image
           source={colorScheme === "dark" ? images.logo_light : images.logo_dark}
@@ -128,38 +132,9 @@ const Register = () => {
           resizeMode="contain"
         />
 
-        <ThemedText style={styles.headline}>Register</ThemedText>
+        <ThemedText style={styles.headline}>Personal Information</ThemedText>
 
         <CompleteForm />
-
-        {/* <OAuth2Login /> */}
-
-        <ThemedView
-          style={{
-            justifyContent: "center",
-            flexDirection: "row",
-            gap: 2,
-            padding: 10,
-          }}
-        >
-          <ThemedText>Do you have an account?</ThemedText>
-          <Link href="/login">
-            <ThemedText type="link">Login</ThemedText>
-          </Link>
-        </ThemedView>
-        <ThemedView
-          style={{
-            justifyContent: "center",
-            flexDirection: "row",
-            gap: 2,
-            padding: 10,
-          }}
-        >
-          <ThemedText>Forget your password?</ThemedText>
-          <Link href="/(auth)/reset-password">
-            <ThemedText type="link">Reset it</ThemedText>
-          </Link>
-        </ThemedView>
       </ScrollView>
     </ThemedView>
   );
