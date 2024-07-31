@@ -107,7 +107,6 @@ const CompleteForm = () => {
                 })}
               </ThemedText>
             )}
-            {/* <ThemedText style={styles.text}>Select Birthdate</ThemedText> */}
           </Pressable>
           {errors.birthdate && touched.birthdate ? (
             <ThemedText style={{ color: Colors.light.error }}>
