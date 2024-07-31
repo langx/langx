@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import DatePicker from "react-native-date-picker";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -54,26 +54,33 @@ const CompleteSchema = Yup.object().shape({
 const CompleteForm = () => {
   const [isSubmitting, setSubmitting] = useState(false);
   const [birthdate, setBirthdate] = useState(new Date());
-  const [open, setOpen] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [genderModalOpen, setGenderModalOpen] = useState(false);
 
-  const handleComplete = async (form: any) => {
+  const handleComplete = async (form) => {
     setSubmitting(true);
     try {
       console.log("Completing with:", form);
-      // const session = await login(form.email, form.password);
-      // const newAccount = await register(form.email, form.password, form.name);
-      // console.log("New account:", newAccount);
-      // const session = await login(form.email, form.password);
-      // console.log("Session:", session);
-      // signInUser(session);
-
-      // signInUser(session);
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setBirthdate(date);
+    // setFieldValue("birthdate", date.toDateString());
+    hideDatePicker();
   };
 
   return (
@@ -93,7 +100,7 @@ const CompleteForm = () => {
       }) => (
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Birthdate</ThemedText>
-          <Pressable onPress={() => setOpen(true)}>
+          <Pressable onPress={showDatePicker}>
             {birthdate ? (
               <ThemedText style={styles.text}>
                 {birthdate.toLocaleDateString("en-US", {
@@ -112,26 +119,59 @@ const CompleteForm = () => {
             </ThemedText>
           ) : null}
 
-          <Modal visible={open} transparent={true} animationType="fade">
-            <TouchableWithoutFeedback onPress={() => setOpen(false)}>
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={handleConfirm}
+            onCancel={hideDatePicker}
+            maximumDate={new Date()}
+          />
+
+          <ThemedText style={styles.text}>Gender</ThemedText>
+          <Pressable onPress={() => setGenderModalOpen(true)}>
+            <ThemedText style={styles.text}>
+              {values.gender || "Select Gender"}
+            </ThemedText>
+          </Pressable>
+          {errors.gender && touched.gender ? (
+            <ThemedText style={{ color: Colors.light.error }}>
+              {errors.gender}
+            </ThemedText>
+          ) : null}
+
+          <Modal
+            visible={genderModalOpen}
+            transparent={true}
+            animationType="fade"
+          >
+            <TouchableWithoutFeedback onPress={() => setGenderModalOpen(false)}>
               <View style={styles.modalOverlay}>
                 <TouchableWithoutFeedback>
                   <View style={styles.modalBox}>
-                    <DatePicker
-                      date={birthdate}
-                      onDateChange={(date) => setBirthdate(date)}
-                      mode="date"
+                    <Button
+                      title="Male"
+                      onPress={() => {
+                        setGenderModalOpen(false);
+                        setFieldValue("gender", "male");
+                      }}
                     />
                     <Button
-                      title="Confirm"
+                      title="Female"
                       onPress={() => {
-                        setOpen(false);
-                        setFieldValue("birthdate", birthdate.toDateString());
+                        setGenderModalOpen(false);
+                        setFieldValue("gender", "female");
+                      }}
+                    />
+                    <Button
+                      title="Prefer not to say"
+                      onPress={() => {
+                        setGenderModalOpen(false);
+                        setFieldValue("gender", "other");
                       }}
                     />
                     <Button
                       title="Cancel"
-                      onPress={() => setOpen(false)}
+                      onPress={() => setGenderModalOpen(false)}
                       color={Colors.light.error}
                     />
                   </View>
@@ -139,21 +179,6 @@ const CompleteForm = () => {
               </View>
             </TouchableWithoutFeedback>
           </Modal>
-
-          <ThemedText style={styles.text}>Gender</ThemedText>
-          <TextInput
-            key="gender"
-            style={styles.text}
-            onChangeText={handleChange("gender")}
-            onBlur={handleBlur("gender")}
-            value={values.gender}
-            placeholder="Gender"
-          />
-          {errors.gender && touched.gender ? (
-            <ThemedText style={{ color: Colors.light.error }}>
-              {errors.gender}
-            </ThemedText>
-          ) : null}
 
           <ThemedText style={styles.text}>Country</ThemedText>
           <TextInput
@@ -261,6 +286,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     alignItems: "center",
+  },
+  datePickerHeader: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
   },
 });
 
