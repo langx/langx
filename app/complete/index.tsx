@@ -69,20 +69,6 @@ const CompleteForm = () => {
     }
   };
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (date) => {
-    setBirthdate(date);
-    // setFieldValue("birthdate", date.toDateString());
-    hideDatePicker();
-  };
-
   return (
     <Formik
       initialValues={{ birthdate: "", gender: "", country: "" }}
@@ -100,7 +86,7 @@ const CompleteForm = () => {
       }) => (
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Birthdate</ThemedText>
-          <Pressable onPress={showDatePicker}>
+          <Pressable onPress={() => setDatePickerVisibility(true)}>
             {birthdate ? (
               <ThemedText style={styles.text}>
                 {birthdate.toLocaleDateString("en-US", {
@@ -122,8 +108,12 @@ const CompleteForm = () => {
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"
-            onConfirm={handleConfirm}
-            onCancel={hideDatePicker}
+            onConfirm={(date) => {
+              setBirthdate(date);
+              setFieldValue("birthdate", date);
+              setDatePickerVisibility(false);
+            }}
+            onCancel={() => setDatePickerVisibility(false)}
             maximumDate={new Date()}
           />
 
