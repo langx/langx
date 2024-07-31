@@ -12,6 +12,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import OAuth2Login from "@/components/auth/OAuth2Login";
+import { Link } from "expo-router";
 
 const ResetSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -92,6 +93,33 @@ const ResetPassword = () => {
 
         <ResetForm />
         <OAuth2Login />
+
+        <ThemedView
+          style={{
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 2,
+            padding: 10,
+          }}
+        >
+          <ThemedText>Don't you have an account?</ThemedText>
+          <Link href="/register">
+            <ThemedText type="link">Register</ThemedText>
+          </Link>
+        </ThemedView>
+        <ThemedView
+          style={{
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: 2,
+            padding: 10,
+          }}
+        >
+          <ThemedText>Forget your password?</ThemedText>
+          <Link href="/(auth)/reset-password">
+            <ThemedText type="link">Reset it</ThemedText>
+          </Link>
+        </ThemedView>
       </ScrollView>
     </ThemedView>
   );
