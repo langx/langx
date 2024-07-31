@@ -9,16 +9,12 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import "react-native-reanimated";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import Toast, {
-  BaseToast,
-  ErrorToast,
-  ToastConfig,
-} from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 
 import store, { RootState, AppDispatch } from "@/store/store";
 import { fetchAuthData } from "@/store/authSlice";
 import { fonts } from "@/constants/fonts";
-import { Colors } from "@/constants/Colors";
+import { toastConfig } from "@/constants/toast";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import usePlausible from "@/hooks/usePlausible";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -102,51 +98,6 @@ export default function RootLayout() {
   if (!fontsLoaded && !error) {
     return null;
   }
-
-  const toastConfig: ToastConfig = {
-    /*
-      Overwrite 'success' type,
-      by modifying the existing `BaseToast` component
-    */
-    success: (props) => (
-      <ThemedView>
-        <BaseToast
-          {...props}
-          style={{
-            borderLeftColor: Colors[theme].success,
-            backgroundColor: Colors[theme].background,
-          }}
-          contentContainerStyle={{ paddingHorizontal: 15 }}
-          text1Style={{
-            fontSize: 15,
-            fontWeight: "400",
-            fontFamily: "Lexend-Bold",
-            color: Colors[theme].black,
-          }}
-        />
-      </ThemedView>
-    ),
-    /*
-      Overwrite 'error' type,
-      by modifying the existing `ErrorToast` component
-    */
-    error: (props) => (
-      <ErrorToast
-        {...props}
-        style={{
-          borderLeftColor: Colors[theme].error,
-          backgroundColor: Colors[theme].background,
-        }}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
-        text1Style={{
-          fontSize: 15,
-          fontWeight: "400",
-          fontFamily: "Lexend-Bold",
-          color: Colors[theme].black,
-        }}
-      />
-    ),
-  };
 
   return (
     <Provider store={store}>
