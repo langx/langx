@@ -80,6 +80,7 @@ const StackLayout = () => {
         name="(auth)"
         options={{ headerShown: false, presentation: "modal" }}
       />
+      <Stack.Screen name="complete" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" options={{ headerBackTitle: "Back" }} />
     </Stack>
   );
