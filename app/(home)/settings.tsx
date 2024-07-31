@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, FlatList, Pressable, ScrollView } from "react-native";
+import { FlatList, Pressable, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,6 +11,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { defaultStyles } from "@/constants/Styles";
 import { Colors } from "@/constants/Colors";
 import BoxedIcon from "@/components/BoxedIcon";
+import { showToast } from "@/constants/toast";
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -81,11 +82,11 @@ const Settings = () => {
     try {
       await logout();
       dispatch(setAuthInitialState());
-      Alert.alert("Success", "User signed out successfully");
+      showToast("success", "Logged out");
       console.log("logged out");
       router.replace("/");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      showToast("error", error.message);
     } finally {
       setSubmitting(false);
     }
