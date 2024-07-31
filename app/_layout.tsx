@@ -54,7 +54,7 @@ const StackLayout = () => {
 
   // Debugging useSegments
   useEffect(() => {
-    console.log(segments);
+    console.log("[SEGMENT] ", segments);
   }, [segments]);
 
   if (isLoading) {

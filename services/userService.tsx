@@ -45,7 +45,7 @@ export async function listUsers(params: any): Promise<User[]> {
   const filterData = params?.filterData || null;
   const offset = params?.currentOffset || null;
   const searchText = params?.searchText || null;
-  console.log("----", filterData);
+  console.log("[FILTER] ", filterData);
 
   try {
     // Default queries
