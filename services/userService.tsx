@@ -50,7 +50,7 @@ export async function listUsers(params: any): Promise<User[]> {
   try {
     // Default queries
     const queries = [
-      Query.orderDesc("$updatedAt"),
+      Query.orderDesc("lastSeen"),
       Query.notEqual("$id", userId),
       Query.limit(PAGINATION_LIMIT),
     ];
