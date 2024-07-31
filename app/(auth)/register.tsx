@@ -8,7 +8,7 @@ import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import useSignInUser from "@/hooks/useSingInUser";
-import { login } from "@/services/authService";
+import { login, register } from "@/services/authService";
 import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -22,14 +22,23 @@ const RegisterSchema = Yup.object().shape({
 });
 
 const RegisterForm = () => {
+  // Hooks
+  const signInUser = useSignInUser();
+
   // States
   const [isSubmitting, setSubmitting] = useState(false);
 
   const handleRegister = async (form: any) => {
     setSubmitting(true);
     try {
-      console.log("Registering with:", form.email);
+      console.log("Registering with:", form);
       // const session = await login(form.email, form.password);
+      const newAccount = await register(form.email, form.password, form.name);
+      console.log("New account:", newAccount);
+      const session = await login(form.email, form.password);
+      console.log("Session:", session);
+      signInUser(session);
+
       // signInUser(session);
     } catch (error) {
       console.error("Error logging in:", error);
