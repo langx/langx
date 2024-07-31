@@ -3,8 +3,9 @@ import { ScrollView, Image, StyleSheet, TextInput } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+import { Colors } from "@/constants/Colors";
+import { showToast } from "@/constants/toast";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { resetPassword } from "@/services/authService";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -26,8 +27,10 @@ const ResetForm = () => {
       console.log("Resetting password for:", form.email);
       const response = await resetPassword(form.email);
       console.log("Response:", response);
+      showToast("success", "Password reset email sent");
+      form.email = "";
     } catch (error) {
-      console.error("Error logging in:", error);
+      showToast("error", error.message);
     } finally {
       setSubmitting(false);
     }
