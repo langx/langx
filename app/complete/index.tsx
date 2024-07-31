@@ -7,6 +7,7 @@ import {
   Modal,
   Button,
   Pressable,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -23,7 +24,29 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 
 const CompleteSchema = Yup.object().shape({
-  birthdate: Yup.string().min(1, "Invalid birthdate").required("Required"),
+  birthdate: Yup.date()
+    .required("Required")
+    .typeError("Invalid birthdate")
+    .test(
+      "is-13-years-old",
+      "You must be at least 13 years old",
+      function (value) {
+        const today = new Date();
+        const birthDate = new Date(value);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+        const dayDifference = today.getDate() - birthDate.getDate();
+
+        if (
+          age > 13 ||
+          (age === 13 && monthDifference > 0) ||
+          (age === 13 && monthDifference === 0 && dayDifference >= 0)
+        ) {
+          return true;
+        }
+        return false;
+      }
+    ),
   gender: Yup.string().min(1, "Invalid gender").required("Required"),
   country: Yup.string().min(1, "Invalid country").required("Required"),
 });
@@ -70,47 +93,54 @@ const CompleteForm = () => {
       }) => (
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Birthdate</ThemedText>
-          <TextInput
-            style={styles.text}
-            value={birthdate.toLocaleDateString("en-US", {
-              month: "2-digit",
-              day: "2-digit",
-              year: "numeric",
-            })}
-            editable={false}
-            placeholder="Select Birthdate"
-          />
+          <Pressable onPress={() => setOpen(true)}>
+            {birthdate && (
+              <ThemedText
+                style={styles.text}
+                // editable={false}
+                // placeholder="Select Birthdate"
+              >
+                {birthdate.toLocaleDateString("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                })}
+              </ThemedText>
+            )}
+            {/* <ThemedText style={styles.text}>Select Birthdate</ThemedText> */}
+          </Pressable>
           {errors.birthdate && touched.birthdate ? (
             <ThemedText style={{ color: Colors.light.error }}>
               {errors.birthdate}
             </ThemedText>
           ) : null}
 
-          <Pressable onPress={() => setOpen(true)}>
-            <ThemedText style={styles.text}>Select Birthdate</ThemedText>
-          </Pressable>
           <Modal visible={open} transparent={true} animationType="fade">
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalBox}>
-                <DatePicker
-                  date={birthdate}
-                  onDateChange={(date) => setBirthdate(date)}
-                  mode="date"
-                />
-                <Button
-                  title="Confirm"
-                  onPress={() => {
-                    setOpen(false);
-                    setFieldValue("birthdate", birthdate.toDateString());
-                  }}
-                />
-                <Button
-                  title="Cancel"
-                  onPress={() => setOpen(false)}
-                  color={Colors.light.error}
-                />
+            <TouchableWithoutFeedback onPress={() => setOpen(false)}>
+              <View style={styles.modalOverlay}>
+                <TouchableWithoutFeedback>
+                  <View style={styles.modalBox}>
+                    <DatePicker
+                      date={birthdate}
+                      onDateChange={(date) => setBirthdate(date)}
+                      mode="date"
+                    />
+                    <Button
+                      title="Confirm"
+                      onPress={() => {
+                        setOpen(false);
+                        setFieldValue("birthdate", birthdate.toDateString());
+                      }}
+                    />
+                    <Button
+                      title="Cancel"
+                      onPress={() => setOpen(false)}
+                      color={Colors.light.error}
+                    />
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </Modal>
 
           <ThemedText style={styles.text}>Gender</ThemedText>
@@ -136,7 +166,6 @@ const CompleteForm = () => {
             onBlur={handleBlur("country")}
             value={values.country}
             placeholder="Country"
-            secureTextEntry
           />
           {errors.country && touched.country ? (
             <ThemedText style={{ color: Colors.light.error }}>
