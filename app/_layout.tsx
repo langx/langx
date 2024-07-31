@@ -14,7 +14,7 @@ import Toast from "react-native-toast-message";
 import store, { RootState, AppDispatch } from "@/store/store";
 import { fetchAuthData } from "@/store/authSlice";
 import { fonts } from "@/constants/fonts";
-import { toastConfig } from "@/constants/toast";
+import { getToastConfig } from "@/constants/toast";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import usePlausible from "@/hooks/usePlausible";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
@@ -88,6 +88,8 @@ const StackLayout = () => {
 export default function RootLayout() {
   const theme = useColorScheme() ?? "light";
   const [fontsLoaded, error] = useFonts(fonts);
+
+  const toastConfig = getToastConfig(theme);
 
   useEffect(() => {
     if (fontsLoaded) {

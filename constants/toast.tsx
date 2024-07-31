@@ -3,12 +3,10 @@ import Toast, {
   ErrorToast,
   ToastConfig,
 } from "react-native-toast-message";
+import * as Haptics from "expo-haptics";
 
 import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
-
-const theme = useColorScheme() ?? "light";
 
 export const showToast = (type: string, msg: string) => {
   const updatedMsg = msg.replace("AppwriteException: ", "");
@@ -16,13 +14,10 @@ export const showToast = (type: string, msg: string) => {
     type: type,
     text1: updatedMsg,
   });
+  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 };
 
-export const toastConfig: ToastConfig = {
-  /*
-    Overwrite 'success' type,
-    by modifying the existing `BaseToast` component
-  */
+export const getToastConfig = (theme: string): ToastConfig => ({
   success: (props) => (
     <ThemedView>
       <BaseToast
@@ -41,10 +36,6 @@ export const toastConfig: ToastConfig = {
       />
     </ThemedView>
   ),
-  /*
-    Overwrite 'error' type,
-    by modifying the existing `ErrorToast` component
-  */
   error: (props) => (
     <ErrorToast
       {...props}
@@ -61,4 +52,4 @@ export const toastConfig: ToastConfig = {
       }}
     />
   ),
-};
+});
