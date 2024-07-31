@@ -1,14 +1,14 @@
 import React from "react";
 import { Image, StyleSheet, Pressable, StatusBar } from "react-native";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import { ExternalLink } from "@/components/ExternalLink";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -50,13 +50,14 @@ const App = () => {
             {"."}
           </ThemedText>
 
-          <Link href={"/(auth)"} asChild>
-            <Pressable style={styles.button}>
-              <ThemedText type="link" style={styles.buttonText}>
-                Agree & Continue
-              </ThemedText>
-            </Pressable>
-          </Link>
+          <Pressable
+            style={styles.button}
+            onPress={() => router.push("/(auth)")}
+          >
+            <ThemedText type="link" style={styles.buttonText}>
+              Agree & Continue
+            </ThemedText>
+          </Pressable>
         </ThemedView>
       </ParallaxScrollView>
     </>

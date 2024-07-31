@@ -8,6 +8,7 @@ import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
 import useSignInUser from "@/hooks/useSingInUser";
 import { login } from "@/services/authService";
+import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
@@ -16,7 +17,7 @@ import OAuth2Login from "@/components/auth/OAuth2Login";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(6, "Password too short!").required("Required"),
+  password: Yup.string().min(8, "Password too short!").required("Required"),
 });
 
 const LoginForm = () => {
@@ -33,6 +34,7 @@ const LoginForm = () => {
       signInUser(session);
     } catch (error) {
       console.error("Error logging in:", error);
+      showToast("error", error.message);
     } finally {
       setSubmitting(false);
     }

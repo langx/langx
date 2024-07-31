@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Alert, Image, StyleSheet } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 
 import images from "@/constants/images";
+import { showToast } from "@/constants/toast";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { createAnonymousSession, getAccount } from "@/services/authService";
 import { setSession, setAccount } from "@/store/authSlice";
@@ -31,9 +32,9 @@ const Welcome = () => {
       dispatch(setSession(session));
       const account = await getAccount();
       dispatch(setAccount(account));
-      Alert.alert("Success", "User signed in successfully");
+      showToast("success", "User signed in successfully");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      showToast("error", error.message);
     } finally {
       setSubmitting(false);
     }

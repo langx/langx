@@ -1,7 +1,7 @@
-import { Alert } from "react-native";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from 'react';
 
-import { PAGINATION_LIMIT } from "@/constants/config";
+import { PAGINATION_LIMIT } from '@/constants/config';
+import { showToast } from '@/constants/toast';
 
 interface Params {
   userId?: string;
@@ -29,7 +29,7 @@ export function useDatabase(fn: Function, params: Params = {}) {
       }
       setHasMore(res.length > 0);
     } catch (error) {
-      Alert.alert("Error", error.message);
+      showToast('error', error.message);
     } finally {
       setLoading(false);
     }
