@@ -94,18 +94,16 @@ const CompleteForm = () => {
         <ThemedView style={{ flex: 1 }}>
           <ThemedText style={styles.text}>Birthdate</ThemedText>
           <Pressable onPress={() => setOpen(true)}>
-            {birthdate && (
-              <ThemedText
-                style={styles.text}
-                // editable={false}
-                // placeholder="Select Birthdate"
-              >
+            {birthdate ? (
+              <ThemedText style={styles.text}>
                 {birthdate.toLocaleDateString("en-US", {
                   month: "2-digit",
                   day: "2-digit",
                   year: "numeric",
                 })}
               </ThemedText>
+            ) : (
+              <ThemedText style={styles.text}>Select Birthdate</ThemedText>
             )}
           </Pressable>
           {errors.birthdate && touched.birthdate ? (
