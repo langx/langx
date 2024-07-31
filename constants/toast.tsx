@@ -30,7 +30,6 @@ export const toastConfig: ToastConfig = {
         style={{
           borderLeftColor: Colors[theme].success,
           backgroundColor: Colors[theme].background,
-          zIndex: 9999,
         }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
@@ -52,7 +51,6 @@ export const toastConfig: ToastConfig = {
       style={{
         borderLeftColor: Colors[theme].error,
         backgroundColor: Colors[theme].background,
-        zIndex: 9999,
       }}
       contentContainerStyle={{ paddingHorizontal: 15 }}
       text1Style={{
