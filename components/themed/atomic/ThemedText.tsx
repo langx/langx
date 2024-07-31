@@ -55,6 +55,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   link: {
-    color: Colors.light.primary,
+    color: Colors.light.secondary,
   },
 });
