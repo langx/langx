@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { Session } from '@/models/Session';
@@ -12,6 +11,7 @@ import {
   setSession,
   setUser,
 } from '@/store/authSlice';
+import { showToast } from '@/constants/toast';
 
 const useSignInUser = () => {
   const dispatch = useDispatch();
@@ -31,11 +31,11 @@ const useSignInUser = () => {
         dispatch(setJwt(jwt));
 
         router.replace('/(home)/(tabs)');
-        Alert.alert('Success', 'User signed in successfully');
+        showToast('success', 'User signed in successfully');
       } catch (error) {
         dispatch(setError(error.message || 'An error occurred'));
         console.error('Error signing in user:', error);
-        Alert.alert('Error', 'Failed to sign in user');
+        showToast('error', 'Failed to sign in user');
       }
     },
     [dispatch, router]
