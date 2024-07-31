@@ -14,6 +14,7 @@ import { RootState } from "@/store/store";
 
 import { RoomExtendedInterface } from "@/models/extended/RoomExtended.interface";
 import { Colors } from "@/constants/Colors";
+import { showToast } from "@/constants/toast";
 import { getFlagEmoji, onlineStatusInChatRoom } from "@/constants/utils";
 import icons from "@/constants/icons";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -128,7 +129,9 @@ export default function RoomLayout() {
         ios_backgroundColor={Colors.light.gray3}
         onValueChange={(newValue) => {
           setIsCopilotEnabled(newValue);
-          if (newValue) Alert.alert("Copilot", "Copilot is under maintenance");
+          if (newValue) {
+            showToast("error", "Copilot is under maintenance");
+          }
         }}
         value={isCopilotEnabled}
       />
