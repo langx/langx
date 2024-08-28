@@ -55,12 +55,10 @@ const CompleteForm = () => {
   const theme = useColorScheme() ?? "light";
   const [isSubmitting, setSubmitting] = useState(false);
   const [birthdate, setBirthdate] = useState(new Date());
-  const [gender, setGender] = useState("male");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
 
   const genders = ["male", "female", "other"];
-  // const gender = null;
 
   const handleComplete = async (form) => {
     setSubmitting(true);
@@ -75,12 +73,11 @@ const CompleteForm = () => {
   };
 
   const renderGenderItem = useCallback(
-    ({ item }) => (
+    ({ item, setFieldValue }) => (
       <Pressable
         onPress={() => {
           console.log(item);
-          setGender(item);
-          // setFieldValue("gender", item);
+          setFieldValue("gender", item);
           setGenderModalOpen(false);
         }}
       >
@@ -115,7 +112,7 @@ const CompleteForm = () => {
         </ThemedView>
       </Pressable>
     ),
-    [gender]
+    []
   );
 
   return (
@@ -192,7 +189,9 @@ const CompleteForm = () => {
                     <FlatList
                       data={genders}
                       keyExtractor={(item) => item.toString()}
-                      renderItem={(item) => renderGenderItem(item)}
+                      renderItem={({ item }) =>
+                        renderGenderItem({ item, setFieldValue })
+                      }
                     />
                   </ThemedView>
                 </TouchableWithoutFeedback>
