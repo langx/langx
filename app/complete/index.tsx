@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Image,
   StyleSheet,
   ScrollView,
   TextInput,
   Modal,
-  Button,
   Pressable,
   TouchableWithoutFeedback,
-  View,
+  FlatList,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
@@ -22,6 +21,7 @@ import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
+import { Ionicons } from "@expo/vector-icons";
 
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
@@ -52,10 +52,15 @@ const CompleteSchema = Yup.object().shape({
 });
 
 const CompleteForm = () => {
+  const theme = useColorScheme() ?? "light";
   const [isSubmitting, setSubmitting] = useState(false);
   const [birthdate, setBirthdate] = useState(new Date());
+  const [gender, setGender] = useState("male");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
+
+  const genders = ["male", "female", "other"];
+  // const gender = null;
 
   const handleComplete = async (form) => {
     setSubmitting(true);
@@ -68,6 +73,43 @@ const CompleteForm = () => {
       setSubmitting(false);
     }
   };
+
+  const renderGenderItem = useCallback(
+    ({ item }) => (
+      <Pressable onPress={() => console.log(item)}>
+        <ThemedView style={styles.item}>
+          <ThemedView
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <ThemedView style={{ flexDirection: "row", alignItems: "center" }}>
+              <Ionicons
+                name={
+                  item === "male"
+                    ? "man-outline"
+                    : item === "female"
+                    ? "woman-outline"
+                    : "male-female-outline"
+                }
+                style={styles.icon}
+              />
+              <ThemedText style={styles.text}>
+                {item === "male"
+                  ? "Male"
+                  : item === "female"
+                  ? "Female"
+                  : "Prefer not to say"}
+              </ThemedText>
+            </ThemedView>
+          </ThemedView>
+        </ThemedView>
+      </Pressable>
+    ),
+    [gender]
+  );
 
   return (
     <Formik
@@ -96,7 +138,9 @@ const CompleteForm = () => {
                 })}
               </ThemedText>
             ) : (
-              <ThemedText style={styles.text}>Select Birthdate</ThemedText>
+              <ThemedText style={[styles.text, styles.detail]}>
+                Select Birthdate
+              </ThemedText>
             )}
           </Pressable>
           {errors.birthdate && touched.birthdate ? (
@@ -119,7 +163,7 @@ const CompleteForm = () => {
 
           <ThemedText style={styles.text}>Gender</ThemedText>
           <Pressable onPress={() => setGenderModalOpen(true)}>
-            <ThemedText style={styles.text}>
+            <ThemedText style={[styles.text, styles.detail]}>
               {values.gender || "Select Gender"}
             </ThemedText>
           </Pressable>
@@ -135,38 +179,13 @@ const CompleteForm = () => {
             animationType="fade"
           >
             <TouchableWithoutFeedback onPress={() => setGenderModalOpen(false)}>
-              <View style={styles.modalOverlay}>
+              <ThemedView style={styles.modalOverlay}>
                 <TouchableWithoutFeedback>
-                  <View style={styles.modalBox}>
-                    <Button
-                      title="Male"
-                      onPress={() => {
-                        setGenderModalOpen(false);
-                        setFieldValue("gender", "male");
-                      }}
-                    />
-                    <Button
-                      title="Female"
-                      onPress={() => {
-                        setGenderModalOpen(false);
-                        setFieldValue("gender", "female");
-                      }}
-                    />
-                    <Button
-                      title="Prefer not to say"
-                      onPress={() => {
-                        setGenderModalOpen(false);
-                        setFieldValue("gender", "other");
-                      }}
-                    />
-                    <Button
-                      title="Cancel"
-                      onPress={() => setGenderModalOpen(false)}
-                      color={Colors.light.error}
-                    />
-                  </View>
+                  <ThemedView style={styles.modalBox}>
+                    <FlatList data={genders} renderItem={renderGenderItem} />
+                  </ThemedView>
                 </TouchableWithoutFeedback>
-              </View>
+              </ThemedView>
             </TouchableWithoutFeedback>
           </Modal>
 
@@ -244,6 +263,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 6,
   },
+  detail: {
+    color: Colors.light.gray3,
+  },
   welcomeImage: {
     width: "100%",
     marginVertical: 20,
@@ -273,7 +295,6 @@ const styles = StyleSheet.create({
   modalBox: {
     width: 300,
     padding: 20,
-    backgroundColor: "white",
     borderRadius: 10,
     alignItems: "center",
   },
@@ -281,6 +302,45 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+  },
+  card: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 10,
+  },
+  cardHeader: {
+    padding: 20,
+    alignItems: "center",
+  },
+  cardTitle: {
+    fontSize: 24,
+    fontFamily: "Lexend-Bold",
+  },
+  cardSubtitle: {
+    fontSize: 16,
+    marginTop: 5,
+  },
+  cardContent: {
+    padding: 20,
+  },
+  item: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  icon: {
+    fontSize: 24,
+    marginRight: 20,
+    color: Colors.light.primary,
+  },
+  label: {
+    fontSize: 16,
+  },
+  note: {
+    fontFamily: "NotoSans-Regular",
+    fontSize: 14,
+    color: Colors.light.gray3,
   },
 });
 
