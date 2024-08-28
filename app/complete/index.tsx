@@ -76,7 +76,14 @@ const CompleteForm = () => {
 
   const renderGenderItem = useCallback(
     ({ item }) => (
-      <Pressable onPress={() => console.log(item)}>
+      <Pressable
+        onPress={() => {
+          console.log(item);
+          setGender(item);
+          // setFieldValue("gender", item);
+          setGenderModalOpen(false);
+        }}
+      >
         <ThemedView style={styles.item}>
           <ThemedView
             style={{
@@ -182,7 +189,11 @@ const CompleteForm = () => {
               <ThemedView style={styles.modalOverlay}>
                 <TouchableWithoutFeedback>
                   <ThemedView style={styles.modalBox}>
-                    <FlatList data={genders} renderItem={renderGenderItem} />
+                    <FlatList
+                      data={genders}
+                      keyExtractor={(item) => item.toString()}
+                      renderItem={(item) => renderGenderItem(item)}
+                    />
                   </ThemedView>
                 </TouchableWithoutFeedback>
               </ThemedView>
