@@ -76,7 +76,6 @@ const CompleteForm = () => {
     ({ item, setFieldValue }) => (
       <Pressable
         onPress={() => {
-          console.log(item);
           setFieldValue("gender", item);
           setGenderModalOpen(false);
         }}
@@ -105,7 +104,7 @@ const CompleteForm = () => {
                   ? "Male"
                   : item === "female"
                   ? "Female"
-                  : "Prefer not to say"}
+                  : "Prefer Not To Say"}
               </ThemedText>
             </ThemedView>
           </ThemedView>
@@ -167,10 +166,22 @@ const CompleteForm = () => {
 
           <ThemedText style={styles.text}>Gender</ThemedText>
           <Pressable onPress={() => setGenderModalOpen(true)}>
-            <ThemedText style={[styles.text, styles.detail]}>
-              {values.gender || "Select Gender"}
+            <ThemedText
+              style={[
+                styles.text,
+                values.gender ? styles.selectedText : styles.detail,
+              ]}
+            >
+              {values.gender === "male"
+                ? "Male"
+                : values.gender === "female"
+                ? "Female"
+                : values.gender === "other"
+                ? "Prefer Not To Say"
+                : "Select Gender"}
             </ThemedText>
           </Pressable>
+
           {errors.gender && touched.gender ? (
             <ThemedText style={{ color: Colors.light.error }}>
               {errors.gender}
@@ -275,6 +286,9 @@ const styles = StyleSheet.create({
   },
   detail: {
     color: Colors.light.gray3,
+  },
+  selectedText: {
+    color: Colors.light.black,
   },
   welcomeImage: {
     width: "100%",
