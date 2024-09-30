@@ -3,7 +3,6 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  TextInput,
   Modal,
   Pressable,
   TouchableWithoutFeedback,
@@ -193,12 +192,7 @@ const CompleteForm = () => {
           {/* Gender Field */}
           <ThemedText style={styles.text}>Gender</ThemedText>
           <Pressable onPress={() => setGenderModalOpen(true)}>
-            <ThemedText
-              style={[
-                styles.text,
-                values.gender ? styles.selectedText : styles.detail,
-              ]}
-            >
+            <ThemedText style={[styles.text, styles.detail]}>
               {values.gender === "male"
                 ? "Male"
                 : values.gender === "female"
@@ -241,7 +235,8 @@ const CompleteForm = () => {
             <ThemedText
               style={[
                 styles.text,
-                values.country ? styles.selectedText : styles.detail,
+                styles.detail, // Apply detail style to country
+                values.country && styles.selectedText, // Apply selectedText style if country is selected
               ]}
             >
               {values.country ? values.country : "Select Country"}
@@ -336,10 +331,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   detail: {
-    color: Colors.light.gray3,
-  },
-  selectedText: {
-    color: Colors.light.black,
+    color: Colors.light.gray2,
   },
   welcomeImage: {
     width: "100%",
