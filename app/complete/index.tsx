@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   FlatList,
+  TextInput,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
@@ -69,7 +70,9 @@ const CompleteForm = () => {
   const [birthdate, setBirthdate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
-  const [countryModalOpen, setCountryModalOpen] = useState(false); // State for country picker modal
+  const [countryModalOpen, setCountryModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredCountries, setFilteredCountries] = useState(countries);
 
   const genders = ["male", "female", "other"];
 
@@ -142,6 +145,14 @@ const CompleteForm = () => {
     ),
     []
   );
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = countries.filter((country) =>
+      country.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredCountries(filtered);
+  };
 
   return (
     <Formik
@@ -232,13 +243,7 @@ const CompleteForm = () => {
           {/* Country Field */}
           <ThemedText style={styles.text}>Country</ThemedText>
           <Pressable onPress={() => setCountryModalOpen(true)}>
-            <ThemedText
-              style={[
-                styles.text,
-                styles.detail, // Apply detail style to country
-                values.country && styles.selectedText, // Apply selectedText style if country is selected
-              ]}
-            >
+            <ThemedText style={[styles.text, styles.detail]}>
               {values.country ? values.country : "Select Country"}
             </ThemedText>
           </Pressable>
@@ -258,8 +263,14 @@ const CompleteForm = () => {
               <ThemedView style={styles.modalOverlay}>
                 <TouchableWithoutFeedback>
                   <ThemedView style={styles.modalBox}>
+                    <TextInput
+                      style={styles.searchInput}
+                      placeholder="Search..."
+                      onChangeText={handleSearch}
+                      value={searchQuery}
+                    />
                     <FlatList
-                      data={countries}
+                      data={filteredCountries}
                       keyExtractor={(item) => item}
                       renderItem={({ item }) =>
                         renderCountryItem({ item, setFieldValue })
@@ -408,6 +419,14 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSans-Regular",
     fontSize: 14,
     color: Colors.light.gray3,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: Colors.light.gray4,
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 8,
   },
 });
 
