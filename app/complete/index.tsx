@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -78,7 +78,7 @@ const CompleteForm = () => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchCountries = async () => {
       try {
         const response = await fetch("https://db.langx.io/v1/locale/countries");
