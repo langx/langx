@@ -280,22 +280,24 @@ const CompleteForm = () => {
                 >
                   <TouchableWithoutFeedback>
                     <ThemedView style={styles.modalBox}>
-                      {filteredCountries.length > 0 && (
-                        <>
-                          <TextInput
-                            style={styles.searchInput}
-                            placeholder="Search..."
-                            onChangeText={handleSearch}
-                            value={searchQuery}
-                          />
-                          <FlatList
-                            data={filteredCountries}
-                            keyExtractor={(item) => item.code}
-                            renderItem={({ item }) =>
-                              renderCountryItem({ item, setFieldValue })
-                            }
-                          />
-                        </>
+                      <TextInput
+                        style={[styles.searchInput, { width: "100%" }]}
+                        placeholder="Search..."
+                        onChangeText={handleSearch}
+                        value={searchQuery}
+                      />
+                      {filteredCountries.length > 0 ? (
+                        <FlatList
+                          data={filteredCountries}
+                          keyExtractor={(item) => item.code}
+                          renderItem={({ item }) =>
+                            renderCountryItem({ item, setFieldValue })
+                          }
+                        />
+                      ) : (
+                        <ThemedText style={styles.text}>
+                          No countries found.
+                        </ThemedText>
                       )}
                     </ThemedView>
                   </TouchableWithoutFeedback>
@@ -362,6 +364,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     paddingVertical: 6,
+    textAlign: "left",
   },
   detail: {
     color: Colors.light.gray2,
