@@ -51,6 +51,7 @@ const CompleteSchema = Yup.object().shape({
     ),
   gender: Yup.string().min(1, "Invalid gender").required("Required"),
   country: Yup.string().min(1, "Invalid country").required("Required"),
+  countryCode: Yup.string().min(1, "Invalid country code").required("Required"),
 });
 
 const CompleteForm = () => {
@@ -141,6 +142,7 @@ const CompleteForm = () => {
       <Pressable
         onPress={() => {
           setFieldValue("country", item.name);
+          setFieldValue("countryCode", item.code);
           setCountryModalOpen(false);
         }}
       >
