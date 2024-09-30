@@ -161,19 +161,15 @@ const CompleteForm = () => {
           {/* Birthdate Field */}
           <ThemedText style={styles.text}>Birthdate</ThemedText>
           <Pressable onPress={() => setDatePickerVisibility(true)}>
-            {birthdate ? (
-              <ThemedText style={styles.text}>
-                {birthdate.toLocaleDateString("en-US", {
-                  month: "2-digit",
-                  day: "2-digit",
-                  year: "numeric",
-                })}
-              </ThemedText>
-            ) : (
-              <ThemedText style={[styles.text, styles.detail]}>
-                Select Birthdate
-              </ThemedText>
-            )}
+            <ThemedText style={[styles.text, styles.detail]}>
+              {values.birthdate
+                ? birthdate.toLocaleDateString("en-US", {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric",
+                  })
+                : "Select Birthdate"}
+            </ThemedText>
           </Pressable>
           {errors.birthdate && touched.birthdate ? (
             <ThemedText style={{ color: Colors.light.error }}>
