@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback,
   FlatList,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
@@ -22,19 +24,6 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { Ionicons } from "@expo/vector-icons";
-
-const countries = [
-  "United States",
-  "Canada",
-  "Australia",
-  "United Kingdom",
-  "Germany",
-  "France",
-  "India",
-  "China",
-  "Japan",
-  "Brazil",
-];
 
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
@@ -72,7 +61,8 @@ const CompleteForm = () => {
   const [genderModalOpen, setGenderModalOpen] = useState(false);
   const [countryModalOpen, setCountryModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredCountries, setFilteredCountries] = useState(countries);
+  const [allCountries, setAllCountries] = useState([]); // Store all countries
+  const [filteredCountries, setFilteredCountries] = useState([]);
 
   const genders = ["male", "female", "other"];
 
@@ -87,6 +77,22 @@ const CompleteForm = () => {
       setSubmitting(false);
     }
   };
+
+  React.useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("https://db.langx.io/v1/locale/countries");
+        const data = await response.json();
+        setAllCountries(data.countries); // Store all countries
+        setFilteredCountries(data.countries); // Update state with countries array
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+        showToast("error", "Failed to load countries.");
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const renderGenderItem = useCallback(
     ({ item, setFieldValue }) => (
@@ -134,12 +140,12 @@ const CompleteForm = () => {
     ({ item, setFieldValue }) => (
       <Pressable
         onPress={() => {
-          setFieldValue("country", item);
+          setFieldValue("country", item.name);
           setCountryModalOpen(false);
         }}
       >
         <ThemedView style={styles.item}>
-          <ThemedText style={styles.text}>{item}</ThemedText>
+          <ThemedText style={styles.text}>{item.name}</ThemedText>
         </ThemedView>
       </Pressable>
     ),
@@ -148,10 +154,15 @@ const CompleteForm = () => {
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filtered = countries.filter((country) =>
-      country.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredCountries(filtered);
+    if (query === "") {
+      // If search query is empty, reset to all countries
+      setFilteredCountries(allCountries);
+    } else {
+      const filtered = allCountries.filter((country) =>
+        country.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredCountries(filtered);
+    }
   };
 
   return (
@@ -261,23 +272,32 @@ const CompleteForm = () => {
               onPress={() => setCountryModalOpen(false)}
             >
               <ThemedView style={styles.modalOverlay}>
-                <TouchableWithoutFeedback>
-                  <ThemedView style={styles.modalBox}>
-                    <TextInput
-                      style={styles.searchInput}
-                      placeholder="Search..."
-                      onChangeText={handleSearch}
-                      value={searchQuery}
-                    />
-                    <FlatList
-                      data={filteredCountries}
-                      keyExtractor={(item) => item}
-                      renderItem={({ item }) =>
-                        renderCountryItem({ item, setFieldValue })
-                      }
-                    />
-                  </ThemedView>
-                </TouchableWithoutFeedback>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={{ flex: 1, justifyContent: "center" }}
+                >
+                  <TouchableWithoutFeedback>
+                    <ThemedView style={styles.modalBox}>
+                      {filteredCountries.length > 0 && (
+                        <>
+                          <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search..."
+                            onChangeText={handleSearch}
+                            value={searchQuery}
+                          />
+                          <FlatList
+                            data={filteredCountries}
+                            keyExtractor={(item) => item.code}
+                            renderItem={({ item }) =>
+                              renderCountryItem({ item, setFieldValue })
+                            }
+                          />
+                        </>
+                      )}
+                    </ThemedView>
+                  </TouchableWithoutFeedback>
+                </KeyboardAvoidingView>
               </ThemedView>
             </TouchableWithoutFeedback>
           </Modal>
@@ -372,6 +392,7 @@ const styles = StyleSheet.create({
   },
   modalBox: {
     width: 300,
+    maxHeight: "80%",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
