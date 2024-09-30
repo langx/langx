@@ -70,8 +70,7 @@ const CompleteForm = () => {
   const [birthdate, setBirthdate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
-  const [countrySuggestions, setCountrySuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [countryModalOpen, setCountryModalOpen] = useState(false); // State for country picker modal
 
   const genders = ["male", "female", "other"];
 
@@ -129,18 +128,21 @@ const CompleteForm = () => {
     []
   );
 
-  const filterCountries = (text) => {
-    if (text) {
-      const filtered = countries.filter((country) =>
-        country.toLowerCase().includes(text.toLowerCase())
-      );
-      setCountrySuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
-      setCountrySuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
+  const renderCountryItem = useCallback(
+    ({ item, setFieldValue }) => (
+      <Pressable
+        onPress={() => {
+          setFieldValue("country", item);
+          setCountryModalOpen(false);
+        }}
+      >
+        <ThemedView style={styles.item}>
+          <ThemedText style={styles.text}>{item}</ThemedText>
+        </ThemedView>
+      </Pressable>
+    ),
+    []
+  );
 
   return (
     <Formik
@@ -187,6 +189,7 @@ const CompleteForm = () => {
             onCancel={() => setDatePickerVisibility(false)}
             maximumDate={new Date()}
           />
+
           {/* Gender Field */}
           <ThemedText style={styles.text}>Gender</ThemedText>
           <Pressable onPress={() => setGenderModalOpen(true)}>
@@ -231,44 +234,47 @@ const CompleteForm = () => {
               </ThemedView>
             </TouchableWithoutFeedback>
           </Modal>
-          {/* Country Field with Autocomplete */}
+
+          {/* Country Field */}
           <ThemedText style={styles.text}>Country</ThemedText>
-          <ThemedView>
-            <TextInput
-              key="country"
-              style={styles.text}
-              onChangeText={(text) => {
-                handleChange("country")(text);
-                filterCountries(text);
-              }}
-              onBlur={() => {
-                handleBlur("country");
-                setShowSuggestions(false);
-              }}
-              value={values.country}
-              placeholder="Country"
-            />
-          </ThemedView>
+          <Pressable onPress={() => setCountryModalOpen(true)}>
+            <ThemedText
+              style={[
+                styles.text,
+                values.country ? styles.selectedText : styles.detail,
+              ]}
+            >
+              {values.country ? values.country : "Select Country"}
+            </ThemedText>
+          </Pressable>
           {errors.country && touched.country ? (
             <ThemedText style={{ color: Colors.light.error }}>
               {errors.country}
             </ThemedText>
           ) : null}
-          {showSuggestions && (
-            <ThemedView style={styles.suggestionsContainer}>
-              {countrySuggestions.map((item) => (
-                <Pressable
-                  key={item}
-                  onPress={() => {
-                    setFieldValue("country", item);
-                    setShowSuggestions(false);
-                  }}
-                >
-                  <ThemedText style={styles.suggestionText}>{item}</ThemedText>
-                </Pressable>
-              ))}
-            </ThemedView>
-          )}
+          <Modal
+            visible={countryModalOpen}
+            transparent={true}
+            animationType="fade"
+          >
+            <TouchableWithoutFeedback
+              onPress={() => setCountryModalOpen(false)}
+            >
+              <ThemedView style={styles.modalOverlay}>
+                <TouchableWithoutFeedback>
+                  <ThemedView style={styles.modalBox}>
+                    <FlatList
+                      data={countries}
+                      keyExtractor={(item) => item}
+                      renderItem={({ item }) =>
+                        renderCountryItem({ item, setFieldValue })
+                      }
+                    />
+                  </ThemedView>
+                </TouchableWithoutFeedback>
+              </ThemedView>
+            </TouchableWithoutFeedback>
+          </Modal>
 
           <ThemedButton
             onPress={handleSubmit}
@@ -410,19 +416,6 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSans-Regular",
     fontSize: 14,
     color: Colors.light.gray3,
-  },
-  suggestionsContainer: {
-    maxHeight: 100,
-    // backgroundColor: Colors.light.background,
-    borderWidth: 0,
-    borderColor: Colors.light.gray3,
-    marginTop: 5,
-  },
-  suggestionText: {
-    padding: 10,
-    borderBottomWidth: 0,
-    borderBottomColor: Colors.light.gray3,
-    fontSize: 16,
   },
 });
 
