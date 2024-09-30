@@ -188,9 +188,9 @@ const CompleteForm = () => {
           <Pressable onPress={() => setDatePickerVisibility(true)}>
             <ThemedText style={[styles.text, styles.detail]}>
               {values.birthdate
-                ? birthdate.toLocaleDateString("en-US", {
-                    month: "2-digit",
+                ? birthdate.toLocaleDateString("en-GB", {
                     day: "2-digit",
+                    month: "2-digit",
                     year: "numeric",
                   })
                 : "Select Birthdate"}
@@ -205,6 +205,15 @@ const CompleteForm = () => {
             isVisible={isDatePickerVisible}
             mode="date"
             onConfirm={(date) => {
+              const currentDate = new Date();
+              const maximumDate = new Date(
+                currentDate.setFullYear(currentDate.getFullYear() - 13)
+              );
+
+              // Check if the selected date is the same as the current date
+              if (date.toDateString() === new Date().toDateString()) {
+                date = maximumDate;
+              }
               setBirthdate(date);
               setFieldValue("birthdate", date);
               setDatePickerVisibility(false);
