@@ -23,6 +23,19 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { Ionicons } from "@expo/vector-icons";
 
+const countries = [
+  "United States",
+  "Canada",
+  "Australia",
+  "United Kingdom",
+  "Germany",
+  "France",
+  "India",
+  "China",
+  "Japan",
+  "Brazil",
+];
+
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
     .required("Required")
@@ -57,6 +70,8 @@ const CompleteForm = () => {
   const [birthdate, setBirthdate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
+  const [countrySuggestions, setCountrySuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const genders = ["male", "female", "other"];
 
@@ -114,6 +129,19 @@ const CompleteForm = () => {
     []
   );
 
+  const filterCountries = (text) => {
+    if (text) {
+      const filtered = countries.filter((country) =>
+        country.toLowerCase().includes(text.toLowerCase())
+      );
+      setCountrySuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setCountrySuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
   return (
     <Formik
       initialValues={{ birthdate: "", gender: "", country: "" }}
@@ -130,6 +158,7 @@ const CompleteForm = () => {
         touched,
       }) => (
         <ThemedView style={{ flex: 1 }}>
+          {/* Birthdate Field */}
           <ThemedText style={styles.text}>Birthdate</ThemedText>
           <Pressable onPress={() => setDatePickerVisibility(true)}>
             {birthdate ? (
@@ -151,7 +180,6 @@ const CompleteForm = () => {
               {errors.birthdate}
             </ThemedText>
           ) : null}
-
           <DateTimePickerModal
             isVisible={isDatePickerVisible}
             mode="date"
@@ -163,7 +191,7 @@ const CompleteForm = () => {
             onCancel={() => setDatePickerVisibility(false)}
             maximumDate={new Date()}
           />
-
+          {/* Gender Field */}
           <ThemedText style={styles.text}>Gender</ThemedText>
           <Pressable onPress={() => setGenderModalOpen(true)}>
             <ThemedText
@@ -181,13 +209,11 @@ const CompleteForm = () => {
                 : "Select Gender"}
             </ThemedText>
           </Pressable>
-
           {errors.gender && touched.gender ? (
             <ThemedText style={{ color: Colors.light.error }}>
               {errors.gender}
             </ThemedText>
           ) : null}
-
           <Modal
             visible={genderModalOpen}
             transparent={true}
@@ -209,21 +235,44 @@ const CompleteForm = () => {
               </ThemedView>
             </TouchableWithoutFeedback>
           </Modal>
-
+          {/* Country Field with Autocomplete */}
           <ThemedText style={styles.text}>Country</ThemedText>
-          <TextInput
-            key="country"
-            style={styles.text}
-            onChangeText={handleChange("country")}
-            onBlur={handleBlur("country")}
-            value={values.country}
-            placeholder="Country"
-          />
+          <ThemedView>
+            <TextInput
+              key="country"
+              style={styles.text}
+              onChangeText={(text) => {
+                handleChange("country")(text);
+                filterCountries(text);
+              }}
+              onBlur={() => {
+                handleBlur("country");
+                setShowSuggestions(false);
+              }}
+              value={values.country}
+              placeholder="Country"
+            />
+          </ThemedView>
           {errors.country && touched.country ? (
             <ThemedText style={{ color: Colors.light.error }}>
               {errors.country}
             </ThemedText>
           ) : null}
+          {showSuggestions && (
+            <ThemedView style={styles.suggestionsContainer}>
+              {countrySuggestions.map((item) => (
+                <Pressable
+                  key={item}
+                  onPress={() => {
+                    setFieldValue("country", item);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  <ThemedText style={styles.suggestionText}>{item}</ThemedText>
+                </Pressable>
+              ))}
+            </ThemedView>
+          )}
 
           <ThemedButton
             onPress={handleSubmit}
@@ -365,6 +414,19 @@ const styles = StyleSheet.create({
     fontFamily: "NotoSans-Regular",
     fontSize: 14,
     color: Colors.light.gray3,
+  },
+  suggestionsContainer: {
+    maxHeight: 100,
+    // backgroundColor: Colors.light.background,
+    borderWidth: 0,
+    borderColor: Colors.light.gray3,
+    marginTop: 5,
+  },
+  suggestionText: {
+    padding: 10,
+    borderBottomWidth: 0,
+    borderBottomColor: Colors.light.gray3,
+    fontSize: 16,
   },
 });
 
