@@ -208,7 +208,9 @@ const CompleteForm = () => {
               setDatePickerVisibility(false);
             }}
             onCancel={() => setDatePickerVisibility(false)}
-            maximumDate={new Date()}
+            maximumDate={
+              new Date(new Date().setFullYear(new Date().getFullYear() - 13))
+            }
           />
 
           {/* Gender Field */}
