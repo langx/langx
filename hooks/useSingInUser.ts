@@ -30,7 +30,11 @@ const useSignInUser = () => {
         dispatch(setSession(session));
         dispatch(setJwt(jwt));
 
-        router.replace('/(home)/(tabs)');
+        if (!user) {
+          router.replace('/complete');
+        } else {
+          router.replace('/(home)/(tabs)');
+        }
         showToast('success', 'User signed in successfully');
       } catch (error) {
         dispatch(setError(error.message || 'An error occurred'));

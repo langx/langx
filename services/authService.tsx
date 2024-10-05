@@ -77,6 +77,19 @@ export async function createAnonymousSession() {
   }
 }
 
+// Register
+export async function register(email: string, password: string, name: string) {
+  try {
+    const newAccount = await account.create(ID.unique(), email, password, name);
+
+    if (!newAccount) throw new Error("Account creation failed");
+
+    return newAccount;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
 // Reset Password
 export async function resetPassword(email: string) {
   try {

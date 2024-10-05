@@ -33,20 +33,25 @@ const StackLayout = () => {
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
   const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     if (!isLoading) {
       // TODO: We may add this check to (auth) layout
       if (segments.length === 0) {
         if (isLoggedIn || isGuestIn) {
-          router.replace("/(home)");
+          if (!user) {
+            router.replace("/complete");
+          } else {
+            router.replace("/(home)");
+          }
         }
         setTimeout(() => {
           SplashScreen.hideAsync();
         }, 500);
       }
     }
-  }, [isLoggedIn, isGuestIn, isLoading]);
+  }, [isLoggedIn, isGuestIn, isLoading, user]);
 
   useEffect(() => {
     dispatch(fetchAuthData());
@@ -80,6 +85,7 @@ const StackLayout = () => {
         name="(auth)"
         options={{ headerShown: false, presentation: "modal" }}
       />
+      <Stack.Screen name="complete" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" options={{ headerBackTitle: "Back" }} />
     </Stack>
   );
