@@ -6,13 +6,13 @@ import * as Yup from "yup";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
+import { useColorScheme } from "@/hooks/useColorScheme";
 import useSignInUser from "@/hooks/useSingInUser";
 import { login } from "@/services/authService";
 import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import OAuth2Login from "@/components/auth/OAuth2Login";
 
 const LoginSchema = Yup.object().shape({
