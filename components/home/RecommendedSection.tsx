@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Pressable,
+  Text,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -66,8 +67,9 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
     <ThemedView style={styles.card}>
       {/* Header Section */}
       <ThemedView style={styles.cardHeader}>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText style={styles.cardTitle}>For You</ThemedText>
+        <ThemedView className="flex-col items-center">
+          <ThemedText className="text-center">For You</ThemedText>
+          <Text className="text-[#ffe668]">Test of Nativewind</Text>
           <Pressable
             style={styles.infoButton}
             onPress={() => router.push("(home)/recommended")}
