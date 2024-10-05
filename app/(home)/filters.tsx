@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useAuth } from "@/hooks/useAuth";
 // TODO: #882 useFilters() hook
+import { useFilters } from "@/hooks/useFilters";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
@@ -19,6 +20,8 @@ const Filters = () => {
   const theme = useColorScheme() ?? "light";
   const { currentUser } = useAuth();
   const languages = currentUser?.languages;
+
+  const { filters, removeFilters, saveFilters } = useFilters("filters");
 
   const initialState = {
     studyLanguages: [],
@@ -89,7 +92,7 @@ const Filters = () => {
     setCountry(initialState.country);
     setAgeRange(initialState.ageRange);
     try {
-      await AsyncStorage.removeItem("filters");
+      await removeFilters();
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     } catch (error) {
       console.error("Failed to reset filters", error);
@@ -97,10 +100,9 @@ const Filters = () => {
   };
 
   useEffect(() => {
-    const loadFilters = async () => {
+    const loadFilters = () => {
       try {
-        const savedFilters = await AsyncStorage.getItem("filters");
-        if (savedFilters) {
+        if (filters) {
           const {
             studyLanguages,
             motherLanguages,
@@ -108,7 +110,7 @@ const Filters = () => {
             isMatchMyGender,
             country,
             ageRange,
-          } = JSON.parse(savedFilters);
+          } = filters;
 
           setStudyLanguages(studyLanguages || []);
           setMotherLanguages(motherLanguages || []);
@@ -134,28 +136,19 @@ const Filters = () => {
       country === null &&
       ageRange[0] === 13 &&
       ageRange[1] === 100;
-
-    const saveFilters = async () => {
-      try {
-        if (isInitialState) {
-          await AsyncStorage.removeItem("filters");
-          return;
-        }
-        const filters = {
-          studyLanguages,
-          motherLanguages,
-          gender,
-          isMatchMyGender,
-          country,
-          ageRange,
-        };
-        await AsyncStorage.setItem("filters", JSON.stringify(filters));
-      } catch (error) {
-        console.error("Failed to save filters", error);
-      }
+    if (isInitialState) {
+      removeFilters();
+      return;
+    }
+    const filters = {
+      studyLanguages,
+      motherLanguages,
+      gender,
+      isMatchMyGender,
+      country,
+      ageRange,
     };
-
-    saveFilters();
+    saveFilters(JSON.stringify(filters));
   }, [
     studyLanguages,
     motherLanguages,
@@ -163,6 +156,8 @@ const Filters = () => {
     isMatchMyGender,
     country,
     ageRange,
+    saveFilters,
+    removeFilters,
   ]);
 
   const renderItem = useCallback(
