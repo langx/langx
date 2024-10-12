@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-  useCallback,
-} from "react";
+import { useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import {
   FlatList,
   ActivityIndicator,
@@ -11,7 +6,7 @@ import {
   Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, Href } from "expo-router";
 
 import { Colors } from "@/constants/Colors";
 import { useDatabase } from "@/hooks/useDatabase";
@@ -70,7 +65,7 @@ const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
           <ThemedText style={styles.cardTitle}>For You</ThemedText>
           <Pressable
             style={styles.infoButton}
-            onPress={() => router.push("(home)/recommended")}
+            onPress={() => router.push("(home)/recommended" as Href)}
           >
             <Ionicons
               name="ellipsis-horizontal-circle-outline"
