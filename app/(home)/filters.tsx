@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList, SafeAreaView, StyleSheet, Pressable } from "react-native";
 import { Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { useAuth } from "@/hooks/useAuth";
-// TODO: #882 useFilters() hook
 import { useFilters } from "@/hooks/useFilters";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/constants/Colors";
