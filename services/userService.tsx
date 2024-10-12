@@ -4,21 +4,13 @@ import _ from "lodash";
 
 import { User } from "@/models/User";
 import { Jwt } from "@/models/Jwt";
+import { FilterDataInterface } from "@/models/utils/filterData.interface";
 import { listDocuments } from "@/services/apiService";
 import {
   USERS_COLLECTION,
   PAGINATION_LIMIT,
   API_ENDPOINT,
 } from "@/constants/config";
-
-interface FilterDataInterface {
-  gender?: string;
-  country?: string;
-  ageRange?: number[];
-  motherLanguages?: string[];
-  studyLanguages?: string[];
-  isMatchMyGender?: boolean;
-}
 
 // Update Current User
 export async function updateUser(
@@ -42,10 +34,12 @@ export async function updateUser(
 
 export async function listUsers(params: any): Promise<User[]> {
   const userId = params?.userId;
-  const filterData = params?.filterData || null;
+  const filterData: FilterDataInterface =
+    JSON.parse(params?.filterData) || null;
   const offset = params?.currentOffset || null;
   const searchText = params?.searchText || null;
-  console.log("[FILTER] ", filterData);
+
+  console.log("[FILTER] ", typeof filterData, filterData);
 
   try {
     // Default queries
@@ -131,12 +125,12 @@ function createFilterQueries(filterData: FilterDataInterface): any[] {
   }
 
   // Query for users with the selected languages filter
-  if (filterData?.motherLanguages.length > 0) {
+  if (filterData?.motherLanguages?.length > 0) {
     const keywords = filterData.motherLanguages;
     // OR Query for users with any of the selected languages
     queries.push(Query.contains("motherLanguages", keywords));
   }
-  if (filterData?.studyLanguages.length > 0) {
+  if (filterData?.studyLanguages?.length > 0) {
     const keywords = filterData.studyLanguages;
     // OR Query for users with any of the selected languages
     queries.push(Query.contains("studyLanguages", keywords));

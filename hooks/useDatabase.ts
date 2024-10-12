@@ -6,7 +6,7 @@ import { showToast } from '@/constants/toast';
 interface Params {
   userId?: string;
   roomId?: string;
-  filterData?: Object;
+  filterData?: string;
   searchText?: string;
   initialOffset?: number;
 }
@@ -27,9 +27,10 @@ export function useDatabase(fn: Function, params: Params = {}) {
       } else {
         setData((prevData) => [...prevData, ...res]);
       }
-      setHasMore(res.length > 0);
+      setHasMore(res && res.length > 0);
     } catch (error) {
       showToast('error', error.message);
+      console.log(error);
     } finally {
       setLoading(false);
     }

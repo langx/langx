@@ -17,7 +17,7 @@ import UserCard from "@/components/home/UserCard";
 
 interface RecommendedSectionProps {
   currentUserId: string;
-  filterData?: any;
+  filterData?: string;
   searchText?: string;
 }
 
