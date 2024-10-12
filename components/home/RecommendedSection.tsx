@@ -22,7 +22,7 @@ interface RecommendedSectionProps {
 }
 
 const RecommendedSection = forwardRef((props: RecommendedSectionProps, ref) => {
-  const { currentUserId, filterData = {}, searchText = "" } = props;
+  const { currentUserId, filterData = null, searchText = "" } = props;
 
   const {
     data: users,
