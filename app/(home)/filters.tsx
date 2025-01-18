@@ -100,6 +100,7 @@ const Filters = () => {
   useEffect(() => {
     const loadFilters = () => {
       try {
+        console.log("filters", filters);
         if (filters) {
           const {
             studyLanguages,
