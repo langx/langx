@@ -15,6 +15,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Href, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -23,7 +25,6 @@ import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
-import { Ionicons } from "@expo/vector-icons";
 
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
@@ -56,6 +57,8 @@ const CompleteSchema = Yup.object().shape({
 
 const CompleteForm = () => {
   const theme = useColorScheme() ?? "light";
+  const router = useRouter();
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [birthdate, setBirthdate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -70,7 +73,10 @@ const CompleteForm = () => {
   const handleComplete = async (form) => {
     setSubmitting(true);
     try {
+      // Handle form submission
+      // TODO: Save form data to ngrx store
       console.log("Completing with:", form);
+      router.push("/complete/languages" as Href);
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
