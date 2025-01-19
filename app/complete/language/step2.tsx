@@ -88,7 +88,6 @@ const CompleteForm = () => {
         setFilteredLanguages(
           data.languages.filter((lang) => lang.code !== motherLanguageCode)
         );
-        console.log("Languages:", allLanguages);
       } catch (error) {
         console.error("Error fetching languages:", error);
         showToast("error", "Failed to load languages.");
@@ -138,6 +137,7 @@ const CompleteForm = () => {
       );
       setFilteredLanguages(filtered);
     }
+    console.log("Filtered languages:", filteredLanguages);
   };
 
   return (
