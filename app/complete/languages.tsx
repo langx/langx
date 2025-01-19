@@ -28,7 +28,7 @@ import { Href, useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
-const CompleteSchema = Yup.object().shape({
+const LanguageSchema = Yup.object().shape({
   birthdate: Yup.date()
     .required("Required")
     .typeError("Invalid birthdate")
@@ -53,8 +53,10 @@ const CompleteSchema = Yup.object().shape({
       }
     ),
   gender: Yup.string().min(1, "Invalid gender").required("Required"),
-  country: Yup.string().min(1, "Invalid country").required("Required"),
-  countryCode: Yup.string().min(1, "Invalid country code").required("Required"),
+  language: Yup.string().min(1, "Invalid language").required("Required"),
+  languageCode: Yup.string()
+    .min(1, "Invalid language code")
+    .required("Required"),
 });
 
 const CompleteForm = () => {
@@ -65,10 +67,10 @@ const CompleteForm = () => {
   const [birthdate, setBirthdate] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
-  const [countryModalOpen, setCountryModalOpen] = useState(false);
+  const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [allCountries, setAllCountries] = useState([]); // Store all countries
-  const [filteredCountries, setFilteredCountries] = useState([]);
+  const [allLanguages, setAllLanguages] = useState([]);
+  const [filteredLanguages, setFilteredLanguages] = useState([]);
 
   const genders = ["male", "female", "other"];
 
@@ -77,7 +79,7 @@ const CompleteForm = () => {
     try {
       // Handle form submission
       console.log("Completing with:", form);
-      router.push("/complete/languages" as Href);
+      // router.push("/complete/languages" as Href);
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
@@ -87,19 +89,19 @@ const CompleteForm = () => {
   };
 
   useEffect(() => {
-    const fetchCountries = async () => {
+    const fetchLanguages = async () => {
       try {
-        const response = await fetch("https://db.langx.io/v1/locale/countries");
+        const response = await fetch("https://db.langx.io/v1/locale/languages");
         const data = await response.json();
-        setAllCountries(data.countries); // Store all countries
-        setFilteredCountries(data.countries); // Update state with countries array
+        setAllLanguages(data.languages);
+        setFilteredLanguages(data.languages);
       } catch (error) {
-        console.error("Error fetching countries:", error);
-        showToast("error", "Failed to load countries.");
+        console.error("Error fetching languages:", error);
+        showToast("error", "Failed to load languages.");
       }
     };
 
-    fetchCountries();
+    fetchLanguages();
   }, []);
 
   const renderGenderItem = useCallback(
@@ -144,13 +146,14 @@ const CompleteForm = () => {
     []
   );
 
-  const renderCountryItem = useCallback(
+  const renderLanguageItem = useCallback(
     ({ item, setFieldValue }) => (
       <Pressable
         onPress={() => {
-          setFieldValue("country", item.name);
-          setFieldValue("countryCode", item.code);
-          setCountryModalOpen(false);
+          console.log("Selected language:", item);
+          setFieldValue("language", item.name);
+          setFieldValue("languageCode", item.code);
+          setLanguageModalOpen(false);
         }}
       >
         <ThemedView style={styles.item}>
@@ -164,20 +167,25 @@ const CompleteForm = () => {
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query === "") {
-      // If search query is empty, reset to all countries
-      setFilteredCountries(allCountries);
+      // If search query is empty, reset to all languages
+      setFilteredLanguages(allLanguages);
     } else {
-      const filtered = allCountries.filter((country) =>
-        country.name.toLowerCase().includes(query.toLowerCase())
+      const filtered = allLanguages.filter((lang) =>
+        lang.name.toLowerCase().includes(query.toLowerCase())
       );
-      setFilteredCountries(filtered);
+      setFilteredLanguages(filtered);
     }
   };
 
   return (
     <Formik
-      initialValues={{ birthdate: "", gender: "", country: "" }}
-      validationSchema={CompleteSchema}
+      initialValues={{
+        birthdate: "",
+        gender: "",
+        language: "",
+        languageCode: "",
+      }}
+      validationSchema={LanguageSchema}
       onSubmit={(values) => handleComplete(values)}
     >
       {({
@@ -271,25 +279,25 @@ const CompleteForm = () => {
             </TouchableWithoutFeedback>
           </Modal>
 
-          {/* Country Field */}
-          <ThemedText style={styles.text}>Country</ThemedText>
-          <Pressable onPress={() => setCountryModalOpen(true)}>
+          {/* Language Field */}
+          <ThemedText style={styles.text}>Language</ThemedText>
+          <Pressable onPress={() => setLanguageModalOpen(true)}>
             <ThemedText style={[styles.text, styles.detail]}>
-              {values.country ? values.country : "Select Country"}
+              {values.language ? values.language : "Select Language"}
             </ThemedText>
           </Pressable>
-          {errors.country && touched.country ? (
+          {errors.language && touched.language ? (
             <ThemedText style={{ color: Colors.light.error }}>
-              {errors.country}
+              {errors.language}
             </ThemedText>
           ) : null}
           <Modal
-            visible={countryModalOpen}
+            visible={languageModalOpen}
             transparent={true}
             animationType="fade"
           >
             <TouchableWithoutFeedback
-              onPress={() => setCountryModalOpen(false)}
+              onPress={() => setLanguageModalOpen(false)}
             >
               <ThemedView style={styles.modalOverlay}>
                 <KeyboardAvoidingView
@@ -304,17 +312,17 @@ const CompleteForm = () => {
                         onChangeText={handleSearch}
                         value={searchQuery}
                       />
-                      {filteredCountries.length > 0 ? (
+                      {filteredLanguages.length > 0 ? (
                         <FlatList
-                          data={filteredCountries}
+                          data={filteredLanguages}
                           keyExtractor={(item) => item.code}
                           renderItem={({ item }) =>
-                            renderCountryItem({ item, setFieldValue })
+                            renderLanguageItem({ item, setFieldValue })
                           }
                         />
                       ) : (
                         <ThemedText style={styles.text}>
-                          No countries found.
+                          No languages found.
                         </ThemedText>
                       )}
                     </ThemedView>
@@ -336,7 +344,7 @@ const CompleteForm = () => {
   );
 };
 
-const Register = () => {
+const Languages = () => {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
 
@@ -488,4 +496,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+export default Languages;
