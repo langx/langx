@@ -25,6 +25,13 @@ import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
+import {
+  setBirthdate,
+  setCountry,
+  setCountryCode,
+  setGender,
+} from "@/store/registerSlice";
+import { useDispatch } from "react-redux";
 
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
@@ -58,9 +65,10 @@ const CompleteSchema = Yup.object().shape({
 const CompleteForm = () => {
   const theme = useColorScheme() ?? "light";
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [isSubmitting, setSubmitting] = useState(false);
-  const [birthdate, setBirthdate] = useState(new Date());
+  const [birthdate, setBirthdateState] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
   const [countryModalOpen, setCountryModalOpen] = useState(false);
@@ -74,8 +82,12 @@ const CompleteForm = () => {
     setSubmitting(true);
     try {
       // Handle form submission
-      // TODO: Save form data to ngrx store
+      // TODO: Save form data to store
       console.log("Completing with:", form);
+      dispatch(setBirthdate(form.birthdate.toISOString()));
+      dispatch(setGender(form.gender));
+      dispatch(setCountry(form.country));
+      dispatch(setCountryCode(form.countryCode));
       router.push("/complete/languages" as Href);
     } catch (error) {
       console.error("Error logging in:", error);
@@ -220,7 +232,7 @@ const CompleteForm = () => {
               if (date.toDateString() === new Date().toDateString()) {
                 date = maximumDate;
               }
-              setBirthdate(date);
+              setBirthdateState(date);
               setFieldValue("birthdate", date);
               setDatePickerVisibility(false);
             }}
