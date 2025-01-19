@@ -38,6 +38,7 @@ const LanguageSchema = Yup.object().shape({
         languageNativename: Yup.string()
           .min(1, "Invalid language code")
           .required("Required"),
+        level: Yup.number().min(0).max(3).required("Required"),
       })
     )
     .max(3, "You can add up to 3 languages"),
@@ -87,6 +88,7 @@ const CompleteForm = () => {
         setFilteredLanguages(
           data.languages.filter((lang) => lang.code !== motherLanguageCode)
         );
+        console.log("Languages:", allLanguages);
       } catch (error) {
         console.error("Error fetching languages:", error);
         showToast("error", "Failed to load languages.");
@@ -141,7 +143,9 @@ const CompleteForm = () => {
   return (
     <Formik
       initialValues={{
-        languages: [{ language: "", languageCode: "", languageNativename: "" }],
+        languages: [
+          { language: "", languageCode: "", languageNativename: "", level: 0 },
+        ],
       }}
       validationSchema={LanguageSchema}
       onSubmit={(values) => handleComplete(values)}
@@ -190,6 +194,86 @@ const CompleteForm = () => {
                         </Pressable>
                       )}
                     </ThemedView>
+                    {language.language && (
+                      <ThemedView style={styles.levelContainer}>
+                        <Pressable
+                          onPress={() =>
+                            setFieldValue(`languages[${index}].level`, 0)
+                          }
+                          style={styles.levelButton}
+                        >
+                          <Ionicons
+                            name="battery-dead-outline"
+                            size={24}
+                            color={
+                              language.level === 0
+                                ? Colors.light.primary
+                                : Colors.light.gray2
+                            }
+                          />
+                          <ThemedText style={styles.levelText}>
+                            Absolute Beginner
+                          </ThemedText>
+                        </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            setFieldValue(`languages[${index}].level`, 1)
+                          }
+                          style={styles.levelButton}
+                        >
+                          <Ionicons
+                            name="battery-half-outline"
+                            size={24}
+                            color={
+                              language.level === 1
+                                ? Colors.light.primary
+                                : Colors.light.gray2
+                            }
+                          />
+                          <ThemedText style={styles.levelText}>
+                            Beginner
+                          </ThemedText>
+                        </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            setFieldValue(`languages[${index}].level`, 2)
+                          }
+                          style={styles.levelButton}
+                        >
+                          <Ionicons
+                            name="battery-full-outline"
+                            size={24}
+                            color={
+                              language.level === 2
+                                ? Colors.light.primary
+                                : Colors.light.gray2
+                            }
+                          />
+                          <ThemedText style={styles.levelText}>
+                            Intermediate
+                          </ThemedText>
+                        </Pressable>
+                        <Pressable
+                          onPress={() =>
+                            setFieldValue(`languages[${index}].level`, 3)
+                          }
+                          style={styles.levelButton}
+                        >
+                          <Ionicons
+                            name="rocket-outline"
+                            size={24}
+                            color={
+                              language.level === 3
+                                ? Colors.light.primary
+                                : Colors.light.gray2
+                            }
+                          />
+                          <ThemedText style={styles.levelText}>
+                            Fluent
+                          </ThemedText>
+                        </Pressable>
+                      </ThemedView>
+                    )}
                     {errors.languages &&
                     errors.languages[index] &&
                     touched.languages &&
@@ -208,6 +292,7 @@ const CompleteForm = () => {
                         language: "",
                         languageCode: "",
                         languageNativename: "",
+                        level: 0,
                       })
                     }
                     style={[styles.button, styles.outlinedButton]}
@@ -411,6 +496,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 8,
+  },
+  levelContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  levelButton: {
+    alignItems: "center",
+    flexDirection: "row",
+    marginVertical: 5,
+  },
+  levelText: {
+    fontSize: 12,
+    color: Colors.light.gray2,
+    marginLeft: 10,
   },
 });
 
