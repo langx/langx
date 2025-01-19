@@ -25,6 +25,8 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Href, useRouter } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
@@ -337,6 +339,20 @@ const CompleteForm = () => {
 const Register = () => {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
+
+  const birthdate = useSelector((state: RootState) => state.register.birthdate);
+  const gender = useSelector((state: RootState) => state.register.gender);
+  const country = useSelector((state: RootState) => state.register.country);
+  const countryCode = useSelector(
+    (state: RootState) => state.register.countryCode
+  );
+
+  useEffect(() => {
+    console.log("Birthdate:", birthdate);
+    console.log("Gender:", gender);
+    console.log("Country:", country);
+    console.log("Country Code:", countryCode);
+  }, [birthdate, gender, country, countryCode]);
 
   return (
     <ThemedView
