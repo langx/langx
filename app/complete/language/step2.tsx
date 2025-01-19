@@ -1,4 +1,3 @@
-// app/complete/language/step2.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
@@ -165,18 +164,32 @@ const CompleteForm = () => {
                     <ThemedText style={styles.text}>
                       Study Language {index + 1}
                     </ThemedText>
-                    <Pressable
-                      onPress={() => {
-                        setCurrentLanguageIndex(index);
-                        setLanguageModalOpen(true);
-                      }}
+                    <ThemedView
+                      style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <ThemedText style={[styles.text, styles.detail]}>
-                        {language.language
-                          ? language.language
-                          : "Select Language"}
-                      </ThemedText>
-                    </Pressable>
+                      <Pressable
+                        onPress={() => {
+                          setCurrentLanguageIndex(index);
+                          setLanguageModalOpen(true);
+                        }}
+                        style={{ flex: 1 }}
+                      >
+                        <ThemedText style={[styles.text, styles.detail]}>
+                          {language.language
+                            ? language.language
+                            : "Select Language"}
+                        </ThemedText>
+                      </Pressable>
+                      {index > 0 && (
+                        <Pressable onPress={() => remove(index)}>
+                          <Ionicons
+                            name="close-circle"
+                            size={24}
+                            color={Colors.light.error}
+                          />
+                        </Pressable>
+                      )}
+                    </ThemedView>
                     {errors.languages &&
                     errors.languages[index] &&
                     touched.languages &&
@@ -304,6 +317,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 6,
     textAlign: "left",
+    flex: 1,
   },
   detail: {
     color: Colors.light.gray2,
