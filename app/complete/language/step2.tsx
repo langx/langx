@@ -1,3 +1,4 @@
+// app/complete/language/step2.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
@@ -12,7 +13,7 @@ import {
   Platform,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Formik } from "formik";
+import { Formik, FieldArray } from "formik";
 import * as Yup from "yup";
 
 import { Colors } from "@/constants/Colors";
@@ -28,13 +29,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 const LanguageSchema = Yup.object().shape({
-  language: Yup.string().min(1, "Invalid language").required("Required"),
-  languageCode: Yup.string()
-    .min(1, "Invalid language code")
-    .required("Required"),
-  languageNativename: Yup.string()
-    .min(1, "Invalid language code")
-    .required("Required"),
+  languages: Yup.array()
+    .of(
+      Yup.object().shape({
+        language: Yup.string().min(1, "Invalid language").required("Required"),
+        languageCode: Yup.string()
+          .min(1, "Invalid language code")
+          .required("Required"),
+        languageNativename: Yup.string()
+          .min(1, "Invalid language code")
+          .required("Required"),
+      })
+    )
+    .max(3, "You can add up to 3 languages"),
 });
 
 const CompleteForm = () => {
@@ -47,6 +54,7 @@ const CompleteForm = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [allLanguages, setAllLanguages] = useState([]);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
+  const [currentLanguageIndex, setCurrentLanguageIndex] = useState(0);
 
   const motherLanguageCode = useSelector(
     (state: RootState) => state.register.motherLanguageCode
@@ -95,9 +103,18 @@ const CompleteForm = () => {
       <Pressable
         onPress={() => {
           console.log("Selected language:", item);
-          setFieldValue("language", item.name);
-          setFieldValue("languageCode", item.code);
-          setFieldValue("languageNativename", item.nativeName);
+          setFieldValue(
+            `languages[${currentLanguageIndex}].language`,
+            item.name
+          );
+          setFieldValue(
+            `languages[${currentLanguageIndex}].languageCode`,
+            item.code
+          );
+          setFieldValue(
+            `languages[${currentLanguageIndex}].languageNativename`,
+            item.nativeName
+          );
           setLanguageModalOpen(false);
         }}
       >
@@ -106,7 +123,7 @@ const CompleteForm = () => {
         </ThemedView>
       </Pressable>
     ),
-    []
+    [currentLanguageIndex]
   );
 
   const handleSearch = (query) => {
@@ -125,8 +142,7 @@ const CompleteForm = () => {
   return (
     <Formik
       initialValues={{
-        language: "",
-        languageCode: "",
+        languages: [{ language: "", languageCode: "", languageNativename: "" }],
       }}
       validationSchema={LanguageSchema}
       onSubmit={(values) => handleComplete(values)}
@@ -141,18 +157,53 @@ const CompleteForm = () => {
         touched,
       }) => (
         <ThemedView style={{ flex: 1 }}>
-          {/* MotherLanguage Field */}
-          <ThemedText style={styles.text}>Study Language</ThemedText>
-          <Pressable onPress={() => setLanguageModalOpen(true)}>
-            <ThemedText style={[styles.text, styles.detail]}>
-              {values.language ? values.language : "Select Language"}
-            </ThemedText>
-          </Pressable>
-          {errors.language && touched.language ? (
-            <ThemedText style={{ color: Colors.light.error }}>
-              {errors.language}
-            </ThemedText>
-          ) : null}
+          <FieldArray name="languages">
+            {({ push, remove }) => (
+              <>
+                {values.languages.map((language, index) => (
+                  <React.Fragment key={index}>
+                    <ThemedText style={styles.text}>
+                      Study Language {index + 1}
+                    </ThemedText>
+                    <Pressable
+                      onPress={() => {
+                        setCurrentLanguageIndex(index);
+                        setLanguageModalOpen(true);
+                      }}
+                    >
+                      <ThemedText style={[styles.text, styles.detail]}>
+                        {language.language
+                          ? language.language
+                          : "Select Language"}
+                      </ThemedText>
+                    </Pressable>
+                    {errors.languages &&
+                    errors.languages[index] &&
+                    touched.languages &&
+                    touched.languages[index] ? (
+                      <ThemedText style={{ color: Colors.light.error }}>
+                        {typeof errors.languages[index] === "object" &&
+                          errors.languages[index].language}
+                      </ThemedText>
+                    ) : null}
+                  </React.Fragment>
+                ))}
+                {values.languages.length < 3 && (
+                  <ThemedButton
+                    onPress={() =>
+                      push({
+                        language: "",
+                        languageCode: "",
+                        languageNativename: "",
+                      })
+                    }
+                    style={[styles.button, styles.outlinedButton]}
+                    title="Add More Language"
+                  />
+                )}
+              </>
+            )}
+          </FieldArray>
           <Modal
             visible={languageModalOpen}
             transparent={true}
@@ -271,6 +322,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginTop: 20,
+  },
+  outlinedButton: {
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
+    backgroundColor: "transparent",
   },
   buttonText: {
     color: Colors.light.primary,
