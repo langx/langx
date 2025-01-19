@@ -24,12 +24,8 @@ import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { Ionicons } from "@expo/vector-icons";
 import { Href, useRouter } from "expo-router";
-import { useDispatch } from "react-redux";
-import {
-  setMotherLanguageCode,
-  setMotherLanguageName,
-  setMotherLanguageNativeName,
-} from "@/store/registerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const LanguageSchema = Yup.object().shape({
   language: Yup.string().min(1, "Invalid language").required("Required"),
@@ -51,6 +47,10 @@ const CompleteForm = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [allLanguages, setAllLanguages] = useState([]);
   const [filteredLanguages, setFilteredLanguages] = useState([]);
+
+  const motherLanguageCode = useSelector(
+    (state: RootState) => state.register.motherLanguageCode
+  );
 
   const handleComplete = async (form) => {
     setSubmitting(true);
@@ -74,8 +74,12 @@ const CompleteForm = () => {
       try {
         const response = await fetch("https://db.langx.io/v1/locale/languages");
         const data = await response.json();
-        setAllLanguages(data.languages);
-        setFilteredLanguages(data.languages);
+        setAllLanguages(
+          data.languages.filter((lang) => lang.code !== motherLanguageCode)
+        );
+        setFilteredLanguages(
+          data.languages.filter((lang) => lang.code !== motherLanguageCode)
+        );
       } catch (error) {
         console.error("Error fetching languages:", error);
         showToast("error", "Failed to load languages.");
@@ -83,7 +87,8 @@ const CompleteForm = () => {
     };
 
     fetchLanguages();
-  }, []);
+    console.log("Fetching languages...");
+  }, [motherLanguageCode]);
 
   const renderLanguageItem = useCallback(
     ({ item, setFieldValue }) => (
@@ -204,20 +209,6 @@ const CompleteForm = () => {
 const Languages = () => {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
-
-  // const birthdate = useSelector((state: RootState) => state.register.birthdate);
-  // const gender = useSelector((state: RootState) => state.register.gender);
-  // const country = useSelector((state: RootState) => state.register.country);
-  // const countryCode = useSelector(
-  //   (state: RootState) => state.register.countryCode
-  // );
-
-  // useEffect(() => {
-  //   console.log("Birthdate:", birthdate);
-  //   console.log("Gender:", gender);
-  //   console.log("Country:", country);
-  //   console.log("Country Code:", countryCode);
-  // }, [birthdate, gender, country, countryCode]);
 
   return (
     <ThemedView
