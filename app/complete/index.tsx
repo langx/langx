@@ -89,7 +89,7 @@ const CompleteForm = () => {
       dispatch(setGender(form.gender));
       dispatch(setCountry(form.country));
       dispatch(setCountryCode(form.countryCode));
-      router.push("/complete/languages" as Href);
+      router.push("/complete/language/step1" as Href);
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
