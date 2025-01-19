@@ -37,6 +37,7 @@ const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
     .required("Required")
     .typeError("Invalid birthdate")
+    // TODO: Check test, it doesnt work
     .test(
       "is-13-years-old",
       "You must be at least 13 years old",
