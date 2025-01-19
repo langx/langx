@@ -6,6 +6,9 @@ interface RegisterState {
   gender: string;
   country: string;
   countryCode: string;
+  motherLanguageName: string;
+  motherLanguageCode: string;
+  motherLanguageNativeName: string;
   isLoading: boolean;
   error: string | null;
 }
@@ -15,6 +18,9 @@ const initialState: RegisterState = {
   gender: null,
   country: null,
   countryCode: null,
+  motherLanguageName: null,
+  motherLanguageCode: null,
+  motherLanguageNativeName: null,
   isLoading: false,
   error: null,
 };
@@ -71,6 +77,18 @@ const registerSlice = createSlice({
     setCountryCode: (state, action: PayloadAction<string | null>) => {
       state.countryCode = action.payload;
     },
+    setMotherLanguageName: (state, action: PayloadAction<string | null>) => {
+      state.motherLanguageName = action.payload;
+    },
+    setMotherLanguageCode: (state, action: PayloadAction<string | null>) => {
+      state.motherLanguageCode = action.payload;
+    },
+    setMotherLanguageNativeName: (
+      state,
+      action: PayloadAction<string | null>
+    ) => {
+      state.motherLanguageNativeName = action.payload;
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
@@ -102,6 +120,9 @@ export const {
   setGender,
   setCountry,
   setCountryCode,
+  setMotherLanguageName,
+  setMotherLanguageCode,
+  setMotherLanguageNativeName,
   setLoading,
   setError,
   setRegisterInitialState,
