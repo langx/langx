@@ -144,7 +144,6 @@ const CompleteForm = () => {
       );
       setFilteredLanguages(filtered);
     }
-    console.log("Filtered languages:", filteredLanguages.length);
   };
 
   return (
@@ -351,7 +350,7 @@ const CompleteForm = () => {
                         />
                         {availableLanguages.length > 0 ? (
                           <FlatList
-                            data={availableLanguages}
+                            data={filteredLanguages}
                             keyExtractor={(item) => item.code}
                             renderItem={({ item }) =>
                               renderLanguageItem({ item, setFieldValue })
