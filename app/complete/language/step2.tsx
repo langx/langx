@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik, FieldArray } from "formik";
 import * as Yup from "yup";
+import CountryFlag from "react-native-country-flag";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -26,6 +27,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Href, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { language2Country } from "@/constants/language2Country";
 
 const LanguageSchema = Yup.object().shape({
   languages: Yup.array()
@@ -119,6 +121,11 @@ const CompleteForm = () => {
         }}
       >
         <ThemedView style={styles.item}>
+          <CountryFlag
+            isoCode={language2Country[item.code]}
+            size={20}
+            style={styles.flag}
+          />
           <ThemedText style={styles.text}>{item.name}</ThemedText>
         </ThemedView>
       </Pressable>
@@ -184,8 +191,19 @@ const CompleteForm = () => {
                             setCurrentLanguageIndex(index);
                             setLanguageModalOpen(true);
                           }}
-                          style={{ flex: 1 }}
+                          style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            alignItems: "center",
+                          }}
                         >
+                          {language.languageCode ? (
+                            <CountryFlag
+                              isoCode={language2Country[language.languageCode]}
+                              size={20}
+                              style={styles.flag}
+                            />
+                          ) : null}
                           <ThemedText style={[styles.text, styles.detail]}>
                             {language.language
                               ? language.language
@@ -483,6 +501,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
+  },
+  flag: {
+    marginRight: 10,
+    borderRadius: 5,
+    overflow: "hidden",
   },
   icon: {
     fontSize: 24,
