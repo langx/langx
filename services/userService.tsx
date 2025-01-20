@@ -4,7 +4,7 @@ import _ from "lodash";
 
 import { User } from "@/models/User";
 import { Jwt } from "@/models/Jwt";
-import { FilterDataInterface } from "@/models/utils/filterData.interface";
+import { FilterDataInterface } from "@/models/utils/FilterData.interface";
 import { listDocuments } from "@/services/apiService";
 import {
   USERS_COLLECTION,
