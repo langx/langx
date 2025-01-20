@@ -14,6 +14,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import CountryFlag from "react-native-country-flag";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -30,6 +31,7 @@ import {
   setMotherLanguageName,
   setMotherLanguageNativeName,
 } from "@/store/registerSlice";
+import { language2Country } from "@/constants/language2Country";
 
 const LanguageSchema = Yup.object().shape({
   language: Yup.string().min(1, "Invalid language").required("Required"),
@@ -97,6 +99,11 @@ const CompleteForm = () => {
         }}
       >
         <ThemedView style={styles.item}>
+          <CountryFlag
+            isoCode={language2Country[item.code]}
+            size={20}
+            style={styles.flag}
+          />
           <ThemedText style={styles.text}>{item.name}</ThemedText>
         </ThemedView>
       </Pressable>
@@ -139,9 +146,18 @@ const CompleteForm = () => {
           {/* MotherLanguage Field */}
           <ThemedText style={styles.text}>Mother Language</ThemedText>
           <Pressable onPress={() => setLanguageModalOpen(true)}>
-            <ThemedText style={[styles.text, styles.detail]}>
-              {values.language ? values.language : "Select Language"}
-            </ThemedText>
+            <ThemedView style={styles.selectedLanguage}>
+              {values.languageCode ? (
+                <CountryFlag
+                  isoCode={language2Country[values.languageCode]}
+                  size={20}
+                  style={styles.flag}
+                />
+              ) : null}
+              <ThemedText style={[styles.text, styles.detail]}>
+                {values.language ? values.language : "Select Language"}
+              </ThemedText>
+            </ThemedView>
           </Pressable>
           {errors.language && touched.language ? (
             <ThemedText style={{ color: Colors.light.error }}>
@@ -204,20 +220,6 @@ const CompleteForm = () => {
 const Languages = () => {
   const colorScheme = useColorScheme();
   const insets = useSafeAreaInsets();
-
-  // const birthdate = useSelector((state: RootState) => state.register.birthdate);
-  // const gender = useSelector((state: RootState) => state.register.gender);
-  // const country = useSelector((state: RootState) => state.register.country);
-  // const countryCode = useSelector(
-  //   (state: RootState) => state.register.countryCode
-  // );
-
-  // useEffect(() => {
-  //   console.log("Birthdate:", birthdate);
-  //   console.log("Gender:", gender);
-  //   console.log("Country:", country);
-  //   console.log("Country Code:", countryCode);
-  // }, [birthdate, gender, country, countryCode]);
 
   return (
     <ThemedView
@@ -329,6 +331,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
+  },
+  flag: {
+    marginRight: 10,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  selectedLanguage: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   icon: {
     fontSize: 24,
