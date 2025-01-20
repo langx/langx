@@ -28,6 +28,7 @@ import { Href, useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { language2Country } from "@/constants/language2Country";
+import { setLoading } from "@/store/registerSlice";
 
 const LanguageSchema = Yup.object().shape({
   languages: Yup.array()
@@ -62,10 +63,14 @@ const CompleteForm = () => {
     (state: RootState) => state.register.motherLanguageCode
   );
 
+  const registerState = useSelector((state: RootState) => state.register);
+
   const handleComplete = async (form) => {
     setSubmitting(true);
+    dispatch(setLoading(true));
     try {
       // Handle form submission
+      console.log("State:", registerState); // Log the entire state to debug
       console.log("Completing with:", form);
       // dispatch(setMotherLanguageName(form.language));
       // dispatch(setMotherLanguageNativeName(form.languageNativename));
@@ -78,7 +83,6 @@ const CompleteForm = () => {
       setSubmitting(false);
     }
   };
-
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
