@@ -82,12 +82,12 @@ const CompleteForm = () => {
       try {
         const response = await fetch("https://db.langx.io/v1/locale/languages");
         const data = await response.json();
-        setAllLanguages(
-          data.languages.filter((lang) => lang.code !== motherLanguageCode)
+        const filtered = data.languages.filter(
+          (lang) => lang.code !== motherLanguageCode
         );
-        setFilteredLanguages(
-          data.languages.filter((lang) => lang.code !== motherLanguageCode)
-        );
+        setAllLanguages(filtered);
+        setFilteredLanguages(filtered);
+        console.log("Fetched languages:", data.languages.length);
       } catch (error) {
         console.error("Error fetching languages:", error);
         showToast("error", "Failed to load languages.");
@@ -137,7 +137,7 @@ const CompleteForm = () => {
       );
       setFilteredLanguages(filtered);
     }
-    console.log("Filtered languages:", filteredLanguages);
+    console.log("Filtered languages:", filteredLanguages.length);
   };
 
   return (
