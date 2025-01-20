@@ -402,7 +402,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 6,
     textAlign: "left",
-    flex: 1,
   },
   detail: {
     color: Colors.light.gray2,
