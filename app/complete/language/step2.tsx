@@ -29,6 +29,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { language2Country } from "@/constants/language2Country";
 import { setLoading } from "@/store/registerSlice";
+import { createUserDoc } from "@/services/userService";
+import { useAuth } from "@/hooks/useAuth";
+import { CompleteRegistrationRequestInterface } from "@/models/requests/completeRegistrationRequestInterface";
 
 const LanguageSchema = Yup.object().shape({
   languages: Yup.array()
@@ -52,6 +55,9 @@ const CompleteForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  // Hooks
+  const { currentAccount, jwt } = useAuth();
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,8 +76,20 @@ const CompleteForm = () => {
     dispatch(setLoading(true));
     try {
       // Handle form submission
-      console.log("State:", registerState); // Log the entire state to debug
-      console.log("Completing with:", form);
+      // console.log("State:", registerState); // Log the entire state to debug
+      // console.log("Completing with:", form);
+      // console.log("Current account :", currentAccount);
+      // console.log("JWT:", jwt);
+      const userDoc: CompleteRegistrationRequestInterface = {
+        name: currentAccount.name,
+        birthdate: new Date(registerState.birthdate),
+        country: registerState.country,
+        countryCode: registerState.countryCode,
+        gender: registerState.gender,
+        lastSeen: new Date(),
+      };
+      console.log("User doc:", userDoc);
+      createUserDoc(userDoc, jwt, currentAccount.$id);
       // dispatch(setMotherLanguageName(form.language));
       // dispatch(setMotherLanguageNativeName(form.languageNativename));
       // dispatch(setMotherLanguageCode(form.languageCode));
@@ -83,6 +101,7 @@ const CompleteForm = () => {
       setSubmitting(false);
     }
   };
+
   useEffect(() => {
     const fetchLanguages = async () => {
       try {
