@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Href, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import CountryFlag from "react-native-country-flag";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -166,6 +167,7 @@ const CompleteForm = () => {
         }}
       >
         <ThemedView style={styles.item}>
+          <CountryFlag isoCode={item.code} size={20} style={styles.flag} />
           <ThemedText style={styles.text}>{item.name}</ThemedText>
         </ThemedView>
       </Pressable>
@@ -188,7 +190,12 @@ const CompleteForm = () => {
 
   return (
     <Formik
-      initialValues={{ birthdate: "", gender: "", country: "" }}
+      initialValues={{
+        birthdate: "",
+        gender: "",
+        country: "",
+        countryCode: "",
+      }}
       validationSchema={CompleteSchema}
       onSubmit={(values) => handleComplete(values)}
     >
@@ -286,9 +293,18 @@ const CompleteForm = () => {
           {/* Country Field */}
           <ThemedText style={styles.text}>Country</ThemedText>
           <Pressable onPress={() => setCountryModalOpen(true)}>
-            <ThemedText style={[styles.text, styles.detail]}>
-              {values.country ? values.country : "Select Country"}
-            </ThemedText>
+            <ThemedView style={styles.selectedCountry}>
+              {values.countryCode ? (
+                <CountryFlag
+                  isoCode={values.countryCode}
+                  size={20}
+                  style={styles.flag}
+                />
+              ) : null}
+              <ThemedText style={[styles.text, styles.detail]}>
+                {values.country ? values.country : "Select Country"}
+              </ThemedText>
+            </ThemedView>
           </Pressable>
           {errors.country && touched.country ? (
             <ThemedText style={{ color: Colors.light.error }}>
@@ -462,6 +478,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
+  },
+  flag: {
+    marginRight: 10,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  selectedCountry: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   icon: {
     fontSize: 24,
