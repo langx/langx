@@ -355,7 +355,7 @@ const CompleteForm = () => {
               onPress={handleSubmit}
               style={styles.button}
               isLoading={isSubmitting}
-              title="Next"
+              title="Done ✅"
             />
           </ThemedView>
         );
