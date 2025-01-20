@@ -320,7 +320,8 @@ const CompleteForm = () => {
                           level: 0,
                         })
                       }
-                      style={[styles.button, styles.outlinedButton]}
+                      style={styles.button}
+                      type="outline"
                       title="Add More Language"
                     />
                   )}
@@ -446,11 +447,6 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginTop: 20,
-  },
-  outlinedButton: {
-    borderWidth: 1,
-    borderColor: Colors.light.primary,
-    backgroundColor: "transparent",
   },
   buttonText: {
     color: Colors.light.primary,
