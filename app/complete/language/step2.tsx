@@ -158,199 +158,208 @@ const CompleteForm = () => {
         values,
         errors,
         touched,
-      }) => (
-        <ThemedView style={{ flex: 1 }}>
-          <FieldArray name="languages">
-            {({ push, remove }) => (
-              <>
-                {values.languages.map((language, index) => (
-                  <React.Fragment key={index}>
-                    <ThemedText style={styles.text}>
-                      Study Language {index + 1}
-                    </ThemedText>
-                    <ThemedView
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Pressable
-                        onPress={() => {
-                          setCurrentLanguageIndex(index);
-                          setLanguageModalOpen(true);
-                        }}
-                        style={{ flex: 1 }}
-                      >
-                        <ThemedText style={[styles.text, styles.detail]}>
-                          {language.language
-                            ? language.language
-                            : "Select Language"}
-                        </ThemedText>
-                      </Pressable>
-                      {index > 0 && (
-                        <Pressable onPress={() => remove(index)}>
-                          <Ionicons
-                            name="close-circle"
-                            size={24}
-                            color={Colors.light.error}
-                          />
-                        </Pressable>
-                      )}
-                    </ThemedView>
-                    {language.language && (
-                      <ThemedView style={styles.levelContainer}>
-                        <Pressable
-                          onPress={() =>
-                            setFieldValue(`languages[${index}].level`, 0)
-                          }
-                          style={styles.levelButton}
-                        >
-                          <Ionicons
-                            name="battery-dead-outline"
-                            size={24}
-                            color={
-                              language.level === 0
-                                ? Colors.light.primary
-                                : Colors.light.gray2
-                            }
-                          />
-                          <ThemedText style={styles.levelText}>
-                            Absolute Beginner
-                          </ThemedText>
-                        </Pressable>
-                        <Pressable
-                          onPress={() =>
-                            setFieldValue(`languages[${index}].level`, 1)
-                          }
-                          style={styles.levelButton}
-                        >
-                          <Ionicons
-                            name="battery-half-outline"
-                            size={24}
-                            color={
-                              language.level === 1
-                                ? Colors.light.primary
-                                : Colors.light.gray2
-                            }
-                          />
-                          <ThemedText style={styles.levelText}>
-                            Beginner
-                          </ThemedText>
-                        </Pressable>
-                        <Pressable
-                          onPress={() =>
-                            setFieldValue(`languages[${index}].level`, 2)
-                          }
-                          style={styles.levelButton}
-                        >
-                          <Ionicons
-                            name="battery-full-outline"
-                            size={24}
-                            color={
-                              language.level === 2
-                                ? Colors.light.primary
-                                : Colors.light.gray2
-                            }
-                          />
-                          <ThemedText style={styles.levelText}>
-                            Intermediate
-                          </ThemedText>
-                        </Pressable>
-                        <Pressable
-                          onPress={() =>
-                            setFieldValue(`languages[${index}].level`, 3)
-                          }
-                          style={styles.levelButton}
-                        >
-                          <Ionicons
-                            name="rocket-outline"
-                            size={24}
-                            color={
-                              language.level === 3
-                                ? Colors.light.primary
-                                : Colors.light.gray2
-                            }
-                          />
-                          <ThemedText style={styles.levelText}>
-                            Fluent
-                          </ThemedText>
-                        </Pressable>
-                      </ThemedView>
-                    )}
-                    {errors.languages &&
-                    errors.languages[index] &&
-                    touched.languages &&
-                    touched.languages[index] ? (
-                      <ThemedText style={{ color: Colors.light.error }}>
-                        {typeof errors.languages[index] === "object" &&
-                          errors.languages[index].language}
-                      </ThemedText>
-                    ) : null}
-                  </React.Fragment>
-                ))}
-                {values.languages.length < 3 && (
-                  <ThemedButton
-                    onPress={() =>
-                      push({
-                        language: "",
-                        languageCode: "",
-                        languageNativename: "",
-                        level: 0,
-                      })
-                    }
-                    style={[styles.button, styles.outlinedButton]}
-                    title="Add More Language"
-                  />
-                )}
-              </>
-            )}
-          </FieldArray>
-          <Modal
-            visible={languageModalOpen}
-            transparent={true}
-            animationType="fade"
-          >
-            <TouchableWithoutFeedback
-              onPress={() => setLanguageModalOpen(false)}
-            >
-              <ThemedView style={styles.modalOverlay}>
-                <KeyboardAvoidingView
-                  behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  style={{ flex: 1, justifyContent: "center" }}
-                >
-                  <TouchableWithoutFeedback>
-                    <ThemedView style={styles.modalBox}>
-                      <TextInput
-                        style={[styles.searchInput, { width: "100%" }]}
-                        placeholder="Search..."
-                        onChangeText={handleSearch}
-                        value={searchQuery}
-                      />
-                      {filteredLanguages.length > 0 ? (
-                        <FlatList
-                          data={filteredLanguages}
-                          keyExtractor={(item) => item.code}
-                          renderItem={({ item }) =>
-                            renderLanguageItem({ item, setFieldValue })
-                          }
-                        />
-                      ) : (
-                        <ThemedText style={styles.text}>
-                          No languages found.
-                        </ThemedText>
-                      )}
-                    </ThemedView>
-                  </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
-              </ThemedView>
-            </TouchableWithoutFeedback>
-          </Modal>
+      }) => {
+        const selectedLanguages = values.languages.map(
+          (language) => language.languageCode
+        );
+        const availableLanguages = allLanguages.filter(
+          (lang) => !selectedLanguages.includes(lang.code)
+        );
 
-          <ThemedButton
-            onPress={handleSubmit}
-            style={styles.button}
-            isLoading={isSubmitting}
-            title="Next"
-          />
-        </ThemedView>
-      )}
+        return (
+          <ThemedView style={{ flex: 1 }}>
+            <FieldArray name="languages">
+              {({ push, remove }) => (
+                <>
+                  {values.languages.map((language, index) => (
+                    <React.Fragment key={index}>
+                      <ThemedText style={styles.text}>
+                        Study Language {index + 1}
+                      </ThemedText>
+                      <ThemedView
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Pressable
+                          onPress={() => {
+                            setCurrentLanguageIndex(index);
+                            setLanguageModalOpen(true);
+                          }}
+                          style={{ flex: 1 }}
+                        >
+                          <ThemedText style={[styles.text, styles.detail]}>
+                            {language.language
+                              ? language.language
+                              : "Select Language"}
+                          </ThemedText>
+                        </Pressable>
+                        {index > 0 && (
+                          <Pressable onPress={() => remove(index)}>
+                            <Ionicons
+                              name="close-circle"
+                              size={24}
+                              color={Colors.light.error}
+                            />
+                          </Pressable>
+                        )}
+                      </ThemedView>
+                      {language.language && (
+                        <ThemedView style={styles.levelContainer}>
+                          <Pressable
+                            onPress={() =>
+                              setFieldValue(`languages[${index}].level`, 0)
+                            }
+                            style={styles.levelButton}
+                          >
+                            <Ionicons
+                              name="battery-dead-outline"
+                              size={24}
+                              color={
+                                language.level === 0
+                                  ? Colors.light.primary
+                                  : Colors.light.gray2
+                              }
+                            />
+                            <ThemedText style={styles.levelText}>
+                              Absolute Beginner
+                            </ThemedText>
+                          </Pressable>
+                          <Pressable
+                            onPress={() =>
+                              setFieldValue(`languages[${index}].level`, 1)
+                            }
+                            style={styles.levelButton}
+                          >
+                            <Ionicons
+                              name="battery-half-outline"
+                              size={24}
+                              color={
+                                language.level === 1
+                                  ? Colors.light.primary
+                                  : Colors.light.gray2
+                              }
+                            />
+                            <ThemedText style={styles.levelText}>
+                              Beginner
+                            </ThemedText>
+                          </Pressable>
+                          <Pressable
+                            onPress={() =>
+                              setFieldValue(`languages[${index}].level`, 2)
+                            }
+                            style={styles.levelButton}
+                          >
+                            <Ionicons
+                              name="battery-full-outline"
+                              size={24}
+                              color={
+                                language.level === 2
+                                  ? Colors.light.primary
+                                  : Colors.light.gray2
+                              }
+                            />
+                            <ThemedText style={styles.levelText}>
+                              Intermediate
+                            </ThemedText>
+                          </Pressable>
+                          <Pressable
+                            onPress={() =>
+                              setFieldValue(`languages[${index}].level`, 3)
+                            }
+                            style={styles.levelButton}
+                          >
+                            <Ionicons
+                              name="rocket-outline"
+                              size={24}
+                              color={
+                                language.level === 3
+                                  ? Colors.light.primary
+                                  : Colors.light.gray2
+                              }
+                            />
+                            <ThemedText style={styles.levelText}>
+                              Fluent
+                            </ThemedText>
+                          </Pressable>
+                        </ThemedView>
+                      )}
+                      {errors.languages &&
+                      errors.languages[index] &&
+                      touched.languages &&
+                      touched.languages[index] ? (
+                        <ThemedText style={{ color: Colors.light.error }}>
+                          {typeof errors.languages[index] === "object" &&
+                            errors.languages[index].language}
+                        </ThemedText>
+                      ) : null}
+                    </React.Fragment>
+                  ))}
+                  {values.languages.length < 3 && (
+                    <ThemedButton
+                      onPress={() =>
+                        push({
+                          language: "",
+                          languageCode: "",
+                          languageNativename: "",
+                          level: 0,
+                        })
+                      }
+                      style={[styles.button, styles.outlinedButton]}
+                      title="Add More Language"
+                    />
+                  )}
+                </>
+              )}
+            </FieldArray>
+            <Modal
+              visible={languageModalOpen}
+              transparent={true}
+              animationType="fade"
+            >
+              <TouchableWithoutFeedback
+                onPress={() => setLanguageModalOpen(false)}
+              >
+                <ThemedView style={styles.modalOverlay}>
+                  <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{ flex: 1, justifyContent: "center" }}
+                  >
+                    <TouchableWithoutFeedback>
+                      <ThemedView style={styles.modalBox}>
+                        <TextInput
+                          style={[styles.searchInput, { width: "100%" }]}
+                          placeholder="Search..."
+                          onChangeText={handleSearch}
+                          value={searchQuery}
+                        />
+                        {availableLanguages.length > 0 ? (
+                          <FlatList
+                            data={availableLanguages}
+                            keyExtractor={(item) => item.code}
+                            renderItem={({ item }) =>
+                              renderLanguageItem({ item, setFieldValue })
+                            }
+                          />
+                        ) : (
+                          <ThemedText style={styles.text}>
+                            No languages found.
+                          </ThemedText>
+                        )}
+                      </ThemedView>
+                    </TouchableWithoutFeedback>
+                  </KeyboardAvoidingView>
+                </ThemedView>
+              </TouchableWithoutFeedback>
+            </Modal>
+
+            <ThemedButton
+              onPress={handleSubmit}
+              style={styles.button}
+              isLoading={isSubmitting}
+              title="Next"
+            />
+          </ThemedView>
+        );
+      }}
     </Formik>
   );
 };
