@@ -15,6 +15,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~3.2.3",
     "@expo/vector-icons": "^14.0.2",
     "@react-native-async-storage/async-storage": "^1.24.0",
     "@react-native-clipboard/clipboard": "^1.14.1",
@@ -41,6 +42,7 @@
     "react-native": "0.74.5",
     "react-native-appwrite": "^0.4.0",
     "react-native-context-menu-view": "^1.16.0",
+    "react-native-country-flag": "^2.0.2",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-get-random-values": "^1.11.0",
@@ -58,8 +60,7 @@
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",
     "uuid": "^10.0.0",
-    "yup": "^1.4.0",
-    "@expo/metro-runtime": "~3.2.3"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
