@@ -10,6 +10,7 @@ export const useAuth = () => {
   const dispatch = useDispatch();
   const jwt = useSelector((state: RootState) => state.auth.jwt);
   const currentUser = useSelector((state: RootState) => state.auth.user);
+  const currentAccount = useSelector((state: RootState) => state.auth.account);
 
   useEffect(() => {
     const checkAndRenewJWT = async () => {
@@ -37,5 +38,5 @@ export const useAuth = () => {
     checkAndRenewJWT();
   }, [jwt, dispatch]);
 
-  return { jwt, currentUser };
+  return { jwt, currentUser, currentAccount };
 };
