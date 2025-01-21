@@ -78,20 +78,6 @@ const CompleteForm = () => {
     setSubmitting(true);
     dispatch(setLoading(true));
     try {
-      // Handle form submission
-      const userDoc: CompleteRegistrationRequestInterface = {
-        name: currentAccount.name,
-        birthdate: new Date(registerState.birthdate),
-        country: registerState.country,
-        countryCode: registerState.countryCode,
-        gender: registerState.gender,
-        lastSeen: new Date(),
-        motherLanguages: [registerState.motherLanguageName],
-        studyLanguages: form.languages.map((lang) => lang.language),
-      };
-      // console.log("User doc:", userDoc);
-      const newUser = await createUserDoc(userDoc, jwt, currentAccount.$id);
-
       // Create language docs
       const mLanguage: createLanguageRequestInterface = {
         name: registerState.motherLanguageName,
@@ -117,14 +103,30 @@ const CompleteForm = () => {
 
       await Promise.all(createLanguagePromises);
 
+      // Create User Doc
+      const userDoc: CompleteRegistrationRequestInterface = {
+        name: currentAccount.name,
+        birthdate: new Date(registerState.birthdate),
+        country: registerState.country,
+        countryCode: registerState.countryCode,
+        gender: registerState.gender,
+        lastSeen: new Date(),
+        motherLanguages: [registerState.motherLanguageName],
+        studyLanguages: form.languages.map((lang) => lang.language),
+      };
+      // console.log("User doc:", userDoc);
+      const newUser = await createUserDoc(userDoc, jwt, currentAccount.$id);
       dispatch(setUser(newUser));
+      // Get User data
       dispatch(setRegisterInitialState());
-      dispatch(setLoading(false));
+
+      // Redirect to home
       router.replace("/(home)");
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
     } finally {
+      dispatch(setLoading(false));
       setSubmitting(false);
     }
   };
