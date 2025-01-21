@@ -79,6 +79,8 @@ const authSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
+      state.isGuestIn = false;
+      state.isLoggedIn = true;
     },
     setSession: (state, action: PayloadAction<Models.Session | null>) => {
       state.session = action.payload;
