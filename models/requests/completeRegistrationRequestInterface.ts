@@ -5,4 +5,6 @@ export interface CompleteRegistrationRequestInterface {
   countryCode: string;
   gender: string;
   lastSeen: Date;
+  motherLanguages: string[];
+  studyLanguages: string[];
 }
