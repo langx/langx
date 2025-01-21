@@ -24,14 +24,17 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
 import { Ionicons } from "@expo/vector-icons";
-import { Href, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { language2Country } from "@/constants/language2Country";
-import { setLoading } from "@/store/registerSlice";
+import { setLoading, setRegisterInitialState } from "@/store/registerSlice";
 import { createUserDoc } from "@/services/userService";
 import { useAuth } from "@/hooks/useAuth";
 import { CompleteRegistrationRequestInterface } from "@/models/requests/completeRegistrationRequestInterface";
+import { createLanguageDoc } from "@/services/languageService";
+import { createLanguageRequestInterface } from "@/models/requests/createLanguageRequestInterface";
+import { setUser } from "@/store/authSlice";
 
 const LanguageSchema = Yup.object().shape({
   languages: Yup.array()
@@ -87,13 +90,38 @@ const CompleteForm = () => {
         countryCode: registerState.countryCode,
         gender: registerState.gender,
         lastSeen: new Date(),
+        motherLanguages: [registerState.motherLanguageName],
+        studyLanguages: form.languages.map((lang) => lang.language),
       };
       console.log("User doc:", userDoc);
-      createUserDoc(userDoc, jwt, currentAccount.$id);
-      // dispatch(setMotherLanguageName(form.language));
-      // dispatch(setMotherLanguageNativeName(form.languageNativename));
-      // dispatch(setMotherLanguageCode(form.languageCode));
-      // router.push("/complete/languages" as Href);
+      const user = await createUserDoc(userDoc, jwt, currentAccount.$id);
+      dispatch(setUser(user));
+
+      // Create language docs
+      const mLanguage: createLanguageRequestInterface = {
+        name: registerState.motherLanguageName,
+        nativeName: registerState.motherLanguageNativeName,
+        code: registerState.motherLanguageCode,
+        level: -1,
+        motherLanguage: true,
+      };
+      createLanguageDoc(mLanguage, jwt, currentAccount.$id);
+
+      // Create other language docs
+      form.languages.forEach((lang) => {
+        const language: createLanguageRequestInterface = {
+          name: lang.language,
+          nativeName: lang.languageNativename,
+          code: lang.languageCode,
+          level: lang.level,
+          motherLanguage: false,
+        };
+        createLanguageDoc(language, jwt, currentAccount.$id);
+      });
+
+      dispatch(setRegisterInitialState());
+      dispatch(setLoading(false));
+      router.replace("/(home)");
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
