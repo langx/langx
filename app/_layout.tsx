@@ -30,17 +30,14 @@ const StackLayout = () => {
   usePlausible();
 
   // Selectors
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  const isGuestIn = useSelector((state: RootState) => state.auth.isGuestIn);
-  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
-  const user = useSelector((state: RootState) => state.auth.user);
+  const authState = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!authState.isLoading) {
       // TODO: We may add this check to (auth) layout
-      if (segments.length === 0) {
-        if (isLoggedIn || isGuestIn) {
-          if (!user) {
+      if (segments.length === (0 as number)) {
+        if (authState.session && !authState.user) {
+          if (!authState.user) {
             router.replace("/complete");
           } else {
             router.replace("/(home)");
@@ -51,7 +48,12 @@ const StackLayout = () => {
         }, 500);
       }
     }
-  }, [isLoggedIn, isGuestIn, isLoading, user]);
+  }, [
+    authState.isLoggedIn,
+    authState.isGuestIn,
+    authState.isLoading,
+    authState.user,
+  ]);
 
   useEffect(() => {
     dispatch(fetchAuthData());
@@ -62,7 +64,7 @@ const StackLayout = () => {
     console.log("[SEGMENT] ", segments);
   }, [segments]);
 
-  if (isLoading) {
+  if (authState.isLoading) {
     return (
       <ThemedView
         style={{
