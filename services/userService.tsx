@@ -16,6 +16,7 @@ import {
   PAGINATION_LIMIT,
   API_ENDPOINT,
 } from "@/constants/config";
+import { CompleteRegistrationRequestInterface } from "@/models/requests/completeRegistrationRequestInterface";
 
 // Update Current User
 export async function updateUser(
@@ -101,7 +102,7 @@ export async function getUserByUsername(username: string): Promise<User> {
 
 // Create User Document
 export async function createUserDoc(
-  data: any,
+  data: CompleteRegistrationRequestInterface,
   jwt: Jwt,
   userId: string
 ): Promise<User> {
