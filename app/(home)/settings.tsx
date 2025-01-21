@@ -84,7 +84,7 @@ const Settings = () => {
       dispatch(setAuthInitialState());
       showToast("success", "Logged out");
       console.log("logged out");
-      router.replace("/");
+      router.replace("/(auth)/login");
     } catch (error) {
       showToast("error", error.message);
     } finally {
