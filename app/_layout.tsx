@@ -36,7 +36,7 @@ const StackLayout = () => {
     if (!authState.isLoading) {
       // TODO: We may add this check to (auth) layout
       if (segments.length === (0 as number)) {
-        if (authState.session && !authState.user) {
+        if (authState.session) {
           if (!authState.user) {
             router.replace("/complete");
           } else {
