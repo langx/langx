@@ -185,14 +185,18 @@ const CompleteForm = () => {
     [currentLanguageIndex]
   );
 
-  const handleSearch = (query) => {
+  const handleSearch = (query, selectedLanguages) => {
     setSearchQuery(query);
     if (query === "") {
-      // If search query is empty, reset to all languages
-      setFilteredLanguages(allLanguages);
+      // If search query is empty, reset to available languages
+      setFilteredLanguages(
+        allLanguages.filter((lang) => !selectedLanguages.includes(lang.code))
+      );
     } else {
-      const filtered = allLanguages.filter((lang) =>
-        lang.name.toLowerCase().includes(query.toLowerCase())
+      const filtered = allLanguages.filter(
+        (lang) =>
+          lang.name.toLowerCase().includes(query.toLowerCase()) &&
+          !selectedLanguages.includes(lang.code)
       );
       setFilteredLanguages(filtered);
     }
@@ -240,6 +244,11 @@ const CompleteForm = () => {
                         <Pressable
                           onPress={() => {
                             setCurrentLanguageIndex(index);
+                            setFilteredLanguages(
+                              allLanguages.filter(
+                                (lang) => !selectedLanguages.includes(lang.code)
+                              )
+                            );
                             setLanguageModalOpen(true);
                           }}
                           style={{
@@ -398,7 +407,9 @@ const CompleteForm = () => {
                         <TextInput
                           style={[styles.searchInput, { width: "100%" }]}
                           placeholder="Search..."
-                          onChangeText={handleSearch}
+                          onChangeText={(query) =>
+                            handleSearch(query, selectedLanguages)
+                          }
                           value={searchQuery}
                         />
                         {availableLanguages.length > 0 ? (
@@ -593,6 +604,3 @@ const styles = StyleSheet.create({
 });
 
 export default Languages;
-function isLoggedIn(arg0: boolean): any {
-  throw new Error("Function not implemented.");
-}
