@@ -14,7 +14,7 @@ export type ThemedButtonProps = {
   lightColor?: string;
   darkColor?: string;
   title: string;
-  type?: "default" | "primary" | "secondary" | "link";
+  type?: "default" | "primary" | "secondary" | "link" | "outline";
   onPress?: () => void;
   isLoading?: boolean;
   style?: ViewStyle | ViewStyle[];
@@ -35,11 +35,17 @@ export function ThemedButton({
     { light: lightColor, dark: darkColor },
     "primary"
   );
+  const borderColor = Colors.light.primary;
 
   const getButtonStyle = (state: PressableStateCallbackType): ViewStyle[] => {
     return [
       styles.defaultButton,
-      { backgroundColor },
+      type === "outline" && {
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor,
+      },
+      type !== "outline" && { backgroundColor },
       ...(Array.isArray(style) ? style : [style]),
       state.pressed ? styles.pressed : undefined,
       isLoading ? styles.loading : undefined,
@@ -48,7 +54,14 @@ export function ThemedButton({
 
   return (
     <Pressable style={getButtonStyle} onPress={onPress} {...rest}>
-      <Text style={[styles.buttonText, { color }]}>{title}</Text>
+      <Text
+        style={[
+          styles.buttonText,
+          { color: type === "outline" ? Colors.light.gray2 : color },
+        ]}
+      >
+        {title}
+      </Text>
     </Pressable>
   );
 }

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { router, Stack } from "expo-router";
+import { Href, router, Stack } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import _ from "lodash";
@@ -90,7 +90,7 @@ export default function CommunityScreen() {
             headerIconColor: Colors.light.black,
           },
           headerRight: () => (
-            <Pressable onPress={() => router.push("(home)/filters")}>
+            <Pressable onPress={() => router.push("(home)/filters" as Href)}>
               <Ionicons
                 name="filter-outline"
                 size={24}

@@ -91,14 +91,14 @@ LangX is an application built with **React Native** that helps users exchange di
 2. Build
 
    ```bash
-    npx expo run:ios
-    npx expo run:android
+    npm run ios
+    npm run android
    ```
 
 3. Start the app
 
    ```bash
-    npx expo start
+    npm run start
    ```
 
 In the output, you'll find options to open the app in a

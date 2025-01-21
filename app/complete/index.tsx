@@ -15,6 +15,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { Href, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import CountryFlag from "react-native-country-flag";
 
 import { Colors } from "@/constants/Colors";
 import images from "@/constants/images";
@@ -23,12 +26,19 @@ import { showToast } from "@/constants/toast";
 import { ThemedText } from "@/components/themed/atomic/ThemedText";
 import { ThemedView } from "@/components/themed/atomic/ThemedView";
 import { ThemedButton } from "@/components/themed/atomic/ThemedButton";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  setBirthdate,
+  setCountry,
+  setCountryCode,
+  setGender,
+} from "@/store/registerSlice";
+import { useDispatch } from "react-redux";
 
 const CompleteSchema = Yup.object().shape({
   birthdate: Yup.date()
     .required("Required")
     .typeError("Invalid birthdate")
+    // TODO: Check test, it doesnt work
     .test(
       "is-13-years-old",
       "You must be at least 13 years old",
@@ -56,8 +66,11 @@ const CompleteSchema = Yup.object().shape({
 
 const CompleteForm = () => {
   const theme = useColorScheme() ?? "light";
+  const router = useRouter();
+  const dispatch = useDispatch();
+
   const [isSubmitting, setSubmitting] = useState(false);
-  const [birthdate, setBirthdate] = useState(new Date());
+  const [birthdate, setBirthdateState] = useState(new Date());
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [genderModalOpen, setGenderModalOpen] = useState(false);
   const [countryModalOpen, setCountryModalOpen] = useState(false);
@@ -70,7 +83,14 @@ const CompleteForm = () => {
   const handleComplete = async (form) => {
     setSubmitting(true);
     try {
+      // Handle form submission
+      // TODO: Save form data to store
       console.log("Completing with:", form);
+      dispatch(setBirthdate(form.birthdate.toISOString()));
+      dispatch(setGender(form.gender));
+      dispatch(setCountry(form.country));
+      dispatch(setCountryCode(form.countryCode));
+      router.push("/complete/language/step1" as Href);
     } catch (error) {
       console.error("Error logging in:", error);
       showToast("error", error.message);
@@ -147,6 +167,7 @@ const CompleteForm = () => {
         }}
       >
         <ThemedView style={styles.item}>
+          <CountryFlag isoCode={item.code} size={20} style={styles.flag} />
           <ThemedText style={styles.text}>{item.name}</ThemedText>
         </ThemedView>
       </Pressable>
@@ -169,7 +190,12 @@ const CompleteForm = () => {
 
   return (
     <Formik
-      initialValues={{ birthdate: "", gender: "", country: "" }}
+      initialValues={{
+        birthdate: "",
+        gender: "",
+        country: "",
+        countryCode: "",
+      }}
       validationSchema={CompleteSchema}
       onSubmit={(values) => handleComplete(values)}
     >
@@ -214,7 +240,7 @@ const CompleteForm = () => {
               if (date.toDateString() === new Date().toDateString()) {
                 date = maximumDate;
               }
-              setBirthdate(date);
+              setBirthdateState(date);
               setFieldValue("birthdate", date);
               setDatePickerVisibility(false);
             }}
@@ -267,9 +293,18 @@ const CompleteForm = () => {
           {/* Country Field */}
           <ThemedText style={styles.text}>Country</ThemedText>
           <Pressable onPress={() => setCountryModalOpen(true)}>
-            <ThemedText style={[styles.text, styles.detail]}>
-              {values.country ? values.country : "Select Country"}
-            </ThemedText>
+            <ThemedView style={styles.selectedCountry}>
+              {values.countryCode ? (
+                <CountryFlag
+                  isoCode={values.countryCode}
+                  size={20}
+                  style={styles.flag}
+                />
+              ) : null}
+              <ThemedText style={[styles.text, styles.detail]}>
+                {values.country ? values.country : "Select Country"}
+              </ThemedText>
+            </ThemedView>
           </Pressable>
           {errors.country && touched.country ? (
             <ThemedText style={{ color: Colors.light.error }}>
@@ -443,6 +478,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
+  },
+  flag: {
+    marginRight: 10,
+    borderRadius: 5,
+    overflow: "hidden",
+  },
+  selectedCountry: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   icon: {
     fontSize: 24,

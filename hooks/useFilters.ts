@@ -10,6 +10,7 @@ export function useFilters(FILTERS_KEY: string) {
     setLoading(true);
     try {
       const savedFilters = await AsyncStorage.getItem(FILTERS_KEY);
+      console.log('savedFilters', savedFilters);
       const parsedFilters = savedFilters ? JSON.parse(savedFilters) : null;
       if (!_.isEqual(filters, parsedFilters)) {
         setFilters(parsedFilters);
@@ -19,7 +20,7 @@ export function useFilters(FILTERS_KEY: string) {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, []);
 
   const saveFilters = useCallback(async (newFilters) => {
     setLoading(true);
