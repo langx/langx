@@ -8,6 +8,7 @@ export const APP_DATABASE = "650750f16cd0c482bb83";
 export const USERS_COLLECTION = "65103e2d3a6b4d9494c8";
 export const ROOMS_COLLECTION = "6507510fc71f989d5d1c";
 export const MESSAGES_COLLECTION = "65075108a4025a4f5bd7";
+export const LANGUAGES_COLLECTION = "6511599e2bf0bb1b4d2c";
 export const WALLET_COLLECTION = "66622b8a000b305b236c";
 export const VISITS_COLLECTION = "659dfb10b82eedbe1d6c";
 export const STREAKS_COLLECTION = "65e73985ef5ac00c186b";
