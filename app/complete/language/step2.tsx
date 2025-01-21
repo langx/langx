@@ -79,10 +79,6 @@ const CompleteForm = () => {
     dispatch(setLoading(true));
     try {
       // Handle form submission
-      // console.log("State:", registerState); // Log the entire state to debug
-      // console.log("Completing with:", form);
-      // console.log("Current account :", currentAccount);
-      // console.log("JWT:", jwt);
       const userDoc: CompleteRegistrationRequestInterface = {
         name: currentAccount.name,
         birthdate: new Date(registerState.birthdate),
@@ -93,9 +89,8 @@ const CompleteForm = () => {
         motherLanguages: [registerState.motherLanguageName],
         studyLanguages: form.languages.map((lang) => lang.language),
       };
-      console.log("User doc:", userDoc);
-      const user = await createUserDoc(userDoc, jwt, currentAccount.$id);
-      dispatch(setUser(user));
+      // console.log("User doc:", userDoc);
+      const newUser = await createUserDoc(userDoc, jwt, currentAccount.$id);
 
       // Create language docs
       const mLanguage: createLanguageRequestInterface = {
@@ -105,20 +100,24 @@ const CompleteForm = () => {
         level: -1,
         motherLanguage: true,
       };
-      createLanguageDoc(mLanguage, jwt, currentAccount.$id);
 
-      // Create other language docs
-      form.languages.forEach((lang) => {
-        const language: createLanguageRequestInterface = {
-          name: lang.language,
-          nativeName: lang.languageNativename,
-          code: lang.languageCode,
-          level: lang.level,
-          motherLanguage: false,
-        };
-        createLanguageDoc(language, jwt, currentAccount.$id);
-      });
+      const createLanguagePromises = [
+        createLanguageDoc(mLanguage, jwt, currentAccount.$id),
+        ...form.languages.map((lang) => {
+          const language: createLanguageRequestInterface = {
+            name: lang.language,
+            nativeName: lang.languageNativename,
+            code: lang.languageCode,
+            level: lang.level,
+            motherLanguage: false,
+          };
+          return createLanguageDoc(language, jwt, currentAccount.$id);
+        }),
+      ];
 
+      await Promise.all(createLanguagePromises);
+
+      dispatch(setUser(newUser));
       dispatch(setRegisterInitialState());
       dispatch(setLoading(false));
       router.replace("/(home)");
@@ -592,3 +591,6 @@ const styles = StyleSheet.create({
 });
 
 export default Languages;
+function isLoggedIn(arg0: boolean): any {
+  throw new Error("Function not implemented.");
+}
