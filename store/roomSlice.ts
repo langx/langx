@@ -84,7 +84,10 @@ const roomSlice = createSlice({
     createMessage: (state, action: PayloadAction<Message>) => {
       // Update the room if it is the same room
       if (state.room) {
-        if (state.room.$id === action.payload.roomId['$id']) {
+        const { sender, to } = action.payload;
+        const users = state.room.users;
+
+        if (users.includes(sender) && users.includes(to)) {
           state.room = {
             ...state.room,
             messages: [action.payload, ...state.room.messages],
@@ -96,7 +99,8 @@ const roomSlice = createSlice({
       // Find the room in the rooms array and update messages
       const roomIndex = state.rooms.findIndex(
         (room: RoomExtendedInterface) =>
-          room.$id === action.payload.roomId['$id']
+          room.users.includes(action.payload.sender) &&
+          room.users.includes(action.payload.to)
       );
       if (roomIndex !== -1) {
         state.rooms[roomIndex].messages.unshift(action.payload);
@@ -104,24 +108,30 @@ const roomSlice = createSlice({
     },
     updateMessage: (state, action: PayloadAction<Message>) => {
       // Update the message in the current room if it is the same room
-      if (state.room && state.room.$id === action.payload.roomId['$id']) {
-        const currentMessageIndex = state.room.messages.findIndex(
-          (message: Message) => message.$id === action.payload.$id
-        );
-        if (currentMessageIndex !== -1) {
-          // Update the message if found
-          state.room.messages[currentMessageIndex] = action.payload;
-          // Optionally update lastMessageUpdatedAt if needed
-          state.room.lastMessageUpdatedAt = action.payload.createdAt;
-        } else {
-          console.log('Message not found in current room, unable to update');
+      if (state.room) {
+        const { sender, to } = action.payload;
+        const users = state.room.users;
+
+        if (users.includes(sender) && users.includes(to)) {
+          const currentMessageIndex = state.room.messages.findIndex(
+            (message: Message) => message.$id === action.payload.$id
+          );
+          if (currentMessageIndex !== -1) {
+            // Update the message if found
+            state.room.messages[currentMessageIndex] = action.payload;
+            // Optionally update lastMessageUpdatedAt if needed
+            state.room.lastMessageUpdatedAt = action.payload.createdAt;
+          } else {
+            console.log('Message not found in current room, unable to update');
+          }
         }
       }
 
       // Find and update the message in the rooms array
       const roomIndex = state.rooms.findIndex(
         (room: RoomExtendedInterface) =>
-          room.$id === action.payload.roomId['$id']
+          room.users.includes(action.payload.sender) &&
+          room.users.includes(action.payload.to)
       );
       if (roomIndex !== -1) {
         const messageIndex = state.rooms[roomIndex].messages.findIndex(
