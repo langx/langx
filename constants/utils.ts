@@ -32,6 +32,16 @@ export const getAge = (birthdate: string) => {
   return Math.abs(ageDate.getUTCFullYear() - 1970);
 };
 
+export const isBirthday = (birthdate: string | Date): boolean => {
+  if (!birthdate) return false;
+  const birthDate = new Date(birthdate);
+  const today = new Date();
+  return (
+    birthDate.getMonth() === today.getMonth() &&
+    birthDate.getDate() === today.getDate()
+  );
+};
+
 export function lastSeen(date: Date) {
   let now = new Date();
   let lastSeen = new Date(date);

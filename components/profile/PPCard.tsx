@@ -7,7 +7,7 @@ import {
   ImageStyle,
 } from "react-native";
 
-import { getFlagEmoji, getAge, lastSeen } from "@/constants/utils";
+import { getFlagEmoji, getAge, lastSeen, isBirthday } from "@/constants/utils";
 import { Colors } from "@/constants/Colors";
 import { useAuth } from "@/hooks/useAuth";
 import { getUserImage } from "@/services/bucketService";
@@ -65,7 +65,9 @@ const PPCard = ({ user }) => {
             )}
           </ThemedView>
         </Pressable>
-        <ThemedText style={styles.cardTitle}>{user.name}</ThemedText>
+        <ThemedText style={styles.cardTitle}>
+          {user.name} {isBirthday(user.birthdate) && '🎂'}
+        </ThemedText>
         <ThemedText style={styles.cardSubtitle}>
           {getAge(user.birthdate)} |{" "}
           {user.gender.charAt(0).toUpperCase() + user.gender.slice(1)} |{" "}

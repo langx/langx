@@ -7,7 +7,7 @@ import { ThemedText } from "@/components/themed/atomic/ThemedText";
 
 import { useDatabase } from "@/hooks/useDatabase";
 import { getUserImage } from "@/services/bucketService";
-import { onlineStatus, getFlagEmoji2 } from "@/constants/utils";
+import { onlineStatus, getFlagEmoji2, isBirthday } from "@/constants/utils";
 import { Language } from "@/models/Language";
 
 const UserCard = ({ item }) => {
@@ -76,6 +76,13 @@ const UserCard = ({ item }) => {
             {renderStatusEmoji()}
           </ThemedText>
         </ThemedView>
+        {isBirthday(item.birthdate) && (
+          <ThemedView style={styles.birthdayIndicator}>
+            <ThemedText style={{ fontSize: 14 }}>
+              🎂
+            </ThemedText>
+          </ThemedView>
+        )}
         <ThemedView
           style={{
             opacity: 0.8,
@@ -129,6 +136,13 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     top: 5,
     left: 10,
+    zIndex: 2,
+  },
+  birthdayIndicator: {
+    position: "absolute",
+    backgroundColor: "transparent",
+    top: 5,
+    right: 10,
     zIndex: 2,
   },
 });

@@ -17,6 +17,7 @@ import LanguagesCard from "@/components/profile/LanguagesCard";
 import BadgesCard from "@/components/profile/BadgesCard";
 import DayStreaksCard from "@/components/profile/DayStreaksCard";
 import UserManagementCard from "@/components/profile/UserManagementCard";
+import BirthdayBanner from "@/components/profile/BirthdayBanner";
 
 const StackLayout = ({ username }: { username: string }) => {
   return (
@@ -68,6 +69,12 @@ const UserScreen = () => {
 
   const components = [
     { component: <PPCard user={user} />, key: "PPCard" },
+    {
+      component: (
+        <BirthdayBanner birthdate={user?.birthdate} name={user?.name} />
+      ),
+      key: "BirthdayBanner",
+    },
     {
       component: <PhotosGalleryCard user={user} />,
       key: "PhotosGalleryCard",
