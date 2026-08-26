@@ -1,0 +1,36 @@
+{
+  "name": "@langx/api",
+  "version": "2.0.0",
+  "private": true,
+  "license": "BSD-3-Clause",
+  "description": "LangX v2 API — Better Auth + REST + Socket.io in one Fastify process",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=../../.env src/index.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node24 --format=esm --packages=external --outfile=dist/index.js",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fastify/cors": "catalog:",
+    "@fastify/helmet": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@langx/shared": "workspace:*",
+    "fastify": "catalog:",
+    "fastify-type-provider-zod": "catalog:",
+    "mongodb": "catalog:",
+    "pino": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "esbuild": "catalog:",
+    "mongodb-memory-server": "catalog:",
+    "pino-pretty": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

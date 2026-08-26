@@ -1,0 +1,36 @@
+{
+  "name": "langx2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "LangX v2 \u2014 language exchange app (Expo mobile/web + Fastify API + MongoDB Atlas)",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/langx-io/langx2"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel run dev",
+    "dev:api": "pnpm --filter @langx/api run dev",
+    "dev:mobile": "pnpm --filter @langx/mobile run dev",
+    "dev:web": "pnpm --filter @langx/mobile run web",
+    "build": "pnpm -r run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "@types/node": "^24.3.0",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}
