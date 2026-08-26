@@ -12,8 +12,8 @@ export const COLLECTIONS = {
   // domain
   profiles: 'profiles',
   handleReservations: 'handleReservations',
-  likes: 'likes',
-  matches: 'matches',
+  // No `likes`/`matches` — there's no match gate. A conversation starts
+  // directly; `conversations.pairKey` is what used to be `matches.pairKey`.
   conversations: 'conversations',
   messages: 'messages',
   blocks: 'blocks',

@@ -76,11 +76,14 @@ describe('Faz 0 — boot', () => {
   it('enforces the invariants that uniques exist to guarantee', async () => {
     await ensureIndexes(handle.db)
 
-    // A duplicate match can never be written, in either participant order.
-    const matches = handle.db.collection('matches')
-    await matches.insertOne({ pairKey: 'a_b', users: ['a', 'b'], status: 'active' })
+    // A second conversation between the same two people can never be
+    // written, in either participant order — there's no match gate, so this
+    // unique index is the only thing standing between "message" and a
+    // duplicate thread.
+    const conversations = handle.db.collection('conversations')
+    await conversations.insertOne({ pairKey: 'a_b', participants: ['a', 'b'] })
     await expect(
-      matches.insertOne({ pairKey: 'a_b', users: ['b', 'a'], status: 'active' }),
+      conversations.insertOne({ pairKey: 'a_b', participants: ['b', 'a'] }),
     ).rejects.toThrow(/duplicate key/i)
 
     // The same message cannot be awarded XP twice (REST and socket paths).

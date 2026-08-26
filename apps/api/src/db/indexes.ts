@@ -50,18 +50,13 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { expiresAt: 1 }, name: 'expires_at' },
   ],
 
-  [COLLECTIONS.likes]: [
-    { key: { from: 1, to: 1 }, name: 'from_to_unique', unique: true },
-    { key: { to: 1, createdAt: -1 }, name: 'to_created' },
-  ],
-
-  [COLLECTIONS.matches]: [
-    // '<minId>_<maxId>' — a duplicate match cannot be written, in either order.
-    { key: { pairKey: 1 }, name: 'pair_key_unique', unique: true },
-    { key: { users: 1, status: 1 }, name: 'users_status' },
-  ],
-
   [COLLECTIONS.conversations]: [
+    // No match gate — a conversation starts directly the first time either
+    // side sends a message. This unique index is what physically prevents a
+    // second thread between the same two people (concurrent "message" taps
+    // from both sides at once included), same role `matches.pairKey` would
+    // have played in a match-gated model.
+    { key: { pairKey: 1 }, name: 'pair_key_unique', unique: true },
     { key: { participants: 1, 'lastMessage.createdAt': -1 }, name: 'participants_recent' },
     // Backs the rolling-24h initiation quota without a separate collection.
     { key: { firstMessageBy: 1, firstMessageAt: -1 }, name: 'first_message_by' },
