@@ -32,6 +32,10 @@ catalog:
   better-auth: ^1.7.1
   '@better-auth/expo': ^1.7.1
   resend: ^6.24.0
+  jose: ^6.2.10
+  '@aws-sdk/client-s3': ^3.1119.0
+  '@aws-sdk/s3-request-presigner': ^3.1119.0
+  'node-appwrite': ^28.0.0
 
   # react / expo (SDK 57)
   react: 19.2.3

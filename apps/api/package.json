@@ -14,6 +14,8 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "catalog:",
+    "@aws-sdk/s3-request-presigner": "catalog:",
     "@better-auth/expo": "catalog:",
     "@fastify/cors": "catalog:",
     "@fastify/helmet": "catalog:",
@@ -22,7 +24,7 @@
     "better-auth": "catalog:",
     "fastify": "catalog:",
     "fastify-type-provider-zod": "catalog:",
-    "jose": "^6.2.10",
+    "jose": "catalog:",
     "mongodb": "catalog:",
     "pino": "catalog:",
     "resend": "catalog:",
@@ -32,6 +34,7 @@
     "@types/node": "^24.3.0",
     "esbuild": "catalog:",
     "mongodb-memory-server": "catalog:",
+    "node-appwrite": "catalog:",
     "pino-pretty": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",

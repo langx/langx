@@ -4,36 +4,9 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from './app'
 import { createAuth } from './auth'
 import { connectToDatabase, type DbHandle } from './db/client'
-import type { EmailMessage, EmailSender } from './email/sender'
 import { loadEnv } from './env'
-
-/** Captures every email instead of sending it, so a test can pull the token/url out. */
-class CapturingEmailSender implements EmailSender {
-  readonly messages: EmailMessage[] = []
-
-  send(message: EmailMessage): Promise<void> {
-    this.messages.push(message)
-    return Promise.resolve()
-  }
-
-  latestUrl(): string {
-    const message = this.messages.at(-1)
-    if (!message) throw new Error('no email was sent')
-    const match = /https?:\/\/\S+/.exec(message.text)
-    if (!match) throw new Error(`no URL found in email text: ${message.text}`)
-    return match[0]
-  }
-}
-
-function setCookieValue(response: { headers: Record<string, unknown> }): string {
-  const raw = response.headers['set-cookie']
-  const cookies = Array.isArray(raw) ? raw : [raw]
-  const sessionCookie = cookies.find(
-    (c): c is string => typeof c === 'string' && c.includes('session_token'),
-  )
-  if (!sessionCookie) throw new Error(`no session cookie in response: ${JSON.stringify(raw)}`)
-  return sessionCookie.split(';')[0] ?? ''
-}
+import { createStorageProvider } from './storage/createStorageProvider'
+import { CapturingEmailSender, setCookieValue } from './testSupport/authFlow'
 
 describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', () => {
   // Real signup/verify/reset writes span multiple Better Auth collections in
@@ -61,8 +34,9 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
 
     emailSender = new CapturingEmailSender()
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+    const storage = createStorageProvider(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth })
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage })
     await app.ready()
 
     // A MongoMemoryReplSet's very first transaction commit is prone to a

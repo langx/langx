@@ -7,6 +7,7 @@ import { connectToDatabase, type DbHandle } from './db/client'
 import { ensureIndexes, INDEXES } from './db/indexes'
 import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
+import { createStorageProvider } from './storage/createStorageProvider'
 
 describe('Faz 0 — boot', () => {
   let mongod: MongoMemoryServer
@@ -27,8 +28,9 @@ describe('Faz 0 — boot', () => {
 
     const emailSender = createEmailSender(env, { warn: () => undefined })
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+    const storage = createStorageProvider(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth })
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage })
     await app.ready()
   })
 

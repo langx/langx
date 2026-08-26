@@ -29,10 +29,23 @@ export const INDEXES: Partial<IndexSpec> = {
 
   [COLLECTIONS.profiles]: [
     { key: { handle: 1 }, name: 'handle_unique', unique: true },
-    // Discovery's main index: mutual-fit match on languages, freshest first.
+    // Discovery needs mutual fit — my learning ∈ their native AND my native ∈
+    // their learning — but MongoDB physically refuses a compound index across
+    // two array fields in the same document ("cannot index parallel arrays",
+    // confirmed by hand: inserting a profile with both fields populated
+    // against a single combined index throws code 171 on every insert, not
+    // just discovery queries). So this is two indexes, not one: the query
+    // uses whichever the planner picks for its $match, then filters the
+    // other array field over that already-narrowed candidate set. Faz 3's
+    // `explain()` check is what confirms this stays index-driven rather than
+    // degrading to a collection scan.
     {
-      key: { 'nativeLanguages.code': 1, 'learning.code': 1, 'stats.lastActiveAt': -1 },
-      name: 'discovery_languages_active',
+      key: { 'nativeLanguages.code': 1, 'stats.lastActiveAt': -1 },
+      name: 'discovery_native_active',
+    },
+    {
+      key: { 'learning.code': 1, 'stats.lastActiveAt': -1 },
+      name: 'discovery_learning_active',
     },
     { key: { location: '2dsphere' }, name: 'location_2dsphere' },
     { key: { displayName: 'text', bio: 'text' }, name: 'profile_text' },

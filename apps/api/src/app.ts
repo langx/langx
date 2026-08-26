@@ -11,13 +11,20 @@ import {
 import type { Db, MongoClient } from 'mongodb'
 import type { Auth } from './auth'
 import type { Env } from './env'
+import { ApiError } from './lib/ApiError'
 import { registerAuthRoutes } from './routes/auth'
+import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
+import { mediaRoutes } from './routes/media'
+import { profileRoutes } from './routes/profiles'
+import type { StorageProvider } from './storage/StorageProvider'
 
 declare module 'fastify' {
   interface FastifyInstance {
     mongo: { client: MongoClient; db: Db }
     auth: Auth
+    env: Env
+    storage: StorageProvider
     appVersion: string
   }
 }
@@ -27,6 +34,7 @@ export interface BuildAppOptions {
   client: MongoClient
   db: Db
   auth: Auth
+  storage: StorageProvider
   version?: string
 }
 
@@ -35,6 +43,7 @@ export async function buildApp({
   client,
   db,
   auth,
+  storage,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -58,6 +67,8 @@ export async function buildApp({
 
   app.decorate('mongo', { client, db })
   app.decorate('auth', auth)
+  app.decorate('env', env)
+  app.decorate('storage', storage)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -74,6 +85,10 @@ export async function buildApp({
   })
 
   app.setErrorHandler((error, request, reply) => {
+    if (error instanceof ApiError) {
+      return reply.code(error.statusCode).send(error.toBody())
+    }
+
     if (hasZodFastifySchemaValidationErrors(error)) {
       const body: ApiErrorBody = {
         code: ERROR_CODES.VALIDATION_FAILED,
@@ -112,6 +127,9 @@ export async function buildApp({
 
   await app.register(healthRoutes)
   await registerAuthRoutes(app, auth)
+  await app.register(profileRoutes)
+  await app.register(handleRoutes)
+  await app.register(mediaRoutes)
 
   return app
 }

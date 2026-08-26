@@ -5,6 +5,7 @@ import { connectToDatabase } from './db/client'
 import { ensureIndexes } from './db/indexes'
 import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
+import { createStorageProvider } from './storage/createStorageProvider'
 
 async function main(): Promise<void> {
   const env = loadEnv()
@@ -13,8 +14,9 @@ async function main(): Promise<void> {
 
   const emailSender = createEmailSender(env, console)
   const auth = await createAuth({ env, db, client, emailSender })
+  const storage = createStorageProvider(env)
 
-  const app = await buildApp({ env, client, db, auth })
+  const app = await buildApp({ env, client, db, auth, storage })
 
   // Declarative indexes are applied before the first request is served, so a
   // fresh environment can never answer a discovery query without them.
