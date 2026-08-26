@@ -1,6 +1,7 @@
 export * from './age'
 export * from './appScheme'
 export * from './cefr'
+export * from './discovery'
 export * from './errors'
 export * from './handle'
 export * from './languages'

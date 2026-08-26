@@ -13,6 +13,7 @@ import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
 import { registerAuthRoutes } from './routes/auth'
+import { discoveryRoutes } from './routes/discovery'
 import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
@@ -130,6 +131,7 @@ export async function buildApp({
   await app.register(profileRoutes)
   await app.register(handleRoutes)
   await app.register(mediaRoutes)
+  await app.register(discoveryRoutes)
 
   return app
 }
