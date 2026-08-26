@@ -1,3 +1,4 @@
+import { APP_SCHEMES } from '@langx/shared'
 import type { ExpoConfig } from 'expo/config'
 
 /**
@@ -7,15 +8,15 @@ import type { ExpoConfig } from 'expo/config'
  *  1. `bundleIdentifier` / `package` are byte-identical to v1
  *     (`langx-angular` 0.15.0). Change either one and the store treats this as
  *     a different app: second icon on device, zero reviews, lost install base.
- *  2. Both URL schemes are declared. v1 registered
- *     `tech.newchapter.languagexchange` (lowercase x); the abandoned Expo
- *     rewrite declared only `langx`. Ship only `langx` and every deep link
- *     already in the wild breaks.
+ *  2. Both URL schemes are declared (`APP_SCHEMES`, shared with the API's
+ *     Better Auth `trustedOrigins` so OAuth redirects back into the app are
+ *     trusted). v1 registered `tech.newchapter.languagexchange` (lowercase
+ *     x); the abandoned Expo rewrite declared only `langx`. Ship only `langx`
+ *     and every deep link already in the wild breaks.
  *  3. `app.langx.io` app links are carried over from v1's AndroidManifest.
  *
  * versionCode/buildNumber must stay above the published 119.
  */
-const V1_URL_SCHEME = 'tech.newchapter.languagexchange'
 const APP_LINK_HOST = 'app.langx.io'
 
 const config: ExpoConfig = {
@@ -24,7 +25,7 @@ const config: ExpoConfig = {
   version: '2.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
-  scheme: ['langx', V1_URL_SCHEME],
+  scheme: [...APP_SCHEMES],
 
   ios: {
     bundleIdentifier: 'tech.newchapter.languageXchange',

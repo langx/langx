@@ -24,9 +24,12 @@ as v1.
 
 ## Quick start
 
+MongoDB needs to run as a replica set (Better Auth's writes use
+transactions) — full setup in [CONTRIBUTING.md](CONTRIBUTING.md#getting-set-up).
+
 ```bash
 pnpm install
-cp .env.example .env      # set MONGODB_URI
+cp .env.example .env      # set MONGODB_URI and BETTER_AUTH_SECRET
 pnpm dev                  # API on :4000, Expo on :8081
 ```
 

@@ -2,8 +2,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from './app'
+import { createAuth } from './auth'
 import { connectToDatabase, type DbHandle } from './db/client'
 import { ensureIndexes, INDEXES } from './db/indexes'
+import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
 
 describe('Faz 0 — boot', () => {
@@ -20,9 +22,13 @@ describe('Faz 0 — boot', () => {
       MONGODB_URI: mongod.getUri(),
       MONGODB_DB: 'langx_test',
       LOG_LEVEL: 'silent',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
     })
 
-    app = await buildApp({ env, client: handle.client, db: handle.db })
+    const emailSender = createEmailSender(env, { warn: () => undefined })
+    const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth })
     await app.ready()
   })
 
@@ -98,19 +104,29 @@ describe('env', () => {
     expect(() => loadEnv({})).toThrow(/MONGODB_URI/)
   })
 
-  it('treats a blank optional secret as unset, not a 0-char value', () => {
-    // .env.example ships BETTER_AUTH_SECRET="" until Faz 1 wires auth up.
+  it('treats a blank optional value as unset, not a 0-char string', () => {
     const env = loadEnv({
       MONGODB_URI: 'mongodb://localhost:27017',
-      BETTER_AUTH_SECRET: '',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      SENTRY_DSN: '',
     })
 
-    expect(env.BETTER_AUTH_SECRET).toBeUndefined()
+    expect(env.SENTRY_DSN).toBeUndefined()
+  })
+
+  it('requires a real BETTER_AUTH_SECRET — Better Auth cannot run without one', () => {
+    expect(() =>
+      loadEnv({ MONGODB_URI: 'mongodb://localhost:27017', BETTER_AUTH_SECRET: 'too-short' }),
+    ).toThrow(/BETTER_AUTH_SECRET/)
+    expect(() => loadEnv({ MONGODB_URI: 'mongodb://localhost:27017' })).toThrow(
+      /BETTER_AUTH_SECRET/,
+    )
   })
 
   it('parses TRUSTED_ORIGINS into a list', () => {
     const env = loadEnv({
       MONGODB_URI: 'mongodb://localhost:27017',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
       TRUSTED_ORIGINS: 'http://a.test, http://b.test ,',
     })
 

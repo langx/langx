@@ -18,11 +18,30 @@ payload shape is used on both sides, it belongs there — not duplicated.
 
 Requires Node >= 24 and pnpm 10.
 
+MongoDB must run as a **replica set**, even locally with one node — Better
+Auth's writes use multi-document transactions, which a standalone `mongod`
+doesn't support:
+
+```bash
+mkdir -p ~/mongodb-data
+mongod --dbpath ~/mongodb-data --replSet rs0 --logpath ~/mongodb-data/mongod.log --fork
+mongosh --quiet --eval "rs.initiate()"   # once, the first time
+```
+
+Then:
+
 ```bash
 pnpm install
-cp .env.example .env      # fill in MONGODB_URI at minimum
+cp .env.example .env
+# fill in MONGODB_URI and generate a secret:
+#   openssl rand -base64 32   ->  BETTER_AUTH_SECRET
 pnpm dev                  # API + Expo together
 ```
+
+Everything else in `.env.example` (Resend, Google/Apple OAuth) is optional for
+local dev — email/password auth works without them; verification and
+reset-password links print to the console instead of sending until
+`RESEND_API_KEY` is set.
 
 `pnpm dev:api`, `pnpm dev:mobile` and `pnpm dev:web` run them individually.
 

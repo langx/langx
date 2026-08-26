@@ -1,6 +1,9 @@
 import { buildApp } from './app'
+import { createAuth } from './auth'
+import { warmUpAuthCollections } from './auth/warmUp'
 import { connectToDatabase } from './db/client'
 import { ensureIndexes } from './db/indexes'
+import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
 
 async function main(): Promise<void> {
@@ -8,12 +11,17 @@ async function main(): Promise<void> {
 
   const { client, db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
 
-  const app = await buildApp({ env, client, db })
+  const emailSender = createEmailSender(env, console)
+  const auth = await createAuth({ env, db, client, emailSender })
+
+  const app = await buildApp({ env, client, db, auth })
 
   // Declarative indexes are applied before the first request is served, so a
   // fresh environment can never answer a discovery query without them.
   const indexResults = await ensureIndexes(db)
   app.log.info({ collections: indexResults.length }, 'indexes ensured')
+
+  await warmUpAuthCollections(auth, db, app.log)
 
   const shutdown = async (signal: string): Promise<void> => {
     app.log.info({ signal }, 'shutting down')

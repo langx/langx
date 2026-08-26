@@ -9,12 +9,15 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 import type { Db, MongoClient } from 'mongodb'
+import type { Auth } from './auth'
 import type { Env } from './env'
+import { registerAuthRoutes } from './routes/auth'
 import { healthRoutes } from './routes/health'
 
 declare module 'fastify' {
   interface FastifyInstance {
     mongo: { client: MongoClient; db: Db }
+    auth: Auth
     appVersion: string
   }
 }
@@ -23,6 +26,7 @@ export interface BuildAppOptions {
   env: Env
   client: MongoClient
   db: Db
+  auth: Auth
   version?: string
 }
 
@@ -30,6 +34,7 @@ export async function buildApp({
   env,
   client,
   db,
+  auth,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -52,6 +57,7 @@ export async function buildApp({
   app.setSerializerCompiler(serializerCompiler)
 
   app.decorate('mongo', { client, db })
+  app.decorate('auth', auth)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -105,6 +111,7 @@ export async function buildApp({
   })
 
   await app.register(healthRoutes)
+  await registerAuthRoutes(app, auth)
 
   return app
 }

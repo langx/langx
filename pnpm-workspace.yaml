@@ -29,6 +29,9 @@ catalog:
   pino-pretty: ^13.1.2
   'mongodb-memory-server': ^11.2.0
   esbuild: ^0.28.2
+  better-auth: ^1.7.1
+  '@better-auth/expo': ^1.7.1
+  resend: ^6.24.0
 
   # react / expo (SDK 57)
   react: 19.2.3

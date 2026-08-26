@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "LangX v2 API — Better Auth + REST + Socket.io in one Fastify process",
+  "description": "LangX v2 API \u2014 Better Auth + REST + Socket.io in one Fastify process",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
@@ -14,14 +14,18 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@better-auth/expo": "catalog:",
     "@fastify/cors": "catalog:",
     "@fastify/helmet": "catalog:",
     "@fastify/rate-limit": "catalog:",
     "@langx/shared": "workspace:*",
+    "better-auth": "catalog:",
     "fastify": "catalog:",
     "fastify-type-provider-zod": "catalog:",
+    "jose": "^6.2.10",
     "mongodb": "catalog:",
     "pino": "catalog:",
+    "resend": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

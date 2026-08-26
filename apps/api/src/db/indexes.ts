@@ -16,6 +16,17 @@ type IndexSpec = Record<CollectionName, IndexDescription[]>
 const NINETY_DAYS = 90 * 24 * 60 * 60
 
 export const INDEXES: Partial<IndexSpec> = {
+  // Deliberately nothing here for user/session/account/verification. Better
+  // Auth's mongo-adapter lazily creates its own indexes for these four
+  // collections on first use (`ensureModelIndexes`, matching its own schema's
+  // declared uniques — email, session token, {issuer, accountId}, etc.).
+  // Declaring the same key pattern here too, even under a different index
+  // name, throws IndexOptionsConflict (code 85) on boot: MongoDB rejects a
+  // second index with an identical key pattern. Confirmed by hitting exactly
+  // that against a live sign-up. "We only add indexes, never fields" (see
+  // the collection list below) turned out not to hold here — for these four,
+  // we add nothing at all and let Better Auth manage them entirely.
+
   [COLLECTIONS.profiles]: [
     { key: { handle: 1 }, name: 'handle_unique', unique: true },
     // Discovery's main index: mutual-fit match on languages, freshest first.
