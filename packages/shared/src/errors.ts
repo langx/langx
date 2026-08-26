@@ -19,9 +19,10 @@ export const ERROR_CODES = {
   HANDLE_RESERVED: 'HANDLE_RESERVED',
   HANDLE_ALREADY_CLAIMED: 'HANDLE_ALREADY_CLAIMED',
 
-  // social graph
-  NOT_MATCHED: 'NOT_MATCHED',
+  // chat / social graph
   BLOCKED: 'BLOCKED',
+  /** A conversation between these two already exists — see `conversations.pairKey`. */
+  CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
 
   // generic
   NOT_FOUND: 'NOT_FOUND',
@@ -53,8 +54,8 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
   HANDLE_ALREADY_CLAIMED: 409,
-  NOT_MATCHED: 403,
   BLOCKED: 403,
+  CONVERSATION_EXISTS: 409,
   NOT_FOUND: 404,
   VALIDATION_FAILED: 400,
   RATE_LIMITED: 429,
