@@ -1,6 +1,9 @@
 import { LANGUAGES, MINIMUM_AGE, PLAN_LIMITS } from '@langx/shared'
+import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { Button } from '../src/components/ui/Button'
+import { authClient } from '../src/lib/auth-client'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000'
 
@@ -8,13 +11,14 @@ type HealthState =
   { kind: 'loading' } | { kind: 'ok'; db: string } | { kind: 'error'; message: string }
 
 /**
- * Faz 0 smoke screen. It exists to prove three things at once on iOS, Android
- * and web: the app boots, `@langx/shared` resolves as source through the
- * monorepo, and the client can reach the API. Replaced by real routing in
- * Faz 1.
+ * Only reachable when signed in (see `_layout.tsx`'s `Stack.Protected`).
+ * Still doubles as the Faz 0 smoke check — proving `@langx/shared` resolves
+ * and the API is reachable — alongside the real session it now shows.
  */
 export default function Index() {
+  const { data: session } = authClient.useSession()
   const [health, setHealth] = useState<HealthState>({ kind: 'loading' })
+  const [signingOut, setSigningOut] = useState(false)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -34,10 +38,23 @@ export default function Index() {
     }
   }, [])
 
+  async function onSignOut() {
+    setSigningOut(true)
+    await authClient.signOut()
+    setSigningOut(false)
+    router.replace('/(auth)/sign-in')
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LangX v2</Text>
       <Text style={styles.subtitle}>Practice, Learn, Succeed!</Text>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>Signed in as</Text>
+        <Text style={styles.ok}>{session?.user.email}</Text>
+        <Text style={styles.hint}>{session?.user.emailVerified ? 'verified' : 'not verified'}</Text>
+      </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>API</Text>
@@ -53,6 +70,8 @@ export default function Index() {
         <Text style={styles.value}>{MINIMUM_AGE}+ only</Text>
         <Text style={styles.value}>free: {PLAN_LIMITS.free.initiationsPer24h} new chats / 24h</Text>
       </View>
+
+      <Button label="Sign out" onPress={onSignOut} loading={signingOut} variant="secondary" />
     </View>
   )
 }

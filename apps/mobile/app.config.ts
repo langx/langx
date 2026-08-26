@@ -1,4 +1,11 @@
-import { APP_SCHEMES } from '@langx/shared'
+// Imported from the dedicated subpath, not the package root: app.config.ts is
+// evaluated by Expo's config loader under plain Node ESM resolution (not
+// Metro's bundler resolution), which requires explicit file extensions on
+// relative imports. `@langx/shared`'s barrel file re-exports several modules
+// without them (fine for Metro/tsc's Bundler resolution, not for Node's
+// native loader) — `appScheme.ts` has no imports of its own, so it's the one
+// module in the package this loader can actually resolve.
+import { APP_SCHEMES } from '@langx/shared/appScheme'
 import type { ExpoConfig } from 'expo/config'
 
 /**
