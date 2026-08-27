@@ -21,6 +21,7 @@ import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
+import { days } from '../../../src/lib/format'
 import { colors, font, layout, radius, spacing } from '../../../src/lib/theme'
 
 export default function ProfileScreen() {
@@ -130,7 +131,7 @@ export default function ProfileScreen() {
           <Chip label={`${user.age}`} />
           {user.country ? <Chip label={user.country} /> : null}
           {user.streak.current > 0 ? (
-            <Chip label={`🔥 ${user.streak.current} days`} tone="streak" />
+            <Chip label={`🔥 ${days(user.streak.current)}`} tone="streak" />
           ) : null}
           {user.tier === 'pro' ? <Chip label="PRO" tone="pro" selected /> : null}
         </View>

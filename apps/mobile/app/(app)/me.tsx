@@ -116,13 +116,15 @@ export default function MeScreen() {
         <View style={styles.flex}>
           <Text style={styles.storeName}>Streak freeze</Text>
           <Text style={styles.storeMeta}>
-            Saves one missed day · {wallet.data?.streakFreezes ?? 0} banked /
-            {TOKEN_RULES.sinks.maxBankedStreakFreezes}
+            {/* One expression, not two on separate lines — JSX eats the
+                newline between them, which rendered "banked /2". */}
+            {`Saves one missed day · ${wallet.data?.streakFreezes ?? 0}/${TOKEN_RULES.sinks.maxBankedStreakFreezes} banked`}
           </Text>
         </View>
         <Button
           label={`${TOKEN_RULES.sinks.streakFreeze} tokens`}
           variant="secondary"
+          style={styles.storeAction}
           disabled={balance < TOKEN_RULES.sinks.streakFreeze || purchase.isPending}
           onPress={() => purchase.mutate(STREAK_FREEZE_SKU)}
         />
@@ -141,6 +143,7 @@ export default function MeScreen() {
             <Button
               label={isOwned ? 'Owned' : `${item.price} tokens`}
               variant="secondary"
+              style={styles.storeAction}
               disabled={isOwned || balance < item.price || purchase.isPending}
               onPress={() => purchase.mutate(item.id)}
             />
@@ -210,6 +213,13 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: spacing.md,
   },
+  /**
+   * Undoes `Button`'s full-width default, which is right in a form column and
+   * wrong here: claiming 100% of a row leaves nothing for the name beside it,
+   * and the name column — being `flex: 1`, so shrinkable — collapses to a
+   * single character per line rather than pushing back.
+   */
+  storeAction: { flexShrink: 0, width: 'auto' },
   storeName: { ...font.body, color: colors.text, fontWeight: '600' },
   storeMeta: { ...font.caption, color: colors.textMuted },
   settings: { marginTop: spacing.xl },

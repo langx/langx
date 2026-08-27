@@ -6,6 +6,7 @@ import { useLeaderboard, useTokens } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { days } from '../../src/lib/format'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const TABS: { key: PeriodType; label: string }[] = [
@@ -33,7 +34,7 @@ export default function LeaderboardScreen() {
       {streak ? (
         <View style={styles.streakCard}>
           <View>
-            <Text style={styles.streakValue}>🔥 {streak.current} days</Text>
+            <Text style={styles.streakValue}>🔥 {days(streak.current)}</Text>
             <Text style={styles.streakHint}>
               {streak.qualifiedToday
                 ? 'Today is done. See you tomorrow.'

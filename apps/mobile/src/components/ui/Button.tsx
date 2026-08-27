@@ -49,6 +49,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     minHeight: 48,
     paddingHorizontal: 20,
+    /**
+     * A default for the common case — a button at the bottom of a form column,
+     * which should span it. It is **wrong inside a row**: 100% of the row
+     * leaves nothing for the siblings, and a `flex: 1` sibling collapses to a
+     * single character per line instead of pushing back. Pass
+     * `style={{ width: 'auto' }}` there; `style` is merged last, so it wins.
+     */
     width: '100%',
   },
   primary: { backgroundColor: '#111' },
