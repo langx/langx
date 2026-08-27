@@ -1,7 +1,15 @@
-import { PLAN_LIMITS, QUOTA_WINDOW_MS, type PlanTier } from '@langx/shared'
+import { QUOTA_WINDOW_MS, quotaLimit, type PlanTier } from '@langx/shared'
 import type { Db } from 'mongodb'
-import { COLLECTIONS } from '../../db/collections'
-import type { Profile } from '../profiles/profiles'
+import { COLLECTIONS } from '../db/collections'
+import type { Profile } from '../modules/profiles/profiles'
+
+/**
+ * `corrections` is deliberately absent — `PLAN_LIMITS.correctionsPer24h` is
+ * `null` on both tiers (see limits.ts's doc comment), so nothing ever needs
+ * to track it, and `profiles.quota` only has `initiations`/`translations`
+ * fields to spend storage tracking a limit that doesn't exist.
+ */
+export type TrackedQuotaKind = 'initiations' | 'translations'
 
 export interface QuotaStatus {
   limit: number | null
@@ -13,20 +21,21 @@ function windowStartAt(now: Date): Date {
   return new Date(now.getTime() - QUOTA_WINDOW_MS)
 }
 
-function validInitiations(initiations: Date[], windowStart: Date): Date[] {
-  return initiations.filter((d) => new Date(d) >= windowStart)
+function validTimestamps(timestamps: Date[], windowStart: Date): Date[] {
+  return timestamps.filter((d) => new Date(d) >= windowStart)
 }
 
-export async function getInitiationQuotaStatus(
+export async function getQuotaStatus(
   db: Db,
   userId: string,
   tier: PlanTier,
+  kind: TrackedQuotaKind,
 ): Promise<QuotaStatus> {
-  const limit = PLAN_LIMITS[tier].initiationsPer24h
+  const limit = quotaLimit(tier, kind)
   if (limit === null) return { limit: null, remaining: null, nextAvailableAt: null }
 
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
-  const valid = validInitiations(profile?.quota.initiations ?? [], windowStartAt(new Date()))
+  const valid = validTimestamps(profile?.quota[kind] ?? [], windowStartAt(new Date()))
   const remaining = Math.max(0, limit - valid.length)
   const nextAvailableAt =
     remaining === 0 && valid.length > 0
@@ -39,7 +48,8 @@ export async function getInitiationQuotaStatus(
 export type ConsumeResult = { consumed: true } | { consumed: false; nextAvailableAt: Date | null }
 
 /**
- * Atomic, race-safe decrement for the rolling-24h initiation quota.
+ * Atomic, race-safe decrement for a rolling-24h quota bucket (`initiations`
+ * or `translations` — see `TrackedQuotaKind`).
  *
  * The naive approach — read the count, check it client-side, then push a
  * timestamp — overruns the quota under concurrent requests (the plan calls
@@ -54,27 +64,25 @@ export type ConsumeResult = { consumed: true } | { consumed: false; nextAvailabl
  * The same pipeline stage also prunes anything outside the window, so the
  * array never grows past `limit` entries.
  */
-export async function consumeInitiationQuota(
+export async function consumeQuota(
   db: Db,
   userId: string,
   tier: PlanTier,
+  kind: TrackedQuotaKind,
 ): Promise<ConsumeResult> {
-  const limit = PLAN_LIMITS[tier].initiationsPer24h
+  const limit = quotaLimit(tier, kind)
   if (limit === null) return { consumed: true } // Pro — unlimited, quota untouched
 
   const now = new Date()
   const windowStart = windowStartAt(now)
+  const field = `quota.${kind}`
 
   const result = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
     {
       _id: userId,
       $expr: {
         $lt: [
-          {
-            $size: {
-              $filter: { input: '$quota.initiations', cond: { $gte: ['$$this', windowStart] } },
-            },
-          },
+          { $size: { $filter: { input: `$${field}`, cond: { $gte: ['$$this', windowStart] } } } },
           limit,
         ],
       },
@@ -82,9 +90,9 @@ export async function consumeInitiationQuota(
     [
       {
         $set: {
-          'quota.initiations': {
+          [field]: {
             $concatArrays: [
-              { $filter: { input: '$quota.initiations', cond: { $gte: ['$$this', windowStart] } } },
+              { $filter: { input: `$${field}`, cond: { $gte: ['$$this', windowStart] } } },
               [now],
             ],
           },
@@ -95,6 +103,6 @@ export async function consumeInitiationQuota(
 
   if (result) return { consumed: true }
 
-  const status = await getInitiationQuotaStatus(db, userId, tier)
+  const status = await getQuotaStatus(db, userId, tier, kind)
   return { consumed: false, nextAvailableAt: status.nextAvailableAt }
 }

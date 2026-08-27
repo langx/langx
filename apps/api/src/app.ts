@@ -21,7 +21,9 @@ import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
 import { messageRoutes } from './routes/messages'
 import { profileRoutes } from './routes/profiles'
+import { translationRoutes } from './routes/translate'
 import type { StorageProvider } from './storage/StorageProvider'
+import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
 
 declare module 'fastify' {
@@ -30,6 +32,7 @@ declare module 'fastify' {
     auth: Auth
     env: Env
     storage: StorageProvider
+    translation: TranslationProvider
     appVersion: string
     io: SocketIOServer
   }
@@ -41,6 +44,7 @@ export interface BuildAppOptions {
   db: Db
   auth: Auth
   storage: StorageProvider
+  translation: TranslationProvider
   version?: string
 }
 
@@ -50,6 +54,7 @@ export async function buildApp({
   db,
   auth,
   storage,
+  translation,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -75,6 +80,7 @@ export async function buildApp({
   app.decorate('auth', auth)
   app.decorate('env', env)
   app.decorate('storage', storage)
+  app.decorate('translation', translation)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -139,6 +145,7 @@ export async function buildApp({
   await app.register(discoveryRoutes)
   await app.register(conversationRoutes)
   await app.register(messageRoutes)
+  await app.register(translationRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the

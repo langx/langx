@@ -76,6 +76,15 @@ const envSchema = z.object({
   STORAGE_SECRET_ACCESS_KEY: emptyToUndefined(z.string().optional()),
   STORAGE_PUBLIC_BASE_URL: emptyToUndefined(z.url().optional()),
 
+  // Faz 6: translation. Left unset, `/translate` returns a clear
+  // TRANSLATION_NOT_CONFIGURED-style error; every other route still works.
+  // The service-account key's *content* goes here (not a file path like
+  // Google's own `GOOGLE_APPLICATION_CREDENTIALS` convention expects) — a
+  // container secret store holds strings, not files. Same reasoning as
+  // APPLE_PRIVATE_KEY, the other JWT-signing credential in this file.
+  GOOGLE_TRANSLATE_PROJECT_ID: emptyToUndefined(z.string().optional()),
+  GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON: emptyToUndefined(z.string().optional()),
+
   // Faz 2: username claim. Must match what the ETL used to hash legacy
   // emails into handleReservations.legacyEmailHash, or nothing ever matches.
   LEGACY_EMAIL_HASH_SALT: emptyToUndefined(z.string().optional()),

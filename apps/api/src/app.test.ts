@@ -8,6 +8,7 @@ import { ensureIndexes, INDEXES } from './db/indexes'
 import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
+import { createTranslationProvider } from './translation/createTranslationProvider'
 
 describe('Faz 0 — boot', () => {
   let mongod: MongoMemoryServer
@@ -30,7 +31,9 @@ describe('Faz 0 — boot', () => {
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
     const storage = createStorageProvider(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage })
+    const translation = createTranslationProvider(env)
+
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
     await app.ready()
   })
 

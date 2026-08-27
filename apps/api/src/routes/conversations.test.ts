@@ -9,6 +9,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
+import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
 const PASSWORD = 'correct horse battery staple'
@@ -93,7 +94,8 @@ describe('Faz 4 — starting a conversation', () => {
     emailSender = new CapturingEmailSender()
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
     const storage = createStorageProvider(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage })
+    const translation = createTranslationProvider(env)
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
     await app.ready()
 
     // Same first-transaction warm-up as the other Faz 2/3 suites.
@@ -241,10 +243,12 @@ describe('Faz 4 — starting a conversation', () => {
         url: '/me/quota',
         headers: { cookie: viewer.cookie },
       })
-      expect(response.json()).toEqual({ limit: null, remaining: null, nextAvailableAt: null })
+      expect(response.json()).toMatchObject({
+        initiations: { limit: null, remaining: null, nextAvailableAt: null },
+      })
     })
 
-    it('counts down for free, and sets nextAvailableAt once exhausted', async () => {
+    it('counts down initiations for free, and sets nextAvailableAt once exhausted — independently of translations', async () => {
       const viewer = await newUser('quota-status-free@example.com')
       const recipients = await newUsers(5, 'quota-status-recipient')
 
@@ -253,7 +257,10 @@ describe('Faz 4 — starting a conversation', () => {
         url: '/me/quota',
         headers: { cookie: viewer.cookie },
       })
-      expect(before.json()).toMatchObject({ limit: 5, remaining: 5, nextAvailableAt: null })
+      expect(before.json()).toMatchObject({
+        initiations: { limit: 5, remaining: 5, nextAvailableAt: null },
+        translations: { limit: 20, remaining: 20, nextAvailableAt: null },
+      })
 
       for (const r of recipients) {
         const started = await startConversation(viewer, r.userId)
@@ -265,10 +272,15 @@ describe('Faz 4 — starting a conversation', () => {
         url: '/me/quota',
         headers: { cookie: viewer.cookie },
       })
-      const afterBody = after.json<{ limit: number; remaining: number; nextAvailableAt: string | null }>()
-      expect(afterBody).toMatchObject({ limit: 5, remaining: 0 })
-      expect(afterBody.nextAvailableAt).not.toBeNull()
-      expect(new Date(afterBody.nextAvailableAt ?? '').getTime()).toBeGreaterThan(Date.now())
+      const afterBody = after.json<{
+        initiations: { limit: number; remaining: number; nextAvailableAt: string | null }
+        translations: { limit: number; remaining: number }
+      }>()
+      expect(afterBody.initiations).toMatchObject({ limit: 5, remaining: 0 })
+      expect(afterBody.initiations.nextAvailableAt).not.toBeNull()
+      expect(new Date(afterBody.initiations.nextAvailableAt ?? '').getTime()).toBeGreaterThan(Date.now())
+      // Sending conversations never touches the translation bucket.
+      expect(afterBody.translations).toMatchObject({ limit: 20, remaining: 20 })
     })
   })
 })

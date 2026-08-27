@@ -2,8 +2,8 @@ import { ERROR_CODES, type StartConversationInput } from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { consumeQuota } from '../../lib/quota'
 import type { Profile } from '../profiles/profiles'
-import { consumeInitiationQuota } from './quota'
 
 export interface Conversation {
   _id: ObjectId
@@ -85,7 +85,7 @@ export async function startConversation(
     throw new ApiError(ERROR_CODES.CONVERSATION_EXISTS, 'A conversation with this user already exists')
   }
 
-  const quota = await consumeInitiationQuota(db, viewerId, viewer.entitlement.tier)
+  const quota = await consumeQuota(db, viewerId, viewer.entitlement.tier, 'initiations')
   if (!quota.consumed) {
     throw new ApiError(
       ERROR_CODES.QUOTA_EXCEEDED,
