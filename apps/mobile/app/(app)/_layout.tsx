@@ -6,6 +6,9 @@ import { colors } from '../../src/lib/theme'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useSocket } from '../../src/hooks/useSocket'
 
+/** Not a tab, and no tab bar under it either. */
+const FULL_SCREEN = { href: null, tabBarStyle: { display: 'none' } } as const
+
 function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
   return <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.45 }}>{emoji}</Text>
 }
@@ -64,15 +67,27 @@ export default function AppLayout() {
             tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
           }}
         />
-        {/* Reachable by navigation, never a tab. */}
-        <Tabs.Screen name="chat/[id]" options={{ href: null }} />
-        <Tabs.Screen name="profile/[handle]" options={{ href: null }} />
-        <Tabs.Screen name="edit-profile" options={{ href: null }} />
-        <Tabs.Screen name="blocked" options={{ href: null }} />
-        <Tabs.Screen name="settings" options={{ href: null }} />
-        <Tabs.Screen name="paywall" options={{ href: null }} />
-        <Tabs.Screen name="viewers" options={{ href: null }} />
-        <Tabs.Screen name="filters" options={{ href: null }} />
+        {/*
+        Reachable by navigation, never a tab.
+
+        `href: null` only removes the *button*; the screen is still a tab route
+        so the bar keeps being drawn under it — a strip of four tabs beneath
+        every conversation, settings page and paywall. `FULL_SCREEN` hides the
+        bar itself.
+
+        Doing so also corrects a layout bug rather than causing one: `Screen`
+        adds `paddingBottom: insets.bottom` unconditionally *and* the navigator
+        insets content above the bar, so these screens carried the bottom
+        padding twice.
+      */}
+        <Tabs.Screen name="chat/[id]" options={FULL_SCREEN} />
+        <Tabs.Screen name="profile/[handle]" options={FULL_SCREEN} />
+        <Tabs.Screen name="edit-profile" options={FULL_SCREEN} />
+        <Tabs.Screen name="blocked" options={FULL_SCREEN} />
+        <Tabs.Screen name="settings" options={FULL_SCREEN} />
+        <Tabs.Screen name="paywall" options={FULL_SCREEN} />
+        <Tabs.Screen name="viewers" options={FULL_SCREEN} />
+        <Tabs.Screen name="filters" options={FULL_SCREEN} />
       </Tabs>
     </SafeAreaView>
   )
