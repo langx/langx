@@ -1,0 +1,196 @@
+import { MongoMemoryReplSet } from 'mongodb-memory-server'
+import type { FastifyInstance } from 'fastify'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { buildApp } from '../app'
+import { createAuth } from '../auth'
+import { connectToDatabase, type DbHandle } from '../db/client'
+import { ensureIndexes } from '../db/indexes'
+import { loadEnv } from '../env'
+import type {
+  RevenueCatClient,
+  SubscriberEntitlement,
+} from '../modules/billing/revenueCatClient'
+import { createStorageProvider } from '../storage/createStorageProvider'
+import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
+import { createTranslationProvider } from '../translation/createTranslationProvider'
+
+const PASSWORD = 'correct horse battery staple'
+const WEBHOOK_SECRET = 'test-webhook-shared-secret'
+
+class FakeRevenueCatClient implements RevenueCatClient {
+  next: SubscriberEntitlement | null = null
+  getProEntitlement(): Promise<SubscriberEntitlement | null> {
+    return Promise.resolve(this.next)
+  }
+}
+
+function onboardingBody(overrides: Record<string, unknown> = {}) {
+  return {
+    handle: `user${Math.random().toString(36).slice(2, 10)}`,
+    displayName: 'Test User',
+    birthYear: 1995,
+    gender: 'undisclosed',
+    nativeLanguages: [{ code: 'tr' }],
+    learning: [{ code: 'en', level: 'B1', priority: 1 }],
+    ...overrides,
+  }
+}
+
+describe('Faz 7 — billing', () => {
+  let replSet: MongoMemoryReplSet
+  let handle: DbHandle
+  let app: FastifyInstance
+  let emailSender: CapturingEmailSender
+  let fakeRevenueCat: FakeRevenueCatClient
+
+  async function newUser(email: string): Promise<SignedUpUser> {
+    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody(),
+    })
+    if (response.statusCode !== 201) {
+      throw new Error(`onboarding failed (${response.statusCode}): ${response.body}`)
+    }
+    return user
+  }
+
+  beforeAll(async () => {
+    replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
+    handle = await connectToDatabase(replSet.getUri(), 'langx_billing_test')
+
+    const env = loadEnv({
+      NODE_ENV: 'test',
+      MONGODB_URI: replSet.getUri(),
+      MONGODB_DB: 'langx_billing_test',
+      LOG_LEVEL: 'silent',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      BETTER_AUTH_URL: 'http://localhost:4000',
+      REVENUECAT_WEBHOOK_AUTH_HEADER: WEBHOOK_SECRET,
+    })
+
+    await ensureIndexes(handle.db)
+
+    emailSender = new CapturingEmailSender()
+    const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+    const storage = createStorageProvider(env)
+    const translation = createTranslationProvider(env)
+    fakeRevenueCat = new FakeRevenueCatClient()
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat: fakeRevenueCat,
+    })
+    await app.ready()
+
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      const warmUp = await app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-up/email',
+        payload: { email: `warmup-${attempt}@example.com`, password: PASSWORD, name: 'Warm Up' },
+      })
+      if (warmUp.statusCode === 200) break
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+    emailSender.messages.length = 0
+  }, 120_000)
+
+  afterAll(async () => {
+    await app?.close()
+    await handle?.close()
+    await replSet?.stop()
+  })
+
+  describe('POST /webhooks/revenuecat', () => {
+    it('rejects a request with no auth header', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        payload: { event: { id: 'e1', type: 'INITIAL_PURCHASE', app_user_id: 'someone' } },
+      })
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('rejects a request with the wrong auth header', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: 'wrong-secret' },
+        payload: { event: { id: 'e2', type: 'INITIAL_PURCHASE', app_user_id: 'someone' } },
+      })
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('grants Pro to the matching profile with the correct secret', async () => {
+      const user = await newUser('webhook-grant@example.com')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-grant-1',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            store: 'app_store',
+            expiration_at_ms: Date.now() + 1_000_000,
+          },
+        },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ processed: true })
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+    })
+  })
+
+  describe('POST /billing/refresh', () => {
+    it('rejects an unauthenticated request', async () => {
+      const response = await app.inject({ method: 'POST', url: '/billing/refresh' })
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('reconciles to Pro when RevenueCat reports an active entitlement', async () => {
+      const user = await newUser('refresh-active@example.com')
+      fakeRevenueCat.next = {
+        isActive: true,
+        expiresAt: new Date(Date.now() + 1_000_000),
+        productId: 'pro_monthly',
+        store: 'play_store',
+      }
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/billing/refresh',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ tier: 'pro', store: 'play_store' })
+    })
+
+    it('reconciles to free when RevenueCat reports no active entitlement', async () => {
+      const user = await newUser('refresh-inactive@example.com')
+      fakeRevenueCat.next = null
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/billing/refresh',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ tier: 'free' })
+    })
+  })
+})

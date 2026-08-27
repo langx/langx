@@ -5,6 +5,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import type { TranslationProvider } from '../../translation/TranslationProvider'
+import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 
 export interface TranslationCacheDoc {
@@ -51,7 +52,7 @@ export async function translateText(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  const quota = await consumeQuota(db, userId, profile.entitlement.tier, 'translations')
+  const quota = await consumeQuota(db, userId, effectiveTier(profile), 'translations')
   if (!quota.consumed) {
     throw new ApiError(
       ERROR_CODES.QUOTA_EXCEEDED,

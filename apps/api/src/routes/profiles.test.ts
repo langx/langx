@@ -10,6 +10,7 @@ import { loadEnv } from '../env'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
+import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
 const LEGACY_SALT = 'test-legacy-salt'
@@ -60,7 +61,8 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
+    const revenueCat = createRevenueCatClientFromEnv(env)
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
     await app.ready()
 
     // Same first-transaction warm-up as auth.test.ts — see its comment for why.
@@ -346,7 +348,8 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
       const storage = createStorageProvider(env)
       const translation = createTranslationProvider(env)
-      configuredApp = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
+      const revenueCat = createRevenueCatClientFromEnv(env)
+      configuredApp = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
       await configuredApp.ready()
     })
 

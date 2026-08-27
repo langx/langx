@@ -1,5 +1,6 @@
 export * from './age'
 export * from './appScheme'
+export * from './billing'
 export * from './cefr'
 export * from './chat'
 export * from './discovery'

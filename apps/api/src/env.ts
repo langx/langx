@@ -85,6 +85,16 @@ const envSchema = z.object({
   GOOGLE_TRANSLATE_PROJECT_ID: emptyToUndefined(z.string().optional()),
   GOOGLE_TRANSLATE_SERVICE_ACCOUNT_JSON: emptyToUndefined(z.string().optional()),
 
+  // Faz 7: billing. REVENUECAT_WEBHOOK_AUTH_HEADER is a shared secret you set
+  // as the "Authorization header value" in the RevenueCat dashboard's
+  // webhook config — RevenueCat doesn't sign webhooks cryptographically, this
+  // literal-string check is the actual defense. REVENUECAT_SECRET_API_KEY is
+  // for the reconciliation path (POST /billing/refresh) when a webhook is
+  // late or lost. Left unset, both routes fail clearly; nothing else depends
+  // on them — entitlement itself already lives in `profiles.entitlement`.
+  REVENUECAT_SECRET_API_KEY: emptyToUndefined(z.string().optional()),
+  REVENUECAT_WEBHOOK_AUTH_HEADER: emptyToUndefined(z.string().optional()),
+
   // Faz 2: username claim. Must match what the ETL used to hash legacy
   // emails into handleReservations.legacyEmailHash, or nothing ever matches.
   LEGACY_EMAIL_HASH_SALT: emptyToUndefined(z.string().optional()),

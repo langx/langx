@@ -13,6 +13,7 @@ import {
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 
 /**
@@ -60,7 +61,7 @@ export async function discoverProfiles(
   if (!viewer) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
   const proKeysUsed = DISCOVERY_PRO_FILTER_KEYS.filter((key) => query[key] !== undefined)
-  if (proKeysUsed.length > 0 && !hasFeature(viewer.entitlement.tier, 'advancedFilters')) {
+  if (proKeysUsed.length > 0 && !hasFeature(effectiveTier(viewer), 'advancedFilters')) {
     throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Advanced filters require Pro', {
       feature: 'advancedFilters',
     })

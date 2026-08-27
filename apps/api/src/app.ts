@@ -14,6 +14,7 @@ import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
 import { registerAuthRoutes } from './routes/auth'
+import { billingRoutes } from './routes/billing'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
 import { handleRoutes } from './routes/handles'
@@ -22,6 +23,7 @@ import { mediaRoutes } from './routes/media'
 import { messageRoutes } from './routes/messages'
 import { profileRoutes } from './routes/profiles'
 import { translationRoutes } from './routes/translate'
+import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
@@ -33,6 +35,7 @@ declare module 'fastify' {
     env: Env
     storage: StorageProvider
     translation: TranslationProvider
+    revenueCat: RevenueCatClient
     appVersion: string
     io: SocketIOServer
   }
@@ -45,6 +48,7 @@ export interface BuildAppOptions {
   auth: Auth
   storage: StorageProvider
   translation: TranslationProvider
+  revenueCat: RevenueCatClient
   version?: string
 }
 
@@ -55,6 +59,7 @@ export async function buildApp({
   auth,
   storage,
   translation,
+  revenueCat,
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -81,6 +86,7 @@ export async function buildApp({
   app.decorate('env', env)
   app.decorate('storage', storage)
   app.decorate('translation', translation)
+  app.decorate('revenueCat', revenueCat)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -146,6 +152,7 @@ export async function buildApp({
   await app.register(conversationRoutes)
   await app.register(messageRoutes)
   await app.register(translationRoutes)
+  await app.register(billingRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the

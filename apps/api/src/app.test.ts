@@ -9,6 +9,7 @@ import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 
 describe('Faz 0 — boot', () => {
   let mongod: MongoMemoryServer
@@ -33,7 +34,9 @@ describe('Faz 0 — boot', () => {
 
     const translation = createTranslationProvider(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
+    const revenueCat = createRevenueCatClientFromEnv(env)
+
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
     await app.ready()
   })
 

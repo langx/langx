@@ -7,6 +7,7 @@ import { connectToDatabase, type DbHandle } from './db/client'
 import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { CapturingEmailSender, setCookieValue } from './testSupport/authFlow'
 
 describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', () => {
@@ -39,7 +40,9 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
 
     const translation = createTranslationProvider(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
+    const revenueCat = createRevenueCatClientFromEnv(env)
+
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
     await app.ready()
 
     // A MongoMemoryReplSet's very first transaction commit is prone to a

@@ -11,6 +11,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
+import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
 const PASSWORD = 'correct horse battery staple'
@@ -106,7 +107,8 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation })
+    const revenueCat = createRevenueCatClientFromEnv(env)
+    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
 
     // A real listening socket, not `app.ready()` — Socket.io needs an actual
     // HTTP upgrade handshake, which `inject()`'s in-memory dispatch can't do.

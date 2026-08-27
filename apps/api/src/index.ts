@@ -7,6 +7,7 @@ import { createEmailSender } from './email/sender'
 import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
+import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 
 async function main(): Promise<void> {
   const env = loadEnv()
@@ -19,7 +20,9 @@ async function main(): Promise<void> {
 
   const translation = createTranslationProvider(env)
 
-  const app = await buildApp({ env, client, db, auth, storage, translation })
+  const revenueCat = createRevenueCatClientFromEnv(env)
+
+  const app = await buildApp({ env, client, db, auth, storage, translation, revenueCat })
 
   // Declarative indexes are applied before the first request is served, so a
   // fresh environment can never answer a discovery query without them.

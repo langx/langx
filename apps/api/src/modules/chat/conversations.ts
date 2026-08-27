@@ -3,6 +3,7 @@ import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
+import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 
 export interface Conversation {
@@ -85,7 +86,7 @@ export async function startConversation(
     throw new ApiError(ERROR_CODES.CONVERSATION_EXISTS, 'A conversation with this user already exists')
   }
 
-  const quota = await consumeQuota(db, viewerId, viewer.entitlement.tier, 'initiations')
+  const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
   if (!quota.consumed) {
     throw new ApiError(
       ERROR_CODES.QUOTA_EXCEEDED,

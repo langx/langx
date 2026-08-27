@@ -6,6 +6,7 @@ import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn } from '../testSupport/authFlow'
 import type { TranslateInput, TranslateResult, TranslationProvider } from '../translation/TranslationProvider'
@@ -71,6 +72,7 @@ describe('POST /translate', () => {
     emailSender = new CapturingEmailSender()
     const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
     const storage = createStorageProvider(env)
+    const revenueCat = createRevenueCatClientFromEnv(env)
     fakeProvider = new FakeTranslationProvider()
     app = await buildApp({
       env,
@@ -79,6 +81,7 @@ describe('POST /translate', () => {
       auth,
       storage,
       translation: fakeProvider,
+      revenueCat,
     })
     await app.ready()
 
