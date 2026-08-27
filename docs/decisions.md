@@ -557,6 +557,45 @@ until the profile editor.
 Both branches now render the same View + Text structure. Styling a `Text` as
 though it were the container is what let them drift apart.
 
+## Reversed — v1 token balances migrate after all
+
+The original decision retired the token _and_ dropped the balances. On
+2026-08-27 the owner reversed the second half: balances come across as XP.
+
+Part of the original reasoning turned out to rest on a wrong belief.
+`CHECKOUT_COLLECTION` looks like a purchase log and is not one — its fields are
+`distribution`, `baseAmount`, `text`, `image`, `audio`, `streak`, `badges`,
+`onlineMin`, which is a daily payout broken down by activity. v1's version of
+the daily XP pool. There is no Stripe integration and no purchase flow; the
+client only lists checkouts. So migrating balances cannot smuggle money-bought
+currency into a system whose rule is that XP is never purchasable. That rule
+survives the reversal intact.
+
+## Measuring before converting, and what it found
+
+Whether balances _should_ migrate was the owner's call. At what ratio is an
+engineering question, and it was worth measuring rather than assuming.
+
+`scripts/inspect-v1-economy.ts` reads the live wallet and streak collections.
+1403 wallets hold 6,079,895 tokens: median 20, p90 9,136, p99 37,821, max
+2,277,521, with 266 at zero. A very active day in v2 is about 700 XP.
+
+Credited 1:1 to _earned_ XP, that puts the p99 user level with roughly 54
+consecutive days of maximum activity, the top account at about nine years, and
+injects 608 days of the entire daily pool at once. The all-time and yearly
+tables become a permanent v1 ranking.
+
+The recommendation is to credit the spendable **balance** instead of earned XP.
+Faz 9 already separated the two on purpose — `xpAggregates` is what the
+leaderboard ranks, the balance is what purchases draw on — so the v1 economy
+can be honoured exactly (9,136 tokens buy 9,136 XP of spending) and spent on
+what the migration wants it spent on (restoring a frozen streak, cosmetics),
+without a ranking position nobody can contest. `balance = earned + granted −
+spent`, one new component.
+
+Left open in the plan rather than resolved silently: the owner asked for 1:1,
+and this is a recommendation against part of it, not a decision already taken.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

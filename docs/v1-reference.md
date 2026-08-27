@@ -61,6 +61,55 @@ the wild.
 | API                                | `https://api.langx.io/api`           |
 | Analytics (Plausible, self-hosted) | `https://insight.langx.io/api/event` |
 
+## The v1 economy
+
+**Nothing in v1 was ever bought or sold.** `CHECKOUT_COLLECTION` reads like a
+purchase log and is not one: its fields are `distribution`, `baseAmount`,
+`text`, `image`, `audio`, `streak`, `badges`, `onlineMin` — a daily payout
+calculation broken down by activity, which is v1's version of what v2 calls the
+daily XP pool. There is no Stripe integration, no purchase flow, and the client
+only ever _lists_ checkouts. Confirmed by reading the v1 source and by the
+owner, 2026-08-27.
+
+That matters because the original plan retired the token partly on the grounds
+that migrating balances would put money-bought currency into a system where
+"XP can never be purchased". It would not have. Balances are entirely earned.
+
+### Measured, 2026-08-27 (`scripts/inspect-v1-economy.ts`)
+
+| Token balances (1403 wallets) |           | Streaks (4239 records) |       |
+| ----------------------------- | --------- | ---------------------- | ----- |
+| total                         | 6,079,895 | total                  | 9,751 |
+| median                        | 20        | median                 | 1     |
+| p90                           | 9,136     | p90                    | 3     |
+| p99                           | 37,821    | p99                    | 13    |
+| max                           | 2,277,521 | max                    | 446   |
+| zero                          | 266       | zero                   | 0     |
+
+For scale: a very active day in v2 is about **700 XP** (a 500 XP ceiling on the
+daily pool share, plus the 100-message cap at 2 XP each).
+
+### Open decision — what a token converts into
+
+Migrating balances is decided. **Where they land is not.** Credited 1:1 to
+_earned_ XP, the p99 user starts level with about 54 consecutive days of
+maximum activity and the top account with roughly nine years; the total
+injected is 608 days of the entire daily pool, shared across everyone. The
+all-time and yearly tables would become a permanent v1 ranking that nobody new
+can enter.
+
+The recommendation is to credit the **balance** rather than earned XP. The
+distinction already exists and was built deliberately: `xpAggregates` holds
+what was _earned_ and is what the leaderboard ranks, while the spendable
+balance is `earned − spent`. Crediting a legacy balance honours the v1 economy
+exactly — 9,136 tokens buy 9,136 XP of spending — and it spends on precisely
+what the migration wants it spent on, restoring a frozen streak and cosmetics,
+without touching a ranking it was never earned in. Mechanically that is
+`balance = earned + granted − spent`, one new component.
+
+Weekly and monthly tables are unaffected either way; only yearly and all-time
+are at stake.
+
 ## Conversation history is not migrated — and that is still an open question
 
 The MVP migrates profiles, avatars and usernames. Rooms and messages are left

@@ -320,12 +320,24 @@ what is left and when the next slot opens.
 
 ## Gamification: streaks and the XP economy
 
-**The token is retired.** v1's `WALLET_COLLECTION` / `CHECKOUT_COLLECTION` data
-and its `/token` leaderboard do not move to v2; balances are dropped. In their
-place: **XP**, which cannot be traded, bought or withdrawn. The ledger is still
-**append-only, idempotent and period-bucketed** — that is correct engineering
-for any point economy (audit, dispute, recompute), and it leaves the door open
-without committing to it.
+**The token is retired as a mechanic**, but **balances now migrate** — that
+part of the original decision was reversed on 2026-08-27. v1's `/token`
+leaderboard and its wallet/checkout UI do not come across; the balances do.
+
+The reversal is safe because nothing in v1 was ever purchased: `CHECKOUT_COLLECTION`
+is a daily payout calculation, not a purchase log (see
+[`v1-reference.md`](./v1-reference.md)). So converting balances cannot put
+money-bought currency into a system whose rule is that **XP can never be
+bought, traded or withdrawn** — that rule still holds without exception.
+
+What a converted token _becomes_ is still an open decision, and it is a
+question of scale rather than principle: at v1's magnitudes, crediting earned
+XP 1:1 would freeze the all-time table. See the measured distribution and the
+recommendation in `v1-reference.md`.
+
+The ledger is **append-only, idempotent and period-bucketed** — correct
+engineering for any point economy (audit, dispute, recompute), and it is what
+makes a one-off migration credit safe to apply exactly once.
 
 ### Streak
 
