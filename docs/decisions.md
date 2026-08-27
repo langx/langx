@@ -23,7 +23,7 @@ is shaped that way. Several of them record a plan that turned out to be wrong.
 | 10  | `profileViews` + incognito, push, block/report, **account deletion + export**                                                      | **Server done** — 18 tests: a blocked user disappears from discovery, the chat list, the leaderboard and their profile (404, not 403) at once; a deleted account is invisible immediately, still recoverable on day 29, and gone from every collection on day 31 |
 | —   | **Client screens** — onboarding, discovery, chat, leaderboard, profile, paywall, settings                                          | **Done** — the plan did not list this as a phase, but MVP items 2/3/4/5/12 all depend on it and only phase 1's auth screens existed                                                                                                                              |
 | 11  | The ETL's profile + avatar + **gallery** step                                                                                      | **Code done, media step waiting on credentials** — 13 mapping tests; live dry run: 3479 documents → 3150 stageable                                                                                                                                               |
-| 12  | EAS build, store identity, web deploy, Sentry, `docs/self-host.md`                                                                 | **What can be done from code is done** — keystore inheritance, EAS credentials and real submission need console access                                                                                                                                           |
+| 12  | EAS build, store identity, **API deploy**, web deploy, Sentry, `docs/self-host.md`                                                 | **What can be done from code is done** — keystore inheritance, EAS credentials and real submission need console access. The API deploy is a committed `Dockerfile` + `fly.toml`, verified by running the image; `fly launch` itself needs an account             |
 | 13  | Promise update + privacy forms + staged rollout                                                                                    | **Copy written, not published** — publishing needs langx.io and console access                                                                                                                                                                                   |
 
 ## Phase 1 — the age gate moved to phase 2
@@ -1006,6 +1006,41 @@ everyone, whenever they arrive.
 The recipient is told on the welcome-back screen, which is the only place they
 would ever learn of it. A gift nobody is told about is indistinguishable from
 no gift.
+
+## The API runs on Fly.io, and never scales to zero
+
+The deploy target had been left open long enough that it blocked the
+RevenueCat webhook, which needs a public URL before it can be configured at
+all. Fly was chosen for the ordinary reasons — a container, a custom domain
+with an automatic certificate, secrets in the platform rather than the repo.
+
+The part that is not ordinary is `auto_stop_machines = 'off'`. Scale-to-zero
+is the headline feature of every platform in this class, and it is wrong here.
+Four schedulers live inside the API process and every one of them is an
+interval tick, not platform cron: the token pool, the account purge, the
+streak reminder, the legacy import. A suspended machine runs none of them, and
+nothing wakes it, because the work is not triggered by a request — nobody
+calls the API to make 20:00 arrive in a user's timezone. The failure is silent
+and looks like a bug in the schedulers.
+
+Two smaller constraints, both of which cost an afternoon to find:
+
+`packages/shared` is inlined into the bundle by an esbuild `--alias` rather
+than left external like every npm package. It ships as TypeScript source, so
+externally Node resolves it to a `.ts` file and then cannot follow that file's
+own extensionless imports. `node dist/index.js` had never been run before —
+the documented deploy command did not work.
+
+`pnpm deploy` runs with `--config.node-linker=hoisted`, because the default
+symlink layout keeps a `.pnpm` store containing the entire workspace. The API
+image shipped Expo, React Native and the Hermes compiler until it did not:
+1.15 GB down to 608 MB.
+
+Going past one machine needs a Socket.io adapter first. Socket.io's default
+transport list starts with HTTP polling, which assumes consecutive requests
+reach the same instance, and Fly has no sticky sessions. Everything else about
+the app is already safe to run multiply — the `jobRuns` unique index means only
+one instance can own a given day's pool.
 
 ## Known risks
 

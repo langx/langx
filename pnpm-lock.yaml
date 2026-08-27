@@ -179,6 +179,9 @@ importers:
       mongodb:
         specifier: 'catalog:'
         version: 7.6.0
+      node-appwrite:
+        specifier: 'catalog:'
+        version: 28.0.0
       pino:
         specifier: 'catalog:'
         version: 10.3.1
@@ -201,9 +204,6 @@ importers:
       mongodb-memory-server:
         specifier: 'catalog:'
         version: 11.2.0
-      node-appwrite:
-        specifier: 'catalog:'
-        version: 28.0.0
       pino-pretty:
         specifier: 'catalog:'
         version: 13.1.3

@@ -56,6 +56,58 @@ leftovers. They are not.
 `versionCode` and `buildNumber` must both start **above 119**, the published
 v1 version. They are currently 120.
 
+## The API has to be deployed, and it has to be deployed early
+
+Everything below this line assumes the v2 API answers on a public URL. For a
+long time nothing did: `api.langx.io` still points at v1's Appwrite host, and
+the repo had no deploy configuration at all. That single gap blocked the
+RevenueCat webhook, which cannot be configured without a URL to point at.
+
+`Dockerfile` and `fly.toml` at the repo root are the deploy; `docs/self-host.md`
+has the commands and the Cloudflare caveat. Use a **new** subdomain rather than
+`api.langx.io` — v1 is still serving from that name and moving it now breaks
+the users we are trying to migrate.
+
+- [ ] MongoDB Atlas cluster created and `MONGODB_URI` set. It must be a replica
+      set; Atlas already is, a hand-rolled `mongod` is not, and Better Auth
+      fails on the first sign-up without one
+- [ ] `fly launch --no-deploy`, then `fly secrets set` for `MONGODB_URI`,
+      `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and whichever optional services
+      are being switched on. Nothing secret goes in `fly.toml` — this repo is
+      public
+- [ ] `fly certs add <host>`, with the Cloudflare record on DNS-only (grey
+      cloud) or the certificate never issues
+- [ ] `TRUSTED_ORIGINS` includes the web origin and both app schemes, or the
+      browser drops the session cookie and sign-in appears to succeed and do
+      nothing
+
+**This is ordered before the EAS build on purpose.** `EXPO_PUBLIC_API_URL` is
+compiled into the client bundle, so the host has to exist and be final before
+the build that goes to the stores. Build first and deploy after, and the
+binary in review is pointing at `http://localhost:4000` — which passes every
+local test and fails on every real device. Setting that variable on the
+`preview` and `production` profiles in `eas.json` is the checklist item this
+deadline exists for; it is listed with the other prerequisites below.
+
+Once the host answers, the webhook is a five-minute dashboard task:
+
+- [ ] RevenueCat → project LangX (`94ab2b94`) → Integrations → Webhooks →
+      `https://<host>/webhooks/revenuecat`, with an "Authorization header
+      value" you choose
+- [ ] The identical string in `REVENUECAT_WEBHOOK_AUTH_HEADER`, plus
+      `REVENUECAT_SECRET_API_KEY`. RevenueCat does not sign webhooks
+      cryptographically, so that literal-string comparison is the whole
+      defense; left unset the route refuses every request rather than
+      trusting one
+- [ ] Confirm with a Test Store purchase: a 200 in RevenueCat's webhook log,
+      and `profiles.entitlement` updating without the client calling
+      `POST /billing/refresh`
+
+Without the webhook the app still sells subscriptions — the paywall calls
+`POST /billing/refresh` after a purchase and on restore. What is missed is
+every renewal and cancellation that happens outside the app, which is most of
+them after the first month.
+
 ## Deep links only work once the domain answers
 
 `app.langx.io` is claimed in two places — `associatedDomains` on iOS,
@@ -164,7 +216,8 @@ be tested end to end until they are:
 - [ ] Bank and tax details submitted
 - [ ] Subscription group + products created in App Store Connect
 - [ ] Subscription products created in Play Console
-- [ ] RevenueCat project connected to both, API keys issued
+- [ ] RevenueCat project connected to both, API keys issued. The webhook is a
+      separate step and needs the API deployed first — see above
 - [ ] Google OAuth client created (Web application type) and
       `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set
 - [ ] Sign in with Apple: Services ID, key (.p8) and the four `APPLE_*`

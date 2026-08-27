@@ -1,0 +1,31 @@
+node_modules
+**/node_modules
+dist
+**/dist
+build
+coverage
+**/*.tsbuildinfo
+
+.git
+.github
+.claude
+
+# Never let a local .env reach an image layer; Fly injects secrets at runtime.
+.env
+.env.*
+!.env.example
+
+# The API image does not build the client, but apps/mobile/package.json has to
+# be there for --frozen-lockfile to accept the workspace.
+apps/mobile/**
+!apps/mobile/package.json
+
+docs
+*.md
+.expo
+.expo-shared
+web-build
+.DS_Store
+*.log
+.idea
+.vscode
