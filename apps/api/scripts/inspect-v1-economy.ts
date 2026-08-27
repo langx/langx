@@ -1,10 +1,12 @@
 /**
  * Read-only: what v1's token economy actually looks like.
  *
- * A 1:1 token→token conversion only makes sense if the two economies are on a
- * comparable scale. If v1 paid out far more generously, every returning user
- * lands permanently at the top of the all-time leaderboard and nobody new can
- * ever catch them — which would break the thing the leaderboard is for.
+ * v1 and v2 use the same word for two economies that were never on the same
+ * scale, which is what makes the conversion ratio a real question. If v1 paid
+ * out far more generously, a 1:1 credit lands every returning user permanently
+ * at the top of the all-time leaderboard and nobody new can ever catch them —
+ * breaking the thing the leaderboard is for. Measured here so the divisor in
+ * `TOKEN_RULES` is a decision rather than a guess.
  *
  *   pnpm --filter @langx/api exec tsx scripts/inspect-v1-economy.ts
  */
