@@ -76,6 +76,8 @@ export default function HandleStep() {
         learning: current.learning.map((l, index) => ({ ...l, priority: index + 1 })),
         ...(current.bio.trim() ? { bio: current.bio.trim() } : {}),
         ...(current.interests.length > 0 ? { interests: current.interests } : {}),
+        ...(current.avatarUrl ? { avatarUrl: current.avatarUrl } : {}),
+        ...(current.country ? { country: current.country } : {}),
         // The device already knows the user's timezone; asking would be a
         // question with one correct answer the app can read itself. It drives
         // the streak's notion of "today".
@@ -99,7 +101,7 @@ export default function HandleStep() {
 
   return (
     <Screen scroll>
-      <Text style={styles.step}>3 / 3</Text>
+      <Text style={styles.step}>4 / 4</Text>
       <Text style={styles.title}>Choose a username</Text>
 
       {reserved ? (

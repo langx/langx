@@ -34,7 +34,7 @@ export default function AboutYouStep() {
 
   return (
     <Screen scroll>
-      <Text style={styles.step}>2 / 3</Text>
+      <Text style={styles.step}>2 / 4</Text>
       <Text style={styles.title}>About you</Text>
 
       <FormField
@@ -71,6 +71,17 @@ export default function AboutYouStep() {
         ))}
       </View>
 
+      {/*
+        Required by `architecture.md`: choosing this has a consequence people
+        cannot see, and finding out later that you were invisible to half the
+        searches on the app is a bad way to learn it.
+      */}
+      {draft.gender === 'undisclosed' ? (
+        <Text style={styles.genderNote}>
+          Choosing this keeps you out of gender-filtered searches.
+        </Text>
+      ) : null}
+
       <FormField
         label="About you (optional)"
         value={draft.bio}
@@ -82,7 +93,7 @@ export default function AboutYouStep() {
       <Button
         label="Continue"
         disabled={!canContinue}
-        onPress={() => router.push('/(onboarding)/handle')}
+        onPress={() => router.push('/(onboarding)/photo')}
         style={styles.cta}
       />
     </Screen>
@@ -104,5 +115,6 @@ const styles = StyleSheet.create({
   genderActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   genderText: { ...font.caption, color: colors.textMuted },
   genderTextActive: { color: colors.primaryText, fontWeight: '700' },
+  genderNote: { ...font.caption, color: colors.textMuted, marginTop: spacing.sm },
   cta: { marginTop: spacing.xl },
 })

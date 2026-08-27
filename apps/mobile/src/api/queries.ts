@@ -271,6 +271,17 @@ async function uploadImage(
   return target.publicUrl
 }
 
+/**
+ * Uploads an avatar and returns its public URL **without** confirming it.
+ *
+ * Onboarding needs this: `confirm` writes the URL onto a profile, and during
+ * the wizard there is no profile yet. The URL goes into the draft instead and
+ * is written by `POST /profiles`, which runs the same bucket check.
+ */
+export function uploadAvatarBytes(uri: string, contentType: string): Promise<string> {
+  return uploadImage('avatar', uri, contentType)
+}
+
 export function useUploadAvatar() {
   const queryClient = useQueryClient()
   return useMutation({

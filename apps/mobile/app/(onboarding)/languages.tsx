@@ -40,7 +40,7 @@ export default function LanguagesStep() {
 
   return (
     <Screen fluid style={styles.screen}>
-      <Text style={styles.step}>1 / 3</Text>
+      <Text style={styles.step}>1 / 4</Text>
       <Text style={styles.title}>Which languages do you speak?</Text>
       <Text style={styles.subtitle}>
         Your native language is what you can teach; what you're learning is who you'll match with.

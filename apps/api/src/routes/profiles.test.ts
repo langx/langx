@@ -406,6 +406,53 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(confirm.json()).toMatchObject({ avatarUrl: body.publicUrl })
     })
 
+    /**
+     * Onboarding writes an `avatarUrl` on a path that never calls `confirm`,
+     * so it needs its own copy of the bucket check — without it the wizard
+     * quietly reopens the hole `confirm` exists to close: a profile picture
+     * served from any host on the internet, inside our UI.
+     */
+    it('accepts an onboarding avatar that lives in our bucket', async () => {
+      const user = await newUser('onboarding-avatar-ok@example.com')
+      const response = await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({
+          handle: 'onboardavatar',
+          avatarUrl: `https://cdn.example.com/avatars/${user.userId}/a.png`,
+        }),
+      })
+
+      expect(response.statusCode, response.body).toBe(201)
+      expect(response.json()).toMatchObject({
+        avatarUrl: `https://cdn.example.com/avatars/${user.userId}/a.png`,
+      })
+    })
+
+    it('refuses an onboarding avatar hosted anywhere else, and writes no profile', async () => {
+      const user = await newUser('onboarding-avatar-foreign@example.com')
+      const response = await configuredApp.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({
+          handle: 'onboardforeign',
+          avatarUrl: 'https://evil.example.com/pretty.png',
+        }),
+      })
+
+      expect(response.statusCode).toBe(400)
+      // The whole request fails rather than the field being dropped: silently
+      // ignoring it would tell the user their picture was set when it was not.
+      const profile = await configuredApp.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.statusCode).toBe(404)
+    })
+
     it('rejects a confirm URL that does not point into our own bucket', async () => {
       const user = await newUser('avatar-foreign-url@example.com')
       await configuredApp.inject({

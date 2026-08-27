@@ -33,7 +33,39 @@ function learningDoesNotOverlapNative(data: {
 }
 
 const MAX_LANGUAGES = 5
-const MAX_INTERESTS = 10
+export const MAX_INTERESTS = 10
+
+/**
+ * What onboarding offers as chips. Free text is still accepted by
+ * `interestsSchema` — this is a starting point, not a vocabulary.
+ *
+ * Chosen to be things two strangers can actually talk about across a language
+ * barrier, which rules out most of what an interest picker usually contains:
+ * nothing needs shared cultural reference, and every one of them survives being
+ * discussed at B1.
+ */
+export const INTEREST_SUGGESTIONS = [
+  'music',
+  'films',
+  'books',
+  'cooking',
+  'travel',
+  'football',
+  'fitness',
+  'gaming',
+  'art',
+  'photography',
+  'history',
+  'science',
+  'technology',
+  'nature',
+  'animals',
+  'fashion',
+  'business',
+  'politics',
+  'languages',
+  'teaching',
+] as const
 const BIO_MAX_LENGTH = 500
 const DISPLAY_NAME_MAX_LENGTH = 50
 
@@ -62,6 +94,13 @@ export const onboardingProfileSchema = z
     country: countryCodeSchema.optional(),
     city: z.string().trim().min(1).max(100).optional(),
     timezone: z.string().trim().min(1).optional(),
+    /**
+     * Uploaded during onboarding, when there is no profile yet to `confirm`
+     * against. The server still checks it points into our own bucket before
+     * writing it — see `assertOwnBucket`; without that, this field would be a
+     * way to point a profile at any host on the internet.
+     */
+    avatarUrl: z.url().optional(),
   })
   .refine(learningDoesNotOverlapNative, {
     message: 'A learning language cannot also be listed as native',

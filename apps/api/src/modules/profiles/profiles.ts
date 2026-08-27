@@ -9,6 +9,7 @@ import {
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import { restoreByHash } from '../handles/legacyRestore'
 import { grantSignupBonus } from '../tokens/signupBonus'
@@ -100,6 +101,7 @@ export async function createProfile(
   userId: string,
   legacyEmailHash: string | null,
   input: OnboardingProfileInput,
+  storagePublicBaseUrl?: string,
 ): Promise<Profile> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
@@ -156,6 +158,13 @@ export async function createProfile(
   // any route — so a returning user never sees this form at all. What remains
   // here is the path for someone whose v1 record was too incomplete to build a
   // profile from: they fill in the gaps, and the restore completes afterwards.
+
+  if (input.avatarUrl) {
+    // Onboarding never calls `confirm`, so this is the only thing standing
+    // between the form and a profile picture hosted anywhere at all.
+    assertOwnBucket(storagePublicBaseUrl, input.avatarUrl)
+    profile.avatarUrl = input.avatarUrl
+  }
 
   try {
     await profiles.insertOne(profile)

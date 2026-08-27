@@ -28,6 +28,7 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         request.userId,
         legacyEmailHash,
         request.body,
+        app.env.STORAGE_PUBLIC_BASE_URL,
       )
       return reply.code(201).send(profile)
     },

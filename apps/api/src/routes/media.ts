@@ -12,6 +12,7 @@ import { randomUUID } from 'node:crypto'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
+import { assertOwnBucket } from '../lib/assertOwnBucket'
 import { requireAuth } from '../middleware/requireAuth'
 import { assertConversationAccess } from '../modules/chat/access'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
@@ -119,16 +120,4 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(await removePhoto(app.mongo.db, request.userId, request.body.url))
     },
   )
-}
-
-/**
- * A URL outside our own bucket would break the account-deletion purge and any
- * future moderation or rehosting of profile images — and would let anyone
- * point their profile at an arbitrary host.
- */
-function assertOwnBucket(base: string | undefined, url: string): void {
-  if (!base) throw new ApiError(ERROR_CODES.INTERNAL, 'Storage is not configured')
-  if (!url.startsWith(base)) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'URL must point into our own storage bucket')
-  }
 }
