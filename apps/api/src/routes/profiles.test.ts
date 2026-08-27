@@ -1,3 +1,4 @@
+import { PLAN_LIMITS } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -422,6 +423,73 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       })
       expect(confirm.statusCode).toBe(400)
       expect(confirm.json()).toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+  })
+
+  describe('gallery photos', () => {
+    const BUCKET = 'https://cdn.example.com'
+
+    /** `newUser` only signs up; the gallery needs a profile to attach to. */
+    async function onboarded(email: string, handle: string): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle }),
+      })
+      if (response.statusCode !== 201) {
+        throw new Error(`onboarding failed (${response.statusCode}): ${response.body}`)
+      }
+      return user
+    }
+
+    async function addPhoto(user: SignedUpUser, url: string) {
+      return app.inject({
+        method: 'POST',
+        url: '/me/photos',
+        headers: { cookie: user.cookie },
+        payload: { url },
+      })
+    }
+
+    it('refuses a URL outside our own bucket', async () => {
+      const user = await onboarded('photos-foreign@example.com', 'photosforeign')
+      // Without this, a profile could point at any host — which breaks the
+      // deletion purge and hands us an arbitrary-image-embed surface.
+      const response = await addPhoto(user, 'https://evil.example.net/pic.jpg')
+      expect([400, 500]).toContain(response.statusCode)
+    })
+
+    it('caps the gallery and does not exceed it under concurrent adds', async () => {
+      const user = await onboarded('photos-cap@example.com', 'photoscap')
+      const max = PLAN_LIMITS.free.maxPhotos
+
+      // Written straight to the document: the presigned upload path needs real
+      // storage, and what is under test here is the cap, not the upload.
+      const profiles = handle.db.collection(COLLECTIONS.profiles)
+      await profiles.updateOne({ _id: user.userId as never }, { $set: { photos: [] } })
+
+      const { addPhoto: addPhotoDirect } = await import('../modules/profiles/profiles')
+      const results = await Promise.allSettled(
+        Array.from({ length: max + 4 }, (_, i) =>
+          addPhotoDirect(handle.db, user.userId, `${BUCKET}/p${i}.jpg`),
+        ),
+      )
+      expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(max)
+
+      const profile = await profiles.findOne({ _id: user.userId as never })
+      expect((profile as { photos?: unknown[] })?.photos).toHaveLength(max)
+    })
+
+    it('removes a photo by url', async () => {
+      const user = await onboarded('photos-remove@example.com', 'photosremove')
+      const { addPhoto: addPhotoDirect, removePhoto } = await import('../modules/profiles/profiles')
+      await addPhotoDirect(handle.db, user.userId, `${BUCKET}/keep.jpg`)
+      await addPhotoDirect(handle.db, user.userId, `${BUCKET}/drop.jpg`)
+
+      const after = await removePhoto(handle.db, user.userId, `${BUCKET}/drop.jpg`)
+      expect(after.photos?.map((p) => p.url)).toEqual([`${BUCKET}/keep.jpg`])
     })
   })
 })

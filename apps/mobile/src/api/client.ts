@@ -27,7 +27,7 @@ export class ApiRequestError extends Error {
  * `code` the UI can branch on — a paywall for UPGRADE_REQUIRED, a quota sheet
  * for QUOTA_EXCEEDED — instead of a stringly-typed message nobody can match on.
  */
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+export async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await apiFetch(path, {
     ...init,
     headers: {
@@ -48,6 +48,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
+  request,
   get: <T>(path: string) => request<T>(path),
   post: <T>(path: string, body?: unknown) =>
     request<T>(path, {

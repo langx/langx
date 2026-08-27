@@ -517,6 +517,46 @@ shown a forced-update screen to someone whose app was fine, with no way out.
 it cannot read. Being wrong in the permissive direction is the only safe way to
 be wrong here.
 
+## Client — the three MVP gaps the server had already covered
+
+An audit against the MVP list found three items whose server side was written
+and tested but had no screen: profile editing with avatar and gallery upload
+(item 3), translation in chat (item 6), and managing who you have blocked
+(item 10). Blocking in particular was effectively irreversible — one tap to
+block, and no way back, because the profile you would unblock from is exactly
+the one you can no longer reach.
+
+The gallery had no API either. `Profile.photos` existed and the ETL populated
+it, but nothing could add or remove one. `POST /me/photos` enforces
+`PLAN_LIMITS.maxPhotos` inside the update's own filter rather than by reading
+the array first — two uploads finishing at once would otherwise both see room
+and both append. The cap is the same on both tiers on purpose: a gallery is how
+someone shows they are a real person, and gating it would make free profiles
+look like the throwaway accounts the product is trying to keep out.
+
+## Client — a form that was always blank, and why
+
+`useState(profile?.displayName ?? '')` runs on the component's _first_ render,
+and hooks cannot sit behind an early return — so with the query still pending,
+every field initialised to empty and stayed empty once the data arrived. The
+edit screen looked correct and silently discarded the user's existing profile
+on save.
+
+Caught by looking at a screenshot rather than by a test: the screen rendered,
+typechecked and had no runtime error. The fix splits loading from the form so
+the form's initialisers only ever run with real data.
+
+## Client — a chip that rendered its own colour on itself
+
+`Chip` styled its read-only branch as a bare `Text` with a separate style
+array, which quietly dropped `selected` from the text colour: a filled chip
+drew muted blue text on a blue background. Only visible on a screen that
+happened to use a selected chip without an `onPress`, which is why it survived
+until the profile editor.
+
+Both branches now render the same View + Text structure. Styling a `Text` as
+though it were the container is what let them drift apart.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

@@ -25,6 +25,7 @@ export const keys = {
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
+  blocks: ['blocks'] as const,
 }
 
 export function useMe() {
@@ -35,6 +36,11 @@ export function useMe() {
     // error to retry.
     retry: false,
   })
+}
+
+/** `DELETE` with a body — `api.delete` has no body parameter, so this is the one place it is needed. */
+function apiDelete<T>(path: string, body: unknown): Promise<T> {
+  return api.request<T>(path, { method: 'DELETE', body: JSON.stringify(body) })
 }
 
 export interface MeProfile {
@@ -48,6 +54,7 @@ export interface MeProfile {
   country?: string
   city?: string
   timezone?: string
+  photos?: { url: string }[]
   nativeLanguages: { code: string }[]
   learning: { code: string; level: string; priority: number }[]
   interests: string[]
@@ -205,6 +212,116 @@ export function usePurchase() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: keys.wallet })
       void queryClient.invalidateQueries({ queryKey: keys.xp })
+    },
+  })
+}
+
+export interface UploadUrlDto {
+  uploadUrl: string
+  publicUrl: string
+  contentType: string
+}
+
+/**
+ * Presigned upload: ask the API where to put it, PUT the bytes straight to the
+ * bucket, then tell the API it landed. The file never passes through our
+ * server, which is the whole reason for the three-step dance.
+ */
+async function uploadImage(
+  kind: 'avatar' | 'photo',
+  uri: string,
+  contentType: string,
+): Promise<string> {
+  const path = kind === 'avatar' ? '/me/avatar/upload-url' : '/me/photos/upload-url'
+  const target = await api.post<UploadUrlDto>(path, { contentType })
+
+  const blob = await (await fetch(uri)).blob()
+  const put = await fetch(target.uploadUrl, {
+    method: 'PUT',
+    body: blob,
+    // Must match the signed content type exactly or the signature is rejected.
+    headers: { 'content-type': contentType },
+  })
+  if (!put.ok) throw new Error(`Upload failed (${put.status})`)
+
+  return target.publicUrl
+}
+
+export function useUploadAvatar() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { uri: string; contentType: string }) => {
+      const url = await uploadImage('avatar', input.uri, input.contentType)
+      return api.post<MeProfile>('/me/avatar/confirm', { avatarUrl: url })
+    },
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+    },
+  })
+}
+
+export function useAddPhoto() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (input: { uri: string; contentType: string }) => {
+      const url = await uploadImage('photo', input.uri, input.contentType)
+      return api.post<MeProfile>('/me/photos', { url })
+    },
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+    },
+  })
+}
+
+export function useRemovePhoto() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (url: string) => apiDelete<MeProfile>('/me/photos', { url }),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+    },
+  })
+}
+
+export interface TranslationDto {
+  translatedText: string
+  sourceLang: string
+  cached: boolean
+}
+
+export function useTranslate() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { text: string; targetLang: string }) =>
+      api.post<TranslationDto>('/translate', input),
+    onSuccess: (result) => {
+      // A cache hit costs no quota, so only a miss can have changed it.
+      if (!result.cached) void queryClient.invalidateQueries({ queryKey: keys.quota })
+    },
+  })
+}
+
+export interface BlockDto {
+  _id: string
+  blockerId: string
+  blockedId: string
+  createdAt: string
+}
+
+export function useBlocks() {
+  return useQuery({
+    queryKey: keys.blocks,
+    queryFn: () => api.get<{ items: BlockDto[] }>('/blocks'),
+  })
+}
+
+export function useUnblockUser() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (userId: string) => api.delete(`/blocks/${userId}`),
+    onSuccess: () => {
+      // Unblocking puts the person back into every list, server-side.
+      void queryClient.invalidateQueries()
     },
   })
 }

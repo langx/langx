@@ -30,6 +30,14 @@ export interface PlanLimits {
   profileViewerIdentities: boolean
   /** Browse without leaving a profileViews record. */
   incognito: boolean
+  /**
+   * Photos on a profile, avatar excluded.
+   *
+   * The same on both tiers on purpose. A gallery is how someone shows they are
+   * a real person, and gating it would make free profiles look like the
+   * throwaway accounts the product is trying to keep out.
+   */
+  maxPhotos: number
 }
 
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
@@ -40,6 +48,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: false,
     profileViewerIdentities: false,
     incognito: false,
+    maxPhotos: 6,
   },
   pro: {
     initiationsPer24h: null,
@@ -48,6 +57,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: true,
     profileViewerIdentities: true,
     incognito: true,
+    maxPhotos: 6,
   },
 }
 

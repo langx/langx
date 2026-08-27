@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  PLAN_LIMITS,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   meetsMinimumAge,
   type OnboardingProfileInput,
@@ -318,4 +319,42 @@ export async function findProfileByHandleOrId(db: Db, handleOrId: string): Promi
   return db
     .collection<Profile>(COLLECTIONS.profiles)
     .findOne({ $or: [{ _id: key }, { handle: key }], deletedAt: { $exists: false } })
+}
+
+/**
+ * Adds a photo to the gallery, capped at `PLAN_LIMITS.maxPhotos`.
+ *
+ * The cap is enforced in the update's own filter rather than by reading the
+ * array first: two uploads finishing at once would otherwise both see room and
+ * both append. Same reasoning as the quota decrement — let the write decide.
+ */
+export async function addPhoto(db: Db, userId: string, url: string): Promise<Profile> {
+  const max = PLAN_LIMITS.free.maxPhotos
+  const result = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
+    {
+      _id: userId,
+      $expr: { $lt: [{ $size: { $ifNull: ['$photos', []] } }, max] },
+    },
+    { $push: { photos: { url, createdAt: new Date() } }, $set: { updatedAt: new Date() } },
+    { returnDocument: 'after' },
+  )
+
+  if (!result) {
+    const existing = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
+    if (!existing) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `You can have at most ${max} photos`)
+  }
+  return result
+}
+
+export async function removePhoto(db: Db, userId: string, url: string): Promise<Profile> {
+  const result = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOneAndUpdate(
+      { _id: userId },
+      { $pull: { photos: { url } }, $set: { updatedAt: new Date() } },
+      { returnDocument: 'after' },
+    )
+  if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  return result
 }

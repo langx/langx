@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -12,8 +13,8 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import { keys, useMe, useMessages, type MessageDto } from '../../../src/api/queries'
-import { api } from '../../../src/api/client'
+import { keys, useMe, useMessages, useTranslate, type MessageDto } from '../../../src/api/queries'
+import { api, ApiRequestError } from '../../../src/api/client'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
@@ -31,7 +32,12 @@ export default function ChatScreen() {
   const [sending, setSending] = useState(false)
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   const [partnerTyping, setPartnerTyping] = useState(false)
+  // Keyed by message id: a translation replaces nothing, it sits under the
+  // original so the learner can compare the two.
+  const [translations, setTranslations] = useState<Record<string, string>>({})
+  const [translating, setTranslating] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageDto>>(null)
+  const translateApi = useTranslate()
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const items = messages.data?.items ?? []
@@ -105,6 +111,31 @@ export default function ChatScreen() {
 
   const isMine = (message: MessageDto) => message.senderId === me.data?._id
 
+  /**
+   * Translates into the caller's first native language — the one they read
+   * fluently. Asking which language every time would be a question with an
+   * obvious answer, and translating into what they are *learning* would defeat
+   * the purpose.
+   */
+  async function translate(message: MessageDto): Promise<void> {
+    const target = me.data?.nativeLanguages[0]?.code
+    if (!target || translations[message._id]) return
+    setTranslating(message._id)
+    try {
+      const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
+      setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
+    } catch (error) {
+      Alert.alert(
+        'Translation unavailable',
+        error instanceof ApiRequestError && error.code === 'QUOTA_EXCEEDED'
+          ? "You've used today's free translations. Pro removes the limit."
+          : 'Could not translate that message right now.',
+      )
+    } finally {
+      setTranslating(null)
+    }
+  }
+
   return (
     <Screen fluid style={styles.screen}>
       <View style={styles.header}>
@@ -148,6 +179,7 @@ export default function ChatScreen() {
                 </View>
               )
             }
+            const translated = translations[item._id]
             return (
               <Pressable
                 // Long-press someone else's message to correct it — the
@@ -160,6 +192,20 @@ export default function ChatScreen() {
                 style={[styles.bubble, mine ? styles.mine : styles.theirs]}
               >
                 <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{item.body}</Text>
+                {translated ? (
+                  <Text style={[styles.translation, mine && styles.translationMine]}>
+                    {translated}
+                  </Text>
+                ) : null}
+                {/* Only offered on the other person's messages: translating your
+                    own is a round trip to something you already understand. */}
+                {!mine && !translated ? (
+                  <Pressable onPress={() => void translate(item)} hitSlop={6}>
+                    <Text style={styles.translateLink}>
+                      {translating === item._id ? 'Translating…' : 'Translate'}
+                    </Text>
+                  </Pressable>
+                ) : null}
               </Pressable>
             )
           }}
@@ -235,6 +281,16 @@ const styles = StyleSheet.create({
   theirs: { alignSelf: 'flex-start', backgroundColor: colors.surface },
   bubbleText: { ...font.body, color: colors.text },
   bubbleTextMine: { color: colors.primaryText },
+  translation: {
+    ...font.caption,
+    borderTopColor: colors.border,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+    paddingTop: spacing.xs,
+  },
+  translationMine: { borderTopColor: 'rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.75)' },
+  translateLink: { ...font.caption, color: colors.accent, marginTop: spacing.xs },
   correction: {
     borderColor: colors.success,
     borderRadius: radius.lg,

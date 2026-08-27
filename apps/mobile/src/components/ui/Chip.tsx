@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text } from 'react-native'
+import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native'
 import { colors, font, radius, spacing } from '../../lib/theme'
 
 interface ChipProps {
@@ -15,21 +15,34 @@ const TONE = {
   pro: colors.pro,
 } as const
 
+/**
+ * A read-only chip and a tappable one look identical, so they have to be
+ * *styled* identically. An earlier version styled the static branch separately
+ * and forgot `selected`, which rendered a filled chip with muted text on its
+ * own background colour — unreadable, and only visible on a screen that
+ * happened to use a selected chip without an `onPress`.
+ */
 export function Chip({ label, selected = false, onPress, tone = 'default' }: ChipProps) {
   const colour = TONE[tone]
-  const content = (
-    <Text style={[styles.label, { color: selected ? colors.primaryText : colour }]}>{label}</Text>
-  )
-  const style = [
+  const container: ViewStyle[] = [
     styles.base,
     { borderColor: colour },
-    selected && { backgroundColor: colour, borderColor: colour },
+    ...(selected ? [{ backgroundColor: colour }] : []),
   ]
+  const text = [styles.label, { color: selected ? colors.primaryText : colour }]
 
-  if (!onPress) return <Text style={[...style, styles.static]}>{label}</Text>
+  // Both branches render the same View + Text structure. Styling a bare Text
+  // as the container is what let the two drift apart in the first place.
+  if (!onPress) {
+    return (
+      <View style={container}>
+        <Text style={text}>{label}</Text>
+      </View>
+    )
+  }
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [...style, pressed && styles.pressed]}>
-      {content}
+    <Pressable onPress={onPress} style={({ pressed }) => [...container, pressed && styles.pressed]}>
+      <Text style={text}>{label}</Text>
     </Pressable>
   )
 }
@@ -38,10 +51,10 @@ const styles = StyleSheet.create({
   base: {
     borderRadius: radius.pill,
     borderWidth: 1,
+    overflow: 'hidden',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs + 2,
   },
-  static: { color: colors.textMuted, ...font.caption },
   label: { ...font.caption, fontWeight: '600' },
   pressed: { opacity: 0.7 },
 })

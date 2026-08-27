@@ -58,6 +58,8 @@ export default function AppLayout() {
       {/* Reachable by navigation, never a tab. */}
       <Tabs.Screen name="chat/[id]" options={{ href: null }} />
       <Tabs.Screen name="profile/[handle]" options={{ href: null }} />
+      <Tabs.Screen name="edit-profile" options={{ href: null }} />
+      <Tabs.Screen name="blocked" options={{ href: null }} />
       <Tabs.Screen name="settings" options={{ href: null }} />
       <Tabs.Screen name="paywall" options={{ href: null }} />
       <Tabs.Screen name="viewers" options={{ href: null }} />

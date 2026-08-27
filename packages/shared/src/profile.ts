@@ -116,3 +116,11 @@ export const AVATAR_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as
 export const avatarContentTypeSchema = z.enum(AVATAR_CONTENT_TYPES)
 
 export const avatarConfirmSchema = z.object({ avatarUrl: z.url() })
+
+/** `POST /me/photos` — confirm an upload and add it to the gallery. */
+export const photoAddSchema = z.object({ url: z.url() })
+export type PhotoAddInput = z.infer<typeof photoAddSchema>
+
+/** `DELETE /me/photos` — remove one by its URL, which is what the client already holds. */
+export const photoRemoveSchema = z.object({ url: z.url() })
+export type PhotoRemoveInput = z.infer<typeof photoRemoveSchema>

@@ -142,10 +142,15 @@ export default function MeScreen() {
       })}
 
       <Button
+        label="Edit profile"
+        onPress={() => router.push('/(app)/edit-profile')}
+        style={styles.settings}
+      />
+      <Button
         label="Settings"
         variant="secondary"
         onPress={() => router.push('/(app)/settings')}
-        style={styles.settings}
+        style={styles.settingsSecondary}
       />
     </Screen>
   )
@@ -200,5 +205,6 @@ const styles = StyleSheet.create({
   },
   storeName: { ...font.body, color: colors.text, fontWeight: '600' },
   storeMeta: { ...font.caption, color: colors.textMuted },
-  settings: { marginBottom: spacing.xxl, marginTop: spacing.xl },
+  settings: { marginTop: spacing.xl },
+  settingsSecondary: { marginBottom: spacing.xxl, marginTop: spacing.sm },
 })

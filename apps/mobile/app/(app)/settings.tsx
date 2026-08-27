@@ -125,6 +125,13 @@ export default function SettingsScreen() {
         }
       />
 
+      <Button
+        label="Blocked people"
+        variant="secondary"
+        onPress={() => router.push('/(app)/blocked')}
+        style={styles.button}
+      />
+
       <Text style={styles.section}>Your data</Text>
       <Button
         label="Download my data"
