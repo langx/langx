@@ -50,7 +50,7 @@ describe('sign-in, and the bridge to v1 behind it', () => {
       birthYear: 1990,
       gender: 'other',
       nativeLanguages: [{ code: 'tr' }],
-      learning: [{ code: 'en', level: 'B1', priority: 1 }],
+      learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       photos: [],
       migratedAt: new Date(),
       ...rest,

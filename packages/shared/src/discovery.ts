@@ -1,4 +1,4 @@
-import { cefrLevelSchema } from './cefr'
+import { languageLevelSchema } from './level'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
 import { genderSchema } from './profile'
@@ -66,7 +66,7 @@ export const discoveryQuerySchema = z
      */
     onlyMyGender: z.coerce.boolean().optional(),
     country: countryCodeSchema.optional(),
-    minLevel: cefrLevelSchema.optional(),
+    minLevel: languageLevelSchema.optional(),
     ageMin: z.coerce.number().int().min(18).optional(),
     ageMax: z.coerce.number().int().min(18).optional(),
   })
@@ -92,7 +92,7 @@ export const discoveryItemSchema = z.object({
   age: z.number().int(),
   nativeLanguages: z.array(z.object({ code: languageCodeSchema })),
   learning: z.array(
-    z.object({ code: languageCodeSchema, level: cefrLevelSchema, priority: z.number() }),
+    z.object({ code: languageCodeSchema, level: languageLevelSchema, priority: z.number() }),
   ),
   isOnline: z.boolean(),
   streak: z.object({ current: z.number().int() }),

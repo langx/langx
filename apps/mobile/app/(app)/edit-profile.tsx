@@ -1,13 +1,14 @@
 import {
   BIO_MAX_LENGTH,
-  CEFR_LEVELS,
+  LANGUAGE_LEVELS,
+  LEVEL_SHORT_LABELS,
   CITY_MAX_LENGTH,
   DISPLAY_NAME_MAX_LENGTH,
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
   PLAN_LIMITS,
   getLanguage,
-  type CefrLevel,
+  type LanguageLevel,
   type Gender,
 } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
@@ -92,8 +93,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [interests, setInterests] = useState<string[]>(profile?.interests ?? [])
   const [gender, setGender] = useState<Gender>(profile?.gender ?? 'undisclosed')
   const [native, setNative] = useState<string[]>(profile?.nativeLanguages.map((l) => l.code) ?? [])
-  const [learning, setLearning] = useState<{ code: string; level: CefrLevel }[]>(
-    profile?.learning.map((l) => ({ code: l.code, level: l.level as CefrLevel })) ?? [],
+  const [learning, setLearning] = useState<{ code: string; level: LanguageLevel }[]>(
+    profile?.learning.map((l) => ({ code: l.code, level: l.level as LanguageLevel })) ?? [],
   )
   const [editing, setEditing] = useState<'none' | 'native' | 'learning'>('none')
   const [error, setError] = useState<string | undefined>()
@@ -287,7 +288,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                 setLearning((current) =>
                   current.some((l) => l.code === code)
                     ? current.filter((l) => l.code !== code)
-                    : [...current, { code, level: 'A1' }],
+                    : [...current, { code, level: 'absoluteBeginner' as const }],
                 )
               }
             }}
@@ -300,10 +301,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
                     {getLanguage(entry.code)?.name ?? entry.code}
                   </Text>
                   <View style={styles.row}>
-                    {CEFR_LEVELS.map((level) => (
+                    {LANGUAGE_LEVELS.map((level) => (
                       <Chip
                         key={level}
-                        label={level}
+                        label={LEVEL_SHORT_LABELS[level]}
                         selected={entry.level === level}
                         onPress={() =>
                           setLearning((current) =>

@@ -1,4 +1,9 @@
-import { isLanguageCode, type CefrLevel, type Gender } from '@langx/shared'
+import {
+  V1_LEVEL_TO_LANGUAGE_LEVEL,
+  isLanguageCode,
+  type Gender,
+  type LanguageLevel,
+} from '@langx/shared'
 
 /**
  * Translating v1's Appwrite documents into v2's vocabulary.
@@ -13,19 +18,15 @@ import { isLanguageCode, type CefrLevel, type Gender } from '@langx/shared'
  */
 
 /**
- * v1 stored a numeric proficiency; v2 speaks CEFR. Observed live: `-1` marks a
- * mother tongue and learning languages use 0–3.
+ * v1's numeric proficiency, mapped **exactly**. `-1` marks a mother tongue;
+ * learning languages use 0–3.
  *
- * Mapped conservatively — the top of v1's scale becomes B2, not C2. An
- * inflated level produces confident bad matches, and a user who really is C1
- * fixes it in one tap; someone wrongly labelled C2 has to notice first.
+ * This used to be a lossy squeeze onto CEFR, with the top of v1's scale
+ * deliberately landing on `B2` rather than `C2` — an inflated level produces
+ * confident bad matches. v2 now uses v1's own four tiers, so every value has a
+ * counterpart instead of an approximation and that compromise is retired.
  */
-export const LEVEL_TO_CEFR: Record<number, CefrLevel> = {
-  0: 'A1',
-  1: 'A2',
-  2: 'B1',
-  3: 'B2',
-}
+export const LEVEL_TO_CEFR = V1_LEVEL_TO_LANGUAGE_LEVEL
 
 const GENDERS = new Set<Gender>(['female', 'male', 'other', 'undisclosed'])
 
@@ -37,7 +38,7 @@ export interface V1Language {
 
 export interface MappedLanguages {
   nativeLanguages: { code: string }[]
-  learning: { code: string; level: CefrLevel; priority: number }[]
+  learning: { code: string; level: LanguageLevel; priority: number }[]
 }
 
 /** The live data is mostly lowercase but not entirely — one "Male" per 500. */
@@ -55,7 +56,7 @@ export function toBirthYear(value: unknown, now: Date = new Date()): number | un
 
 export function mapLanguages(value: unknown): MappedLanguages {
   const nativeLanguages: { code: string }[] = []
-  const learning: { code: string; level: CefrLevel; priority: number }[] = []
+  const learning: { code: string; level: LanguageLevel; priority: number }[] = []
   if (!Array.isArray(value)) return { nativeLanguages, learning }
 
   const seenNative = new Set<string>()
@@ -76,7 +77,7 @@ export function mapLanguages(value: unknown): MappedLanguages {
     }
     if (seenLearning.has(code)) continue
     seenLearning.add(code)
-    const level = LEVEL_TO_CEFR[typeof raw.level === 'number' ? raw.level : 0] ?? 'A1'
+    const level = LEVEL_TO_CEFR[typeof raw.level === 'number' ? raw.level : 0] ?? 'absoluteBeginner'
     learning.push({ code, level, priority: learning.length + 1 })
   }
 

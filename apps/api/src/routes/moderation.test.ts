@@ -50,7 +50,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         birthYear: 1995,
         gender: 'undisclosed',
         nativeLanguages: [{ code: 'tr' }],
-        learning: [{ code: 'en', level: 'B1', priority: 1 }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
         ...overrides,
       },
     })
@@ -121,11 +121,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       // Mutual language fit, so they would otherwise see each other.
       const me = await newUser({
         nativeLanguages: [{ code: 'tr' }],
-        learning: [{ code: 'en', level: 'B1', priority: 1 }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       })
       const them = await newUser({
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'tr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
 
       await startConversation(me, them.userId, 'before the block')
@@ -170,11 +170,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
     it('hides the blocker from the blocked user too, without telling them', async () => {
       const blocker = await newUser({
         nativeLanguages: [{ code: 'de' }],
-        learning: [{ code: 'fr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fr', level: 'intermediate', priority: 1 }],
       })
       const blocked = await newUser({
         nativeLanguages: [{ code: 'fr' }],
-        learning: [{ code: 'de', level: 'B1', priority: 1 }],
+        learning: [{ code: 'de', level: 'intermediate', priority: 1 }],
       })
 
       await post(blocker, '/blocks', { userId: blocked.userId })
@@ -248,11 +248,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
     it('stops a frozen user earning while still delivering their messages', async () => {
       const frozen = await newUser({
         nativeLanguages: [{ code: 'es' }],
-        learning: [{ code: 'it', level: 'B1', priority: 1 }],
+        learning: [{ code: 'it', level: 'intermediate', priority: 1 }],
       })
       const other = await newUser({
         nativeLanguages: [{ code: 'it' }],
-        learning: [{ code: 'es', level: 'B1', priority: 1 }],
+        learning: [{ code: 'es', level: 'intermediate', priority: 1 }],
       })
       await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
@@ -360,11 +360,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
     it('hides the account immediately and kills every session', async () => {
       const leaving = await newUser({
         nativeLanguages: [{ code: 'pt' }],
-        learning: [{ code: 'nl', level: 'B1', priority: 1 }],
+        learning: [{ code: 'nl', level: 'intermediate', priority: 1 }],
       })
       const observer = await newUser({
         nativeLanguages: [{ code: 'nl' }],
-        learning: [{ code: 'pt', level: 'B1', priority: 1 }],
+        learning: [{ code: 'pt', level: 'intermediate', priority: 1 }],
       })
       expect((await get(observer, `/profiles/${leaving.userId}`)).statusCode).toBe(200)
 

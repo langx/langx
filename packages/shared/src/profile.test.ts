@@ -28,7 +28,7 @@ function baseOnboarding() {
     birthYear: 1995,
     gender: 'undisclosed' as const,
     nativeLanguages: [{ code: 'tr' }],
-    learning: [{ code: 'en', level: 'B1' as const, priority: 1 }],
+    learning: [{ code: 'en', level: 'intermediate' as const, priority: 1 }],
   }
 }
 
@@ -50,7 +50,7 @@ describe('onboardingProfileSchema', () => {
     const result = onboardingProfileSchema.safeParse({
       ...baseOnboarding(),
       nativeLanguages: [{ code: 'en' }],
-      learning: [{ code: 'en', level: 'B1', priority: 1 }],
+      learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
     })
     expect(result.success).toBe(false)
   })
@@ -82,15 +82,16 @@ describe('updateProfileSchema', () => {
     expect(
       updateProfileSchema.safeParse({
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'en', level: 'B1', priority: 1 }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       }).success,
     ).toBe(false)
 
     // Updating just `learning` can't be checked without the stored profile —
     // that cross-check is the repository's job, not the schema's.
     expect(
-      updateProfileSchema.safeParse({ learning: [{ code: 'en', level: 'B1', priority: 1 }] })
-        .success,
+      updateProfileSchema.safeParse({
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
+      }).success,
     ).toBe(true)
   })
 

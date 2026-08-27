@@ -1,11 +1,11 @@
 import {
-  CEFR_LEVELS,
-  cefrRank,
+  LANGUAGE_LEVELS,
+  levelRank,
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
   hasFeature,
   ONLINE_WINDOW_MS,
-  type CefrLevel,
+  type LanguageLevel,
   type DiscoveryItem,
   type DiscoveryPage,
   type DiscoveryQuery,
@@ -47,9 +47,9 @@ function decodeOffsetCursor(cursor: string): number {
   return offset
 }
 
-/** Levels at or above `minLevel`, e.g. B1 → ['B1','B2','C1','C2']. */
-function levelsAtOrAbove(minLevel: CefrLevel): CefrLevel[] {
-  return CEFR_LEVELS.slice(cefrRank(minLevel) - 1)
+/** Levels at or above `minLevel`, e.g. intermediate → ['intermediate','fluent']. */
+function levelsAtOrAbove(minLevel: LanguageLevel): LanguageLevel[] {
+  return LANGUAGE_LEVELS.slice(levelRank(minLevel) - 1)
 }
 
 export async function discoverProfiles(
@@ -108,7 +108,7 @@ export async function discoverProfiles(
   if (query.minLevel) {
     // How well *they* speak *my* native language — the language they're
     // learning from me, not the one I'm learning from them (native speakers
-    // have no CEFR level to filter on).
+    // have no level to filter on).
     match.learning = {
       $elemMatch: { code: { $in: myNativeCodes }, level: { $in: levelsAtOrAbove(query.minLevel) } },
     }

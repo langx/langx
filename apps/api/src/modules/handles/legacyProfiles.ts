@@ -1,4 +1,4 @@
-import type { CefrLevel, Gender } from '@langx/shared'
+import type { LanguageLevel, Gender } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -23,7 +23,7 @@ export interface LegacyProfile {
   country?: string
   countryCode?: string
   nativeLanguages: { code: string }[]
-  learning: { code: string; level: CefrLevel; priority: number }[]
+  learning: { code: string; level: LanguageLevel; priority: number }[]
   /** Migrated to our own bucket by the ETL; absent when media was skipped. */
   avatarUrl?: string
   photos: { url: string }[]

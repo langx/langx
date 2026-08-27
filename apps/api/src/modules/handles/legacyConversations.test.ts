@@ -55,7 +55,7 @@ describe('importing a v1 conversation', () => {
       handle: legacyId,
       legacyEmailHash: `hash-${legacyId}`,
       nativeLanguages: [{ code: 'tr' }],
-      learning: [{ code: 'en', level: 'B1', priority: 1 }],
+      learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       photos: [],
       migratedAt: new Date(),
     }

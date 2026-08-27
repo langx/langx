@@ -1,4 +1,4 @@
-import type { CefrLevel, Gender } from '@langx/shared'
+import type { LanguageLevel, Gender } from '@langx/shared'
 
 /**
  * Discovery filters, and the translation between the filter screen, the URL
@@ -20,7 +20,7 @@ export interface DiscoveryFilters {
   gender?: Gender
   onlyMyGender?: boolean
   country?: string
-  minLevel?: CefrLevel
+  minLevel?: LanguageLevel
   ageMin?: number
   ageMax?: number
 }
@@ -55,7 +55,7 @@ export function parseFilters(
   const country = one(params.country)
   if (country) filters.country = country
   const minLevel = one(params.minLevel)
-  if (minLevel) filters.minLevel = minLevel as CefrLevel
+  if (minLevel) filters.minLevel = minLevel as LanguageLevel
 
   const ageMin = Number(one(params.ageMin))
   if (Number.isInteger(ageMin) && ageMin > 0) filters.ageMin = ageMin

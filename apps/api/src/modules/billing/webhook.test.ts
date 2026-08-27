@@ -14,7 +14,7 @@ function minimalProfile(id: string): Profile {
     birthYear: 1995,
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
-    learning: [{ code: 'en', level: 'B1', priority: 1 }],
+    learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
     interests: [],
     settings: { discoverable: true, notifications: true },
     privacy: { incognito: false },

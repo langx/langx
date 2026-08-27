@@ -86,8 +86,15 @@ be tested end to end until they are:
 4. All three are idempotent and can be re-run. The profile ETL skips anything a
    v2 user has already restored; the message ETL skips attachments it has
    already copied and rooms already imported into a live conversation.
-5. Verify a returning user's handle claim end to end before opening the gates.
-6. Verify chat history too: restore two accounts that talked to each other in
+5. Run the level conversion: `tsx scripts/migrate-levels.ts --apply`
+   (dry run first). Rewrites `learning[].level` from CEFR to the four-tier
+   scale in both `profiles` and `legacyProfiles`. Skip it and every profile
+   written before the switch fails validation the first time its owner edits
+   it, while the discovery `minLevel` filter matches none of them — silently,
+   in both cases. **Order matters:** run it _after_ the profile ETL, or the ETL
+   writes fresh CEFR values behind it.
+6. Verify a returning user's handle claim end to end before opening the gates.
+7. Verify chat history too: restore two accounts that talked to each other in
    v1 and confirm the thread arrives with its photos and voice notes. A
    conversation is only imported once **both** sides are back, so testing with
    one account proves nothing.

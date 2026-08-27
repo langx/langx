@@ -1,4 +1,4 @@
-import { CEFR_LABELS, CEFR_LEVELS, getLanguage, type CefrLevel } from '@langx/shared'
+import { LEVEL_SHORT_LABELS, LANGUAGE_LEVELS, getLanguage, type LanguageLevel } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
@@ -30,11 +30,11 @@ export default function LanguagesStep() {
   function toggleLearning(code: string): void {
     const next = learningCodes.includes(code)
       ? draft.learning.filter((l) => l.code !== code)
-      : [...draft.learning, { code, level: 'A1' as CefrLevel }]
+      : [...draft.learning, { code, level: 'absoluteBeginner' as LanguageLevel }]
     updateDraft({ learning: next })
   }
 
-  function setLevel(code: string, level: CefrLevel): void {
+  function setLevel(code: string, level: LanguageLevel): void {
     updateDraft({ learning: draft.learning.map((l) => (l.code === code ? { ...l, level } : l)) })
   }
 
@@ -91,7 +91,7 @@ export default function LanguagesStep() {
                     {getLanguage(entry.code)?.name ?? entry.code}
                   </Text>
                   <View style={styles.levelChips}>
-                    {CEFR_LEVELS.map((level) => (
+                    {LANGUAGE_LEVELS.map((level) => (
                       <Pressable
                         key={level}
                         onPress={() => setLevel(entry.code, level)}
@@ -108,7 +108,7 @@ export default function LanguagesStep() {
                       </Pressable>
                     ))}
                   </View>
-                  <Text style={styles.levelHint}>{CEFR_LABELS[entry.level]}</Text>
+                  <Text style={styles.levelHint}>{LEVEL_SHORT_LABELS[entry.level]}</Text>
                 </View>
               ))}
             </ScrollView>

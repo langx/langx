@@ -1,6 +1,6 @@
 import { countryCodeSchema } from './countries'
 import { birthYearSchema } from './age'
-import { cefrLevelSchema } from './cefr'
+import { languageLevelSchema } from './level'
 import { handleSchema } from './handle'
 import { languageCodeSchema } from './languages'
 import { z } from 'zod'
@@ -13,7 +13,7 @@ const nativeLanguageSchema = z.object({ code: languageCodeSchema })
 
 const learningLanguageSchema = z.object({
   code: languageCodeSchema,
-  level: cefrLevelSchema,
+  level: languageLevelSchema,
   /** Lower is more important; onboarding's first pick is priority 1. */
   priority: z.number().int().min(1),
 })

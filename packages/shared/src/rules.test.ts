@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { MINIMUM_AGE, birthYearSchema, meetsMinimumAge } from './age'
-import { CEFR_LEVELS, cefrRank } from './cefr'
+import { LANGUAGE_LEVELS, levelRank } from './level'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
 import { PLAN_LIMITS, PRO_FEATURES, effectivePlanTier, hasFeature, quotaLimit } from './limits'
 import {
@@ -132,7 +132,7 @@ describe('xp rules', () => {
   })
 })
 
-describe('language + cefr tables', () => {
+describe('language + level tables', () => {
   it('exposes ISO 639-1 codes with unique entries', () => {
     const codes = LANGUAGES.map((l) => l.code)
     expect(new Set(codes).size).toBe(codes.length)
@@ -147,8 +147,8 @@ describe('language + cefr tables', () => {
     expect(languageCodeSchema.safeParse('zz').success).toBe(false)
   })
 
-  it('ranks CEFR levels in order', () => {
-    expect(CEFR_LEVELS.map(cefrRank)).toEqual([1, 2, 3, 4, 5, 6])
+  it('ranks levels in order', () => {
+    expect(LANGUAGE_LEVELS.map(levelRank)).toEqual([1, 2, 3, 4])
   })
 })
 

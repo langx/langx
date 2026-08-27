@@ -853,6 +853,29 @@ it exists to correct a real award, so it has to land where that award did. The
 ledger row still carries every period key, so a recompute can always see where
 an award actually fell.
 
+## Language levels are v1's four, not CEFR's six
+
+`A1…C2` was replaced by Absolute beginner / Beginner / Intermediate / Fluent.
+
+The reason is the migration rather than taste. v1 stored a number, 0–3, and
+`LEVEL_TO_CEFR` squeezed it onto six bands — sending v1's top to `B2` on
+purpose, with a comment admitting the compromise: an inflated level produces
+confident bad matches. `C1` and `C2` were bands no migrated user could ever
+occupy. Four tiers make the mapping exact, and that compromise is retired.
+
+It is also a scale people can answer honestly. CEFR is a formal qualification
+most speakers have never been assessed against, so on a self-declared field it
+invites guessing; "beginner" and "fluent" do not.
+
+The cost is a one-off conversion of stored data, `scripts/migrate-levels.ts`,
+and it must run **after** the profile ETL or the ETL writes fresh CEFR values
+behind it. The conversion under-claims deliberately: six bands collapse to
+four, `C1` and `C2` both land on `fluent` because there is nothing above it,
+and nobody is promoted by a migration they did not ask for.
+
+`cefr.ts` became `level.ts` rather than keeping a name that would have lied
+about its contents.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

@@ -35,7 +35,7 @@ export interface PlanLimits {
    */
   mediaPer24h: Limit
   /**
-   * gender / country / age / CEFR filters in discovery — the exact set is
+   * gender / country / age / level filters in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
    * This used to say "distance" as well. There is no distance filter and there

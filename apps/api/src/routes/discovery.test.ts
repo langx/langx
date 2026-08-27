@@ -23,7 +23,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
     birthYear: 1995,
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
-    learning: [{ code: 'en', level: 'B1', priority: 1 }],
+    learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
     ...overrides,
   }
 }
@@ -136,17 +136,17 @@ describe('Faz 3 — discovery aggregation', () => {
       const viewer = await newUser('mutual-viewer@example.com')
       const mutual = await newUser('mutual-match@example.com', {
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'tr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
       // Speaks what I'm learning, but isn't learning what I speak.
       const oneDirectional = await newUser('one-directional@example.com', {
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'fr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fr', level: 'intermediate', priority: 1 }],
       })
       // Neither direction fits.
       const unrelated = await newUser('unrelated@example.com', {
         nativeLanguages: [{ code: 'de' }],
-        learning: [{ code: 'es', level: 'B1', priority: 1 }],
+        learning: [{ code: 'es', level: 'intermediate', priority: 1 }],
       })
 
       const response = await discover(viewer)
@@ -169,15 +169,15 @@ describe('Faz 3 — discovery aggregation', () => {
     it('excludes non-discoverable and soft-deleted profiles', async () => {
       const viewer = await newUser('exclusion-viewer@example.com', {
         nativeLanguages: [{ code: 'fr' }],
-        learning: [{ code: 'it', level: 'B1', priority: 1 }],
+        learning: [{ code: 'it', level: 'intermediate', priority: 1 }],
       })
       const hidden = await newUser('hidden-profile@example.com', {
         nativeLanguages: [{ code: 'it' }],
-        learning: [{ code: 'fr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fr', level: 'intermediate', priority: 1 }],
       })
       const deleted = await newUser('deleted-profile@example.com', {
         nativeLanguages: [{ code: 'it' }],
-        learning: [{ code: 'fr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fr', level: 'intermediate', priority: 1 }],
       })
       await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
@@ -195,15 +195,15 @@ describe('Faz 3 — discovery aggregation', () => {
     it('excludes a block in either direction', async () => {
       const viewer = await newUser('blocker-viewer@example.com', {
         nativeLanguages: [{ code: 'pt' }],
-        learning: [{ code: 'nl', level: 'B1', priority: 1 }],
+        learning: [{ code: 'nl', level: 'intermediate', priority: 1 }],
       })
       const iBlock = await newUser('i-block-them@example.com', {
         nativeLanguages: [{ code: 'nl' }],
-        learning: [{ code: 'pt', level: 'B1', priority: 1 }],
+        learning: [{ code: 'pt', level: 'intermediate', priority: 1 }],
       })
       const blocksMe = await newUser('they-block-me@example.com', {
         nativeLanguages: [{ code: 'nl' }],
-        learning: [{ code: 'pt', level: 'B1', priority: 1 }],
+        learning: [{ code: 'pt', level: 'intermediate', priority: 1 }],
       })
       await handle.db
         .collection(COLLECTIONS.blocks)
@@ -223,15 +223,15 @@ describe('Faz 3 — discovery aggregation', () => {
     it('online filter keeps only recently-active profiles', async () => {
       const viewer = await newUser('online-viewer@example.com', {
         nativeLanguages: [{ code: 'sv' }],
-        learning: [{ code: 'da', level: 'B1', priority: 1 }],
+        learning: [{ code: 'da', level: 'intermediate', priority: 1 }],
       })
       const recentlyActive = await newUser('recently-active@example.com', {
         nativeLanguages: [{ code: 'da' }],
-        learning: [{ code: 'sv', level: 'B1', priority: 1 }],
+        learning: [{ code: 'sv', level: 'intermediate', priority: 1 }],
       })
       const staleActive = await newUser('stale-active@example.com', {
         nativeLanguages: [{ code: 'da' }],
-        learning: [{ code: 'sv', level: 'B1', priority: 1 }],
+        learning: [{ code: 'sv', level: 'intermediate', priority: 1 }],
       })
       await setLastActiveAt(staleActive.userId, new Date(Date.now() - 60 * 60 * 1000))
 
@@ -245,17 +245,17 @@ describe('Faz 3 — discovery aggregation', () => {
       const viewer = await newUser('target-lang-viewer@example.com', {
         nativeLanguages: [{ code: 'tr' }],
         learning: [
-          { code: 'en', level: 'B1', priority: 1 },
-          { code: 'de', level: 'A2', priority: 2 },
+          { code: 'en', level: 'intermediate', priority: 1 },
+          { code: 'de', level: 'beginner', priority: 2 },
         ],
       })
       const englishNative = await newUser('english-native@example.com', {
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'tr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
       const germanNative = await newUser('german-native@example.com', {
         nativeLanguages: [{ code: 'de' }],
-        learning: [{ code: 'tr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
 
       const onlyGerman = await discover(viewer, 'targetLanguage=de')
@@ -290,27 +290,27 @@ describe('Faz 3 — discovery aggregation', () => {
     it('lets a Pro user filter by gender, country and age range', async () => {
       const viewer = await newUser('pro-filter-viewer@example.com', {
         nativeLanguages: [{ code: 'fi' }],
-        learning: [{ code: 'et', level: 'B1', priority: 1 }],
+        learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
       })
       await makePro(viewer.userId)
 
       const wanted = await newUser('pro-match@example.com', {
         nativeLanguages: [{ code: 'et' }],
-        learning: [{ code: 'fi', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
         gender: 'female',
         country: 'US',
         birthYear: 1990,
       })
       const wrongGender = await newUser('pro-wrong-gender@example.com', {
         nativeLanguages: [{ code: 'et' }],
-        learning: [{ code: 'fi', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
         gender: 'male',
         country: 'US',
         birthYear: 1990,
       })
       const wrongAge = await newUser('pro-wrong-age@example.com', {
         nativeLanguages: [{ code: 'et' }],
-        learning: [{ code: 'fi', level: 'B1', priority: 1 }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
         gender: 'female',
         country: 'US',
         birthYear: 2005,
@@ -331,19 +331,19 @@ describe('Faz 3 — discovery aggregation', () => {
     it('onlyMyGender narrows to the viewer own gender', async () => {
       const viewer = await newUser('same-gender-viewer@example.com', {
         nativeLanguages: [{ code: 'sl' }],
-        learning: [{ code: 'sk', level: 'B1', priority: 1 }],
+        learning: [{ code: 'sk', level: 'intermediate', priority: 1 }],
         gender: 'female',
       })
       await makePro(viewer.userId)
 
       const sameGender = await newUser('same-gender-match@example.com', {
         nativeLanguages: [{ code: 'sk' }],
-        learning: [{ code: 'sl', level: 'B1', priority: 1 }],
+        learning: [{ code: 'sl', level: 'intermediate', priority: 1 }],
         gender: 'female',
       })
       const otherGender = await newUser('other-gender-match@example.com', {
         nativeLanguages: [{ code: 'sk' }],
-        learning: [{ code: 'sl', level: 'B1', priority: 1 }],
+        learning: [{ code: 'sl', level: 'intermediate', priority: 1 }],
         gender: 'male',
       })
 
@@ -361,19 +361,19 @@ describe('Faz 3 — discovery aggregation', () => {
     it('onlyMyGender does nothing when the viewer has not disclosed a gender', async () => {
       const viewer = await newUser('undisclosed-viewer@example.com', {
         nativeLanguages: [{ code: 'hr' }],
-        learning: [{ code: 'mk', level: 'B1', priority: 1 }],
+        learning: [{ code: 'mk', level: 'intermediate', priority: 1 }],
         gender: 'undisclosed',
       })
       await makePro(viewer.userId)
 
       const female = await newUser('undisclosed-peer-f@example.com', {
         nativeLanguages: [{ code: 'mk' }],
-        learning: [{ code: 'hr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'hr', level: 'intermediate', priority: 1 }],
         gender: 'female',
       })
       const male = await newUser('undisclosed-peer-m@example.com', {
         nativeLanguages: [{ code: 'mk' }],
-        learning: [{ code: 'hr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'hr', level: 'intermediate', priority: 1 }],
         gender: 'male',
       })
 
@@ -408,20 +408,20 @@ describe('Faz 3 — discovery aggregation', () => {
     it('minLevel filters on how well the candidate speaks the viewer own native language', async () => {
       const viewer = await newUser('minlevel-viewer@example.com', {
         nativeLanguages: [{ code: 'lv' }],
-        learning: [{ code: 'lt', level: 'B1', priority: 1 }],
+        learning: [{ code: 'lt', level: 'intermediate', priority: 1 }],
       })
       await makePro(viewer.userId)
 
       const fluent = await newUser('fluent-in-my-language@example.com', {
         nativeLanguages: [{ code: 'lt' }],
-        learning: [{ code: 'lv', level: 'C1', priority: 1 }],
+        learning: [{ code: 'lv', level: 'fluent', priority: 1 }],
       })
       const beginner = await newUser('beginner-in-my-language@example.com', {
         nativeLanguages: [{ code: 'lt' }],
-        learning: [{ code: 'lv', level: 'A1', priority: 1 }],
+        learning: [{ code: 'lv', level: 'absoluteBeginner', priority: 1 }],
       })
 
-      const response = await discover(viewer, 'minLevel=B2')
+      const response = await discover(viewer, 'minLevel=intermediate')
       const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(handles).toContain(fluent.handle)
       expect(handles).not.toContain(beginner.handle)
@@ -432,13 +432,13 @@ describe('Faz 3 — discovery aggregation', () => {
     it('sort=active pages through by lastActiveAt with no duplicates or gaps', async () => {
       const viewer = await newUser('active-sort-viewer@example.com', {
         nativeLanguages: [{ code: 'ro' }],
-        learning: [{ code: 'bg', level: 'B1', priority: 1 }],
+        learning: [{ code: 'bg', level: 'intermediate', priority: 1 }],
       })
       const candidates = []
       for (let i = 0; i < 5; i++) {
         const c = await newUser(`active-sort-${i}@example.com`, {
           nativeLanguages: [{ code: 'bg' }],
-          learning: [{ code: 'ro', level: 'B1', priority: 1 }],
+          learning: [{ code: 'ro', level: 'intermediate', priority: 1 }],
         })
         await setLastActiveAt(c.userId, new Date(Date.now() - i * 1000))
         candidates.push(c)
@@ -463,17 +463,17 @@ describe('Faz 3 — discovery aggregation', () => {
     it('sort=recommended favours a shared-interest candidate over one with no overlap', async () => {
       const viewer = await newUser('recommend-viewer@example.com', {
         nativeLanguages: [{ code: 'el' }],
-        learning: [{ code: 'hu', level: 'B1', priority: 1 }],
+        learning: [{ code: 'hu', level: 'intermediate', priority: 1 }],
         interests: ['music', 'tech'],
       })
       const noOverlap = await newUser('no-shared-interest@example.com', {
         nativeLanguages: [{ code: 'hu' }],
-        learning: [{ code: 'el', level: 'B1', priority: 1 }],
+        learning: [{ code: 'el', level: 'intermediate', priority: 1 }],
         interests: ['cooking'],
       })
       const sharedInterest = await newUser('shared-interest@example.com', {
         nativeLanguages: [{ code: 'hu' }],
-        learning: [{ code: 'el', level: 'B1', priority: 1 }],
+        learning: [{ code: 'el', level: 'intermediate', priority: 1 }],
         interests: ['music'],
       })
 
@@ -488,7 +488,7 @@ describe('Faz 3 — discovery aggregation', () => {
       const viewer = await newUser('explain-viewer@example.com')
       await newUser('explain-candidate@example.com', {
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'tr', level: 'B1', priority: 1 }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
       })
 
       // Mirrors the mutual-fit $match discoverProfiles builds — see its

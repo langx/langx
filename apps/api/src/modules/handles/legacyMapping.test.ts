@@ -13,8 +13,8 @@ describe('Faz 11 — v1 → v2 field mapping', () => {
 
       expect(result.nativeLanguages).toEqual([{ code: 'hi' }])
       expect(result.learning).toEqual([
-        { code: 'en', level: 'B2', priority: 1 },
-        { code: 'es', level: 'A2', priority: 2 },
+        { code: 'en', level: 'fluent', priority: 1 },
+        { code: 'es', level: 'beginner', priority: 2 },
       ])
     })
 
@@ -32,7 +32,7 @@ describe('Faz 11 — v1 → v2 field mapping', () => {
         { code: 'fr', level: 2, motherLanguage: false },
       ])
       expect(result.nativeLanguages).toEqual([{ code: 'de' }])
-      expect(result.learning).toEqual([{ code: 'fr', level: 'B1', priority: 1 }])
+      expect(result.learning).toEqual([{ code: 'fr', level: 'intermediate', priority: 1 }])
     })
 
     it('keeps priorities contiguous after dropping an overlap', () => {
@@ -50,7 +50,7 @@ describe('Faz 11 — v1 → v2 field mapping', () => {
         { code: 'klingon', level: 2 },
         { code: 'en', level: 2 },
       ])
-      expect(result.learning).toEqual([{ code: 'en', level: 'B1', priority: 1 }])
+      expect(result.learning).toEqual([{ code: 'en', level: 'intermediate', priority: 1 }])
     })
 
     it('de-duplicates repeated entries', () => {
@@ -64,12 +64,21 @@ describe('Faz 11 — v1 → v2 field mapping', () => {
       expect(result.nativeLanguages).toHaveLength(1)
     })
 
-    it('never maps to C1 or C2', () => {
-      // Deliberate: an inflated level produces confident bad matches.
-      for (const level of [0, 1, 2, 3, 99]) {
-        const result = mapLanguages([{ code: 'en', level }])
-        expect(['A1', 'A2', 'B1', 'B2']).toContain(result.learning[0]?.level)
+    /**
+     * The whole reason v2 dropped CEFR. Squeezing v1's four values onto six
+     * bands was lossy in both directions — the old mapping sent v1's top to
+     * `B2` on purpose, and `C1`/`C2` were bands no migrated user could reach.
+     * Now every v1 value has a counterpart rather than an approximation.
+     */
+    it('maps every v1 level to its exact counterpart, losing nothing', () => {
+      const expected = ['absoluteBeginner', 'beginner', 'intermediate', 'fluent'] as const
+      for (const [raw, level] of expected.entries()) {
+        expect(mapLanguages([{ code: 'en', level: raw }]).learning[0]?.level).toBe(level)
       }
+    })
+
+    it('falls back to the lowest level for a value v1 never used', () => {
+      expect(mapLanguages([{ code: 'en', level: 99 }]).learning[0]?.level).toBe('absoluteBeginner')
     })
 
     it('survives a missing or malformed languages field', () => {

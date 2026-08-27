@@ -1,10 +1,10 @@
 import { useSyncExternalStore } from 'react'
-import type { CefrLevel, Gender } from '@langx/shared'
+import type { LanguageLevel, Gender } from '@langx/shared'
 import { FLAG_KEYS, clearFlag, readJsonFlag, writeJsonFlag } from '../lib/localFlags'
 
 export interface OnboardingDraft {
   nativeLanguages: string[]
-  learning: { code: string; level: CefrLevel }[]
+  learning: { code: string; level: LanguageLevel }[]
   handle: string
   displayName: string
   birthYear: string

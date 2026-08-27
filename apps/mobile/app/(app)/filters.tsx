@@ -1,4 +1,11 @@
-import { CEFR_LEVELS, GENDERS, getLanguage, type CefrLevel, type Gender } from '@langx/shared'
+import {
+  LANGUAGE_LEVELS,
+  LEVEL_SHORT_LABELS,
+  GENDERS,
+  getLanguage,
+  type LanguageLevel,
+  type Gender,
+} from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
@@ -203,10 +210,10 @@ export default function FiltersScreen() {
             selected={!filters.minLevel}
             onPress={() => set({ minLevel: undefined }, true)}
           />
-          {CEFR_LEVELS.map((level: CefrLevel) => (
+          {LANGUAGE_LEVELS.map((level: LanguageLevel) => (
             <Chip
               key={level}
-              label={`${level}+`}
+              label={`${LEVEL_SHORT_LABELS[level]}+`}
               selected={filters.minLevel === level}
               onPress={() =>
                 set({ minLevel: filters.minLevel === level ? undefined : level }, true)

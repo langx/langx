@@ -16,7 +16,10 @@ const EMPTY: OnboardingDraft = {
 }
 
 const draft = (patch: Partial<OnboardingDraft>): OnboardingDraft => ({ ...EMPTY, ...patch })
-const withLanguages = { nativeLanguages: ['tr'], learning: [{ code: 'en', level: 'B1' as const }] }
+const withLanguages = {
+  nativeLanguages: ['tr'],
+  learning: [{ code: 'en', level: 'intermediate' as const }],
+}
 
 describe('furthestOnboardingStep', () => {
   it('starts at the beginning for an empty draft', () => {
@@ -25,9 +28,9 @@ describe('furthestOnboardingStep', () => {
 
   it('stays on languages until both directions are set', () => {
     expect(furthestOnboardingStep(draft({ nativeLanguages: ['tr'] }))).toBe('languages')
-    expect(furthestOnboardingStep(draft({ learning: [{ code: 'en', level: 'B1' }] }))).toBe(
-      'languages',
-    )
+    expect(
+      furthestOnboardingStep(draft({ learning: [{ code: 'en', level: 'intermediate' }] })),
+    ).toBe('languages')
   })
 
   it('moves on once a language pair exists', () => {

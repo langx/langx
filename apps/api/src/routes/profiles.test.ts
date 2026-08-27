@@ -24,7 +24,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
     birthYear: 1995,
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
-    learning: [{ code: 'en', level: 'B1', priority: 1 }],
+    learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
     ...overrides,
   }
 }
@@ -315,7 +315,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       headers: { cookie: user.cookie },
       payload: {
         nativeLanguages: [{ code: 'en' }],
-        learning: [{ code: 'en', level: 'B1', priority: 1 }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       },
     })
     expect(response.statusCode).toBe(400)

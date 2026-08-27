@@ -57,7 +57,7 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
         birthYear: 1995,
         gender: 'undisclosed',
         nativeLanguages: [{ code: 'tr' }],
-        learning: [{ code: 'en', level: 'B1', priority: 1 }],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
         ...overrides,
       },
     })
