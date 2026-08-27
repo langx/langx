@@ -9,6 +9,7 @@
   "types": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
+    "./appIdentity": "./src/appIdentity.ts",
     "./appScheme": "./src/appScheme.ts"
   },
   "scripts": {

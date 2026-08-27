@@ -46,10 +46,55 @@ leftovers. They are not.
 | App Store Connect app id | `6474187141` (wired into `eas.json` submit)                                                                                                        |
 | Apple Team ID            | `8F63M4JH8P`                                                                                                                                       |
 | `scheme`                 | **Both** schemes. v1 registered `tech.newchapter.languagexchange` (lowercase x). Ship only `langx` and every deep link already in the wild breaks. |
-| App links                | `https://app.langx.io`, `autoVerify` — carried from v1's AndroidManifest                                                                           |
+| App links                | `https://app.langx.io`, `autoVerify` — carried from v1's AndroidManifest. Declaring them is half the job; see the next section                     |
 
 `versionCode` and `buildNumber` must both start **above 119**, the published
 v1 version. They are currently 120.
+
+## Deep links only work once the domain answers
+
+`app.langx.io` is claimed in two places — `associatedDomains` on iOS,
+`autoVerify` intent filter on Android — and **both platforms verify the claim
+by fetching a file from the domain**. Until that fetch succeeds, every
+`https://app.langx.io/...` link opens the browser. Nothing errors, nothing logs.
+
+The files are checked in at `apps/mobile/public/.well-known/`, which Expo
+copies verbatim to the root of the web export, so hosting the web build hosts
+them. Three things about how they are served are not optional:
+
+- **HTTPS, no redirect.** Both platforms follow zero redirects. A host that
+  bounces `app.langx.io` to `www.` or appends a trailing slash fails
+  verification while looking fine in a browser.
+- **`apple-app-site-association` has no extension and must come back as
+  `application/json`.** A static host that guesses `application/octet-stream`
+  is the usual cause of "it works on Android but not iOS".
+- **No authentication, no geo-blocking.** Apple fetches through its own CDN,
+  Google from its own servers; neither carries a user's session.
+
+Verify after deploying, before submitting:
+
+```bash
+curl -sI https://app.langx.io/.well-known/apple-app-site-association   # 200, application/json, no 30x
+curl -s  https://app.langx.io/.well-known/assetlinks.json | jq .
+```
+
+Apple's CDN caches the AASA for up to 24 hours, so fix it _before_ the build
+goes out for review, not after.
+
+### The Android fingerprint is the one thing missing
+
+- [ ] `ANDROID_CERT_SHA256` in `packages/shared/src/appIdentity.ts` filled in,
+      and `assetlinks.json` updated to match (a test enforces that they agree)
+
+It is empty today, which means the Android half is inert. The value comes from
+**Play Console → Test and release → App integrity → App signing key
+certificate**, as colon-separated uppercase hex — and it must be the _app
+signing_ key, not the upload key, because Google re-signs the bundle and the
+device only ever sees Google's signature. Add the upload key's fingerprint too
+if anyone side-loads internal builds; the list takes several.
+
+Nothing here is secret. Android serves these fingerprints from every device
+that has the app installed, which is why they belong in a public repo.
 
 ## Prerequisites that are business process, not code
 

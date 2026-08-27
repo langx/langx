@@ -1,6 +1,7 @@
 export * from './account'
 export * from './age'
 export * from './appConfig'
+export * from './appIdentity'
 export * from './appScheme'
 export * from './billing'
 export * from './level'

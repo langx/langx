@@ -1,4 +1,4 @@
-import { APP_SCHEMES } from '@langx/shared'
+import { APP_SCHEMES, IOS_BUNDLE_ID } from '@langx/shared'
 import { betterAuth } from 'better-auth'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
@@ -45,7 +45,7 @@ export async function createAuth({ env, db, client, emailSender }: CreateAuthOpt
       clientSecret: appleClientSecret,
       // Lets native sign-in that returns Apple's identity token directly
       // (rather than the web redirect flow) resolve to the same account.
-      appBundleIdentifier: 'tech.newchapter.languageXchange',
+      appBundleIdentifier: IOS_BUNDLE_ID,
     }
   }
 

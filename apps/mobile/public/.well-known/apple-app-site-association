@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["8F63M4JH8P.tech.newchapter.languageXchange"],
+        "components": [
+          {
+            "/": "/.well-known/*",
+            "exclude": true,
+            "comment": "These two files are for Apple and Google, not for a person; opening the app to render them would be nonsense."
+          },
+          {
+            "/": "/*",
+            "comment": "Every route the web build answers on is a route the app has, so any link into the site can open the app instead."
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["8F63M4JH8P.tech.newchapter.languageXchange"]
+  }
+}

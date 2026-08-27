@@ -1,10 +1,11 @@
-// Imported from the dedicated subpath, not the package root: app.config.ts is
+// Imported from dedicated subpaths, not the package root: app.config.ts is
 // evaluated by Expo's config loader under plain Node ESM resolution (not
 // Metro's bundler resolution), which requires explicit file extensions on
 // relative imports. `@langx/shared`'s barrel file re-exports several modules
 // without them (fine for Metro/tsc's Bundler resolution, not for Node's
-// native loader) — `appScheme.ts` has no imports of its own, so it's the one
-// module in the package this loader can actually resolve.
+// native loader). These two modules have no imports of their own, which is
+// why they are the ones this loader can resolve — keep it that way.
+import { ANDROID_PACKAGE, APP_LINK_HOST, IOS_BUNDLE_ID } from '@langx/shared/appIdentity'
 import { APP_SCHEMES } from '@langx/shared/appScheme'
 import type { ExpoConfig } from 'expo/config'
 
@@ -21,10 +22,12 @@ import type { ExpoConfig } from 'expo/config'
  *     x); the abandoned Expo rewrite declared only `langx`. Ship only `langx`
  *     and every deep link already in the wild breaks.
  *  3. `app.langx.io` app links are carried over from v1's AndroidManifest.
+ *     Declaring them is only half of it — both platforms verify the claim
+ *     against a file on the domain, so these entries do nothing until
+ *     `apps/mobile/public/.well-known/` is actually served from that host.
  *
  * versionCode/buildNumber must stay above the published 119.
  */
-const APP_LINK_HOST = 'app.langx.io'
 // Existing EAS project, carried over from the abandoned rewrite.
 const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
 
@@ -37,14 +40,18 @@ const config: ExpoConfig = {
   scheme: [...APP_SCHEMES],
 
   ios: {
-    bundleIdentifier: 'tech.newchapter.languageXchange',
+    bundleIdentifier: IOS_BUNDLE_ID,
     buildNumber: '120',
     supportsTablet: true,
-    associatedDomains: [`applinks:${APP_LINK_HOST}`],
+    // `webcredentials` is not about links: it is what lets iCloud Keychain
+    // treat a password saved on app.langx.io and one saved in the app as the
+    // same credential, so signing in on the phone offers the password the
+    // person already has. Both halves are declared in the AASA file.
+    associatedDomains: [`applinks:${APP_LINK_HOST}`, `webcredentials:${APP_LINK_HOST}`],
   },
 
   android: {
-    package: 'tech.newchapter.languageXchange',
+    package: ANDROID_PACKAGE,
     versionCode: 120,
     intentFilters: [
       {
