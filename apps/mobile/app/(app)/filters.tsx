@@ -1,17 +1,9 @@
-import {
-  CEFR_LEVELS,
-  countryFlag,
-  GENDERS,
-  getCountry,
-  getLanguage,
-  searchCountries,
-  type CefrLevel,
-  type Gender,
-} from '@langx/shared'
+import { CEFR_LEVELS, GENDERS, getLanguage, type CefrLevel, type Gender } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useMemo, useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native'
+import { useState } from 'react'
+import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
 import { useMe } from '../../src/api/queries'
+import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
@@ -55,13 +47,8 @@ export default function FiltersScreen() {
   const myGender = me.data?.gender
 
   const [filters, setFilters] = useState<DiscoveryFilters>(() => parseFilters(params))
-  const [countrySearch, setCountrySearch] = useState('')
 
   const learning = me.data?.learning ?? []
-
-  // Empty until someone types: the alphabetically-first eight countries are
-  // not suggestions, they are noise that looks like suggestions.
-  const countryMatches = useMemo(() => searchCountries(countrySearch), [countrySearch])
 
   /**
    * Every control in a locked section routes to the paywall instead of
@@ -94,7 +81,6 @@ export default function FiltersScreen() {
   }
 
   const count = activeCount(filters)
-  const selectedCountry = filters.country ? getCountry(filters.country) : undefined
 
   return (
     <Screen fluid>
@@ -230,42 +216,11 @@ export default function FiltersScreen() {
         </View>
 
         <SectionTitle title="Country" locked={!isPro} />
-        {selectedCountry ? (
-          <View style={styles.row}>
-            <Chip
-              label={`${countryFlag(selectedCountry.code)} ${selectedCountry.name} ✕`}
-              selected
-              onPress={() => set({ country: undefined }, true)}
-            />
-          </View>
-        ) : (
-          <>
-            <TextInput
-              style={styles.search}
-              value={countrySearch}
-              onChangeText={setCountrySearch}
-              placeholder="Search countries"
-              placeholderTextColor={colors.textMuted}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-            <View style={styles.row}>
-              {countryMatches.map((country) => (
-                <Chip
-                  key={country.code}
-                  label={`${countryFlag(country.code)} ${country.name}`}
-                  onPress={() => {
-                    set({ country: country.code }, true)
-                    setCountrySearch('')
-                  }}
-                />
-              ))}
-            </View>
-            {countryMatches.length === 0 && countrySearch.trim() ? (
-              <Text style={styles.hint}>No country matches “{countrySearch.trim()}”.</Text>
-            ) : null}
-          </>
-        )}
+        <CountryPicker
+          value={filters.country ?? ''}
+          onChange={(country) => set({ country: country || undefined }, true)}
+          {...(isPro ? {} : { onLocked: () => router.push('/(app)/paywall') })}
+        />
 
         <View style={styles.actions}>
           <Button label={count > 0 ? `Show results · ${count}` : 'Show results'} onPress={apply} />

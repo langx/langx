@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
 import { Image } from 'expo-image'
 import { uploadAvatarBytes } from '../../src/api/queries'
+import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
@@ -108,6 +109,19 @@ export default function PhotoStep() {
         ))}
       </View>
 
+      {/*
+        `country` has been in the onboarding schema and in the draft from the
+        start with no screen writing it, so every account created through the
+        wizard had none — and discovery's country filter had nothing to match.
+      */}
+      <View style={styles.country}>
+        <CountryPicker
+          label="Where are you?"
+          value={draft.country}
+          onChange={(country) => updateDraft({ country })}
+        />
+      </View>
+
       <Button
         label="Continue"
         onPress={() => router.push('/(onboarding)/handle')}
@@ -139,6 +153,7 @@ const styles = StyleSheet.create({
   avatarAction: { flexShrink: 1, width: 'auto' },
   label: { ...font.label, color: colors.text, marginTop: spacing.xl },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  country: { marginTop: spacing.xl },
   cta: { marginTop: spacing.xl },
   skip: {
     ...font.body,

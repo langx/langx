@@ -26,6 +26,7 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { FormField } from '../../src/components/ui/FormField'
+import { CountryPicker } from '../../src/components/CountryPicker'
 import { Screen } from '../../src/components/ui/Screen'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
@@ -129,7 +130,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         displayName: displayName.trim(),
         bio: bio.trim(),
         gender,
-        ...(country.trim() ? { country: country.trim().toUpperCase().slice(0, 2) } : {}),
+        ...(country ? { country } : {}),
         nativeLanguages: native.map((code) => ({ code })),
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
       })
@@ -170,13 +171,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         placeholder="What do you like talking about?"
         multiline
       />
-      <FormField
-        label="Country (2-letter code)"
-        value={country}
-        onChangeText={setCountry}
-        placeholder="TR"
-        autoCapitalize="characters"
-      />
+      <CountryPicker label="Country" value={country} onChange={setCountry} />
 
       <Text style={styles.label}>Gender</Text>
       <View style={styles.row}>
