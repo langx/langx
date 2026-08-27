@@ -42,7 +42,7 @@ pnpm dev                  # API on :4000, Expo on :8081
 ```
 apps/api          Fastify API — auth, REST, realtime, scheduled jobs
 apps/mobile       Expo app (iOS + Android + web)
-packages/shared   zod schemas, language/CEFR tables, PLAN_LIMITS, XP_RULES
+packages/shared   zod schemas, language/CEFR tables, PLAN_LIMITS, TOKEN_RULES
 packages/config   shared tsconfig + eslint presets
 ```
 

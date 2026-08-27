@@ -1,7 +1,7 @@
 /**
  * Read-only: what v1's token economy actually looks like.
  *
- * A 1:1 token→XP conversion only makes sense if the two economies are on a
+ * A 1:1 token→token conversion only makes sense if the two economies are on a
  * comparable scale. If v1 paid out far more generously, every returning user
  * lands permanently at the top of the all-time leaderboard and nobody new can
  * ever catch them — which would break the thing the leaderboard is for.
@@ -9,7 +9,7 @@
  *   pnpm --filter @langx/api exec tsx scripts/inspect-v1-economy.ts
  */
 import { Client, Databases, Query } from 'node-appwrite'
-import { XP_RULES } from '@langx/shared'
+import { TOKEN_RULES } from '@langx/shared'
 import { loadEnv } from '../src/env'
 
 const DATABASE_ID = '650750f16cd0c482bb83'
@@ -73,14 +73,14 @@ async function main(): Promise<void> {
   }
 
   console.log('\n=== v2 for comparison ===')
-  console.log(`  daily pool          ${XP_RULES.pool.total.toLocaleString()} XP/day, shared`)
+  console.log(`  daily pool          ${TOKEN_RULES.pool.total.toLocaleString()} tokens/day, shared`)
   console.log(
-    `  per-user daily cap  ${XP_RULES.pool.total * XP_RULES.pool.maxShareOfPool} XP from the pool`,
+    `  per-user daily cap  ${TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool} tokens from the pool`,
   )
-  console.log(`  message award       ${XP_RULES.award.message} XP`)
-  console.log(`  correction award    ${XP_RULES.award.correction} XP`)
+  console.log(`  message award       ${TOKEN_RULES.award.message} token`)
+  console.log(`  correction award    ${TOKEN_RULES.award.correction} token`)
   console.log(
-    `  a very active day   ~${XP_RULES.pool.total * XP_RULES.pool.maxShareOfPool + 100 * XP_RULES.award.message} XP`,
+    `  a very active day   ~${TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool + 100 * TOKEN_RULES.award.message} token`,
   )
 }
 

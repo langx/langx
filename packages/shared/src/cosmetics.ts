@@ -1,10 +1,10 @@
 import { z } from 'zod'
 
 /**
- * The only things XP can buy, besides a streak freeze.
+ * The only things token can buy, besides a streak freeze.
  *
- * Deliberately cosmetic and nothing else: the moment XP can buy a Pro
- * capability, farming XP becomes a substitute for paying, and the
+ * Deliberately cosmetic and nothing else: the moment token can buy a Pro
+ * capability, farming token becomes a substitute for paying, and the
  * subscription is the thing that funds the app. Prices live here, in public,
  * because the enforcement is a server-side atomic balance check — not secrecy.
  */
@@ -32,7 +32,7 @@ export function findCosmetic(id: string): Cosmetic | undefined {
   return COSMETICS.find((c) => c.id === id)
 }
 
-/** Everything XP can be spent on: the freeze plus the cosmetics catalogue. */
+/** Everything token can be spent on: the freeze plus the cosmetics catalogue. */
 export const STREAK_FREEZE_SKU = 'streakFreeze'
 
 export const purchaseSchema = z.object({
@@ -42,9 +42,9 @@ export const purchaseSchema = z.object({
 export type PurchaseInput = z.infer<typeof purchaseSchema>
 
 export const walletSchema = z.object({
-  /** All-time XP earned. Never decreases — it is what the leaderboard ranks. */
+  /** All-time token earned. Never decreases — it is what the leaderboard ranks. */
   earned: z.number().int(),
-  /** All-time XP spent. */
+  /** All-time token spent. */
   spent: z.number().int(),
   /** `earned - spent`, what a purchase can draw on. */
   balance: z.number().int(),

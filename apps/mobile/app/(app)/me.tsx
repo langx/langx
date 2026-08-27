@@ -1,7 +1,14 @@
-import { COSMETICS, STREAK_FREEZE_SKU, XP_RULES, getLanguage } from '@langx/shared'
+import { COSMETICS, STREAK_FREEZE_SKU, TOKEN_RULES, getLanguage } from '@langx/shared'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useMe, usePurchase, useQuota, useViewers, useWallet, useXp } from '../../src/api/queries'
+import {
+  useMe,
+  usePurchase,
+  useQuota,
+  useViewers,
+  useWallet,
+  useTokens,
+} from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
@@ -19,7 +26,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
 
 export default function MeScreen() {
   const me = useMe()
-  const xp = useXp()
+  const xp = useTokens()
   const wallet = useWallet()
   const quota = useQuota()
   const viewers = useViewers()
@@ -49,7 +56,7 @@ export default function MeScreen() {
 
       <View style={styles.stats}>
         <Stat label="Streak" value={`🔥 ${xp.data?.streak.current ?? 0}`} tone={colors.streak} />
-        <Stat label="Total XP" value={String(xp.data?.xp.all ?? 0)} />
+        <Stat label="Total tokens" value={String(xp.data?.tokens.all ?? 0)} />
         <Stat label="Balance" value={String(balance)} tone={colors.accent} />
       </View>
 
@@ -99,10 +106,10 @@ export default function MeScreen() {
         ))}
       </View>
 
-      <Text style={styles.sectionTitle}>XP store</Text>
+      <Text style={styles.sectionTitle}>Token store</Text>
       <Text style={styles.storeHint}>
-        XP cannot be bought, traded, or used to unlock any Pro feature — only streak freezes and
-        cosmetics.
+        Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak
+        freezes and cosmetics.
       </Text>
 
       <View style={styles.storeRow}>
@@ -110,13 +117,13 @@ export default function MeScreen() {
           <Text style={styles.storeName}>Streak freeze</Text>
           <Text style={styles.storeMeta}>
             Saves one missed day · {wallet.data?.streakFreezes ?? 0} banked /
-            {XP_RULES.sinks.maxBankedStreakFreezes}
+            {TOKEN_RULES.sinks.maxBankedStreakFreezes}
           </Text>
         </View>
         <Button
-          label={`${XP_RULES.sinks.streakFreeze} XP`}
+          label={`${TOKEN_RULES.sinks.streakFreeze} tokens`}
           variant="secondary"
-          disabled={balance < XP_RULES.sinks.streakFreeze || purchase.isPending}
+          disabled={balance < TOKEN_RULES.sinks.streakFreeze || purchase.isPending}
           onPress={() => purchase.mutate(STREAK_FREEZE_SKU)}
         />
       </View>
@@ -132,7 +139,7 @@ export default function MeScreen() {
               </Text>
             </View>
             <Button
-              label={isOwned ? 'Owned' : `${item.price} XP`}
+              label={isOwned ? 'Owned' : `${item.price} tokens`}
               variant="secondary"
               disabled={isOwned || balance < item.price || purchase.isPending}
               onPress={() => purchase.mutate(item.id)}

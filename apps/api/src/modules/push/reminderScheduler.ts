@@ -2,7 +2,7 @@ import { localDayKey } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
-import type { SchedulerLogger } from '../xp/poolScheduler'
+import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { streakReminderCandidates, tokensFor, type PushSender } from './devices'
 
 /**

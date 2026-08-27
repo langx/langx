@@ -31,7 +31,7 @@ export const dataExportSchema = z.object({
   profile: z.unknown(),
   conversations: z.array(z.unknown()),
   messages: z.array(z.unknown()),
-  xpLedger: z.array(z.unknown()),
+  tokenLedger: z.array(z.unknown()),
   subscriptions: z.array(z.unknown()),
   blocks: z.array(z.unknown()),
   profileViews: z.array(z.unknown()),

@@ -4,7 +4,7 @@
 reach langx.io, the Terms, the privacy policy, the litepaper and both store
 listings _before_ v2 ships. Publishing needs access this repo does not have.
 
-## The two promises v1 made in public that v2 does not keep
+## What v1 promised in public, and what changes
 
 ### 1. "Free forever"
 
@@ -28,26 +28,50 @@ receives as much as what a free user gives.
 Anyone who used v1 will read a paywall as a broken promise unless the change is
 stated plainly. Do not bury it in a Terms diff.
 
-### 2. The token
+### 2. The token — kept, but stripped of everything it implied
 
-v1 shipped a token: wallets, checkouts, a token leaderboard, and a litepaper
-describing something tradable. v2 **retires it**. Balances are not migrated and
-are not redeemable.
+This one is a change of _meaning_, not a withdrawal, and that distinction is
+the whole message.
 
-In its place: **XP**. XP cannot be bought, sold, traded, withdrawn, or
-transferred, and it can never unlock a Pro feature. It buys exactly two things:
-a streak freeze, and cosmetic frames and titles. That restriction is
-deliberate — the moment XP can buy a subscription feature, farming XP becomes a
-substitute for paying, and the subscription is what funds the app.
+v1 shipped a token with wallets, a token leaderboard, and a litepaper
+describing something tradable, staked and eventually listed. **The name stays.
+The trading does not.** LangX Token in v2 is an in-app point: earned by
+practising and teaching, spent on a streak freeze and cosmetics, and nothing
+else. It cannot be bought, sold, traded, staked, withdrawn or transferred, and
+it can never unlock a Pro feature — the moment it could, farming tokens would
+become a substitute for subscribing, and the subscription is what funds the app.
 
-The litepaper needs an explicit note saying the on-chain design is not being
-built, rather than being left up as if it were still the plan. If an on-chain
-distribution layer is ever revisited it will be a new document after legal
-review, not a continuation of that one.
+**Balances carry over.** Nothing in v1 was ever bought or sold: what looked
+like a purchase log (`CHECKOUT_COLLECTION`) is a daily payout calculation, and
+there was never a purchase flow. So balances are entirely earned, and there is
+no reason not to honour them.
+
+They are **divided by 100** on the way in. Say this plainly rather than letting
+people discover it. The two economies were never on the same scale — v1
+balances run to a maximum of 2.28 million, while a very active day in v2 is
+about 700 tokens. One-for-one, the largest v1 balance would sit roughly nine
+years ahead of anyone new and the all-time table would never move again.
+Divided, it starts about 32 days ahead: a real head start that someone can
+actually close.
+
+Returning users also get a welcome-back bonus, and a streak they had in v1 is
+frozen and can be restored by spending tokens.
+
+**The litepaper is the liability.** It needs an explicit note that the on-chain
+design in it is not being built — leaving it up unqualified reads as a
+roadmap, and an app whose official site advertises staking and trading invites
+a store rejection under Apple's crypto rules (3.1.5(b)). If an on-chain layer
+is ever revisited it will be a new document after legal review, not a
+continuation of that one.
+
+Full constraints for whoever writes this copy: `docs/token-messaging-brief.md`.
 
 ## Copy to publish
 
 ### langx.io homepage
+
+Two things to fix here: the "free forever" claim, and the Learn-to-Earn
+section, which currently advertises staking and a future marketplace.
 
 Replace "free forever" with something that is true and still generous:
 
@@ -55,15 +79,22 @@ Replace "free forever" with something that is true and still generous:
 > correct as many as you like. LangX Pro adds filters, unlimited translation,
 > and the ability to start as many new conversations as you want.
 
+And for the token section:
+
+> **Earn tokens by practising — and by teaching.** Correcting someone else's
+> sentence is worth more than sending one. Spend them on a streak freeze or on
+> cosmetics for your profile. LangX Token is an in-app point: it cannot be
+> bought, sold, traded or withdrawn, and it never will be.
+
 ### Terms — clauses that must change
 
-| Clause           | Change                                                                                                                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Pricing          | Add the subscription, the free-tier limits, and that they are per rolling 24 hours (not per calendar day)                 |
-| Token            | Remove the token entirely; state that v1 balances are void and not redeemable                                             |
-| Virtual items    | Add XP: non-transferable, no cash value, cannot be purchased, forfeited on account deletion                               |
-| Account deletion | 30-day grace period, then permanent. Messages you sent stay in the other person's conversation with their content removed |
-| Minimum age      | 18+, enforced at profile creation                                                                                         |
+| Clause           | Change                                                                                                                                                                                                         |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pricing          | Add the subscription, the free-tier limits, and that they are per rolling 24 hours (not per calendar day)                                                                                                      |
+| Token            | Redefine it: an in-app point with no cash value. Non-transferable, cannot be purchased, sold, traded, staked or withdrawn. State that v1 balances carry over at 1:100 and that nothing is redeemable for money |
+| Virtual items    | Cover the streak freeze and cosmetics; forfeited on account deletion                                                                                                                                           |
+| Account deletion | 30-day grace period, then permanent. Messages you sent stay in the other person's conversation with their content removed                                                                                      |
+| Minimum age      | 18+, enforced at profile creation                                                                                                                                                                              |
 
 ### Store listings
 

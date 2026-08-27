@@ -67,13 +67,13 @@ the wild.
 purchase log and is not one: its fields are `distribution`, `baseAmount`,
 `text`, `image`, `audio`, `streak`, `badges`, `onlineMin` — a daily payout
 calculation broken down by activity, which is v1's version of what v2 calls the
-daily XP pool. There is no Stripe integration, no purchase flow, and the client
+daily token pool. There is no Stripe integration, no purchase flow, and the client
 only ever _lists_ checkouts. Confirmed by reading the v1 source and by the
 owner, 2026-08-27.
 
 That matters because the original plan retired the token partly on the grounds
 that migrating balances would put money-bought currency into a system where
-"XP can never be purchased". It would not have. Balances are entirely earned.
+"token can never be purchased". It would not have. Balances are entirely earned.
 
 ### Measured, 2026-08-27 (`scripts/inspect-v1-economy.ts`)
 
@@ -86,22 +86,22 @@ that migrating balances would put money-bought currency into a system where
 | max                           | 2,277,521 | max                    | 446   |
 | zero                          | 266       | zero                   | 0     |
 
-For scale: a very active day in v2 is about **700 XP** (a 500 XP ceiling on the
-daily pool share, plus the 100-message cap at 2 XP each).
+For scale: a very active day in v2 is about **700 tokens** (a 500 tokens ceiling on the
+daily pool share, plus the 100-message cap at 2 tokens each).
 
-### Decided — a token converts to earned XP, divided by 100
+### Decided — a token converts to earned tokens, divided by 100
 
 Migrating balances was the owner's call; the ratio was measured rather than
 assumed, and the two economies are not on the same scale.
 
-| v1 balance    | → XP   |
-| ------------- | ------ |
-| median 20     | 0      |
-| p90 9,136     | 91     |
-| p99 37,821    | 378    |
-| max 2,277,521 | 22,775 |
+| v1 balance    | → token |
+| ------------- | ------- |
+| median 20     | 0       |
+| p90 9,136     | 91      |
+| p99 37,821    | 378     |
+| max 2,277,521 | 22,775  |
 
-Credited 1:1 to earned XP the top account would start roughly nine years ahead
+Credited 1:1 to earned tokens the top account would start roughly nine years ahead
 of a maximally active new user, and the all-time table would be a permanent v1
 ranking. Divided by 100 it starts about 32 days ahead — a real head start that
 a newcomer can still close.
@@ -109,12 +109,12 @@ a newcomer can still close.
 The accepted cost: everyone below 100 tokens converts to nothing, and since the
 median is 20 that is more than half of them. It is accepted because the
 **welcome-back bonus** is what rewards a median user for returning; the
-conversion exists to recognise the people who genuinely accumulated. `awardXp`
+conversion exists to recognise the people who genuinely accumulated. `awardTokens`
 writes no row for a zero amount, so those users get no meaningless ledger entry
 either.
 
-In code: `XP_RULES.legacyTokenDivisor` (100), `XP_RULES.welcomeBackBonus`
-(250), `legacyTokensToXp()`, and two new ledger kinds —
+In code: `TOKEN_RULES.legacyTokenDivisor` (100), `TOKEN_RULES.welcomeBackBonus`
+(250), `convertLegacyTokens()`, and two new ledger kinds —
 `legacyTokenConversion` and `welcomeBack`.
 
 Weekly and monthly tables are unaffected by any of this; only yearly and

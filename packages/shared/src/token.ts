@@ -2,8 +2,8 @@ import { z } from 'zod'
 import { walletSchema } from './cosmetics'
 
 /**
- * XP is **not** a token. It cannot be traded, withdrawn or bought, and it can
- * never buy a Pro feature — otherwise farming XP becomes a substitute for the
+ * token is **not** a token. It cannot be traded, withdrawn or bought, and it can
+ * never buy a Pro feature — otherwise farming token becomes a substitute for the
  * subscription. The only sinks are a streak freeze and cosmetics.
  *
  * v1 shipped an on-chain-flavoured token (wallets, checkouts, a token
@@ -13,28 +13,28 @@ import { walletSchema } from './cosmetics'
  * recompute), and it leaves the door open without committing to it.
  */
 
-export const XP_KINDS = [
+export const TOKEN_KINDS = [
   'message',
   'correction',
   'streak',
   'dailyPool',
   'adjustment',
-  /** One-off credit for a v1 token balance, at `XP_RULES.legacyTokenDivisor`. */
+  /** One-off credit for a v1 token balance, at `TOKEN_RULES.legacyTokenDivisor`. */
   'legacyTokenConversion',
   /** One-off bonus for a returning v1 user completing their restore. */
   'welcomeBack',
   /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
-   * for audit but deliberately do **not** touch `xpAggregates`: the
-   * leaderboard ranks XP *earned*, so buying a frame must never drop someone
+   * for audit but deliberately do **not** touch `tokenAggregates`: the
+   * leaderboard ranks token *earned*, so buying a frame must never drop someone
    * down the table. Balance is `earned - spent`, tracked separately.
    */
   'spend',
 ] as const
-export type XpKind = (typeof XP_KINDS)[number]
-export const xpKindSchema = z.enum(XP_KINDS)
+export type TokenKind = (typeof TOKEN_KINDS)[number]
+export const tokenKindSchema = z.enum(TOKEN_KINDS)
 
-export interface XpRules {
+export interface TokenRules {
   /** Direct, immediate awards — the feedback loop. */
   award: {
     message: number
@@ -44,7 +44,7 @@ export interface XpRules {
   }
   caps: {
     /**
-     * Max message-XP a user can earn per **UTC** day.
+     * Max message-token a user can earn per **UTC** day.
      *
      * Deliberately UTC, unlike the streak. A cap is a ceiling on ledger rows,
      * and ledger rows are bucketed by UTC day/week/month; if the cap reset on
@@ -54,10 +54,10 @@ export interface XpRules {
      * east" exploit periods.ts warns about. Only the streak is local.
      */
     messagesPerDay: number
-    /** Max message-XP per partner per UTC day — blocks single-partner farming. */
+    /** Max message-token per partner per UTC day — blocks single-partner farming. */
     messagesPerPartnerPerDay: number
   }
-  /** Bonus XP at streak milestones, keyed by day count. */
+  /** Bonus token at streak milestones, keyed by day count. */
   streakMilestones: Record<number, number>
   /** Daily pool, distributed at day close by cron in proportion to activity. */
   pool: {
@@ -81,11 +81,11 @@ export interface XpRules {
     maxBankedStreakFreezes: number
   }
   /**
-   * v1 token balances are credited to **earned** XP, divided by this.
+   * v1 token balances are credited to **earned** token, divided by this.
    *
    * The two economies are not on the same scale. v1's balances run to a median
    * of 20 and a maximum of 2,277,521, while a very active day in v2 is about
-   * 700 XP — so a 1:1 credit would put the top account roughly nine years ahead
+   * 700 tokens — so a 1:1 credit would put the top account roughly nine years ahead
    * and freeze the all-time table permanently. Dividing by 100 leaves it about
    * 32 days ahead: still a head start, but one a new user can close.
    *
@@ -108,7 +108,7 @@ export interface XpRules {
  * every rule here is enforced server-side with atomic writes and a unique
  * `{userId, kind, refId}` ledger index, not by being secret.
  */
-export const XP_RULES: XpRules = {
+export const TOKEN_RULES: TokenRules = {
   award: {
     message: 2,
     // Weighted above messages on purpose: teaching is the behaviour worth paying for.
@@ -153,7 +153,7 @@ export interface ActivityCounters {
 }
 
 /** Pure, so the cron and its test compute the identical number. */
-export function activityScore(counters: ActivityCounters, rules: XpRules = XP_RULES): number {
+export function activityScore(counters: ActivityCounters, rules: TokenRules = TOKEN_RULES): number {
   const { weights, messageCountCap } = rules.pool
   return (
     weights.mutualConversations * counters.mutualConversations +
@@ -168,7 +168,11 @@ export function activityScore(counters: ActivityCounters, rules: XpRules = XP_RU
  * to `maxShareOfPool`. Returns 0 when nobody was active, so a quiet day
  * distributes nothing rather than dividing by zero.
  */
-export function poolShare(score: number, totalScore: number, rules: XpRules = XP_RULES): number {
+export function poolShare(
+  score: number,
+  totalScore: number,
+  rules: TokenRules = TOKEN_RULES,
+): number {
   if (totalScore <= 0 || score <= 0) return 0
   const { total, maxShareOfPool } = rules.pool
   return Math.floor(Math.min(total * (score / totalScore), total * maxShareOfPool))
@@ -185,12 +189,12 @@ export function poolShare(score: number, totalScore: number, rules: XpRules = XP
  */
 export const TIMEZONE_UPDATE_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000
 
-export function streakMilestoneBonus(day: number, rules: XpRules = XP_RULES): number {
+export function streakMilestoneBonus(day: number, rules: TokenRules = TOKEN_RULES): number {
   return rules.streakMilestones[day] ?? 0
 }
 
-/** `GET /me/xp` — the user's own totals, streak and today's live counters. */
-export const xpSummarySchema = z.object({
+/** `GET /me/tokens` — the user's own totals, streak and today's live counters. */
+export const tokenSummarySchema = z.object({
   streak: z.object({
     current: z.number().int(),
     longest: z.number().int(),
@@ -198,7 +202,7 @@ export const xpSummarySchema = z.object({
     /** True when today has already been credited — drives the "send 1 message" nudge. */
     qualifiedToday: z.boolean(),
   }),
-  xp: z.object({
+  tokens: z.object({
     all: z.number().int(),
     year: z.number().int(),
     month: z.number().int(),
@@ -216,14 +220,14 @@ export const xpSummarySchema = z.object({
     activityScore: z.number(),
   }),
 })
-export type XpSummary = z.infer<typeof xpSummarySchema>
+export type TokenSummary = z.infer<typeof tokenSummarySchema>
 
 /**
- * XP credited for a v1 token balance. Floors, so anything under the divisor
- * converts to nothing and — since `awardXp` writes no row for a zero amount —
+ * token credited for a v1 token balance. Floors, so anything under the divisor
+ * converts to nothing and — since `awardTokens` writes no row for a zero amount —
  * leaves no ledger entry at all rather than a meaningless one.
  */
-export function legacyTokensToXp(balance: number, rules: XpRules = XP_RULES): number {
+export function convertLegacyTokens(balance: number, rules: TokenRules = TOKEN_RULES): number {
   if (!Number.isFinite(balance) || balance <= 0) return 0
   return Math.floor(balance / rules.legacyTokenDivisor)
 }

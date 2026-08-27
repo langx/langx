@@ -102,8 +102,8 @@ describe('Faz 0 — boot', () => {
       conversations.insertOne({ pairKey: 'a_b', participants: ['b', 'a'] }),
     ).rejects.toThrow(/duplicate key/i)
 
-    // The same message cannot be awarded XP twice (REST and socket paths).
-    const ledger = handle.db.collection('xpLedger')
+    // The same message cannot be awarded tokens twice (REST and socket paths).
+    const ledger = handle.db.collection('tokenLedger')
     await ledger.insertOne({ userId: 'u1', kind: 'message', refId: 'm1', amount: 2 })
     await expect(
       ledger.insertOne({ userId: 'u1', kind: 'message', refId: 'm1', amount: 2 }),

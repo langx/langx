@@ -183,7 +183,7 @@ export default function ChatScreen() {
             return (
               <Pressable
                 // Long-press someone else's message to correct it — the
-                // teaching gesture, and the highest-XP action in the app.
+                // teaching gesture, and the highest-earning action in the app.
                 onLongPress={() => {
                   if (mine) return
                   setCorrecting(item)

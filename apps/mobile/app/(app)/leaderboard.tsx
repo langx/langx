@@ -2,7 +2,7 @@ import type { PeriodType } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
-import { useLeaderboard, useXp } from '../../src/api/queries'
+import { useLeaderboard, useTokens } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -20,7 +20,7 @@ const MEDALS = ['🥇', '🥈', '🥉']
 export default function LeaderboardScreen() {
   const [period, setPeriod] = useState<PeriodType>('week')
   const board = useLeaderboard(period)
-  const xp = useXp()
+  const xp = useTokens()
 
   const streak = xp.data?.streak
   const entries = board.data?.entries ?? []
@@ -41,7 +41,7 @@ export default function LeaderboardScreen() {
             </Text>
           </View>
           <Pressable onPress={() => router.push('/(app)/me')}>
-            <Text style={styles.streakXp}>{xp.data?.xp[period] ?? 0} XP</Text>
+            <Text style={styles.streakXp}>{xp.data?.tokens[period] ?? 0} tokens</Text>
           </Pressable>
         </View>
       ) : null}
@@ -71,7 +71,7 @@ export default function LeaderboardScreen() {
             <EmptyState
               emoji="🏆"
               title="Nothing here yet"
-              body="Send messages and write corrections — be the first to earn XP this period."
+              body="Send messages and write corrections — be the first to earn tokens this period."
             />
           }
           ListFooterComponent={
@@ -79,7 +79,7 @@ export default function LeaderboardScreen() {
               <View style={styles.viewerRow}>
                 <Text style={styles.rank}>#{viewer.rank}</Text>
                 <Text style={styles.viewerLabel}>You</Text>
-                <Text style={styles.xp}>{viewer.xp} XP</Text>
+                <Text style={styles.tokens}>{viewer.tokens}</Text>
               </View>
             ) : null
           }
@@ -97,7 +97,7 @@ export default function LeaderboardScreen() {
                 </Text>
                 {item.streak > 0 ? <Text style={styles.streakSmall}>🔥 {item.streak}</Text> : null}
               </View>
-              <Text style={styles.xp}>{item.xp} XP</Text>
+              <Text style={styles.tokens}>{item.tokens}</Text>
             </Pressable>
           )}
         />
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   body: { flex: 1 },
   name: { ...font.body, color: colors.text, fontWeight: '600' },
   streakSmall: { ...font.caption, color: colors.streak },
-  xp: { ...font.body, color: colors.text, fontWeight: '700' },
+  tokens: { ...font.body, color: colors.text, fontWeight: '700' },
   viewerRow: {
     alignItems: 'center',
     borderTopColor: colors.border,

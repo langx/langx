@@ -32,7 +32,7 @@ The listings must also declare in-app purchases. v1 had none.
 >
 > **Translation when you're stuck.** Built in, so you don't leave the chat.
 >
-> **A reason to come back.** Keep a daily streak, earn XP for talking and
+> **A reason to come back.** Keep a daily streak, earn tokens for talking and
 > teaching, and see where you land on the weekly, monthly, yearly and all-time
 > boards.
 >
@@ -73,7 +73,7 @@ The listings must also declare in-app purchases. v1 had none.
 >
 > **Takıldığında çeviri.** Uygulamanın içinde, sohbetten çıkmadan.
 >
-> **Geri dönmek için bir sebep.** Günlük serini koru, konuşarak ve öğreterek XP
+> **Geri dönmek için bir sebep.** Günlük serini koru, konuşarak ve öğreterek token
 > kazan, haftalık/aylık/yıllık ve tüm zamanlar tablolarında yerini gör.
 >
 > **Kullanımı her zaman ücretsiz.** Sana gelen tüm mesajlara sınırsız cevap
@@ -90,7 +90,7 @@ The listings must also declare in-app purchases. v1 had none.
 ## What's new (release notes)
 
 > LangX v2 is a rebuild. Faster matching, realtime chat, message corrections,
-> built-in translation, daily streaks and XP leaderboards.
+> built-in translation, daily streaks and token leaderboards.
 >
 > Your username is waiting for you — sign up with the email you used before and
 > claim it.

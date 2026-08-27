@@ -3,7 +3,13 @@ import { MINIMUM_AGE, birthYearSchema, meetsMinimumAge } from './age'
 import { CEFR_LEVELS, cefrRank } from './cefr'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
 import { PLAN_LIMITS, hasFeature, quotaLimit } from './limits'
-import { XP_RULES, activityScore, legacyTokensToXp, poolShare, streakMilestoneBonus } from './xp'
+import {
+  TOKEN_RULES,
+  activityScore,
+  convertLegacyTokens,
+  poolShare,
+  streakMilestoneBonus,
+} from './token'
 
 const NOW = new Date('2026-08-26T00:00:00Z')
 
@@ -49,12 +55,12 @@ describe('plan limits', () => {
 
 describe('xp rules', () => {
   it('weights corrections above messages', () => {
-    expect(XP_RULES.award.correction).toBeGreaterThan(XP_RULES.award.message)
+    expect(TOKEN_RULES.award.correction).toBeGreaterThan(TOKEN_RULES.award.message)
   })
 
   it('scores activity with the message term capped', () => {
     const counters = { mutualConversations: 2, corrections: 3, messages: 500, distinctPartners: 4 }
-    const { weights, messageCountCap } = XP_RULES.pool
+    const { weights, messageCountCap } = TOKEN_RULES.pool
     expect(activityScore(counters)).toBe(
       weights.mutualConversations * 2 +
         weights.corrections * 3 +
@@ -64,7 +70,7 @@ describe('xp rules', () => {
   })
 
   it('caps one user at maxShareOfPool no matter how dominant', () => {
-    const { total, maxShareOfPool } = XP_RULES.pool
+    const { total, maxShareOfPool } = TOKEN_RULES.pool
     expect(poolShare(1_000_000, 1_000_001)).toBe(Math.floor(total * maxShareOfPool))
   })
 
@@ -77,7 +83,7 @@ describe('xp rules', () => {
     const scores = [50, 30, 20, 10, 5]
     const totalScore = scores.reduce((a, b) => a + b, 0)
     const paid = scores.reduce((sum, s) => sum + poolShare(s, totalScore), 0)
-    expect(paid).toBeLessThanOrEqual(XP_RULES.pool.total)
+    expect(paid).toBeLessThanOrEqual(TOKEN_RULES.pool.total)
   })
 
   it('pays streak milestones only on exact days', () => {
@@ -109,23 +115,23 @@ describe('language + cefr tables', () => {
 describe('legacy token conversion', () => {
   it('divides the v1 balance and floors it', () => {
     // The measured distribution: median 20, p90 9136, p99 37821, max 2277521.
-    expect(legacyTokensToXp(20)).toBe(0)
-    expect(legacyTokensToXp(9136)).toBe(91)
-    expect(legacyTokensToXp(37_821)).toBe(378)
-    expect(legacyTokensToXp(2_277_521)).toBe(22_775)
+    expect(convertLegacyTokens(20)).toBe(0)
+    expect(convertLegacyTokens(9136)).toBe(91)
+    expect(convertLegacyTokens(37_821)).toBe(378)
+    expect(convertLegacyTokens(2_277_521)).toBe(22_775)
   })
 
   it('keeps the top v1 account within reach of a new user', () => {
-    // A very active v2 day is ~700 XP (500 pool ceiling + the 100-message cap).
+    // A very active v2 day is ~700 tokens (500 pool ceiling + the 100-message cap).
     const veryActiveDay =
-      XP_RULES.pool.total * XP_RULES.pool.maxShareOfPool + 100 * XP_RULES.award.message
-    const daysToCatchTheTop = legacyTokensToXp(2_277_521) / veryActiveDay
+      TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool + 100 * TOKEN_RULES.award.message
+    const daysToCatchTheTop = convertLegacyTokens(2_277_521) / veryActiveDay
     expect(daysToCatchTheTop).toBeLessThan(60)
   })
 
   it('returns nothing for a missing or nonsensical balance', () => {
-    expect(legacyTokensToXp(0)).toBe(0)
-    expect(legacyTokensToXp(-5)).toBe(0)
-    expect(legacyTokensToXp(Number.NaN)).toBe(0)
+    expect(convertLegacyTokens(0)).toBe(0)
+    expect(convertLegacyTokens(-5)).toBe(0)
+    expect(convertLegacyTokens(Number.NaN)).toBe(0)
   })
 })

@@ -9,19 +9,23 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from '../moderation/blocks'
-import type { XpAggregate } from './ledger'
+import type { TokenAggregate } from './ledger'
 
 /**
  * Competition ranking over an already-sorted page: equal scores share a rank
  * and the next distinct score skips ahead (1, 2, 2, 4).
  *
  * This has to agree with how a viewer outside the page learns their rank —
- * `countDocuments({ xp: { $gt: mine } }) + 1` — or two people on the same
+ * `countDocuments({ tokens: { $gt: mine } }) + 1` — or two people on the same
  * score would be told different positions depending on whether they made the
  * page. Positional ranking (index + 1) would do exactly that.
  */
-function rankOf(index: number, xp: number, previous: { rank: number; xp: number } | null): number {
-  if (previous && previous.xp === xp) return previous.rank
+function rankOf(
+  index: number,
+  tokens: number,
+  previous: { rank: number; tokens: number } | null,
+): number {
+  if (previous && previous.tokens === tokens) return previous.rank
   return index + 1
 }
 
@@ -34,12 +38,12 @@ export async function getLeaderboard(
   const periodType = query.period
   const periodKey = query.periodKey ?? periodKeys(at)[periodType]
 
-  const aggregates = db.collection<XpAggregate>(COLLECTIONS.xpAggregates)
+  const aggregates = db.collection<TokenAggregate>(COLLECTIONS.tokenAggregates)
 
   const top = await aggregates
     .find({ periodType, periodKey })
     // `_id` breaks ties deterministically, so paging and repeat calls agree.
-    .sort({ xp: -1, _id: 1 })
+    .sort({ tokens: -1, _id: 1 })
     .limit(query.limit)
     .toArray()
 
@@ -58,14 +62,14 @@ export async function getLeaderboard(
   const byId = new Map(profiles.map((p) => [p._id, p]))
 
   const entries: LeaderboardEntry[] = []
-  let previous: { rank: number; xp: number } | null = null
+  let previous: { rank: number; tokens: number } | null = null
   for (const [index, row] of top.entries()) {
     // A soft-deleted account keeps its aggregate row (the ledger is
     // append-only) but must not appear. It still occupies its rank position,
     // so the ranks of everyone below don't shift when someone deletes.
     const profile = byId.get(row.userId)
-    const rank = rankOf(index, row.xp, previous)
-    previous = { rank, xp: row.xp }
+    const rank = rankOf(index, row.tokens, previous)
+    previous = { rank, tokens: row.tokens }
     if (!profile || hidden.has(row.userId)) continue
 
     const entry: LeaderboardEntry = {
@@ -73,7 +77,7 @@ export async function getLeaderboard(
       userId: row.userId,
       handle: profile.handle,
       displayName: profile.displayName ?? profile.handle,
-      xp: row.xp,
+      tokens: row.tokens,
       // Read defensively. A single profile document missing `streak` — an
       // ETL-imported row, a partially written one — must not be able to 500
       // a global endpoint for every user on the board.
@@ -87,12 +91,12 @@ export async function getLeaderboard(
   const viewerRow = await aggregates.findOne({
     _id: aggregateId(viewerId, periodType, periodKey),
   })
-  const viewerXp = viewerRow?.xp ?? 0
+  const viewerXp = viewerRow?.tokens ?? 0
   const inPage = entries.some((e) => e.isViewer)
   const rank =
     viewerXp > 0
-      ? (await aggregates.countDocuments({ periodType, periodKey, xp: { $gt: viewerXp } })) + 1
+      ? (await aggregates.countDocuments({ periodType, periodKey, tokens: { $gt: viewerXp } })) + 1
       : null
 
-  return { period: periodType, periodKey, entries, viewer: { rank, xp: viewerXp, inPage } }
+  return { period: periodType, periodKey, entries, viewer: { rank, tokens: viewerXp, inPage } }
 }

@@ -1,14 +1,14 @@
 import {
   COSMETICS,
   STREAK_FREEZE_SKU,
-  XP_RULES,
+  TOKEN_RULES,
   activityScore,
   poolShare,
   shiftDayKey,
   utcDayKey,
   type Leaderboard,
   type Wallet,
-  type XpSummary,
+  type TokenSummary,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
@@ -21,9 +21,9 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
-import type { DailyActivity } from '../modules/xp/dailyActivity'
-import { awardXp, type XpAggregate, type XpLedgerEntry } from '../modules/xp/ledger'
-import { DAILY_POOL_JOB, runDailyPool, type JobRun } from '../modules/xp/pool'
+import type { DailyActivity } from '../modules/tokens/dailyActivity'
+import { awardTokens, type TokenAggregate, type TokenLedgerEntry } from '../modules/tokens/ledger'
+import { DAILY_POOL_JOB, runDailyPool, type JobRun } from '../modules/tokens/pool'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -31,7 +31,7 @@ import { createTranslationProvider } from '../translation/createTranslationProvi
 const PASSWORD = 'correct horse battery staple'
 const YESTERDAY = shiftDayKey(utcDayKey(new Date()), -1)
 
-describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
+describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
   let app: FastifyInstance
@@ -89,10 +89,10 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
 
   function totalXp(): Promise<number> {
     return handle.db
-      .collection<XpAggregate>(COLLECTIONS.xpAggregates)
+      .collection<TokenAggregate>(COLLECTIONS.tokenAggregates)
       .aggregate<{ total: number }>([
         { $match: { periodType: 'all' } },
-        { $group: { _id: null, total: { $sum: '$xp' } } },
+        { $group: { _id: null, total: { $sum: '$tokens' } } },
       ])
       .toArray()
       .then((rows) => rows[0]?.total ?? 0)
@@ -220,16 +220,16 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
 
       const rowFor = (userId: string) =>
         handle.db
-          .collection<XpLedgerEntry>(COLLECTIONS.xpLedger)
+          .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
           .findOne({ userId, kind: 'dailyPool', refId: day })
       const busyRow = await rowFor(busyId)
       const quietRow = await rowFor(quietIds[0]!)
       expect(busyRow?.amount).toBe(poolShare(busyScore, total))
       // Twice the activity, twice the share — and neither is at the cap.
       expect(busyRow!.amount).toBeGreaterThan(quietRow!.amount)
-      const cap = Math.floor(XP_RULES.pool.total * XP_RULES.pool.maxShareOfPool)
+      const cap = Math.floor(TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool)
       expect(busyRow!.amount).toBeLessThan(cap)
-      expect(first.ran && first.result.distributed).toBeLessThanOrEqual(XP_RULES.pool.total)
+      expect(first.ran && first.result.distributed).toBeLessThanOrEqual(TOKEN_RULES.pool.total)
 
       // The done-criterion: running it again changes nothing at all.
       const second = await runDailyPool(handle.db, { day })
@@ -267,12 +267,12 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       expect(outcome.ran && outcome.result.paid).toBe(0)
     })
 
-    it('pays no share to a user whose XP is frozen', async () => {
+    it('pays no share to a user whose token is frozen', async () => {
       const user = await newUser()
       await ageAccount(user.userId)
       await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: user.userId }, { $set: { xpFrozenAt: new Date() } })
+        .updateOne({ _id: user.userId }, { $set: { tokenFrozenAt: new Date() } })
       const day = shiftDayKey(YESTERDAY, -4)
       await seedActivity(user.userId, { messages: 30, partners: ['z'] }, day)
 
@@ -297,25 +297,25 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
 
       await runDailyPool(handle.db, { day })
       const row = await handle.db
-        .collection<XpLedgerEntry>(COLLECTIONS.xpLedger)
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
         .findOne({ userId: whale.userId, kind: 'dailyPool', refId: day })
       // Sole participant, so an uncapped share would be the whole pool.
-      expect(row?.amount).toBe(Math.floor(XP_RULES.pool.total * XP_RULES.pool.maxShareOfPool))
-      expect(row?.amount).toBeLessThan(XP_RULES.pool.total)
+      expect(row?.amount).toBe(Math.floor(TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool))
+      expect(row?.amount).toBeLessThan(TOKEN_RULES.pool.total)
     })
   })
 
   describe('leaderboards', () => {
-    it('ranks by XP and marks the viewer', async () => {
+    it('ranks by token and marks the viewer', async () => {
       const first = await newUser()
       const second = await newUser()
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: first.userId,
         kind: 'adjustment',
         amount: 900,
         refId: 'lb-1',
       })
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: second.userId,
         kind: 'adjustment',
         amount: 400,
@@ -337,13 +337,13 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       const a = await newUser()
       const b = await newUser()
       const tie = 777
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: a.userId,
         kind: 'adjustment',
         amount: tie,
         refId: 'tie-a',
       })
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: b.userId,
         kind: 'adjustment',
         amount: tie,
@@ -361,7 +361,7 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
 
     it('reports a rank for someone outside the requested page', async () => {
       const loner = await newUser()
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: loner.userId,
         kind: 'adjustment',
         amount: 1,
@@ -372,7 +372,7 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       expect(result.entries).toHaveLength(1)
       expect(result.viewer.inPage).toBe(false)
       expect(result.viewer.rank).toBeGreaterThan(1)
-      expect(result.viewer.xp).toBe(1)
+      expect(result.viewer.tokens).toBe(1)
     })
 
     it('serves the four periods and defaults to the current week', async () => {
@@ -387,7 +387,7 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
 
     it('hides a soft-deleted account without shifting everyone else down', async () => {
       const ghost = await newUser()
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: ghost.userId,
         kind: 'adjustment',
         amount: 50_000,
@@ -410,11 +410,11 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
     })
   })
 
-  describe('XP sinks', () => {
+  describe('token sinks', () => {
     it('buys a cosmetic, deducts the balance and leaves the leaderboard untouched', async () => {
       const user = await newUser()
       const frame = COSMETICS.find((c) => c.kind === 'frame')!
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
         amount: frame.price + 100,
@@ -429,10 +429,10 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       expect(after.spent).toBe(frame.price)
       expect(after.balance).toBe(100)
       expect(after.owned).toContain(frame.id)
-      // Earned XP — and therefore the standing — is unchanged by spending.
+      // Earned token — and therefore the standing — is unchanged by spending.
       expect(after.earned).toBe(frame.price + 100)
       const rankAfter = (await board(user, '?period=all')).viewer
-      expect(rankAfter.xp).toBe(rankBefore.xp)
+      expect(rankAfter.tokens).toBe(rankBefore.tokens)
       expect(rankAfter.rank).toBe(rankBefore.rank)
     })
 
@@ -441,13 +441,13 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       const priciest = COSMETICS.reduce((a, b) => (a.price > b.price ? a : b))
       const response = await buy(user, priciest.id)
       expect(response.statusCode).toBe(400)
-      expect(response.json<{ message: string }>().message).toContain('Not enough XP')
+      expect(response.json<{ message: string }>().message).toContain('Not enough token')
     })
 
     it('lets exactly one of several concurrent buys of the same item through', async () => {
       const user = await newUser()
       const frame = COSMETICS.find((c) => c.id === 'frame.silver')!
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
         amount: frame.price * 5,
@@ -467,10 +467,10 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
     it('banks a streak freeze and spends it to bridge one missed day', async () => {
       const user = await newUser()
       const other = await newUser()
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
-        amount: XP_RULES.sinks.streakFreeze * 3,
+        amount: TOKEN_RULES.sinks.streakFreeze * 3,
         refId: 'freeze-funds',
       })
       expect((await buy(user, STREAK_FREEZE_SKU)).statusCode).toBe(200)
@@ -498,35 +498,35 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       expect(started.statusCode, started.body).toBe(201)
 
       const summary = await app
-        .inject({ method: 'GET', url: '/me/xp', headers: { cookie: user.cookie } })
-        .then((r) => r.json<XpSummary>())
+        .inject({ method: 'GET', url: '/me/tokens', headers: { cookie: user.cookie } })
+        .then((r) => r.json<TokenSummary>())
       expect(summary.streak.current).toBe(6) // continued, not reset to 1
       expect(summary.wallet.streakFreezes).toBe(0) // and the freeze was consumed
     })
 
     it('will not bank more freezes than the cap allows', async () => {
       const user = await newUser()
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
-        amount: XP_RULES.sinks.streakFreeze * 10,
+        amount: TOKEN_RULES.sinks.streakFreeze * 10,
         refId: 'freeze-cap',
       })
-      for (let i = 0; i < XP_RULES.sinks.maxBankedStreakFreezes; i++) {
+      for (let i = 0; i < TOKEN_RULES.sinks.maxBankedStreakFreezes; i++) {
         expect((await buy(user, STREAK_FREEZE_SKU)).statusCode).toBe(200)
       }
       const overflow = await buy(user, STREAK_FREEZE_SKU)
       expect(overflow.statusCode).toBe(400)
-      expect((await wallet(user)).streakFreezes).toBe(XP_RULES.sinks.maxBankedStreakFreezes)
+      expect((await wallet(user)).streakFreezes).toBe(TOKEN_RULES.sinks.maxBankedStreakFreezes)
     })
 
     it('does not let a freeze paper over a two-day gap', async () => {
       const user = await newUser()
       const other = await newUser()
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
-        amount: XP_RULES.sinks.streakFreeze,
+        amount: TOKEN_RULES.sinks.streakFreeze,
         refId: 'freeze-widegap',
       })
       await buy(user, STREAK_FREEZE_SKU)
@@ -546,8 +546,8 @@ describe('Faz 9 — daily pool, leaderboards and XP sinks', () => {
       })
 
       const summary = await app
-        .inject({ method: 'GET', url: '/me/xp', headers: { cookie: user.cookie } })
-        .then((r) => r.json<XpSummary>())
+        .inject({ method: 'GET', url: '/me/tokens', headers: { cookie: user.cookie } })
+        .then((r) => r.json<TokenSummary>())
       expect(summary.streak.current).toBe(1) // reset
       expect(summary.wallet.streakFreezes).toBe(1) // and the freeze was not touched
     })

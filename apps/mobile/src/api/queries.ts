@@ -4,7 +4,7 @@ import type {
   PeriodType,
   PublicProfileDto,
   Wallet,
-  XpSummary,
+  TokenSummary,
 } from './types'
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
@@ -20,7 +20,7 @@ export const keys = {
   discovery: (filters: string) => ['discovery', filters] as const,
   conversations: ['conversations'] as const,
   messages: (id: string) => ['messages', id] as const,
-  xp: ['xp'] as const,
+  tokens: ['tokens'] as const,
   wallet: ['wallet'] as const,
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
@@ -125,8 +125,8 @@ export function useMessages(conversationId: string) {
   })
 }
 
-export function useXp() {
-  return useQuery({ queryKey: keys.xp, queryFn: () => api.get<XpSummary>('/me/xp') })
+export function useTokens() {
+  return useQuery({ queryKey: keys.tokens, queryFn: () => api.get<TokenSummary>('/me/tokens') })
 }
 
 export function useWallet() {
@@ -178,11 +178,11 @@ export function useStartConversation() {
     mutationFn: (input: { toUserId: string; body: string }) =>
       api.post<{ _id: string }>('/conversations', input),
     onSuccess: () => {
-      // Starting a conversation spends quota and earns XP — both visible
+      // Starting a conversation spends quota and earns tokens — both visible
       // elsewhere in the UI, so both caches are now stale.
       void queryClient.invalidateQueries({ queryKey: keys.conversations })
       void queryClient.invalidateQueries({ queryKey: keys.quota })
-      void queryClient.invalidateQueries({ queryKey: keys.xp })
+      void queryClient.invalidateQueries({ queryKey: keys.tokens })
     },
   })
 }
@@ -211,7 +211,7 @@ export function usePurchase() {
     mutationFn: (sku: string) => api.post('/me/wallet/purchase', { sku }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: keys.wallet })
-      void queryClient.invalidateQueries({ queryKey: keys.xp })
+      void queryClient.invalidateQueries({ queryKey: keys.tokens })
     },
   })
 }

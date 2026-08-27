@@ -12,7 +12,7 @@ import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCa
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { ExpoPushSender } from './modules/push/devices'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
-import { startDailyPoolScheduler } from './modules/xp/poolScheduler'
+import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
 
 async function main(): Promise<void> {
   const env = loadEnv()

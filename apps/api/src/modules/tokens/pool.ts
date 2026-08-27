@@ -1,9 +1,9 @@
-import { XP_RULES, activityScore, poolShare, shiftDayKey, utcDayKey } from '@langx/shared'
+import { TOKEN_RULES, activityScore, poolShare, shiftDayKey, utcDayKey } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { countersOf, type DailyActivity } from './dailyActivity'
-import { awardXp } from './ledger'
+import { awardTokens } from './ledger'
 
 export interface JobRun {
   job: string
@@ -44,7 +44,7 @@ function dayCloseAt(day: string): Date {
 export const DAILY_POOL_JOB = 'dailyPool'
 
 /**
- * Distributes one day's XP pool, proportional to each participant's activity
+ * Distributes one day's token pool, proportional to each participant's activity
  * score and clamped to `maxShareOfPool` per user.
  *
  * **Two independent defences against paying twice**, because a cron that
@@ -86,7 +86,7 @@ export async function runDailyPool(
     .toArray()
 
   const closedAt = dayCloseAt(day)
-  const rampUpMs = XP_RULES.pool.accountAgeRampUpHours * 60 * 60 * 1000
+  const rampUpMs = TOKEN_RULES.pool.accountAgeRampUpHours * 60 * 60 * 1000
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
   const eligible: { userId: string; score: number }[] = []
@@ -96,10 +96,10 @@ export async function runDailyPool(
   for (const activity of activities) {
     const profile = await profiles.findOne(
       { _id: activity.userId },
-      { projection: { createdAt: 1, xpFrozenAt: 1, deletedAt: 1 } },
+      { projection: { createdAt: 1, tokenFrozenAt: 1, deletedAt: 1 } },
     )
     if (!profile || profile.deletedAt) continue
-    if (profile.xpFrozenAt) {
+    if (profile.tokenFrozenAt) {
       skippedFrozen++
       continue
     }
@@ -119,7 +119,7 @@ export async function runDailyPool(
   let paid = 0
   for (const { userId, score } of eligible) {
     const amount = poolShare(score, totalScore)
-    const award = await awardXp(db, {
+    const award = await awardTokens(db, {
       userId,
       kind: 'dailyPool',
       amount,

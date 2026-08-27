@@ -18,8 +18,8 @@ is shaped that way. Several of them record a plan that turned out to be wrong.
 | 5   | Chat: Socket.io over phase 4's conversations + history + read/typing + corrections                                                 | **Done** — 15 tests (5 REST + 10 real Socket.io connections): message delivery between two live WebSockets measured **under 1s**; history survives a disconnect                                                                                                  |
 | 6   | Translation service + cache + daily counters                                                                                       | **Done** — 11 tests: second request for the same text is served from cache, free tier hits `QUOTA_EXCEEDED` after 20, cache hits cost no quota                                                                                                                   |
 | 7   | RevenueCat + paywall + webhook + entitlement + quota + Pro filters                                                                 | **Server done** (11 tests). A real sandbox purchase cannot be tested until the store prerequisites are complete (see note)                                                                                                                                       |
-| 8   | Streak + XP ledger + direct awards + `xpAggregates`                                                                                | **Done** — 13 tests: 10 concurrent replays of the same message leave one ledger row; streaks advance and reset on the local day; a milestone pays once                                                                                                           |
-| 9   | Daily pool + 4 leaderboards + sinks                                                                                                | **Done** — 18 tests plus live verification: the pool ran twice (once with the lock, once with the lock deleted) and total XP stayed at 1054                                                                                                                      |
+| 8   | Streak + token ledger + direct awards + `tokenAggregates`                                                                          | **Done** — 13 tests: 10 concurrent replays of the same message leave one ledger row; streaks advance and reset on the local day; a milestone pays once                                                                                                           |
+| 9   | Daily pool + 4 leaderboards + sinks                                                                                                | **Done** — 18 tests plus live verification: the pool ran twice (once with the lock, once with the lock deleted) and total token stayed at 1054                                                                                                                   |
 | 10  | `profileViews` + incognito, push, block/report, **account deletion + export**                                                      | **Server done** — 18 tests: a blocked user disappears from discovery, the chat list, the leaderboard and their profile (404, not 403) at once; a deleted account is invisible immediately, still recoverable on day 29, and gone from every collection on day 31 |
 | —   | **Client screens** — onboarding, discovery, chat, leaderboard, profile, paywall, settings                                          | **Done** — the plan did not list this as a phase, but MVP items 2/3/4/5/12 all depend on it and only phase 1's auth screens existed                                                                                                                              |
 | 11  | The ETL's profile + avatar + **gallery** step                                                                                      | **Code done, media step waiting on credentials** — 13 mapping tests; live dry run: 3479 documents → 3150 stageable                                                                                                                                               |
@@ -160,9 +160,9 @@ unique index is the single source of truth: insert first, and treat a duplicate
 key as "already processed". The same "insert first, read the duplicate key as a
 meaningful signal" family as phase 4's `pairKey` and phase 2's `handle_unique`.
 
-## Phase 8 — XP caps run on the UTC day; only the streak is local
+## Phase 8 — token caps run on the UTC day; only the streak is local
 
-`XpRules.caps` originally said "local day". That is exploitable. A cap is a
+`TokenRules.caps` originally said "local day". That is exploitable. A cap is a
 ceiling on ledger rows, and ledger rows sit in UTC day/week/month buckets — if
 the cap reset on the local day, moving the clock east would open a second cap
 window **inside the same UTC day** and both awards would land in the same
@@ -175,7 +175,7 @@ days; writing the same zone is never blocked.
 
 ## Phase 8 — ledger first, aggregates second; the order cannot be reversed
 
-`awardXp` does two writes: the `xpLedger` insert, where the unique
+`awardTokens` does two writes: the `tokenLedger` insert, where the unique
 `{userId, kind, refId}` index decides atomically and cluster-wide whether this
 award has already been paid (a duplicate key is not an error, it is the answer
 "yes"), and then the `$inc` on four period aggregates.
@@ -188,14 +188,14 @@ message that hit its cap should leave no trace, not a row worth zero.
 ## Phase 8 — the award path is deliberately not swallowed
 
 `awardForSend` runs after the message is written and does not suppress errors.
-The only expected failure is a duplicate award, which `awardXp` already answers
+The only expected failure is a duplicate award, which `awardTokens` already answers
 with a no-op; everything else means the database is unreachable, in which case
 the message insert in front of it would have failed too. Catching silently
 would trade a loud, recoverable error for a quiet drift in everyone's balance.
 
 ## Phase 8 — the reciprocity bonus pays both sides
 
-There is no separate "mutual" kind in `XP_KINDS`, and adding one would change
+There is no separate "mutual" kind in `TOKEN_KINDS`, and adding one would change
 the ledger's schema. Instead the `refId` carries a `mutual:` prefix — it cannot
 collide with a message id, and the unique index means it is paid once per
 person per conversation. The trigger is the **transition** of `bothSpoke`, not
@@ -231,15 +231,15 @@ running behind them.
 
 Verified live: first a restart with the lock in place (no work done), then the
 lock was **deleted** and the process restarted — the job ran, saw `active: 2`,
-wrote `paid: 0`, and total XP stayed at 1054. The lock avoids the work; the
+wrote `paid: 0`, and total token stayed at 1054. The lock avoids the work; the
 ledger guarantees the outcome.
 
-## Phase 9 — spending does not touch `xpAggregates`
+## Phase 9 — spending does not touch `tokenAggregates`
 
-With a single counter, buying a 500 XP frame would drop the buyer down every
+With a single counter, buying a 500 tokens frame would drop the buyer down every
 leaderboard — engaging with the gamification would penalise you in it. So:
-**earned** XP (`xpAggregates`, never decremented, what the table ranks) and
-**balance** (`earned − profiles.xpSpent`, what a purchase draws on). Spends are
+**earned** token (`tokenAggregates`, never decremented, what the table ranks) and
+**balance** (`earned − profiles.tokenSpent`, what a purchase draws on). Spends are
 recorded in the ledger with a negative amount for audit but never touch the
 aggregates.
 
@@ -261,7 +261,7 @@ it bridged nothing.
 
 ## Phase 9 — competition ranking, and not by preference
 
-Equal XP shares a rank and the next distinct score skips (1, 2, 2, 4).
+Equal token shares a rank and the next distinct score skips (1, 2, 2, 4).
 Positional ranking (index + 1) would be simpler, but a user outside the page
 learns their rank from `countDocuments({xp: {$gt: mine}}) + 1`, and the two
 would disagree: two people on the same score would be told different positions
@@ -301,7 +301,7 @@ do. For the same reason `POST /reports` does not echo `xpFrozen` back: whether
 someone else's earning is suspended is not the reporter's business, and telling
 them turns the threshold into a game to probe.
 
-## Phase 10 — freezing XP takes three distinct reporters, not three reports
+## Phase 10 — freezing token takes three distinct reporters, not three reports
 
 If one person could freeze anyone by reporting them three times, everyone who
 politely declined a conversation would be a target.
@@ -317,7 +317,7 @@ comment and the code disagreed, and a test caught it.)
 
 Better Auth's collections store ids as **ObjectId**; our domain collections
 store the **string** form, because `profiles._id` _is_ the user id and
-`xpAggregates`'s `<userId>:<period>` and `dailyActivity`'s `<userId>:<day>` keys
+`tokenAggregates`'s `<userId>:<period>` and `dailyActivity`'s `<userId>:<day>` keys
 only work with a string `_id`.
 
 The consequence: `deleteMany({ userId: '6a8f...' })` against `session` matches
@@ -560,15 +560,15 @@ though it were the container is what let them drift apart.
 ## Reversed — v1 token balances migrate after all
 
 The original decision retired the token _and_ dropped the balances. On
-2026-08-27 the owner reversed the second half: balances come across as XP.
+2026-08-27 the owner reversed the second half: balances come across as token.
 
 Part of the original reasoning turned out to rest on a wrong belief.
 `CHECKOUT_COLLECTION` looks like a purchase log and is not one — its fields are
 `distribution`, `baseAmount`, `text`, `image`, `audio`, `streak`, `badges`,
 `onlineMin`, which is a daily payout broken down by activity. v1's version of
-the daily XP pool. There is no Stripe integration and no purchase flow; the
+the daily token pool. There is no Stripe integration and no purchase flow; the
 client only lists checkouts. So migrating balances cannot smuggle money-bought
-currency into a system whose rule is that XP is never purchasable. That rule
+currency into a system whose rule is that tokens are never purchasable. That rule
 survives the reversal intact.
 
 ## Measuring before converting, and what it found
@@ -578,18 +578,18 @@ engineering question, and it was worth measuring rather than assuming.
 
 `scripts/inspect-v1-economy.ts` reads the live wallet and streak collections.
 1403 wallets hold 6,079,895 tokens: median 20, p90 9,136, p99 37,821, max
-2,277,521, with 266 at zero. A very active day in v2 is about 700 XP.
+2,277,521, with 266 at zero. A very active day in v2 is about 700 tokens.
 
-Credited 1:1 to _earned_ XP, that puts the p99 user level with roughly 54
+Credited 1:1 to _earned_ token, that puts the p99 user level with roughly 54
 consecutive days of maximum activity, the top account at about nine years, and
 injects 608 days of the entire daily pool at once. The all-time and yearly
 tables become a permanent v1 ranking.
 
 Two ways out were put to the owner: credit the spendable **balance** instead of
-earned XP (Faz 9 already separates the two — aggregates rank, balance is
-spent), or credit earned XP but divide it down.
+earned tokens (Faz 9 already separates the two — aggregates rank, balance is
+spent), or credit earned tokens but divide it down.
 
-**Decided: earned XP, divided by 100.** The top account starts about 32 days
+**Decided: earned tokens, divided by 100.** The top account starts about 32 days
 ahead of a maximally active newcomer rather than nine years, which is a real
 head start that can still be closed. Balance-crediting would have protected the
 table completely, but it also would have meant a v1 veteran's history never
@@ -600,11 +600,11 @@ The accepted cost is that everyone under 100 tokens converts to nothing, which
 at a median of 20 is more than half of them. That is what the **welcome-back
 bonus** is for: it is the thing that rewards a median user for coming back,
 while the conversion recognises the people who genuinely accumulated. Since
-`awardXp` writes no row for a zero amount, those users are left with no
+`awardTokens` writes no row for a zero amount, those users are left with no
 meaningless ledger entry either.
 
-In code: `XP_RULES.legacyTokenDivisor`, `XP_RULES.welcomeBackBonus`,
-`legacyTokensToXp()`, and two new ledger kinds. The divisor being config rather
+In code: `TOKEN_RULES.legacyTokenDivisor`, `TOKEN_RULES.welcomeBackBonus`,
+`convertLegacyTokens()`, and two new ledger kinds. The divisor being config rather
 than a literal matters — the right number is a judgement about two economies,
 and the ledger is append-only, so a recompute stays possible.
 

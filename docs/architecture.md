@@ -22,7 +22,7 @@ learning. Discovery _ranks_ by mutual fit, but listing is not a gate — there i
 **no match/like/swipe mechanic**. Pro can message anyone; free can start 5 new
 conversations per rolling 24 hours and reply to everything they receive without
 limit. HelloTalk/Tandem, not Tinder. Users correct each other's sentences, and
-the whole thing is wrapped in a game: streaks, XP, leaderboards. Mobile
+the whole thing is wrapped in a game: streaks, token, leaderboards. Mobile
 (iOS/Android) and web come out of **one Expo codebase**. Minimum age **18**.
 
 **v2 stays open source** — BSD 3-Clause, public repo. That is an architectural
@@ -55,7 +55,7 @@ Appwrite did four jobs for v1: auth, realtime, file storage, and
 **document-level authorisation**. The last one matters most — "only these two
 people can read this message" used to be a database guarantee and is now our
 API's responsibility. Two more responsibilities join it in the same layer:
-**entitlement checks** and the **integrity of the XP economy**.
+**entitlement checks** and the **integrity of the token economy**.
 
 Verified external constraints:
 
@@ -86,22 +86,25 @@ v2 breaks both:
    gender + country + level (CEFR) + min/max age filters, and
    `settings/visitors.page` offers "who viewed me", both **free**. In v2 they
    are Pro.
-2. **The token is retired.** v1 ships `wallet.service` + `token.service`,
-   `WALLET_COLLECTION`, `CHECKOUT_COLLECTION`, a `/token` leaderboard endpoint
-   and two token pages. v2 replaces it with non-transferable **XP**, and
-   **balances are not migrated.**
+2. **The token stays, but everything it implied goes.** v1's homepage sells a
+   "Learn to Earn" token and the litepaper describes something tradable,
+   staked and eventually listed. v2 keeps the **name** and drops all of that:
+   LangX Token becomes an in-app point, earned by practising and teaching,
+   spent on a streak freeze and cosmetics. Balances carry over, divided by 100
+   (see "Gamification"). The trading, staking and marketplace claims must come
+   off the site — see [`token-messaging-brief.md`](./token-messaging-brief.md).
 
 This is communication work, and it is part of the delivery:
 
 - `langx.io` homepage: rewrite the "no in-app purchases" / "lifetime free"
   claims and the "Learn to Earn" section.
 - `langx.io/terms-conditions`: dated 7 June 2024. Add subscription terms,
-  cancellation, renewal, and XP's non-transferability. **Clean up §11** — today
+  cancellation, renewal, and the token's non-transferability. **Clean up §11** — today
   it contains both "under-18s may not use this" and "our users may be children,
   we follow the Families policy / COPPA". 18+ wins.
-- Privacy policy: new backend, Sentry, location, gender, activity/XP data.
-- The `docs.langx.io` litepaper: state plainly that the token is not in the MVP
-  and that XP is not transferable.
+- Privacy policy: new backend, Sentry, location, gender, activity/token data.
+- The `docs.langx.io` litepaper: state plainly that the on-chain design in it
+  is not being built, and that tokens are not transferable.
 - Store listing copy and the **App Privacy / Data Safety** forms.
 - **Check Play Console's "target audience" declaration** — a Families
   declaration changes Data Safety, ad SDK rules and content policy entirely,
@@ -128,11 +131,11 @@ This is communication work, and it is part of the delivery:
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                               |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                       |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                             |
-| Gamification        | **In the MVP**: streak + XP + daily pool + 4 leaderboards. Non-transferable XP                                                                                                                                                                                                                                                                |
+| Gamification        | **In the MVP**: streak + token + daily pool + 4 leaderboards. Non-transferable token                                                                                                                                                                                                                                                          |
 | **Token**           | **v1's token system is retired**; wallet/checkout/token leaderboard are not migrated, balances are dropped                                                                                                                                                                                                                                    |
 | **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Pro: unlimited within fair use                                                                                                                                                                                            |
 | **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`)                                                                                                                                                                                                                     |
-| XP sinks            | **Only** streak freeze + cosmetics (frame/title). XP can never buy a Pro feature                                                                                                                                                                                                                                                              |
+| Token sinks         | **Only** streak freeze + cosmetics (frame/title). Tokens can never buy a Pro feature                                                                                                                                                                                                                                                          |
 | Streak condition    | At least one **meaningful action** per day (send a message or write a correction) — opening the app does not count                                                                                                                                                                                                                            |
 | Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                |
 | Storage             | S3-compatible abstraction; **moving to R2**, B2 reachable by config                                                                                                                                                                                                                                                                           |
@@ -149,10 +152,10 @@ A public repo puts four items on the plan:
 1. **No secrets.** No key ever lives in the repo. `.env.example` plus the
    platform's secret store. Things that legitimately _are_ public (RevenueCat
    SDK public key, Stripe publishable key) get names that make that obvious.
-2. **Enforcement does not rest on secrecy.** Quotas, entitlement, XP rules and
+2. **Enforcement does not rest on secrecy.** Quotas, entitlement, token rules and
    anti-abuse thresholds are all readable. That is accepted: the defence is
    server-side validation, rate limiting and idempotency, not "nobody knows".
-   `XP_RULES` and `PLAN_LIMITS` are config, so weights can change at deploy.
+   `TOKEN_RULES` and `PLAN_LIMITS` are config, so weights can change at deploy.
 3. **Forks can disable the paywall.** Open source plus a Pro tier makes that
    inherently possible. It is a consequence of the model, not a bug; revenue
    comes from the instance we host.
@@ -182,7 +185,7 @@ A public repo puts four items on the plan:
 - Validation: zod + `fastify-type-provider-zod`. Indexes are declared in
   `src/db/indexes.ts` and applied at boot by `ensureIndexes()`.
 - `socket.io`, `pino`, Sentry.
-- **Scheduled work:** the daily XP pool, account purging and streak reminders.
+- **Scheduled work:** the daily token pool, account purging and streak reminders.
   A unique `{job, periodKey}` in `jobRuns` makes a double run physically
   impossible.
 
@@ -244,7 +247,7 @@ repository functions, and access control lives there:
 - Discovery and profile queries always filter through `blocks`
 
 **Socket events pass through the same guards.** The WebSocket must not become a
-back door around authorisation, quota or XP.
+back door around authorisation, quota or token.
 
 ## Monetization
 
@@ -318,22 +321,25 @@ what is left and when the next slot opens.
   subscription group setup, paid apps agreement, bank and tax details, Play
   subscription products. All of it is a prerequisite.
 
-## Gamification: streaks and the XP economy
+## Gamification: streaks and the token economy
 
-**The token is retired as a mechanic**, but **balances now migrate** — that
-part of the original decision was reversed on 2026-08-27. v1's `/token`
-leaderboard and its wallet/checkout UI do not come across; the balances do.
+The original plan retired the token outright and dropped the balances. Both
+halves were reversed on 2026-08-27: the **name stays** and the **balances
+migrate**. What does not come across is everything the name used to imply —
+the wallet and checkout UI, the `/token` leaderboard, and the on-chain
+roadmap.
 
-The reversal is safe because nothing in v1 was ever purchased: `CHECKOUT_COLLECTION`
-is a daily payout calculation, not a purchase log (see
-[`v1-reference.md`](./v1-reference.md)). So converting balances cannot put
-money-bought currency into a system whose rule is that **XP can never be
-bought, traded or withdrawn** — that rule still holds without exception.
+**LangX Token cannot be bought, sold, traded, staked, withdrawn or
+transferred, and can never unlock a Pro feature.** That rule holds without
+exception, and the reversal does not weaken it: nothing in v1 was ever
+purchased either. `CHECKOUT_COLLECTION` reads like a purchase log and is a
+daily payout calculation (see [`v1-reference.md`](./v1-reference.md)), so
+migrating balances cannot put money-bought currency into the system.
 
-What a converted token _becomes_ is still an open decision, and it is a
-question of scale rather than principle: at v1's magnitudes, crediting earned
-XP 1:1 would freeze the all-time table. See the measured distribution and the
-recommendation in `v1-reference.md`.
+Balances are credited to **earned** tokens, divided by
+`TOKEN_RULES.legacyTokenDivisor` (100). A question of scale rather than
+principle: v1 balances reach 2.28 million while a very active day here is
+about 700, so a 1:1 credit would freeze the all-time table for years.
 
 The ledger is **append-only, idempotent and period-bucketed** — correct
 engineering for any point economy (audit, dispute, recompute), and it is what
@@ -348,11 +354,11 @@ makes a one-off migration credit safe to apply exactly once.
   an action: same day is a no-op, previous day increments, a gap resets to 1.
 - The day is the **user's local day**. Timezone updates are rate-limited to
   stop someone farming a second day by moving their clock.
-- Milestones (7/30/100 days) pay bonus XP.
+- Milestones (7/30/100 days) pay bonus token.
 
-### Earning XP — two channels
+### Earning token — two channels
 
-**1) Direct XP**, immediate and deterministic:
+**1) Direct token**, immediate and deterministic:
 
 | Action               | Note                                                      |
 | -------------------- | --------------------------------------------------------- |
@@ -373,18 +379,18 @@ activityScore = w1·mutual conversations
 share = P × (activityScore / Σ activityScore)   [clamped to the ceiling]
 ```
 
-Weights are config in `XP_RULES`. The pool is deliberately **relative** —
+Weights are config in `TOKEN_RULES`. The pool is deliberately **relative** —
 making your share depend on everyone else's activity is what keeps the table
 worth watching.
 
 ### Data model
 
-- **`xpLedger`** (append-only): `{ userId, kind, amount, refId?, day, week,
+- **`tokenLedger`** (append-only): `{ userId, kind, amount, refId?, day, week,
 month, year, createdAt }`. **Unique `{ userId, kind, refId }`** → the same
   message or day can never be paid twice.
-- **`xpAggregates`**: `_id = '<userId>:<periodType>:<periodKey>'`. Atomic
+- **`tokenAggregates`**: `_id = '<userId>:<periodType>:<periodKey>'`. Atomic
   `$inc` on every award, index `{ periodType: 1, periodKey: 1, xp: -1 }`.
-  **This is XP's only source of truth** — no duplicate counter in `profiles`,
+  **This is token's only source of truth** — no duplicate counter in `profiles`,
   which would only drift.
 - **`dailyActivity`**: `_id = '<userId>:<day>'`, live counters the pool reads.
 - **`jobRuns`**: unique `{ job, periodKey }`, the cron idempotency lock.
@@ -392,7 +398,7 @@ month, year, createdAt }`. **Unique `{ userId, kind, refId }`** → the same
 ### Leaderboards
 
 Four tabs: **weekly / monthly / yearly / all time**. The query is
-`find({periodType, periodKey}).sort({xp:-1}).limit(100)` over `xpAggregates`.
+`find({periodType, periodKey}).sort({xp:-1}).limit(100)` over `tokenAggregates`.
 A user outside the top 100 gets their rank from
 `countDocuments({periodType, periodKey, xp: {$gt: mine}}) + 1`.
 
@@ -400,16 +406,16 @@ A user outside the top 100 gets their rank from
 has to be comparable. **Streaks use the local day.** The asymmetry is
 deliberate: one is about fairness, the other about how it feels.
 
-### Where XP is spent
+### Where tokens are spent
 
 **Only** two places: a **streak freeze** (rescuing one day) and **cosmetic
-frames and titles**. XP can never buy a Pro feature — if it could, Pro's value
-erodes and farming XP becomes a substitute for subscribing.
+frames and titles**. Tokens can never buy a Pro feature — if they could, Pro's
+value erodes and farming tokens becomes a substitute for subscribing.
 
 ### Anti-abuse
 
 The reciprocity requirement, per-partner caps, daily caps, a ramp-up for new
-accounts (no pool share in the first 24 hours), freezing the XP of a user who
+accounts (no pool share in the first 24 hours), freezing the token of a user who
 has been reported or blocked, and reversal via an `adjustment` row. **Every
 threshold is visible in the public repo** — the defence is server-side
 enforcement and idempotency, not secrecy.
@@ -453,7 +459,7 @@ write to them directly and never change their shape.
   entitlement: { tier: 'free' | 'pro', expiresAt?, willRenew?, store?, updatedAt },
   quota: { initiations: [Date], translations: [Date] },
   streak: { current, longest, lastQualifiedDay },
-  streakFreezes?, xpSpent?, cosmetics?, xpFrozenAt?,
+  streakFreezes?, tokenSpent?, cosmetics?, tokenFrozenAt?,
   stats: { lastActiveAt, messagesSent },
   deletedAt?,
   createdAt, updatedAt
@@ -619,7 +625,7 @@ creates accounts; GDPR additionally requires access and portability.
   `profiles.deletedAt` is written, the user drops out of every list, sessions
   are destroyed and push tokens deleted.
 - After 30 days a scheduler **hard-deletes**: `profiles`, Better Auth's
-  `user`/`session`/`account`, `blocks`, `devices`, `profileViews`, the XP
+  `user`/`session`/`account`, `blocks`, `devices`, `profileViews`, the token
   ledger and aggregates. Messages the user _sent_ stay in place with their
   content cleared — they are part of a conversation the other person is also a
   party to.
@@ -689,7 +695,7 @@ only thing that matters is preserving store identity.
 6. Translation service + usage quotas
 7. **Monetization:** RevenueCat (native + web), paywall, webhook → entitlement,
    quota, Pro filters, who-viewed-me + incognito
-8. **Gamification:** streak, XP ledger, daily pool, 4 leaderboards, streak
+8. **Gamification:** streak, token ledger, daily pool, 4 leaderboards, streak
    freeze + cosmetic sinks
 9. Push notifications (message / streak reminder)
 10. Block + report

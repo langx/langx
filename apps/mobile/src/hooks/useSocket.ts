@@ -39,7 +39,7 @@ export function useSocket(): void {
           },
         )
         void queryClient.invalidateQueries({ queryKey: keys.conversations })
-        void queryClient.invalidateQueries({ queryKey: keys.xp })
+        void queryClient.invalidateQueries({ queryKey: keys.tokens })
       })
 
       socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {

@@ -1,7 +1,7 @@
 import {
   ERROR_CODES,
   STREAK_FREEZE_SKU,
-  XP_RULES,
+  TOKEN_RULES,
   findCosmetic,
   periodKeys,
   utcDayKey,
@@ -11,10 +11,10 @@ import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
-import { readAggregates, type XpLedgerEntry } from './ledger'
+import { readAggregates, type TokenLedgerEntry } from './ledger'
 
 export function walletOf(profile: Profile, earned: number): Wallet {
-  const spent = profile.xpSpent ?? 0
+  const spent = profile.tokenSpent ?? 0
   return {
     earned,
     spent,
@@ -38,7 +38,7 @@ export interface PurchaseResult {
 }
 
 /**
- * Spends XP on the only two things it can buy: a streak freeze, or a cosmetic.
+ * Spends token on the only two things it can buy: a streak freeze, or a cosmetic.
  *
  * Race safety works the same way `consumeQuota` does — one atomic
  * `findOneAndUpdate` whose filter re-checks affordability against the document
@@ -65,31 +65,31 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
   if (!isFreeze && !cosmetic) {
     throw new ApiError(ERROR_CODES.NOT_FOUND, `Unknown item: ${sku}`)
   }
-  const price = isFreeze ? XP_RULES.sinks.streakFreeze : (cosmetic?.price ?? 0)
+  const price = isFreeze ? TOKEN_RULES.sinks.streakFreeze : (cosmetic?.price ?? 0)
 
   if (!isFreeze && (profile.cosmetics ?? []).includes(sku)) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You already own this item')
   }
-  if (isFreeze && (profile.streakFreezes ?? 0) >= XP_RULES.sinks.maxBankedStreakFreezes) {
+  if (isFreeze && (profile.streakFreezes ?? 0) >= TOKEN_RULES.sinks.maxBankedStreakFreezes) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
-      `You can bank at most ${XP_RULES.sinks.maxBankedStreakFreezes} streak freezes`,
+      `You can bank at most ${TOKEN_RULES.sinks.maxBankedStreakFreezes} streak freezes`,
     )
   }
 
   const grant = isFreeze
-    ? { $inc: { xpSpent: price, streakFreezes: 1 } }
-    : { $inc: { xpSpent: price }, $addToSet: { cosmetics: sku } }
+    ? { $inc: { tokenSpent: price, streakFreezes: 1 } }
+    : { $inc: { tokenSpent: price }, $addToSet: { cosmetics: sku } }
 
   const updated = await profiles.findOneAndUpdate(
     {
       _id: userId,
-      $expr: { $lte: [{ $add: [{ $ifNull: ['$xpSpent', 0] }, price] }, earned] },
+      $expr: { $lte: [{ $add: [{ $ifNull: ['$tokenSpent', 0] }, price] }, earned] },
       // Re-checked inside the atomic filter, not just above: two concurrent
       // buys of the same cosmetic would otherwise both pass the read-time
       // check and charge twice for one item.
       ...(isFreeze
-        ? { streakFreezes: { $not: { $gte: XP_RULES.sinks.maxBankedStreakFreezes } } }
+        ? { streakFreezes: { $not: { $gte: TOKEN_RULES.sinks.maxBankedStreakFreezes } } }
         : { cosmetics: { $ne: sku } }),
     },
     grant,
@@ -99,16 +99,16 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
   if (!updated) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
-      `Not enough XP — ${sku} costs ${price}, you have ${earned - (profile.xpSpent ?? 0)}`,
+      `Not enough token — ${sku} costs ${price}, you have ${earned - (profile.tokenSpent ?? 0)}`,
     )
   }
 
-  // Audit only. Negative amount, and `awardXp` is bypassed on purpose: a spend
-  // must not touch `xpAggregates`, or buying a frame would drop the buyer down
-  // every leaderboard. The table ranks XP earned, not XP held.
+  // Audit only. Negative amount, and `awardTokens` is bypassed on purpose: a spend
+  // must not touch `tokenAggregates`, or buying a frame would drop the buyer down
+  // every leaderboard. The table ranks token earned, not token held.
   const at = new Date()
   const keys = periodKeys(at)
-  await db.collection<XpLedgerEntry>(COLLECTIONS.xpLedger).insertOne({
+  await db.collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger).insertOne({
     _id: new ObjectId(),
     userId,
     kind: 'spend',

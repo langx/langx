@@ -5,7 +5,7 @@ import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
-import { awardForSend } from '../xp/awards'
+import { awardForSend } from '../tokens/awards'
 
 export interface Conversation {
   _id: ObjectId

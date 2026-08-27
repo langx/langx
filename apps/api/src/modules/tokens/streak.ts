@@ -8,7 +8,7 @@ import {
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
-import { awardXp } from './ledger'
+import { awardTokens } from './ledger'
 import { consumeStreakFreeze } from './wallet'
 
 export interface StreakResult {
@@ -17,7 +17,7 @@ export interface StreakResult {
   lastQualifiedDay: string
   /** True only for the action that actually credited today. */
   advanced: boolean
-  /** XP paid for crossing a milestone with this action; 0 otherwise. */
+  /** token paid for crossing a milestone with this action; 0 otherwise. */
   milestoneXp: number
   /** True when a banked freeze was spent to bridge a single missed day. */
   freezeUsed: boolean
@@ -27,7 +27,7 @@ export interface StreakResult {
  * The streak's day is the **user's local day**, deliberately unlike every
  * other bucket in the gamification system (see periods.ts). "Today" has to
  * feel like today or the mechanic loses its meaning; leaderboards, ledger rows
- * and XP caps stay on UTC so they remain globally comparable.
+ * and token caps stay on UTC so they remain globally comparable.
  *
  * An unset timezone falls back to UTC — `localDayKey` also swallows an
  * unparseable zone rather than throwing, because a bad string in a profile
@@ -106,7 +106,7 @@ export async function recordQualifyingAction(
   // `refId` is the day, so a milestone can only ever be paid once per user per
   // day even if the streak is manually replayed or recomputed.
   const bonus = streakMilestoneBonus(current)
-  const award = await awardXp(db, {
+  const award = await awardTokens(db, {
     userId: profile._id,
     kind: 'streak',
     amount: bonus,

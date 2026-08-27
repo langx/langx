@@ -83,13 +83,13 @@ export async function listBlocked(db: Db, blockerId: string): Promise<Block[]> {
 
 export interface ReportResult {
   report: Report
-  /** True when this report crossed the threshold and suspended the target's XP. */
+  /** True when this report crossed the threshold and suspended the target's token. */
   xpFrozen: boolean
 }
 
 /**
  * Files a report and, past `REPORTS_TO_FREEZE_XP` *distinct* reporters,
- * suspends the target's XP earning.
+ * suspends the target's token earning.
  *
  * Distinct reporters, not reports: otherwise one person could freeze anyone by
  * reporting them three times. Freezing stops the payout only — messages still
@@ -134,8 +134,8 @@ export async function reportUser(
     const result = await db
       .collection(COLLECTIONS.profiles)
       .updateOne(
-        { _id: input.userId as unknown as never, xpFrozenAt: { $exists: false } },
-        { $set: { xpFrozenAt: new Date() } },
+        { _id: input.userId as unknown as never, tokenFrozenAt: { $exists: false } },
+        { $set: { tokenFrozenAt: new Date() } },
       )
     xpFrozen = result.modifiedCount > 0
   }

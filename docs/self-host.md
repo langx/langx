@@ -58,11 +58,11 @@ Three schedulers start with the API. None of them is a cron expression — each
 asks "is there unfinished work?" on an interval, so a process that was down
 during the window catches up on its next tick instead of skipping silently.
 
-| Scheduler       | Interval | What it does                                                                                                                   |
-| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Daily XP pool   | 15 min   | Distributes a closed day's XP pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days. |
-| Account purge   | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                          |
-| Streak reminder | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day.                                                      |
+| Scheduler        | Interval | What it does                                                                                                                      |
+| ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Daily token pool | 15 min   | Distributes a closed day's token pool. Idempotent twice over: a `jobRuns` lock, and the ledger's unique index. Catches up 7 days. |
+| Account purge    | 1 hour   | Hard-deletes accounts past their 30-day grace period.                                                                             |
+| Streak reminder  | 30 min   | Sends the nudge at 20:00 in each user's own timezone, once per local day.                                                         |
 
 Running several API instances is safe. The pool's `jobRuns` unique index means
 only one instance can own a given day.

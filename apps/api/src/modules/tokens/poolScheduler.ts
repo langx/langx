@@ -49,13 +49,13 @@ export function startDailyPoolScheduler(
         const day = shiftDayKey(today, -back)
         const outcome = await runDailyPool(db, { day })
         if (outcome.ran) {
-          logger.info({ ...outcome.result }, 'daily XP pool distributed')
+          logger.info({ ...outcome.result }, 'daily token pool distributed')
         }
       }
     } catch (error) {
       // Never let a bad day kill the timer — the next tick retries, and the
       // `jobRuns` row for a day that failed mid-flight is what needs a human.
-      logger.error({ err: error }, 'daily XP pool run failed')
+      logger.error({ err: error }, 'daily token pool run failed')
     } finally {
       running = false
     }

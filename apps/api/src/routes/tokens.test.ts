@@ -1,4 +1,4 @@
-import { XP_RULES, localDayKey, shiftDayKey, utcDayKey, type XpSummary } from '@langx/shared'
+import { TOKEN_RULES, localDayKey, shiftDayKey, utcDayKey, type TokenSummary } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -10,7 +10,7 @@ import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
-import { awardXp, type XpLedgerEntry } from '../modules/xp/ledger'
+import { awardTokens, type TokenLedgerEntry } from '../modules/tokens/ledger'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -29,7 +29,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   }
 }
 
-describe('Faz 8 — streak, XP ledger and direct awards', () => {
+describe('Faz 8 — streak, token ledger and direct awards', () => {
   let replSet: MongoMemoryReplSet
   let handle: DbHandle
   let app: FastifyInstance
@@ -85,19 +85,19 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
     })
   }
 
-  async function summary(user: SignedUpUser): Promise<XpSummary> {
+  async function summary(user: SignedUpUser): Promise<TokenSummary> {
     const response = await app.inject({
       method: 'GET',
-      url: '/me/xp',
+      url: '/me/tokens',
       headers: { cookie: user.cookie },
     })
     expect(response.statusCode, response.body).toBe(200)
-    return response.json<XpSummary>()
+    return response.json<TokenSummary>()
   }
 
   function ledgerOf(userId: string) {
     return handle.db
-      .collection<XpLedgerEntry>(COLLECTIONS.xpLedger)
+      .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
       .find({ userId })
       .sort({ createdAt: 1 })
       .toArray()
@@ -168,10 +168,10 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
       await startConversation(sender, recipient.userId, 'merhaba')
 
       const body = await summary(sender)
-      expect(body.xp.all).toBe(XP_RULES.award.message)
-      expect(body.xp.year).toBe(XP_RULES.award.message)
-      expect(body.xp.month).toBe(XP_RULES.award.message)
-      expect(body.xp.week).toBe(XP_RULES.award.message)
+      expect(body.tokens.all).toBe(TOKEN_RULES.award.message)
+      expect(body.tokens.year).toBe(TOKEN_RULES.award.message)
+      expect(body.tokens.month).toBe(TOKEN_RULES.award.message)
+      expect(body.tokens.week).toBe(TOKEN_RULES.award.message)
       expect(body.today.messages).toBe(1)
       expect(body.today.distinctPartners).toBe(1)
       expect(await ledgerOf(sender.userId)).toHaveLength(1)
@@ -189,10 +189,10 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
       // the REST-and-socket double-delivery case, amplified.
       const results = await Promise.all(
         Array.from({ length: 10 }, () =>
-          awardXp(handle.db, {
+          awardTokens(handle.db, {
             userId: recipient.userId,
             kind: 'message',
-            amount: XP_RULES.award.message,
+            amount: TOKEN_RULES.award.message,
             refId: message._id.toHexString(),
             at: message.createdAt,
           }),
@@ -201,7 +201,7 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
 
       expect(results.every((r) => !r.awarded)).toBe(true)
       const after = await summary(recipient)
-      expect(after.xp.all).toBe(before.xp.all)
+      expect(after.tokens.all).toBe(before.tokens.all)
       expect(
         (await ledgerOf(recipient.userId)).filter((row) => row.refId === message._id.toHexString()),
       ).toHaveLength(1)
@@ -212,7 +212,7 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
 
       const results = await Promise.all(
         Array.from({ length: 10 }, () =>
-          awardXp(handle.db, {
+          awardTokens(handle.db, {
             userId: user.userId,
             kind: 'adjustment',
             amount: 42,
@@ -222,12 +222,12 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
       )
 
       expect(results.filter((r) => r.awarded)).toHaveLength(1)
-      expect((await summary(user)).xp.all).toBe(42)
+      expect((await summary(user)).tokens.all).toBe(42)
     })
 
     it('writes nothing at all for a zero award', async () => {
       const user = await newUser('xp-zero@example.com')
-      const result = await awardXp(handle.db, {
+      const result = await awardTokens(handle.db, {
         userId: user.userId,
         kind: 'adjustment',
         amount: 0,
@@ -247,14 +247,14 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
         .collection<{ _id: unknown }>(COLLECTIONS.messages)
         .findOne({ conversationId: { $exists: true } }, { sort: { createdAt: -1 } })
 
-      const before = (await summary(b)).xp.all
+      const before = (await summary(b)).tokens.all
       await correct(b.userId, conversationId, String(target?._id))
       const after = await summary(b)
 
       // b's correction is also the first time b has spoken, so the
       // conversation becomes mutual in the same send.
-      expect(after.xp.all - before).toBe(
-        XP_RULES.award.correction + XP_RULES.award.mutualConversation,
+      expect(after.tokens.all - before).toBe(
+        TOKEN_RULES.award.correction + TOKEN_RULES.award.mutualConversation,
       )
       expect(after.today.corrections).toBe(1)
     })
@@ -264,36 +264,36 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
       const b = await newUser('xp-mutual-b@example.com')
       const conversationId = await startConversation(a, b.userId, 'selam')
 
-      const aBefore = (await summary(a)).xp.all
+      const aBefore = (await summary(a)).tokens.all
       await reply(b.userId, conversationId, 'selam sana da')
 
-      const aAfter = (await summary(a)).xp.all
-      const bAfter = (await summary(b)).xp.all
-      expect(aAfter - aBefore).toBe(XP_RULES.award.mutualConversation)
-      expect(bAfter).toBe(XP_RULES.award.message + XP_RULES.award.mutualConversation)
+      const aAfter = (await summary(a)).tokens.all
+      const bAfter = (await summary(b)).tokens.all
+      expect(aAfter - aBefore).toBe(TOKEN_RULES.award.mutualConversation)
+      expect(bAfter).toBe(TOKEN_RULES.award.message + TOKEN_RULES.award.mutualConversation)
 
       // Every further message in the same thread earns the message award only.
       await reply(b.userId, conversationId, 'nasilsin')
-      expect((await summary(b)).xp.all).toBe(bAfter + XP_RULES.award.message)
-      expect((await summary(a)).xp.all).toBe(aAfter)
+      expect((await summary(b)).tokens.all).toBe(bAfter + TOKEN_RULES.award.message)
+      expect((await summary(a)).tokens.all).toBe(aAfter)
     })
 
-    it('stops paying message XP past the per-partner daily cap', async () => {
+    it('stops paying message token past the per-partner daily cap', async () => {
       const a = await newUser('xp-cap-a@example.com')
       const b = await newUser('xp-cap-b@example.com')
       const conversationId = await startConversation(a, b.userId, 'first')
 
-      const cap = XP_RULES.caps.messagesPerPartnerPerDay
+      const cap = TOKEN_RULES.caps.messagesPerPartnerPerDay
       for (let i = 1; i < cap; i++) {
         await reply(a.userId, conversationId, `message ${i}`)
       }
-      const atCap = (await summary(a)).xp.all
+      const atCap = (await summary(a)).tokens.all
       expect((await summary(a)).today.messages).toBe(cap)
 
       await reply(a.userId, conversationId, 'one over the cap')
       const overCap = await summary(a)
-      expect(overCap.xp.all).toBe(atCap)
-      // The activity counter still moves — the cap withholds XP, it does not
+      expect(overCap.tokens.all).toBe(atCap)
+      // The activity counter still moves — the cap withholds token, it does not
       // pretend the message never happened (the pool cron reads these).
       expect(overCap.today.messages).toBe(cap + 1)
     }, 60_000)
@@ -351,20 +351,20 @@ describe('Faz 8 — streak, XP ledger and direct awards', () => {
       const b = await newUser('xp-milestone-b@example.com')
       const conversationId = await startConversation(a, b.userId, 'day six')
 
-      const before = (await summary(a)).xp.all
-      const milestone = XP_RULES.streakMilestones[7] ?? 0
+      const before = (await summary(a)).tokens.all
+      const milestone = TOKEN_RULES.streakMilestones[7] ?? 0
       const streakDay = localDayKey(new Date(), 'UTC')
       await setStreak(a.userId, 6, shiftDayKey(streakDay, -1))
       await reply(a.userId, conversationId, 'day seven')
 
       const after = await summary(a)
       expect(after.streak.current).toBe(7)
-      expect(after.xp.all - before).toBe(XP_RULES.award.message + milestone)
+      expect(after.tokens.all - before).toBe(TOKEN_RULES.award.message + milestone)
 
       // Replaying the same day cannot pay the bonus again.
       await setStreak(a.userId, 6, shiftDayKey(streakDay, -1))
       await reply(a.userId, conversationId, 'replayed day seven')
-      expect((await summary(a)).xp.all - before).toBe(2 * XP_RULES.award.message + milestone)
+      expect((await summary(a)).tokens.all - before).toBe(2 * TOKEN_RULES.award.message + milestone)
     })
   })
 

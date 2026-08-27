@@ -4,7 +4,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
 import { blockedUserIds } from '../moderation/blocks'
-import { awardForSend } from '../xp/awards'
+import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
 
@@ -16,10 +16,10 @@ export interface SendResult {
 /**
  * Every send (text or correction) is: write the message, update the
  * conversation's denormalized `lastMessage`/`unread`/`bothSpoke`, then pay
- * out XP and advance the streak — the same sequence regardless of type,
+ * out token and advance the streak — the same sequence regardless of type,
  * factored here so `sendTextMessage` and `sendCorrection` can't drift on what
  * "sending a message" means for the conversation document, and so the socket
- * transport earns XP through exactly the same code REST does.
+ * transport earns tokens through exactly the same code REST does.
  */
 async function recordMessage(
   db: Db,

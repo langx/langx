@@ -1,8 +1,8 @@
 import { leaderboardQuerySchema, purchaseSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
-import { getLeaderboard } from '../modules/xp/leaderboard'
-import { getWallet, purchase } from '../modules/xp/wallet'
+import { getLeaderboard } from '../modules/tokens/leaderboard'
+import { getWallet, purchase } from '../modules/tokens/wallet'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {

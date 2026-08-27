@@ -1,5 +1,5 @@
 import type { Db } from 'mongodb'
-import type { SchedulerLogger } from '../xp/poolScheduler'
+import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { purgeExpiredAccounts } from './deletion'
 
 /** Hourly is plenty — the grace period is 30 days, nothing here is urgent. */

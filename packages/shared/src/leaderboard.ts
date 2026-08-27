@@ -17,7 +17,7 @@ export type LeaderboardQuery = z.infer<typeof leaderboardQuerySchema>
 
 export const leaderboardEntrySchema = z.object({
   /**
-   * Competition ranking: equal XP shares a rank and the next distinct score
+   * Competition ranking: equal token shares a rank and the next distinct score
    * skips (1, 2, 2, 4). It has to match how a viewer outside the top N gets
    * their own rank — a count of everyone strictly above them — or the two
    * numbers would disagree on a tie.
@@ -27,7 +27,7 @@ export const leaderboardEntrySchema = z.object({
   handle: z.string(),
   displayName: z.string(),
   avatarUrl: z.string().optional(),
-  xp: z.number().int(),
+  tokens: z.number().int(),
   streak: z.number().int(),
   isViewer: z.boolean(),
 })
@@ -40,7 +40,7 @@ export const leaderboardSchema = z.object({
   /** The caller's own standing, always present even when outside the page. */
   viewer: z.object({
     rank: z.number().int().nullable(),
-    xp: z.number().int(),
+    tokens: z.number().int(),
     inPage: z.boolean(),
   }),
 })

@@ -126,8 +126,8 @@ export async function purgeExpiredAccounts(
         $or: [{ blockerId: userId }, { blockedId: userId }],
       }),
       db.collection(COLLECTIONS.reports).deleteMany({ reporterId: userId }),
-      db.collection(COLLECTIONS.xpLedger).deleteMany({ userId }),
-      db.collection(COLLECTIONS.xpAggregates).deleteMany({ userId }),
+      db.collection(COLLECTIONS.tokenLedger).deleteMany({ userId }),
+      db.collection(COLLECTIONS.tokenAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.dailyActivity).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
       db.collection(COLLECTIONS.appwriteIdMap).deleteMany({ userId }),
@@ -152,7 +152,7 @@ export async function purgeExpiredAccounts(
  * someone else's words under the banner of their own data rights.
  */
 export async function exportUserData(db: Db, userId: string): Promise<DataExport> {
-  const [profile, conversations, messages, xpLedger, subscriptions, blocks, views, devices] =
+  const [profile, conversations, messages, tokenLedger, subscriptions, blocks, views, devices] =
     await Promise.all([
       db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
       db
@@ -160,7 +160,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
         .find({ participants: userId })
         .toArray(),
       db.collection<Message>(COLLECTIONS.messages).find({ senderId: userId }).toArray(),
-      db.collection(COLLECTIONS.xpLedger).find({ userId }).toArray(),
+      db.collection(COLLECTIONS.tokenLedger).find({ userId }).toArray(),
       db.collection(COLLECTIONS.subscriptions).find({ userId }).toArray(),
       db.collection(COLLECTIONS.blocks).find({ blockerId: userId }).toArray(),
       db.collection(COLLECTIONS.profileViews).find({ viewerId: userId }).toArray(),
@@ -174,7 +174,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     profile,
     conversations,
     messages,
-    xpLedger,
+    tokenLedger,
     subscriptions,
     blocks,
     profileViews: views,

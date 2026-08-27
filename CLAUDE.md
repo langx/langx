@@ -11,11 +11,11 @@ decisions look arbitrary until you know what went wrong the first time.
 
 ## Layout
 
-| Path              | What                                                                      |
-| ----------------- | ------------------------------------------------------------------------- |
-| `apps/api`        | Fastify + Better Auth + Socket.io, one process                            |
-| `apps/mobile`     | Expo app; the web build comes out of the same code                        |
-| `packages/shared` | zod schemas, DTO types, `PLAN_LIMITS`, `XP_RULES`, languages, error codes |
+| Path              | What                                                                         |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `apps/api`        | Fastify + Better Auth + Socket.io, one process                               |
+| `apps/mobile`     | Expo app; the web build comes out of the same code                           |
+| `packages/shared` | zod schemas, DTO types, `PLAN_LIMITS`, `TOKEN_RULES`, languages, error codes |
 
 ## Commands
 
@@ -43,11 +43,11 @@ document-level permissions, so it is the whole authorisation story, not a style
 preference.
 
 **Socket events pass through the same guards as REST.** The WebSocket must
-never become a back door around authorisation, quota or XP.
+never become a back door around authorisation, quota or token accounting.
 
 **Indexes are declared in `apps/api/src/db/indexes.ts`** and applied at boot.
 Never create one by hand. The uniques there are invariants, not optimisations —
-they make double-awarded XP and twice-run cron jobs physically impossible.
+they make double-awarded tokens and twice-run cron jobs physically impossible.
 
 **Two id worlds.** Better Auth's collections (`user`, `session`, `account`,
 `verification`) store ids as ObjectId; ours store the string form. Use

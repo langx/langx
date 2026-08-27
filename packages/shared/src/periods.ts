@@ -13,7 +13,7 @@
 export const PERIOD_TYPES = ['all', 'year', 'month', 'week'] as const
 export type PeriodType = (typeof PERIOD_TYPES)[number]
 
-/** `_id` of an xpAggregates document. */
+/** `_id` of an tokenAggregates document. */
 export function aggregateId(userId: string, periodType: PeriodType, periodKey: string): string {
   return `${userId}:${periodType}:${periodKey}`
 }

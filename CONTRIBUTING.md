@@ -7,7 +7,7 @@ Thanks for helping out. LangX is BSD-3 licensed and stays open source.
 ```
 apps/api        Fastify + MongoDB API (auth, REST, Socket.io — one process)
 apps/mobile     Expo app; iOS, Android and web come out of this codebase
-packages/shared zod schemas, DTO types, language/CEFR tables, PLAN_LIMITS, XP_RULES
+packages/shared zod schemas, DTO types, language/CEFR tables, PLAN_LIMITS, TOKEN_RULES
 packages/config shared tsconfig + eslint presets
 ```
 
@@ -64,7 +64,7 @@ CI runs the same four.
   permissions we had on Appwrite, so a direct `db.collection(...)` call in a
   route handler is a security regression.
 - **Socket events go through the same guards as REST.** WebSocket must not
-  become a back door around authorization, quota or XP accounting.
+  become a back door around authorization, quota or token accounting.
 - **Authorization, quota and entitlement decisions are server-side.** The client
   may cache them for UI, never for enforcement.
 - **Indexes are declarative.** Add them to `apps/api/src/db/indexes.ts`; they are

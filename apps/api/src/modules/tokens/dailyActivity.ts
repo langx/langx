@@ -5,13 +5,13 @@ import { COLLECTIONS } from '../../db/collections'
 /**
  * One document per user per **UTC** day. Two readers depend on it:
  *
- * - the XP caps in `awards.ts`, which need a counter that is incremented
+ * - the token caps in `awards.ts`, which need a counter that is incremented
  *   atomically and read back in the same round-trip;
  * - the daily-pool cron (Faz 9), which closes a UTC day and needs every
  *   active user's counters without scanning the ledger.
  *
  * UTC, not the user's local day, for the reason spelled out on
- * `XpRules.caps` — a local-day bucket lets a timezone change re-open a cap
+ * `TokenRules.caps` — a local-day bucket lets a timezone change re-open a cap
  * inside a single leaderboard period.
  */
 export interface DailyActivity {

@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb'
  * Better Auth's own collections (`user`, `session`, `account`, `verification`)
  * store ids as **ObjectId**. Every domain collection we own stores the *string*
  * form, because `profiles._id` is the user id and a string `_id` is what makes
- * `xpAggregates`'s `<userId>:<period>` keys and `dailyActivity`'s
+ * `tokenAggregates`'s `<userId>:<period>` keys and `dailyActivity`'s
  * `<userId>:<day>` keys work at all.
  *
  * The failure this prevents is silent: `deleteMany({ userId: '6a8f...' })`

@@ -33,10 +33,10 @@ export const reportSchema = z.object({
 export type ReportInput = z.infer<typeof reportSchema>
 
 /**
- * How many distinct reporters it takes to suspend a user's XP automatically.
+ * How many distinct reporters it takes to suspend a user's token automatically.
  *
  * Deliberately not one: a single report is too easy to weaponise against
- * someone who simply declined a conversation. Freezing XP is reversible and
+ * someone who simply declined a conversation. Freezing token is reversible and
  * invisible to everyone else, which is what makes an automatic threshold
  * acceptable at all — nothing here bans anyone, that stays a human decision.
  */

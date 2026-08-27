@@ -8,7 +8,7 @@ import { COLLECTIONS, type CollectionName } from './collections'
  * production while passing locally — don't.
  *
  * Uniques here are not optimisations, they are invariants: they make duplicate
- * matches, double-awarded XP and twice-run cron jobs physically impossible
+ * matches, double-awarded tokens and twice-run cron jobs physically impossible
  * rather than merely unlikely.
  */
 type IndexSpec = Record<CollectionName, IndexDescription[]>
@@ -116,7 +116,7 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
   ],
 
-  [COLLECTIONS.xpLedger]: [
+  [COLLECTIONS.tokenLedger]: [
     // The single most important index here: the same message cannot be awarded
     // twice, whether it arrived over REST or the socket, and a re-run cron
     // cannot pay the daily pool out again.
@@ -130,9 +130,9 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { day: 1 }, name: 'day' },
   ],
 
-  [COLLECTIONS.xpAggregates]: [
+  [COLLECTIONS.tokenAggregates]: [
     // Top-N for a leaderboard tab in one index scan.
-    { key: { periodType: 1, periodKey: 1, xp: -1 }, name: 'leaderboard' },
+    { key: { periodType: 1, periodKey: 1, tokens: -1 }, name: 'leaderboard' },
     { key: { userId: 1 }, name: 'user' },
   ],
 

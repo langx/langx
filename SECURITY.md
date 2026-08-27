@@ -26,7 +26,7 @@ we review security-relevant changes:
   the platform secret store. `.env.example` carries placeholder keys only.
   Anything prefixed `EXPO_PUBLIC_` is compiled into the client bundle and is
   world-readable — never put a secret behind that prefix.
-- **No security through obscurity.** Quota limits, entitlement checks and XP
+- **No security through obscurity.** Quota limits, entitlement checks and token
   anti-abuse thresholds are all readable in this repository. That is fine, and
   it is why every one of them is enforced server-side with atomic writes and
   idempotency keys rather than by hiding the rule. A change that moves an

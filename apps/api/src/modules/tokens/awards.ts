@@ -1,15 +1,15 @@
-import { XP_RULES } from '@langx/shared'
+import { TOKEN_RULES } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
 import { recordActivity } from './dailyActivity'
-import { awardXp } from './ledger'
+import { awardTokens } from './ledger'
 import { recordQualifyingAction, type StreakResult } from './streak'
 
 export interface SendAward {
-  /** XP credited to the sender for this send, milestone and mutual bonus included. */
-  xp: number
+  /** token credited to the sender for this send, milestone and mutual bonus included. */
+  tokens: number
   streak: StreakResult | null
   /** True when this send crossed the daily or per-partner message cap. */
   capped: boolean
@@ -27,7 +27,7 @@ function mutualRefId(conversation: Conversation): string {
  * writes its message inline because it also has to charge initiation quota).
  *
  * Nothing here is best-effort-swallowed. The only failure this path expects is
- * a duplicate award, which `awardXp` already answers with a no-op; anything
+ * a duplicate award, which `awardTokens` already answers with a no-op; anything
  * else is the database being unavailable, in which case the message insert
  * that precedes it would have failed too. Silently catching would trade a
  * loud, recoverable error for a quiet drift in everyone's balance.
@@ -56,9 +56,9 @@ export async function awardForSend(
   // still sends and the activity counters below still move — only the payout
   // stops, so a reviewer who clears the report can reconcile what was withheld
   // from a history that was never interrupted.
-  const frozen = Boolean(sender?.xpFrozenAt)
+  const frozen = Boolean(sender?.tokenFrozenAt)
 
-  let xp = 0
+  let tokens = 0
   let capped = false
 
   if (message.type === 'correction') {
@@ -66,14 +66,14 @@ export async function awardForSend(
     // (`PLAN_LIMITS.correctionsPer24h`) and teaching is the behaviour the
     // whole economy exists to reward.
     await recordActivity(db, { userId: senderId, kind: 'correction', at })
-    const award = await awardXp(db, {
+    const award = await awardTokens(db, {
       userId: senderId,
       kind: 'correction',
-      amount: frozen ? 0 : XP_RULES.award.correction,
+      amount: frozen ? 0 : TOKEN_RULES.award.correction,
       refId: message._id.toHexString(),
       at,
     })
-    xp += award.amount
+    tokens += award.amount
   } else {
     const activity = await recordActivity(db, {
       userId: senderId,
@@ -83,17 +83,17 @@ export async function awardForSend(
     })
     const perPartner = partnerId ? (activity.perPartner[partnerId] ?? 0) : 0
     capped =
-      activity.messages > XP_RULES.caps.messagesPerDay ||
-      perPartner > XP_RULES.caps.messagesPerPartnerPerDay
+      activity.messages > TOKEN_RULES.caps.messagesPerDay ||
+      perPartner > TOKEN_RULES.caps.messagesPerPartnerPerDay
 
-    const award = await awardXp(db, {
+    const award = await awardTokens(db, {
       userId: senderId,
       kind: 'message',
-      amount: capped || frozen ? 0 : XP_RULES.award.message,
+      amount: capped || frozen ? 0 : TOKEN_RULES.award.message,
       refId: message._id.toHexString(),
       at,
     })
-    xp += award.amount
+    tokens += award.amount
   }
 
   // Reciprocity: paid to *both* sides the first time both have spoken, because
@@ -110,14 +110,14 @@ export async function awardForSend(
       // The partner is not the one under review, so their half of the
       // reciprocity bonus is unaffected by the sender's freeze.
       const frozenHere = participantId === senderId ? frozen : false
-      const award = await awardXp(db, {
+      const award = await awardTokens(db, {
         userId: participantId,
         kind: 'message',
-        amount: frozenHere ? 0 : XP_RULES.award.mutualConversation,
+        amount: frozenHere ? 0 : TOKEN_RULES.award.mutualConversation,
         refId: mutualRefId(conversation),
         at,
       })
-      if (participantId === senderId) xp += award.amount
+      if (participantId === senderId) tokens += award.amount
     }
   }
 
@@ -125,7 +125,7 @@ export async function awardForSend(
   // must not be interleaved with it. `sender` is the pre-image, so its
   // `streak` is exactly the state this action is deciding against.
   const streak = sender ? await recordQualifyingAction(db, sender, at) : null
-  if (streak) xp += streak.milestoneXp
+  if (streak) tokens += streak.milestoneXp
 
-  return { xp, streak, capped }
+  return { tokens, streak, capped }
 }

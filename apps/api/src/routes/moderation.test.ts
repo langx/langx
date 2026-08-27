@@ -18,7 +18,7 @@ import { loadEnv } from '../env'
 import { purgeExpiredAccounts } from '../modules/account/deletion'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
-import { awardXp } from '../modules/xp/ledger'
+import { awardTokens } from '../modules/tokens/ledger'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -128,7 +128,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       })
 
       await startConversation(me, them.userId, 'before the block')
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: them.userId,
         kind: 'adjustment',
         amount: 99_999,
@@ -212,14 +212,14 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
   })
 
   describe('reports', () => {
-    it('freezes XP only once distinct reporters cross the threshold', async () => {
+    it('freezes token only once distinct reporters cross the threshold', async () => {
       const target = await newUser()
       const reporters = []
       for (let i = 0; i < REPORTS_TO_FREEZE_XP; i++) reporters.push(await newUser())
 
       const frozenAfter = async () =>
         (await handle.db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: target.userId }))
-          ?.xpFrozenAt
+          ?.tokenFrozenAt
 
       for (const reporter of reporters.slice(0, REPORTS_TO_FREEZE_XP - 1)) {
         expect(
@@ -241,7 +241,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       const profile = await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
         .findOne({ _id: target.userId })
-      expect(profile?.xpFrozenAt).toBeUndefined()
+      expect(profile?.tokenFrozenAt).toBeUndefined()
     })
 
     it('stops a frozen user earning while still delivering their messages', async () => {
@@ -255,13 +255,13 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       })
       await handle.db
         .collection<Profile>(COLLECTIONS.profiles)
-        .updateOne({ _id: frozen.userId }, { $set: { xpFrozenAt: new Date() } })
+        .updateOne({ _id: frozen.userId }, { $set: { tokenFrozenAt: new Date() } })
 
       const started = await startConversation(frozen, other.userId, 'still talking')
       expect(started.statusCode).toBe(201) // the message went through
 
-      const summary = await get(frozen, '/me/xp')
-      expect(summary.json<{ xp: { all: number } }>().xp.all).toBe(0) // but paid nothing
+      const summary = await get(frozen, '/me/tokens')
+      expect(summary.json<{ tokens: { all: number } }>().tokens.all).toBe(0) // but paid nothing
       // Activity is still recorded, so a reviewer clearing the freeze can reconcile.
       expect(summary.json<{ today: { messages: number } }>().today.messages).toBe(1)
     })
@@ -381,7 +381,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       const leaving = await newUser()
       const partner = await newUser()
       await startConversation(leaving, partner.userId, 'last words')
-      await awardXp(handle.db, {
+      await awardTokens(handle.db, {
         userId: leaving.userId,
         kind: 'adjustment',
         amount: 10,
@@ -408,8 +408,8 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
 
       for (const collection of [
         COLLECTIONS.profiles,
-        COLLECTIONS.xpLedger,
-        COLLECTIONS.xpAggregates,
+        COLLECTIONS.tokenLedger,
+        COLLECTIONS.tokenAggregates,
         COLLECTIONS.devices,
         COLLECTIONS.user,
         COLLECTIONS.session,

@@ -34,8 +34,8 @@ export const COLLECTIONS = {
   subscriptions: 'subscriptions',
 
   // gamification
-  xpLedger: 'xpLedger',
-  xpAggregates: 'xpAggregates',
+  tokenLedger: 'tokenLedger',
+  tokenAggregates: 'tokenAggregates',
   dailyActivity: 'dailyActivity',
 
   /** One row per user per local day a streak nudge was sent — the dedupe key. */
