@@ -38,8 +38,8 @@ the wild.
 | Collection  | Id                     | Migrated to v2?                                            |
 | ----------- | ---------------------- | ---------------------------------------------------------- |
 | `users`     | `65103e2d3a6b4d9494c8` | **Yes** — profiles + handle reservations                   |
-| `rooms`     | `6507510fc71f989d5d1c` | No — see below                                             |
-| `messages`  | `65075108a4025a4f5bd7` | No — see below                                             |
+| `rooms`     | `6507510fc71f989d5d1c` | **Yes** — staged, imported once both sides return          |
+| `messages`  | `65075108a4025a4f5bd7` | **Yes** — with attachments; see below                      |
 | `languages` | `6511599e2bf0bb1b4d2c` | No — v2 uses a compile-time ISO 639-1 table                |
 | `wallet`    | `66622b8a000b305b236c` | **Balances only** — credited at 1:100 on restore           |
 | `visits`    | `659dfb10b82eedbe1d6c` | No — v2 starts `profileViews` fresh                        |
@@ -120,27 +120,38 @@ In code: `TOKEN_RULES.legacyTokenDivisor` (100), `TOKEN_RULES.welcomeBackBonus`
 Weekly and monthly tables are unaffected by any of this; only yearly and
 all-time were ever at stake.
 
-## Conversation history is not migrated — and that is still an open question
+## Conversation history — migrated, but only when both people come back
 
-The MVP migrates profiles, avatars and usernames. Rooms and messages are left
-behind, which means a returning user finds their username and their profile but
-an empty inbox.
+This was left open for a long time, on three obstacles. All three are now
+answered, and `scripts/migrate-messages.ts` plus
+`modules/handles/legacyConversations.ts` are the answer.
 
-The data is there and reachable (`rooms` and `messages` above, plus the
-`message` and `audio` buckets), so this remains a decision rather than a
-constraint. Three things make it harder than the profile migration, and all
-three would need answering first:
-
-- **Identity.** A message references two Appwrite user ids, and a v2 user id
-  only exists once that person signs up again. A conversation can only be
-  reconstructed when _both_ participants have returned — so the import cannot
-  be a one-shot ETL at cutover; it would have to run lazily, as people arrive.
+- **Identity.** A v1 message references two Appwrite user ids, and a v2 user id
+  only exists once that person signs up again — so this can never be a one-shot
+  ETL at cutover. It is not one. The ETL only _stages_ (`legacyRooms`,
+  `legacyMessages`); the import runs per pair, whenever the second of the two
+  returns.
 - **Consent.** Restoring one person's messages necessarily restores the other
-  person's words too, and the second person may never come back to agree to it.
-- ~~**Media.**~~ **No longer a blocker.** v2 now sends and renders images and
-  voice messages, so an imported thread can come across whole instead of as a
-  text-only skeleton with holes where the attachments were. The `message` and
-  `audio` buckets can be copied the same way avatars are.
+  person's words. So a thread waits — possibly forever — until **both**
+  participants have a v2 account. One person returning imports nothing.
+- ~~**Media.**~~ Gone. v2 sends and renders images and voice notes, so a thread
+  arrives whole. The `message` and `audio` buckets are copied the same way
+  avatars are.
 
-Left explicitly undecided. The identifiers are recorded here so the option
-stays open.
+The one thing worth knowing about the ETL: it copies the attachments **at
+staging time**, long before any thread is eligible to be imported, and that is
+deliberate. v1's Appwrite is being switched off; the ETL run is the last moment
+those 4,874 files can be read at all. Fetching them lazily at import time would
+work right up until the day it silently didn't, and by then the originals would
+be gone.
+
+What does _not_ come across: messages deleted in v1 (deleted means deleted),
+and threads where neither participant was stageable (they can never satisfy the
+both-sides rule, so their bytes are not worth copying). What does: v1's read
+state, mirrored rather than flattened — a message someone never opened is still
+waiting for them.
+
+No tokens are awarded and no quota consumed for an imported message. That work
+was already paid for in v1, and the payment is coming back as the converted
+balance; paying twice would mint the same activity again and hand a long thread
+a leaderboard win.

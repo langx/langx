@@ -506,6 +506,11 @@ the tiebreak for a true keyset.
 **`subscriptions`** — RevenueCat events plus current state; unique `eventId`.
 **`handleReservations`** — unique `handle`, index on `legacyEmailHash`.
 **`legacyProfiles`** — v1 profile data staged by the ETL, keyed by Appwrite id.
+**`legacyRooms`** / **`legacyMessages`** — v1 chat history, staged with its
+attachments already copied into our bucket. Consumed pairwise: a thread is
+imported only once _both_ of its participants have returned, so these outlive
+any single restore. `messages.legacyId` is a sparse unique index, which is what
+makes a replayed import write nothing twice.
 **`profileViews`** — unique `{viewerId, viewedId}` (upsert), 90-day TTL. No row
 is written at all for an incognito viewer.
 **`translationCache`** — unique `{sourceHash, targetLang}`, TTL.

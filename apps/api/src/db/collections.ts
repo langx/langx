@@ -20,6 +20,14 @@ export const COLLECTIONS = {
    * claims their handle.
    */
   legacyProfiles: 'legacyProfiles',
+  /**
+   * v1 chat threads and their messages, staged by the same ETL. Separate from
+   * `legacyProfiles` because a thread needs *both* of its people to come back
+   * before it can be imported, so these records outlive the restore of any one
+   * user and are consumed pairwise rather than per account.
+   */
+  legacyRooms: 'legacyRooms',
+  legacyMessages: 'legacyMessages',
   // No `likes`/`matches` — there's no match gate. A conversation starts
   // directly; `conversations.pairKey` is what used to be `matches.pairKey`.
   conversations: 'conversations',

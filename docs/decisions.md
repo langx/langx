@@ -656,6 +656,51 @@ The plan's verification list named them; the suite did not cover them.
 - **Corrections are unlimited on the free tier.** Fifty in a row, and nothing
   moves, because corrections are not a tracked bucket at all.
 
+## A v1 conversation needs both people back before it comes back
+
+The import waits for the second participant, however long that takes, and
+imports nothing when only one has returned.
+
+It would have been far simpler to import a thread the moment one side restored.
+That is also the version that republishes someone's words into an account they
+never opened, on the strength of a decision made by the other person. A
+conversation is jointly authored; one author cannot consent for both. So
+`legacyRooms` records sit staged until both sides have a v2 account, and a
+thread whose second person never comes back is simply never imported.
+
+This makes the whole thing a per-pair event rather than a cutover ETL, which is
+why there are two halves: `scripts/migrate-messages.ts` only stages, and
+`importLegacyConversations` runs at each restore. Whoever returns second finds
+the first already marked, so the ordering needs no bookkeeping of its own.
+
+## The attachments are copied years before anything reads them
+
+The ETL stages a thread's photos and voice notes into our bucket immediately,
+even though most of those threads will not be eligible to import for months and
+some never will be. Copying lazily at import time would be strictly cheaper.
+
+It would also be wrong. v1's Appwrite is being switched off, and the ETL run is
+the last moment those 4,874 files can be read. A lazy fetch works perfectly
+until the day the source is gone, and then it fails silently for every thread
+still waiting — the ones belonging to the users slowest to return, which is to
+say the ones this whole exercise is for. The bytes are cheap; the second chance
+does not exist.
+
+Rooms where _neither_ participant was staged are skipped, which is where the
+cost actually gets controlled: those can never satisfy the both-sides rule.
+
+## Imported messages pay out nothing
+
+No token, no quota, no streak. The messages were already paid for in v1, and
+that payment is coming back as the converted balance the restore credits —
+awarding again would mint the same work twice. It would also mean a returning
+user with a 400-message thread arrives at the top of the leaderboard for
+something they did in 2023.
+
+Read state is the opposite call: v1's `seen` flag is mirrored rather than
+flattened to "all read". Flattening keeps the unread badge tidy at the cost of
+permanently hiding a message someone genuinely never opened.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

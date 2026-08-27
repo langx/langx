@@ -5,6 +5,7 @@ import { awardTokens } from '../tokens/ledger'
 import type { Profile } from '../profiles/profiles'
 import { resolveHandleClaim } from './handleReservations'
 import { hashLegacyEmail } from './legacyEmailHash'
+import { importLegacyConversations } from './legacyConversations'
 import { findLegacyProfile, markRestored, type LegacyProfile } from './legacyProfiles'
 
 export type RestoreOutcome =
@@ -14,7 +15,14 @@ export type RestoreOutcome =
   | { kind: 'already-restored' }
   /** The v1 data was too incomplete to build a profile from; onboarding pre-fills it instead. */
   | { kind: 'needs-onboarding'; missing: string[] }
-  | { kind: 'restored'; handle: string; tokensCredited: number; frozenStreak: number }
+  | {
+      kind: 'restored'
+      handle: string
+      tokensCredited: number
+      frozenStreak: number
+      /** Threads whose other side had also returned, so they came back too. */
+      conversationsImported: number
+    }
 
 /**
  * The single rule: **the moment a v2 account's email is verified, by any
@@ -95,12 +103,32 @@ export async function restoreByHash(
   }
 
   const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)
+  const conversations = await tryImportConversations(db, userId, legacy._id)
 
   return {
     kind: 'restored',
     handle: legacy.handle,
     tokensCredited,
     frozenStreak: legacy.frozenStreak ?? 0,
+    conversationsImported: conversations,
+  }
+}
+
+/**
+ * Chat history is restored here rather than by each of the three callers, for
+ * the reason the rest of this module exists: one rule, one place. It is the
+ * last step and its failure is swallowed, because everything above it has
+ * already been written — the profile, the handle, the tokens — and throwing
+ * now would report a restore that in fact happened as a failure. The
+ * `sweepLegacyImports` timer retries whatever is dropped here.
+ */
+async function tryImportConversations(db: Db, userId: string, legacyId: string): Promise<number> {
+  try {
+    const result = await importLegacyConversations(db, userId, legacyId)
+    return result.conversationsImported
+  } catch (error) {
+    console.error('[legacy-restore] conversation import failed', { userId, error })
+    return 0
   }
 }
 

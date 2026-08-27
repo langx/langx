@@ -70,6 +70,15 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { restoredBy: 1 }, name: 'restored_by', sparse: true },
   ],
 
+  [COLLECTIONS.legacyRooms]: [
+    // "Which of this returning user's threads exist?" — the multikey lookup
+    // the import runs once per restore.
+    { key: { participants: 1 }, name: 'participants' },
+    { key: { importedAt: 1 }, name: 'imported_at', sparse: true },
+  ],
+
+  [COLLECTIONS.legacyMessages]: [{ key: { roomId: 1, createdAt: 1 }, name: 'room_created' }],
+
   [COLLECTIONS.conversations]: [
     // No match gate — a conversation starts directly the first time either
     // side sends a message. This unique index is what physically prevents a
@@ -85,6 +94,15 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.messages]: [
     { key: { conversationId: 1, createdAt: -1 }, name: 'conversation_created' },
     { key: { senderId: 1, createdAt: -1 }, name: 'sender_created' },
+    /**
+     * The whole safety net under the v1 message import. The importer inserts
+     * before it marks the room done, so a crash halfway leaves the room
+     * unclaimed and the next run replays it — this index is what makes that
+     * replay write nothing twice. Sparse because only imported messages carry
+     * a `legacyId`; every message sent in v2 has none, and a non-sparse unique
+     * index would let exactly one of them exist.
+     */
+    { key: { legacyId: 1 }, name: 'legacy_id_unique', unique: true, sparse: true },
   ],
 
   [COLLECTIONS.blocks]: [

@@ -34,6 +34,12 @@ export interface Message {
   body: string
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
   media?: MessageMedia
+  /**
+   * The v1 message id this was imported from — absent on everything sent in
+   * v2. Carried so `messages.legacy_id_unique` can refuse a second import of
+   * the same message, which is what lets the importer be replayed safely.
+   */
+  legacyId?: string
   readAt?: Date
   createdAt: Date
   /** Set when the sender's account was purged; the body is cleared, the row stays. */
@@ -41,7 +47,7 @@ export interface Message {
 }
 
 /** `<minId>_<maxId>` — the same two people can never open a second conversation. */
-function pairKeyFor(a: string, b: string): string {
+export function pairKeyFor(a: string, b: string): string {
   return [a, b].sort().join('_')
 }
 

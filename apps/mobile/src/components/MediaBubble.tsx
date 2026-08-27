@@ -1,5 +1,6 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
+import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
 import { colors, font, radius, spacing } from '../lib/theme'
@@ -62,18 +63,31 @@ export function AudioBubble({ message, mine }: { message: MessageDto; mine: bool
  * scrolling back through a conversation should not re-download every picture.
  * The aspect ratio comes from the message so the row reserves the right space
  * before the bytes arrive and the list does not jump.
+ *
+ * When the message carries no dimensions the picture measures itself on load
+ * instead of falling back to a square. A fixed 1:1 with `contentFit: cover`
+ * does not merely guess wrong, it *crops* — a portrait photo would lose its
+ * top and bottom permanently, with no way for the viewer to see the rest.
+ * v1's messages have no stored dimensions beyond what the migration could
+ * read out of the file header, so this is the path a good number of imported
+ * photos take.
  */
 export function ImageBubble({ message }: { message: MessageDto }) {
   const { width, height, url } = message.media ?? {}
-  const ratio = width && height ? width / height : 1
+  const [measured, setMeasured] = useState<number | null>(null)
+  const ratio = width && height ? width / height : measured
   if (!url) return null
 
   return (
     <Image
       source={{ uri: url }}
-      style={[styles.image, { aspectRatio: ratio }]}
+      style={[styles.image, ratio ? { aspectRatio: ratio } : styles.imageUnmeasured]}
       contentFit="cover"
       transition={150}
+      onLoad={({ source }) => {
+        if (ratio || !source.width || !source.height) return
+        setMeasured(source.width / source.height)
+      }}
     />
   )
 }
@@ -85,4 +99,6 @@ const styles = StyleSheet.create({
   trackFill: { borderRadius: 2, height: 3 },
   duration: { ...font.caption, fontVariant: ['tabular-nums'] },
   image: { backgroundColor: colors.surface, borderRadius: radius.md, width: 220 },
+  /** Holds a plausible slot until `onLoad` reports the real shape. */
+  imageUnmeasured: { height: 220 },
 })
