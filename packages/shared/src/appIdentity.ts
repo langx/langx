@@ -56,9 +56,17 @@ export const APP_LINK_HOST = 'app.langx.io'
  *
  * Both are public information: Android serves them from every device that has
  * the app installed. Nothing secret goes in this list.
- *
- * Empty means Android App Links do not verify and `https://app.langx.io/...`
- * opens the browser — which is exactly what happens today, so an empty list is
- * not a regression. `docs/release-runbook.md` blocks the release on filling it.
  */
-export const ANDROID_CERT_SHA256: readonly string[] = []
+export const ANDROID_CERT_SHA256: readonly string[] = [
+  // v1's release key — `langx-angular/android/release.keystore`, alias `key0`,
+  // issued 10 Jan 2024 to New Chapter Technology LLC, valid until 2049. This
+  // is the certificate the published 0.15.0 build was signed with.
+  //
+  // Whether it is *sufficient* depends on Play App Signing: if it is enabled,
+  // Google re-signs the bundle and store installs present Google's app signing
+  // certificate instead, which has a different fingerprint and has to be added
+  // alongside this one. Direct installs — internal testing APKs, side-loads,
+  // `eas build --local` — present this one either way, so it belongs here
+  // regardless of how that question resolves. See docs/release-runbook.md.
+  '17:D3:A5:F3:FD:53:32:D3:A3:D2:4F:3F:C0:99:30:21:45:F7:DE:A6:B3:A9:C3:18:6D:B4:3F:34:15:64:9D:A0',
+]

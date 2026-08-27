@@ -17,11 +17,16 @@ sits in the working copy, gitignored — and signing was done by hand rather tha
 in CI, so the password is not in `gradle.properties`, `build.gradle` or any
 workflow. Only the owner has it.
 
-That turns the worst case into a formality, but confirm which of these applies:
+**And the password works.** Confirmed 27 August 2026 by listing the keystore:
+one entry, alias `key0`, a 2048-bit RSA key issued 10 January 2024 to New
+Chapter Technology LLC and valid until January 2049, SHA-256
+`17:D3:A5:F3:…:15:64:9D:A0`. So the best case below is the actual case, and the
+two recovery paths are recorded only because losing the password later would
+put us back on one of them.
 
 | State                                       | What it means                                                                                                                                                                                 |
 | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **We hold the keystore and its password**   | Best case, and the likely one. Import it with `eas credentials` and submit normally.                                                                                                          |
+| **We hold the keystore and its password**   | **This is where we are.** Import it with `eas credentials` and submit normally.                                                                                                               |
 | **Play App Signing enabled, password lost** | Still recoverable. Generate a new keystore, export `upload_certificate.pem`, and request an upload key reset in Play Console. Google keeps the app signing key, so nothing changes for users. |
 | **Disabled, and the password is lost**      | The Android listing cannot be updated. There is no workaround.                                                                                                                                |
 
@@ -81,17 +86,26 @@ curl -s  https://app.langx.io/.well-known/assetlinks.json | jq .
 Apple's CDN caches the AASA for up to 24 hours, so fix it _before_ the build
 goes out for review, not after.
 
-### The Android fingerprint is the one thing missing
+### The Android fingerprint depends on Play App Signing
 
-- [ ] `ANDROID_CERT_SHA256` in `packages/shared/src/appIdentity.ts` filled in,
-      and `assetlinks.json` updated to match (a test enforces that they agree)
+`ANDROID_CERT_SHA256` in `packages/shared/src/appIdentity.ts` holds one
+fingerprint, `17:D3:…:9D:A0` — v1's release key (alias `key0`, issued 10
+January 2024 to New Chapter Technology LLC, valid to 2049), which is the
+certificate the published 0.15.0 build was signed with. `assetlinks.json`
+lists the same value and a test fails if the two ever disagree.
 
-It is empty today, which means the Android half is inert. The value comes from
-**Play Console → Test and release → App integrity → App signing key
-certificate**, as colon-separated uppercase hex — and it must be the _app
-signing_ key, not the upload key, because Google re-signs the bundle and the
-device only ever sees Google's signature. Add the upload key's fingerprint too
-if anyone side-loads internal builds; the list takes several.
+That is sufficient on its own **only if Play App Signing is disabled**. With it
+enabled Google re-signs the bundle, so a store install presents _Google's_ app
+signing certificate — a different fingerprint. Store users would then fail
+verification while a side-loaded APK passed, which is a confusing way to find
+out.
+
+- [ ] Read **Play Console → Test and release → App integrity → App signing**
+      and add the **app signing key** SHA-256 if one is listed there
+
+The list takes several fingerprints and there is no cost to carrying both: the
+key above still covers internal-testing APKs, side-loads and
+`eas build --local`, none of which go through Google's re-signing.
 
 Nothing here is secret. Android serves these fingerprints from every device
 that has the app installed, which is why they belong in a public repo.

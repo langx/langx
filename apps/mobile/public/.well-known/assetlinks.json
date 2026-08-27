@@ -7,7 +7,9 @@
     "target": {
       "namespace": "android_app",
       "package_name": "tech.newchapter.languageXchange",
-      "sha256_cert_fingerprints": []
+      "sha256_cert_fingerprints": [
+        "17:D3:A5:F3:FD:53:32:D3:A3:D2:4F:3F:C0:99:30:21:45:F7:DE:A6:B3:A9:C3:18:6D:B4:3F:34:15:64:9D:A0"
+      ]
     }
   }
 ]
