@@ -63,6 +63,13 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { expiresAt: 1 }, name: 'expires_at' },
   ],
 
+  [COLLECTIONS.legacyProfiles]: [
+    // The lookup onboarding does: same hash the handle reservation carries.
+    { key: { legacyEmailHash: 1 }, name: 'legacy_email_hash' },
+    { key: { handle: 1 }, name: 'handle' },
+    { key: { restoredBy: 1 }, name: 'restored_by', sparse: true },
+  ],
+
   [COLLECTIONS.conversations]: [
     // No match gate — a conversation starts directly the first time either
     // side sends a message. This unique index is what physically prevents a

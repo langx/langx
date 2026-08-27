@@ -9,6 +9,7 @@ import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { resolveHandleClaim } from '../handles/handleReservations'
+import { findLegacyProfile, markRestored } from '../handles/legacyProfiles'
 
 export interface Profile {
   _id: string
@@ -126,6 +127,29 @@ export async function createProfile(
   if (input.timezone !== undefined) {
     profile.timezone = input.timezone
     profile.timezoneUpdatedAt = now
+  }
+
+  // A returning v1 user gets their migrated media and streak back. Only the
+  // things a client must not be able to assert about itself are restored here
+  // — the form already carries the text fields, pre-filled from the same
+  // record (see GET /handle-reservation). The `markRestored` gate is what
+  // makes this happen exactly once: two concurrent onboarding attempts for one
+  // legacy account cannot both take it.
+  if (legacyEmailHash) {
+    const legacy = await findLegacyProfile(db, legacyEmailHash)
+    if (legacy && legacy.handle === input.handle && (await markRestored(db, legacy._id, userId))) {
+      if (legacy.avatarUrl) profile.avatarUrl = legacy.avatarUrl
+      if (legacy.photos.length > 0) {
+        profile.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
+      }
+      // The streak's *length* carries over, but not its currency: the last
+      // qualifying day stays null, so the streak is a record of what they did
+      // in v1 and continues only if they act today. Carrying the day across
+      // would hand back a live streak nobody earned in v2.
+      if (legacy.legacyStreak && legacy.legacyStreak > 0) {
+        profile.streak = { current: 0, longest: legacy.legacyStreak, lastQualifiedDay: null }
+      }
+    }
   }
 
   try {

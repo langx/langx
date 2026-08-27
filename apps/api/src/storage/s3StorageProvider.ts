@@ -1,6 +1,6 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import type { StorageProvider, UploadUrl } from './StorageProvider'
+import type { StorageProviderWithPut, UploadUrl } from './StorageProvider'
 
 const UPLOAD_URL_TTL_SECONDS = 5 * 60
 
@@ -19,7 +19,7 @@ export interface S3StorageConfig {
  * / `createStorageProvider`). `forcePathStyle` is the safe default across
  * S3-compatible providers that aren't AWS itself.
  */
-export class S3StorageProvider implements StorageProvider {
+export class S3StorageProvider implements StorageProviderWithPut {
   readonly #client: S3Client
   readonly #bucket: string
   readonly #publicBaseUrl: string
@@ -55,5 +55,17 @@ export class S3StorageProvider implements StorageProvider {
       contentType,
       expiresInSeconds: UPLOAD_URL_TTL_SECONDS,
     }
+  }
+
+  async putObject(key: string, body: Uint8Array, contentType: string): Promise<string> {
+    await this.#client.send(
+      new PutObjectCommand({
+        Bucket: this.#bucket,
+        Key: key,
+        Body: body,
+        ContentType: contentType,
+      }),
+    )
+    return `${this.#publicBaseUrl}/${key}`
   }
 }

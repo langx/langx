@@ -12,6 +12,14 @@ export const COLLECTIONS = {
   // domain
   profiles: 'profiles',
   handleReservations: 'handleReservations',
+  /**
+   * v1 profile data, staged by the Faz 11 ETL and keyed by the Appwrite
+   * document id. Not `profiles`: a migrated user has no v2 account yet — the
+   * password hashes could not come across — so there is no user id to key a
+   * real profile on. Onboarding restores from here when the returning user
+   * claims their handle.
+   */
+  legacyProfiles: 'legacyProfiles',
   // No `likes`/`matches` — there's no match gate. A conversation starts
   // directly; `conversations.pairKey` is what used to be `matches.pairKey`.
   conversations: 'conversations',
