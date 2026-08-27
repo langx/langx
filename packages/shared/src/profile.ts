@@ -33,6 +33,7 @@ function learningDoesNotOverlapNative(data: {
 }
 
 const MAX_LANGUAGES = 5
+export const CITY_MAX_LENGTH = 100
 export const MAX_INTERESTS = 10
 
 /**
@@ -92,7 +93,7 @@ export const onboardingProfileSchema = z
     bio: bioSchema.optional(),
     interests: interestsSchema.optional(),
     country: countryCodeSchema.optional(),
-    city: z.string().trim().min(1).max(100).optional(),
+    city: z.string().trim().min(1).max(CITY_MAX_LENGTH).optional(),
     timezone: z.string().trim().min(1).optional(),
     /**
      * Uploaded during onboarding, when there is no profile yet to `confirm`
@@ -124,7 +125,7 @@ export const updateProfileSchema = z
     learning: learningLanguagesSchema,
     interests: interestsSchema,
     country: countryCodeSchema,
-    city: z.string().trim().min(1).max(100),
+    city: z.string().trim().min(1).max(CITY_MAX_LENGTH),
     timezone: z.string().trim().min(1),
     settings: z.object({
       discoverable: z.boolean(),

@@ -122,6 +122,17 @@ export async function buildApp({
     origin: env.TRUSTED_ORIGINS.length > 0 ? env.TRUSTED_ORIGINS : true,
     // Better Auth uses cookies on web; native sends the session as a header.
     credentials: true,
+    /**
+     * `@fastify/cors` defaults to `GET,HEAD,POST` — which silently made every
+     * `PATCH` and `DELETE` impossible from the web build. Editing a profile
+     * and unregistering a push token both failed at the preflight, before the
+     * request existed, so the server logged nothing and the client could only
+     * report a generic failure.
+     *
+     * Native was unaffected (no preflight), which is exactly why it went
+     * unnoticed: the two platforms disagreed about whether the app worked.
+     */
+    methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
   })
 
   await app.register(rateLimit, {

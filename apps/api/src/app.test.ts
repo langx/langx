@@ -61,6 +61,28 @@ describe('Faz 0 — boot', () => {
     expect(response.json()).toMatchObject({ status: 'ok', db: 'up', version: '2.0.0' })
   })
 
+  /**
+   * `@fastify/cors` defaults to `GET,HEAD,POST`, which made every `PATCH` and
+   * `DELETE` impossible from the web build — editing a profile and
+   * unregistering a push token failed at the preflight, before the request
+   * existed. Native has no preflight and was unaffected, so the two platforms
+   * quietly disagreed about whether the app worked.
+   */
+  it('allows the methods the app actually uses through a preflight', async () => {
+    for (const method of ['PATCH', 'DELETE']) {
+      const response = await app.inject({
+        method: 'OPTIONS',
+        url: '/profiles/me',
+        headers: {
+          origin: 'http://localhost:8081',
+          'access-control-request-method': method,
+        },
+      })
+      const allowed = String(response.headers['access-control-allow-methods'] ?? '')
+      expect(allowed, `${method} must survive the preflight`).toContain(method)
+    }
+  })
+
   it('answers unknown routes with the shared error shape', async () => {
     const response = await app.inject({ method: 'GET', url: '/nope' })
 

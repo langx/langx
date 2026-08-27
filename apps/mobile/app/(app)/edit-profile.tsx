@@ -1,7 +1,10 @@
 import {
   BIO_MAX_LENGTH,
   CEFR_LEVELS,
+  CITY_MAX_LENGTH,
   DISPLAY_NAME_MAX_LENGTH,
+  INTEREST_SUGGESTIONS,
+  MAX_INTERESTS,
   PLAN_LIMITS,
   getLanguage,
   type CefrLevel,
@@ -85,6 +88,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
   const [country, setCountry] = useState(profile?.country ?? '')
+  const [city, setCity] = useState(profile?.city ?? '')
+  const [interests, setInterests] = useState<string[]>(profile?.interests ?? [])
   const [gender, setGender] = useState<Gender>(profile?.gender ?? 'undisclosed')
   const [native, setNative] = useState<string[]>(profile?.nativeLanguages.map((l) => l.code) ?? [])
   const [learning, setLearning] = useState<{ code: string; level: CefrLevel }[]>(
@@ -139,6 +144,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         bio: bio.trim(),
         gender,
         ...(country ? { country } : {}),
+        ...(city.trim() ? { city: city.trim() } : {}),
+        interests,
         nativeLanguages: native.map((code) => ({ code })),
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
       })
@@ -186,6 +193,46 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         multiline
       />
       <CountryPicker label="Country" value={country} onChange={setCountry} />
+
+      {/*
+        `city` has been in the schema and declared in the store privacy form
+        from the start, and no screen ever asked for it — the declaration was
+        describing a field that was always empty.
+      */}
+      <FormField
+        label="City (optional)"
+        value={city}
+        onChangeText={setCity}
+        placeholder="Istanbul"
+        autoCapitalize="words"
+        maxLength={CITY_MAX_LENGTH}
+      />
+
+      {/*
+        Interests were collected nowhere until the onboarding step landed, and
+        anyone who predates it — or skipped it — still had no way to add them.
+        The shared-interest term in the discovery score (weight 0.5) is a
+        permanent zero for those accounts.
+      */}
+      <Text style={styles.label}>
+        Interests {interests.length > 0 ? `(${interests.length}/${MAX_INTERESTS})` : ''}
+      </Text>
+      <View style={styles.row}>
+        {INTEREST_SUGGESTIONS.map((interest) => {
+          const chosen = interests.includes(interest)
+          return (
+            <Chip
+              key={interest}
+              label={interest}
+              selected={chosen}
+              onPress={() => {
+                if (chosen) setInterests(interests.filter((each) => each !== interest))
+                else if (interests.length < MAX_INTERESTS) setInterests([...interests, interest])
+              }}
+            />
+          )
+        })}
+      </View>
 
       <Text style={styles.label}>Gender</Text>
       <View style={styles.row}>
