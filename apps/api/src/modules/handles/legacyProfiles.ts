@@ -27,7 +27,10 @@ export interface LegacyProfile {
   /** Migrated to our own bucket by the ETL; absent when media was skipped. */
   avatarUrl?: string
   photos: { url: string }[]
-  legacyStreak?: number
+  /** The user's *current* streak at their last v1 activity — what they can buy back. */
+  frozenStreak?: number
+  /** v1 token balance, converted at `TOKEN_RULES.legacyTokenDivisor` on restore. */
+  legacyTokenBalance?: number
   lastSeenAt?: Date
   migratedAt: Date
   /** Set once a v2 user has taken this data, so it is only restored once. */

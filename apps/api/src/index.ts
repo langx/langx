@@ -11,6 +11,7 @@ import { createTranslationProvider } from './translation/createTranslationProvid
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
 import { startPurgeScheduler } from './modules/account/purgeScheduler'
 import { ExpoPushSender } from './modules/push/devices'
+import { AppwriteLegacyVerifier, DisabledLegacyVerifier } from './modules/handles/legacyLogin'
 import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startDailyPoolScheduler } from './modules/tokens/poolScheduler'
 
@@ -32,7 +33,25 @@ async function main(): Promise<void> {
 
   const push = new ExpoPushSender()
 
-  const app = await buildApp({ env, client, db, auth, storage, translation, revenueCat, push })
+  // The bridge only exists while v1 is still running. Without APPWRITE_* it is
+  // simply off, and a returning user goes through the normal reset-password
+  // route instead.
+  const legacyVerifier =
+    env.APPWRITE_ENDPOINT && env.APPWRITE_PROJECT_ID
+      ? new AppwriteLegacyVerifier(env.APPWRITE_ENDPOINT, env.APPWRITE_PROJECT_ID)
+      : new DisabledLegacyVerifier()
+
+  const app = await buildApp({
+    env,
+    client,
+    db,
+    auth,
+    storage,
+    translation,
+    revenueCat,
+    push,
+    legacyVerifier,
+  })
 
   // Declarative indexes are applied before the first request is served, so a
   // fresh environment can never answer a discovery query without them.

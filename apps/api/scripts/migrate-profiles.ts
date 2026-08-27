@@ -45,6 +45,7 @@ import { supportsPut } from '../src/storage/StorageProvider'
 const DATABASE_ID = '650750f16cd0c482bb83'
 const USERS_COLLECTION = '65103e2d3a6b4d9494c8'
 const USER_BUCKET = '6515f94d20becd47cb40' // "user" bucket — profilePic + otherPics
+const WALLET_COLLECTION = '66622b8a000b305b236c'
 const PAGE_SIZE = 100
 
 interface V1Profile {
@@ -70,9 +71,37 @@ interface Summary {
   badHandle: number
   noLanguages: number
   staged: number
+  withBalance: number
   avatarsCopied: number
   photosCopied: number
   mediaFailures: number
+}
+
+/**
+ * Every v1 token balance, keyed by the same id the profile uses.
+ *
+ * Fetched once into memory rather than queried per profile: 1403 wallets is
+ * nothing to hold, and the alternative is 3479 round trips to save it.
+ */
+async function fetchAllWallets(databases: Databases): Promise<Map<string, number>> {
+  const balances = new Map<string, number>()
+  let cursor: string | undefined
+  for (;;) {
+    const queries = [Query.limit(PAGE_SIZE)]
+    if (cursor) queries.push(Query.cursorAfter(cursor))
+    const page = await databases.listDocuments({
+      databaseId: DATABASE_ID,
+      collectionId: WALLET_COLLECTION,
+      queries,
+    })
+    for (const doc of page.documents) {
+      const balance = (doc as { balance?: unknown }).balance
+      if (typeof balance === 'number' && balance > 0) balances.set(doc.$id, balance)
+    }
+    if (page.documents.length < PAGE_SIZE) break
+    cursor = page.documents.at(-1)?.$id
+  }
+  return balances
 }
 
 async function fetchAllUserEmails(users: Users): Promise<Map<string, string>> {
@@ -162,6 +191,10 @@ async function main(): Promise<void> {
   console.log('Fetching v1 Auth users…')
   const emailById = await fetchAllUserEmails(users)
   console.log(`  ${emailById.size} Auth users loaded`)
+
+  console.log('Fetching v1 token balances…')
+  const balanceById = await fetchAllWallets(databases)
+  console.log(`  ${balanceById.size} wallets with a positive balance`)
   console.log(
     apply
       ? `Applying${skipMedia ? ' (text only, media skipped)' : ' with media copy'}…`
@@ -175,6 +208,7 @@ async function main(): Promise<void> {
     badHandle: 0,
     noLanguages: 0,
     staged: 0,
+    withBalance: 0,
     avatarsCopied: 0,
     photosCopied: 0,
     mediaFailures: 0,
@@ -232,7 +266,12 @@ async function main(): Promise<void> {
     }
     if (typeof doc.lastSeen === 'string') record.lastSeenAt = new Date(doc.lastSeen)
     const streaks = doc.streaks as { daystreak?: unknown } | undefined
-    if (typeof streaks?.daystreak === 'number') record.legacyStreak = streaks.daystreak
+    if (typeof streaks?.daystreak === 'number') record.frozenStreak = streaks.daystreak
+    // Credited at `TOKEN_RULES.legacyTokenDivisor` when they come back, not
+    // here — staging the raw balance keeps the divisor a decision that can
+    // still change without re-running the ETL.
+    const balance = balanceById.get(doc.$id)
+    if (balance !== undefined) record.legacyTokenBalance = balance
     if (existing?.avatarUrl) record.avatarUrl = existing.avatarUrl
 
     if (apply && !skipMedia && canCopyMedia) {
@@ -269,6 +308,7 @@ async function main(): Promise<void> {
     }
 
     summary.staged++
+    if (record.legacyTokenBalance !== undefined) summary.withBalance++
     if (!apply) continue
 
     // `$set` of the whole mapped record, but never `restoredBy`/`restoredAt` —
@@ -284,6 +324,7 @@ async function main(): Promise<void> {
   console.log(`Username fails v2 handle format: ${summary.badHandle}`)
   console.log(`No usable language pair:         ${summary.noLanguages}`)
   console.log(`Staged:                          ${summary.staged}`)
+  console.log(`  ...of those, with a balance:   ${summary.withBalance}`)
   if (apply && !skipMedia) {
     console.log(`Avatars copied:                  ${summary.avatarsCopied}`)
     console.log(`Gallery photos copied:           ${summary.photosCopied}`)

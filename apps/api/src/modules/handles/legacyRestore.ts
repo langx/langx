@@ -1,0 +1,186 @@
+import { TOKEN_RULES, convertLegacyTokens, meetsMinimumAge } from '@langx/shared'
+import type { Db } from 'mongodb'
+import { COLLECTIONS } from '../../db/collections'
+import { awardTokens } from '../tokens/ledger'
+import type { Profile } from '../profiles/profiles'
+import { resolveHandleClaim } from './handleReservations'
+import { hashLegacyEmail } from './legacyEmailHash'
+import { findLegacyProfile, markRestored, type LegacyProfile } from './legacyProfiles'
+
+export type RestoreOutcome =
+  /** No v1 account behind this email. The overwhelmingly common case. */
+  | { kind: 'no-legacy-account' }
+  /** Someone already took this record — including a previous run for this same user. */
+  | { kind: 'already-restored' }
+  /** The v1 data was too incomplete to build a profile from; onboarding pre-fills it instead. */
+  | { kind: 'needs-onboarding'; missing: string[] }
+  | { kind: 'restored'; handle: string; tokensCredited: number; frozenStreak: number }
+
+/**
+ * The single rule: **the moment a v2 account's email is verified, by any
+ * route, a matching v1 profile comes back.**
+ *
+ * Three sign-ins reach this — the email link, Google/Apple (where the provider
+ * has already proven the address), and the legacy-password bridge — and they
+ * all call this one function rather than each carrying their own copy of the
+ * logic. Previously the restore lived inside onboarding, which meant a
+ * returning user had to fill in a form describing a profile we already had.
+ *
+ * Idempotent, and that is load-bearing: `markRestored` is a conditional update,
+ * so of any number of concurrent verifications exactly one wins and the rest
+ * see `already-restored`. Every token award additionally carries a `refId`, so
+ * even a restore replayed against a wiped flag cannot pay twice.
+ */
+export async function restoreLegacyProfile(
+  db: Db,
+  userId: string,
+  email: string,
+  salt: string | undefined,
+): Promise<RestoreOutcome> {
+  if (!salt) return { kind: 'no-legacy-account' }
+  return restoreByHash(db, userId, hashLegacyEmail(email, salt))
+}
+
+/**
+ * The same restore, for callers that already hold the hash — onboarding, which
+ * computed it to check the handle claim, and would otherwise need the raw
+ * email again just to hash it a second time.
+ */
+export async function restoreByHash(
+  db: Db,
+  userId: string,
+  legacyEmailHash: string,
+): Promise<RestoreOutcome> {
+  const legacy = await findLegacyProfile(db, legacyEmailHash)
+  if (!legacy) return { kind: 'no-legacy-account' }
+
+  const missing = missingForProfile(legacy)
+  if (missing.length > 0) {
+    // Leave the record staged. Onboarding will pre-fill from it and the
+    // restore happens there instead, so nothing is lost — the user just has a
+    // form to finish.
+    return { kind: 'needs-onboarding', missing }
+  }
+
+  // Claim the record before doing anything else. Everything after this point
+  // is safe to be the only writer of.
+  if (!(await markRestored(db, legacy._id, userId))) return { kind: 'already-restored' }
+
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const existing = await profiles.findOne({ _id: userId })
+  const now = new Date()
+
+  if (!existing) {
+    // The handle has to be claimed through the reservation, not just written:
+    // that is what stops a v1 handle being taken by someone else in the gap.
+    const resolution = await resolveHandleClaim(db, legacy.handle, userId, legacyEmailHash)
+    if (resolution.kind === 'reserved_for_other') {
+      // Should not happen — the reservation and the profile share an email
+      // hash — but writing the handle anyway would hand it to the wrong person.
+      return { kind: 'needs-onboarding', missing: ['handle'] }
+    }
+    await profiles.insertOne(buildProfile(userId, legacy, now))
+  } else {
+    // They onboarded first and are only now proving the email. Restore the
+    // parts the form never asked for.
+    const update: Record<string, unknown> = { updatedAt: now }
+    if (legacy.avatarUrl && !existing.avatarUrl) update.avatarUrl = legacy.avatarUrl
+    if (legacy.photos.length > 0 && (existing.photos ?? []).length === 0) {
+      update.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
+    }
+    if (legacy.frozenStreak && legacy.frozenStreak > existing.streak.longest) {
+      update['streak.longest'] = legacy.frozenStreak
+    }
+    await profiles.updateOne({ _id: userId }, { $set: update })
+  }
+
+  const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)
+
+  return {
+    kind: 'restored',
+    handle: legacy.handle,
+    tokensCredited,
+    frozenStreak: legacy.frozenStreak ?? 0,
+  }
+}
+
+/** Fields a profile cannot be built without. `birthYear` is the age gate. */
+function missingForProfile(legacy: LegacyProfile): string[] {
+  const missing: string[] = []
+  if (!legacy.handle) missing.push('handle')
+  if (!legacy.displayName) missing.push('displayName')
+  if (legacy.birthYear === undefined) missing.push('birthYear')
+  else if (!meetsMinimumAge(legacy.birthYear)) missing.push('birthYear')
+  if (legacy.nativeLanguages.length === 0) missing.push('nativeLanguages')
+  if (legacy.learning.length === 0) missing.push('learning')
+  return missing
+}
+
+function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile {
+  const profile: Profile = {
+    _id: userId,
+    handle: legacy.handle,
+    displayName: legacy.displayName ?? legacy.handle,
+    birthYear: legacy.birthYear!,
+    gender: legacy.gender ?? 'undisclosed',
+    nativeLanguages: legacy.nativeLanguages,
+    learning: legacy.learning,
+    interests: [],
+    settings: { discoverable: true, notifications: true, ageRange: [18, 99], distanceKm: 50 },
+    privacy: { incognito: false },
+    entitlement: { tier: 'free', updatedAt: now },
+    quota: { initiations: [], translations: [], media: [] },
+    /**
+     * The streak's *length* comes back but not its currency. `current` starts
+     * at zero and `lastQualifiedDay` stays null, so what they built in v1 is a
+     * record rather than a live streak — restoring the day would hand back
+     * something nobody earned here. `frozenStreak` is what they can buy back.
+     */
+    streak: { current: 0, longest: legacy.frozenStreak ?? 0, lastQualifiedDay: null },
+    stats: { lastActiveAt: now, messagesSent: 0 },
+    createdAt: now,
+    updatedAt: now,
+  }
+  if (legacy.bio) profile.bio = legacy.bio
+  if (legacy.countryCode) profile.country = legacy.countryCode
+  if (legacy.avatarUrl) profile.avatarUrl = legacy.avatarUrl
+  if (legacy.photos.length > 0) {
+    profile.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
+  }
+  return profile
+}
+
+/**
+ * The v1 economy, credited once.
+ *
+ * Both awards carry a `refId` derived from the Appwrite id, so the ledger's
+ * unique index refuses a second payment even if this ran twice — the same
+ * defence the daily pool uses, and the reason a replayed restore is harmless.
+ */
+async function creditLegacyEconomy(
+  db: Db,
+  userId: string,
+  legacy: LegacyProfile,
+  at: Date,
+): Promise<number> {
+  const converted = convertLegacyTokens(legacy.legacyTokenBalance ?? 0)
+
+  const [conversion] = await Promise.all([
+    awardTokens(db, {
+      userId,
+      kind: 'legacyTokenConversion',
+      amount: converted,
+      refId: legacy._id,
+      at,
+    }),
+    awardTokens(db, {
+      userId,
+      kind: 'welcomeBack',
+      amount: TOKEN_RULES.welcomeBackBonus,
+      refId: legacy._id,
+      at,
+    }),
+  ])
+
+  return conversion.amount
+}

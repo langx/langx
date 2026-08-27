@@ -10,7 +10,7 @@ import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { resolveHandleClaim } from '../handles/handleReservations'
-import { findLegacyProfile, markRestored } from '../handles/legacyProfiles'
+import { restoreByHash } from '../handles/legacyRestore'
 
 export interface Profile {
   _id: string
@@ -130,28 +130,11 @@ export async function createProfile(
     profile.timezoneUpdatedAt = now
   }
 
-  // A returning v1 user gets their migrated media and streak back. Only the
-  // things a client must not be able to assert about itself are restored here
-  // — the form already carries the text fields, pre-filled from the same
-  // record (see GET /handle-reservation). The `markRestored` gate is what
-  // makes this happen exactly once: two concurrent onboarding attempts for one
-  // legacy account cannot both take it.
-  if (legacyEmailHash) {
-    const legacy = await findLegacyProfile(db, legacyEmailHash)
-    if (legacy && legacy.handle === input.handle && (await markRestored(db, legacy._id, userId))) {
-      if (legacy.avatarUrl) profile.avatarUrl = legacy.avatarUrl
-      if (legacy.photos.length > 0) {
-        profile.photos = legacy.photos.map((photo) => ({ url: photo.url, createdAt: now }))
-      }
-      // The streak's *length* carries over, but not its currency: the last
-      // qualifying day stays null, so the streak is a record of what they did
-      // in v1 and continues only if they act today. Carrying the day across
-      // would hand back a live streak nobody earned in v2.
-      if (legacy.legacyStreak && legacy.legacyStreak > 0) {
-        profile.streak = { current: 0, longest: legacy.legacyStreak, lastQualifiedDay: null }
-      }
-    }
-  }
+  // The v1 restore used to live here, in a second copy of the same logic.
+  // It now runs from `legacyRestore.ts` the moment the email is verified — by
+  // any route — so a returning user never sees this form at all. What remains
+  // here is the path for someone whose v1 record was too incomplete to build a
+  // profile from: they fill in the gaps, and the restore completes afterwards.
 
   try {
     await profiles.insertOne(profile)
@@ -160,6 +143,15 @@ export async function createProfile(
       throw new ApiError(ERROR_CODES.HANDLE_TAKEN, `@${input.handle} is already taken`)
     }
     throw error
+  }
+
+  // Finishes a restore that could not run at verification time because the v1
+  // record was missing something this form has just supplied. A no-op for
+  // everyone else, and idempotent if it somehow already ran.
+  if (legacyEmailHash) {
+    await restoreByHash(db, userId, legacyEmailHash)
+    const restored = await profiles.findOne({ _id: userId })
+    if (restored) return restored
   }
 
   return profile

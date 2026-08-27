@@ -4,6 +4,7 @@ import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
+import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import type { EmailSender } from './email/sender'
 import { resetPasswordEmail, verificationEmail } from './email/templates'
 import type { Env } from './env'
@@ -48,6 +49,20 @@ export async function createAuth({ env, db, client, emailSender }: CreateAuthOpt
     }
   }
 
+  /**
+   * A restore must never be able to fail a sign-in. The account is real and
+   * the session is valid either way; a failure here means the user lands
+   * without their old profile, which onboarding can still recover, whereas a
+   * thrown error means they cannot get in at all.
+   */
+  const tryRestore = async (userId: string, email: string): Promise<void> => {
+    try {
+      await restoreLegacyProfile(db, userId, email, env.LEGACY_EMAIL_HASH_SALT)
+    } catch (error) {
+      console.error('[legacy-restore] failed', { userId, error })
+    }
+  }
+
   return betterAuth({
     baseURL,
     secret: env.BETTER_AUTH_SECRET,
@@ -73,6 +88,33 @@ export async function createAuth({ env, db, client, emailSender }: CreateAuthOpt
       sendVerificationEmail: async ({ user, url }) => {
         const email = verificationEmail(url)
         await emailSender.send({ to: user.email, ...email })
+      },
+      // Clicking the link is proof of the address, so a matching v1 profile
+      // comes back here rather than waiting for the user to fill in a form
+      // describing something we already have.
+      afterEmailVerification: async (user) => {
+        await tryRestore(user.id, user.email)
+      },
+    },
+
+    databaseHooks: {
+      user: {
+        create: {
+          /**
+           * Covers the routes `afterEmailVerification` does not: Google and
+           * Apple, where the provider has already proven the address and the
+           * account is created verified, and the legacy-password bridge, which
+           * creates the account itself.
+           *
+           * Fires for *every* new user, so the verified check is what keeps an
+           * unverified email/password sign-up from restoring someone else's
+           * profile by claiming their address.
+           */
+          after: async (user) => {
+            if (!user.emailVerified) return
+            await tryRestore(user.id, user.email)
+          },
+        },
       },
     },
 

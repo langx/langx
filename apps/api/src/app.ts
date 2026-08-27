@@ -16,6 +16,7 @@ import { ApiError } from './lib/ApiError'
 import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
 import { appConfigRoutes } from './routes/appConfig'
+import { loginRoutes } from './routes/login'
 import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
 import { conversationRoutes } from './routes/conversations'
@@ -31,6 +32,7 @@ import { leaderboardRoutes } from './routes/leaderboard'
 import { xpRoutes } from './routes/tokens'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import { LoggingPushSender, type PushSender } from './modules/push/devices'
+import { DisabledLegacyVerifier, type LegacyVerifier } from './modules/handles/legacyLogin'
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
@@ -44,6 +46,7 @@ declare module 'fastify' {
     translation: TranslationProvider
     revenueCat: RevenueCatClient
     push: PushSender
+    legacyVerifier: LegacyVerifier
     appVersion: string
     io: SocketIOServer
   }
@@ -63,6 +66,12 @@ export interface BuildAppOptions {
    * to name a dependency it never exercises.
    */
   push?: PushSender
+  /**
+   * Checks a v1 password against the still-running Appwrite. Defaults to the
+   * disabled one, so tests and any instance without APPWRITE_* simply never
+   * take the bridge path.
+   */
+  legacyVerifier?: LegacyVerifier
   version?: string
 }
 
@@ -75,6 +84,7 @@ export async function buildApp({
   translation,
   revenueCat,
   push = new LoggingPushSender(),
+  legacyVerifier = new DisabledLegacyVerifier(),
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -103,6 +113,7 @@ export async function buildApp({
   app.decorate('translation', translation)
   app.decorate('revenueCat', revenueCat)
   app.decorate('push', push)
+  app.decorate('legacyVerifier', legacyVerifier)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -164,6 +175,7 @@ export async function buildApp({
 
   await app.register(healthRoutes)
   await app.register(appConfigRoutes)
+  await app.register(loginRoutes)
   await registerAuthRoutes(app, auth)
   await app.register(profileRoutes)
   await app.register(handleRoutes)
