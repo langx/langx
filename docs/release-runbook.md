@@ -138,26 +138,33 @@ curl -s  https://app.langx.io/.well-known/assetlinks.json | jq .
 Apple's CDN caches the AASA for up to 24 hours, so fix it _before_ the build
 goes out for review, not after.
 
-### The Android fingerprint depends on Play App Signing
+### Android needs both fingerprints, and v1 tells us which
 
-`ANDROID_CERT_SHA256` in `packages/shared/src/appIdentity.ts` holds one
-fingerprint, `17:D3:…:9D:A0` — v1's release key (alias `key0`, issued 10
-January 2024 to New Chapter Technology LLC, valid to 2049), which is the
-certificate the published 0.15.0 build was signed with. `assetlinks.json`
-lists the same value and a test fails if the two ever disagree.
+`ANDROID_CERT_SHA256` in `packages/shared/src/appIdentity.ts` holds two:
 
-That is sufficient on its own **only if Play App Signing is disabled**. With it
-enabled Google re-signs the bundle, so a store install presents _Google's_ app
-signing certificate — a different fingerprint. Store users would then fail
-verification while a side-loaded APK passed, which is a confusing way to find
-out.
+| Fingerprint     | What it is                                                                                                       |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `17:D3:…:9D:A0` | v1's release key — `langx-angular/android/release.keystore`, alias `key0`, issued 10 January 2024, valid to 2049 |
+| `A6:55:…:CD:0E` | Google's app signing key, from Play App Signing                                                                  |
 
-- [ ] Read **Play Console → Test and release → App integrity → App signing**
-      and add the **app signing key** SHA-256 if one is listed there
+Both come from what v1 serves at
+`https://app.langx.io/.well-known/assetlinks.json` today, which is the file
+every shipped Play install has been verifying against — so this is not a guess
+about how Play is configured, it is the configuration itself, read back out.
+Two fingerprints means Play App Signing is enabled: Google re-signs the bundle
+and store installs present its certificate, while internal-testing APKs,
+side-loads and `eas build --local` still present the release key. Ship one of
+them and half the installs fail verification.
 
-The list takes several fingerprints and there is no cost to carrying both: the
-key above still covers internal-testing APKs, side-loads and
-`eas build --local`, none of which go through Google's re-signing.
+`assetlinks.json` lists the same two values and a test fails if the file and
+the constant ever disagree.
+
+- [ ] Confirm the second value against **Play Console → Test and release → App
+      integrity → App signing key certificate** before submitting. It should
+      match; if Play shows something else, Play wins and both go in the list.
+
+v2 replaces this file when the web build deploys, so getting it wrong is a
+regression against links that work today, not a new feature that fails.
 
 `eas credentials --platform android` prints the fingerprint of the keystore
 EAS holds for this project, which is the upload key. It needs no password.

@@ -69,4 +69,18 @@ export const ANDROID_CERT_SHA256: readonly string[] = [
   // `eas build --local` — present this one either way, so it belongs here
   // regardless of how that question resolves. See docs/release-runbook.md.
   '17:D3:A5:F3:FD:53:32:D3:A3:D2:4F:3F:C0:99:30:21:45:F7:DE:A6:B3:A9:C3:18:6D:B4:3F:34:15:64:9D:A0',
+
+  // The second certificate v1 verifies against, and the answer to the question
+  // above: Play App Signing *is* enabled, so store installs present Google's
+  // key, not the one above. Taken from what the live site serves today —
+  // https://app.langx.io/.well-known/assetlinks.json, which is the file the
+  // shipped 0.15.0 build verifies against on every Play install there is.
+  //
+  // Read off the live deployment rather than the Play Console because the
+  // console needs a human, and because this file is the ground truth either
+  // way: whatever it lists is what Android has been accepting. Worth
+  // confirming against Play Console → App integrity → App signing key
+  // certificate at release time, but shipping without it is the failure we
+  // know about — dropping it would break App Links for every store install.
+  'A6:55:54:9F:DB:37:29:20:30:1B:8D:78:96:2B:B4:8C:95:AD:4C:0D:26:79:0F:D8:1B:BD:8E:74:DA:BF:CD:0E',
 ]
