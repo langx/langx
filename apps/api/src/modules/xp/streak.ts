@@ -1,8 +1,15 @@
-import { localDayKey, nextStreak, streakMilestoneBonus } from '@langx/shared'
+import {
+  isConsecutiveDay,
+  localDayKey,
+  nextStreak,
+  streakMilestoneBonus,
+  shiftDayKey,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { awardXp } from './ledger'
+import { consumeStreakFreeze } from './wallet'
 
 export interface StreakResult {
   current: number
@@ -12,6 +19,8 @@ export interface StreakResult {
   advanced: boolean
   /** XP paid for crossing a milestone with this action; 0 otherwise. */
   milestoneXp: number
+  /** True when a banked freeze was spent to bridge a single missed day. */
+  freezeUsed: boolean
 }
 
 /**
@@ -52,10 +61,23 @@ export async function recordQualifyingAction(
     lastQualifiedDay: today,
     advanced: false,
     milestoneXp: 0,
+    freezeUsed: false,
   }
   if (profile.streak.lastQualifiedDay === today) return held
 
-  const current = nextStreak(profile.streak.current, profile.streak.lastQualifiedDay, today)
+  // A freeze bridges *exactly one* missed day. Wider gaps are not for sale —
+  // letting a stockpile paper over a week away would empty the streak of the
+  // meaning that makes people come back.
+  const last = profile.streak.lastQualifiedDay
+  const missedExactlyOne = last !== null && isConsecutiveDay(shiftDayKey(last, 1), today)
+  const freezeUsed =
+    missedExactlyOne && (profile.streakFreezes ?? 0) > 0
+      ? await consumeStreakFreeze(db, profile._id)
+      : false
+
+  const current = freezeUsed
+    ? profile.streak.current + 1
+    : nextStreak(profile.streak.current, last, today)
   const longest = Math.max(profile.streak.longest, current)
 
   const updated = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
@@ -70,7 +92,16 @@ export async function recordQualifyingAction(
     },
     { returnDocument: 'after' },
   )
-  if (!updated) return held // another action for the same day won the race
+  if (!updated) {
+    // Another action for the same day won the race. If this call had already
+    // spent a freeze, hand it back — it bridged nothing.
+    if (freezeUsed) {
+      await db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: profile._id }, { $inc: { streakFreezes: 1 } })
+    }
+    return held
+  }
 
   // `refId` is the day, so a milestone can only ever be paid once per user per
   // day even if the streak is manually replayed or recomputed.
@@ -89,5 +120,6 @@ export async function recordQualifyingAction(
     lastQualifiedDay: today,
     advanced: true,
     milestoneXp: award.amount,
+    freezeUsed,
   }
 }

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { walletSchema } from './cosmetics'
 
 /**
  * XP is **not** a token. It cannot be traded, withdrawn or bought, and it can
@@ -12,7 +13,20 @@ import { z } from 'zod'
  * recompute), and it leaves the door open without committing to it.
  */
 
-export const XP_KINDS = ['message', 'correction', 'streak', 'dailyPool', 'adjustment'] as const
+export const XP_KINDS = [
+  'message',
+  'correction',
+  'streak',
+  'dailyPool',
+  'adjustment',
+  /**
+   * The only kind with a negative `amount`. Spends are recorded in the ledger
+   * for audit but deliberately do **not** touch `xpAggregates`: the
+   * leaderboard ranks XP *earned*, so buying a frame must never drop someone
+   * down the table. Balance is `earned - spent`, tracked separately.
+   */
+  'spend',
+] as const
 export type XpKind = (typeof XP_KINDS)[number]
 export const xpKindSchema = z.enum(XP_KINDS)
 
@@ -59,8 +73,8 @@ export interface XpRules {
   }
   sinks: {
     streakFreeze: number
-    profileFrame: number
-    title: number
+    /** How many freezes a user may bank at once — a freeze stockpile would make the streak meaningless. */
+    maxBankedStreakFreezes: number
   }
 }
 
@@ -104,8 +118,7 @@ export const XP_RULES: XpRules = {
   },
   sinks: {
     streakFreeze: 200,
-    profileFrame: 500,
-    title: 1000,
+    maxBankedStreakFreezes: 2,
   },
 }
 
@@ -168,6 +181,7 @@ export const xpSummarySchema = z.object({
     month: z.number().int(),
     week: z.number().int(),
   }),
+  wallet: walletSchema,
   today: z.object({
     /** UTC day, matching the ledger buckets and the pool cron — not the local streak day. */
     day: z.string(),

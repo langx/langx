@@ -52,6 +52,14 @@ export async function awardForSend(
     { returnDocument: 'before' },
   )
 
+  // A user under review earns nothing until the freeze is lifted. The message
+  // still sends, the activity counters still move — only the payout stops, so
+  // lifting the freeze later can be reconciled from the untouched history.
+  if (sender?.xpFrozenAt) {
+    const streak = await recordQualifyingAction(db, sender, at)
+    return { xp: 0, streak, capped: false }
+  }
+
   let xp = 0
   let capped = false
 

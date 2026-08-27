@@ -6,6 +6,7 @@ import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
 import { countersOf, readActivity, scoreOf } from './dailyActivity'
 import { readAggregates } from './ledger'
+import { walletOf } from './wallet'
 import { streakDay } from './streak'
 
 /**
@@ -35,6 +36,7 @@ export async function getXpSummary(
       qualifiedToday: profile.streak.lastQualifiedDay === streakDay(profile, at),
     },
     xp,
+    wallet: walletOf(profile, xp.all),
     today: {
       day: utcDayKey(at),
       messages: counters.messages,

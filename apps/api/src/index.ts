@@ -8,6 +8,7 @@ import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
+import { startDailyPoolScheduler } from './modules/xp/poolScheduler'
 
 async function main(): Promise<void> {
   const env = loadEnv()
@@ -31,8 +32,13 @@ async function main(): Promise<void> {
 
   await warmUpAuthCollections(auth, db, app.log)
 
+  // Started here rather than in `buildApp` so tests get an app with no timers
+  // running behind them — they drive `runDailyPool` directly instead.
+  const poolScheduler = startDailyPoolScheduler(db, app.log)
+
   const shutdown = async (signal: string): Promise<void> => {
     app.log.info({ signal }, 'shutting down')
+    poolScheduler.stop()
     await app.close()
     await close()
     process.exit(0)

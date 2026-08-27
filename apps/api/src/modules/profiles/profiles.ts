@@ -42,6 +42,14 @@ export interface Profile {
   }
   quota: { initiations: Date[]; translations: Date[] }
   streak: { current: number; longest: number; lastQualifiedDay: string | null }
+  /** Banked streak freezes; one is spent automatically to bridge a single missed day. */
+  streakFreezes?: number
+  /** All-time XP spent. Earned XP lives in `xpAggregates` and is never decremented. */
+  xpSpent?: number
+  /** Cosmetic ids owned (see `COSMETICS`). */
+  cosmetics?: string[]
+  /** Set when XP earning is suspended pending review (report/block). Clears by unsetting. */
+  xpFrozenAt?: Date
   stats: { lastActiveAt: Date; messagesSent: number }
   deletedAt?: Date
   createdAt: Date
