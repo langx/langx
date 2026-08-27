@@ -44,6 +44,10 @@ export function useSocket(): void {
 
       socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {
         void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
+        // The chat list too: reading a conversation clears its unread count,
+        // and without this the badge stays up until something else happens to
+        // refetch — including when *you* are the one who read it elsewhere.
+        void queryClient.invalidateQueries({ queryKey: keys.conversations })
       })
     })()
 

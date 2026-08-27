@@ -27,6 +27,7 @@ import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import * as ImagePicker from 'expo-image-picker'
 import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
+import { MessageMeta } from '../../../src/components/MessageMeta'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
 import { colors, font, radius, spacing } from '../../../src/lib/theme'
@@ -247,6 +248,7 @@ export default function ChatScreen() {
                   {item.correction?.note ? (
                     <Text style={styles.correctionNote}>{item.correction.note}</Text>
                   ) : null}
+                  <MessageMeta message={item} mine={mine} />
                 </View>
               )
             }
@@ -265,6 +267,7 @@ export default function ChatScreen() {
                       {item.body}
                     </Text>
                   ) : null}
+                  <MessageMeta message={item} mine={mine} />
                 </View>
               )
             }
@@ -296,6 +299,7 @@ export default function ChatScreen() {
                     </Text>
                   </Pressable>
                 ) : null}
+                <MessageMeta message={item} mine={mine} />
               </Pressable>
             )
           }}

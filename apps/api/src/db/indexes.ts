@@ -94,6 +94,18 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { conversationId: 1, createdAt: -1 }, name: 'conversation_created' },
     { key: { senderId: 1, createdAt: -1 }, name: 'sender_created' },
     /**
+     * Backs `markConversationRead`'s `updateMany`, which selects the unread
+     * messages in one conversation. Without it that update scans every message
+     * in the thread on every read — and a read happens each time the screen is
+     * opened, which is the most frequent write in the app.
+     *
+     * Deliberately **not** sparse. The query looks for messages *missing*
+     * `readAt`, and a sparse index is precisely the one that would not contain
+     * them; MongoDB indexes an absent field as null, which is what makes the
+     * `$exists: false` lookup work here.
+     */
+    { key: { conversationId: 1, readAt: 1 }, name: 'conversation_unread' },
+    /**
      * The whole safety net under the v1 message import. The importer inserts
      * before it marks the room done, so a crash halfway leaves the room
      * unclaimed and the next run replays it — this index is what makes that
