@@ -6,10 +6,11 @@ import type { Profile } from '../modules/profiles/profiles'
 /**
  * `corrections` is deliberately absent — `PLAN_LIMITS.correctionsPer24h` is
  * `null` on both tiers (see limits.ts's doc comment), so nothing ever needs
- * to track it, and `profiles.quota` only has `initiations`/`translations`
- * fields to spend storage tracking a limit that doesn't exist.
+ * to track it, and `profiles.quota` spends no storage on a limit that does
+ * not exist. `media` *is* tracked: attachments cost bytes we store and serve
+ * forever, which text does not.
  */
-export type TrackedQuotaKind = 'initiations' | 'translations'
+export type TrackedQuotaKind = 'initiations' | 'translations' | 'media'
 
 export interface QuotaStatus {
   limit: number | null

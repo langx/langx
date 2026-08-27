@@ -126,7 +126,20 @@ export async function purgeExpiredAccounts(
     // the files stay publicly fetchable by URL would make "permanently
     // removed" false, which is what the privacy policy promises.
     if (options.storage && supportsPut(options.storage)) {
-      const urls = [profile.avatarUrl, ...(profile.photos ?? []).map((p) => p.url)]
+      // Attachments they sent, too. The message row survives with its body
+      // cleared (it is half of someone else's conversation), but the bytes
+      // behind it are theirs alone and must go — the same reasoning that
+      // applies to the avatar.
+      const sentMedia = await db
+        .collection<Message>(COLLECTIONS.messages)
+        .find({ senderId: userId, media: { $exists: true } }, { projection: { media: 1 } })
+        .toArray()
+
+      const urls = [
+        profile.avatarUrl,
+        ...(profile.photos ?? []).map((p) => p.url),
+        ...sentMedia.map((m) => m.media?.url),
+      ]
       for (const url of urls) {
         if (!url) continue
         const key = options.storage.keyFromPublicUrl(url)
@@ -146,12 +159,12 @@ export async function purgeExpiredAccounts(
       }
     }
 
-    await db
-      .collection<Message>(COLLECTIONS.messages)
-      .updateMany(
-        { senderId: userId },
-        { $set: { body: '', deletedWithAccount: true }, $unset: { correction: '' } },
-      )
+    await db.collection<Message>(COLLECTIONS.messages).updateMany(
+      { senderId: userId },
+      // `media` goes with the body: the object behind it has just been
+      // deleted, so leaving the reference would render a broken image.
+      { $set: { body: '', deletedWithAccount: true }, $unset: { correction: '', media: '' } },
+    )
 
     await Promise.all([
       db.collection(COLLECTIONS.profiles).deleteOne({ _id: userId as unknown as never }),

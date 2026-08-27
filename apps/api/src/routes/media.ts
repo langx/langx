@@ -2,6 +2,9 @@ import {
   avatarContentTypeSchema,
   avatarConfirmSchema,
   ERROR_CODES,
+  isAudioContentType,
+  isImageContentType,
+  mediaUploadUrlSchema,
   photoAddSchema,
   photoRemoveSchema,
 } from '@langx/shared'
@@ -10,6 +13,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
+import { assertConversationAccess } from '../modules/chat/access'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
 
 const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
@@ -70,6 +74,41 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       assertOwnBucket(app.env.STORAGE_PUBLIC_BASE_URL, request.body.url)
       return reply.send(await addPhoto(app.mongo.db, request.userId, request.body.url))
+    },
+  )
+
+  /**
+   * A presigned URL for an attachment in a conversation.
+   *
+   * Access is checked *here*, before any URL is signed — a signed URL is a
+   * capability, and handing one out to someone who cannot post in the
+   * conversation would let them write into our bucket for free.
+   */
+  app.post(
+    '/messages/upload-url',
+    { preHandler: requireAuth, schema: { body: mediaUploadUrlSchema } },
+    async (request, reply) => {
+      const conversation = await assertConversationAccess(
+        app.mongo.db,
+        request.body.conversationId,
+        request.userId,
+      )
+
+      const { kind, contentType } = request.body
+      const allowed =
+        kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
+      if (!allowed) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          `${contentType} is not a supported ${kind} type`,
+        )
+      }
+
+      // Keyed by conversation so the account purge can find a user's
+      // attachments, and so a leaked key reveals nothing about who is talking.
+      const extension = contentType.split('/')[1]?.split(';')[0] ?? 'bin'
+      const key = `messages/${conversation._id.toHexString()}/${randomUUID()}.${extension}`
+      return reply.send(await app.storage.getUploadUrl(key, contentType))
     },
   )
 

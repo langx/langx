@@ -1,11 +1,19 @@
-import { sendCorrectionSchema, sendTextMessageSchema } from '@langx/shared'
+import { sendCorrectionSchema, sendMediaMessageSchema, sendTextMessageSchema } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { Server as SocketIOServer, type Socket } from 'socket.io'
 import { z, ZodError } from 'zod'
 import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../lib/ApiError'
+import { consumeQuota } from '../lib/quota'
+import { effectiveTier } from '../modules/profiles/entitlement'
+import { getProfile } from '../modules/profiles/profiles'
 import { assertConversationAccess } from '../modules/chat/access'
-import { markConversationRead, sendCorrection, sendTextMessage } from '../modules/chat/messages'
+import {
+  markConversationRead,
+  sendCorrection,
+  sendMediaMessage,
+  sendTextMessage,
+} from '../modules/chat/messages'
 import { tokensFor } from '../modules/push/devices'
 import { SocketRateLimiter } from './rateLimit'
 
@@ -166,6 +174,37 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
       sendTextMessageSchema
         .parseAsync(payload)
         .then((input) => sendTextMessage(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          for (const participantId of conversation.participants) {
+            io.to(userRoom(participantId)).emit('message:new', message)
+          }
+          void notifyRecipient(app, io, conversation, message)
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    // Separate from `message:send` because the payload is a different shape
+    // and the quota bucket is different — an attachment costs storage, text
+    // does not.
+    socket.on('message:media', (payload: unknown, ack: Ack) => {
+      if (!limited('message:media', ack)) return
+      sendMediaMessageSchema
+        .parseAsync(payload)
+        .then(async (input) => {
+          const profile = await getProfile(app.mongo.db, userId)
+          if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+
+          const quota = await consumeQuota(app.mongo.db, userId, effectiveTier(profile), 'media')
+          if (!quota.consumed) {
+            throw new ApiError(
+              ERROR_CODES.QUOTA_EXCEEDED,
+              'Daily attachment limit reached',
+              quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
+            )
+          }
+          return sendMediaMessage(app.mongo.db, userId, input, app.env.STORAGE_PUBLIC_BASE_URL)
+        })
         .then(({ message, conversation }) => {
           for (const participantId of conversation.participants) {
             io.to(userRoom(participantId)).emit('message:new', message)

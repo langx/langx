@@ -481,6 +481,58 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(result.objectsDeleted).toBe(2)
     })
 
+    it('deletes attachments they sent, and clears the reference so nothing renders broken', async () => {
+      const me = await newUser()
+      const partner = await newUser()
+      const started = await startConversation(me, partner.userId, 'here is a photo')
+      const conversationId = started.json<{ _id: string }>()._id
+
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      await sendMediaMessage(
+        handle.db,
+        me.userId,
+        {
+          conversationId,
+          kind: 'image',
+          media: {
+            url: 'https://cdn.example.com/messages/c/x.jpg',
+            contentType: 'image/jpeg',
+            sizeBytes: 500,
+          },
+        },
+        'https://cdn.example.com',
+      )
+
+      const deleted: string[] = []
+      const storage = {
+        getUploadUrl: () => Promise.reject(new Error('unused')),
+        putObject: () => Promise.resolve(''),
+        deleteObject: (key: string) => {
+          deleted.push(key)
+          return Promise.resolve()
+        },
+        keyFromPublicUrl: (url: string) =>
+          url.startsWith('https://cdn.example.com/')
+            ? url.slice('https://cdn.example.com/'.length)
+            : null,
+      }
+
+      await post(me, '/me/delete', { confirm: 'DELETE' })
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+        storage,
+      })
+
+      expect(deleted).toContain('messages/c/x.jpg')
+      // The row survives — it is half of the other person's conversation —
+      // but with no reference to an object that no longer exists.
+      const row = await handle.db
+        .collection<{ media?: unknown; deletedWithAccount?: boolean }>(COLLECTIONS.messages)
+        .findOne({ senderId: me.userId, type: 'image' })
+      expect(row?.deletedWithAccount).toBe(true)
+      expect(row?.media).toBeUndefined()
+    })
+
     it('purges even when storage is unavailable, leaving an orphaned file rather than an account', async () => {
       const user = await newUser()
       const storage = {

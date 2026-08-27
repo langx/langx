@@ -30,6 +30,8 @@ export interface BucketConfig {
 export const EVENT_LIMITS: Record<string, BucketConfig> = {
   'message:send': { capacity: 20, refillPerSecond: 1 },
   'message:correct': { capacity: 20, refillPerSecond: 1 },
+  // Tighter than text: each one is an upload we store and serve.
+  'message:media': { capacity: 10, refillPerSecond: 0.5 },
   'conversation:read': { capacity: 30, refillPerSecond: 2 },
   typing: { capacity: 40, refillPerSecond: 10 },
 }

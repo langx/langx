@@ -103,12 +103,22 @@ export function useConversations() {
   })
 }
 
+export interface MessageMediaDto {
+  url: string
+  contentType: string
+  sizeBytes: number
+  durationSeconds?: number
+  width?: number
+  height?: number
+}
+
 export interface MessageDto {
   _id: string
   conversationId: string
   senderId: string
-  type: 'text' | 'correction'
+  type: 'text' | 'correction' | 'image' | 'audio'
   body: string
+  media?: MessageMediaDto
   correction?: { original: string; corrected: string; note?: string }
   readAt?: string
   createdAt: string
@@ -281,6 +291,55 @@ export function useRemovePhoto() {
       queryClient.setQueryData(keys.me, profile)
     },
   })
+}
+
+/**
+ * Uploads an attachment and returns what the send needs to describe it.
+ *
+ * The upload URL is signed per conversation, and the server checks access
+ * before signing — so this cannot be used to write into the bucket for a
+ * conversation the caller is not in.
+ */
+export async function uploadMessageMedia(input: {
+  conversationId: string
+  kind: 'image' | 'audio'
+  uri: string
+  contentType: string
+  durationSeconds?: number
+  width?: number
+  height?: number
+}): Promise<{
+  url: string
+  contentType: string
+  sizeBytes: number
+  durationSeconds?: number
+  width?: number
+  height?: number
+}> {
+  const target = await api.post<UploadUrlDto>('/messages/upload-url', {
+    conversationId: input.conversationId,
+    kind: input.kind,
+    contentType: input.contentType,
+  })
+
+  const blob = await (await fetch(input.uri)).blob()
+  const put = await fetch(target.uploadUrl, {
+    method: 'PUT',
+    body: blob,
+    headers: { 'content-type': input.contentType },
+  })
+  if (!put.ok) throw new Error(`Upload failed (${put.status})`)
+
+  return {
+    url: target.publicUrl,
+    contentType: input.contentType,
+    // The server re-checks this against its own ceiling; sending it lets the
+    // check happen before the message row is written rather than after.
+    sizeBytes: blob.size,
+    ...(input.durationSeconds !== undefined ? { durationSeconds: input.durationSeconds } : {}),
+    ...(input.width !== undefined ? { width: input.width } : {}),
+    ...(input.height !== undefined ? { height: input.height } : {}),
+  }
 }
 
 export interface TranslationDto {

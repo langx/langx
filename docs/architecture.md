@@ -486,11 +486,19 @@ denormalized `lastMessage`, `unread: {<userId>: n}`, `firstMessageBy`,
 **`messages`** — a separate collection; embedding would hit the 16MB limit.
 
 ```ts
-{ conversationId, senderId, type: 'text'|'correction',
-  body,
+{ conversationId, senderId, type: 'text'|'correction'|'image'|'audio',
+  body,                                    // caption for an attachment
   correction?: { targetMessageId, original, corrected, note },
-  readAt?, createdAt }
+  media?: { url, contentType, sizeBytes, durationSeconds?, width?, height? },
+  readAt?, createdAt, deletedWithAccount? }
 ```
+
+Attachments restore v1 parity and are what let the message migration bring a
+whole thread rather than a text-only skeleton. Size is capped when the upload
+URL is _signed_ rather than after the bytes have been paid for, and
+`PLAN_LIMITS.mediaPer24h` caps the count on the free tier — a ceiling on abuse
+rather than a paywall, since v1 offered both free. Corrections stay uncapped
+because they cost nothing to store.
 
 Index `{ conversationId: 1, createdAt: -1 }` → cursor pagination, with `_id` as
 the tiebreak for a true keyset.
@@ -705,11 +713,13 @@ only thing that matters is preserving store identity.
 14. **Promise update:** langx.io homepage, Terms, privacy policy, litepaper
     note, store listing copy
 
-**P1:** Copilot, voice messages, badges, availability hours, discovery boost,
-the "New Users" and "Enthusiasts" sort presets.
+**P1:** Copilot, badges, availability hours, discovery boost, the "New Users"
+and "Enthusiasts" sort presets. _(Voice messages moved into P0 — the message
+migration needs them.)_
 **P2:** video calls, groups, vocabulary notebook, moderation console, an
 on-chain distribution layer (after legal review).
 
-> **Note — v1 feature parity:** v1 has voice messages and badges; both are P1.
-> v2's first release is a **regression** on those two. Acceptable with no
-> active users, but the store listing's feature list must be corrected.
+> **Note — v1 feature parity:** voice messages and images are back in P0,
+> because the message migration would otherwise have to drop 1,270 voice notes
+> and 3,604 images. Badges remain P1, so the store listing's feature list still
+> needs correcting on that one point.

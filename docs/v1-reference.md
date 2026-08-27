@@ -137,9 +137,10 @@ three would need answering first:
   be a one-shot ETL at cutover; it would have to run lazily, as people arrive.
 - **Consent.** Restoring one person's messages necessarily restores the other
   person's words too, and the second person may never come back to agree to it.
-- **Media.** Voice messages are 1270 files for a feature v2 does not ship until
-  P1, and chat images are 3604 more. Importing messages that reference media the
-  app cannot yet render would be worse than not importing them.
+- ~~**Media.**~~ **No longer a blocker.** v2 now sends and renders images and
+  voice messages, so an imported thread can come across whole instead of as a
+  text-only skeleton with holes where the attachments were. The `message` and
+  `audio` buckets can be copied the same way avatars are.
 
 Left explicitly undecided. The identifiers are recorded here so the option
 stays open.

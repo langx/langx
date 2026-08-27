@@ -1,4 +1,13 @@
-import { ERROR_CODES, type SendCorrectionInput, type SendTextMessageInput } from '@langx/shared'
+import {
+  ERROR_CODES,
+  isAudioContentType,
+  isImageContentType,
+  MAX_AUDIO_BYTES,
+  MAX_IMAGE_BYTES,
+  type SendCorrectionInput,
+  type SendMediaMessageInput,
+  type SendTextMessageInput,
+} from '@langx/shared'
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
@@ -21,6 +30,12 @@ export interface SendResult {
  * "sending a message" means for the conversation document, and so the socket
  * transport earns tokens through exactly the same code REST does.
  */
+function previewFor(type: Message['type']): string {
+  if (type === 'image') return '📷 Photo'
+  if (type === 'audio') return '🎤 Voice message'
+  return ''
+}
+
 async function recordMessage(
   db: Db,
   conversation: Conversation,
@@ -36,7 +51,9 @@ async function recordMessage(
     {
       $set: {
         lastMessage: {
-          body: message.body,
+          // The chat list shows this verbatim, so an attachment needs a label
+          // rather than the empty string a caption-less voice note carries.
+          body: message.body || previewFor(message.type),
           senderId: message.senderId,
           createdAt: message.createdAt,
         },
@@ -117,6 +134,63 @@ export async function sendCorrection(
       corrected: input.corrected,
       ...(input.note !== undefined ? { note: input.note } : {}),
     },
+    createdAt: new Date(),
+  }
+
+  const updatedConversation = await recordMessage(db, conversation, message)
+  return { message, conversation: updatedConversation }
+}
+
+/**
+ * An image or a voice note. Restores v1 parity, and is what lets the message
+ * migration bring a whole thread across instead of a text-only skeleton.
+ *
+ * The attachment is already in the bucket by the time this runs — the client
+ * uploaded it through a presigned URL — so this validates that what it is
+ * telling us matches what it asked to upload, and refuses anything else. The
+ * checks are cheap and the alternative is a message pointing at a file we
+ * never agreed to host.
+ */
+export async function sendMediaMessage(
+  db: Db,
+  senderId: string,
+  input: SendMediaMessageInput,
+  storagePublicBaseUrl: string | undefined,
+): Promise<SendResult> {
+  const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+
+  const typeMatches =
+    input.kind === 'image'
+      ? isImageContentType(input.media.contentType)
+      : isAudioContentType(input.media.contentType)
+  if (!typeMatches) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `${input.media.contentType} is not a supported ${input.kind} type`,
+    )
+  }
+
+  const maxBytes = input.kind === 'image' ? MAX_IMAGE_BYTES : MAX_AUDIO_BYTES
+  if (input.media.sizeBytes > maxBytes) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `That ${input.kind} is too large`)
+  }
+
+  // A URL outside our own bucket would let a message embed an arbitrary host,
+  // and would survive the account purge because we could never delete it.
+  if (!storagePublicBaseUrl || !input.media.url.startsWith(storagePublicBaseUrl)) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      'Attachment must point into our own storage bucket',
+    )
+  }
+
+  const message: Message = {
+    _id: new ObjectId(),
+    conversationId: conversation._id,
+    senderId,
+    type: input.kind,
+    body: input.body ?? '',
+    media: input.media,
     createdAt: new Date(),
   }
 

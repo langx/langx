@@ -13,11 +13,21 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import { keys, useMe, useMessages, useTranslate, type MessageDto } from '../../../src/api/queries'
+import {
+  keys,
+  uploadMessageMedia,
+  useMe,
+  useMessages,
+  useTranslate,
+  type MessageDto,
+} from '../../../src/api/queries'
 import { api, ApiRequestError } from '../../../src/api/client'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
+import * as ImagePicker from 'expo-image-picker'
+import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
+import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
 import { colors, font, radius, spacing } from '../../../src/lib/theme'
 
@@ -38,6 +48,8 @@ export default function ChatScreen() {
   const [translating, setTranslating] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageDto>>(null)
   const translateApi = useTranslate()
+  const recorder = useVoiceRecorder()
+  const [sendingMedia, setSendingMedia] = useState(false)
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const items = messages.data?.items ?? []
@@ -84,6 +96,65 @@ export default function ChatScreen() {
     // Stop advertising "typing" if they pause — otherwise the indicator sticks
     // on the other side until the message is finally sent.
     typingTimer.current = setTimeout(() => notifyTyping(false), 3000)
+  }
+
+  async function sendMedia(
+    kind: 'image' | 'audio',
+    input: {
+      uri: string
+      contentType: string
+      durationSeconds?: number
+      width?: number
+      height?: number
+    },
+  ): Promise<void> {
+    setSendingMedia(true)
+    try {
+      const media = await uploadMessageMedia({ conversationId, kind, ...input })
+      const socket = await getSocket()
+      await emitWithAck(socket, 'message:media', { conversationId, kind, media })
+    } catch (error) {
+      Alert.alert(
+        'Could not send',
+        error instanceof ApiRequestError && error.code === 'QUOTA_EXCEEDED'
+          ? "You've reached today's limit for photos and voice messages."
+          : 'That attachment could not be sent. Try again.',
+      )
+    } finally {
+      setSendingMedia(false)
+    }
+  }
+
+  async function pickImage(): Promise<void> {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (!permission.granted) {
+      Alert.alert('Photos', 'LangX needs permission to open your photo library.')
+      return
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.8,
+    })
+    const asset = result.assets?.[0]
+    if (result.canceled || !asset) return
+    await sendMedia('image', {
+      uri: asset.uri,
+      contentType: asset.mimeType ?? 'image/jpeg',
+      // Sent so the bubble can reserve the right height before the bytes land.
+      ...(asset.width ? { width: asset.width } : {}),
+      ...(asset.height ? { height: asset.height } : {}),
+    })
+  }
+
+  async function toggleRecording(): Promise<void> {
+    if (!recorder.isRecording) {
+      const started = await recorder.start()
+      if (!started && recorder.error) Alert.alert('Microphone', recorder.error)
+      return
+    }
+    const recording = await recorder.stop()
+    if (!recording) return
+    await sendMedia('audio', recording)
   }
 
   async function send(): Promise<void> {
@@ -179,6 +250,25 @@ export default function ChatScreen() {
                 </View>
               )
             }
+            if (item.type === 'image' || item.type === 'audio') {
+              return (
+                <View style={[styles.bubble, mine ? styles.mine : styles.theirs]}>
+                  {item.type === 'image' ? (
+                    <ImageBubble message={item} />
+                  ) : (
+                    <AudioBubble message={item} mine={mine} />
+                  )}
+                  {item.body ? (
+                    <Text
+                      style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}
+                    >
+                      {item.body}
+                    </Text>
+                  ) : null}
+                </View>
+              )
+            }
+
             const translated = translations[item._id]
             return (
               <Pressable
@@ -231,6 +321,26 @@ export default function ChatScreen() {
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.composer}>
+          {recorder.isRecording ? (
+            <View style={styles.recording}>
+              <Text style={styles.recordingDot}>●</Text>
+              <Text style={styles.recordingTime}>
+                {Math.floor(recorder.seconds / 60)}:{String(recorder.seconds % 60).padStart(2, '0')}
+              </Text>
+              <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
+                <Text style={styles.recordingCancel}>Cancel</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <Pressable
+              onPress={() => void pickImage()}
+              disabled={sendingMedia}
+              hitSlop={8}
+              style={styles.attach}
+            >
+              <Text style={styles.attachIcon}>📷</Text>
+            </Pressable>
+          )}
           <TextInput
             value={draft}
             onChangeText={onChangeDraft}
@@ -240,13 +350,29 @@ export default function ChatScreen() {
             multiline
             onSubmitEditing={() => void send()}
           />
-          <Pressable
-            onPress={() => void send()}
-            disabled={!draft.trim() || sending}
-            style={[styles.sendButton, (!draft.trim() || sending) && styles.sendDisabled]}
-          >
-            <Text style={styles.sendLabel}>{sending ? '…' : '↑'}</Text>
-          </Pressable>
+          {/* The button becomes a microphone when there is nothing to send,
+              which is the gesture people already expect from a chat app. */}
+          {draft.trim() ? (
+            <Pressable
+              onPress={() => void send()}
+              disabled={sending}
+              style={[styles.sendButton, sending && styles.sendDisabled]}
+            >
+              <Text style={styles.sendLabel}>{sending ? '…' : '↑'}</Text>
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => void toggleRecording()}
+              disabled={sendingMedia}
+              style={[
+                styles.sendButton,
+                recorder.isRecording && styles.recordButtonActive,
+                sendingMedia && styles.sendDisabled,
+              ]}
+            >
+              <Text style={styles.sendLabel}>{recorder.isRecording ? '■' : '🎤'}</Text>
+            </Pressable>
+          )}
         </View>
       </KeyboardAvoidingView>
     </Screen>
@@ -346,5 +472,18 @@ const styles = StyleSheet.create({
     width: 40,
   },
   sendDisabled: { opacity: 0.35 },
+  recordButtonActive: { backgroundColor: colors.danger },
+  attach: { paddingBottom: spacing.sm, paddingRight: spacing.xs },
+  attachIcon: { fontSize: 22 },
+  caption: { marginTop: spacing.xs },
+  recording: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingBottom: spacing.sm,
+  },
+  recordingDot: { color: colors.danger, fontSize: 12 },
+  recordingTime: { ...font.caption, color: colors.text, fontVariant: ['tabular-nums'] },
+  recordingCancel: { ...font.caption, color: colors.textMuted },
   sendLabel: { color: colors.primaryText, fontSize: 20, fontWeight: '700' },
 })

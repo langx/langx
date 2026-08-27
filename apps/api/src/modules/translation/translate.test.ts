@@ -36,7 +36,7 @@ function minimalProfile(id: string, tier: 'free' | 'pro'): Profile {
     settings: { discoverable: true, notifications: true, ageRange: [18, 99], distanceKm: 50 },
     privacy: { incognito: false },
     entitlement: { tier, updatedAt: now },
-    quota: { initiations: [], translations: [] },
+    quota: { initiations: [], translations: [], media: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
     stats: { lastActiveAt: now, messagesSent: 0 },
     createdAt: now,

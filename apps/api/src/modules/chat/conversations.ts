@@ -1,4 +1,9 @@
-import { ERROR_CODES, type StartConversationInput } from '@langx/shared'
+import {
+  ERROR_CODES,
+  type MessageMedia,
+  type MessageType,
+  type StartConversationInput,
+} from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
@@ -24,11 +29,15 @@ export interface Message {
   _id: ObjectId
   conversationId: ObjectId
   senderId: string
-  type: 'text' | 'correction'
+  type: MessageType
+  /** Caption for an attachment, the whole message for text, the fix for a correction. */
   body: string
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
+  media?: MessageMedia
   readAt?: Date
   createdAt: Date
+  /** Set when the sender's account was purged; the body is cleared, the row stays. */
+  deletedWithAccount?: boolean
 }
 
 /** `<minId>_<maxId>` — the same two people can never open a second conversation. */

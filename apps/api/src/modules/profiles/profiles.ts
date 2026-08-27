@@ -42,7 +42,7 @@ export interface Profile {
     store?: string
     updatedAt: Date
   }
-  quota: { initiations: Date[]; translations: Date[] }
+  quota: { initiations: Date[]; translations: Date[]; media: Date[] }
   photos?: { url: string; createdAt: Date }[]
   streak: { current: number; longest: number; lastQualifiedDay: string | null }
   /** Banked streak freezes; one is spent automatically to bridge a single missed day. */
@@ -116,7 +116,7 @@ export async function createProfile(
     },
     privacy: { incognito: false },
     entitlement: { tier: 'free', updatedAt: now },
-    quota: { initiations: [], translations: [] },
+    quota: { initiations: [], translations: [], media: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
     stats: { lastActiveAt: now, messagesSent: 0 },
     createdAt: now,

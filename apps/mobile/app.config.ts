@@ -85,7 +85,20 @@ const config: ExpoConfig = {
    */
   runtimeVersion: { policy: 'sdkVersion' },
 
-  plugins: ['expo-router'],
+  plugins: [
+    'expo-router',
+    // Microphone access is only ever requested when the user taps record, but
+    // the string has to be declared here or iOS terminates the app the first
+    // time it is asked for.
+    [
+      'expo-audio',
+      { microphonePermission: 'LangX uses the microphone so you can send voice messages.' },
+    ],
+    [
+      'expo-image-picker',
+      { photosPermission: 'LangX uses your photo library so you can share photos in chat.' },
+    ],
+  ],
 
   experiments: {
     typedRoutes: true,

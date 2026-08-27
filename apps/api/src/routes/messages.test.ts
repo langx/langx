@@ -1,4 +1,4 @@
-import { PLAN_LIMITS } from '@langx/shared'
+import { MAX_IMAGE_BYTES, PLAN_LIMITS } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -6,6 +6,7 @@ import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
+import type { Profile } from '../modules/profiles/profiles'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { createStorageProvider } from '../storage/createStorageProvider'
@@ -263,6 +264,135 @@ describe('Faz 5 — conversation/message history REST', () => {
         .initiations
       // Corrections are not a tracked bucket at all, so nothing moved.
       expect(initiations.remaining).toBe(initiations.limit)
+    })
+  })
+
+  describe('image and voice messages', () => {
+    const BUCKET = 'https://cdn.example.com'
+    const image = {
+      url: `${BUCKET}/messages/x/a.jpg`,
+      contentType: 'image/jpeg',
+      sizeBytes: 1024,
+      width: 800,
+      height: 600,
+    }
+
+    async function pair(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const conversation = await startConversation(a, b.userId, 'hi')
+      return { a, b, conversationId: conversation._id }
+    }
+
+    it('sends an image and shows a label in the chat list instead of an empty line', async () => {
+      const { a, conversationId } = await pair('media-image')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+
+      const result = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, kind: 'image', media: image },
+        BUCKET,
+      )
+      expect(result.message.type).toBe('image')
+      expect(result.message.media?.url).toBe(image.url)
+      // A caption-less attachment would otherwise render as a blank row.
+      expect(result.conversation.lastMessage.body).toBe('📷 Photo')
+    })
+
+    it('keeps a caption on the message rather than splitting it in two', async () => {
+      const { a, conversationId } = await pair('media-caption')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      const result = await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, kind: 'image', media: image, body: 'look at this' },
+        BUCKET,
+      )
+      expect(result.message.body).toBe('look at this')
+      expect(result.conversation.lastMessage.body).toBe('look at this')
+    })
+
+    it('refuses an attachment that points outside our bucket', async () => {
+      // Otherwise a message can embed an arbitrary host, and the account purge
+      // could never delete it.
+      const { a, conversationId } = await pair('media-foreign')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          {
+            conversationId,
+            kind: 'image',
+            media: { ...image, url: 'https://evil.example.net/x.jpg' },
+          },
+          BUCKET,
+        ),
+      ).rejects.toThrow(/own storage bucket/)
+    })
+
+    it('refuses a content type that does not match the kind', async () => {
+      const { a, conversationId } = await pair('media-mismatch')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, kind: 'audio', media: { ...image, contentType: 'image/jpeg' } },
+          BUCKET,
+        ),
+      ).rejects.toThrow(/not a supported audio type/)
+    })
+
+    it('refuses an oversized attachment', async () => {
+      const { a, conversationId } = await pair('media-huge')
+      const { sendMediaMessage } = await import('../modules/chat/messages')
+      await expect(
+        sendMediaMessage(
+          handle.db,
+          a.userId,
+          { conversationId, kind: 'image', media: { ...image, sizeBytes: MAX_IMAGE_BYTES + 1 } },
+          BUCKET,
+        ),
+      ).rejects.toThrow(/too large/)
+    })
+
+    it('will not sign an upload URL for a conversation you are not in', async () => {
+      // The signed URL is a capability: handing one out would let an outsider
+      // write into our bucket for free.
+      const { conversationId } = await pair('media-outsider')
+      const outsider = await newUser('media-outsider-c@example.com')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/messages/upload-url',
+        headers: { cookie: outsider.cookie },
+        payload: { conversationId, kind: 'image', contentType: 'image/jpeg' },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+
+    it('charges the media quota, which text and corrections do not', async () => {
+      const { a, conversationId } = await pair('media-quota')
+      const { sendMediaMessage, sendTextMessage } = await import('../modules/chat/messages')
+      const { consumeQuota } = await import('../lib/quota')
+
+      await sendTextMessage(handle.db, a.userId, { conversationId, body: 'free of charge' })
+      await sendMediaMessage(
+        handle.db,
+        a.userId,
+        { conversationId, kind: 'image', media: image },
+        BUCKET,
+      )
+      // The send path itself does not spend it — the socket handler does, so
+      // spend one here and check the bucket is the media one.
+      await consumeQuota(handle.db, a.userId, 'free', 'media')
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: a.userId })
+      expect(profile?.quota.media).toHaveLength(1)
+      expect(profile?.quota.initiations).toHaveLength(1) // just the conversation they opened
     })
   })
 })
