@@ -20,9 +20,11 @@
     "@tanstack/react-query": "catalog:",
     "better-auth": "catalog:",
     "expo": "~57.0.16",
+    "expo-apple-authentication": "~57.0.1",
     "expo-application": "~57.0.2",
     "expo-audio": "~57.0.4",
     "expo-constants": "~57.0.14",
+    "expo-dev-client": "~57.0.16",
     "expo-device": "~57.0.1",
     "expo-font": "~57.0.1",
     "expo-image": "~57.0.3",
@@ -40,6 +42,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-native": "catalog:",
+    "react-native-purchases": "^10.8.1",
     "react-native-reanimated": "4.5.1",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
@@ -48,8 +51,8 @@
     "socket.io-client": "catalog:"
   },
   "devDependencies": {
-    "vitest": "catalog:",
     "@types/react": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   }
 }

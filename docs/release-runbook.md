@@ -107,6 +107,9 @@ The list takes several fingerprints and there is no cost to carrying both: the
 key above still covers internal-testing APKs, side-loads and
 `eas build --local`, none of which go through Google's re-signing.
 
+`eas credentials --platform android` prints the fingerprint of the keystore
+EAS holds for this project, which is the upload key. It needs no password.
+
 Nothing here is secret. Android serves these fingerprints from every device
 that has the app installed, which is why they belong in a public repo.
 
@@ -120,6 +123,12 @@ be tested end to end until they are:
 - [ ] Subscription group + products created in App Store Connect
 - [ ] Subscription products created in Play Console
 - [ ] RevenueCat project connected to both, API keys issued
+- [ ] Google OAuth client created (Web application type) and
+      `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` set
+- [ ] Sign in with Apple: Services ID, key (.p8) and the four `APPLE_*`
+      variables set. **Apple requires this if any other social login ships**,
+      so it gates the iOS release rather than merely improving it. Until both
+      are set the sign-in screen simply does not draw the buttons
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not

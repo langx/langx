@@ -1,10 +1,12 @@
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import type { LoginResult } from '../../src/api/types'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
+import { useAppConfig } from '../../src/hooks/useAppConfig'
+import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../../src/lib/appleSignIn'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorMessage } from '../../src/lib/errors'
 
@@ -13,6 +15,18 @@ export default function SignIn() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
+  const [socialError, setSocialError] = useState<string>()
+
+  /**
+   * Which of the two buttons to draw at all.
+   *
+   * Undefined while the config request is in flight, and after it fails —
+   * both of which hide the buttons. That is the right way round: a provider
+   * we cannot confirm is one we cannot complete a sign-in with, and a button
+   * that opens a browser only to come back with "provider not found" is worse
+   * than no button. Email and password never depend on this.
+   */
+  const providers = useAppConfig().data?.authProviders
 
   /**
    * Normal sign-in, then the v1 bridge, then the error.
@@ -80,13 +94,40 @@ export default function SignIn() {
   }
 
   async function onGoogle() {
-    const { error: socialError } = await authClient.signIn.social({ provider: 'google' })
-    if (socialError) Alert.alert('Google sign-in failed', authErrorMessage(socialError))
+    setSocialError(undefined)
+    // No `router.replace` after this one: the browser redirect comes back into
+    // the app on its own and the root layout reacts to the new session.
+    const { error: googleError } = await authClient.signIn.social({ provider: 'google' })
+    if (googleError) setSocialError(authErrorMessage(googleError) ?? 'Google sign-in failed')
   }
 
   async function onApple() {
-    const { error: socialError } = await authClient.signIn.social({ provider: 'apple' })
-    if (socialError) Alert.alert('Apple sign-in failed', authErrorMessage(socialError))
+    setSocialError(undefined)
+    try {
+      if (!(await isNativeAppleSignInAvailable())) {
+        const { error: webError } = await authClient.signIn.social({ provider: 'apple' })
+        if (webError) setSocialError(authErrorMessage(webError) ?? 'Apple sign-in failed')
+        return
+      }
+
+      const identity = await requestAppleIdentity()
+      // The person closed the sheet. Saying anything here would be scolding
+      // them for changing their mind.
+      if (!identity) return
+
+      const { error: appleError } = await authClient.signIn.social({
+        provider: 'apple',
+        idToken: identity,
+      })
+      if (appleError) {
+        setSocialError(authErrorMessage(appleError) ?? 'Apple sign-in failed')
+        return
+      }
+      // The native path never leaves the app, so nothing else will navigate.
+      router.replace('/')
+    } catch {
+      setSocialError('Apple sign-in failed')
+    }
   }
 
   return (
@@ -120,14 +161,24 @@ export default function SignIn() {
 
       <Button label="Sign in" onPress={onSubmit} loading={loading} disabled={!email || !password} />
 
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>or</Text>
-        <View style={styles.dividerLine} />
-      </View>
+      {providers?.google || providers?.apple ? (
+        <>
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or</Text>
+            <View style={styles.dividerLine} />
+          </View>
 
-      <Button label="Continue with Google" onPress={onGoogle} variant="secondary" />
-      <Button label="Continue with Apple" onPress={onApple} variant="secondary" />
+          {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
+
+          {providers.google ? (
+            <Button label="Continue with Google" onPress={onGoogle} variant="secondary" />
+          ) : null}
+          {providers.apple ? (
+            <Button label="Continue with Apple" onPress={onApple} variant="secondary" />
+          ) : null}
+        </>
+      ) : null}
 
       <View style={styles.footer}>
         <Text>Don&apos;t have an account? </Text>
@@ -146,5 +197,6 @@ const styles = StyleSheet.create({
   divider: { alignItems: 'center', flexDirection: 'row', gap: 12, marginVertical: 4 },
   dividerLine: { backgroundColor: '#ddd', flex: 1, height: StyleSheet.hairlineWidth },
   dividerText: { opacity: 0.5 },
+  socialError: { color: '#b00020' },
   footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
 })

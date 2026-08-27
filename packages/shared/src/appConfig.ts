@@ -57,10 +57,31 @@ export const DEFAULT_APP_CONFIG: Omit<AppConfig, 'updatedAt'> = {
   flags: { translationEnabled: true, discoveryEnabled: true, signupsEnabled: true },
 }
 
+/**
+ * Which OAuth providers this deployment can actually complete a sign-in with.
+ *
+ * Not stored with the rest of the config and not editable at runtime: it is
+ * decided by which credentials the process was started with. It rides along on
+ * this response because the client needs it at exactly the moment it already
+ * asks for the config — before anyone has signed in — and a second endpoint
+ * for two booleans would be a second round trip on the launch path.
+ *
+ * The point is that a button which cannot work should not be drawn. Without
+ * this the sign-in screen offers Google and Apple on every self-hosted
+ * instance, and both fail with a provider error after the browser has already
+ * opened.
+ */
+export const authProvidersSchema = z.object({
+  google: z.boolean(),
+  apple: z.boolean(),
+})
+export type AuthProviders = z.infer<typeof authProvidersSchema>
+
 /** What `GET /app-config` returns: the config plus what it means for *this* caller. */
 export const appConfigResponseSchema = appConfigSchema.extend({
   /** True when the calling client is older than its platform's minimum. */
   updateRequired: z.boolean(),
+  authProviders: authProvidersSchema,
 })
 export type AppConfigResponse = z.infer<typeof appConfigResponseSchema>
 

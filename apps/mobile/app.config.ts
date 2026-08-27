@@ -43,6 +43,10 @@ const config: ExpoConfig = {
     bundleIdentifier: IOS_BUNDLE_ID,
     buildNumber: '120',
     supportsTablet: true,
+    // Adds the Sign in with Apple entitlement. Without it the native sheet
+    // opens and then fails with no identity token, which reads like a bug in
+    // the app rather than a missing capability.
+    usesAppleSignIn: true,
     // `webcredentials` is not about links: it is what lets iCloud Keychain
     // treat a password saved on app.langx.io and one saved in the app as the
     // same credential, so signing in on the phone offers the password the

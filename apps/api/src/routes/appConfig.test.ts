@@ -1,4 +1,4 @@
-import { compareVersions, isUpdateRequired } from '@langx/shared'
+import { compareVersions, isUpdateRequired, type AuthProviders } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
@@ -88,6 +88,57 @@ describe('app config, maintenance and the version gate', () => {
       const response = await get('/app-config')
       expect(response.statusCode).toBe(200)
       expect(response.json<{ maintenance: { enabled: boolean } }>().maintenance.enabled).toBe(false)
+    })
+
+    it('reports no OAuth providers when none are configured', async () => {
+      // The default for every self-hosted instance, and the reason this is on
+      // the response at all: the sign-in screen must not draw a Google button
+      // that opens a browser and comes back with a provider error.
+      const response = await get('/app-config')
+      expect(response.json<{ authProviders: AuthProviders }>().authProviders).toEqual({
+        google: false,
+        apple: false,
+      })
+    })
+
+    it('reports a provider as available once its credentials are set', async () => {
+      const env = loadEnv({
+        NODE_ENV: 'test',
+        MONGODB_URI: replSet.getUri(),
+        MONGODB_DB: 'langx_config_test',
+        LOG_LEVEL: 'silent',
+        BETTER_AUTH_SECRET: 'a'.repeat(32),
+        BETTER_AUTH_URL: 'http://localhost:4000',
+        GOOGLE_CLIENT_ID: 'google-client-id',
+        GOOGLE_CLIENT_SECRET: 'google-client-secret',
+      })
+      const configured = await buildApp({
+        env,
+        client: handle.client,
+        db: handle.db,
+        auth: await createAuth({
+          env,
+          db: handle.db,
+          client: handle.client,
+          emailSender: new CapturingEmailSender(),
+        }),
+        storage: createStorageProvider(env),
+        translation: createTranslationProvider(env),
+        revenueCat: createRevenueCatClientFromEnv(env),
+      })
+      await configured.ready()
+      try {
+        const response = await configured.inject({ method: 'GET', url: '/app-config' })
+        // Apple stays false with Google set: the two are independent, and a
+        // deployment with only one of them is the normal case while the other
+        // is still waiting on a console.
+        expect(response.json<{ authProviders: AuthProviders }>().authProviders).toEqual({
+          google: true,
+          apple: false,
+        })
+      } finally {
+        await configured.close()
+      }
     })
 
     it('computes updateRequired per platform', async () => {
