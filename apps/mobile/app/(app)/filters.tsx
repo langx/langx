@@ -2,7 +2,7 @@ import { CEFR_LEVELS, GENDERS, getLanguage, type CefrLevel, type Gender } from '
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
-import { useMe } from '../../src/api/queries'
+import { useIsPro, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
@@ -43,7 +43,7 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
 export default function FiltersScreen() {
   const params = useLocalSearchParams<Record<string, string>>()
   const me = useMe()
-  const isPro = me.data?.entitlement.tier === 'pro'
+  const isPro = useIsPro()
   const myGender = me.data?.gender
 
   const [filters, setFilters] = useState<DiscoveryFilters>(() => parseFilters(params))

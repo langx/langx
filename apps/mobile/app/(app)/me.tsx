@@ -10,6 +10,7 @@ import {
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import {
+  useIsPro,
   useMe,
   usePurchase,
   useQuota,
@@ -53,6 +54,9 @@ export default function MeScreen() {
   const quota = useQuota()
   const viewers = useViewers()
   const purchase = usePurchase()
+  // Above the early return: hooks cannot be called conditionally, and putting
+  // this below it renders nothing at all.
+  const isPro = useIsPro()
 
   if (me.isPending || !me.data) {
     return (
@@ -63,7 +67,6 @@ export default function MeScreen() {
   }
 
   const profile = me.data
-  const isPro = profile.entitlement.tier === 'pro'
   const balance = wallet.data?.balance ?? 0
   const owned = wallet.data?.owned ?? []
 

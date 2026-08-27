@@ -1,26 +1,51 @@
-import { PLAN_LIMITS } from '@langx/shared'
+import { PLAN_LIMITS, PRO_BENEFITS, type ProBenefit } from '@langx/shared'
 import { router } from 'expo-router'
-import { StyleSheet, Text, View } from 'react-native'
-import { useQuota } from '../../src/api/queries'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useIsPro, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
-const FEATURES = [
-  {
+/**
+ * Copy for every benefit in `PRO_BENEFITS`, keyed by it.
+ *
+ * `Record<ProBenefit, ...>` is the enforcement: add a benefit to the shared
+ * list without writing its copy and this file stops compiling, and there is no
+ * way to advertise something the list does not contain. The three definitions
+ * of "what Pro is" — the shared list, the rules test and this screen — used to
+ * be independent, so the first one to change made the other two lie.
+ *
+ * The free-tier numbers come from `PLAN_LIMITS` rather than being typed out,
+ * because a paywall quoting a limit the server no longer enforces is the worst
+ * kind of wrong.
+ */
+const BENEFIT_COPY: Record<ProBenefit, { emoji: string; title: string; body: string }> = {
+  unlimitedInitiations: {
     emoji: '💬',
     title: 'Unlimited new chats',
     body: `${PLAN_LIMITS.free.initiationsPer24h} a day on the free plan.`,
   },
-  { emoji: '🎯', title: 'Advanced filters', body: 'Search by gender, country, age and level.' },
-  {
+  advancedFilters: {
+    emoji: '🎯',
+    title: 'Advanced filters',
+    body: 'Search by gender, country, age and level.',
+  },
+  unlimitedTranslation: {
     emoji: '🌍',
     title: 'Unlimited translation',
     body: `${PLAN_LIMITS.free.translationsPer24h} a day on the free plan.`,
   },
-  { emoji: '👀', title: 'Who viewed you', body: 'Not just the count — see who they are.' },
-  { emoji: '🕶️', title: 'Incognito browsing', body: 'Look at profiles without leaving a trace.' },
-]
+  profileViewerIdentities: {
+    emoji: '👀',
+    title: 'Who viewed you',
+    body: 'Not just the count — see who they are.',
+  },
+  incognito: {
+    emoji: '🕶️',
+    title: 'Incognito browsing',
+    body: 'Look at profiles without leaving a trace.',
+  },
+}
 
 /**
  * Deliberately not a purchase screen yet.
@@ -33,6 +58,8 @@ const FEATURES = [
  */
 export default function PaywallScreen() {
   const quota = useQuota()
+  const refresh = useRefreshEntitlement()
+  const isPro = useIsPro()
   const remaining = quota.data?.initiations.remaining
 
   return (
@@ -49,7 +76,26 @@ export default function PaywallScreen() {
         </View>
       ) : null}
 
-      {FEATURES.map((feature) => (
+      {/*
+        Someone who just subscribed elsewhere — or renewed, or whose webhook was
+        simply late — has no other way to make the app notice. This is the
+        client half of the entitlement flow's step 5, which existed on the
+        server and had no caller.
+      */}
+      {isPro ? null : (
+        <Pressable
+          onPress={() => refresh.mutate()}
+          disabled={refresh.isPending}
+          hitSlop={8}
+          style={styles.restore}
+        >
+          <Text style={styles.restoreText}>
+            {refresh.isPending ? 'Checking…' : 'Already subscribed? Refresh'}
+          </Text>
+        </Pressable>
+      )}
+
+      {PRO_BENEFITS.map((benefit) => BENEFIT_COPY[benefit]).map((feature) => (
         <View key={feature.title} style={styles.feature}>
           <Text style={styles.emoji}>{feature.emoji}</Text>
           <View style={styles.featureBody}>
@@ -73,6 +119,8 @@ export default function PaywallScreen() {
 }
 
 const styles = StyleSheet.create({
+  restore: { alignSelf: 'center', paddingVertical: spacing.sm },
+  restoreText: { ...font.caption, color: colors.accent, fontWeight: '600' },
   eyebrow: { ...font.label, color: colors.pro, letterSpacing: 1, marginTop: spacing.lg },
   title: { ...font.title, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.xs },
   quotaBanner: {

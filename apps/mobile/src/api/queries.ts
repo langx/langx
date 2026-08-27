@@ -1,4 +1,4 @@
-import type { Gender } from '@langx/shared'
+import { effectivePlanTier, type Gender } from '@langx/shared'
 import type {
   DiscoveryResult,
   Leaderboard,
@@ -83,6 +83,40 @@ export interface MeProfile {
     conversationsImported: number
     acknowledgedAt?: string
   }
+}
+
+/**
+ * Whether the *client* should show Pro, applying the same expiry rule the
+ * server enforces.
+ *
+ * Four screens read `me.entitlement.tier` directly, which meant a lapsed
+ * subscription whose webhook was late or lost showed a Pro interface while
+ * every Pro action came back refused. Not a conversion problem — a trust one:
+ * the app told people they had something and then behaved as if they did not.
+ */
+export function useIsPro(): boolean {
+  const me = useMe()
+  const entitlement = me.data?.entitlement
+  if (!entitlement) return false
+  return effectivePlanTier(entitlement.tier, entitlement.expiresAt) === 'pro'
+}
+
+/**
+ * Asks the server to re-read the entitlement from RevenueCat.
+ *
+ * Step 5 of the documented entitlement flow — the client's answer to a webhook
+ * that is late or never arrives. The endpoint was written and nothing called
+ * it, so a user whose subscription had just been renewed or cancelled had no
+ * way to make the app notice short of waiting.
+ */
+export function useRefreshEntitlement() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.post('/billing/refresh', {}),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: keys.me })
+    },
+  })
 }
 
 export function useProfile(handleOrId: string) {

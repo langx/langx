@@ -3,7 +3,7 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { Alert, Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../src/api/client'
-import { useMe, useUpdateProfile } from '../../src/api/queries'
+import { useIsPro, useMe, useUpdateProfile } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
@@ -44,7 +44,7 @@ export default function SettingsScreen() {
   const [busy, setBusy] = useState(false)
 
   const profile = me.data
-  const isPro = profile?.entitlement.tier === 'pro'
+  const isPro = useIsPro()
 
   async function signOut(): Promise<void> {
     // Before the session ends, not after: once signed out the request has no

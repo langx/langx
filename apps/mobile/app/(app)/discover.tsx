@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from 'react-native'
-import { useDiscovery, useMe } from '../../src/api/queries'
+import { useDiscovery, useIsPro } from '../../src/api/queries'
 import type { DiscoveryItem } from '../../src/api/types'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Chip } from '../../src/components/ui/Chip'
@@ -43,11 +43,10 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
 }
 
 export default function DiscoverScreen() {
-  const me = useMe()
   const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<'recommended' | 'active'>('recommended')
 
-  const isPro = me.data?.entitlement.tier === 'pro'
+  const isPro = useIsPro()
   const filters = useMemo(() => parseFilters(params), [params])
 
   /**

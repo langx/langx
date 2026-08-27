@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { MINIMUM_AGE, birthYearSchema, meetsMinimumAge } from './age'
 import { CEFR_LEVELS, cefrRank } from './cefr'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
-import { PLAN_LIMITS, hasFeature, quotaLimit } from './limits'
+import { PLAN_LIMITS, PRO_FEATURES, effectivePlanTier, hasFeature, quotaLimit } from './limits'
 import {
   TOKEN_RULES,
   activityScore,
@@ -45,11 +45,51 @@ describe('plan limits', () => {
     expect(PLAN_LIMITS.pro.correctionsPer24h).toBeNull()
   })
 
-  it('keeps advanced filters, viewer identities and incognito Pro-only', () => {
-    for (const feature of ['advancedFilters', 'profileViewerIdentities', 'incognito'] as const) {
+  /** Iterates the real list rather than retyping it — a fourth feature added to
+   *  `PRO_FEATURES` is then covered by this test automatically instead of
+   *  silently escaping it. */
+  it('gates every Pro capability behind Pro', () => {
+    expect(PRO_FEATURES.length).toBeGreaterThan(0)
+    for (const feature of PRO_FEATURES) {
       expect(hasFeature('free', feature)).toBe(false)
       expect(hasFeature('pro', feature)).toBe(true)
     }
+  })
+})
+
+/**
+ * The rule that used to exist twice — enforced on the server, ignored on the
+ * client — so a late webhook showed a Pro interface the server would refuse.
+ */
+describe('effectivePlanTier', () => {
+  const hour = 3_600_000
+
+  it('leaves a free account alone whatever the date says', () => {
+    expect(effectivePlanTier('free')).toBe('free')
+    expect(effectivePlanTier('free', new Date(Date.now() - hour))).toBe('free')
+  })
+
+  it('keeps Pro with no expiry at all', () => {
+    expect(effectivePlanTier('pro')).toBe('pro')
+    expect(effectivePlanTier('pro', null)).toBe('pro')
+  })
+
+  it('keeps Pro while the subscription still has time on it', () => {
+    expect(effectivePlanTier('pro', new Date(Date.now() + hour))).toBe('pro')
+  })
+
+  it('drops an expired Pro to free', () => {
+    expect(effectivePlanTier('pro', new Date(Date.now() - hour))).toBe('free')
+  })
+
+  it('reads an ISO string as well as a Date — the client only ever has the string', () => {
+    expect(effectivePlanTier('pro', new Date(Date.now() - hour).toISOString())).toBe('free')
+    expect(effectivePlanTier('pro', new Date(Date.now() + hour).toISOString())).toBe('pro')
+  })
+
+  /** An unreadable date is not evidence of expiry — never downgrade a payer. */
+  it('keeps Pro when the expiry cannot be parsed', () => {
+    expect(effectivePlanTier('pro', 'not-a-date')).toBe('pro')
   })
 })
 

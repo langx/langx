@@ -34,7 +34,16 @@ export interface PlanLimits {
    * paywall, and v1 offered both features free.
    */
   mediaPer24h: Limit
-  /** gender / country / distance / age / CEFR filters in discovery. */
+  /**
+   * gender / country / age / CEFR filters in discovery — the exact set is
+   * `DISCOVERY_PRO_FILTER_KEYS`.
+   *
+   * This used to say "distance" as well. There is no distance filter and there
+   * never was: `$geoNear` has to be an aggregation's first stage, which the
+   * discovery pipeline cannot give it (`decisions.md:66-76`). Since the paywall
+   * copy is derived from this list, leaving the word in was a route to selling
+   * something that cannot be bought.
+   */
   advancedFilters: boolean
   /** See *who* viewed the profile, not just how many. */
   profileViewerIdentities: boolean
@@ -88,12 +97,61 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
   return PLAN_LIMITS[tier][QUOTA_LIMIT_KEY[kind]]
 }
 
-/** Pro-only capabilities, keyed for the `403 UPGRADE_REQUIRED` payload. */
+/**
+ * Pro-only *capabilities* — the boolean gates, keyed for the
+ * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
+ * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
+ */
 export const PRO_FEATURES = ['advancedFilters', 'profileViewerIdentities', 'incognito'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
+
+/**
+ * Everything Pro gives you, which is deliberately **wider** than
+ * `PRO_FEATURES`: two of these are not capability flags at all but quotas that
+ * stop applying, and a paywall that listed only the booleans would undersell
+ * the plan by leaving out the limit most people actually hit.
+ *
+ * The paywall keys its copy off this list, so adding a benefit here without
+ * writing the copy is a compile error, and describing a benefit on the paywall
+ * that does not exist here is impossible. That is the whole point: the feature
+ * list had drifted into three separate places — here, the rules test, and the
+ * paywall screen — and the first one to change would have made the other two
+ * quietly lie.
+ */
+export const PRO_BENEFITS = [
+  'unlimitedInitiations',
+  'advancedFilters',
+  'unlimitedTranslation',
+  'profileViewerIdentities',
+  'incognito',
+] as const
+export type ProBenefit = (typeof PRO_BENEFITS)[number]
 
 export function hasFeature(tier: PlanTier, feature: ProFeature): boolean {
   return PLAN_LIMITS[tier][feature]
 }
 
 export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
+
+/**
+ * The tier a guard should actually enforce, given a stored entitlement.
+ *
+ * `tier` alone is not enough: a lapsed subscription whose RevenueCat
+ * `EXPIRATION` webhook has not arrived — or never will, since delivery is not
+ * guaranteed — must not keep granting Pro forever.
+ *
+ * Lives in `shared` because **both sides have to agree**. The server has
+ * always applied this; the client read `entitlement.tier` directly, so a late
+ * webhook produced an app showing a Pro interface while every Pro action was
+ * refused. Two implementations of one rule is how that happened, so there is
+ * now one — and it takes `expiresAt` as a `Date` or an ISO string, because the
+ * server holds the first and JSON gives the client the second.
+ */
+export function effectivePlanTier(tier: PlanTier, expiresAt?: Date | string | null): PlanTier {
+  if (tier !== 'pro' || !expiresAt) return tier
+  const at = expiresAt instanceof Date ? expiresAt.getTime() : Date.parse(expiresAt)
+  // An unparseable date is not evidence of expiry — treat it as no expiry
+  // rather than silently downgrading someone who is paying.
+  if (Number.isNaN(at)) return tier
+  return at <= Date.now() ? 'free' : tier
+}
