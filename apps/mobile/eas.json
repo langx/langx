@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 12.5.1",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://localhost:4000"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview",
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "channel": "production",
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "track": "production",
+        "releaseStatus": "inProgress",
+        "rollout": 0.1
+      },
+      "ios": {
+        "ascAppId": "6474187141",
+        "appleTeamId": "8F63M4JH8P"
+      }
+    }
+  }
+}

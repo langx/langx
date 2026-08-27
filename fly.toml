@@ -1,0 +1,53 @@
+# LangX v2 API on Fly.io.
+#
+# Secrets are NOT here — this file is committed and the repo is public. Set them
+# with `fly secrets set`; see docs/self-host.md. Only values that are safe in
+# public go in [env].
+
+app = 'langx-api'
+primary_region = 'fra'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  NODE_ENV = 'production'
+  # Fly's convention; internal_port below must agree.
+  PORT = '8080'
+  HOST = '0.0.0.0'
+  LOG_LEVEL = 'info'
+  MONGODB_DB = 'langx'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+
+  # Never scale to zero. Four schedulers live inside this process (token pool,
+  # account purge, streak reminder, legacy import) and they are interval ticks,
+  # not platform cron — a suspended machine simply does not run them, and no
+  # request arrives to wake it because nobody is calling the API at 20:00 in a
+  # user's timezone. See "Background work" in docs/self-host.md.
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [http_service.concurrency]
+    type = 'requests'
+    soft_limit = 200
+    hard_limit = 400
+
+# /health is readiness, not just liveness: it answers 503 when the Mongo ping
+# fails, so an instance that cannot reach Atlas leaves rotation instead of
+# serving errors. grace_period covers boot — ensureIndexes() and the Better
+# Auth collection warm-up both run before the first request is served.
+[[http_service.checks]]
+  interval = '15s'
+  timeout = '5s'
+  grace_period = '30s'
+  method = 'GET'
+  path = '/health'
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '512mb'

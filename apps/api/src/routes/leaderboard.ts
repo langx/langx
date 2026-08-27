@@ -1,0 +1,32 @@
+import { leaderboardQuerySchema, purchaseSchema } from '@langx/shared'
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { requireAuth } from '../middleware/requireAuth'
+import { getLeaderboard } from '../modules/tokens/leaderboard'
+import { getWallet, purchase } from '../modules/tokens/wallet'
+
+// eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
+export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
+  // The four tabs are one endpoint with a `period` parameter, not four routes:
+  // the query is identical apart from which key it reads.
+  app.get(
+    '/leaderboard',
+    { preHandler: requireAuth, schema: { querystring: leaderboardQuerySchema } },
+    async (request, reply) => {
+      const board = await getLeaderboard(app.mongo.db, request.userId, request.query)
+      return reply.send(board)
+    },
+  )
+
+  app.get('/me/wallet', { preHandler: requireAuth }, async (request, reply) => {
+    return reply.send(await getWallet(app.mongo.db, request.userId))
+  })
+
+  app.post(
+    '/me/wallet/purchase',
+    { preHandler: requireAuth, schema: { body: purchaseSchema } },
+    async (request, reply) => {
+      const result = await purchase(app.mongo.db, request.userId, request.body.sku)
+      return reply.send(result)
+    },
+  )
+}
