@@ -23,6 +23,7 @@ import { mediaRoutes } from './routes/media'
 import { messageRoutes } from './routes/messages'
 import { profileRoutes } from './routes/profiles'
 import { translationRoutes } from './routes/translate'
+import { xpRoutes } from './routes/xp'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
@@ -153,6 +154,7 @@ export async function buildApp({
   await app.register(messageRoutes)
   await app.register(translationRoutes)
   await app.register(billingRoutes)
+  await app.register(xpRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the

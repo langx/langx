@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  TIMEZONE_UPDATE_COOLDOWN_MS,
   meetsMinimumAge,
   type OnboardingProfileInput,
   type UpdateProfileInput,
@@ -168,9 +169,35 @@ export async function updateProfile(
   )
 
   const now = new Date()
+  let timezoneUpdatedAt: Date | null = null
+
+  // The streak runs on the user's local day, which makes an unrestricted
+  // timezone field a "repair my broken streak" button. Rate-limited rather
+  // than frozen: real travel still works, farming a second local day inside
+  // one UTC day does not. A no-op write (same zone) is never blocked.
+  if (input.timezone !== undefined && input.timezone !== current.timezone) {
+    const last = current.timezoneUpdatedAt
+    if (last && now.getTime() - new Date(last).getTime() < TIMEZONE_UPDATE_COOLDOWN_MS) {
+      throw new ApiError(
+        ERROR_CODES.RATE_LIMITED,
+        'Timezone was changed recently; try again later',
+        {
+          retryAt: new Date(new Date(last).getTime() + TIMEZONE_UPDATE_COOLDOWN_MS).toISOString(),
+        },
+      )
+    }
+    timezoneUpdatedAt = now
+  }
+
   const result = await profiles.findOneAndUpdate(
     { _id: userId },
-    { $set: { ...definedUpdates, updatedAt: now } },
+    {
+      $set: {
+        ...definedUpdates,
+        ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
+        updatedAt: now,
+      },
+    },
     { returnDocument: 'after' },
   )
   if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')

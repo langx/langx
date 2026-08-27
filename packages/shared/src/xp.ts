@@ -25,9 +25,18 @@ export interface XpRules {
     mutualConversation: number
   }
   caps: {
-    /** Max message-XP a user can earn per local day. */
+    /**
+     * Max message-XP a user can earn per **UTC** day.
+     *
+     * Deliberately UTC, unlike the streak. A cap is a ceiling on ledger rows,
+     * and ledger rows are bucketed by UTC day/week/month; if the cap reset on
+     * the user's local day, moving the device clock east would open a second
+     * cap window inside the same UTC day and pay both awards into the same
+     * leaderboard bucket. That is exactly the "farm a period twice by flying
+     * east" exploit periods.ts warns about. Only the streak is local.
+     */
     messagesPerDay: number
-    /** Max message-XP per partner per local day — blocks single-partner farming. */
+    /** Max message-XP per partner per UTC day — blocks single-partner farming. */
     messagesPerPartnerPerDay: number
   }
   /** Bonus XP at streak milestones, keyed by day count. */
@@ -129,6 +138,45 @@ export function poolShare(score: number, totalScore: number, rules: XpRules = XP
   return Math.floor(Math.min(total * (score / totalScore), total * maxShareOfPool))
 }
 
+/**
+ * How long a user must wait before changing their timezone again.
+ *
+ * The streak runs on the user's local day, so an unrestricted timezone field
+ * is a streak-repair button: set the clock back a day, act, and a broken
+ * streak looks continuous. Seven days is long enough that real travel is
+ * unaffected in practice and short enough that a genuine relocation isn't
+ * stuck for a month.
+ */
+export const TIMEZONE_UPDATE_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000
+
 export function streakMilestoneBonus(day: number, rules: XpRules = XP_RULES): number {
   return rules.streakMilestones[day] ?? 0
 }
+
+/** `GET /me/xp` — the user's own totals, streak and today's live counters. */
+export const xpSummarySchema = z.object({
+  streak: z.object({
+    current: z.number().int(),
+    longest: z.number().int(),
+    lastQualifiedDay: z.string().nullable(),
+    /** True when today has already been credited — drives the "send 1 message" nudge. */
+    qualifiedToday: z.boolean(),
+  }),
+  xp: z.object({
+    all: z.number().int(),
+    year: z.number().int(),
+    month: z.number().int(),
+    week: z.number().int(),
+  }),
+  today: z.object({
+    /** UTC day, matching the ledger buckets and the pool cron — not the local streak day. */
+    day: z.string(),
+    messages: z.number().int(),
+    corrections: z.number().int(),
+    mutualConversations: z.number().int(),
+    distinctPartners: z.number().int(),
+    /** Provisional; the real share is only known when the pool closes the day. */
+    activityScore: z.number(),
+  }),
+})
+export type XpSummary = z.infer<typeof xpSummarySchema>

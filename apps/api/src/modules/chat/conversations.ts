@@ -5,6 +5,7 @@ import { ApiError } from '../../lib/ApiError'
 import { consumeQuota } from '../../lib/quota'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
+import { awardForSend } from '../xp/awards'
 
 export interface Conversation {
   _id: ObjectId
@@ -128,14 +129,20 @@ export async function startConversation(
     throw error
   }
 
-  await db.collection<Message>(COLLECTIONS.messages).insertOne({
+  const message: Message = {
     _id: new ObjectId(),
     conversationId: conversation._id,
     senderId: viewerId,
     type: 'text',
     body: input.body,
     createdAt: now,
-  })
+  }
+  await db.collection<Message>(COLLECTIONS.messages).insertOne(message)
+
+  // This path writes its own message rather than going through
+  // `recordMessage`, so it has to pay out itself. `becameMutual` is always
+  // false here by construction — only one side has spoken.
+  await awardForSend(db, { conversation, message, becameMutual: false })
 
   return conversation
 }

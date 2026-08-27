@@ -3,6 +3,7 @@ import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
+import { awardForSend } from '../xp/awards'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
 
@@ -12,11 +13,12 @@ export interface SendResult {
 }
 
 /**
- * Every send (text or correction) is: write the message, then update the
- * conversation's denormalized `lastMessage`/`unread`/`bothSpoke` — same two
- * writes regardless of type, factored here so `sendTextMessage` and
- * `sendCorrection` can't drift on what "sending a message" means for the
- * conversation document.
+ * Every send (text or correction) is: write the message, update the
+ * conversation's denormalized `lastMessage`/`unread`/`bothSpoke`, then pay
+ * out XP and advance the streak — the same sequence regardless of type,
+ * factored here so `sendTextMessage` and `sendCorrection` can't drift on what
+ * "sending a message" means for the conversation document, and so the socket
+ * transport earns XP through exactly the same code REST does.
  */
 async function recordMessage(
   db: Db,
@@ -45,6 +47,15 @@ async function recordMessage(
     { returnDocument: 'after' },
   )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+
+  await awardForSend(db, {
+    conversation: updated,
+    message,
+    // The transition, not the state: `bothSpoke` stays true forever after, so
+    // the reciprocity bonus has to fire on the send that flipped it.
+    becameMutual: !conversation.bothSpoke && bothSpoke,
+  })
+
   return updated
 }
 

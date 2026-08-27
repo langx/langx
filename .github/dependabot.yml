@@ -5,13 +5,13 @@ updates:
   # at all, GitHub's automatic security-update system still tries to patch
   # vulnerable transitive deps, but without pnpm-workspace awareness, which is
   # what produced the failing "npm_and_yarn ... uuid" PR.
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
     open-pull-requests-limit: 5
 
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
+      interval: 'weekly'
