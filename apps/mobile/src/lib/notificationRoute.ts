@@ -1,4 +1,5 @@
 import { PUSH_KINDS, type PushKind } from '@langx/shared'
+import type { Href } from 'expo-router'
 
 /**
  * Where tapping a notification should land.
@@ -8,8 +9,13 @@ import { PUSH_KINDS, type PushKind } from '@langx/shared'
  * an older build of the server sent, or nothing at all. Returning `null` for
  * anything unrecognised is what keeps a future notification kind from throwing
  * inside a launch path — the app opens where it would have anyway.
+ *
+ * `Href` is imported as a type only. Typed routes make `router.push` reject
+ * a plain string, and this is the value it gets — but a value import of
+ * `expo-router` would pull native modules into a file the unit tests load
+ * directly, and vitest cannot parse those.
  */
-export function notificationRoute(data: unknown): string | null {
+export function notificationRoute(data: unknown): Href | null {
   if (typeof data !== 'object' || data === null) return null
   const { kind, conversationId } = data as { kind?: unknown; conversationId?: unknown }
   if (typeof kind !== 'string' || !(PUSH_KINDS as readonly string[]).includes(kind)) return null
