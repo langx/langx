@@ -1,5 +1,4 @@
 import * as Device from 'expo-device'
-import * as Notifications from 'expo-notifications'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
 import { api } from '../api/client'
@@ -17,6 +16,15 @@ export function usePushRegistration(): void {
     void (async () => {
       try {
         if (Platform.OS === 'web' || !Device.isDevice) return
+
+        // Imported here, not at module scope. Inside Expo Go on Android,
+        // `expo-notifications` throws the moment it is imported — remote push
+        // was removed from Expo Go there in SDK 53. At module scope that throw
+        // takes down the layout importing this hook, and every signed-in
+        // screen with it; expo-router surfaces it as the very misleading
+        // "Route (app)/_layout.tsx is missing the required default export".
+        // A development build has the native module and works normally.
+        const Notifications = await import('expo-notifications')
 
         // `granted` is compared through expo's own enum rather than the string
         // literal — the two are not the same type, and the literal comparison
