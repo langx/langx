@@ -49,7 +49,7 @@ export function LanguagePicker({
       <TextInput
         value={query}
         onChangeText={setQuery}
-        placeholder="Dil ara…"
+        placeholder="Search languages…"
         placeholderTextColor={colors.textMuted}
         style={styles.search}
         autoCorrect={false}

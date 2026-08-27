@@ -10,12 +10,12 @@ import { colors, font, radius, spacing } from '../../src/lib/theme'
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
   const minutes = Math.floor(diff / 60_000)
-  if (minutes < 1) return 'şimdi'
-  if (minutes < 60) return `${minutes}dk`
+  if (minutes < 1) return 'now'
+  if (minutes < 60) return `${minutes}m`
   const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}sa`
+  if (hours < 24) return `${hours}h`
   const days = Math.floor(hours / 24)
-  if (days < 7) return `${days}g`
+  if (days < 7) return `${days}d`
   return new Date(iso).toLocaleDateString()
 }
 
@@ -32,7 +32,7 @@ export default function ChatsScreen() {
 
   return (
     <Screen fluid>
-      <Text style={styles.title}>Sohbetler</Text>
+      <Text style={styles.title}>Chats</Text>
 
       {conversations.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -44,9 +44,9 @@ export default function ChatsScreen() {
           ListEmptyComponent={
             <EmptyState
               emoji="💬"
-              title="Henüz sohbet yok"
-              body="Keşfet sekmesinden birine yaz. Ücretsiz planda günde 5 yeni sohbet başlatabilirsin — gelen mesajlara cevap vermek sınırsız."
-              actionLabel="Keşfet'e git"
+              title="No chats yet"
+              body="Message someone from Discover. On the free plan you can start 5 new chats a day — replying to messages you receive is always unlimited."
+              actionLabel="Go to Discover"
               onAction={() => router.push('/(app)/discover')}
             />
           }
@@ -69,7 +69,7 @@ export default function ChatsScreen() {
                 <View style={styles.body}>
                   <View style={styles.top}>
                     <Text style={styles.name} numberOfLines={1}>
-                      {partner?.displayName ?? 'Yükleniyor…'}
+                      {partner?.displayName ?? 'Loading…'}
                     </Text>
                     <Text style={styles.time}>{relativeTime(item.lastMessage.createdAt)}</Text>
                   </View>
@@ -78,7 +78,7 @@ export default function ChatsScreen() {
                       style={[styles.preview, unread > 0 && styles.previewUnread]}
                       numberOfLines={1}
                     >
-                      {mine ? 'Sen: ' : ''}
+                      {mine ? 'You: ' : ''}
                       {item.lastMessage.body}
                     </Text>
                     {unread > 0 ? (

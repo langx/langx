@@ -43,8 +43,8 @@ export default function ProfileScreen() {
   if (!profile.data) {
     return (
       <Screen>
-        <Text style={styles.missing}>Bu profil bulunamadı.</Text>
-        <Button label="Geri" variant="secondary" onPress={() => router.back()} />
+        <Text style={styles.missing}>Profile not found.</Text>
+        <Button label="Back" variant="secondary" onPress={() => router.back()} />
       </Screen>
     )
   }
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
         }
         setError(caught.message)
       } else {
-        setError('Mesaj gönderilemedi.')
+        setError('Could not send the message.')
       }
     }
   }
@@ -82,11 +82,11 @@ export default function ProfileScreen() {
   function confirmBlock(): void {
     Alert.alert(
       'Engelle',
-      `${user.displayName} engellensin mi? Birbirinizi hiçbir listede göremezsiniz.`,
+      `Block ${user.displayName}? Neither of you will appear in the other's lists.`,
       [
-        { text: 'Vazgeç', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Engelle',
+          text: 'Block',
           style: 'destructive',
           onPress: () => {
             block.mutate(user._id, { onSuccess: () => router.replace('/(app)/discover') })
@@ -97,12 +97,15 @@ export default function ProfileScreen() {
   }
 
   function confirmReport(): void {
-    Alert.alert('Şikayet et', 'Bu profili neden bildiriyorsun?', [
-      { text: 'Vazgeç', style: 'cancel' },
+    Alert.alert('Report', 'Why are you reporting this profile?', [
+      { text: 'Cancel', style: 'cancel' },
       { text: 'Spam', onPress: () => report.mutate({ userId: user._id, reason: 'spam' }) },
-      { text: 'Taciz', onPress: () => report.mutate({ userId: user._id, reason: 'harassment' }) },
       {
-        text: 'Uygunsuz içerik',
+        text: 'Harassment',
+        onPress: () => report.mutate({ userId: user._id, reason: 'harassment' }),
+      },
+      {
+        text: 'Inappropriate content',
         onPress: () => report.mutate({ userId: user._id, reason: 'inappropriate_content' }),
       },
     ])
@@ -111,7 +114,7 @@ export default function ProfileScreen() {
   return (
     <Screen scroll>
       <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Geri</Text>
+        <Text style={styles.back}>‹ Back</Text>
       </Pressable>
 
       <View style={styles.hero}>
@@ -127,7 +130,7 @@ export default function ProfileScreen() {
           <Chip label={`${user.age}`} />
           {user.country ? <Chip label={user.country} /> : null}
           {user.streak.current > 0 ? (
-            <Chip label={`🔥 ${user.streak.current} gün`} tone="streak" />
+            <Chip label={`🔥 ${user.streak.current} days`} tone="streak" />
           ) : null}
           {user.tier === 'pro' ? <Chip label="PRO" tone="pro" selected /> : null}
         </View>
@@ -135,14 +138,14 @@ export default function ProfileScreen() {
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
-      <Text style={styles.sectionTitle}>Konuşuyor</Text>
+      <Text style={styles.sectionTitle}>Speaks</Text>
       <View style={styles.chips}>
         {user.nativeLanguages.map((l) => (
           <Chip key={l.code} label={getLanguage(l.code)?.name ?? l.code} tone="accent" selected />
         ))}
       </View>
 
-      <Text style={styles.sectionTitle}>Öğreniyor</Text>
+      <Text style={styles.sectionTitle}>Learning</Text>
       <View style={styles.chips}>
         {user.learning.map((l) => (
           <Chip
@@ -155,7 +158,7 @@ export default function ProfileScreen() {
 
       {user.interests.length > 0 ? (
         <>
-          <Text style={styles.sectionTitle}>İlgi alanları</Text>
+          <Text style={styles.sectionTitle}>Interests</Text>
           <View style={styles.chips}>
             {user.interests.map((interest) => (
               <Chip key={interest} label={interest} />
@@ -164,18 +167,18 @@ export default function ProfileScreen() {
         </>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Mesaj gönder</Text>
+      <Text style={styles.sectionTitle}>Send a message</Text>
       <TextInput
         value={message}
         onChangeText={setMessage}
-        placeholder={`${user.displayName} kişisine merhaba de…`}
+        placeholder={`Say hello to ${user.displayName}…`}
         placeholderTextColor={colors.textMuted}
         style={styles.input}
         multiline
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        label="Gönder"
+        label="Send"
         disabled={message.trim().length === 0}
         loading={startConversation.isPending}
         onPress={send}
@@ -184,10 +187,10 @@ export default function ProfileScreen() {
 
       <View style={styles.danger}>
         <Pressable onPress={confirmReport} hitSlop={8}>
-          <Text style={styles.dangerText}>Şikayet et</Text>
+          <Text style={styles.dangerText}>Report</Text>
         </Pressable>
         <Pressable onPress={confirmBlock} hitSlop={8}>
-          <Text style={styles.dangerText}>Engelle</Text>
+          <Text style={styles.dangerText}>Block</Text>
         </Pressable>
       </View>
     </Screen>

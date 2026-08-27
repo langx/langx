@@ -13,9 +13,9 @@ export default function ViewersScreen() {
   return (
     <Screen fluid>
       <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Geri</Text>
+        <Text style={styles.back}>‹ Back</Text>
       </Pressable>
-      <Text style={styles.title}>Profilini görüntüleyenler</Text>
+      <Text style={styles.title}>Who viewed your profile</Text>
 
       {viewers.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -23,11 +23,13 @@ export default function ViewersScreen() {
         <View style={styles.locked}>
           <Text style={styles.lockedCount}>{viewers.data.total}</Text>
           <Text style={styles.lockedLabel}>
-            {viewers.data.total === 0 ? 'Henüz kimse profiline bakmadı.' : 'kişi profiline baktı'}
+            {viewers.data.total === 0
+              ? 'Nobody has viewed your profile yet.'
+              : 'people viewed your profile'}
           </Text>
           {viewers.data.total > 0 ? (
             <Button
-              label="Kim olduklarını gör"
+              label="See who they are"
               onPress={() => router.push('/(app)/paywall')}
               style={styles.cta}
             />
@@ -39,11 +41,7 @@ export default function ViewersScreen() {
           keyExtractor={(item) => item.userId}
           contentContainerStyle={styles.list}
           ListEmptyComponent={
-            <EmptyState
-              emoji="👀"
-              title="Henüz ziyaretçi yok"
-              body="Profilini tamamlamak yardımcı olur."
-            />
+            <EmptyState emoji="👀" title="No visitors yet" body="Filling in your profile helps." />
           }
           renderItem={({ item }) => (
             <Pressable

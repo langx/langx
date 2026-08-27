@@ -53,8 +53,8 @@ export type ConsumeResult = { consumed: true } | { consumed: false; nextAvailabl
  *
  * The naive approach — read the count, check it client-side, then push a
  * timestamp — overruns the quota under concurrent requests (the plan calls
- * this out explicitly: "sayıp sonra yazmak eşzamanlı isteklerde kotayı
- * aşırır"). This does both in one `findOneAndUpdate`: the query's `$expr`
+ * this out explicitly: "count-then-write overruns the quota under concurrent
+ * requests"). This does both in one `findOneAndUpdate`: the query's `$expr`
  * recomputes the in-window count from the document MongoDB is about to write
  * to, and only a request that still sees room gets its update applied.
  * MongoDB serializes writes to a single document, so concurrent callers for

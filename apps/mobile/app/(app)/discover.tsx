@@ -19,8 +19,8 @@ import { Screen } from '../../src/components/ui/Screen'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const SORTS = [
-  { key: 'recommended', label: 'Önerilen' },
-  { key: 'active', label: 'Aktif' },
+  { key: 'recommended', label: 'For you' },
+  { key: 'active', label: 'Active' },
 ] as const
 
 function LanguageLine({ item }: { item: DiscoveryItem }) {
@@ -51,7 +51,7 @@ export default function DiscoverScreen() {
   return (
     <Screen fluid>
       <View style={styles.header}>
-        <Text style={styles.title}>Keşfet</Text>
+        <Text style={styles.title}>Discover</Text>
         <View style={styles.filters}>
           {SORTS.map((option) => (
             <Chip
@@ -62,7 +62,7 @@ export default function DiscoverScreen() {
             />
           ))}
           <Chip
-            label="Çevrimiçi"
+            label="Online"
             tone="accent"
             selected={onlineOnly}
             onPress={() => setOnlineOnly((v) => !v)}
@@ -71,7 +71,7 @@ export default function DiscoverScreen() {
               routing to the paywall sells better than hiding it entirely —
               the user has to see what they are missing. */}
           <Chip
-            label={isPro ? 'Filtreler' : 'Filtreler ✦'}
+            label={isPro ? 'Filters' : 'Filters ✦'}
             tone="pro"
             onPress={() => router.push(isPro ? '/(app)/settings' : '/(app)/paywall')}
           />
@@ -98,8 +98,8 @@ export default function DiscoverScreen() {
           ListEmptyComponent={
             <EmptyState
               emoji="🔍"
-              title="Henüz kimse yok"
-              body="Karşılıklı dil uyumu olan biri katıldığında burada görünecek. Filtreleri gevşetmeyi dene."
+              title="Nobody here yet"
+              body="People whose languages match yours in both directions show up here. Try loosening the filters."
             />
           }
           ListFooterComponent={

@@ -8,7 +8,7 @@ import type { Conversation } from './conversations'
  * The one gate every conversation-scoped operation goes through — REST
  * (`routes/messages.ts`) and socket handlers (`ws/index.ts`) alike, so the
  * socket transport is never a back door around the REST checks (see the
- * plan's "Socket olayları da aynı guard'lardan geçer").
+ * plan's "socket events pass through the same guards").
  *
  * Checks participancy AND re-checks blocks live on every call, not just at
  * `POST /conversations` time — a block placed after the conversation exists

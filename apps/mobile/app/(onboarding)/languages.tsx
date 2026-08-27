@@ -41,9 +41,9 @@ export default function LanguagesStep() {
   return (
     <Screen fluid style={styles.screen}>
       <Text style={styles.step}>1 / 3</Text>
-      <Text style={styles.title}>Hangi dilleri konuşuyorsun?</Text>
+      <Text style={styles.title}>Which languages do you speak?</Text>
       <Text style={styles.subtitle}>
-        Ana dilin öğretebileceğin, öğrendiğin dil ise eşleşeceğin kişiyi belirler.
+        Your native language is what you can teach; what you're learning is who you'll match with.
       </Text>
 
       <View style={styles.tabs}>
@@ -52,7 +52,7 @@ export default function LanguagesStep() {
           style={[styles.tab, mode === 'native' && styles.tabActive]}
         >
           <Text style={[styles.tabLabel, mode === 'native' && styles.tabLabelActive]}>
-            Ana dilim ({draft.nativeLanguages.length})
+            Native ({draft.nativeLanguages.length})
           </Text>
         </Pressable>
         <Pressable
@@ -60,7 +60,7 @@ export default function LanguagesStep() {
           style={[styles.tab, mode === 'learning' && styles.tabActive]}
         >
           <Text style={[styles.tabLabel, mode === 'learning' && styles.tabLabelActive]}>
-            Öğreniyorum ({draft.learning.length})
+            Learning ({draft.learning.length})
           </Text>
         </Pressable>
       </View>
@@ -84,7 +84,7 @@ export default function LanguagesStep() {
           />
           {draft.learning.length > 0 ? (
             <ScrollView style={styles.levels} keyboardShouldPersistTaps="handled">
-              <Text style={styles.levelsTitle}>Seviyen</Text>
+              <Text style={styles.levelsTitle}>Your level</Text>
               {draft.learning.map((entry) => (
                 <View key={entry.code} style={styles.levelRow}>
                   <Text style={styles.levelLang}>
@@ -117,7 +117,7 @@ export default function LanguagesStep() {
       )}
 
       <Button
-        label="Devam"
+        label="Continue"
         disabled={!canContinue}
         onPress={() => router.push('/(onboarding)/about-you')}
         style={styles.cta}

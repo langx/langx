@@ -24,7 +24,7 @@ export const ONLINE_WINDOW_MS = 5 * 60 * 1000
 /**
  * Keys that require Pro (`PLAN_LIMITS.advancedFilters`). A free account
  * sending any of these gets `403 UPGRADE_REQUIRED`, not a silently-ignored
- * parameter — see "Paywall kuralları" in the plan.
+ * parameter — see "Paywall rules" in the plan.
  */
 export const DISCOVERY_PRO_FILTER_KEYS = [
   'gender',

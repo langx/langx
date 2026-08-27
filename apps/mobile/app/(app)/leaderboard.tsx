@@ -9,10 +9,10 @@ import { Screen } from '../../src/components/ui/Screen'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const TABS: { key: PeriodType; label: string }[] = [
-  { key: 'week', label: 'Hafta' },
-  { key: 'month', label: 'Ay' },
-  { key: 'year', label: 'Yıl' },
-  { key: 'all', label: 'Tüm zamanlar' },
+  { key: 'week', label: 'Week' },
+  { key: 'month', label: 'Month' },
+  { key: 'year', label: 'Year' },
+  { key: 'all', label: 'All time' },
 ]
 
 const MEDALS = ['🥇', '🥈', '🥉']
@@ -28,16 +28,16 @@ export default function LeaderboardScreen() {
 
   return (
     <Screen fluid>
-      <Text style={styles.title}>Sıralama</Text>
+      <Text style={styles.title}>Leaderboard</Text>
 
       {streak ? (
         <View style={styles.streakCard}>
           <View>
-            <Text style={styles.streakValue}>🔥 {streak.current} gün</Text>
+            <Text style={styles.streakValue}>🔥 {streak.current} days</Text>
             <Text style={styles.streakHint}>
               {streak.qualifiedToday
-                ? 'Bugünü tamamladın. Yarın görüşürüz.'
-                : 'Bugün bir mesaj gönder, serini kaybetme.'}
+                ? 'Today is done. See you tomorrow.'
+                : 'Send one message today to keep it going.'}
             </Text>
           </View>
           <Pressable onPress={() => router.push('/(app)/me')}>
@@ -70,15 +70,15 @@ export default function LeaderboardScreen() {
           ListEmptyComponent={
             <EmptyState
               emoji="🏆"
-              title="Bu dönem henüz boş"
-              body="Mesaj gönder ve düzeltme yap — XP kazanan ilk kişi sen ol."
+              title="Nothing here yet"
+              body="Send messages and write corrections — be the first to earn XP this period."
             />
           }
           ListFooterComponent={
             viewer && !viewer.inPage && viewer.rank ? (
               <View style={styles.viewerRow}>
                 <Text style={styles.rank}>#{viewer.rank}</Text>
-                <Text style={styles.viewerLabel}>Sen</Text>
+                <Text style={styles.viewerLabel}>You</Text>
                 <Text style={styles.xp}>{viewer.xp} XP</Text>
               </View>
             ) : null
@@ -93,7 +93,7 @@ export default function LeaderboardScreen() {
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
                   {item.displayName}
-                  {item.isViewer ? ' (sen)' : ''}
+                  {item.isViewer ? ' (you)' : ''}
                 </Text>
                 {item.streak > 0 ? <Text style={styles.streakSmall}>🔥 {item.streak}</Text> : null}
               </View>

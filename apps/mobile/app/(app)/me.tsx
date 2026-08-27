@@ -48,20 +48,20 @@ export default function MeScreen() {
       </View>
 
       <View style={styles.stats}>
-        <Stat label="Seri" value={`🔥 ${xp.data?.streak.current ?? 0}`} tone={colors.streak} />
-        <Stat label="Toplam XP" value={String(xp.data?.xp.all ?? 0)} />
-        <Stat label="Bakiye" value={String(balance)} tone={colors.accent} />
+        <Stat label="Streak" value={`🔥 ${xp.data?.streak.current ?? 0}`} tone={colors.streak} />
+        <Stat label="Total XP" value={String(xp.data?.xp.all ?? 0)} />
+        <Stat label="Balance" value={String(balance)} tone={colors.accent} />
       </View>
 
       {/* Free users get the count and a locked list; that contrast is the
           entire argument for Pro, so it is shown rather than hidden. */}
       <Pressable style={styles.card} onPress={() => router.push('/(app)/viewers')}>
         <View>
-          <Text style={styles.cardTitle}>Profilini görüntüleyenler</Text>
+          <Text style={styles.cardTitle}>Who viewed your profile</Text>
           <Text style={styles.cardBody}>
             {viewers.data?.locked
-              ? `${viewers.data.total} kişi baktı — kim olduklarını Pro ile gör`
-              : `${viewers.data?.total ?? 0} kişi`}
+              ? `${viewers.data.total} people looked — see who with Pro`
+              : `${viewers.data?.total ?? 0} people`}
           </Text>
         </View>
         <Text style={styles.chevron}>›</Text>
@@ -75,17 +75,17 @@ export default function MeScreen() {
           <View style={styles.flex}>
             <Text style={styles.proTitle}>LangX Pro</Text>
             <Text style={styles.cardBody}>
-              Sınırsız sohbet başlatma, gelişmiş filtreler, çeviri ve gizli gezinme.
+              Unlimited new chats, advanced filters, translation and incognito browsing.
             </Text>
             <Text style={styles.quota}>
-              Bugün kalan yeni sohbet: {quota.data?.initiations.remaining ?? '—'} /{' '}
+              New chats left today: {quota.data?.initiations.remaining ?? '—'} /{' '}
               {quota.data?.initiations.limit ?? '∞'}
             </Text>
           </View>
         </Pressable>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Dillerim</Text>
+      <Text style={styles.sectionTitle}>My languages</Text>
       <View style={styles.chips}>
         {profile.nativeLanguages.map((l) => (
           <Chip key={l.code} label={getLanguage(l.code)?.name ?? l.code} tone="accent" selected />
@@ -99,17 +99,17 @@ export default function MeScreen() {
         ))}
       </View>
 
-      <Text style={styles.sectionTitle}>XP mağazası</Text>
+      <Text style={styles.sectionTitle}>XP store</Text>
       <Text style={styles.storeHint}>
-        XP satın alınamaz, takas edilemez ve hiçbir Pro özelliğini açmaz — yalnızca seri dondurma ve
-        kozmetik.
+        XP cannot be bought, traded, or used to unlock any Pro feature — only streak freezes and
+        cosmetics.
       </Text>
 
       <View style={styles.storeRow}>
         <View style={styles.flex}>
-          <Text style={styles.storeName}>Seri dondurma</Text>
+          <Text style={styles.storeName}>Streak freeze</Text>
           <Text style={styles.storeMeta}>
-            Kaçırdığın bir günü kurtarır · bankada {wallet.data?.streakFreezes ?? 0}/
+            Saves one missed day · {wallet.data?.streakFreezes ?? 0} banked /
             {XP_RULES.sinks.maxBankedStreakFreezes}
           </Text>
         </View>
@@ -128,11 +128,11 @@ export default function MeScreen() {
             <View style={styles.flex}>
               <Text style={styles.storeName}>{item.label}</Text>
               <Text style={styles.storeMeta}>
-                {item.kind === 'frame' ? 'Profil çerçevesi' : 'Ünvan'}
+                {item.kind === 'frame' ? 'Profile frame' : 'Title'}
               </Text>
             </View>
             <Button
-              label={isOwned ? 'Sende var' : `${item.price} XP`}
+              label={isOwned ? 'Owned' : `${item.price} XP`}
               variant="secondary"
               disabled={isOwned || balance < item.price || purchase.isPending}
               onPress={() => purchase.mutate(item.id)}
@@ -142,7 +142,7 @@ export default function MeScreen() {
       })}
 
       <Button
-        label="Ayarlar"
+        label="Settings"
         variant="secondary"
         onPress={() => router.push('/(app)/settings')}
         style={styles.settings}

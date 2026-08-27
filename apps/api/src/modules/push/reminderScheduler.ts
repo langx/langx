@@ -60,8 +60,8 @@ export function startStreakReminderScheduler(
         if (tokens.length === 0) continue
         await sender.send({
           to: tokens,
-          title: `${candidate.streak} gün! 🔥`,
-          body: 'Bugün bir mesaj gönder, serini kaybetme.',
+          title: `${candidate.streak} day streak! 🔥`,
+          body: 'Send one message today to keep it going.',
           data: { kind: 'streakReminder' },
         })
         sent++

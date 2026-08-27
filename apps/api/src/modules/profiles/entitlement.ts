@@ -7,7 +7,7 @@ import type { Profile } from './profiles'
  * whose RevenueCat `EXPIRATION` webhook hasn't arrived yet — or never will,
  * webhook delivery isn't guaranteed — must not keep granting Pro forever.
  * Every quota/feature check goes through this, never
- * `profile.entitlement.tier` directly (see the plan's "expiresAt geçmişse
+ * `profile.entitlement.tier` directly (see the plan's "if expiresAt has passed
  * guard reddeder").
  */
 export function effectiveTier(profile: Pick<Profile, 'entitlement'>): PlanTier {

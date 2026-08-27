@@ -8,10 +8,10 @@ import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDr
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const GENDER_LABELS: Record<Gender, string> = {
-  female: 'Kadın',
-  male: 'Erkek',
-  other: 'Diğer',
-  undisclosed: 'Belirtmek istemiyorum',
+  female: 'Female',
+  male: 'Male',
+  other: 'Other',
+  undisclosed: 'Prefer not to say',
 }
 
 export default function AboutYouStep() {
@@ -29,24 +29,24 @@ export default function AboutYouStep() {
   // retrying. It is not the check that matters.
   const ageError =
     draft.birthYear.length === 4 && yearLooksValid && !oldEnough
-      ? `LangX ${MINIMUM_AGE} yaş ve üzeri içindir.`
+      ? `LangX is for people aged ${MINIMUM_AGE} and over.`
       : undefined
 
   return (
     <Screen scroll>
       <Text style={styles.step}>2 / 3</Text>
-      <Text style={styles.title}>Kendinden bahset</Text>
+      <Text style={styles.title}>About you</Text>
 
       <FormField
-        label="Görünen ad"
+        label="Display name"
         value={draft.displayName}
         onChangeText={(displayName) => updateDraft({ displayName })}
-        placeholder="Ayşe"
+        placeholder="Alex"
         autoCapitalize="words"
       />
 
       <FormField
-        label="Doğum yılı"
+        label="Year of birth"
         value={draft.birthYear}
         onChangeText={(birthYear) =>
           updateDraft({ birthYear: birthYear.replace(/\D/g, '').slice(0, 4) })
@@ -56,7 +56,7 @@ export default function AboutYouStep() {
         {...(ageError ? { error: ageError } : {})}
       />
 
-      <Text style={styles.label}>Cinsiyet</Text>
+      <Text style={styles.label}>Gender</Text>
       <View style={styles.genders}>
         {GENDERS.map((gender) => (
           <Pressable
@@ -72,15 +72,15 @@ export default function AboutYouStep() {
       </View>
 
       <FormField
-        label="Hakkında (isteğe bağlı)"
+        label="About you (optional)"
         value={draft.bio}
         onChangeText={(bio) => updateDraft({ bio })}
-        placeholder="Neyi konuşmayı seversin?"
+        placeholder="What do you like talking about?"
         multiline
       />
 
       <Button
-        label="Devam"
+        label="Continue"
         disabled={!canContinue}
         onPress={() => router.push('/(onboarding)/handle')}
         style={styles.cta}

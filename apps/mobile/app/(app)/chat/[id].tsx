@@ -117,8 +117,8 @@ export default function ChatScreen() {
         >
           <Avatar url={partner?.avatarUrl} name={partner?.displayName ?? '?'} size={32} />
           <View>
-            <Text style={styles.headerName}>{partner?.displayName ?? 'Sohbet'}</Text>
-            {partnerTyping ? <Text style={styles.typing}>yazıyor…</Text> : null}
+            <Text style={styles.headerName}>{partner?.displayName ?? 'Chat'}</Text>
+            {partnerTyping ? <Text style={styles.typing}>typing…</Text> : null}
           </View>
         </Pressable>
       </View>
@@ -137,7 +137,7 @@ export default function ChatScreen() {
             if (item.type === 'correction') {
               return (
                 <View style={[styles.correction, mine ? styles.mine : styles.theirs]}>
-                  <Text style={styles.correctionLabel}>✏️ Düzeltme</Text>
+                  <Text style={styles.correctionLabel}>✏️ Correction</Text>
                   {item.correction ? (
                     <Text style={styles.correctionOriginal}>{item.correction.original}</Text>
                   ) : null}
@@ -169,7 +169,7 @@ export default function ChatScreen() {
       {correcting ? (
         <View style={styles.correctingBanner}>
           <Text style={styles.correctingText} numberOfLines={1}>
-            Düzeltiliyor: “{correcting.body}”
+            Correcting: “{correcting.body}”
           </Text>
           <Pressable
             onPress={() => {
@@ -178,7 +178,7 @@ export default function ChatScreen() {
             }}
             hitSlop={8}
           >
-            <Text style={styles.correctingCancel}>Vazgeç</Text>
+            <Text style={styles.correctingCancel}>Cancel</Text>
           </Pressable>
         </View>
       ) : null}
@@ -188,7 +188,7 @@ export default function ChatScreen() {
           <TextInput
             value={draft}
             onChangeText={onChangeDraft}
-            placeholder={correcting ? 'Doğrusunu yaz…' : 'Mesaj yaz…'}
+            placeholder={correcting ? 'Write the correction…' : 'Write a message…'}
             placeholderTextColor={colors.textMuted}
             style={styles.input}
             multiline

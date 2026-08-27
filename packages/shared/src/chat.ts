@@ -28,7 +28,7 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
 /**
  * `audio`/`image` are v1 parity items pushed to P1 (see the plan's MVP
  * note) — Faz 5 only needs `text` and `correction`, the two the MVP list
- * calls out ("1-1 sohbet" + "mesaj düzeltme").
+ * calls out ("1-1 chat" + "message correction").
  */
 export const MESSAGE_TYPES = ['text', 'correction'] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]

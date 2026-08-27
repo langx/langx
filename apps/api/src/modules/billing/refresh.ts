@@ -6,8 +6,8 @@ import type { RevenueCatClient } from './revenueCatClient'
 /**
  * The client-triggered fallback for a webhook that's late or never arrives
  * (network blip, RevenueCat outage) — see the plan's "Webhook gecikirse
- * client POST /billing/refresh çağırır, sunucu RevenueCat REST'inden
- * doğrular." Reconciles straight from RevenueCat's own subscriber record,
+ * client calls POST /billing/refresh and the server verifies against
+ * RevenueCat's REST API." Reconciles straight from RevenueCat's own subscriber record,
  * never from anything the client asserts about its own purchase state.
  */
 export async function refreshEntitlement(

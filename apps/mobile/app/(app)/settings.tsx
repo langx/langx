@@ -64,12 +64,12 @@ export default function SettingsScreen() {
 
   function confirmDelete(): void {
     Alert.alert(
-      'Hesabını sil',
-      `Hesabın hemen görünmez olur. Verilerin ${ACCOUNT_DELETION_GRACE_DAYS} gün saklanır — bu süre içinde tekrar giriş yaparsan silme iptal olur. Sonrasında kalıcı olarak silinir.`,
+      'Delete your account',
+      `Your account disappears immediately. Your data is kept for ${ACCOUNT_DELETION_GRACE_DAYS} days — signing back in within that window cancels the deletion. After that it is permanently removed.`,
       [
-        { text: 'Vazgeç', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Sil',
+          text: 'Delete',
           style: 'destructive',
           onPress: () => {
             void (async () => {
@@ -80,8 +80,8 @@ export default function SettingsScreen() {
                 router.replace('/(auth)/sign-in')
               } catch (error) {
                 Alert.alert(
-                  'Silinemedi',
-                  error instanceof ApiRequestError ? error.message : 'Tekrar dene.',
+                  'Could not delete',
+                  error instanceof ApiRequestError ? error.message : 'Try again.',
                 )
               } finally {
                 setBusy(false)
@@ -96,51 +96,51 @@ export default function SettingsScreen() {
   return (
     <Screen scroll>
       <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Geri</Text>
+        <Text style={styles.back}>‹ Back</Text>
       </Pressable>
-      <Text style={styles.title}>Ayarlar</Text>
+      <Text style={styles.title}>Settings</Text>
 
-      <Text style={styles.section}>Gizlilik</Text>
+      <Text style={styles.section}>Privacy</Text>
       <Row
-        title="Keşfette görün"
-        subtitle="Kapatırsan kimse seni keşfet listesinde bulamaz."
+        title="Show me in Discover"
+        subtitle="Turn this off and nobody will find you in Discover."
         value={profile?.settings.discoverable ?? true}
         onValueChange={(discoverable) =>
           update.mutate({ settings: { ...profile?.settings, discoverable } })
         }
       />
       <Row
-        title="Gizli gezinme"
-        subtitle={isPro ? 'Profillere iz bırakmadan bak.' : 'Pro özelliği.'}
+        title="Incognito browsing"
+        subtitle={isPro ? 'Look at profiles without leaving a trace.' : 'Pro feature.'}
         value={profile?.privacy.incognito ?? false}
         disabled={!isPro}
         onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
       />
       <Row
-        title="Bildirimler"
-        subtitle="Mesajlar ve seri hatırlatıcısı."
+        title="Notifications"
+        subtitle="Messages and the streak reminder."
         value={profile?.settings.notifications ?? true}
         onValueChange={(notifications) =>
           update.mutate({ settings: { ...profile?.settings, notifications } })
         }
       />
 
-      <Text style={styles.section}>Verilerin</Text>
+      <Text style={styles.section}>Your data</Text>
       <Button
-        label="Verilerimi indir"
+        label="Download my data"
         variant="secondary"
         onPress={exportData}
         style={styles.button}
       />
 
-      <Text style={styles.section}>Hesap</Text>
-      <Button label="Çıkış yap" variant="secondary" onPress={signOut} style={styles.button} />
+      <Text style={styles.section}>Account</Text>
+      <Button label="Sign out" variant="secondary" onPress={signOut} style={styles.button} />
 
       <Pressable onPress={confirmDelete} disabled={busy} style={styles.delete}>
-        <Text style={styles.deleteText}>Hesabımı sil</Text>
+        <Text style={styles.deleteText}>Delete my account</Text>
       </Pressable>
       <Text style={styles.deleteHint}>
-        {ACCOUNT_DELETION_GRACE_DAYS} gün içinde giriş yaparsan silme iptal olur.
+        Signing back in within {ACCOUNT_DELETION_GRACE_DAYS} days cancels the deletion.
       </Text>
     </Screen>
   )

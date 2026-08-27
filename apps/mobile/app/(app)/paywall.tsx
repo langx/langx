@@ -9,17 +9,17 @@ import { colors, font, radius, spacing } from '../../src/lib/theme'
 const FEATURES = [
   {
     emoji: '💬',
-    title: 'Sınırsız sohbet başlatma',
-    body: `Ücretsiz planda günde ${PLAN_LIMITS.free.initiationsPer24h}.`,
+    title: 'Unlimited new chats',
+    body: `${PLAN_LIMITS.free.initiationsPer24h} a day on the free plan.`,
   },
-  { emoji: '🎯', title: 'Gelişmiş filtreler', body: 'Cinsiyet, ülke, yaş ve seviye ile ara.' },
+  { emoji: '🎯', title: 'Advanced filters', body: 'Search by gender, country, age and level.' },
   {
     emoji: '🌍',
-    title: 'Sınırsız çeviri',
-    body: `Ücretsiz planda günde ${PLAN_LIMITS.free.translationsPer24h}.`,
+    title: 'Unlimited translation',
+    body: `${PLAN_LIMITS.free.translationsPer24h} a day on the free plan.`,
   },
-  { emoji: '👀', title: 'Seni kim görüntüledi', body: 'Sadece sayıyı değil, kim olduklarını gör.' },
-  { emoji: '🕶️', title: 'Gizli gezinme', body: 'İz bırakmadan profillere bak.' },
+  { emoji: '👀', title: 'Who viewed you', body: 'Not just the count — see who they are.' },
+  { emoji: '🕶️', title: 'Incognito browsing', body: 'Look at profiles without leaving a trace.' },
 ]
 
 /**
@@ -38,13 +38,13 @@ export default function PaywallScreen() {
   return (
     <Screen scroll>
       <Text style={styles.eyebrow}>LANGX PRO</Text>
-      <Text style={styles.title}>Daha fazla konuş, daha hızlı öğren</Text>
+      <Text style={styles.title}>Talk more, learn faster</Text>
 
       {remaining === 0 ? (
         <View style={styles.quotaBanner}>
           <Text style={styles.quotaText}>
-            Bugünkü {PLAN_LIMITS.free.initiationsPer24h} yeni sohbet hakkını kullandın. Gelen
-            mesajlara cevap vermeye sınırsız devam edebilirsin.
+            You've used today's {PLAN_LIMITS.free.initiationsPer24h} new chats. You can still reply
+            to everything you receive, with no limit.
           </Text>
         </View>
       ) : null}
@@ -60,19 +60,14 @@ export default function PaywallScreen() {
       ))}
 
       <View style={styles.notice}>
-        <Text style={styles.noticeTitle}>Satın alma henüz açık değil</Text>
+        <Text style={styles.noticeTitle}>Purchasing isn't live yet</Text>
         <Text style={styles.noticeBody}>
-          Abonelik altyapısı sunucu tarafında hazır, ancak mağaza ürünleri (App Store Connect / Play
-          Console) ve RevenueCat anahtarları kurulmadan gerçek satın alma yapılamaz.
+          The subscription backend is finished, but a real purchase needs the store products (App
+          Store Connect / Play Console) and RevenueCat keys to be set up first.
         </Text>
       </View>
 
-      <Button
-        label="Geri dön"
-        variant="secondary"
-        onPress={() => router.back()}
-        style={styles.back}
-      />
+      <Button label="Back" variant="secondary" onPress={() => router.back()} style={styles.back} />
     </Screen>
   )
 }

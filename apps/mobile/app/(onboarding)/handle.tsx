@@ -86,7 +86,9 @@ export default function HandleStep() {
       router.replace('/(app)/discover')
     } catch (error) {
       setSubmitError(
-        error instanceof ApiRequestError ? error.message : 'Profil oluşturulamadı, tekrar dene.',
+        error instanceof ApiRequestError
+          ? error.message
+          : 'Could not create your profile. Try again.',
       )
     } finally {
       setSubmitting(false)
@@ -98,24 +100,24 @@ export default function HandleStep() {
   return (
     <Screen scroll>
       <Text style={styles.step}>3 / 3</Text>
-      <Text style={styles.title}>Kullanıcı adını seç</Text>
+      <Text style={styles.title}>Choose a username</Text>
 
       {reserved ? (
         <View style={styles.reserved}>
-          <Text style={styles.reservedTitle}>@{reserved} senin için ayrılmış</Text>
+          <Text style={styles.reservedTitle}>@{reserved} is reserved for you</Text>
           <Text style={styles.reservedBody}>
-            Eski LangX hesabındaki kullanıcı adın. Bir defaya mahsus geri alabilirsin.
+            Your username from the old LangX. You can claim it back, once.
           </Text>
         </View>
       ) : null}
 
       <FormField
-        label="Kullanıcı adı"
+        label="Username"
         value={draft.handle}
         onChangeText={(handle) =>
           updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
         }
-        placeholder="ayse"
+        placeholder="alex"
         autoCapitalize="none"
         autoCorrect={false}
         {...(!parsed.success && draft.handle.length > 0
@@ -126,17 +128,17 @@ export default function HandleStep() {
       <View style={styles.status}>
         {checking ? <ActivityIndicator size="small" /> : null}
         {!checking && available === true ? (
-          <Text style={styles.ok}>@{draft.handle} müsait ✓</Text>
+          <Text style={styles.ok}>@{draft.handle} is available ✓</Text>
         ) : null}
         {!checking && available === false ? (
-          <Text style={styles.taken}>@{draft.handle} alınmış</Text>
+          <Text style={styles.taken}>@{draft.handle} is taken</Text>
         ) : null}
       </View>
 
       {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
 
       <Button
-        label="LangX'e başla"
+        label="Start using LangX"
         disabled={!canSubmit}
         loading={submitting}
         onPress={submit}
