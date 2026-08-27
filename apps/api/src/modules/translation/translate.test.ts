@@ -33,7 +33,7 @@ function minimalProfile(id: string, tier: 'free' | 'pro'): Profile {
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'B1', priority: 1 }],
     interests: [],
-    settings: { discoverable: true, notifications: true, ageRange: [18, 99], distanceKm: 50 },
+    settings: { discoverable: true, notifications: true },
     privacy: { incognito: false },
     entitlement: { tier, updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },

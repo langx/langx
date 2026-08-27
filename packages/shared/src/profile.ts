@@ -130,8 +130,6 @@ export const updateProfileSchema = z
     settings: z.object({
       discoverable: z.boolean(),
       notifications: z.boolean(),
-      ageRange: z.tuple([z.number().int().min(18), z.number().int().min(18)]),
-      distanceKm: z.number().int().positive(),
     }),
     privacy: z.object({ incognito: z.boolean() }),
   })

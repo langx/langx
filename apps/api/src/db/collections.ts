@@ -53,7 +53,6 @@ export const COLLECTIONS = {
   /** A single document (`_id: 'current'`) — maintenance, min versions, feature flags. */
   appConfig: 'appConfig',
   jobRuns: 'jobRuns',
-  appwriteIdMap: 'appwriteIdMap',
 } as const
 
 export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]

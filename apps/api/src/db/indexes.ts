@@ -47,7 +47,6 @@ export const INDEXES: Partial<IndexSpec> = {
       key: { 'learning.code': 1, 'stats.lastActiveAt': -1 },
       name: 'discovery_learning_active',
     },
-    { key: { location: '2dsphere' }, name: 'location_2dsphere' },
     { key: { displayName: 'text', bio: 'text' }, name: 'profile_text' },
     // Soft-deleted accounts must drop out of every list; sparse keeps it small.
     {
@@ -166,11 +165,6 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.jobRuns]: [
     // The only defence against a double-run cron distributing the pool twice.
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },
-  ],
-
-  [COLLECTIONS.appwriteIdMap]: [
-    { key: { appwriteId: 1 }, name: 'appwrite_id_unique', unique: true },
-    { key: { userId: 1 }, name: 'user' },
   ],
 }
 

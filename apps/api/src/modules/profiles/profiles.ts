@@ -26,6 +26,14 @@ export interface Profile {
   city?: string
   timezone?: string
   timezoneUpdatedAt?: Date
+  /**
+   * Never written and never read. Kept as the shape a distance filter would
+   * need, and *without* its 2dsphere index — that index cost every profile
+   * write and indexed an always-empty field. `decisions.md` records why the
+   * distance filter was deferred: `$geoNear` has to be an aggregation's first
+   * stage, which the discovery pipeline cannot give it. Bring the index back
+   * with the feature, not before.
+   */
   location?: { type: 'Point'; coordinates: [number, number] }
   nativeLanguages: { code: string }[]
   learning: { code: string; level: string; priority: number }[]
@@ -33,8 +41,6 @@ export interface Profile {
   settings: {
     discoverable: boolean
     notifications: boolean
-    ageRange: [number, number]
-    distanceKm: number
   }
   privacy: { incognito: boolean }
   entitlement: {
@@ -80,9 +86,6 @@ export interface Profile {
   createdAt: Date
   updatedAt: Date
 }
-
-const DEFAULT_AGE_RANGE: [number, number] = [18, 99]
-const DEFAULT_DISTANCE_KM = 50
 
 function isDuplicateKeyError(error: unknown, indexName: string): boolean {
   return (
@@ -134,8 +137,6 @@ export async function createProfile(
     settings: {
       discoverable: true,
       notifications: true,
-      ageRange: DEFAULT_AGE_RANGE,
-      distanceKm: DEFAULT_DISTANCE_KM,
     },
     privacy: { incognito: false },
     entitlement: { tier: 'free', updatedAt: now },

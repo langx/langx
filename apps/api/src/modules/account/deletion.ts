@@ -186,7 +186,6 @@ export async function purgeExpiredAccounts(
       db.collection(COLLECTIONS.tokenAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.dailyActivity).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
-      db.collection(COLLECTIONS.appwriteIdMap).deleteMany({ userId }),
       // Better Auth's own rows. Deleting the `user` document is what makes the
       // email reusable and the account genuinely gone rather than orphaned.
       db.collection(COLLECTIONS.session).deleteMany({ userId: authId(userId) }),

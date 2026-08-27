@@ -515,7 +515,11 @@ makes a replayed import write nothing twice.
 is written at all for an incognito viewer.
 **`translationCache`** — unique `{sourceHash, targetLang}`, TTL.
 **`blocks`**, **`reports`**, **`devices`**, **`streakReminders`**,
-**`appwriteIdMap`**.
+~~`appwriteIdMap`~~ — removed. It had a collection, a unique index and a purge
+step, and nothing ever wrote to it. The plan claimed ETL idempotency came from
+here; it did not. The real mechanism is `legacyProfiles._id` (the Appwrite
+document id) together with `restoredBy`, which is what every re-run actually
+checks.
 
 The language list and CEFR levels are constants in `packages/shared`.
 

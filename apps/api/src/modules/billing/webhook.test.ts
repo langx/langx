@@ -16,7 +16,7 @@ function minimalProfile(id: string): Profile {
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'B1', priority: 1 }],
     interests: [],
-    settings: { discoverable: true, notifications: true, ageRange: [18, 99], distanceKm: 50 },
+    settings: { discoverable: true, notifications: true },
     privacy: { incognito: false },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },

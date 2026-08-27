@@ -184,7 +184,7 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
     nativeLanguages: legacy.nativeLanguages,
     learning: legacy.learning,
     interests: [],
-    settings: { discoverable: true, notifications: true, ageRange: [18, 99], distanceKm: 50 },
+    settings: { discoverable: true, notifications: true },
     privacy: { incognito: false },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
