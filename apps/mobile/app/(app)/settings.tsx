@@ -7,6 +7,7 @@ import { useMe, useUpdateProfile } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { authClient } from '../../src/lib/auth-client'
+import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000'
@@ -93,6 +94,16 @@ export default function SettingsScreen() {
     )
   }
 
+  /**
+   * Clears the flag the signed-out entry point reads, so the carousel plays
+   * again next time. It cannot be shown from here — the intro lives in
+   * `(auth)`, which `Stack.Protected` hides from a signed-in user — so this
+   * says what will happen rather than doing it now.
+   */
+  function replayIntro(): void {
+    void clearFlag(FLAG_KEYS.introSeen)
+    Alert.alert('Intro reset', 'You will see the intro again next time you sign in.')
+  }
   return (
     <Screen scroll>
       <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
@@ -129,6 +140,13 @@ export default function SettingsScreen() {
         label="Blocked people"
         variant="secondary"
         onPress={() => router.push('/(app)/blocked')}
+        style={styles.button}
+      />
+
+      <Button
+        label="Show intro again"
+        variant="secondary"
+        onPress={replayIntro}
         style={styles.button}
       />
 
