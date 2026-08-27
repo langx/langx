@@ -53,13 +53,45 @@ the wild.
 | `audio`   | `6563aa2ef2cd2964cf27` | 1270 — voice messages             |
 | `assets`  | `652d3cc9c509a3bc8ef3` | 4                                 |
 
+Two properties of these buckets decide how the migration has to work, and both
+were measured rather than assumed (`scripts/inspect-v1-media.ts`):
+
+- **`encryption: true`.** Appwrite encrypts at rest, so the objects sitting in
+  the DigitalOcean Space behind it are ciphertext. Repointing v2 at that Space,
+  or recovering the files if the Appwrite server goes away, is not possible —
+  every byte has to come out through the Appwrite API while it is still up.
+- **`fileSecurity: true`, and each file grants read only to its uploader.** An
+  anonymous request returns 404. So v2 cannot link to a v1 file either; without
+  copying, nothing renders for anyone.
+
+Together those two rule out every alternative to copying the bytes now.
+
+Contents, by type:
+
+| Bucket    | Type                  | Files | Volume  |
+| --------- | --------------------- | ----- | ------- |
+| `message` | `image/jpeg`          | 2836  | 2488 MB |
+| `message` | `image/png`           | 759   | 386 MB  |
+| `message` | `image/webp`          | 5     | 1.4 MB  |
+| `message` | _(none recorded)_     | 3     | 19 MB   |
+| `message` | `application/pdf`     | 1     | 1.4 MB  |
+| `audio`   | `audio/x-hx-aac-adts` | 1270  | 187 MB  |
+
+About 3.1 GB in total, on top of the `user` bucket.
+
+**Every voice note reports `audio/x-hx-aac-adts`** — a type no v2 allowlist
+contains and no player advertises. It is ADTS-framed AAC, i.e. `audio/aac`, so
+`lib/legacyMedia.ts` renames it on the way through; nothing is transcoded.
+Taken at face value it fails `isAudioContentType`, and the migration would have
+skipped all 1,270 while reporting success. The PDF and the three untyped files
+are genuinely dropped — v2 has no way to render them.
+
 ## Other infrastructure
 
-|                                    |                                      |
-| ---------------------------------- | ------------------------------------ |
-| App                                | `https://app.langx.io`               |
-| API                                | `https://api.langx.io/api`           |
-| Analytics (Plausible, self-hosted) | `https://insight.langx.io/api/event` |
+|     |                            |
+| --- | -------------------------- |
+| App | `https://app.langx.io`     |
+| API | `https://api.langx.io/api` |
 
 ## The v1 economy
 

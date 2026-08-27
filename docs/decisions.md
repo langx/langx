@@ -701,6 +701,74 @@ Read state is the opposite call: v1's `seen` flag is mirrored rather than
 flattened to "all read". Flattening keeps the unread badge tidy at the cost of
 permanently hiding a message someone genuinely never opened.
 
+## The analytics dashboard is private, and that decides the tool
+
+v1 published its analytics. `insight.langx.io` was a self-hosted Plausible CE
+instance with the dashboard shared publicly, and there is a blog post on the
+website inviting people to go and look at it. That was a coherent thing to do
+for a product with nothing to sell: the numbers were traffic, and showing them
+cost nothing while backing up the open-source promise.
+
+v2 sells a Pro tier, so the same dashboard now reads out conversion rate,
+churn, and which channel the paying users come from. Publishing that hands
+pricing and channel strategy to anyone who asks, and it does it permanently —
+a share link can be switched off, but what has already been read cannot be
+unread. There is a second cost that has nothing to do with competitors: a
+pre-release product's absolute numbers are small, and small numbers published
+next to a paywall read as a dead app to exactly the people being asked to pay.
+
+So v2's analytics dashboard is internal. The transparency that `insight` was
+carrying moves, if it moves anywhere, to a curated public stats page built from
+our own data — users, languages, messages, corrections, streaks — with no
+revenue, conversion or funnel on it. That is a different artefact with a
+different audience, not the same dashboard with a lock removed.
+
+**The consequence is the tool choice.** Open source stopped being a
+requirement the moment the dashboard stopped being public: self-hosting was
+what made "go and audit our numbers yourself" true, and without that claim it
+buys nothing but a ClickHouse instance to keep alive. What replaces it as the
+constraint is mobile. v1's Plausible was web-shaped — Ionic meant a script tag
+covered everything — while v2's revenue is mobile-first and sells through the
+App Store, Play and the web at the same time. The tool has to answer one
+question across all three: where in install → onboarding → first conversation →
+paywall people stop, per channel, joined to RevenueCat's purchase events. A
+pageview counter cannot answer it in any of its self-hosted forms.
+
+**The tool is PostHog Cloud (EU).** It is the one option that is mobile-first
+and answers the channel question without a second integration: an official
+React Native SDK, funnels and retention rather than pageviews, and a
+server-side RevenueCat connector that puts purchase events in the same
+timeline as the behaviour that led to them, so a Play subscriber and a
+Stripe-on-web subscriber land in one funnel. Its free tier is 1M events a
+month, which is far above anything v2 will produce before it matters.
+Self-hosting PostHog was rejected outright: Kafka, ClickHouse and Redis is
+the opposite of this project's one-container API, and it would be paying the
+full operational cost of self-hosting for a dashboard nobody outside the
+team will ever open. EU Cloud rather than US, because the users are.
+
+**This invalidated a store claim.** `docs/store/privacy-data-safety.md` said
+the app carries no third-party analytics SDK. That was true while analytics
+meant our own Plausible endpoint and stops being true the day the PostHog SDK
+ships in the Expo build, so the document has been rewritten ahead of the
+integration: PostHog appears in both tables, and the three properties the
+store answers actually depend on — no message bodies, our own user id rather
+than a device id, coarse IP geolocation off — are recorded there as
+declarations rather than left as configuration someone can quietly change.
+Apple's privacy questionnaire and Play's Data Safety form have to be updated
+_before_ that build goes out, not after, and the promise-update copy in phase
+13 is where users hear about it.
+
+**`insight.langx.io` has been removed from the code**, across all the v1
+repositories: the script tags on the website, the token site and the Ionic
+app, the `INSIGHT` environment entry and the "Insights" row in that app's
+about page, the `usePlausible` hook in the abandoned React Native attempt,
+and the README links. Two things are deliberately left: the Better Stack
+status page section, which lives in their dashboard and not in any repo, and
+the blog post announcing the public dashboard — deleting a published article
+is a separate decision from removing a dead link. Killing the instance while
+those still point at it leaves dead links on exactly the properties someone
+checks when deciding whether the project is still alive.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

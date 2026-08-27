@@ -34,13 +34,7 @@
  *   pnpm --filter @langx/api exec tsx scripts/migrate-messages.ts --apply --skip-media
  *   pnpm --filter @langx/api exec tsx scripts/migrate-messages.ts --limit 25    # try a slice first
  */
-import {
-  MAX_AUDIO_BYTES,
-  MAX_IMAGE_BYTES,
-  isAudioContentType,
-  isImageContentType,
-  type MessageMedia,
-} from '@langx/shared'
+import { MAX_AUDIO_BYTES, MAX_IMAGE_BYTES, type MessageMedia } from '@langx/shared'
 import { Client, Databases, Query, Storage } from 'node-appwrite'
 import { connectToDatabase } from '../src/db/client'
 import { COLLECTIONS } from '../src/db/collections'
@@ -50,6 +44,7 @@ import type { LegacyProfile } from '../src/modules/handles/legacyProfiles'
 import { createStorageProvider } from '../src/storage/createStorageProvider'
 import { supportsPut, type StorageProviderWithPut } from '../src/storage/StorageProvider'
 import { imageDimensions } from '../src/lib/imageDimensions'
+import { isServableLegacyMedia, normalizeLegacyContentType } from '../src/lib/legacyMedia'
 
 const DATABASE_ID = '650750f16cd0c482bb83'
 const ROOMS_COLLECTION = '6507510fc71f989d5d1c'
@@ -91,6 +86,7 @@ interface Summary {
   audioCopied: number
   mediaFailures: number
   mediaTooLarge: number
+  mediaUnsupported: number
 }
 
 async function* fetchRooms(databases: Databases, limit: number): AsyncGenerator<V1Room> {
@@ -168,10 +164,14 @@ async function copyAttachment(
   summary: Summary,
 ): Promise<MessageMedia | null> {
   const file = await storage.getFile({ bucketId, fileId })
-  const contentType = file.mimeType || (kind === 'image' ? 'image/jpeg' : 'audio/mp4')
-  const acceptable =
-    kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
-  if (!acceptable) return null
+  // v1's own name for the type, translated — its voice notes all report
+  // `audio/x-hx-aac-adts`, which no allowlist in v2 contains. See
+  // `lib/legacyMedia.ts`; taking it at face value skips every voice message.
+  const contentType = normalizeLegacyContentType(file.mimeType)
+  if (!isServableLegacyMedia(contentType, kind)) {
+    summary.mediaUnsupported++
+    return null
+  }
 
   const ceiling = kind === 'image' ? MAX_IMAGE_BYTES : MAX_AUDIO_BYTES
   if (file.sizeOriginal > ceiling) {
@@ -263,6 +263,7 @@ async function main(): Promise<void> {
     audioCopied: 0,
     mediaFailures: 0,
     mediaTooLarge: 0,
+    mediaUnsupported: 0,
   }
 
   for await (const roomDoc of fetchRooms(databases, limit)) {
@@ -404,6 +405,7 @@ async function main(): Promise<void> {
     console.log(`Images copied:                     ${summary.imagesCopied}`)
     console.log(`Voice notes copied:                ${summary.audioCopied}`)
     console.log(`Media over the size ceiling:       ${summary.mediaTooLarge}`)
+    console.log(`Media of a type v2 cannot serve:   ${summary.mediaUnsupported}`)
     console.log(`Media failures:                    ${summary.mediaFailures}`)
   }
   if (!apply) console.log('\n(dry run — re-run with --apply to write)')
