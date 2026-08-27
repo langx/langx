@@ -1,7 +1,10 @@
 import { Redirect } from 'expo-router'
+import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { ApiRequestError } from '../src/api/client'
 import { useMe } from '../src/api/queries'
+import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
+import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
 import { colors } from '../src/lib/theme'
 
 /**
@@ -15,8 +18,23 @@ import { colors } from '../src/lib/theme'
  */
 export default function Index() {
   const { data: profile, isPending, error } = useMe()
+  const [draftReady, setDraftReady] = useState(isDraftHydrated)
 
-  if (isPending) {
+  // Reading the stored draft is asynchronous, and redirecting before it lands
+  // would send someone who was three screens in back to screen one — the exact
+  // thing persisting the draft exists to prevent.
+  useEffect(() => {
+    if (draftReady) return
+    let cancelled = false
+    void hydrateDraft().then(() => {
+      if (!cancelled) setDraftReady(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [draftReady])
+
+  if (isPending || !draftReady) {
     return (
       <View
         style={{
@@ -32,7 +50,8 @@ export default function Index() {
   }
 
   const needsOnboarding = !profile || (error instanceof ApiRequestError && error.status === 404)
-  if (needsOnboarding) return <Redirect href="/(onboarding)/languages" />
+  // Back to the step the draft has actually earned, not always the first one.
+  if (needsOnboarding) return <Redirect href={onboardingHref(furthestOnboardingStep(getDraft()))} />
 
   /**
    * A restored v1 user skips the wizard entirely, so without this they would

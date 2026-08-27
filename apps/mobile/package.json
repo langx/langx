@@ -11,7 +11,7 @@
     "ios": "expo start --ios",
     "android": "expo start --android",
     "typecheck": "tsc --noEmit",
-    "test": "echo \"no mobile tests yet\" && exit 0"
+    "test": "vitest run"
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",
@@ -48,6 +48,7 @@
     "socket.io-client": "catalog:"
   },
   "devDependencies": {
+    "vitest": "catalog:",
     "@types/react": "catalog:",
     "typescript": "catalog:"
   }
