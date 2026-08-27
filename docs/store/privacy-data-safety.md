@@ -65,8 +65,16 @@ Both required by both stores, and both implemented in-app:
 - **Export** — Settings → "Verilerimi indir" returns one JSON document with
   everything the app holds about you.
 
-One deliberate exception, worth stating in the policy in plain words: messages
-you **sent** are not deleted from the other person's conversation. Their
+Photos go too — the avatar and every gallery image are removed from storage,
+not just from the database, so nothing stays fetchable by URL.
+
+Two deliberate exceptions, both worth stating in the policy in plain words.
+
+The token ledger survives as an audit record, with your identity replaced by a
+random value stored nowhere else: the totals still reconcile, and the rows no
+longer identify anyone. Your leaderboard entries are deleted outright.
+
+And messages you **sent** are not deleted from the other person's conversation. Their
 content is removed and they are marked as belonging to a deleted account.
 Deleting them outright would rewrite a conversation someone else is also a
 party to.

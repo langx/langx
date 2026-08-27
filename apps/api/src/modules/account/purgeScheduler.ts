@@ -1,4 +1,5 @@
 import type { Db } from 'mongodb'
+import type { StorageProvider } from '../../storage/StorageProvider'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { purgeExpiredAccounts } from './deletion'
 
@@ -16,7 +17,7 @@ export const PURGE_INTERVAL_MS = 60 * 60 * 1000
 export function startPurgeScheduler(
   db: Db,
   logger: SchedulerLogger,
-  options: { intervalMs?: number } = {},
+  options: { intervalMs?: number; storage?: StorageProvider } = {},
 ): { stop: () => void } {
   const intervalMs = options.intervalMs ?? PURGE_INTERVAL_MS
   let running = false
@@ -25,9 +26,14 @@ export function startPurgeScheduler(
     if (running) return
     running = true
     try {
-      const result = await purgeExpiredAccounts(db)
+      const result = await purgeExpiredAccounts(db, {
+        ...(options.storage ? { storage: options.storage } : {}),
+      })
       if (result.purged > 0) {
-        logger.info({ purged: result.purged }, 'expired accounts purged')
+        logger.info(
+          { purged: result.purged, objectsDeleted: result.objectsDeleted },
+          'expired accounts purged',
+        )
       }
     } catch (error) {
       logger.error({ err: error }, 'account purge failed')

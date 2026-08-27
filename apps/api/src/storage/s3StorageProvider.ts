@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import type { StorageProviderWithPut, UploadUrl } from './StorageProvider'
 
@@ -67,5 +67,18 @@ export class S3StorageProvider implements StorageProviderWithPut {
       }),
     )
     return `${this.#publicBaseUrl}/${key}`
+  }
+
+  async deleteObject(key: string): Promise<void> {
+    // S3 delete is already idempotent — a missing key returns 204, not an
+    // error — so nothing extra is needed to make a retried purge safe.
+    await this.#client.send(new DeleteObjectCommand({ Bucket: this.#bucket, Key: key }))
+  }
+
+  keyFromPublicUrl(url: string): string | null {
+    const prefix = `${this.#publicBaseUrl}/`
+    if (!url.startsWith(prefix)) return null
+    const key = url.slice(prefix.length)
+    return key.length > 0 ? key : null
   }
 }

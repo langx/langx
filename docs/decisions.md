@@ -608,6 +608,54 @@ In code: `TOKEN_RULES.legacyTokenDivisor`, `TOKEN_RULES.welcomeBackBonus`,
 than a literal matters — the right number is a judgement about two economies,
 and the ledger is append-only, so a recompute stays possible.
 
+## Three gaps an audit against the plan found
+
+Re-reading the plan against the code surfaced three places where the
+implementation and the written intent had drifted. All three were real; none
+would have been found by a passing test suite, because the tests asserted what
+the code did rather than what the plan said.
+
+**A deleted account's photos stayed in the bucket.** `purgeExpiredAccounts`
+removed the user from every collection and never touched storage, while
+`store/privacy-data-safety.md` told the user their data was permanently
+removed. Their avatar and gallery stayed publicly fetchable by URL forever.
+`StorageProvider` grew `deleteObject` and `keyFromPublicUrl`; the purge now
+deletes what it owns and, deliberately, only what it owns — a URL outside our
+bucket is skipped rather than guessed at, and a storage failure leaves an
+orphaned file rather than an account that can never be purged.
+
+**Socket events had no rate limit.** REST is covered by `@fastify/rate-limit`,
+but once the handshake is done a `message:send` is just a frame and nothing
+counted them — so the one guard REST had and sockets did not was exactly the
+one the plan's "socket events pass through the same guards" rule was about.
+Now a per-connection token bucket, per event: sending is 20 burst at 1/second,
+typing is far more generous because it fires on almost every keystroke. A
+bucket rather than a fixed window, because a fixed window lets someone spend
+the whole allowance at the boundary and the same again a millisecond later.
+Over-limit events are refused **through the ack** — a client that gets no
+answer retries, which is the opposite of what a limit is for.
+
+**The token ledger was deleted, not anonymised.** The plan asked for it to
+survive as an audit trail with the identity removed. It now does: the rows are
+re-keyed to `deleted:<uuid>` generated at purge time and stored nowhere else,
+so the economy still reconciles and the rows identify no one. The _aggregates_
+are still deleted, which is what actually removes the account from every
+leaderboard.
+
+## Three verification criteria that had no test
+
+The plan's verification list named them; the suite did not cover them.
+
+- **The 24h window rolls, it does not reset.** Full at 23 hours, open again at
+  25, and slots free individually rather than all at once — a calendar-day
+  reset would open the whole allowance at midnight.
+- **Replying spends no quota.** Twenty inbound messages and twenty replies
+  leave the counter untouched. This is the product's core promise — five new
+  conversations a day, unlimited talking — and it was the one thing not
+  asserted anywhere.
+- **Corrections are unlimited on the free tier.** Fifty in a row, and nothing
+  moves, because corrections are not a tracked bucket at all.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

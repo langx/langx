@@ -1,3 +1,4 @@
+import { PLAN_LIMITS } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -293,6 +294,68 @@ describe('Faz 4 — starting a conversation', () => {
       )
       // Sending conversations never touches the translation bucket.
       expect(afterBody.translations).toMatchObject({ limit: 20, remaining: 20 })
+    })
+  })
+
+  describe('the 24h window rolls, it does not reset', () => {
+    it('is still full at 23 hours and open again at 25', async () => {
+      const viewer = await newUser('rolling-window@example.com')
+      const limit = PLAN_LIMITS.free.initiationsPer24h!
+
+      // Backdate a full allowance rather than sending real messages: what is
+      // under test is the window arithmetic, not the send path.
+      const stamp = (hoursAgo: number) => new Date(Date.now() - hoursAgo * 60 * 60 * 1000)
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+
+      await profiles.updateOne(
+        { _id: viewer.userId },
+        { $set: { 'quota.initiations': Array.from({ length: limit }, () => stamp(23)) } },
+      )
+      const at23 = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(at23.json<{ initiations: { remaining: number } }>().initiations.remaining).toBe(0)
+
+      await profiles.updateOne(
+        { _id: viewer.userId },
+        { $set: { 'quota.initiations': Array.from({ length: limit }, () => stamp(25)) } },
+      )
+      const at25 = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(at25.json<{ initiations: { remaining: number } }>().initiations.remaining).toBe(limit)
+    })
+
+    it('frees slots one at a time as each falls out of the window', async () => {
+      // A calendar-day reset would open all of them at midnight; a rolling
+      // window opens them individually, which is the whole point.
+      const viewer = await newUser('rolling-partial@example.com')
+      const limit = PLAN_LIMITS.free.initiationsPer24h!
+      const hoursAgo = (h: number) => new Date(Date.now() - h * 60 * 60 * 1000)
+
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: viewer.userId },
+        {
+          $set: {
+            'quota.initiations': [
+              hoursAgo(25),
+              hoursAgo(25),
+              ...Array.from({ length: limit - 2 }, () => hoursAgo(1)),
+            ],
+          },
+        },
+      )
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.json<{ initiations: { remaining: number } }>().initiations.remaining).toBe(2)
     })
   })
 })

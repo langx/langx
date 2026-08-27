@@ -2,10 +2,12 @@ import { sendCorrectionSchema, sendTextMessageSchema } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { Server as SocketIOServer, type Socket } from 'socket.io'
 import { z, ZodError } from 'zod'
+import { ERROR_CODES } from '@langx/shared'
 import { ApiError } from '../lib/ApiError'
 import { assertConversationAccess } from '../modules/chat/access'
 import { markConversationRead, sendCorrection, sendTextMessage } from '../modules/chat/messages'
 import { tokensFor } from '../modules/push/devices'
+import { SocketRateLimiter } from './rateLimit'
 
 function userRoom(userId: string): string {
   return `user:${userId}`
@@ -52,6 +54,8 @@ async function notifyRecipient(
 
 interface SocketData {
   userId: string
+  /** Per-connection token buckets; see ws/rateLimit.ts. */
+  limiter: SocketRateLimiter
 }
 
 /** Socket.io's four generics default `data` to `any` — this pins it down so `.data.userId` typechecks. */
@@ -137,9 +141,28 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
 
   io.on('connection', (socket) => {
     const userId = socket.data.userId
+    socket.data.limiter = new SocketRateLimiter()
     void socket.join(userRoom(userId))
 
+    /**
+     * Wraps a handler in the connection's rate limit. Refusing through the ack
+     * rather than dropping the frame matters: a client that gets no answer
+     * retries, which is the opposite of what a limit is for.
+     */
+    const limited = (event: string, ack: Ack): boolean => {
+      if (socket.data.limiter.take(event)) return true
+      ack?.({
+        ok: false,
+        error: {
+          code: ERROR_CODES.RATE_LIMITED,
+          message: `Too many ${event} events. Try again in ${socket.data.limiter.retryAfterSeconds(event)}s.`,
+        },
+      })
+      return false
+    }
+
     socket.on('message:send', (payload: unknown, ack: Ack) => {
+      if (!limited('message:send', ack)) return
       sendTextMessageSchema
         .parseAsync(payload)
         .then((input) => sendTextMessage(app.mongo.db, userId, input))
@@ -154,6 +177,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     })
 
     socket.on('message:correct', (payload: unknown, ack: Ack) => {
+      if (!limited('message:correct', ack)) return
       sendCorrectionSchema
         .parseAsync(payload)
         .then((input) => sendCorrection(app.mongo.db, userId, input))
@@ -167,6 +191,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     })
 
     socket.on('conversation:read', (payload: unknown, ack: Ack) => {
+      if (!limited('conversation:read', ack)) return
       readPayloadSchema
         .parseAsync(payload)
         .then(({ conversationId }) =>
@@ -188,6 +213,8 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     // Ephemeral, best-effort — a bad or late payload is silently dropped
     // rather than surfaced, there's no ack channel for typing.
     socket.on('typing', (payload: unknown) => {
+      // No ack channel on typing, so an over-limit event is simply dropped.
+      if (!socket.data.limiter.take('typing')) return
       typingPayloadSchema
         .parseAsync(payload)
         .then(({ conversationId, isTyping }) =>

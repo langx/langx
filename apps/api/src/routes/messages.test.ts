@@ -1,3 +1,4 @@
+import { PLAN_LIMITS } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -196,5 +197,72 @@ describe('Faz 5 — conversation/message history REST', () => {
     })
     expect(response.statusCode).toBe(403)
     expect(response.json()).toMatchObject({ code: 'BLOCKED' })
+  })
+
+  describe('the free tier is limited in conversations opened, never in talking', () => {
+    it('spends no quota replying, however many messages arrive', async () => {
+      // The product's core promise: 5 new conversations a day, unlimited
+      // replies. If replying ever charged quota, that promise is broken.
+      const me = await newUser('reply-quota-me@example.com')
+      const them = await newUser('reply-quota-them@example.com')
+
+      const conversation = await startConversation(them, me.userId, 'they opened it')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+
+      for (let i = 0; i < 20; i++) {
+        await sendTextMessage(handle.db, them.userId, {
+          conversationId: conversation._id,
+          body: `inbound ${i}`,
+        })
+        await sendTextMessage(handle.db, me.userId, {
+          conversationId: conversation._id,
+          body: `reply ${i}`,
+        })
+      }
+
+      const quota = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: me.cookie },
+      })
+      const initiations = quota.json<{ initiations: { limit: number; remaining: number } }>()
+        .initiations
+      // Untouched: this user never opened a conversation.
+      expect(initiations.remaining).toBe(initiations.limit)
+    })
+
+    it('lets a free account write far more corrections than any quota would allow', async () => {
+      // PLAN_LIMITS.correctionsPer24h is null on both tiers, deliberately:
+      // rate-limiting corrections would shrink what a free user gives a Pro one.
+      const teacher = await newUser('corrections-teacher@example.com')
+      const learner = await newUser('corrections-learner@example.com')
+      const conversation = await startConversation(learner, teacher.userId, 'I has a apple')
+
+      const { sendTextMessage, sendCorrection } = await import('../modules/chat/messages')
+      const target = await sendTextMessage(handle.db, learner.userId, {
+        conversationId: conversation._id,
+        body: 'I has a apple',
+      })
+
+      expect(PLAN_LIMITS.free.correctionsPer24h).toBeNull()
+      for (let i = 0; i < 50; i++) {
+        const result = await sendCorrection(handle.db, teacher.userId, {
+          conversationId: conversation._id,
+          targetMessageId: String(target.message._id),
+          corrected: `I have an apple (${i})`,
+        })
+        expect(result.message.type).toBe('correction')
+      }
+
+      const quota = await app.inject({
+        method: 'GET',
+        url: '/me/quota',
+        headers: { cookie: teacher.cookie },
+      })
+      const initiations = quota.json<{ initiations: { limit: number; remaining: number } }>()
+        .initiations
+      // Corrections are not a tracked bucket at all, so nothing moved.
+      expect(initiations.remaining).toBe(initiations.limit)
+    })
   })
 })

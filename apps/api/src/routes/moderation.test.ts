@@ -438,6 +438,113 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(message?.deletedWithAccount).toBe(true)
     })
 
+    it('removes the images from storage, and never touches an object it does not own', async () => {
+      const user = await newUser()
+      const deleted: string[] = []
+      // A storage double: the real provider needs credentials, and what is
+      // under test is which keys the purge asks for, not S3 itself.
+      const storage = {
+        getUploadUrl: () => Promise.reject(new Error('unused')),
+        putObject: () => Promise.resolve(''),
+        deleteObject: (key: string) => {
+          deleted.push(key)
+          return Promise.resolve()
+        },
+        keyFromPublicUrl: (url: string) =>
+          url.startsWith('https://cdn.example.com/')
+            ? url.slice('https://cdn.example.com/'.length)
+            : null,
+      }
+
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            avatarUrl: 'https://cdn.example.com/avatars/a.jpg',
+            photos: [
+              { url: 'https://cdn.example.com/photos/1.jpg', createdAt: new Date() },
+              // Not ours. The purge must leave it alone rather than guess a key.
+              { url: 'https://someone-else.example.net/2.jpg', createdAt: new Date() },
+            ],
+          },
+        },
+      )
+
+      await post(user, '/me/delete', { confirm: 'DELETE' })
+      const result = await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+        storage,
+      })
+
+      expect(result.userIds).toContain(user.userId)
+      expect(deleted).toEqual(['avatars/a.jpg', 'photos/1.jpg'])
+      expect(result.objectsDeleted).toBe(2)
+    })
+
+    it('purges even when storage is unavailable, leaving an orphaned file rather than an account', async () => {
+      const user = await newUser()
+      const storage = {
+        getUploadUrl: () => Promise.reject(new Error('unused')),
+        putObject: () => Promise.resolve(''),
+        deleteObject: () => Promise.reject(new Error('bucket unreachable')),
+        keyFromPublicUrl: () => 'avatars/x.jpg',
+      }
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { avatarUrl: 'https://cdn.example.com/avatars/x.jpg' } },
+        )
+
+      await post(user, '/me/delete', { confirm: 'DELETE' })
+      const result = await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+        storage,
+      })
+
+      // The account is gone even though the file could not be removed — an
+      // account that can never be purged is the worse failure.
+      expect(result.userIds).toContain(user.userId)
+      expect(result.objectsDeleted).toBe(0)
+      expect(
+        await handle.db
+          .collection(COLLECTIONS.profiles)
+          .countDocuments({ _id: user.userId as never }),
+      ).toBe(0)
+    })
+
+    it('keeps the token ledger as an anonymous audit trail but drops the aggregates', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 42,
+        refId: 'audit-me',
+      })
+      const userId = user.userId
+
+      await post(user, '/me/delete', { confirm: 'DELETE' })
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+      })
+
+      // Nothing left under their id...
+      expect(await handle.db.collection(COLLECTIONS.tokenLedger).countDocuments({ userId })).toBe(0)
+      // ...but the row itself survives, re-keyed to an id stored nowhere else,
+      // so the economy still reconciles and the row identifies no one.
+      const row = await handle.db
+        .collection<{ userId: string; amount: number }>(COLLECTIONS.tokenLedger)
+        .findOne({ refId: 'audit-me' })
+      expect(row?.amount).toBe(42)
+      expect(row?.userId).toMatch(/^deleted:/)
+      expect(row?.userId).not.toContain(userId)
+
+      // The aggregates go, which is what removes them from every leaderboard.
+      expect(
+        await handle.db.collection(COLLECTIONS.tokenAggregates).countDocuments({ userId }),
+      ).toBe(0)
+    })
+
     it('cancels a pending deletion', async () => {
       const user = await newUser()
       await post(user, '/me/delete', { confirm: 'DELETE' })

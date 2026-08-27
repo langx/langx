@@ -24,6 +24,23 @@ export interface StorageProviderWithPut extends StorageProvider {
    * path with more to go wrong for no privacy benefit.
    */
   putObject(key: string, body: Uint8Array, contentType: string): Promise<string>
+
+  /**
+   * Removes an object. Used by the account purge — a deleted account's photos
+   * have to leave the bucket, or "your data is permanently removed" is not
+   * true and the URLs stay publicly fetchable forever.
+   *
+   * Must be idempotent: deleting an object that is already gone is a success,
+   * not an error, because the purge may well be retried.
+   */
+  deleteObject(key: string): Promise<void>
+
+  /**
+   * The object key behind a public URL, or `null` if the URL does not belong
+   * to our bucket. Returning null rather than guessing is what stops the purge
+   * from trying to delete something it does not own.
+   */
+  keyFromPublicUrl(url: string): string | null
 }
 
 export function supportsPut(provider: StorageProvider): provider is StorageProviderWithPut {

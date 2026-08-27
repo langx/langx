@@ -47,7 +47,7 @@ async function main(): Promise<void> {
   // running behind them — they drive `runDailyPool` directly instead.
   const schedulers = [
     startDailyPoolScheduler(db, app.log),
-    startPurgeScheduler(db, app.log),
+    startPurgeScheduler(db, app.log, { storage }),
     startStreakReminderScheduler(db, push, app.log),
   ]
 

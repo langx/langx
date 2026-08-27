@@ -4,10 +4,13 @@ import {
   type AccountDeletionStatus,
   type DataExport,
 } from '@langx/shared'
+import { randomUUID } from 'node:crypto'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
+import type { StorageProvider } from '../../storage/StorageProvider'
+import { supportsPut } from '../../storage/StorageProvider'
 import type { Conversation, Message } from '../chat/conversations'
 import type { Profile } from '../profiles/profiles'
 
@@ -81,20 +84,28 @@ export async function deletionStatus(db: Db, userId: string): Promise<AccountDel
 export interface PurgeResult {
   purged: number
   userIds: string[]
+  /** Images removed from the bucket. Zero when storage is not configured. */
+  objectsDeleted: number
 }
 
 /**
  * Hard-deletes every account whose grace period has expired.
  *
- * What survives and why: messages the user *sent* are left in place with the
- * body replaced, because deleting them would silently rewrite the other
- * participant's history of a conversation they are also a party to. Everything
- * that is only about the deleted user — profile, devices, views, blocks,
- * ledger, aggregates, auth rows — goes completely.
+ * What survives and why:
+ *
+ * - Messages the user *sent* stay, with the body cleared — deleting them would
+ *   silently rewrite the other participant's history of a conversation they
+ *   are also a party to.
+ * - The token ledger stays, with its identity replaced by a random id stored
+ *   nowhere else. That keeps an audit trail of the economy (totals still
+ *   reconcile) while making the rows genuinely anonymous. The *aggregates* are
+ *   deleted, which is what removes the account from every leaderboard.
+ * - Everything else — profile, devices, views, blocks, subscriptions, auth
+ *   rows, and the images in the bucket — goes completely.
  */
 export async function purgeExpiredAccounts(
   db: Db,
-  options: { now?: Date; limit?: number } = {},
+  options: { now?: Date; limit?: number; storage?: StorageProvider } = {},
 ): Promise<PurgeResult> {
   const now = options.now ?? new Date()
   const cutoff = new Date(now.getTime() - GRACE_MS)
@@ -106,8 +117,34 @@ export async function purgeExpiredAccounts(
     .toArray()
 
   const userIds: string[] = []
+  let objectsDeleted = 0
+
   for (const profile of expired) {
     const userId = profile._id
+
+    // Their images have to leave the bucket too. Deleting the documents while
+    // the files stay publicly fetchable by URL would make "permanently
+    // removed" false, which is what the privacy policy promises.
+    if (options.storage && supportsPut(options.storage)) {
+      const urls = [profile.avatarUrl, ...(profile.photos ?? []).map((p) => p.url)]
+      for (const url of urls) {
+        if (!url) continue
+        const key = options.storage.keyFromPublicUrl(url)
+        // A URL outside our bucket is not ours to delete. It should not be
+        // possible — both upload paths verify the prefix — but a purge is the
+        // wrong place to find out by deleting someone else's object.
+        if (!key) continue
+        try {
+          await options.storage.deleteObject(key)
+          objectsDeleted++
+        } catch {
+          // One unreachable object must not strand the whole purge. The row is
+          // still removed and the next run finds nothing left to delete, so the
+          // failure mode is an orphaned file rather than an account that never
+          // gets purged.
+        }
+      }
+    }
 
     await db
       .collection<Message>(COLLECTIONS.messages)
@@ -126,7 +163,13 @@ export async function purgeExpiredAccounts(
         $or: [{ blockerId: userId }, { blockedId: userId }],
       }),
       db.collection(COLLECTIONS.reports).deleteMany({ reporterId: userId }),
-      db.collection(COLLECTIONS.tokenLedger).deleteMany({ userId }),
+      // The ledger survives as an audit trail, with the identity removed: a
+      // fresh random id per purge, stored nowhere else, so the rows stay
+      // linkable to each other and to nobody. The aggregates *are* deleted,
+      // which is what drops the account off every leaderboard.
+      db
+        .collection(COLLECTIONS.tokenLedger)
+        .updateMany({ userId }, { $set: { userId: `deleted:${randomUUID()}` } }),
       db.collection(COLLECTIONS.tokenAggregates).deleteMany({ userId }),
       db.collection(COLLECTIONS.dailyActivity).deleteMany({ userId }),
       db.collection(COLLECTIONS.subscriptions).deleteMany({ userId }),
@@ -141,7 +184,7 @@ export async function purgeExpiredAccounts(
     userIds.push(userId)
   }
 
-  return { purged: userIds.length, userIds }
+  return { purged: userIds.length, userIds, objectsDeleted }
 }
 
 /**
