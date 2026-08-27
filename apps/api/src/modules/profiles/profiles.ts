@@ -55,6 +55,26 @@ export interface Profile {
   /** Set when token earning is suspended pending review (report/block). Clears by unsetting. */
   tokenFrozenAt?: Date
   stats: { lastActiveAt: Date; messagesSent: number }
+  /**
+   * Set once, when a v1 account was restored onto this one, and read by the
+   * welcome-back screen — which is the only reason it is persisted at all.
+   * `restoreByHash` already computes every number here for its return value;
+   * that return value reaches whichever request happened to trigger the
+   * restore, and a restore triggered by clicking an email link on a laptop has
+   * no way of telling the phone what it found.
+   *
+   * `acknowledgedAt` is what stops the screen appearing twice.
+   *
+   * Deliberately absent from `toPublicProfile`: it is nobody else's business
+   * that this account came from v1, or what it was given for coming back.
+   */
+  restoredFromV1?: {
+    at: Date
+    tokensCredited: number
+    frozenStreak: number
+    conversationsImported: number
+    acknowledgedAt?: Date
+  }
   deletedAt?: Date
   createdAt: Date
   updatedAt: Date

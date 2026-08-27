@@ -110,6 +110,31 @@ export async function restoreByHash(
   const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)
   const conversations = await tryImportConversations(db, userId, legacy._id)
 
+  /**
+   * Written once, after both numbers are known, and for both branches above —
+   * a single `$set` rather than a copy in each, since either branch has by now
+   * put a profile there to write to.
+   *
+   * It is persisted because the return value below only reaches whichever
+   * request happened to trigger the restore, and that is often not the device
+   * the user is holding: an email link clicked on a laptop restores the
+   * account, and the phone has no way of learning what was found. The
+   * welcome-back screen reads this instead.
+   */
+  await profiles.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        restoredFromV1: {
+          at: now,
+          tokensCredited,
+          frozenStreak: legacy.frozenStreak ?? 0,
+          conversationsImported: conversations,
+        },
+      },
+    },
+  )
+
   return {
     kind: 'restored',
     handle: legacy.handle,

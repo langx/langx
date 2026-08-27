@@ -12,7 +12,7 @@ import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueC
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import type { LegacyVerifier } from '../modules/handles/legacyLogin'
 import type { LegacyProfile } from '../modules/handles/legacyProfiles'
-import type { Profile } from '../modules/profiles/profiles'
+import { toPublicProfile, type Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -191,6 +191,70 @@ describe('sign-in, and the bridge to v1 behind it', () => {
     expect(profile?.streak.longest).toBe(12)
     expect(profile?.streak.current).toBe(0)
     expect(profile?.streak.lastQualifiedDay).toBeNull()
+  })
+
+  /**
+   * The return value of a restore only reaches whichever request triggered it,
+   * and that is regularly not the device the user is holding — an email link
+   * clicked on a laptop restores the account while the phone learns nothing.
+   * So it is written down, and the welcome-back screen reads it there.
+   */
+  it('records what came back on the profile, not only in the response', async () => {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'returninguser' })
+
+    expect(profile?.restoredFromV1).toMatchObject({
+      tokensCredited: convertLegacyTokens(9136),
+      frozenStreak: 12,
+      conversationsImported: 0,
+    })
+    expect(profile?.restoredFromV1?.at).toBeInstanceOf(Date)
+    // Nothing has dismissed it yet, so the screen is still owed.
+    expect(profile?.restoredFromV1?.acknowledgedAt).toBeUndefined()
+  })
+
+  it('dismisses the welcome-back screen once, and stays dismissed', async () => {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'returninguser' })
+    const cookie = (
+      await app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/email',
+        payload: { email: 'returning@example.com', password: 'my-v1-password' },
+      })
+    ).headers['set-cookie']
+
+    const ack = () =>
+      app.inject({
+        method: 'POST',
+        url: '/me/welcome-back/ack',
+        headers: { cookie: Array.isArray(cookie) ? cookie.join('; ') : (cookie ?? '') },
+      })
+
+    expect((await ack()).statusCode).toBe(204)
+    const first = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: profile!._id })
+    const at = first?.restoredFromV1?.acknowledgedAt
+    expect(at).toBeInstanceOf(Date)
+
+    // A replay must not move the timestamp — it is a latch, not a heartbeat.
+    expect((await ack()).statusCode).toBe(204)
+    const second = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ _id: profile!._id })
+    expect(second?.restoredFromV1?.acknowledgedAt).toEqual(at)
+  })
+
+  /** It is nobody else's business that this account came from v1. */
+  it('never shows the restore on a public profile', async () => {
+    const profile = await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .findOne({ handle: 'returninguser' })
+    expect(profile?.restoredFromV1).toBeTruthy()
+    expect(toPublicProfile(profile!)).not.toHaveProperty('restoredFromV1')
   })
 
   it('credits the v1 economy exactly once, however many times sign-in is retried', async () => {
