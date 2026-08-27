@@ -57,6 +57,16 @@ const config: ExpoConfig = {
   android: {
     package: ANDROID_PACKAGE,
     versionCode: 120,
+    /**
+     * FCM's Android client config. Only set when the file is actually there:
+     * naming a file that does not exist fails the prebuild, and this repo is
+     * public so the file is not committed. Without it the app builds and runs
+     * and simply never receives a remote notification on Android — which is
+     * the state it is in until someone points this at a real file.
+     */
+    ...(process.env.GOOGLE_SERVICES_JSON
+      ? { googleServicesFile: process.env.GOOGLE_SERVICES_JSON }
+      : {}),
     intentFilters: [
       {
         action: 'VIEW',

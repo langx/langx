@@ -14,7 +14,7 @@ import {
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
-import { tokensFor } from '../modules/push/devices'
+import { sendPush, tokensFor } from '../modules/push/devices'
 import { SocketRateLimiter } from './rateLimit'
 
 function userRoom(userId: string): string {
@@ -49,7 +49,7 @@ async function notifyRecipient(
     ])
     if (tokens.length === 0) return
 
-    await app.push.send({
+    await sendPush(app.mongo.db, app.push, {
       to: tokens,
       title: sender?.displayName ?? sender?.handle ?? 'LangX',
       body: message.body.slice(0, 120),

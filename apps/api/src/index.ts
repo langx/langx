@@ -32,7 +32,7 @@ async function main(): Promise<void> {
 
   const revenueCat = createRevenueCatClientFromEnv(env)
 
-  const push = new ExpoPushSender()
+  const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
 
   // The bridge only exists while v1 is still running. Without APPWRITE_* it is
   // simply off, and a returning user goes through the normal reset-password

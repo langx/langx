@@ -65,6 +65,11 @@ const envSchema = z.object({
       .optional(),
   ),
 
+  // Only needed when the Expo project has enhanced push security enabled, in
+  // which case an unauthenticated send is rejected outright. Expo dashboard →
+  // Access tokens. Unset is the normal case and sends work without it.
+  EXPO_ACCESS_TOKEN: emptyToUndefined(z.string().optional()),
+
   // Faz 2: avatar upload. Same S3-compatible code path works for both B2 and
   // R2 — only these values change. Left unset, the upload-url endpoint
   // returns a clear STORAGE_NOT_CONFIGURED error rather than the app failing

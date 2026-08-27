@@ -3,6 +3,7 @@ import { Text } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '../../src/lib/theme'
+import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useSocket } from '../../src/hooks/useSocket'
 
@@ -22,6 +23,10 @@ function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
 export default function AppLayout() {
   useSocket()
   usePushRegistration()
+  // Here rather than in the root layout: every destination a notification has
+  // is behind the sign-in gate, so routing from one before there is a session
+  // would land on a screen that immediately redirects away.
+  useNotificationRouting()
 
   return (
     /**

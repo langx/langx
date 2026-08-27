@@ -25,3 +25,8 @@ yarn-error.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# FCM Android client config. Not a secret in the usual sense, but it is
+# instance-specific and this repo is public — point GOOGLE_SERVICES_JSON at it.
+google-services.json
+GoogleService-Info.plist

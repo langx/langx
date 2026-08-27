@@ -113,6 +113,48 @@ EAS holds for this project, which is the upload key. It needs no password.
 Nothing here is secret. Android serves these fingerprints from every device
 that has the app installed, which is why they belong in a public repo.
 
+## Push needs credentials in three places
+
+The pipeline is complete in code — a token is registered, a message send fans
+out to the recipient's devices, a nudge goes out at 20:00 local, a tapped
+notification opens the conversation — and none of it reaches a phone until
+Expo can talk to Apple and Google on our behalf. There are three separate
+pieces and missing any one of them looks identical from the app: nothing
+arrives, nothing errors.
+
+- [ ] **APNs key (iOS).** Apple Developer → Keys → a key with the Apple Push
+      Notifications service enabled. `eas credentials` uploads it. One key
+      covers development and production.
+- [ ] **FCM v1 service account (Android).** Firebase console → Project
+      settings → Service accounts → generate a private key, then upload the
+      JSON with `eas credentials`. The legacy server key is gone; FCM v1 is
+      the only option now.
+- [ ] **`google-services.json` in the build.** The same Firebase project's
+      Android app config, which carries the sender id the client registers
+      with. It is gitignored — this repo is public — so point
+      `GOOGLE_SERVICES_JSON` at a local path or an EAS file secret.
+      `app.config.ts` only sets `googleServicesFile` when that variable is
+      present, so a build without it succeeds and simply never receives a
+      remote notification.
+
+The Firebase project must use the same package name,
+`tech.newchapter.languageXchange`. A mismatch registers tokens that Expo
+accepts and FCM silently drops.
+
+Verify with a real device before submitting — a simulator cannot receive
+remote notifications at all:
+
+```bash
+curl -X POST https://exp.host/--/api/v2/push/send \
+  -H 'content-type: application/json' \
+  -d '{"to":"ExponentPushToken[…]","title":"test","body":"hello"}'
+```
+
+A `DeviceNotRegistered` ticket in the reply means the credentials are wrong,
+not the token. The API prunes tokens that come back with it, so a
+misconfigured send also quietly empties the devices collection — fix the
+credentials before running the streak reminder against real users.
+
 ## Prerequisites that are business process, not code
 
 None of these can be done from this repo, and Faz 7's subscription work cannot

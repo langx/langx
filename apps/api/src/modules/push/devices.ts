@@ -51,8 +51,16 @@ export interface PushMessage {
   data: { kind: PushKind; conversationId?: string }
 }
 
+/**
+ * What a send tells us afterwards. Only the failures worth acting on: a token
+ * Expo says is no longer installed anywhere.
+ */
+export interface PushResult {
+  invalidTokens: string[]
+}
+
 export interface PushSender {
-  send: (message: PushMessage) => Promise<void>
+  send: (message: PushMessage) => Promise<PushResult>
 }
 
 /**
@@ -63,32 +71,103 @@ export interface PushSender {
 export class LoggingPushSender implements PushSender {
   readonly sent: PushMessage[] = []
 
-  send(message: PushMessage): Promise<void> {
+  send(message: PushMessage): Promise<PushResult> {
     this.sent.push(message)
-    return Promise.resolve()
+    return Promise.resolve({ invalidTokens: [] })
   }
 }
+
+/** Expo accepts at most this many messages in one request. */
+const EXPO_BATCH_SIZE = 100
 
 /** Expo's push service — one HTTP call, no SDK, no per-platform certificates. */
 export class ExpoPushSender implements PushSender {
   readonly #endpoint = 'https://exp.host/--/api/v2/push/send'
+  readonly #accessToken: string | undefined
 
-  async send(message: PushMessage): Promise<void> {
-    if (message.to.length === 0) return
-    await fetch(this.#endpoint, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(
-        message.to.map((token) => ({
-          to: token,
-          title: message.title,
-          body: message.body,
-          data: message.data,
-          sound: 'default',
-        })),
-      ),
-    })
+  /**
+   * `accessToken` is only needed when the Expo project has enhanced push
+   * security switched on, which makes an unauthenticated send fail wholesale.
+   * Unset is the normal case.
+   */
+  constructor(accessToken?: string) {
+    this.#accessToken = accessToken
   }
+
+  async send(message: PushMessage): Promise<PushResult> {
+    const invalidTokens: string[] = []
+
+    // Chunked because Expo rejects a request carrying more than 100 messages —
+    // one popular account's devices will not reach that, but the streak
+    // reminder fanning out over a whole timezone can.
+    for (let index = 0; index < message.to.length; index += EXPO_BATCH_SIZE) {
+      const batch = message.to.slice(index, index + EXPO_BATCH_SIZE)
+      const response = await fetch(this.#endpoint, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+          ...(this.#accessToken ? { authorization: `Bearer ${this.#accessToken}` } : {}),
+        },
+        body: JSON.stringify(
+          batch.map((token) => ({
+            to: token,
+            title: message.title,
+            body: message.body,
+            data: message.data,
+            sound: 'default',
+          })),
+        ),
+      })
+
+      /**
+       * The response was previously thrown away, which is the difference
+       * between push working and push appearing to work. Expo answers 200 with
+       * a *per-token* ticket, and a token belonging to an app that has been
+       * uninstalled comes back `DeviceNotRegistered` — forever. Unread, those
+       * tokens accumulate on the account and every later send wastes a slot on
+       * a phone that will never show anything.
+       *
+       * Tickets are positional, so a ticket's index is its token's index.
+       */
+      if (!response.ok) continue
+      const payload = (await response.json()) as {
+        data?: { status: string; details?: { error?: string } }[]
+      }
+      payload.data?.forEach((ticket, ticketIndex) => {
+        if (ticket.status === 'ok') return
+        // Only DeviceNotRegistered is permanent. MessageRateExceeded and
+        // MessageTooBig say something about this send, not about the device,
+        // and deleting a token over either would silence a real phone.
+        if (ticket.details?.error !== 'DeviceNotRegistered') return
+        const token = batch[ticketIndex]
+        if (token) invalidTokens.push(token)
+      })
+    }
+
+    return { invalidTokens }
+  }
+}
+
+/**
+ * Send, then forget the phones that no longer exist.
+ *
+ * Wrapped rather than left to each caller because there are two call sites and
+ * both would otherwise have to remember; a notification path that quietly
+ * stops pruning is exactly the kind of thing nobody notices for a year.
+ */
+export async function sendPush(
+  db: Db,
+  sender: PushSender,
+  message: PushMessage,
+): Promise<PushResult> {
+  const result = await sender.send(message)
+  if (result.invalidTokens.length > 0) {
+    await db
+      .collection<Device>(COLLECTIONS.devices)
+      .deleteMany({ pushToken: { $in: result.invalidTokens } })
+  }
+  return result
 }
 
 export async function tokensFor(db: Db, userId: string): Promise<string[]> {
