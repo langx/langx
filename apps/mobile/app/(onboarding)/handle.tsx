@@ -85,7 +85,10 @@ export default function HandleStep() {
       })
       resetDraft()
       await queryClient.invalidateQueries({ queryKey: keys.me })
-      router.replace('/(app)/discover')
+      // To the finish screen, not straight into discovery: a list of strangers
+      // with no instruction is a poor first thing to hand someone who has just
+      // finished four forms.
+      router.replace('/(onboarding)/done')
     } catch (error) {
       setSubmitError(
         error instanceof ApiRequestError

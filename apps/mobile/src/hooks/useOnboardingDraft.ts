@@ -61,6 +61,17 @@ function emit(): void {
 }
 
 function schedulePersist(): void {
+  /**
+   * Never write before the stored draft has been read.
+   *
+   * Any route into a wizard screen that does not pass through the gate — a
+   * deep link, or the last-route restore expo-router does on some launches —
+   * leaves this module un-hydrated, and the first keystroke would then persist
+   * an otherwise-empty draft straight over everything the user had already
+   * filled in. Losing the data this module exists to keep, at the moment they
+   * came back for it.
+   */
+  if (!hydrated) return
   if (writeTimer) clearTimeout(writeTimer)
   writeTimer = setTimeout(() => {
     void writeJsonFlag(FLAG_KEYS.onboardingDraft, draft)
@@ -80,6 +91,9 @@ export async function hydrateDraft(): Promise<void> {
   const stored = await readJsonFlag<Partial<OnboardingDraft>>(FLAG_KEYS.onboardingDraft)
   if (stored) draft = { ...EMPTY, ...stored, ...diffFromEmpty(draft) }
   hydrated = true
+  // Anything typed while the read was in flight has not been written yet,
+  // because `schedulePersist` refuses to run before this point.
+  schedulePersist()
   emit()
   for (const waiter of hydrationWaiters) waiter()
   hydrationWaiters.clear()

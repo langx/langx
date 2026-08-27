@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
+import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { days } from '../../src/lib/format'
@@ -122,6 +123,12 @@ export default function WelcomeBackScreen() {
           />
         ) : null}
       </View>
+
+      {/*
+        A returning user never sees `done.tsx`, so the notification prompt has
+        to have a second home — this is the only screen they pass through.
+      */}
+      <NotificationPriming />
 
       <Button
         label={busy ? 'One moment…' : 'Start using LangX'}
