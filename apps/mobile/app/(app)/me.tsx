@@ -1,4 +1,12 @@
-import { COSMETICS, STREAK_FREEZE_SKU, TOKEN_RULES, getLanguage } from '@langx/shared'
+import {
+  COSMETICS,
+  STREAK_FREEZE_SKU,
+  TOKEN_RULES,
+  countryFlag,
+  getCountry,
+  getLanguage,
+  type Gender,
+} from '@langx/shared'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import {
@@ -9,11 +17,25 @@ import {
   useWallet,
   useTokens,
 } from '../../src/api/queries'
+import { PhotoGallery } from '../../src/components/PhotoGallery'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
+
+/** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
+function countryLabel(code: string): string {
+  const country = getCountry(code)
+  return country ? `${countryFlag(country.code)} ${country.name}` : code
+}
+
+const GENDER_LABELS: Record<Gender, string> = {
+  female: 'Female',
+  male: 'Male',
+  other: 'Other',
+  undisclosed: '',
+}
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
@@ -45,14 +67,31 @@ export default function MeScreen() {
   const balance = wallet.data?.balance ?? 0
   const owned = wallet.data?.owned ?? []
 
+  /** Everything on this screen comes from a different query. */
+  function refresh(): void {
+    void Promise.all([me.refetch(), xp.refetch(), wallet.refetch(), quota.refetch()])
+  }
+
   return (
-    <Screen scroll>
+    <Screen scroll onRefresh={refresh} refreshing={me.isRefetching}>
       <View style={styles.hero}>
         <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
         <Text style={styles.name}>{profile.displayName}</Text>
         <Text style={styles.handle}>@{profile.handle}</Text>
-        {isPro ? <Chip label="PRO" tone="pro" selected /> : null}
+        {/*
+          The same badges other people already see on your profile. Yours
+          showed name and handle only, so the one profile you cannot look at
+          from outside was also the one that told you least about itself.
+        */}
+        <View style={styles.badges}>
+          <Chip label={String(new Date().getFullYear() - profile.birthYear)} />
+          {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
+          {profile.gender !== 'undisclosed' ? <Chip label={GENDER_LABELS[profile.gender]} /> : null}
+          {isPro ? <Chip label="PRO" tone="pro" selected /> : null}
+        </View>
       </View>
+
+      <PhotoGallery photos={profile.photos ?? []} />
 
       <View style={styles.stats}>
         <Stat label="Streak" value={`🔥 ${xp.data?.streak.current ?? 0}`} tone={colors.streak} />
@@ -170,6 +209,7 @@ const styles = StyleSheet.create({
   loading: { marginTop: spacing.xxl },
   flex: { flex: 1 },
   hero: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.lg },
+  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' },
   name: { ...font.title, color: colors.text, marginTop: spacing.sm },
   handle: { ...font.caption, color: colors.textMuted },
   stats: {

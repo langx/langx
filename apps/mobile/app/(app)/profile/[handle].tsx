@@ -1,4 +1,4 @@
-import { getLanguage } from '@langx/shared'
+import { countryFlag, getCountry, getLanguage } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import {
@@ -19,10 +19,17 @@ import {
 } from '../../../src/api/queries'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
+import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { days } from '../../../src/lib/format'
 import { colors, font, layout, radius, spacing } from '../../../src/lib/theme'
+
+/** "🇹🇷 Türkiye", not "TR" — the code alone means nothing to a reader. */
+function countryLabel(code: string): string {
+  const country = getCountry(code)
+  return country ? `${countryFlag(country.code)} ${country.name}` : code
+}
 
 export default function ProfileScreen() {
   const { handle } = useLocalSearchParams<{ handle: string }>()
@@ -82,7 +89,7 @@ export default function ProfileScreen() {
 
   function confirmBlock(): void {
     Alert.alert(
-      'Engelle',
+      'Block',
       `Block ${user.displayName}? Neither of you will appear in the other's lists.`,
       [
         { text: 'Cancel', style: 'cancel' },
@@ -129,13 +136,15 @@ export default function ProfileScreen() {
         <Text style={styles.handle}>@{user.handle}</Text>
         <View style={styles.badges}>
           <Chip label={`${user.age}`} />
-          {user.country ? <Chip label={user.country} /> : null}
+          {user.country ? <Chip label={countryLabel(user.country)} /> : null}
           {user.streak.current > 0 ? (
             <Chip label={`🔥 ${days(user.streak.current)}`} tone="streak" />
           ) : null}
           {user.tier === 'pro' ? <Chip label="PRO" tone="pro" selected /> : null}
         </View>
       </View>
+
+      <PhotoGallery photos={user.photos} />
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 

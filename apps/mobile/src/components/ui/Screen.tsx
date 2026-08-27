@@ -1,5 +1,12 @@
 import type { ReactNode } from 'react'
-import { Platform, ScrollView, StyleSheet, View, type ViewStyle } from 'react-native'
+import {
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+  type ViewStyle,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { colors, layout, spacing } from '../../lib/theme'
 
@@ -8,6 +15,9 @@ interface ScreenProps {
   scroll?: boolean
   /** Turn off the centred max-width column — chat wants the full height. */
   fluid?: boolean
+  /** Pull-to-refresh. Only meaningful together with `scroll`. */
+  onRefresh?: () => void
+  refreshing?: boolean
   style?: ViewStyle
 }
 
@@ -16,7 +26,14 @@ interface ScreenProps {
  * wide browsers. Without the column, the same layout that reads well on a
  * 390px phone spreads a single line of text across a desktop monitor.
  */
-export function Screen({ children, scroll = false, fluid = false, style }: ScreenProps) {
+export function Screen({
+  children,
+  scroll = false,
+  fluid = false,
+  onRefresh,
+  refreshing = false,
+  style,
+}: ScreenProps) {
   const insets = useSafeAreaInsets()
   const padding = {
     paddingTop: insets.top,
@@ -31,6 +48,9 @@ export function Screen({ children, scroll = false, fluid = false, style }: Scree
         style={[styles.root, padding]}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        {...(onRefresh
+          ? { refreshControl: <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> }
+          : {})}
       >
         {inner}
       </ScrollView>

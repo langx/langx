@@ -6,6 +6,7 @@ import { api, ApiRequestError } from '../../src/api/client'
 import { useMe, useUpdateProfile } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { appVersion } from '../../src/hooks/useAppConfig'
 import { authClient } from '../../src/lib/auth-client'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
@@ -172,6 +173,16 @@ export default function SettingsScreen() {
       <Text style={styles.deleteHint}>
         Signing back in within {ACCOUNT_DELETION_GRACE_DAYS} days cancels the deletion.
       </Text>
+
+      {/*
+        The two things a support reply always has to ask for. v1 showed both on
+        its account page; v2 showed neither, so every "it is broken" message
+        started with two extra round trips.
+      */}
+      <Text style={styles.build} selectable>
+        LangX {appVersion()}
+        {profile ? ` · ${profile._id}` : ''}
+      </Text>
     </Screen>
   )
 }
@@ -208,6 +219,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   deleteText: { ...font.body, color: colors.danger, fontWeight: '700' },
+  build: {
+    ...font.caption,
+    color: colors.textMuted,
+    marginTop: spacing.xxl,
+    textAlign: 'center',
+  },
   deleteHint: {
     ...font.caption,
     color: colors.textMuted,

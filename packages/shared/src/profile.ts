@@ -66,8 +66,8 @@ export const INTEREST_SUGGESTIONS = [
   'languages',
   'teaching',
 ] as const
-const BIO_MAX_LENGTH = 500
-const DISPLAY_NAME_MAX_LENGTH = 50
+export const BIO_MAX_LENGTH = 500
+export const DISPLAY_NAME_MAX_LENGTH = 50
 
 const displayNameSchema = z.string().trim().min(1).max(DISPLAY_NAME_MAX_LENGTH)
 const bioSchema = z.string().trim().max(BIO_MAX_LENGTH)

@@ -1,4 +1,12 @@
-import { CEFR_LEVELS, PLAN_LIMITS, getLanguage, type CefrLevel, type Gender } from '@langx/shared'
+import {
+  BIO_MAX_LENGTH,
+  CEFR_LEVELS,
+  DISPLAY_NAME_MAX_LENGTH,
+  PLAN_LIMITS,
+  getLanguage,
+  type CefrLevel,
+  type Gender,
+} from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import { useState } from 'react'
@@ -163,11 +171,17 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         </View>
       </View>
 
-      <FormField label="Display name" value={displayName} onChangeText={setDisplayName} />
+      <FormField
+        label="Display name"
+        value={displayName}
+        onChangeText={setDisplayName}
+        maxLength={DISPLAY_NAME_MAX_LENGTH}
+      />
       <FormField
         label="About you"
         value={bio}
         onChangeText={setBio}
+        maxLength={BIO_MAX_LENGTH}
         placeholder="What do you like talking about?"
         multiline
       />
