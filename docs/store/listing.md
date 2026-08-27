@@ -1,9 +1,14 @@
 # Store listing copy (v2)
 
-Both listings currently describe v1 and must be updated before release. Two
-claims in them are now **wrong rather than stale**: voice messages and badges
-exist in v1, are not in v2's first release, and are planned for the next one.
-Leaving them up is a feature claim the app does not meet.
+Both listings currently describe v1 and must be updated before release. One
+claim in them is **wrong rather than stale**: badges exist in v1, are not in
+v2's first release, and are planned for the next one. Leaving it up is a
+feature claim the app does not meet.
+
+Voice messages _were_ on that list and are not any more — they shipped in P0
+along with image messages (`cef9309`), pulled forward because the v1 message
+migration would otherwise have had to drop 1,270 voice notes and 3,604 photos.
+The listing may advertise them.
 
 The listings must also declare in-app purchases. v1 had none.
 
@@ -95,7 +100,7 @@ The listings must also declare in-app purchases. v1 had none.
 > Your username is waiting for you — sign up with the email you used before and
 > claim it.
 >
-> Voice messages and badges are coming back in the next release.
+> Badges are coming back in the next release.
 
 The third line is not optional. Every v1 user has to sign up again — the old
 password hashes could not be migrated — and without that sentence the first
