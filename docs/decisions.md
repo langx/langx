@@ -585,16 +585,28 @@ consecutive days of maximum activity, the top account at about nine years, and
 injects 608 days of the entire daily pool at once. The all-time and yearly
 tables become a permanent v1 ranking.
 
-The recommendation is to credit the spendable **balance** instead of earned XP.
-Faz 9 already separated the two on purpose — `xpAggregates` is what the
-leaderboard ranks, the balance is what purchases draw on — so the v1 economy
-can be honoured exactly (9,136 tokens buy 9,136 XP of spending) and spent on
-what the migration wants it spent on (restoring a frozen streak, cosmetics),
-without a ranking position nobody can contest. `balance = earned + granted −
-spent`, one new component.
+Two ways out were put to the owner: credit the spendable **balance** instead of
+earned XP (Faz 9 already separates the two — aggregates rank, balance is
+spent), or credit earned XP but divide it down.
 
-Left open in the plan rather than resolved silently: the owner asked for 1:1,
-and this is a recommendation against part of it, not a decision already taken.
+**Decided: earned XP, divided by 100.** The top account starts about 32 days
+ahead of a maximally active newcomer rather than nine years, which is a real
+head start that can still be closed. Balance-crediting would have protected the
+table completely, but it also would have meant a v1 veteran's history never
+showed up in the ranking at all — and the owner wanted the economy visible, not
+merely spendable.
+
+The accepted cost is that everyone under 100 tokens converts to nothing, which
+at a median of 20 is more than half of them. That is what the **welcome-back
+bonus** is for: it is the thing that rewards a median user for coming back,
+while the conversion recognises the people who genuinely accumulated. Since
+`awardXp` writes no row for a zero amount, those users are left with no
+meaningless ledger entry either.
+
+In code: `XP_RULES.legacyTokenDivisor`, `XP_RULES.welcomeBackBonus`,
+`legacyTokensToXp()`, and two new ledger kinds. The divisor being config rather
+than a literal matters — the right number is a judgement about two economies,
+and the ledger is append-only, so a recompute stays possible.
 
 ## Known risks
 

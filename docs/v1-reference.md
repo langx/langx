@@ -89,26 +89,36 @@ that migrating balances would put money-bought currency into a system where
 For scale: a very active day in v2 is about **700 XP** (a 500 XP ceiling on the
 daily pool share, plus the 100-message cap at 2 XP each).
 
-### Open decision — what a token converts into
+### Decided — a token converts to earned XP, divided by 100
 
-Migrating balances is decided. **Where they land is not.** Credited 1:1 to
-_earned_ XP, the p99 user starts level with about 54 consecutive days of
-maximum activity and the top account with roughly nine years; the total
-injected is 608 days of the entire daily pool, shared across everyone. The
-all-time and yearly tables would become a permanent v1 ranking that nobody new
-can enter.
+Migrating balances was the owner's call; the ratio was measured rather than
+assumed, and the two economies are not on the same scale.
 
-The recommendation is to credit the **balance** rather than earned XP. The
-distinction already exists and was built deliberately: `xpAggregates` holds
-what was _earned_ and is what the leaderboard ranks, while the spendable
-balance is `earned − spent`. Crediting a legacy balance honours the v1 economy
-exactly — 9,136 tokens buy 9,136 XP of spending — and it spends on precisely
-what the migration wants it spent on, restoring a frozen streak and cosmetics,
-without touching a ranking it was never earned in. Mechanically that is
-`balance = earned + granted − spent`, one new component.
+| v1 balance    | → XP   |
+| ------------- | ------ |
+| median 20     | 0      |
+| p90 9,136     | 91     |
+| p99 37,821    | 378    |
+| max 2,277,521 | 22,775 |
 
-Weekly and monthly tables are unaffected either way; only yearly and all-time
-are at stake.
+Credited 1:1 to earned XP the top account would start roughly nine years ahead
+of a maximally active new user, and the all-time table would be a permanent v1
+ranking. Divided by 100 it starts about 32 days ahead — a real head start that
+a newcomer can still close.
+
+The accepted cost: everyone below 100 tokens converts to nothing, and since the
+median is 20 that is more than half of them. It is accepted because the
+**welcome-back bonus** is what rewards a median user for returning; the
+conversion exists to recognise the people who genuinely accumulated. `awardXp`
+writes no row for a zero amount, so those users get no meaningless ledger entry
+either.
+
+In code: `XP_RULES.legacyTokenDivisor` (100), `XP_RULES.welcomeBackBonus`
+(250), `legacyTokensToXp()`, and two new ledger kinds —
+`legacyTokenConversion` and `welcomeBack`.
+
+Weekly and monthly tables are unaffected by any of this; only yearly and
+all-time were ever at stake.
 
 ## Conversation history is not migrated — and that is still an open question
 

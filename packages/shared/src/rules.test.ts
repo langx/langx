@@ -3,7 +3,7 @@ import { MINIMUM_AGE, birthYearSchema, meetsMinimumAge } from './age'
 import { CEFR_LEVELS, cefrRank } from './cefr'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
 import { PLAN_LIMITS, hasFeature, quotaLimit } from './limits'
-import { XP_RULES, activityScore, poolShare, streakMilestoneBonus } from './xp'
+import { XP_RULES, activityScore, legacyTokensToXp, poolShare, streakMilestoneBonus } from './xp'
 
 const NOW = new Date('2026-08-26T00:00:00Z')
 
@@ -103,5 +103,29 @@ describe('language + cefr tables', () => {
 
   it('ranks CEFR levels in order', () => {
     expect(CEFR_LEVELS.map(cefrRank)).toEqual([1, 2, 3, 4, 5, 6])
+  })
+})
+
+describe('legacy token conversion', () => {
+  it('divides the v1 balance and floors it', () => {
+    // The measured distribution: median 20, p90 9136, p99 37821, max 2277521.
+    expect(legacyTokensToXp(20)).toBe(0)
+    expect(legacyTokensToXp(9136)).toBe(91)
+    expect(legacyTokensToXp(37_821)).toBe(378)
+    expect(legacyTokensToXp(2_277_521)).toBe(22_775)
+  })
+
+  it('keeps the top v1 account within reach of a new user', () => {
+    // A very active v2 day is ~700 XP (500 pool ceiling + the 100-message cap).
+    const veryActiveDay =
+      XP_RULES.pool.total * XP_RULES.pool.maxShareOfPool + 100 * XP_RULES.award.message
+    const daysToCatchTheTop = legacyTokensToXp(2_277_521) / veryActiveDay
+    expect(daysToCatchTheTop).toBeLessThan(60)
+  })
+
+  it('returns nothing for a missing or nonsensical balance', () => {
+    expect(legacyTokensToXp(0)).toBe(0)
+    expect(legacyTokensToXp(-5)).toBe(0)
+    expect(legacyTokensToXp(Number.NaN)).toBe(0)
   })
 })

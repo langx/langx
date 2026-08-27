@@ -19,6 +19,10 @@ export const XP_KINDS = [
   'streak',
   'dailyPool',
   'adjustment',
+  /** One-off credit for a v1 token balance, at `XP_RULES.legacyTokenDivisor`. */
+  'legacyTokenConversion',
+  /** One-off bonus for a returning v1 user completing their restore. */
+  'welcomeBack',
   /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `xpAggregates`: the
@@ -76,6 +80,23 @@ export interface XpRules {
     /** How many freezes a user may bank at once — a freeze stockpile would make the streak meaningless. */
     maxBankedStreakFreezes: number
   }
+  /**
+   * v1 token balances are credited to **earned** XP, divided by this.
+   *
+   * The two economies are not on the same scale. v1's balances run to a median
+   * of 20 and a maximum of 2,277,521, while a very active day in v2 is about
+   * 700 XP — so a 1:1 credit would put the top account roughly nine years ahead
+   * and freeze the all-time table permanently. Dividing by 100 leaves it about
+   * 32 days ahead: still a head start, but one a new user can close.
+   *
+   * The cost is that everyone below 100 tokens — over half of them, since the
+   * median is 20 — converts to nothing. That is accepted, because the
+   * welcome-back bonus is what actually rewards a median user for returning;
+   * the conversion is there to recognise the people who genuinely accumulated.
+   */
+  legacyTokenDivisor: number
+  /** Flat bonus when a returning v1 user's profile is restored. */
+  welcomeBackBonus: number
 }
 
 /**
@@ -120,6 +141,8 @@ export const XP_RULES: XpRules = {
     streakFreeze: 200,
     maxBankedStreakFreezes: 2,
   },
+  legacyTokenDivisor: 100,
+  welcomeBackBonus: 250,
 }
 
 export interface ActivityCounters {
@@ -194,3 +217,13 @@ export const xpSummarySchema = z.object({
   }),
 })
 export type XpSummary = z.infer<typeof xpSummarySchema>
+
+/**
+ * XP credited for a v1 token balance. Floors, so anything under the divisor
+ * converts to nothing and — since `awardXp` writes no row for a zero amount —
+ * leaves no ledger entry at all rather than a meaningless one.
+ */
+export function legacyTokensToXp(balance: number, rules: XpRules = XP_RULES): number {
+  if (!Number.isFinite(balance) || balance <= 0) return 0
+  return Math.floor(balance / rules.legacyTokenDivisor)
+}
