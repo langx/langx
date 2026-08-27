@@ -72,9 +72,25 @@ be tested end to end until they are:
    (dry run first — last verified 3479 profiles → 3401 reservation candidates)
 2. Run the profile ETL: `tsx scripts/migrate-profiles.ts --apply`
    (dry run: 3479 → 3150 stageable; needs `STORAGE_*` for the media step)
-3. Both are idempotent and can be re-run. The profile ETL skips anything a v2
-   user has already restored.
-4. Verify a returning user's handle claim end to end before opening the gates.
+3. Run the message ETL: `tsx scripts/migrate-messages.ts --apply`
+   (dry run first; needs `STORAGE_*` for the attachments)
+
+   **Do not skip this step, and do not run it after the Appwrite shutdown.** It
+   stages v1's chat history _and copies the 4,874 attachments out of Appwrite
+   Storage_, which are encrypted at rest and readable only through Appwrite's
+   own API — once that server is gone they cannot be recovered from the bucket
+   behind it. Nothing later in this runbook will tell you the history is
+   missing: threads simply never appear, because the import waits for both
+   participants to return and silently finds nothing staged.
+
+4. All three are idempotent and can be re-run. The profile ETL skips anything a
+   v2 user has already restored; the message ETL skips attachments it has
+   already copied and rooms already imported into a live conversation.
+5. Verify a returning user's handle claim end to end before opening the gates.
+6. Verify chat history too: restore two accounts that talked to each other in
+   v1 and confirm the thread arrives with its photos and voice notes. A
+   conversation is only imported once **both** sides are back, so testing with
+   one account proves nothing.
 
 ## Release
 

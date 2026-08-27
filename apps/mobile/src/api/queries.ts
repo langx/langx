@@ -65,6 +65,12 @@ export interface MeProfile {
   streak: { current: number; longest: number }
   cosmetics?: string[]
   /**
+   * Set while a deletion is pending. The profile is still returned to its
+   * owner — they are the one person who has to be able to see it, and to take
+   * it back — while `findPublicProfile` already hides it from everyone else.
+   */
+  deletedAt?: string
+  /**
    * Present only when a v1 account was restored onto this one. `/profiles/me`
    * carries it because the restore may well have happened on another device —
    * an email link clicked on a laptop — so this is how the phone finds out.

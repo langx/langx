@@ -33,6 +33,36 @@ export async function registerPushToken(): Promise<void> {
 }
 
 /**
+ * Removes this device's push token from the account it is currently signed
+ * into. Call before ending the session.
+ *
+ * Without it a signed-out device keeps receiving that account's message and
+ * streak notifications until the token happens to be reassigned — someone
+ * signs out on a borrowed or sold phone and their messages keep arriving on
+ * it. `DELETE /me/devices/:token` existed for this from the beginning and
+ * nothing called it.
+ *
+ * Every failure is swallowed. A token that cannot be removed must never be
+ * able to trap someone in a signed-in state: being unable to sign out is a
+ * worse outcome than a stale token, and the server drops the token anyway the
+ * moment it is claimed by another account.
+ */
+export async function unregisterPushToken(): Promise<void> {
+  try {
+    if (Platform.OS === 'web' || !Device.isDevice) return
+    const Notifications = await import('expo-notifications')
+    const existing = await Notifications.getPermissionsAsync()
+    // No permission means no token was ever registered from this device.
+    if (!existing.granted) return
+
+    const token = await Notifications.getExpoPushTokenAsync()
+    await api.delete(`/me/devices/${encodeURIComponent(token.data)}`)
+  } catch {
+    // See above: never block a sign-out.
+  }
+}
+
+/**
  * Registers the push token on launch — and **does not ask for permission**.
  *
  * It used to ask, the moment the signed-in layout mounted: a system dialog

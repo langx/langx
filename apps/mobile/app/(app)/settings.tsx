@@ -7,6 +7,7 @@ import { useMe, useUpdateProfile } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { authClient } from '../../src/lib/auth-client'
+import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
@@ -45,6 +46,10 @@ export default function SettingsScreen() {
   const isPro = profile?.entitlement.tier === 'pro'
 
   async function signOut(): Promise<void> {
+    // Before the session ends, not after: once signed out the request has no
+    // credentials and the token would stay attached to the account, still
+    // receiving its messages on a device nobody is signed into.
+    await unregisterPushToken()
     await authClient.signOut()
     router.replace('/(auth)/sign-in')
   }

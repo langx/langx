@@ -1,5 +1,7 @@
 import { Tabs } from 'expo-router'
 import { Text } from 'react-native'
+import { DeletionBanner } from '../../src/components/DeletionBanner'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '../../src/lib/theme'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useSocket } from '../../src/hooks/useSocket'
@@ -19,51 +21,59 @@ export default function AppLayout() {
   usePushRegistration()
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { borderTopColor: colors.border },
-      }}
-    >
-      <Tabs.Screen
-        name="discover"
-        options={{
-          title: 'Discover',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🧭" focused={focused} />,
+    /**
+     * The banner lives above the navigator so a pending deletion is visible on
+     * every screen rather than only where someone happens to look. `edges` is
+     * top-only: the tab bar owns the bottom inset.
+     */
+    <SafeAreaView style={{ backgroundColor: colors.bg, flex: 1 }} edges={['top']}>
+      <DeletionBanner />
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: colors.text,
+          tabBarInactiveTintColor: colors.textMuted,
+          tabBarStyle: { borderTopColor: colors.border },
         }}
-      />
-      <Tabs.Screen
-        name="chats"
-        options={{
-          title: 'Chats',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="💬" focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="leaderboard"
-        options={{
-          title: 'Leaderboard',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="🏆" focused={focused} />,
-        }}
-      />
-      <Tabs.Screen
-        name="me"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
-        }}
-      />
-      {/* Reachable by navigation, never a tab. */}
-      <Tabs.Screen name="chat/[id]" options={{ href: null }} />
-      <Tabs.Screen name="profile/[handle]" options={{ href: null }} />
-      <Tabs.Screen name="edit-profile" options={{ href: null }} />
-      <Tabs.Screen name="blocked" options={{ href: null }} />
-      <Tabs.Screen name="settings" options={{ href: null }} />
-      <Tabs.Screen name="paywall" options={{ href: null }} />
-      <Tabs.Screen name="viewers" options={{ href: null }} />
-      <Tabs.Screen name="filters" options={{ href: null }} />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="discover"
+          options={{
+            title: 'Discover',
+            tabBarIcon: ({ focused }) => <TabIcon emoji="🧭" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="chats"
+          options={{
+            title: 'Chats',
+            tabBarIcon: ({ focused }) => <TabIcon emoji="💬" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="leaderboard"
+          options={{
+            title: 'Leaderboard',
+            tabBarIcon: ({ focused }) => <TabIcon emoji="🏆" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="me"
+          options={{
+            title: 'Profile',
+            tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
+          }}
+        />
+        {/* Reachable by navigation, never a tab. */}
+        <Tabs.Screen name="chat/[id]" options={{ href: null }} />
+        <Tabs.Screen name="profile/[handle]" options={{ href: null }} />
+        <Tabs.Screen name="edit-profile" options={{ href: null }} />
+        <Tabs.Screen name="blocked" options={{ href: null }} />
+        <Tabs.Screen name="settings" options={{ href: null }} />
+        <Tabs.Screen name="paywall" options={{ href: null }} />
+        <Tabs.Screen name="viewers" options={{ href: null }} />
+        <Tabs.Screen name="filters" options={{ href: null }} />
+      </Tabs>
+    </SafeAreaView>
   )
 }
