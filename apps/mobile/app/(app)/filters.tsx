@@ -14,6 +14,7 @@ import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
+import { openPaywall } from '../../src/lib/paywall'
 import {
   AGE_BRACKETS,
   activeCount,
@@ -69,7 +70,7 @@ export default function FiltersScreen() {
    */
   function set(patch: FilterPatch, pro = false): void {
     if (pro && !isPro) {
-      router.push('/(app)/paywall')
+      openPaywall('advancedFilters')
       return
     }
     setFilters((current) => {
@@ -226,7 +227,7 @@ export default function FiltersScreen() {
         <CountryPicker
           value={filters.country ?? ''}
           onChange={(country) => set({ country: country || undefined }, true)}
-          {...(isPro ? {} : { onLocked: () => router.push('/(app)/paywall') })}
+          {...(isPro ? {} : { onLocked: () => openPaywall('advancedFilters') })}
         />
 
         <View style={styles.actions}>

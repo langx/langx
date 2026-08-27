@@ -8,7 +8,18 @@
  * types them with Mongo's `ObjectId`/`Date`, which arrive over the wire as
  * strings; restating them is the honest way to say "this is JSON now".
  */
-export type { Leaderboard, LeaderboardEntry, PeriodType, Wallet, TokenSummary } from '@langx/shared'
+export type {
+  Leaderboard,
+  LeaderboardEntry,
+  PeriodType,
+  PlanTier,
+  Wallet,
+  TokenSummary,
+} from '@langx/shared'
+
+// Re-exported above for consumers; imported here because a `export ... from`
+// does not bind the name locally and the DTOs below need to use it.
+import type { PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
   _id: string
@@ -25,7 +36,7 @@ export interface PublicProfileDto {
   learning: { code: string; level: string; priority: number }[]
   interests: string[]
   streak: { current: number; longest: number }
-  tier: 'free' | 'pro'
+  tier: PlanTier
   cosmetics: string[]
   isOnline: boolean
   lastActiveAt: string

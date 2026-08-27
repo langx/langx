@@ -1,4 +1,12 @@
-import { effectivePlanTier, type Gender } from '@langx/shared'
+import {
+  effectivePlanTier,
+  hasFeature,
+  isPaidTier,
+  type Gender,
+  type PaidPlanTier,
+  type PlanFeature,
+  type PlanTier,
+} from '@langx/shared'
 import type {
   DiscoveryResult,
   Leaderboard,
@@ -61,7 +69,7 @@ export interface MeProfile {
   interests: string[]
   settings: { discoverable: boolean; notifications: boolean }
   privacy: { incognito: boolean }
-  entitlement: { tier: 'free' | 'pro'; expiresAt?: string }
+  entitlement: { tier: PlanTier; expiresAt?: string }
   streak: { current: number; longest: number }
   cosmetics?: string[]
   /**
@@ -81,6 +89,7 @@ export interface MeProfile {
     tokensCredited: number
     frozenStreak: number
     conversationsImported: number
+    lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: string
     streakRestoredAt?: string
   }
@@ -95,11 +104,32 @@ export interface MeProfile {
  * every Pro action came back refused. Not a conversion problem — a trust one:
  * the app told people they had something and then behaved as if they did not.
  */
-export function useIsPro(): boolean {
+export function useEffectiveTier(): PlanTier {
   const me = useMe()
   const entitlement = me.data?.entitlement
-  if (!entitlement) return false
-  return effectivePlanTier(entitlement.tier, entitlement.expiresAt) === 'pro'
+  if (!entitlement) return 'free'
+  return effectivePlanTier(entitlement.tier, entitlement.expiresAt)
+}
+
+/**
+ * Whether the *client* should show a paid interface.
+ *
+ * `isPaidTier`, not `=== 'pro'`. With two paid tiers the equality check would
+ * have told every Pro+ subscriber they were on the free plan — the exact
+ * failure this hook was written to prevent, reintroduced from the other side.
+ */
+export function useIsPro(): boolean {
+  return isPaidTier(useEffectiveTier())
+}
+
+/**
+ * The client half of a capability gate. The server decides for real; this is
+ * what stops the app offering a button it already knows will come back
+ * `403 UPGRADE_REQUIRED`, and it reads the same `PLAN_LIMITS` table the server
+ * enforces rather than a second list of which tier gets what.
+ */
+export function useHasFeature(feature: PlanFeature): boolean {
+  return hasFeature(useEffectiveTier(), feature)
 }
 
 /**

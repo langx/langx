@@ -1,6 +1,7 @@
 import { APP_PLATFORM_HEADER, APP_VERSION_HEADER } from '@langx/shared'
 import * as Application from 'expo-application'
 import { Platform } from 'react-native'
+import { API_URL } from '../lib/apiUrl'
 import { authClient } from '../lib/auth-client'
 
 /**
@@ -14,8 +15,6 @@ function versionHeaders(): Record<string, string> {
       Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web',
   }
 }
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000'
 
 /**
  * Fetch wrapper for *our own* API routes (not Better Auth's, which the

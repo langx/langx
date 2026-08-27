@@ -66,7 +66,7 @@ export default function WelcomeBackScreen() {
   }
 
   const handle = me.data?.handle ?? ''
-  const { tokensCredited, conversationsImported, frozenStreak } = restored
+  const { tokensCredited, conversationsImported, frozenStreak, lifetimeGranted } = restored
 
   return (
     <Screen scroll>
@@ -120,6 +120,20 @@ export default function WelcomeBackScreen() {
             icon="🔥"
             title={`${days(frozenStreak)} best streak`}
             body="Kept as your record. Your live streak starts fresh from today."
+          />
+        ) : null}
+
+        {/*
+          Roughly the top one percent of v1 balances, so most people never see
+          this line — which is the point of putting it last and of saying it
+          plainly. A gift nobody is told about is indistinguishable from no
+          gift, and this screen is the only place the recipient learns of it.
+        */}
+        {lifetimeGranted ? (
+          <Line
+            icon="✨"
+            title={lifetimeGranted === 'pro_plus' ? 'LangX Pro+, for life' : 'LangX Pro, for life'}
+            body="For what you built in v1. It never expires and there is nothing to pay — thank you for being here first."
           />
         ) : null}
       </View>

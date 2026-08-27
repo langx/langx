@@ -85,7 +85,9 @@ the users we are trying to migrate.
 compiled into the client bundle, so the host has to exist and be final before
 the build that goes to the stores. Build first and deploy after, and the
 binary in review is pointing at `http://localhost:4000` — which passes every
-local test and fails on every real device.
+local test and fails on every real device. Setting that variable on the
+`preview` and `production` profiles in `eas.json` is the checklist item this
+deadline exists for; it is listed with the other prerequisites below.
 
 Once the host answers, the webhook is a five-minute dashboard task:
 
@@ -223,6 +225,11 @@ be tested end to end until they are:
       so it gates the iOS release rather than merely improving it. Until both
       are set the sign-in screen simply does not draw the buttons
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
+- [ ] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
+      profiles in `eas.json`. Only `development` sets it today, and only to
+      localhost — which a development build rewrites to the dev server's
+      address at runtime, but a released build has no dev server and would
+      ship pointing at the phone itself
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not
       yet enabled — deliberately, rather than shipping a button that cannot work)

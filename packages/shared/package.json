@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "Contract shared by @langx/api and @langx/mobile: zod schemas, language/CEFR tables, plan limits, XP rules, error codes",
+  "description": "Contract shared by @langx/api and @langx/mobile: zod schemas, language and level tables, plan limits, token rules, error codes",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

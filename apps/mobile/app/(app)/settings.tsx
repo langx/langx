@@ -7,12 +7,11 @@ import { useIsPro, useMe, useUpdateProfile } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
+import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000'
 
 function Row({
   title,

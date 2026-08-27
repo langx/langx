@@ -2,11 +2,14 @@ import {
   ENTITLEMENT_CANCEL_EVENTS,
   ENTITLEMENT_GRANT_EVENTS,
   ENTITLEMENT_REVOKE_EVENTS,
+  tierFromEntitlementIds,
   type RevenueCatEvent,
 } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import { refreshEntitlement } from './refresh'
+import type { RevenueCatClient } from './revenueCatClient'
 
 export interface SubscriptionRecord {
   eventId: string
@@ -37,14 +40,24 @@ export interface WebhookResult {
  * guard: insert first, and a duplicate-key error means this exact event was
  * already handled — return early without touching `profiles.entitlement` a
  * second time. Only after a clean insert does entitlement change.
+ *
+ * `client` is optional so every test that only exercises the recording and
+ * idempotency halves can keep calling this with two arguments. Passing it
+ * buys one thing, and only on `EXPIRATION`: see the comment on that branch.
  */
 export async function processRevenueCatWebhook(
   db: Db,
   event: RevenueCatEvent,
+  client?: RevenueCatClient,
 ): Promise<WebhookResult> {
+  // TRANSFER events have no `app_user_id` at all — the recipient arrives in
+  // `transferred_to`. Only the first id matters: RevenueCat lists the target
+  // user's aliases, which are all the same person to us.
+  const userId = event.app_user_id ?? event.transferred_to?.[0] ?? null
+
   const record: SubscriptionRecord = {
     eventId: event.id,
-    userId: event.app_user_id,
+    userId: userId ?? 'unknown',
     type: event.type,
     store: event.store ?? 'unknown',
     productId: event.product_id ?? 'unknown',
@@ -60,34 +73,77 @@ export async function processRevenueCatWebhook(
     throw error
   }
 
+  // Recorded for audit, but there is nobody to grant to or revoke from.
+  // Still a 2xx: a payload we cannot act on will not act differently on the
+  // fifth redelivery either.
+  if (!userId) return { processed: true }
+
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const now = new Date()
 
   if (GRANT_SET.has(event.type)) {
+    const tier = tierFromEntitlementIds(event.entitlement_ids)
+
+    // TRANSFER carries no entitlement information — not even `product_id` —
+    // so which tier just arrived is unknowable from the event. Ask RevenueCat
+    // what the recipient holds now; the generic fallback below still covers
+    // the client being unavailable.
+    if (tier === null && event.type === 'TRANSFER' && client) {
+      if (await reconciled(db, client, userId)) return { processed: true }
+    }
+
+    // Falls back to the *lowest paid* tier rather than to free. A grant event
+    // whose `entitlement_ids` we cannot read still means the user bought
+    // something; defaulting to free would revoke access on a malformed
+    // payload, which is the one direction that is never safe to guess in.
+    // This is also what makes `PRODUCT_CHANGE` — the upgrade/downgrade event —
+    // finally land on the tier that was actually changed *to*.
     const entitlement: Profile['entitlement'] = {
-      tier: 'pro',
+      tier: tier ?? 'pro',
       willRenew: true,
       store: record.store,
       updatedAt: now,
     }
     if (record.expiresAt) entitlement.expiresAt = record.expiresAt
-    await profiles.updateOne({ _id: event.app_user_id }, { $set: { entitlement, updatedAt: now } })
+    await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
   } else if (REVOKE_SET.has(event.type)) {
+    // An EXPIRATION says something ended — never what is left. A subscriber
+    // whose Pro+ lapses while a separate Pro subscription runs on must land on
+    // `pro`, and no field on this event can tell us that. So ask RevenueCat
+    // what they hold *now*; only if that is impossible (no secret key, or the
+    // API is down) do we fall back to the event's own pessimistic reading.
+    if (client && (await reconciled(db, client, userId))) return { processed: true }
+
     const entitlement: Profile['entitlement'] = {
       tier: 'free',
       willRenew: false,
       store: record.store,
       updatedAt: now,
     }
-    await profiles.updateOne({ _id: event.app_user_id }, { $set: { entitlement, updatedAt: now } })
+    await profiles.updateOne({ _id: userId }, { $set: { entitlement, updatedAt: now } })
   } else if (CANCEL_SET.has(event.type)) {
     // Access continues until expiresAt — only the renewal intent changes.
     await profiles.updateOne(
-      { _id: event.app_user_id },
+      { _id: userId },
       { $set: { 'entitlement.willRenew': false, updatedAt: now } },
     )
   }
   // BILLING_ISSUE and anything unrecognized: recorded above for audit, no entitlement change.
 
   return { processed: true }
+}
+
+/**
+ * Writes the entitlement RevenueCat reports right now, returning `false` when
+ * it could not be asked. Swallowing the error is deliberate: billing being
+ * unreachable must not turn into a non-2xx, because RevenueCat would then
+ * retry this event forever while the caller has a perfectly good fallback.
+ */
+async function reconciled(db: Db, client: RevenueCatClient, userId: string): Promise<boolean> {
+  try {
+    await refreshEntitlement(db, client, userId)
+    return true
+  } catch {
+    return false
+  }
 }

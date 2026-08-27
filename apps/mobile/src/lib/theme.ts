@@ -21,6 +21,14 @@ export const colors = {
   success: '#12864b',
   streak: '#f79009',
   pro: '#7a5af8',
+  /**
+   * Deliberately the same hue family as `pro`, only deeper. Pro+ is a superset
+   * of Pro, not a different product, and giving it an unrelated colour would
+   * read as two separate things to choose between rather than one being more
+   * than the other. Deep enough to stay legible as text on `bg`, which the
+   * lighter `pro` only just manages.
+   */
+  proPlus: '#5b21b6',
 } as const
 
 export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32 } as const

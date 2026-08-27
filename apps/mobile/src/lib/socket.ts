@@ -1,9 +1,8 @@
 import { APP_SCHEME } from '@langx/shared'
 import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
+import { API_URL } from './apiUrl'
 import { authClient } from './auth-client'
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000'
 
 let socket: Socket | null = null
 

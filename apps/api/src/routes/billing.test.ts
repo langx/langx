@@ -16,8 +16,25 @@ const WEBHOOK_SECRET = 'test-webhook-shared-secret'
 
 class FakeRevenueCatClient implements RevenueCatClient {
   next: SubscriberEntitlement | null = null
-  getProEntitlement(): Promise<SubscriberEntitlement | null> {
+  /**
+   * Stands in for "no secret key configured, or RevenueCat is down". The
+   * webhook's EXPIRATION branch has a fallback for exactly this, and a fake
+   * that can only succeed would never reach it.
+   */
+  unavailable = false
+
+  /** Every `grantLifetimeEntitlement` call, so tests can assert who got what. */
+  readonly grants: { appUserId: string; entitlementId: string }[] = []
+
+  getEntitlement(): Promise<SubscriberEntitlement | null> {
+    if (this.unavailable) return Promise.reject(new Error('Billing is not configured'))
     return Promise.resolve(this.next)
+  }
+
+  grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
+    if (this.unavailable) return Promise.reject(new Error('Billing is not configured'))
+    this.grants.push({ appUserId, entitlementId })
+    return Promise.resolve()
   }
 }
 
@@ -155,6 +172,231 @@ describe('Faz 7 — billing', () => {
       })
       expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
     })
+
+    /**
+     * The event above carries no `entitlement_ids` — a payload from before the
+     * field was read, or a product mapped to nothing we sell. Granting the
+     * lowest paid tier is the deliberate choice: the user demonstrably bought
+     * something, and free is the one answer that is never safe to guess.
+     */
+    it('falls back to Pro when the event names no entitlement', async () => {
+      const user = await newUser('webhook-no-ids@example.com')
+
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-no-ids',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            entitlement_ids: null,
+          },
+        },
+      })
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+    })
+
+    /** Pro+ products grant `pro` too, so both ids arrive and precedence decides. */
+    it('grants Pro+ when the event names both entitlements', async () => {
+      const user = await newUser('webhook-proplus@example.com')
+
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-proplus',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            product_id: 'pro_plus_monthly',
+            entitlement_ids: ['pro', 'pro_plus'],
+            expiration_at_ms: Date.now() + 1_000_000,
+          },
+        },
+      })
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro_plus' } })
+    })
+
+    /**
+     * The bug this branch exists for: an EXPIRATION says something ended, never
+     * what is left. Written naively it drops a subscriber whose Pro+ lapsed —
+     * but whose Pro is still running — all the way to free.
+     */
+    it('lands on Pro, not free, when Pro+ expires over a still-active Pro', async () => {
+      const user = await newUser('webhook-expire-partial@example.com')
+      fakeRevenueCat.unavailable = false
+      fakeRevenueCat.next = {
+        tier: 'pro',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        productId: 'monthly',
+        store: 'app_store',
+      }
+
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-expire-partial',
+            type: 'EXPIRATION',
+            app_user_id: user.userId,
+            entitlement_ids: ['pro_plus'],
+          },
+        },
+      })
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+    })
+
+    /**
+     * A real TRANSFER payload has **no `app_user_id`** — the recipient is in
+     * `transferred_to`. When the schema required `app_user_id`, every real
+     * TRANSFER answered 400 and RevenueCat retried it forever. It also names
+     * no entitlement, so the handler reconciles against RevenueCat.
+     */
+    it('accepts a TRANSFER without app_user_id and reconciles the recipient', async () => {
+      const user = await newUser('webhook-transfer@example.com')
+      fakeRevenueCat.unavailable = false
+      fakeRevenueCat.next = {
+        tier: 'pro_plus',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        productId: 'pro_plus_monthly',
+        store: 'app_store',
+      }
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-transfer',
+            type: 'TRANSFER',
+            store: 'APP_STORE',
+            transferred_from: ['some-old-account'],
+            transferred_to: [user.userId],
+          },
+        },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ processed: true })
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro_plus' } })
+    })
+
+    /** With RevenueCat unreachable, a transfer still grants — the safe direction. */
+    it('falls back to Pro on a TRANSFER when RevenueCat cannot be reached', async () => {
+      const user = await newUser('webhook-transfer-offline@example.com')
+      fakeRevenueCat.unavailable = true
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-transfer-offline',
+            type: 'TRANSFER',
+            transferred_to: [user.userId],
+          },
+        },
+      })
+      fakeRevenueCat.unavailable = false
+      expect(response.statusCode, response.body).toBe(200)
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'pro' } })
+    })
+
+    /** Nobody named at all: recorded for audit, acked, nothing granted. */
+    it('acks an event that names no user instead of erroring into a retry loop', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: { id: 'evt-nobody', type: 'TRANSFER', transferred_to: [] },
+        },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ processed: true })
+    })
+
+    it('revokes to free on expiry when RevenueCat cannot be reached', async () => {
+      const user = await newUser('webhook-expire-offline@example.com')
+
+      // Grant first, so the revocation has something to take away.
+      await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-expire-offline-grant',
+            type: 'INITIAL_PURCHASE',
+            app_user_id: user.userId,
+            entitlement_ids: ['pro'],
+          },
+        },
+      })
+
+      fakeRevenueCat.unavailable = true
+      const response = await app.inject({
+        method: 'POST',
+        url: '/webhooks/revenuecat',
+        headers: { authorization: WEBHOOK_SECRET },
+        payload: {
+          event: {
+            id: 'evt-expire-offline',
+            type: 'EXPIRATION',
+            app_user_id: user.userId,
+            entitlement_ids: ['pro'],
+          },
+        },
+      })
+      fakeRevenueCat.unavailable = false
+
+      // Still a clean 2xx: a non-2xx would put RevenueCat into a retry loop
+      // over something the fallback already handled correctly.
+      expect(response.statusCode, response.body).toBe(200)
+
+      const profile = await app.inject({
+        method: 'GET',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+      })
+      expect(profile.json()).toMatchObject({ entitlement: { tier: 'free' } })
+    })
   })
 
   describe('POST /billing/refresh', () => {
@@ -165,10 +407,11 @@ describe('Faz 7 — billing', () => {
 
     it('reconciles to Pro when RevenueCat reports an active entitlement', async () => {
       const user = await newUser('refresh-active@example.com')
+      fakeRevenueCat.unavailable = false
       fakeRevenueCat.next = {
-        isActive: true,
+        tier: 'pro',
         expiresAt: new Date(Date.now() + 1_000_000),
-        productId: 'pro_monthly',
+        productId: 'monthly',
         store: 'play_store',
       }
 
@@ -181,8 +424,28 @@ describe('Faz 7 — billing', () => {
       expect(response.json()).toMatchObject({ tier: 'pro', store: 'play_store' })
     })
 
+    it('reconciles to Pro+ when RevenueCat reports the higher entitlement', async () => {
+      const user = await newUser('refresh-proplus@example.com')
+      fakeRevenueCat.unavailable = false
+      fakeRevenueCat.next = {
+        tier: 'pro_plus',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        productId: 'pro_plus_yearly',
+        store: 'play_store',
+      }
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/billing/refresh',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ tier: 'pro_plus' })
+    })
+
     it('reconciles to free when RevenueCat reports no active entitlement', async () => {
       const user = await newUser('refresh-inactive@example.com')
+      fakeRevenueCat.unavailable = false
       fakeRevenueCat.next = null
 
       const response = await app.inject({

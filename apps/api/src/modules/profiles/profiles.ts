@@ -2,8 +2,11 @@ import {
   ERROR_CODES,
   PLAN_LIMITS,
   TIMEZONE_UPDATE_COOLDOWN_MS,
+  effectivePlanTier,
   meetsMinimumAge,
   type OnboardingProfileInput,
+  type PaidPlanTier,
+  type PlanTier,
   type UpdateProfileInput,
 } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
@@ -11,6 +14,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
+import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { restoreByHash } from '../handles/legacyRestore'
 import { grantSignupBonus } from '../tokens/signupBonus'
 
@@ -44,7 +48,7 @@ export interface Profile {
   }
   privacy: { incognito: boolean }
   entitlement: {
-    tier: 'free' | 'pro'
+    tier: PlanTier
     expiresAt?: Date
     willRenew?: boolean
     store?: string
@@ -80,6 +84,8 @@ export interface Profile {
     tokensCredited: number
     frozenStreak: number
     conversationsImported: number
+    /** Lifetime tier handed out through RevenueCat for a top-percentile v1 balance; `null` for everyone else. */
+    lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: Date
     /** Latch: the frozen streak can be bought back exactly once. */
     streakRestoredAt?: Date
@@ -107,6 +113,8 @@ export async function createProfile(
   legacyEmailHash: string | null,
   input: OnboardingProfileInput,
   storagePublicBaseUrl?: string,
+  /** Carries the v1 loyalty gift when this form finishes a deferred restore. */
+  billing?: RevenueCatClient,
 ): Promise<Profile> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
@@ -186,7 +194,7 @@ export async function createProfile(
   // record was missing something this form has just supplied. A no-op for
   // everyone else, and idempotent if it somehow already ran.
   if (legacyEmailHash) {
-    await restoreByHash(db, userId, legacyEmailHash)
+    await restoreByHash(db, userId, legacyEmailHash, billing)
     const restored = await profiles.findOne({ _id: userId })
     if (restored) return restored
   }
@@ -300,7 +308,7 @@ export interface PublicProfile {
   learning: { code: string; level: string; priority: number }[]
   interests: string[]
   streak: { current: number; longest: number }
-  tier: 'free' | 'pro'
+  tier: PlanTier
   cosmetics: string[]
   isOnline: boolean
   lastActiveAt: Date
@@ -330,7 +338,10 @@ export function toPublicProfile(profile: Profile, now: Date = new Date()): Publi
     learning: profile.learning ?? [],
     interests: profile.interests ?? [],
     streak: { current: profile.streak?.current ?? 0, longest: profile.streak?.longest ?? 0 },
-    tier: profile.entitlement?.tier ?? 'free',
+    // `effectivePlanTier`, not the raw stored tier: a lapsed subscription
+    // whose EXPIRATION webhook is late or lost would otherwise keep showing
+    // everyone else a PRO badge the server already refuses to honour.
+    tier: effectivePlanTier(profile.entitlement?.tier ?? 'free', profile.entitlement?.expiresAt),
     cosmetics: profile.cosmetics ?? [],
     isOnline: now.getTime() - new Date(lastActiveAt).getTime() < ONLINE_WINDOW_MS,
     lastActiveAt: new Date(lastActiveAt),
