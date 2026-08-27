@@ -70,10 +70,46 @@ only one instance can own a given day.
 ## Deploying
 
 **API** — `pnpm --filter @langx/api run build` produces a single
-`dist/index.js` (external deps). Run it with `node dist/index.js` behind a TLS
-terminator. Set `NODE_ENV=production` so `trustProxy` is on, or the rate
-limiter will see your proxy's IP for every request and put all your users in
-one bucket.
+`dist/index.js`. npm packages stay external, but `@langx/shared` is inlined by
+an esbuild `--alias`: it ships as TypeScript source, so left external Node
+resolves it to a `.ts` file whose own extensionless imports it then cannot
+follow, and the process dies at startup. Run it with `node dist/index.js`
+behind a TLS terminator. Set `NODE_ENV=production` so `trustProxy` is on, or
+the rate limiter will see your proxy's IP for every request and put all your
+users in one bucket.
+
+The `Dockerfile` at the repo root packages exactly that, and the build context
+is the workspace root rather than `apps/api`. Note that `deploy` runs with
+`--config.node-linker=hoisted`: pnpm's default symlink layout keeps a `.pnpm`
+store holding the whole workspace, so the API image would otherwise carry Expo,
+React Native and the Hermes compiler.
+
+**Fly.io** — `fly.toml` is committed and holds no secrets. First deploy:
+
+```bash
+fly launch --no-deploy          # claims the app name; keeps the committed fly.toml
+fly secrets set MONGODB_URI='...' BETTER_AUTH_SECRET='...' BETTER_AUTH_URL='https://<host>'
+fly deploy
+fly certs add <your-domain>     # Let's Encrypt, issued and renewed automatically
+```
+
+If DNS is behind Cloudflare, the record has to be DNS-only (grey cloud) for
+the certificate to issue — a proxied record answers Fly's challenge itself and
+the certificate stays pending forever. Leaving it grey afterwards is the
+simpler setup; a proxied record additionally needs Cloudflare's SSL mode on
+Full (strict), because "Flexible" talks HTTP to an origin that redirects to
+HTTPS and the request loops.
+
+Do not let the platform scale the API to zero. The four schedulers above are
+interval ticks inside the process, not platform cron: a suspended machine runs
+none of them, and no request arrives to wake it at 20:00 in a user's timezone.
+`auto_stop_machines = 'off'` in `fly.toml` is there for that reason.
+
+Socket.io is served by the same process over the same port, so WebSockets need
+no extra configuration — but its default transport list starts with HTTP
+polling, which assumes consecutive requests reach the same instance. Fly does
+not do sticky sessions, so going past one machine needs a Socket.io adapter
+first.
 
 **Web** — `pnpm --filter @langx/mobile exec expo export --platform web` emits
 a static site in `dist/`. Serve it from any static host. It needs

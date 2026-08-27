@@ -876,6 +876,41 @@ and nobody is promoted by a migration they did not ask for.
 `cefr.ts` became `level.ts` rather than keeping a name that would have lied
 about its contents.
 
+## The API runs on Fly.io, and never scales to zero
+
+The deploy target had been left open long enough that it blocked the
+RevenueCat webhook, which needs a public URL before it can be configured at
+all. Fly was chosen for the ordinary reasons — a container, a custom domain
+with an automatic certificate, secrets in the platform rather than the repo.
+
+The part that is not ordinary is `auto_stop_machines = 'off'`. Scale-to-zero
+is the headline feature of every platform in this class, and it is wrong here.
+Four schedulers live inside the API process and every one of them is an
+interval tick, not platform cron: the token pool, the account purge, the
+streak reminder, the legacy import. A suspended machine runs none of them, and
+nothing wakes it, because the work is not triggered by a request — nobody
+calls the API to make 20:00 arrive in a user's timezone. The failure is silent
+and looks like a bug in the schedulers.
+
+Two smaller constraints, both of which cost an afternoon to find:
+
+`packages/shared` is inlined into the bundle by an esbuild `--alias` rather
+than left external like every npm package. It ships as TypeScript source, so
+externally Node resolves it to a `.ts` file and then cannot follow that file's
+own extensionless imports. `node dist/index.js` had never been run before —
+the documented deploy command did not work.
+
+`pnpm deploy` runs with `--config.node-linker=hoisted`, because the default
+symlink layout keeps a `.pnpm` store containing the entire workspace. The API
+image shipped Expo, React Native and the Hermes compiler until it did not:
+1.15 GB down to 608 MB.
+
+Going past one machine needs a Socket.io adapter first. Socket.io's default
+transport list starts with HTTP polling, which assumes consecutive requests
+reach the same instance, and Fly has no sticky sessions. Everything else about
+the app is already safe to run multiply — the `jobRuns` unique index means only
+one instance can own a given day's pool.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is
