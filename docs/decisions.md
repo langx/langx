@@ -263,7 +263,7 @@ it bridged nothing.
 
 Equal token shares a rank and the next distinct score skips (1, 2, 2, 4).
 Positional ranking (index + 1) would be simpler, but a user outside the page
-learns their rank from `countDocuments({xp: {$gt: mine}}) + 1`, and the two
+learns their rank from `countDocuments({tokens: {$gt: mine}}) + 1`, and the two
 would disagree: two people on the same score would be told different positions
 depending on whether they made the page.
 

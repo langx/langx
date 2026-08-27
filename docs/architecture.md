@@ -132,7 +132,7 @@ This is communication work, and it is part of the delivery:
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                       |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                             |
 | Gamification        | **In the MVP**: streak + token + daily pool + 4 leaderboards. Non-transferable token                                                                                                                                                                                                                                                          |
-| **Token**           | **v1's token system is retired**; wallet/checkout/token leaderboard are not migrated, balances are dropped                                                                                                                                                                                                                                    |
+| **Token**           | **Kept, not retired** (reversed 2026-08-27) — the name stays and v1 balances migrate at 1:100. What does not come across: the wallet/checkout UI, the `/token` leaderboard, and the on-chain roadmap                                                                                                                                          |
 | **Copilot quota**   | **P1** (does not block the MVP). Keeps the name "Copilot" (already promised publicly under it). Free: 5 uses a day. Pro: unlimited within fair use                                                                                                                                                                                            |
 | **Profile photos**  | One avatar is not enough — v1 parity means a **multi-photo gallery** (avatar + extras, capped by `PLAN_LIMITS.maxPhotos`)                                                                                                                                                                                                                     |
 | Token sinks         | **Only** streak freeze + cosmetics (frame/title). Tokens can never buy a Pro feature                                                                                                                                                                                                                                                          |
@@ -389,7 +389,7 @@ worth watching.
 month, year, createdAt }`. **Unique `{ userId, kind, refId }`** → the same
   message or day can never be paid twice.
 - **`tokenAggregates`**: `_id = '<userId>:<periodType>:<periodKey>'`. Atomic
-  `$inc` on every award, index `{ periodType: 1, periodKey: 1, xp: -1 }`.
+  `$inc` on every award, index `{ periodType: 1, periodKey: 1, tokens: -1 }`.
   **This is token's only source of truth** — no duplicate counter in `profiles`,
   which would only drift.
 - **`dailyActivity`**: `_id = '<userId>:<day>'`, live counters the pool reads.
@@ -398,9 +398,9 @@ month, year, createdAt }`. **Unique `{ userId, kind, refId }`** → the same
 ### Leaderboards
 
 Four tabs: **weekly / monthly / yearly / all time**. The query is
-`find({periodType, periodKey}).sort({xp:-1}).limit(100)` over `tokenAggregates`.
+`find({periodType, periodKey}).sort({tokens:-1}).limit(100)` over `tokenAggregates`.
 A user outside the top 100 gets their rank from
-`countDocuments({periodType, periodKey, xp: {$gt: mine}}) + 1`.
+`countDocuments({periodType, periodKey, tokens: {$gt: mine}}) + 1`.
 
 **Period keys are UTC** (`2026-W35`, `2026-08`, `2026`) because a global table
 has to be comparable. **Streaks use the local day.** The asymmetry is

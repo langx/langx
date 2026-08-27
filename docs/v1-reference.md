@@ -41,7 +41,7 @@ the wild.
 | `rooms`     | `6507510fc71f989d5d1c` | No — see below                                             |
 | `messages`  | `65075108a4025a4f5bd7` | No — see below                                             |
 | `languages` | `6511599e2bf0bb1b4d2c` | No — v2 uses a compile-time ISO 639-1 table                |
-| `wallet`    | `66622b8a000b305b236c` | **Never** — the token is retired                           |
+| `wallet`    | `66622b8a000b305b236c` | **Balances only** — credited at 1:100 on restore           |
 | `visits`    | `659dfb10b82eedbe1d6c` | No — v2 starts `profileViews` fresh                        |
 | `streaks`   | `65e73985ef5ac00c186b` | Partially — the streak _length_ rides along on the profile |
 | `reports`   | `659cd2d4bea77b451cb2` | No — moderation history starts fresh                       |

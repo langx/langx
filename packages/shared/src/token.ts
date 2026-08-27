@@ -2,12 +2,14 @@ import { z } from 'zod'
 import { walletSchema } from './cosmetics'
 
 /**
- * token is **not** a token. It cannot be traded, withdrawn or bought, and it can
- * never buy a Pro feature — otherwise farming token becomes a substitute for the
- * subscription. The only sinks are a streak freeze and cosmetics.
+ * The token is a point, not a currency. It cannot be traded, withdrawn or
+ * bought, and it can never buy a Pro feature — otherwise farming tokens becomes
+ * a substitute for the subscription. The only sinks are a streak freeze and
+ * cosmetics.
  *
- * v1 shipped an on-chain-flavoured token (wallets, checkouts, a token
- * leaderboard). That system is retired in v2 and balances are not migrated.
+ * v1 shipped the same name wrapped in on-chain framing (wallets, checkouts, a
+ * `/token` leaderboard). That framing is gone in v2; the balances are not —
+ * they migrate at `TOKEN_RULES.legacyTokenDivisor`.
  * The ledger below is still append-only, idempotent and period-bucketed —
  * that is correct engineering for any point economy (audit, dispute,
  * recompute), and it leaves the door open without committing to it.
