@@ -796,11 +796,11 @@ It is inert when the viewer's own gender is `undisclosed`: "people like me"
 cannot mean "people who also declined to say", and narrowing to that group
 would be a worse answer than not narrowing.
 
-**It is Pro, and that is worth a second look.** It sits behind the paywall
-because it is a gender filter and the server gates those together. But it is
-also the one filter people use for safety rather than preference, and safety
-behind a paywall reads differently from convenience behind one. Moving it to
-the free tier is a one-line change on each side if that is the call.
+**It is Pro, deliberately.** It was raised as a question — it is the one filter
+people use for safety rather than preference, and safety behind a paywall reads
+differently from convenience behind one — and the answer was to keep it Pro. It
+is a gender filter, the server gates those together, and splitting one of them
+out would make the paywall's rule harder to explain than it is worth.
 
 ## Countries are a compile-time table, like languages
 
