@@ -108,6 +108,20 @@ export interface TokenRules {
     streakFreeze: number
     /** How many freezes a user may bank at once — a freeze stockpile would make the streak meaningless. */
     maxBankedStreakFreezes: number
+    /**
+     * Price per day to bring a v1 streak back to life, and the ceiling on it.
+     *
+     * `legacyRestore.ts` has always said "`frozenStreak` is what they can buy
+     * back" and there was no way to buy it — the number only reached
+     * `streak.longest`, where it sat as a souvenir. Priced by length because a
+     * long streak is worth more to its owner, and capped because v1's longest
+     * was 446 days and a linear price there would be unreachable.
+     *
+     * At 20 a day the welcome-back bonus alone buys back about twelve days,
+     * which is what a returning user's streak usually was.
+     */
+    streakRestorePerDay: number
+    streakRestoreMax: number
   }
   /**
    * v1 token balances are credited to **earned** token, divided by this.
@@ -180,6 +194,8 @@ export const TOKEN_RULES: TokenRules = {
   sinks: {
     streakFreeze: 200,
     maxBankedStreakFreezes: 2,
+    streakRestorePerDay: 20,
+    streakRestoreMax: 2000,
   },
   legacyTokenDivisor: 100,
   welcomeBackBonus: 250,
@@ -271,4 +287,16 @@ export type TokenSummary = z.infer<typeof tokenSummarySchema>
 export function convertLegacyTokens(balance: number, rules: TokenRules = TOKEN_RULES): number {
   if (!Number.isFinite(balance) || balance <= 0) return 0
   return Math.floor(balance / rules.legacyTokenDivisor)
+}
+
+/**
+ * What it costs to bring a frozen v1 streak back. `0` means there is nothing
+ * to buy — no streak, or one already restored.
+ */
+export function streakRestorePrice(frozenStreak: number, rules = TOKEN_RULES): number {
+  if (!Number.isFinite(frozenStreak) || frozenStreak <= 0) return 0
+  return Math.min(
+    rules.sinks.streakRestoreMax,
+    Math.ceil(frozenStreak) * rules.sinks.streakRestorePerDay,
+  )
 }

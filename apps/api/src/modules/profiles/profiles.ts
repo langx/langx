@@ -81,6 +81,8 @@ export interface Profile {
     frozenStreak: number
     conversationsImported: number
     acknowledgedAt?: Date
+    /** Latch: the frozen streak can be bought back exactly once. */
+    streakRestoredAt?: Date
   }
   deletedAt?: Date
   createdAt: Date

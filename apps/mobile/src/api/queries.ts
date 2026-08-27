@@ -82,6 +82,7 @@ export interface MeProfile {
     frozenStreak: number
     conversationsImported: number
     acknowledgedAt?: string
+    streakRestoredAt?: string
   }
 }
 
@@ -276,6 +277,10 @@ export function usePurchase() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: keys.wallet })
       void queryClient.invalidateQueries({ queryKey: keys.tokens })
+      // The profile too: a streak restore writes `streak` and the
+      // `streakRestoredAt` latch onto it, and without this the offer stays on
+      // screen after being bought — inviting a second tap that can only fail.
+      void queryClient.invalidateQueries({ queryKey: keys.me })
     },
   })
 }

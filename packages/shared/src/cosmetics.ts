@@ -34,6 +34,8 @@ export function findCosmetic(id: string): Cosmetic | undefined {
 
 /** Everything token can be spent on: the freeze plus the cosmetics catalogue. */
 export const STREAK_FREEZE_SKU = 'streakFreeze'
+/** Buys back the streak a returning v1 user had. Available once, if at all. */
+export const STREAK_RESTORE_SKU = 'streakRestore'
 
 export const purchaseSchema = z.object({
   /** `streakFreeze`, or a cosmetic id from `COSMETICS`. */

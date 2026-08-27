@@ -1,9 +1,11 @@
 import {
   ERROR_CODES,
   STREAK_FREEZE_SKU,
+  STREAK_RESTORE_SKU,
   TOKEN_RULES,
   findCosmetic,
   periodKeys,
+  streakRestorePrice,
   utcDayKey,
   type Wallet,
 } from '@langx/shared'
@@ -11,6 +13,7 @@ import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
+import { streakDay } from './streak'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
 export function walletOf(profile: Profile, earned: number): Wallet {
@@ -60,6 +63,8 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
 
   const earned = (await readAggregates(db, userId)).all
 
+  if (sku === STREAK_RESTORE_SKU) return restoreStreak(db, profile, earned)
+
   const isFreeze = sku === STREAK_FREEZE_SKU
   const cosmetic = isFreeze ? undefined : findCosmetic(sku)
   if (!isFreeze && !cosmetic) {
@@ -103,9 +108,21 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
     )
   }
 
-  // Audit only. Negative amount, and `awardTokens` is bypassed on purpose: a spend
-  // must not touch `tokenAggregates`, or buying a frame would drop the buyer down
-  // every leaderboard. The table ranks token earned, not token held.
+  await recordSpend(db, userId, sku, price)
+
+  return { sku, price, wallet: walletOf(updated, earned) }
+}
+
+/**
+ * Audit only. Negative amount, and `awardTokens` is bypassed on purpose: a
+ * spend must not touch `tokenAggregates`, or buying a frame would drop the
+ * buyer down every leaderboard. The table ranks token earned, not token held.
+ *
+ * Written after the balance change, never before: losing this row leaves the
+ * visible state correct and the history incomplete, which is the right way
+ * round.
+ */
+async function recordSpend(db: Db, userId: string, sku: string, price: number): Promise<void> {
   const at = new Date()
   const keys = periodKeys(at)
   await db.collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger).insertOne({
@@ -123,8 +140,6 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
     year: keys.year,
     createdAt: at,
   })
-
-  return { sku, price, wallet: walletOf(updated, earned) }
 }
 
 /** Spends one banked freeze, atomically. `false` means there was none to spend. */
@@ -137,4 +152,63 @@ export async function consumeStreakFreeze(db: Db, userId: string): Promise<boole
       { returnDocument: 'after' },
     )
   return result !== null
+}
+
+/**
+ * Brings a returning v1 user's streak back to life.
+ *
+ * `legacyRestore.ts` has said "`frozenStreak` is what they can buy back" since
+ * it was written, and there was no way to buy it — the number only reached
+ * `streak.longest`, where it sat as a record. So the welcome-back screen could
+ * say "your best was 12 days" and offer nothing.
+ *
+ * Once only, and `restoredFromV1.streakRestoredAt` is the latch — the same
+ * conditional-update pattern `markRestored` and the acknowledgement use. It is
+ * part of the atomic filter, not just checked above it, so two taps cannot
+ * both charge.
+ *
+ * `lastQualifiedDay` is set to **today**: they bought the streak, so it is
+ * alive today and they have to act tomorrow to keep it. Dating it yesterday
+ * would break the streak the moment they close the app, which is a poor thing
+ * to sell someone.
+ */
+async function restoreStreak(db: Db, profile: Profile, earned: number): Promise<PurchaseResult> {
+  const frozen = profile.restoredFromV1?.frozenStreak ?? 0
+  if (!profile.restoredFromV1 || frozen <= 0) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'You have no v1 streak to restore')
+  }
+  if (profile.restoredFromV1.streakRestoredAt) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Your streak has already been restored')
+  }
+
+  const price = streakRestorePrice(frozen)
+  const today = streakDay(profile, new Date())
+
+  const updated = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
+    {
+      _id: profile._id,
+      $expr: { $lte: [{ $add: [{ $ifNull: ['$tokenSpent', 0] }, price] }, earned] },
+      'restoredFromV1.streakRestoredAt': { $exists: false },
+    },
+    {
+      $inc: { tokenSpent: price },
+      $set: {
+        'streak.current': frozen,
+        'streak.longest': Math.max(profile.streak.longest, frozen),
+        'streak.lastQualifiedDay': today,
+        'restoredFromV1.streakRestoredAt': new Date(),
+      },
+    },
+    { returnDocument: 'after' },
+  )
+
+  if (!updated) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `Not enough token — restoring your streak costs ${price}, you have ${earned - (profile.tokenSpent ?? 0)}`,
+    )
+  }
+
+  await recordSpend(db, profile._id, STREAK_RESTORE_SKU, price)
+  return { sku: STREAK_RESTORE_SKU, price, wallet: walletOf(updated, earned) }
 }

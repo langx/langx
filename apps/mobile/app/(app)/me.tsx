@@ -1,10 +1,12 @@
 import {
   COSMETICS,
   STREAK_FREEZE_SKU,
+  STREAK_RESTORE_SKU,
   TOKEN_RULES,
   countryFlag,
   getCountry,
   getLanguage,
+  streakRestorePrice,
   type Gender,
 } from '@langx/shared'
 import { router } from 'expo-router'
@@ -68,6 +70,9 @@ export default function MeScreen() {
 
   const profile = me.data
   const balance = wallet.data?.balance ?? 0
+  const restored = profile.restoredFromV1
+  const restorableStreak = restored && !restored.streakRestoredAt ? restored.frozenStreak : 0
+  const restorePrice = streakRestorePrice(restorableStreak)
   const owned = wallet.data?.owned ?? []
 
   /** Everything on this screen comes from a different query. */
@@ -153,6 +158,30 @@ export default function MeScreen() {
         Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak
         freezes and cosmetics.
       </Text>
+
+      {/*
+        Only ever offered to someone who came back from v1 and has not bought
+        it yet — `restoredFromV1` carries the number and `streakRestoredAt` is
+        the latch. Before this the welcome-back screen could name the streak
+        and offer nothing to do about it.
+      */}
+      {restorableStreak > 0 ? (
+        <View style={styles.storeRow}>
+          <View style={styles.flex}>
+            <Text style={styles.storeName}>Restore your streak</Text>
+            <Text style={styles.storeMeta}>
+              {`Bring back the ${restorableStreak}-day streak you had in v1`}
+            </Text>
+          </View>
+          <Button
+            label={`${restorePrice} tokens`}
+            variant="secondary"
+            style={styles.storeAction}
+            disabled={balance < restorePrice || purchase.isPending}
+            onPress={() => purchase.mutate(STREAK_RESTORE_SKU)}
+          />
+        </View>
+      ) : null}
 
       <View style={styles.storeRow}>
         <View style={styles.flex}>

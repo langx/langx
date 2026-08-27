@@ -1,10 +1,12 @@
 import {
   COSMETICS,
   STREAK_FREEZE_SKU,
+  STREAK_RESTORE_SKU,
   TOKEN_RULES,
   activityScore,
   poolShare,
   shiftDayKey,
+  streakRestorePrice,
   utcDayKey,
   type Leaderboard,
   type Wallet,
@@ -411,6 +413,104 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
   })
 
   describe('token sinks', () => {
+    /**
+     * `legacyRestore.ts` promised this in a comment from the day it was
+     * written — "`frozenStreak` is what they can buy back" — and there was no
+     * way to buy it, so the welcome-back screen could name a streak and offer
+     * nothing to do about it.
+     */
+    describe('restoring a v1 streak', () => {
+      async function stageReturningUser(frozenStreak: number, tokens: number) {
+        const user = await newUser()
+        await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+          { _id: user.userId },
+          {
+            $set: {
+              restoredFromV1: {
+                at: new Date(),
+                tokensCredited: 0,
+                frozenStreak,
+                conversationsImported: 0,
+              },
+            },
+          },
+        )
+        if (tokens > 0) {
+          await awardTokens(handle.db, {
+            userId: user.userId,
+            kind: 'adjustment',
+            amount: tokens,
+            refId: `streak-restore-${user.userId}`,
+          })
+        }
+        return user
+      }
+
+      it('brings the streak back and charges for it by length', async () => {
+        const user = await stageReturningUser(12, 1000)
+        const price = streakRestorePrice(12)
+
+        const response = await buy(user, STREAK_RESTORE_SKU)
+        expect(response.statusCode, response.body).toBe(200)
+        expect(response.json()).toMatchObject({ sku: STREAK_RESTORE_SKU, price })
+
+        const profile = await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .findOne({ _id: user.userId })
+        expect(profile?.streak.current).toBe(12)
+        expect(profile?.streak.longest).toBeGreaterThanOrEqual(12)
+        // Alive today — they bought it, so it does not break the moment they
+        // close the app; keeping it going from tomorrow is on them.
+        expect(profile?.streak.lastQualifiedDay).toBeTruthy()
+        expect((await wallet(user)).spent).toBe(price)
+      })
+
+      it('is a latch — a second attempt is refused, not charged', async () => {
+        const user = await stageReturningUser(10, 2000)
+
+        expect((await buy(user, STREAK_RESTORE_SKU)).statusCode).toBe(200)
+        const spentAfterFirst = (await wallet(user)).spent
+
+        const second = await buy(user, STREAK_RESTORE_SKU)
+        expect(second.statusCode).toBe(400)
+        expect((await wallet(user)).spent).toBe(spentAfterFirst)
+      })
+
+      it('lets exactly one of several simultaneous taps through', async () => {
+        const user = await stageReturningUser(10, 5000)
+
+        const results = await Promise.all(
+          Array.from({ length: 5 }, () => buy(user, STREAK_RESTORE_SKU)),
+        )
+        expect(results.filter((r) => r.statusCode === 200)).toHaveLength(1)
+        expect((await wallet(user)).spent).toBe(streakRestorePrice(10))
+      })
+
+      it('refuses when the balance will not cover it, and changes nothing', async () => {
+        const user = await stageReturningUser(100, 50)
+
+        const response = await buy(user, STREAK_RESTORE_SKU)
+        expect(response.statusCode).toBe(400)
+
+        const profile = await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .findOne({ _id: user.userId })
+        expect(profile?.streak.current).toBe(0)
+        expect((await wallet(user)).spent).toBe(0)
+      })
+
+      it('has nothing to sell someone who never came back from v1', async () => {
+        const user = await newUser()
+        await awardTokens(handle.db, {
+          userId: user.userId,
+          kind: 'adjustment',
+          amount: 5000,
+          refId: `no-v1-${user.userId}`,
+        })
+        expect((await buy(user, STREAK_RESTORE_SKU)).statusCode).toBe(404)
+      })
+    })
+
     it('buys a cosmetic, deducts the balance and leaves the leaderboard untouched', async () => {
       const user = await newUser()
       const frame = COSMETICS.find((c) => c.kind === 'frame')!
