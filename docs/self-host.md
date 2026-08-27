@@ -22,7 +22,7 @@ get a working instance before deciding which paid services they want.
 ## Quick start
 
 ```bash
-git clone https://github.com/langx/langx2 && cd langx2
+git clone https://github.com/langx/langx && cd langx
 pnpm install
 cp .env.example .env      # fill in MONGODB_URI and BETTER_AUTH_SECRET at minimum
 pnpm dev                  # API on :4000, Expo on :8081

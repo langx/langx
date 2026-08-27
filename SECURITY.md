@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-`langx2` is pre-release. Only `main` receives security updates until v2 ships.
+v2 is pre-release. Only `main` receives security updates until v2 ships.
 
 | Component                  | Supported                                     |
 | -------------------------- | --------------------------------------------- |

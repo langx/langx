@@ -8,9 +8,14 @@ iOS, Android and web all come out of one Expo codebase. BSD-3, open source, same
 as v1.
 
 > **Status: pre-release.** v2 is a ground-up rewrite of
-> [`langx-angular`](https://github.com/langx-io) (Ionic/Angular on Appwrite) onto
+> [`langx-angular`](https://github.com/langx/langx-angular) (Ionic/Angular on Appwrite) onto
 > Expo + Fastify + MongoDB Atlas. It ships as an **update to the existing App
 > Store and Play Store listings**, not as a new app.
+
+v2 was written in a separate repository and moved here, because this is where
+the releases and the issue history are. Nothing was dropped in the move: the
+`v1` branch is `main` as it stood beforehand, and the shipped v1 is tagged up
+to `v0.15`.
 
 ## Stack
 

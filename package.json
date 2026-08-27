@@ -1,12 +1,12 @@
 {
-  "name": "langx2",
+  "name": "langx",
   "version": "2.0.0",
   "private": true,
   "description": "LangX v2 \u2014 language exchange app (Expo mobile/web + Fastify API + MongoDB Atlas)",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/langx-io/langx2"
+    "url": "https://github.com/langx/langx"
   },
   "packageManager": "pnpm@10.17.1",
   "engines": {
