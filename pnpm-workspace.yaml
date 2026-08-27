@@ -40,6 +40,9 @@ catalog:
   'socket.io': ^4.8.3
   'socket.io-client': ^4.8.3
 
+  # mobile client
+  '@tanstack/react-query': ^5.90.2
+
   # react / expo (SDK 57)
   react: 19.2.3
   react-dom: 19.2.3

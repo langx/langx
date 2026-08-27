@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "LangX v2 client \u2014 iOS, Android and web from one Expo codebase",
+  "description": "LangX v2 client — iOS, Android and web from one Expo codebase",
   "main": "expo-router/entry",
   "scripts": {
     "dev": "expo start",
@@ -17,12 +17,16 @@
     "@better-auth/expo": "catalog:",
     "@expo/metro-runtime": "~57.0.13",
     "@langx/shared": "workspace:*",
+    "@tanstack/react-query": "catalog:",
     "better-auth": "catalog:",
     "expo": "~57.0.16",
     "expo-constants": "~57.0.14",
+    "expo-device": "~57.0.1",
     "expo-font": "~57.0.1",
+    "expo-image-picker": "~57.0.14",
     "expo-linking": "~57.0.7",
     "expo-network": "~57.0.1",
+    "expo-notifications": "~57.0.15",
     "expo-router": "~57.0.16",
     "expo-secure-store": "~57.0.1",
     "expo-splash-screen": "~57.0.8",
@@ -36,10 +40,10 @@
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
     "react-native-web": "catalog:",
-    "react-native-worklets": "0.10.1"
+    "react-native-worklets": "0.10.1",
+    "socket.io-client": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
     "@types/react": "catalog:",
     "typescript": "catalog:"
   }

@@ -1,0 +1,162 @@
+import type { PeriodType } from '@langx/shared'
+import { router } from 'expo-router'
+import { useState } from 'react'
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useLeaderboard, useXp } from '../../src/api/queries'
+import { Avatar } from '../../src/components/ui/Avatar'
+import { EmptyState } from '../../src/components/ui/EmptyState'
+import { Screen } from '../../src/components/ui/Screen'
+import { colors, font, radius, spacing } from '../../src/lib/theme'
+
+const TABS: { key: PeriodType; label: string }[] = [
+  { key: 'week', label: 'Hafta' },
+  { key: 'month', label: 'Ay' },
+  { key: 'year', label: 'Yıl' },
+  { key: 'all', label: 'Tüm zamanlar' },
+]
+
+const MEDALS = ['🥇', '🥈', '🥉']
+
+export default function LeaderboardScreen() {
+  const [period, setPeriod] = useState<PeriodType>('week')
+  const board = useLeaderboard(period)
+  const xp = useXp()
+
+  const streak = xp.data?.streak
+  const entries = board.data?.entries ?? []
+  const viewer = board.data?.viewer
+
+  return (
+    <Screen fluid>
+      <Text style={styles.title}>Sıralama</Text>
+
+      {streak ? (
+        <View style={styles.streakCard}>
+          <View>
+            <Text style={styles.streakValue}>🔥 {streak.current} gün</Text>
+            <Text style={styles.streakHint}>
+              {streak.qualifiedToday
+                ? 'Bugünü tamamladın. Yarın görüşürüz.'
+                : 'Bugün bir mesaj gönder, serini kaybetme.'}
+            </Text>
+          </View>
+          <Pressable onPress={() => router.push('/(app)/me')}>
+            <Text style={styles.streakXp}>{xp.data?.xp[period] ?? 0} XP</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      <View style={styles.tabs}>
+        {TABS.map((tab) => (
+          <Pressable
+            key={tab.key}
+            onPress={() => setPeriod(tab.key)}
+            style={[styles.tab, period === tab.key && styles.tabActive]}
+          >
+            <Text style={[styles.tabLabel, period === tab.key && styles.tabLabelActive]}>
+              {tab.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {board.isPending ? (
+        <ActivityIndicator style={styles.loading} />
+      ) : (
+        <FlatList
+          data={entries}
+          keyExtractor={(item) => item.userId}
+          contentContainerStyle={styles.list}
+          ListEmptyComponent={
+            <EmptyState
+              emoji="🏆"
+              title="Bu dönem henüz boş"
+              body="Mesaj gönder ve düzeltme yap — XP kazanan ilk kişi sen ol."
+            />
+          }
+          ListFooterComponent={
+            viewer && !viewer.inPage && viewer.rank ? (
+              <View style={styles.viewerRow}>
+                <Text style={styles.rank}>#{viewer.rank}</Text>
+                <Text style={styles.viewerLabel}>Sen</Text>
+                <Text style={styles.xp}>{viewer.xp} XP</Text>
+              </View>
+            ) : null
+          }
+          renderItem={({ item }) => (
+            <Pressable
+              onPress={() => router.push(`/(app)/profile/${item.handle}`)}
+              style={[styles.row, item.isViewer && styles.rowViewer]}
+            >
+              <Text style={styles.rank}>{MEDALS[item.rank - 1] ?? `#${item.rank}`}</Text>
+              <Avatar url={item.avatarUrl} name={item.displayName} size={36} />
+              <View style={styles.body}>
+                <Text style={styles.name} numberOfLines={1}>
+                  {item.displayName}
+                  {item.isViewer ? ' (sen)' : ''}
+                </Text>
+                {item.streak > 0 ? <Text style={styles.streakSmall}>🔥 {item.streak}</Text> : null}
+              </View>
+              <Text style={styles.xp}>{item.xp} XP</Text>
+            </Pressable>
+          )}
+        />
+      )}
+    </Screen>
+  )
+}
+
+const styles = StyleSheet.create({
+  title: { ...font.title, color: colors.text, paddingTop: spacing.md },
+  streakCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: spacing.md,
+    padding: spacing.md,
+  },
+  streakValue: { ...font.heading, color: colors.streak },
+  streakHint: { ...font.caption, color: colors.textMuted, marginTop: 2 },
+  streakXp: { ...font.heading, color: colors.text },
+  tabs: { flexDirection: 'row', gap: spacing.xs, marginTop: spacing.md },
+  tab: {
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+  },
+  tabActive: { backgroundColor: colors.primary, borderColor: colors.primary },
+  tabLabel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  tabLabelActive: { color: colors.primaryText },
+  loading: { marginTop: spacing.xxl },
+  list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  row: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  rowViewer: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.sm,
+  },
+  rank: { ...font.body, color: colors.textMuted, minWidth: 36 },
+  body: { flex: 1 },
+  name: { ...font.body, color: colors.text, fontWeight: '600' },
+  streakSmall: { ...font.caption, color: colors.streak },
+  xp: { ...font.body, color: colors.text, fontWeight: '700' },
+  viewerRow: {
+    alignItems: 'center',
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
+  },
+  viewerLabel: { ...font.body, color: colors.text, flex: 1, fontWeight: '600' },
+})
