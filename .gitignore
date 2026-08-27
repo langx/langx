@@ -26,6 +26,12 @@ yarn-error.log*
 .vscode/*
 !.vscode/extensions.json
 
+# Signing keys. `apps/mobile/android/` is ignored already, but a keystore
+# copied anywhere else in a public repo is a lost app, not a lost file: Play
+# will not accept an update signed by a different key.
+*.keystore
+*.jks
+
 # FCM Android client config. Not a secret in the usual sense, but it is
 # instance-specific and this repo is public — point GOOGLE_SERVICES_JSON at it.
 google-services.json
