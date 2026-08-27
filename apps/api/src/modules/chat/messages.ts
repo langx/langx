@@ -32,7 +32,11 @@ async function recordMessage(
     { _id: conversation._id },
     {
       $set: {
-        lastMessage: { body: message.body, senderId: message.senderId, createdAt: message.createdAt },
+        lastMessage: {
+          body: message.body,
+          senderId: message.senderId,
+          createdAt: message.createdAt,
+        },
         updatedAt: message.createdAt,
         bothSpoke,
       },
@@ -186,7 +190,10 @@ export async function listConversations(
   const filter: Document = { participants: userId }
   if (query.cursor) {
     const { date, id } = decodeDateIdCursor(query.cursor)
-    filter.$or = [{ 'lastMessage.createdAt': { $lt: date } }, { 'lastMessage.createdAt': date, _id: { $lt: id } }]
+    filter.$or = [
+      { 'lastMessage.createdAt': { $lt: date } },
+      { 'lastMessage.createdAt': date, _id: { $lt: id } },
+    ]
   }
 
   const page = await conversations
@@ -198,7 +205,8 @@ export async function listConversations(
   const hasMore = page.length > query.limit
   const items = hasMore ? page.slice(0, query.limit) : page
   const last = items.at(-1)
-  const nextCursor = hasMore && last ? encodeDateIdCursor(last.lastMessage.createdAt, last._id) : null
+  const nextCursor =
+    hasMore && last ? encodeDateIdCursor(last.lastMessage.createdAt, last._id) : null
 
   return { items, nextCursor }
 }

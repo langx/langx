@@ -60,7 +60,12 @@ export const MESSAGE_PAGE_SIZE_MAX = 100
 /** `GET /conversations/:id/messages` — cursor pages backwards into history, newest page first. */
 export const listMessagesQuerySchema = z.object({
   cursor: z.string().optional(),
-  limit: z.coerce.number().int().min(1).max(MESSAGE_PAGE_SIZE_MAX).default(MESSAGE_PAGE_SIZE_DEFAULT),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(MESSAGE_PAGE_SIZE_MAX)
+    .default(MESSAGE_PAGE_SIZE_DEFAULT),
 })
 export type ListMessagesQuery = z.infer<typeof listMessagesQuerySchema>
 

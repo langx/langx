@@ -87,12 +87,17 @@ describe('processRevenueCatWebhook', () => {
     const second = await processRevenueCatWebhook(handle.db, event)
     expect(second.processed).toBe(false)
 
-    const count = await handle.db.collection(COLLECTIONS.subscriptions).countDocuments({ eventId: 'evt-replay' })
+    const count = await handle.db
+      .collection(COLLECTIONS.subscriptions)
+      .countDocuments({ eventId: 'evt-replay' })
     expect(count).toBe(1)
   })
 
   it('EXPIRATION revokes Pro immediately', async () => {
-    await insertProfile({ ...minimalProfile('expiring-user'), entitlement: { tier: 'pro', updatedAt: new Date() } })
+    await insertProfile({
+      ...minimalProfile('expiring-user'),
+      entitlement: { tier: 'pro', updatedAt: new Date() },
+    })
 
     await processRevenueCatWebhook(handle.db, {
       id: 'evt-expire',

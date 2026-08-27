@@ -21,7 +21,9 @@ describe('parseServiceAccountJson', () => {
       /client_email or private_key/,
     )
     expect(() =>
-      parseServiceAccountJson(JSON.stringify({ client_email: 'svc@project.iam.gserviceaccount.com' })),
+      parseServiceAccountJson(
+        JSON.stringify({ client_email: 'svc@project.iam.gserviceaccount.com' }),
+      ),
     ).toThrow(/client_email or private_key/)
   })
 })

@@ -42,7 +42,15 @@ describe('Faz 1 — Better Auth: sign-up → verify → sign-in → sign-out', (
 
     const revenueCat = createRevenueCatClientFromEnv(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
     await app.ready()
 
     // A MongoMemoryReplSet's very first transaction commit is prone to a

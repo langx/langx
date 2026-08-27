@@ -33,7 +33,9 @@ export function createGoogleTranslateProvider(config: GoogleTranslateConfig): Tr
         }),
       })
       if (!response.ok) {
-        throw new Error(`Google Translate request failed (${response.status}): ${await response.text()}`)
+        throw new Error(
+          `Google Translate request failed (${response.status}): ${await response.text()}`,
+        )
       }
 
       const body = (await response.json()) as TranslateTextResponse

@@ -36,7 +36,15 @@ describe('Faz 0 — boot', () => {
 
     const revenueCat = createRevenueCatClientFromEnv(env)
 
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
     await app.ready()
   })
 

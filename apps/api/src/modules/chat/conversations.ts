@@ -83,7 +83,10 @@ export async function startConversation(
   // what still catches the genuine race (both sides messaging at once).
   const existing = await conversations.findOne({ pairKey })
   if (existing) {
-    throw new ApiError(ERROR_CODES.CONVERSATION_EXISTS, 'A conversation with this user already exists')
+    throw new ApiError(
+      ERROR_CODES.CONVERSATION_EXISTS,
+      'A conversation with this user already exists',
+    )
   }
 
   const quota = await consumeQuota(db, viewerId, effectiveTier(viewer), 'initiations')
@@ -117,7 +120,10 @@ export async function startConversation(
       // accepts this as the rare cost of the true concurrent-race case
       // (both sides messaging each other at the same instant), rather than
       // adding a second round-trip to every request to guard against it.
-      throw new ApiError(ERROR_CODES.CONVERSATION_EXISTS, 'A conversation with this user already exists')
+      throw new ApiError(
+        ERROR_CODES.CONVERSATION_EXISTS,
+        'A conversation with this user already exists',
+      )
     }
     throw error
   }

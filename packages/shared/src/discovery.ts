@@ -26,26 +26,32 @@ export const ONLINE_WINDOW_MS = 5 * 60 * 1000
  * sending any of these gets `403 UPGRADE_REQUIRED`, not a silently-ignored
  * parameter — see "Paywall kuralları" in the plan.
  */
-export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'country', 'minLevel', 'ageMin', 'ageMax'] as const
+export const DISCOVERY_PRO_FILTER_KEYS = [
+  'gender',
+  'country',
+  'minLevel',
+  'ageMin',
+  'ageMax',
+] as const
 
 export const discoveryQuerySchema = z
   .object({
     sort: discoverySortSchema.default('recommended'),
     /** Opaque token from the previous page's `nextCursor`. Never parse it client-side. */
     cursor: z.string().optional(),
-    limit: z.coerce.number().int().min(1).max(DISCOVERY_PAGE_SIZE_MAX).default(DISCOVERY_PAGE_SIZE_DEFAULT),
+    limit: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(DISCOVERY_PAGE_SIZE_MAX)
+      .default(DISCOVERY_PAGE_SIZE_DEFAULT),
     /** Free filter: narrow to one specific language out of the viewer's own learning list. */
     targetLanguage: languageCodeSchema.optional(),
     /** Free filter: only profiles active within {@link ONLINE_WINDOW_MS}. */
     online: z.coerce.boolean().optional(),
     // Pro-only from here down.
     gender: genderSchema.optional(),
-    country: z
-      .string()
-      .trim()
-      .min(1)
-      .max(2)
-      .optional(),
+    country: z.string().trim().min(1).max(2).optional(),
     minLevel: cefrLevelSchema.optional(),
     ageMin: z.coerce.number().int().min(18).optional(),
     ageMax: z.coerce.number().int().min(18).optional(),
@@ -67,7 +73,9 @@ export const discoveryItemSchema = z.object({
   gender: genderSchema,
   age: z.number().int(),
   nativeLanguages: z.array(z.object({ code: languageCodeSchema })),
-  learning: z.array(z.object({ code: languageCodeSchema, level: cefrLevelSchema, priority: z.number() })),
+  learning: z.array(
+    z.object({ code: languageCodeSchema, level: cefrLevelSchema, priority: z.number() }),
+  ),
   isOnline: z.boolean(),
   streak: z.object({ current: z.number().int() }),
 })

@@ -30,7 +30,9 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
         { headers: { authorization: `Bearer ${secretApiKey}` } },
       )
       if (!response.ok) {
-        throw new Error(`RevenueCat subscriber lookup failed (${response.status}): ${await response.text()}`)
+        throw new Error(
+          `RevenueCat subscriber lookup failed (${response.status}): ${await response.text()}`,
+        )
       }
 
       const body = (await response.json()) as RevenueCatSubscriberResponse

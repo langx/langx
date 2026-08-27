@@ -34,7 +34,11 @@ describe('Faz 4 — starting a conversation', () => {
   let emailSender: CapturingEmailSender
 
   async function newUser(email: string, profileOverrides: Record<string, unknown> = {}) {
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'Test',
+    })
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -97,7 +101,15 @@ describe('Faz 4 — starting a conversation', () => {
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
     const revenueCat = createRevenueCatClientFromEnv(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
     await app.ready()
 
     // Same first-transaction warm-up as the other Faz 2/3 suites.
@@ -212,9 +224,7 @@ describe('Faz 4 — starting a conversation', () => {
     const viewer = await newUser('quota-race-viewer@example.com')
     const recipients = await newUsers(10, 'quota-race-recipient')
 
-    const responses = await Promise.all(
-      recipients.map((r) => startConversation(viewer, r.userId)),
-    )
+    const responses = await Promise.all(recipients.map((r) => startConversation(viewer, r.userId)))
     const succeeded = responses.filter((r) => r.statusCode === 201)
     const quotaBlocked = responses.filter((r) => r.statusCode === 402)
     expect(succeeded.length).toBe(5)
@@ -229,9 +239,7 @@ describe('Faz 4 — starting a conversation', () => {
     await makePro(viewer.userId)
     const recipients = await newUsers(10, 'quota-pro-recipient')
 
-    const responses = await Promise.all(
-      recipients.map((r) => startConversation(viewer, r.userId)),
-    )
+    const responses = await Promise.all(recipients.map((r) => startConversation(viewer, r.userId)))
     expect(responses.every((r) => r.statusCode === 201)).toBe(true)
   })
 
@@ -280,7 +288,9 @@ describe('Faz 4 — starting a conversation', () => {
       }>()
       expect(afterBody.initiations).toMatchObject({ limit: 5, remaining: 0 })
       expect(afterBody.initiations.nextAvailableAt).not.toBeNull()
-      expect(new Date(afterBody.initiations.nextAvailableAt ?? '').getTime()).toBeGreaterThan(Date.now())
+      expect(new Date(afterBody.initiations.nextAvailableAt ?? '').getTime()).toBeGreaterThan(
+        Date.now(),
+      )
       // Sending conversations never touches the translation bucket.
       expect(afterBody.translations).toMatchObject({ limit: 20, remaining: 20 })
     })

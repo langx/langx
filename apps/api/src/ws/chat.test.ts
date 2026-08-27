@@ -29,7 +29,11 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
 }
 
 /** Waits for a named event once, rejecting if it doesn't arrive in time — used everywhere below instead of a bare `on` + manual timer. */
-function waitForEvent<T = unknown>(socket: ClientSocket, event: string, timeoutMs = 2000): Promise<T> {
+function waitForEvent<T = unknown>(
+  socket: ClientSocket,
+  event: string,
+  timeoutMs = 2000,
+): Promise<T> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`timed out waiting for "${event}"`)), timeoutMs)
     socket.once(event, (payload: T) => {
@@ -48,7 +52,11 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
   const openSockets: ClientSocket[] = []
 
   async function newUser(email: string, profileOverrides: Record<string, unknown> = {}) {
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'Test',
+    })
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -108,7 +116,15 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
     const revenueCat = createRevenueCatClientFromEnv(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
 
     // A real listening socket, not `app.ready()` — Socket.io needs an actual
     // HTTP upgrade handshake, which `inject()`'s in-memory dispatch can't do.

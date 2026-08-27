@@ -9,7 +9,12 @@ export const translationRoutes: FastifyPluginAsyncZod = async (app) => {
     '/translate',
     { preHandler: requireVerifiedEmail, schema: { body: translateRequestSchema } },
     async (request, reply) => {
-      const result = await translateText(app.mongo.db, app.translation, request.userId, request.body)
+      const result = await translateText(
+        app.mongo.db,
+        app.translation,
+        request.userId,
+        request.body,
+      )
       return reply.send(result)
     },
   )

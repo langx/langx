@@ -62,7 +62,15 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
     const revenueCat = createRevenueCatClientFromEnv(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
     await app.ready()
 
     // Same first-transaction warm-up as auth.test.ts — see its comment for why.
@@ -349,7 +357,15 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       const storage = createStorageProvider(env)
       const translation = createTranslationProvider(env)
       const revenueCat = createRevenueCatClientFromEnv(env)
-      configuredApp = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+      configuredApp = await buildApp({
+        env,
+        client: handle.client,
+        db: handle.db,
+        auth,
+        storage,
+        translation,
+        revenueCat,
+      })
       await configuredApp.ready()
     })
 

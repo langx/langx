@@ -27,6 +27,9 @@ catalogs:
     '@fastify/rate-limit':
       specifier: ^11.2.0
       version: 11.2.0
+    '@types/node':
+      specifier: ^24.3.0
+      version: 24.13.3
     '@types/react':
       specifier: ~19.2.2
       version: 19.2.18
@@ -181,7 +184,7 @@ importers:
         version: 4.4.3
     devDependencies:
       '@types/node':
-        specifier: ^24.3.0
+        specifier: 'catalog:'
         version: 24.13.3
       esbuild:
         specifier: 'catalog:'
@@ -280,6 +283,9 @@ importers:
         specifier: 0.10.1
         version: 0.10.1(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(react-native@0.86.2(@babel/core@7.29.7)(@react-native/metro-config@0.87.1(@babel/core@7.29.7))(@types/react@19.2.18)(react@19.2.3))(react@19.2.3)
     devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.13.3
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.18

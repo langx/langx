@@ -6,10 +6,7 @@ import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
-import type {
-  RevenueCatClient,
-  SubscriberEntitlement,
-} from '../modules/billing/revenueCatClient'
+import type { RevenueCatClient, SubscriberEntitlement } from '../modules/billing/revenueCatClient'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -44,7 +41,11 @@ describe('Faz 7 — billing', () => {
   let fakeRevenueCat: FakeRevenueCatClient
 
   async function newUser(email: string): Promise<SignedUpUser> {
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'Test',
+    })
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',

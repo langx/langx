@@ -2,7 +2,11 @@ import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
 import { connectToDatabase, type DbHandle } from '../../db/client'
-import type { TranslateInput, TranslateResult, TranslationProvider } from '../../translation/TranslationProvider'
+import type {
+  TranslateInput,
+  TranslateResult,
+  TranslationProvider,
+} from '../../translation/TranslationProvider'
 import type { Profile } from '../profiles/profiles'
 import { translateText } from './translate'
 
@@ -119,7 +123,10 @@ describe('translateText', () => {
     const provider = new CountingFakeProvider()
 
     for (let i = 0; i < 20; i++) {
-      await translateText(handle.db, provider, 'quota-user', { text: `phrase ${i}`, targetLang: 'tr' })
+      await translateText(handle.db, provider, 'quota-user', {
+        text: `phrase ${i}`,
+        targetLang: 'tr',
+      })
     }
 
     await expect(

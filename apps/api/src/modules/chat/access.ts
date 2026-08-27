@@ -42,7 +42,8 @@ export async function assertConversationAccess(
       { blockerId: otherId, blockedId: userId },
     ],
   })
-  if (blocked) throw new ApiError(ERROR_CODES.BLOCKED, 'Cannot access a conversation with a blocked user')
+  if (blocked)
+    throw new ApiError(ERROR_CODES.BLOCKED, 'Cannot access a conversation with a blocked user')
 
   return conversation
 }

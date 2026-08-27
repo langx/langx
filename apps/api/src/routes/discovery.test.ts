@@ -35,7 +35,11 @@ describe('Faz 3 — discovery aggregation', () => {
   let emailSender: CapturingEmailSender
 
   async function newUser(email: string, profileOverrides: Record<string, unknown> = {}) {
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'Test',
+    })
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -82,7 +86,15 @@ describe('Faz 3 — discovery aggregation', () => {
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
     const revenueCat = createRevenueCatClientFromEnv(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
     await app.ready()
 
     // Same first-transaction warm-up as auth.test.ts / profiles.test.ts.
@@ -269,7 +281,10 @@ describe('Faz 3 — discovery aggregation', () => {
       const viewer = await newUser('free-filter-viewer@example.com')
       const response = await discover(viewer, 'gender=female')
       expect(response.statusCode).toBe(403)
-      expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED', feature: 'advancedFilters' })
+      expect(response.json()).toMatchObject({
+        code: 'UPGRADE_REQUIRED',
+        feature: 'advancedFilters',
+      })
     })
 
     it('lets a Pro user filter by gender, country and age range', async () => {

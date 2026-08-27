@@ -9,7 +9,11 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn } from '../testSupport/authFlow'
-import type { TranslateInput, TranslateResult, TranslationProvider } from '../translation/TranslationProvider'
+import type {
+  TranslateInput,
+  TranslateResult,
+  TranslationProvider,
+} from '../translation/TranslationProvider'
 
 const PASSWORD = 'correct horse battery staple'
 
@@ -17,7 +21,10 @@ class FakeTranslationProvider implements TranslationProvider {
   calls = 0
   translate(input: TranslateInput): Promise<TranslateResult> {
     this.calls++
-    return Promise.resolve({ translatedText: `[${input.targetLang}] ${input.text}`, sourceLang: 'en' })
+    return Promise.resolve({
+      translatedText: `[${input.targetLang}] ${input.text}`,
+      sourceLang: 'en',
+    })
   }
 }
 
@@ -41,7 +48,11 @@ describe('POST /translate', () => {
   let fakeProvider: FakeTranslationProvider
 
   async function newUser(email: string) {
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'Test',
+    })
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',

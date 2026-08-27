@@ -29,8 +29,7 @@ type AppServer = SocketIOServer<
 >
 
 type AckResponse =
-  | { ok: true; data?: unknown }
-  | { ok: false; error: { code: string; message: string } }
+  { ok: true; data?: unknown } | { ok: false; error: { code: string; message: string } }
 type Ack = ((response: AckResponse) => void) | undefined
 
 function errorPayload(error: unknown): { code: string; message: string } {
@@ -153,7 +152,8 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then(({ conversationId, isTyping }) =>
           assertConversationAccess(app.mongo.db, conversationId, userId).then((conversation) => {
             const otherId = conversation.participants.find((id) => id !== userId)
-            if (otherId) io.to(userRoom(otherId)).emit('typing', { conversationId, userId, isTyping })
+            if (otherId)
+              io.to(userRoom(otherId)).emit('typing', { conversationId, userId, isTyping })
           }),
         )
         .catch(() => undefined)

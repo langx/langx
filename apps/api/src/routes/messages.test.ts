@@ -33,7 +33,11 @@ describe('Faz 5 — conversation/message history REST', () => {
   let emailSender: CapturingEmailSender
 
   async function newUser(email: string, profileOverrides: Record<string, unknown> = {}) {
-    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'Test' })
+    const user = await signUpAndSignIn(app, emailSender, {
+      email,
+      password: PASSWORD,
+      name: 'Test',
+    })
     const response = await app.inject({
       method: 'POST',
       url: '/profiles',
@@ -79,7 +83,15 @@ describe('Faz 5 — conversation/message history REST', () => {
     const storage = createStorageProvider(env)
     const translation = createTranslationProvider(env)
     const revenueCat = createRevenueCatClientFromEnv(env)
-    app = await buildApp({ env, client: handle.client, db: handle.db, auth, storage, translation, revenueCat })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage,
+      translation,
+      revenueCat,
+    })
     await app.ready()
 
     for (let attempt = 1; attempt <= 5; attempt++) {
@@ -144,7 +156,10 @@ describe('Faz 5 — conversation/message history REST', () => {
       headers: { cookie: a.cookie },
     })
     expect(response.statusCode, response.body).toBe(200)
-    const body = response.json<{ items: { body: string; type: string }[]; nextCursor: string | null }>()
+    const body = response.json<{
+      items: { body: string; type: string }[]
+      nextCursor: string | null
+    }>()
     expect(body.items).toHaveLength(1)
     expect(body.items[0]).toMatchObject({ body: 'the very first message', type: 'text' })
     expect(body.nextCursor).toBeNull()
@@ -170,7 +185,9 @@ describe('Faz 5 — conversation/message history REST', () => {
     const b = await newUser('blocked-history-b@example.com')
     const conversation = await startConversation(a, b.userId, 'before the block')
 
-    await handle.db.collection(COLLECTIONS.blocks).insertOne({ blockerId: a.userId, blockedId: b.userId })
+    await handle.db
+      .collection(COLLECTIONS.blocks)
+      .insertOne({ blockerId: a.userId, blockedId: b.userId })
 
     const response = await app.inject({
       method: 'GET',

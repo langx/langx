@@ -38,7 +38,10 @@ export interface WebhookResult {
  * already handled — return early without touching `profiles.entitlement` a
  * second time. Only after a clean insert does entitlement change.
  */
-export async function processRevenueCatWebhook(db: Db, event: RevenueCatEvent): Promise<WebhookResult> {
+export async function processRevenueCatWebhook(
+  db: Db,
+  event: RevenueCatEvent,
+): Promise<WebhookResult> {
   const record: SubscriptionRecord = {
     eventId: event.id,
     userId: event.app_user_id,

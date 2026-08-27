@@ -66,7 +66,9 @@ async function fetchAccessToken(account: GoogleServiceAccount): Promise<AccessTo
     body: new URLSearchParams({ grant_type: GRANT_TYPE, assertion }),
   })
   if (!response.ok) {
-    throw new Error(`Google OAuth2 token exchange failed (${response.status}): ${await response.text()}`)
+    throw new Error(
+      `Google OAuth2 token exchange failed (${response.status}): ${await response.text()}`,
+    )
   }
   const body = (await response.json()) as { access_token: string; expires_in: number }
   return { token: body.access_token, expiresAt: Date.now() + body.expires_in * 1000 }
