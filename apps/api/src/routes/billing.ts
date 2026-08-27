@@ -22,7 +22,11 @@ export const billingRoutes: FastifyPluginAsyncZod = async (app) => {
         throw new ApiError(ERROR_CODES.UNAUTHENTICATED, 'Invalid webhook credentials')
       }
 
-      const result = await processRevenueCatWebhook(app.mongo.db, request.body.event)
+      const result = await processRevenueCatWebhook(
+        app.mongo.db,
+        request.body.event,
+        app.revenueCat,
+      )
       return reply.send(result)
     },
   )

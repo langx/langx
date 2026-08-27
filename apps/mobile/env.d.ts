@@ -12,6 +12,19 @@ declare global {
   const process: {
     env: {
       readonly EXPO_PUBLIC_API_URL?: string
+      /**
+       * RevenueCat SDK keys. Public by design — they identify the app to
+       * RevenueCat and are compiled into the bundle; the secret key that can
+       * read and write subscriber records is a server-only variable and must
+       * never appear under this prefix.
+       *
+       * The per-platform pair is what a released build uses. The Test Store
+       * key is a single key covering both platforms, and is all this project
+       * has until real App Store / Play configurations exist.
+       */
+      readonly EXPO_PUBLIC_REVENUECAT_IOS_KEY?: string
+      readonly EXPO_PUBLIC_REVENUECAT_ANDROID_KEY?: string
+      readonly EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY?: string
     }
   }
 }

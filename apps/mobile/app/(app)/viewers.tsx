@@ -5,6 +5,7 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, spacing } from '../../src/lib/theme'
 
 export default function ViewersScreen() {
@@ -30,7 +31,7 @@ export default function ViewersScreen() {
           {viewers.data.total > 0 ? (
             <Button
               label="See who they are"
-              onPress={() => router.push('/(app)/paywall')}
+              onPress={() => openPaywall('profileViewerIdentities')}
               style={styles.cta}
             />
           ) : null}

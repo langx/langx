@@ -5,7 +5,7 @@ interface ChipProps {
   label: string
   selected?: boolean
   onPress?: () => void
-  tone?: 'default' | 'accent' | 'streak' | 'pro'
+  tone?: 'default' | 'accent' | 'streak' | 'pro' | 'proPlus'
 }
 
 const TONE = {
@@ -13,6 +13,7 @@ const TONE = {
   accent: colors.accent,
   streak: colors.streak,
   pro: colors.pro,
+  proPlus: colors.proPlus,
 } as const
 
 /**

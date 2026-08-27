@@ -20,6 +20,7 @@ import {
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { days } from '../../../src/lib/format'
@@ -140,7 +141,7 @@ export default function ProfileScreen() {
           {user.streak.current > 0 ? (
             <Chip label={`🔥 ${days(user.streak.current)}`} tone="streak" />
           ) : null}
-          {user.tier === 'pro' ? <Chip label="PRO" tone="pro" selected /> : null}
+          <TierBadge tier={user.tier} />
         </View>
       </View>
 

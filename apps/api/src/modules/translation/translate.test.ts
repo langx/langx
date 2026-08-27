@@ -1,3 +1,4 @@
+import type { PlanTier } from '@langx/shared'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { COLLECTIONS } from '../../db/collections'
@@ -22,7 +23,7 @@ class CountingFakeProvider implements TranslationProvider {
   }
 }
 
-function minimalProfile(id: string, tier: 'free' | 'pro'): Profile {
+function minimalProfile(id: string, tier: PlanTier): Profile {
   const now = new Date()
   return {
     _id: id,

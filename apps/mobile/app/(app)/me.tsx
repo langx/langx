@@ -12,6 +12,7 @@ import {
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import {
+  useEffectiveTier,
   useIsPro,
   useMe,
   usePurchase,
@@ -21,10 +22,12 @@ import {
   useTokens,
 } from '../../src/api/queries'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
+import { TierBadge } from '../../src/components/TierBadge'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
+import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
 /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
@@ -59,6 +62,7 @@ export default function MeScreen() {
   // Above the early return: hooks cannot be called conditionally, and putting
   // this below it renders nothing at all.
   const isPro = useIsPro()
+  const tier = useEffectiveTier()
 
   if (me.isPending || !me.data) {
     return (
@@ -95,7 +99,7 @@ export default function MeScreen() {
           <Chip label={String(new Date().getFullYear() - profile.birthYear)} />
           {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
           {profile.gender !== 'undisclosed' ? <Chip label={GENDER_LABELS[profile.gender]} /> : null}
-          {isPro ? <Chip label="PRO" tone="pro" selected /> : null}
+          <TierBadge tier={tier} />
         </View>
       </View>
 
@@ -122,10 +126,7 @@ export default function MeScreen() {
       </Pressable>
 
       {!isPro ? (
-        <Pressable
-          style={[styles.card, styles.proCard]}
-          onPress={() => router.push('/(app)/paywall')}
-        >
+        <Pressable style={[styles.card, styles.proCard]} onPress={() => openPaywall()}>
           <View style={styles.flex}>
             <Text style={styles.proTitle}>LangX Pro</Text>
             <Text style={styles.cardBody}>

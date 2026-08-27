@@ -2,7 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { MINIMUM_AGE, birthYearSchema, meetsMinimumAge } from './age'
 import { LANGUAGE_LEVELS, levelRank } from './level'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
-import { PLAN_LIMITS, PRO_FEATURES, effectivePlanTier, hasFeature, quotaLimit } from './limits'
+import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
+import {
+  PLAN_LIMITS,
+  PLAN_TIERS,
+  PRO_FEATURES,
+  PRO_PLUS_FEATURES,
+  effectivePlanTier,
+  hasFeature,
+  isPaidTier,
+  quotaLimit,
+} from './limits'
 import {
   TOKEN_RULES,
   activityScore,
@@ -38,11 +48,12 @@ describe('plan limits', () => {
     expect(quotaLimit('pro', 'initiations')).toBeNull()
   })
 
-  it('leaves corrections unlimited on both tiers', () => {
+  it('leaves corrections unlimited on every tier', () => {
     // Rate-limiting corrections would shrink the value free users create for
     // Pro users. If this ever changes it is a product decision, not a tweak.
-    expect(PLAN_LIMITS.free.correctionsPer24h).toBeNull()
-    expect(PLAN_LIMITS.pro.correctionsPer24h).toBeNull()
+    for (const tier of PLAN_TIERS) {
+      expect(PLAN_LIMITS[tier].correctionsPer24h).toBeNull()
+    }
   })
 
   /** Iterates the real list rather than retyping it — a fourth feature added to
@@ -54,6 +65,109 @@ describe('plan limits', () => {
       expect(hasFeature('free', feature)).toBe(false)
       expect(hasFeature('pro', feature)).toBe(true)
     }
+  })
+
+  it('gates every Pro+ capability behind Pro+ — Pro does not get them', () => {
+    expect(PRO_PLUS_FEATURES.length).toBeGreaterThan(0)
+    for (const feature of PRO_PLUS_FEATURES) {
+      expect(hasFeature('free', feature)).toBe(false)
+      expect(hasFeature('pro', feature)).toBe(false)
+      expect(hasFeature('pro_plus', feature)).toBe(true)
+    }
+  })
+
+  /**
+   * The packaging promise, asserted rather than trusted: Pro+ is Pro plus two
+   * flags. Written as a comparison of the real rows so that giving Pro+ a
+   * *worse* value than Pro anywhere — the easy mistake when hand-copying a
+   * table — fails here instead of shipping.
+   */
+  it('makes Pro+ a strict superset of Pro', () => {
+    for (const feature of PRO_FEATURES) {
+      expect(hasFeature('pro_plus', feature)).toBe(true)
+    }
+    expect(PLAN_LIMITS.pro_plus.initiationsPer24h).toBe(PLAN_LIMITS.pro.initiationsPer24h)
+    expect(PLAN_LIMITS.pro_plus.translationsPer24h).toBe(PLAN_LIMITS.pro.translationsPer24h)
+    expect(PLAN_LIMITS.pro_plus.mediaPer24h).toBe(PLAN_LIMITS.pro.mediaPer24h)
+  })
+
+  /**
+   * Two call sites read `PLAN_LIMITS.free.maxPhotos` regardless of the viewer's
+   * tier. That is only correct while the allowance is uniform, so the
+   * assumption is pinned here rather than left as a comment.
+   */
+  it('keeps the photo allowance identical on every tier', () => {
+    for (const tier of PLAN_TIERS) {
+      expect(PLAN_LIMITS[tier].maxPhotos).toBe(PLAN_LIMITS.free.maxPhotos)
+    }
+  })
+
+  it('counts every tier but free as paid', () => {
+    expect(isPaidTier('free')).toBe(false)
+    expect(isPaidTier('pro')).toBe(true)
+    expect(isPaidTier('pro_plus')).toBe(true)
+  })
+})
+
+/**
+ * Pro+ products deliberately grant `pro` as well as `pro_plus`, so almost
+ * every real payload names both and something has to pick.
+ */
+describe('tierFromEntitlementIds', () => {
+  it('prefers Pro+ when a subscriber holds both', () => {
+    expect(tierFromEntitlementIds(['pro', 'pro_plus'])).toBe('pro_plus')
+    expect(tierFromEntitlementIds(['pro_plus', 'pro'])).toBe('pro_plus')
+  })
+
+  it('reads a lone entitlement', () => {
+    expect(tierFromEntitlementIds(['pro'])).toBe('pro')
+    expect(tierFromEntitlementIds(['pro_plus'])).toBe('pro_plus')
+  })
+
+  /** Absent, empty and null all mean "this event tells us nothing". */
+  it('returns null when there is nothing to read', () => {
+    expect(tierFromEntitlementIds(undefined)).toBeNull()
+    expect(tierFromEntitlementIds(null)).toBeNull()
+    expect(tierFromEntitlementIds([])).toBeNull()
+  })
+
+  /** An entitlement configured in the dashboard before the code knows it must
+   *  leave the user where they are, not throw the webhook into a retry loop. */
+  it('ignores entitlements it does not sell', () => {
+    expect(tierFromEntitlementIds(['something_new'])).toBeNull()
+    expect(tierFromEntitlementIds(['something_new', 'pro'])).toBe('pro')
+  })
+})
+
+/**
+ * `PACKAGES` mirrors identifiers typed into the RevenueCat dashboard, which no
+ * compiler can see — so the mirror's own invariants are pinned here instead.
+ */
+describe('PACKAGES', () => {
+  it('sells only paid tiers — a free package is a configuration mistake', () => {
+    for (const definition of Object.values(PACKAGES)) {
+      expect(isPaidTier(definition.tier)).toBe(true)
+    }
+  })
+
+  it('matches the dashboard identifiers this project configured', () => {
+    // The three reserved ids came with the project; Pro+ needed custom ones
+    // because a reserved id can be used once per offering. Renaming a package
+    // in the dashboard must come here too, or it stops rendering on the
+    // paywall (deliberately — see getOffers).
+    expect(Object.keys(PACKAGES).sort()).toEqual([
+      '$rc_annual',
+      '$rc_lifetime',
+      '$rc_monthly',
+      'pro_plus_monthly',
+      'pro_plus_yearly',
+    ])
+  })
+
+  it('resolves known ids and rejects unknown ones', () => {
+    expect(packageDefinition('$rc_monthly')).toEqual({ tier: 'pro', period: 'monthly' })
+    expect(packageDefinition('pro_plus_yearly')).toEqual({ tier: 'pro_plus', period: 'yearly' })
+    expect(packageDefinition('$rc_six_month')).toBeNull()
   })
 })
 
@@ -90,6 +204,29 @@ describe('effectivePlanTier', () => {
   /** An unreadable date is not evidence of expiry — never downgrade a payer. */
   it('keeps Pro when the expiry cannot be parsed', () => {
     expect(effectivePlanTier('pro', 'not-a-date')).toBe('pro')
+  })
+
+  /**
+   * The regression this guard was rewritten for. The original read
+   * `tier !== 'pro'` and returned early, which with a third tier meant an
+   * expired Pro+ subscription **never dropped at all** — the one failure mode
+   * the whole function exists to prevent, reappearing on the new tier.
+   */
+  it('drops an expired Pro+ to free, exactly like Pro', () => {
+    expect(effectivePlanTier('pro_plus', new Date(Date.now() - hour))).toBe('free')
+    expect(effectivePlanTier('pro_plus', new Date(Date.now() - hour).toISOString())).toBe('free')
+  })
+
+  it('keeps Pro+ while it still has time on it', () => {
+    expect(effectivePlanTier('pro_plus')).toBe('pro_plus')
+    expect(effectivePlanTier('pro_plus', null)).toBe('pro_plus')
+    expect(effectivePlanTier('pro_plus', new Date(Date.now() + hour))).toBe('pro_plus')
+  })
+
+  /** Downgrade is to `free`, never to the tier below — an expired subscription
+   *  is not a cheaper subscription. */
+  it('drops an expired Pro+ all the way to free, not to Pro', () => {
+    expect(effectivePlanTier('pro_plus', new Date(Date.now() - hour))).not.toBe('pro')
   })
 })
 

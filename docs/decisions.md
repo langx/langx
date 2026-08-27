@@ -17,7 +17,7 @@ is shaped that way. Several of them record a plan that turned out to be wrong.
 | 4   | Starting a conversation: `POST /conversations` — no match gate, quota decrement + `pairKey` lock                                   | **Done** — 11 tests: 10 concurrent first-message attempts on free → exactly 5 succeed; 10/10 on Pro; a second conversation for the same pair is refused with `CONVERSATION_EXISTS`                                                                               |
 | 5   | Chat: Socket.io over phase 4's conversations + history + read/typing + corrections                                                 | **Done** — 15 tests (5 REST + 10 real Socket.io connections): message delivery between two live WebSockets measured **under 1s**; history survives a disconnect                                                                                                  |
 | 6   | Translation service + cache + daily counters                                                                                       | **Done** — 11 tests: second request for the same text is served from cache, free tier hits `QUOTA_EXCEEDED` after 20, cache hits cost no quota                                                                                                                   |
-| 7   | RevenueCat + paywall + webhook + entitlement + quota + Pro filters                                                                 | **Server done** (11 tests). A real sandbox purchase cannot be tested until the store prerequisites are complete (see note)                                                                                                                                       |
+| 7   | RevenueCat + paywall + webhook + entitlement + quota + Pro filters                                                                 | **Done, three tiers** (17 tests). Client SDK, purchase and restore are wired against RevenueCat's Test Store; real-store receipts, proration and review still wait on the store prerequisites (see note)                                                         |
 | 8   | Streak + token ledger + direct awards + `tokenAggregates`                                                                          | **Done** — 13 tests: 10 concurrent replays of the same message leave one ledger row; streaks advance and reset on the local day; a milestone pays once                                                                                                           |
 | 9   | Daily pool + 4 leaderboards + sinks                                                                                                | **Done** — 18 tests plus live verification: the pool ran twice (once with the lock, once with the lock deleted) and total token stayed at 1054                                                                                                                   |
 | 10  | `profileViews` + incognito, push, block/report, **account deletion + export**                                                      | **Server done** — 18 tests: a blocked user disappears from discovery, the chat list, the leaderboard and their profile (404, not 403) at once; a deleted account is invisible immediately, still recoverable on day 29, and gone from every collection on day 31 |
@@ -876,6 +876,85 @@ and nobody is promoted by a migration they did not ask for.
 `cefr.ts` became `level.ts` rather than keeping a name that would have lied
 about its contents.
 
+## A third tier, and the four things two tiers were hiding
+
+`PLAN_TIERS` is `free | pro | pro_plus`. Pro+ is a **strict superset** of Pro:
+same quotas, same three capability flags, plus `nearby` and `copilot`.
+
+Adding it was cheap for the reason the table was built that way — `PLAN_LIMITS`
+is a `Record<PlanTier, PlanLimits>`, so TypeScript demanded exactly one new row
+and not one `hasFeature`/`quotaLimit` caller changed. Nothing compares tiers;
+there is still no `tier > 'free'` anywhere, and `isPaidTier` is a not-free
+test, not an ordering. Keep it that way.
+
+**Neither Pro+ feature exists.** `nearby` needs the `sort=nearby` branch that
+`$geoNear` forces into its own pipeline, and `copilot` has no code at all. The
+tier is sold anyway — that was a product call — so the paywall marks both rows
+`COMING SOON` from a required `shipped` field in the copy table. A boolean
+someone has to come back and flip is the only version of that promise the
+compiler can hold us to.
+
+Widening the table surfaced four bugs that two tiers had kept invisible:
+
+- **`effectivePlanTier` never expired Pro+.** The guard read `tier !== 'pro'`
+  and returned early. With two tiers that was the same test as `tier === 'free'`;
+  with three it meant an expired Pro+ subscription kept its tier forever — the
+  one failure the function exists to prevent, reappearing on the new tier.
+- **The webhook could not tell the tiers apart.** `revenueCatEventSchema` never
+  declared `entitlement_ids`, so all eight grant events wrote `tier: 'pro'`
+  blindly. `PRODUCT_CHANGE` is a grant event, which made the upgrade/downgrade
+  event silently downgrade every Pro+ subscriber who touched it.
+- **`EXPIRATION` wrote `free` unconditionally.** An expiry says something ended,
+  never what is left; a lapsed Pro+ over a still-running Pro has to land on
+  `pro`. No field on the event can say that, so the handler now reconciles
+  against RevenueCat and only falls back to `free` when it cannot be asked.
+  The fallback swallows the error deliberately: a non-2xx would put RevenueCat
+  into a retry loop over something already handled correctly.
+- **`toPublicProfile` read the raw stored tier.** A subscription whose
+  `EXPIRATION` was late or lost kept showing everyone else a PRO badge the
+  server already refused to honour. It now goes through `effectivePlanTier`,
+  the same rule every guard uses.
+
+The client half of the entitlement flow, which had never been built, now
+exists: `react-native-purchases`, offerings read for real prices, purchase and
+restore, and `POST /billing/refresh` called immediately after a purchase rather
+than waiting on a webhook that may be seconds late or lost.
+
+**`Purchases.logIn(userId)` runs from the root layout, not the paywall.** The
+identity has to be right before a purchase is possible, not at the moment one
+is attempted: the server keys everything off `app_user_id`, so a purchase made
+under an anonymous RevenueCat id is real on the store and invisible here, and
+no later `logIn` moves it.
+
+## Pro+ products grant the `pro` entitlement too
+
+Two entitlements, `pro` and `pro_plus`, and every Pro+ product is attached to
+both. It falls out of the packaging — a Pro+ subscriber _is_ a Pro subscriber —
+but it buys two concrete things.
+
+A subscriber therefore almost always holds both ids at once, so something has
+to pick: `ENTITLEMENT_PRECEDENCE` resolves Pro+ over Pro. That is a resolution
+rule for concurrent entitlements, not the tier ordering ruled out above.
+
+It also degrades in the right direction. Any guard that still asks only about
+`pro` — and, before the client was written, the entire server did — reads a
+Pro+ subscriber as Pro rather than as free. The failure mode of forgetting the
+new tier somewhere is "gets less than they paid for", never "gets nothing".
+
+The dashboard side has one wart worth knowing: **entitlement identifiers cannot
+be renamed after creation.** The project was set up with `langx_pro` while the
+code had always hardcoded `pro`, so `getProEntitlement` looked up a key that
+never existed and nobody could have been granted Pro by a successful purchase.
+Fixing it meant creating `pro` and deleting `langx_pro`, which was free only
+because there were no customers yet.
+
+Package identifiers have the mirror-image constraint: a reserved one
+(`$rc_monthly`, `$rc_annual`, `$rc_lifetime`) can be used once per offering, so
+Pro's three kept them and Pro+ had to take custom ones. A custom identifier
+reports `packageType: 'CUSTOM'`, so the SDK can describe Pro's billing cadence
+and not Pro+'s — which is why `PACKAGES` carries `period` itself instead of the
+paywall reading it off the SDK for one column and guessing for the other.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is
@@ -883,7 +962,18 @@ about its contents.
   come from the Account Owner and the new key takes days to activate.
 - **16 KB page size.** Already in force. Third-party native libraries are the
   risk; each needs checking before the rollout widens.
-- **The paywall cannot be tested end to end** until the store prerequisites are
-  done.
+- **The paywall can be tested against RevenueCat's Test Store, not a real
+  store.** The catalog, both entitlements and the client SDK are wired, so
+  purchase and restore can be exercised in a dev build. What that cannot cover
+  is anything only a real store produces: StoreKit/Play receipts, upgrade
+  proration between Pro and Pro+ in one subscription group, and review. Those
+  still wait on the App Store Connect and Play Console prerequisites.
+- **The webhook has no configured endpoint yet.** Entitlement therefore only
+  moves when the client calls `POST /billing/refresh`; a purchase made outside
+  the app reaches the server on the next refresh, not immediately. Configuring
+  it needs a publicly reachable API URL, which localhost is not.
+- **`langx.io/terms-conditions` still has no subscription clauses.** The
+  paywall links to it, as a store requires, and the document it links to does
+  not yet cover renewal or cancellation.
 - **The promise change** reaches the community as a broken promise unless it is
   explained deliberately.

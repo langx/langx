@@ -1,8 +1,23 @@
 import { z } from 'zod'
 
-export const PLAN_TIERS = ['free', 'pro'] as const
+/**
+ * Deliberately **not** an ordered scale. Nothing in the codebase compares
+ * tiers (`tier > 'free'` appears nowhere), and that is what makes adding a
+ * third one cheap: `PLAN_LIMITS` below is a `Record<PlanTier, PlanLimits>`,
+ * so TypeScript demands exactly one new row and every existing `hasFeature` /
+ * `quotaLimit` call keeps working untouched.
+ *
+ * Keep it that way. The moment one guard asks "is this tier at least X", the
+ * table stops being the single source of truth and the ordering becomes a
+ * second one that can disagree with it.
+ */
+export const PLAN_TIERS = ['free', 'pro', 'pro_plus'] as const
 export type PlanTier = (typeof PLAN_TIERS)[number]
 export const planTierSchema = z.enum(PLAN_TIERS)
+
+/** The tiers that can actually be bought — what a paywall has columns for. */
+export const PAID_PLAN_TIERS = ['pro', 'pro_plus'] as const
+export type PaidPlanTier = (typeof PAID_PLAN_TIERS)[number]
 
 /** `null` means unlimited. */
 export type Limit = number | null
@@ -19,7 +34,7 @@ export interface PlanLimits {
   /**
    * Corrections written per rolling 24 hours.
    *
-   * Unlimited on both tiers, deliberately. Writing a correction is a favour to
+   * Unlimited on every tier, deliberately. Writing a correction is a favour to
    * the other person; rate-limiting free users would also shrink the value Pro
    * users receive. Pro's revenue rests on filters, translation and incognito.
    */
@@ -35,7 +50,7 @@ export interface PlanLimits {
    */
   mediaPer24h: Limit
   /**
-   * gender / country / age / level filters in discovery — the exact set is
+   * gender / country / age / CEFR filters in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
    * This used to say "distance" as well. There is no distance filter and there
@@ -50,11 +65,34 @@ export interface PlanLimits {
   /** Browse without leaving a profileViews record. */
   incognito: boolean
   /**
+   * Distance-sorted discovery (`sort=nearby`).
+   *
+   * Pro+ only. **No server implements this yet** — the flag exists so the
+   * entitlement, the paywall copy and the eventual guard all read one
+   * definition instead of three, and so the tier table stops lying about what
+   * separates Pro from Pro+.
+   */
+  nearby: boolean
+  /**
+   * The AI language copilot — the one paid feature v1 ever promised publicly
+   * (`architecture.md:425`).
+   *
+   * Pro+ only, and the actual justification for the price gap: unlike nearby,
+   * a copilot call has a real per-request cost. **Also unimplemented.** See
+   * the note on `nearby`.
+   */
+  copilot: boolean
+  /**
    * Photos on a profile, avatar excluded.
    *
-   * The same on both tiers on purpose. A gallery is how someone shows they are
+   * The same on every tier on purpose. A gallery is how someone shows they are
    * a real person, and gating it would make free profiles look like the
    * throwaway accounts the product is trying to keep out.
+   *
+   * Because it is identical everywhere, two call sites read `PLAN_LIMITS.free`
+   * directly rather than the viewer's tier (`profiles.ts` addPhoto,
+   * `edit-profile.tsx`). That is safe **only while this stays uniform** — give
+   * one tier a different allowance and those two places go quietly wrong.
    */
   maxPhotos: number
 }
@@ -68,6 +106,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: false,
     profileViewerIdentities: false,
     incognito: false,
+    nearby: false,
+    copilot: false,
     maxPhotos: 6,
   },
   pro: {
@@ -78,6 +118,26 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: true,
     profileViewerIdentities: true,
     incognito: true,
+    nearby: false,
+    copilot: false,
+    maxPhotos: 6,
+  },
+  /**
+   * A strict superset of `pro` — every value here is pro's, with `nearby` and
+   * `copilot` flipped on. That is the whole difference, and it is why the
+   * RevenueCat Pro+ products grant both the `pro_plus` **and** the `pro`
+   * entitlement: a subscriber who is one is always also the other.
+   */
+  pro_plus: {
+    initiationsPer24h: null,
+    translationsPer24h: null,
+    correctionsPer24h: null,
+    mediaPer24h: null,
+    advancedFilters: true,
+    profileViewerIdentities: true,
+    incognito: true,
+    nearby: true,
+    copilot: true,
     maxPhotos: 6,
   },
 }
@@ -106,6 +166,20 @@ export const PRO_FEATURES = ['advancedFilters', 'profileViewerIdentities', 'inco
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
+ * Capabilities only `pro_plus` unlocks. Split from `PRO_FEATURES` rather than
+ * appended to it because the rules test asserts every `PRO_FEATURES` entry is
+ * true on `pro` — merging the two lists would have made that assertion false
+ * and, worse, made a Pro subscriber's refused nearby request look like a bug
+ * in the guard rather than the tier boundary working.
+ */
+export const PRO_PLUS_FEATURES = ['nearby', 'copilot'] as const
+export type ProPlusFeature = (typeof PRO_PLUS_FEATURES)[number]
+
+/** Every gated capability, whichever tier unlocks it. */
+export const PLAN_FEATURES = [...PRO_FEATURES, ...PRO_PLUS_FEATURES] as const
+export type PlanFeature = ProFeature | ProPlusFeature
+
+/**
  * Everything Pro gives you, which is deliberately **wider** than
  * `PRO_FEATURES`: two of these are not capability flags at all but quotas that
  * stop applying, and a paywall that listed only the booleans would undersell
@@ -114,7 +188,7 @@ export type ProFeature = (typeof PRO_FEATURES)[number]
  * The paywall keys its copy off this list, so adding a benefit here without
  * writing the copy is a compile error, and describing a benefit on the paywall
  * that does not exist here is impossible. That is the whole point: the feature
- * list had drifted into three separate places — here, the rules test, and the
+ * list had drifted into three separate places — here, the rules test and the
  * paywall screen — and the first one to change would have made the other two
  * quietly lie.
  */
@@ -127,8 +201,40 @@ export const PRO_BENEFITS = [
 ] as const
 export type ProBenefit = (typeof PRO_BENEFITS)[number]
 
-export function hasFeature(tier: PlanTier, feature: ProFeature): boolean {
+/**
+ * What Pro+ adds **on top of** Pro — not a replacement list. The paywall
+ * renders `PRO_BENEFITS` for the Pro column and these two extra rows for the
+ * Pro+ one, so the superset relationship is visible in the copy instead of
+ * being re-typed and left to drift.
+ */
+export const PRO_PLUS_BENEFITS = ['nearby', 'copilot'] as const
+export type ProPlusBenefit = (typeof PRO_PLUS_BENEFITS)[number]
+
+export function hasFeature(tier: PlanTier, feature: PlanFeature): boolean {
   return PLAN_LIMITS[tier][feature]
+}
+
+/** Any tier that is not `free`. Not an ordering — see `PLAN_TIERS`. */
+export function isPaidTier(tier: PlanTier): boolean {
+  return tier !== 'free'
+}
+
+/**
+ * The cheapest tier that unlocks a capability, for a paywall that has been
+ * told *why* it was opened and has to point at the right column.
+ *
+ * This is the one place that leans on `PAID_PLAN_TIERS` being listed
+ * cheapest-first, and it is a presentation concern rather than the tier
+ * ordering ruled out on `PLAN_TIERS`: no guard calls it, and getting it wrong
+ * upsells someone to a plan they did not need instead of letting them past a
+ * gate. It still reads the real `PLAN_LIMITS` rows, so a capability moved
+ * between tiers moves the answer with it.
+ */
+export function tierUnlocking(feature: PlanFeature): PaidPlanTier | null {
+  for (const tier of PAID_PLAN_TIERS) {
+    if (PLAN_LIMITS[tier][feature]) return tier
+  }
+  return null
 }
 
 export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
@@ -146,9 +252,14 @@ export const QUOTA_WINDOW_MS = 24 * 60 * 60 * 1000
  * refused. Two implementations of one rule is how that happened, so there is
  * now one — and it takes `expiresAt` as a `Date` or an ISO string, because the
  * server holds the first and JSON gives the client the second.
+ *
+ * The guard below reads `tier === 'free'` rather than `tier !== 'pro'`. With
+ * only two tiers those were the same test; with three, the second one lets a
+ * **Pro+ subscription expire without ever dropping** — it would return early
+ * and hand back `pro_plus` forever.
  */
 export function effectivePlanTier(tier: PlanTier, expiresAt?: Date | string | null): PlanTier {
-  if (tier !== 'pro' || !expiresAt) return tier
+  if (tier === 'free' || !expiresAt) return tier
   const at = expiresAt instanceof Date ? expiresAt.getTime() : Date.parse(expiresAt)
   // An unparseable date is not evidence of expiry — treat it as no expiry
   // rather than silently downgrading someone who is paying.

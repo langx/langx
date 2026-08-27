@@ -1,12 +1,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
 import { AppGate } from '../src/components/AppGate'
 import { authClient } from '../src/lib/auth-client'
+import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { colors } from '../src/lib/theme'
 
 function createQueryClient(): QueryClient {
@@ -28,6 +29,22 @@ function createQueryClient(): QueryClient {
 export default function RootLayout() {
   const { data: session, isPending } = authClient.useSession()
   const [queryClient] = useState(createQueryClient)
+
+  /**
+   * Binds RevenueCat to the signed-in account, and unbinds on sign-out.
+   *
+   * This lives at the root rather than on the paywall because the identity has
+   * to be right *before* a purchase is possible, not at the moment one is
+   * attempted: a purchase made under an anonymous RevenueCat id is real on the
+   * store and invisible to this app, and no amount of later logIn() moves it.
+   * Everything it calls is a no-op when billing is unconfigured, so this costs
+   * nothing on web or in a build without the native module.
+   */
+  const userId = session?.user?.id
+  useEffect(() => {
+    if (userId) void identifyForPurchases(userId)
+    else void forgetPurchasesIdentity()
+  }, [userId])
 
   // useSession() sets isPending on every refetch, not just the first load —
   // sign-up, sign-in and sign-out all trigger one. Gating the whole <Stack>
