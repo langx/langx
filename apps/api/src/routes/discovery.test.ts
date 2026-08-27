@@ -323,6 +323,88 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(handles).not.toContain(wrongAge.handle)
     })
 
+    /**
+     * v1's "Match My Gender". Resolved on the server because only the server
+     * is sure what the viewer's own gender is — a client that had not finished
+     * loading its own profile would otherwise send nothing and look filtered.
+     */
+    it('onlyMyGender narrows to the viewer own gender', async () => {
+      const viewer = await newUser('same-gender-viewer@example.com', {
+        nativeLanguages: [{ code: 'sl' }],
+        learning: [{ code: 'sk', level: 'B1', priority: 1 }],
+        gender: 'female',
+      })
+      await makePro(viewer.userId)
+
+      const sameGender = await newUser('same-gender-match@example.com', {
+        nativeLanguages: [{ code: 'sk' }],
+        learning: [{ code: 'sl', level: 'B1', priority: 1 }],
+        gender: 'female',
+      })
+      const otherGender = await newUser('other-gender-match@example.com', {
+        nativeLanguages: [{ code: 'sk' }],
+        learning: [{ code: 'sl', level: 'B1', priority: 1 }],
+        gender: 'male',
+      })
+
+      const response = await discover(viewer, 'onlyMyGender=true')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles).toContain(sameGender.handle)
+      expect(handles).not.toContain(otherGender.handle)
+    })
+
+    /**
+     * "People like me" cannot mean "people who also declined to say", so the
+     * toggle is silently inert rather than narrowing to the undisclosed group
+     * — which would be a worse answer than not narrowing at all.
+     */
+    it('onlyMyGender does nothing when the viewer has not disclosed a gender', async () => {
+      const viewer = await newUser('undisclosed-viewer@example.com', {
+        nativeLanguages: [{ code: 'hr' }],
+        learning: [{ code: 'mk', level: 'B1', priority: 1 }],
+        gender: 'undisclosed',
+      })
+      await makePro(viewer.userId)
+
+      const female = await newUser('undisclosed-peer-f@example.com', {
+        nativeLanguages: [{ code: 'mk' }],
+        learning: [{ code: 'hr', level: 'B1', priority: 1 }],
+        gender: 'female',
+      })
+      const male = await newUser('undisclosed-peer-m@example.com', {
+        nativeLanguages: [{ code: 'mk' }],
+        learning: [{ code: 'hr', level: 'B1', priority: 1 }],
+        gender: 'male',
+      })
+
+      const response = await discover(viewer, 'onlyMyGender=true')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles).toContain(female.handle)
+      expect(handles).toContain(male.handle)
+    })
+
+    it('is a Pro filter like the rest — a free account gets 403, not a wider list', async () => {
+      const viewer = await newUser('free-same-gender@example.com', { gender: 'female' })
+      const response = await discover(viewer, 'onlyMyGender=true')
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED' })
+    })
+
+    it('refuses a gender and "my gender" at once rather than silently picking one', async () => {
+      const viewer = await newUser('both-gender-filters@example.com', { gender: 'female' })
+      await makePro(viewer.userId)
+      const response = await discover(viewer, 'onlyMyGender=true&gender=male')
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('rejects a country code that is not a real one', async () => {
+      const viewer = await newUser('bad-country@example.com')
+      await makePro(viewer.userId)
+      expect((await discover(viewer, 'country=ZZ')).statusCode).toBe(400)
+      // Case is normalised, so a lowercase code is a match rather than a miss.
+      expect((await discover(viewer, 'country=us')).statusCode).toBe(200)
+    })
+
     it('minLevel filters on how well the candidate speaks the viewer own native language', async () => {
       const viewer = await newUser('minlevel-viewer@example.com', {
         nativeLanguages: [{ code: 'lv' }],

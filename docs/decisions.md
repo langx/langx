@@ -772,6 +772,55 @@ something to sell — true, and a worse thing to say out loud than saying
 nothing. The transparency claim it made is not being replaced by a smaller
 claim; it is being replaced by the stats page, or by nothing.
 
+## Discovery filters live in the URL, not a store
+
+The filter screen is pushed on top of Discover and has to hand its result back,
+which route params do without introducing a global. The reason to prefer them
+outright is the web build: a filtered search survives a reload and can be
+pasted to someone, for free.
+
+The cost is that a Pro filter can reach a free account — a pasted link, or a
+subscription that lapsed while the link sat in a tab. The server answers those
+with 403 by design (`DISCOVERY_PRO_FILTER_KEYS`, never a silent ignore), so the
+client strips them before asking. An error page is a worse answer to "here is a
+link to some people" than an unfiltered list.
+
+## "Only my gender" is resolved on the server
+
+It would have been half the code to translate the toggle into `gender=<mine>`
+in the client. But only the server is certain what the viewer's own gender is,
+and a client that had not finished loading its own profile would send an
+unfiltered query that looked, on screen, exactly like a filtered one.
+
+It is inert when the viewer's own gender is `undisclosed`: "people like me"
+cannot mean "people who also declined to say", and narrowing to that group
+would be a worse answer than not narrowing.
+
+**It is Pro, and that is worth a second look.** It sits behind the paywall
+because it is a gender filter and the server gates those together. But it is
+also the one filter people use for safety rather than preference, and safety
+behind a paywall reads differently from convenience behind one. Moving it to
+the free tier is a one-line change on each side if that is the call.
+
+## Countries are a compile-time table, like languages
+
+`profiles.country` was a free-text two-letter field, which meant the edit form
+asked people to type "GB" and nothing stopped them typing "gb" — while the
+filter searched for one exact spelling. Both sides now go through
+`countryCodeSchema`, which normalises case and rejects anything that is not a
+real code.
+
+The table is generated from Node's own ICU data rather than hand-written, then
+filtered twice: deprecated codes are dropped by keeping only codes that are
+their own canonical form, and aggregates are excluded by name. `ZZ` — ICU's
+"Unknown Region" — survived the first pass and would have validated as a
+country; a test now asserts it does not.
+
+Search folds diacritics, which is not cosmetic here: the English name of the
+country most of v1's users live in is spelled "Türkiye", so without folding the
+single most likely search on the filter screen returns Turkmenistan and the
+Turks & Caicos Islands and nothing else.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

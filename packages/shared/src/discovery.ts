@@ -1,4 +1,5 @@
 import { cefrLevelSchema } from './cefr'
+import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
 import { genderSchema } from './profile'
 import { z } from 'zod'
@@ -28,6 +29,7 @@ export const ONLINE_WINDOW_MS = 5 * 60 * 1000
  */
 export const DISCOVERY_PRO_FILTER_KEYS = [
   'gender',
+  'onlyMyGender',
   'country',
   'minLevel',
   'ageMin',
@@ -51,7 +53,19 @@ export const discoveryQuerySchema = z
     online: z.coerce.boolean().optional(),
     // Pro-only from here down.
     gender: genderSchema.optional(),
-    country: z.string().trim().min(1).max(2).optional(),
+    /**
+     * v1's "Match My Gender", kept because it is the one filter people use for
+     * a reason other than preference.
+     *
+     * Resolved on the server rather than translated into `gender` by the
+     * client: only the server is certain what the viewer's own gender is, and
+     * a client that had not finished loading its own profile would otherwise
+     * send an unfiltered query that silently looked like it had applied.
+     * Ignored when the viewer's own gender is `undisclosed` — "people like me"
+     * cannot mean "people who also declined to say".
+     */
+    onlyMyGender: z.coerce.boolean().optional(),
+    country: countryCodeSchema.optional(),
     minLevel: cefrLevelSchema.optional(),
     ageMin: z.coerce.number().int().min(18).optional(),
     ageMax: z.coerce.number().int().min(18).optional(),
@@ -59,6 +73,10 @@ export const discoveryQuerySchema = z
   .refine((q) => q.ageMin === undefined || q.ageMax === undefined || q.ageMin <= q.ageMax, {
     message: 'ageMin cannot exceed ageMax',
     path: ['ageMin'],
+  })
+  .refine((q) => !(q.onlyMyGender && q.gender), {
+    message: 'Pick a gender or match your own, not both',
+    path: ['onlyMyGender'],
   })
 
 export type DiscoveryQuery = z.infer<typeof discoveryQuerySchema>

@@ -63,6 +63,7 @@ export default function AppLayout() {
       <Tabs.Screen name="settings" options={{ href: null }} />
       <Tabs.Screen name="paywall" options={{ href: null }} />
       <Tabs.Screen name="viewers" options={{ href: null }} />
+      <Tabs.Screen name="filters" options={{ href: null }} />
     </Tabs>
   )
 }

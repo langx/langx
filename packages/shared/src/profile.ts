@@ -1,3 +1,4 @@
+import { countryCodeSchema } from './countries'
 import { birthYearSchema } from './age'
 import { cefrLevelSchema } from './cefr'
 import { handleSchema } from './handle'
@@ -58,7 +59,7 @@ export const onboardingProfileSchema = z
     learning: learningLanguagesSchema,
     bio: bioSchema.optional(),
     interests: interestsSchema.optional(),
-    country: z.string().trim().min(1).max(2).optional(),
+    country: countryCodeSchema.optional(),
     city: z.string().trim().min(1).max(100).optional(),
     timezone: z.string().trim().min(1).optional(),
   })
@@ -83,7 +84,7 @@ export const updateProfileSchema = z
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
     interests: interestsSchema,
-    country: z.string().trim().min(1).max(2),
+    country: countryCodeSchema,
     city: z.string().trim().min(1).max(100),
     timezone: z.string().trim().min(1),
     settings: z.object({

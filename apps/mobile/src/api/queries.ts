@@ -1,3 +1,4 @@
+import type { Gender } from '@langx/shared'
 import type {
   DiscoveryResult,
   Leaderboard,
@@ -50,7 +51,7 @@ export interface MeProfile {
   avatarUrl?: string
   bio?: string
   birthYear: number
-  gender: string
+  gender: Gender
   country?: string
   city?: string
   timezone?: string

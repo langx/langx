@@ -98,6 +98,12 @@ export async function discoverProfiles(
     match['stats.lastActiveAt'] = { $gte: new Date(Date.now() - ONLINE_WINDOW_MS) }
   }
   if (query.gender) match.gender = query.gender
+  // "Match my gender", resolved here because here is where the viewer's own
+  // gender is known for certain. Deliberately silent when the viewer has not
+  // disclosed one: matching everybody else who also declined is not what the
+  // toggle means, and narrowing to that group would be a worse answer than
+  // not narrowing at all.
+  if (query.onlyMyGender && viewer.gender !== 'undisclosed') match.gender = viewer.gender
   if (query.country) match.country = query.country
   if (query.minLevel) {
     // How well *they* speak *my* native language — the language they're

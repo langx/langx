@@ -1,6 +1,6 @@
 import { getLanguage } from '@langx/shared'
-import { router } from 'expo-router'
-import { useState } from 'react'
+import { router, useLocalSearchParams } from 'expo-router'
+import { useMemo, useState } from 'react'
 import {
   ActivityIndicator,
   FlatList,
@@ -16,6 +16,13 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import {
+  activeCount,
+  hasProFilters,
+  parseFilters,
+  toQuery,
+  withoutProFilters,
+} from '../../src/lib/discoveryFilters'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const SORTS = [
@@ -37,16 +44,23 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
 
 export default function DiscoverScreen() {
   const me = useMe()
+  const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<'recommended' | 'active'>('recommended')
-  const [onlineOnly, setOnlineOnly] = useState(false)
 
-  const query = useDiscovery({
-    sort,
-    ...(onlineOnly ? { online: 'true' } : {}),
-  })
+  const isPro = me.data?.entitlement.tier === 'pro'
+  const filters = useMemo(() => parseFilters(params), [params])
+
+  /**
+   * A free account never sends a Pro filter, even when one reaches it — a
+   * pasted URL, or a subscription that lapsed while the link sat in a tab.
+   * The server would answer 403, and an error page is a worse response to
+   * "here is a link to some people" than an unfiltered list.
+   */
+  const effective = isPro || !hasProFilters(filters) ? filters : withoutProFilters(filters)
+  const query = useDiscovery({ sort, ...toQuery(effective) })
 
   const items = query.data?.pages.flatMap((page) => page.items) ?? []
-  const isPro = me.data?.entitlement.tier === 'pro'
+  const count = activeCount(effective)
 
   return (
     <Screen fluid>
@@ -64,16 +78,19 @@ export default function DiscoverScreen() {
           <Chip
             label="Online"
             tone="accent"
-            selected={onlineOnly}
-            onPress={() => setOnlineOnly((v) => !v)}
+            selected={effective.online === true}
+            onPress={() => router.setParams(effective.online ? { online: '' } : { online: '1' })}
           />
-          {/* Advanced filters are the Pro hook. Showing the control and
-              routing to the paywall sells better than hiding it entirely —
-              the user has to see what they are missing. */}
+          {/* Advanced filters are the Pro hook, so the control is shown to
+              everyone and the *screen* handles the upsell — hiding it makes
+              the paywall a surprise instead of an offer. Free filters still
+              live behind it, which is why a free account opens the filters
+              rather than the paywall. */}
           <Chip
-            label={isPro ? 'Filters' : 'Filters ✦'}
+            label={count > 0 ? `Filters · ${count}` : isPro ? 'Filters' : 'Filters ✦'}
             tone="pro"
-            onPress={() => router.push(isPro ? '/(app)/settings' : '/(app)/paywall')}
+            selected={count > 0}
+            onPress={() => router.push({ pathname: '/(app)/filters', params })}
           />
         </View>
       </View>

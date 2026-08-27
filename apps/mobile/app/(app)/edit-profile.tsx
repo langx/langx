@@ -76,7 +76,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
   const [country, setCountry] = useState(profile?.country ?? '')
-  const [gender, setGender] = useState<Gender>((profile?.gender as Gender) ?? 'undisclosed')
+  const [gender, setGender] = useState<Gender>(profile?.gender ?? 'undisclosed')
   const [native, setNative] = useState<string[]>(profile?.nativeLanguages.map((l) => l.code) ?? [])
   const [learning, setLearning] = useState<{ code: string; level: CefrLevel }[]>(
     profile?.learning.map((l) => ({ code: l.code, level: l.level as CefrLevel })) ?? [],
