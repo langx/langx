@@ -22,8 +22,10 @@ export interface Message {
   _id: ObjectId
   conversationId: ObjectId
   senderId: string
-  type: 'text'
+  type: 'text' | 'correction'
   body: string
+  correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
+  readAt?: Date
   createdAt: Date
 }
 

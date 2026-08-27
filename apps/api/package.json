@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "private": true,
   "license": "BSD-3-Clause",
-  "description": "LangX v2 API \u2014 Better Auth + REST + Socket.io in one Fastify process",
+  "description": "LangX v2 API — Better Auth + REST + Socket.io in one Fastify process",
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
@@ -28,6 +28,7 @@
     "mongodb": "catalog:",
     "pino": "catalog:",
     "resend": "catalog:",
+    "socket.io": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -36,6 +37,7 @@
     "mongodb-memory-server": "catalog:",
     "node-appwrite": "catalog:",
     "pino-pretty": "catalog:",
+    "socket.io-client": "catalog:",
     "tsx": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

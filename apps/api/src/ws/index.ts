@@ -1,0 +1,164 @@
+import { sendCorrectionSchema, sendTextMessageSchema } from '@langx/shared'
+import type { FastifyInstance } from 'fastify'
+import { Server as SocketIOServer, type Socket } from 'socket.io'
+import { z, ZodError } from 'zod'
+import { ApiError } from '../lib/ApiError'
+import { assertConversationAccess } from '../modules/chat/access'
+import { markConversationRead, sendCorrection, sendTextMessage } from '../modules/chat/messages'
+
+function userRoom(userId: string): string {
+  return `user:${userId}`
+}
+
+interface SocketData {
+  userId: string
+}
+
+/** Socket.io's four generics default `data` to `any` — this pins it down so `.data.userId` typechecks. */
+type AppSocket = Socket<
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  SocketData
+>
+type AppServer = SocketIOServer<
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>,
+  SocketData
+>
+
+type AckResponse =
+  | { ok: true; data?: unknown }
+  | { ok: false; error: { code: string; message: string } }
+type Ack = ((response: AckResponse) => void) | undefined
+
+function errorPayload(error: unknown): { code: string; message: string } {
+  if (error instanceof ApiError) return { code: error.code, message: error.message }
+  if (error instanceof ZodError) return { code: 'VALIDATION_FAILED', message: 'Invalid payload' }
+  return { code: 'INTERNAL', message: 'Something went wrong' }
+}
+
+const readPayloadSchema = z.object({ conversationId: z.string().trim().min(1) })
+const typingPayloadSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  isTyping: z.boolean(),
+})
+
+/**
+ * The same session cookie `apiFetch` attaches to REST calls (see its doc
+ * comment: web has a real cookie jar, native reads it back out of
+ * SecureStore) — a browser's WebSocket handshake carries cookies
+ * automatically, but React Native has no cookie jar, so native passes the
+ * value explicitly via `auth.cookie` in the socket.io-client connection
+ * options instead of a header it can't set on this transport.
+ */
+async function authenticateSocket(app: FastifyInstance, socket: AppSocket): Promise<string> {
+  const authCookie = (socket.handshake.auth as { cookie?: string } | undefined)?.cookie
+  const cookie = socket.handshake.headers.cookie ?? authCookie
+  if (!cookie) throw new Error('UNAUTHENTICATED')
+
+  const session = await app.auth.api.getSession({ headers: new Headers({ cookie }) })
+  if (!session) throw new Error('UNAUTHENTICATED')
+  // Matches requireVerifiedEmail's REST-side rule — every profile in the
+  // system was already gated on this at creation, so this only ever
+  // rejects an unverified account that has no profile (and thus nothing to
+  // chat about) trying to open a socket anyway.
+  if (!session.user.emailVerified) throw new Error('EMAIL_NOT_VERIFIED')
+  return session.user.id
+}
+
+/**
+ * One room per user (`user:<id>`), not one per conversation — a 1-1 chat
+ * only ever has two participants, both already known from the conversation
+ * document, so there's nothing a per-conversation room buys here and no
+ * separate "join this conversation" handshake for clients to get wrong.
+ *
+ * Every handler re-derives access through `assertConversationAccess` /
+ * the `modules/chat` functions that call it — the same gate REST uses, so
+ * the socket transport can't become a back door around it.
+ */
+export function attachSocketServer(app: FastifyInstance): AppServer {
+  const io: AppServer = new SocketIOServer(app.server, {
+    cors: {
+      origin: app.env.TRUSTED_ORIGINS.length > 0 ? app.env.TRUSTED_ORIGINS : true,
+      credentials: true,
+    },
+  })
+
+  io.use((socket, next) => {
+    authenticateSocket(app, socket).then(
+      (userId) => {
+        socket.data.userId = userId
+        next()
+      },
+      (error: unknown) => next(error instanceof Error ? error : new Error('UNAUTHENTICATED')),
+    )
+  })
+
+  io.on('connection', (socket) => {
+    const userId = socket.data.userId
+    void socket.join(userRoom(userId))
+
+    socket.on('message:send', (payload: unknown, ack: Ack) => {
+      sendTextMessageSchema
+        .parseAsync(payload)
+        .then((input) => sendTextMessage(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          for (const participantId of conversation.participants) {
+            io.to(userRoom(participantId)).emit('message:new', message)
+          }
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:correct', (payload: unknown, ack: Ack) => {
+      sendCorrectionSchema
+        .parseAsync(payload)
+        .then((input) => sendCorrection(app.mongo.db, userId, input))
+        .then(({ message, conversation }) => {
+          for (const participantId of conversation.participants) {
+            io.to(userRoom(participantId)).emit('message:new', message)
+          }
+          ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('conversation:read', (payload: unknown, ack: Ack) => {
+      readPayloadSchema
+        .parseAsync(payload)
+        .then(({ conversationId }) =>
+          markConversationRead(app.mongo.db, userId, conversationId).then((conversation) => {
+            const otherId = conversation.participants.find((id) => id !== userId)
+            if (otherId) {
+              io.to(userRoom(otherId)).emit('conversation:read', {
+                conversationId,
+                readBy: userId,
+                readAt: new Date().toISOString(),
+              })
+            }
+            ack?.({ ok: true })
+          }),
+        )
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    // Ephemeral, best-effort — a bad or late payload is silently dropped
+    // rather than surfaced, there's no ack channel for typing.
+    socket.on('typing', (payload: unknown) => {
+      typingPayloadSchema
+        .parseAsync(payload)
+        .then(({ conversationId, isTyping }) =>
+          assertConversationAccess(app.mongo.db, conversationId, userId).then((conversation) => {
+            const otherId = conversation.participants.find((id) => id !== userId)
+            if (otherId) io.to(userRoom(otherId)).emit('typing', { conversationId, userId, isTyping })
+          }),
+        )
+        .catch(() => undefined)
+    })
+  })
+
+  return io
+}

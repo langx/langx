@@ -9,6 +9,7 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 import type { Db, MongoClient } from 'mongodb'
+import type { Server as SocketIOServer } from 'socket.io'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
@@ -18,8 +19,10 @@ import { discoveryRoutes } from './routes/discovery'
 import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
+import { messageRoutes } from './routes/messages'
 import { profileRoutes } from './routes/profiles'
 import type { StorageProvider } from './storage/StorageProvider'
+import { attachSocketServer } from './ws'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -28,6 +31,7 @@ declare module 'fastify' {
     env: Env
     storage: StorageProvider
     appVersion: string
+    io: SocketIOServer
   }
 }
 
@@ -134,6 +138,12 @@ export async function buildApp({
   await app.register(mediaRoutes)
   await app.register(discoveryRoutes)
   await app.register(conversationRoutes)
+  await app.register(messageRoutes)
+
+  // Attached last: Socket.io only needs `app.server` (Fastify creates the
+  // underlying http.Server synchronously at construction) plus the
+  // decorators above (`mongo`, `auth`, `env`), all already in place by now.
+  app.decorate('io', attachSocketServer(app))
 
   return app
 }
