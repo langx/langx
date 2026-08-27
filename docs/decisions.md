@@ -955,6 +955,58 @@ reports `packageType: 'CUSTOM'`, so the SDK can describe Pro's billing cadence
 and not Pro+'s — which is why `PACKAGES` carries `period` itself instead of the
 paywall reading it off the SDK for one column and guessing for the other.
 
+## The v1 loyalty gift goes through RevenueCat, not the database
+
+Two rungs, cut at v1's measured percentiles and handed out automatically the
+moment a returning user's email is verified:
+
+| v1 balance     | gift          | roughly |
+| -------------- | ------------- | ------- |
+| ≥ 37,821 (p99) | lifetime Pro+ | 14      |
+| ≥ 9,136 (p90)  | lifetime Pro  | 140     |
+
+The numbers are `LOYALTY_LIFETIME_GRANTS` in `packages/shared`, from
+`inspect-v1-economy.ts`'s measurement of 1403 wallets (median 20, max 2.28M).
+The median wallet holds twenty tokens, so either cut separates cleanly — nobody
+lands on a rung by accident, and the thresholds can move without touching code.
+
+**The obvious implementation is wrong.** Writing `tier: 'pro'` straight into
+`profiles.entitlement` looks like the whole feature and survives about as long
+as the user's next visit to the paywall: `refreshEntitlement` replaces the
+stored tier with whatever RevenueCat reports, so a database-only gift is erased
+by the first `/billing/refresh` — and the paywall calls it on open and on
+restore. Anything that grants entitlement has to go through RevenueCat, which
+is what `grantLifetimeEntitlement` does (`POST .../entitlements/{id}/promotional`,
+`duration: 'lifetime'` — there is no `end_time_ms` that means "never expires").
+Granted there it also survives a reinstall, shows up in the dashboard, and can
+be revoked.
+
+The Pro+ rung grants **both** `pro_plus` and `pro`, mirroring how the Pro+
+products are configured. Precedence resolves `pro_plus` alone correctly today,
+so this is insurance: a gifted Pro+ subscriber should be indistinguishable from
+a paying one, including to whatever code someone writes next that asks only
+about `pro`. The leading entitlement decides the tier and is awaited alone — if
+it fails there is no gift to report; the rest are best-effort.
+
+**A failed gift must never cost someone their account.** The grant runs last,
+after the profile, handle, tokens and conversations are all written, and its
+failure is swallowed exactly like the conversation import's — logged, reported
+as no gift, restore unaffected. That is the house rule (optional services
+degrade, they do not crash) and it is the only sane direction here: a missing
+gift can be granted from the dashboard in a minute, whereas a restore that
+throws is somebody who cannot get their account back. `legacyLifetimeGrant.test.ts`
+asserts that direction, not just the thresholds.
+
+**It is delivered at restore time rather than by a batch script**, because the
+grant needs an `app_user_id` and that is the Better Auth user id — which only
+exists once someone has actually come back. A script could only ever have
+reached the people who had already returned; hooking the restore covers
+everyone, whenever they arrive.
+
+The recipient is told on the welcome-back screen, which is the only place they
+would ever learn of it. A gift nobody is told about is indistinguishable from
+no gift.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

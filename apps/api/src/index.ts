@@ -25,12 +25,15 @@ async function main(): Promise<void> {
   const { client, db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
 
   const emailSender = createEmailSender(env, console)
-  const auth = await createAuth({ env, db, client, emailSender })
+
+  // Built before `createAuth` because the restore that runs on email
+  // verification hands the v1 loyalty gift out through it.
+  const revenueCat = createRevenueCatClientFromEnv(env)
+
+  const auth = await createAuth({ env, db, client, emailSender, revenueCat })
   const storage = createStorageProvider(env)
 
   const translation = createTranslationProvider(env)
-
-  const revenueCat = createRevenueCatClientFromEnv(env)
 
   const push = new ExpoPushSender(env.EXPO_ACCESS_TOKEN)
 

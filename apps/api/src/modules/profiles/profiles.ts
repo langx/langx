@@ -5,6 +5,7 @@ import {
   effectivePlanTier,
   meetsMinimumAge,
   type OnboardingProfileInput,
+  type PaidPlanTier,
   type PlanTier,
   type UpdateProfileInput,
 } from '@langx/shared'
@@ -13,6 +14,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
+import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { restoreByHash } from '../handles/legacyRestore'
 import { grantSignupBonus } from '../tokens/signupBonus'
 
@@ -82,6 +84,8 @@ export interface Profile {
     tokensCredited: number
     frozenStreak: number
     conversationsImported: number
+    /** Lifetime tier handed out through RevenueCat for a top-percentile v1 balance; `null` for everyone else. */
+    lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: Date
     /** Latch: the frozen streak can be bought back exactly once. */
     streakRestoredAt?: Date
@@ -109,6 +113,8 @@ export async function createProfile(
   legacyEmailHash: string | null,
   input: OnboardingProfileInput,
   storagePublicBaseUrl?: string,
+  /** Carries the v1 loyalty gift when this form finishes a deferred restore. */
+  billing?: RevenueCatClient,
 ): Promise<Profile> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
@@ -188,7 +194,7 @@ export async function createProfile(
   // record was missing something this form has just supplied. A no-op for
   // everyone else, and idempotent if it somehow already ran.
   if (legacyEmailHash) {
-    await restoreByHash(db, userId, legacyEmailHash)
+    await restoreByHash(db, userId, legacyEmailHash, billing)
     const restored = await profiles.findOne({ _id: userId })
     if (restored) return restored
   }

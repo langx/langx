@@ -8,19 +8,27 @@ import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import type { EmailSender } from './email/sender'
 import { resetPasswordEmail, verificationEmail } from './email/templates'
 import type { Env } from './env'
+import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 
 export interface CreateAuthOptions {
   env: Env
   db: Db
   client: MongoClient
   emailSender: EmailSender
+  /**
+   * Only for the restore that fires on email verification, which hands the v1
+   * loyalty gift out through RevenueCat. Optional so the many tests that build
+   * an auth instance without a billing story keep working — leaving it out
+   * simply means no gift is attempted.
+   */
+  revenueCat?: RevenueCatClient
 }
 
 /**
  * `betterAuth()` itself is synchronous, but wiring Apple requires signing a
  * JWT first (see auth/appleClientSecret.ts), so construction is async.
  */
-export async function createAuth({ env, db, client, emailSender }: CreateAuthOptions) {
+export async function createAuth({ env, db, client, emailSender, revenueCat }: CreateAuthOptions) {
   const baseURL =
     env.BETTER_AUTH_URL ?? `http://${env.HOST === '0.0.0.0' ? 'localhost' : env.HOST}:${env.PORT}`
 
@@ -57,7 +65,7 @@ export async function createAuth({ env, db, client, emailSender }: CreateAuthOpt
    */
   const tryRestore = async (userId: string, email: string): Promise<void> => {
     try {
-      await restoreLegacyProfile(db, userId, email, env.LEGACY_EMAIL_HASH_SALT)
+      await restoreLegacyProfile(db, userId, email, env.LEGACY_EMAIL_HASH_SALT, revenueCat)
     } catch (error) {
       console.error('[legacy-restore] failed', { userId, error })
     }

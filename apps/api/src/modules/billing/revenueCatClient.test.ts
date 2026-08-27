@@ -116,6 +116,34 @@ describe('createRevenueCatClient', () => {
     expect(result).toMatchObject({ tier: 'pro', store: 'unknown' })
   })
 
+  it('posts a lifetime promotional grant to the right endpoint', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve('{}') })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await createRevenueCatClient('sk_test').grantLifetimeEntitlement('user 1', 'pro_plus')
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.revenuecat.com/v1/subscribers/user%201/entitlements/pro_plus/promotional',
+      {
+        method: 'POST',
+        headers: { authorization: 'Bearer sk_test', 'content-type': 'application/json' },
+        // `duration: 'lifetime'` and not `end_time_ms`: there is no timestamp
+        // that means "never expires".
+        body: JSON.stringify({ duration: 'lifetime' }),
+      },
+    )
+  })
+
+  it('throws when a grant is refused, so the caller can report no gift', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({ ok: false, status: 404, text: () => Promise.resolve('no user') }),
+    )
+    await expect(
+      createRevenueCatClient('sk').grantLifetimeEntitlement('ghost', 'pro'),
+    ).rejects.toThrow('404')
+  })
+
   it('throws on a non-2xx so callers cannot mistake an outage for free', async () => {
     vi.stubGlobal(
       'fetch',

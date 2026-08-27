@@ -1,6 +1,13 @@
-import { TOKEN_RULES, convertLegacyTokens, meetsMinimumAge } from '@langx/shared'
+import {
+  TOKEN_RULES,
+  convertLegacyTokens,
+  lifetimeGrantFor,
+  meetsMinimumAge,
+  type PaidPlanTier,
+} from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import type { RevenueCatClient } from '../billing/revenueCatClient'
 import { awardTokens } from '../tokens/ledger'
 import { grantSignupBonus } from '../tokens/signupBonus'
 import type { Profile } from '../profiles/profiles'
@@ -23,6 +30,11 @@ export type RestoreOutcome =
       frozenStreak: number
       /** Threads whose other side had also returned, so they came back too. */
       conversationsImported: number
+      /**
+       * The lifetime tier gifted for a top-percentile v1 balance, or `null`
+       * for the great majority who earn none. See `LOYALTY_LIFETIME_GRANTS`.
+       */
+      lifetimeGranted: PaidPlanTier | null
     }
 
 /**
@@ -45,9 +57,10 @@ export async function restoreLegacyProfile(
   userId: string,
   email: string,
   salt: string | undefined,
+  billing?: RevenueCatClient,
 ): Promise<RestoreOutcome> {
   if (!salt) return { kind: 'no-legacy-account' }
-  return restoreByHash(db, userId, hashLegacyEmail(email, salt))
+  return restoreByHash(db, userId, hashLegacyEmail(email, salt), billing)
 }
 
 /**
@@ -59,6 +72,13 @@ export async function restoreByHash(
   db: Db,
   userId: string,
   legacyEmailHash: string,
+  /**
+   * Optional so that every caller which does not sell anything — and every
+   * test that only cares about the profile coming back — can leave it out.
+   * Without it the loyalty gift is simply not attempted, exactly as if no
+   * RevenueCat key were configured.
+   */
+  billing?: RevenueCatClient,
 ): Promise<RestoreOutcome> {
   const legacy = await findLegacyProfile(db, legacyEmailHash)
   if (!legacy) return { kind: 'no-legacy-account' }
@@ -109,6 +129,7 @@ export async function restoreByHash(
 
   const tokensCredited = await creditLegacyEconomy(db, userId, legacy, now)
   const conversations = await tryImportConversations(db, userId, legacy._id)
+  const lifetimeGranted = await tryGrantLifetime(billing, userId, legacy)
 
   /**
    * Written once, after both numbers are known, and for both branches above —
@@ -130,6 +151,7 @@ export async function restoreByHash(
           tokensCredited,
           frozenStreak: legacy.frozenStreak ?? 0,
           conversationsImported: conversations,
+          lifetimeGranted,
         },
       },
     },
@@ -141,7 +163,62 @@ export async function restoreByHash(
     tokensCredited,
     frozenStreak: legacy.frozenStreak ?? 0,
     conversationsImported: conversations,
+    lifetimeGranted,
   }
+}
+
+/**
+ * The v1 loyalty gift — lifetime Pro+ or Pro, by v1 token balance
+ * (`LOYALTY_LIFETIME_GRANTS`).
+ *
+ * Failure is swallowed for the same reason the conversation import's is —
+ * everything above has already been written, and reporting a restore that
+ * *did* happen as a failure is worse than a missing gift. It is also the
+ * house rule: optional services degrade, they do not crash. Someone missed
+ * here can be granted from the dashboard later; RevenueCat is the record
+ * either way, so nothing is lost but the automation.
+ *
+ * The first entitlement is the one that decides the tier, so it is awaited
+ * alone: if it fails there is no gift to report. The rest are belt-and-braces
+ * (Pro+ also grants `pro`, mirroring the products) and a failure among them
+ * leaves a recipient who is still correctly Pro+ by precedence — worth
+ * logging, not worth withholding the news over.
+ *
+ * Safe to replay: a promotional grant is an upsert on RevenueCat's side, and
+ * `markRestored` already makes a second restore for the same account a no-op.
+ */
+async function tryGrantLifetime(
+  billing: RevenueCatClient | undefined,
+  userId: string,
+  legacy: LegacyProfile,
+): Promise<PaidPlanTier | null> {
+  if (!billing) return null
+  const rung = lifetimeGrantFor(legacy.legacyTokenBalance)
+  if (!rung) return null
+
+  const [primary, ...rest] = rung.entitlements
+  if (!primary) return null
+
+  try {
+    await billing.grantLifetimeEntitlement(userId, primary)
+  } catch (error) {
+    console.error('[legacy-restore] lifetime grant failed', { userId, error })
+    return null
+  }
+
+  for (const entitlement of rest) {
+    try {
+      await billing.grantLifetimeEntitlement(userId, entitlement)
+    } catch (error) {
+      console.error('[legacy-restore] secondary lifetime grant failed', {
+        userId,
+        entitlement,
+        error,
+      })
+    }
+  }
+
+  return rung.tier
 }
 
 /**

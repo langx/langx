@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { PlanTier } from './limits'
+import type { PaidPlanTier, PlanTier } from './limits'
 
 /**
  * RevenueCat's own webhook payload has many more fields; this only declares
@@ -126,6 +126,65 @@ export function tierFromEntitlementIds(ids: readonly string[] | null | undefined
     if (ids.includes(candidate)) return ENTITLEMENT_TIERS[candidate]
   }
   return null
+}
+
+export interface LifetimeGrantRung {
+  /** Inclusive floor on the v1 token balance. */
+  minLegacyTokenBalance: number
+  /** The tier the recipient ends up on. */
+  tier: PaidPlanTier
+  /**
+   * Every entitlement to grant, the tier-defining one first.
+   *
+   * Pro+ lists `pro` as well, mirroring how the Pro+ *products* are configured:
+   * a bought Pro+ subscriber holds both ids, and a gifted one should be
+   * indistinguishable from them. Precedence would resolve `pro_plus` alone
+   * correctly today, so this is insurance rather than necessity — but the day
+   * something asks only about `pro`, the gift keeps working.
+   */
+  entitlements: readonly EntitlementId[]
+}
+
+/**
+ * Lifetime access, given to the v1 accounts that genuinely earned in the old
+ * economy — a thank-you, not a promotion.
+ *
+ * Two rungs, cut at v1's measured percentiles (`v1-reference.md`, 1403
+ * wallets: median 20, p90 9,136, p99 37,821, max 2.28M):
+ *
+ * | rung | v1 balance | gift          | roughly |
+ * | ---- | ---------- | ------------- | ------- |
+ * | p99  | ≥ 37,821   | lifetime Pro+ | 14      |
+ * | p90  | ≥ 9,136    | lifetime Pro  | 140     |
+ *
+ * Ordered **highest first**, and `lifetimeGrantFor` takes the first match, so
+ * a p99 balance gets Pro+ rather than also matching the p90 rung below it.
+ * The median wallet holds 20 tokens, so either cut separates cleanly; nobody
+ * lands here by accident.
+ *
+ * **This is granted through RevenueCat, never by writing `profiles.entitlement`
+ * directly.** The server treats RevenueCat as the only authority on
+ * entitlement — `refreshEntitlement` overwrites the stored tier with whatever
+ * RevenueCat reports — so a database-only gift is erased by the next
+ * `/billing/refresh` the app makes.
+ */
+export const LOYALTY_LIFETIME_GRANTS = [
+  { minLegacyTokenBalance: 37_821, tier: 'pro_plus', entitlements: ['pro_plus', 'pro'] },
+  { minLegacyTokenBalance: 9_136, tier: 'pro', entitlements: ['pro'] },
+] as const satisfies readonly LifetimeGrantRung[]
+
+/**
+ * The rung a v1 balance earns, or `null` for the great majority who earn none.
+ * A missing or nonsensical balance never qualifies — an absent number is not a
+ * large one.
+ */
+export function lifetimeGrantFor(
+  legacyTokenBalance: number | undefined | null,
+): LifetimeGrantRung | null {
+  if (typeof legacyTokenBalance !== 'number' || !Number.isFinite(legacyTokenBalance)) return null
+  return (
+    LOYALTY_LIFETIME_GRANTS.find((rung) => legacyTokenBalance >= rung.minLegacyTokenBalance) ?? null
+  )
 }
 
 /**

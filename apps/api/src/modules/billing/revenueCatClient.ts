@@ -23,6 +23,23 @@ export interface RevenueCatClient {
    * has to win.
    */
   getEntitlement(appUserId: string): Promise<SubscriberEntitlement | null>
+
+  /**
+   * Gives an entitlement outright, with no purchase behind it — RevenueCat's
+   * "promotional" grant, which is how the v1 loyalty gift is delivered.
+   *
+   * It has to go through RevenueCat rather than straight into
+   * `profiles.entitlement` because RevenueCat is the only authority the server
+   * recognises: `refreshEntitlement` replaces the stored tier with whatever
+   * RevenueCat reports, so a gift written only to the database is erased by
+   * the next `/billing/refresh`. Granted this way it also survives a reinstall
+   * and a new device, and is visible and revocable in the dashboard.
+   *
+   * Lifetime only, on purpose. RevenueCat now prefers `end_time_ms` over the
+   * older `duration` values, but there is no timestamp that means "never
+   * expires" — `duration: 'lifetime'` is the only way to express it.
+   */
+  grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void>
 }
 
 /**
@@ -94,6 +111,25 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
       }
       return null
     },
+
+    async grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
+      const response = await fetch(
+        `https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(appUserId)}/entitlements/${encodeURIComponent(entitlementId)}/promotional`,
+        {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${secretApiKey}`,
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({ duration: 'lifetime' }),
+        },
+      )
+      if (!response.ok) {
+        throw new Error(
+          `RevenueCat promotional grant failed (${response.status}): ${await response.text()}`,
+        )
+      }
+    },
   }
 }
 
@@ -101,7 +137,12 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
 export function createNotConfiguredRevenueCatClient(): RevenueCatClient {
   return {
     getEntitlement(): Promise<SubscriberEntitlement | null> {
-      return Promise.reject(new Error('Billing is not configured — set REVENUECAT_SECRET_API_KEY'))
+      return Promise.reject(new Error(NOT_CONFIGURED))
+    },
+    grantLifetimeEntitlement(): Promise<void> {
+      return Promise.reject(new Error(NOT_CONFIGURED))
     },
   }
 }
+
+const NOT_CONFIGURED = 'Billing is not configured — set REVENUECAT_SECRET_API_KEY'

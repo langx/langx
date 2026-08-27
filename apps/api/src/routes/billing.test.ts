@@ -23,9 +23,18 @@ class FakeRevenueCatClient implements RevenueCatClient {
    */
   unavailable = false
 
+  /** Every `grantLifetimeEntitlement` call, so tests can assert who got what. */
+  readonly grants: { appUserId: string; entitlementId: string }[] = []
+
   getEntitlement(): Promise<SubscriberEntitlement | null> {
     if (this.unavailable) return Promise.reject(new Error('Billing is not configured'))
     return Promise.resolve(this.next)
+  }
+
+  grantLifetimeEntitlement(appUserId: string, entitlementId: string): Promise<void> {
+    if (this.unavailable) return Promise.reject(new Error('Billing is not configured'))
+    this.grants.push({ appUserId, entitlementId })
+    return Promise.resolve()
   }
 }
 

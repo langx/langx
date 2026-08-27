@@ -70,7 +70,13 @@ export const loginRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const userId = await markVerified(app, email)
       const restored = userId
-        ? await restoreLegacyProfile(app.mongo.db, userId, email, app.env.LEGACY_EMAIL_HASH_SALT)
+        ? await restoreLegacyProfile(
+            app.mongo.db,
+            userId,
+            email,
+            app.env.LEGACY_EMAIL_HASH_SALT,
+            app.revenueCat,
+          )
         : null
 
       // Sign in properly now that the account is verified, so the caller gets

@@ -3,6 +3,7 @@ import {
   hasFeature,
   isPaidTier,
   type Gender,
+  type PaidPlanTier,
   type PlanFeature,
   type PlanTier,
 } from '@langx/shared'
@@ -88,6 +89,7 @@ export interface MeProfile {
     tokensCredited: number
     frozenStreak: number
     conversationsImported: number
+    lifetimeGranted?: PaidPlanTier | null
     acknowledgedAt?: string
     streakRestoredAt?: string
   }
