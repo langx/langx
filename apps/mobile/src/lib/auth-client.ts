@@ -2,8 +2,7 @@ import { APP_SCHEME } from '@langx/shared'
 import { expoClient } from '@better-auth/expo/client'
 import { createAuthClient } from 'better-auth/react'
 import * as SecureStore from 'expo-secure-store'
-
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000'
+import { API_URL } from './apiUrl'
 
 /**
  * One client for iOS, Android and web. `expoClient` branches on
