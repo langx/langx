@@ -108,6 +108,19 @@ const envSchema = z.object({
   APPWRITE_API_KEY: emptyToUndefined(z.string().optional()),
 
   SENTRY_DSN: emptyToUndefined(z.string().optional()),
+
+  /**
+   * Hard kill switch. Checked before the database-backed flag, because it is
+   * what you reach for when the database itself is the problem.
+   */
+  MAINTENANCE_MODE: z.preprocess((v) => v === 'true' || v === '1', z.boolean()).default(false),
+  /** User ids allowed through the maintenance gate, to verify a fix before reopening. */
+  ADMIN_USER_IDS: z
+    .preprocess(
+      (v) => (typeof v === 'string' && v.length > 0 ? v.split(',').map((s) => s.trim()) : []),
+      z.array(z.string()),
+    )
+    .default([]),
 })
 
 export type Env = z.infer<typeof envSchema>

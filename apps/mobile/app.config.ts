@@ -25,6 +25,8 @@ import type { ExpoConfig } from 'expo/config'
  * versionCode/buildNumber must stay above the published 119.
  */
 const APP_LINK_HOST = 'app.langx.io'
+// Existing EAS project, carried over from the abandoned rewrite.
+const EAS_PROJECT_ID = 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115'
 
 const config: ExpoConfig = {
   name: 'LangX',
@@ -59,6 +61,30 @@ const config: ExpoConfig = {
     output: 'static',
   },
 
+  /**
+   * Over-the-air updates. JS and assets reach users in minutes without a store
+   * review, which is the difference between fixing a crash today and fixing it
+   * next week. Native changes — a new module, a new permission, an SDK bump —
+   * still require a build and a submission.
+   *
+   * `fallbackToCacheTimeout: 0` means launch never blocks on the network: the
+   * app starts on the bundle it already has and picks up a new one in the
+   * background, applied on the next launch. Blocking would trade a crash for a
+   * spinner on a bad connection.
+   */
+  updates: {
+    url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
+    fallbackToCacheTimeout: 0,
+  },
+
+  /**
+   * An update is only offered to a build with the same runtime version, which
+   * is what stops a JS bundle expecting a native module the installed binary
+   * does not have. Tied to the SDK, so it changes exactly when the native
+   * layer does.
+   */
+  runtimeVersion: { policy: 'sdkVersion' },
+
   plugins: ['expo-router'],
 
   experiments: {
@@ -66,10 +92,7 @@ const config: ExpoConfig = {
   },
 
   extra: {
-    eas: {
-      // Existing EAS project, carried over from the abandoned rewrite.
-      projectId: 'c331c0a6-b2fc-4664-a9a3-c04d1fb2c115',
-    },
+    eas: { projectId: EAS_PROJECT_ID },
   },
 }
 

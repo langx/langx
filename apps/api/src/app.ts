@@ -13,7 +13,9 @@ import type { Server as SocketIOServer } from 'socket.io'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
+import { registerMaintenanceGate } from './middleware/maintenance'
 import { accountRoutes } from './routes/account'
+import { appConfigRoutes } from './routes/appConfig'
 import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
 import { conversationRoutes } from './routes/conversations'
@@ -157,7 +159,11 @@ export async function buildApp({
     return reply.code(404).send(body)
   })
 
+  // Before every route, so nothing slips past it.
+  registerMaintenanceGate(app)
+
   await app.register(healthRoutes)
+  await app.register(appConfigRoutes)
   await registerAuthRoutes(app, auth)
   await app.register(profileRoutes)
   await app.register(handleRoutes)

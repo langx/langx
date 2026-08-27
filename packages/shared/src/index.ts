@@ -1,5 +1,6 @@
 export * from './account'
 export * from './age'
+export * from './appConfig'
 export * from './appScheme'
 export * from './billing'
 export * from './cefr'

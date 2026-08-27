@@ -502,6 +502,102 @@ $sort:     score desc, lastActiveAt desc  → cursor pagination
 If the Pro distance filter is on, `$geoNear` must be the pipeline's **first**
 stage.
 
+## Updates, maintenance and remote config
+
+Three layers ship independently, and the difference between them decides how
+fast a fix reaches anyone.
+
+| Layer                  | How it updates                                    | How long                 |
+| ---------------------- | ------------------------------------------------- | ------------------------ |
+| Web                    | redeploy the static export                        | next page load           |
+| API                    | redeploy the container                            | immediate                |
+| Mobile — JS and assets | **EAS Update** (`eas update --branch production`) | minutes, next app launch |
+| Mobile — native        | EAS Build + store submission                      | days, store review       |
+
+### Over-the-air updates
+
+`expo-updates` points at EAS Update on the `production` and `preview` channels
+already declared in `eas.json`. Screens, logic, copy and most bug fixes go out
+this way without a store review; a new native module, a new permission or an
+SDK bump still needs a build.
+
+`runtimeVersion` follows the SDK version, which is what stops a JS bundle
+being offered to a binary whose native layer cannot run it.
+
+Launch never blocks on the network (`fallbackToCacheTimeout: 0`): the app
+starts on the bundle it has and picks up a new one in the background, applied
+on the **next** launch. Reloading under someone mid-conversation is worse than
+shipping the fix a few minutes later. A bad update is undone with
+`eas update:rollback`.
+
+### Runtime config
+
+One document (`appConfig`, `_id: 'current'`) answers three questions that would
+otherwise each need their own mechanism, because all three are "the server
+needs to tell the client something now":
+
+```ts
+{
+  maintenance: { enabled, message, until },
+  minVersion:  { ios, android, web },
+  flags:       { translationEnabled, discoveryEnabled, signupsEnabled }
+}
+```
+
+`GET /app-config` is unauthenticated and exempt from the maintenance gate —
+it is how a client finds out _why_ everything else is refusing it. The client
+reads it at launch and whenever the app returns to the foreground, not on a
+timer: someone who left the app open overnight should learn about maintenance
+when they come back, and polling would spend battery to learn nothing almost
+every time.
+
+Reads are cached in memory for 10 seconds, so consulting it on every request
+costs nothing while a flipped switch still feels immediate.
+
+### Maintenance mode
+
+Two switches, checked in this order:
+
+1. `MAINTENANCE_MODE=true` — a hard kill switch that keeps working when the
+   **database** is the problem, which is exactly the situation it exists for.
+   Toggling it needs a redeploy.
+2. The `appConfig` flag — the everyday one. A single write, effective within
+   the cache TTL, no redeploy.
+
+While maintenance is on every route returns `503 MAINTENANCE` with a
+`Retry-After` header, except `/health` (a 503 there would make the platform
+restart the container in a loop), `/app-config`, and Better Auth's routes — so
+an admin listed in `ADMIN_USER_IDS` can sign in and verify the fix against the
+real system before letting anyone else back in.
+
+Operated from a script rather than an admin endpoint, because this is the
+control you reach for when something is wrong and it should not depend on the
+API being healthy enough to authenticate you:
+
+```bash
+tsx scripts/maintenance.ts on "Back at 14:00 UTC" 2026-08-27T14:00:00Z
+tsx scripts/maintenance.ts off
+tsx scripts/maintenance.ts min-version ios 2.1.0
+tsx scripts/maintenance.ts flag translationEnabled false
+```
+
+### The version gate
+
+OTA updates are not instant — someone who has not opened the app in a month is
+still on an old bundle, and a server change that assumes a newer client breaks
+for them silently. Raising `minVersion` turns that into an explicit "update to
+continue" screen, which first tries an OTA update and only falls back to the
+store when there is nothing to download.
+
+A missing **or unparseable** version header never forces an update. Parsing
+junk as `0.0.0` would compare below every minimum and lock the user out, which
+is exactly backwards: a header we cannot read is our problem, not theirs.
+
+The client gate fails **open**. If `/app-config` is unreachable the app runs
+normally — a config endpoint being down must never be the reason a working app
+refuses to start. The server's own 503s remain the real enforcement; the screen
+only makes them legible.
+
 ## Account deletion and data rights
 
 App Store guideline 5.1.1(v) requires in-app account deletion for any app that

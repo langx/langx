@@ -5,6 +5,7 @@ import { useRef, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
+import { AppGate } from '../src/components/AppGate'
 import { authClient } from '../src/lib/auth-client'
 import { colors } from '../src/lib/theme'
 
@@ -55,16 +56,18 @@ export default function RootLayout() {
             <ActivityIndicator />
           </View>
         ) : (
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Protected guard={!!session}>
-              <Stack.Screen name="index" />
-              <Stack.Screen name="(onboarding)" />
-              <Stack.Screen name="(app)" />
-            </Stack.Protected>
-            <Stack.Protected guard={!session}>
-              <Stack.Screen name="(auth)" />
-            </Stack.Protected>
-          </Stack>
+          <AppGate>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Protected guard={!!session}>
+                <Stack.Screen name="index" />
+                <Stack.Screen name="(onboarding)" />
+                <Stack.Screen name="(app)" />
+              </Stack.Protected>
+              <Stack.Protected guard={!session}>
+                <Stack.Screen name="(auth)" />
+              </Stack.Protected>
+            </Stack>
+          </AppGate>
         )}
       </QueryClientProvider>
     </SafeAreaProvider>

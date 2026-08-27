@@ -483,6 +483,40 @@ The `!Device.isDevice` guard inside the hook never got a chance to run, because
 the module died while loading. The import now sits inside the `useEffect`'s
 try/catch, after the guards.
 
+## Updates — OTA plus a server-side gate, chosen together
+
+The two were designed as one thing because they answer the same question from
+opposite ends: EAS Update gets new code to people quickly, and `minVersion`
+handles everyone it has not reached yet. Either alone leaves a gap — OTA with
+no gate means old clients silently break against a changed API, and a gate with
+no OTA means the only remedy is a store round-trip.
+
+Rejected: a self-hosted update server (correct for the project's open-source
+posture, but signing, manifests and rollback are a phase of work on their own,
+and EAS Update is already wired to the channels in `eas.json`), and
+store-updates-only (an urgent fix would take days and could never reach people
+who stop updating).
+
+## Maintenance — two switches on purpose
+
+The database-backed flag is the everyday one: a single write, no redeploy. The
+env variable exists for the case the database is what broke, where a
+config-read-based gate cannot help. Two mechanisms is a cost, but one of them
+covers precisely where the other fails.
+
+`/health` stays open while maintenance is on. Returning 503 there would make
+the deploy platform's health check fail and restart the container in a loop —
+turning a planned maintenance window into an outage of a different kind.
+
+## The version gate must fail permissive, and a test caught it failing closed
+
+The first implementation parsed an unparseable version as `0.0.0`, which
+compares below every minimum — so a malformed or truncated header would have
+shown a forced-update screen to someone whose app was fine, with no way out.
+`isUpdateRequired` now validates the shape first and returns false for anything
+it cannot read. Being wrong in the permissive direction is the only safe way to
+be wrong here.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

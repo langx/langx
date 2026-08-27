@@ -28,6 +28,10 @@ export const ERROR_CODES = {
   NOT_FOUND: 'NOT_FOUND',
   VALIDATION_FAILED: 'VALIDATION_FAILED',
   RATE_LIMITED: 'RATE_LIMITED',
+  /** The service is deliberately down. The client shows a maintenance screen, not an error. */
+  MAINTENANCE: 'MAINTENANCE',
+  /** This client is older than the minimum the server will serve — see appConfig.minVersion. */
+  UPDATE_REQUIRED: 'UPDATE_REQUIRED',
   INTERNAL: 'INTERNAL',
 } as const
 
@@ -59,5 +63,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   NOT_FOUND: 404,
   VALIDATION_FAILED: 400,
   RATE_LIMITED: 429,
+  MAINTENANCE: 503,
+  UPDATE_REQUIRED: 426,
   INTERNAL: 500,
 }
