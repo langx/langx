@@ -3,9 +3,10 @@
 LangX v2 — a language-exchange app. Expo (iOS/Android/web) + Fastify + MongoDB,
 in a pnpm workspace. Open source, BSD-3, and **the repo is public**.
 
-Start with [`docs/architecture.md`](docs/architecture.md) for the design and
+Start with [`docs/architecture.md`](docs/architecture.md) for the design,
 [`docs/decisions.md`](docs/decisions.md) for why things are shaped the way they
-are. Both are worth reading before changing anything structural — several
+are, and [`docs/v1-reference.md`](docs/v1-reference.md) for the identifiers of
+the system this replaces. Both are worth reading before changing anything structural — several
 decisions look arbitrary until you know what went wrong the first time.
 
 ## Layout

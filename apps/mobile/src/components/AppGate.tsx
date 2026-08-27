@@ -7,8 +7,13 @@ import { colors, font, spacing } from '../lib/theme'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
 
+/**
+ * The *existing* listings, inherited from v1 — v2 ships as an update to them,
+ * not as a new app. `market://` opens the Play app directly when it is
+ * installed; the https form is the fallback the web build needs anyway.
+ */
 const STORE_URL = Platform.select({
-  ios: 'https://apps.apple.com/app/id0000000000',
+  ios: 'https://apps.apple.com/app/id6474187141',
   android: 'market://details?id=tech.newchapter.languageXchange',
   default: 'https://langx.io',
 })

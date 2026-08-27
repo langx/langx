@@ -10,11 +10,24 @@ base.
 **This gates the entire Android release and nothing else can proceed without
 it.** Check Play Console → Test and release → App Integrity → Play app signing.
 
-| State                                                       | What it means                                                                                                                                                                                    |
-| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Play App Signing enabled**                                | A lost upload key is recoverable. Generate a new keystore, export `upload_certificate.pem`, and request a reset in Play Console. Google keeps the app signing key, so nothing changes for users. |
-| **Enabled, and we still hold the original upload keystore** | Best case. Import it into EAS with `eas credentials`.                                                                                                                                            |
-| **Disabled, and the original keystore is lost**             | The Android listing cannot be updated. There is no workaround.                                                                                                                                   |
+**The original keystore was found.** `langx-angular/android/release.keystore`
+(2708 bytes, dated 10 January 2024) is v1's release key, with a second copy at
+`backup/languageXchange/android/release.keystore`. It is not in any repo — it
+sits in the working copy, gitignored — and signing was done by hand rather than
+in CI, so the password is not in `gradle.properties`, `build.gradle` or any
+workflow. Only the owner has it.
+
+That turns the worst case into a formality, but confirm which of these applies:
+
+| State                                       | What it means                                                                                                                                                                                 |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **We hold the keystore and its password**   | Best case, and the likely one. Import it with `eas credentials` and submit normally.                                                                                                          |
+| **Play App Signing enabled, password lost** | Still recoverable. Generate a new keystore, export `upload_certificate.pem`, and request an upload key reset in Play Console. Google keeps the app signing key, so nothing changes for users. |
+| **Disabled, and the password is lost**      | The Android listing cannot be updated. There is no workaround.                                                                                                                                |
+
+Back the keystore up somewhere that is not a working directory before touching
+anything else. Losing it is the one failure in this document with no recovery
+path.
 
 Two things about the reset path, both of which affect the schedule: the request
 must come from the **Account Owner** (or an account with release + App Signing
@@ -26,12 +39,14 @@ in the plan before promising a date.
 Four values in `apps/mobile/app.config.ts` are load-bearing. They look like
 leftovers. They are not.
 
-| Value                  | Must stay                                                                                                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ios.bundleIdentifier` | `tech.newchapter.languageXchange`                                                                                                                  |
-| `android.package`      | `tech.newchapter.languageXchange`                                                                                                                  |
-| `scheme`               | **Both** schemes. v1 registered `tech.newchapter.languagexchange` (lowercase x). Ship only `langx` and every deep link already in the wild breaks. |
-| App links              | `https://app.langx.io`, `autoVerify` — carried from v1's AndroidManifest                                                                           |
+| Value                    | Must stay                                                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ios.bundleIdentifier`   | `tech.newchapter.languageXchange`                                                                                                                  |
+| `android.package`        | `tech.newchapter.languageXchange`                                                                                                                  |
+| App Store Connect app id | `6474187141` (wired into `eas.json` submit)                                                                                                        |
+| Apple Team ID            | `8F63M4JH8P`                                                                                                                                       |
+| `scheme`                 | **Both** schemes. v1 registered `tech.newchapter.languagexchange` (lowercase x). Ship only `langx` and every deep link already in the wild breaks. |
+| App links                | `https://app.langx.io`, `autoVerify` — carried from v1's AndroidManifest                                                                           |
 
 `versionCode` and `buildNumber` must both start **above 119**, the published
 v1 version. They are currently 120.
@@ -46,7 +61,7 @@ be tested end to end until they are:
 - [ ] Subscription group + products created in App Store Connect
 - [ ] Subscription products created in Play Console
 - [ ] RevenueCat project connected to both, API keys issued
-- [ ] `ascAppId` filled into `eas.json`'s submit profile
+- [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not
       yet enabled — deliberately, rather than shipping a button that cannot work)
