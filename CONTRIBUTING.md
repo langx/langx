@@ -7,7 +7,7 @@ Thanks for helping out. LangX is BSD-3 licensed and stays open source.
 ```
 apps/api        Fastify + MongoDB API (auth, REST, Socket.io — one process)
 apps/mobile     Expo app; iOS, Android and web come out of this codebase
-packages/shared zod schemas, DTO types, language/CEFR tables, PLAN_LIMITS, TOKEN_RULES
+packages/shared zod schemas, DTO types, language + level tables, PLAN_LIMITS, TOKEN_RULES
 packages/config shared tsconfig + eslint presets
 ```
 
@@ -44,6 +44,39 @@ reset-password links print to the console instead of sending until
 `RESEND_API_KEY` is set.
 
 `pnpm dev:api`, `pnpm dev:mobile` and `pnpm dev:web` run them individually.
+
+## Running on a phone
+
+The web build and the simulators cover most of it, but three things only
+exist on a real device: push notifications, App Links opening the app
+instead of the browser, and Sign in with Apple's native sheet. All three
+need a **development build** — Expo Go cannot load the app's native modules.
+
+```bash
+cd apps/mobile
+eas login                       # once
+eas build --profile development --platform ios       # or android
+```
+
+Install the result, then `pnpm dev` and scan the QR code. The API does not
+need any extra configuration: it already listens on `0.0.0.0`, and the app
+takes the host from the dev server it connected to rather than from
+`EXPO_PUBLIC_API_URL`, whose `localhost` would be the phone itself. Both
+have to be on the same network.
+
+To build the native project locally instead — useful for checking that a
+newly added native module links, without waiting on a build queue:
+
+```bash
+npx expo prebuild --platform ios --clean
+cd ios && pod install
+npx expo run:ios --device "<simulator name or udid>"
+```
+
+`ios/` and `android/` are generated and gitignored; nothing in them is
+edited by hand, and `--clean` throws them away and regenerates from
+`app.config.ts`. Building onto a physical iPhone this way additionally
+needs a signing certificate in Xcode, which the EAS route handles for you.
 
 ## Before you open a PR
 

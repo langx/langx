@@ -172,6 +172,11 @@ be tested end to end until they are:
       so it gates the iOS release rather than merely improving it. Until both
       are set the sign-in screen simply does not draw the buttons
 - [x] `ascAppId` (6474187141) and `appleTeamId` (8F63M4JH8P) in `eas.json`
+- [ ] `EXPO_PUBLIC_API_URL` set on the `preview` and `production` build
+      profiles in `eas.json`. Only `development` sets it today, and only to
+      localhost — which a development build rewrites to the dev server's
+      address at runtime, but a released build has no dev server and would
+      ship pointing at the phone itself
 - [ ] `EXPO_PUBLIC_REVENUECAT_*` keys set, `react-native-purchases` wired into
       the paywall screen (which today states the offer and says purchase is not
       yet enabled — deliberately, rather than shipping a button that cannot work)

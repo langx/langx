@@ -1,7 +1,22 @@
+import Constants from 'expo-constants'
 import * as Device from 'expo-device'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
 import { api } from '../api/client'
+
+/**
+ * Expo needs to know which project a push token belongs to. It can usually
+ * work this out from the app config on its own, but when it cannot it throws —
+ * and every caller here swallows errors, so the failure would show up as
+ * notifications simply never arriving, with nothing logged anywhere. Passing
+ * it explicitly costs one line and removes that failure mode.
+ */
+function pushTokenOptions(): { projectId?: string } {
+  const eas = Constants.expoConfig?.extra?.eas as { projectId?: string } | undefined
+  // Omitted rather than passed as undefined, which `exactOptionalPropertyTypes`
+  // rejects — and omitting it leaves Expo to work it out, the old behaviour.
+  return eas?.projectId ? { projectId: eas.projectId } : {}
+}
 
 /**
  * Registers this device's Expo push token with the API.
@@ -22,7 +37,7 @@ export async function registerPushToken(): Promise<void> {
     // native module and works normally.
     const Notifications = await import('expo-notifications')
 
-    const token = await Notifications.getExpoPushTokenAsync()
+    const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
     await api.post('/me/devices', {
       pushToken: token.data,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
@@ -55,7 +70,7 @@ export async function unregisterPushToken(): Promise<void> {
     // No permission means no token was ever registered from this device.
     if (!existing.granted) return
 
-    const token = await Notifications.getExpoPushTokenAsync()
+    const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
     await api.delete(`/me/devices/${encodeURIComponent(token.data)}`)
   } catch {
     // See above: never block a sign-out.
