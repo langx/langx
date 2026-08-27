@@ -4,6 +4,7 @@ import { warmUpAuthCollections } from './auth/warmUp'
 import { connectToDatabase } from './db/client'
 import { ensureIndexes } from './db/indexes'
 import { createEmailSender } from './email/sender'
+import { attachSentryErrorHandler, initSentry } from './observability/sentry'
 import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
@@ -15,6 +16,9 @@ import { startDailyPoolScheduler } from './modules/xp/poolScheduler'
 
 async function main(): Promise<void> {
   const env = loadEnv()
+
+  // Before anything else, so a failure during startup is reported too.
+  const sentryEnabled = initSentry(env)
 
   const { client, db, close } = await connectToDatabase(env.MONGODB_URI, env.MONGODB_DB)
 
@@ -32,8 +36,10 @@ async function main(): Promise<void> {
 
   // Declarative indexes are applied before the first request is served, so a
   // fresh environment can never answer a discovery query without them.
+  if (sentryEnabled) attachSentryErrorHandler(app)
+
   const indexResults = await ensureIndexes(db)
-  app.log.info({ collections: indexResults.length }, 'indexes ensured')
+  app.log.info({ collections: indexResults.length, sentry: sentryEnabled }, 'indexes ensured')
 
   await warmUpAuthCollections(auth, db, app.log)
 

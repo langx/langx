@@ -43,6 +43,9 @@ catalog:
   # mobile client
   '@tanstack/react-query': ^5.90.2
 
+  # observability
+  '@sentry/node': ^10.19.0
+
   # react / expo (SDK 57)
   react: 19.2.3
   react-dom: 19.2.3
