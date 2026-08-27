@@ -4,6 +4,7 @@ import {
   type AccountDeletionStatus,
   type DataExport,
   type Leaderboard,
+  TOKEN_RULES,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { ObjectId } from 'mongodb'
@@ -261,7 +262,11 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(started.statusCode).toBe(201) // the message went through
 
       const summary = await get(frozen, '/me/tokens')
-      expect(summary.json<{ tokens: { all: number } }>().tokens.all).toBe(0) // but paid nothing
+      // Their all-time total still holds the signup grant, which is not an
+      // earning — the ranked week is what says they were paid nothing.
+      const tokens = summary.json<{ tokens: { all: number; week: number } }>().tokens
+      expect(tokens.week).toBe(0)
+      expect(tokens.all).toBe(TOKEN_RULES.signupBonus)
       // Activity is still recorded, so a reviewer clearing the freeze can reconcile.
       expect(summary.json<{ today: { messages: number } }>().today.messages).toBe(1)
     })

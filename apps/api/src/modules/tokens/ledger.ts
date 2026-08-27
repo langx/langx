@@ -1,4 +1,11 @@
-import { aggregateId, periodKeys, utcDayKey, type PeriodType, type TokenKind } from '@langx/shared'
+import {
+  aggregateId,
+  isGrantKind,
+  periodKeys,
+  utcDayKey,
+  type PeriodType,
+  type TokenKind,
+} from '@langx/shared'
 import { MongoServerError, ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -68,6 +75,16 @@ function isDuplicateKeyError(error: unknown, indexName: string): boolean {
  *
  * `amount <= 0` writes nothing at all: a message that hit its daily cap should
  * leave no trace, not a row worth zero.
+ *
+ * **Grants are the exception to step 2.** A signup bonus, a welcome-back bonus
+ * and a converted v1 balance credit the all-time total only — see
+ * `TOKEN_GRANT_KINDS`. All-time is where a spendable balance comes from, so
+ * they stay spendable; the week, month and year buckets are what the
+ * leaderboard ranks, and nobody did anything this week to deserve them.
+ * Counting them would put whoever signed up most recently above whoever
+ * actually talked to someone, and on launch week a returning user would top
+ * the weekly table with tokens earned in 2023. The ledger row still carries
+ * every period key, so a recompute can always tell where the award landed.
  */
 export async function awardTokens(db: Db, input: AwardTokensInput): Promise<AwardTokensResult> {
   if (input.amount <= 0) return { awarded: false, amount: 0, reason: 'zero' }
@@ -97,8 +114,12 @@ export async function awardTokens(db: Db, input: AwardTokensInput): Promise<Awar
     throw error
   }
 
+  const credited: PeriodType[] = isGrantKind(input.kind)
+    ? ['all']
+    : (Object.keys(keys) as PeriodType[])
+
   await db.collection<TokenAggregate>(COLLECTIONS.tokenAggregates).bulkWrite(
-    (Object.keys(keys) as PeriodType[]).map((periodType) => ({
+    credited.map((periodType) => ({
       updateOne: {
         filter: { _id: aggregateId(input.userId, periodType, keys[periodType]) },
         update: {

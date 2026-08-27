@@ -11,6 +11,7 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import { restoreByHash } from '../handles/legacyRestore'
+import { grantSignupBonus } from '../tokens/signupBonus'
 
 export interface Profile {
   _id: string
@@ -144,6 +145,10 @@ export async function createProfile(
     }
     throw error
   }
+
+  // Idempotent on the ledger's unique index, so it does not matter that the
+  // restore below may reach for it again.
+  await grantSignupBonus(db, userId, now)
 
   // Finishes a restore that could not run at verification time because the v1
   // record was missing something this form has just supplied. A no-op for

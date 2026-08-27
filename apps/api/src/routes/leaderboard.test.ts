@@ -372,7 +372,7 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(result.entries).toHaveLength(1)
       expect(result.viewer.inPage).toBe(false)
       expect(result.viewer.rank).toBeGreaterThan(1)
-      expect(result.viewer.tokens).toBe(1)
+      expect(result.viewer.tokens).toBe(TOKEN_RULES.signupBonus + 1)
     })
 
     it('serves the four periods and defaults to the current week', async () => {
@@ -427,10 +427,10 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
 
       const after = await wallet(user)
       expect(after.spent).toBe(frame.price)
-      expect(after.balance).toBe(100)
+      expect(after.balance).toBe(TOKEN_RULES.signupBonus + 100)
       expect(after.owned).toContain(frame.id)
       // Earned token — and therefore the standing — is unchanged by spending.
-      expect(after.earned).toBe(frame.price + 100)
+      expect(after.earned).toBe(TOKEN_RULES.signupBonus + frame.price + 100)
       const rankAfter = (await board(user, '?period=all')).viewer
       expect(rankAfter.tokens).toBe(rankBefore.tokens)
       expect(rankAfter.rank).toBe(rankBefore.rank)

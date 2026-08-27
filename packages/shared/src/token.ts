@@ -25,6 +25,8 @@ export const TOKEN_KINDS = [
   'legacyTokenConversion',
   /** One-off bonus for a returning v1 user completing their restore. */
   'welcomeBack',
+  /** One-off starting balance, so a new account has something to spend. */
+  'signupBonus',
   /**
    * The only kind with a negative `amount`. Spends are recorded in the ledger
    * for audit but deliberately do **not** touch `tokenAggregates`: the
@@ -34,6 +36,30 @@ export const TOKEN_KINDS = [
   'spend',
 ] as const
 export type TokenKind = (typeof TOKEN_KINDS)[number]
+
+/**
+ * Kinds that are **given**, not earned.
+ *
+ * These credit the all-time total — which is where a spendable balance comes
+ * from — but deliberately not the week, month or year buckets the leaderboard
+ * ranks. Nobody did anything this week to deserve them, and counting them
+ * would put whoever signed up (or came back from v1) most recently above
+ * whoever actually talked to people. On launch week that is not a hypothetical:
+ * a returning user's converted v1 balance would top the weekly table with
+ * tokens earned in 2023.
+ *
+ * `adjustment` is not here on purpose. It exists to correct a real award, so
+ * it has to land in the same periods that award did.
+ */
+export const TOKEN_GRANT_KINDS = [
+  'legacyTokenConversion',
+  'welcomeBack',
+  'signupBonus',
+] as const satisfies readonly TokenKind[]
+
+export function isGrantKind(kind: TokenKind): boolean {
+  return (TOKEN_GRANT_KINDS as readonly TokenKind[]).includes(kind)
+}
 export const tokenKindSchema = z.enum(TOKEN_KINDS)
 
 export interface TokenRules {
@@ -100,6 +126,17 @@ export interface TokenRules {
   legacyTokenDivisor: number
   /** Flat bonus when a returning v1 user's profile is restored. */
   welcomeBackBonus: number
+  /**
+   * What a brand-new account starts with, so the token store is not inert on
+   * day one. Set to the price of a streak freeze plus change: the freeze is
+   * the one thing worth owning before you have earned anything, because it
+   * protects the first day you miss — and buying it is how someone finds out
+   * the economy is real.
+   *
+   * Deliberately below the cheapest cosmetic (500). A starting grant that buys
+   * a frame outright would make the cheapest frame mean nothing.
+   */
+  signupBonus: number
 }
 
 /**
@@ -146,6 +183,7 @@ export const TOKEN_RULES: TokenRules = {
   },
   legacyTokenDivisor: 100,
   welcomeBackBonus: 250,
+  signupBonus: 250,
 }
 
 export interface ActivityCounters {

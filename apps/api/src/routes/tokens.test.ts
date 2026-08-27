@@ -1,8 +1,16 @@
-import { TOKEN_RULES, localDayKey, shiftDayKey, utcDayKey, type TokenSummary } from '@langx/shared'
+import {
+  TOKEN_GRANT_KINDS,
+  TOKEN_RULES,
+  localDayKey,
+  shiftDayKey,
+  utcDayKey,
+  type TokenSummary,
+} from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
+import { grantSignupBonus } from '../modules/tokens/signupBonus'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
@@ -95,10 +103,15 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     return response.json<TokenSummary>()
   }
 
-  function ledgerOf(userId: string) {
+  /**
+   * Everything this user *earned*. Grants are filtered out because every
+   * account now starts with a signup bonus, and no test here is about it —
+   * counting it would turn "one award for one message" into "two rows".
+   */
+  function earnedLedgerOf(userId: string) {
     return handle.db
       .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
-      .find({ userId })
+      .find({ userId, kind: { $nin: [...TOKEN_GRANT_KINDS] } })
       .sort({ createdAt: 1 })
       .toArray()
   }
@@ -168,13 +181,41 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       await startConversation(sender, recipient.userId, 'merhaba')
 
       const body = await summary(sender)
-      expect(body.tokens.all).toBe(TOKEN_RULES.award.message)
+      // All-time carries the signup grant as well, because that is where a
+      // spendable balance is read from. The three ranked periods carry only
+      // what was earned — see `TOKEN_GRANT_KINDS`.
+      expect(body.tokens.all).toBe(TOKEN_RULES.signupBonus + TOKEN_RULES.award.message)
       expect(body.tokens.year).toBe(TOKEN_RULES.award.message)
       expect(body.tokens.month).toBe(TOKEN_RULES.award.message)
       expect(body.tokens.week).toBe(TOKEN_RULES.award.message)
       expect(body.today.messages).toBe(1)
       expect(body.today.distinctPartners).toBe(1)
-      expect(await ledgerOf(sender.userId)).toHaveLength(1)
+      expect(await earnedLedgerOf(sender.userId)).toHaveLength(1)
+    })
+
+    /**
+     * The reason grants are kept out of the ranked periods: without this, a
+     * brand-new account would sit on the weekly leaderboard with 250 tokens it
+     * did nothing for, above everyone who actually talked to someone.
+     */
+    it('keeps the signup grant out of every ranked period', async () => {
+      const user = await newUser('grant-periods@example.com')
+
+      const body = await summary(user)
+      expect(body.tokens.all).toBe(TOKEN_RULES.signupBonus)
+      expect(body.tokens.year).toBe(0)
+      expect(body.tokens.month).toBe(0)
+      expect(body.tokens.week).toBe(0)
+    })
+
+    it('grants the starting balance exactly once, however the profile was made', async () => {
+      const user = await newUser('grant-once@example.com')
+
+      // A replay of the grant — what a retried onboarding, or a restore
+      // running after the form, would do.
+      const again = await grantSignupBonus(handle.db, user.userId)
+      expect(again).toBe(0)
+      expect((await summary(user)).tokens.all).toBe(TOKEN_RULES.signupBonus)
     })
 
     it('never pays the same message twice, however many times it is replayed', async () => {
@@ -203,7 +244,9 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       const after = await summary(recipient)
       expect(after.tokens.all).toBe(before.tokens.all)
       expect(
-        (await ledgerOf(recipient.userId)).filter((row) => row.refId === message._id.toHexString()),
+        (await earnedLedgerOf(recipient.userId)).filter(
+          (row) => row.refId === message._id.toHexString(),
+        ),
       ).toHaveLength(1)
     })
 
@@ -222,7 +265,7 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       )
 
       expect(results.filter((r) => r.awarded)).toHaveLength(1)
-      expect((await summary(user)).tokens.all).toBe(42)
+      expect((await summary(user)).tokens.all).toBe(TOKEN_RULES.signupBonus + 42)
     })
 
     it('writes nothing at all for a zero award', async () => {
@@ -234,7 +277,7 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
         refId: 'nothing',
       })
       expect(result.awarded).toBe(false)
-      expect(await ledgerOf(user.userId)).toHaveLength(0)
+      expect(await earnedLedgerOf(user.userId)).toHaveLength(0)
     })
   })
 
@@ -270,7 +313,9 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       const aAfter = (await summary(a)).tokens.all
       const bAfter = (await summary(b)).tokens.all
       expect(aAfter - aBefore).toBe(TOKEN_RULES.award.mutualConversation)
-      expect(bAfter).toBe(TOKEN_RULES.award.message + TOKEN_RULES.award.mutualConversation)
+      expect(bAfter).toBe(
+        TOKEN_RULES.signupBonus + TOKEN_RULES.award.message + TOKEN_RULES.award.mutualConversation,
+      )
 
       // Every further message in the same thread earns the message award only.
       await reply(b.userId, conversationId, 'nasilsin')

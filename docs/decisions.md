@@ -821,6 +821,38 @@ country most of v1's users live in is spelled "Türkiye", so without folding the
 single most likely search on the filter screen returns Turkmenistan and the
 Turks & Caicos Islands and nothing else.
 
+## A new account starts with tokens, and grants do not rank you
+
+A brand-new account had a balance of zero, which made the token store inert on
+day one: every row priced out, nothing to try, and no way to find out the
+economy is real. New accounts now start with `TOKEN_RULES.signupBonus`.
+
+The amount is the price of a streak freeze plus change, and deliberately below
+the cheapest cosmetic. The freeze is the one thing worth owning before you have
+earned anything — it protects the first day you miss — and buying it is how
+someone discovers the store works. A grant that bought a frame outright would
+make the cheapest frame mean nothing.
+
+There is no farming incentive to defend against: tokens cannot be bought, sold,
+traded, transferred or withdrawn, so a second account earns its owner nothing
+they can use on the first.
+
+**Adding it exposed a bug that was already shipped.** `awardTokens` increments
+all four period aggregates, so a one-off grant lands in this week's, this
+month's and this year's buckets — the ones the leaderboard ranks. A signup
+bonus would have put every new account above people who had actually talked to
+someone, and the same was already true of `welcomeBack` and
+`legacyTokenConversion`: on launch week, returning v1 users would have topped
+the weekly table with tokens earned in 2023. That is not what the divisor
+decision was weighing, which was only the all-time table.
+
+So `TOKEN_GRANT_KINDS` credit **all-time only**. All-time is where a spendable
+balance is read from, so grants stay spendable; the ranked periods stay a
+record of what someone did in them. `adjustment` is deliberately not a grant —
+it exists to correct a real award, so it has to land where that award did. The
+ledger row still carries every period key, so a recompute can always see where
+an award actually fell.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

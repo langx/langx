@@ -2,6 +2,7 @@ import { TOKEN_RULES, convertLegacyTokens, meetsMinimumAge } from '@langx/shared
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { awardTokens } from '../tokens/ledger'
+import { grantSignupBonus } from '../tokens/signupBonus'
 import type { Profile } from '../profiles/profiles'
 import { resolveHandleClaim } from './handleReservations'
 import { hashLegacyEmail } from './legacyEmailHash'
@@ -88,6 +89,10 @@ export async function restoreByHash(
       return { kind: 'needs-onboarding', missing: ['handle'] }
     }
     await profiles.insertOne(buildProfile(userId, legacy, now))
+    // This is the other place a profile comes into existence — a restored user
+    // never sees the onboarding form, so the starting grant has to happen here
+    // too. Idempotent, so the overlap with `createProfile` costs nothing.
+    await grantSignupBonus(db, userId, now)
   } else {
     // They onboarded first and are only now proving the email. Restore the
     // parts the form never asked for.
