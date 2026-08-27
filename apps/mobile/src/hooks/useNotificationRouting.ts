@@ -32,7 +32,7 @@ export function useNotificationRouting(): void {
 
         subscription = Notifications.addNotificationResponseReceivedListener((response) => {
           const href = notificationRoute(response.notification.request.content.data)
-          if (href) router.push(href as never)
+          if (href) router.push(href)
         })
 
         const initial = await Notifications.getLastNotificationResponseAsync()
@@ -41,7 +41,7 @@ export function useNotificationRouting(): void {
         // `push`, not `replace`: the tab the app opened on stays underneath, so
         // the back gesture out of the conversation goes somewhere sensible
         // instead of off the end of the stack.
-        if (href) router.push(href as never)
+        if (href) router.push(href)
       } catch {
         // No notifications module here — nothing to route.
       }
