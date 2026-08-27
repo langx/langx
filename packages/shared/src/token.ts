@@ -46,7 +46,8 @@ export interface TokenRules {
   }
   caps: {
     /**
-     * Max message-token a user can earn per **UTC** day.
+     * Max messages that pay per **UTC** day. This counts messages, not
+     * tokens — the 101st message of the day awards nothing.
      *
      * Deliberately UTC, unlike the streak. A cap is a ceiling on ledger rows,
      * and ledger rows are bucketed by UTC day/week/month; if the cap reset on
@@ -56,7 +57,7 @@ export interface TokenRules {
      * east" exploit periods.ts warns about. Only the streak is local.
      */
     messagesPerDay: number
-    /** Max message-token per partner per UTC day — blocks single-partner farming. */
+    /** Max paying messages per partner per UTC day — blocks single-partner farming. */
     messagesPerPartnerPerDay: number
   }
   /** Bonus token at streak milestones, keyed by day count. */
