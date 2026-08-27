@@ -8,7 +8,6 @@ Thanks for helping out. LangX is BSD-3 licensed and stays open source.
 apps/api        Fastify + MongoDB API (auth, REST, Socket.io — one process)
 apps/mobile     Expo app; iOS, Android and web come out of this codebase
 packages/shared zod schemas, DTO types, language + level tables, PLAN_LIMITS, TOKEN_RULES
-packages/config shared tsconfig + eslint presets
 ```
 
 `packages/shared` is the contract between the two apps. If a limit, error code or
