@@ -758,16 +758,19 @@ Apple's privacy questionnaire and Play's Data Safety form have to be updated
 _before_ that build goes out, not after, and the promise-update copy in phase
 13 is where users hear about it.
 
-**`insight.langx.io` has been removed from the code**, across all the v1
-repositories: the script tags on the website, the token site and the Ionic
-app, the `INSIGHT` environment entry and the "Insights" row in that app's
-about page, the `usePlausible` hook in the abandoned React Native attempt,
-and the README links. Two things are deliberately left: the Better Stack
-status page section, which lives in their dashboard and not in any repo, and
-the blog post announcing the public dashboard — deleting a published article
-is a separate decision from removing a dead link. Killing the instance while
-those still point at it leaves dead links on exactly the properties someone
-checks when deciding whether the project is still alive.
+**`insight.langx.io` is gone from every repository**: the script tags on the
+website, the token site and the Ionic app, the `INSIGHT` environment entry
+and the "Insights" row in that app's about page, the `usePlausible` hook in
+the abandoned React Native attempt, and the README links. The Better Stack
+status page section was removed by hand, since it lives in their dashboard
+and not in any repo.
+
+The blog post announcing the public dashboard was deleted outright rather
+than rewritten. Rewriting it would have meant a public article explaining
+that the numbers became commercially sensitive the moment there was
+something to sell — true, and a worse thing to say out loud than saying
+nothing. The transparency claim it made is not being replaced by a smaller
+claim; it is being replaced by the stats page, or by nothing.
 
 ## Known risks
 
