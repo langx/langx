@@ -64,6 +64,19 @@ export interface MeProfile {
   entitlement: { tier: 'free' | 'pro'; expiresAt?: string }
   streak: { current: number; longest: number }
   cosmetics?: string[]
+  /**
+   * Present only when a v1 account was restored onto this one. `/profiles/me`
+   * carries it because the restore may well have happened on another device —
+   * an email link clicked on a laptop — so this is how the phone finds out.
+   * Absent from every public profile.
+   */
+  restoredFromV1?: {
+    at: string
+    tokensCredited: number
+    frozenStreak: number
+    conversationsImported: number
+    acknowledgedAt?: string
+  }
 }
 
 export function useProfile(handleOrId: string) {
