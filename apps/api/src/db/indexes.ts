@@ -131,6 +131,13 @@ export const INDEXES: Partial<IndexSpec> = {
 
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
 
+  [COLLECTIONS.streakReminders]: [
+    // `_id` is `<userId>:<localDay>` and carries the uniqueness; this TTL just
+    // stops the collection growing forever — a nudge from last month proves
+    // nothing today.
+    { key: { sentOn: 1 }, name: 'ttl_7d', expireAfterSeconds: 7 * 24 * 60 * 60 },
+  ],
+
   [COLLECTIONS.jobRuns]: [
     // The only defence against a double-run cron distributing the pool twice.
     { key: { job: 1, periodKey: 1 }, name: 'job_period_unique', unique: true },

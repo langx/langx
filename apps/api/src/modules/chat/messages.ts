@@ -3,6 +3,7 @@ import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
+import { blockedUserIds } from '../moderation/blocks'
 import { awardForSend } from '../xp/awards'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
@@ -198,7 +199,15 @@ export async function listConversations(
 ): Promise<ConversationPage> {
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
 
-  const filter: Document = { participants: userId }
+  // A blocked counterpart's thread disappears from the list entirely.
+  // `assertConversationAccess` already refuses to open it; without this the
+  // thread would still sit in the list, unopenable — the worst of both.
+  const hidden = await blockedUserIds(db, userId)
+  // On an array field `$nin` means "contains none of these", so this reads as
+  //: my threads, minus any whose participant list includes someone hidden.
+  const filter: Document = {
+    participants: hidden.length > 0 ? { $eq: userId, $nin: hidden } : userId,
+  }
   if (query.cursor) {
     const { date, id } = decodeDateIdCursor(query.cursor)
     filter.$or = [

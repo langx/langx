@@ -8,6 +8,7 @@ import {
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
+import { blockedUserIds } from '../moderation/blocks'
 import type { XpAggregate } from './ledger'
 
 /**
@@ -42,6 +43,11 @@ export async function getLeaderboard(
     .limit(query.limit)
     .toArray()
 
+  // Blocked either way, and the person drops out of the table — same rule as
+  // discovery and the conversation list. Their rank position stays occupied,
+  // so blocking someone does not promote you past them.
+  const hidden = new Set(await blockedUserIds(db, viewerId))
+
   const profiles = await db
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
@@ -60,7 +66,7 @@ export async function getLeaderboard(
     const profile = byId.get(row.userId)
     const rank = rankOf(index, row.xp, previous)
     previous = { rank, xp: row.xp }
-    if (!profile) continue
+    if (!profile || hidden.has(row.userId)) continue
 
     const entry: LeaderboardEntry = {
       rank,

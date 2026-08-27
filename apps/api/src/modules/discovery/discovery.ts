@@ -12,6 +12,7 @@ import {
 } from '@langx/shared'
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { blockedUserIds } from '../moderation/blocks'
 import { ApiError } from '../../lib/ApiError'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
@@ -80,12 +81,9 @@ export async function discoverProfiles(
   // language if the caller asked for a specific target, otherwise any of mine.
   const wantTheirNative = query.targetLanguage ? [query.targetLanguage] : myLearningCodes
 
-  const blocks = db.collection<{ blockerId: string; blockedId: string }>(COLLECTIONS.blocks)
-  const [blockedByMe, blockedMe] = await Promise.all([
-    blocks.distinct('blockedId', { blockerId: viewerId }),
-    blocks.distinct('blockerId', { blockedId: viewerId }),
-  ])
-  const excludedIds = [viewerId, ...blockedByMe, ...blockedMe]
+  // One helper for "everyone I must not see", shared with the conversation
+  // list, the leaderboard and profile views — see `blockedUserIds`.
+  const excludedIds = [viewerId, ...(await blockedUserIds(db, viewerId))]
 
   const match: Document = {
     _id: { $nin: excludedIds },

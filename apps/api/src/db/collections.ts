@@ -30,6 +30,9 @@ export const COLLECTIONS = {
   xpAggregates: 'xpAggregates',
   dailyActivity: 'dailyActivity',
 
+  /** One row per user per local day a streak nudge was sent — the dedupe key. */
+  streakReminders: 'streakReminders',
+
   // ops
   jobRuns: 'jobRuns',
   appwriteIdMap: 'appwriteIdMap',

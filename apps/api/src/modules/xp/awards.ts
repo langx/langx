@@ -53,12 +53,10 @@ export async function awardForSend(
   )
 
   // A user under review earns nothing until the freeze is lifted. The message
-  // still sends, the activity counters still move — only the payout stops, so
-  // lifting the freeze later can be reconciled from the untouched history.
-  if (sender?.xpFrozenAt) {
-    const streak = await recordQualifyingAction(db, sender, at)
-    return { xp: 0, streak, capped: false }
-  }
+  // still sends and the activity counters below still move — only the payout
+  // stops, so a reviewer who clears the report can reconcile what was withheld
+  // from a history that was never interrupted.
+  const frozen = Boolean(sender?.xpFrozenAt)
 
   let xp = 0
   let capped = false
@@ -71,7 +69,7 @@ export async function awardForSend(
     const award = await awardXp(db, {
       userId: senderId,
       kind: 'correction',
-      amount: XP_RULES.award.correction,
+      amount: frozen ? 0 : XP_RULES.award.correction,
       refId: message._id.toHexString(),
       at,
     })
@@ -91,7 +89,7 @@ export async function awardForSend(
     const award = await awardXp(db, {
       userId: senderId,
       kind: 'message',
-      amount: capped ? 0 : XP_RULES.award.message,
+      amount: capped || frozen ? 0 : XP_RULES.award.message,
       refId: message._id.toHexString(),
       at,
     })
@@ -109,10 +107,13 @@ export async function awardForSend(
         at,
         partnerId: participantId === senderId ? partnerId : senderId,
       })
+      // The partner is not the one under review, so their half of the
+      // reciprocity bonus is unaffected by the sender's freeze.
+      const frozenHere = participantId === senderId ? frozen : false
       const award = await awardXp(db, {
         userId: participantId,
         kind: 'message',
-        amount: XP_RULES.award.mutualConversation,
+        amount: frozenHere ? 0 : XP_RULES.award.mutualConversation,
         refId: mutualRefId(conversation),
         at,
       })

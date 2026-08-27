@@ -13,6 +13,7 @@ import type { Server as SocketIOServer } from 'socket.io'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
+import { accountRoutes } from './routes/account'
 import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
 import { conversationRoutes } from './routes/conversations'
@@ -21,11 +22,13 @@ import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
 import { messageRoutes } from './routes/messages'
+import { moderationRoutes } from './routes/moderation'
 import { profileRoutes } from './routes/profiles'
 import { translationRoutes } from './routes/translate'
 import { leaderboardRoutes } from './routes/leaderboard'
 import { xpRoutes } from './routes/xp'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
+import { LoggingPushSender, type PushSender } from './modules/push/devices'
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
@@ -38,6 +41,7 @@ declare module 'fastify' {
     storage: StorageProvider
     translation: TranslationProvider
     revenueCat: RevenueCatClient
+    push: PushSender
     appVersion: string
     io: SocketIOServer
   }
@@ -51,6 +55,12 @@ export interface BuildAppOptions {
   storage: StorageProvider
   translation: TranslationProvider
   revenueCat: RevenueCatClient
+  /**
+   * Defaults to the logging no-op. Production passes `ExpoPushSender`
+   * explicitly from index.ts; leaving it optional keeps every test from having
+   * to name a dependency it never exercises.
+   */
+  push?: PushSender
   version?: string
 }
 
@@ -62,6 +72,7 @@ export async function buildApp({
   storage,
   translation,
   revenueCat,
+  push = new LoggingPushSender(),
   version = '2.0.0',
 }: BuildAppOptions): Promise<FastifyInstance> {
   const app = Fastify({
@@ -89,6 +100,7 @@ export async function buildApp({
   app.decorate('storage', storage)
   app.decorate('translation', translation)
   app.decorate('revenueCat', revenueCat)
+  app.decorate('push', push)
   app.decorate('appVersion', version)
 
   await app.register(helmet, { contentSecurityPolicy: false })
@@ -157,6 +169,8 @@ export async function buildApp({
   await app.register(billingRoutes)
   await app.register(xpRoutes)
   await app.register(leaderboardRoutes)
+  await app.register(moderationRoutes)
+  await app.register(accountRoutes)
 
   // Attached last: Socket.io only needs `app.server` (Fastify creates the
   // underlying http.Server synchronously at construction) plus the

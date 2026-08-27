@@ -5,9 +5,49 @@ import { z, ZodError } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { assertConversationAccess } from '../modules/chat/access'
 import { markConversationRead, sendCorrection, sendTextMessage } from '../modules/chat/messages'
+import { tokensFor } from '../modules/push/devices'
 
 function userRoom(userId: string): string {
   return `user:${userId}`
+}
+
+/**
+ * Pushes a new message to the recipient — but only if they have no socket in
+ * their room. Someone with the thread open on screen does not need their phone
+ * to buzz about the message they are watching arrive.
+ *
+ * Best-effort by design: a failed push must never fail the send. The message is
+ * already durably written and already delivered over the socket by this point.
+ */
+async function notifyRecipient(
+  app: FastifyInstance,
+  io: AppServer,
+  conversation: { participants: readonly string[] },
+  message: { senderId: string; body: string; conversationId: { toHexString: () => string } },
+): Promise<void> {
+  try {
+    const recipientId = conversation.participants.find((id) => id !== message.senderId)
+    if (!recipientId) return
+    const sockets = await io.in(userRoom(recipientId)).fetchSockets()
+    if (sockets.length > 0) return
+
+    const [sender, tokens] = await Promise.all([
+      app.mongo.db
+        .collection<{ displayName?: string; handle: string }>('profiles')
+        .findOne({ _id: message.senderId as unknown as never }),
+      tokensFor(app.mongo.db, recipientId),
+    ])
+    if (tokens.length === 0) return
+
+    await app.push.send({
+      to: tokens,
+      title: sender?.displayName ?? sender?.handle ?? 'LangX',
+      body: message.body.slice(0, 120),
+      data: { kind: 'message', conversationId: message.conversationId.toHexString() },
+    })
+  } catch (error) {
+    app.log.warn({ err: error }, 'push notification failed')
+  }
 }
 
 interface SocketData {
@@ -107,6 +147,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           for (const participantId of conversation.participants) {
             io.to(userRoom(participantId)).emit('message:new', message)
           }
+          void notifyRecipient(app, io, conversation, message)
           ack?.({ ok: true, data: message })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))

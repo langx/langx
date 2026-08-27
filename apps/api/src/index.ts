@@ -8,6 +8,9 @@ import { loadEnv } from './env'
 import { createStorageProvider } from './storage/createStorageProvider'
 import { createTranslationProvider } from './translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from './modules/billing/createRevenueCatClient'
+import { startPurgeScheduler } from './modules/account/purgeScheduler'
+import { ExpoPushSender } from './modules/push/devices'
+import { startStreakReminderScheduler } from './modules/push/reminderScheduler'
 import { startDailyPoolScheduler } from './modules/xp/poolScheduler'
 
 async function main(): Promise<void> {
@@ -23,7 +26,9 @@ async function main(): Promise<void> {
 
   const revenueCat = createRevenueCatClientFromEnv(env)
 
-  const app = await buildApp({ env, client, db, auth, storage, translation, revenueCat })
+  const push = new ExpoPushSender()
+
+  const app = await buildApp({ env, client, db, auth, storage, translation, revenueCat, push })
 
   // Declarative indexes are applied before the first request is served, so a
   // fresh environment can never answer a discovery query without them.
@@ -34,11 +39,15 @@ async function main(): Promise<void> {
 
   // Started here rather than in `buildApp` so tests get an app with no timers
   // running behind them — they drive `runDailyPool` directly instead.
-  const poolScheduler = startDailyPoolScheduler(db, app.log)
+  const schedulers = [
+    startDailyPoolScheduler(db, app.log),
+    startPurgeScheduler(db, app.log),
+    startStreakReminderScheduler(db, push, app.log),
+  ]
 
   const shutdown = async (signal: string): Promise<void> => {
     app.log.info({ signal }, 'shutting down')
-    poolScheduler.stop()
+    for (const scheduler of schedulers) scheduler.stop()
     await app.close()
     await close()
     process.exit(0)

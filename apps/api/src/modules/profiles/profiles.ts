@@ -41,6 +41,7 @@ export interface Profile {
     updatedAt: Date
   }
   quota: { initiations: Date[]; translations: Date[] }
+  photos?: { url: string; createdAt: Date }[]
   streak: { current: number; longest: number; lastQualifiedDay: string | null }
   /** Banked streak freezes; one is spent automatically to bridge a single missed day. */
   streakFreezes?: number
@@ -228,4 +229,69 @@ export async function setAvatarUrl(db: Db, userId: string, avatarUrl: string): P
     )
   if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
   return result
+}
+
+export interface PublicProfile {
+  _id: string
+  handle: string
+  displayName: string
+  avatarUrl?: string
+  photos: { url: string }[]
+  bio?: string
+  age: number
+  gender: Profile['gender']
+  country?: string
+  city?: string
+  nativeLanguages: { code: string }[]
+  learning: { code: string; level: string; priority: number }[]
+  interests: string[]
+  streak: { current: number; longest: number }
+  tier: 'free' | 'pro'
+  cosmetics: string[]
+  isOnline: boolean
+  lastActiveAt: Date
+}
+
+const ONLINE_WINDOW_MS = 5 * 60 * 1000
+
+/**
+ * What one user is allowed to see of another. Built by naming fields rather
+ * than deleting them from the stored document: a field added to `Profile`
+ * later — a new quota bucket, an internal flag — is then private by default
+ * instead of leaking the first time someone forgets to add it to a blocklist.
+ *
+ * `birthYear` becomes an age, deliberately: it is what the UI shows, and the
+ * exact year is more identifying than the product needs.
+ */
+export function toPublicProfile(profile: Profile, now: Date = new Date()): PublicProfile {
+  const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
+  const result: PublicProfile = {
+    _id: profile._id,
+    handle: profile.handle,
+    displayName: profile.displayName ?? profile.handle,
+    photos: (profile.photos ?? []).map((p) => ({ url: p.url })),
+    age: new Date().getUTCFullYear() - profile.birthYear,
+    gender: profile.gender,
+    nativeLanguages: profile.nativeLanguages ?? [],
+    learning: profile.learning ?? [],
+    interests: profile.interests ?? [],
+    streak: { current: profile.streak?.current ?? 0, longest: profile.streak?.longest ?? 0 },
+    tier: profile.entitlement?.tier ?? 'free',
+    cosmetics: profile.cosmetics ?? [],
+    isOnline: now.getTime() - new Date(lastActiveAt).getTime() < ONLINE_WINDOW_MS,
+    lastActiveAt: new Date(lastActiveAt),
+  }
+  if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
+  if (profile.bio !== undefined) result.bio = profile.bio
+  if (profile.country !== undefined) result.country = profile.country
+  if (profile.city !== undefined) result.city = profile.city
+  return result
+}
+
+/** Looks up by `@handle` or by user id — the two things a deep link can carry. */
+export async function findProfileByHandleOrId(db: Db, handleOrId: string): Promise<Profile | null> {
+  const key = handleOrId.startsWith('@') ? handleOrId.slice(1) : handleOrId
+  return db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOne({ $or: [{ _id: key }, { handle: key }], deletedAt: { $exists: false } })
 }
