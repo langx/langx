@@ -2,13 +2,14 @@ import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { type AddressInfo } from 'node:net'
 import { io as ioClient, type Socket as ClientSocket } from 'socket.io-client'
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import type { Profile } from '../modules/profiles/profiles'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
@@ -501,5 +502,72 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     })
     expect(ack.ok).toBe(false)
     expect(ack.error?.code).toBe('BLOCKED')
+  })
+
+  describe('presence', () => {
+    async function lastActiveAt(userId: string): Promise<Date> {
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: userId })
+      return new Date(profile!.stats.lastActiveAt)
+    }
+
+    /** Backdate so any write at all is visible as a jump forward. */
+    async function backdate(userId: string): Promise<Date> {
+      const stale = new Date(Date.now() - 60 * 60 * 1000)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: userId }, { $set: { 'stats.lastActiveAt': stale } })
+      return stale
+    }
+
+    /**
+     * Before this, `lastActiveAt` moved only when a message was sent, so
+     * someone who opened the app and browsed was never "online".
+     */
+    it('marks a user active as soon as they connect', async () => {
+      const user = await newUser('presence-connect@example.com')
+      const stale = await backdate(user.userId)
+
+      await connectSocket(user.cookie)
+      await vi.waitFor(async () => {
+        expect((await lastActiveAt(user.userId)).getTime()).toBeGreaterThan(stale.getTime())
+      })
+    })
+
+    /**
+     * `now`, not an offline flag: it starts the five-minute decay from the
+     * moment they left, and a decaying timestamp cannot get stuck the way a
+     * boolean left `true` by a crashed process can.
+     */
+    it('stamps the moment they leave on disconnect', async () => {
+      const user = await newUser('presence-disconnect@example.com')
+      const socket = await connectSocket(user.cookie)
+      await vi.waitFor(async () => {
+        expect((await lastActiveAt(user.userId)).getTime()).toBeGreaterThan(0)
+      })
+
+      const stale = await backdate(user.userId)
+      socket.disconnect()
+      await vi.waitFor(async () => {
+        expect((await lastActiveAt(user.userId)).getTime()).toBeGreaterThan(stale.getTime())
+      })
+    })
+
+    it('refuses a client looping on the heartbeat, through the ack', async () => {
+      const user = await newUser('presence-flood@example.com')
+      const socket = await connectSocket(user.cookie)
+
+      const codes: (string | undefined)[] = []
+      for (let i = 0; i < 8; i++) {
+        const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+          socket.emit('presence:ping', {}, (response: { ok: boolean; error?: { code: string } }) =>
+            resolve(response),
+          )
+        })
+        codes.push(ack.ok ? undefined : ack.error?.code)
+      }
+      expect(codes).toContain('RATE_LIMITED')
+    })
   })
 })

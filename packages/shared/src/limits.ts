@@ -65,6 +65,14 @@ export interface PlanLimits {
   /** Browse without leaving a profileViews record. */
   incognito: boolean
   /**
+   * Turn off the green dot: nobody sees you as online, and you still see them.
+   *
+   * Separate from `incognito`, which is about *who viewed my profile* and has
+   * never touched presence. One flag doing both would make the store's
+   * privacy description and the paywall copy wrong about each other.
+   */
+  hideOnlineStatus: boolean
+  /**
    * Distance-sorted discovery (`sort=nearby`).
    *
    * Pro+ only, and gates the *sort* alone. Sharing a location is free and
@@ -107,6 +115,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: false,
     profileViewerIdentities: false,
     incognito: false,
+    hideOnlineStatus: false,
     nearby: false,
     copilot: false,
     maxPhotos: 6,
@@ -119,6 +128,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: true,
     profileViewerIdentities: true,
     incognito: true,
+    hideOnlineStatus: true,
     nearby: false,
     copilot: false,
     maxPhotos: 6,
@@ -137,6 +147,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     advancedFilters: true,
     profileViewerIdentities: true,
     incognito: true,
+    hideOnlineStatus: true,
     nearby: true,
     copilot: true,
     maxPhotos: 6,
@@ -163,7 +174,12 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters', 'profileViewerIdentities', 'incognito'] as const
+export const PRO_FEATURES = [
+  'advancedFilters',
+  'profileViewerIdentities',
+  'incognito',
+  'hideOnlineStatus',
+] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -199,6 +215,7 @@ export const PRO_BENEFITS = [
   'unlimitedTranslation',
   'profileViewerIdentities',
   'incognito',
+  'hideOnlineStatus',
 ] as const
 export type ProBenefit = (typeof PRO_BENEFITS)[number]
 

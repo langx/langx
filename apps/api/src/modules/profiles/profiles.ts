@@ -3,6 +3,7 @@ import {
   PLAN_LIMITS,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
+  isOnlineAt,
   meetsMinimumAge,
   toGeoPoint,
   type GeoPoint,
@@ -16,6 +17,7 @@ import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
+import { hidesOnlineStatus } from './presenceVisibility'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
@@ -57,7 +59,7 @@ export interface Profile {
     discoverable: boolean
     notifications: boolean
   }
-  privacy: { incognito: boolean }
+  privacy: { incognito: boolean; hideOnlineStatus?: boolean }
   entitlement: {
     tier: PlanTier
     expiresAt?: Date
@@ -159,7 +161,7 @@ export async function createProfile(
       discoverable: true,
       notifications: true,
     },
-    privacy: { incognito: false },
+    privacy: { incognito: false, hideOnlineStatus: false },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
@@ -250,6 +252,21 @@ export async function updateProfile(
     Object.entries(input).filter(([, value]) => value !== undefined),
   )
 
+  /**
+   * `privacy` is written key by key, not as a sub-document.
+   *
+   * `$set: { privacy: {...} }` replaces the whole thing, so a request naming
+   * one flag silently clears the other. That was latent while `privacy` had a
+   * single field and is a live bug the moment it has two: a client toggling
+   * incognito would turn the caller's online status back on without asking.
+   * `settings` above is safe only because both its keys are always sent
+   * together; this one is not.
+   */
+  const { privacy, ...rest } = definedUpdates as { privacy?: Record<string, boolean> }
+  const privacyPaths = Object.fromEntries(
+    Object.entries(privacy ?? {}).map(([key, value]) => [`privacy.${key}`, value]),
+  )
+
   const now = new Date()
   let timezoneUpdatedAt: Date | null = null
 
@@ -275,7 +292,8 @@ export async function updateProfile(
     { _id: userId },
     {
       $set: {
-        ...definedUpdates,
+        ...rest,
+        ...privacyPaths,
         ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
         updatedAt: now,
       },
@@ -365,7 +383,12 @@ export interface PublicProfile {
   tier: PlanTier
   cosmetics: string[]
   isOnline: boolean
-  lastActiveAt: Date
+  /**
+   * Absent when the profile hides its online status. Sending a fresh
+   * timestamp alongside `isOnline: false` would let any client recompute the
+   * truth in one subtraction, which makes the setting theatre.
+   */
+  lastActiveAt?: Date
   /** Account creation, shown as an age — `formatAccountAge` does the wording. */
   createdAt: Date
   /**
@@ -374,8 +397,6 @@ export interface PublicProfile {
    */
   emailVerified: boolean
 }
-
-const ONLINE_WINDOW_MS = 5 * 60 * 1000
 
 /**
  * What one user is allowed to see of another. Built by naming fields rather
@@ -396,6 +417,7 @@ export function toPublicProfile(
   now: Date = new Date(),
 ): PublicProfile {
   const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
+  const hidden = hidesOnlineStatus(profile)
   const result: PublicProfile = {
     _id: profile._id,
     handle: profile.handle,
@@ -412,11 +434,11 @@ export function toPublicProfile(
     // everyone else a PRO badge the server already refuses to honour.
     tier: effectivePlanTier(profile.entitlement?.tier ?? 'free', profile.entitlement?.expiresAt),
     cosmetics: profile.cosmetics ?? [],
-    isOnline: now.getTime() - new Date(lastActiveAt).getTime() < ONLINE_WINDOW_MS,
-    lastActiveAt: new Date(lastActiveAt),
+    isOnline: hidden ? false : isOnlineAt(lastActiveAt, now),
     createdAt: profile.createdAt,
     emailVerified,
   }
+  if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio
   if (profile.country !== undefined) result.country = profile.country

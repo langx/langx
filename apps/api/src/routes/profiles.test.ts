@@ -6,6 +6,7 @@ import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
+import type { Profile } from '../modules/profiles/profiles'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { authId } from '../lib/authId'
@@ -711,6 +712,122 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
 
       expect(response.statusCode).toBe(200)
       expect(response.json<{ emailVerified: boolean }>().emailVerified).toBe(false)
+    })
+  })
+
+  describe('hiding your online status', () => {
+    async function onboarded(email: string, userHandle: string): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: userHandle }),
+      })
+      if (created.statusCode !== 201) throw new Error(`onboarding failed: ${created.body}`)
+      return user
+    }
+
+    const makePro = (userId: string) =>
+      handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+
+    const patchPrivacy = (user: SignedUpUser, privacy: Record<string, boolean>) =>
+      app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { privacy },
+      })
+
+    it('refuses to turn it on without a paid tier, naming the feature', async () => {
+      const free = await onboarded('hide-free@example.com', 'hidefree')
+      const response = await patchPrivacy(free, { hideOnlineStatus: true })
+
+      expect(response.statusCode).toBe(403)
+      expect(response.json<{ code: string; feature: string }>()).toMatchObject({
+        code: 'UPGRADE_REQUIRED',
+        feature: 'hideOnlineStatus',
+      })
+    })
+
+    /**
+     * Gated on write, not on read — unlike incognito. Re-checking at read time
+     * would make a lapsed subscription silently expose someone as online, so
+     * turning it *off* has to work on any tier or people get stuck hidden.
+     */
+    it('always allows turning it off, on any tier', async () => {
+      const user = await onboarded('hide-off@example.com', 'hideoff')
+      const response = await patchPrivacy(user, { hideOnlineStatus: false })
+      expect(response.statusCode, response.body).toBe(200)
+    })
+
+    it('reports a hidden Pro user as offline, and sends no lastActiveAt at all', async () => {
+      const hider = await onboarded('hide-pro@example.com', 'hidepro')
+      const viewer = await onboarded('hide-viewer@example.com', 'hideviewer')
+      await makePro(hider.userId)
+      expect((await patchPrivacy(hider, { hideOnlineStatus: true })).statusCode).toBe(200)
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/hidepro',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{ isOnline: boolean; lastActiveAt?: string }>()
+      expect(body.isOnline).toBe(false)
+      // Omitted, not stale: a fresh timestamp beside `isOnline: false` lets
+      // any client recompute the truth in one subtraction.
+      expect(body).not.toHaveProperty('lastActiveAt')
+
+      // Still recorded server-side; only the answer to other people changes.
+      const stored = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: hider.userId })
+      expect(stored?.stats.lastActiveAt).toBeInstanceOf(Date)
+    })
+
+    /**
+     * `$set: { privacy: {...} }` replaces the sub-document, so a request
+     * naming one flag used to clear the other. Latent while `privacy` had one
+     * field; a live bug the moment it has two.
+     */
+    it('does not clear the other privacy flag when one is updated', async () => {
+      const user = await onboarded('hide-partial@example.com', 'hidepartial')
+      await makePro(user.userId)
+
+      expect((await patchPrivacy(user, { hideOnlineStatus: true })).statusCode).toBe(200)
+      expect((await patchPrivacy(user, { incognito: true })).statusCode).toBe(200)
+
+      const after = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(after?.privacy).toMatchObject({ incognito: true, hideOnlineStatus: true })
+
+      expect((await patchPrivacy(user, { incognito: false })).statusCode).toBe(200)
+      const later = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(later?.privacy).toMatchObject({ incognito: false, hideOnlineStatus: true })
+    })
+
+    /** The two flags are independent; incognito never touched presence. */
+    it('leaves online status alone when only incognito is on', async () => {
+      const hider = await onboarded('incog-only@example.com', 'incogonly')
+      const viewer = await onboarded('incog-viewer@example.com', 'incogviewer')
+      await makePro(hider.userId)
+      await patchPrivacy(hider, { incognito: true })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/incogonly',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.json<{ lastActiveAt?: string }>().lastActiveAt).toBeDefined()
     })
   })
 })

@@ -43,9 +43,10 @@ export async function awardForSend(
 
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
-  // One unconditional write for liveness: `stats.lastActiveAt` is what
-  // discovery's "online now" filter and its `active` sort read, and until now
-  // nothing had ever updated it after onboarding.
+  // `modules/presence` is the primary writer of `stats.lastActiveAt` now —
+  // connect, heartbeat and disconnect. This one stays because it is inside
+  // the award funnel's single write, and pulling it out would widen this diff
+  // into the token economy for no behavioural gain.
   const sender = await profiles.findOneAndUpdate(
     { _id: senderId },
     { $set: { 'stats.lastActiveAt': at }, $inc: { 'stats.messagesSent': 1 } },

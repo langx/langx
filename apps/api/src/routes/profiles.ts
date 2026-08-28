@@ -1,10 +1,16 @@
-import { locationInputSchema, onboardingProfileSchema, updateProfileSchema } from '@langx/shared'
+import {
+  hasFeature,
+  locationInputSchema,
+  onboardingProfileSchema,
+  updateProfileSchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { blockedUserIds } from '../modules/moderation/blocks'
 import { recordProfileView } from '../modules/moderation/profileViews'
+import { effectiveTier } from '../modules/profiles/entitlement'
 import {
   clearLocation,
   createProfile,
@@ -76,6 +82,26 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
     '/profiles/me',
     { preHandler: requireAuth, schema: { body: updateProfileSchema } },
     async (request, reply) => {
+      /**
+       * The one field gated on *write* rather than at read time.
+       *
+       * `incognito` re-checks the tier every time it is honoured, which is
+       * right for it: nothing is lost if a lapsed subscriber starts leaving
+       * profile-view rows again. Doing that here would silently make someone
+       * visible as online because a payment failed — a privacy setting
+       * revoked by a billing event, without telling them. Turning it *off* is
+       * always allowed, so nobody is ever stuck hidden either.
+       */
+      if (request.body.privacy?.hideOnlineStatus === true) {
+        const current = await getProfile(app.mongo.db, request.userId)
+        if (!current) throw new ApiError('NOT_FOUND', 'Profile not found')
+        if (!hasFeature(effectiveTier(current), 'hideOnlineStatus')) {
+          throw new ApiError('UPGRADE_REQUIRED', 'Hiding your online status is a Pro feature', {
+            feature: 'hideOnlineStatus',
+          })
+        }
+      }
+
       const profile = await updateProfile(app.mongo.db, request.userId, request.body)
       return reply.send(profile)
     },

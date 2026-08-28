@@ -131,7 +131,14 @@ export const updateProfileSchema = z
       discoverable: z.boolean(),
       notifications: z.boolean(),
     }),
-    privacy: z.object({ incognito: z.boolean() }),
+    /**
+     * `.partial()` on the inner object as well as the outer one. With two
+     * keys and both required, every existing client sending
+     * `{ privacy: { incognito } }` would start failing validation the moment
+     * the second key landed. See `updateProfile` — a partial `privacy` also
+     * has to be written as dotted paths, or the `$set` drops the other flag.
+     */
+    privacy: z.object({ incognito: z.boolean(), hideOnlineStatus: z.boolean() }).partial(),
   })
   .partial()
   .refine(

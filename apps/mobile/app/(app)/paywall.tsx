@@ -86,6 +86,11 @@ const BENEFIT_COPY: Record<ProBenefit, { emoji: string; title: string; body: str
     title: 'Incognito browsing',
     body: 'Look at profiles without leaving a trace.',
   },
+  hideOnlineStatus: {
+    emoji: '🌙',
+    title: 'Hide when you are online',
+    body: 'Nobody sees your green dot. You still see theirs.',
+  },
 }
 
 /**
@@ -130,6 +135,7 @@ const FEATURE_TITLE: Record<PlanFeature, string> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
   profileViewerIdentities: BENEFIT_COPY.profileViewerIdentities.title,
   incognito: BENEFIT_COPY.incognito.title,
+  hideOnlineStatus: BENEFIT_COPY.hideOnlineStatus.title,
   nearby: PRO_PLUS_BENEFIT_COPY.nearby.title,
   copilot: PRO_PLUS_BENEFIT_COPY.copilot.title,
 }

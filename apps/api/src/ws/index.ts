@@ -16,6 +16,7 @@ import {
   sendTextMessage,
 } from '../modules/chat/messages'
 import { fanOutMessage } from './fanOut'
+import { PresenceThrottle, touchPresence } from '../modules/presence/presence'
 import { SocketRateLimiter } from './rateLimit'
 import { userRoom, type AppServer, type AppSocket } from './types'
 
@@ -89,7 +90,19 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
   io.on('connection', (socket) => {
     const userId = socket.data.userId
     socket.data.limiter = new SocketRateLimiter()
+    socket.data.presence = new PresenceThrottle()
     void socket.join(userRoom(userId))
+
+    /**
+     * Opening the app makes you online, immediately and unthrottled. People
+     * expect the dot the moment they arrive, and this is once per connection.
+     * Fire-and-forget for the same reason as the delivery sweep below: a
+     * missed presence write decays away by itself, a rejection here would
+     * take down a working connection.
+     */
+    void touchPresence(app.mongo.db, userId, new Date()).catch((error: unknown) =>
+      app.log.warn({ err: error }, 'presence write on connect failed'),
+    )
 
     /**
      * Connecting *is* the delivery receipt for everything sent while this user
@@ -218,6 +231,33 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           }),
         )
         .catch(() => undefined)
+    })
+
+    socket.on('presence:ping', (_payload: unknown, ack: Ack) => {
+      if (!limited('presence:ping', ack)) return
+      // Throttled: a heartbeat is cheap to send and not cheap to store, and
+      // without a floor every connected tab is a write per interval.
+      if (socket.data.presence.shouldWrite()) {
+        void touchPresence(app.mongo.db, userId, new Date()).catch((error: unknown) =>
+          app.log.warn({ err: error }, 'presence heartbeat write failed'),
+        )
+      }
+      ack?.({ ok: true })
+    })
+
+    /**
+     * Leaving stamps `now`, not an offline flag and not a backdated time.
+     *
+     * It is true ("last seen just now"), it starts the five-minute decay from
+     * the moment they actually left rather than from their last message, and
+     * it leaves the `active` sort ordered by something real. The reason that
+     * matters most is failure: a decaying timestamp cannot get stuck, while a
+     * boolean left `true` by a crashed process marks everyone online forever.
+     */
+    socket.on('disconnect', () => {
+      void touchPresence(app.mongo.db, userId, new Date()).catch((error: unknown) =>
+        app.log.warn({ err: error }, 'presence write on disconnect failed'),
+      )
     })
   })
 

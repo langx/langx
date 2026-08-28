@@ -157,6 +157,17 @@ export default function SettingsScreen() {
         onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
       />
       <Row
+        title="Hide when I'm online"
+        subtitle={
+          isPro
+            ? 'People will not see the green dot on your profile. You can still see theirs.'
+            : 'Pro feature.'
+        }
+        value={profile?.privacy.hideOnlineStatus ?? false}
+        disabled={!isPro}
+        onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
+      />
+      <Row
         title="Share my approximate location"
         subtitle="Lets people nearby find you. Rounded to about a kilometre before it is stored — nobody is ever shown where you are, only roughly how far away."
         value={sharingLocation}

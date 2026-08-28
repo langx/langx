@@ -77,7 +77,7 @@ export interface MeProfile {
   learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
   settings: { discoverable: boolean; notifications: boolean }
-  privacy: { incognito: boolean }
+  privacy: { incognito: boolean; hideOnlineStatus: boolean }
   /**
    * Present only while the user is sharing one, which is exactly what the
    * Settings toggle reads: there is no separate "sharing is on" flag on the

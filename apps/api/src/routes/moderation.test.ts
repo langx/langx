@@ -320,6 +320,32 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
   })
 
   describe('profile views and incognito', () => {
+    /**
+     * The question Behic asked of the existing toggle: it works, and it only
+     * ever did this. Hiding your online status is `privacy.hideOnlineStatus`
+     * and has no effect here — pinned so neither flag quietly grows into the
+     * other's job.
+     */
+    it('records a profile view even when the viewer hides their online status', async () => {
+      const viewer = await newUser()
+      const viewed = await newUser()
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: viewer.userId },
+        {
+          $set: {
+            entitlement: { tier: 'pro', updatedAt: new Date() },
+            'privacy.hideOnlineStatus': true,
+          },
+        },
+      )
+
+      await get(viewer, `/profiles/${viewed.userId}`)
+      const views = await handle.db
+        .collection(COLLECTIONS.profileViews)
+        .countDocuments({ viewedId: viewed.userId })
+      expect(views).toBe(1)
+    })
+
     it('records one row per viewer however many times they look', async () => {
       const viewer = await newUser()
       const viewed = await newUser()

@@ -27,6 +27,29 @@ export const DISCOVERY_PAGE_SIZE_MAX = 50
 /** A profile counts as "online now" for the free `online` filter within this window. */
 export const ONLINE_WINDOW_MS = 5 * 60 * 1000
 
+/** How often a connected client tells the server it is still there. */
+export const PRESENCE_HEARTBEAT_MS = 60_000
+
+/**
+ * Server-side floor between two presence writes for one socket.
+ *
+ * Below the heartbeat rather than equal to it: at equal values a heartbeat
+ * arriving a millisecond early is silently dropped, and the next one is a
+ * whole interval away, so a connected user flickers offline for no reason.
+ */
+export const PRESENCE_WRITE_MIN_GAP_MS = 50_000
+
+/**
+ * The one definition of "online".
+ *
+ * It used to be written out three times — twice in the API and once as a
+ * local constant in `profiles.ts` that did not import the shared window at
+ * all, so changing it here would have moved two of the three.
+ */
+export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()): boolean {
+  return now.getTime() - new Date(lastActiveAt).getTime() < ONLINE_WINDOW_MS
+}
+
 /**
  * Keys that require Pro (`PLAN_LIMITS.advancedFilters`). A free account
  * sending any of these gets `403 UPGRADE_REQUIRED`, not a silently-ignored
