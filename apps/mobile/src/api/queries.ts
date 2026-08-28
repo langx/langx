@@ -24,6 +24,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { api } from './client'
+import type { ConversationPageDto } from '../lib/conversationCache'
+import type { MessagePageDto } from '../lib/messageCache'
 
 /**
  * Query keys in one place. A typo in an inline key array is invisible — the
@@ -208,10 +210,14 @@ export interface ConversationDto {
 }
 
 export function useConversations() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: keys.conversations,
-    queryFn: () =>
-      api.get<{ items: ConversationDto[]; nextCursor: string | null }>('/conversations'),
+    queryFn: ({ pageParam }) =>
+      api.get<ConversationPageDto>(
+        `/conversations${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 
@@ -238,12 +244,19 @@ export interface MessageDto {
 }
 
 export function useMessages(conversationId: string) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: keys.messages(conversationId),
-    queryFn: () =>
-      api.get<{ items: MessageDto[]; nextCursor: string | null; participants: string[] }>(
-        `/conversations/${conversationId}/messages`,
+    queryFn: ({ pageParam }) =>
+      api.get<MessagePageDto>(
+        `/conversations/${conversationId}/messages${
+          pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''
+        }`,
       ),
+    initialPageParam: '',
+    // The cursor walks *backwards* into history, so "the next page" is older
+    // messages and `pages[0]` stays the newest. `flattenMessagePages` is the
+    // only sanctioned way to read this — see the note there.
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: conversationId.length > 0,
   })
 }

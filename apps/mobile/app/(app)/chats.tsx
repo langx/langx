@@ -1,5 +1,13 @@
 import { router } from 'expo-router'
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { useConversations, useMe } from '../../src/api/queries'
 import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
@@ -7,6 +15,7 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { Skeleton } from '../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
+import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
@@ -25,7 +34,10 @@ function relativeTime(iso: string): string {
 export default function ChatsScreen() {
   const me = useMe()
   const conversations = useConversations()
-  const items = conversations.data?.items ?? []
+  // Deduped on flatten: a keyset cursor over a moving sort key can emit the
+  // same row on two pages, and a duplicate `key` in a FlatList is a warning
+  // plus a row that never updates.
+  const items = dedupeById(conversations.data?.pages.flatMap((page) => page.items) ?? [])
 
   // One batched lookup for every counterpart, instead of a query per row.
   const partnerIds = items
@@ -53,6 +65,21 @@ export default function ChatsScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={conversations.isRefetching}
+              onRefresh={() => void conversations.refetch()}
+            />
+          }
+          onEndReachedThreshold={0.6}
+          onEndReached={() => {
+            if (conversations.hasNextPage && !conversations.isFetchingNextPage) {
+              void conversations.fetchNextPage()
+            }
+          }}
+          ListFooterComponent={
+            conversations.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
+          }
           ListEmptyComponent={
             <EmptyState
               emoji="💬"
@@ -127,6 +154,7 @@ export default function ChatsScreen() {
 const styles = StyleSheet.create({
   title: { ...font.title, color: colors.text, paddingTop: spacing.md },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  footer: { paddingVertical: spacing.lg },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
