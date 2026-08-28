@@ -94,6 +94,7 @@ export default function AppLayout() {
         <Tabs.Screen name="viewers" options={FULL_SCREEN} />
         <Tabs.Screen name="filters" options={FULL_SCREEN} />
         <Tabs.Screen name="intro" options={FULL_SCREEN} />
+        <Tabs.Screen name="store" options={FULL_SCREEN} />
       </Tabs>
     </SafeAreaView>
   )
