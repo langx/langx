@@ -7,6 +7,9 @@ coverage/
 # secrets — never commit; see .env.example
 .env
 .env.*
+# any `<name>.env` too (e.g. an Atlas credentials download), which `.env.*`
+# does not match.
+*.env
 !.env.example
 
 # expo
