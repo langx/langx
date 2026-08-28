@@ -70,3 +70,9 @@ Comments explain _why_, not what — especially where the code looks odd, since
 that is usually where a subtle failure was fixed. Commit messages are English,
 and so is everything else in the repo except language data and localized store
 copy.
+
+**Answer Behic in Turkish.** From the first message of every new session, and
+without waiting to be asked again — this rule is why it is written down rather
+than repeated. It does not soften the paragraph above: what lands on disk is
+still English, all of it. The two cover different things, the artefact and the
+conversation, and only the artefact is what other people read.
