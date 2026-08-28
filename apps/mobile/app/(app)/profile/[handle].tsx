@@ -17,6 +17,7 @@ import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
+import { goBackTo } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
@@ -29,7 +30,10 @@ function countryLabel(code: string): string {
 }
 
 export default function ProfileScreen() {
-  const { handle } = useLocalSearchParams<{ handle: string }>()
+  // `from` is set by whoever pushed here — this screen is reachable from
+  // Discover, Chats, the viewer list, the leaderboard and a chat header, so a
+  // single named parent would be wrong for four of the five.
+  const { handle, from } = useLocalSearchParams<{ handle: string; from?: string }>()
   const profile = useProfile(handle ?? '')
   const startConversation = useStartConversation()
   const block = useBlockUser()
@@ -49,7 +53,11 @@ export default function ProfileScreen() {
     return (
       <Screen>
         <Text style={styles.missing}>Profile not found.</Text>
-        <Button label="Back" variant="secondary" onPress={() => router.back()} />
+        <Button
+          label="Back"
+          variant="secondary"
+          onPress={() => goBackTo('/(app)/discover', from)}
+        />
       </Screen>
     )
   }
@@ -73,7 +81,7 @@ export default function ProfileScreen() {
           // `openPaywall` rather than the raw route: it is the one place that
           // knows how the paywall is reached, and pushing the path directly
           // meant this call site quietly missed whatever it does.
-          openPaywall()
+          openPaywall(undefined, `/(app)/profile/${handle}`)
           return
         }
         if (caught.code === 'CONVERSATION_EXISTS') {
@@ -118,7 +126,11 @@ export default function ProfileScreen() {
 
   return (
     <Screen scroll>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
+      <Pressable
+        onPress={() => goBackTo('/(app)/discover', from)}
+        hitSlop={12}
+        style={styles.backRow}
+      >
         <Text style={styles.back}>‹ Back</Text>
       </Pressable>
 

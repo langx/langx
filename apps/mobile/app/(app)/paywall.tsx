@@ -17,6 +17,7 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from 'r
 import { useEffectiveTier, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import {
   getOffers,
   isPurchasesAvailable,
@@ -147,7 +148,12 @@ function parseFeature(raw: string | undefined): PlanFeature | null {
 }
 
 export default function PaywallScreen() {
-  const { feature: featureParam } = useLocalSearchParams<{ feature?: string }>()
+  // Reached from the profile, the viewer list, filters, Discover and a chat
+  // thread, so the caller says where back leads.
+  const { feature: featureParam, from } = useLocalSearchParams<{
+    feature?: string
+    from?: string
+  }>()
   const feature = parseFeature(featureParam)
   // Which column to point at, read off `PLAN_LIMITS` rather than assumed:
   // move a capability between tiers and the sentence follows it.
@@ -286,7 +292,12 @@ export default function PaywallScreen() {
         </Pressable>
       </View>
 
-      <Button label="Back" variant="secondary" onPress={() => router.back()} style={styles.back} />
+      <Button
+        label="Back"
+        variant="secondary"
+        onPress={() => goBackTo('/(app)/me', from)}
+        style={styles.back}
+      />
     </Screen>
   )
 }

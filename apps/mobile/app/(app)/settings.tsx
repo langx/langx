@@ -12,6 +12,7 @@ import {
 } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import { appVersion } from '../../src/hooks/useAppConfig'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
@@ -135,7 +136,7 @@ export default function SettingsScreen() {
   }
   return (
     <Screen scroll>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
+      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
         <Text style={styles.back}>‹ Back</Text>
       </Pressable>
       <Text style={styles.title}>Settings</Text>

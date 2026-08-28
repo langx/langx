@@ -86,7 +86,7 @@ export default function DiscoverScreen() {
    */
   async function chooseNearby(): Promise<void> {
     if (!canUseNearby) {
-      openPaywall('nearby')
+      openPaywall('nearby', '/(app)/discover')
       return
     }
     if (!sharingLocation && !(await enableSharing())) return
@@ -242,7 +242,11 @@ export default function DiscoverScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => router.push(`/(app)/profile/${item.handle}`)}
+              onPress={() =>
+                router.push(
+                  `/(app)/profile/${item.handle}?from=${encodeURIComponent('/(app)/discover')}`,
+                )
+              }
               style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
             >
               <Avatar url={item.avatarUrl} name={item.displayName} online={item.isOnline} />

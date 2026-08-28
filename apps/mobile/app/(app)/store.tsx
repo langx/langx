@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import { useMe, usePurchase, useTokens, useWallet } from '../../src/api/queries'
 import { StoreRow } from '../../src/components/store/StoreRow'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
@@ -42,7 +43,7 @@ export default function StoreScreen() {
 
   return (
     <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
+      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
         <Text style={styles.back}>‹ Back</Text>
       </Pressable>
       <Text style={styles.title}>Token store</Text>

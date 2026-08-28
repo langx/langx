@@ -113,7 +113,11 @@ export default function LeaderboardScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => router.push(`/(app)/profile/${item.handle}`)}
+              onPress={() =>
+                router.push(
+                  `/(app)/profile/${item.handle}?from=${encodeURIComponent('/(app)/leaderboard')}`,
+                )
+              }
               style={[styles.row, item.isViewer && styles.rowViewer]}
             >
               <Text style={styles.rank}>{MEDALS[item.rank - 1] ?? `#${item.rank}`}</Text>

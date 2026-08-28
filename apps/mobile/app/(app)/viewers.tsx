@@ -13,6 +13,7 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, spacing } from '../../src/lib/theme'
@@ -31,7 +32,7 @@ export default function ViewersScreen() {
 
   return (
     <Screen fluid>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
+      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
         <Text style={styles.back}>‹ Back</Text>
       </Pressable>
       <Text style={styles.title}>Who viewed your profile</Text>
@@ -49,7 +50,7 @@ export default function ViewersScreen() {
           {summary.total > 0 ? (
             <Button
               label="See who they are"
-              onPress={() => openPaywall('profileViewerIdentities')}
+              onPress={() => openPaywall('profileViewerIdentities', '/(app)/viewers')}
               style={styles.cta}
             />
           ) : null}
@@ -77,7 +78,11 @@ export default function ViewersScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => router.push(`/(app)/profile/${item.handle}`)}
+              onPress={() =>
+                router.push(
+                  `/(app)/profile/${item.handle}?from=${encodeURIComponent('/(app)/viewers')}`,
+                )
+              }
               style={styles.row}
             >
               <Avatar url={item.avatarUrl} name={item.displayName} />

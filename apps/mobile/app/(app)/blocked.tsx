@@ -12,6 +12,7 @@ import { useBlocks, useUnblockUser } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { confirmAlert } from '../../src/lib/alert'
 import { dedupeById } from '../../src/lib/dedupeById'
@@ -33,7 +34,7 @@ export default function BlockedScreen() {
 
   return (
     <Screen fluid>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
+      <Pressable onPress={() => goBackTo('/(app)/settings')} hitSlop={12} style={styles.backRow}>
         <Text style={styles.back}>‹ Back</Text>
       </Pressable>
       <Text style={styles.title}>Blocked people</Text>

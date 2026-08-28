@@ -14,6 +14,7 @@ import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import {
   AGE_BRACKETS,
@@ -70,7 +71,7 @@ export default function FiltersScreen() {
    */
   function set(patch: FilterPatch, pro = false): void {
     if (pro && !isPro) {
-      openPaywall('advancedFilters')
+      openPaywall('advancedFilters', '/(app)/filters')
       return
     }
     setFilters((current) => {
@@ -93,7 +94,7 @@ export default function FiltersScreen() {
   return (
     <Screen fluid>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Pressable onPress={() => router.back()} hitSlop={8}>
+        <Pressable onPress={() => goBackTo('/(app)/discover')} hitSlop={8}>
           <Text style={styles.back}>‹ Back</Text>
         </Pressable>
         <Text style={styles.title}>Filters</Text>
@@ -227,7 +228,7 @@ export default function FiltersScreen() {
         <CountryPicker
           value={filters.country ?? ''}
           onChange={(country) => set({ country: country || undefined }, true)}
-          {...(isPro ? {} : { onLocked: () => openPaywall('advancedFilters') })}
+          {...(isPro ? {} : { onLocked: () => openPaywall('advancedFilters', '/(app)/filters') })}
         />
 
         <View style={styles.actions}>

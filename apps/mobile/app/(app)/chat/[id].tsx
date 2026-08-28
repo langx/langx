@@ -37,6 +37,7 @@ import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu } from '../../../src/lib/messageMenu'
+import { goBackTo } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { flattenMessagePages } from '../../../src/lib/messageCache'
@@ -146,7 +147,7 @@ export default function ChatScreen() {
           'Could not send',
           "You've reached today's limit for photos and voice messages.",
         )
-        openPaywall()
+        openPaywall(undefined, `/(app)/chat/${conversationId}`)
       } else {
         void showAlert('Could not send', 'That attachment could not be sent. Try again.')
       }
@@ -235,7 +236,7 @@ export default function ChatScreen() {
         // not a `PlanFeature` — it is a quota that stops applying rather than
         // a capability flag — so there is no key to pass. The paywall's Pro
         // column already lists it.
-        openPaywall()
+        openPaywall(undefined, `/(app)/chat/${conversationId}`)
       } else {
         await showAlert('Translation unavailable', 'Could not translate that message right now.')
       }
@@ -293,12 +294,17 @@ export default function ChatScreen() {
   return (
     <Screen fluid style={styles.screen}>
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} hitSlop={12}>
+        <Pressable onPress={() => goBackTo('/(app)/chats')} hitSlop={12}>
           <Text style={styles.back}>‹</Text>
         </Pressable>
         <Pressable
           style={styles.headerUser}
-          onPress={() => partner && router.push(`/(app)/profile/${partner.handle}`)}
+          onPress={() =>
+            partner &&
+            router.push(
+              `/(app)/profile/${partner.handle}?from=${encodeURIComponent(`/(app)/chat/${conversationId}`)}`,
+            )
+          }
         >
           <Avatar url={partner?.avatarUrl} name={partner?.displayName ?? '?'} size={32} />
           <View>
