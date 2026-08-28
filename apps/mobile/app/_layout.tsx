@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
+import { AlertHost } from '../src/components/AlertHost'
 import { AppGate } from '../src/components/AppGate'
 import { authClient } from '../src/lib/auth-client'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
@@ -74,6 +75,12 @@ export default function RootLayout() {
           </View>
         ) : (
           <AppGate>
+            {/*
+              Above the navigator, not inside a screen: the delete-account flow
+              signs out while its own confirmation is still open, and a dialog
+              owned by a screen dies with it.
+            */}
+            <AlertHost />
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Protected guard={!!session}>
                 <Stack.Screen name="index" />

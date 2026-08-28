@@ -2,7 +2,7 @@ import { INTEREST_SUGGESTIONS, MAX_INTERESTS } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Image } from 'expo-image'
 import { uploadAvatarBytes } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
@@ -10,6 +10,7 @@ import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
+import { showAlert } from '../../src/lib/alert'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 /**
@@ -33,7 +34,7 @@ export default function PhotoStep() {
   async function pickPhoto(): Promise<void> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      Alert.alert('Photos unavailable', 'LangX needs access to your photos to set a picture.')
+      void showAlert('Photos unavailable', 'LangX needs access to your photos to set a picture.')
       return
     }
 
@@ -51,7 +52,7 @@ export default function PhotoStep() {
       const url = await uploadAvatarBytes(asset.uri, asset.mimeType ?? 'image/jpeg')
       updateDraft({ avatarUrl: url })
     } catch {
-      Alert.alert('Upload failed', 'That picture did not upload. You can try again or skip.')
+      void showAlert('Upload failed', 'That picture did not upload. You can try again or skip.')
     } finally {
       setUploading(false)
     }

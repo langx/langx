@@ -1,7 +1,7 @@
 import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Alert, Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../src/api/client'
 import {
   useIsPro,
@@ -13,6 +13,7 @@ import {
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
+import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
@@ -69,7 +70,7 @@ export default function SettingsScreen() {
     }
     const fix = await captureLocation()
     if (!fix.ok) {
-      Alert.alert('Location unavailable', LOCATION_FAILURE_MESSAGE[fix.reason])
+      void showAlert('Location unavailable', LOCATION_FAILURE_MESSAGE[fix.reason])
       return
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
@@ -89,35 +90,28 @@ export default function SettingsScreen() {
     await Linking.openURL(url)
   }
 
-  function confirmDelete(): void {
-    Alert.alert(
-      'Delete your account',
-      `Your account disappears immediately. Your data is kept for ${ACCOUNT_DELETION_GRACE_DAYS} days — signing back in within that window cancels the deletion. After that it is permanently removed.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => {
-            void (async () => {
-              setBusy(true)
-              try {
-                await api.post('/me/delete', { confirm: 'DELETE' })
-                await authClient.signOut()
-                router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
-              } catch (error) {
-                Alert.alert(
-                  'Could not delete',
-                  error instanceof ApiRequestError ? error.message : 'Try again.',
-                )
-              } finally {
-                setBusy(false)
-              }
-            })()
-          },
-        },
-      ],
-    )
+  async function confirmDelete(): Promise<void> {
+    const yes = await confirmAlert({
+      title: 'Delete your account',
+      message: `Your account disappears immediately. Your data is kept for ${ACCOUNT_DELETION_GRACE_DAYS} days — signing back in within that window cancels the deletion. After that it is permanently removed.`,
+      confirmLabel: 'Delete',
+      destructive: true,
+    })
+    if (!yes) return
+
+    setBusy(true)
+    try {
+      await api.post('/me/delete', { confirm: 'DELETE' })
+      await authClient.signOut()
+      router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+    } catch (error) {
+      await showAlert(
+        'Could not delete',
+        error instanceof ApiRequestError ? error.message : 'Try again.',
+      )
+    } finally {
+      setBusy(false)
+    }
   }
 
   /**
@@ -206,7 +200,7 @@ export default function SettingsScreen() {
       />
 
       <Text style={styles.section}>Account</Text>
-      <Pressable onPress={confirmDelete} disabled={busy} style={styles.delete}>
+      <Pressable onPress={() => void confirmDelete()} disabled={busy} style={styles.delete}>
         <Text style={styles.deleteText}>Delete my account</Text>
       </Pressable>
       <Text style={styles.deleteHint}>

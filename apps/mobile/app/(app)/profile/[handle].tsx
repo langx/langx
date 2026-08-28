@@ -1,15 +1,7 @@
 import { countryFlag, getCountry, getLanguage } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native'
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { ApiRequestError } from '../../../src/api/client'
 import {
   useBlockUser,
@@ -23,6 +15,7 @@ import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
+import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { days } from '../../../src/lib/format'
 import { colors, font, layout, radius, spacing } from '../../../src/lib/theme'
 
@@ -88,36 +81,23 @@ export default function ProfileScreen() {
     }
   }
 
-  function confirmBlock(): void {
-    Alert.alert(
-      'Block',
-      `Block ${user.displayName}? Neither of you will appear in the other's lists.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Block',
-          style: 'destructive',
-          onPress: () => {
-            block.mutate(user._id, { onSuccess: () => router.replace('/(app)/discover') })
-          },
-        },
-      ],
-    )
+  async function confirmBlock(): Promise<void> {
+    const yes = await confirmAlert({
+      title: 'Block',
+      message: `Block ${user.displayName}? Neither of you will appear in the other's lists.`,
+      confirmLabel: 'Block',
+      destructive: true,
+    })
+    if (yes) block.mutate(user._id, { onSuccess: () => router.replace('/(app)/discover') })
   }
 
-  function confirmReport(): void {
-    Alert.alert('Report', 'Why are you reporting this profile?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Spam', onPress: () => report.mutate({ userId: user._id, reason: 'spam' }) },
-      {
-        text: 'Harassment',
-        onPress: () => report.mutate({ userId: user._id, reason: 'harassment' }),
-      },
-      {
-        text: 'Inappropriate content',
-        onPress: () => report.mutate({ userId: user._id, reason: 'inappropriate_content' }),
-      },
+  async function confirmReport(): Promise<void> {
+    const reason = await chooseAlert('Report', 'Why are you reporting this profile?', [
+      { label: 'Spam', value: 'spam' },
+      { label: 'Harassment', value: 'harassment' },
+      { label: 'Inappropriate content', value: 'inappropriate_content' },
     ])
+    if (reason) report.mutate({ userId: user._id, reason })
   }
 
   return (
@@ -197,10 +177,10 @@ export default function ProfileScreen() {
       />
 
       <View style={styles.danger}>
-        <Pressable onPress={confirmReport} hitSlop={8}>
+        <Pressable onPress={() => void confirmReport()} hitSlop={8}>
           <Text style={styles.dangerText}>Report</Text>
         </Pressable>
-        <Pressable onPress={confirmBlock} hitSlop={8}>
+        <Pressable onPress={() => void confirmBlock()} hitSlop={8}>
           <Text style={styles.dangerText}>Block</Text>
         </Pressable>
       </View>

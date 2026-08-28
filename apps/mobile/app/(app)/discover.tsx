@@ -9,7 +9,6 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -37,6 +36,7 @@ import {
   toQuery,
   withoutProFilters,
 } from '../../src/lib/discoveryFilters'
+import { showAlert } from '../../src/lib/alert'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
@@ -93,7 +93,7 @@ export default function DiscoverScreen() {
   async function enableSharing(): Promise<boolean> {
     const fix = await captureLocation()
     if (!fix.ok) {
-      Alert.alert('Location needed', LOCATION_FAILURE_MESSAGE[fix.reason])
+      void showAlert('Location needed', LOCATION_FAILURE_MESSAGE[fix.reason])
       return false
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })

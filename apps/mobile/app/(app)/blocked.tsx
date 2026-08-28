@@ -1,10 +1,11 @@
 import { router } from 'expo-router'
-import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useBlocks, useUnblockUser } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
+import { confirmAlert } from '../../src/lib/alert'
 import { colors, font, spacing } from '../../src/lib/theme'
 
 /**
@@ -59,10 +60,13 @@ export default function BlockedScreen() {
                   hitSlop={8}
                   disabled={unblock.isPending}
                   onPress={() =>
-                    Alert.alert('Unblock', `Unblock ${name}? You will both be visible again.`, [
-                      { text: 'Cancel', style: 'cancel' },
-                      { text: 'Unblock', onPress: () => unblock.mutate(item.blockedId) },
-                    ])
+                    void confirmAlert({
+                      title: 'Unblock',
+                      message: `Unblock ${name}? You will both be visible again.`,
+                      confirmLabel: 'Unblock',
+                    }).then((yes) => {
+                      if (yes) unblock.mutate(item.blockedId)
+                    })
                   }
                 >
                   <Text style={styles.unblock}>Unblock</Text>
