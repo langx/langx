@@ -63,6 +63,23 @@ export const ENTITLEMENT_TIERS = {
 
 export type EntitlementId = keyof typeof ENTITLEMENT_TIERS
 
+/**
+ * The entitlement ids a paid tier hands out — the mirror image of
+ * `tierFromEntitlementIds`.
+ *
+ * Pro+ lists `pro` as well because that is how the Pro+ *products* are
+ * configured in the dashboard: a Pro+ subscriber genuinely holds both ids, and
+ * `ENTITLEMENT_PRECEDENCE` exists to resolve exactly that overlap. Written
+ * down once here so that everything which has to reproduce a purchase — the
+ * loyalty gift below, the fake store the local harness buys from — says it the
+ * same way. Two independent spellings of "Pro+ also grants Pro" is how one of
+ * them quietly stops being true.
+ */
+export const TIER_ENTITLEMENTS = {
+  pro: ['pro'],
+  pro_plus: ['pro_plus', 'pro'],
+} as const satisfies Record<PaidPlanTier, readonly EntitlementId[]>
+
 /** How often a package bills. Not a duration — only what the paywall labels it. */
 export type BillingPeriod = 'monthly' | 'yearly' | 'lifetime'
 
@@ -169,8 +186,12 @@ export interface LifetimeGrantRung {
  * `/billing/refresh` the app makes.
  */
 export const LOYALTY_LIFETIME_GRANTS = [
-  { minLegacyTokenBalance: 37_821, tier: 'pro_plus', entitlements: ['pro_plus', 'pro'] },
-  { minLegacyTokenBalance: 9_136, tier: 'pro', entitlements: ['pro'] },
+  {
+    minLegacyTokenBalance: 37_821,
+    tier: 'pro_plus',
+    entitlements: TIER_ENTITLEMENTS.pro_plus,
+  },
+  { minLegacyTokenBalance: 9_136, tier: 'pro', entitlements: TIER_ENTITLEMENTS.pro },
 ] as const satisfies readonly LifetimeGrantRung[]
 
 /**
