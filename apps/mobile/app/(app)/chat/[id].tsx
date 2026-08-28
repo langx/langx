@@ -3,7 +3,6 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -29,6 +28,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
 import { MessageMeta } from '../../../src/components/MessageMeta'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
+import { showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
 import { colors, font, radius, spacing } from '../../../src/lib/theme'
 
@@ -120,7 +120,7 @@ export default function ChatScreen() {
       const socket = await getSocket()
       await emitWithAck(socket, 'message:media', { conversationId, kind, media })
     } catch (error) {
-      Alert.alert(
+      void showAlert(
         'Could not send',
         error instanceof ApiRequestError && error.code === 'QUOTA_EXCEEDED'
           ? "You've reached today's limit for photos and voice messages."
@@ -134,7 +134,7 @@ export default function ChatScreen() {
   async function pickImage(): Promise<void> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      Alert.alert('Photos', 'LangX needs permission to open your photo library.')
+      void showAlert('Photos', 'LangX needs permission to open your photo library.')
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -155,7 +155,7 @@ export default function ChatScreen() {
   async function toggleRecording(): Promise<void> {
     if (!recorder.isRecording) {
       const started = await recorder.start()
-      if (!started && recorder.error) Alert.alert('Microphone', recorder.error)
+      if (!started && recorder.error) void showAlert('Microphone', recorder.error)
       return
     }
     const recording = await recorder.stop()
@@ -202,7 +202,7 @@ export default function ChatScreen() {
       const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
-      Alert.alert(
+      await showAlert(
         'Translation unavailable',
         error instanceof ApiRequestError && error.code === 'QUOTA_EXCEEDED'
           ? "You've used today's free translations. Pro removes the limit."

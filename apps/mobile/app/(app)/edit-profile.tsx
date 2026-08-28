@@ -16,7 +16,6 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import {
   ActivityIndicator,
-  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -40,6 +39,7 @@ import { Chip } from '../../src/components/ui/Chip'
 import { FormField } from '../../src/components/ui/FormField'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Screen } from '../../src/components/ui/Screen'
+import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
 const GENDER_LABELS: Record<Gender, string> = {
@@ -105,7 +105,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   async function pick(then: (uri: string, contentType: string) => void): Promise<void> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      Alert.alert('Photos', 'LangX needs permission to open your photo library.')
+      void showAlert('Photos', 'LangX needs permission to open your photo library.')
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -121,7 +121,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   function onUploadError(caught: unknown): void {
     // Storage may simply not be configured yet on this instance; say so rather
     // than showing a generic failure the user cannot act on.
-    Alert.alert(
+    void showAlert(
       'Upload failed',
       caught instanceof ApiRequestError && caught.code === 'INTERNAL'
         ? 'Photo storage is not configured on this server yet.'
@@ -329,14 +329,14 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           <Pressable
             key={photo.url}
             onLongPress={() =>
-              Alert.alert('Remove photo', 'Remove this photo from your profile?', [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                  text: 'Remove',
-                  style: 'destructive',
-                  onPress: () => removePhoto.mutate(photo.url),
-                },
-              ])
+              void confirmAlert({
+                title: 'Remove photo',
+                message: 'Remove this photo from your profile?',
+                confirmLabel: 'Remove',
+                destructive: true,
+              }).then((yes) => {
+                if (yes) removePhoto.mutate(photo.url)
+              })
             }
           >
             <Image source={{ uri: photo.url }} style={styles.photo} />
