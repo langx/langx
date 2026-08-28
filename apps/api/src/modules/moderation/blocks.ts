@@ -1,7 +1,14 @@
-import { ERROR_CODES, REPORTS_TO_FREEZE_XP, type ReportInput } from '@langx/shared'
-import { MongoServerError, ObjectId, type Db } from 'mongodb'
+import {
+  ERROR_CODES,
+  MODERATION_PAGE_SIZE_DEFAULT,
+  REPORTS_TO_FREEZE_XP,
+  type ModerationListQuery,
+  type ReportInput,
+} from '@langx/shared'
+import { MongoServerError, ObjectId, type Db, type Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 
 export interface Block {
   _id: ObjectId
@@ -75,12 +82,41 @@ export async function unblockUser(db: Db, blockerId: string, blockedId: string):
   await db.collection<Block>(COLLECTIONS.blocks).deleteOne({ blockerId, blockedId })
 }
 
-export async function listBlocked(db: Db, blockerId: string): Promise<Block[]> {
-  return db
+export interface BlockedPage {
+  items: Block[]
+  nextCursor: string | null
+}
+
+/**
+ * Paged. This used to have no limit at all — one query and one response body
+ * sized by however many people someone had blocked.
+ */
+export async function listBlocked(
+  db: Db,
+  blockerId: string,
+  query: ModerationListQuery = { limit: MODERATION_PAGE_SIZE_DEFAULT },
+): Promise<BlockedPage> {
+  const filter: Filter<Block> = { blockerId }
+  if (query.cursor) {
+    const { date, id } = decodeDateIdCursor(query.cursor)
+    filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
+  }
+
+  // One extra to know whether a next page exists without a second round trip.
+  const page = await db
     .collection<Block>(COLLECTIONS.blocks)
-    .find({ blockerId })
-    .sort({ createdAt: -1 })
+    .find(filter)
+    .sort({ createdAt: -1, _id: -1 })
+    .limit(query.limit + 1)
     .toArray()
+
+  const hasMore = page.length > query.limit
+  const items = hasMore ? page.slice(0, query.limit) : page
+  const last = items.at(-1)
+  return {
+    items,
+    nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
+  }
 }
 
 export interface ReportResult {

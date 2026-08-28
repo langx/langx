@@ -1,4 +1,4 @@
-import { blockSchema, reportSchema } from '@langx/shared'
+import { blockSchema, moderationListQuerySchema, reportSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
 import { blockUser, listBlocked, reportUser, unblockUser } from '../modules/moderation/blocks'
@@ -15,9 +15,13 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
-  app.get('/blocks', { preHandler: requireAuth }, async (request, reply) => {
-    return reply.send({ items: await listBlocked(app.mongo.db, request.userId) })
-  })
+  app.get(
+    '/blocks',
+    { preHandler: requireAuth, schema: { querystring: moderationListQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await listBlocked(app.mongo.db, request.userId, request.query))
+    },
+  )
 
   app.delete('/blocks/:userId', { preHandler: requireAuth }, async (request, reply) => {
     const { userId } = request.params as { userId: string }
@@ -37,7 +41,11 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
-  app.get('/me/viewers', { preHandler: requireAuth }, async (request, reply) => {
-    return reply.send(await getViewers(app.mongo.db, request.userId))
-  })
+  app.get(
+    '/me/viewers',
+    { preHandler: requireAuth, schema: { querystring: moderationListQuerySchema } },
+    async (request, reply) => {
+      return reply.send(await getViewers(app.mongo.db, request.userId, request.query))
+    },
+  )
 }

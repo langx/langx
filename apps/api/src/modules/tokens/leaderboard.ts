@@ -1,12 +1,14 @@
 import {
+  ERROR_CODES,
   aggregateId,
   periodKeys,
   type Leaderboard,
   type LeaderboardEntry,
   type PeriodType,
 } from '@langx/shared'
-import type { Db } from 'mongodb'
+import type { Db, Filter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from '../moderation/blocks'
 import type { TokenAggregate } from './ledger'
@@ -29,10 +31,36 @@ function rankOf(
   return index + 1
 }
 
+/**
+ * Cursor over `{tokens: -1, _id: 1}` — `<tokens>|<aggregateId>`.
+ *
+ * Not `dateIdCursor`: a `tokenAggregates` `_id` is the string
+ * `<userId>:<periodType>:<periodKey>`, not an ObjectId. The `_id` tiebreak is
+ * what the sort was already written for ("so paging and repeat calls agree").
+ */
+function encodeBoardCursor(tokens: number, id: string): string {
+  return `${tokens}|${id}`
+}
+
+function decodeBoardCursor(cursor: string): { tokens: number; id: string } {
+  const separator = cursor.indexOf('|')
+  const tokens = Number.parseInt(cursor.slice(0, separator), 10)
+  const id = cursor.slice(separator + 1)
+  if (separator < 0 || !Number.isInteger(tokens) || !id) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed cursor')
+  }
+  return { tokens, id }
+}
+
 export async function getLeaderboard(
   db: Db,
   viewerId: string,
-  query: { period: PeriodType; periodKey?: string | undefined; limit: number },
+  query: {
+    period: PeriodType
+    periodKey?: string | undefined
+    limit: number
+    cursor?: string | undefined
+  },
   at: Date = new Date(),
 ): Promise<Leaderboard> {
   const periodType = query.period
@@ -40,12 +68,53 @@ export async function getLeaderboard(
 
   const aggregates = db.collection<TokenAggregate>(COLLECTIONS.tokenAggregates)
 
-  const top = await aggregates
-    .find({ periodType, periodKey })
+  const filter: Filter<TokenAggregate> = { periodType, periodKey }
+  if (query.cursor) {
+    const { tokens, id } = decodeBoardCursor(query.cursor)
+    filter.$or = [{ tokens: { $lt: tokens } }, { tokens, _id: { $gt: id } }]
+  }
+
+  const fetched = await aggregates
+    .find(filter)
     // `_id` breaks ties deterministically, so paging and repeat calls agree.
     .sort({ tokens: -1, _id: 1 })
-    .limit(query.limit)
+    // One extra to detect a next page without a second round trip.
+    .limit(query.limit + 1)
     .toArray()
+
+  const hasMore = fetched.length > query.limit
+  const top = hasMore ? fetched.slice(0, query.limit) : fetched
+
+  /**
+   * Two different numbers about this page's first row, and conflating them is
+   * the whole trap.
+   *
+   * `startIndex` is how many rows sort *before* it — the keyset itself, so
+   * rows tied with it on the previous page are counted. `firstRank` is its
+   * competition rank, which by definition ignores those ties. They coincide
+   * only when the page begins at a new score, which is exactly why using one
+   * for both passes in isolation and fails the moment a tie straddles a page
+   * boundary: the row after the tie gets its positional index instead of
+   * skipping past both halves.
+   *
+   * `firstRank` is the same expression the out-of-page viewer rank uses
+   * below. That is the invariant this file exists to protect — two people on
+   * the same score are told the same position whether or not they made the
+   * page — and deriving both from one formula keeps it true by construction.
+   */
+  const first = top[0]
+  const [startIndex, firstRank] = first
+    ? await Promise.all([
+        aggregates.countDocuments({
+          periodType,
+          periodKey,
+          $or: [{ tokens: { $gt: first.tokens } }, { tokens: first.tokens, _id: { $lt: first._id } }],
+        }),
+        aggregates
+          .countDocuments({ periodType, periodKey, tokens: { $gt: first.tokens } })
+          .then((above) => above + 1),
+      ])
+    : [0, 1]
 
   // Blocked either way, and the person drops out of the table — same rule as
   // discovery and the conversation list. Their rank position stays occupied,
@@ -64,11 +133,14 @@ export async function getLeaderboard(
   const entries: LeaderboardEntry[] = []
   let previous: { rank: number; tokens: number } | null = null
   for (const [index, row] of top.entries()) {
+    const absoluteIndex = startIndex + index
     // A soft-deleted account keeps its aggregate row (the ledger is
     // append-only) but must not appear. It still occupies its rank position,
     // so the ranks of everyone below don't shift when someone deletes.
     const profile = byId.get(row.userId)
-    const rank = rankOf(index, row.tokens, previous)
+    // The page's first row takes its competition rank directly; it may be
+    // mid-tie, and `previous` is empty at a page boundary.
+    const rank = index === 0 ? firstRank : rankOf(absoluteIndex, row.tokens, previous)
     previous = { rank, tokens: row.tokens }
     if (!profile || hidden.has(row.userId)) continue
 
@@ -98,5 +170,15 @@ export async function getLeaderboard(
       ? (await aggregates.countDocuments({ periodType, periodKey, tokens: { $gt: viewerXp } })) + 1
       : null
 
-  return { period: periodType, periodKey, entries, viewer: { rank, tokens: viewerXp, inPage } }
+  const lastRow = top.at(-1)
+  return {
+    period: periodType,
+    periodKey,
+    entries,
+    // Off the raw page: a soft-deleted account is dropped from `entries` but
+    // still occupied a place, so cursoring from the last rendered row would
+    // replay it.
+    nextCursor: hasMore && lastRow ? encodeBoardCursor(lastRow.tokens, lastRow._id) : null,
+    viewer: { rank, tokens: viewerXp, inPage },
+  }
 }

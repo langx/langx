@@ -270,9 +270,14 @@ export function useWallet() {
 }
 
 export function useLeaderboard(period: PeriodType) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: keys.leaderboard(period),
-    queryFn: () => api.get<Leaderboard>(`/leaderboard?period=${period}`),
+    queryFn: ({ pageParam }) =>
+      api.get<Leaderboard>(
+        `/leaderboard?period=${period}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 
@@ -294,21 +299,28 @@ export function useQuota() {
   })
 }
 
+export interface ViewerPageDto {
+  total: number
+  locked: boolean
+  viewers: {
+    userId: string
+    handle: string
+    displayName: string
+    avatarUrl?: string
+    lastViewedAt: string
+  }[]
+  nextCursor: string | null
+}
+
 export function useViewers() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: keys.viewers,
-    queryFn: () =>
-      api.get<{
-        total: number
-        locked: boolean
-        viewers: {
-          userId: string
-          handle: string
-          displayName: string
-          avatarUrl?: string
-          lastViewedAt: string
-        }[]
-      }>('/me/viewers'),
+    queryFn: ({ pageParam }) =>
+      api.get<ViewerPageDto>(
+        `/me/viewers${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 
@@ -517,10 +529,20 @@ export interface BlockDto {
   createdAt: string
 }
 
+export interface BlockPageDto {
+  items: BlockDto[]
+  nextCursor: string | null
+}
+
 export function useBlocks() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: keys.blocks,
-    queryFn: () => api.get<{ items: BlockDto[] }>('/blocks'),
+    queryFn: ({ pageParam }) =>
+      api.get<BlockPageDto>(
+        `/blocks${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 

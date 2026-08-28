@@ -166,9 +166,11 @@ export default function MeScreen() {
         <View>
           <Text style={styles.cardTitle}>Who viewed your profile</Text>
           <Text style={styles.cardBody}>
-            {viewers.data?.locked
-              ? `${viewers.data.total} people looked — see who with Pro`
-              : `${viewers.data?.total ?? 0} people`}
+            {/* `total` and `locked` describe the whole list, so page one is
+                the authority on both. */}
+            {viewers.data?.pages[0]?.locked
+              ? `${viewers.data.pages[0].total} people looked — see who with Pro`
+              : `${viewers.data?.pages[0]?.total ?? 0} people`}
           </Text>
         </View>
         <Text style={styles.chevron}>›</Text>

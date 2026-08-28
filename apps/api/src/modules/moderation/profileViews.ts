@@ -1,7 +1,13 @@
-import { ERROR_CODES, hasFeature } from '@langx/shared'
-import { type ObjectId, type Db } from 'mongodb'
+import {
+  ERROR_CODES,
+  MODERATION_PAGE_SIZE_DEFAULT,
+  hasFeature,
+  type ModerationListQuery,
+} from '@langx/shared'
+import { type Db, type Filter, type ObjectId } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
 import { blockedUserIds } from './blocks'
@@ -26,6 +32,8 @@ export interface ViewerSummary {
     lastViewedAt: string
   }[]
   locked: boolean
+  /** `null` on the last page, and always `null` while `locked`. */
+  nextCursor: string | null
 }
 
 /**
@@ -70,26 +78,45 @@ export async function recordProfileView(
  * the paywall is only persuasive if the user can see there is something behind
  * it.
  */
-export async function getViewers(db: Db, userId: string): Promise<ViewerSummary> {
+export async function getViewers(
+  db: Db,
+  userId: string,
+  query: ModerationListQuery = { limit: MODERATION_PAGE_SIZE_DEFAULT },
+): Promise<ViewerSummary> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
   const me = await profiles.findOne({ _id: userId })
   if (!me) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
   const hidden = await blockedUserIds(db, userId)
-  const filter = { viewedId: userId, viewerId: { $nin: hidden } }
+  const filter: Filter<ProfileView> = { viewedId: userId, viewerId: { $nin: hidden } }
 
+  // The count is over everyone, not over the page — it is the number the free
+  // tier is shown, and the thing the paywall is arguing about.
   const total = await db.collection<ProfileView>(COLLECTIONS.profileViews).countDocuments(filter)
 
   if (!hasFeature(effectiveTier(me), 'profileViewerIdentities')) {
-    return { total, viewers: [], locked: true }
+    return { total, viewers: [], locked: true, nextCursor: null }
   }
 
-  const views = await db
+  const paged: Filter<ProfileView> = { ...filter }
+  if (query.cursor) {
+    const { date, id } = decodeDateIdCursor(query.cursor)
+    paged.$or = [{ lastViewedAt: { $lt: date } }, { lastViewedAt: date, _id: { $lt: id } }]
+  }
+
+  // Was a hard `.limit(100)` with no way past it: someone with 150 viewers saw
+  // 100 of them beside a `total` saying 150, which reads as the feature being
+  // broken rather than paged.
+  const page = await db
     .collection<ProfileView>(COLLECTIONS.profileViews)
-    .find(filter)
-    .sort({ lastViewedAt: -1 })
-    .limit(100)
+    .find(paged)
+    .sort({ lastViewedAt: -1, _id: -1 })
+    .limit(query.limit + 1)
     .toArray()
+
+  const hasMore = page.length > query.limit
+  const views = hasMore ? page.slice(0, query.limit) : page
+  const lastView = views.at(-1)
 
   const viewerProfiles = await profiles
     .find(
@@ -113,5 +140,14 @@ export async function getViewers(db: Db, userId: string): Promise<ViewerSummary>
     viewers.push(entry)
   }
 
-  return { total, viewers, locked: false }
+  return {
+    total,
+    viewers,
+    locked: false,
+    // Off the raw page, not off `viewers`: a view whose profile was deleted is
+    // dropped from the output but still consumed a place in the page, and
+    // cursoring from the last *rendered* row would replay it.
+    nextCursor:
+      hasMore && lastView ? encodeDateIdCursor(lastView.lastViewedAt, lastView._id) : null,
+  }
 }

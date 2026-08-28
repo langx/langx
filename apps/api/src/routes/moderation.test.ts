@@ -207,6 +207,33 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect((await get(a, '/blocks')).json<{ items: unknown[] }>().items).toHaveLength(0)
     })
 
+    /** Had no limit at all: one query and one response body sized by the list. */
+    it('pages the blocked list without repeating or skipping', async () => {
+      const blocker = await newUser()
+      const blocked = []
+      for (let i = 0; i < 5; i++) {
+        const target = await newUser()
+        expect((await post(blocker, '/blocks', { userId: target.userId })).statusCode).toBe(201)
+        blocked.push(target.userId)
+      }
+
+      const seen: string[] = []
+      let cursor: string | null = null
+      let pages = 0
+      do {
+        const suffix: string = cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+        const page = await get(blocker, `/blocks?limit=2${suffix}`)
+        expect(page.statusCode, page.body).toBe(200)
+        const body = page.json<{ items: { blockedId: string }[]; nextCursor: string | null }>()
+        seen.push(...body.items.map((b) => b.blockedId))
+        cursor = body.nextCursor
+        pages++
+      } while (cursor && pages < 10)
+
+      expect(seen).toHaveLength(5)
+      expect(new Set(seen)).toEqual(new Set(blocked))
+    })
+
     it('refuses a self-block', async () => {
       const a = await newUser()
       expect((await post(a, '/blocks', { userId: a.userId })).statusCode).toBe(400)
@@ -410,6 +437,64 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
 
       await get(ghost, `/profiles/${viewed.userId}`)
       expect((await get(viewed, '/me/viewers')).json<{ total: number }>().total).toBe(0)
+    })
+
+    /**
+     * Was a hard `.limit(100)` with no way past it, beside a `total` counting
+     * everyone — so a Pro user with 150 viewers saw a list that contradicted
+     * the number printed above it.
+     */
+    it('pages the viewer list without repeating or skipping, and counts everyone', async () => {
+      const viewed = await newUser()
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: viewed.userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+
+      const lookers = []
+      for (let i = 0; i < 5; i++) {
+        const looker = await newUser()
+        await get(looker, `/profiles/${viewed.userId}`)
+        lookers.push(looker.userId)
+      }
+
+      const seen: string[] = []
+      let cursor: string | null = null
+      let pages = 0
+      do {
+        const suffix: string = cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+        const page = await get(viewed, `/me/viewers?limit=2${suffix}`)
+        expect(page.statusCode, page.body).toBe(200)
+        const body = page.json<{
+          total: number
+          viewers: { userId: string }[]
+          nextCursor: string | null
+        }>()
+        // The count is over everyone, not over the page — it is what the free
+        // tier is shown and what the paywall argues about.
+        expect(body.total).toBe(5)
+        seen.push(...body.viewers.map((v) => v.userId))
+        cursor = body.nextCursor
+        pages++
+      } while (cursor && pages < 10)
+
+      expect(seen).toHaveLength(5)
+      expect(new Set(seen)).toEqual(new Set(lookers))
+    })
+
+    it('never hands a free user a cursor to page with', async () => {
+      const viewed = await newUser()
+      const looker = await newUser()
+      await get(looker, `/profiles/${viewed.userId}`)
+
+      const body = (await get(viewed, '/me/viewers')).json<{
+        locked: boolean
+        nextCursor: string | null
+      }>()
+      expect(body.locked).toBe(true)
+      expect(body.nextCursor).toBeNull()
     })
 
     it('does not honour incognito for a free user — it is a Pro capability', async () => {
