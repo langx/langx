@@ -9,7 +9,6 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 import type { Db, MongoClient } from 'mongodb'
-import type { Server as SocketIOServer } from 'socket.io'
 import type { Auth } from './auth'
 import type { Env } from './env'
 import { ApiError } from './lib/ApiError'
@@ -36,6 +35,7 @@ import { DisabledLegacyVerifier, type LegacyVerifier } from './modules/handles/l
 import type { StorageProvider } from './storage/StorageProvider'
 import type { TranslationProvider } from './translation/TranslationProvider'
 import { attachSocketServer } from './ws'
+import type { AppServer } from './ws/types'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -48,7 +48,13 @@ declare module 'fastify' {
     push: PushSender
     legacyVerifier: LegacyVerifier
     appVersion: string
-    io: SocketIOServer
+    /**
+     * The pinned server type, not socket.io's default. Its generics default
+     * `data` to `any`, which makes every `app.io` handed to a typed helper an
+     * unsafe argument — caught by lint the first time a route outside `ws/`
+     * needed to fan a message out.
+     */
+    io: AppServer
   }
 }
 

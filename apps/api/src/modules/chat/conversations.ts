@@ -54,6 +54,11 @@ export interface Message {
   deletedWithAccount?: boolean
 }
 
+export interface StartResult {
+  conversation: Conversation
+  message: Message
+}
+
 /** `<minId>_<maxId>` — the same two people can never open a second conversation. */
 export function pairKeyFor(a: string, b: string): string {
   return [a, b].sort().join('_')
@@ -77,7 +82,7 @@ export async function startConversation(
   db: Db,
   viewerId: string,
   input: StartConversationInput,
-): Promise<Conversation> {
+): Promise<StartResult> {
   if (input.toUserId === viewerId) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Cannot start a conversation with yourself')
   }
@@ -167,5 +172,9 @@ export async function startConversation(
   // false here by construction — only one side has spoken.
   await awardForSend(db, { conversation, message, becameMutual: false })
 
-  return conversation
+  // The message comes back as well as the conversation because the caller has
+  // to fan it out, and it is the only thing that holds it: this path does not
+  // go through `recordMessage`, so nothing else ever sees the first message of
+  // a thread. Returning just the conversation is what let it go unannounced.
+  return { conversation, message }
 }
