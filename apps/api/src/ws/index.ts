@@ -1,5 +1,6 @@
 import { sendCorrectionSchema, sendMediaMessageSchema, sendTextMessageSchema } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
+import type { ObjectId } from 'mongodb'
 import { Server as SocketIOServer, type Socket } from 'socket.io'
 import { z, ZodError } from 'zod'
 import { ERROR_CODES } from '@langx/shared'
@@ -10,6 +11,8 @@ import { getProfile } from '../modules/profiles/profiles'
 import { assertConversationAccess } from '../modules/chat/access'
 import {
   markConversationRead,
+  markDelivered,
+  markPendingDelivered,
   sendCorrection,
   sendMediaMessage,
   sendTextMessage,
@@ -22,24 +25,47 @@ function userRoom(userId: string): string {
 }
 
 /**
- * Pushes a new message to the recipient — but only if they have no socket in
- * their room. Someone with the thread open on screen does not need their phone
- * to buzz about the message they are watching arrive.
+ * The two things that happen to a message the instant after it is written, and
+ * the reason they are one function: both hinge on the same question — is the
+ * recipient holding a socket right now?
  *
- * Best-effort by design: a failed push must never fail the send. The message is
- * already durably written and already delivered over the socket by this point.
+ * If they are, `message:new` above just reached their device, which is the
+ * second tick; we stamp `deliveredAt` and tell the sender. If they are not,
+ * their phone buzzes instead, and the message stays on one tick until they
+ * connect and {@link markPendingDelivered} sweeps it up. Someone with the
+ * thread open on screen does not need a notification about the message they
+ * are watching arrive, and someone who is away has nothing to deliver to — the
+ * two branches are genuinely exclusive, so asking twice would only create room
+ * for the answer to change in between.
+ *
+ * Best-effort by design: a failed push or a failed stamp must never fail the
+ * send. The message is durably written by the time this runs.
+ *
+ * `pushWhenAway` is false for corrections, which have never notified.
  */
-async function notifyRecipient(
+async function deliverToRecipient(
   app: FastifyInstance,
   io: AppServer,
-  conversation: { participants: readonly string[] },
+  conversation: { _id: ObjectId; participants: readonly string[] },
   message: { senderId: string; body: string; conversationId: { toHexString: () => string } },
+  { pushWhenAway }: { pushWhenAway: boolean },
 ): Promise<void> {
   try {
     const recipientId = conversation.participants.find((id) => id !== message.senderId)
     if (!recipientId) return
     const sockets = await io.in(userRoom(recipientId)).fetchSockets()
-    if (sockets.length > 0) return
+    if (sockets.length > 0) {
+      const deliveredAt = await markDelivered(app.mongo.db, conversation._id, recipientId)
+      if (deliveredAt) {
+        io.to(userRoom(message.senderId)).emit('conversation:delivered', {
+          conversationId: message.conversationId.toHexString(),
+          deliveredTo: recipientId,
+          deliveredAt: deliveredAt.toISOString(),
+        })
+      }
+      return
+    }
+    if (!pushWhenAway) return
 
     const [sender, tokens] = await Promise.all([
       app.mongo.db
@@ -56,7 +82,7 @@ async function notifyRecipient(
       data: { kind: 'message', conversationId: message.conversationId.toHexString() },
     })
   } catch (error) {
-    app.log.warn({ err: error }, 'push notification failed')
+    app.log.warn({ err: error }, 'post-send delivery fan-out failed')
   }
 }
 
@@ -153,6 +179,27 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
     void socket.join(userRoom(userId))
 
     /**
+     * Connecting *is* the delivery receipt for everything sent while this user
+     * was away — this is the only thing that moves those messages off one
+     * tick, since the send-time path had no socket to hand them to.
+     *
+     * Deliberately not awaited and deliberately silent on failure: a second
+     * tick appearing late is a cosmetic loss, whereas a rejection here would
+     * take down a connection that is otherwise perfectly good.
+     */
+    void markPendingDelivered(app.mongo.db, userId)
+      .then((swept) => {
+        for (const { conversationId, senderId, deliveredAt } of swept) {
+          io.to(userRoom(senderId)).emit('conversation:delivered', {
+            conversationId,
+            deliveredTo: userId,
+            deliveredAt: deliveredAt.toISOString(),
+          })
+        }
+      })
+      .catch((error: unknown) => app.log.warn({ err: error }, 'delivery sweep on connect failed'))
+
+    /**
      * Wraps a handler in the connection's rate limit. Refusing through the ack
      * rather than dropping the frame matters: a client that gets no answer
      * retries, which is the opposite of what a limit is for.
@@ -178,7 +225,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           for (const participantId of conversation.participants) {
             io.to(userRoom(participantId)).emit('message:new', message)
           }
-          void notifyRecipient(app, io, conversation, message)
+          void deliverToRecipient(app, io, conversation, message, { pushWhenAway: true })
           ack?.({ ok: true, data: message })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
@@ -209,7 +256,7 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           for (const participantId of conversation.participants) {
             io.to(userRoom(participantId)).emit('message:new', message)
           }
-          void notifyRecipient(app, io, conversation, message)
+          void deliverToRecipient(app, io, conversation, message, { pushWhenAway: true })
           ack?.({ ok: true, data: message })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
@@ -224,6 +271,9 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           for (const participantId of conversation.participants) {
             io.to(userRoom(participantId)).emit('message:new', message)
           }
+          // Ticks, but no push: a correction is help arriving in a thread the
+          // recipient chose to be in, not something to wake a phone for.
+          void deliverToRecipient(app, io, conversation, message, { pushWhenAway: false })
           ack?.({ ok: true, data: message })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))

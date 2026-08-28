@@ -243,6 +243,114 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     expect(event).toMatchObject({ conversationId: conversation._id, readBy: bob.userId })
   })
 
+  it('a message to a recipient who is connected comes back delivered', async () => {
+    const alice = await newUser('ws-deliv-alice@example.com')
+    const bob = await newUser('ws-deliv-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'hello')
+
+    // Bob first, so his connect-time sweep of that opening message fires
+    // before Alice has a room to receive it in — leaving the send below as
+    // the only thing that can produce the event this test waits for.
+    const bobSocket = await connectSocket(bob.cookie)
+    await new Promise((resolve) => setTimeout(resolve, 200))
+    const aliceSocket = await connectSocket(alice.cookie)
+
+    const delivered = waitForEvent<{ conversationId: string; deliveredTo: string }>(
+      aliceSocket,
+      'conversation:delivered',
+    )
+    aliceSocket.emit('message:send', { conversationId: conversation._id, body: 'you there?' })
+
+    expect(await delivered).toMatchObject({
+      conversationId: conversation._id,
+      deliveredTo: bob.userId,
+    })
+    expect(bobSocket.connected).toBe(true)
+
+    const history = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: alice.cookie },
+    })
+    const sent = history
+      .json<{ items: { body: string; deliveredAt?: string; readAt?: string }[] }>()
+      .items.find((m) => m.body === 'you there?')
+    expect(sent?.deliveredAt).toBeDefined()
+    // Delivered is not read — Bob has a socket, not the thread open.
+    expect(sent?.readAt).toBeUndefined()
+  })
+
+  it('a message sent to someone offline stays on one tick until they connect', async () => {
+    const alice = await newUser('ws-undeliv-alice@example.com')
+    const bob = await newUser('ws-undeliv-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'first hello')
+    const aliceSocket = await connectSocket(alice.cookie)
+
+    await new Promise<void>((resolve) => {
+      aliceSocket.emit(
+        'message:send',
+        { conversationId: conversation._id, body: 'while away' },
+        () => resolve(),
+      )
+    })
+
+    const readHistory = async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversation._id}/messages`,
+        headers: { cookie: alice.cookie },
+      })
+      return response.json<{ items: { body: string; deliveredAt?: string }[] }>().items
+    }
+
+    // Nobody was there to hand it to, so nothing may claim it arrived.
+    expect((await readHistory()).find((m) => m.body === 'while away')?.deliveredAt).toBeUndefined()
+
+    const delivered = waitForEvent<{ conversationId: string; deliveredTo: string }>(
+      aliceSocket,
+      'conversation:delivered',
+    )
+    await connectSocket(bob.cookie)
+
+    expect(await delivered).toMatchObject({
+      conversationId: conversation._id,
+      deliveredTo: bob.userId,
+    })
+    // Both of Alice's messages, not just the one sent while Bob was away.
+    const after = await readHistory()
+    expect(after.every((m) => m.deliveredAt)).toBe(true)
+  })
+
+  it('reconnecting does not drag an existing delivery timestamp forward', async () => {
+    const alice = await newUser('ws-redeliv-alice@example.com')
+    const bob = await newUser('ws-redeliv-bob@example.com')
+    const conversation = await startConversation(alice, bob.userId, 'stamp me once')
+
+    const firstBobSocket = await connectSocket(bob.cookie)
+    await new Promise((resolve) => setTimeout(resolve, 300))
+
+    const stampOf = async () => {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversation._id}/messages`,
+        headers: { cookie: alice.cookie },
+      })
+      return response.json<{ items: { deliveredAt?: string }[] }>().items[0]?.deliveredAt
+    }
+
+    const first = await stampOf()
+    expect(first).toBeDefined()
+
+    firstBobSocket.disconnect()
+    await connectSocket(bob.cookie)
+    await new Promise((resolve) => setTimeout(resolve, 300))
+
+    // Delivery is the moment it arrived, not a flag that gets re-set — a
+    // second tick that keeps changing its own timestamp is telling a lie
+    // about when the message got there.
+    expect(await stampOf()).toBe(first)
+  })
+
   it('typing relays to the other participant only', async () => {
     const alice = await newUser('ws-typing-alice@example.com')
     const bob = await newUser('ws-typing-bob@example.com')

@@ -1,3 +1,4 @@
+import { deliveryStateOf, type DeliveryState } from '@langx/shared'
 import { StyleSheet, Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
 import { colors, font, spacing } from '../lib/theme'
@@ -9,27 +10,39 @@ function clockTime(iso: string): string {
 }
 
 /**
- * The time under a message, and — on your own — whether it has been read.
+ * A tick means nothing to a screen reader, and the whole point of the glyph is
+ * that it carries information the text does not.
+ */
+const LABELS: Record<DeliveryState, string> = {
+  sent: 'Sent',
+  delivered: 'Delivered',
+  read: 'Read',
+}
+
+/**
+ * The time under a message, and — on your own — how far it has got.
  *
- * Everything behind this was already built and none of it was drawn:
- * `Message.readAt` is written by `markConversationRead`, the `conversation:read`
- * socket event travels in both directions, and `MessageDto.readAt` reached the
- * client and was never once read. A chat with no timestamps and no read state
- * is the kind of gap people notice immediately and cannot name.
- *
- * Two states, not three. v1 showed sending / sent / read and v2 has no
- * `deliveredAt` field and no acknowledgement event to build one from — in a
- * one-to-one chat the socket connection is already the delivery receipt. A
- * third tick would be decoration standing in for information we do not have.
+ * One tick sent, two ticks delivered, two tinted ticks read: the convention
+ * WhatsApp and Telegram taught everyone, so it needs no explanation in the UI.
+ * Each state is backed by something real — `deliveredAt` is written when the
+ * message goes out over a socket the recipient is holding, or when they next
+ * connect; `readAt` when they open the thread. Neither is inferred from the
+ * other.
  */
 export function MessageMeta({ message, mine }: { message: MessageDto; mine: boolean }) {
   const tint = mine ? colors.primaryText : colors.textMuted
+  const state = deliveryStateOf(message)
 
   return (
     <View style={styles.row}>
       <Text style={[styles.time, { color: tint }]}>{clockTime(message.createdAt)}</Text>
       {mine ? (
-        <Text style={[styles.status, { color: tint }]}>{message.readAt ? '◉' : '○'}</Text>
+        <Text
+          accessibilityLabel={LABELS[state]}
+          style={[styles.status, { color: state === 'read' ? colors.read : tint }]}
+        >
+          {state === 'sent' ? '✓' : '✓✓'}
+        </Text>
       ) : null}
     </View>
   )
@@ -44,5 +57,13 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   time: { ...font.caption, fontSize: 11, opacity: 0.7 },
-  status: { fontSize: 11, opacity: 0.85 },
+  status: {
+    fontSize: 11,
+    // Pulls the second tick under the first, the way the single glyph these
+    // imitate is drawn. Without it the pair reads as two separate marks.
+    letterSpacing: -3,
+    opacity: 0.9,
+    // The negative tracking above also eats the space after the last tick.
+    paddingRight: 3,
+  },
 })

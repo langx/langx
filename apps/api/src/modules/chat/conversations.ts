@@ -40,6 +40,14 @@ export interface Message {
    * the same message, which is what lets the importer be replayed safely.
    */
   legacyId?: string
+  /**
+   * When the message reached the recipient's device — the second tick. Set by
+   * `markDelivered` either as the message goes out over an open socket, or on
+   * the sweep that runs when the recipient next connects. Absent on everything
+   * that predates the feature, which is why `deliveryStateOf` treats `readAt`
+   * as proof of delivery rather than requiring both.
+   */
+  deliveredAt?: Date
   readAt?: Date
   createdAt: Date
   /** Set when the sender's account was purged; the body is cleared, the row stays. */
