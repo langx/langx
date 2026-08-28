@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "expo start",
     "web": "expo start --web",
-    "build:web": "expo export --platform web && cp dist/+not-found.html dist/404.html",
+    "build:web": "expo export --platform web --clear && cp dist/+not-found.html dist/404.html",
     "deploy:web": "npx wrangler pages deploy dist --project-name langx-web --branch main",
     "ios": "expo start --ios",
     "android": "expo start --android",
