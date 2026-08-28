@@ -16,16 +16,37 @@ type IndexSpec = Record<CollectionName, IndexDescription[]>
 const NINETY_DAYS = 90 * 24 * 60 * 60
 
 export const INDEXES: Partial<IndexSpec> = {
-  // Deliberately nothing here for user/session/account/verification. Better
-  // Auth's mongo-adapter lazily creates its own indexes for these four
-  // collections on first use (`ensureModelIndexes`, matching its own schema's
-  // declared uniques — email, session token, {issuer, accountId}, etc.).
-  // Declaring the same key pattern here too, even under a different index
-  // name, throws IndexOptionsConflict (code 85) on boot: MongoDB rejects a
-  // second index with an identical key pattern. Confirmed by hitting exactly
-  // that against a live sign-up. "We only add indexes, never fields" (see
-  // the collection list below) turned out not to hold here — for these four,
-  // we add nothing at all and let Better Auth manage them entirely.
+  // Better Auth owns these four collections, but on MongoDB it indexes almost
+  // nothing in them. Its schema marks `user.email` and `session.token`
+  // `unique: true` and `session.userId` `index: true` at the *field* level,
+  // and the mongo adapter's `ensureModelIndexes()` only reads *table*-level
+  // `indexes` — field-level metadata is for the SQL migrator's column
+  // constraints. Verified against a live Atlas sign-up: `account` came back
+  // with the adapter's own `account_issuer_accountId_uidx` (the one table-level
+  // index Better Auth declares) and `user` with nothing but `_id_`. So
+  // duplicate emails are only prevented by a read-then-write in application
+  // code, and every session lookup — one per authenticated request — is a
+  // collection scan.
+  //
+  // Each name below is exactly what `getDatabaseIndexName()` would generate
+  // (`<table>_<fields>_uidx` / `_idx`). That is the whole trick: if a later
+  // Better Auth version declares any of these itself, its `createIndex` sees
+  // an identical name, key and uniqueness and is a no-op, instead of the
+  // IndexOptionsConflict (code 85) that a same-key-different-name index
+  // throws — the failure the previous version of this comment recorded, and
+  // the reason not to invent names here.
+  [COLLECTIONS.user]: [{ key: { email: 1 }, name: 'user_email_uidx', unique: true }],
+  [COLLECTIONS.session]: [
+    // Every authenticated request resolves a session by token.
+    { key: { token: 1 }, name: 'session_token_uidx', unique: true },
+    // Sign-out-everywhere and the account purge delete by user.
+    { key: { userId: 1 }, name: 'session_userId_idx' },
+  ],
+  // `account_issuer_accountId_uidx` is the adapter's own — not repeated here.
+  // This is the other access path: every account of one user.
+  [COLLECTIONS.account]: [{ key: { userId: 1 }, name: 'account_userId_idx' }],
+  // Email verification and password reset both look a token up by identifier.
+  [COLLECTIONS.verification]: [{ key: { identifier: 1 }, name: 'verification_identifier_idx' }],
 
   [COLLECTIONS.profiles]: [
     { key: { handle: 1 }, name: 'handle_unique', unique: true },
