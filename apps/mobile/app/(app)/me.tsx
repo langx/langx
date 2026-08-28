@@ -1,14 +1,4 @@
-import {
-  COSMETICS,
-  STREAK_FREEZE_SKU,
-  STREAK_RESTORE_SKU,
-  TOKEN_RULES,
-  countryFlag,
-  formatAccountAge,
-  getCountry,
-  streakRestorePrice,
-  type Gender,
-} from '@langx/shared'
+import { countryFlag, formatAccountAge, getCountry, type Gender } from '@langx/shared'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
@@ -16,7 +6,6 @@ import {
   useEffectiveTier,
   useIsPro,
   useMe,
-  usePurchase,
   useQuota,
   useViewers,
   useWallet,
@@ -67,7 +56,6 @@ export default function MeScreen() {
   const wallet = useWallet()
   const quota = useQuota()
   const viewers = useViewers()
-  const purchase = usePurchase()
   // Above the early return: hooks cannot be called conditionally, and putting
   // this below it renders nothing at all.
   const isPro = useIsPro()
@@ -83,10 +71,6 @@ export default function MeScreen() {
 
   const profile = me.data
   const balance = wallet.data?.balance ?? 0
-  const restored = profile.restoredFromV1
-  const restorableStreak = restored && !restored.streakRestoredAt ? restored.frozenStreak : 0
-  const restorePrice = streakRestorePrice(restorableStreak)
-  const owned = wallet.data?.owned ?? []
 
   async function signOut(): Promise<void> {
     // Sign out sits under the profile, one mis-tap away from everything on it.
@@ -163,7 +147,17 @@ export default function MeScreen() {
       <View style={styles.stats}>
         <Stat label="Streak" value={`🔥 ${xp.data?.streak.current ?? 0}`} tone={colors.streak} />
         <Stat label="Total tokens" value={String(xp.data?.tokens.all ?? 0)} />
-        <Stat label="Balance" value={String(balance)} tone={colors.accent} />
+        {/* The balance is the way into the store — a number nobody can act on
+            reads as decoration, and the store had nowhere else to be reached
+            from once it left this screen. */}
+        <Pressable
+          onPress={() => router.push('/(app)/store')}
+          accessibilityRole="button"
+          accessibilityLabel="Token store"
+          style={styles.flex}
+        >
+          <Stat label="Balance ›" value={String(balance)} tone={colors.accent} />
+        </Pressable>
       </View>
 
       {/* Free users get the count and a locked list; that contrast is the
@@ -196,75 +190,6 @@ export default function MeScreen() {
       ) : null}
 
       <LanguageCards native={profile.nativeLanguages} learning={profile.learning} />
-
-      <Text style={styles.sectionTitle}>Token store</Text>
-      <Text style={styles.storeHint}>
-        Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak
-        freezes and cosmetics.
-      </Text>
-
-      {/*
-        Only ever offered to someone who came back from v1 and has not bought
-        it yet — `restoredFromV1` carries the number and `streakRestoredAt` is
-        the latch. Before this the welcome-back screen could name the streak
-        and offer nothing to do about it.
-      */}
-      {restorableStreak > 0 ? (
-        <View style={styles.storeRow}>
-          <View style={styles.flex}>
-            <Text style={styles.storeName}>Restore your streak</Text>
-            <Text style={styles.storeMeta}>
-              {`Bring back the ${restorableStreak}-day streak you had in v1`}
-            </Text>
-          </View>
-          <Button
-            label={`${restorePrice} tokens`}
-            variant="secondary"
-            style={styles.storeAction}
-            disabled={balance < restorePrice || purchase.isPending}
-            onPress={() => purchase.mutate(STREAK_RESTORE_SKU)}
-          />
-        </View>
-      ) : null}
-
-      <View style={styles.storeRow}>
-        <View style={styles.flex}>
-          <Text style={styles.storeName}>Streak freeze</Text>
-          <Text style={styles.storeMeta}>
-            {/* One expression, not two on separate lines — JSX eats the
-                newline between them, which rendered "banked /2". */}
-            {`Saves one missed day · ${wallet.data?.streakFreezes ?? 0}/${TOKEN_RULES.sinks.maxBankedStreakFreezes} banked`}
-          </Text>
-        </View>
-        <Button
-          label={`${TOKEN_RULES.sinks.streakFreeze} tokens`}
-          variant="secondary"
-          style={styles.storeAction}
-          disabled={balance < TOKEN_RULES.sinks.streakFreeze || purchase.isPending}
-          onPress={() => purchase.mutate(STREAK_FREEZE_SKU)}
-        />
-      </View>
-
-      {COSMETICS.map((item) => {
-        const isOwned = owned.includes(item.id)
-        return (
-          <View key={item.id} style={styles.storeRow}>
-            <View style={styles.flex}>
-              <Text style={styles.storeName}>{item.label}</Text>
-              <Text style={styles.storeMeta}>
-                {item.kind === 'frame' ? 'Profile frame' : 'Title'}
-              </Text>
-            </View>
-            <Button
-              label={isOwned ? 'Owned' : `${item.price} tokens`}
-              variant="secondary"
-              style={styles.storeAction}
-              disabled={isOwned || balance < item.price || purchase.isPending}
-              onPress={() => purchase.mutate(item.id)}
-            />
-          </View>
-        )
-      })}
 
       <DebugQuotaPanel />
 
@@ -318,24 +243,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     marginTop: spacing.xl,
   },
-  storeHint: { ...font.caption, color: colors.textMuted, marginBottom: spacing.md },
-  storeRow: {
-    alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
-  },
-  /**
-   * Undoes `Button`'s full-width default, which is right in a form column and
-   * wrong here: claiming 100% of a row leaves nothing for the name beside it,
-   * and the name column — being `flex: 1`, so shrinkable — collapses to a
-   * single character per line rather than pushing back.
-   */
-  storeAction: { flexShrink: 0, width: 'auto' },
-  storeName: { ...font.body, color: colors.text, fontWeight: '600' },
-  storeMeta: { ...font.caption, color: colors.textMuted },
   firstAction: { marginTop: spacing.xl },
   signOut: { marginBottom: spacing.xxl, marginTop: spacing.sm },
 })
