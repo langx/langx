@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
 import { AlertHost } from '../src/components/AlertHost'
 import { AppGate } from '../src/components/AppGate'
+import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { colors } from '../src/lib/theme'
@@ -91,6 +92,12 @@ export default function RootLayout() {
                 <Stack.Screen name="(auth)" />
               </Stack.Protected>
             </Stack>
+            {/*
+              After the navigator, not before it: this one is a plain
+              positioned view rather than a Modal, so painting over the screen
+              is a matter of coming later in the tree.
+            */}
+            <ToastHost />
           </AppGate>
         )}
       </QueryClientProvider>
