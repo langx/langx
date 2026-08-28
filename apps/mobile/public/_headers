@@ -1,0 +1,15 @@
+# Cloudflare Pages reads this file from the deployed root; it is configuration,
+# not an asset, and is never served.
+
+# iOS rejects the association file unless it arrives as application/json, and
+# it is checked in without an extension, so a static host that guesses by
+# extension gets it wrong. Both platforms also follow zero redirects when
+# verifying, which is why nothing rewrites this path.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+
+# Fingerprinted by Expo — the name changes whenever the contents do.
+/_expo/static/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

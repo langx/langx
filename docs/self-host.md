@@ -116,6 +116,23 @@ a static site in `dist/`. Serve it from any static host. It needs
 `EXPO_PUBLIC_API_URL` set at build time, and that origin must appear in the
 API's `TRUSTED_ORIGINS` or the browser will block the session cookie.
 
+Cloudflare Pages is the host this repo is set up for — a static export needs
+no server of its own, so it needs no machine and costs nothing:
+
+```bash
+cd apps/mobile
+EXPO_PUBLIC_API_URL=https://<your-api-host> pnpm run build:web
+pnpm run deploy:web
+```
+
+Two details in that setup are not decoration. `apple-app-site-association` is
+sent as `application/json` by `public/_headers` — it is checked in without a
+file extension, so a host that sniffs the type breaks iOS deep links while
+Android keeps working. And `build:web` copies Expo's `+not-found.html` to
+`404.html`, which is the name Pages answers unmatched paths with, and it
+answers with a real 404: `output: 'static'` writes a file per route, so a host
+that rewrites everything to `index.html` would return 200 for every typo.
+
 **Mobile** — EAS handles builds; see `eas.json`. Self-hosters building their
 own app need their own bundle identifier, their own signing keys, and their
 own store listings. Do not reuse the identifiers in `app.config.ts` — they
