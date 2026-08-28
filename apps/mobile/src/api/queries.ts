@@ -260,7 +260,11 @@ export function useQuota() {
   return useQuery({
     queryKey: keys.quota,
     queryFn: () =>
-      api.get<{ initiations: QuotaStatusDto; translations: QuotaStatusDto }>('/me/quota'),
+      api.get<{
+        initiations: QuotaStatusDto
+        translations: QuotaStatusDto
+        media: QuotaStatusDto
+      }>('/me/quota'),
   })
 }
 
