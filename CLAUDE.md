@@ -35,6 +35,27 @@ Better Auth wraps writes in transactions and MongoDB only offers those on a
 replica set. A standalone `mongod` fails on the first sign-up with a
 transaction error. See `docs/self-host.md`.
 
+## Every worktree needs its own `pnpm install`
+
+The install is slow and a second worktree is right there, so pointing one at
+the other's `node_modules` is the obvious shortcut. It fails one of two ways
+depending on which `node_modules` gets linked, and only one of them tells you.
+
+Linking the **root** one fails loudly. pnpm's layout is isolated, not hoisted:
+each package's dependencies live under `<pkg>/node_modules`, so the root
+directory holds neither `fastify` nor `@langx/shared` and nothing resolves.
+
+Linking a **per-package** one — `apps/api/node_modules` — is the dangerous
+case. pnpm links workspace packages with a relative symlink
+(`@langx/shared -> ../../../../packages/shared`), and a relative symlink
+resolves from where it really lives, not from where you reached it. Through the
+link that is the _other_ worktree, so `apps/api` imports that branch's
+`packages/shared`. Nothing errors, nothing warns, and the tests pass — against
+code you are not editing. A green run stops meaning anything while still
+looking exactly like one that does.
+
+`git worktree add`, then `pnpm install`. Every time.
+
 ## Conventions that are load-bearing
 
 **No handler queries a collection directly.** Every module has repository
