@@ -39,7 +39,8 @@ export interface PublicProfileDto {
   tier: PlanTier
   cosmetics: string[]
   isOnline: boolean
-  lastActiveAt: string
+  /** Absent when the profile hides its online status. */
+  lastActiveAt?: string
   /** ISO; rendered as an age with `formatAccountAge`, never as a date. */
   createdAt: string
   emailVerified: boolean

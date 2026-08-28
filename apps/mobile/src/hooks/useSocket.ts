@@ -1,3 +1,4 @@
+import { PRESENCE_HEARTBEAT_MS } from '@langx/shared'
 import type { InfiniteData } from '@tanstack/react-query'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
@@ -20,10 +21,21 @@ export function useSocket(): void {
 
   useEffect(() => {
     let cancelled = false
+    let heartbeat: ReturnType<typeof setInterval> | null = null
 
     void (async () => {
       const socket = await getSocket()
       if (cancelled) return
+
+      /**
+       * Says "still here" while the app is open. Without it `lastActiveAt`
+       * only moved when a message was sent, so browsing for an hour left you
+       * offline. Lives with the socket rather than in a screen for the reason
+       * `_layout.tsx` gives for owning the socket once.
+       */
+      heartbeat = setInterval(() => {
+        socket.emit('presence:ping', {})
+      }, PRESENCE_HEARTBEAT_MS)
 
       socket.on('message:new', (message: MessageDto) => {
         const conversationId =
@@ -105,6 +117,7 @@ export function useSocket(): void {
 
     return () => {
       cancelled = true
+      if (heartbeat) clearInterval(heartbeat)
       closeSocket()
     }
   }, [queryClient])

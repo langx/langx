@@ -34,6 +34,10 @@ export const EVENT_LIMITS: Record<string, BucketConfig> = {
   'message:media': { capacity: 10, refillPerSecond: 0.5 },
   'conversation:read': { capacity: 30, refillPerSecond: 2 },
   typing: { capacity: 40, refillPerSecond: 10 },
+  // One per 20s sustained, burst of 4. A 60s heartbeat passes with room; a
+  // client looping on it is refused. `DEFAULT_LIMIT` would cover it, but the
+  // note below is explicit that a new event gets a named entry.
+  'presence:ping': { capacity: 4, refillPerSecond: 0.05 },
 }
 
 /** Applied to any event not named above, so a new one is never accidentally unlimited. */
