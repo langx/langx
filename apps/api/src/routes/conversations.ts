@@ -35,10 +35,15 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
     if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
 
     const tier = effectiveTier(profile)
-    const [initiations, translations] = await Promise.all([
+    // Every kind `quota.ts` tracks, so a client never has to guess why an
+    // action was refused. `media` was missing here while being consumed on
+    // the socket path, which left the chat screen with no way to say which
+    // limit it had hit.
+    const [initiations, translations, media] = await Promise.all([
       getQuotaStatus(app.mongo.db, request.userId, tier, 'initiations'),
       getQuotaStatus(app.mongo.db, request.userId, tier, 'translations'),
+      getQuotaStatus(app.mongo.db, request.userId, tier, 'media'),
     ])
-    return reply.send({ initiations, translations })
+    return reply.send({ initiations, translations, media })
   })
 }

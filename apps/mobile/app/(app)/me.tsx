@@ -22,6 +22,7 @@ import {
   useWallet,
   useTokens,
 } from '../../src/api/queries'
+import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
 import { LanguageCards } from '../../src/components/LanguageCards'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
@@ -264,6 +265,8 @@ export default function MeScreen() {
           </View>
         )
       })}
+
+      <DebugQuotaPanel />
 
       <Button
         label="Edit profile"

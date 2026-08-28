@@ -295,6 +295,33 @@ describe('Faz 4 — starting a conversation', () => {
       // Sending conversations never touches the translation bucket.
       expect(afterBody.translations).toMatchObject({ limit: 20, remaining: 20 })
     })
+
+    /**
+     * `media` is consumed on the socket path but was missing from this
+     * response, which left the chat screen unable to say which limit an
+     * attachment had hit. Every kind `quota.ts` tracks is reported.
+     */
+    it('reports every tracked kind, media included', async () => {
+      const free = await newUser('quota-kinds-free@example.com')
+      const freeBody = await app
+        .inject({ method: 'GET', url: '/me/quota', headers: { cookie: free.cookie } })
+        .then((r) => r.json<Record<string, { limit: number | null }>>())
+
+      expect(Object.keys(freeBody).sort()).toEqual(['initiations', 'media', 'translations'])
+      expect(freeBody.media).toMatchObject({
+        limit: PLAN_LIMITS.free.mediaPer24h,
+        remaining: PLAN_LIMITS.free.mediaPer24h,
+        nextAvailableAt: null,
+      })
+
+      const pro = await newUser('quota-kinds-pro@example.com')
+      await makePro(pro.userId)
+      const proBody = await app
+        .inject({ method: 'GET', url: '/me/quota', headers: { cookie: pro.cookie } })
+        .then((r) => r.json<Record<string, { limit: number | null }>>())
+
+      expect(proBody.media).toMatchObject({ limit: null, remaining: null })
+    })
   })
 
   describe('the 24h window rolls, it does not reset', () => {
