@@ -1,5 +1,6 @@
 import { packageDefinition, type BillingPeriod, type PaidPlanTier } from '@langx/shared'
 import { Platform } from 'react-native'
+import { fakeOffers, fakePurchase, isFakePurchasesEnabled } from './fakePurchases'
 // `import type` is erased at compile time, so naming the module here costs
 // nothing at runtime — the actual native module is still only pulled in by the
 // dynamic import in `loadSdk()`, on the platforms that have it.
@@ -24,6 +25,13 @@ import type * as PurchasesSdk from 'react-native-purchases'
  * shapes below, and the RevenueCat `PurchasesPackage` objects stay in
  * `packagesById` — passing an opaque SDK object through React props is how a
  * UI ends up unable to be tested without the native module present.
+ *
+ * Each function below opens with the same `isFakePurchasesEnabled()` check,
+ * which is the local development harness (`./fakePurchases`) taking the whole
+ * module over. Branching here rather than at the call sites is what keeps the
+ * promise the paragraph above makes: the paywall still has exactly one surface
+ * onto billing and cannot tell which store it is talking to, so what the
+ * harness exercises is the screen that ships.
  */
 
 /** `react-native-purchases` is native-only; the browser build needs RevenueCat's separate JS SDK, which this app does not ship. */
@@ -44,6 +52,7 @@ function apiKey(): string | null {
 }
 
 export function isPurchasesAvailable(): boolean {
+  if (isFakePurchasesEnabled()) return true
   return apiKey() !== null
 }
 
@@ -88,6 +97,11 @@ async function loadSdk(): Promise<PurchasesModule | null> {
  * Safe to call repeatedly; it no-ops once the current user is already bound.
  */
 export async function identifyForPurchases(userId: string): Promise<void> {
+  // Nothing to bind under the harness: its purchases are made by an
+  // authenticated API call, so the app user id *is* the session's user id and
+  // cannot drift from it — which is the failure this function exists to
+  // prevent, made structurally impossible rather than handled.
+  if (isFakePurchasesEnabled()) return
   if (configuredFor === userId) return
   const sdk = await loadSdk()
   if (!sdk) return
@@ -110,6 +124,7 @@ export async function identifyForPurchases(userId: string): Promise<void> {
 
 /** Clears the binding on sign-out so the next account does not inherit it. */
 export async function forgetPurchasesIdentity(): Promise<void> {
+  if (isFakePurchasesEnabled()) return
   if (configuredFor === null) return
   const sdk = await loadSdk()
   configuredFor = null
@@ -128,6 +143,7 @@ export async function forgetPurchasesIdentity(): Promise<void> {
  * the paywall renders the same honest empty state for all of them.
  */
 export async function getOffers(): Promise<PurchaseOffer[]> {
+  if (isFakePurchasesEnabled()) return fakeOffers()
   const sdk = await loadSdk()
   if (!sdk) return []
 
@@ -166,6 +182,7 @@ export async function getOffers(): Promise<PurchaseOffer[]> {
  * teaches people it is broken.
  */
 export async function purchaseOffer(offerId: string): Promise<PurchaseOutcome> {
+  if (isFakePurchasesEnabled()) return fakePurchase(offerId)
   const sdk = await loadSdk()
   const pkg = packagesById.get(offerId)
   if (!sdk || !pkg) return 'unavailable'
@@ -186,6 +203,10 @@ export async function purchaseOffer(offerId: string): Promise<PurchaseOutcome> {
  * runs afterwards.
  */
 export async function restorePurchases(): Promise<boolean> {
+  // There is no device receipt to restore *from* here, and reporting failure
+  // would be misleading: the caller reconciles with the server straight
+  // afterwards, and under the harness the server is the only record there was.
+  if (isFakePurchasesEnabled()) return true
   const sdk = await loadSdk()
   if (!sdk) return false
   try {

@@ -218,7 +218,11 @@ credentials before running the streak reminder against real users.
 ## Prerequisites that are business process, not code
 
 None of these can be done from this repo, and Faz 7's subscription work cannot
-be tested end to end until they are:
+be tested against a real store until they are. What _can_ be tested without
+them — the paywall, the webhook handler, entitlement and reconciliation, as one
+flow — is in [`billing-testing.md`](billing-testing.md); it does not replace the
+Test Store purchase below, it only stops that purchase being the first time any
+of it runs together.
 
 - [ ] Paid apps agreement accepted (Apple + Google)
 - [ ] Bank and tax details submitted

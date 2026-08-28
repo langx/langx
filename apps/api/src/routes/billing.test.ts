@@ -457,4 +457,21 @@ describe('Faz 7 — billing', () => {
       expect(response.json()).toMatchObject({ tier: 'free' })
     })
   })
+
+  describe('POST /billing/test-event', () => {
+    // The route that hands out entitlement with no purchase behind it should
+    // not exist unless somebody asked for it. This app is built without
+    // REVENUECAT_FAKE_STORE, which is every deployment that is not a
+    // developer's laptop — see billingTestStore.test.ts for the other half.
+    it('does not exist without REVENUECAT_FAKE_STORE', async () => {
+      const user = await newUser('no-test-store@example.com')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/billing/test-event',
+        headers: { cookie: user.cookie },
+        payload: { action: 'purchase', packageId: '$rc_monthly' },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+  })
 })

@@ -25,6 +25,14 @@ declare global {
       readonly EXPO_PUBLIC_REVENUECAT_IOS_KEY?: string
       readonly EXPO_PUBLIC_REVENUECAT_ANDROID_KEY?: string
       readonly EXPO_PUBLIC_REVENUECAT_TEST_STORE_KEY?: string
+      /**
+       * `'1'` replaces RevenueCat entirely with the local development harness
+       * in `lib/fakePurchases.ts`, so the paywall can be bought from on web
+       * and without store products. Only ever read together with `__DEV__`,
+       * and the API needs its own `REVENUECAT_FAKE_STORE` for the purchase to
+       * land anywhere — see `docs/billing-testing.md`.
+       */
+      readonly EXPO_PUBLIC_REVENUECAT_FAKE_STORE?: string
     }
   }
 }

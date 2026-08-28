@@ -100,6 +100,21 @@ const envSchema = z.object({
   REVENUECAT_SECRET_API_KEY: emptyToUndefined(z.string().optional()),
   REVENUECAT_WEBHOOK_AUTH_HEADER: emptyToUndefined(z.string().optional()),
 
+  /**
+   * Replaces RevenueCat with an in-process stand-in, so a purchase can be
+   * driven end to end without an App Store or Play product existing — see
+   * `docs/billing-testing.md`. It takes precedence over
+   * `REVENUECAT_SECRET_API_KEY`: a machine that has both is a machine where a
+   * leftover real key would otherwise silently win, and the surprise there
+   * runs the wrong way round.
+   *
+   * `loadEnv` refuses to return with this set under `NODE_ENV=production`.
+   * That check is the whole safety story — everything else about this flag is
+   * a convenience, but a production API that hands out Pro to anyone who asks
+   * is not a bug you find in review.
+   */
+  REVENUECAT_FAKE_STORE: z.preprocess((v) => v === 'true' || v === '1', z.boolean()).default(false),
+
   // Faz 2: username claim. Must match what the ETL used to hash legacy
   // emails into handleReservations.legacyEmailHash, or nothing ever matches.
   LEGACY_EMAIL_HASH_SALT: emptyToUndefined(z.string().optional()),
@@ -138,5 +153,16 @@ export function loadEnv(source: NodeJS.ProcessEnv = process.env): Env {
       .join('\n')
     throw new Error(`Invalid environment:\n${issues}`)
   }
+
+  // Refusing to boot, rather than ignoring the flag, because the two failures
+  // look identical from outside and only one of them is safe: an API that
+  // quietly dropped the flag would keep serving real billing while whoever set
+  // it believes they are on the fake store.
+  if (parsed.data.NODE_ENV === 'production' && parsed.data.REVENUECAT_FAKE_STORE) {
+    throw new Error(
+      'Invalid environment:\n  REVENUECAT_FAKE_STORE: refused under NODE_ENV=production — it grants entitlement with no purchase behind it',
+    )
+  }
+
   return parsed.data
 }
