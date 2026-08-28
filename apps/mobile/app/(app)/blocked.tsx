@@ -1,11 +1,20 @@
 import { router } from 'expo-router'
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { useBlocks, useUnblockUser } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { confirmAlert } from '../../src/lib/alert'
+import { dedupeById } from '../../src/lib/dedupeById'
 import { showToast } from '../../src/lib/toast'
 import { colors, font, spacing } from '../../src/lib/theme'
 
@@ -18,7 +27,7 @@ export default function BlockedScreen() {
   const blocks = useBlocks()
   const unblock = useUnblockUser()
 
-  const items = blocks.data?.items ?? []
+  const items = dedupeById(blocks.data?.pages.flatMap((page) => page.items) ?? [])
   // The block row stores ids only; these are the names to show against them.
   const profiles = useProfileCache(items.map((b) => b.blockedId))
 
@@ -36,6 +45,19 @@ export default function BlockedScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={blocks.isRefetching}
+              onRefresh={() => void blocks.refetch()}
+            />
+          }
+          onEndReachedThreshold={0.6}
+          onEndReached={() => {
+            if (blocks.hasNextPage && !blocks.isFetchingNextPage) void blocks.fetchNextPage()
+          }}
+          ListFooterComponent={
+            blocks.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
+          }
           ListEmptyComponent={
             <EmptyState
               emoji="🚫"
@@ -89,6 +111,7 @@ const styles = StyleSheet.create({
   back: { ...font.body, color: colors.textMuted },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
   loading: { marginTop: spacing.xxl },
+  footer: { paddingVertical: spacing.lg },
   list: { paddingTop: spacing.md },
   row: {
     alignItems: 'center',

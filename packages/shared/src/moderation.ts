@@ -50,3 +50,24 @@ export const REPORTS_TO_FREEZE_XP = 3
 
 export const REPORT_STATUSES = ['open', 'reviewing', 'actioned', 'dismissed'] as const
 export type ReportStatus = (typeof REPORT_STATUSES)[number]
+
+/**
+ * Paging for the two moderation lists.
+ *
+ * `GET /me/viewers` used to take the newest 100 and stop, which a Pro user
+ * paying to see the list would experience as the list being wrong — the
+ * `total` beside it counted everyone. `GET /blocks` had no limit at all.
+ */
+export const MODERATION_PAGE_SIZE_DEFAULT = 30
+export const MODERATION_PAGE_SIZE_MAX = 100
+
+export const moderationListQuerySchema = z.object({
+  cursor: z.string().trim().min(1).optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(MODERATION_PAGE_SIZE_MAX)
+    .default(MODERATION_PAGE_SIZE_DEFAULT),
+})
+export type ModerationListQuery = z.infer<typeof moderationListQuerySchema>

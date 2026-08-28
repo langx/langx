@@ -164,6 +164,9 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.blocks]: [
     { key: { blockerId: 1, blockedId: 1 }, name: 'blocker_blocked_unique', unique: true },
     { key: { blockedId: 1 }, name: 'blocked' },
+    // The blocked list pages newest-first; the unique index above covers the
+    // filter but leaves the sort in memory.
+    { key: { blockerId: 1, createdAt: -1 }, name: 'blocker_recent' },
   ],
 
   [COLLECTIONS.reports]: [{ key: { status: 1, createdAt: -1 }, name: 'status_created' }],

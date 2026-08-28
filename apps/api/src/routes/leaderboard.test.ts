@@ -361,6 +361,77 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       expect(result.viewer.rank).toBe(rankA)
     })
 
+    /**
+     * `rankOf` counts from the page's own index, so page two would restart at
+     * 1 — and a tie spanning the boundary would be told two different
+     * positions depending on which page it landed on. The page's starting
+     * rank is asked for with the same count the viewer rank uses, so this
+     * holds by construction.
+     */
+    it('keeps ranks continuous across pages, including a tie on the boundary', async () => {
+      const users = []
+      for (let i = 0; i < 4; i++) users.push(await newUser())
+      // 900, 900, 800, 700 — the tie sits across a limit=2 boundary.
+      const amounts = [900, 900, 800, 700]
+      for (const [i, user] of users.entries()) {
+        await awardTokens(handle.db, {
+          userId: user.userId,
+          kind: 'adjustment',
+          amount: amounts[i]!,
+          refId: `page-tie-${i}`,
+        })
+      }
+
+      const viewer = users[0]!
+      const ourIds = new Set(users.map((u) => u.userId))
+
+      async function walk(limit: number) {
+        const found = new Map<string, { rank: number; tokens: number }>()
+        let cursor: string | null = null
+        do {
+          const suffix: string = cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+          const page = await board(viewer, `?period=all&limit=${limit}${suffix}`)
+          for (const entry of page.entries) {
+            if (ourIds.has(entry.userId)) {
+              found.set(entry.userId, { rank: entry.rank, tokens: entry.tokens })
+            }
+          }
+          cursor = page.nextCursor
+        } while (cursor)
+        return found
+      }
+
+      // Two different page sizes put the boundaries in different places. With
+      // the page's start index conflated with its first row's rank, a tie
+      // straddling a boundary makes these disagree — which is the bug.
+      const small = await walk(2)
+      const large = await walk(7)
+
+      expect(small.size).toBe(4)
+      expect(large.size).toBe(4)
+      for (const [userId, entry] of small) {
+        expect(large.get(userId)?.rank, `rank for ${userId}`).toBe(entry.rank)
+      }
+
+      // The two equal scores share a rank wherever the boundaries fall.
+      const byScore = [...small.values()].sort((x, y) => y.tokens - x.tokens)
+      const tied = byScore.filter((e) => e.tokens === byScore[0]!.tokens)
+      expect(tied).toHaveLength(2)
+      expect(tied[0]!.rank).toBe(tied[1]!.rank)
+
+      // And the count-based rank the viewer gets from outside any page still
+      // agrees with the one they got inside one.
+      const own = small.get(viewer.userId)!
+      const board2 = await board(viewer, '?period=all&limit=1')
+      expect(board2.viewer.rank).toBe(own.rank)
+    })
+
+    it('stops handing out cursors on the last page', async () => {
+      const user = await newUser()
+      const result = await board(user, '?period=all&limit=100')
+      expect(result.nextCursor).toBeNull()
+    })
+
     it('reports a rank for someone outside the requested page', async () => {
       const loner = await newUser()
       await awardTokens(handle.db, {

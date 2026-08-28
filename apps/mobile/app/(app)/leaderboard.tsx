@@ -1,13 +1,22 @@
 import type { PeriodType } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import { useLeaderboard, useTokens } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { days } from '../../src/lib/format'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { dedupeById } from '../../src/lib/dedupeById'
 
 const TABS: { key: PeriodType; label: string }[] = [
   { key: 'week', label: 'Week' },
@@ -24,8 +33,11 @@ export default function LeaderboardScreen() {
   const xp = useTokens()
 
   const streak = xp.data?.streak
-  const entries = board.data?.entries ?? []
-  const viewer = board.data?.viewer
+  const entries = dedupeById(
+    (board.data?.pages.flatMap((page) => page.entries) ?? []).map((e) => ({ ...e, _id: e.userId })),
+  )
+  // The viewer's own standing is about the whole table, not this page.
+  const viewer = board.data?.pages[0]?.viewer
 
   return (
     <Screen fluid>
@@ -68,6 +80,16 @@ export default function LeaderboardScreen() {
           data={entries}
           keyExtractor={(item) => item.userId}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl
+              refreshing={board.isRefetching}
+              onRefresh={() => void board.refetch()}
+            />
+          }
+          onEndReachedThreshold={0.6}
+          onEndReached={() => {
+            if (board.hasNextPage && !board.isFetchingNextPage) void board.fetchNextPage()
+          }}
           ListEmptyComponent={
             <EmptyState
               emoji="🏆"
@@ -76,13 +98,18 @@ export default function LeaderboardScreen() {
             />
           }
           ListFooterComponent={
-            viewer && !viewer.inPage && viewer.rank ? (
-              <View style={styles.viewerRow}>
-                <Text style={styles.rank}>#{viewer.rank}</Text>
-                <Text style={styles.viewerLabel}>You</Text>
-                <Text style={styles.tokens}>{viewer.tokens}</Text>
-              </View>
-            ) : null
+            <>
+              {board.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
+              {/* Your own row, pinned below the page you can see — the whole
+                  point of `viewer.rank` is that it works from outside it. */}
+              {viewer && !viewer.inPage && viewer.rank ? (
+                <View style={styles.viewerRow}>
+                  <Text style={styles.rank}>#{viewer.rank}</Text>
+                  <Text style={styles.viewerLabel}>You</Text>
+                  <Text style={styles.tokens}>{viewer.tokens}</Text>
+                </View>
+              ) : null}
+            </>
           }
           renderItem={({ item }) => (
             <Pressable
@@ -133,6 +160,7 @@ const styles = StyleSheet.create({
   tabLabel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
   tabLabelActive: { color: colors.primaryText },
   loading: { marginTop: spacing.xxl },
+  footer: { paddingVertical: spacing.lg },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
   row: {
     alignItems: 'center',
