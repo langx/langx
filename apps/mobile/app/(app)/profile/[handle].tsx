@@ -1,4 +1,4 @@
-import { countryFlag, formatAccountAge, getCountry, getLanguage } from '@langx/shared'
+import { countryFlag, formatAccountAge, getCountry } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
@@ -11,6 +11,7 @@ import {
 } from '../../../src/api/queries'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
+import { LanguageCards } from '../../../src/components/LanguageCards'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
 import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
@@ -147,23 +148,7 @@ export default function ProfileScreen() {
 
       {user.bio ? <Text style={styles.bio}>{user.bio}</Text> : null}
 
-      <Text style={styles.sectionTitle}>Speaks</Text>
-      <View style={styles.chips}>
-        {user.nativeLanguages.map((l) => (
-          <Chip key={l.code} label={getLanguage(l.code)?.name ?? l.code} tone="accent" selected />
-        ))}
-      </View>
-
-      <Text style={styles.sectionTitle}>Learning</Text>
-      <View style={styles.chips}>
-        {user.learning.map((l) => (
-          <Chip
-            key={l.code}
-            label={`${getLanguage(l.code)?.name ?? l.code} · ${l.level}`}
-            tone="accent"
-          />
-        ))}
-      </View>
+      <LanguageCards native={user.nativeLanguages} learning={user.learning} />
 
       {user.interests.length > 0 ? (
         <>

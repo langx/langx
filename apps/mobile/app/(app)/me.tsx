@@ -6,7 +6,6 @@ import {
   countryFlag,
   formatAccountAge,
   getCountry,
-  getLanguage,
   streakRestorePrice,
   type Gender,
 } from '@langx/shared'
@@ -22,6 +21,7 @@ import {
   useWallet,
   useTokens,
 } from '../../src/api/queries'
+import { LanguageCards } from '../../src/components/LanguageCards'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { TierBadge } from '../../src/components/TierBadge'
@@ -176,19 +176,7 @@ export default function MeScreen() {
         </Pressable>
       ) : null}
 
-      <Text style={styles.sectionTitle}>My languages</Text>
-      <View style={styles.chips}>
-        {profile.nativeLanguages.map((l) => (
-          <Chip key={l.code} label={getLanguage(l.code)?.name ?? l.code} tone="accent" selected />
-        ))}
-        {profile.learning.map((l) => (
-          <Chip
-            key={l.code}
-            label={`${getLanguage(l.code)?.name ?? l.code} · ${l.level}`}
-            tone="accent"
-          />
-        ))}
-      </View>
+      <LanguageCards native={profile.nativeLanguages} learning={profile.learning} />
 
       <Text style={styles.sectionTitle}>Token store</Text>
       <Text style={styles.storeHint}>
@@ -314,7 +302,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     marginTop: spacing.xl,
   },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
   storeHint: { ...font.caption, color: colors.textMuted, marginBottom: spacing.md },
   storeRow: {
     alignItems: 'center',

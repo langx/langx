@@ -1,6 +1,7 @@
 import {
   formatDistance,
   getLanguage,
+  LEVEL_SHORT_LABELS,
   NEARBY_MAX_KM,
   NEARBY_RADIUS_OPTIONS_KM,
   type DiscoverySort,
@@ -50,7 +51,7 @@ const SORTS: { key: DiscoverySort; label: string }[] = [
 function LanguageLine({ item }: { item: DiscoveryItem }) {
   const speaks = item.nativeLanguages.map((l) => getLanguage(l.code)?.name ?? l.code).join(', ')
   const learns = item.learning
-    .map((l) => `${getLanguage(l.code)?.name ?? l.code} ${l.level}`)
+    .map((l) => `${getLanguage(l.code)?.name ?? l.code} ${LEVEL_SHORT_LABELS[l.level]}`)
     .join(', ')
   return (
     <Text style={styles.languages} numberOfLines={1}>
