@@ -240,6 +240,71 @@ export async function listMessages(
   return { items: items.reverse(), nextCursor, participants: conversation.participants }
 }
 
+/**
+ * The second tick: everything in this conversation that `recipientId` has not
+ * received yet is now on their device. Returns the timestamp if anything
+ * actually changed and `null` otherwise, so a caller does not emit a realtime
+ * event announcing that nothing happened.
+ *
+ * `$exists: false` rather than a blanket `$set`, because delivery is a moment,
+ * not a flag — re-stamping a message that arrived an hour ago would drag its
+ * timestamp forward every time the recipient reconnects.
+ */
+export async function markDelivered(
+  db: Db,
+  conversationId: ObjectId,
+  recipientId: string,
+): Promise<Date | null> {
+  const deliveredAt = new Date()
+  const result = await db.collection<Message>(COLLECTIONS.messages).updateMany(
+    {
+      conversationId,
+      senderId: { $ne: recipientId },
+      deliveredAt: { $exists: false },
+    },
+    { $set: { deliveredAt } },
+  )
+  return result.modifiedCount > 0 ? deliveredAt : null
+}
+
+export interface DeliveredSweep {
+  conversationId: string
+  /** The counterpart — the one waiting to see a second tick appear. */
+  senderId: string
+  deliveredAt: Date
+}
+
+/**
+ * What runs when someone connects: every message that was sent to them while
+ * they were away is delivered now, in every thread at once.
+ *
+ * Without this, a message sent to an offline recipient would sit on one tick
+ * forever — the send-time path can only mark what it can hand to an open
+ * socket, and there may not be one.
+ *
+ * Scoped to conversations with a non-zero unread count rather than all of
+ * them, which is sound because undelivered implies unread: a message cannot be
+ * read before it arrives, so anything missing `deliveredAt` is still counted
+ * in `unread[userId]`. That keeps a reconnect off a scan of the user's entire
+ * history — reconnects are frequent and happen in bursts (a train tunnel, a
+ * phone waking up), which is exactly when a full scan would hurt most.
+ */
+export async function markPendingDelivered(db: Db, userId: string): Promise<DeliveredSweep[]> {
+  const pending = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .find({ participants: userId, [`unread.${userId}`]: { $gt: 0 } })
+    .toArray()
+
+  const swept: DeliveredSweep[] = []
+  for (const conversation of pending) {
+    const deliveredAt = await markDelivered(db, conversation._id, userId)
+    const senderId = conversation.participants.find((id) => id !== userId)
+    if (!deliveredAt || !senderId) continue
+    swept.push({ conversationId: conversation._id.toHexString(), senderId, deliveredAt })
+  }
+  return swept
+}
+
 export async function markConversationRead(
   db: Db,
   userId: string,
@@ -254,6 +319,12 @@ export async function markConversationRead(
       { $set: { [`unread.${userId}`]: 0 } },
       { returnDocument: 'after' },
     )
+  // Reading a thread proves the messages in it arrived, and this is the only
+  // path that catches a reader who never held a socket — opening the app
+  // straight from a push notification marks read over REST. No
+  // `conversation:delivered` event follows, because the `conversation:read`
+  // the caller emits already implies it.
+  await markDelivered(db, conversation._id, userId)
   await db
     .collection<Message>(COLLECTIONS.messages)
     .updateMany(

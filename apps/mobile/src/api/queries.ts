@@ -216,6 +216,7 @@ export interface MessageDto {
   body: string
   media?: MessageMediaDto
   correction?: { original: string; corrected: string; note?: string }
+  deliveredAt?: string
   readAt?: string
   createdAt: string
 }

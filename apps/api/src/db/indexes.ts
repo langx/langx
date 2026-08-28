@@ -139,6 +139,18 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { conversationId: 1, readAt: 1 }, name: 'conversation_unread' },
     /**
+     * The same shape one step earlier in a message's life: `markDelivered`
+     * selects the messages in one conversation that have not reached the
+     * recipient yet. It runs on every send to someone who is online and once
+     * per conversation when someone reconnects, so it is on the hot path twice
+     * over.
+     *
+     * Not sparse, for the same reason as `conversation_unread` above — the
+     * query matches documents *missing* `deliveredAt`, and those are exactly
+     * the ones a sparse index would leave out.
+     */
+    { key: { conversationId: 1, deliveredAt: 1 }, name: 'conversation_undelivered' },
+    /**
      * The whole safety net under the v1 message import. The importer inserts
      * before it marks the room done, so a crash halfway leaves the room
      * unclaimed and the next run replays it — this index is what makes that

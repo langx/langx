@@ -199,6 +199,31 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.unread[b.userId]).toBe(0)
   })
 
+  it('reading over REST marks the thread delivered as well as read', async () => {
+    const a = await newUser('read-implies-a@example.com')
+    const b = await newUser('read-implies-b@example.com')
+    const conversation = await startConversation(a, b.userId, 'opened from a push')
+
+    // No socket anywhere in this test: opening the app straight from a
+    // notification is exactly the path where nothing else can have set the
+    // second tick, and a message cannot be read without having arrived.
+    const read = await app.inject({
+      method: 'POST',
+      url: `/conversations/${conversation._id}/read`,
+      headers: { cookie: b.cookie },
+    })
+    expect(read.statusCode, read.body).toBe(200)
+
+    const history = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: a.cookie },
+    })
+    const message = history.json<{ items: { deliveredAt?: string; readAt?: string }[] }>().items[0]
+    expect(message?.deliveredAt).toBeDefined()
+    expect(message?.readAt).toBeDefined()
+  })
+
   it('refuses history access once the two participants have blocked each other', async () => {
     const a = await newUser('blocked-history-a@example.com')
     const b = await newUser('blocked-history-b@example.com')

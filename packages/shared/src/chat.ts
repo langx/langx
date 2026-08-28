@@ -151,3 +151,34 @@ export function isImageContentType(value: string): boolean {
 export function isAudioContentType(value: string): boolean {
   return (AUDIO_CONTENT_TYPES as readonly string[]).includes(value)
 }
+
+/**
+ * What the ticks under your own message mean, in the order they happen:
+ *
+ * - `sent` — one tick. The server has it. Nothing more is claimed: the other
+ *   person may be asleep with their phone off.
+ * - `delivered` — two ticks. It reached their device, which for us means it
+ *   went out over a socket they had open (or they connected and we handed it
+ *   over then). Still unread.
+ * - `read` — two ticks, tinted. They opened the thread.
+ *
+ * The same three states WhatsApp and Telegram use, and people read them
+ * without being taught. A message never moves backwards through this.
+ */
+export const DELIVERY_STATES = ['sent', 'delivered', 'read'] as const
+export type DeliveryState = (typeof DELIVERY_STATES)[number]
+
+/**
+ * `readAt` wins over `deliveredAt` rather than requiring both, so that history
+ * predating `deliveredAt` — every v1 message imported as seen, and everything
+ * sent before this shipped — reads as `read` instead of falling back to one
+ * tick. Being read is proof of delivery; there is nothing to backfill.
+ */
+export function deliveryStateOf(message: {
+  deliveredAt?: string | Date | null
+  readAt?: string | Date | null
+}): DeliveryState {
+  if (message.readAt) return 'read'
+  if (message.deliveredAt) return 'delivered'
+  return 'sent'
+}

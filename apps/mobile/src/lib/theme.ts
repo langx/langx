@@ -20,6 +20,13 @@ export const colors = {
   danger: '#d92d20',
   success: '#12864b',
   streak: '#f79009',
+  /**
+   * The read ticks, and the only colour that has to work against `primary`
+   * rather than `bg` — status ticks appear on your own bubble and nowhere
+   * else. `accent` is the app's blue but clears barely 3:1 on that near-black
+   * at 11px; this is the same blue lifted until the glyph is unambiguous.
+   */
+  read: '#59a8ff',
   pro: '#7a5af8',
   /**
    * Deliberately the same hue family as `pro`, only deeper. Pro+ is a superset

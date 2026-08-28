@@ -42,6 +42,46 @@ export function useSocket(): void {
         void queryClient.invalidateQueries({ queryKey: keys.tokens })
       })
 
+      /**
+       * Patched into the cache rather than invalidated, unlike the read event
+       * below. Delivery fires on *every* message sent to someone who is
+       * online, so refetching the thread each time would put a request behind
+       * every keystroke-turned-message in an active conversation — and the
+       * event already carries everything the change needs. Reads are the
+       * rarer event and clear an unread count the client cannot recompute,
+       * which is why that one still goes back to the server.
+       */
+      socket.on(
+        'conversation:delivered',
+        ({
+          conversationId,
+          deliveredTo,
+          deliveredAt,
+        }: {
+          conversationId: string
+          deliveredTo: string
+          deliveredAt: string
+        }) => {
+          queryClient.setQueryData<{ items: MessageDto[]; nextCursor: string | null }>(
+            keys.messages(conversationId),
+            (old) => {
+              if (!old) return old
+              // The server stamped every message in the thread the recipient
+              // had not received yet, so this mirrors that filter exactly:
+              // theirs are not mine to mark, and an existing timestamp is the
+              // moment it actually arrived.
+              let changed = false
+              const items = old.items.map((message) => {
+                if (message.senderId === deliveredTo || message.deliveredAt) return message
+                changed = true
+                return { ...message, deliveredAt }
+              })
+              return changed ? { ...old, items } : old
+            },
+          )
+        },
+      )
+
       socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {
         void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
         // The chat list too: reading a conversation clears its unread count,
