@@ -3,6 +3,7 @@ import {
   hasFeature,
   isPaidTier,
   type Gender,
+  type LanguageLevel,
   type PaidPlanTier,
   type PlanFeature,
   type PlanTier,
@@ -65,7 +66,7 @@ export interface MeProfile {
   timezone?: string
   photos?: { url: string }[]
   nativeLanguages: { code: string }[]
-  learning: { code: string; level: string; priority: number }[]
+  learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
   settings: { discoverable: boolean; notifications: boolean }
   privacy: { incognito: boolean }

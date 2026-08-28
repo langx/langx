@@ -19,7 +19,7 @@ export type {
 
 // Re-exported above for consumers; imported here because a `export ... from`
 // does not bind the name locally and the DTOs below need to use it.
-import type { PlanTier } from '@langx/shared'
+import type { LanguageLevel, PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
   _id: string
@@ -33,7 +33,7 @@ export interface PublicProfileDto {
   country?: string
   city?: string
   nativeLanguages: { code: string }[]
-  learning: { code: string; level: string; priority: number }[]
+  learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
   streak: { current: number; longest: number }
   tier: PlanTier
@@ -55,7 +55,7 @@ export interface DiscoveryItem {
   gender: string
   country?: string
   nativeLanguages: { code: string }[]
-  learning: { code: string; level: string }[]
+  learning: { code: string; level: LanguageLevel }[]
   streak: { current: number }
   isOnline: boolean
   score?: number

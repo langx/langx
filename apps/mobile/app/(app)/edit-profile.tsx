@@ -95,7 +95,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [gender, setGender] = useState<Gender>(profile?.gender ?? 'undisclosed')
   const [native, setNative] = useState<string[]>(profile?.nativeLanguages.map((l) => l.code) ?? [])
   const [learning, setLearning] = useState<{ code: string; level: LanguageLevel }[]>(
-    profile?.learning.map((l) => ({ code: l.code, level: l.level as LanguageLevel })) ?? [],
+    profile?.learning.map((l) => ({ code: l.code, level: l.level })) ?? [],
   )
   const [editing, setEditing] = useState<'none' | 'native' | 'learning'>('none')
   const [error, setError] = useState<string | undefined>()
