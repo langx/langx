@@ -103,18 +103,24 @@ export async function getLeaderboard(
    * page — and deriving both from one formula keeps it true by construction.
    */
   const first = top[0]
-  const [startIndex, firstRank] = first
-    ? await Promise.all([
-        aggregates.countDocuments({
-          periodType,
-          periodKey,
-          $or: [{ tokens: { $gt: first.tokens } }, { tokens: first.tokens, _id: { $lt: first._id } }],
-        }),
-        aggregates
-          .countDocuments({ periodType, periodKey, tokens: { $gt: first.tokens } })
-          .then((above) => above + 1),
-      ])
-    : [0, 1]
+  // Annotated, and counted separately rather than destructured out of one
+  // `Promise.all`: a tuple built by a ternary infers as `number[]`, which
+  // under `noUncheckedIndexedAccess` makes both `number | undefined` and
+  // takes `rank` below with it.
+  let startIndex = 0
+  let firstRank = 1
+  if (first) {
+    const [before, above] = await Promise.all([
+      aggregates.countDocuments({
+        periodType,
+        periodKey,
+        $or: [{ tokens: { $gt: first.tokens } }, { tokens: first.tokens, _id: { $lt: first._id } }],
+      }),
+      aggregates.countDocuments({ periodType, periodKey, tokens: { $gt: first.tokens } }),
+    ])
+    startIndex = before
+    firstRank = above + 1
+  }
 
   // Blocked either way, and the person drops out of the table — same rule as
   // discovery and the conversation list. Their rank position stays occupied,
@@ -140,7 +146,7 @@ export async function getLeaderboard(
     const profile = byId.get(row.userId)
     // The page's first row takes its competition rank directly; it may be
     // mid-tie, and `previous` is empty at a page boundary.
-    const rank = index === 0 ? firstRank : rankOf(absoluteIndex, row.tokens, previous)
+    const rank: number = index === 0 ? firstRank : rankOf(absoluteIndex, row.tokens, previous)
     previous = { rank, tokens: row.tokens }
     if (!profile || hidden.has(row.userId)) continue
 
