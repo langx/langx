@@ -66,7 +66,8 @@ RevenueCat webhook, which cannot be configured without a URL to point at.
 `Dockerfile` and `fly.toml` at the repo root are the deploy; `docs/self-host.md`
 has the commands and the Cloudflare caveat. Use a **new** subdomain rather than
 `api.langx.io` — v1 is still serving from that name and moving it now breaks
-the users we are trying to migrate.
+the users we are trying to migrate. What has to happen before that name can be
+freed is **Retiring the v1 API** at the end of this runbook.
 
 - [ ] MongoDB Atlas cluster created and `MONGODB_URI` set. It must be a replica
       set; Atlas already is, a hand-rolled `mongod` is not, and Better Auth
@@ -319,3 +320,47 @@ listings all need updating, and the release notes must tell returning users to
 sign up again to claim their username. Their old passwords could not be
 migrated; without that line, the first thing a returning user meets is a login
 that rejects them.
+
+## Retiring the v1 API (`langx/api`) — after the rollout, not before
+
+`langx/api` is v1's Express + Appwrite API behind `api.langx.io`. Nothing has
+been committed to it since June 2024 and `REPO_MAP.md` files it under archive,
+so it reads as dead. It is not: it still serves production traffic for three
+callers.
+
+| Caller                                                                     | Endpoint                                      |
+| -------------------------------------------------------------------------- | --------------------------------------------- |
+| v0.15 on the stores (`langx-angular/src/environments/environment.prod.ts`) | `https://api.langx.io/` — all of v1           |
+| `website/src/lib/components/molecules/NewsletterForm.svelte`               | `/api/mail` — the newsletter form on langx.io |
+| `token-website/js/leaderboard-token.js`                                    | `/api/leaderboard/token`                      |
+
+It also answers `/api/update`, driven by `ANDROID_VERSION`,
+`ANDROID_MAINTENANCE`, `IOS_*` and `WEB_*` in its `.env` (env only — a version
+bump needs no commit). That endpoint is the **only channel that can tell a v1
+install to update or that the service is down**, and v1 installs are exactly
+the users this release exists to migrate. Its fourth flag,
+`COPILOT_MAINTENANCE`, has no caller left in `copilot/` and blocks nothing.
+
+Archiving the GitHub repo does not stop the deploy — archiving is a read-only
+flag — but it does declare dead a service the shipped app still depends on and
+leaves nobody able to push a fix to it. Do these first, in order:
+
+- [ ] Move the newsletter form off `/api/mail`. v2 has **no mail route**, so
+      this is real work, not a URL swap: add one to `apps/api`, or post to
+      SendGrid from the site
+- [ ] Point `token-website`'s leaderboard at v2's
+      `apps/api/src/routes/leaderboard.ts`
+- [ ] Confirm every migrated client takes its version and maintenance flags
+      from v2's `appConfig` route and `middleware/maintenance.ts`
+- [ ] Let the v0.15 install base drain far enough that losing `/api/update`
+      strands nobody — the same install-base numbers the `minSdk` decision
+      under **Release** turns on
+- [ ] Only then repoint `api.langx.io`, stop the deploy, and archive the repo
+
+Keep `/api/update` answering while any v1 client remains, even after the other
+two callers are gone: the user who never updates is the one it exists for.
+
+One unknown to resolve before pulling it down — where it actually runs.
+`netlify.toml` says Netlify (with `npm run start` as the build command) while
+`README.md` documents `pm2` on a VM. Find the live one before assuming a
+disabled Netlify site is the whole shutdown.

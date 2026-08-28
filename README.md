@@ -79,7 +79,8 @@ Fastify API behind them. BSD-3, open source, same as v1.
 
 - 🟢 [website](https://github.com/langx/website) _Svelte_
 - 🟢 [token-website](https://github.com/langx/token-website) _HTML/CSS_
-- 🟢 [api](https://github.com/langx/api) _Express, Node.js — the token API_
+- 🟢 [api](https://github.com/langx/api) _Express, Node.js — v1's API, still
+  serving `api.langx.io`; retired after the v2 rollout_
 - 🟢 [copilot](https://github.com/langx/copilot) _JavaScript_
 - 🟢 [docs](https://github.com/langx/docs)
 - 🟢 [insight](https://github.com/langx/insight)
