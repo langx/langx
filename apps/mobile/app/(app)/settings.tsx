@@ -15,7 +15,8 @@ import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
-import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
+import { authLandingHref } from '../../src/lib/authLanding'
+import { clearFlag, FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
@@ -103,7 +104,7 @@ export default function SettingsScreen() {
               try {
                 await api.post('/me/delete', { confirm: 'DELETE' })
                 await authClient.signOut()
-                router.replace('/(auth)/sign-in')
+                router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
               } catch (error) {
                 Alert.alert(
                   'Could not delete',
@@ -127,7 +128,7 @@ export default function SettingsScreen() {
    */
   function replayIntro(): void {
     void clearFlag(FLAG_KEYS.introSeen)
-    Alert.alert('Intro reset', 'You will see the intro again next time you sign in.')
+    Alert.alert('Intro reset', 'The intro will play next time you sign out.')
   }
   return (
     <Screen scroll>

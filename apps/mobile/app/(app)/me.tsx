@@ -29,6 +29,8 @@ import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
 import { authClient } from '../../src/lib/auth-client'
+import { authLandingHref } from '../../src/lib/authLanding'
+import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
@@ -87,7 +89,10 @@ export default function MeScreen() {
     // receiving its messages on a device nobody is signed into.
     await unregisterPushToken()
     await authClient.signOut()
-    router.replace('/(auth)/sign-in')
+    // Naming sign-in directly is what made "Show intro again" look broken:
+    // `(auth)/index` is the only screen that reads the flag, and this route
+    // never went through it.
+    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
   }
 
   /** Everything on this screen comes from a different query. */

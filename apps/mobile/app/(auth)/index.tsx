@@ -1,6 +1,7 @@
 import { Redirect } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
+import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { colors } from '../../src/lib/theme'
 
@@ -42,5 +43,5 @@ export default function AuthIndex() {
     )
   }
 
-  return <Redirect href={seen ? '/(auth)/sign-in' : '/(auth)/intro'} />
+  return <Redirect href={authLandingHref(seen)} />
 }
