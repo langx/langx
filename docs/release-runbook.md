@@ -109,6 +109,42 @@ Without the webhook the app still sells subscriptions — the paywall calls
 every renewal and cancellation that happens outside the app, which is most of
 them after the first month.
 
+### Which database production actually uses
+
+dev and prod are **not two clusters — they are two database names inside one
+cluster**, and the cluster is the one called `dev`. Checked 28 August 2026:
+
+| Where              | `MONGODB_DB`   | Against                                 |
+| ------------------ | -------------- | --------------------------------------- |
+| Local `.env`       | `langx_dev`    | `dev.3xuhkbz.mongodb.net` (Atlas)       |
+| `fly.toml` `[env]` | `langx`        | whatever the `MONGODB_URI` secret holds |
+| Tests              | `langx_*_test` | `mongodb-memory-server`, never Atlas    |
+
+So **production is `langx`, and it is serving**: `langx-api.fly.dev/health`
+answers `{"status":"ok","db":"up"}`. `client.db(dbName)` in
+`apps/api/src/db/client.ts` is the entire separation — one connection string,
+one Atlas user, two names.
+
+Two consequences, neither of which is visible from the app:
+
+- The credentials in `.env` and `atlas-credentials.env` are a **single Atlas
+  user reaching both databases**. Anything that can read the dev database can
+  read and drop the production one, and a script run with the wrong
+  `MONGODB_DB` writes to real users. `scripts/seed-test-users.ts` takes a
+  `--db` flag for exactly this reason — it is a guard, not a convenience.
+- Both share one cluster's storage and connection limit, so a migration ETL
+  run from a laptop competes with production traffic.
+
+- [ ] Verify against the deploy rather than against this file, with
+      `fly secrets list` and `fly config env` on `langx-api`. A secret named
+      `MONGODB_DB` silently overrides `[env]` in `fly.toml`, and that could not
+      be checked from the droplet — flyctl is not installed there
+- [ ] Decide whether production keeps living in a cluster named `dev`. A
+      separate cluster — or at minimum a second Atlas user restricted to
+      `langx` — is what stops a local mistake reaching real users. It costs one
+      `fly secrets set MONGODB_URI` and a restart, so do it **before** the
+      migration ETLs load 3,479 real profiles in, not after
+
 ## Deep links only work once the domain answers
 
 `app.langx.io` is claimed in two places — `associatedDomains` on iOS,
@@ -214,6 +250,36 @@ A `DeviceNotRegistered` ticket in the reply means the credentials are wrong,
 not the token. The API prunes tokens that come back with it, so a
 misconfigured send also quietly empties the devices collection — fix the
 credentials before running the streak reminder against real users.
+
+## Actions that succeed silently
+
+`src/lib/alert.ts` and `AlertHost` give the app a dialog that works in the
+browser as well as on a device, and the destructive paths already ask before
+they act. The other half is missing: an action that _succeeds_ says nothing.
+
+Sign out is the clearest case. `apps/mobile/app/(app)/me.tsx` unregisters the
+push token, ends the session and replaces the route — three things — and all
+the user sees is the sign-in screen appearing. On web that reads as a page that
+navigated by itself, not as a session that ended.
+
+- [ ] Ask before signing out, so a mis-tap on the profile screen is not an
+      instant session loss
+- [ ] Acknowledge after it: "Signed out — your session has ended." A request
+      queued in `alert.ts` outlives the `router.replace` underneath it, because
+      `AlertHost` is mounted at the root layout rather than inside the
+      navigator — the same reason the delete-account confirmation survives
+      signing itself out
+- [ ] Give the same treatment to the other actions that return to a screen with
+      no word about what happened: profile saved, photo uploaded, report sent,
+      user blocked and unblocked
+- [ ] Decide modal vs. banner first, once, rather than per screen. `AlertHost`
+      draws a `Modal`, which is right for a question and heavy for "Saved" — a
+      success with nothing to decide probably wants a self-dismissing banner on
+      the same queue, not a button the user has to press. Ship the two side by
+      side and the app has two notification languages
+
+Nothing here blocks the build, and all of it is visible in the first minute of
+use. It belongs before the rollout widens, not in the first patch after it.
 
 ## Prerequisites that are business process, not code
 
