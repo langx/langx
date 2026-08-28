@@ -17,6 +17,7 @@ import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
+import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
 import { colors, font, layout, radius, spacing } from '../../../src/lib/theme'
@@ -69,7 +70,10 @@ export default function ProfileScreen() {
         // The free tier's 5-a-day cap is the single most important thing this
         // screen has to explain well — a generic failure here reads as a bug.
         if (caught.code === 'QUOTA_EXCEEDED') {
-          router.push('/(app)/paywall')
+          // `openPaywall` rather than the raw route: it is the one place that
+          // knows how the paywall is reached, and pushing the path directly
+          // meant this call site quietly missed whatever it does.
+          openPaywall()
           return
         }
         if (caught.code === 'CONVERSATION_EXISTS') {
