@@ -351,6 +351,70 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
     expect(await stampOf()).toBe(first)
   })
 
+  it('the first message of a thread reaches the recipient live, not on the next refetch', async () => {
+    const alice = await newUser('ws-firstmsg-alice@example.com')
+    const bob = await newUser('ws-firstmsg-bob@example.com')
+
+    // Both connected *before* the conversation exists — the case the socket
+    // send path always handled and `POST /conversations` did not, because it
+    // wrote the message and told nobody.
+    await connectSocket(alice.cookie)
+    const bobSocket = await connectSocket(bob.cookie)
+
+    const received = waitForEvent<{ body: string; senderId: string }>(bobSocket, 'message:new')
+    await startConversation(alice, bob.userId, 'first contact')
+
+    expect(await received).toMatchObject({ body: 'first contact', senderId: alice.userId })
+  })
+
+  it('the first message goes to two ticks while the recipient is connected', async () => {
+    const alice = await newUser('ws-firstdeliv-alice@example.com')
+    const bob = await newUser('ws-firstdeliv-bob@example.com')
+
+    await connectSocket(bob.cookie)
+    const aliceSocket = await connectSocket(alice.cookie)
+
+    const delivered = waitForEvent<{ deliveredTo: string }>(aliceSocket, 'conversation:delivered')
+    const conversation = await startConversation(alice, bob.userId, 'tick me')
+
+    expect(await delivered).toMatchObject({
+      conversationId: conversation._id,
+      deliveredTo: bob.userId,
+    })
+
+    const history = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: alice.cookie },
+    })
+    const first = history.json<{ items: { deliveredAt?: string; readAt?: string }[] }>().items[0]
+    expect(first?.deliveredAt).toBeDefined()
+    // Bob holds a socket; he has not opened the thread.
+    expect(first?.readAt).toBeUndefined()
+  })
+
+  it('a first message to someone offline still waits for them to connect', async () => {
+    const alice = await newUser('ws-firstoff-alice@example.com')
+    const bob = await newUser('ws-firstoff-bob@example.com')
+    const aliceSocket = await connectSocket(alice.cookie)
+
+    // Nobody to hand it to, so the second tick may not appear yet — the point
+    // of stamping on real delivery rather than on the write succeeding.
+    const conversation = await startConversation(alice, bob.userId, 'are you there')
+    const before = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: alice.cookie },
+    })
+    expect(
+      before.json<{ items: { deliveredAt?: string }[] }>().items[0]?.deliveredAt,
+    ).toBeUndefined()
+
+    const delivered = waitForEvent<{ deliveredTo: string }>(aliceSocket, 'conversation:delivered')
+    await connectSocket(bob.cookie)
+    expect(await delivered).toMatchObject({ deliveredTo: bob.userId })
+  })
+
   it('typing relays to the other participant only', async () => {
     const alice = await newUser('ws-typing-alice@example.com')
     const bob = await newUser('ws-typing-bob@example.com')

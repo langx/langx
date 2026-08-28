@@ -6,6 +6,7 @@ import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { startConversation } from '../modules/chat/conversations'
 import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
+import { fanOutMessage } from '../ws/fanOut'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -13,7 +14,18 @@ export const conversationRoutes: FastifyPluginAsyncZod = async (app) => {
     '/conversations',
     { preHandler: requireVerifiedEmail, schema: { body: startConversationSchema } },
     async (request, reply) => {
-      const conversation = await startConversation(app.mongo.db, request.userId, request.body)
+      const { conversation, message } = await startConversation(
+        app.mongo.db,
+        request.userId,
+        request.body,
+      )
+      // Starting a conversation *is* sending its first message, so it gets the
+      // same treatment as every other send: it reaches the recipient live, it
+      // advances the sender's ticks, and it notifies if they are away. This
+      // was the one message path with no realtime at all — a first message sat
+      // unannounced until something happened to refetch, which for the person
+      // being contacted is the message that matters most.
+      void fanOutMessage(app, app.io, conversation, message, { pushWhenAway: true })
       return reply.code(201).send(conversation)
     },
   )
