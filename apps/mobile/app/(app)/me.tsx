@@ -22,11 +22,13 @@ import {
   useTokens,
 } from '../../src/api/queries'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
+import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { TierBadge } from '../../src/components/TierBadge'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
+import { authClient } from '../../src/lib/auth-client'
 import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
@@ -78,6 +80,15 @@ export default function MeScreen() {
   const restorableStreak = restored && !restored.streakRestoredAt ? restored.frozenStreak : 0
   const restorePrice = streakRestorePrice(restorableStreak)
   const owned = wallet.data?.owned ?? []
+
+  async function signOut(): Promise<void> {
+    // Before the session ends, not after: once signed out the request has no
+    // credentials and the token would stay attached to the account, still
+    // receiving its messages on a device nobody is signed into.
+    await unregisterPushToken()
+    await authClient.signOut()
+    router.replace('/(auth)/sign-in')
+  }
 
   /** Everything on this screen comes from a different query. */
   function refresh(): void {
@@ -234,6 +245,7 @@ export default function MeScreen() {
         onPress={() => router.push('/(app)/settings')}
         style={styles.settingsSecondary}
       />
+      <Button label="Sign out" variant="secondary" onPress={signOut} style={styles.signOut} />
     </Screen>
   )
 }
@@ -296,5 +308,6 @@ const styles = StyleSheet.create({
   storeName: { ...font.body, color: colors.text, fontWeight: '600' },
   storeMeta: { ...font.caption, color: colors.textMuted },
   settings: { marginTop: spacing.xl },
-  settingsSecondary: { marginBottom: spacing.xxl, marginTop: spacing.sm },
+  settingsSecondary: { marginTop: spacing.sm },
+  signOut: { marginBottom: spacing.xxl, marginTop: spacing.sm },
 })

@@ -15,7 +15,6 @@ import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
-import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
@@ -73,15 +72,6 @@ export default function SettingsScreen() {
       return
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
-  }
-
-  async function signOut(): Promise<void> {
-    // Before the session ends, not after: once signed out the request has no
-    // credentials and the token would stay attached to the account, still
-    // receiving its messages on a device nobody is signed into.
-    await unregisterPushToken()
-    await authClient.signOut()
-    router.replace('/(auth)/sign-in')
   }
 
   /**
@@ -213,8 +203,6 @@ export default function SettingsScreen() {
       />
 
       <Text style={styles.section}>Account</Text>
-      <Button label="Sign out" variant="secondary" onPress={signOut} style={styles.button} />
-
       <Pressable onPress={confirmDelete} disabled={busy} style={styles.delete}>
         <Text style={styles.deleteText}>Delete my account</Text>
       </Pressable>
