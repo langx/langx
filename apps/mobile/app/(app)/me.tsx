@@ -4,6 +4,7 @@ import {
   STREAK_RESTORE_SKU,
   TOKEN_RULES,
   countryFlag,
+  formatAccountAge,
   getCountry,
   getLanguage,
   streakRestorePrice,
@@ -122,6 +123,9 @@ export default function MeScreen() {
         <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
         <Text style={styles.name}>{profile.displayName}</Text>
         <Text style={styles.handle}>@{profile.handle}</Text>
+        <Text style={styles.joined}>
+          Registered {formatAccountAge(new Date(profile.createdAt))}
+        </Text>
         {/*
           The same badges other people already see on your profile. Yours
           showed name and handle only, so the one profile you cannot look at
@@ -278,6 +282,7 @@ const styles = StyleSheet.create({
   badges: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' },
   name: { ...font.title, color: colors.text, marginTop: spacing.sm },
   handle: { ...font.caption, color: colors.textMuted },
+  joined: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
   stats: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,

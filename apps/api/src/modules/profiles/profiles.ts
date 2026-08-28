@@ -15,6 +15,7 @@ import {
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { authId } from '../../lib/authId'
 import { assertOwnBucket } from '../../lib/assertOwnBucket'
 import { resolveHandleClaim } from '../handles/handleReservations'
 import type { RevenueCatClient } from '../billing/revenueCatClient'
@@ -365,6 +366,13 @@ export interface PublicProfile {
   cosmetics: string[]
   isOnline: boolean
   lastActiveAt: Date
+  /** Account creation, shown as an age — `formatAccountAge` does the wording. */
+  createdAt: Date
+  /**
+   * Better Auth's flag, not one of ours: it lives on `user`, so it reaches
+   * here through {@link isEmailVerified} rather than off the profile document.
+   */
+  emailVerified: boolean
 }
 
 const ONLINE_WINDOW_MS = 5 * 60 * 1000
@@ -382,7 +390,11 @@ const ONLINE_WINDOW_MS = 5 * 60 * 1000
  * never reach another user in any form. What nearby discovery returns is a
  * bucketed distance computed on the server, never a point.
  */
-export function toPublicProfile(profile: Profile, now: Date = new Date()): PublicProfile {
+export function toPublicProfile(
+  profile: Profile,
+  emailVerified: boolean,
+  now: Date = new Date(),
+): PublicProfile {
   const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
   const result: PublicProfile = {
     _id: profile._id,
@@ -402,12 +414,30 @@ export function toPublicProfile(profile: Profile, now: Date = new Date()): Publi
     cosmetics: profile.cosmetics ?? [],
     isOnline: now.getTime() - new Date(lastActiveAt).getTime() < ONLINE_WINDOW_MS,
     lastActiveAt: new Date(lastActiveAt),
+    createdAt: profile.createdAt,
+    emailVerified,
   }
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl
   if (profile.bio !== undefined) result.bio = profile.bio
   if (profile.country !== undefined) result.country = profile.country
   if (profile.city !== undefined) result.city = profile.city
   return result
+}
+
+/**
+ * Whether Better Auth considers this account's email verified.
+ *
+ * Its own routes carry the flag on the session, but that is the *viewer's*
+ * session — a profile being looked at has none here, so the only way to the
+ * value is the `user` document, through `authId` like every other crossing of
+ * the two id worlds. A string `_id` matches nothing and would report every
+ * profile unverified without erroring.
+ */
+export async function isEmailVerified(db: Db, userId: string): Promise<boolean> {
+  const user = await db
+    .collection(COLLECTIONS.user)
+    .findOne({ _id: authId(userId) }, { projection: { emailVerified: 1 } })
+  return user?.emailVerified === true
 }
 
 /** Looks up by `@handle` or by user id — the two things a deep link can carry. */

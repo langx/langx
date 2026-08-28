@@ -254,7 +254,7 @@ describe('sign-in, and the bridge to v1 behind it', () => {
       .collection<Profile>(COLLECTIONS.profiles)
       .findOne({ handle: 'returninguser' })
     expect(profile?.restoredFromV1).toBeTruthy()
-    expect(toPublicProfile(profile!)).not.toHaveProperty('restoredFromV1')
+    expect(toPublicProfile(profile!, true)).not.toHaveProperty('restoredFromV1')
   })
 
   it('credits the v1 economy exactly once, however many times sign-in is retried', async () => {

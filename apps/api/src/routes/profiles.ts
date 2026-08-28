@@ -10,6 +10,7 @@ import {
   createProfile,
   findProfileByHandleOrId,
   getProfile,
+  isEmailVerified,
   setLocation,
   toPublicProfile,
   updateProfile,
@@ -63,7 +64,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       }
 
       if (viewer) await recordProfileView(app.mongo.db, viewer, target._id)
-      return reply.send(toPublicProfile(target))
+      // Read after the block check, not with it: an unverified-email lookup
+      // for a profile this viewer is not allowed to see is a query we should
+      // never run.
+      const emailVerified = await isEmailVerified(app.mongo.db, target._id)
+      return reply.send(toPublicProfile(target, emailVerified))
     },
   )
 
