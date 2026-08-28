@@ -28,11 +28,13 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
+import { confirmAlert } from '../../src/lib/alert'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
+import { showToast } from '../../src/lib/toast'
 
 /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
 function countryLabel(code: string): string {
@@ -84,6 +86,16 @@ export default function MeScreen() {
   const owned = wallet.data?.owned ?? []
 
   async function signOut(): Promise<void> {
+    // Sign out sits under the profile, one mis-tap away from everything on it.
+    // Asking costs a tap; not asking costs a session and, on a device that
+    // never saved the password, whatever it takes to get back in.
+    const yes = await confirmAlert({
+      title: 'Sign out?',
+      message: 'You can sign back in with the same account whenever you like.',
+      confirmLabel: 'Sign out',
+    })
+    if (!yes) return
+
     // Before the session ends, not after: once signed out the request has no
     // credentials and the token would stay attached to the account, still
     // receiving its messages on a device nobody is signed into.
@@ -93,6 +105,10 @@ export default function MeScreen() {
     // `(auth)/index` is the only screen that reads the flag, and this route
     // never went through it.
     router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+    // After the replace, and it still arrives: `ToastHost` lives above the
+    // navigator. Without this the whole thing reads as a screen that navigated
+    // by itself rather than as a session that ended.
+    showToast('Signed out — your session has ended.')
   }
 
   /** Everything on this screen comes from a different query. */

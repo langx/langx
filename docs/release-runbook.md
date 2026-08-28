@@ -262,21 +262,24 @@ push token, ends the session and replaces the route — three things — and all
 the user sees is the sign-in screen appearing. On web that reads as a page that
 navigated by itself, not as a session that ended.
 
-- [ ] Ask before signing out, so a mis-tap on the profile screen is not an
+**The decision, made once so it is not remade per screen: something that
+worked gets a toast, something that failed gets an alert.** A failure carries
+detail and is worth interrupting for — missing it because you looked away for
+four seconds is the outcome `alert.ts` exists to prevent. A success has nothing
+to decide, and putting an OK button under it asks for a tap that means nothing.
+`src/lib/toast.ts` is the second queue that follows from it, drawn by
+`ToastHost` as a self-dismissing banner rather than a `Modal`, so it never
+takes the screen's touches while it is up.
+
+- [x] Ask before signing out, so a mis-tap on the profile screen is not an
       instant session loss
-- [ ] Acknowledge after it: "Signed out — your session has ended." A request
-      queued in `alert.ts` outlives the `router.replace` underneath it, because
-      `AlertHost` is mounted at the root layout rather than inside the
-      navigator — the same reason the delete-account confirmation survives
-      signing itself out
+- [x] Acknowledge after it: "Signed out — your session has ended." The banner
+      outlives the `router.replace` underneath it because `ToastHost` is
+      mounted at the root layout rather than inside the navigator — the same
+      reason the delete-account confirmation survives signing itself out
 - [ ] Give the same treatment to the other actions that return to a screen with
       no word about what happened: profile saved, photo uploaded, report sent,
-      user blocked and unblocked
-- [ ] Decide modal vs. banner first, once, rather than per screen. `AlertHost`
-      draws a `Modal`, which is right for a question and heavy for "Saved" — a
-      success with nothing to decide probably wants a self-dismissing banner on
-      the same queue, not a button the user has to press. Ship the two side by
-      side and the app has two notification languages
+      user blocked and unblocked, account deleted
 
 Nothing here blocks the build, and all of it is visible in the first minute of
 use. It belongs before the rollout widens, not in the first patch after it.
