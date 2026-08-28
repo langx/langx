@@ -2,7 +2,6 @@ import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
-  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -21,6 +20,7 @@ import {
   type MessageDto,
 } from '../../../src/api/queries'
 import { api, ApiRequestError } from '../../../src/api/client'
+import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
@@ -30,6 +30,7 @@ import { MessageMeta } from '../../../src/components/MessageMeta'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
+import { listState } from '../../../src/lib/listState'
 import { colors, font, radius, spacing } from '../../../src/lib/theme'
 
 export default function ChatScreen() {
@@ -54,6 +55,11 @@ export default function ChatScreen() {
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const items = messages.data?.items ?? []
+  const state = listState({
+    isPending: messages.isPending,
+    isError: messages.isError,
+    itemCount: items.length,
+  })
   // From the participant list, not from the messages: a thread nobody has
   // replied to yet contains only my own sends, and reading the partner off
   // those leaves the header with no name and no avatar.
@@ -231,8 +237,15 @@ export default function ChatScreen() {
         </Pressable>
       </View>
 
-      {messages.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+      {state === 'skeleton' ? (
+        // `flex: 1` because the FlatList it stands in for takes the whole
+        // height; without it the composer rides up under the placeholders and
+        // then drops when the real thread arrives.
+        <View style={[styles.list, styles.skeletonFill]}>
+          {SKELETON_BUBBLES.map((key, index) => (
+            <MessageBubbleSkeleton key={key} index={index} />
+          ))}
+        </View>
       ) : (
         <FlatList
           ref={listRef}
@@ -404,8 +417,8 @@ const styles = StyleSheet.create({
   headerUser: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   headerName: { ...font.body, color: colors.text, fontWeight: '700' },
   typing: { ...font.caption, color: colors.accent },
-  loading: { marginTop: spacing.xxl },
   list: { gap: spacing.xs, paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
+  skeletonFill: { flex: 1 },
   bubble: {
     borderRadius: radius.lg,
     maxWidth: '80%',
@@ -496,3 +509,6 @@ const styles = StyleSheet.create({
   recordingCancel: { ...font.caption, color: colors.textMuted },
   sendLabel: { color: colors.primaryText, fontSize: 20, fontWeight: '700' },
 })
+
+/** A thread's worth; the composer sits below them either way. */
+const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']

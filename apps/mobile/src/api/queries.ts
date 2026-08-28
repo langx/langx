@@ -16,7 +16,13 @@ import type {
   Wallet,
   TokenSummary,
 } from './types'
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { api } from './client'
 
 /**
@@ -182,6 +188,13 @@ export function useDiscovery(params: Record<string, string>) {
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
+    /**
+     * The query key is the whole serialised query string, so every filter
+     * chip creates a fresh cache entry and flips `isPending`. Without this,
+     * one tap replaces the entire list with placeholders — which is a worse
+     * answer than the spinner the placeholders were meant to improve on.
+     */
+    placeholderData: keepPreviousData,
   })
 }
 
