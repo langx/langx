@@ -41,6 +41,7 @@ import {
 import { showAlert } from '../../src/lib/alert'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
+import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
@@ -119,7 +120,10 @@ export default function DiscoverScreen() {
     ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
   })
 
-  const items = query.data?.pages.flatMap((page) => page.items) ?? []
+  // Deduped for the reason `dedupeById` gives: presence moves
+  // `stats.lastActiveAt` about once a minute now, so the `active` keyset can
+  // hand back a profile already seen on an earlier page.
+  const items = dedupeById(query.data?.pages.flatMap((page) => page.items) ?? [])
   const state = listState({
     isPending: query.isPending,
     isError: query.isError,
@@ -143,7 +147,9 @@ export default function DiscoverScreen() {
             />
           ))}
           <Chip
-            label="Online"
+            // "Online first", not "Online": it is a sort modifier now, and a
+            // label promising a filter would be describing the old behaviour.
+            label="Online first"
             tone="accent"
             selected={effective.online === true}
             onPress={() => router.setParams(effective.online ? { online: '' } : { online: '1' })}

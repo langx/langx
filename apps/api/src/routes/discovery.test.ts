@@ -1,4 +1,4 @@
-import { DISTANCE_BUCKETS_KM } from '@langx/shared'
+import { DISCOVERY_CURSOR_MAX_AGE_MS, DISTANCE_BUCKETS_KM } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -221,7 +221,12 @@ describe('Faz 3 — discovery aggregation', () => {
   })
 
   describe('free filters', () => {
-    it('online filter keeps only recently-active profiles', async () => {
+    /**
+     * `online` orders, it does not exclude. It used to `$match` the
+     * five-minute window, which emptied the screen whenever nobody happened
+     * to be about — the opposite of what discovery is for.
+     */
+    it('puts online profiles first and still returns everyone else', async () => {
       const viewer = await newUser('online-viewer@example.com', {
         nativeLanguages: [{ code: 'sv' }],
         learning: [{ code: 'da', level: 'intermediate', priority: 1 }],
@@ -239,7 +244,160 @@ describe('Faz 3 — discovery aggregation', () => {
       const response = await discover(viewer, 'online=true')
       const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(handles).toContain(recentlyActive.handle)
-      expect(handles).not.toContain(staleActive.handle)
+      expect(handles).toContain(staleActive.handle)
+      expect(handles.indexOf(recentlyActive.handle)).toBeLessThan(
+        handles.indexOf(staleActive.handle),
+      )
+    })
+
+    it('never empties the list when nobody is online', async () => {
+      const viewer = await newUser('all-offline-viewer@example.com', {
+        nativeLanguages: [{ code: 'cs' }],
+        learning: [{ code: 'sk', level: 'intermediate', priority: 1 }],
+      })
+      const offline = await newUser('all-offline-match@example.com', {
+        nativeLanguages: [{ code: 'sk' }],
+        learning: [{ code: 'cs', level: 'intermediate', priority: 1 }],
+      })
+      await setLastActiveAt(offline.userId, new Date(Date.now() - 60 * 60 * 1000))
+
+      const response = await discover(viewer, 'online=true')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles).toEqual([offline.handle])
+    })
+
+    /**
+     * The bucket predicate lives in an aggregation `$cond`; the read-time
+     * `isOnline` comes from `hidesOnlineStatus` in TypeScript. This test is
+     * the only thing holding those two expressions of one rule together —
+     * without it, the ordering leaks exactly what the setting exists to hide.
+     */
+    it('does not promote someone who hides their online status', async () => {
+      const viewer = await newUser('hidden-online-viewer@example.com', {
+        nativeLanguages: [{ code: 'fi' }],
+        learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
+      })
+      const hidden = await newUser('hidden-online-match@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+      })
+      const visible = await newUser('visible-online-match@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+      })
+      // Fresh for both; only the flag differs.
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: hidden.userId }, { $set: { 'privacy.hideOnlineStatus': true } })
+      await setLastActiveAt(visible.userId, new Date(Date.now() - 60 * 60 * 1000))
+
+      const response = await discover(viewer, 'online=true')
+      const items = response.json<{ items: { handle: string; isOnline: boolean }[] }>().items
+      const handles = items.map((i) => i.handle)
+      // Both land in bucket 0 — the hidden one because it is hidden, the
+      // other because it is stale — so what must hold is that hiding removed
+      // the promotion, and that the row agrees with the ordering.
+      expect(handles).toContain(hidden.handle)
+      expect(handles).toContain(visible.handle)
+      expect(items.find((i) => i.handle === hidden.handle)?.isOnline).toBe(false)
+    })
+
+    it('orders online-first ahead of the recommended score, not behind it', async () => {
+      const viewer = await newUser('bucket-order-viewer@example.com', {
+        nativeLanguages: [{ code: 'hu' }],
+        learning: [{ code: 'ro', level: 'intermediate', priority: 1 }],
+        interests: ['chess', 'hiking'],
+      })
+      // Shares both interests, so it scores higher — and is offline.
+      const highScoreOffline = await newUser('bucket-high-offline@example.com', {
+        nativeLanguages: [{ code: 'ro' }],
+        learning: [{ code: 'hu', level: 'intermediate', priority: 1 }],
+        interests: ['chess', 'hiking'],
+      })
+      const lowScoreOnline = await newUser('bucket-low-online@example.com', {
+        nativeLanguages: [{ code: 'ro' }],
+        learning: [{ code: 'hu', level: 'intermediate', priority: 1 }],
+      })
+      await setLastActiveAt(highScoreOffline.userId, new Date(Date.now() - 60 * 60 * 1000))
+
+      const withChip = await discover(viewer, 'online=true')
+      const chipHandles = withChip
+        .json<{ items: { handle: string }[] }>()
+        .items.map((i) => i.handle)
+      expect(chipHandles[0]).toBe(lowScoreOnline.handle)
+
+      // And without the chip the score still wins, so this is opt-in.
+      const without = await discover(viewer)
+      const plainHandles = without
+        .json<{ items: { handle: string }[] }>()
+        .items.map((i) => i.handle)
+      expect(plainHandles[0]).toBe(highScoreOffline.handle)
+    })
+
+    /**
+     * The cutoff is pinned into the cursor. Recomputed per request, a profile
+     * crossing the five-minute line between pages moves the whole partition
+     * under a `$skip` already handed out — one row repeats and another is
+     * never shown. Without the pin this test fails, which is why it exists.
+     */
+    it('pages consistently when someone crosses the online boundary mid-scroll', async () => {
+      const viewer = await newUser('boundary-viewer@example.com', {
+        nativeLanguages: [{ code: 'lt' }],
+        learning: [{ code: 'lv', level: 'intermediate', priority: 1 }],
+      })
+      const matches = []
+      for (const name of ['a', 'b', 'c']) {
+        const user = await newUser(`boundary-${name}@example.com`, {
+          nativeLanguages: [{ code: 'lv' }],
+          learning: [{ code: 'lt', level: 'intermediate', priority: 1 }],
+        })
+        await setLastActiveAt(user.userId, new Date(Date.now() - 60 * 60 * 1000))
+        matches.push(user)
+      }
+
+      const seen: string[] = []
+      let cursor: string | null = ''
+      let flipped = false
+      do {
+        const suffix: string = cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+        const page = await discover(viewer, `online=true&limit=1${suffix}`)
+        expect(page.statusCode, page.body).toBe(200)
+        const body = page.json<{ items: { handle: string }[]; nextCursor: string | null }>()
+        seen.push(...body.items.map((i) => i.handle))
+        cursor = body.nextCursor
+        // Between page one and page two, one of them comes online.
+        if (!flipped) {
+          await setLastActiveAt(matches[2]!.userId, new Date())
+          flipped = true
+        }
+      } while (cursor)
+
+      expect(seen).toHaveLength(3)
+      expect(new Set(seen).size).toBe(3)
+    })
+
+    it('refuses a cursor older than the pinned cutoff is allowed to be', async () => {
+      const viewer = await newUser('stale-cursor-viewer@example.com', {
+        nativeLanguages: [{ code: 'sl' }],
+        learning: [{ code: 'hr', level: 'intermediate', priority: 1 }],
+      })
+      const old = new Date(Date.now() - DISCOVERY_CURSOR_MAX_AGE_MS - 60_000).toISOString()
+      const response = await discover(
+        viewer,
+        `online=true&cursor=${encodeURIComponent(`${old}|1`)}`,
+      )
+      expect(response.statusCode).toBe(400)
+      expect(response.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
+    })
+
+    /** Old app builds in the wild send a bare integer. */
+    it('still accepts a cursor from before the cutoff was pinned', async () => {
+      const viewer = await newUser('legacy-cursor-viewer@example.com', {
+        nativeLanguages: [{ code: 'bg' }],
+        learning: [{ code: 'mk', level: 'intermediate', priority: 1 }],
+      })
+      const response = await discover(viewer, 'online=true&cursor=0')
+      expect(response.statusCode, response.body).toBe(200)
     })
 
     it('targetLanguage narrows to one of the viewer own learning languages, and rejects anything else', async () => {

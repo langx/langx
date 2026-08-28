@@ -122,7 +122,7 @@ export default function FiltersScreen() {
         <SectionTitle title="Availability" />
         <View style={styles.row}>
           <Chip
-            label="Online now"
+            label="Online first"
             tone="accent"
             selected={filters.online === true}
             onPress={() => set({ online: filters.online ? undefined : true })}
