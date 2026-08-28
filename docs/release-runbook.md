@@ -288,6 +288,83 @@ takes the screen's touches while it is up.
 Nothing here blocks the build, and all of it is visible in the first minute of
 use. It belongs before the rollout widens, not in the first patch after it.
 
+## Design pass — the app does not look like LangX yet
+
+Two things are wrong with how v2 looks, and only one of them is a matter of
+taste.
+
+The first is not. `apps/mobile/app.config.ts` sets no `icon`, no `splash`, no
+`android.adaptiveIcon` and no `web.favicon`, and there is no image file
+anywhere in this repo. Every build so far has shipped Expo's default icon.
+That blocks submission on its own, and it is invisible while developing,
+because a dev client shows its own icon instead.
+
+The second is that the code and the store have drifted apart. What users
+recognise is v1's identity, and it is still consistent everywhere it is
+served: amber `#ffc409` with orange `#ff571a`, the two-arc exchange mark,
+Comfortaa — on langx.io, on token.langx.io, in every store screenshot, in the
+Windows tile colour. `apps/mobile/src/lib/theme.ts` uses none of it: `primary`
+is near-black `#111113`, `accent` is blue, and there is no yellow in the app
+at all. The website still holds the old palette while borrowing `pro`,
+`streak` and `accent` back from `theme.ts`, so the two surfaces have already
+half-merged into a third thing nobody designed. Ship it as-is and the icon,
+the screenshots and the app disagree with each other in the same listing.
+
+This sits before **Release** rather than in it on purpose: the icon and the
+screenshots are part of the submission, not part of the rollout.
+
+Two constraints on whatever gets decided. `docs/token-messaging-brief.md`
+rules out coin, chain and wallet iconography — that is an App Review question
+(3.1.5(b)), not a stylistic one. And `packages/shared/src/cosmetics.ts` sells
+`frame.gold` as a rank, so if the brand colour stays amber, gold has to read
+as something bought rather than as the product.
+
+- [ ] Decide the identity first: keep v1's amber and orange, or make the
+      black-and-blue drift in `theme.ts` official. This ships as an update to
+      the existing listings, so a changed icon on a returning user's home
+      screen is a cost being chosen, not a free redraw
+- [ ] One source per surface — `theme.ts` for the app, `_themes.scss` and
+      `_variables.scss` for the site. The site's `define-color` mixin emits
+      the `-rgb` and `-contrast` variants that components composite against;
+      replacing it with flat hex breaks `Button`, `Tag` and `Waves`. Radius
+      and the first six spacing steps already match across the two, and
+      should stay matched
+- [ ] Dark mode in the app. `userInterfaceStyle: 'automatic'` has been set
+      all along with nothing behind it, while the site has had three-state
+      theming since launch. `colors` is a module constant that 41
+      `StyleSheet.create` calls capture at load, so this is the one item that
+      is not a value swap
+- [ ] A typeface. The app loads no font and renders in the platform default;
+      the site's headings are Comfortaa. `expo-font` is already a dependency
+- [ ] Replace the emoji icons, the tab bar in `app/(app)/_layout.tsx`
+      included, with a real icon set. They became the house style by
+      accident, and they draw differently on every platform
+- [ ] Move `components/ui/Button.tsx` and `FormField.tsx` onto the tokens.
+      Both predate `theme.ts` and hold most of the stray hex left in the app;
+      fixing those two reaches 22 and 7 screens respectively
+- [ ] Give the cosmetic tiers real colours. `cosmetics.ts` names bronze,
+      silver and gold and defines no values, so nothing can render them today
+- [ ] Produce the icon, splash, adaptive icon and favicon and wire them into
+      `app.config.ts`. `branding/` has no vector master — its only SVG is an
+      auto-trace — and its `splash.png` is 3601×3600, so none of it can be
+      reused unaltered
+- [ ] Profile screens show account age ("Registered 3 months ago", the unit
+      widening from days to months to years as the account gets older) and a
+      Verified Email badge. Both need adding to the public profile DTO in
+      `packages/shared` and reading through the profile repository;
+      `emailVerified` lives in Better Auth's `user` collection, so it crosses
+      the id boundary and goes through `lib/authId.ts`
+- [ ] Restyle the screens and the pages. `website/src/lib/data/*.ts` is
+      hand-synced content and does not move, and neither does the
+      toast-and-alert behaviour decided above — only the appearance changes
+- [ ] The brand colour also lives outside CSS: the meta tags in
+      `website/src/app.html`, `website/static/favicons/*`, the inline fills
+      in `Logo.svelte`, and the feature screenshots under
+      `website/static/images/features/`, which still show v1's UI
+- [ ] Re-shoot the store screenshots in the new identity. They live in
+      `branding/`, which is out of scope for work — the shots are needed, the
+      repo is still not one to work in
+
 ## Prerequisites that are business process, not code
 
 None of these can be done from this repo, and Faz 7's subscription work cannot
