@@ -11,3 +11,19 @@ export function authErrorMessage(
 ): string | undefined {
   return error?.message
 }
+
+/**
+ * The API's error code, whichever transport the failure came back on.
+ *
+ * REST rejects with an `ApiRequestError`; a socket ack rejects with a plain
+ * `Error` carrying `.code` (`lib/socket.ts`'s `emitWithAck`). Every
+ * `instanceof ApiRequestError` check on a socket path was therefore dead —
+ * the media quota message in the chat screen had never once been shown.
+ * Deliberately structural rather than another `instanceof`: the two error
+ * shapes share nothing but this field.
+ */
+export function errorCodeOf(error: unknown): string | undefined {
+  if (typeof error !== 'object' || error === null) return undefined
+  const code = (error as { code?: unknown }).code
+  return typeof code === 'string' ? code : undefined
+}

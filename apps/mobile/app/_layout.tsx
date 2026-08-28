@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ApiRequestError } from '../src/api/client'
 import { AlertHost } from '../src/components/AlertHost'
+import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
@@ -82,6 +83,7 @@ export default function RootLayout() {
               owned by a screen dies with it.
             */}
             <AlertHost />
+            <MessageMenuHost />
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Protected guard={!!session}>
                 <Stack.Screen name="index" />

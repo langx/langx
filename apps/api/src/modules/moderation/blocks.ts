@@ -17,6 +17,8 @@ export interface Report {
   reason: string
   details?: string
   conversationId?: ObjectId
+  /** The specific message, when the report was raised from one. */
+  messageId?: ObjectId
   status: 'open' | 'reviewing' | 'actioned' | 'dismissed'
   createdAt: Date
 }
@@ -120,6 +122,13 @@ export async function reportUser(
       report.conversationId = new ObjectId(input.conversationId)
     } catch {
       throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed conversation id')
+    }
+  }
+  if (input.messageId !== undefined) {
+    try {
+      report.messageId = new ObjectId(input.messageId)
+    } catch {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
     }
   }
   await reports.insertOne(report)

@@ -29,6 +29,12 @@ export const reportSchema = z.object({
   details: z.string().trim().max(REPORT_DETAILS_MAX_LENGTH).optional(),
   /** Optional pointer to the conversation the reported behaviour happened in. */
   conversationId: z.string().trim().min(1).optional(),
+  /**
+   * Optional pointer to the specific message. Narrower than `conversationId`
+   * and kept alongside it rather than replacing it: a report raised from a
+   * profile has neither, and one raised from a thread has both.
+   */
+  messageId: z.string().trim().min(1).optional(),
 })
 export type ReportInput = z.infer<typeof reportSchema>
 

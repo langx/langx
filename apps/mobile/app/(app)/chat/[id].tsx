@@ -17,10 +17,12 @@ import {
   uploadMessageMedia,
   useMe,
   useMessages,
+  useReportUser,
   useTranslate,
   type MessageDto,
 } from '../../../src/api/queries'
-import { api, ApiRequestError } from '../../../src/api/client'
+import * as Clipboard from 'expo-clipboard'
+import { api } from '../../../src/api/client'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
@@ -29,9 +31,14 @@ import * as ImagePicker from 'expo-image-picker'
 import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
 import { MessageMeta } from '../../../src/components/MessageMeta'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
-import { showAlert } from '../../../src/lib/alert'
+import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
+import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
+import { messageActionsFor } from '../../../src/lib/messageActions'
+import { openMessageMenu } from '../../../src/lib/messageMenu'
+import { openPaywall } from '../../../src/lib/paywall'
+import { showToast } from '../../../src/lib/toast'
 import { flattenMessagePages } from '../../../src/lib/messageCache'
 import { colors, font, radius, spacing } from '../../../src/lib/theme'
 
@@ -54,6 +61,7 @@ export default function ChatScreen() {
   // Starts true: a thread opens at its newest message.
   const atBottom = useRef(true)
   const translateApi = useTranslate()
+  const report = useReportUser()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -130,12 +138,18 @@ export default function ChatScreen() {
       const socket = await getSocket()
       await emitWithAck(socket, 'message:media', { conversationId, kind, media })
     } catch (error) {
-      void showAlert(
-        'Could not send',
-        error instanceof ApiRequestError && error.code === 'QUOTA_EXCEEDED'
-          ? "You've reached today's limit for photos and voice messages."
-          : 'That attachment could not be sent. Try again.',
-      )
+      // `emitWithAck` rejects with a plain Error carrying `.code`, not an
+      // ApiRequestError, so the `instanceof` this used to do never matched
+      // and the quota message had never once been shown.
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          'Could not send',
+          "You've reached today's limit for photos and voice messages.",
+        )
+        openPaywall()
+      } else {
+        void showAlert('Could not send', 'That attachment could not be sent. Try again.')
+      }
     } finally {
       setSendingMedia(false)
     }
@@ -212,15 +226,68 @@ export default function ChatScreen() {
       const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
-      await showAlert(
-        'Translation unavailable',
-        error instanceof ApiRequestError && error.code === 'QUOTA_EXCEEDED'
-          ? "You've used today's free translations. Pro removes the limit."
-          : 'Could not translate that message right now.',
-      )
+      if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
+        await showAlert(
+          'Translation unavailable',
+          "You've used today's free translations. Pro removes the limit.",
+        )
+        // Bare, deliberately. `unlimitedTranslation` is a `ProBenefit` and
+        // not a `PlanFeature` — it is a quota that stops applying rather than
+        // a capability flag — so there is no key to pass. The paywall's Pro
+        // column already lists it.
+        openPaywall()
+      } else {
+        await showAlert('Translation unavailable', 'Could not translate that message right now.')
+      }
     } finally {
       setTranslating(null)
     }
+  }
+
+  /**
+   * Long-press on any bubble. Correction used to *be* the gesture, on the
+   * other person's text only; it is one row here, which is what let the other
+   * three exist at all.
+   */
+  async function openActions(message: MessageDto): Promise<void> {
+    const actions = messageActionsFor({
+      mine: isMine(message),
+      type: message.type,
+      hasBody: message.body.trim().length > 0,
+      alreadyTranslated: Boolean(translations[message._id]),
+    })
+    // Your own captionless voice note has nothing to offer; an empty sheet is
+    // worse than no sheet.
+    if (actions.length === 0) return
+
+    const picked = await openMessageMenu(message.body || messageTypeLabel(message.type), actions)
+    if (picked === 'copy') {
+      await Clipboard.setStringAsync(message.body)
+      showToast('Copied')
+    } else if (picked === 'translate') {
+      await translate(message)
+    } else if (picked === 'correct') {
+      setCorrecting(message)
+      setDraft(message.body)
+    } else if (picked === 'report') {
+      await reportMessage(message)
+    }
+  }
+
+  async function reportMessage(message: MessageDto): Promise<void> {
+    const reason = await chooseAlert('Report', 'Why are you reporting this message?', [
+      { label: 'Spam', value: 'spam' },
+      { label: 'Harassment', value: 'harassment' },
+      { label: 'Inappropriate content', value: 'inappropriate_content' },
+    ])
+    if (!reason || !partnerId) return
+    report.mutate(
+      { userId: partnerId, reason, conversationId, messageId: message._id },
+      {
+        onSuccess: () => showToast('Reported. Thank you — we look at every one.'),
+        onError: () => void showAlert('Could not report', 'Try again in a moment.'),
+      },
+    )
   }
 
   return (
@@ -297,7 +364,10 @@ export default function ChatScreen() {
             const mine = isMine(item)
             if (item.type === 'correction') {
               return (
-                <View style={[styles.correction, mine ? styles.mine : styles.theirs]}>
+                <Pressable
+                  onLongPress={() => void openActions(item)}
+                  style={[styles.correction, mine ? styles.mine : styles.theirs]}
+                >
                   <Text style={styles.correctionLabel}>✏️ Correction</Text>
                   {item.correction ? (
                     <Text style={styles.correctionOriginal}>{item.correction.original}</Text>
@@ -307,12 +377,15 @@ export default function ChatScreen() {
                     <Text style={styles.correctionNote}>{item.correction.note}</Text>
                   ) : null}
                   <MessageMeta message={item} mine={mine} />
-                </View>
+                </Pressable>
               )
             }
             if (item.type === 'image' || item.type === 'audio') {
               return (
-                <View style={[styles.bubble, mine ? styles.mine : styles.theirs]}>
+                <Pressable
+                  onLongPress={() => void openActions(item)}
+                  style={[styles.bubble, mine ? styles.mine : styles.theirs]}
+                >
                   {item.type === 'image' ? (
                     <ImageBubble message={item} />
                   ) : (
@@ -326,20 +399,14 @@ export default function ChatScreen() {
                     </Text>
                   ) : null}
                   <MessageMeta message={item} mine={mine} />
-                </View>
+                </Pressable>
               )
             }
 
             const translated = translations[item._id]
             return (
               <Pressable
-                // Long-press someone else's message to correct it — the
-                // teaching gesture, and the highest-earning action in the app.
-                onLongPress={() => {
-                  if (mine) return
-                  setCorrecting(item)
-                  setDraft(item.body)
-                }}
+                onLongPress={() => void openActions(item)}
                 style={[styles.bubble, mine ? styles.mine : styles.theirs]}
               >
                 <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{item.body}</Text>
@@ -348,14 +415,10 @@ export default function ChatScreen() {
                     {translated}
                   </Text>
                 ) : null}
-                {/* Only offered on the other person's messages: translating your
-                    own is a round trip to something you already understand. */}
-                {!mine && !translated ? (
-                  <Pressable onPress={() => void translate(item)} hitSlop={6}>
-                    <Text style={styles.translateLink}>
-                      {translating === item._id ? 'Translating…' : 'Translate'}
-                    </Text>
-                  </Pressable>
+                {/* The link is gone — translate is a menu row now. This only
+                    reports the request already in flight. */}
+                {translating === item._id ? (
+                  <Text style={styles.translateLink}>Translating…</Text>
                 ) : null}
                 <MessageMeta message={item} mine={mine} />
               </Pressable>
@@ -553,6 +616,13 @@ const styles = StyleSheet.create({
 
 /** A thread's worth; the composer sits below them either way. */
 const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
+
+/** What the sheet shows above the actions when a message has no text. */
+function messageTypeLabel(type: MessageDto['type']): string {
+  if (type === 'image') return 'Photo'
+  if (type === 'audio') return 'Voice message'
+  return 'Message'
+}
 
 /** Pixels from the top at which the next page of history is requested. */
 const OLDER_MESSAGES_THRESHOLD = 80

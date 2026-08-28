@@ -14,6 +14,7 @@ import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
+import type { Report } from '../modules/moderation/blocks'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
 import { purgeExpiredAccounts } from '../modules/account/deletion'
@@ -274,6 +275,47 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
     it('refuses a self-report', async () => {
       const a = await newUser()
       expect((await post(a, '/reports', { userId: a.userId, reason: 'spam' })).statusCode).toBe(400)
+    })
+
+    /**
+     * Reports raised from the chat menu point at one message. A reviewer
+     * opening a report of "harassment" against someone with two hundred
+     * messages otherwise has nowhere to start.
+     */
+    it('keeps the message a report was raised from', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      const started = await startConversation(reporter, target.userId, 'hello there')
+      const conversationId = started.json<{ _id: string }>()._id
+      const messages = await get(reporter, `/conversations/${conversationId}/messages`)
+      const messageId = messages.json<{ items: { _id: string }[] }>().items[0]?._id
+
+      const response = await post(reporter, '/reports', {
+        userId: target.userId,
+        reason: 'harassment',
+        conversationId,
+        messageId,
+      })
+      expect(response.statusCode, response.body).toBe(201)
+
+      const stored = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reporterId: reporter.userId, reportedId: target.userId })
+      expect(stored?.messageId?.toString()).toBe(messageId)
+      expect(stored?.conversationId?.toString()).toBe(conversationId)
+    })
+
+    it('still accepts a report raised from a profile, with neither pointer', async () => {
+      const reporter = await newUser()
+      const target = await newUser()
+      const response = await post(reporter, '/reports', { userId: target.userId, reason: 'spam' })
+      expect(response.statusCode, response.body).toBe(201)
+
+      const stored = await handle.db
+        .collection<Report>(COLLECTIONS.reports)
+        .findOne({ reporterId: reporter.userId, reportedId: target.userId })
+      expect(stored?.messageId).toBeUndefined()
+      expect(stored?.conversationId).toBeUndefined()
     })
   })
 

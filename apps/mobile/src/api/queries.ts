@@ -340,8 +340,13 @@ export function useBlockUser() {
 
 export function useReportUser() {
   return useMutation({
-    mutationFn: (input: { userId: string; reason: string; details?: string }) =>
-      api.post('/reports', input),
+    mutationFn: (input: {
+      userId: string
+      reason: string
+      details?: string
+      conversationId?: string
+      messageId?: string
+    }) => api.post('/reports', input),
   })
 }
 
