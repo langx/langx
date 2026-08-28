@@ -45,17 +45,17 @@ export default function AppLayout() {
         }}
       >
         <Tabs.Screen
-          name="discover"
-          options={{
-            title: 'Discover',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="🧭" focused={focused} />,
-          }}
-        />
-        <Tabs.Screen
           name="chats"
           options={{
             title: 'Chats',
             tabBarIcon: ({ focused }) => <TabIcon emoji="💬" focused={focused} />,
+          }}
+        />
+        <Tabs.Screen
+          name="discover"
+          options={{
+            title: 'Discover',
+            tabBarIcon: ({ focused }) => <TabIcon emoji="🧭" focused={focused} />,
           }}
         />
         <Tabs.Screen
