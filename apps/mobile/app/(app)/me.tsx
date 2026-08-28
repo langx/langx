@@ -9,6 +9,7 @@ import {
   streakRestorePrice,
   type Gender,
 } from '@langx/shared'
+import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import {
@@ -119,6 +120,23 @@ export default function MeScreen() {
 
   return (
     <Screen scroll onRefresh={refresh} refreshing={me.isRefetching}>
+      {/*
+        Settings used to be a button below the token store, at the bottom of a
+        screen that scrolls for a while — reachable, but only by someone who
+        already knew it was there. It is the only way into that screen, so it
+        gets the corner instead.
+      */}
+      <View style={styles.topBar}>
+        <Pressable
+          onPress={() => router.push('/(app)/settings')}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Settings"
+        >
+          <Ionicons name="settings-outline" size={24} color={colors.textMuted} />
+        </Pressable>
+      </View>
+
       <View style={styles.hero}>
         <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
         <Text style={styles.name}>{profile.displayName}</Text>
@@ -250,13 +268,7 @@ export default function MeScreen() {
       <Button
         label="Edit profile"
         onPress={() => router.push('/(app)/edit-profile')}
-        style={styles.settings}
-      />
-      <Button
-        label="Settings"
-        variant="secondary"
-        onPress={() => router.push('/(app)/settings')}
-        style={styles.settingsSecondary}
+        style={styles.firstAction}
       />
       <Button label="Sign out" variant="secondary" onPress={signOut} style={styles.signOut} />
     </Screen>
@@ -266,6 +278,7 @@ export default function MeScreen() {
 const styles = StyleSheet.create({
   loading: { marginTop: spacing.xxl },
   flex: { flex: 1 },
+  topBar: { alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end' },
   hero: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.lg },
   badges: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' },
   name: { ...font.title, color: colors.text, marginTop: spacing.sm },
@@ -320,7 +333,6 @@ const styles = StyleSheet.create({
   storeAction: { flexShrink: 0, width: 'auto' },
   storeName: { ...font.body, color: colors.text, fontWeight: '600' },
   storeMeta: { ...font.caption, color: colors.textMuted },
-  settings: { marginTop: spacing.xl },
-  settingsSecondary: { marginTop: spacing.sm },
+  firstAction: { marginTop: spacing.xl },
   signOut: { marginBottom: spacing.xxl, marginTop: spacing.sm },
 })
