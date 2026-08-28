@@ -131,9 +131,20 @@ export async function startConversation(
   const conversation: Conversation = {
     _id: new ObjectId(),
     pairKey,
-    participants: [viewerId, input.toUserId],
+    participants: [viewerId, recipient._id],
     lastMessage: { body: input.body, senderId: viewerId, createdAt: now },
-    unread: { [viewerId]: 0, [input.toUserId]: 1 },
+    /**
+     * The recipient's id is read off the profile that was just loaded, not off
+     * the request that named it — even though the two are equal by the time
+     * execution reaches here, since `findOne` above threw NOT_FOUND otherwise.
+     *
+     * It matters because this one is used as a *property name*, and a property
+     * name whose provenance is a request body is a shape worth not having:
+     * proving it safe means re-reading forty lines up every time, and it is
+     * what CodeQL's `js/remote-property-injection` flags (alert 12). Taking it
+     * from the record removes the question rather than answering it.
+     */
+    unread: { [viewerId]: 0, [recipient._id]: 1 },
     firstMessageBy: viewerId,
     firstMessageAt: now,
     bothSpoke: false,
