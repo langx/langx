@@ -27,6 +27,16 @@ export const DISCOVERY_PAGE_SIZE_MAX = 50
 /** A profile counts as "online now" for the free `online` filter within this window. */
 export const ONLINE_WINDOW_MS = 5 * 60 * 1000
 
+/**
+ * How stale a discovery cursor may be before it is refused.
+ *
+ * The `online` ordering pins its five-minute cutoff into the cursor so the
+ * partition cannot move mid-scroll. Left unbounded that pin eventually
+ * classifies everyone as online and the ordering silently stops meaning
+ * anything — degraded rather than corrupt, and impossible to diagnose.
+ */
+export const DISCOVERY_CURSOR_MAX_AGE_MS = 60 * 60 * 1000
+
 /** How often a connected client tells the server it is still there. */
 export const PRESENCE_HEARTBEAT_MS = 60_000
 

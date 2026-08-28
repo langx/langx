@@ -5,7 +5,9 @@ import {
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
   hasFeature,
+  DISCOVERY_CURSOR_MAX_AGE_MS,
   ONLINE_WINDOW_MS,
+  isOnlineAt,
   type LanguageLevel,
   type DiscoveryItem,
   type DiscoveryPage,
@@ -14,6 +16,7 @@ import {
 import type { Db, Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { blockedUserIds } from '../moderation/blocks'
+import { hidesOnlineStatus } from '../profiles/presenceVisibility'
 import { ApiError } from '../../lib/ApiError'
 import { effectiveTier } from '../profiles/entitlement'
 import type { Profile } from '../profiles/profiles'
@@ -54,6 +57,46 @@ function decodeOffsetCursor(cursor: string): number {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed cursor')
   }
   return offset
+}
+
+/**
+ * `<cutoffISO>|<offset>` — the offset cursor, plus the moment "online" was
+ * decided.
+ *
+ * The cutoff is a boundary *in time* that the offset is measured against.
+ * Recompute it per request and someone crossing the five-minute line
+ * mid-scroll moves the whole partition underneath a `$skip` that has already
+ * been handed out: one profile repeats and another is never shown. Pinning it
+ * at page one means the list reflects who was online when the scroll began,
+ * which is also the honest answer to the question the chip asked.
+ */
+function encodeOnlineOffsetCursor(cutoff: Date, offset: number): string {
+  return `${cutoff.toISOString()}|${offset}`
+}
+
+interface OnlineOffsetCursor {
+  cutoff: Date
+  offset: number
+}
+
+function decodeOnlineOffsetCursor(cursor: string, now: Date): OnlineOffsetCursor {
+  // No separator means a cursor from a build before this existed. Reading it
+  // as a bare offset keeps app versions already in the wild paging.
+  if (!cursor.includes('|')) {
+    return {
+      cutoff: new Date(now.getTime() - ONLINE_WINDOW_MS),
+      offset: decodeOffsetCursor(cursor),
+    }
+  }
+  const [iso, rawOffset] = cursor.split('|')
+  const cutoff = iso ? new Date(iso) : null
+  if (!cutoff || Number.isNaN(cutoff.getTime()) || rawOffset === undefined) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed cursor')
+  }
+  if (now.getTime() - cutoff.getTime() > DISCOVERY_CURSOR_MAX_AGE_MS) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Cursor has expired; start again')
+  }
+  return { cutoff, offset: decodeOffsetCursor(rawOffset) }
 }
 
 /** Levels at or above `minLevel`, e.g. intermediate → ['intermediate','fluent']. */
@@ -122,9 +165,6 @@ export async function discoverProfiles(
     'learning.code': { $in: myNativeCodes },
   }
 
-  if (query.online) {
-    match['stats.lastActiveAt'] = { $gte: new Date(Date.now() - ONLINE_WINDOW_MS) }
-  }
   if (query.gender) match.gender = query.gender
   // "Match my gender", resolved here because here is where the viewer's own
   // gender is known for certain. Deliberately silent when the viewer has not
@@ -183,6 +223,51 @@ export async function discoverProfiles(
         ]
       : [{ $match: match }]
 
+  /**
+   * "Online first" is an *ordering*, not a filter.
+   *
+   * It used to be a `$match` on the five-minute window, which emptied the
+   * list whenever nobody was about — the opposite of what a discovery screen
+   * is for. Everyone still comes back; the online ones lead, and the rest
+   * follow by whatever the sort already used.
+   *
+   * `sort=active` needs none of this: ordering by `lastActiveAt` descending
+   * already puts the window at the top by construction.
+   */
+  const now = new Date()
+  const cursor = query.cursor ? decodeOnlineOffsetCursor(query.cursor, now) : null
+  const onlineOffset = cursor?.offset ?? 0
+  const onlineCutoff =
+    query.online && query.sort !== 'active'
+      ? (cursor?.cutoff ?? new Date(now.getTime() - ONLINE_WINDOW_MS))
+      : null
+
+  if (onlineCutoff) {
+    pipeline.push({
+      $addFields: {
+        /**
+         * Two expressions of one rule: this, and `hidesOnlineStatus` in
+         * TypeScript for the read-time `isOnline`. Nothing but
+         * `discovery.test.ts` holds them together — a profile that hides its
+         * status must not be promoted here either, or the ordering leaks
+         * exactly what the setting exists to hide.
+         */
+        onlineBucket: {
+          $cond: [
+            {
+              $and: [
+                { $gte: ['$stats.lastActiveAt', onlineCutoff] },
+                { $ne: ['$privacy.hideOnlineStatus', true] },
+              ],
+            },
+            1,
+            0,
+          ],
+        },
+      },
+    })
+  }
+
   if (query.sort === 'active') {
     if (query.cursor) {
       const { lastActiveAt, id } = decodeActiveCursor(query.cursor)
@@ -197,9 +282,18 @@ export async function discoverProfiles(
     }
     pipeline.push({ $sort: { 'stats.lastActiveAt': -1, _id: 1 } })
   } else if (query.sort === 'nearby') {
-    // No `$sort`: `$geoNear` already emits nearest-first, and re-sorting would
-    // both cost a blocking stage and quietly discard that guarantee.
-    if (query.cursor) pipeline.push({ $skip: decodeOffsetCursor(query.cursor) })
+    /**
+     * Normally no `$sort`: `$geoNear` already emits nearest-first, and
+     * re-sorting costs a blocking stage and discards that guarantee.
+     *
+     * With the chip on, discarding it is exactly what was asked for, so one
+     * goes in — bounded by `maxDistance` and Pro+ only, so the blocking sort
+     * runs over a small candidate set.
+     */
+    if (onlineCutoff) {
+      pipeline.push({ $sort: { onlineBucket: -1, distanceMeters: 1, _id: 1 } })
+    }
+    if (query.cursor) pipeline.push({ $skip: onlineOffset })
   } else {
     // Small, capped arrays (MAX_LANGUAGES=5, MAX_INTERESTS=10) — cheap to
     // score with $setIntersection per candidate rather than needing a
@@ -218,9 +312,13 @@ export async function discoverProfiles(
           },
         },
       },
-      { $sort: { score: -1, 'stats.lastActiveAt': -1, _id: 1 } },
+      {
+        $sort: onlineCutoff
+          ? { onlineBucket: -1, score: -1, 'stats.lastActiveAt': -1, _id: 1 }
+          : { score: -1, 'stats.lastActiveAt': -1, _id: 1 },
+      },
     )
-    if (query.cursor) pipeline.push({ $skip: decodeOffsetCursor(query.cursor) })
+    if (query.cursor) pipeline.push({ $skip: onlineOffset })
   }
 
   // Fetch one extra to know whether a next page exists without a second round-trip.
@@ -232,7 +330,6 @@ export async function discoverProfiles(
   const hasMore = docs.length > query.limit
   const page = hasMore ? docs.slice(0, query.limit) : docs
 
-  const now = new Date()
   const items: DiscoveryItem[] = page.map((doc) => {
     const item: DiscoveryItem = {
       _id: doc._id,
@@ -245,7 +342,10 @@ export async function discoverProfiles(
       // interface just doesn't carry those branded types.
       nativeLanguages: doc.nativeLanguages as DiscoveryItem['nativeLanguages'],
       learning: doc.learning as DiscoveryItem['learning'],
-      isOnline: now.getTime() - new Date(doc.stats.lastActiveAt).getTime() < ONLINE_WINDOW_MS,
+      // Same rule as `toPublicProfile`, and it was missing here: a hidden
+      // profile still drew a green dot in the discovery list, which is the
+      // one place most people would have seen it.
+      isOnline: hidesOnlineStatus(doc) ? false : isOnlineAt(doc.stats.lastActiveAt, now),
       streak: { current: doc.streak.current },
     }
     if (doc.avatarUrl !== undefined) item.avatarUrl = doc.avatarUrl
@@ -261,16 +361,17 @@ export async function discoverProfiles(
   if (hasMore) {
     const last = page.at(-1)
     if (last) {
+      const nextOffset = page.length + onlineOffset
       nextCursor =
         query.sort === 'active'
           ? encodeActiveCursor(new Date(last.stats.lastActiveAt), last._id)
-          : String(page.length + decodeOffsetCursorSafe(query.cursor))
+          : onlineCutoff
+            ? // The cutoff rides along so page two measures its offset against
+              // the same boundary page one did.
+              encodeOnlineOffsetCursor(onlineCutoff, nextOffset)
+            : String(nextOffset)
     }
   }
 
   return { items, nextCursor }
-}
-
-function decodeOffsetCursorSafe(cursor: string | undefined): number {
-  return cursor ? decodeOffsetCursor(cursor) : 0
 }
