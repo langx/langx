@@ -26,6 +26,7 @@ import {
 } from '../../src/api/queries'
 import { ApiRequestError } from '../../src/api/client'
 import type { DiscoveryItem } from '../../src/api/types'
+import { DiscoveryCardSkeleton } from '../../src/components/skeletons/DiscoveryCardSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -40,6 +41,7 @@ import {
 import { showAlert } from '../../src/lib/alert'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
+import { listState } from '../../src/lib/listState'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 const SORTS: { key: DiscoverySort; label: string }[] = [
@@ -118,6 +120,11 @@ export default function DiscoverScreen() {
   })
 
   const items = query.data?.pages.flatMap((page) => page.items) ?? []
+  const state = listState({
+    isPending: query.isPending,
+    isError: query.isError,
+    itemCount: items.length,
+  })
   const count = activeCount(effective)
   const locationRevoked =
     query.error instanceof ApiRequestError && query.error.code === 'LOCATION_REQUIRED'
@@ -171,8 +178,12 @@ export default function DiscoverScreen() {
         ) : null}
       </View>
 
-      {query.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+      {state === 'skeleton' ? (
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key) => (
+            <DiscoveryCardSkeleton key={key} />
+          ))}
+        </View>
       ) : locationRevoked ? (
         /**
          * The client checked before switching, so reaching here means sharing
@@ -263,7 +274,6 @@ const styles = StyleSheet.create({
   header: { paddingTop: spacing.md },
   title: { ...font.title, color: colors.text },
   filters: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginTop: spacing.md },
-  loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
   footer: { paddingVertical: spacing.lg },
   card: {
@@ -284,3 +294,6 @@ const styles = StyleSheet.create({
   distance: { ...font.caption, color: colors.textMuted, marginTop: 2 },
   bio: { ...font.caption, color: colors.textMuted, marginTop: 2 },
 })
+
+/** Enough to fill a phone; the list scrolls before it needs more. */
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f', 'g']

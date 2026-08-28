@@ -1,11 +1,14 @@
 import { router } from 'expo-router'
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useConversations, useMe } from '../../src/api/queries'
+import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { Skeleton } from '../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { listState } from '../../src/lib/listState'
+import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -29,13 +32,22 @@ export default function ChatsScreen() {
     .map((c) => c.participants.find((p) => p !== me.data?._id))
     .filter((id): id is string => Boolean(id))
   const partners = useProfileCache(partnerIds)
+  const state = listState({
+    isPending: conversations.isPending,
+    isError: conversations.isError,
+    itemCount: items.length,
+  })
 
   return (
     <Screen fluid>
       <Text style={styles.title}>Chats</Text>
 
-      {conversations.isPending ? (
-        <ActivityIndicator style={styles.loading} />
+      {state === 'skeleton' ? (
+        <View style={styles.list}>
+          {SKELETON_ROWS.map((key) => (
+            <ConversationRowSkeleton key={key} />
+          ))}
+        </View>
       ) : (
         <FlatList
           data={items}
@@ -61,16 +73,31 @@ export default function ChatsScreen() {
                 onPress={() => router.push(`/(app)/chat/${item._id}`)}
                 style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
               >
-                <Avatar
-                  url={partner?.avatarUrl}
-                  name={partner?.displayName ?? '?'}
-                  online={partner?.isOnline ?? false}
-                />
+                {partner ? (
+                  <Avatar
+                    url={partner.avatarUrl}
+                    name={partner.displayName}
+                    online={partner.isOnline}
+                  />
+                ) : (
+                  <Skeleton
+                    width={layout.avatar}
+                    height={layout.avatar}
+                    radius={layout.avatar / 2}
+                  />
+                )}
                 <View style={styles.body}>
                   <View style={styles.top}>
-                    <Text style={styles.name} numberOfLines={1}>
-                      {partner?.displayName ?? 'Loading…'}
-                    </Text>
+                    {partner ? (
+                      <Text style={styles.name} numberOfLines={1}>
+                        {partner.displayName}
+                      </Text>
+                    ) : (
+                      // The row is real, its partner is not resolved yet: the
+                      // names come from a separate batched query. This used to
+                      // read "Loading…", which looked like somebody's name.
+                      <Skeleton width={132} height={15} />
+                    )}
                     <Text style={styles.time}>{relativeTime(item.lastMessage.createdAt)}</Text>
                   </View>
                   <View style={styles.bottom}>
@@ -99,7 +126,6 @@ export default function ChatsScreen() {
 
 const styles = StyleSheet.create({
   title: { ...font.title, color: colors.text, paddingTop: spacing.md },
-  loading: { marginTop: spacing.xxl },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
   row: {
     alignItems: 'center',
@@ -127,3 +153,6 @@ const styles = StyleSheet.create({
   },
   badgeText: { color: colors.primaryText, fontSize: 11, fontWeight: '700' },
 })
+
+/** Enough to fill a phone; the list scrolls before it needs more. */
+const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f', 'g']
