@@ -6,6 +6,7 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { confirmAlert } from '../../src/lib/alert'
+import { showToast } from '../../src/lib/toast'
 import { colors, font, spacing } from '../../src/lib/theme'
 
 /**
@@ -65,7 +66,10 @@ export default function BlockedScreen() {
                       message: `Unblock ${name}? You will both be visible again.`,
                       confirmLabel: 'Unblock',
                     }).then((yes) => {
-                      if (yes) unblock.mutate(item.blockedId)
+                      if (yes)
+                        unblock.mutate(item.blockedId, {
+                          onSuccess: () => showToast(`${name} is unblocked.`),
+                        })
                     })
                   }
                 >

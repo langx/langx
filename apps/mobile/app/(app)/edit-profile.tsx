@@ -40,6 +40,7 @@ import { FormField } from '../../src/components/ui/FormField'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Screen } from '../../src/components/ui/Screen'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
+import { showToast } from '../../src/lib/toast'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
 
 const GENDER_LABELS: Record<Gender, string> = {
@@ -151,6 +152,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
       })
       router.back()
+      showToast('Profile saved.')
     } catch (caught) {
       setError(caught instanceof ApiRequestError ? caught.message : 'Could not save your profile.')
     }
@@ -172,7 +174,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
             disabled={uploadAvatar.isPending}
             onPress={() =>
               void pick((uri, contentType) =>
-                uploadAvatar.mutate({ uri, contentType }, { onError: onUploadError }),
+                uploadAvatar.mutate(
+                  { uri, contentType },
+                  { onError: onUploadError, onSuccess: () => showToast('Photo updated.') },
+                ),
               )
             }
           />
@@ -348,7 +353,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
             disabled={addPhoto.isPending}
             onPress={() =>
               void pick((uri, contentType) =>
-                addPhoto.mutate({ uri, contentType }, { onError: onUploadError }),
+                addPhoto.mutate(
+                  { uri, contentType },
+                  { onError: onUploadError, onSuccess: () => showToast('Photo added.') },
+                ),
               )
             }
           >

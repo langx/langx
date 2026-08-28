@@ -16,6 +16,7 @@ import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
+import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
 import { colors, font, layout, radius, spacing } from '../../../src/lib/theme'
 
@@ -88,7 +89,13 @@ export default function ProfileScreen() {
       confirmLabel: 'Block',
       destructive: true,
     })
-    if (yes) block.mutate(user._id, { onSuccess: () => router.replace('/(app)/discover') })
+    if (yes)
+      block.mutate(user._id, {
+        onSuccess: () => {
+          router.replace('/(app)/discover')
+          showToast(`${user.displayName} is blocked.`)
+        },
+      })
   }
 
   async function confirmReport(): Promise<void> {
@@ -97,7 +104,11 @@ export default function ProfileScreen() {
       { label: 'Harassment', value: 'harassment' },
       { label: 'Inappropriate content', value: 'inappropriate_content' },
     ])
-    if (reason) report.mutate({ userId: user._id, reason })
+    if (reason)
+      report.mutate(
+        { userId: user._id, reason },
+        { onSuccess: () => showToast('Report sent. We will look into it.') },
+      )
   }
 
   return (
