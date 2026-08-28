@@ -14,6 +14,7 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
+import { showToast } from '../../src/lib/toast'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
@@ -104,6 +105,12 @@ export default function SettingsScreen() {
       await api.post('/me/delete', { confirm: 'DELETE' })
       await authClient.signOut()
       router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+      // The grace period is the one thing worth repeating here: the dialog said
+      // it before the account existed in this state, and this is the first
+      // moment it is true.
+      showToast(
+        `Account deleted. Signing back in within ${ACCOUNT_DELETION_GRACE_DAYS} days cancels it.`,
+      )
     } catch (error) {
       await showAlert(
         'Could not delete',

@@ -135,10 +135,12 @@ Two consequences, neither of which is visible from the app:
 - Both share one cluster's storage and connection limit, so a migration ETL
   run from a laptop competes with production traffic.
 
-- [ ] Verify against the deploy rather than against this file, with
-      `fly secrets list` and `fly config env` on `langx-api`. A secret named
-      `MONGODB_DB` silently overrides `[env]` in `fly.toml`, and that could not
-      be checked from the droplet — flyctl is not installed there
+- [x] Verified against the deploy rather than against this file, on
+      28 August 2026: `fly config env -a langx-api` reports `MONGODB_DB=langx`,
+      and `fly secrets list` holds only `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
+      `MONGODB_URI`, `RESEND_API_KEY`, `EMAIL_FROM` and `TRUSTED_ORIGINS` — no
+      `MONGODB_DB` secret, so nothing overrides `[env]` in `fly.toml`.
+      Production is `langx`, confirmed from the deploy and not from this file
 - [ ] Decide whether production keeps living in a cluster named `dev`. A
       separate cluster — or at minimum a second Atlas user restricted to
       `langx` — is what stops a local mistake reaching real users. It costs one
@@ -277,9 +279,11 @@ takes the screen's touches while it is up.
       outlives the `router.replace` underneath it because `ToastHost` is
       mounted at the root layout rather than inside the navigator — the same
       reason the delete-account confirmation survives signing itself out
-- [ ] Give the same treatment to the other actions that return to a screen with
+- [x] Give the same treatment to the other actions that return to a screen with
       no word about what happened: profile saved, photo uploaded, report sent,
-      user blocked and unblocked, account deleted
+      user blocked and unblocked, account deleted. Reporting was the worst of
+      them — the picker closed onto an identical screen, so nothing
+      distinguished a sent report from a cancelled one
 
 Nothing here blocks the build, and all of it is visible in the first minute of
 use. It belongs before the rollout widens, not in the first patch after it.
