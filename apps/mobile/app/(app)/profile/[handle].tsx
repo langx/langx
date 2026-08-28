@@ -1,4 +1,4 @@
-import { countryFlag, getCountry, getLanguage } from '@langx/shared'
+import { countryFlag, formatAccountAge, getCountry, getLanguage } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
@@ -126,12 +126,19 @@ export default function ProfileScreen() {
         />
         <Text style={styles.name}>{user.displayName}</Text>
         <Text style={styles.handle}>@{user.handle}</Text>
+        {/*
+          How long the account has existed, next to who it says it is: the two
+          questions someone asks about a stranger who just messaged them are
+          the same question, and only one of them was answered here before.
+        */}
+        <Text style={styles.joined}>Registered {formatAccountAge(new Date(user.createdAt))}</Text>
         <View style={styles.badges}>
           <Chip label={`${user.age}`} />
           {user.country ? <Chip label={countryLabel(user.country)} /> : null}
           {user.streak.current > 0 ? (
             <Chip label={`🔥 ${days(user.streak.current)}`} tone="streak" />
           ) : null}
+          {user.emailVerified ? <Chip label="✓ Verified email" tone="accent" /> : null}
           <TierBadge tier={user.tier} />
         </View>
       </View>
@@ -212,6 +219,7 @@ const styles = StyleSheet.create({
   hero: { alignItems: 'center', paddingVertical: spacing.lg },
   name: { ...font.title, color: colors.text, marginTop: spacing.md },
   handle: { ...font.caption, color: colors.textMuted },
+  joined: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
   badges: {
     flexDirection: 'row',
     flexWrap: 'wrap',

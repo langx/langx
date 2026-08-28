@@ -83,6 +83,8 @@ export interface MeProfile {
   entitlement: { tier: PlanTier; expiresAt?: string }
   streak: { current: number; longest: number }
   cosmetics?: string[]
+  /** ISO. The one date on this screen the user did not enter themselves. */
+  createdAt: string
   /**
    * Set while a deletion is pending. The profile is still returned to its
    * owner — they are the one person who has to be able to see it, and to take

@@ -348,12 +348,20 @@ as something bought rather than as the product.
       `app.config.ts`. `branding/` has no vector master — its only SVG is an
       auto-trace — and its `splash.png` is 3601×3600, so none of it can be
       reused unaltered
-- [ ] Profile screens show account age ("Registered 3 months ago", the unit
+- [x] Profile screens show account age ("Registered 3 months ago", the unit
       widening from days to months to years as the account gets older) and a
-      Verified Email badge. Both need adding to the public profile DTO in
-      `packages/shared` and reading through the profile repository;
-      `emailVerified` lives in Better Auth's `user` collection, so it crosses
-      the id boundary and goes through `lib/authId.ts`
+      Verified Email badge. The DTO is `PublicProfile` in
+      `apps/api/src/modules/profiles/profiles.ts`, mirrored by
+      `PublicProfileDto` in `apps/mobile/src/api/types.ts` — **not**
+      `packages/shared`, which holds the schemas and now the wording in
+      `accountAge.ts`. `emailVerified` lives in Better Auth's `user`
+      collection, so it crosses the id boundary and goes through
+      `lib/authId.ts`. One thing to know before reading the badge as a signal:
+      it is true for **every** profile today, because onboarding is gated on
+      `requireVerifiedEmail` and the v1 bridge marks the address verified
+      itself, so nothing can currently produce an unverified profile. It is
+      read from `user` rather than assumed, so that an email-change flow later
+      does not turn it into a badge that lies
 - [ ] Restyle the screens and the pages. `website/src/lib/data/*.ts` is
       hand-synced content and does not move, and neither does the
       toast-and-alert behaviour decided above — only the appearance changes

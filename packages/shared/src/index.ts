@@ -1,4 +1,5 @@
 export * from './account'
+export * from './accountAge'
 export * from './age'
 export * from './appConfig'
 export * from './appIdentity'

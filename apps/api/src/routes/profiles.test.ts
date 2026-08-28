@@ -8,6 +8,7 @@ import { connectToDatabase, type DbHandle } from '../db/client'
 import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import { authId } from '../lib/authId'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -650,6 +651,66 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.statusCode).toBe(200)
       expect(response.json()).not.toHaveProperty('location')
       expect(response.body).not.toContain('28.98')
+    })
+  })
+
+  describe('account age and email verification on a public profile', () => {
+    async function onboarded(email: string, handle: string): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle }),
+      })
+      if (response.statusCode !== 201) {
+        throw new Error(`onboarding failed (${response.statusCode}): ${response.body}`)
+      }
+      return user
+    }
+
+    it('carries createdAt and emailVerified, and no raw birthYear or email', async () => {
+      await onboarded('public-age-viewed@example.com', 'ageviewed')
+      const viewer = await onboarded('public-age-viewer@example.com', 'ageviewer')
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/ageviewed',
+        headers: { cookie: viewer.cookie },
+      })
+
+      expect(response.statusCode).toBe(200)
+      const body = response.json<{ createdAt: string; emailVerified: boolean }>()
+      expect(new Date(body.createdAt).getTime()).toBeGreaterThan(0)
+      // The account got here through onboarding, which requires a verified
+      // email — so `true` here also proves the ObjectId lookup found the
+      // Better Auth user at all. A string `_id` would find nothing and
+      // report every profile unverified without failing.
+      expect(body.emailVerified).toBe(true)
+      expect(body).not.toHaveProperty('birthYear')
+      expect(response.body).not.toContain('public-age-viewed@example.com')
+    })
+
+    it('reports an unverified account as unverified rather than assuming', async () => {
+      const viewer = await onboarded('public-unverified-viewer@example.com', 'unverifviewer')
+      const target = await onboarded('public-unverified@example.com', 'unverifviewed')
+
+      // Reaching past Better Auth on purpose: nothing in the app can produce
+      // this state today, because onboarding is gated on a verified email.
+      // The flag is read from `user` rather than assumed for exactly the day
+      // that stops being true.
+      await handle.db
+        .collection(COLLECTIONS.user)
+        .updateOne({ _id: authId(target.userId) }, { $set: { emailVerified: false } })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/unverifviewed',
+        headers: { cookie: viewer.cookie },
+      })
+
+      expect(response.statusCode).toBe(200)
+      expect(response.json<{ emailVerified: boolean }>().emailVerified).toBe(false)
     })
   })
 })

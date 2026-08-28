@@ -40,6 +40,9 @@ export interface PublicProfileDto {
   cosmetics: string[]
   isOnline: boolean
   lastActiveAt: string
+  /** ISO; rendered as an age with `formatAccountAge`, never as a date. */
+  createdAt: string
+  emailVerified: boolean
 }
 
 export interface DiscoveryItem {
