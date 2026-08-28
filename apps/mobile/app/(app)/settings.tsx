@@ -16,7 +16,7 @@ import { appVersion } from '../../src/hooks/useAppConfig'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
-import { clearFlag, FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
+import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
@@ -121,14 +121,16 @@ export default function SettingsScreen() {
   }
 
   /**
-   * Clears the flag the signed-out entry point reads, so the carousel plays
-   * again next time. It cannot be shown from here — the intro lives in
-   * `(auth)`, which `Stack.Protected` hides from a signed-in user — so this
-   * says what will happen rather than doing it now.
+   * Opens the carousel now, which is what the button says.
+   *
+   * It used to clear `introSeen` and raise an alert explaining that the intro
+   * would play at the next sign-out. On web that alert never appeared —
+   * react-native-web ships `Alert` as `static alert() {}` — so the button
+   * looked dead. `(app)/intro` exists so there is something to push to:
+   * `(auth)/intro` is unreachable while a session is held.
    */
   function replayIntro(): void {
-    void clearFlag(FLAG_KEYS.introSeen)
-    Alert.alert('Intro reset', 'The intro will play next time you sign out.')
+    router.push('/(app)/intro')
   }
   return (
     <Screen scroll>
