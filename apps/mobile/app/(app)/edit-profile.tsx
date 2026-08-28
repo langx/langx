@@ -39,6 +39,7 @@ import { Chip } from '../../src/components/ui/Chip'
 import { FormField } from '../../src/components/ui/FormField'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Screen } from '../../src/components/ui/Screen'
+import { goBackTo } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
 import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
@@ -151,7 +152,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         nativeLanguages: native.map((code) => ({ code })),
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
       })
-      router.back()
+      goBackTo('/(app)/me')
       showToast('Profile saved.')
     } catch (caught) {
       setError(caught instanceof ApiRequestError ? caught.message : 'Could not save your profile.')
@@ -160,7 +161,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 
   return (
     <Screen scroll>
-      <Pressable onPress={() => router.back()} hitSlop={12} style={styles.backRow}>
+      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
         <Text style={styles.back}>‹ Back</Text>
       </Pressable>
       <Text style={styles.title}>Edit profile</Text>

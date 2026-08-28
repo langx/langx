@@ -15,9 +15,10 @@ import { router } from 'expo-router'
  * paywall is a route: it has to survive a deep link and a back-navigation,
  * and a store would not.
  */
-export function openPaywall(feature?: PlanFeature): void {
+export function openPaywall(feature?: PlanFeature, from?: string): void {
+  const params = { ...(feature ? { feature } : {}), ...(from ? { from } : {}) }
   router.push({
     pathname: '/(app)/paywall',
-    ...(feature ? { params: { feature } } : {}),
+    ...(Object.keys(params).length > 0 ? { params } : {}),
   })
 }
