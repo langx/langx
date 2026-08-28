@@ -34,11 +34,23 @@ export async function registerAuthRoutes(app: FastifyInstance, auth: Auth): Prom
         else if (Array.isArray(value)) for (const v of value) headers.append(key, v)
       }
 
-      const hasBody = request.method !== 'GET' && request.method !== 'HEAD'
+      // Only a request that actually carried bytes gets a body: Better Auth
+      // answers 415 to an empty body with no content-type, which is exactly
+      // what a bodyless POST like sign-out would become otherwise.
+      // `request.body` is a Buffer only when the parser above ran on real
+      // bytes — it is null for an empty payload.
+      const raw = request.body
+      const hasBody = request.method !== 'GET' && request.method !== 'HEAD' && Buffer.isBuffer(raw)
+      // A `Buffer` is not a `BodyInit`: `BufferSource` here is the DOM's (a
+      // dependency pulls lib.dom in), and since TS 5.7 that accepts only a
+      // view over a non-shared `ArrayBuffer`, while `Buffer.buffer` is
+      // `ArrayBufferLike`. Copying is the honest fix — auth bodies are a few
+      // hundred bytes, and the alternative is a cast that lies about which
+      // buffer backs the view.
       const webRequest = new Request(
         url,
         hasBody
-          ? { method: request.method, headers, body: request.body as Buffer }
+          ? { method: request.method, headers, body: new Uint8Array(raw) }
           : { method: request.method, headers },
       )
 
