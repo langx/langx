@@ -33,5 +33,23 @@ jobs:
       - name: Format
         run: pnpm format:check
 
+      # `apps/api`'s tests each start their own MongoMemoryServer, and vitest
+      # runs the files in parallel workers. On a cold cache they all reach for
+      # the same mongod binary at once and race on its download and lockfile —
+      # which surfaces as `Cannot unlock file ... .lock`, an ENOENT renaming
+      # `.tgz.downloading`, or a 120s hook timeout in whichever file lost. It
+      # reads exactly like a real test failure and is not one. Caching the
+      # directory removes the download on all but the first run; fetching the
+      # binary once here removes the race on that first run.
+      - name: Cache the mongodb-memory-server binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}
+
+      - name: Fetch the mongodb-memory-server binary
+        working-directory: apps/api
+        run: node -e "const {MongoMemoryServer}=require('mongodb-memory-server');MongoMemoryServer.create().then(s=>s.stop())"
+
       - name: Test
         run: pnpm test
