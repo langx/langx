@@ -12,7 +12,10 @@ export default tseslint.config(
       '**/.expo/**',
       'apps/mobile/ios/**',
       'apps/mobile/android/**',
-      'apps/mobile/expo-env.d.ts',
+      // Expo generates this next to whichever app it is run from, and it is
+      // gitignored everywhere — a stray copy at the repo root (left by the v1
+      // app that used to live here) otherwise fails the whole lint run.
+      '**/expo-env.d.ts',
     ],
   },
   js.configs.recommended,
