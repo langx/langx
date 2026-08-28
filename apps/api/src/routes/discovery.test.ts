@@ -1,3 +1,4 @@
+import { DISTANCE_BUCKETS_KM } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -480,6 +481,258 @@ describe('Faz 3 — discovery aggregation', () => {
       const response = await discover(viewer, 'sort=recommended')
       const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(handles.indexOf(sharedInterest.handle)).toBeLessThan(handles.indexOf(noOverlap.handle))
+    })
+  })
+
+  /**
+   * The Pro+ sort. Everything here turns on one thing worth stating: sharing a
+   * location is free, sorting by it is not — so these fixtures give candidates
+   * a location without giving them a subscription.
+   */
+  describe('sort=nearby (Pro+)', () => {
+    /** Istanbul. Every distance below is measured from here. */
+    const VIEWER = { lat: 41.0082, lng: 28.9784 }
+    const NEXT_DOOR = { lat: 41.02, lng: 28.99 } //     ~1.5 km
+    const ACROSS_TOWN = { lat: 41.2, lng: 29.1 } //     ~23 km
+    const ANOTHER_CITY = { lat: 40.19, lng: 29.06 } //  ~91 km  (Bursa)
+    const FAR_AWAY = { lat: 39.93, lng: 32.86 } //     ~350 km  (Ankara)
+
+    async function setTier(userId: string, tier: Profile['entitlement']['tier']) {
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: userId }, { $set: { 'entitlement.tier': tier } })
+    }
+
+    // Generic so it hands back exactly what it was given — `newUser` returns a
+    // `SignedUpUser` *plus* the handle, and every assertion below needs it.
+    async function share<T extends SignedUpUser>(
+      user: T,
+      at: { lat: number; lng: number },
+    ): Promise<T> {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload: at,
+      })
+      if (response.statusCode !== 200) {
+        throw new Error(`sharing location failed (${response.statusCode}): ${response.body}`)
+      }
+      return user
+    }
+
+    /** A candidate who mutually fits a `tr`-native viewer learning `en`. */
+    async function candidate(email: string, overrides: Record<string, unknown> = {}) {
+      return newUser(email, {
+        nativeLanguages: [{ code: 'en' }],
+        learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],
+        ...overrides,
+      })
+    }
+
+    it('refuses a free account with UPGRADE_REQUIRED naming nearby, not advancedFilters', async () => {
+      const viewer = await newUser('nearby-free@example.com')
+      const response = await discover(viewer, 'sort=nearby')
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED', feature: 'nearby' })
+    })
+
+    it('refuses a Pro account too — this is the whole difference between the two paid tiers', async () => {
+      const viewer = await newUser('nearby-pro@example.com')
+      await setTier(viewer.userId, 'pro')
+      await share(viewer, VIEWER)
+
+      const response = await discover(viewer, 'sort=nearby')
+      expect(response.statusCode).toBe(403)
+      expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED', feature: 'nearby' })
+    })
+
+    it('tells a Pro+ user who has shared nothing to share something, rather than returning an empty list', async () => {
+      const viewer = await newUser('nearby-no-location@example.com')
+      await setTier(viewer.userId, 'pro_plus')
+
+      const response = await discover(viewer, 'sort=nearby')
+      expect(response.statusCode).toBe(409)
+      expect(response.json()).toMatchObject({ code: 'LOCATION_REQUIRED' })
+    })
+
+    it('orders by distance and reports it as a bucket, never as the measured value', async () => {
+      const viewer = await newUser('nearby-viewer@example.com')
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const near = await share(await candidate('nearby-near@example.com'), NEXT_DOOR)
+      const mid = await share(await candidate('nearby-mid@example.com'), ACROSS_TOWN)
+      const far = await share(await candidate('nearby-far@example.com'), FAR_AWAY)
+
+      const response = await discover(viewer, 'sort=nearby')
+      expect(response.statusCode).toBe(200)
+      const items = response.json<{ items: { handle: string; distanceKm: number }[] }>().items
+
+      const handles = items.map((i) => i.handle)
+      expect(handles.indexOf(near.handle)).toBeLessThan(handles.indexOf(mid.handle))
+      expect(handles.indexOf(mid.handle)).toBeLessThan(handles.indexOf(far.handle))
+
+      const distances = items.map((i) => i.distanceKm)
+      expect(distances).toEqual([...distances].sort((a, b) => a - b))
+      for (const km of distances) expect(DISTANCE_BUCKETS_KM).toContain(km)
+      // The nearest is about 1.5 km away; the answer must not be finer than a bucket.
+      expect(items[0]?.distanceKm).toBeLessThanOrEqual(5)
+    })
+
+    it('leaves out everyone who has not shared a location, and says so by omission only in this sort', async () => {
+      const viewer = await newUser('nearby-optin-viewer@example.com', {
+        nativeLanguages: [{ code: 'sv' }],
+        learning: [{ code: 'da', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const sharing = await share(
+        await candidate('nearby-optin-yes@example.com', {
+          nativeLanguages: [{ code: 'da' }],
+          learning: [{ code: 'sv', level: 'intermediate', priority: 1 }],
+        }),
+        NEXT_DOOR,
+      )
+      const notSharing = await candidate('nearby-optin-no@example.com', {
+        nativeLanguages: [{ code: 'da' }],
+        learning: [{ code: 'sv', level: 'intermediate', priority: 1 }],
+      })
+
+      const nearby = await discover(viewer, 'sort=nearby')
+      const nearbyHandles = nearby
+        .json<{ items: { handle: string }[] }>()
+        .items.map((i) => i.handle)
+      expect(nearbyHandles).toContain(sharing.handle)
+      expect(nearbyHandles).not.toContain(notSharing.handle)
+
+      // Opting out of nearby is not opting out of discovery.
+      const recommended = await discover(viewer)
+      const recommendedHandles = recommended
+        .json<{ items: { handle: string }[] }>()
+        .items.map((i) => i.handle)
+      expect(recommendedHandles).toContain(notSharing.handle)
+      // ...and no distance leaks into a sort that never measured one.
+      const withDistance = recommended
+        .json<{ items: { distanceKm?: number }[] }>()
+        .items.filter((i) => i.distanceKm !== undefined)
+      expect(withDistance).toEqual([])
+    })
+
+    it('honours radiusKm, which is what stops "nearby" meaning "nearest"', async () => {
+      const viewer = await newUser('nearby-radius-viewer@example.com', {
+        nativeLanguages: [{ code: 'no' }],
+        learning: [{ code: 'is', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const inside = await share(
+        await candidate('nearby-radius-inside@example.com', {
+          nativeLanguages: [{ code: 'is' }],
+          learning: [{ code: 'no', level: 'intermediate', priority: 1 }],
+        }),
+        ACROSS_TOWN,
+      )
+      const outside = await share(
+        await candidate('nearby-radius-outside@example.com', {
+          nativeLanguages: [{ code: 'is' }],
+          learning: [{ code: 'no', level: 'intermediate', priority: 1 }],
+        }),
+        ANOTHER_CITY,
+      )
+
+      const wide = await discover(viewer, 'sort=nearby')
+      expect(wide.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)).toEqual(
+        expect.arrayContaining([inside.handle, outside.handle]),
+      )
+
+      const tight = await discover(viewer, 'sort=nearby&radiusKm=50')
+      const tightHandles = tight.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(tightHandles).toContain(inside.handle)
+      expect(tightHandles).not.toContain(outside.handle)
+    })
+
+    it('still applies the mutual-fit match and blocks — $geoNear runs them as its own `query`', async () => {
+      const viewer = await newUser('nearby-guards-viewer@example.com', {
+        nativeLanguages: [{ code: 'pl' }],
+        learning: [{ code: 'lt', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const wrongLanguages = await share(
+        await candidate('nearby-guards-language@example.com'),
+        NEXT_DOOR,
+      )
+      const blocked = await share(
+        await candidate('nearby-guards-blocked@example.com', {
+          nativeLanguages: [{ code: 'lt' }],
+          learning: [{ code: 'pl', level: 'intermediate', priority: 1 }],
+        }),
+        NEXT_DOOR,
+      )
+      const visible = await share(
+        await candidate('nearby-guards-visible@example.com', {
+          nativeLanguages: [{ code: 'lt' }],
+          learning: [{ code: 'pl', level: 'intermediate', priority: 1 }],
+        }),
+        ACROSS_TOWN,
+      )
+
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: viewer.cookie },
+        payload: { userId: blocked.userId },
+      })
+
+      const response = await discover(viewer, 'sort=nearby')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles).toContain(visible.handle)
+      expect(handles).not.toContain(blocked.handle)
+      expect(handles).not.toContain(wrongLanguages.handle)
+    })
+
+    it('pages without repeating or skipping anyone, despite every profile in a grid cell tying on distance', async () => {
+      const viewer = await newUser('nearby-page-viewer@example.com', {
+        nativeLanguages: [{ code: 'cs' }],
+        learning: [{ code: 'sk', level: 'intermediate', priority: 1 }],
+      })
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const tied = []
+      for (let i = 0; i < 5; i++) {
+        // Identical coordinates on purpose: this is the tie a distance keyset
+        // cursor could not have resumed through.
+        tied.push(
+          await share(
+            await candidate(`nearby-page-${i}@example.com`, {
+              nativeLanguages: [{ code: 'sk' }],
+              learning: [{ code: 'cs', level: 'intermediate', priority: 1 }],
+            }),
+            NEXT_DOOR,
+          ),
+        )
+      }
+
+      const seen: string[] = []
+      let cursor: string | undefined
+      for (let page = 0; page < 5; page++) {
+        const qs = new URLSearchParams({ sort: 'nearby', limit: '2' })
+        if (cursor) qs.set('cursor', cursor)
+        const body = await discover(viewer, qs.toString()).then((r) =>
+          r.json<{ items: { handle: string }[]; nextCursor: string | null }>(),
+        )
+        seen.push(...body.items.map((i) => i.handle))
+        if (!body.nextCursor) break
+        cursor = body.nextCursor
+      }
+
+      expect(new Set(seen).size).toBe(seen.length)
+      expect(seen.sort()).toEqual(tied.map((c) => c.handle).sort())
     })
   })
 

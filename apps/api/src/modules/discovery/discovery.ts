@@ -1,6 +1,7 @@
 import {
   LANGUAGE_LEVELS,
   levelRank,
+  bucketDistanceKm,
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
   hasFeature,
@@ -25,6 +26,14 @@ import type { Profile } from '../profiles/profiles'
  * index on — so it's offset pagination instead, page-capped rather than
  * cursor-safe. That tradeoff is deliberate for MVP scale; revisit only if
  * discovery becomes the actual bottleneck.
+ *
+ * `nearby` shares `recommended`'s offset cursor, and there the reason is not a
+ * tradeoff but a correctness one. A keyset over distance looks obvious —
+ * `$geoNear` even offers `minDistance` for it — but stored coordinates are
+ * rounded onto a ~1 km grid, so every profile in the same cell is at *exactly*
+ * the same distance. Ties are the normal case rather than the rare one, and a
+ * keyset that resumes after a tied value either repeats a whole cell or skips
+ * one; resuming *at* it never terminates.
  */
 function encodeActiveCursor(lastActiveAt: Date, id: string): string {
   return `${lastActiveAt.toISOString()}|${id}`
@@ -61,11 +70,30 @@ export async function discoverProfiles(
   const viewer = await profiles.findOne({ _id: viewerId })
   if (!viewer) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
+  const tier = effectiveTier(viewer)
+
   const proKeysUsed = DISCOVERY_PRO_FILTER_KEYS.filter((key) => query[key] !== undefined)
-  if (proKeysUsed.length > 0 && !hasFeature(effectiveTier(viewer), 'advancedFilters')) {
+  if (proKeysUsed.length > 0 && !hasFeature(tier, 'advancedFilters')) {
     throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Advanced filters require Pro', {
       feature: 'advancedFilters',
     })
+  }
+
+  if (query.sort === 'nearby') {
+    if (!hasFeature(tier, 'nearby')) {
+      throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, 'Nearby requires Pro+', {
+        feature: 'nearby',
+      })
+    }
+    // Checked before the query rather than left to return nothing: an empty
+    // list would be indistinguishable from "nobody is near you", and the user
+    // would go looking for people instead of for the setting.
+    if (!viewer.location) {
+      throw new ApiError(
+        ERROR_CODES.LOCATION_REQUIRED,
+        'Share your own location to sort by distance',
+      )
+    }
   }
 
   const myNativeCodes = viewer.nativeLanguages.map((l) => l.code)
@@ -122,7 +150,38 @@ export async function discoverProfiles(
     match.birthYear = birthYear
   }
 
-  const pipeline: Document[] = [{ $match: match }]
+  /**
+   * `$geoNear` must be the pipeline's **first** stage — a MongoDB rule, not a
+   * preference — which is what made a distance filter look impossible next to
+   * a `$match` that is itself doing the mutual-language work
+   * (`decisions.md`). The way out is that `$geoNear` takes the match as its
+   * own `query` argument and applies it internally, so there is exactly one
+   * leading stage and both conditions still hold.
+   *
+   * What is genuinely given up is which index drives the query: the 2dsphere
+   * index selects candidates and the language arrays are filtered over that
+   * already-narrowed set, rather than the other way round. Bounded by
+   * `maxDistance` that set is small, which is the other reason the radius cap
+   * is not optional.
+   */
+  const pipeline: Document[] =
+    query.sort === 'nearby' && viewer.location
+      ? [
+          {
+            $geoNear: {
+              near: viewer.location,
+              distanceField: 'distanceMeters',
+              maxDistance: query.radiusKm * 1000,
+              // Named explicitly rather than left to MongoDB's single-geo-index
+              // inference: a second geo index added later would otherwise turn
+              // this into an error at runtime instead of at review.
+              key: 'location',
+              spherical: true,
+              query: match,
+            },
+          },
+        ]
+      : [{ $match: match }]
 
   if (query.sort === 'active') {
     if (query.cursor) {
@@ -137,6 +196,10 @@ export async function discoverProfiles(
       })
     }
     pipeline.push({ $sort: { 'stats.lastActiveAt': -1, _id: 1 } })
+  } else if (query.sort === 'nearby') {
+    // No `$sort`: `$geoNear` already emits nearest-first, and re-sorting would
+    // both cost a blocking stage and quietly discard that guarantee.
+    if (query.cursor) pipeline.push({ $skip: decodeOffsetCursor(query.cursor) })
   } else {
     // Small, capped arrays (MAX_LANGUAGES=5, MAX_INTERESTS=10) — cheap to
     // score with $setIntersection per candidate rather than needing a
@@ -163,7 +226,9 @@ export async function discoverProfiles(
   // Fetch one extra to know whether a next page exists without a second round-trip.
   pipeline.push({ $limit: query.limit + 1 })
 
-  const docs = await profiles.aggregate<Profile & { score?: number }>(pipeline).toArray()
+  const docs = await profiles
+    .aggregate<Profile & { score?: number; distanceMeters?: number }>(pipeline)
+    .toArray()
   const hasMore = docs.length > query.limit
   const page = hasMore ? docs.slice(0, query.limit) : docs
 
@@ -186,6 +251,9 @@ export async function discoverProfiles(
     if (doc.avatarUrl !== undefined) item.avatarUrl = doc.avatarUrl
     if (doc.bio !== undefined) item.bio = doc.bio
     if (doc.country !== undefined) item.country = doc.country
+    // Bucketed, never the measured value — `bucketDistanceKm` explains what
+    // reporting the real one would give away.
+    if (doc.distanceMeters !== undefined) item.distanceKm = bucketDistanceKm(doc.distanceMeters)
     return item
   })
 

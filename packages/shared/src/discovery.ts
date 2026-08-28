@@ -1,4 +1,5 @@
 import { languageLevelSchema } from './level'
+import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
 import { genderSchema } from './profile'
@@ -11,8 +12,12 @@ import { z } from 'zod'
  * field the discovery indexes are already built on). "New Users" would need a
  * fresh `createdAt` index and "Enthusiasts" depends on the badge system —
  * both P1. Visitors already exists separately as `profileViews` (Pro).
+ *
+ * `nearby` came later and is the one sort that is not free: it is Pro+
+ * (`PLAN_LIMITS.nearby`), it needs the viewer to have shared a location of
+ * their own, and it only ever sees candidates who have shared one too.
  */
-export const DISCOVERY_SORTS = ['recommended', 'active'] as const
+export const DISCOVERY_SORTS = ['recommended', 'active', 'nearby'] as const
 export type DiscoverySort = (typeof DISCOVERY_SORTS)[number]
 export const discoverySortSchema = z.enum(DISCOVERY_SORTS)
 
@@ -51,6 +56,15 @@ export const discoveryQuerySchema = z
     targetLanguage: languageCodeSchema.optional(),
     /** Free filter: only profiles active within {@link ONLINE_WINDOW_MS}. */
     online: z.coerce.boolean().optional(),
+    /**
+     * How far `sort=nearby` looks. Ignored by every other sort.
+     *
+     * Deliberately **not** in `DISCOVERY_PRO_FILTER_KEYS`: it is a parameter
+     * of a sort that is already gated, not a filter of its own, and listing it
+     * there would refuse a free account over a value that cannot affect the
+     * query it is actually allowed to run.
+     */
+    radiusKm: z.coerce.number().min(1).max(NEARBY_MAX_KM).default(NEARBY_MAX_KM),
     // Pro-only from here down.
     gender: genderSchema.optional(),
     /**
@@ -96,6 +110,12 @@ export const discoveryItemSchema = z.object({
   ),
   isOnline: z.boolean(),
   streak: z.object({ current: z.number().int() }),
+  /**
+   * Present only on `sort=nearby`, and always an edge from
+   * `DISTANCE_BUCKETS_KM` rather than the measured distance — see
+   * `bucketDistanceKm` for why the real number never leaves the server.
+   */
+  distanceKm: z.number().optional(),
 })
 export type DiscoveryItem = z.infer<typeof discoveryItemSchema>
 

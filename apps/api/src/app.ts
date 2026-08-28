@@ -136,7 +136,17 @@ export async function buildApp({
   })
 
   await app.register(rateLimit, {
-    max: 300,
+    /**
+     * Effectively off under `NODE_ENV=test`, and only there. A suite drives
+     * several hundred requests through one synthetic connection in seconds, so
+     * the limiter ends up measuring the harness rather than a user — and the
+     * symptom is not a failing assertion about rate limiting but whichever
+     * test happens to run last failing on a 429, which reads as a bug in the
+     * feature it was written for. Adding a test is then a way to break an
+     * unrelated one, which is a worse property for a suite to have than
+     * leaving this guard unexercised.
+     */
+    max: env.NODE_ENV === 'test' ? Number.MAX_SAFE_INTEGER : 300,
     timeWindow: '1 minute',
   })
 

@@ -1,8 +1,15 @@
-import { getLanguage } from '@langx/shared'
+import {
+  formatDistance,
+  getLanguage,
+  NEARBY_MAX_KM,
+  NEARBY_RADIUS_OPTIONS_KM,
+  type DiscoverySort,
+} from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -10,7 +17,14 @@ import {
   Text,
   View,
 } from 'react-native'
-import { useDiscovery, useIsPro } from '../../src/api/queries'
+import {
+  useDiscovery,
+  useHasFeature,
+  useIsPro,
+  useMe,
+  useShareLocation,
+} from '../../src/api/queries'
+import { ApiRequestError } from '../../src/api/client'
 import type { DiscoveryItem } from '../../src/api/types'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Chip } from '../../src/components/ui/Chip'
@@ -23,12 +37,15 @@ import {
   toQuery,
   withoutProFilters,
 } from '../../src/lib/discoveryFilters'
+import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
+import { openPaywall } from '../../src/lib/paywall'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
-const SORTS = [
+const SORTS: { key: DiscoverySort; label: string }[] = [
   { key: 'recommended', label: 'For you' },
   { key: 'active', label: 'Active' },
-] as const
+  { key: 'nearby', label: 'Nearby' },
+]
 
 function LanguageLine({ item }: { item: DiscoveryItem }) {
   const speaks = item.nativeLanguages.map((l) => getLanguage(l.code)?.name ?? l.code).join(', ')
@@ -44,10 +61,44 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
 
 export default function DiscoverScreen() {
   const params = useLocalSearchParams<Record<string, string>>()
-  const [sort, setSort] = useState<'recommended' | 'active'>('recommended')
+  const [sort, setSort] = useState<DiscoverySort>('recommended')
+  const [radiusKm, setRadiusKm] = useState<number>(NEARBY_MAX_KM)
 
   const isPro = useIsPro()
+  const canUseNearby = useHasFeature('nearby')
+  const me = useMe()
+  const shareLocation = useShareLocation()
+  const sharingLocation = me.data?.location !== undefined
   const filters = useMemo(() => parseFilters(params), [params])
+
+  /**
+   * Nearby has two preconditions and they fail differently, so the chip
+   * resolves both before switching rather than letting the request come back
+   * 403 or 409 and turning a missing setting into an error screen.
+   *
+   * Sharing is asked for here as well as in Settings because this is where
+   * someone finds out they want it — sending them to Settings to find a
+   * toggle, then back, is how a feature goes untried.
+   */
+  async function chooseNearby(): Promise<void> {
+    if (!canUseNearby) {
+      openPaywall('nearby')
+      return
+    }
+    if (!sharingLocation && !(await enableSharing())) return
+    setSort('nearby')
+  }
+
+  /** Captures a fix and sends it. `false` when the user or the device said no. */
+  async function enableSharing(): Promise<boolean> {
+    const fix = await captureLocation()
+    if (!fix.ok) {
+      Alert.alert('Location needed', LOCATION_FAILURE_MESSAGE[fix.reason])
+      return false
+    }
+    shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
+    return true
+  }
 
   /**
    * A free account never sends a Pro filter, even when one reaches it — a
@@ -56,10 +107,19 @@ export default function DiscoverScreen() {
    * "here is a link to some people" than an unfiltered list.
    */
   const effective = isPro || !hasProFilters(filters) ? filters : withoutProFilters(filters)
-  const query = useDiscovery({ sort, ...toQuery(effective) })
+  const query = useDiscovery({
+    sort,
+    ...toQuery(effective),
+    // Only sent where it means something. On any other sort the server ignores
+    // it, but sending it anyway would put it in the query string the cache is
+    // keyed on and refetch every list each time the radius changed.
+    ...(sort === 'nearby' ? { radiusKm: String(radiusKm) } : {}),
+  })
 
   const items = query.data?.pages.flatMap((page) => page.items) ?? []
   const count = activeCount(effective)
+  const locationRevoked =
+    query.error instanceof ApiRequestError && query.error.code === 'LOCATION_REQUIRED'
 
   return (
     <Screen fluid>
@@ -69,9 +129,9 @@ export default function DiscoverScreen() {
           {SORTS.map((option) => (
             <Chip
               key={option.key}
-              label={option.label}
+              label={option.key === 'nearby' && !canUseNearby ? `${option.label} ✦` : option.label}
               selected={sort === option.key}
-              onPress={() => setSort(option.key)}
+              onPress={() => (option.key === 'nearby' ? void chooseNearby() : setSort(option.key))}
             />
           ))}
           <Chip
@@ -92,10 +152,40 @@ export default function DiscoverScreen() {
             onPress={() => router.push({ pathname: '/(app)/filters', params })}
           />
         </View>
+
+        {/* Only while it applies. A radius row above a list that is not sorted
+            by distance would be a control with nothing to control. */}
+        {sort === 'nearby' ? (
+          <View style={styles.filters}>
+            {NEARBY_RADIUS_OPTIONS_KM.map((km) => (
+              <Chip
+                key={km}
+                label={`${km} km`}
+                tone="accent"
+                selected={radiusKm === km}
+                onPress={() => setRadiusKm(km)}
+              />
+            ))}
+          </View>
+        ) : null}
       </View>
 
       {query.isPending ? (
         <ActivityIndicator style={styles.loading} />
+      ) : locationRevoked ? (
+        /**
+         * The client checked before switching, so reaching here means sharing
+         * was withdrawn since — on another device, or in Settings while this
+         * screen sat in the background. Recoverable in one tap, so it is
+         * offered as one rather than as an error.
+         */
+        <EmptyState
+          emoji="📍"
+          title="Location sharing is off"
+          body="Nearby needs to know roughly where you are. Nothing precise is stored, and nobody sees more than a rough distance."
+          actionLabel={shareLocation.isPending ? 'Turning on…' : 'Turn it on'}
+          onAction={() => void enableSharing()}
+        />
       ) : (
         <FlatList
           data={items}
@@ -112,11 +202,22 @@ export default function DiscoverScreen() {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
           }}
           ListEmptyComponent={
-            <EmptyState
-              emoji="🔍"
-              title="Nobody here yet"
-              body="People whose languages match yours in both directions show up here. Try loosening the filters."
-            />
+            sort === 'nearby' ? (
+              // Two things narrow this list that narrow no other, and a user
+              // who is not told about the second one concludes the feature is
+              // broken rather than that the pool is small.
+              <EmptyState
+                emoji="📍"
+                title={`Nobody within ${radiusKm} km`}
+                body="Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs."
+              />
+            ) : (
+              <EmptyState
+                emoji="🔍"
+                title="Nobody here yet"
+                body="People whose languages match yours in both directions show up here. Try loosening the filters."
+              />
+            )
           }
           ListFooterComponent={
             query.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
@@ -138,6 +239,11 @@ export default function DiscoverScreen() {
                   ) : null}
                 </View>
                 <LanguageLine item={item} />
+                {item.distanceKm !== undefined ? (
+                  // `formatDistance` words it as the bound it is — the server
+                  // sends a bucket edge, never a measured distance.
+                  <Text style={styles.distance}>📍 {formatDistance(item.distanceKm)}</Text>
+                ) : null}
                 {item.bio ? (
                   <Text style={styles.bio} numberOfLines={2}>
                     {item.bio}
@@ -174,5 +280,6 @@ const styles = StyleSheet.create({
   age: { ...font.caption, color: colors.textMuted },
   streak: { ...font.caption, color: colors.streak, fontWeight: '700' },
   languages: { ...font.caption, color: colors.accent, marginTop: 2 },
+  distance: { ...font.caption, color: colors.textMuted, marginTop: 2 },
   bio: { ...font.caption, color: colors.textMuted, marginTop: 2 },
 })

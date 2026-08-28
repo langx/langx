@@ -69,6 +69,17 @@ export interface MeProfile {
   interests: string[]
   settings: { discoverable: boolean; notifications: boolean }
   privacy: { incognito: boolean }
+  /**
+   * Present only while the user is sharing one, which is exactly what the
+   * Settings toggle reads: there is no separate "sharing is on" flag on the
+   * server, because a flag and the data could disagree and the dangerous
+   * disagreement — flag off, coordinates still there — is the silent one.
+   *
+   * Already coarsened by the time it gets here; the server never held
+   * anything finer. It is returned to its owner and to nobody else.
+   */
+  location?: { type: 'Point'; coordinates: [number, number] }
+  locationUpdatedAt?: string
   entitlement: { tier: PlanTier; expiresAt?: string }
   streak: { current: number; longest: number }
   cosmetics?: string[]
@@ -481,6 +492,40 @@ export function useUnblockUser() {
     onSuccess: () => {
       // Unblocking puts the person back into every list, server-side.
       void queryClient.invalidateQueries()
+    },
+  })
+}
+
+/**
+ * Turning location sharing on, or refreshing it.
+ *
+ * Its own endpoint rather than a `PATCH /profiles/me` field — see the route's
+ * comment. Both mutations write `keys.me` from the response, so the Settings
+ * toggle reflects the real stored state rather than what it optimistically
+ * assumed.
+ */
+export function useShareLocation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (at: { lat: number; lng: number }) =>
+      api.post<MeProfile>('/profiles/me/location', at),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+      // The prefix every `keys.discovery(filters)` starts with: nearby results
+      // are ordered by a distance that just changed, and which filter string
+      // produced the cached page is not something this mutation can know.
+      void queryClient.invalidateQueries({ queryKey: ['discovery'] })
+    },
+  })
+}
+
+export function useStopSharingLocation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => api.delete<MeProfile>('/profiles/me/location'),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+      void queryClient.invalidateQueries({ queryKey: ['discovery'] })
     },
   })
 }

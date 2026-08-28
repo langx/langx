@@ -48,6 +48,18 @@ export const INDEXES: Partial<IndexSpec> = {
       name: 'discovery_learning_active',
     },
     { key: { displayName: 'text', bio: 'text' }, name: 'profile_text' },
+    /**
+     * Backs `sort=nearby`'s `$geoNear`, which is the *only* stage that can
+     * read it — MongoDB refuses `$geoNear` outright without this index, so its
+     * absence is a failed query rather than a slow one.
+     *
+     * A 2dsphere index is sparse whether or not it is asked to be: it holds an
+     * entry only for documents that actually carry the field. That is the
+     * whole reason nearby needs no "has shared a location" filter of its own —
+     * a profile with no `location` is not in the index, so it is not a
+     * candidate, and the opt-in enforces itself.
+     */
+    { key: { location: '2dsphere' }, name: 'location_2dsphere' },
     // Soft-deleted accounts must drop out of every list; sparse keeps it small.
     {
       key: { deletedAt: 1 },

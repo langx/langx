@@ -53,11 +53,11 @@ export interface PlanLimits {
    * gender / country / age / CEFR filters in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
    *
-   * This used to say "distance" as well. There is no distance filter and there
-   * never was: `$geoNear` has to be an aggregation's first stage, which the
-   * discovery pipeline cannot give it (`decisions.md:66-76`). Since the paywall
-   * copy is derived from this list, leaving the word in was a route to selling
-   * something that cannot be bought.
+   * This used to say "distance" as well, and still must not. Distance is a
+   * Pro+ *sort* (`nearby` below), not a Pro filter, and the two are bought
+   * separately — since the paywall copy is derived from this list, naming
+   * distance here would sell a Pro subscriber something their tier does not
+   * include.
    */
   advancedFilters: boolean
   /** See *who* viewed the profile, not just how many. */
@@ -67,10 +67,10 @@ export interface PlanLimits {
   /**
    * Distance-sorted discovery (`sort=nearby`).
    *
-   * Pro+ only. **No server implements this yet** — the flag exists so the
-   * entitlement, the paywall copy and the eventual guard all read one
-   * definition instead of three, and so the tier table stops lying about what
-   * separates Pro from Pro+.
+   * Pro+ only, and gates the *sort* alone. Sharing a location is free and
+   * always was: a paid-only pool would have nobody in it on the day it
+   * shipped, and the people worth finding nearby are mostly not the people
+   * paying to look.
    */
   nearby: boolean
   /**
@@ -78,8 +78,9 @@ export interface PlanLimits {
    * (`architecture.md:425`).
    *
    * Pro+ only, and the actual justification for the price gap: unlike nearby,
-   * a copilot call has a real per-request cost. **Also unimplemented.** See
-   * the note on `nearby`.
+   * a copilot call has a real per-request cost. **Still unimplemented** — the
+   * flag exists so the entitlement, the paywall copy and the eventual guard
+   * read one definition instead of three.
    */
   copilot: boolean
   /**

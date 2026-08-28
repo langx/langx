@@ -289,6 +289,28 @@ handle this, but any third-party native library that has not been rebuilt for
 16 KB pages will fail on newer devices. Verify with a real device or emulator
 image configured for 16 KB before the rollout widens past 10%.
 
+## Location changes both privacy forms
+
+Nearby (Pro+) added the app's first location permission, so two answers that
+were "no" are now "yes", and a store form that still says otherwise is a false
+declaration rather than a stale one:
+
+- [ ] Play Data Safety → **Location → Approximate location**: collected, not
+      shared, optional, purpose "App functionality". **Precise location stays
+      unchecked** — the client asks the OS for its lowest accuracy and the
+      server rounds to ~1 km before storing, so there is no precise data to
+      declare
+- [ ] Apple App Privacy → **Location → Coarse Location**, linked to the user,
+      purpose "App Functionality". Precise Location stays unchecked
+- [ ] The privacy policy has to describe it: what is stored, that it is
+      optional, that it is rounded, and that other users see only a bucketed
+      distance. `docs/store/privacy-data-safety.md` is the source text
+
+The permission itself is **when-in-use only** and declared in
+`app.config.ts`. Nothing here needs a background-location declaration, and
+adding one later would reopen both forms and, on Android, require a separate
+Play review.
+
 ## Content that must ship with the release
 
 See `docs/legal/promise-change.md`. In short: the homepage's "free forever"

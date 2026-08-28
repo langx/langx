@@ -119,6 +119,20 @@ const config: ExpoConfig = {
       'expo-image-picker',
       { photosPermission: 'LangX uses your photo library so you can share photos in chat.' },
     ],
+    // Only ever requested when someone turns on location sharing in Settings,
+    // and only ever "when in use" — there is no background permission here and
+    // adding one would change what both stores' privacy forms have to say.
+    // The string is what iOS shows in the prompt, so it names the feature
+    // rather than the permission.
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission:
+          'LangX uses your approximate location so you can find language partners near you. Your exact position is never stored, and nobody is shown more than a rough distance.',
+        isAndroidBackgroundLocationEnabled: false,
+        isIosBackgroundLocationEnabled: false,
+      },
+    ],
   ],
 
   experiments: {

@@ -24,6 +24,17 @@ export const ERROR_CODES = {
   /** A conversation between these two already exists — see `conversations.pairKey`. */
   CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
 
+  // discovery
+  /**
+   * `sort=nearby` from someone who has not shared a location. Distinct from
+   * `VALIDATION_FAILED` because the request is well-formed and the fix is not
+   * in it: the client has to send the user to the location toggle, which it
+   * can only know to do if this is its own code. 409 for the same reason the
+   * handle codes are — the conflict is with the state of the account, not
+   * with anything in the request.
+   */
+  LOCATION_REQUIRED: 'LOCATION_REQUIRED',
+
   // generic
   NOT_FOUND: 'NOT_FOUND',
   VALIDATION_FAILED: 'VALIDATION_FAILED',
@@ -60,6 +71,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   HANDLE_ALREADY_CLAIMED: 409,
   BLOCKED: 403,
   CONVERSATION_EXISTS: 409,
+  LOCATION_REQUIRED: 409,
   NOT_FOUND: 404,
   VALIDATION_FAILED: 400,
   RATE_LIMITED: 429,

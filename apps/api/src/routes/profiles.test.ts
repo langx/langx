@@ -539,4 +539,117 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(after.photos?.map((p) => p.url)).toEqual([`${BUCKET}/keep.jpg`])
     })
   })
+
+  describe('location sharing', () => {
+    /** `newUser` only signs up; location attaches to a profile. */
+    async function onboarded(email: string, handle: string): Promise<SignedUpUser> {
+      const user = await newUser(email)
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle }),
+      })
+      if (response.statusCode !== 201) {
+        throw new Error(`onboarding failed (${response.statusCode}): ${response.body}`)
+      }
+      return user
+    }
+
+    function share(user: SignedUpUser, payload: Record<string, number>) {
+      return app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+        payload,
+      })
+    }
+
+    it('stores a coarsened point and keeps no precise copy of what the device sent', async () => {
+      const user = await onboarded('location-store@example.com', 'locationstore')
+      const response = await share(user, { lat: 41.008238, lng: 28.978359 })
+      expect(response.statusCode, response.body).toBe(200)
+
+      const stored = await handle.db
+        .collection(COLLECTIONS.profiles)
+        .findOne<{ location?: { type: string; coordinates: number[] }; locationUpdatedAt?: Date }>({
+          _id: user.userId as never,
+        })
+      // GeoJSON order, and nothing finer than the documented grid — the metre-
+      // accurate reading must not exist on the server in any field.
+      expect(stored?.location).toEqual({ type: 'Point', coordinates: [28.98, 41.01] })
+      expect(stored?.locationUpdatedAt).toBeInstanceOf(Date)
+      expect(JSON.stringify(stored)).not.toContain('41.008238')
+    })
+
+    it('overwrites rather than accumulating, so an old position cannot be read back', async () => {
+      const user = await onboarded('location-move@example.com', 'locationmove')
+      await share(user, { lat: 41.0082, lng: 28.9784 })
+      await share(user, { lat: 39.9334, lng: 32.8597 })
+
+      const stored = await handle.db
+        .collection(COLLECTIONS.profiles)
+        .findOne<{ location?: { coordinates: number[] } }>({ _id: user.userId as never })
+      expect(stored?.location?.coordinates).toEqual([32.86, 39.93])
+    })
+
+    it('removes the field on delete, not merely a flag — absence is what keeps you out of the geo index', async () => {
+      const user = await onboarded('location-clear@example.com', 'locationclear')
+      await share(user, { lat: 41.0082, lng: 28.9784 })
+
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+
+      const stored = await handle.db
+        .collection(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId as never })
+      expect(stored).not.toHaveProperty('location')
+      expect(stored).not.toHaveProperty('locationUpdatedAt')
+    })
+
+    it('is idempotent when nothing was shared, so a settings toggle never has to check first', async () => {
+      const user = await onboarded('location-clear-twice@example.com', 'locationcleartwice')
+      const response = await app.inject({
+        method: 'DELETE',
+        url: '/profiles/me/location',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode).toBe(200)
+    })
+
+    it('rejects coordinates that are not on the planet', async () => {
+      const user = await onboarded('location-invalid@example.com', 'locationinvalid')
+      const response = await share(user, { lat: 123, lng: 28.9784 })
+      expect(response.statusCode).toBe(400)
+      expect(response.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
+    })
+
+    it('needs a session — a location is the last thing to accept anonymously', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles/me/location',
+        payload: { lat: 41.0082, lng: 28.9784 },
+      })
+      expect(response.statusCode).toBe(401)
+    })
+
+    it('never appears on somebody else profile', async () => {
+      const viewed = await onboarded('location-public-viewed@example.com', 'locationviewed')
+      await share(viewed, { lat: 41.0082, lng: 28.9784 })
+      const viewer = await onboarded('location-public-viewer@example.com', 'locationviewer')
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/locationviewed',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode).toBe(200)
+      expect(response.json()).not.toHaveProperty('location')
+      expect(response.body).not.toContain('28.98')
+    })
+  })
 })

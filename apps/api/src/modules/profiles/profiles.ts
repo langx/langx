@@ -4,6 +4,9 @@ import {
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
   meetsMinimumAge,
+  toGeoPoint,
+  type GeoPoint,
+  type LocationInput,
   type OnboardingProfileInput,
   type PaidPlanTier,
   type PlanTier,
@@ -31,14 +34,21 @@ export interface Profile {
   timezone?: string
   timezoneUpdatedAt?: Date
   /**
-   * Never written and never read. Kept as the shape a distance filter would
-   * need, and *without* its 2dsphere index — that index cost every profile
-   * write and indexed an always-empty field. `decisions.md` records why the
-   * distance filter was deferred: `$geoNear` has to be an aggregation's first
-   * stage, which the discovery pipeline cannot give it. Bring the index back
-   * with the feature, not before.
+   * Where the user roughly is, opt-in, and **already coarsened** — every write
+   * goes through `toGeoPoint`, which rounds to about a kilometre before this
+   * field ever exists. There is no precise copy anywhere; see `location.ts`.
+   *
+   * Its presence is the consent record. Nothing else tracks whether location
+   * sharing is on, because a second flag could disagree with the data, and the
+   * disagreement that matters — flag off, coordinates still stored — is the
+   * one nobody would notice.
+   *
+   * Never leaves the server except as a bucketed distance, and never appears
+   * in `toPublicProfile`.
    */
-  location?: { type: 'Point'; coordinates: [number, number] }
+  location?: GeoPoint
+  /** When the point above was last refreshed. Shown to its owner so "share my location" is not a thing they turned on once and forgot. */
+  locationUpdatedAt?: Date
   nativeLanguages: { code: string }[]
   learning: { code: string; level: string; priority: number }[]
   interests: string[]
@@ -281,6 +291,49 @@ export async function updateProfile(
  * upload → confirm sequence (routes/media.ts), which is what lets the route
  * verify the URL actually points into our own bucket before trusting it.
  */
+/**
+ * Stores where the user is, coarsened.
+ *
+ * A plain `$set` rather than part of `PATCH /profiles/me`, and not in
+ * `updateProfileSchema`, on purpose: this is the one field written by a
+ * background capture rather than by a form the user is looking at, and folding
+ * it into the general profile update would have meant every location refresh
+ * ran the timezone cooldown, the language cross-check and the whole merge —
+ * and, worse, that a client could park coordinates in a request whose visible
+ * subject was something else entirely.
+ */
+export async function setLocation(db: Db, userId: string, input: LocationInput): Promise<Profile> {
+  const now = new Date()
+  const result = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .findOneAndUpdate(
+      { _id: userId },
+      { $set: { location: toGeoPoint(input), locationUpdatedAt: now, updatedAt: now } },
+      { returnDocument: 'after' },
+    )
+  if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  return result
+}
+
+/**
+ * Withdraws it. `$unset`, not a null or a flag — the field's absence is what
+ * keeps the profile out of the 2dsphere index, and therefore out of everyone
+ * else's nearby results. Anything short of removing it would leave the user
+ * findable after they asked not to be.
+ */
+export async function clearLocation(db: Db, userId: string): Promise<Profile> {
+  const result = await db.collection<Profile>(COLLECTIONS.profiles).findOneAndUpdate(
+    { _id: userId },
+    {
+      $unset: { location: '', locationUpdatedAt: '' },
+      $set: { updatedAt: new Date() },
+    },
+    { returnDocument: 'after' },
+  )
+  if (!result) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  return result
+}
+
 export async function setAvatarUrl(db: Db, userId: string, avatarUrl: string): Promise<Profile> {
   const result = await db
     .collection<Profile>(COLLECTIONS.profiles)
@@ -324,6 +377,10 @@ const ONLINE_WINDOW_MS = 5 * 60 * 1000
  *
  * `birthYear` becomes an age, deliberately: it is what the UI shows, and the
  * exact year is more identifying than the product needs.
+ *
+ * `location` is absent for the same reason and more strongly: coordinates
+ * never reach another user in any form. What nearby discovery returns is a
+ * bucketed distance computed on the server, never a point.
  */
 export function toPublicProfile(profile: Profile, now: Date = new Date()): PublicProfile {
   const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt

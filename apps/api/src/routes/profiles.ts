@@ -1,4 +1,4 @@
-import { onboardingProfileSchema, updateProfileSchema } from '@langx/shared'
+import { locationInputSchema, onboardingProfileSchema, updateProfileSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
@@ -6,9 +6,11 @@ import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { blockedUserIds } from '../modules/moderation/blocks'
 import { recordProfileView } from '../modules/moderation/profileViews'
 import {
+  clearLocation,
   createProfile,
   findProfileByHandleOrId,
   getProfile,
+  setLocation,
   toPublicProfile,
   updateProfile,
 } from '../modules/profiles/profiles'
@@ -73,4 +75,29 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(profile)
     },
   )
+
+  /**
+   * Location is its own pair of routes rather than two more keys on
+   * `PATCH /profiles/me`, because it is the only profile data a *device*
+   * writes on its own initiative. Keeping it separate means the capture path
+   * cannot touch anything else, and revoking is a single call with no body to
+   * get wrong — which matters when the caller is a settings toggle someone
+   * has just switched off.
+   *
+   * Free on every tier. `PLAN_LIMITS.nearby` gates reading distance, not
+   * contributing to it.
+   */
+  app.post(
+    '/profiles/me/location',
+    { preHandler: requireAuth, schema: { body: locationInputSchema } },
+    async (request, reply) => {
+      const profile = await setLocation(app.mongo.db, request.userId, request.body)
+      return reply.send(profile)
+    },
+  )
+
+  app.delete('/profiles/me/location', { preHandler: requireAuth }, async (request, reply) => {
+    const profile = await clearLocation(app.mongo.db, request.userId)
+    return reply.send(profile)
+  })
 }

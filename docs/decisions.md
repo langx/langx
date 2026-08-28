@@ -74,6 +74,47 @@ filter when distance is on. That is a real design decision, outside phase 3's
 scope, and untestable before Pro entitlement was real. The other Pro filters
 are simple `$match` additions and shipped immediately.
 
+**Resolved — see the next entry.** It shipped as a Pro+ _sort_, not a Pro
+filter, and the way out of the first-stage constraint was simpler than either
+option above.
+
+## Nearby — `$geoNear` takes the match as an argument
+
+Two stages could not both be first, so only one is: `$geoNear` accepts the
+whole mutual-fit `$match` as its own `query` field and applies it internally.
+Nothing is dropped and nothing is unioned.
+
+What is really traded is **which index drives the query**. The 2dsphere index
+selects the candidates and the language arrays are filtered over that
+already-narrowed set, rather than the language indexes narrowing first. That is
+the "demote the language filter" option, and it is acceptable only because
+`maxDistance` bounds the candidate set — which is why `NEARBY_MAX_KM` is a cap
+rather than a nicety, and why a radius with no ceiling was never on the table.
+
+Three consequences worth knowing before changing any of it:
+
+- **Opt-in enforces itself.** A 2dsphere index holds entries only for documents
+  that carry the field, so a profile with no `location` is not a candidate.
+  There is no "is sharing" filter anywhere, and clearing a location is
+  `$unset`, never a flag — anything less would leave someone findable after
+  they asked not to be.
+- **Pagination is offset, and here that is correctness rather than a
+  tradeoff.** Coordinates are rounded onto a ~1 km grid before storage, so
+  everyone in a cell is at _exactly_ the same distance. A keyset cursor over
+  distance (`$geoNear` even offers `minDistance` for it) either repeats a whole
+  cell, skips one, or never terminates. Ties are the normal case here, not the
+  rare one.
+- **Precision is given away twice, deliberately.** Coordinates are coarsened on
+  write, and the distance is bucketed on read. The first is not enough on its
+  own: a distance is a circle, and an attacker who can move reads three circles
+  and intersects them into something far tighter than the grid cell. Bucketing
+  makes every position in a band report the same number, which is what breaks
+  that.
+
+Sharing a location is free on every tier while sorting by it is Pro+. A
+paid-only pool would have contained nobody on the day it shipped, and the
+people worth finding nearby are mostly not the people paying to look.
+
 ## Phase 4 — quota decrement is one atomic `findOneAndUpdate`
 
 Count-then-write overruns the quota under concurrency; the plan predicted that.

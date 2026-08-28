@@ -56,6 +56,12 @@ export interface DiscoveryItem {
   streak: { current: number }
   isOnline: boolean
   score?: number
+  /**
+   * Only on `sort=nearby`, and always one of `DISTANCE_BUCKETS_KM` — the
+   * server never sends the distance it measured. Render it with
+   * `formatDistance`, which words it as the bound it actually is.
+   */
+  distanceKm?: number
 }
 
 export interface DiscoveryResult {

@@ -91,12 +91,12 @@ const BENEFIT_COPY: Record<ProBenefit, { emoji: string; title: string; body: str
 /**
  * The same contract for Pro+, plus one field the Pro list does not need.
  *
- * `shipped` exists because **neither of these is built yet** — `PLAN_LIMITS`
- * says so in as many words. A tier can be sold before its features land, but a
- * screen that describes them in the present tense while they do nothing is
- * selling something that does not exist, which is exactly what the previous
- * version of this file refused to do. Making it a required field means a
- * feature cannot ship quietly half-true: someone has to come back and flip it.
+ * `shipped` exists because neither of these was built when the tier went on
+ * sale. A tier can be sold before its features land, but a screen that
+ * describes them in the present tense while they do nothing is selling
+ * something that does not exist. Making it a required field means a feature
+ * cannot ship quietly half-true: someone has to come back and flip it, which
+ * is what happened to `nearby` and has not yet happened to `copilot`.
  */
 const PRO_PLUS_BENEFIT_COPY: Record<
   ProPlusBenefit,
@@ -105,8 +105,10 @@ const PRO_PLUS_BENEFIT_COPY: Record<
   nearby: {
     emoji: '📍',
     title: 'Nearby',
-    body: 'Sort discovery by distance instead of by activity.',
-    shipped: false,
+    // Says what it does *and* what it costs the reader, because the second
+    // half is the part they would otherwise find out after paying.
+    body: 'Sort discovery by distance. Needs your own approximate location — rounded before it is stored, and shown to others only as a rough distance.',
+    shipped: true,
   },
   copilot: {
     emoji: '🤖',

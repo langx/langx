@@ -127,7 +127,8 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `likes`/`matches` collection                                                                                                                            |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                   |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                       |
-| Pro bundle          | Unlimited conversations · advanced filters (gender, location, age, CEFR, city) · unlimited translation · who viewed me + incognito                                                                                                                                                                                                            |
+| Pro bundle          | Unlimited conversations · advanced filters (gender, country, age, CEFR) · unlimited translation · who viewed me + incognito                                                                                                                                                                                                                   |
+| Pro+ bundle         | Everything in Pro · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                                                            |
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                               |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                       |
 | Message correction  | **P0**, and **unlimited for everyone** (no quota)                                                                                                                                                                                                                                                                                             |
@@ -251,20 +252,32 @@ back door around authorisation, quota or token.
 
 ## Monetization
 
-### Free vs Pro
+### Free vs Pro vs Pro+
 
-|                            | Free                  | Pro                                         |
-| -------------------------- | --------------------- | ------------------------------------------- |
-| Starting new conversations | **5** per rolling 24h | Unlimited                                   |
-| Replying                   | **Unlimited**         | Unlimited                                   |
-| Filters                    | Language, online      | + gender, country, distance/city, age, CEFR |
-| Translation                | N per day (config)    | Unlimited                                   |
-| **Message correction**     | **Unlimited**         | **Unlimited**                               |
-| Who viewed me              | Count only            | Identities                                  |
-| Incognito                  | —                     | Yes                                         |
+|                            | Free                  | Pro                          | Pro+          |
+| -------------------------- | --------------------- | ---------------------------- | ------------- |
+| Starting new conversations | **5** per rolling 24h | Unlimited                    | Unlimited     |
+| Replying                   | **Unlimited**         | Unlimited                    | Unlimited     |
+| Filters                    | Language, online      | + gender, country, age, CEFR | same as Pro   |
+| Sort by distance (Nearby)  | —                     | —                            | **Yes**       |
+| Translation                | N per day (config)    | Unlimited                    | Unlimited     |
+| **Message correction**     | **Unlimited**         | **Unlimited**                | **Unlimited** |
+| Who viewed me              | Count only            | Identities                   | Identities    |
+| Incognito                  | —                     | Yes                          | Yes           |
+| AI copilot                 | —                     | —                            | **Not built** |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
+
+**Pro+ is a strict superset of Pro**, which is why its RevenueCat products
+grant both entitlements. The only two things it adds are Nearby and the
+copilot, and only the first exists.
+
+**Distance is a sort, not a filter.** There is no "within X km" filter next to
+gender and country: Nearby re-orders the same list by distance, with a radius
+that bounds the search rather than narrowing a result set the user could
+otherwise have had. Sharing a location is free on every tier — a Pro+-only
+pool would have been empty on the day it shipped.
 
 **Correction quota was deliberately dropped:** writing a correction is a favour
 to the other person, and limiting it would shrink the value a free user
@@ -454,7 +467,8 @@ write to them directly and never change their shape.
   nativeLanguages: [{ code: 'tr' }],
   learning: [{ code: 'en', level: 'B1', priority: 1 }],
   interests: ['music', 'tech'],
-  settings: { discoverable, notifications, ageRange, distanceKm },
+  settings: { discoverable, notifications },
+  locationUpdatedAt,
   privacy: { incognito: false },
   entitlement: { tier: 'free' | 'pro', expiresAt?, willRenew?, store?, updatedAt },
   quota: { initiations: [Date], translations: [Date] },
@@ -466,13 +480,20 @@ write to them directly and never change their shape.
 }
 ```
 
+`location` is opt-in and **already coarsened** — every write goes through
+`toGeoPoint`, which rounds to ~1 km first, so no precise position is ever
+stored. Its presence is the consent record; there is no separate flag, because
+a flag and the data could disagree. It never leaves the server, not even to its
+owner's own public profile — Nearby returns a bucketed distance instead.
+
 Indexes: **two separate** discovery indexes —
 `{ 'nativeLanguages.code': 1, 'stats.lastActiveAt': -1 }` and
 `{ 'learning.code': 1, 'stats.lastActiveAt': -1 }`. MongoDB refuses to combine
 two array fields in one compound index ("cannot index parallel arrays",
 confirmed by hand: a single combined index threw on every insert). Plus
-`2dsphere` on `location`, unique `handle`, and a text index on
-`displayName + bio`.
+`2dsphere` on `location` (sparse by nature, which is what keeps a profile with
+no location out of Nearby without a filter of its own), unique `handle`, and a
+text index on `displayName + bio`.
 
 A user who picks `gender: 'undisclosed'` does not appear in gender-filtered
 results, and onboarding says so.
@@ -529,13 +550,17 @@ The language list and CEFR levels are constants in `packages/shared`.
 $match:    discoverable, !deleted, !blocked (either direction),
            nativeLanguages.code ∈ my learning,      ← mutual fit
            learning.code ∈ my nativeLanguages
-           [if Pro] gender / country / age / CEFR / city
+           [if Pro] gender / country / age / CEFR
 $addFields score = language fit + shared interests + activity recency
 $sort:     score desc, lastActiveAt desc  → cursor pagination
 ```
 
-If the Pro distance filter is on, `$geoNear` must be the pipeline's **first**
-stage.
+**`sort=nearby` (Pro+)** replaces that leading `$match` with a single
+`$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot
+share the position. The match above is handed to it as its `query` argument
+instead, so both still apply; what changes is that the 2dsphere index drives
+the query and the language arrays are filtered over the candidates it returns.
+`maxDistance` is what keeps that candidate set small. See `decisions.md`.
 
 ## Updates, maintenance and remote config
 

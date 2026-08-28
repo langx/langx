@@ -3,7 +3,13 @@ import { router } from 'expo-router'
 import { useState } from 'react'
 import { Alert, Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../src/api/client'
-import { useIsPro, useMe, useUpdateProfile } from '../../src/api/queries'
+import {
+  useIsPro,
+  useMe,
+  useShareLocation,
+  useStopSharingLocation,
+  useUpdateProfile,
+} from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { appVersion } from '../../src/hooks/useAppConfig'
@@ -11,6 +17,7 @@ import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { clearFlag, FLAG_KEYS } from '../../src/lib/localFlags'
+import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
 import { colors, font, radius, spacing } from '../../src/lib/theme'
 
 function Row({
@@ -44,6 +51,29 @@ export default function SettingsScreen() {
 
   const profile = me.data
   const isPro = useIsPro()
+  const shareLocation = useShareLocation()
+  const stopSharingLocation = useStopSharingLocation()
+
+  /**
+   * The switch is driven by whether the server holds a point, not by a local
+   * flag — turning it on has to survive a declined OS prompt without the row
+   * claiming otherwise, and the only thing that knows how that ended is what
+   * came back.
+   */
+  const sharingLocation = profile?.location !== undefined
+
+  async function toggleLocation(next: boolean): Promise<void> {
+    if (!next) {
+      stopSharingLocation.mutate()
+      return
+    }
+    const fix = await captureLocation()
+    if (!fix.ok) {
+      Alert.alert('Location unavailable', LOCATION_FAILURE_MESSAGE[fix.reason])
+      return
+    }
+    shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
+  }
 
   async function signOut(): Promise<void> {
     // Before the session ends, not after: once signed out the request has no
@@ -133,6 +163,25 @@ export default function SettingsScreen() {
         onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
       />
       <Row
+        title="Share my approximate location"
+        subtitle="Lets people nearby find you. Rounded to about a kilometre before it is stored — nobody is ever shown where you are, only roughly how far away."
+        value={sharingLocation}
+        disabled={shareLocation.isPending || stopSharingLocation.isPending}
+        onValueChange={(next) => void toggleLocation(next)}
+      />
+      {sharingLocation ? (
+        <Pressable
+          onPress={() => void toggleLocation(true)}
+          disabled={shareLocation.isPending}
+          hitSlop={8}
+          style={styles.subAction}
+        >
+          <Text style={styles.subActionLabel}>
+            {shareLocation.isPending ? 'Updating…' : 'Update my location'}
+          </Text>
+        </Pressable>
+      ) : null}
+      <Row
         title="Notifications"
         subtitle="Messages and the streak reminder."
         value={profile?.settings.notifications ?? true}
@@ -188,6 +237,8 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   backRow: { paddingTop: spacing.md },
+  subAction: { paddingBottom: spacing.sm },
+  subActionLabel: { ...font.caption, color: colors.accent },
   back: { ...font.body, color: colors.textMuted },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
   section: {
