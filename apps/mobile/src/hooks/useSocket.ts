@@ -1,7 +1,10 @@
+import type { InfiniteData } from '@tanstack/react-query'
 import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import type { MessageDto } from '../api/queries'
 import { keys } from '../api/queries'
+import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
+import { appendIncomingMessage, applyDeliveredAt, type MessagePageDto } from '../lib/messageCache'
 import { closeSocket, getSocket } from '../lib/socket'
 
 /**
@@ -28,17 +31,35 @@ export function useSocket(): void {
             ? message.conversationId
             : String(message.conversationId)
 
-        queryClient.setQueryData<{ items: MessageDto[]; nextCursor: string | null }>(
+        queryClient.setQueryData<InfiniteData<MessagePageDto>>(
           keys.messages(conversationId),
-          (old) => {
-            if (!old) return old
-            // The sender already appended this optimistically; the socket
-            // echoes to *both* participants, so guard against a duplicate.
-            if (old.items.some((m) => String(m._id) === String(message._id))) return old
-            return { ...old, items: [...old.items, message] }
-          },
+          (old) => appendIncomingMessage(old, message) ?? old,
         )
-        void queryClient.invalidateQueries({ queryKey: keys.conversations })
+
+        /**
+         * Patched rather than invalidated. On an infinite query
+         * `invalidateQueries` refetches *every loaded page*, sequentially —
+         * one request while the chat list had one page, ten once someone has
+         * scrolled, on every single incoming message. The fall back to
+         * invalidating is for a conversation that has scrolled out of the
+         * loaded pages, which is the one case this cannot patch.
+         */
+        const meId = queryClient.getQueryData<{ _id: string }>(keys.me)?._id
+        let patched = false
+        queryClient.setQueryData<InfiniteData<ConversationPageDto>>(keys.conversations, (old) => {
+          if (!old || !meId) return old
+          const next = applyIncomingMessage(old, {
+            conversationId,
+            body: message.body,
+            senderId: message.senderId,
+            createdAt: message.createdAt,
+            forUserId: meId,
+          })
+          if (!next) return old
+          patched = true
+          return next
+        })
+        if (!patched) void queryClient.invalidateQueries({ queryKey: keys.conversations })
         void queryClient.invalidateQueries({ queryKey: keys.tokens })
       })
 
@@ -62,31 +83,22 @@ export function useSocket(): void {
           deliveredTo: string
           deliveredAt: string
         }) => {
-          queryClient.setQueryData<{ items: MessageDto[]; nextCursor: string | null }>(
+          queryClient.setQueryData<InfiniteData<MessagePageDto>>(
             keys.messages(conversationId),
-            (old) => {
-              if (!old) return old
-              // The server stamped every message in the thread the recipient
-              // had not received yet, so this mirrors that filter exactly:
-              // theirs are not mine to mark, and an existing timestamp is the
-              // moment it actually arrived.
-              let changed = false
-              const items = old.items.map((message) => {
-                if (message.senderId === deliveredTo || message.deliveredAt) return message
-                changed = true
-                return { ...message, deliveredAt }
-              })
-              return changed ? { ...old, items } : old
-            },
+            (old) => applyDeliveredAt(old, { deliveredTo, deliveredAt }) ?? old,
           )
         },
       )
 
+      /**
+       * Still invalidated, unlike `message:new` above. This fires once when
+       * someone opens a thread, not once per message, so refetching the
+       * loaded pages is cheap here — and the event is delivered only to the
+       * *other* participant, carrying `readBy`, which is not the unread count
+       * this client draws. Patching it would change nothing visible.
+       */
       socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {
         void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
-        // The chat list too: reading a conversation clears its unread count,
-        // and without this the badge stays up until something else happens to
-        // refetch — including when *you* are the one who read it elsewhere.
         void queryClient.invalidateQueries({ queryKey: keys.conversations })
       })
     })()

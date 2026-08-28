@@ -133,6 +133,36 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.items[0]?.participants).toContain(newer.userId) // most recent activity first
   })
 
+  /**
+   * The client only started reading `nextCursor` here once the chat list
+   * became an infinite query. The server side was already right; this pins it
+   * before anything depends on it.
+   */
+  it('pages the conversation list without repeating or skipping a thread', async () => {
+    const viewer = await newUser('page-convos-viewer@example.com')
+    const partners = []
+    for (const name of ['a', 'b', 'c']) {
+      const partner = await newUser(`page-convos-${name}@example.com`)
+      await startConversation(viewer, partner.userId, `thread ${name}`)
+      partners.push(partner.userId)
+    }
+
+    const seen: string[] = []
+    let cursor: string | null = ''
+    do {
+      const url: string = `/conversations?limit=1${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`
+      const page = await app.inject({ method: 'GET', url, headers: { cookie: viewer.cookie } })
+      expect(page.statusCode, page.body).toBe(200)
+      const body = page.json<{ items: { _id: string }[]; nextCursor: string | null }>()
+      expect(body.items.length).toBeLessThanOrEqual(1)
+      seen.push(...body.items.map((c) => c._id))
+      cursor = body.nextCursor
+    } while (cursor)
+
+    expect(seen).toHaveLength(3)
+    expect(new Set(seen).size).toBe(3)
+  })
+
   it('404s the message history of a conversation you are not part of', async () => {
     const a = await newUser('history-a@example.com')
     const b = await newUser('history-b@example.com')

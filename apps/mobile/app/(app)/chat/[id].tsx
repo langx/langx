@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
+  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -31,6 +32,7 @@ import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
 import { listState } from '../../../src/lib/listState'
+import { flattenMessagePages } from '../../../src/lib/messageCache'
 import { colors, font, radius, spacing } from '../../../src/lib/theme'
 
 export default function ChatScreen() {
@@ -49,12 +51,14 @@ export default function ChatScreen() {
   const [translations, setTranslations] = useState<Record<string, string>>({})
   const [translating, setTranslating] = useState<string | null>(null)
   const listRef = useRef<FlatList<MessageDto>>(null)
+  // Starts true: a thread opens at its newest message.
+  const atBottom = useRef(true)
   const translateApi = useTranslate()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const items = messages.data?.items ?? []
+  const items = flattenMessagePages(messages.data)
   const state = listState({
     isPending: messages.isPending,
     isError: messages.isError,
@@ -65,7 +69,7 @@ export default function ChatScreen() {
   // those leaves the header with no name and no avatar.
   // Optional on `participants` too: the response is a bare cast, so an API
   // older than this field would throw here rather than fall back.
-  const partnerId = messages.data?.participants?.find((p) => p !== me.data?._id) ?? ''
+  const partnerId = messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ?? ''
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
 
@@ -252,7 +256,43 @@ export default function ChatScreen() {
           data={items}
           keyExtractor={(item) => String(item._id)}
           contentContainerStyle={styles.list}
-          onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+          /**
+           * Keeps the newest message in view while the reader is at the
+           * bottom, and stops the moment they scroll up.
+           *
+           * "Have we done it once" is the obvious gate and the wrong one: the
+           * first size change arrives before the rows have finished laying
+           * out, so a one-shot scroll lands in the middle of the thread and
+           * never corrects. Unconditional is also wrong — it yanks the reader
+           * back down every time a page of older messages arrives, which
+           * makes scrolling up impossible rather than merely jarring.
+           */
+          onContentSizeChange={() => {
+            if (!atBottom.current) return
+            // One frame later. `scrollToEnd` resolves against the content size
+            // as it is *now*, and rows are still settling when this fires —
+            // scrolling synchronously lands a hundred-odd pixels short and
+            // there is no second size change to correct it.
+            requestAnimationFrame(() => listRef.current?.scrollToEnd({ animated: false }))
+          }}
+          onScroll={({ nativeEvent }) => {
+            const { contentOffset, contentSize, layoutMeasurement } = nativeEvent
+            const distanceFromBottom =
+              contentSize.height - contentOffset.y - layoutMeasurement.height
+            atBottom.current = distanceFromBottom <= BOTTOM_ANCHOR_SLACK
+
+            // Older messages load from the top. `onStartReached` does not
+            // exist on react-native-web's FlatList, and this app ships the
+            // same code to the browser.
+            if (contentOffset.y > OLDER_MESSAGES_THRESHOLD) return
+            if (messages.hasNextPage && !messages.isFetchingNextPage) {
+              void messages.fetchNextPage()
+            }
+          }}
+          scrollEventThrottle={16}
+          ListHeaderComponent={
+            messages.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
+          }
           renderItem={({ item }) => {
             const mine = isMine(item)
             if (item.type === 'correction') {
@@ -419,6 +459,7 @@ const styles = StyleSheet.create({
   typing: { ...font.caption, color: colors.accent },
   list: { gap: spacing.xs, paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
   skeletonFill: { flex: 1 },
+  older: { paddingVertical: spacing.md },
   bubble: {
     borderRadius: radius.lg,
     maxWidth: '80%',
@@ -512,3 +553,15 @@ const styles = StyleSheet.create({
 
 /** A thread's worth; the composer sits below them either way. */
 const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
+
+/** Pixels from the top at which the next page of history is requested. */
+const OLDER_MESSAGES_THRESHOLD = 80
+
+/**
+ * How far off the bottom still counts as "following the conversation".
+ *
+ * Wider than the list's own padding so a settled `scrollToEnd` still reads as
+ * "at the bottom", and far narrower than a deliberate scroll back through the
+ * history — which is the gesture this has to stop stealing.
+ */
+const BOTTOM_ANCHOR_SLACK = 120
