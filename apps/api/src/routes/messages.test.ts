@@ -167,6 +167,23 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.nextCursor).toBeNull()
   })
 
+  it('names both participants even when only one side has written', async () => {
+    // The thread header identifies the counterpart from this list. Deriving it
+    // from the messages instead leaves a one-sided thread nameless.
+    const a = await newUser('participants-a@example.com')
+    const b = await newUser('participants-b@example.com')
+    const conversation = await startConversation(a, b.userId, 'no reply yet')
+
+    const response = await app.inject({
+      method: 'GET',
+      url: `/conversations/${conversation._id}/messages`,
+      headers: { cookie: a.cookie },
+    })
+    expect(response.statusCode, response.body).toBe(200)
+    const body = response.json<{ participants: string[] }>()
+    expect(body.participants).toEqual(expect.arrayContaining([a.userId, b.userId]))
+  })
+
   it('marking a conversation read zeroes the reader unread count', async () => {
     const a = await newUser('read-a@example.com')
     const b = await newUser('read-b@example.com')

@@ -201,6 +201,7 @@ export async function sendMediaMessage(
 export interface MessagePage {
   items: Message[]
   nextCursor: string | null
+  participants: string[]
 }
 
 /**
@@ -234,7 +235,9 @@ export async function listMessages(
   const oldest = items.at(-1)
   const nextCursor = hasMore && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null
 
-  return { items: items.reverse(), nextCursor }
+  // The thread header needs the counterpart even before anyone has replied,
+  // and a one-sided thread has no message to read a partner id off.
+  return { items: items.reverse(), nextCursor, participants: conversation.participants }
 }
 
 export async function markConversationRead(

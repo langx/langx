@@ -54,7 +54,12 @@ export default function ChatScreen() {
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const items = messages.data?.items ?? []
-  const partnerId = items.find((m) => m.senderId !== me.data?._id)?.senderId ?? ''
+  // From the participant list, not from the messages: a thread nobody has
+  // replied to yet contains only my own sends, and reading the partner off
+  // those leaves the header with no name and no avatar.
+  // Optional on `participants` too: the response is a bare cast, so an API
+  // older than this field would throw here rather than fall back.
+  const partnerId = messages.data?.participants?.find((p) => p !== me.data?._id) ?? ''
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
 

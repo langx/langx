@@ -224,7 +224,7 @@ export function useMessages(conversationId: string) {
   return useQuery({
     queryKey: keys.messages(conversationId),
     queryFn: () =>
-      api.get<{ items: MessageDto[]; nextCursor: string | null }>(
+      api.get<{ items: MessageDto[]; nextCursor: string | null; participants: string[] }>(
         `/conversations/${conversationId}/messages`,
       ),
     enabled: conversationId.length > 0,
