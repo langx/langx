@@ -18,19 +18,19 @@ describe('messageMenu', () => {
     const seen: (MessageMenuRequest | null)[] = []
     subscribeToMessageMenu((r) => seen.push(r))
 
-    const picked = openMessageMenu('hello', COPY)
+    const picked = openMessageMenu({ mine: false, preview: 'hello', actions: COPY })
     const request = seen.at(-1)
     expect(request?.preview).toBe('hello')
 
-    resolveMessageMenu(request!.id, 'copy')
-    await expect(picked).resolves.toBe('copy')
+    resolveMessageMenu(request!.id, { kind: 'action', id: 'copy' })
+    await expect(picked).resolves.toEqual({ kind: 'action', id: 'copy' })
     expect(seen.at(-1)).toBeNull()
   })
 
   it('resolves null when dismissed', async () => {
     let request: MessageMenuRequest | null = null
     subscribeToMessageMenu((r) => (request = r))
-    const picked = openMessageMenu('hello', COPY)
+    const picked = openMessageMenu({ mine: false, preview: 'hello', actions: COPY })
     resolveMessageMenu(request!.id, null)
     await expect(picked).resolves.toBeNull()
   })
@@ -43,29 +43,29 @@ describe('messageMenu', () => {
     let request: MessageMenuRequest | null = null
     subscribeToMessageMenu((r) => (request = r))
 
-    const first = openMessageMenu('one', COPY)
-    const second = openMessageMenu('two', COPY)
+    const first = openMessageMenu({ mine: false, preview: 'one', actions: COPY })
+    const second = openMessageMenu({ mine: false, preview: 'two', actions: COPY })
     await expect(first).resolves.toBeNull()
 
     expect(request!.preview).toBe('two')
-    resolveMessageMenu(request!.id, 'copy')
-    await expect(second).resolves.toBe('copy')
+    resolveMessageMenu(request!.id, { kind: 'action', id: 'copy' })
+    await expect(second).resolves.toEqual({ kind: 'action', id: 'copy' })
   })
 
   it('ignores a resolve for a menu that is no longer open', async () => {
     let request: MessageMenuRequest | null = null
     subscribeToMessageMenu((r) => (request = r))
-    const picked = openMessageMenu('hello', COPY)
+    const picked = openMessageMenu({ mine: false, preview: 'hello', actions: COPY })
     const staleId = request!.id
 
-    resolveMessageMenu(staleId, 'copy')
-    await expect(picked).resolves.toBe('copy')
+    resolveMessageMenu(staleId, { kind: 'action', id: 'copy' })
+    await expect(picked).resolves.toEqual({ kind: 'action', id: 'copy' })
 
     // A late press on a menu already gone must not throw or reopen anything.
     const onChange = vi.fn()
     subscribeToMessageMenu(onChange)
     onChange.mockClear()
-    resolveMessageMenu(staleId, 'report')
+    resolveMessageMenu(staleId, { kind: 'action', id: 'report' })
     expect(onChange).not.toHaveBeenCalled()
   })
 
@@ -74,7 +74,7 @@ describe('messageMenu', () => {
     const off = subscribeToMessageMenu(listener)
     off()
     listener.mockClear()
-    void openMessageMenu('hello', COPY)
+    void openMessageMenu({ mine: false, preview: 'hello', actions: COPY })
     expect(listener).not.toHaveBeenCalled()
   })
 })

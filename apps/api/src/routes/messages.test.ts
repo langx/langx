@@ -1,4 +1,5 @@
 import { MAX_IMAGE_BYTES, PLAN_LIMITS } from '@langx/shared'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -626,6 +627,198 @@ describe('Faz 5 — conversation/message history REST', () => {
         headers: { cookie: second.a.cookie },
       })
       expect(response.statusCode).toBe(404)
+    })
+  })
+
+  describe('reactions and deletion', () => {
+    async function pair(prefix: string) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const { _id: conversationId } = await startConversation(a, b.userId, 'opening')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { message } = await sendTextMessage(handle.db, a.userId, {
+        conversationId,
+        body: 'the message',
+      })
+      return { a, b, conversationId, messageId: message._id.toHexString(), message }
+    }
+
+    it('moves a reaction rather than stacking them, and clears on a repeat', async () => {
+      const { b, conversationId, messageId } = await pair('react-toggle')
+      const { reactToMessage } = await import('../modules/chat/mutations')
+
+      const first = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '👍',
+      })
+      expect(first.message.reactions?.['👍']).toEqual([b.userId])
+
+      const moved = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '🔥',
+      })
+      expect(moved.message.reactions?.['👍']).toEqual([])
+      expect(moved.message.reactions?.['🔥']).toEqual([b.userId])
+
+      const cleared = await reactToMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        emoji: '🔥',
+      })
+      expect(cleared.message.reactions?.['🔥']).toEqual([])
+    })
+
+    /** One tap must never be a payout, or the emoji strip becomes a farm. */
+    it('pays nothing for a reaction', async () => {
+      const { b, conversationId, messageId } = await pair('react-free')
+      const { reactToMessage } = await import('../modules/chat/mutations')
+
+      const before = await handle.db
+        .collection(COLLECTIONS.tokenLedger)
+        .countDocuments({ userId: b.userId })
+      await reactToMessage(handle.db, b.userId, { conversationId, messageId, emoji: '❤️' })
+      const after = await handle.db
+        .collection(COLLECTIONS.tokenLedger)
+        .countDocuments({ userId: b.userId })
+
+      expect(after).toBe(before)
+    })
+
+    it('hides a message for the person who hid it and nobody else', async () => {
+      const { a, b, conversationId, messageId } = await pair('delete-mine')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+
+      const result = await deleteMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        scope: 'me',
+      })
+      expect(result.audience).toBe('actor')
+
+      const forThem = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: b.cookie },
+      })
+      const forSender = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+
+      const theirs = forThem.json<{ items: { _id: string; hidden?: boolean }[] }>().items
+      const senders = forSender.json<{ items: { _id: string; hidden?: boolean }[] }>().items
+      expect(theirs.find((m) => m._id === messageId)?.hidden).toBe(true)
+      expect(senders.find((m) => m._id === messageId)?.hidden).toBeUndefined()
+    })
+
+    it('refuses to withdraw a message you did not send', async () => {
+      const { b, conversationId, messageId } = await pair('delete-not-mine')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+
+      await expect(
+        deleteMessage(handle.db, b.userId, { conversationId, messageId, scope: 'everyone' }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+
+    it('refuses to withdraw a message older than the window', async () => {
+      const { a, conversationId, messageId, message } = await pair('delete-stale')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+
+      const longAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+      await handle.db
+        .collection(COLLECTIONS.messages)
+        .updateOne({ _id: message._id }, { $set: { createdAt: longAgo } })
+
+      await expect(
+        deleteMessage(handle.db, a.userId, { conversationId, messageId, scope: 'everyone' }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+
+    it('empties the message, the chat-list preview and the unread count', async () => {
+      const { a, b, conversationId, messageId } = await pair('delete-everyone')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+
+      const before = await handle.db
+        .collection<{ unread: Record<string, number> }>(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(conversationId) })
+      expect(before?.unread[b.userId]).toBeGreaterThan(0)
+
+      await deleteMessage(handle.db, a.userId, { conversationId, messageId, scope: 'everyone' })
+
+      const after = await handle.db
+        .collection<{
+          unread: Record<string, number>
+          lastMessage: { body: string; deleted?: boolean }
+        }>(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(conversationId) })
+      expect(after?.lastMessage.body).toBe('')
+      expect(after?.lastMessage.deleted).toBe(true)
+      expect(after?.unread[b.userId]).toBe((before?.unread[b.userId] ?? 1) - 1)
+
+      const page = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: b.cookie },
+      })
+      const row = page
+        .json<{ items: { _id: string; body: string; deleted?: boolean }[] }>()
+        .items.find((m) => m._id === messageId)
+      // The row stays: it is half of someone else's thread.
+      expect(row?.deleted).toBe(true)
+      expect(row?.body).toBe('')
+    })
+
+    /** Two devices pressing delete at once must not decrement unread twice. */
+    it('is idempotent, so a second withdrawal changes nothing', async () => {
+      const { a, b, conversationId, messageId } = await pair('delete-twice')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+
+      await deleteMessage(handle.db, a.userId, { conversationId, messageId, scope: 'everyone' })
+      const once = await handle.db
+        .collection<{ unread: Record<string, number> }>(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(conversationId) })
+
+      await deleteMessage(handle.db, a.userId, { conversationId, messageId, scope: 'everyone' })
+      const twice = await handle.db
+        .collection<{ unread: Record<string, number> }>(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(conversationId) })
+
+      expect(twice?.unread[b.userId]).toBe(once?.unread[b.userId])
+    })
+
+    /**
+     * A newer message wins the race by making the `lastMessage` filter stop
+     * matching — no transaction, and no read-modify-write to lose.
+     */
+    it('leaves the chat-list preview alone when a newer message arrived first', async () => {
+      const { a, conversationId, messageId } = await pair('delete-raced')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { deleteMessage } = await import('../modules/chat/mutations')
+
+      await sendTextMessage(handle.db, a.userId, { conversationId, body: 'came after' })
+      await deleteMessage(handle.db, a.userId, { conversationId, messageId, scope: 'everyone' })
+
+      const conversation = await handle.db
+        .collection<{ lastMessage: { body: string } }>(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(conversationId) })
+      expect(conversation?.lastMessage.body).toBe('came after')
+    })
+
+    it('404s a message id from another conversation', async () => {
+      const first = await pair('mutate-foreign-1')
+      const second = await pair('mutate-foreign-2')
+      const { reactToMessage } = await import('../modules/chat/mutations')
+
+      await expect(
+        reactToMessage(handle.db, second.a.userId, {
+          conversationId: second.conversationId,
+          messageId: first.messageId,
+          emoji: '👍',
+        }),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' })
     })
   })
 })

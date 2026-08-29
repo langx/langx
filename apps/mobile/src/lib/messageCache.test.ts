@@ -4,6 +4,7 @@ import type { MessageDto } from '../api/queries'
 import {
   appendIncomingMessage,
   applyDeliveredAt,
+  applyMessageUpdate,
   messagesNewestFirst,
   type MessagePageDto,
 } from './messageCache'
@@ -113,5 +114,57 @@ describe('applyDeliveredAt', () => {
     const data = pages([message('a', ME, earlier)])
     const next = applyDeliveredAt(data, { deliveredTo: THEM, deliveredAt: at })
     expect(next?.pages[0]?.items[0]?.deliveredAt).toBe(earlier)
+  })
+})
+
+describe('applyMessageUpdate', () => {
+  it('replaces the message wholesale rather than merging into it', () => {
+    const data = pages([{ ...message('a'), body: 'before' }])
+    const withdrawn = { ...message('a'), body: '', deleted: true }
+    const next = applyMessageUpdate(data, withdrawn)
+
+    expect(next?.pages[0]?.items[0]).toEqual(withdrawn)
+  })
+
+  /**
+   * A merge would resurrect exactly what the server's projection took away —
+   * the attachment of a message that was just deleted, most obviously.
+   */
+  it('does not carry a dropped field through from the old copy', () => {
+    const withMedia = {
+      ...message('a'),
+      media: { url: 'https://cdn/x.jpg', contentType: 'image/jpeg', sizeBytes: 1 },
+    }
+    const next = applyMessageUpdate(pages([withMedia]), { ...message('a'), deleted: true })
+    expect(next?.pages[0]?.items[0]?.media).toBeUndefined()
+  })
+
+  it('finds the message on any page', () => {
+    const data = pages([message('new1')], [message('old1')])
+    const next = applyMessageUpdate(data, { ...message('old1'), body: 'edited' })
+    expect(next?.pages[1]?.items[0]?.body).toBe('edited')
+  })
+
+  /** An update for something not loaded is not an invitation to insert it. */
+  it('is a no-op for a message outside the loaded pages', () => {
+    const data = pages([message('a')])
+    expect(applyMessageUpdate(data, message('elsewhere'))).toBe(data)
+  })
+})
+
+describe('messagesNewestFirst and hidden messages', () => {
+  /**
+   * Filtered here rather than on the server: dropping rows from a keyset page
+   * would make a page of 30 arrive as 12, and the paging would have to
+   * compensate for a number only this viewer knows.
+   */
+  it('drops the ones this reader hid, and keeps the rest', () => {
+    const data = pages([message('a'), { ...message('b'), hidden: true }, message('c')])
+    expect(messagesNewestFirst(data).map((m) => m._id)).toEqual(['c', 'a'])
+  })
+
+  it('keeps a message withdrawn for everyone, which still occupies its place', () => {
+    const data = pages([{ ...message('a'), deleted: true, body: '' }])
+    expect(messagesNewestFirst(data).map((m) => m._id)).toEqual(['a'])
   })
 })

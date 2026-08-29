@@ -32,6 +32,11 @@ export const EVENT_LIMITS: Record<string, BucketConfig> = {
   'message:correct': { capacity: 20, refillPerSecond: 1 },
   // Tighter than text: each one is an upload we store and serve.
   'message:media': { capacity: 10, refillPerSecond: 0.5 },
+  // Cheap and tappable: a reaction is one small write and people do change
+  // their minds, but a held finger on an emoji must not become a write loop.
+  'message:react': { capacity: 30, refillPerSecond: 2 },
+  // Destructive, and never something anyone does in a burst.
+  'message:delete': { capacity: 10, refillPerSecond: 0.5 },
   'conversation:read': { capacity: 30, refillPerSecond: 2 },
   typing: { capacity: 40, refillPerSecond: 10 },
   // One per 20s sustained, burst of 4. A 60s heartbeat passes with room; a

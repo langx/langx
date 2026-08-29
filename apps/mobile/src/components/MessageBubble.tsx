@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { memo, useMemo, useRef } from 'react'
 import { Animated, PanResponder, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
+import type { AnchorRect } from '../lib/messageMenu'
 import { shouldCaptureSwipe, swipeReleased, swipeTranslation } from '../lib/swipeToReply'
 import { makeStyles, useTheme } from '../lib/theme'
 import { AudioBubble, ImageBubble } from './MediaBubble'
@@ -20,7 +21,7 @@ export interface MessageBubbleProps {
   replyToMine: boolean
   /** Briefly ringed after a jump, so the reader sees where they landed. */
   highlighted: boolean
-  onLongPress: (message: MessageDto, alreadyTranslated: boolean) => void
+  onLongPress: (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => void
   onReply: (message: MessageDto) => void
   onJumpTo: (messageId: string) => void
 }
@@ -50,7 +51,24 @@ export const MessageBubble = memo(function MessageBubble({
 }: MessageBubbleProps) {
   const { colors } = useTheme()
   const styles = useStyles()
-  const press = () => onLongPress(message, Boolean(translation))
+  /**
+   * The bubble reports where it is, so the menu can be drawn against it rather
+   * than at the bottom of the screen. `measureInWindow` exists on
+   * react-native-web's View too — it is `getBoundingClientRect` underneath — so
+   * this is genuinely cross-platform despite being the app's first use of it.
+   * If it never calls back, the menu falls back to the sheet.
+   */
+  const box = useRef<View>(null)
+  const press = () => {
+    const alreadyTranslated = Boolean(translation)
+    if (!box.current) {
+      onLongPress(message, alreadyTranslated)
+      return
+    }
+    box.current.measureInWindow((x, y, width, height) =>
+      onLongPress(message, alreadyTranslated, { x, y, width, height }),
+    )
+  }
 
   /**
    * Swipe right to reply — native only.
@@ -83,6 +101,24 @@ export const MessageBubble = memo(function MessageBubble({
 
   const pan = Platform.OS === 'web' ? {} : responder.panHandlers
   const flash = highlighted ? styles.highlighted : null
+
+  /**
+   * Counts, not avatars: a 1-1 thread has at most two people on an emoji, so
+   * a number is only ever "2" and the badge is mostly there to say which
+   * emojis were used at all.
+   */
+  const reactions = Object.entries(message.reactions ?? {}).filter(([, users]) => users.length > 0)
+  const badge =
+    reactions.length > 0 ? (
+      <View style={[styles.reactions, mine ? styles.reactionsMine : styles.reactionsTheirs]}>
+        {reactions.map(([emoji, users]) => (
+          <View key={emoji} style={styles.reaction}>
+            <Text style={styles.reactionGlyph}>{emoji}</Text>
+            {users.length > 1 ? <Text style={styles.reactionCount}>{users.length}</Text> : null}
+          </View>
+        ))}
+      </View>
+    ) : null
   const replyTo = message.replyTo
 
   const quote = replyTo ? (
@@ -101,9 +137,31 @@ export const MessageBubble = memo(function MessageBubble({
     </Pressable>
   ) : null
 
+  /**
+   * A withdrawal keeps its place in the thread rather than closing the gap.
+   * The alternative — removing the row — rewrites the shape of a conversation
+   * the other person remembers having, which is worse than an obvious hole.
+   */
+  if (message.deleted) {
+    return (
+      <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
+        <Pressable
+          onLongPress={press}
+          style={[styles.bubble, mine ? styles.mine : styles.theirs, styles.tombstone, flash]}
+        >
+          <View style={styles.tombstoneRow}>
+            <Feather name="slash" size={13} color={colors.textMuted} />
+            <Text style={styles.tombstoneText}>This message was deleted</Text>
+          </View>
+          <MessageMeta message={message} mine={mine} />
+        </Pressable>
+      </Animated.View>
+    )
+  }
+
   if (message.type === 'correction') {
     return (
-      <Animated.View style={{ transform: [{ translateX }] }} {...pan}>
+      <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
         <Pressable
           onLongPress={press}
           style={[styles.correction, mine ? styles.correctionMine : null, flash]}
@@ -130,6 +188,7 @@ export const MessageBubble = memo(function MessageBubble({
             ) : null}
             <MessageMeta message={message} mine={mine} />
           </View>
+          {badge}
         </Pressable>
       </Animated.View>
     )
@@ -139,7 +198,7 @@ export const MessageBubble = memo(function MessageBubble({
 
   if (message.type === 'image' || message.type === 'audio') {
     return (
-      <Animated.View style={{ transform: [{ translateX }] }} {...pan}>
+      <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
         <Pressable
           onLongPress={press}
           style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
@@ -156,13 +215,14 @@ export const MessageBubble = memo(function MessageBubble({
             </Text>
           ) : null}
           <MessageMeta message={message} mine={mine} />
+          {badge}
         </Pressable>
       </Animated.View>
     )
   }
 
   return (
-    <Animated.View style={{ transform: [{ translateX }] }} {...pan}>
+    <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
       <Pressable
         onLongPress={press}
         style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
@@ -176,12 +236,13 @@ export const MessageBubble = memo(function MessageBubble({
             request already in flight. */}
         {translating ? <Text style={styles.translateLink}>Translating…</Text> : null}
         <MessageMeta message={message} mine={mine} />
+        {badge}
       </Pressable>
     </Animated.View>
   )
 })
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   bubble: {
     borderRadius: radius.lg,
     maxWidth: '82%',
@@ -227,6 +288,33 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
    * that would say the wrong thing for a second and a half.
    */
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
+  tombstone: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
+  tombstoneRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
+  tombstoneText: { ...font.body, color: colors.textMuted, fontStyle: 'italic' },
+  /**
+   * Inside the bubble, not overhanging it. An overhang reads better, but the
+   * correction card clips to its rounded header (`overflow: 'hidden'`, which
+   * the header border needs) and would cut the badge in half — one shape for
+   * all four beats a special case that only looks right in three of them.
+   */
+  reactions: {
+    ...cardShadow,
+    alignSelf: 'flex-start',
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 2,
+    marginTop: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+  },
+  reactionsMine: { alignSelf: 'flex-end' },
+  reactionsTheirs: { alignSelf: 'flex-start' },
+  reaction: { alignItems: 'center', flexDirection: 'row', gap: 2 },
+  reactionGlyph: { fontSize: 13, lineHeight: 18 },
+  reactionCount: { ...font.caption, color: colors.textMuted, fontWeight: '700' },
   bubbleText: { ...font.body, color: colors.text, lineHeight: 22 },
   bubbleTextMine: { color: colors.primaryText },
   caption: { marginTop: spacing.xs },

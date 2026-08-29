@@ -16,6 +16,7 @@ import { ApiError } from '../../lib/ApiError'
 import { blockedUserIds } from '../moderation/blocks'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess } from './access'
+import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
 
 export interface SendResult {
@@ -241,7 +242,11 @@ export async function sendMediaMessage(
 }
 
 export interface MessagePage {
-  items: Message[]
+  /**
+   * Projected, never raw. Per-user state lives on the same document now, so a
+   * page has to be built for the person asking for it — see `toMessageView`.
+   */
+  items: MessageView[]
   /** Feed to `cursor` for the page *before* this one. Null at the beginning of history. */
   nextCursor: string | null
   /**
@@ -300,7 +305,7 @@ export async function listMessages(
   const oldest = items[0]
   const newest = items.at(-1)
   return {
-    items,
+    items: items.map((message) => toMessageView(message, userId)),
     // Only the direction actually being paged reports more: the caller already
     // holds everything on the side it came from, and claiming otherwise would
     // have an infinite query walk back over pages it has.
@@ -382,7 +387,7 @@ export async function listMessagesAround(
   const newest = items.at(-1)
 
   return {
-    items,
+    items: items.map((message) => toMessageView(message, userId)),
     nextCursor: hasOlder && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
     prevCursor: hasNewer && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
     participants: conversation.participants,

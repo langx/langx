@@ -1,4 +1,10 @@
-import { sendCorrectionSchema, sendMediaMessageSchema, sendTextMessageSchema } from '@langx/shared'
+import {
+  deleteMessageSchema,
+  reactToMessageSchema,
+  sendCorrectionSchema,
+  sendMediaMessageSchema,
+  sendTextMessageSchema,
+} from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
 import { Server as SocketIOServer } from 'socket.io'
 import { z, ZodError } from 'zod'
@@ -8,6 +14,8 @@ import { consumeQuota } from '../lib/quota'
 import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
 import { assertConversationAccess } from '../modules/chat/access'
+import { toMessageView } from '../modules/chat/messageView'
+import { deleteMessage, reactToMessage } from '../modules/chat/mutations'
 import {
   markConversationRead,
   markPendingDelivered,
@@ -15,7 +23,7 @@ import {
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
-import { fanOutMessage } from './fanOut'
+import { fanOutMessage, fanOutMessageUpdate } from './fanOut'
 import { PresenceThrottle, touchPresence } from '../modules/presence/presence'
 import { SocketRateLimiter } from './rateLimit'
 import { userRoom, type AppServer, type AppSocket } from './types'
@@ -192,6 +200,35 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
           // recipient chose to be in, not something to wake a phone for.
           void fanOutMessage(app, io, conversation, message, { pushWhenAway: false })
           ack?.({ ok: true, data: message })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    /**
+     * Both of these go through `loadMutableMessage`, which is where the
+     * conversation guard lives — the handler itself checks nothing, and that
+     * is the point: a third mutation added later cannot forget to.
+     */
+    socket.on('message:react', (payload: unknown, ack: Ack) => {
+      if (!limited('message:react', ack)) return
+      reactToMessageSchema
+        .parseAsync(payload)
+        .then((input) => reactToMessage(app.mongo.db, userId, input))
+        .then(({ message, conversation, audience }) => {
+          fanOutMessageUpdate(io, conversation, message, audience, userId)
+          ack?.({ ok: true, data: toMessageView(message, userId) })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:delete', (payload: unknown, ack: Ack) => {
+      if (!limited('message:delete', ack)) return
+      deleteMessageSchema
+        .parseAsync(payload)
+        .then((input) => deleteMessage(app.mongo.db, userId, input, app.storage))
+        .then(({ message, conversation, audience }) => {
+          fanOutMessageUpdate(io, conversation, message, audience, userId)
+          ack?.({ ok: true, data: toMessageView(message, userId) })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })

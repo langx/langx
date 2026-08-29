@@ -5,7 +5,12 @@ import { useEffect } from 'react'
 import type { MessageDto } from '../api/queries'
 import { keys } from '../api/queries'
 import { applyIncomingMessage, type ConversationPageDto } from '../lib/conversationCache'
-import { appendIncomingMessage, applyDeliveredAt, type MessagePageDto } from '../lib/messageCache'
+import {
+  appendIncomingMessage,
+  applyDeliveredAt,
+  applyMessageUpdate,
+  type MessagePageDto,
+} from '../lib/messageCache'
 import { closeSocket, getSocket } from '../lib/socket'
 
 /**
@@ -92,6 +97,24 @@ export function useSocket(): void {
        * rarer event and clear an unread count the client cannot recompute,
        * which is why that one still goes back to the server.
        */
+      /**
+       * One event for every mutation, carrying the message's whole new state.
+       * A client that applies "the message is now this" cannot drift; one that
+       * applied a patch would have to be right about the order they arrive in.
+       */
+      socket.on('message:updated', (message: MessageDto) => {
+        const conversationId = String(message.conversationId)
+        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+          { queryKey: keys.messages(conversationId) },
+          (old) => applyMessageUpdate(old, message) ?? old,
+        )
+        // A withdrawal empties the chat list's preview too, and that is the
+        // one thing this cannot patch from here.
+        if (message.deleted) {
+          void queryClient.invalidateQueries({ queryKey: keys.conversations })
+        }
+      })
+
       socket.on(
         'conversation:delivered',
         ({

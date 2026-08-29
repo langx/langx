@@ -1,5 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import type { ObjectId } from 'mongodb'
+import type { Message } from '../modules/chat/conversations'
+import { toMessageView } from '../modules/chat/messageView'
 import { markDelivered } from '../modules/chat/messages'
 import { sendPush, tokensFor } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
@@ -10,11 +12,12 @@ interface FannedConversation {
   participants: readonly string[]
 }
 
-interface FannedMessage {
-  senderId: string
-  body: string
-  conversationId: { toHexString: () => string }
-}
+/**
+ * The whole document, because the emit is now a per-viewer projection rather
+ * than the raw row — see `toMessageView`. Narrowing this to the three fields
+ * the push notification needs is what let per-user state reach the wire.
+ */
+type FannedMessage = Message
 
 /**
  * Everything that happens to a message once it is durably written: both
@@ -41,8 +44,10 @@ export async function fanOutMessage(
   { pushWhenAway }: { pushWhenAway: boolean },
 ): Promise<void> {
   try {
+    // Projected per participant: two people are sent two different objects
+    // from the same row, because what each is allowed to see differs.
     for (const participantId of conversation.participants) {
-      io.to(userRoom(participantId)).emit('message:new', message)
+      io.to(userRoom(participantId)).emit('message:new', toMessageView(message, participantId))
     }
 
     const recipientId = conversation.participants.find((id) => id !== message.senderId)
@@ -82,5 +87,36 @@ export async function fanOutMessage(
     })
   } catch (error) {
     app.log.warn({ err: error }, 'post-send fan-out failed')
+  }
+}
+
+/**
+ * A message that already exists has changed.
+ *
+ * One event for every mutation — reaction, withdrawal, and later edit, star and
+ * pin — carrying the message's whole new state rather than a description of
+ * what changed. A client that applies "the message is now this" cannot drift;
+ * one that applies a patch has to be right about the order they arrive in.
+ *
+ * Withdrawal is not a separate event either: a deleted message is a
+ * `message:updated` whose body the projection has emptied.
+ *
+ * Synchronous and silent — no delivery stamping, no push. Nothing about a
+ * reaction is worth waking a phone for.
+ */
+export function fanOutMessageUpdate(
+  io: AppServer,
+  conversation: FannedConversation,
+  message: Message,
+  audience: 'both' | 'actor',
+  actorId: string,
+): void {
+  // `actor` is per-user state — a hide, or later a star. It goes to the
+  // actor's own room only, so their other devices converge and the other
+  // person is told nothing whatsoever.
+  const recipients = audience === 'actor' ? [actorId] : conversation.participants
+
+  for (const participantId of recipients) {
+    io.to(userRoom(participantId)).emit('message:updated', toMessageView(message, participantId))
   }
 }
