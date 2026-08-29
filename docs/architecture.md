@@ -750,8 +750,11 @@ only thing that matters is preserving store identity.
 **P1:** Copilot, badges, availability hours, discovery boost, the "New Users"
 and "Enthusiasts" sort presets. _(Voice messages moved into P0 — the message
 migration needs them.)_
-**P2:** video calls, groups, vocabulary notebook, moderation console, an
-on-chain distribution layer (after legal review).
+**P2:** video calls, groups, the **learning module**, moderation console, an
+on-chain distribution layer (after legal review). The learning module — spaced
+repetition over curated per-language, per-level courses — is what this list
+used to call the vocabulary notebook, widened from a personal word list into a
+content product; it is planned in [`learn-module.md`](./learn-module.md).
 
 > **Note — v1 feature parity:** voice messages and images are back in P0,
 > because the message migration would otherwise have to drop 1,270 voice notes
