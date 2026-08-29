@@ -45,6 +45,12 @@ export const keys = {
   discovery: (filters: string) => ['discovery', filters] as const,
   conversations: ['conversations'] as const,
   messages: (id: string) => ['messages', id] as const,
+  /**
+   * Deliberately a child of `messages(id)`: a socket patch written with
+   * `setQueriesData` and that prefix reaches the live thread and any open jump
+   * window in one call, which is the only thing keeping the two in step.
+   */
+  messagesAround: (id: string, anchorId: string) => ['messages', id, 'around', anchorId] as const,
   tokens: ['tokens'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
@@ -247,6 +253,8 @@ export interface MessageDto {
   body: string
   media?: MessageMediaDto
   correction?: { original: string; corrected: string; note?: string }
+  /** A snapshot taken when the reply was sent, so it survives the target. */
+  replyTo?: { messageId: string; senderId: string; preview: string }
   deliveredAt?: string
   readAt?: string
   createdAt: string
@@ -263,10 +271,54 @@ export function useMessages(conversationId: string) {
       ),
     initialPageParam: '',
     // The cursor walks *backwards* into history, so "the next page" is older
-    // messages and `pages[0]` stays the newest. `flattenMessagePages` is the
+    // messages and `pages[0]` stays the newest. `messagesNewestFirst` is the
     // only sanctioned way to read this — see the note there.
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: conversationId.length > 0,
+  })
+}
+
+/** Which end of the window a page is being fetched from. */
+export interface MessageWindowParam {
+  dir: 'around' | 'older' | 'newer'
+  value: string
+}
+
+function windowUrl(conversationId: string, param: MessageWindowParam): string {
+  const key = param.dir === 'around' ? 'around' : param.dir === 'older' ? 'cursor' : 'after'
+  return `/conversations/${conversationId}/messages?${key}=${encodeURIComponent(param.value)}`
+}
+
+/**
+ * A thread opened in the middle, at one particular message.
+ *
+ * A separate cache from `useMessages` on purpose. Making the live query
+ * bidirectional would break the invariant three other modules are built on —
+ * that `pages[0]` is the newest page, which is where `appendIncomingMessage`
+ * writes and where `useSocket` expects a new message to land. A window has no
+ * append target and no such invariant, so it is free to page both ways, and
+ * the live thread is left untouched underneath it.
+ *
+ * The key is a child of `keys.messages(id)`, so socket patches written with
+ * that prefix reach this cache too.
+ */
+export function useMessageWindow(conversationId: string, anchorId: string | null) {
+  // Annotated rather than asserted: the literal has to keep its narrow `dir`
+  // type, and a plain object literal in the option bag widens it to `string`.
+  const start: MessageWindowParam = { dir: 'around', value: anchorId ?? '' }
+
+  return useInfiniteQuery({
+    queryKey: keys.messagesAround(conversationId, anchorId ?? ''),
+    queryFn: ({ pageParam }) => api.get<MessagePageDto>(windowUrl(conversationId, pageParam)),
+    initialPageParam: start,
+    getNextPageParam: (last): MessageWindowParam | undefined =>
+      last.nextCursor ? { dir: 'older', value: last.nextCursor } : undefined,
+    getPreviousPageParam: (first): MessageWindowParam | undefined =>
+      first.prevCursor ? { dir: 'newer', value: first.prevCursor } : undefined,
+    enabled: conversationId.length > 0 && Boolean(anchorId),
+    // A jump is a detour, not a place to live: let it fall out of cache once
+    // the reader is back on the live thread.
+    gcTime: 60_000,
   })
 }
 

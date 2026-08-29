@@ -1,7 +1,8 @@
 import Feather from '@expo/vector-icons/Feather'
-import { memo } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { memo, useMemo, useRef } from 'react'
+import { Animated, PanResponder, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
+import { shouldCaptureSwipe, swipeReleased, swipeTranslation } from '../lib/swipeToReply'
 import { makeStyles, useTheme } from '../lib/theme'
 import { AudioBubble, ImageBubble } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
@@ -15,7 +16,13 @@ export interface MessageBubbleProps {
   partnerName: string
   translation?: string | undefined
   translating: boolean
+  /** Whether the *quoted* message is the reader's own, for the quote's byline. */
+  replyToMine: boolean
+  /** Briefly ringed after a jump, so the reader sees where they landed. */
+  highlighted: boolean
   onLongPress: (message: MessageDto, alreadyTranslated: boolean) => void
+  onReply: (message: MessageDto) => void
+  onJumpTo: (messageId: string) => void
 }
 
 /**
@@ -35,41 +42,96 @@ export const MessageBubble = memo(function MessageBubble({
   partnerName,
   translation,
   translating,
+  replyToMine,
+  highlighted,
   onLongPress,
+  onReply,
+  onJumpTo,
 }: MessageBubbleProps) {
   const { colors } = useTheme()
   const styles = useStyles()
   const press = () => onLongPress(message, Boolean(translation))
 
+  /**
+   * Swipe right to reply — native only.
+   *
+   * Off on web deliberately. react-native-web does map mouse events onto the
+   * responder system, so a drag reaches this, but it fights the browser's own
+   * text selection and a trackpad's horizontal gesture is a `wheel` event that
+   * never arrives here at all. A gesture that works for some inputs and not
+   * others is worse than one that is plainly absent; in a browser the menu's
+   * Reply row is the way in.
+   */
+  const translateX = useRef(new Animated.Value(0)).current
+  const responder = useMemo(() => {
+    const settle = () =>
+      Animated.spring(translateX, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start()
+    return PanResponder.create({
+      // Never on start: that would swallow the tap and the long press.
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_event, gesture) => shouldCaptureSwipe(gesture.dx, gesture.dy),
+      onPanResponderMove: (_event, gesture) => translateX.setValue(swipeTranslation(gesture.dx)),
+      onPanResponderRelease: (_event, gesture) => {
+        if (swipeReleased(gesture.dx)) onReply(message)
+        settle()
+      },
+      onPanResponderTerminate: settle,
+      // The list asking for the responder back mid-scroll wins, always.
+      onPanResponderTerminationRequest: () => true,
+    })
+  }, [message, onReply, translateX])
+
+  const pan = Platform.OS === 'web' ? {} : responder.panHandlers
+  const flash = highlighted ? styles.highlighted : null
+  const replyTo = message.replyTo
+
+  const quote = replyTo ? (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Go to the quoted message"
+      onPress={() => onJumpTo(replyTo.messageId)}
+      style={[styles.quote, mine ? styles.quoteMine : styles.quoteTheirs]}
+    >
+      <Text style={[styles.quoteAuthor, mine && styles.quoteAuthorMine]} numberOfLines={1}>
+        {replyToMine ? 'You' : partnerName}
+      </Text>
+      <Text style={[styles.quoteText, mine && styles.quoteTextMine]} numberOfLines={2}>
+        {replyTo.preview || 'Attachment'}
+      </Text>
+    </Pressable>
+  ) : null
+
   if (message.type === 'correction') {
     return (
-      <Pressable
-        onLongPress={press}
-        style={[styles.correction, mine ? styles.correctionMine : null]}
-      >
-        {/*
+      <Animated.View style={{ transform: [{ translateX }] }} {...pan}>
+        <Pressable
+          onLongPress={press}
+          style={[styles.correction, mine ? styles.correctionMine : null, flash]}
+        >
+          {/*
           The success pair, and only ever the success pair. A correction is
           another person changing your sentence; the info pair belongs to
           Copilot, which proposes one you have not sent. The two must never be
           confusable — see `Callout`.
         */}
-        <View style={styles.correctionHead}>
-          <Feather name="edit-3" size={14} color={colors.success} />
-          <Text style={styles.correctionLabel}>
-            {mine ? 'Your correction' : `Correction from ${partnerName}`}
-          </Text>
-        </View>
-        <View style={styles.correctionBody}>
-          {message.correction ? (
-            <Text style={styles.correctionOriginal}>{message.correction.original}</Text>
-          ) : null}
-          <Text style={styles.correctionText}>{message.body}</Text>
-          {message.correction?.note ? (
-            <Text style={styles.correctionNote}>{message.correction.note}</Text>
-          ) : null}
-          <MessageMeta message={message} mine={mine} />
-        </View>
-      </Pressable>
+          <View style={styles.correctionHead}>
+            <Feather name="edit-3" size={14} color={colors.success} />
+            <Text style={styles.correctionLabel}>
+              {mine ? 'Your correction' : `Correction from ${partnerName}`}
+            </Text>
+          </View>
+          <View style={styles.correctionBody}>
+            {message.correction ? (
+              <Text style={styles.correctionOriginal}>{message.correction.original}</Text>
+            ) : null}
+            <Text style={styles.correctionText}>{message.body}</Text>
+            {message.correction?.note ? (
+              <Text style={styles.correctionNote}>{message.correction.note}</Text>
+            ) : null}
+            <MessageMeta message={message} mine={mine} />
+          </View>
+        </Pressable>
+      </Animated.View>
     )
   }
 
@@ -77,39 +139,45 @@ export const MessageBubble = memo(function MessageBubble({
 
   if (message.type === 'image' || message.type === 'audio') {
     return (
-      <Pressable
-        onLongPress={press}
-        style={[styles.bubble, mine ? styles.mine : styles.theirs, tail]}
-      >
-        {message.type === 'image' ? (
-          <ImageBubble message={message} />
-        ) : (
-          <AudioBubble message={message} mine={mine} />
-        )}
-        {message.body ? (
-          <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>
-            {message.body}
-          </Text>
-        ) : null}
-        <MessageMeta message={message} mine={mine} />
-      </Pressable>
+      <Animated.View style={{ transform: [{ translateX }] }} {...pan}>
+        <Pressable
+          onLongPress={press}
+          style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
+        >
+          {quote}
+          {message.type === 'image' ? (
+            <ImageBubble message={message} />
+          ) : (
+            <AudioBubble message={message} mine={mine} />
+          )}
+          {message.body ? (
+            <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>
+              {message.body}
+            </Text>
+          ) : null}
+          <MessageMeta message={message} mine={mine} />
+        </Pressable>
+      </Animated.View>
     )
   }
 
   return (
-    <Pressable
-      onLongPress={press}
-      style={[styles.bubble, mine ? styles.mine : styles.theirs, tail]}
-    >
-      <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{message.body}</Text>
-      {translation ? (
-        <Text style={[styles.translation, mine && styles.translationMine]}>{translation}</Text>
-      ) : null}
-      {/* The link is gone — translate is a menu row now. This only reports the
-          request already in flight. */}
-      {translating ? <Text style={styles.translateLink}>Translating…</Text> : null}
-      <MessageMeta message={message} mine={mine} />
-    </Pressable>
+    <Animated.View style={{ transform: [{ translateX }] }} {...pan}>
+      <Pressable
+        onLongPress={press}
+        style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
+      >
+        {quote}
+        <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{message.body}</Text>
+        {translation ? (
+          <Text style={[styles.translation, mine && styles.translationMine]}>{translation}</Text>
+        ) : null}
+        {/* The link is gone — translate is a menu row now. This only reports the
+            request already in flight. */}
+        {translating ? <Text style={styles.translateLink}>Translating…</Text> : null}
+        <MessageMeta message={message} mine={mine} />
+      </Pressable>
+    </Animated.View>
   )
 })
 
@@ -135,6 +203,30 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
    */
   tailMine: { borderBottomRightRadius: radius.sm / 2 },
   tailTheirs: { borderBottomLeftRadius: radius.sm / 2 },
+  /**
+   * The quote reads as a layer under the reply rather than as a message of its
+   * own: one accent edge, a tint of whatever bubble it sits in, two lines at
+   * most. Any longer and a reply to a long message looks like a reply *from* it.
+   */
+  quote: {
+    borderLeftWidth: 3,
+    borderRadius: radius.sm,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 6,
+  },
+  quoteTheirs: { backgroundColor: colors.bg, borderLeftColor: colors.accent },
+  quoteMine: { backgroundColor: colors.primaryShade, borderLeftColor: colors.primaryText },
+  quoteAuthor: { ...font.caption, color: colors.accent, fontWeight: '700' },
+  quoteAuthorMine: { color: colors.primaryText },
+  quoteText: { ...font.caption, color: colors.textMuted },
+  quoteTextMine: { color: colors.primaryTextMuted },
+  /**
+   * A ring rather than a fill: the bubble already carries meaning in its
+   * colour — whose it is, and whether it is a correction — and a wash over
+   * that would say the wrong thing for a second and a half.
+   */
+  highlighted: { borderColor: colors.accent, borderWidth: 2 },
   bubbleText: { ...font.body, color: colors.text, lineHeight: 22 },
   bubbleTextMine: { color: colors.primaryText },
   caption: { marginTop: spacing.xs },

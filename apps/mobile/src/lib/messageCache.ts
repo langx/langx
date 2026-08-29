@@ -3,8 +3,13 @@ import type { MessageDto } from '../api/queries'
 
 export interface MessagePageDto {
   items: MessageDto[]
+  /** Older than this page; null at the beginning of history. */
   nextCursor: string | null
+  /** Newer than this page; null means the page already reaches the live tail. */
+  prevCursor: string | null
   participants: string[]
+  /** Only a jump window has one — the message it was opened on. */
+  anchorId?: string
 }
 
 type Pages = InfiniteData<MessagePageDto> | undefined
@@ -22,6 +27,11 @@ export function appendIncomingMessage(data: Pages, message: MessageDto): Pages {
   // The sender already appended this optimistically and the socket echoes to
   // *both* participants, so guard against a duplicate.
   if (data.pages.some((page) => page.items.some((m) => sameId(m, message)))) return data
+  // A jump window that has not paged forward to the tail is a slice out of the
+  // middle of the thread. Appending to it would splice a message sent seconds
+  // ago in after one from last year. Live pages never carry `prevCursor`, so
+  // this is a no-op for them.
+  if (first.prevCursor) return data
   return { ...data, pages: [{ ...first, items: [...first.items, message] }, ...rest] }
 }
 

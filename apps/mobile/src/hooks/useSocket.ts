@@ -43,8 +43,16 @@ export function useSocket(): void {
             ? message.conversationId
             : String(message.conversationId)
 
-        queryClient.setQueryData<InfiniteData<MessagePageDto>>(
-          keys.messages(conversationId),
+        /**
+         * `setQueriesData` with the *prefix*, not `setQueryData` with the key:
+         * `keys.messagesAround` lives under `keys.messages(id)`, so a jump
+         * window open on this thread is patched by the same call. Without it
+         * the window silently stops receiving anything while it is on screen.
+         * `appendIncomingMessage` decides for itself whether a given cache is
+         * one a new message belongs in.
+         */
+        queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+          { queryKey: keys.messages(conversationId) },
           (old) => appendIncomingMessage(old, message) ?? old,
         )
 
@@ -95,8 +103,8 @@ export function useSocket(): void {
           deliveredTo: string
           deliveredAt: string
         }) => {
-          queryClient.setQueryData<InfiniteData<MessagePageDto>>(
-            keys.messages(conversationId),
+          queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+            { queryKey: keys.messages(conversationId) },
             (old) => applyDeliveredAt(old, { deliveredTo, deliveredAt }) ?? old,
           )
         },
