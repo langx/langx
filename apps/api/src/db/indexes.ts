@@ -285,6 +285,21 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { postId: 1, createdAt: 1, _id: 1 }, name: 'post_created_id' },
   ],
 
+  [COLLECTIONS.likes]: [
+    // One like per person per thing. A unique index rather than a check, for
+    // the same reason `post_author_unique` is one: two taps that race would
+    // both pass a read-then-write. It doubles as the "did the viewer like these
+    // forty things" lookup — at most one row per target, by definition — and
+    // its `{targetType, targetId}` prefix serves the counting aggregate, so
+    // there is no third index here.
+    { key: { targetType: 1, targetId: 1, userId: 1 }, name: 'target_user_unique', unique: true },
+    // The likers list, newest first, with the tiebreak already in the key.
+    { key: { targetType: 1, targetId: 1, createdAt: -1, _id: -1 }, name: 'target_recent' },
+    // The account purge and the data export both need every like one person
+    // left, across every target.
+    { key: { userId: 1 }, name: 'user' },
+  ],
+
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
 
   [COLLECTIONS.streakReminders]: [

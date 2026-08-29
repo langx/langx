@@ -24,3 +24,10 @@ export function openProfile(handle: string, from: string): void {
 export function openPost(postId: string, from: string): void {
   router.push(`/(app)/post/${postId}?from=${encodeURIComponent(from)}` as Href)
 }
+
+/** Who liked one post or one correction. */
+export function openLikers(targetType: string, targetId: string, from: string): void {
+  router.push(
+    `/(app)/likes?targetType=${targetType}&targetId=${targetId}&from=${encodeURIComponent(from)}` as Href,
+  )
+}

@@ -17,6 +17,7 @@ import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { decodeFeedCursor, encodeFeedCursor } from '../../lib/feedCursor'
 import { blockedUserIds } from '../moderation/blocks'
+import { EMPTY_LIKE_SUMMARY, likeStateOf, readLikeSummary, type LikeSummary } from './likes'
 import type { Profile } from '../profiles/profiles'
 import { recordActivity } from '../tokens/dailyActivity'
 import { awardTokens } from '../tokens/ledger'
@@ -69,19 +70,29 @@ function authorDto(profile: Profile | undefined, id: string): FeedPost['author']
   }
 }
 
-function correctionDto(doc: PostCorrectionDoc, authors: AuthorMap): PostCorrection {
+function correctionDto(
+  doc: PostCorrectionDoc,
+  authors: AuthorMap,
+  likes: LikeSummary,
+): PostCorrection {
   return {
     _id: doc._id.toHexString(),
     author: authorDto(authors.get(doc.authorId), doc.authorId),
     corrected: doc.corrected,
     ...(doc.note ? { note: doc.note } : {}),
+    ...likeStateOf(likes, 'correction', doc._id),
     createdAt: doc.createdAt.toISOString(),
   }
 }
 
 function postDto(
   post: Post,
-  context: { authors: AuthorMap; top: PostCorrectionDoc | null; correctedByViewer: boolean },
+  context: {
+    authors: AuthorMap
+    top: PostCorrectionDoc | null
+    correctedByViewer: boolean
+    likes: LikeSummary
+  },
 ): FeedPost {
   const profile = context.authors.get(post.authorId)
   return {
@@ -91,8 +102,9 @@ function postDto(
     language: post.language,
     level: levelOf(profile, post.language),
     correctionCount: post.correctionCount,
-    topCorrection: context.top ? correctionDto(context.top, context.authors) : null,
+    topCorrection: context.top ? correctionDto(context.top, context.authors, context.likes) : null,
     correctedByViewer: context.correctedByViewer,
+    ...likeStateOf(context.likes, 'post', post._id),
     createdAt: post.createdAt.toISOString(),
   }
 }
@@ -225,15 +237,24 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   const ids = items.map((post) => post._id)
   const { topByPost, viewerCorrected } = await readCorrectionSummary(db, userId, ids)
 
-  const authors = await loadAuthors(db, [
-    ...items.map((post) => post.authorId),
-    ...[...topByPost.values()].map((c) => c.authorId),
+  const [authors, likes] = await Promise.all([
+    loadAuthors(db, [
+      ...items.map((post) => post.authorId),
+      ...[...topByPost.values()].map((c) => c.authorId),
+    ]),
+    // One call for the whole page — every post *and* the one correction each
+    // card shows. Two lists rather than two calls, because they share a query.
+    readLikeSummary(db, userId, {
+      postIds: ids,
+      correctionIds: [...topByPost.values()].map((c) => c._id),
+    }),
   ])
 
   return {
     items: items.map((post) =>
       postDto(post, {
         authors,
+        likes,
         top: topByPost.get(post._id.toHexString()) ?? null,
         correctedByViewer: viewerCorrected.has(post._id.toHexString()),
       }),
@@ -269,17 +290,14 @@ export async function createPost(
   }
   await db.collection<Post>(COLLECTIONS.posts).insertOne(doc)
 
-  return {
-    _id: doc._id.toHexString(),
-    author: authorDto(profile, userId),
-    body: doc.body,
-    language: doc.language,
-    level: levelOf(profile, doc.language),
-    correctionCount: 0,
-    topCorrection: null,
+  // Nothing can have liked or corrected a post that did not exist a line ago,
+  // so the summary is empty by construction rather than by query.
+  return postDto(doc, {
+    authors: new Map([[userId, profile]]),
+    likes: EMPTY_LIKE_SUMMARY,
+    top: null,
     correctedByViewer: false,
-    createdAt: doc.createdAt.toISOString(),
-  }
+  })
 }
 
 export async function correctPost(
@@ -322,7 +340,7 @@ export async function correctPost(
   await awardForPostCorrection(db, userId, doc)
 
   const authors = await loadAuthors(db, [userId])
-  return correctionDto(doc, authors)
+  return correctionDto(doc, authors, EMPTY_LIKE_SUMMARY)
 }
 
 function isDuplicate(error: unknown): boolean {
@@ -378,9 +396,12 @@ export async function listPostCorrections(
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
 
-  const [post, hidden] = await Promise.all([
+  // The correction summary only needs the post's id, which we already have, so
+  // it rides along here rather than costing a second round trip below.
+  const [post, hidden, { topByPost, viewerCorrected }] = await Promise.all([
     db.collection<Post>(COLLECTIONS.posts).findOne({ _id }),
     blockedUserIds(db, userId),
+    readCorrectionSummary(db, userId, [_id]),
   ])
   if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   // 404 rather than 403, for the reason the profile route gives: a blocked
@@ -407,16 +428,29 @@ export async function listPostCorrections(
   const items = hasMore ? page.slice(0, query.limit) : page
   const last = items.at(-1)
 
-  const authors = await loadAuthors(db, [post.authorId, ...items.map((doc) => doc.authorId)])
-  const { topByPost, viewerCorrected } = await readCorrectionSummary(db, userId, [_id])
+  const top = topByPost.get(postId) ?? null
+  const [authors, likes] = await Promise.all([
+    loadAuthors(db, [post.authorId, ...items.map((doc) => doc.authorId)]),
+    readLikeSummary(db, userId, {
+      postIds: [_id],
+      // The top correction is on page one and nowhere else, so past the first
+      // page it has to be named explicitly or the header's copy of it would
+      // claim nobody had liked it.
+      correctionIds: [
+        ...items.map((doc) => doc._id),
+        ...(top && !items.some((doc) => doc._id.equals(top._id)) ? [top._id] : []),
+      ],
+    }),
+  ])
 
   return {
     post: postDto(post, {
       authors,
-      top: topByPost.get(postId) ?? null,
+      likes,
+      top,
       correctedByViewer: viewerCorrected.has(postId),
     }),
-    items: items.map((doc) => correctionDto(doc, authors)),
+    items: items.map((doc) => correctionDto(doc, authors, likes)),
     nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
   }
 }

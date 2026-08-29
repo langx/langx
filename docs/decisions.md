@@ -1289,6 +1289,76 @@ also what makes "the top correction is the oldest" true — on a new
 `post_created_id`, since `post_created` has no `_id` to make the page boundary
 exact.
 
+## A `likes` collection exists, and it is not a match gate
+
+`collections.ts` said "no `likes`/`matches` — there's no match gate", and the
+architecture's Decisions table said the same. Half of that is still true and
+the other half is now literally false, so both are corrected rather than left
+to be read as a promise nobody kept.
+
+There is a `likes` collection. It is a signal on feed **content** — a post or a
+correction, told apart by `targetType` — and never on a person. It opens no
+channel: access is still governed purely by quota, and a like grants nothing.
+`targetId` is an `ObjectId`, which quietly rules out ever liking a profile,
+since profiles are keyed by string. That is the no-match-mechanic rule
+expressed as a type, and it was free.
+
+One collection with a discriminator rather than one per likeable thing, so a
+third kind needs a value in an enum and no migration.
+
+## A like pays nothing, for the same reason a reaction does not
+
+No ledger row, no daily counter, no streak advance. A like costs one tap, and
+anything that pays out for one tap is a farm — worse than a chat reaction,
+because two accounts liking each other is a _reciprocal_ farm, which is the
+exact shape the reciprocity bonus was designed against. The streak's condition
+is a documented product rule ("send a message or write a correction"), so a
+third qualifying action would rewrite `architecture.md`, not just a module.
+A test pins it, next to the one that pins the same thing for reactions.
+
+## Likes are counted, not denormalized — and must never become a sort key
+
+`posts.correctionCount` is denormalized, and its comment says why: it is the
+sort key for the `needsCorrection` tab, and an index cannot sort on a count it
+would have to join to find. That justification does not transfer. **Nothing
+sorts by likes, and nothing may start** — the moment the feed ranks by them it
+stops being a correction queue and becomes a popularity contest, which is the
+thing the ascending `correctionCount` sort exists to prevent.
+
+So they are counted, by a `$group` shaped exactly like `readCorrectionSummary`:
+one row per liked target rather than one per like, so a post with four hundred
+likes costs a page the same as one with two. A denormalized counter would also
+have meant every like doing two writes that can diverge on a crash.
+
+## `PUT` and `DELETE`, not a toggle: an HTTP retry must not undo a like
+
+`reactToMessage` toggles — re-tapping the same emoji clears it — and copying
+that idiom here would have been a bug. It reaches the server over a socket,
+where `emitWithAck` gives the client a definite answer or a definite failure.
+Over HTTP, a request whose _response_ is lost is retried, and a retried toggle
+silently undoes what the first attempt applied. That is the same class of
+failure the ledger's `user_kind_ref_unique` index exists to make impossible, so
+it gets the same answer: an idempotent set and an idempotent clear, both
+guarded by a unique index rather than by a prior read.
+
+Both return the whole new state, so the client writes rather than increments —
+which is what makes a double tap on a slow network land on the same number.
+
+## Follower counts will be block-filtered; like counts are not
+
+Opposite answers to the same question, on purpose.
+
+The likers _list_ is block-filtered, because a name in a list of names is
+exactly what a block has to hide. The _count_ on the card is not: filtering a
+page-wide aggregate would make it viewer-dependent to conceal a number nobody
+can attribute — with four hundred likers, no one can tell which name is
+missing. So a card can read "12 likes" over a list of 11, and the likers screen
+therefore counts its own rows rather than echoing the card.
+
+Followers get the other answer for the same reason inverted: a follower list is
+short, so an unfiltered count beside a filtered list visibly disagrees, and the
+disagreement itself tells the viewer that someone they blocked is in there.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

@@ -20,6 +20,10 @@ import type {
   FeedFilter,
   FeedPage,
   FeedPost,
+  LikersPage,
+  LikeState,
+  LikeTarget,
+  LikeTargetType,
   PostCorrection,
   PostCorrectionsPage,
   TokenSummary,
@@ -34,7 +38,7 @@ import {
 import type { InfiniteData } from '@tanstack/react-query'
 import { api } from './client'
 import type { ConversationPageDto } from '../lib/conversationCache'
-import { applyCorrection } from '../lib/feedCache'
+import { applyCorrection, applyLike, applyLikeToThread } from '../lib/feedCache'
 import type { MessagePageDto } from '../lib/messageCache'
 
 /**
@@ -61,6 +65,7 @@ export const keys = {
   badges: ['badges'] as const,
   feed: (filter: string) => ['feed', filter] as const,
   postCorrections: (id: string) => ['postCorrections', id] as const,
+  likers: (targetType: string, targetId: string) => ['likers', targetType, targetId] as const,
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
@@ -80,6 +85,10 @@ export function useMe() {
 /** `DELETE` with a body — `api.delete` has no body parameter, so this is the one place it is needed. */
 function apiDelete<T>(path: string, body: unknown): Promise<T> {
   return api.request<T>(path, { method: 'DELETE', body: JSON.stringify(body) })
+}
+
+function apiPut<T>(path: string, body: unknown): Promise<T> {
+  return api.request<T>(path, { method: 'PUT', body: JSON.stringify(body) })
 }
 
 export interface MeProfile {
@@ -424,6 +433,50 @@ export function usePostCorrections(postId: string) {
     queryFn: ({ pageParam }) =>
       api.get<PostCorrectionsPage>(
         `/posts/${postId}/corrections${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+/**
+ * Like or unlike, and patch every list holding the thing that was liked.
+ *
+ * One mutation for both directions rather than two, because the caller always
+ * knows which way it is going and the cache patch is identical either way. The
+ * server returns the whole new state, so nothing here increments — see
+ * `applyLike`.
+ *
+ * `PUT`/`DELETE` rather than a toggling `POST`: a lost response over HTTP is
+ * retried, and a retried toggle undoes the like the first attempt applied.
+ */
+export function useSetLike() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ liked, ...target }: LikeTarget & { liked: boolean }) =>
+      liked ? apiPut<LikeState>('/likes', target) : apiDelete<LikeState>('/likes', target),
+    onSuccess: (state, { targetType, targetId }) => {
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyLike(data, targetType, targetId, state),
+      )
+      client.setQueriesData<InfiniteData<PostCorrectionsPage>>(
+        { queryKey: ['postCorrections'] },
+        (data) => applyLikeToThread(data, targetType, targetId, state),
+      )
+      // Who liked it has changed by exactly one row, and that list is short
+      // enough that refetching it is cheaper than reasoning about where the
+      // new name belongs in a keyset page.
+      void client.invalidateQueries({ queryKey: keys.likers(targetType, targetId) })
+    },
+  })
+}
+
+export function useLikers(targetType: LikeTargetType, targetId: string) {
+  return useInfiniteQuery({
+    queryKey: keys.likers(targetType, targetId),
+    queryFn: ({ pageParam }) =>
+      api.get<LikersPage>(
+        `/likes?targetType=${targetType}&targetId=${targetId}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,

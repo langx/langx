@@ -36,6 +36,13 @@ export const dataExportSchema = z.object({
   blocks: z.array(z.unknown()),
   profileViews: z.array(z.unknown()),
   devices: z.array(z.unknown()),
+  /**
+   * The community feed. Missing since the feed shipped — the export enumerates
+   * collections by hand, and nothing checks that the list is complete.
+   */
+  posts: z.array(z.unknown()),
+  postCorrections: z.array(z.unknown()),
+  likes: z.array(z.unknown()),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
 

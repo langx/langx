@@ -39,6 +39,38 @@ export const createPostCorrectionSchema = z.object({
 })
 export type CreatePostCorrectionInput = z.infer<typeof createPostCorrectionSchema>
 
+/**
+ * What can be liked, and the discriminator that keeps one collection able to
+ * hold all of it.
+ *
+ * A like is a signal on *content* — a sentence somebody wrote, or a correction
+ * somebody left. Never on a person: this app has no match gate, and a like on a
+ * profile is the first half of one.
+ */
+export const LIKE_TARGET_TYPES = ['post', 'correction'] as const
+export type LikeTargetType = (typeof LIKE_TARGET_TYPES)[number]
+
+export const likeTargetSchema = z.object({
+  targetType: z.enum(LIKE_TARGET_TYPES),
+  targetId: z.string().trim().min(1),
+})
+export type LikeTarget = z.infer<typeof likeTargetSchema>
+
+export const likeStateSchema = z.object({
+  likeCount: z.number().int().nonnegative(),
+  likedByViewer: z.boolean(),
+})
+export type LikeState = z.infer<typeof likeStateSchema>
+
+export const LIKERS_PAGE_SIZE_DEFAULT = 30
+export const LIKERS_PAGE_SIZE_MAX = 100
+
+export const listLikersQuerySchema = likeTargetSchema.extend({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(LIKERS_PAGE_SIZE_MAX).default(LIKERS_PAGE_SIZE_DEFAULT),
+})
+export type ListLikersQuery = z.infer<typeof listLikersQuerySchema>
+
 export const feedAuthorSchema = z.object({
   _id: z.string(),
   handle: z.string(),
@@ -51,9 +83,18 @@ export const postCorrectionSchema = z.object({
   author: feedAuthorSchema,
   corrected: z.string(),
   note: z.string().optional(),
+  /** Flat, to read the same way `correctionCount` does one level up. */
+  likeCount: z.number().int().nonnegative(),
+  likedByViewer: z.boolean(),
   createdAt: z.string(),
 })
 export type PostCorrection = z.infer<typeof postCorrectionSchema>
+
+export const likersPageSchema = z.object({
+  items: z.array(feedAuthorSchema),
+  nextCursor: z.string().nullable(),
+})
+export type LikersPage = z.infer<typeof likersPageSchema>
 
 export const feedPostSchema = z.object({
   _id: z.string(),
@@ -71,6 +112,8 @@ export const feedPostSchema = z.object({
   topCorrection: postCorrectionSchema.nullable(),
   /** Whether the viewer has already corrected this. Drives "Add yours". */
   correctedByViewer: z.boolean(),
+  likeCount: z.number().int().nonnegative(),
+  likedByViewer: z.boolean(),
   createdAt: z.string(),
 })
 export type FeedPost = z.infer<typeof feedPostSchema>

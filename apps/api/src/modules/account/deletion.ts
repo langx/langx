@@ -190,6 +190,10 @@ export async function purgeExpiredAccounts(
         $or: [{ blockerId: userId }, { blockedId: userId }],
       }),
       db.collection(COLLECTIONS.reports).deleteMany({ reporterId: userId }),
+      // Likes this account left. Not the ones it *received* — those are counts
+      // on content that survives the author, the same way a post outlives the
+      // account that wrote it.
+      db.collection(COLLECTIONS.likes).deleteMany({ userId }),
       // The ledger survives as an audit trail, with the identity removed: a
       // fresh random id per purge, stored nowhere else, so the rows stay
       // linkable to each other and to nobody. The aggregates *are* deleted,
@@ -221,20 +225,31 @@ export async function purgeExpiredAccounts(
  * someone else's words under the banner of their own data rights.
  */
 export async function exportUserData(db: Db, userId: string): Promise<DataExport> {
-  const [profile, conversations, messages, tokenLedger, subscriptions, blocks, views, devices] =
-    await Promise.all([
-      db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
-      db
-        .collection<Conversation>(COLLECTIONS.conversations)
-        .find({ participants: userId })
-        .toArray(),
-      db.collection<Message>(COLLECTIONS.messages).find({ senderId: userId }).toArray(),
-      db.collection(COLLECTIONS.tokenLedger).find({ userId }).toArray(),
-      db.collection(COLLECTIONS.subscriptions).find({ userId }).toArray(),
-      db.collection(COLLECTIONS.blocks).find({ blockerId: userId }).toArray(),
-      db.collection(COLLECTIONS.profileViews).find({ viewerId: userId }).toArray(),
-      db.collection(COLLECTIONS.devices).find({ userId }).toArray(),
-    ])
+  const [
+    profile,
+    conversations,
+    messages,
+    tokenLedger,
+    subscriptions,
+    blocks,
+    views,
+    devices,
+    posts,
+    postCorrections,
+    likes,
+  ] = await Promise.all([
+    db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
+    db.collection<Conversation>(COLLECTIONS.conversations).find({ participants: userId }).toArray(),
+    db.collection<Message>(COLLECTIONS.messages).find({ senderId: userId }).toArray(),
+    db.collection(COLLECTIONS.tokenLedger).find({ userId }).toArray(),
+    db.collection(COLLECTIONS.subscriptions).find({ userId }).toArray(),
+    db.collection(COLLECTIONS.blocks).find({ blockerId: userId }).toArray(),
+    db.collection(COLLECTIONS.profileViews).find({ viewerId: userId }).toArray(),
+    db.collection(COLLECTIONS.devices).find({ userId }).toArray(),
+    db.collection(COLLECTIONS.posts).find({ authorId: userId }).toArray(),
+    db.collection(COLLECTIONS.postCorrections).find({ authorId: userId }).toArray(),
+    db.collection(COLLECTIONS.likes).find({ userId }).toArray(),
+  ])
 
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
 
@@ -248,5 +263,8 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     blocks,
     profileViews: views,
     devices,
+    posts,
+    postCorrections,
+    likes,
   }
 }

@@ -6,6 +6,7 @@ import { Button } from '../../src/components/ui/Button'
 import { useCorrectPost, useCreatePost, useFeed, useMe } from '../../src/api/queries'
 import type { CreatePostInput, FeedPost } from '../../src/api/types'
 import { Avatar } from '../../src/components/ui/Avatar'
+import { LikeButton } from '../../src/components/LikeButton'
 import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -231,6 +232,17 @@ export default function FeedScreen() {
 
                 <Text style={styles.body}>{item.body}</Text>
 
+                <View style={styles.likeRow}>
+                  <LikeButton
+                    targetType="post"
+                    targetId={item._id}
+                    likeCount={item.likeCount}
+                    likedByViewer={item.likedByViewer}
+                    disabled={mine}
+                    from="/(app)/feed"
+                  />
+                </View>
+
                 {item.topCorrection ? (
                   <View style={styles.top}>
                     <Pressable
@@ -246,6 +258,16 @@ export default function FeedScreen() {
                     {item.topCorrection.note ? (
                       <Text style={styles.topNote}>{item.topCorrection.note}</Text>
                     ) : null}
+                    <View style={styles.likeRow}>
+                      <LikeButton
+                        targetType="correction"
+                        targetId={item.topCorrection._id}
+                        likeCount={item.topCorrection.likeCount}
+                        likedByViewer={item.topCorrection.likedByViewer}
+                        disabled={item.topCorrection.author._id === me.data?._id}
+                        from="/(app)/feed"
+                      />
+                    </View>
                   </View>
                 ) : null}
 
@@ -371,6 +393,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   topText: { ...font.label, color: colors.text, fontWeight: '600', lineHeight: 20, marginTop: 5 },
   topNote: { ...font.caption, color: colors.textMuted, lineHeight: 18, marginTop: 4 },
   actions: { flexDirection: 'row', gap: spacing.sm, marginTop: 14 },
+  likeRow: { flexDirection: 'row', marginTop: 10 },
   action: {
     alignItems: 'center',
     borderRadius: radius.pill,

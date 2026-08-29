@@ -28,8 +28,10 @@ export const COLLECTIONS = {
    */
   legacyRooms: 'legacyRooms',
   legacyMessages: 'legacyMessages',
-  // No `likes`/`matches` — there's no match gate. A conversation starts
-  // directly; `conversations.pairKey` is what used to be `matches.pairKey`.
+  // No `matches` — there's no match gate. A conversation starts directly;
+  // `conversations.pairKey` is what used to be `matches.pairKey`. `likes`
+  // below is not that: it is a signal on feed *content*, never on a person,
+  // and it opens no channel.
   conversations: 'conversations',
   messages: 'messages',
   blocks: 'blocks',
@@ -44,6 +46,16 @@ export const COLLECTIONS = {
    */
   posts: 'posts',
   postCorrections: 'postCorrections',
+  /**
+   * Likes on feed content — a post or a correction, told apart by
+   * `targetType`. One collection rather than one per likeable thing, so a third
+   * kind needs a value in an enum and no migration.
+   *
+   * `targetId` is an `ObjectId`, which quietly rules out ever liking a
+   * *profile*: profiles are keyed by string. That is the architecture's
+   * no-match-mechanic rule expressed as a type, and it was free.
+   */
+  likes: 'likes',
 
   // billing
   subscriptions: 'subscriptions',

@@ -1,7 +1,8 @@
 import { useLocalSearchParams } from 'expo-router'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { usePostCorrections } from '../../../src/api/queries'
+import { useMe, usePostCorrections } from '../../../src/api/queries'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { LikeButton } from '../../../src/components/LikeButton'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
@@ -24,6 +25,7 @@ export default function PostScreen() {
   const names = useDisplayNames()
   const { locale } = useLocale()
   const { id, from } = useLocalSearchParams<{ id: string; from?: string }>()
+  const me = useMe()
 
   const here = `/(app)/post/${id}`
   const query = usePostCorrections(id)
@@ -84,6 +86,16 @@ export default function PostScreen() {
                   </View>
                 </Pressable>
                 <Text style={styles.body}>{post.body}</Text>
+                <View style={styles.likeRow}>
+                  <LikeButton
+                    targetType="post"
+                    targetId={post._id}
+                    likeCount={post.likeCount}
+                    likedByViewer={post.likedByViewer}
+                    disabled={post.author._id === me.data?._id}
+                    from={here}
+                  />
+                </View>
               </View>
               <Text style={styles.sectionTitle}>{t('feed.allCorrections')}</Text>
             </View>
@@ -112,6 +124,16 @@ export default function PostScreen() {
               </Pressable>
               <Text style={styles.corrected}>{item.corrected}</Text>
               {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+              <View style={styles.likeRow}>
+                <LikeButton
+                  targetType="correction"
+                  targetId={item._id}
+                  likeCount={item.likeCount}
+                  likedByViewer={item.likedByViewer}
+                  disabled={item.author._id === me.data?._id}
+                  from={here}
+                />
+              </View>
             </View>
           )}
         />
@@ -149,4 +171,5 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   },
   corrected: { ...font.label, color: colors.text, fontWeight: '600', lineHeight: 20, marginTop: 8 },
   note: { ...font.caption, color: colors.textMuted, lineHeight: 18, marginTop: 4 },
+  likeRow: { flexDirection: 'row', marginTop: 10 },
 }))

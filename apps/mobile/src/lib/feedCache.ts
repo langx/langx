@@ -1,7 +1,15 @@
 import type { InfiniteData } from '@tanstack/react-query'
-import type { FeedPage, FeedPost, PostCorrection } from '@langx/shared'
+import type {
+  FeedPage,
+  FeedPost,
+  LikeState,
+  LikeTargetType,
+  PostCorrection,
+  PostCorrectionsPage,
+} from '@langx/shared'
 
 type Pages = InfiniteData<FeedPage> | undefined
+type ThreadPages = InfiniteData<PostCorrectionsPage> | undefined
 
 /**
  * A correction patched into the loaded feed pages instead of invalidating them.
@@ -46,4 +54,71 @@ function patchPost(data: Pages, postId: string, patch: (post: FeedPost) => FeedP
     return { ...page, items: page.items.map((post) => (post._id === postId ? patch(post) : post)) }
   })
   return found ? { ...data, pages } : data
+}
+
+/**
+ * A like patched into the loaded feed pages.
+ *
+ * The server answers a like with the whole new state rather than an
+ * acknowledgement, so there is nothing to guess: `likeCount` and
+ * `likedByViewer` are written, not incremented. That is what makes a double
+ * tap on a slow network safe — two responses carry the same number, where two
+ * increments would carry two.
+ *
+ * A liked *correction* is patched too, since the card shows one. It is the same
+ * correction object the thread screen shows, and the two must not disagree
+ * while both are on screen.
+ */
+export function applyLike(
+  data: Pages,
+  targetType: LikeTargetType,
+  targetId: string,
+  state: LikeState,
+): Pages {
+  if (!data) return data
+  let found = false
+  const pages = data.pages.map((page) => {
+    const items = page.items.map((post) => {
+      const patched = likePost(post, targetType, targetId, state)
+      if (patched !== post) found = true
+      return patched
+    })
+    return found ? { ...page, items } : page
+  })
+  return found ? { ...data, pages } : data
+}
+
+/** The same patch against the post detail screen's pages. */
+export function applyLikeToThread(
+  data: ThreadPages,
+  targetType: LikeTargetType,
+  targetId: string,
+  state: LikeState,
+): ThreadPages {
+  if (!data) return data
+  let found = false
+  const pages = data.pages.map((page) => {
+    const post = likePost(page.post, targetType, targetId, state)
+    const items = page.items.map((correction) => {
+      if (targetType !== 'correction' || correction._id !== targetId) return correction
+      found = true
+      return { ...correction, ...state }
+    })
+    if (post !== page.post) found = true
+    return { ...page, post, items }
+  })
+  return found ? { ...data, pages } : data
+}
+
+function likePost(
+  post: FeedPost,
+  targetType: LikeTargetType,
+  targetId: string,
+  state: LikeState,
+): FeedPost {
+  if (targetType === 'post') {
+    return post._id === targetId ? { ...post, ...state } : post
+  }
+  if (post.topCorrection?._id !== targetId) return post
+  return { ...post, topCorrection: { ...post.topCorrection, ...state } }
 }
