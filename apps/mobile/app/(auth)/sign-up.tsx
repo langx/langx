@@ -2,13 +2,15 @@ import { MINIMUM_AGE } from '@langx/shared'
 import * as Linking from 'expo-linking'
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
+import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
+import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorMessage } from '../../src/lib/errors'
 
 export default function SignUp() {
+  const styles = useStyles()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -86,7 +88,7 @@ export default function SignUp() {
       />
 
       <View style={styles.footer}>
-        <Text>Already have an account? </Text>
+        <Text style={styles.footerText}>Already have an account? </Text>
         <Link href="/(auth)/sign-in" style={styles.link}>
           Sign in
         </Link>
@@ -95,10 +97,17 @@ export default function SignUp() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, gap: 16, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 28, fontWeight: '700' },
-  subtitle: { marginBottom: 8, opacity: 0.6 },
-  link: { color: '#111', fontWeight: '600', textDecorationLine: 'underline' },
+const useStyles = makeStyles(({ colors }) => ({
+  container: {
+    backgroundColor: colors.bg,
+    flex: 1,
+    gap: 16,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: { color: colors.text, fontSize: 28, fontWeight: '700' },
+  subtitle: { color: colors.textMuted, marginBottom: 8, opacity: 0.6 },
+  link: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
+  footerText: { color: colors.textMuted },
   footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
-})
+}))

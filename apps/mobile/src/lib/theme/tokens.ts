@@ -105,6 +105,18 @@ const lightColors = {
    * left to read as a knob at all.
    */
   knob: '#ffffff',
+
+  /**
+   * Scrims are the same in both schemes and deliberately not derived from the
+   * palette. A scrim's job is to put distance between a sheet and what is
+   * behind it; tinting it with the ground would make it do less of that in
+   * exactly the scheme where the sheet and the ground are already close.
+   */
+  scrim: 'rgba(0, 0, 0, 0.45)',
+  /** The photo lightbox, which is a viewer rather than an overlay. */
+  scrimStrong: 'rgba(0, 0, 0, 0.94)',
+  /** Chrome drawn on a scrim — always white, because a scrim is always dark. */
+  onScrim: '#ffffff',
 } as const
 
 export type ThemeColors = { readonly [K in keyof typeof lightColors]: string }
@@ -145,6 +157,10 @@ const darkColors: ThemeColors = {
   danger: '#ff8082',
 
   knob: '#ffffff',
+
+  scrim: 'rgba(0, 0, 0, 0.45)',
+  scrimStrong: 'rgba(0, 0, 0, 0.94)',
+  onScrim: '#ffffff',
 }
 
 /**

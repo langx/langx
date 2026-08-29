@@ -62,7 +62,7 @@ export default function BlockedScreen() {
           }
           ListEmptyComponent={
             <EmptyState
-              emoji="🚫"
+              icon="slash"
               title="Nobody blocked"
               body="People you block stop appearing anywhere for either of you, and neither of you can message the other."
             />

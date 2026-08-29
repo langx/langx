@@ -1,5 +1,6 @@
 import { Link, useLocalSearchParams } from 'expo-router'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * Landing screen after tapping the emailed verification link.
@@ -13,6 +14,7 @@ import { StyleSheet, Text, View } from 'react-native'
  * them at sign-in rather than leaving them on a bare browser tab.
  */
 export default function VerifyEmailSuccess() {
+  const styles = useStyles()
   const { error } = useLocalSearchParams<{ error?: string }>()
 
   return (
@@ -30,14 +32,26 @@ export default function VerifyEmailSuccess() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, gap: 16, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 28, fontWeight: '700', textAlign: 'center' },
-  body: { fontSize: 15, lineHeight: 22, opacity: 0.8, textAlign: 'center' },
+const useStyles = makeStyles(({ colors }) => ({
+  container: {
+    backgroundColor: colors.bg,
+    flex: 1,
+    gap: 16,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: { color: colors.text, fontSize: 28, fontWeight: '700', textAlign: 'center' },
+  body: {
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 22,
+    opacity: 0.8,
+    textAlign: 'center',
+  },
   link: {
-    color: '#111',
+    color: colors.accent,
     fontWeight: '600',
     textAlign: 'center',
     textDecorationLine: 'underline',
   },
-})
+}))

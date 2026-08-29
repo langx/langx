@@ -202,7 +202,7 @@ export default function DiscoverScreen() {
          * offered as one rather than as an error.
          */
         <EmptyState
-          emoji="📍"
+          icon="map-pin"
           title="Location sharing is off"
           body="Nearby needs to know roughly where you are. Nothing precise is stored, and nobody sees more than a rough distance."
           actionLabel={shareLocation.isPending ? 'Turning on…' : 'Turn it on'}
@@ -229,13 +229,13 @@ export default function DiscoverScreen() {
               // who is not told about the second one concludes the feature is
               // broken rather than that the pool is small.
               <EmptyState
-                emoji="📍"
+                icon="map-pin"
                 title={`Nobody within ${radiusKm} km`}
                 body="Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs."
               />
             ) : (
               <EmptyState
-                emoji="🔍"
+                icon="search"
                 title="Nobody here yet"
                 body="People whose languages match yours in both directions show up here. Try loosening the filters."
               />

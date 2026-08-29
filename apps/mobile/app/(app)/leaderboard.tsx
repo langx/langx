@@ -86,7 +86,7 @@ export default function LeaderboardScreen() {
           }}
           ListEmptyComponent={
             <EmptyState
-              emoji="🏆"
+              icon="award"
               title="Nothing here yet"
               body="Send messages and write corrections — be the first to earn tokens this period."
             />
