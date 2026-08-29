@@ -14,6 +14,7 @@ import type {
   PeriodType,
   PublicProfileDto,
   Wallet,
+  BadgeSummary,
   TokenSummary,
 } from './types'
 import {
@@ -40,6 +41,7 @@ export const keys = {
   messages: (id: string) => ['messages', id] as const,
   tokens: ['tokens'] as const,
   wallet: ['wallet'] as const,
+  badges: ['badges'] as const,
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
@@ -267,6 +269,10 @@ export function useTokens() {
 
 export function useWallet() {
   return useQuery({ queryKey: keys.wallet, queryFn: () => api.get<Wallet>('/me/wallet') })
+}
+
+export function useBadges() {
+  return useQuery({ queryKey: keys.badges, queryFn: () => api.get<BadgeSummary>('/me/badges') })
 }
 
 export function useLeaderboard(period: PeriodType) {
