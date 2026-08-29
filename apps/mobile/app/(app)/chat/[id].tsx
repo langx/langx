@@ -1,3 +1,5 @@
+import Feather from '@expo/vector-icons/Feather'
+import { TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -300,8 +302,14 @@ export default function ChatScreen() {
   return (
     <Screen fluid style={styles.screen}>
       <View style={styles.header}>
-        <Pressable onPress={() => goBackTo('/(app)/chats')} hitSlop={12}>
-          <Text style={styles.back}>‹</Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          onPress={() => goBackTo('/(app)/chats')}
+          hitSlop={12}
+          style={styles.back}
+        >
+          <Feather name="arrow-left" size={19} color={colors.text} />
         </Pressable>
         <Pressable
           style={styles.headerUser}
@@ -312,10 +320,26 @@ export default function ChatScreen() {
             )
           }
         >
-          <Avatar url={partner?.avatarUrl} name={partner?.displayName ?? '?'} size={32} />
-          <View>
-            <Text style={styles.headerName}>{partner?.displayName ?? 'Chat'}</Text>
-            {partnerTyping ? <Text style={styles.typing}>typing…</Text> : null}
+          <Avatar
+            url={partner?.avatarUrl}
+            name={partner?.displayName ?? '?'}
+            size={40}
+            online={partner?.isOnline ?? false}
+          />
+          <View style={styles.headerText}>
+            <Text style={styles.headerName} numberOfLines={1}>
+              {partner?.displayName ?? 'Chat'}
+            </Text>
+            {/*
+              One line that is either presence or typing, never both stacked —
+              the header is 40px tall and a third line pushes the avatar out of
+              alignment with the name.
+            */}
+            {partnerTyping ? (
+              <Text style={styles.typing}>typing…</Text>
+            ) : partner?.isOnline ? (
+              <Text style={styles.presence}>Online</Text>
+            ) : null}
           </View>
         </Pressable>
       </View>
@@ -378,17 +402,32 @@ export default function ChatScreen() {
               return (
                 <Pressable
                   onLongPress={() => void openActions(item)}
-                  style={[styles.correction, mine ? styles.mine : styles.theirs]}
+                  style={[styles.correction, mine ? styles.correctionMine : null]}
                 >
-                  <Text style={styles.correctionLabel}>✏️ Correction</Text>
-                  {item.correction ? (
-                    <Text style={styles.correctionOriginal}>{item.correction.original}</Text>
-                  ) : null}
-                  <Text style={styles.correctionText}>{item.body}</Text>
-                  {item.correction?.note ? (
-                    <Text style={styles.correctionNote}>{item.correction.note}</Text>
-                  ) : null}
-                  <MessageMeta message={item} mine={mine} />
+                  {/*
+                    The success pair, and only ever the success pair. A
+                    correction is another person changing your sentence; the
+                    info pair belongs to Copilot, which proposes one you have
+                    not sent. The two must never be confusable — see `Callout`.
+                  */}
+                  <View style={styles.correctionHead}>
+                    <Feather name="edit-3" size={14} color={colors.success} />
+                    <Text style={styles.correctionLabel}>
+                      {mine
+                        ? 'Your correction'
+                        : `Correction from ${partner?.displayName ?? 'them'}`}
+                    </Text>
+                  </View>
+                  <View style={styles.correctionBody}>
+                    {item.correction ? (
+                      <Text style={styles.correctionOriginal}>{item.correction.original}</Text>
+                    ) : null}
+                    <Text style={styles.correctionText}>{item.body}</Text>
+                    {item.correction?.note ? (
+                      <Text style={styles.correctionNote}>{item.correction.note}</Text>
+                    ) : null}
+                    <MessageMeta message={item} mine={mine} />
+                  </View>
                 </Pressable>
               )
             }
@@ -475,7 +514,7 @@ export default function ChatScreen() {
               hitSlop={8}
               style={styles.attach}
             >
-              <Text style={styles.attachIcon}>📷</Text>
+              <Feather name="camera" size={20} color={colors.textMuted} />
             </Pressable>
           )}
           <TextInput
@@ -514,7 +553,11 @@ export default function ChatScreen() {
               disabled={sending}
               style={[styles.sendButton, sending && styles.sendDisabled]}
             >
-              <Text style={styles.sendLabel}>{sending ? '…' : '↑'}</Text>
+              <Feather
+                name={sending ? 'more-horizontal' : 'arrow-up'}
+                size={20}
+                color={colors.primaryText}
+              />
             </Pressable>
           ) : (
             <Pressable
@@ -526,9 +569,22 @@ export default function ChatScreen() {
                 sendingMedia && styles.sendDisabled,
               ]}
             >
-              <Text style={styles.sendLabel}>{recorder.isRecording ? '■' : '🎤'}</Text>
+              <Feather
+                name={recorder.isRecording ? 'square' : 'mic'}
+                size={20}
+                color={recorder.isRecording ? colors.textInverse : colors.primaryText}
+              />
             </Pressable>
           )}
+        </View>
+        {/*
+          The two facts a first-time user cannot discover: that a long press
+          corrects, and that a message pays. Both come from `TOKEN_RULES`
+          rather than being written into the copy.
+        */}
+        <View style={styles.composerHint}>
+          <Text style={styles.hintLeft}>Hold a message to correct it</Text>
+          <Text style={styles.hintRight}>+{TOKEN_RULES.award.message} tokens / message</Text>
         </View>
       </KeyboardAvoidingView>
     </Screen>
@@ -539,30 +595,56 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   screen: { paddingHorizontal: 0 },
   header: {
     alignItems: 'center',
+    backgroundColor: colors.surface,
     borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    gap: spacing.sm,
-    paddingBottom: spacing.sm,
+    gap: spacing.md,
+    paddingBottom: 14,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
   },
-  back: { color: colors.text, fontSize: 30, lineHeight: 32 },
-  headerUser: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  headerName: { ...font.body, color: colors.text, fontWeight: '700' },
-  typing: { ...font.caption, color: colors.accent },
-  list: { gap: spacing.xs, paddingHorizontal: spacing.lg, paddingVertical: spacing.md },
+  back: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    height: 38,
+    justifyContent: 'center',
+    width: 38,
+  },
+  headerUser: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: spacing.md },
+  headerText: { flex: 1, minWidth: 0 },
+  headerName: { ...font.heading, color: colors.text, fontSize: 16 },
+  typing: { ...font.caption, color: colors.accent, fontWeight: '600' },
+  presence: { ...font.caption, color: colors.success, fontWeight: '600' },
+  list: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   skeletonFill: { flex: 1 },
   older: { paddingVertical: spacing.md },
   bubble: {
     borderRadius: radius.lg,
-    maxWidth: '80%',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    maxWidth: '82%',
+    paddingHorizontal: 14,
+    paddingVertical: spacing.md,
   },
-  mine: { alignSelf: 'flex-end', backgroundColor: colors.primary },
-  theirs: { alignSelf: 'flex-start', backgroundColor: colors.surface },
-  bubbleText: { ...font.body, color: colors.text },
+  /**
+   * One square corner on the side the bubble comes from. It is the whole of
+   * what makes a stack of bubbles read as a conversation rather than as a list
+   * of cards, and it costs one radius each.
+   */
+  mine: {
+    alignSelf: 'flex-end',
+    backgroundColor: colors.primary,
+    borderBottomRightRadius: radius.sm / 2,
+  },
+  theirs: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.surface,
+    borderBottomLeftRadius: radius.sm / 2,
+    borderColor: colors.border,
+    borderWidth: 1,
+  },
+  bubbleText: { ...font.body, color: colors.text, lineHeight: 22 },
   bubbleTextMine: { color: colors.primaryText },
   translation: {
     ...font.caption,
@@ -575,21 +657,50 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   translationMine: { borderTopColor: colors.primaryTextMuted, color: colors.primaryTextMuted },
   translateLink: { ...font.caption, color: colors.accent, marginTop: spacing.xs },
   correction: {
+    backgroundColor: colors.successBg,
     borderColor: colors.success,
     borderRadius: radius.lg,
     borderWidth: 1,
-    maxWidth: '85%',
-    padding: spacing.md,
+    overflow: 'hidden',
   },
-  correctionLabel: { ...font.caption, color: colors.success, fontWeight: '700' },
+  // A correction is about a sentence, not about who is winning, so it spans the
+  // thread rather than taking a side. Only the alignment marks the author.
+  correctionMine: { alignSelf: 'stretch' },
+  correctionHead: {
+    alignItems: 'center',
+    borderBottomColor: colors.success,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: 7,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  correctionLabel: { ...font.heading, color: colors.success, fontSize: 13 },
+  correctionBody: { paddingHorizontal: 14, paddingVertical: 13 },
   correctionOriginal: {
-    ...font.caption,
+    ...font.label,
     color: colors.textMuted,
-    marginTop: spacing.xs,
+    fontWeight: '400',
+    lineHeight: 21,
     textDecorationLine: 'line-through',
   },
-  correctionText: { ...font.body, color: colors.text, marginTop: 2 },
-  correctionNote: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
+  correctionText: {
+    ...font.body,
+    color: colors.text,
+    fontWeight: '600',
+    marginTop: 6,
+    lineHeight: 22,
+  },
+  correctionNote: {
+    ...font.label,
+    borderTopColor: colors.success,
+    borderTopWidth: 1,
+    color: colors.textMuted,
+    fontWeight: '400',
+    lineHeight: 20,
+    marginTop: 11,
+    paddingTop: 10,
+  },
   correctingBanner: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -603,35 +714,58 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   correctingCancel: { ...font.caption, color: colors.danger, fontWeight: '700' },
   composer: {
     alignItems: 'flex-end',
-    borderTopColor: colors.border,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-  },
-  input: {
     backgroundColor: colors.surface,
-    borderRadius: radius.lg,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: 9,
+    paddingHorizontal: 14,
+    paddingTop: spacing.md,
+  },
+  composerHint: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 18,
+    paddingHorizontal: 14,
+    paddingTop: 10,
+  },
+  hintLeft: { ...font.caption, color: colors.textFaint },
+  hintRight: { ...font.caption, color: colors.warning, fontWeight: '600' },
+  input: {
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
     color: colors.text,
     flex: 1,
     maxHeight: 120,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    minHeight: 46,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 13,
     ...font.body,
   },
   sendButton: {
     alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: radius.pill,
-    height: 40,
+    height: 46,
     justifyContent: 'center',
-    width: 40,
+    width: 46,
   },
   sendDisabled: { opacity: 0.35 },
   recordButtonActive: { backgroundColor: colors.danger },
-  attach: { paddingBottom: spacing.sm, paddingRight: spacing.xs },
-  attachIcon: { fontSize: 22 },
+  attach: {
+    alignItems: 'center',
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    height: 46,
+    justifyContent: 'center',
+    width: 46,
+  },
   caption: { marginTop: spacing.xs },
   recording: {
     alignItems: 'center',
@@ -642,7 +776,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   recordingDot: { color: colors.danger, fontSize: 12 },
   recordingTime: { ...font.caption, color: colors.text, fontVariant: ['tabular-nums'] },
   recordingCancel: { ...font.caption, color: colors.textMuted },
-  sendLabel: { color: colors.primaryText, fontSize: 20, fontWeight: '700' },
 }))
 
 /** A thread's worth; the composer sits below them either way. */
