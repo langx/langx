@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native'
-import { colors, font, radius, spacing } from '../../lib/theme'
+import { Pressable, Text, View, type ViewStyle } from 'react-native'
+import { makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
 
 interface ChipProps {
   label: string
@@ -8,13 +8,23 @@ interface ChipProps {
   tone?: 'default' | 'accent' | 'streak' | 'pro' | 'proPlus'
 }
 
-const TONE = {
-  default: colors.textMuted,
-  accent: colors.accent,
-  streak: colors.streak,
-  pro: colors.pro,
-  proPlus: colors.proPlus,
-} as const
+type Tone = NonNullable<ChipProps['tone']>
+
+/**
+ * A function of the palette rather than a module-scope map: the tones differ
+ * per scheme, and a map built at import time would hand a dark screen light
+ * mode's accents.
+ */
+function toneColour(colors: ThemeColors, tone: Tone): string {
+  const byTone: Record<Tone, string> = {
+    default: colors.textMuted,
+    accent: colors.accent,
+    streak: colors.streak,
+    pro: colors.pro,
+    proPlus: colors.proPlus,
+  }
+  return byTone[tone]
+}
 
 /**
  * A read-only chip and a tappable one look identical, so they have to be
@@ -24,13 +34,18 @@ const TONE = {
  * happened to use a selected chip without an `onPress`.
  */
 export function Chip({ label, selected = false, onPress, tone = 'default' }: ChipProps) {
-  const colour = TONE[tone]
+  const { colors } = useTheme()
+  const styles = useStyles()
+
+  const colour = toneColour(colors, tone)
   const container: ViewStyle[] = [
     styles.base,
     { borderColor: colour },
     ...(selected ? [{ backgroundColor: colour }] : []),
   ]
-  const text = [styles.label, { color: selected ? colors.primaryText : colour }]
+  // `textInverse`, not `primaryText`: a selected chip is filled with its own
+  // tone, which is only `primary` by coincidence for the default one.
+  const text = [styles.label, { color: selected ? colors.textInverse : colour }]
 
   // Both branches render the same View + Text structure. Styling a bare Text
   // as the container is what let the two drift apart in the first place.
@@ -48,7 +63,7 @@ export function Chip({ label, selected = false, onPress, tone = 'default' }: Chi
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ font, spacing, radius }) => ({
   base: {
     borderRadius: radius.pill,
     borderWidth: 1,
@@ -58,4 +73,4 @@ const styles = StyleSheet.create({
   },
   label: { ...font.caption, fontWeight: '600' },
   pressed: { opacity: 0.7 },
-})
+}))

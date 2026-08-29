@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router'
 import { Text } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { colors } from '../../src/lib/theme'
+import { useTheme } from '../../src/lib/theme'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useSocket } from '../../src/hooks/useSocket'
@@ -21,6 +21,7 @@ function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
  * is exactly when the unread badge needs to update.
  */
 export default function AppLayout() {
+  const { colors } = useTheme()
   useSocket()
   usePushRegistration()
   // Here rather than in the root layout: every destination a notification has

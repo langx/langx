@@ -7,7 +7,7 @@ import {
   subscribeToMessageMenu,
   type MessageMenuRequest,
 } from '../lib/messageMenu'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 /**
  * Draws whatever `src/lib/messageMenu.ts` has open.
@@ -22,6 +22,9 @@ import { colors, font, radius, spacing } from '../lib/theme'
  * to.
  */
 export function MessageMenuHost() {
+  const { colors, spacing } = useTheme()
+  const styles = useStyles()
+
   const [request, setRequest] = useState<MessageMenuRequest | null>(null)
   const insets = useSafeAreaInsets()
 
@@ -73,7 +76,7 @@ export function MessageMenuHost() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   action: {
     alignItems: 'center',
     borderRadius: radius.md,
@@ -110,4 +113,4 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.md,
     width: '100%',
   },
-})
+}))

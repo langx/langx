@@ -2,7 +2,7 @@ import { INTEREST_SUGGESTIONS, MAX_INTERESTS } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Image } from 'expo-image'
 import { uploadAvatarBytes } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
@@ -11,7 +11,7 @@ import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { showAlert } from '../../src/lib/alert'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * Step 3 of 4, and both halves of it are skippable.
@@ -28,6 +28,8 @@ import { colors, font, radius, spacing } from '../../src/lib/theme'
  * draft and `POST /profiles` writes it, running the same bucket check.
  */
 export default function PhotoStep() {
+  const styles = useStyles()
+
   const draft = useOnboardingDraft()
   const [uploading, setUploading] = useState(false)
 
@@ -135,7 +137,7 @@ export default function PhotoStep() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
   hint: { ...font.caption, color: colors.textMuted, marginBottom: spacing.md },
@@ -163,4 +165,4 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     paddingVertical: spacing.sm,
   },
-})
+}))

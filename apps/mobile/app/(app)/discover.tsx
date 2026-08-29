@@ -43,7 +43,7 @@ import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/locatio
 import { openPaywall } from '../../src/lib/paywall'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 const SORTS: { key: DiscoverySort; label: string }[] = [
   { key: 'recommended', label: 'For you' },
@@ -52,6 +52,8 @@ const SORTS: { key: DiscoverySort; label: string }[] = [
 ]
 
 function LanguageLine({ item }: { item: DiscoveryItem }) {
+  const styles = useStyles()
+
   const speaks = item.nativeLanguages.map((l) => getLanguage(l.code)?.name ?? l.code).join(', ')
   const learns = item.learning
     .map((l) => `${getLanguage(l.code)?.name ?? l.code} ${LEVEL_SHORT_LABELS[l.level]}`)
@@ -64,6 +66,8 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
 }
 
 export default function DiscoverScreen() {
+  const styles = useStyles()
+
   const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<DiscoverySort>('recommended')
   const [radiusKm, setRadiusKm] = useState<number>(NEARBY_MAX_KM)
@@ -280,7 +284,7 @@ export default function DiscoverScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   header: { paddingTop: spacing.md },
   title: { ...font.title, color: colors.text },
   filters: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginTop: spacing.md },
@@ -303,7 +307,7 @@ const styles = StyleSheet.create({
   languages: { ...font.caption, color: colors.accent, marginTop: 2 },
   distance: { ...font.caption, color: colors.textMuted, marginTop: 2 },
   bio: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-})
+}))
 
 /** Enough to fill a phone; the list scrolls before it needs more. */
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f', 'g']

@@ -1,8 +1,8 @@
 import { countryFlag, getCountry, searchCountries } from '@langx/shared'
 import { useMemo, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { Text, TextInput, View } from 'react-native'
 import { Chip } from './ui/Chip'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 interface CountryPickerProps {
   /** ISO 3166-1 alpha-2, or empty for "not set". */
@@ -25,6 +25,9 @@ interface CountryPickerProps {
  * raw code and nothing stopped them typing it in lower case.
  */
 export function CountryPicker({ value, onChange, label, onLocked }: CountryPickerProps) {
+  const { colors } = useTheme()
+  const styles = useStyles()
+
   const [term, setTerm] = useState('')
   const matches = useMemo(() => searchCountries(term), [term])
   const selected = value ? getCountry(value) : undefined
@@ -79,7 +82,7 @@ export function CountryPicker({ value, onChange, label, onLocked }: CountryPicke
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   label: { ...font.label, color: colors.text, marginBottom: spacing.sm },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
   hint: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
@@ -93,4 +96,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
-})
+}))

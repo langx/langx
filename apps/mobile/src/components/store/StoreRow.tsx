@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import type { StoreOffer } from '../../lib/storeOffers'
-import { colors, font, spacing } from '../../lib/theme'
+import { makeStyles } from '../../lib/theme'
 import { Button } from '../ui/Button'
 
 /**
@@ -16,6 +16,8 @@ export function StoreRow({
   pending: boolean
   onBuy: (id: string) => void
 }) {
+  const styles = useStyles()
+
   return (
     <View style={styles.row}>
       <View style={styles.flex}>
@@ -33,7 +35,7 @@ export function StoreRow({
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   /**
    * Undoes `Button`'s full-width default, which is right in a form column and
    * wrong here: claiming 100% of a row leaves nothing for the name beside it,
@@ -52,4 +54,4 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     paddingVertical: spacing.md,
   },
-})
+}))

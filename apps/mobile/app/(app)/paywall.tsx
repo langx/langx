@@ -13,7 +13,7 @@ import {
 } from '@langx/shared'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Linking, Pressable, Text, View } from 'react-native'
 import { useEffectiveTier, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
@@ -25,7 +25,7 @@ import {
   restorePurchases,
   type PurchaseOffer,
 } from '../../src/lib/purchases'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * Both dated 7 June 2024 and, per `architecture.md:101`, **still missing the
@@ -148,6 +148,8 @@ function parseFeature(raw: string | undefined): PlanFeature | null {
 }
 
 export default function PaywallScreen() {
+  const styles = useStyles()
+
   // Reached from the profile, the viewer list, filters, Discover and a chat
   // thread, so the caller says where back leads.
   const { feature: featureParam, from } = useLocalSearchParams<{
@@ -313,6 +315,8 @@ interface TierCardProps {
 }
 
 function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }: TierCardProps) {
+  const styles = useStyles()
+
   const copy = TIER_COPY[tier]
   const tierOffers = offers?.filter((offer) => offer.tier === tier) ?? []
   const isCurrent = currentTier === tier
@@ -391,6 +395,8 @@ function BenefitRow({
   body: string
   pending?: boolean
 }) {
+  const styles = useStyles()
+
   return (
     <View style={styles.feature}>
       <Text style={styles.emoji}>{emoji}</Text>
@@ -405,7 +411,7 @@ function BenefitRow({
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   back: { marginBottom: spacing.xl, marginTop: spacing.lg },
   card: {
     borderColor: colors.border,
@@ -467,4 +473,4 @@ const styles = StyleSheet.create({
   restoreText: { ...font.label, color: colors.accent },
   title: { ...font.title, marginTop: spacing.xs },
   unavailable: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
-})
+}))

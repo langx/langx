@@ -1,21 +1,13 @@
 import type { PeriodType } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useLeaderboard, useTokens } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { days } from '../../src/lib/format'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 import { dedupeById } from '../../src/lib/dedupeById'
 
 const TABS: { key: PeriodType; label: string }[] = [
@@ -28,6 +20,8 @@ const TABS: { key: PeriodType; label: string }[] = [
 const MEDALS = ['🥇', '🥈', '🥉']
 
 export default function LeaderboardScreen() {
+  const styles = useStyles()
+
   const [period, setPeriod] = useState<PeriodType>('week')
   const board = useLeaderboard(period)
   const xp = useTokens()
@@ -138,7 +132,7 @@ export default function LeaderboardScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   title: { ...font.title, color: colors.text, paddingTop: spacing.md },
   streakCard: {
     alignItems: 'center',
@@ -192,4 +186,4 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   viewerLabel: { ...font.body, color: colors.text, flex: 1, fontWeight: '600' },
-})
+}))

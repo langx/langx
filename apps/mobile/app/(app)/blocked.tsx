@@ -16,7 +16,7 @@ import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { confirmAlert } from '../../src/lib/alert'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { showToast } from '../../src/lib/toast'
-import { colors, font, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * Blocking is one tap from a profile; unblocking has to live somewhere, and it
@@ -24,6 +24,8 @@ import { colors, font, spacing } from '../../src/lib/theme'
  * Without this screen a block is irreversible in practice.
  */
 export default function BlockedScreen() {
+  const styles = useStyles()
+
   const blocks = useBlocks()
   const unblock = useUnblockUser()
 
@@ -106,7 +108,7 @@ export default function BlockedScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   backRow: { paddingTop: spacing.md },
   back: { ...font.body, color: colors.textMuted },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
@@ -125,4 +127,4 @@ const styles = StyleSheet.create({
   name: { ...font.body, color: colors.text, fontWeight: '600' },
   since: { ...font.caption, color: colors.textMuted },
   unblock: { ...font.label, color: colors.accent },
-})
+}))

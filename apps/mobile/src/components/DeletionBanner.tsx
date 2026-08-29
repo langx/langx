@@ -1,10 +1,10 @@
 import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { api } from '../api/client'
 import { keys, useMe } from '../api/queries'
-import { colors, font, spacing } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 
 function daysLeft(deletedAt: string): number {
   const purgeAt = new Date(deletedAt).getTime() + ACCOUNT_DELETION_GRACE_DAYS * 86_400_000
@@ -26,6 +26,8 @@ function daysLeft(deletedAt: string): number {
  * tabs, so it is on every screen and cannot be walked past.
  */
 export function DeletionBanner() {
+  const styles = useStyles()
+
   const me = useMe()
   const queryClient = useQueryClient()
   const [busy, setBusy] = useState(false)
@@ -67,7 +69,7 @@ export function DeletionBanner() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   root: {
     alignItems: 'center',
     backgroundColor: colors.danger,
@@ -77,12 +79,12 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   text: { flex: 1 },
-  title: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
-  body: { ...font.caption, color: colors.primaryText, opacity: 0.9 },
+  title: { ...font.caption, color: colors.textInverse, fontWeight: '700' },
+  body: { ...font.caption, color: colors.textInverse, opacity: 0.9 },
   action: {
     ...font.caption,
-    color: colors.primaryText,
+    color: colors.textInverse,
     fontWeight: '700',
     textDecorationLine: 'underline',
   },
-})
+}))

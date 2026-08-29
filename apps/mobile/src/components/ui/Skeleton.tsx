@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { Animated, StyleSheet, type ViewStyle } from 'react-native'
-import { colors, radius } from '../../lib/theme'
+import { Animated, type ViewStyle } from 'react-native'
+// `radius` stays a direct import: it is scheme-independent, and `corner`
+// defaults from it before any hook could have run.
+import { makeStyles, radius } from '../../lib/theme'
 
 /**
  * A placeholder block that pulses while its real content loads.
@@ -22,6 +24,7 @@ export function Skeleton({
   radius?: number
   style?: ViewStyle
 }) {
+  const styles = useStyles()
   const opacity = useRef(new Animated.Value(MIN_OPACITY)).current
 
   useEffect(() => {
@@ -53,6 +56,6 @@ export function Skeleton({
 
 const MIN_OPACITY = 0.35
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) => ({
   block: { backgroundColor: colors.border },
-})
+}))

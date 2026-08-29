@@ -1,7 +1,7 @@
 import { Image } from 'expo-image'
 import { useState } from 'react'
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { Modal, Pressable, ScrollView, Text, View } from 'react-native'
+import { makeStyles } from '../lib/theme'
 
 /**
  * A profile's photos, and a full-screen viewer for them.
@@ -17,6 +17,8 @@ import { colors, font, radius, spacing } from '../lib/theme'
  * they are there for.
  */
 export function PhotoGallery({ photos }: { photos: { url: string }[] }) {
+  const styles = useStyles()
+
   const [openAt, setOpenAt] = useState<number | null>(null)
   if (photos.length === 0) return null
 
@@ -71,7 +73,7 @@ export function PhotoGallery({ photos }: { photos: { url: string }[] }) {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   strip: { gap: spacing.sm, paddingVertical: spacing.sm },
   thumb: {
     backgroundColor: colors.surface,
@@ -92,4 +94,4 @@ const styles = StyleSheet.create({
   },
   pagerArrow: { color: '#fff', fontSize: 32 },
   pagerCount: { ...font.caption, color: '#fff', fontVariant: ['tabular-nums'] },
-})
+}))

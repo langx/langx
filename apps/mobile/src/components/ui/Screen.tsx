@@ -1,14 +1,7 @@
 import type { ReactNode } from 'react'
-import {
-  Platform,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  View,
-  type ViewStyle,
-} from 'react-native'
+import { Platform, RefreshControl, ScrollView, View, type ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { colors, layout, spacing } from '../../lib/theme'
+import { makeStyles } from '../../lib/theme'
 
 interface ScreenProps {
   children: ReactNode
@@ -34,6 +27,8 @@ export function Screen({
   refreshing = false,
   style,
 }: ScreenProps) {
+  const styles = useStyles()
+
   const insets = useSafeAreaInsets()
   const padding = {
     paddingTop: insets.top,
@@ -59,10 +54,10 @@ export function Screen({
   return <View style={[styles.root, padding, styles.centre]}>{inner}</View>
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, spacing, layout }) => ({
   root: { backgroundColor: colors.bg, flex: 1 },
   centre: { alignItems: 'center' },
   scrollContent: { alignItems: 'center', paddingVertical: spacing.lg },
   column: { maxWidth: layout.maxWidth, paddingHorizontal: spacing.lg, width: '100%' },
   fluid: { flex: 1, maxWidth: Platform.OS === 'web' ? layout.maxWidth : undefined },
-})
+}))

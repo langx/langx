@@ -1,7 +1,7 @@
 import { countryFlag, formatAccountAge, getCountry, type Gender } from '@langx/shared'
 import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import {
   useEffectiveTier,
   useIsPro,
@@ -25,7 +25,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { openPaywall } from '../../src/lib/paywall'
-import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { showToast } from '../../src/lib/toast'
 
 /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
@@ -42,6 +42,8 @@ const GENDER_LABELS: Record<Gender, string> = {
 }
 
 function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
+  const styles = useStyles()
+
   return (
     <View style={styles.stat}>
       <Text style={[styles.statValue, tone ? { color: tone } : null]}>{value}</Text>
@@ -51,6 +53,9 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: str
 }
 
 export default function MeScreen() {
+  const { colors, layout } = useTheme()
+  const styles = useStyles()
+
   const me = useMe()
   const xp = useTokens()
   const wallet = useWallet()
@@ -205,7 +210,7 @@ export default function MeScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   loading: { marginTop: spacing.xxl },
   flex: { flex: 1 },
   topBar: { alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end' },
@@ -247,4 +252,4 @@ const styles = StyleSheet.create({
   },
   firstAction: { marginTop: spacing.xl },
   signOut: { marginBottom: spacing.xxl, marginTop: spacing.sm },
-})
+}))

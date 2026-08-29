@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { useQuota } from '../api/queries'
 import { isDebugPanelEnabled } from '../lib/debugPanel'
 import { formatQuota } from '../lib/quotaFormat'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 
 /**
  * The viewer's own daily quotas, for looking at during development.
@@ -13,6 +13,8 @@ import { colors, font, radius, spacing } from '../lib/theme'
  * so nothing here needs product copy.
  */
 export function DebugQuotaPanel() {
+  const styles = useStyles()
+
   const quota = useQuota()
   if (!isDebugPanelEnabled()) return null
 
@@ -37,7 +39,7 @@ export function DebugQuotaPanel() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   label: { ...font.caption, color: colors.textMuted },
   panel: {
     borderColor: colors.border,
@@ -50,4 +52,4 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.xs },
   title: { ...font.label, color: colors.textMuted },
   value: { ...font.caption, color: colors.text, fontVariant: ['tabular-nums'] },
-})
+}))

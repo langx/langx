@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Modal, Pressable, Text, View } from 'react-native'
 import { dismissValue, resolveAlert, subscribeToAlerts, type AlertRequest } from '../lib/alert'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 
 /**
  * Draws whatever `src/lib/alert.ts` has queued.
@@ -15,6 +15,8 @@ import { colors, font, radius, spacing } from '../lib/theme'
  * sits under the tab bar on web, which is exactly where the buttons are.
  */
 export function AlertHost() {
+  const styles = useStyles()
+
   const [request, setRequest] = useState<AlertRequest<unknown> | null>(null)
 
   useEffect(() => subscribeToAlerts(setRequest), [])
@@ -55,7 +57,7 @@ export function AlertHost() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   backdrop: {
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.45)',
@@ -82,4 +84,4 @@ const styles = StyleSheet.create({
   buttonText: { ...font.body, color: colors.text, fontWeight: '600', textAlign: 'center' },
   destructive: { color: colors.danger },
   cancel: { color: colors.textMuted, fontWeight: '400' },
-})
+}))

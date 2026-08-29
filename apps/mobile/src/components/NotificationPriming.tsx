@@ -1,10 +1,10 @@
 import { STREAK_REMINDER_LOCAL_HOUR } from '@langx/shared'
 import * as Device from 'expo-device'
 import { useEffect, useState } from 'react'
-import { Platform, StyleSheet, Text, View } from 'react-native'
+import { Platform, Text, View } from 'react-native'
 import { registerPushToken } from '../hooks/usePushRegistration'
 import { Button } from './ui/Button'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 
 /**
  * Asks for notification permission **with a reason**, on a screen the user
@@ -20,6 +20,8 @@ import { colors, font, radius, spacing } from '../lib/theme'
  * once permission has already been decided.
  */
 export function NotificationPriming() {
+  const styles = useStyles()
+
   const [visible, setVisible] = useState(false)
   const [busy, setBusy] = useState(false)
 
@@ -80,7 +82,7 @@ export function NotificationPriming() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
@@ -92,4 +94,4 @@ const styles = StyleSheet.create({
   body: { ...font.caption, color: colors.textMuted, lineHeight: 18 },
   actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
   action: { flex: 1, width: 'auto' },
-})
+}))

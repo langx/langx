@@ -5,7 +5,7 @@ import { ApiRequestError } from '../src/api/client'
 import { useMe } from '../src/api/queries'
 import { getDraft, hydrateDraft, isDraftHydrated } from '../src/hooks/useOnboardingDraft'
 import { furthestOnboardingStep, onboardingHref } from '../src/lib/onboardingStep'
-import { colors } from '../src/lib/theme'
+import { useTheme } from '../src/lib/theme'
 
 /**
  * The gate `Stack.Protected` alone cannot express: signed out, signed in
@@ -17,6 +17,7 @@ import { colors } from '../src/lib/theme'
  * exist. A 404 from `/profiles/me` is that state, not an error.
  */
 export default function Index() {
+  const { colors } = useTheme()
   const { data: profile, isPending, error } = useMe()
   const [draftReady, setDraftReady] = useState(isDraftHydrated)
 

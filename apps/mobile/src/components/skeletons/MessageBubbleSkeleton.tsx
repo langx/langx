@@ -1,5 +1,5 @@
-import { StyleSheet, View } from 'react-native'
-import { colors, radius, spacing } from '../../lib/theme'
+import { View } from 'react-native'
+import { makeStyles } from '../../lib/theme'
 import { Skeleton } from '../ui/Skeleton'
 
 /**
@@ -9,6 +9,8 @@ import { Skeleton } from '../ui/Skeleton'
  * loading bar, and what is loading here is a conversation.
  */
 export function MessageBubbleSkeleton({ index }: { index: number }) {
+  const styles = useStyles()
+
   const mine = index % 2 === 1
   const width = WIDTHS[index % WIDTHS.length] ?? WIDTHS[0]
   return (
@@ -20,7 +22,7 @@ export function MessageBubbleSkeleton({ index }: { index: number }) {
 
 const WIDTHS: readonly [number, ...number[]] = [168, 96, 210, 132, 76, 190]
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, spacing, radius }) => ({
   bubble: {
     borderRadius: radius.lg,
     marginTop: spacing.sm,
@@ -30,4 +32,4 @@ const styles = StyleSheet.create({
   },
   mine: { alignSelf: 'flex-end', backgroundColor: colors.primary },
   theirs: { alignSelf: 'flex-start', backgroundColor: colors.surface },
-})
+}))

@@ -1,13 +1,5 @@
 import { router } from 'expo-router'
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useViewers } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
@@ -16,9 +8,11 @@ import { Screen } from '../../src/components/ui/Screen'
 import { goBackTo } from '../../src/lib/navigation'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { openPaywall } from '../../src/lib/paywall'
-import { colors, font, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 export default function ViewersScreen() {
+  const styles = useStyles()
+
   const viewers = useViewers()
   // `total` and `locked` describe the whole list, so the first page is the
   // authority on both; only `viewers` accumulates.
@@ -98,7 +92,7 @@ export default function ViewersScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   backRow: { paddingTop: spacing.md },
   back: { ...font.body, color: colors.textMuted },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
@@ -113,4 +107,4 @@ const styles = StyleSheet.create({
   body: { flex: 1 },
   name: { ...font.body, color: colors.text, fontWeight: '600' },
   time: { ...font.caption, color: colors.textMuted },
-})
+}))

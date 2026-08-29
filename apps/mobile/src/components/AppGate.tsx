@@ -1,9 +1,9 @@
 import * as Updates from 'expo-updates'
 import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
-import { Linking, Platform, StyleSheet, Text, View } from 'react-native'
+import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
-import { colors, font, spacing } from '../lib/theme'
+import { makeStyles } from '../lib/theme'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
 
@@ -31,6 +31,8 @@ function Blocked({
   actionLabel?: string
   onAction?: () => void
 }) {
+  const styles = useStyles()
+
   return (
     <Screen>
       <View style={styles.root}>
@@ -133,10 +135,10 @@ export function AppGate({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   root: { alignItems: 'center', paddingHorizontal: spacing.xl },
   emoji: { fontSize: 48, marginBottom: spacing.lg },
   title: { ...font.title, color: colors.text, marginBottom: spacing.sm, textAlign: 'center' },
   body: { ...font.body, color: colors.textMuted, textAlign: 'center' },
   action: { marginTop: spacing.xl, minWidth: 200 },
-})
+}))

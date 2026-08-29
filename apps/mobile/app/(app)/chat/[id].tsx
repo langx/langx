@@ -44,9 +44,12 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { flattenMessagePages } from '../../../src/lib/messageCache'
-import { colors, font, radius, spacing } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 export default function ChatScreen() {
+  const { colors } = useTheme()
+  const styles = useStyles()
+
   const { id } = useLocalSearchParams<{ id: string }>()
   const conversationId = id ?? ''
   const me = useMe()
@@ -532,7 +535,7 @@ export default function ChatScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   screen: { paddingHorizontal: 0 },
   header: {
     alignItems: 'center',
@@ -640,7 +643,7 @@ const styles = StyleSheet.create({
   recordingTime: { ...font.caption, color: colors.text, fontVariant: ['tabular-nums'] },
   recordingCancel: { ...font.caption, color: colors.textMuted },
   sendLabel: { color: colors.primaryText, fontSize: 20, fontWeight: '700' },
-})
+}))
 
 /** A thread's worth; the composer sits below them either way. */
 const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']

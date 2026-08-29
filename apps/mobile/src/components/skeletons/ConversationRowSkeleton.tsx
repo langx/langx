@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native'
-import { colors, layout, spacing } from '../../lib/theme'
+import { makeStyles, useTheme } from '../../lib/theme'
 import { Skeleton } from '../ui/Skeleton'
 
 /**
@@ -8,6 +8,9 @@ import { Skeleton } from '../ui/Skeleton'
  * they arrive, which reads worse than the spinner it replaced.
  */
 export function ConversationRowSkeleton() {
+  const { layout } = useTheme()
+  const styles = useStyles()
+
   return (
     <View style={styles.row}>
       <Skeleton width={layout.avatar} height={layout.avatar} radius={layout.avatar / 2} />
@@ -24,7 +27,7 @@ export function ConversationRowSkeleton() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   body: { flex: 1 },
   bottom: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 4 },
   row: {
@@ -36,4 +39,4 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
   },
   top: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-})
+}))
