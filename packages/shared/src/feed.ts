@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { languageCodeSchema } from './languages'
 import { languageLevelSchema } from './level'
+import { mediaSchema } from './media'
 
 /**
  * The community feed: a sentence somebody is unsure about, and the corrections
@@ -43,12 +44,23 @@ export const createPostSchema = z.object({
   body: postBodySchema,
   /** What language the sentence is in — the one the author is learning. */
   language: languageCodeSchema,
+  /**
+   * A photo of the sentence, or a recording of it being said.
+   *
+   * An attachment to a sentence, not a replacement for one: `body` stays
+   * required. With no text there is nothing for `corrected` to be an edit of,
+   * and the correction composer seeds itself with the post's words. Loosening
+   * this later is backwards-compatible; tightening it would not be.
+   */
+  media: mediaSchema.optional(),
 })
 export type CreatePostInput = z.infer<typeof createPostSchema>
 
 export const createPostCorrectionSchema = z.object({
   corrected: postBodySchema,
   note: z.string().trim().min(1).max(MAX_POST_NOTE_LENGTH).optional(),
+  /** Usually a recording: hearing it said is the half a written correction cannot give. */
+  media: mediaSchema.optional(),
 })
 export type CreatePostCorrectionInput = z.infer<typeof createPostCorrectionSchema>
 
@@ -99,6 +111,7 @@ export const postCorrectionSchema = z.object({
   /** Flat, to read the same way `correctionCount` does one level up. */
   likeCount: z.number().int().nonnegative(),
   likedByViewer: z.boolean(),
+  media: mediaSchema.optional(),
   createdAt: z.string(),
 })
 export type PostCorrection = z.infer<typeof postCorrectionSchema>
@@ -135,9 +148,22 @@ export const feedPostSchema = z.object({
   correctedByViewer: z.boolean(),
   likeCount: z.number().int().nonnegative(),
   likedByViewer: z.boolean(),
+  /**
+   * No `kind` field. `messages` carries `type` because it also has `'text'` and
+   * `'correction'`; a post's attachment is unambiguous from its content type,
+   * so `isImageContentType` derives it and there is one less field to keep in
+   * step with the bytes.
+   */
+  media: mediaSchema.optional(),
   createdAt: z.string(),
 })
 export type FeedPost = z.infer<typeof feedPostSchema>
+
+export const postMediaUploadUrlSchema = z.object({
+  kind: z.enum(['image', 'audio']),
+  contentType: z.string().trim().min(1),
+})
+export type PostMediaUploadUrlInput = z.infer<typeof postMediaUploadUrlSchema>
 
 export const listFeedQuerySchema = z.object({
   filter: z.enum(FEED_FILTERS).default('needsCorrection'),

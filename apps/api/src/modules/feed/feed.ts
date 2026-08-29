@@ -3,6 +3,7 @@ import {
   TOKEN_RULES,
   type CreatePostCorrectionInput,
   type CreatePostInput,
+  type Media,
   type FeedPage,
   type FeedPost,
   FEED_FOLLOWING_SOURCE_LIMIT,
@@ -17,7 +18,10 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { decodeFeedCursor, encodeFeedCursor } from '../../lib/feedCursor'
+import { consumeQuota } from '../../lib/quota'
+import { assertMediaAllowed } from '../media/assertMedia'
 import { blockedUserIds } from '../moderation/blocks'
+import { effectiveTier } from '../profiles/entitlement'
 import { followingIds } from '../social/follows'
 import { EMPTY_LIKE_SUMMARY, likeStateOf, readLikeSummary, type LikeSummary } from './likes'
 import type { Profile } from '../profiles/profiles'
@@ -37,6 +41,7 @@ export interface Post {
    * correction, so it cannot drift the way a periodically-rebuilt counter would.
    */
   correctionCount: number
+  media?: Media
   createdAt: Date
 }
 
@@ -46,6 +51,7 @@ export interface PostCorrectionDoc {
   authorId: string
   corrected: string
   note?: string
+  media?: Media
   createdAt: Date
 }
 
@@ -83,6 +89,7 @@ function correctionDto(
     corrected: doc.corrected,
     ...(doc.note ? { note: doc.note } : {}),
     ...likeStateOf(likes, 'correction', doc._id),
+    ...(doc.media ? { media: doc.media } : {}),
     createdAt: doc.createdAt.toISOString(),
   }
 }
@@ -107,6 +114,7 @@ function postDto(
     topCorrection: context.top ? correctionDto(context.top, context.authors, context.likes) : null,
     correctedByViewer: context.correctedByViewer,
     ...likeStateOf(context.likes, 'post', post._id),
+    ...(post.media ? { media: post.media } : {}),
     createdAt: post.createdAt.toISOString(),
   }
 }
@@ -284,10 +292,44 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   }
 }
 
+/**
+ * The attachment is allowed, and the daily media budget can pay for it.
+ *
+ * The same `media` bucket chat uses, deliberately. It is the same abuse
+ * surface — bytes stored and served forever — and `PLAN_LIMITS.mediaPer24h` is
+ * documented as a ceiling on abuse rather than a paywall. A second bucket would
+ * mean a second limit key, a second quota kind, and a free tier that is really
+ * a hundred a day through two doors.
+ *
+ * The user-visible consequence is real and worth saying out loud: a heavy day
+ * in chat leaves fewer attachments for the feed.
+ *
+ * Consumed only when there *is* an attachment, so a plain sentence still costs
+ * nothing.
+ */
+async function assertAttachable(
+  db: Db,
+  userId: string,
+  profile: Profile,
+  media: Media,
+  storagePublicBaseUrl: string | undefined,
+): Promise<void> {
+  assertMediaAllowed(media, storagePublicBaseUrl)
+  const quota = await consumeQuota(db, userId, effectiveTier(profile), 'media')
+  if (!quota.consumed) {
+    throw new ApiError(
+      ERROR_CODES.QUOTA_EXCEEDED,
+      'Daily attachment limit reached',
+      quota.nextAvailableAt ? { retryAt: quota.nextAvailableAt.toISOString() } : undefined,
+    )
+  }
+}
+
 export async function createPost(
   db: Db,
   userId: string,
   input: CreatePostInput,
+  storagePublicBaseUrl?: string,
 ): Promise<FeedPost> {
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
@@ -298,12 +340,15 @@ export async function createPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you are learning')
   }
 
+  if (input.media) await assertAttachable(db, userId, profile, input.media, storagePublicBaseUrl)
+
   const doc: Post = {
     _id: new ObjectId(),
     authorId: userId,
     body: input.body,
     language: input.language,
     correctionCount: 0,
+    ...(input.media ? { media: input.media } : {}),
     createdAt: new Date(),
   }
   await db.collection<Post>(COLLECTIONS.posts).insertOne(doc)
@@ -323,6 +368,7 @@ export async function correctPost(
   userId: string,
   postId: string,
   input: CreatePostCorrectionInput,
+  storagePublicBaseUrl?: string,
 ): Promise<PostCorrection> {
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
   const _id = new ObjectId(postId)
@@ -334,12 +380,19 @@ export async function correctPost(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot correct your own post')
   }
 
+  if (input.media) {
+    const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
+    if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+    await assertAttachable(db, userId, profile, input.media, storagePublicBaseUrl)
+  }
+
   const doc: PostCorrectionDoc = {
     _id: new ObjectId(),
     postId: _id,
     authorId: userId,
     corrected: input.corrected,
     ...(input.note ? { note: input.note } : {}),
+    ...(input.media ? { media: input.media } : {}),
     createdAt: new Date(),
   }
 

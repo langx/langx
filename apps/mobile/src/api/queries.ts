@@ -23,6 +23,7 @@ import type {
   FollowState,
   LikersPage,
   LikeState,
+  Media,
   LikeTarget,
   LikeTargetType,
   PeoplePage,
@@ -814,6 +815,46 @@ export async function uploadMessageMedia(input: {
     contentType: input.contentType,
     // The server re-checks this against its own ceiling; sending it lets the
     // check happen before the message row is written rather than after.
+    sizeBytes: blob.size,
+    ...(input.durationSeconds !== undefined ? { durationSeconds: input.durationSeconds } : {}),
+    ...(input.width !== undefined ? { width: input.width } : {}),
+    ...(input.height !== undefined ? { height: input.height } : {}),
+  }
+}
+
+/**
+ * Upload an attachment for a post or a correction.
+ *
+ * Same three steps as `uploadMessageMedia` against a different signing route.
+ * Not folded into one function: the message version has to name a conversation
+ * so the server can check access before signing, and this one has nothing to
+ * name yet — the post does not exist until the upload has already succeeded.
+ */
+export async function uploadPostMedia(input: {
+  kind: 'image' | 'audio'
+  uri: string
+  contentType: string
+  durationSeconds?: number
+  width?: number
+  height?: number
+}): Promise<Media> {
+  const target = await api.post<UploadUrlDto>('/posts/upload-url', {
+    kind: input.kind,
+    contentType: input.contentType,
+  })
+
+  const blob = await (await fetch(input.uri)).blob()
+  const put = await fetch(target.uploadUrl, {
+    method: 'PUT',
+    body: blob,
+    // Must match the signed content type exactly or the signature is rejected.
+    headers: { 'content-type': input.contentType },
+  })
+  if (!put.ok) throw new Error(`Upload failed (${put.status})`)
+
+  return {
+    url: target.publicUrl,
+    contentType: input.contentType,
     sizeBytes: blob.size,
     ...(input.durationSeconds !== undefined ? { durationSeconds: input.durationSeconds } : {}),
     ...(input.width !== undefined ? { width: input.width } : {}),

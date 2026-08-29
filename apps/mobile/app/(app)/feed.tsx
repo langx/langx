@@ -3,8 +3,11 @@ import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../src/components/ui/FormField'
 import { Button } from '../../src/components/ui/Button'
+import { uploadPostMedia } from '../../src/api/queries'
 import { useCorrectPost, useCreatePost, useFeed, useMe } from '../../src/api/queries'
 import type { CreatePostInput, FeedPost } from '../../src/api/types'
+import { AttachmentBar, type PendingAttachment } from '../../src/components/AttachmentBar'
+import { AudioBubble, ImageBubble } from '../../src/components/MediaBubble'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { LikeButton } from '../../src/components/LikeButton'
 import { Chip } from '../../src/components/ui/Chip'
@@ -15,6 +18,8 @@ import { openPost, openProfile } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
 import { levelShortLabel, useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
+import { isImageContentType } from '@langx/shared'
+import { ApiRequestError } from '../../src/api/client'
 import { showToast } from '../../src/lib/toast'
 import { relativeTime } from '../../src/lib/format'
 
@@ -53,6 +58,9 @@ export default function FeedScreen() {
   const [draft, setDraft] = useState('')
   const [correctingId, setCorrectingId] = useState<string | null>(null)
   const [correction, setCorrection] = useState('')
+  const [askMedia, setAskMedia] = useState<PendingAttachment | null>(null)
+  const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment | null>(null)
+  const [uploading, setUploading] = useState(false)
   const me = useMe()
   const feed = useFeed(filter)
   const createPost = useCreatePost()
@@ -72,18 +80,54 @@ export default function FeedScreen() {
    */
   const askLanguage = me.data?.learning[0]?.code
 
-  function submitAsk(): void {
-    if (!askLanguage || !draft.trim()) return
+  /**
+   * The attachment is uploaded here, on submit, not when it was picked.
+   *
+   * Picking is not committing: uploading then would spend a day's media quota
+   * and leave bytes in the bucket for a post the writer went on to abandon.
+   */
+  async function attach(pending: PendingAttachment | null) {
+    if (!pending) return undefined
+    return uploadPostMedia(pending)
+  }
+
+  function reportAttachmentError(caught: unknown): void {
+    // REST, so `instanceof` is the right check here. The `errorCodeOf`
+    // workaround in the chat screen exists only because `emitWithAck` rejects
+    // with a plain Error.
+    const quota = caught instanceof ApiRequestError && caught.code === 'QUOTA_EXCEEDED'
+    showToast(quota ? t('feed.mediaQuota') : t('feed.attachmentFailed'))
+  }
+
+  async function submitAsk(): Promise<void> {
+    if (!askLanguage || !draft.trim() || uploading) return
+    setUploading(true)
+    let media
+    try {
+      media = await attach(askMedia)
+    } catch {
+      setUploading(false)
+      showToast(t('feed.attachmentFailed'))
+      return
+    }
+    setUploading(false)
+
     createPost.mutate(
       // `Profile.learning[].code` is a bare string on the DTO; `CreatePostInput`
       // wants the code union. The server validates it again either way.
-      { body: draft.trim(), language: askLanguage as CreatePostInput['language'] },
+      {
+        body: draft.trim(),
+        language: askLanguage as CreatePostInput['language'],
+        ...(media ? { media } : {}),
+      },
       {
         onSuccess: () => {
           setDraft('')
+          setAskMedia(null)
           setAsking(false)
           showToast(t('feed.posted'))
         },
+        onError: reportAttachmentError,
       },
     )
   }
@@ -96,16 +140,29 @@ export default function FeedScreen() {
     setCorrection(post.body)
   }
 
-  function submitCorrection(postId: string): void {
-    if (!correction.trim()) return
+  async function submitCorrection(postId: string): Promise<void> {
+    if (!correction.trim() || uploading) return
+    setUploading(true)
+    let media
+    try {
+      media = await attach(correctionMedia)
+    } catch {
+      setUploading(false)
+      showToast(t('feed.attachmentFailed'))
+      return
+    }
+    setUploading(false)
+
     correctPost.mutate(
-      { postId, corrected: correction.trim() },
+      { postId, corrected: correction.trim(), ...(media ? { media } : {}) },
       {
         onSuccess: () => {
           setCorrectingId(null)
           setCorrection('')
+          setCorrectionMedia(null)
           showToast(t('feed.correctionSent'))
         },
+        onError: reportAttachmentError,
       },
     )
   }
@@ -133,11 +190,20 @@ export default function FeedScreen() {
               autoCapitalize="sentences"
               maxLength={MAX_POST_LENGTH}
             />
-            <Button
-              label={createPost.isPending ? t('feed.posting') : t('feed.post')}
-              disabled={!draft.trim() || createPost.isPending}
-              onPress={submitAsk}
-            />
+            <View style={styles.composeActions}>
+              <AttachmentBar
+                pending={askMedia}
+                onPick={setAskMedia}
+                onClear={() => setAskMedia(null)}
+                disabled={createPost.isPending || uploading}
+              />
+              <Button
+                label={createPost.isPending || uploading ? t('feed.posting') : t('feed.post')}
+                disabled={!draft.trim() || createPost.isPending || uploading}
+                onPress={() => void submitAsk()}
+                style={styles.grow}
+              />
+            </View>
           </View>
         ) : null}
 
@@ -232,6 +298,16 @@ export default function FeedScreen() {
 
                 <Text style={styles.body}>{item.body}</Text>
 
+                {item.media ? (
+                  <View style={styles.media}>
+                    {isImageContentType(item.media.contentType) ? (
+                      <ImageBubble media={item.media} />
+                    ) : (
+                      <AudioBubble media={item.media} />
+                    )}
+                  </View>
+                ) : null}
+
                 <View style={styles.likeRow}>
                   <LikeButton
                     targetType="post"
@@ -258,6 +334,15 @@ export default function FeedScreen() {
                     {item.topCorrection.note ? (
                       <Text style={styles.topNote}>{item.topCorrection.note}</Text>
                     ) : null}
+                    {item.topCorrection.media ? (
+                      <View style={styles.media}>
+                        {isImageContentType(item.topCorrection.media.contentType) ? (
+                          <ImageBubble media={item.topCorrection.media} />
+                        ) : (
+                          <AudioBubble media={item.topCorrection.media} />
+                        )}
+                      </View>
+                    ) : null}
                     <View style={styles.likeRow}>
                       <LikeButton
                         targetType="correction"
@@ -283,17 +368,30 @@ export default function FeedScreen() {
                       autoCapitalize="sentences"
                       maxLength={MAX_POST_LENGTH}
                     />
+                    <AttachmentBar
+                      pending={correctionMedia}
+                      onPick={setCorrectionMedia}
+                      onClear={() => setCorrectionMedia(null)}
+                      disabled={correctPost.isPending || uploading}
+                    />
                     <View style={styles.actions}>
                       <Button
-                        label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
-                        disabled={!correction.trim() || correctPost.isPending}
-                        onPress={() => submitCorrection(item._id)}
+                        label={
+                          correctPost.isPending || uploading
+                            ? t('feed.sending')
+                            : t('feed.sendCorrection')
+                        }
+                        disabled={!correction.trim() || correctPost.isPending || uploading}
+                        onPress={() => void submitCorrection(item._id)}
                         style={styles.grow}
                       />
                       <Button
                         label={t('common.cancel')}
                         variant="secondary"
-                        onPress={() => setCorrectingId(null)}
+                        onPress={() => {
+                          setCorrectingId(null)
+                          setCorrectionMedia(null)
+                        }}
                         style={styles.grow}
                       />
                     </View>
@@ -394,6 +492,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   topNote: { ...font.caption, color: colors.textMuted, lineHeight: 18, marginTop: 4 },
   actions: { flexDirection: 'row', gap: spacing.sm, marginTop: 14 },
   likeRow: { flexDirection: 'row', marginTop: 10 },
+  media: { marginTop: 10 },
+  composeActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   action: {
     alignItems: 'center',
     borderRadius: radius.pill,

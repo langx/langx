@@ -196,6 +196,12 @@ at the start.
 
 **Storage:** a `StorageProvider` interface over `@aws-sdk/client-s3` with
 presigned uploads — B2 and R2 run the same code, the target is an env variable.
+Keys are prefixed `avatars/{userId}/`, `photos/{userId}/`,
+`messages/{conversationId}/` and `posts/{userId}/`. The feed's prefix is keyed
+by user rather than by post because the post does not exist when the URL is
+signed; every prefix is one the account purge can sweep. Attachments on posts
+and corrections share `mediaSchema` and `PLAN_LIMITS.mediaPer24h` with chat —
+one shape, one ceiling, one abuse budget.
 
 **Translation:** a `TranslationProvider` interface. Default **Google Cloud
 Translation v3** for its language coverage; DeepL as an optional quality
@@ -561,6 +567,41 @@ share the position. The match above is handed to it as its `query` argument
 instead, so both still apply; what changes is that the 2dsphere index drives
 the query and the language arrays are filtered over the candidates it returns.
 `maxDistance` is what keeps that candidate set small. See `decisions.md`.
+
+### Community feed
+
+Four collections, none of them a conversation with one participant: a post has
+no pair, no read state and no delivery, and every index on `messages` is built
+around `conversationId`.
+
+```
+posts            { authorId, body, language, correctionCount, media?, createdAt }
+postCorrections  { postId, authorId, corrected, note?, media?, createdAt }
+likes            { targetType: 'post' | 'correction', targetId, userId, createdAt }
+follows          { followerId, followeeId, createdAt }
+```
+
+`posts.correctionCount` is the one denormalized count here, and it is
+denormalized because it is a **sort key**: the `needsCorrection` tab orders by
+it ascending, and an index cannot sort on a count it would have to join to
+find. Putting the uncorrected ones first is what makes the queue drain.
+
+Like and follower counts are **not** stored, for the mirror-image reason:
+nothing sorts by them, so they are the `tokenAggregates` case — one source of
+truth, no second counter to drift. Likes must never become a sort key, or the
+feed stops being a correction queue and becomes a popularity contest.
+
+Both counting reads are a `$group` after an index-backed `$match`, returning one
+row per target rather than one per like, so a post with four hundred likes costs
+a page the same as one with two.
+
+`likes` is not a match gate. `targetId` is an `ObjectId`, which rules out liking
+a profile, since profiles are keyed by a string — the no-like/match/swipe rule
+expressed as a type. A like grants nothing, pays nothing and opens no channel.
+
+`follows` is one-directional and unconfirmed. The feed's "Following" tab reads
+the union of the follow graph and the people you have talked to, capped at
+`FEED_FOLLOWING_SOURCE_LIMIT`; see `decisions.md`.
 
 ## Updates, maintenance and remote config
 

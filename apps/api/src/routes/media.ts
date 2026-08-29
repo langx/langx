@@ -6,6 +6,7 @@ import {
   isImageContentType,
   mediaUploadUrlSchema,
   photoAddSchema,
+  postMediaUploadUrlSchema,
   photoRemoveSchema,
 } from '@langx/shared'
 import { randomUUID } from 'node:crypto'
@@ -13,7 +14,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { assertOwnBucket } from '../lib/assertOwnBucket'
-import { requireAuth } from '../middleware/requireAuth'
+import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { assertConversationAccess } from '../modules/chat/access'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
 
@@ -109,6 +110,41 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
       // attachments, and so a leaked key reveals nothing about who is talking.
       const extension = contentType.split('/')[1]?.split(';')[0] ?? 'bin'
       const key = `messages/${conversation._id.toHexString()}/${randomUUID()}.${extension}`
+      return reply.send(await app.storage.getUploadUrl(key, contentType))
+    },
+  )
+
+  /**
+   * A presigned URL for an attachment on a post or a correction.
+   *
+   * `requireVerifiedEmail`, matching `POST /posts` rather than the plain
+   * `requireAuth` on the message equivalent: a signed URL is a capability, and
+   * the feed's version of "can you post here" is the guard on posting. Handing
+   * one to an account that cannot post would let it write into our bucket for
+   * nothing.
+   *
+   * Keyed by *user*, not by post, because the post does not exist yet when the
+   * URL is signed — unlike a conversation. That also keeps the deletion purge
+   * able to find a person's uploads by prefix.
+   */
+  app.post(
+    '/posts/upload-url',
+    { preHandler: requireVerifiedEmail, schema: { body: postMediaUploadUrlSchema } },
+    async (request, reply) => {
+      const { kind, contentType } = request.body
+      const allowed =
+        kind === 'image' ? isImageContentType(contentType) : isAudioContentType(contentType)
+      if (!allowed) {
+        throw new ApiError(
+          ERROR_CODES.VALIDATION_FAILED,
+          `${contentType} is not a supported ${kind} type`,
+        )
+      }
+
+      // `EXTENSION_BY_CONTENT_TYPE` only covers images; audio needs the same
+      // derivation the messages route uses.
+      const extension = contentType.split('/')[1]?.split(';')[0] ?? 'bin'
+      const key = `posts/${request.userId}/${randomUUID()}.${extension}`
       return reply.send(await app.storage.getUploadUrl(key, contentType))
     },
   )

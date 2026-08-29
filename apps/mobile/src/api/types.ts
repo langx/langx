@@ -18,6 +18,7 @@ export type {
   FollowState,
   LikersPage,
   LikeState,
+  Media,
   LikeTarget,
   LikeTargetType,
   PeoplePage,

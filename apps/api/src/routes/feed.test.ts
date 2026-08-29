@@ -106,6 +106,7 @@ describe('community feed', () => {
       LOG_LEVEL: 'silent',
       BETTER_AUTH_SECRET: 'a'.repeat(32),
       BETTER_AUTH_URL: 'http://localhost:4000',
+      STORAGE_PUBLIC_BASE_URL: 'https://cdn.example.com',
     })
 
     await ensureIndexes(handle.db)
@@ -452,5 +453,122 @@ describe('community feed', () => {
     // Blocking the post's author makes the thread absent, not forbidden.
     await block(viewer, author.userId)
     expect((await corrections(viewer, postId)).statusCode).toBe(404)
+  })
+  describe('attachments', () => {
+    const image = {
+      url: 'https://cdn.example.com/posts/u/1.jpg',
+      contentType: 'image/jpeg',
+      sizeBytes: 1024,
+      width: 800,
+      height: 600,
+    }
+
+    function postWithMedia(user: SignedUpUser, body: string, media: unknown) {
+      return app.inject({
+        method: 'POST',
+        url: '/posts',
+        headers: { cookie: user.cookie },
+        payload: { body, language: 'en', media },
+      })
+    }
+
+    it('carries an attachment back on the feed', async () => {
+      const author = await newUser('media-author@example.com')
+      const response = await postWithMedia(author, 'Is this handwriting right?', image)
+      expect(response.statusCode).toBe(201)
+
+      const item = (await feed(author))
+        .json<{
+          items: { _id: string; media?: { url: string; width?: number } }[]
+        }>()
+        .items.find((i) => i._id === response.json<{ _id: string }>()._id)
+      expect(item?.media?.url).toBe(image.url)
+      expect(item?.media?.width).toBe(800)
+    })
+
+    it('accepts a voice note on a correction', async () => {
+      const author = await newUser('media-post-author@example.com')
+      const helper = await newUser('media-corrector@example.com')
+      const postId = (await post(author, 'I has said it wrong.')).json<{ _id: string }>()._id
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `/posts/${postId}/corrections`,
+        headers: { cookie: helper.cookie },
+        payload: {
+          corrected: 'I said it wrong.',
+          media: {
+            url: 'https://cdn.example.com/posts/u/1.m4a',
+            contentType: 'audio/m4a',
+            sizeBytes: 4096,
+            durationSeconds: 6,
+          },
+        },
+      })
+      expect(response.statusCode).toBe(201)
+      expect(response.json<{ media?: { durationSeconds?: number } }>().media?.durationSeconds).toBe(
+        6,
+      )
+    })
+
+    it("refuses an attachment pointing at somebody else's host", async () => {
+      // The check that matters most: a foreign URL would survive the account
+      // purge, because we could never delete it.
+      const author = await newUser('media-foreign@example.com')
+      const response = await postWithMedia(author, 'Look at this.', {
+        ...image,
+        url: 'https://evil.example.net/a.jpg',
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('refuses an oversized attachment', async () => {
+      const author = await newUser('media-huge@example.com')
+      const response = await postWithMedia(author, 'A very large photo.', {
+        ...image,
+        sizeBytes: 32 * 1024 * 1024,
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('refuses a content type we do not serve', async () => {
+      const author = await newUser('media-type@example.com')
+      const response = await postWithMedia(author, 'A document.', {
+        ...image,
+        contentType: 'application/pdf',
+        url: 'https://cdn.example.com/posts/u/1.pdf',
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('spends the media quota only when there is an attachment', async () => {
+      // The same bucket chat uses: it is the same abuse surface, and a second
+      // one would be a free tier that is really twice the limit through two
+      // doors.
+      const author = await newUser('media-quota@example.com')
+
+      await post(author, 'A sentence with nothing attached.')
+      const afterPlain = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: author.userId })
+      expect(afterPlain?.quota.media ?? []).toHaveLength(0)
+
+      await postWithMedia(author, 'A sentence with a photo.', image)
+      const afterMedia = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: author.userId })
+      expect(afterMedia?.quota.media ?? []).toHaveLength(1)
+    })
+
+    it('signs an upload URL only for a type we serve', async () => {
+      const author = await newUser('media-sign@example.com')
+      const bad = await app.inject({
+        method: 'POST',
+        url: '/posts/upload-url',
+        headers: { cookie: author.cookie },
+        payload: { kind: 'image', contentType: 'application/pdf' },
+      })
+      expect(bad.statusCode).toBe(400)
+    })
   })
 })

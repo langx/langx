@@ -1427,6 +1427,53 @@ when the cap bites.
 The conversation query is sorted now, which it was not. Truncating an unsorted
 find would have kept whichever rows Mongo happened to return.
 
+## Feed attachments share chat's media quota, and its ceilings
+
+A post and a correction can carry a photo or a voice note. They are the same
+shape as a chat attachment — one `mediaSchema`, one set of size limits — and
+they spend the same `mediaPer24h` bucket.
+
+The same bucket, not a second one, because it is the same abuse surface: bytes
+stored and served forever. `PLAN_LIMITS.mediaPer24h` is documented as a ceiling
+on abuse rather than a paywall, and a second bucket would mean a second limit
+key, a second quota kind, and a free tier that is really a hundred a day
+through two doors. The consequence is user-visible and belongs in the release
+note: **a heavy day in chat leaves fewer attachments for the feed.**
+
+The quota is spent only when there is an attachment, so a plain sentence still
+costs nothing.
+
+## The attachment uploads on submit, not on pick
+
+The chat composer uploads the moment you pick, because in a thread picking _is_
+sending. The feed composer holds the local file and uploads when the post is
+actually submitted: there is still a sentence being written, and uploading on
+pick would spend a day's media quota and leave bytes in the bucket for a post
+the writer then abandons.
+
+## A post still needs words
+
+`body` stays required, so there is no photo-only or voice-only ask. This is the
+one place where "attachments everywhere" and "the feed corrects sentences" pull
+against each other, and the sentence wins: with no text there is nothing for
+`corrected` to be an edit of, and the correction composer seeds itself with the
+post's own words.
+
+Loosening this later is backwards-compatible. Tightening it would not be, which
+is the argument for starting here rather than the other way round.
+
+## The signing route is keyed by user, and guarded like posting
+
+`POST /posts/upload-url` needs a verified email, matching `POST /posts` rather
+than the plain `requireAuth` on the message equivalent. A signed URL is a
+capability; handing one to an account that cannot post would let it write into
+our bucket for nothing, and the feed's version of "can you post here" is the
+guard on posting itself.
+
+The key is `posts/{userId}/…` rather than keyed by post, because the post does
+not exist when the URL is signed — unlike a conversation. That also keeps the
+deletion purge able to find a person's uploads by prefix.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

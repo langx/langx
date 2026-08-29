@@ -1,8 +1,10 @@
 import { useLocalSearchParams } from 'expo-router'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useMe, usePostCorrections } from '../../../src/api/queries'
+import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { LikeButton } from '../../../src/components/LikeButton'
+import { isImageContentType } from '@langx/shared'
 import { EmptyState } from '../../../src/components/ui/EmptyState'
 import { Screen } from '../../../src/components/ui/Screen'
 import { dedupeById } from '../../../src/lib/dedupeById'
@@ -86,6 +88,15 @@ export default function PostScreen() {
                   </View>
                 </Pressable>
                 <Text style={styles.body}>{post.body}</Text>
+                {post.media ? (
+                  <View style={styles.media}>
+                    {isImageContentType(post.media.contentType) ? (
+                      <ImageBubble media={post.media} />
+                    ) : (
+                      <AudioBubble media={post.media} />
+                    )}
+                  </View>
+                ) : null}
                 <View style={styles.likeRow}>
                   <LikeButton
                     targetType="post"
@@ -124,6 +135,15 @@ export default function PostScreen() {
               </Pressable>
               <Text style={styles.corrected}>{item.corrected}</Text>
               {item.note ? <Text style={styles.note}>{item.note}</Text> : null}
+              {item.media ? (
+                <View style={styles.media}>
+                  {isImageContentType(item.media.contentType) ? (
+                    <ImageBubble media={item.media} />
+                  ) : (
+                    <AudioBubble media={item.media} />
+                  )}
+                </View>
+              ) : null}
               <View style={styles.likeRow}>
                 <LikeButton
                   targetType="correction"
@@ -172,4 +192,5 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   corrected: { ...font.label, color: colors.text, fontWeight: '600', lineHeight: 20, marginTop: 8 },
   note: { ...font.caption, color: colors.textMuted, lineHeight: 18, marginTop: 4 },
   likeRow: { flexDirection: 'row', marginTop: 10 },
+  media: { marginTop: 10 },
 }))

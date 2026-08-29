@@ -29,7 +29,16 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
     '/posts',
     { preHandler: requireVerifiedEmail, schema: { body: createPostSchema } },
     async (request, reply) => {
-      return reply.code(201).send(await createPost(app.mongo.db, request.userId, request.body))
+      return reply
+        .code(201)
+        .send(
+          await createPost(
+            app.mongo.db,
+            request.userId,
+            request.body,
+            app.env.STORAGE_PUBLIC_BASE_URL,
+          ),
+        )
     },
   )
 
@@ -58,6 +67,7 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
         request.userId,
         request.params.id,
         request.body,
+        app.env.STORAGE_PUBLIC_BASE_URL,
       )
       return reply.code(201).send(correction)
     },
