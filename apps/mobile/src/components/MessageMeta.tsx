@@ -1,7 +1,7 @@
 import { deliveryStateOf, type DeliveryState } from '@langx/shared'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
-import { colors, font, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 function clockTime(iso: string): string {
   const at = new Date(iso)
@@ -30,7 +30,14 @@ const LABELS: Record<DeliveryState, string> = {
  * other.
  */
 export function MessageMeta({ message, mine }: { message: MessageDto; mine: boolean }) {
-  const tint = mine ? colors.primaryText : colors.textMuted
+  const { colors } = useTheme()
+  const styles = useStyles()
+  /**
+   * Your own bubble is `primary` yellow in both schemes, so its meta is black
+   * at half strength rather than the palette's muted grey — the grey was tuned
+   * against `surface` and disappears on yellow.
+   */
+  const tint = mine ? colors.primaryTextMuted : colors.textMuted
   const state = deliveryStateOf(message)
 
   return (
@@ -39,7 +46,10 @@ export function MessageMeta({ message, mine }: { message: MessageDto; mine: bool
       {mine ? (
         <Text
           accessibilityLabel={LABELS[state]}
-          style={[styles.status, { color: state === 'read' ? colors.read : tint }]}
+          // Read is the one state that has to stand out, and on yellow it can
+          // no longer do that with a hue — full-strength black against the
+          // half-strength tint carries it instead.
+          style={[styles.status, { color: state === 'read' && mine ? colors.primaryText : tint }]}
         >
           {state === 'sent' ? '✓' : '✓✓'}
         </Text>
@@ -48,7 +58,7 @@ export function MessageMeta({ message, mine }: { message: MessageDto; mine: bool
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ font, spacing }) => ({
   row: {
     alignItems: 'center',
     alignSelf: 'flex-end',
@@ -66,4 +76,4 @@ const styles = StyleSheet.create({
     // The negative tracking above also eats the space after the last tick.
     paddingRight: 3,
   },
-})
+}))

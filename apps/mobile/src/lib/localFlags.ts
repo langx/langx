@@ -27,6 +27,8 @@ export const FLAG_KEYS = {
   /** Same name and same meaning as v1's. */
   introSeen: 'introSeen',
   onboardingDraft: 'onboardingDraft',
+  /** `auto` | `light` | `dark`. A device preference, not an account one. */
+  themePreference: 'themePreference',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

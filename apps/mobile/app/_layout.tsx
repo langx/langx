@@ -1,3 +1,4 @@
+import { Comfortaa_700Bold, useFonts } from '@expo-google-fonts/comfortaa'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
@@ -11,7 +12,7 @@ import { AppGate } from '../src/components/AppGate'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
-import { colors } from '../src/lib/theme'
+import { ThemeProvider, useTheme } from '../src/lib/theme'
 
 function createQueryClient(): QueryClient {
   return new QueryClient({
@@ -30,6 +31,22 @@ function createQueryClient(): QueryClient {
 }
 
 export default function RootLayout() {
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <RootShell />
+      </ThemeProvider>
+    </SafeAreaProvider>
+  )
+}
+
+/**
+ * Split from `RootLayout` only so it sits *inside* `ThemeProvider` and can call
+ * `useTheme()` — the splash background and the status-bar style both have to
+ * follow the theme, and a provider cannot consume itself.
+ */
+function RootShell() {
+  const { colors, scheme } = useTheme()
   const { data: session, isPending } = authClient.useSession()
   const [queryClient] = useState(createQueryClient)
 
@@ -58,12 +75,20 @@ export default function RootLayout() {
   // the tree; every refetch after that keeps rendering the last known route.
   const hasResolvedOnce = useRef(false)
   if (!isPending) hasResolvedOnce.current = true
-  const showSpinner = isPending && !hasResolvedOnce.current
+
+  /**
+   * Comfortaa is display-only, so a missed load costs headings their voice and
+   * nothing else. `fontError` is therefore treated as "carry on" rather than a
+   * failure: shipping the platform stack is far better than holding the splash
+   * open on a font that is never going to arrive.
+   */
+  const [fontsLoaded, fontError] = useFonts({ Comfortaa_700Bold })
+  const showSpinner = (isPending && !hasResolvedOnce.current) || (!fontsLoaded && !fontError)
 
   return (
-    <SafeAreaProvider>
+    <>
       <QueryClientProvider client={queryClient}>
-        <StatusBar style="auto" />
+        <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         {showSpinner ? (
           <View
             style={{
@@ -103,6 +128,6 @@ export default function RootLayout() {
           </AppGate>
         )}
       </QueryClientProvider>
-    </SafeAreaProvider>
+    </>
   )
 }
