@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { TOKEN_RULES } from '@langx/shared'
+import { PLAN_LIMITS, TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -478,20 +478,38 @@ export default function ChatScreen() {
         />
       )}
 
+      {/*
+        The correction composer, and the success pair again — the same colour
+        the sent correction will be, so the writer can already see what they are
+        making. It shows the sentence being corrected in full rather than
+        truncated to a line: a correction is an edit, and an edit made from a
+        half-remembered original is how a wrong one gets sent.
+      */}
       {correcting ? (
         <View style={styles.correctingBanner}>
-          <Text style={styles.correctingText} numberOfLines={1}>
-            Correcting: “{correcting.body}”
-          </Text>
-          <Pressable
-            onPress={() => {
-              setCorrecting(null)
-              setDraft('')
-            }}
-            hitSlop={8}
-          >
-            <Text style={styles.correctingCancel}>Cancel</Text>
-          </Pressable>
+          <View style={styles.correctingHead}>
+            <Feather name="edit-3" size={14} color={colors.success} />
+            <Text style={styles.correctingTitle}>Correcting</Text>
+            <Pressable
+              onPress={() => {
+                setCorrecting(null)
+                setDraft('')
+              }}
+              hitSlop={8}
+            >
+              <Text style={styles.correctingCancel}>Cancel</Text>
+            </Pressable>
+          </View>
+          <Text style={styles.correctingOriginal}>{correcting.body}</Text>
+          {/*
+            The one reassurance worth spending a line on. Corrections are the
+            behaviour the whole product exists for, and a user who suspects
+            they are rationed writes fewer of them — so the limit is stated
+            from `PLAN_LIMITS` rather than left to be guessed.
+          */}
+          {PLAN_LIMITS.free.correctionsPer24h === null ? (
+            <Text style={styles.correctingFree}>Unlimited on every plan</Text>
+          ) : null}
         </View>
       ) : null}
 
@@ -702,16 +720,24 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingTop: 10,
   },
   correctingBanner: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    flexDirection: 'row',
-    gap: spacing.sm,
-    justifyContent: 'space-between',
+    backgroundColor: colors.successBg,
+    borderTopColor: colors.success,
+    borderTopWidth: 1,
+    gap: 6,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.md,
   },
-  correctingText: { ...font.caption, color: colors.textMuted, flex: 1 },
-  correctingCancel: { ...font.caption, color: colors.danger, fontWeight: '700' },
+  correctingHead: { alignItems: 'center', flexDirection: 'row', gap: 7 },
+  correctingTitle: { ...font.heading, color: colors.success, flex: 1, fontSize: 13 },
+  correctingOriginal: {
+    ...font.label,
+    color: colors.textMuted,
+    fontWeight: '400',
+    lineHeight: 20,
+    textDecorationLine: 'line-through',
+  },
+  correctingFree: { ...font.caption, color: colors.success, fontWeight: '600' },
+  correctingCancel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
   composer: {
     alignItems: 'flex-end',
     backgroundColor: colors.surface,
