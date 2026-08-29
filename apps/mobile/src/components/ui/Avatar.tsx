@@ -37,7 +37,10 @@ export function Avatar({ url, name, size = layout.avatar, online = false }: Avat
   const dimension = { borderRadius: size / 2, height: size, width: size }
 
   return (
-    <View>
+    // Sized rather than left to stretch: the online dot is positioned
+    // absolutely against this view, and a parent with no dimensions of its own
+    // fills the row instead, dropping the dot wherever that ends up.
+    <View style={dimension}>
       {url ? (
         <Image source={{ uri: url }} style={[styles.image, dimension]} />
       ) : (
