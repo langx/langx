@@ -151,9 +151,14 @@ function matches(literal: string, patterns: string[][]): boolean {
   const clean = literal.split('?')[0]!.split('#')[0]!
   const segments = clean.split('/').filter(Boolean)
 
-  // `'/(app)/'` — a trailing slash marks a prefix someone tests with
-  // `startsWith`, not a destination. It is valid when some route begins with
-  // it. `backHref.ts` is the one place that does this.
+  // A trailing slash means the string is the *start* of a path rather than a
+  // whole one — `backHref.ts` tests inbound values with `startsWith('/(app)/')`.
+  //
+  // This is not an exemption, and must not become one: the prefix still has to
+  // be the prefix of a route that exists, so `'/(app)/chatt/'` fails exactly
+  // like `'/(app)/chatt'` would. Anything built by concatenating onto such a
+  // base is therefore checked as far as the base goes — which is as far as a
+  // literal can be checked at all.
   if (clean.endsWith('/') && segments.length > 0) {
     return patterns.some(
       (pattern) =>
@@ -262,6 +267,33 @@ const all = [...structured, ...broad].filter(
 function show(found: Found): string {
   return `${found.file}:${found.line} -> ${found.literal.replaceAll(WILDCARD, '${}')}`
 }
+
+describe('matching', () => {
+  // Pinned because the trailing-slash branch is the one rule here that could be
+  // "simplified" into a real exemption by someone who read it as one.
+  const patterns = [
+    ['(app)', 'chat', '[id]'],
+    ['(app)', 'me'],
+  ]
+
+  it('accepts a prefix of a route that exists', () => {
+    expect(matches('/(app)/chat/', patterns)).toBe(true)
+  })
+
+  it('still rejects a prefix of a route that does not', () => {
+    expect(matches('/(app)/chatt/', patterns)).toBe(false)
+  })
+
+  it('fills a param with an interpolated value, and a literal with itself', () => {
+    expect(matches(`/(app)/chat/${WILDCARD}`, patterns)).toBe(true)
+    expect(matches('/(app)/chat/abc', patterns)).toBe(true)
+    expect(matches('/(app)/chat', patterns)).toBe(false)
+  })
+
+  it('strips a query before matching', () => {
+    expect(matches('/(app)/me?from=x', patterns)).toBe(true)
+  })
+})
 
 describe('route literals', () => {
   it('finds the screens on disk', () => {
