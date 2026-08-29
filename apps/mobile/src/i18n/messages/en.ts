@@ -501,9 +501,9 @@ export const en = {
     posting: 'Posting…',
     posted: 'Posted. Somebody will correct it.',
     correctionSent: 'Correction sent. Thank you.',
-    knownEmptyTitle: 'Nothing from people you know',
-    knownEmptyBody:
-      'This tab shows posts by people you have talked to. Start a conversation and they will appear here.',
+    followingEmptyTitle: 'Nothing from people you follow',
+    followingEmptyBody:
+      'This tab shows posts by people you follow or have talked to. Follow someone and their posts appear here.',
     correctedEmptyTitle: 'Everything is corrected',
     correctedEmptyBody:
       'Nobody is waiting for help right now. Post a sentence of your own, or come back later.',

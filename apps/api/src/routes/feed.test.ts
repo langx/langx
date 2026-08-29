@@ -319,6 +319,48 @@ describe('community feed', () => {
     for (const id of ids) expect(seen).toContain(id)
   })
 
+  it('shows both the people you follow and the people you have talked to', async () => {
+    // The tab is a union, not a replacement. Dropping the conversation
+    // stand-in would have emptied it for every existing user on the day the
+    // Follow button shipped.
+    const viewer = await newUser('union-viewer@example.com')
+    const followed = await newUser('union-followed@example.com')
+    const partner = await newUser('union-partner@example.com')
+    const both = await newUser('union-both@example.com')
+    const stranger = await newUser('union-stranger@example.com')
+
+    await app.inject({
+      method: 'POST',
+      url: `/profiles/${followed.userId}/follow`,
+      headers: { cookie: viewer.cookie },
+    })
+    await talkTo(viewer, partner.userId)
+    await app.inject({
+      method: 'POST',
+      url: `/profiles/${both.userId}/follow`,
+      headers: { cookie: viewer.cookie },
+    })
+    await talkTo(viewer, both.userId)
+
+    const ids = {
+      followed: (await post(followed, 'From someone I follow.')).json<{ _id: string }>()._id,
+      partner: (await post(partner, 'From someone I talked to.')).json<{ _id: string }>()._id,
+      both: (await post(both, 'From someone who is both.')).json<{ _id: string }>()._id,
+      stranger: (await post(stranger, 'From a stranger.')).json<{ _id: string }>()._id,
+    }
+
+    const items = (await feed(viewer, 'filter=following')).json<{ items: { _id: string }[] }>()
+      .items
+    const seen = items.map((item) => item._id)
+
+    expect(seen).toContain(ids.followed)
+    expect(seen).toContain(ids.partner)
+    expect(seen).toContain(ids.both)
+    expect(seen).not.toContain(ids.stranger)
+    // Being both is not being twice.
+    expect(seen.filter((id) => id === ids.both)).toHaveLength(1)
+  })
+
   it("counts a frozen user's correction even though it pays nothing", async () => {
     // Freezing stops the payout only. The lifetime count used to read ledger
     // rows, and a zero-amount award writes none — so a frozen user's

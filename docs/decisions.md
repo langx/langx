@@ -1408,6 +1408,25 @@ route, passed in. Required rather than defaulted, so no call site can quietly
 ship `{ followers: 0 }` for a profile with a thousand. Exactly one existing
 caller had to change, which is the point of finding out at compile time.
 
+## The Following tab is a union, bounded at 500
+
+It reads the follow graph _and_ the people you have talked to. Dropping the
+older half would have emptied the tab for every existing user on the day the
+Follow button shipped, and a conversation partner is somebody you are following
+in every sense except the button.
+
+Both halves are capped and sorted by recency before they are unioned, because
+the result is an `$in` on the feed's author filter, and an `$in` is a list the
+query planner has to carry. Uncapped it grew with how social somebody is —
+which the conversation half already did, silently, before the follow graph
+made it worse. Above the cap the tab is a _sample_ of the graph rather than all
+of it: a deliberate trade against a fan-out table this does not need yet.
+Follows are unioned first, so a deliberate choice outranks an incidental one
+when the cap bites.
+
+The conversation query is sorted now, which it was not. Truncating an unsorted
+find would have kept whichever rows Mongo happened to return.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

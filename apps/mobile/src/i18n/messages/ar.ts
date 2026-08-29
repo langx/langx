@@ -541,8 +541,9 @@ export const ar: Localized<EnMessages> = {
     posting: 'جارٍ النشر…',
     posted: 'نُشرت. سيصحّحها أحدهم.',
     correctionSent: 'أُرسل التصحيح. شكرًا.',
-    knownEmptyTitle: 'لا شيء ممن تعرفهم',
-    knownEmptyBody: 'يعرض هذا التبويب منشورات من تحدثت معهم. ابدأ محادثة وسيظهرون هنا.',
+    followingEmptyTitle: 'لا شيء ممن تتابعهم',
+    followingEmptyBody:
+      'تعرض هذه العلامة منشورات من تتابعهم أو تحدثت إليهم. تابع أحدهم لتظهر منشوراته هنا.',
     correctedEmptyTitle: 'كل شيء مُصحَّح',
     correctedEmptyBody: 'لا أحد ينتظر المساعدة الآن. انشر جملة لك أو عد لاحقًا.',
     noCorrections: 'لا تصحيحات بعد',

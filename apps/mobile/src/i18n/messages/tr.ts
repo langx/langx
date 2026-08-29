@@ -472,9 +472,9 @@ export const tr: Localized<EnMessages> = {
     posting: 'Paylaşılıyor…',
     posted: 'Paylaşıldı. Birisi düzeltecektir.',
     correctionSent: 'Düzeltme gönderildi. Teşekkürler.',
-    knownEmptyTitle: 'Tanıdıklarından bir şey yok',
-    knownEmptyBody:
-      'Bu sekmede konuştuğun kişilerin paylaşımları görünür. Bir sohbet başlat, burada belirsinler.',
+    followingEmptyTitle: 'Takip ettiklerinden bir şey yok',
+    followingEmptyBody:
+      'Bu sekme, takip ettiğin ya da konuştuğun kişilerin gönderilerini gösterir. Birini takip et, gönderileri burada görünsün.',
     correctedEmptyTitle: 'Her şey düzeltilmiş',
     correctedEmptyBody:
       'Şu anda yardım bekleyen kimse yok. Kendi cümleni paylaş ya da sonra tekrar uğra.',

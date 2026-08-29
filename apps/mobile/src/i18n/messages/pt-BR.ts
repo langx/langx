@@ -460,9 +460,9 @@ export const ptBR: Localized<EnMessages> = {
     posting: 'Publicando…',
     posted: 'Publicado. Alguém vai corrigir.',
     correctionSent: 'Correção enviada. Obrigado.',
-    knownEmptyTitle: 'Nada de quem você conhece',
-    knownEmptyBody:
-      'Esta aba mostra posts de pessoas com quem você já conversou. Comece uma conversa e elas aparecerão aqui.',
+    followingEmptyTitle: 'Nada de quem você segue',
+    followingEmptyBody:
+      'Esta aba mostra publicações de pessoas que você segue ou com quem já conversou. Siga alguém e as publicações aparecerão aqui.',
     correctedEmptyTitle: 'Está tudo corrigido',
     correctedEmptyBody:
       'Ninguém está esperando ajuda agora. Publique uma frase sua ou volte mais tarde.',

@@ -466,9 +466,9 @@ export const de: Localized<EnMessages> = {
     posting: 'Wird gepostet…',
     posted: 'Gepostet. Jemand wird ihn korrigieren.',
     correctionSent: 'Korrektur gesendet. Danke.',
-    knownEmptyTitle: 'Nichts von Leuten, die du kennst',
-    knownEmptyBody:
-      'Dieser Tab zeigt Beiträge von Leuten, mit denen du geschrieben hast. Fang ein Gespräch an, dann tauchen sie hier auf.',
+    followingEmptyTitle: 'Nichts von Leuten, denen du folgst',
+    followingEmptyBody:
+      'Dieser Tab zeigt Beiträge von Leuten, denen du folgst oder mit denen du geschrieben hast. Folge jemandem, und die Beiträge erscheinen hier.',
     correctedEmptyTitle: 'Alles ist korrigiert',
     correctedEmptyBody:
       'Gerade wartet niemand auf Hilfe. Poste einen eigenen Satz oder komm später wieder.',

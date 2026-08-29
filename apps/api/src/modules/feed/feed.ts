@@ -5,6 +5,7 @@ import {
   type CreatePostInput,
   type FeedPage,
   type FeedPost,
+  FEED_FOLLOWING_SOURCE_LIMIT,
   type ListFeedQuery,
   type ListPostCorrectionsQuery,
   type PostCorrectionsPage,
@@ -17,6 +18,7 @@ import { ApiError } from '../../lib/ApiError'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { decodeFeedCursor, encodeFeedCursor } from '../../lib/feedCursor'
 import { blockedUserIds } from '../moderation/blocks'
+import { followingIds } from '../social/follows'
 import { EMPTY_LIKE_SUMMARY, likeStateOf, readLikeSummary, type LikeSummary } from './likes'
 import type { Profile } from '../profiles/profiles'
 import { recordActivity } from '../tokens/dailyActivity'
@@ -178,29 +180,45 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   // both directions, so neither party appears in the other's feed.
   // Independent of each other, so they go together: the block list does not
   // narrow the conversation lookup, it filters its result.
-  const [hidden, conversations] = await Promise.all([
+  const following = query.filter === 'following'
+  const [hidden, follows, conversations] = await Promise.all([
     blockedUserIds(db, userId),
-    query.filter === 'following'
+    following ? followingIds(db, userId, FEED_FOLLOWING_SOURCE_LIMIT) : Promise.resolve([]),
+    following
       ? db
           .collection<{ participants: string[] }>(COLLECTIONS.conversations)
           .find({ participants: userId })
+          // Sorted and capped, which is what makes the truncation below mean
+          // something rather than being whichever rows Mongo happened to
+          // return. `participants_recent` already backs this exact order.
+          .sort({ 'lastMessage.createdAt': -1 })
+          .limit(FEED_FOLLOWING_SOURCE_LIMIT)
           .project<{ participants: string[] }>({ participants: 1 })
           .toArray()
       : Promise.resolve([]),
   ])
   const filter: Document = hidden.length > 0 ? { authorId: { $nin: hidden } } : {}
 
-  if (query.filter === 'following') {
-    // "Following" has no follow graph to read, so it means the people you have
-    // actually talked to — which is the relationship this app has instead of
-    // one. A feed of strangers is what the other tab already is.
-    const known = [
-      ...new Set(conversations.flatMap((c) => c.participants).filter((id) => id !== userId)),
-    ]
-    if (known.length === 0) return { items: [], nextCursor: null }
-    const visible = known.filter((id) => !hidden.includes(id))
-    if (visible.length === 0) return { items: [], nextCursor: null }
-    filter.authorId = { $in: visible }
+  if (following) {
+    /*
+     * The union of two relationships, not one.
+     *
+     * The follow graph is the real answer, and the people you have actually
+     * talked to are the one this app had before there was a graph — dropping
+     * them would empty the tab for every existing user on the day the Follow
+     * button shipped, and a conversation partner is somebody you are following
+     * in every sense except the button.
+     *
+     * Bounded, because the result is an `$in`: see
+     * `FEED_FOLLOWING_SOURCE_LIMIT`. Follows come first in the union so that a
+     * deliberate choice outranks an incidental one when the cap bites.
+     */
+    const partners = conversations.flatMap((c) => c.participants).filter((id) => id !== userId)
+    const audience = [...new Set([...follows, ...partners])]
+      .filter((id) => id !== userId && !hidden.includes(id))
+      .slice(0, FEED_FOLLOWING_SOURCE_LIMIT)
+    if (audience.length === 0) return { items: [], nextCursor: null }
+    filter.authorId = { $in: audience }
   }
 
   /**

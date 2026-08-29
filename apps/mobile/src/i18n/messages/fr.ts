@@ -463,9 +463,9 @@ export const fr: Localized<EnMessages> = {
     posting: 'Publication…',
     posted: 'Publié. Quelqu’un la corrigera.',
     correctionSent: 'Correction envoyée. Merci.',
-    knownEmptyTitle: 'Rien de la part de tes contacts',
-    knownEmptyBody:
-      'Cet onglet montre les publications des gens à qui tu as parlé. Lance une conversation et ils apparaîtront ici.',
+    followingEmptyTitle: 'Rien de la part des personnes que vous suivez',
+    followingEmptyBody:
+      'Cet onglet montre les publications des personnes que vous suivez ou à qui vous avez parlé. Suivez quelqu’un et ses publications apparaîtront ici.',
     correctedEmptyTitle: 'Tout est corrigé',
     correctedEmptyBody:
       'Personne n’attend d’aide pour le moment. Publie une phrase à toi, ou reviens plus tard.',

@@ -171,8 +171,8 @@ export default function FeedScreen() {
             filter === 'following' ? (
               <EmptyState
                 icon="users"
-                title={t('feed.knownEmptyTitle')}
-                body={t('feed.knownEmptyBody')}
+                title={t('feed.followingEmptyTitle')}
+                body={t('feed.followingEmptyBody')}
               />
             ) : (
               <EmptyState

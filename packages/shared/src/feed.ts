@@ -26,6 +26,19 @@ export const postBodySchema = z.string().trim().min(1).max(MAX_POST_LENGTH)
 export const FEED_FILTERS = ['needsCorrection', 'following'] as const
 export type FeedFilter = (typeof FEED_FILTERS)[number]
 
+/**
+ * How many people the "Following" tab reads from.
+ *
+ * The audience is an `$in`, and an `$in` is a list the query planner has to
+ * carry — so it needs a ceiling that does not grow with how social somebody is.
+ * Truncated by recency, which is the tiebreak the rest of the app already uses:
+ * somebody following nine hundred people cares most about the ones they most
+ * recently chose. Above this the tab is a sample of the graph rather than all
+ * of it, and that is a deliberate trade against a fan-out table we do not need
+ * yet.
+ */
+export const FEED_FOLLOWING_SOURCE_LIMIT = 500
+
 export const createPostSchema = z.object({
   body: postBodySchema,
   /** What language the sentence is in — the one the author is learning. */
