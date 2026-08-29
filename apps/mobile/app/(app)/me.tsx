@@ -1,3 +1,4 @@
+import { ActivityMap } from '../../src/components/ActivityMap'
 import { countryFlag, formatAccountAge, getCountry, type Gender } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
@@ -131,6 +132,15 @@ export default function MeScreen() {
       </View>
 
       {summary ? <WeeklyChart week={summary.week} /> : null}
+
+      {/*
+        Under the week's chart and above the links: the chart says how this
+        week went, the map says how the last six months did, and a square you
+        can still buy back is only interesting while the day is recent.
+      */}
+      <Card inset style={styles.card}>
+        <ActivityMap />
+      </Card>
 
       <Card inset style={styles.card}>
         {/* Free users get the count and a locked list; that contrast is the

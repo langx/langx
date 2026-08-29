@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { walletSchema } from './cosmetics'
+import { shiftDayKey } from './periods'
 
 /**
  * The token is a point, not a currency. It cannot be traded, withdrawn or
@@ -122,6 +123,25 @@ export interface TokenRules {
      */
     streakRestorePerDay: number
     streakRestoreMax: number
+    /**
+     * Price to fill in one missed day on the activity map.
+     *
+     * Dearer than a freeze, which is the point of the pair: a freeze is bought
+     * ahead of a day you might miss and costs you the foresight; a repair is
+     * bought after one you did miss and costs nothing but tokens. Pricing the
+     * retrospective one lower would make the freeze pointless.
+     */
+    dayRepair: number
+    /** How far back a day can still be repaired. */
+    dayRepairMaxAgeDays: number
+    /**
+     * Repairs allowed per calendar month.
+     *
+     * The cap, not the price, is what stops a balance buying a streak
+     * outright: at two a month even a rich account cannot manufacture a run it
+     * did not live, and the streak keeps meaning what it says.
+     */
+    dayRepairPerMonth: number
   }
   /**
    * v1 token balances are credited to **earned** token, divided by this.
@@ -196,6 +216,9 @@ export const TOKEN_RULES: TokenRules = {
     maxBankedStreakFreezes: 2,
     streakRestorePerDay: 20,
     streakRestoreMax: 2000,
+    dayRepair: 300,
+    dayRepairMaxAgeDays: 14,
+    dayRepairPerMonth: 2,
   },
   legacyTokenDivisor: 100,
   welcomeBackBonus: 250,
@@ -324,4 +347,43 @@ export function streakRestorePrice(frozenStreak: number, rules = TOKEN_RULES): n
     rules.sinks.streakRestoreMax,
     Math.ceil(frozenStreak) * rules.sinks.streakRestorePerDay,
   )
+}
+
+/** `GET /me/activity` — an inclusive local-day range. */
+export const activityRangeSchema = z.object({
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+})
+
+/**
+ * `POST /me/activity/repair`.
+ *
+ * The day is in the body rather than the path, matching `/me/wallet/purchase`:
+ * path params are not zod-validated anywhere in this API, and a spend is not
+ * the place to start trusting one.
+ */
+export const repairDaySchema = z.object({
+  day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+})
+
+/**
+ * The streak that a set of filled days implies, counting back from today.
+ *
+ * In shared because both sides need the same answer for different reasons: the
+ * server writes it after a repair, and the client has to *predict* it before
+ * one, to say what the purchase will do. Two implementations of this would be
+ * two different promises.
+ *
+ * Yesterday is where an unfinished today starts from — a user who has not sent
+ * anything yet today still has the run that ended yesterday.
+ */
+export function streakFromDays(days: Set<string>, today: string): number {
+  let cursor = days.has(today) ? today : shiftDayKey(today, -1)
+  if (!days.has(cursor)) return 0
+  let length = 0
+  while (days.has(cursor)) {
+    length++
+    cursor = shiftDayKey(cursor, -1)
+  }
+  return length
 }

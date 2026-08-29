@@ -36,7 +36,8 @@ the whole message.
 v1 shipped a token with wallets, a token leaderboard, and a litepaper
 describing something tradable, staked and eventually listed. **The name stays.
 The trading does not.** LangX Token in v2 is an in-app point: earned by
-practising and teaching, spent on a streak freeze and cosmetics, and nothing
+practising and teaching, spent on a streak freeze, on filling in a missed day,
+and on cosmetics, and nothing
 else. It cannot be bought, sold, traded, staked, withdrawn or transferred, and
 it can never unlock a Pro feature — the moment it could, farming tokens would
 become a substitute for subscribing, and the subscription is what funds the app.
@@ -82,8 +83,9 @@ Replace "free forever" with something that is true and still generous:
 And for the token section:
 
 > **Earn tokens by practising — and by teaching.** Correcting someone else's
-> sentence is worth more than sending one. Spend them on a streak freeze or on
-> cosmetics for your profile. LangX Token is an in-app point: it cannot be
+> sentence is worth more than sending one. Spend them on a streak freeze, on
+> filling in a day you missed, or on cosmetics for your profile. LangX Token is
+> an in-app point: it cannot be
 > bought, sold, traded or withdrawn, and it never will be.
 
 ### Terms — clauses that must change
@@ -92,7 +94,7 @@ And for the token section:
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Pricing          | Add the subscription, the free-tier limits, and that they are per rolling 24 hours (not per calendar day)                                                                                                      |
 | Token            | Redefine it: an in-app point with no cash value. Non-transferable, cannot be purchased, sold, traded, staked or withdrawn. State that v1 balances carry over at 1:100 and that nothing is redeemable for money |
-| Virtual items    | Cover the streak freeze and cosmetics; forfeited on account deletion                                                                                                                                           |
+| Virtual items    | Cover the streak freeze, filled-in activity days and cosmetics; forfeited on account deletion                                                                                                                  |
 | Account deletion | 30-day grace period, then permanent. Messages you sent stay in the other person's conversation with their content removed                                                                                      |
 | Minimum age      | 18+, enforced at profile creation                                                                                                                                                                              |
 

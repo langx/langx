@@ -4,16 +4,26 @@ import {
   STREAK_RESTORE_SKU,
   TOKEN_RULES,
   findCosmetic,
+  localDayKey,
   periodKeys,
+  shiftDayKey,
   streakRestorePrice,
-  utcDayKey,
   type Wallet,
+  utcDayKey,
 } from '@langx/shared'
 import { ObjectId, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
 import { streakDay } from './streak'
+import {
+  isRepairable,
+  listStreakDays,
+  repairsInMonth,
+  streakDayId,
+  streakFromDays,
+  type StreakDay,
+} from './streakDays'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
 export function walletOf(profile: Profile, earned: number): Wallet {
@@ -211,4 +221,108 @@ async function restoreStreak(db: Db, profile: Profile, earned: number): Promise<
 
   await recordSpend(db, profile._id, STREAK_RESTORE_SKU, price)
   return { sku: STREAK_RESTORE_SKU, price, wallet: walletOf(updated, earned) }
+}
+
+export interface RepairResult {
+  day: string
+  price: number
+  streak: { current: number; longest: number }
+  wallet: Wallet
+  repairsLeftThisMonth: number
+}
+
+/**
+ * Buys back one missed day.
+ *
+ * Two writes, in two collections, so there is no single atomic update to lean
+ * on the way a cosmetic purchase does — the money is on `profiles.tokenSpent`
+ * and the day is a `streakDays` document. The order is what makes that safe:
+ * insert the day first, because its `_id` is `<userId>:<day>` and a duplicate
+ * key is a far better "already filled" check than a read could ever be, then
+ * charge, and delete the day again if the charge does not go through. The
+ * reverse order could take the tokens and fail to fill the square, which is
+ * the failure worth designing against.
+ */
+export async function repairDay(db: Db, userId: string, day: string): Promise<RepairResult> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const profile = await profiles.findOne({ _id: userId })
+  if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+
+  const now = new Date()
+  const timeZone = profile.timezone ?? 'UTC'
+  const today = localDayKey(now, timeZone)
+
+  if (!isRepairable(day, today, timeZone, now)) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `Only the last ${TOKEN_RULES.sinks.dayRepairMaxAgeDays} days, and not today — today is earned`,
+    )
+  }
+
+  const used = await repairsInMonth(db, userId, day)
+  if (used >= TOKEN_RULES.sinks.dayRepairPerMonth) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `You have used both repairs for ${day.slice(0, 7)}`,
+    )
+  }
+
+  const price = TOKEN_RULES.sinks.dayRepair
+  const days = db.collection<StreakDay>(COLLECTIONS.streakDays)
+  try {
+    await days.insertOne({
+      _id: streakDayId(userId, day),
+      userId,
+      day,
+      source: 'purchase',
+      actions: 0,
+    })
+  } catch {
+    // The only way `insertOne` fails here is the unique `_id`, which is
+    // exactly "that day is already filled".
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That day is already filled')
+  }
+
+  const earned = (await readAggregates(db, userId)).all
+  const charged = await profiles.findOneAndUpdate(
+    {
+      _id: userId,
+      $expr: { $lte: [{ $add: [{ $ifNull: ['$tokenSpent', 0] }, price] }, earned] },
+    },
+    { $inc: { tokenSpent: price } },
+    { returnDocument: 'after' },
+  )
+
+  if (!charged) {
+    // Hand the day back rather than leaving a square nobody paid for.
+    await days.deleteOne({ _id: streakDayId(userId, day) })
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `Not enough token — a repair costs ${price}, you have ${earned - (profile.tokenSpent ?? 0)}`,
+    )
+  }
+
+  await recordSpend(db, userId, `dayRepair:${day}`, price)
+
+  /**
+   * Recomputed from the filled days, not incremented. A repair can join two
+   * runs that were never adjacent while they were being lived, so the only way
+   * to know the new length is to walk them.
+   */
+  const window = await listStreakDays(db, userId, shiftDayKey(today, -400), today)
+  const current = streakFromDays(new Set(window.map((d) => d.day)), today)
+  const longest = Math.max(profile.streak.longest, current)
+  const after = await profiles.findOneAndUpdate(
+    { _id: userId },
+    { $set: { 'streak.current': current, 'streak.longest': longest, updatedAt: now } },
+    { returnDocument: 'after' },
+  )
+
+  return {
+    day,
+    price,
+    streak: { current, longest },
+    wallet: walletOf(after ?? charged, earned),
+    repairsLeftThisMonth: TOKEN_RULES.sinks.dayRepairPerMonth - used - 1,
+  }
 }

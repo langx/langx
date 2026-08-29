@@ -52,6 +52,7 @@ export const COLLECTIONS = {
   tokenLedger: 'tokenLedger',
   tokenAggregates: 'tokenAggregates',
   dailyActivity: 'dailyActivity',
+  streakDays: 'streakDays',
 
   /** One row per user per local day a streak nudge was sent — the dedupe key. */
   streakReminders: 'streakReminders',
