@@ -4,16 +4,29 @@ export const MESSAGE_ACTION_IDS = [
   'translate',
   'correct',
   'delete',
+  'edit',
+  'star',
+  'pin',
   'report',
 ] as const
 export type MessageActionId = (typeof MESSAGE_ACTION_IDS)[number]
+
+/** Which of the menu's two pages a row belongs on. */
+export type MessageActionPage = 'primary' | 'more'
 
 export interface MessageAction {
   id: MessageActionId
   label: string
   /** Ionicons name. */
   icon: string
+  page: MessageActionPage
   destructive?: boolean
+  /**
+   * Shown, but not selectable — the only case is a message somebody has
+   * corrected. Hiding Edit there would look like a bug on your own recent
+   * message; saying why is the point.
+   */
+  disabled?: boolean
 }
 
 export interface MessageActionContext {
@@ -23,6 +36,12 @@ export interface MessageActionContext {
   /** A voice note without a caption has nothing to copy, quote or translate. */
   hasBody: boolean
   alreadyTranslated: boolean
+  /** `canEditMessage` from shared, evaluated by the caller against the clock. */
+  canEdit: boolean
+  /** Somebody has corrected this sentence, so editing it is locked off. */
+  corrected: boolean
+  starred: boolean
+  pinned: boolean
 }
 
 /**
@@ -39,13 +58,13 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
   // Every message can be answered, including a captionless voice note — the
   // quote carries a label for those rather than a body. First in the list
   // because on web it is the only way in: the swipe gesture is native-only.
-  actions.push({ id: 'reply', label: 'Reply', icon: 'arrow-undo-outline' })
+  actions.push({ id: 'reply', label: 'Reply', icon: 'arrow-undo-outline', page: 'primary' })
 
-  // Edit, react, star, pin and delete are still absent: each needs a field on
-  // `Message` and a way to mutate one that already exists, which is one piece
-  // of plumbing they should share rather than four.
-  if (context.hasBody) {
-    actions.push({ id: 'copy', label: 'Copy', icon: 'copy-outline' })
+  // The teaching gesture, and the highest-earning action in the app. Only on
+  // the other person's text: there is nothing to correct in an image, and
+  // correcting a correction is a thread nobody wants.
+  if (!context.mine && context.type === 'text') {
+    actions.push({ id: 'correct', label: 'Correct', icon: 'pencil-outline', page: 'primary' })
   }
 
   // Translating your own message is a round trip to something you already
@@ -56,14 +75,11 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     context.type !== 'correction' &&
     !context.alreadyTranslated
   ) {
-    actions.push({ id: 'translate', label: 'Translate', icon: 'language-outline' })
+    actions.push({ id: 'translate', label: 'Translate', icon: 'language-outline', page: 'primary' })
   }
 
-  // The teaching gesture, and the highest-earning action in the app. Only on
-  // the other person's text: there is nothing to correct in an image, and
-  // correcting a correction is a thread nobody wants.
-  if (!context.mine && context.type === 'text') {
-    actions.push({ id: 'correct', label: 'Correct', icon: 'pencil-outline' })
+  if (context.hasBody) {
+    actions.push({ id: 'copy', label: 'Copy', icon: 'copy-outline', page: 'primary' })
   }
 
   /**
@@ -73,11 +89,71 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
    * is `canDeleteForEveryone` in shared, and the screen asks with it rather
    * than the menu guessing.
    */
-  actions.push({ id: 'delete', label: 'Delete', icon: 'trash-outline', destructive: true })
+  actions.push({
+    id: 'delete',
+    label: 'Delete',
+    icon: 'trash-outline',
+    page: 'primary',
+    destructive: true,
+  })
+
+  if (context.canEdit) {
+    actions.push({ id: 'edit', label: 'Edit', icon: 'create-outline', page: 'more' })
+  } else if (context.mine && context.type === 'text' && context.corrected) {
+    actions.push({
+      id: 'edit',
+      label: "Corrected — can't be edited",
+      icon: 'lock-closed-outline',
+      page: 'more',
+      disabled: true,
+    })
+  }
+
+  actions.push({
+    id: 'star',
+    label: context.starred ? 'Unstar' : 'Star',
+    icon: context.starred ? 'star' : 'star-outline',
+    page: 'more',
+  })
+
+  actions.push({
+    id: 'pin',
+    label: context.pinned ? 'Unpin' : 'Pin',
+    icon: 'pin-outline',
+    page: 'more',
+  })
 
   if (!context.mine) {
-    actions.push({ id: 'report', label: 'Report', icon: 'flag-outline', destructive: true })
+    actions.push({
+      id: 'report',
+      label: 'Report',
+      icon: 'flag-outline',
+      page: 'more',
+      destructive: true,
+    })
   }
 
   return actions
+}
+
+/**
+ * The menu's two pages.
+ *
+ * A page rather than one long list because the anchored menu has to fit
+ * between a bubble and the edge of the screen, and nine rows do not. Pure so
+ * the split is testable: which rows are behind `More…` is a product decision,
+ * and a wrong one is invisible in a screenshot of the first page.
+ */
+export function paginateActions(
+  actions: MessageAction[],
+  page: MessageActionPage,
+): { actions: MessageAction[]; hasMore: boolean } {
+  const primary = actions.filter((action) => action.page === 'primary')
+  const more = actions.filter((action) => action.page === 'more')
+  // Nothing behind the divider means no divider: a `More…` row that opens an
+  // empty page is worse than one row too many on the first.
+  if (more.length === 0) return { actions: primary, hasMore: false }
+  return page === 'primary'
+    ? { actions: primary, hasMore: true }
+    : { actions: more, hasMore: false }
 }

@@ -5,6 +5,7 @@ import {
   appendIncomingMessage,
   applyDeliveredAt,
   applyMessageUpdate,
+  applyPinned,
   messagesNewestFirst,
   type MessagePageDto,
 } from './messageCache'
@@ -30,6 +31,7 @@ function pages(...groups: MessageDto[][]): InfiniteData<MessagePageDto> {
       items,
       nextCursor: null,
       prevCursor: null,
+      pinned: null,
       participants: [ME, THEM],
     })),
     pageParams: groups.map((_, i) => (i === 0 ? '' : 'c')),
@@ -166,5 +168,28 @@ describe('messagesNewestFirst and hidden messages', () => {
   it('keeps a message withdrawn for everyone, which still occupies its place', () => {
     const data = pages([{ ...message('a'), deleted: true, body: '' }])
     expect(messagesNewestFirst(data).map((m) => m._id)).toEqual(['a'])
+  })
+})
+
+describe('applyPinned', () => {
+  const pin = { messageId: 'a', byUserId: ME, at: '2026-08-29T09:00:00.000Z' }
+
+  /** The pin rides in on every page, so a change has to reach every page. */
+  it('writes the pin to all of them, not just the newest', () => {
+    const next = applyPinned(pages([message('a')], [message('b')]), pin)
+    expect(next?.pages.map((p) => p.pinned?.messageId)).toEqual(['a', 'a'])
+  })
+
+  it('clears it', () => {
+    const withPin = applyPinned(pages([message('a')]), pin)
+    expect(applyPinned(withPin, null)?.pages[0]?.pinned).toBeNull()
+  })
+
+  /** A re-emit of the pin already held must not re-render the thread. */
+  it('returns the same object when nothing moved', () => {
+    const data = pages([message('a')])
+    expect(applyPinned(data, null)).toBe(data)
+    const withPin = applyPinned(data, pin)
+    expect(applyPinned(withPin, pin)).toBe(withPin)
   })
 })

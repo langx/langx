@@ -107,6 +107,7 @@ export default function AppLayout() {
         <Tabs.Screen name="edit-profile" options={FULL_SCREEN} />
         <Tabs.Screen name="blocked" options={FULL_SCREEN} />
         <Tabs.Screen name="settings" options={FULL_SCREEN} />
+        <Tabs.Screen name="starred" options={FULL_SCREEN} />
         <Tabs.Screen name="paywall" options={FULL_SCREEN} />
         <Tabs.Screen name="viewers" options={FULL_SCREEN} />
         <Tabs.Screen name="filters" options={FULL_SCREEN} />

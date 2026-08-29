@@ -235,6 +235,11 @@ export const MessageBubble = memo(function MessageBubble({
         {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
         {translating ? <Text style={styles.translateLink}>Translating…</Text> : null}
+        {/* Beside the clock, not in place of it: "when" and "changed since" are
+            two different facts and the reader wants both. */}
+        {message.editedAt ? (
+          <Text style={[styles.edited, mine && styles.editedMine]}>Edited</Text>
+        ) : null}
         <MessageMeta message={message} mine={mine} />
         {badge}
       </Pressable>
@@ -289,6 +294,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    */
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
   tombstone: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
+  edited: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
+  editedMine: { color: colors.primaryTextMuted },
   tombstoneRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   tombstoneText: { ...font.body, color: colors.textMuted, fontStyle: 'italic' },
   /**

@@ -821,4 +821,179 @@ describe('Faz 5 — conversation/message history REST', () => {
       ).rejects.toMatchObject({ code: 'NOT_FOUND' })
     })
   })
+
+  describe('editing, starring and pinning', () => {
+    async function pair(prefix: string, body = 'the original sentence') {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const { _id: conversationId } = await startConversation(a, b.userId, 'opening')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { message } = await sendTextMessage(handle.db, a.userId, { conversationId, body })
+      return { a, b, conversationId, message, messageId: message._id.toHexString() }
+    }
+
+    it('rewrites the message and the chat-list preview together', async () => {
+      const { a, conversationId, messageId } = await pair('edit-basic')
+      const { editMessage } = await import('../modules/chat/mutations')
+
+      const { message } = await editMessage(handle.db, a.userId, {
+        conversationId,
+        messageId,
+        body: 'the corrected sentence',
+      })
+      expect(message.body).toBe('the corrected sentence')
+      expect(message.editedAt).toBeInstanceOf(Date)
+
+      const conversation = await handle.db
+        .collection<{ lastMessage: { body: string } }>(COLLECTIONS.conversations)
+        .findOne({ _id: new ObjectId(conversationId) })
+      expect(conversation?.lastMessage.body).toBe('the corrected sentence')
+    })
+
+    it('refuses to edit someone else message', async () => {
+      const { b, conversationId, messageId } = await pair('edit-not-mine')
+      const { editMessage } = await import('../modules/chat/mutations')
+
+      await expect(
+        editMessage(handle.db, b.userId, { conversationId, messageId, body: 'not yours' }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+
+    it('refuses to edit one past the window', async () => {
+      const { a, conversationId, messageId, message } = await pair('edit-stale')
+      const { editMessage } = await import('../modules/chat/mutations')
+
+      await handle.db
+        .collection(COLLECTIONS.messages)
+        .updateOne(
+          { _id: message._id },
+          { $set: { createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) } },
+        )
+
+      await expect(
+        editMessage(handle.db, a.userId, { conversationId, messageId, body: 'too late' }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+
+    /**
+     * The lock that keeps `correction.original` honest. Editing a sentence
+     * someone has already corrected would leave their correction quoting
+     * something that exists nowhere.
+     */
+    it('locks a message once the other person has corrected it', async () => {
+      const { a, b, conversationId, messageId } = await pair('edit-corrected', 'I has a book')
+      const { sendCorrection } = await import('../modules/chat/messages')
+      const { editMessage } = await import('../modules/chat/mutations')
+
+      await sendCorrection(handle.db, b.userId, {
+        conversationId,
+        targetMessageId: messageId,
+        corrected: 'I have a book',
+      })
+
+      // The stamp is on the target, so the client can grey the row out too.
+      const page = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+      const target = page
+        .json<{ items: { _id: string; corrected?: boolean }[] }>()
+        .items.find((m) => m._id === messageId)
+      expect(target?.corrected).toBe(true)
+
+      await expect(
+        editMessage(handle.db, a.userId, { conversationId, messageId, body: 'I have a book' }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+
+    it('keeps a star to the person who set it', async () => {
+      const { a, b, conversationId, messageId } = await pair('star-private')
+      const { starMessage } = await import('../modules/chat/mutations')
+
+      const result = await starMessage(handle.db, b.userId, {
+        conversationId,
+        messageId,
+        starred: true,
+      })
+      expect(result.audience).toBe('actor')
+
+      const forStarrer = await app.inject({
+        method: 'GET',
+        url: '/me/starred',
+        headers: { cookie: b.cookie },
+      })
+      const forSender = await app.inject({
+        method: 'GET',
+        url: '/me/starred',
+        headers: { cookie: a.cookie },
+      })
+      expect(forStarrer.json<{ items: { _id: string }[] }>().items.map((m) => m._id)).toEqual([
+        messageId,
+      ])
+      expect(forSender.json<{ items: unknown[] }>().items).toEqual([])
+
+      // And the flag is per viewer, not a list of who starred it.
+      const thread = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+      const row = thread
+        .json<{ items: { _id: string; starred?: boolean }[] }>()
+        .items.find((m) => m._id === messageId)
+      expect(row?.starred).toBeUndefined()
+      expect(thread.body).not.toContain('starredBy')
+    })
+
+    it('unstars, and drops it off the list', async () => {
+      const { b, conversationId, messageId } = await pair('star-toggle')
+      const { starMessage } = await import('../modules/chat/mutations')
+
+      await starMessage(handle.db, b.userId, { conversationId, messageId, starred: true })
+      await starMessage(handle.db, b.userId, { conversationId, messageId, starred: false })
+
+      const list = await app.inject({
+        method: 'GET',
+        url: '/me/starred',
+        headers: { cookie: b.cookie },
+      })
+      expect(list.json<{ items: unknown[] }>().items).toEqual([])
+    })
+
+    it('pins one message at a time, and either person can change it', async () => {
+      const { a, b, conversationId, messageId } = await pair('pin-one')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { pinMessage } = await import('../modules/chat/mutations')
+
+      const second = await sendTextMessage(handle.db, b.userId, {
+        conversationId,
+        body: 'the second one',
+      })
+
+      await pinMessage(handle.db, a.userId, { conversationId, messageId })
+      // The other person replaces it rather than being locked out of it.
+      const replaced = await pinMessage(handle.db, b.userId, {
+        conversationId,
+        messageId: second.message._id.toHexString(),
+      })
+      expect(replaced.conversation.pinned?.messageId.toHexString()).toBe(
+        second.message._id.toHexString(),
+      )
+      expect(replaced.conversation.pinned?.byUserId).toBe(b.userId)
+
+      const cleared = await pinMessage(handle.db, a.userId, { conversationId, messageId: null })
+      expect(cleared.conversation.pinned).toBeUndefined()
+    })
+
+    it('refuses to pin a withdrawn message', async () => {
+      const { a, conversationId, messageId } = await pair('pin-deleted')
+      const { deleteMessage, pinMessage } = await import('../modules/chat/mutations')
+
+      await deleteMessage(handle.db, a.userId, { conversationId, messageId, scope: 'everyone' })
+      await expect(
+        pinMessage(handle.db, a.userId, { conversationId, messageId }),
+      ).rejects.toMatchObject({ code: 'VALIDATION_FAILED' })
+    })
+  })
 })

@@ -120,3 +120,31 @@ export function fanOutMessageUpdate(
     io.to(userRoom(participantId)).emit('message:updated', toMessageView(message, participantId))
   }
 }
+
+/**
+ * The pinned message changed, and both people see the banner.
+ *
+ * A conversation event rather than a `message:updated`, because what moved is
+ * on the conversation document — the message itself is untouched, and telling
+ * clients otherwise would have them patch a row that did not change.
+ */
+export function fanOutConversationPinned(
+  io: AppServer,
+  conversation: FannedConversation & {
+    pinned?: { messageId: { toHexString: () => string }; byUserId: string; at: Date }
+  },
+): void {
+  const payload = {
+    conversationId: conversation._id.toHexString(),
+    pinned: conversation.pinned
+      ? {
+          messageId: conversation.pinned.messageId.toHexString(),
+          byUserId: conversation.pinned.byUserId,
+          at: conversation.pinned.at.toISOString(),
+        }
+      : null,
+  }
+  for (const participantId of conversation.participants) {
+    io.to(userRoom(participantId)).emit('conversation:pinned', payload)
+  }
+}

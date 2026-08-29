@@ -1,64 +1,109 @@
 import { describe, expect, it } from 'vitest'
-import { messageActionsFor, type MessageActionContext } from './messageActions'
+import { messageActionsFor, paginateActions, type MessageActionContext } from './messageActions'
 
-const text: MessageActionContext = {
+const theirs: MessageActionContext = {
   mine: false,
   type: 'text',
   hasBody: true,
   alreadyTranslated: false,
+  canEdit: false,
+  corrected: false,
+  starred: false,
+  pinned: false,
 }
-const ids = (over: Partial<MessageActionContext> = {}) =>
-  messageActionsFor({ ...text, ...over }).map((a) => a.id)
+
+const ids = (overrides: Partial<MessageActionContext> = {}) =>
+  messageActionsFor({ ...theirs, ...overrides }).map((a) => a.id)
+
+const find = (overrides: Partial<MessageActionContext>, id: string) =>
+  messageActionsFor({ ...theirs, ...overrides }).find((a) => a.id === id)
 
 describe('messageActionsFor', () => {
-  it('offers the full set on the other person`s text', () => {
-    expect(ids()).toEqual(['reply', 'copy', 'translate', 'correct', 'delete', 'report'])
+  it('offers the full set on the other person text', () => {
+    expect(ids()).toEqual([
+      'reply',
+      'correct',
+      'translate',
+      'copy',
+      'delete',
+      'star',
+      'pin',
+      'report',
+    ])
   })
 
-  /** Correcting your own message, or reporting yourself, is not a thing. */
-  it('leaves only copy on your own message', () => {
-    expect(ids({ mine: true })).toEqual(['reply', 'copy', 'delete'])
+  it('never offers to correct, translate or report your own message', () => {
+    const own = ids({ mine: true })
+    expect(own).not.toContain('correct')
+    expect(own).not.toContain('translate')
+    expect(own).not.toContain('report')
   })
 
-  it('does not offer to correct anything but text', () => {
-    expect(ids({ type: 'image' })).not.toContain('correct')
-    expect(ids({ type: 'audio' })).not.toContain('correct')
-    expect(ids({ type: 'correction' })).not.toContain('correct')
-  })
-
-  /** A correction is already both languages side by side. */
-  it('does not offer to translate a correction', () => {
-    expect(ids({ type: 'correction' })).not.toContain('translate')
-  })
-
-  it('drops translate once the message has been translated', () => {
+  it('drops translate once it has been translated', () => {
     expect(ids({ alreadyTranslated: true })).not.toContain('translate')
   })
 
-  /** A voice note without a caption has no text to copy or translate. */
-  it('drops the text actions when there is no body', () => {
-    expect(ids({ type: 'audio', hasBody: false })).toEqual(['reply', 'delete', 'report'])
-  })
-
-  it('always leaves a way to report the other person', () => {
-    for (const type of ['text', 'correction', 'image', 'audio'] as const) {
-      expect(ids({ type, hasBody: false })).toContain('report')
+  it('only corrects text, never an attachment or another correction', () => {
+    for (const type of ['image', 'audio', 'correction'] as const) {
+      expect(ids({ type })).not.toContain('correct')
     }
   })
 
-  /**
-   * This used to return nothing at all, and the screen had to guard against
-   * opening an empty sheet. Reply applies to every message, including one with
-   * no text of its own, so there is always at least one row.
-   */
-  it('offers reply even on your own captionless media, where nothing else applies', () => {
-    expect(ids({ mine: true, type: 'audio', hasBody: false })).toEqual(['reply', 'delete'])
+  it('has nothing to copy on a captionless voice note', () => {
+    expect(ids({ type: 'audio', hasBody: false })).not.toContain('copy')
   })
 
   /** A filter on your own copy, so it never depends on age or authorship. */
-  it('offers delete on every message, whoever sent it', () => {
+  it('offers delete and star on every message, whoever sent it', () => {
     for (const mine of [true, false]) {
       expect(ids({ mine })).toContain('delete')
+      expect(ids({ mine })).toContain('star')
     }
+  })
+
+  it('offers edit only when the caller says the rules allow it', () => {
+    expect(ids({ mine: true, canEdit: true })).toContain('edit')
+    expect(ids({ mine: true, canEdit: false })).not.toContain('edit')
+  })
+
+  /**
+   * Shown rather than hidden: on your own recent message a missing Edit reads
+   * as a bug, so the row stays and says why it cannot be used.
+   */
+  it('explains the lock on a corrected message instead of hiding it', () => {
+    const edit = find({ mine: true, canEdit: false, corrected: true }, 'edit')
+    expect(edit?.disabled).toBe(true)
+    expect(edit?.label).toMatch(/Corrected/)
+  })
+
+  it('names star and pin for what pressing them will do', () => {
+    expect(find({ starred: true }, 'star')?.label).toBe('Unstar')
+    expect(find({ starred: false }, 'star')?.label).toBe('Star')
+    expect(find({ pinned: true }, 'pin')?.label).toBe('Unpin')
+  })
+})
+
+describe('paginateActions', () => {
+  const all = messageActionsFor(theirs)
+
+  it('keeps the everyday five on the first page', () => {
+    const { actions, hasMore } = paginateActions(all, 'primary')
+    expect(actions.map((a) => a.id)).toEqual(['reply', 'correct', 'translate', 'copy', 'delete'])
+    expect(hasMore).toBe(true)
+  })
+
+  it('puts the rest behind More', () => {
+    const { actions, hasMore } = paginateActions(all, 'more')
+    expect(actions.map((a) => a.id)).toEqual(['star', 'pin', 'report'])
+    expect(hasMore).toBe(false)
+  })
+
+  /** A `More…` row that opens an empty page is worse than one row too many. */
+  it('offers no second page when there is nothing on it', () => {
+    const primaryOnly = all.filter((a) => a.page === 'primary')
+    expect(paginateActions(primaryOnly, 'primary')).toEqual({
+      actions: primaryOnly,
+      hasMore: false,
+    })
   })
 })

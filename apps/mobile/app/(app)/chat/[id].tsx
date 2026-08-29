@@ -1,5 +1,11 @@
 import Feather from '@expo/vector-icons/Feather'
-import { canDeleteForEveryone, MESSAGE_REACTIONS, PLAN_LIMITS, TOKEN_RULES } from '@langx/shared'
+import {
+  canDeleteForEveryone,
+  canEditMessage,
+  MESSAGE_REACTIONS,
+  PLAN_LIMITS,
+  TOKEN_RULES,
+} from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -77,6 +83,7 @@ export default function ChatScreen() {
    */
   const [awayFrom, setAwayFrom] = useState<string | null>(null)
   const [replyingTo, setReplyingTo] = useState<MessageDto | null>(null)
+  const [editing, setEditing] = useState<MessageDto | null>(null)
   /**
    * The message a jump is centred on, or null while the live thread is showing.
    *
@@ -106,6 +113,7 @@ export default function ChatScreen() {
         items.findIndex((m) => String(m._id) === awayFrom),
       )
     : 0
+  const pinned = thread.data?.pages[0]?.pinned ?? null
   const state = listState({
     isPending: thread.isPending,
     isError: thread.isError,
@@ -232,6 +240,16 @@ export default function ChatScreen() {
     setSending(true)
     try {
       const socket = await getSocket()
+      if (editing) {
+        await emitWithAck(socket, 'message:edit', {
+          conversationId,
+          messageId: editing._id,
+          body,
+        })
+        setEditing(null)
+        setDraft('')
+        return
+      }
       if (correcting) {
         await emitWithAck(socket, 'message:correct', {
           conversationId,
@@ -312,6 +330,12 @@ export default function ChatScreen() {
       type: message.type,
       hasBody: message.body.trim().length > 0,
       alreadyTranslated,
+      // Evaluated here rather than in the menu, so the row and the server
+      // agree on one rule from `@langx/shared` instead of two copies of it.
+      canEdit: canEditMessage(message, me.data?._id ?? '', new Date()),
+      corrected: message.corrected === true,
+      starred: message.starred === true,
+      pinned: pinned?.messageId === message._id,
     })
 
     const picked = await openMessageMenu({
@@ -341,8 +365,39 @@ export default function ChatScreen() {
       setDraft(message.body)
     } else if (picked.id === 'delete') {
       await removeMessage(message)
+    } else if (picked.id === 'edit') {
+      setEditing(message)
+      setCorrecting(null)
+      setReplyingTo(null)
+      setDraft(message.body)
+    } else if (picked.id === 'star') {
+      await emit('message:star', {
+        conversationId,
+        messageId: message._id,
+        starred: message.starred !== true,
+      })
+    } else if (picked.id === 'pin') {
+      await emit('conversation:pin', {
+        conversationId,
+        messageId: pinned?.messageId === message._id ? null : message._id,
+      })
     } else if (picked.id === 'report') {
       await reportMessage(message)
+    }
+  }
+
+  /**
+   * Every mutation is the same three lines, and the failure is always the same
+   * sentence: the server has already refused with a reason the user cannot act
+   * on ("only within two days"), so the alert says what happened rather than
+   * repeating a rule the menu should not have offered in the first place.
+   */
+  async function emit(event: string, payload: Record<string, unknown>): Promise<void> {
+    const socket = await getSocket()
+    try {
+      await emitWithAck(socket, event, payload)
+    } catch {
+      void showAlert('That did not go through', 'Try again in a moment.')
     }
   }
 
@@ -351,16 +406,7 @@ export default function ChatScreen() {
    * repeat as a toggle, so nothing here has to know the current state.
    */
   async function react(message: MessageDto, emoji: string): Promise<void> {
-    const socket = await getSocket()
-    try {
-      await emitWithAck(socket, 'message:react', {
-        conversationId,
-        messageId: message._id,
-        emoji,
-      })
-    } catch {
-      void showAlert('Could not react', 'That did not go through. Try again.')
-    }
+    await emit('message:react', { conversationId, messageId: message._id, emoji })
   }
 
   /**
@@ -384,16 +430,7 @@ export default function ChatScreen() {
         ])
     if (!scope) return
 
-    const socket = await getSocket()
-    try {
-      await emitWithAck(socket, 'message:delete', {
-        conversationId,
-        messageId: message._id,
-        scope,
-      })
-    } catch {
-      void showAlert('Could not delete', 'That did not go through. Try again.')
-    }
+    await emit('message:delete', { conversationId, messageId: message._id, scope })
   }
 
   /**
@@ -524,6 +561,33 @@ export default function ChatScreen() {
           </View>
         </Pressable>
       </View>
+
+      {/*
+        Above the thread rather than floating over it: a pin is a standing fact
+        about the conversation, not a transient control, and it has to survive
+        scrolling to the top of the history.
+      */}
+      {pinned ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Go to the pinned message"
+          onPress={() => onJumpTo(pinned.messageId)}
+          style={styles.pinBanner}
+        >
+          <Feather name="bookmark" size={14} color={colors.accent} />
+          <Text style={styles.pinText} numberOfLines={1}>
+            {items.find((m) => m._id === pinned.messageId)?.body ?? 'Pinned message'}
+          </Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Unpin"
+            hitSlop={8}
+            onPress={() => void emit('conversation:pin', { conversationId, messageId: null })}
+          >
+            <Feather name="x" size={15} color={colors.textMuted} />
+          </Pressable>
+        </Pressable>
+      ) : null}
 
       {/* The jump button floats over the thread, so it lives in the thread's
           own box rather than the screen's — that keeps it above the composer
@@ -674,7 +738,7 @@ export default function ChatScreen() {
         reply is the ordinary case and a correction is the teaching one, so the
         correction keeps the success colour and this gets the accent edge.
       */}
-      {replyingTo && !correcting ? (
+      {replyingTo && !correcting && !editing ? (
         <View style={styles.replyingBanner}>
           <View style={styles.replyingBar} />
           <View style={styles.replyingText}>
@@ -688,6 +752,27 @@ export default function ChatScreen() {
             </Text>
           </View>
           <Pressable onPress={() => setReplyingTo(null)} hitSlop={8}>
+            <Text style={styles.replyingCancel}>Cancel</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
+      {editing ? (
+        <View style={styles.replyingBanner}>
+          <View style={[styles.replyingBar, styles.editingBar]} />
+          <View style={styles.replyingText}>
+            <Text style={[styles.replyingTitle, styles.editingTitle]}>Editing</Text>
+            <Text style={styles.replyingPreview} numberOfLines={1}>
+              {editing.body}
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => {
+              setEditing(null)
+              setDraft('')
+            }}
+            hitSlop={8}
+          >
             <Text style={styles.replyingCancel}>Cancel</Text>
           </Pressable>
         </View>
@@ -913,6 +998,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   replyingTitle: { ...font.caption, color: colors.accent, fontWeight: '700' },
   replyingPreview: { ...font.caption, color: colors.textMuted },
   replyingCancel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  editingBar: { backgroundColor: colors.warning },
+  editingTitle: { color: colors.warning },
+  pinBanner: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  pinText: { ...font.caption, color: colors.text, flex: 1 },
   older: { paddingVertical: spacing.md },
   correctingBanner: {
     backgroundColor: colors.successBg,

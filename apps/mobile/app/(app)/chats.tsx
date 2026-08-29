@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import {
   ActivityIndicator,
@@ -32,7 +33,7 @@ function relativeTime(iso: string): string {
 }
 
 export default function ChatsScreen() {
-  const { layout } = useTheme()
+  const { colors, layout } = useTheme()
   const styles = useStyles()
 
   const me = useMe()
@@ -55,7 +56,21 @@ export default function ChatsScreen() {
 
   return (
     <Screen fluid>
-      <Text style={styles.title}>Chats</Text>
+      {/*
+        The only way into the starred list. A star is private and one-sided, so
+        without an entry point here it is a write with no read.
+      */}
+      <View style={styles.titleRow}>
+        <Text style={styles.title}>Chats</Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Starred messages"
+          hitSlop={10}
+          onPress={() => router.push('/(app)/starred')}
+        >
+          <Feather name="star" size={20} color={colors.textMuted} />
+        </Pressable>
+      </View>
 
       {state === 'skeleton' ? (
         <View style={styles.list}>
@@ -155,6 +170,7 @@ export default function ChatsScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   title: { ...font.title, color: colors.text, paddingTop: spacing.md },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
   footer: { paddingVertical: spacing.lg },

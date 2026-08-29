@@ -7,7 +7,9 @@ import {
   subscribeToMessageMenu,
 } from './messageMenu'
 
-const COPY = [{ id: 'copy' as const, label: 'Copy', icon: 'copy-outline' }]
+const COPY = [
+  { id: 'copy' as const, label: 'Copy', icon: 'copy-outline', page: 'primary' as const },
+]
 
 afterEach(() => {
   resetMessageMenuForTest()
