@@ -88,7 +88,10 @@ export default function LeaderboardScreen() {
             </Text>
             {next.reward > 0 ? (
               <Text style={styles.nextMeta}>
-                {t('leaderboard.pays', { amount: next.reward.toLocaleString(locale) })}
+                {t('leaderboard.pays', {
+                  count: next.reward,
+                  amount: next.reward.toLocaleString(locale),
+                })}
               </Text>
             ) : null}
           </View>

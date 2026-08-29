@@ -46,13 +46,21 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
     <View style={styles.card}>
       <View style={styles.header}>
         <Text style={styles.title}>{t('weekly.thisWeek')}</Text>
-        <Text style={styles.summary}>{t('store.todayCounts', { messages, corrections })}</Text>
+        <Text style={styles.summary}>
+          {t('store.todayCounts', {
+            messages: t('format.messages', { count: messages }),
+            corrections: t('format.corrections', { count: corrections }),
+          })}
+        </Text>
       </View>
 
       <View
         style={styles.bars}
         accessibilityRole="image"
-        accessibilityLabel={t('weekly.summary', { messages, corrections })}
+        accessibilityLabel={t('weekly.summary', {
+          messages: t('format.messages', { count: messages }),
+          corrections: t('format.corrections', { count: corrections }),
+        })}
       >
         {week.map((day) => (
           <View key={day.day} style={styles.column}>

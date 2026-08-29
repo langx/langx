@@ -160,6 +160,8 @@ export const en = {
     hoursCompact: '{count}h',
     daysCompact: '{count}d',
     days: { one: '{count} day', other: '{count} days' },
+    messages: { one: '{count} message', other: '{count} messages' },
+    corrections: { one: '{count} correction', other: '{count} corrections' },
     accountAgeToday: 'today',
     accountAgeDays: { one: '{count} day ago', other: '{count} days ago' },
     accountAgeMonths: { one: '{count} month ago', other: '{count} months ago' },
@@ -311,10 +313,10 @@ export const en = {
     },
     conversationsBody:
       'Threads where the other person came back too. The rest arrive if and when they do.',
-    tokensCarried: '{count} tokens',
+    tokensCarried: { one: '{count} token', other: '{count} tokens' },
     tokensCarriedBody:
       '{carried} carried over from your old balance, plus {bonus} for coming back.',
-    tokensBonus: '{count} tokens',
+    tokensBonus: { one: '{count} token', other: '{count} tokens' },
     tokensBonusBody: 'A welcome-back bonus to start with. Earn more by talking and by correcting.',
     streak: '{days} best streak',
     streakBody: 'Kept as your record. Your live streak starts fresh from today.',
@@ -535,7 +537,10 @@ export const en = {
   me: {
     dayStreak: 'Day streak',
     viewersTitle: 'Who viewed your profile',
-    viewersLocked: '{count} people looked — see who with Pro',
+    viewersLocked: {
+      one: '{count} person looked — see who with Pro',
+      other: '{count} people looked — see who with Pro',
+    },
     viewersCount: { one: '{count} person', other: '{count} people' },
     leaderboardSubtitle: 'Streaks and corrections',
     proTitle: '✦ LangX Pro',
@@ -628,7 +633,7 @@ export const en = {
   store: {
     intro:
       'Earned by messaging and by correcting other people. Teaching is weighted higher than talking.',
-    todayCounts: '{messages} messages · {corrections} corrections',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: '{used} of {cap} paying messages today',
     capExplainer:
       '{cap} messages a day pay tokens, {perPerson} of them per person. Corrections are not capped.',
@@ -670,7 +675,7 @@ export const en = {
     month: 'Month',
     year: 'Year',
     badges: 'Badges',
-    pays: 'Pays {amount} tokens',
+    pays: { one: 'Pays {amount} token', other: 'Pays {amount} tokens' },
     corrections: 'corrections',
     toGoPlain: '{count} to go',
     you: 'You',
@@ -768,7 +773,7 @@ export const en = {
     thisWeek: 'This week',
     correctionsGiven: 'Corrections given',
     messages: 'Messages',
-    summary: 'This week: {messages} messages and {corrections} corrections.',
+    summary: 'This week: {messages} and {corrections}.',
   },
 } as const
 

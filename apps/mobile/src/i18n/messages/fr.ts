@@ -126,6 +126,8 @@ export const fr: Localized<EnMessages> = {
     hoursCompact: '{count}h',
     daysCompact: '{count}j',
     days: { one: '{count} jour', other: '{count} jours' },
+    messages: { one: '{count} message', other: '{count} messages' },
+    corrections: { one: '{count} correction', other: '{count} corrections' },
     accountAgeToday: "aujourd'hui",
     accountAgeDays: { one: 'il y a {count} jour', other: 'il y a {count} jours' },
     accountAgeMonths: { one: 'il y a {count} mois', other: 'il y a {count} mois' },
@@ -280,9 +282,9 @@ export const fr: Localized<EnMessages> = {
     },
     conversationsBody:
       'Les fils où l’autre personne est revenue aussi. Le reste arrivera si elles reviennent.',
-    tokensCarried: '{count} jetons',
+    tokensCarried: { one: '{count} jeton', other: '{count} jetons' },
     tokensCarriedBody: '{carried} repris de ton ancien solde, plus {bonus} pour ton retour.',
-    tokensBonus: '{count} jetons',
+    tokensBonus: { one: '{count} jeton', other: '{count} jetons' },
     tokensBonusBody:
       'Un cadeau de bienvenue pour démarrer. Gagnes-en plus en parlant et en corrigeant.',
     streak: 'Meilleure série : {days}',
@@ -497,7 +499,10 @@ export const fr: Localized<EnMessages> = {
   me: {
     dayStreak: 'Série de jours',
     viewersTitle: 'Qui a vu ton profil',
-    viewersLocked: '{count} personnes ont regardé — vois qui avec Pro',
+    viewersLocked: {
+      one: '{count} personne a regardé — vois qui avec Pro',
+      other: '{count} personnes ont regardé — vois qui avec Pro',
+    },
     viewersCount: { one: '{count} personne', other: '{count} personnes' },
     leaderboardSubtitle: 'Séries et corrections',
     proTitle: '✦ LangX Pro',
@@ -590,7 +595,7 @@ export const fr: Localized<EnMessages> = {
 
   store: {
     intro: 'Gagnés en écrivant et en corrigeant les autres. Enseigner compte plus que parler.',
-    todayCounts: '{messages} messages · {corrections} corrections',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: '{used} messages sur {cap} qui rapportent aujourd’hui',
     capExplainer:
       '{cap} messages par jour rapportent des jetons, dont {perPerson} par personne. Les corrections ne sont pas plafonnées.',
@@ -633,7 +638,7 @@ export const fr: Localized<EnMessages> = {
     month: 'Mois',
     year: 'Année',
     badges: 'Badges',
-    pays: 'Rapporte {amount} jetons',
+    pays: { one: 'Rapporte {amount} jeton', other: 'Rapporte {amount} jetons' },
     corrections: 'corrections',
     toGoPlain: 'encore {count}',
     you: 'Toi',
@@ -729,6 +734,6 @@ export const fr: Localized<EnMessages> = {
     thisWeek: 'Cette semaine',
     correctionsGiven: 'Corrections données',
     messages: 'Messages',
-    summary: 'Cette semaine : {messages} messages et {corrections} corrections.',
+    summary: 'Cette semaine : {messages} et {corrections}.',
   },
 }

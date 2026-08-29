@@ -126,6 +126,8 @@ export const de: Localized<EnMessages> = {
     hoursCompact: '{count}h',
     daysCompact: '{count}t',
     days: { one: '{count} Tag', other: '{count} Tage' },
+    messages: { one: '{count} Nachricht', other: '{count} Nachrichten' },
+    corrections: { one: '{count} Korrektur', other: '{count} Korrekturen' },
     accountAgeToday: 'heute',
     accountAgeDays: { one: 'vor {count} Tag', other: 'vor {count} Tagen' },
     accountAgeMonths: { one: 'vor {count} Monat', other: 'vor {count} Monaten' },
@@ -281,10 +283,10 @@ export const de: Localized<EnMessages> = {
     },
     conversationsBody:
       'Die Verläufe, bei denen die andere Person auch zurück ist. Der Rest kommt, wenn sie kommen.',
-    tokensCarried: '{count} Token',
+    tokensCarried: { one: '{count} Token', other: '{count} Token' },
     tokensCarriedBody:
       '{carried} aus deinem alten Guthaben übernommen, plus {bonus} fürs Zurückkommen.',
-    tokensBonus: '{count} Token',
+    tokensBonus: { one: '{count} Token', other: '{count} Token' },
     tokensBonusBody:
       'Ein Willkommensbonus für den Anfang. Mehr gibt es fürs Reden und Korrigieren.',
     streak: 'Beste Serie: {days}',
@@ -500,7 +502,10 @@ export const de: Localized<EnMessages> = {
   me: {
     dayStreak: 'Tagesserie',
     viewersTitle: 'Wer dein Profil angesehen hat',
-    viewersLocked: '{count} Leute haben geschaut — mit Pro siehst du, wer',
+    viewersLocked: {
+      one: '{count} Person hat geschaut — mit Pro siehst du, wer',
+      other: '{count} Leute haben geschaut — mit Pro siehst du, wer',
+    },
     viewersCount: { one: '{count} Person', other: '{count} Leute' },
     leaderboardSubtitle: 'Serien und Korrekturen',
     proTitle: '✦ LangX Pro',
@@ -595,7 +600,7 @@ export const de: Localized<EnMessages> = {
   store: {
     intro:
       'Verdient durch Schreiben und durch Korrigieren anderer. Unterrichten zählt mehr als Reden.',
-    todayCounts: '{messages} Nachrichten · {corrections} Korrekturen',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: 'Heute {used} von {cap} Nachrichten, die Token bringen',
     capExplainer:
       '{cap} Nachrichten am Tag bringen Token, davon {perPerson} pro Person. Korrekturen sind nicht gedeckelt.',
@@ -638,7 +643,7 @@ export const de: Localized<EnMessages> = {
     month: 'Monat',
     year: 'Jahr',
     badges: 'Abzeichen',
-    pays: 'Bringt {amount} Token',
+    pays: { one: 'Bringt {amount} Token', other: 'Bringt {amount} Token' },
     corrections: 'Korrekturen',
     toGoPlain: 'noch {count}',
     you: 'Du',
@@ -734,6 +739,6 @@ export const de: Localized<EnMessages> = {
     thisWeek: 'Diese Woche',
     correctionsGiven: 'Gegebene Korrekturen',
     messages: 'Nachrichten',
-    summary: 'Diese Woche: {messages} Nachrichten und {corrections} Korrekturen.',
+    summary: 'Diese Woche: {messages} und {corrections}.',
   },
 }

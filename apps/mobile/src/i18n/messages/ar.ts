@@ -146,6 +146,22 @@ export const ar: Localized<EnMessages> = {
       many: '{count} يومًا',
       other: '{count} يوم',
     },
+    messages: {
+      zero: '{count} رسالة',
+      one: 'رسالة واحدة',
+      two: 'رسالتان',
+      few: '{count} رسائل',
+      many: '{count} رسالة',
+      other: '{count} رسالة',
+    },
+    corrections: {
+      zero: '{count} تصحيح',
+      one: 'تصحيح واحد',
+      two: 'تصحيحان',
+      few: '{count} تصحيحات',
+      many: '{count} تصحيحًا',
+      other: '{count} تصحيح',
+    },
     accountAgeToday: 'اليوم',
     accountAgeDays: {
       zero: 'قبل {count} يوم',
@@ -318,9 +334,23 @@ export const ar: Localized<EnMessages> = {
       other: 'استُعيدت {count} محادثة',
     },
     conversationsBody: 'المحادثات التي عاد فيها الطرف الآخر أيضًا. والبقية تصل إن عادوا.',
-    tokensCarried: '{count} رمزًا',
+    tokensCarried: {
+      zero: '{count} رمز',
+      one: 'رمز واحد',
+      two: 'رمزان',
+      few: '{count} رموز',
+      many: '{count} رمزًا',
+      other: '{count} رمز',
+    },
     tokensCarriedBody: 'انتقل {carried} من رصيدك القديم، بالإضافة إلى {bonus} لعودتك.',
-    tokensBonus: '{count} رمزًا',
+    tokensBonus: {
+      zero: '{count} رمز',
+      one: 'رمز واحد',
+      two: 'رمزان',
+      few: '{count} رموز',
+      many: '{count} رمزًا',
+      other: '{count} رمز',
+    },
     tokensBonusBody: 'هدية عودة للبداية. اكسب المزيد بالحديث والتصحيح.',
     streak: 'أفضل سلسلة: {days}',
     streakBody: 'محفوظة كرقمك القياسي. سلسلتك الحالية تبدأ من جديد اليوم.',
@@ -552,7 +582,14 @@ export const ar: Localized<EnMessages> = {
   me: {
     dayStreak: 'سلسلة الأيام',
     viewersTitle: 'من زار ملفك',
-    viewersLocked: 'زارك {count} شخصًا — اعرف من هم مع Pro',
+    viewersLocked: {
+      zero: 'زارك {count} شخص — اعرف من هم مع Pro',
+      one: 'زارك شخص واحد — اعرف من هو مع Pro',
+      two: 'زارك شخصان — اعرف من هما مع Pro',
+      few: 'زارك {count} أشخاص — اعرف من هم مع Pro',
+      many: 'زارك {count} شخصًا — اعرف من هم مع Pro',
+      other: 'زارك {count} شخص — اعرف من هم مع Pro',
+    },
     viewersCount: {
       zero: '{count} شخص',
       one: 'شخص واحد',
@@ -655,7 +692,7 @@ export const ar: Localized<EnMessages> = {
 
   store: {
     intro: 'تُكتسب بالمراسلة وبتصحيح الآخرين. التعليم يزن أكثر من الحديث.',
-    todayCounts: '{messages} رسالة · {corrections} تصحيحًا',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: '{used} من {cap} رسالة تكسب رموزًا اليوم',
     capExplainer: '{cap} رسالة يوميًا تكسب رموزًا، منها {perPerson} لكل شخص. التصحيحات بلا سقف.',
     disclaimer:
@@ -696,7 +733,14 @@ export const ar: Localized<EnMessages> = {
     month: 'شهر',
     year: 'سنة',
     badges: 'الشارات',
-    pays: 'تمنح {amount} رمزًا',
+    pays: {
+      zero: 'تمنح {amount} رمز',
+      one: 'تمنح رمزًا واحدًا',
+      two: 'تمنح رمزين',
+      few: 'تمنح {amount} رموز',
+      many: 'تمنح {amount} رمزًا',
+      other: 'تمنح {amount} رمز',
+    },
     corrections: 'تصحيحات',
     toGoPlain: 'بقي {count}',
     you: 'أنت',
@@ -809,6 +853,6 @@ export const ar: Localized<EnMessages> = {
     thisWeek: 'هذا الأسبوع',
     correctionsGiven: 'التصحيحات المقدَّمة',
     messages: 'الرسائل',
-    summary: 'هذا الأسبوع: {messages} رسالة و{corrections} تصحيحًا.',
+    summary: 'هذا الأسبوع: {messages} و{corrections}.',
   },
 }

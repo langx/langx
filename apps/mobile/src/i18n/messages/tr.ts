@@ -140,6 +140,8 @@ export const tr: Localized<EnMessages> = {
     hoursCompact: '{count}s',
     daysCompact: '{count}g',
     days: { one: '{count} gün', other: '{count} gün' },
+    messages: { one: '{count} mesaj', other: '{count} mesaj' },
+    corrections: { one: '{count} düzeltme', other: '{count} düzeltme' },
     accountAgeToday: 'bugün',
     accountAgeDays: { one: '{count} gün önce', other: '{count} gün önce' },
     accountAgeMonths: { one: '{count} ay önce', other: '{count} ay önce' },
@@ -286,9 +288,9 @@ export const tr: Localized<EnMessages> = {
     handleBody: 'Kullanıcı adın yine senin — kimse alamadı.',
     conversations: { one: '{count} sohbet geri geldi', other: '{count} sohbet geri geldi' },
     conversationsBody: 'Karşı tarafın da döndüğü sohbetler. Kalanlar, onlar da dönerse gelir.',
-    tokensCarried: '{count} jeton',
+    tokensCarried: { one: '{count} jeton', other: '{count} jeton' },
     tokensCarriedBody: 'Eski bakiyenden {carried} devredildi, döndüğün için de {bonus} eklendi.',
-    tokensBonus: '{count} jeton',
+    tokensBonus: { one: '{count} jeton', other: '{count} jeton' },
     tokensBonusBody:
       'Başlangıç için bir dönüş hediyesi. Konuşarak ve düzelterek daha fazlasını kazan.',
     streak: 'En iyi seri: {days}',
@@ -506,7 +508,10 @@ export const tr: Localized<EnMessages> = {
   me: {
     dayStreak: 'Günlük seri',
     viewersTitle: 'Profiline kim baktı',
-    viewersLocked: '{count} kişi baktı — kim olduklarını Pro ile gör',
+    viewersLocked: {
+      one: '{count} kişi baktı — kim olduklarını Pro ile gör',
+      other: '{count} kişi baktı — kim olduklarını Pro ile gör',
+    },
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
     leaderboardSubtitle: 'Seriler ve düzeltmeler',
     proTitle: '✦ LangX Pro',
@@ -599,7 +604,7 @@ export const tr: Localized<EnMessages> = {
   store: {
     intro:
       'Mesajlaşarak ve başkalarını düzelterek kazanılır. Öğretmek, konuşmaktan daha ağır basar.',
-    todayCounts: '{messages} mesaj · {corrections} düzeltme',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: 'Bugün jeton kazandıran {cap} mesajdan {used} tanesi',
     capExplainer:
       'Günde {cap} mesaj jeton kazandırır, kişi başına {perPerson} tanesi. Düzeltmelerde sınır yok.',
@@ -641,7 +646,7 @@ export const tr: Localized<EnMessages> = {
     month: 'Ay',
     year: 'Yıl',
     badges: 'Rozetler',
-    pays: '{amount} jeton kazandırır',
+    pays: { one: '{amount} jeton kazandırır', other: '{amount} jeton kazandırır' },
     corrections: 'düzeltme',
     toGoPlain: '{count} kaldı',
     you: 'Sen',
@@ -734,6 +739,6 @@ export const tr: Localized<EnMessages> = {
     thisWeek: 'Bu hafta',
     correctionsGiven: 'Yapılan düzeltmeler',
     messages: 'Mesajlar',
-    summary: 'Bu hafta: {messages} mesaj ve {corrections} düzeltme.',
+    summary: 'Bu hafta: {messages} ve {corrections}.',
   },
 }

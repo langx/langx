@@ -141,6 +141,18 @@ export const ru: Localized<EnMessages> = {
       many: '{count} дней',
       other: '{count} дня',
     },
+    messages: {
+      one: '{count} сообщение',
+      few: '{count} сообщения',
+      many: '{count} сообщений',
+      other: '{count} сообщения',
+    },
+    corrections: {
+      one: '{count} исправление',
+      few: '{count} исправления',
+      many: '{count} исправлений',
+      other: '{count} исправления',
+    },
     accountAgeToday: 'сегодня',
     accountAgeDays: {
       one: '{count} день назад',
@@ -308,9 +320,19 @@ export const ru: Localized<EnMessages> = {
     },
     conversationsBody:
       'Те переписки, где вернулся и собеседник. Остальные придут, если и когда вернутся они.',
-    tokensCarried: '{count} жетонов',
+    tokensCarried: {
+      one: '{count} жетон',
+      few: '{count} жетона',
+      many: '{count} жетонов',
+      other: '{count} жетона',
+    },
     tokensCarriedBody: '{carried} перенесено со старого баланса, плюс {bonus} за возвращение.',
-    tokensBonus: '{count} жетонов',
+    tokensBonus: {
+      one: '{count} жетон',
+      few: '{count} жетона',
+      many: '{count} жетонов',
+      other: '{count} жетона',
+    },
     tokensBonusBody:
       'Подарок за возвращение, чтобы начать. Остальное зарабатывается общением и исправлениями.',
     streak: 'Лучшая серия: {days}',
@@ -538,7 +560,12 @@ export const ru: Localized<EnMessages> = {
   me: {
     dayStreak: 'Серия дней',
     viewersTitle: 'Кто смотрел твой профиль',
-    viewersLocked: 'Смотрели {count} — узнай кто с Pro',
+    viewersLocked: {
+      one: 'Смотрел {count} человек — узнай кто с Pro',
+      few: 'Смотрели {count} человека — узнай кто с Pro',
+      many: 'Смотрели {count} человек — узнай кто с Pro',
+      other: 'Смотрели {count} человека — узнай кто с Pro',
+    },
     viewersCount: {
       one: '{count} человек',
       few: '{count} человека',
@@ -638,7 +665,7 @@ export const ru: Localized<EnMessages> = {
   store: {
     intro:
       'Зарабатываются перепиской и исправлениями чужих ошибок. Обучение весит больше, чем разговор.',
-    todayCounts: '{messages} сообщений · {corrections} исправлений',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: 'Сегодня {used} из {cap} оплачиваемых сообщений',
     capExplainer:
       '{cap} сообщений в день приносят жетоны, из них {perPerson} на одного человека. Исправления не ограничены.',
@@ -680,7 +707,12 @@ export const ru: Localized<EnMessages> = {
     month: 'Месяц',
     year: 'Год',
     badges: 'Значки',
-    pays: 'Даёт {amount} жетонов',
+    pays: {
+      one: 'Даёт {amount} жетон',
+      few: 'Даёт {amount} жетона',
+      many: 'Даёт {amount} жетонов',
+      other: 'Даёт {amount} жетона',
+    },
     corrections: 'исправлений',
     toGoPlain: 'осталось {count}',
     you: 'Ты',
@@ -788,6 +820,6 @@ export const ru: Localized<EnMessages> = {
     thisWeek: 'На этой неделе',
     correctionsGiven: 'Сделано исправлений',
     messages: 'Сообщения',
-    summary: 'На этой неделе: {messages} сообщений и {corrections} исправлений.',
+    summary: 'На этой неделе: {messages} и {corrections}.',
   },
 }
