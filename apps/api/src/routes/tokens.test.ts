@@ -526,6 +526,33 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(profile?.streak.current).toBe(5)
     })
 
+    /**
+     * `streakDays` only starts existing when this ships, so every account that
+     * predates it has a history of nothing — and a walk over that history
+     * would price a long streak at zero. Found by watching the profile card
+     * say 1 while the repair confirmation said 2.
+     */
+    it('never lowers a streak that predates the day records', async () => {
+      const user = await funded('repair-legacy@example.com', 1000)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'streak.current': 200, 'streak.longest': 200 } })
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ streak: { current: number } }>().streak.current).toBe(200)
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.streak.current).toBe(200)
+    })
+
     /** The leaderboard ranks token earned. Spending must not move anyone. */
     it('does not touch the leaderboard aggregates', async () => {
       const user = await funded('repair-rank@example.com', 1000)

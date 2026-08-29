@@ -310,7 +310,19 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
    * to know the new length is to walk them.
    */
   const window = await listStreakDays(db, userId, shiftDayKey(today, -400), today)
-  const current = streakFromDays(new Set(window.map((d) => d.day)), today)
+  const walked = streakFromDays(new Set(window.map((d) => d.day)), today)
+
+  /**
+   * Never below what they already had.
+   *
+   * `streakDays` only starts existing when this ships, so every account that
+   * predates it has a history of nothing — and the walk above would price a
+   * two-hundred-day streak at zero. Buying a repair must not be able to take a
+   * streak away, which is what the max guarantees whatever the history looks
+   * like. As the collection fills in, the walk becomes the larger of the two on
+   * its own and this stops doing anything.
+   */
+  const current = Math.max(profile.streak.current, walked)
   const longest = Math.max(profile.streak.longest, current)
   const after = await profiles.findOneAndUpdate(
     { _id: userId },
