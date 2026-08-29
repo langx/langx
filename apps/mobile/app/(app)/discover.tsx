@@ -8,15 +8,7 @@ import {
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useMemo, useState } from 'react'
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import {
   useDiscovery,
   useHasFeature,
@@ -79,6 +71,13 @@ export default function DiscoverScreen() {
   const sharingLocation = me.data?.location !== undefined
   const filters = useMemo(() => parseFilters(params), [params])
 
+  /** "TR → ES" — the first of each, since the header has room for one pair. */
+  const pair = useMemo(() => {
+    const speaks = me.data?.nativeLanguages[0]?.code
+    const learns = me.data?.learning[0]?.code
+    return speaks && learns ? `${speaks.toUpperCase()} → ${learns.toUpperCase()}` : null
+  }, [me.data])
+
   /**
    * Nearby has two preconditions and they fail differently, so the chip
    * resolves both before switching rather than letting the request come back
@@ -140,7 +139,14 @@ export default function DiscoverScreen() {
   return (
     <Screen fluid>
       <View style={styles.header}>
-        <Text style={styles.title}>Discover</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>Discover</Text>
+          {/* Which direction this list is matched in. Every card below is
+              someone native in what you are learning and learning what you
+              speak, and without this the list looks unsorted rather than
+              matched. */}
+          {pair ? <Text style={styles.pair}>{pair}</Text> : null}
+        </View>
         <View style={styles.filters}>
           {SORTS.map((option) => (
             <Chip
@@ -165,7 +171,7 @@ export default function DiscoverScreen() {
               rather than the paywall. */}
           <Chip
             label={count > 0 ? `Filters · ${count}` : isPro ? 'Filters' : 'Filters ✦'}
-            tone="pro"
+            tone="secondary"
             selected={count > 0}
             onPress={() => router.push({ pathname: '/(app)/filters', params })}
           />
@@ -253,7 +259,12 @@ export default function DiscoverScreen() {
               }
               style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
             >
-              <Avatar url={item.avatarUrl} name={item.displayName} online={item.isOnline} />
+              <Avatar
+                url={item.avatarUrl}
+                name={item.displayName}
+                size={54}
+                online={item.isOnline}
+              />
               <View style={styles.cardBody}>
                 <View style={styles.cardTop}>
                   <Text style={styles.name} numberOfLines={1}>
@@ -261,14 +272,14 @@ export default function DiscoverScreen() {
                   </Text>
                   <Text style={styles.age}>{item.age}</Text>
                   {item.streak.current > 0 ? (
-                    <Text style={styles.streak}>🔥{item.streak.current}</Text>
+                    <Text style={styles.streak}>🔥 {item.streak.current}</Text>
                   ) : null}
                 </View>
                 <LanguageLine item={item} />
                 {item.distanceKm !== undefined ? (
                   // `formatDistance` words it as the bound it is — the server
                   // sends a bucket edge, never a measured distance.
-                  <Text style={styles.distance}>📍 {formatDistance(item.distanceKm)}</Text>
+                  <Text style={styles.distance}>{formatDistance(item.distanceKm)}</Text>
                 ) : null}
                 {item.bio ? (
                   <Text style={styles.bio} numberOfLines={2}>
@@ -286,27 +297,49 @@ export default function DiscoverScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   header: { paddingTop: spacing.md },
-  title: { ...font.title, color: colors.text },
-  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, marginTop: spacing.md },
-  list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  title: { ...font.title, color: colors.text, fontSize: 30 },
+  pair: {
+    ...font.caption,
+    backgroundColor: colors.infoBg,
+    borderRadius: radius.pill,
+    color: colors.info,
+    fontWeight: '600',
+    overflow: 'hidden',
+    paddingHorizontal: spacing.md,
+    paddingVertical: 7,
+  },
+  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 14 },
+  list: { gap: spacing.md, paddingBottom: spacing.xxl, paddingTop: spacing.md },
   footer: { paddingVertical: spacing.lg },
   card: {
-    alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
     flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
+    gap: 14,
+    padding: 14,
   },
-  cardPressed: { backgroundColor: colors.surface, borderRadius: radius.md },
-  cardBody: { flex: 1 },
-  cardTop: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  name: { ...font.body, color: colors.text, flexShrink: 1, fontWeight: '700' },
-  age: { ...font.caption, color: colors.textMuted },
-  streak: { ...font.caption, color: colors.streak, fontWeight: '700' },
-  languages: { ...font.caption, color: colors.accent, marginTop: 2 },
-  distance: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-  bio: { ...font.caption, color: colors.textMuted, marginTop: 2 },
+  cardPressed: { opacity: 0.7 },
+  cardBody: { flex: 1, minWidth: 0 },
+  cardTop: { alignItems: 'center', flexDirection: 'row', gap: 7 },
+  name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 17 },
+  age: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  streak: {
+    ...font.caption,
+    backgroundColor: colors.warningBg,
+    borderRadius: radius.pill,
+    color: colors.warning,
+    fontWeight: '600',
+    marginLeft: 'auto',
+    overflow: 'hidden',
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+  },
+  languages: { ...font.label, color: colors.accent, marginTop: 4 },
+  distance: { ...font.caption, color: colors.textMuted, marginTop: 3 },
+  bio: { ...font.label, color: colors.textMuted, fontWeight: '400', lineHeight: 20, marginTop: 5 },
 }))
 
 /** Enough to fill a phone; the list scrolls before it needs more. */

@@ -176,7 +176,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   previewUnread: { color: colors.text, fontWeight: '600' },
   badge: {
     alignItems: 'center',
-    backgroundColor: colors.accent,
+    backgroundColor: colors.danger,
     borderRadius: radius.pill,
     minWidth: 20,
     paddingHorizontal: 6,

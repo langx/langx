@@ -5,7 +5,7 @@ interface ChipProps {
   label: string
   selected?: boolean
   onPress?: () => void
-  tone?: 'default' | 'accent' | 'streak' | 'pro' | 'proPlus'
+  tone?: 'default' | 'accent' | 'secondary' | 'streak' | 'pro' | 'proPlus'
 }
 
 type Tone = NonNullable<ChipProps['tone']>
@@ -17,8 +17,10 @@ type Tone = NonNullable<ChipProps['tone']>
  */
 function toneColour(colors: ThemeColors, tone: Tone): string {
   const byTone: Record<Tone, string> = {
-    default: colors.textMuted,
+    // The committing/primary choice in a row of chips — the selected sort.
+    default: colors.primary,
     accent: colors.accent,
+    secondary: colors.secondary,
     streak: colors.streak,
     pro: colors.pro,
     proPlus: colors.proPlus,
@@ -38,14 +40,27 @@ export function Chip({ label, selected = false, onPress, tone = 'default' }: Chi
   const styles = useStyles()
 
   const colour = toneColour(colors, tone)
-  const container: ViewStyle[] = [
-    styles.base,
-    { borderColor: colour },
-    ...(selected ? [{ backgroundColor: colour }] : []),
+  const container: ViewStyle[] = selected
+    ? [styles.base, { backgroundColor: colour, borderColor: colour }]
+    : // Unselected chips share one outline — `surface` on `border` — so a row of
+      // them reads as one control rather than as five differently-ringed
+      // buttons. The tone survives in the *label*, which is where "Nearby" says
+      // Pro and "Filters" says it is the second action.
+      [styles.base, { backgroundColor: colors.surface, borderColor: colors.border }]
+  const text = [
+    styles.label,
+    {
+      // `default` fills with `primary`, whose contrast partner is black in both
+      // schemes; every other tone is a saturated accent and takes `textInverse`.
+      color: selected
+        ? tone === 'default'
+          ? colors.primaryText
+          : colors.textInverse
+        : tone === 'default'
+          ? colors.text
+          : colour,
+    },
   ]
-  // `textInverse`, not `primaryText`: a selected chip is filled with its own
-  // tone, which is only `primary` by coincidence for the default one.
-  const text = [styles.label, { color: selected ? colors.textInverse : colour }]
 
   // Both branches render the same View + Text structure. Styling a bare Text
   // as the container is what let the two drift apart in the first place.
