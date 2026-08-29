@@ -100,7 +100,7 @@ export function ImageBubble({ message }: { message: MessageDto }) {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
-  track: { backgroundColor: 'rgba(128,128,128,0.35)', borderRadius: 2, flex: 1, height: 3 },
+  track: { backgroundColor: colors.primaryTextMuted, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
   duration: { ...font.caption, fontVariant: ['tabular-nums'] },
   image: { backgroundColor: colors.surface, borderRadius: radius.md, width: 220 },

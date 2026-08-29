@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, type ViewStyle } from 'react-native'
+import { ActivityIndicator, Pressable, Text, type ViewStyle } from 'react-native'
+import { makeStyles, useTheme } from '../../lib/theme'
 
 interface ButtonProps {
   label: string
@@ -9,6 +10,12 @@ interface ButtonProps {
   style?: ViewStyle
 }
 
+/**
+ * The primary is the app's committing action, and it is `primary` yellow with
+ * black on it in **both** schemes — see the palette note in `theme/tokens.ts`.
+ * A user who has learned "the yellow one sends it" should not have to relearn
+ * that after dark.
+ */
 export function Button({
   label,
   onPress,
@@ -17,6 +24,8 @@ export function Button({
   variant = 'primary',
   style,
 }: ButtonProps) {
+  const { colors } = useTheme()
+  const styles = useStyles()
   const isDisabled = disabled || loading
 
   return (
@@ -27,14 +36,14 @@ export function Button({
         styles.base,
         variant === 'primary' ? styles.primary : styles.secondary,
         isDisabled && styles.disabled,
-        pressed && !isDisabled && styles.pressed,
+        pressed && !isDisabled && (variant === 'primary' ? styles.pressedPrimary : styles.pressed),
         style,
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? '#fff' : '#111'} />
+        <ActivityIndicator color={variant === 'primary' ? colors.primaryText : colors.text} />
       ) : (
-        <Text style={variant === 'primary' ? styles.primaryText : styles.secondaryText}>
+        <Text style={variant === 'primary' ? styles.primaryLabel : styles.secondaryLabel}>
           {label}
         </Text>
       )}
@@ -42,13 +51,13 @@ export function Button({
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, radius, spacing, cardShadow, font }) => ({
   base: {
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: radius.pill,
     justifyContent: 'center',
-    minHeight: 48,
-    paddingHorizontal: 20,
+    minHeight: 54,
+    paddingHorizontal: spacing.xl,
     /**
      * A default for the common case — a button at the bottom of a form column,
      * which should span it. It is **wrong inside a row**: 100% of the row
@@ -58,10 +67,28 @@ const styles = StyleSheet.create({
      */
     width: '100%',
   },
-  primary: { backgroundColor: '#111' },
-  secondary: { backgroundColor: 'transparent', borderColor: '#111', borderWidth: 1 },
+  primary: { backgroundColor: colors.primary, ...cardShadow },
+  secondary: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+  },
   disabled: { opacity: 0.5 },
+  // The primary has a pressed *colour* rather than the opacity the outline
+  // variant uses: fading yellow toward the page reads as "disabled", which is
+  // the one thing a press must not look like.
+  pressedPrimary: { backgroundColor: colors.primaryShade },
   pressed: { opacity: 0.8 },
-  primaryText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  secondaryText: { color: '#111', fontSize: 16, fontWeight: '600' },
-})
+  primaryLabel: {
+    color: colors.primaryText,
+    fontFamily: font.heading.fontFamily,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  secondaryLabel: {
+    color: colors.text,
+    fontFamily: font.heading.fontFamily,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+}))

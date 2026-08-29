@@ -1,12 +1,14 @@
 import * as Linking from 'expo-linking'
 import { Link } from 'expo-router'
 import { useState } from 'react'
-import { KeyboardAvoidingView, Platform, StyleSheet, Text } from 'react-native'
+import { KeyboardAvoidingView, Platform, Text } from 'react-native'
+import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
 
 export default function ForgotPassword() {
+  const styles = useStyles()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
@@ -66,9 +68,15 @@ export default function ForgotPassword() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, gap: 16, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 28, fontWeight: '700' },
-  body: { fontSize: 15, lineHeight: 22, opacity: 0.8 },
-  link: { color: '#111', fontWeight: '600', textDecorationLine: 'underline' },
-})
+const useStyles = makeStyles(({ colors }) => ({
+  container: {
+    backgroundColor: colors.bg,
+    flex: 1,
+    gap: 16,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: { color: colors.text, fontSize: 28, fontWeight: '700' },
+  body: { color: colors.textMuted, fontSize: 15, lineHeight: 22, opacity: 0.8 },
+  link: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
+}))

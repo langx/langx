@@ -60,7 +60,7 @@ export function AlertHost() {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   backdrop: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: colors.scrim,
     flex: 1,
     justifyContent: 'center',
     padding: spacing.lg,

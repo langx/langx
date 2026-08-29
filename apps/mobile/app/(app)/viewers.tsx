@@ -68,7 +68,7 @@ export default function ViewersScreen() {
             viewers.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
           ListEmptyComponent={
-            <EmptyState emoji="👀" title="No visitors yet" body="Filling in your profile helps." />
+            <EmptyState icon="eye" title="No visitors yet" body="Filling in your profile helps." />
           }
           renderItem={({ item }) => (
             <Pressable

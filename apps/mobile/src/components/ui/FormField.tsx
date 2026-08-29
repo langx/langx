@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TextInput, type TextInputProps, View } from 'react-native'
+import { Text, TextInput, type TextInputProps, View } from 'react-native'
+import { makeStyles, useTheme } from '../../lib/theme'
 
 interface FormFieldProps extends TextInputProps {
   label: string
@@ -12,6 +13,8 @@ interface FormFieldProps extends TextInputProps {
 }
 
 export function FormField({ label, error, maxLength, style, ...inputProps }: FormFieldProps) {
+  const { colors } = useTheme()
+  const styles = useStyles()
   const used = typeof inputProps.value === 'string' ? inputProps.value.length : 0
   // Quiet until it matters. A counter on an empty field is noise; one at 90%
   // is a warning.
@@ -28,8 +31,16 @@ export function FormField({ label, error, maxLength, style, ...inputProps }: For
         ) : null}
       </View>
       <TextInput
-        style={[styles.input, error ? styles.inputError : null, style]}
-        placeholderTextColor="#999"
+        style={[
+          styles.input,
+          // Controls are pills, but a pill with three lines in it is a lozenge
+          // with the text jammed against its curve. Multiline gets the card
+          // radius instead.
+          inputProps.multiline ? styles.inputMultiline : styles.inputSingle,
+          error ? styles.inputError : null,
+          style,
+        ]}
+        placeholderTextColor={colors.textFaint}
         autoCapitalize="none"
         autoCorrect={false}
         {...(maxLength !== undefined ? { maxLength } : {})}
@@ -40,20 +51,23 @@ export function FormField({ label, error, maxLength, style, ...inputProps }: For
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   container: { gap: 6, width: '100%' },
   labelRow: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
-  label: { fontSize: 13, fontWeight: '600', opacity: 0.7 },
-  count: { fontSize: 12, opacity: 0.5 },
-  countOver: { color: '#c0392b', opacity: 1 },
+  label: { ...font.label, color: colors.textMuted },
+  count: { ...font.caption, color: colors.textFaint },
+  countOver: { color: colors.danger },
   input: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: '#999',
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+    color: colors.text,
     fontSize: 16,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
-  inputError: { borderColor: '#c0392b' },
-  error: { color: '#c0392b', fontSize: 12 },
-})
+  inputSingle: { borderRadius: radius.pill },
+  inputMultiline: { borderRadius: radius.lg },
+  inputError: { borderColor: colors.danger },
+  error: { ...font.caption, color: colors.danger },
+}))

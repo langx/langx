@@ -85,7 +85,7 @@ export default function ChatsScreen() {
           }
           ListEmptyComponent={
             <EmptyState
-              emoji="💬"
+              icon="message-square"
               title="No chats yet"
               body="Message someone from Discover. On the free plan you can start 5 new chats a day — replying to messages you receive is always unlimited."
               actionLabel="Go to Discover"

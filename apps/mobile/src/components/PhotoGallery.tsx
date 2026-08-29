@@ -81,9 +81,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     height: 96,
     width: 96,
   },
-  backdrop: { backgroundColor: 'rgba(0,0,0,0.94)', flex: 1, justifyContent: 'center' },
+  backdrop: { backgroundColor: colors.scrimStrong, flex: 1, justifyContent: 'center' },
   close: { position: 'absolute', right: spacing.lg, top: spacing.xxl, zIndex: 1 },
-  closeText: { color: '#fff', fontSize: 24 },
+  closeText: { color: colors.onScrim, fontSize: 24 },
   full: { flex: 1, width: '100%' },
   pager: {
     alignItems: 'center',
@@ -92,6 +92,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     justifyContent: 'center',
     paddingBottom: spacing.xxl,
   },
-  pagerArrow: { color: '#fff', fontSize: 32 },
-  pagerCount: { ...font.caption, color: '#fff', fontVariant: ['tabular-nums'] },
+  pagerArrow: { color: colors.onScrim, fontSize: 32 },
+  pagerCount: { ...font.caption, color: colors.onScrim, fontVariant: ['tabular-nums'] },
 }))

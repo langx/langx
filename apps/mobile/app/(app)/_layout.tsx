@@ -1,5 +1,6 @@
+import Feather from '@expo/vector-icons/Feather'
 import { Tabs } from 'expo-router'
-import { Text } from 'react-native'
+import type { ColorValue } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTheme } from '../../src/lib/theme'
@@ -10,8 +11,14 @@ import { useSocket } from '../../src/hooks/useSocket'
 /** Not a tab, and no tab bar under it either. */
 const FULL_SCREEN = { href: null, tabBarStyle: { display: 'none' } } as const
 
-function TabIcon({ emoji, focused }: { emoji: string; focused: boolean }) {
-  return <Text style={{ fontSize: 20, opacity: focused ? 1 : 0.45 }}>{emoji}</Text>
+/**
+ * Feather rather than Lucide, which is what the design specifies: Lucide is a
+ * fork of Feather and draws the same glyphs, but `lucide-react-native` needs
+ * `react-native-svg`, and @expo/vector-icons is already a dependency. A whole
+ * native module for a set of icons we already have is not a trade worth making.
+ */
+function TabIcon({ name, color }: { name: keyof typeof Feather.glyphMap; color: ColorValue }) {
+  return <Feather name={name} size={22} color={color} />
 }
 
 /**
@@ -40,37 +47,38 @@ export default function AppLayout() {
       <Tabs
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: colors.text,
+          tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.textMuted,
-          tabBarStyle: { borderTopColor: colors.border },
+          tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+          tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
         }}
       >
         <Tabs.Screen
           name="chats"
           options={{
             title: 'Chats',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="💬" focused={focused} />,
+            tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
           }}
         />
         <Tabs.Screen
           name="discover"
           options={{
             title: 'Discover',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="🧭" focused={focused} />,
+            tabBarIcon: ({ color }) => <TabIcon name="search" color={color} />,
           }}
         />
         <Tabs.Screen
           name="leaderboard"
           options={{
             title: 'Leaderboard',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="🏆" focused={focused} />,
+            tabBarIcon: ({ color }) => <TabIcon name="award" color={color} />,
           }}
         />
         <Tabs.Screen
           name="me"
           options={{
             title: 'Profile',
-            tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
+            tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
           }}
         />
         {/*

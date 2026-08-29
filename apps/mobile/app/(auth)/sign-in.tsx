@@ -1,6 +1,7 @@
 import { Link, router } from 'expo-router'
 import { useState } from 'react'
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native'
+import { makeStyles } from '../../src/lib/theme'
 import { api } from '../../src/api/client'
 import type { LoginResult } from '../../src/api/types'
 import { Button } from '../../src/components/ui/Button'
@@ -11,6 +12,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { authErrorMessage } from '../../src/lib/errors'
 
 export default function SignIn() {
+  const styles = useStyles()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -189,7 +191,7 @@ export default function SignIn() {
       ) : null}
 
       <View style={styles.footer}>
-        <Text>Don&apos;t have an account? </Text>
+        <Text style={styles.footerText}>Don&apos;t have an account? </Text>
         <Link href="/(auth)/sign-up" style={styles.link}>
           Sign up
         </Link>
@@ -198,13 +200,20 @@ export default function SignIn() {
   )
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, gap: 16, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 28, fontWeight: '700', marginBottom: 8 },
-  link: { color: '#111', fontWeight: '600', textDecorationLine: 'underline' },
+const useStyles = makeStyles(({ colors }) => ({
+  container: {
+    backgroundColor: colors.bg,
+    flex: 1,
+    gap: 16,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  title: { color: colors.text, fontSize: 28, fontWeight: '700', marginBottom: 8 },
+  link: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
   divider: { alignItems: 'center', flexDirection: 'row', gap: 12, marginVertical: 4 },
-  dividerLine: { backgroundColor: '#ddd', flex: 1, height: StyleSheet.hairlineWidth },
-  dividerText: { opacity: 0.5 },
-  socialError: { color: '#b00020' },
+  dividerLine: { backgroundColor: colors.border, flex: 1, height: StyleSheet.hairlineWidth },
+  dividerText: { color: colors.textMuted, opacity: 0.5 },
+  socialError: { color: colors.danger },
+  footerText: { color: colors.textMuted },
   footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
-})
+}))

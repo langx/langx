@@ -86,7 +86,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingVertical: spacing.md,
   },
   actionPressed: { backgroundColor: colors.surface },
-  backdrop: { backgroundColor: 'rgba(0,0,0,0.35)', flex: 1 },
+  backdrop: { backgroundColor: colors.scrim, flex: 1 },
   backdropBottom: { justifyContent: 'flex-end' },
   backdropCentred: { alignItems: 'center', justifyContent: 'center' },
   destructive: { color: colors.danger },

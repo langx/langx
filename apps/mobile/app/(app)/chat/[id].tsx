@@ -572,7 +572,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     marginTop: spacing.xs,
     paddingTop: spacing.xs,
   },
-  translationMine: { borderTopColor: 'rgba(255,255,255,0.25)', color: 'rgba(255,255,255,0.75)' },
+  translationMine: { borderTopColor: colors.primaryTextMuted, color: colors.primaryTextMuted },
   translateLink: { ...font.caption, color: colors.accent, marginTop: spacing.xs },
   correction: {
     borderColor: colors.success,
