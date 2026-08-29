@@ -45,9 +45,18 @@ export function SegmentedControl<T extends string>({
 
 const useStyles = makeStyles(({ colors, font, radius }) => ({
   row: { flexDirection: 'row', gap: 6 },
-  segment: { alignItems: 'center', borderRadius: radius.pill, flex: 1, paddingVertical: 9 },
-  on: { backgroundColor: colors.infoBg },
-  off: { backgroundColor: colors.bg },
+  segment: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flex: 1,
+    paddingVertical: 9,
+  },
+  on: { backgroundColor: colors.infoBg, borderColor: colors.infoBg },
+  // `surface` rather than the design's page-grey: the design draws this control
+  // inside a white card, and on the page ground a grey segment on a grey page
+  // disappears. Same outline as an unselected `Chip`, which is what it is.
+  off: { backgroundColor: colors.surface, borderColor: colors.border },
   label: { ...font.label },
   labelOn: { color: colors.info },
   labelOff: { color: colors.textFaint },

@@ -8,12 +8,16 @@ import {
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, ScrollView, Switch, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useIsPro, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
+import { Card } from '../../src/components/ui/Card'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { Toggle } from '../../src/components/ui/Toggle'
 import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import {
@@ -98,12 +102,17 @@ export default function FiltersScreen() {
   return (
     <Screen fluid>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Pressable onPress={() => goBackTo('/(app)/discover')} hitSlop={8}>
-          <Text style={styles.back}>‹ Back</Text>
-        </Pressable>
-        <Text style={styles.title}>Filters</Text>
+        <ScreenHeader
+          title="Filters"
+          onBack={() => goBackTo('/(app)/discover')}
+          trailing={
+            <Pressable onPress={() => setFilters({})} hitSlop={8}>
+              <Text style={styles.reset}>Reset</Text>
+            </Pressable>
+          }
+        />
 
-        <SectionTitle title="Language" />
+        <SectionTitle title="Speaks" />
         <Text style={styles.hint}>
           Which of your own languages you want to practise. Everyone here already speaks it
           natively.
@@ -159,7 +168,7 @@ export default function FiltersScreen() {
           ))}
         </View>
 
-        <View style={styles.switchRow}>
+        <Card style={styles.switchRow}>
           <View style={styles.switchText}>
             <Text style={styles.switchLabel}>Only my gender</Text>
             <Text style={styles.switchHint}>
@@ -168,14 +177,15 @@ export default function FiltersScreen() {
                 : 'Add your own gender to your profile to use this.'}
             </Text>
           </View>
-          <Switch
+          <Toggle
+            accessibilityLabel="Only my gender"
             value={filters.onlyMyGender === true}
             disabled={!myGender || myGender === 'undisclosed'}
             onValueChange={(value) =>
               set({ onlyMyGender: value ? true : undefined, gender: undefined }, true)
             }
           />
-        </View>
+        </Card>
 
         <SectionTitle title="Age" locked={!isPro} />
         <View style={styles.row}>
@@ -210,23 +220,20 @@ export default function FiltersScreen() {
           How well they already speak what you teach. Higher means an easier conversation, lower
           means someone who needs you more.
         </Text>
-        <View style={styles.row}>
-          <Chip
-            label="Any"
-            selected={!filters.minLevel}
-            onPress={() => set({ minLevel: undefined }, true)}
-          />
-          {LANGUAGE_LEVELS.map((level: LanguageLevel) => (
-            <Chip
-              key={level}
-              label={`${LEVEL_SHORT_LABELS[level]}+`}
-              selected={filters.minLevel === level}
-              onPress={() =>
-                set({ minLevel: filters.minLevel === level ? undefined : level }, true)
-              }
-            />
-          ))}
-        </View>
+        {/* One row of equal segments rather than wrapping chips: these are four
+            points on a single scale, and a scale whose steps are different
+            widths reads as four unrelated options. */}
+        <SegmentedControl<LanguageLevel>
+          accessibilityLabel="Their minimum level"
+          options={LANGUAGE_LEVELS.map((level) => ({
+            value: level,
+            label: LEVEL_SHORT_LABELS[level],
+          }))}
+          selected={filters.minLevel ? [filters.minLevel] : []}
+          onToggle={(level) =>
+            set({ minLevel: filters.minLevel === level ? undefined : level }, true)
+          }
+        />
 
         <SectionTitle title="Country" locked={!isPro} />
         <CountryPicker
@@ -237,9 +244,6 @@ export default function FiltersScreen() {
 
         <View style={styles.actions}>
           <Button label={count > 0 ? `Show results · ${count}` : 'Show results'} onPress={apply} />
-          <Pressable onPress={() => setFilters({})} hitSlop={8} style={styles.reset}>
-            <Text style={styles.resetLabel}>Reset all</Text>
-          </Pressable>
         </View>
       </ScrollView>
     </Screen>
@@ -248,8 +252,7 @@ export default function FiltersScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   content: { paddingBottom: spacing.xxl },
-  back: { ...font.body, color: colors.textMuted, paddingVertical: spacing.sm },
-  title: { ...font.title, color: colors.text, marginBottom: spacing.sm },
+  reset: { ...font.label, color: colors.secondary },
   sectionHead: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -265,7 +268,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     flexDirection: 'row',
     gap: spacing.md,
     marginTop: spacing.md,
-    paddingVertical: spacing.sm,
+    padding: spacing.lg,
   },
   switchText: { flex: 1 },
   switchLabel: { ...font.body, color: colors.text, fontWeight: '600' },
@@ -281,6 +284,4 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingVertical: spacing.sm,
   },
   actions: { gap: spacing.md, marginTop: spacing.xxl },
-  reset: { alignSelf: 'center' },
-  resetLabel: { ...font.body, color: colors.textMuted },
 }))
