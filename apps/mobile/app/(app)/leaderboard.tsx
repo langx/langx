@@ -2,12 +2,16 @@ import type { PeriodType } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import { useLeaderboard, useTokens } from '../../src/api/queries'
+import { useBadges, useLeaderboard, useTokens } from '../../src/api/queries'
+import { BadgeGrid } from '../../src/components/BadgeGrid'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
+import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { days } from '../../src/lib/format'
-import { makeStyles } from '../../src/lib/theme'
+import { goBackTo } from '../../src/lib/navigation'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { dedupeById } from '../../src/lib/dedupeById'
 
 const TABS: { key: PeriodType; label: string }[] = [
@@ -20,13 +24,16 @@ const TABS: { key: PeriodType; label: string }[] = [
 const MEDALS = ['🥇', '🥈', '🥉']
 
 export default function LeaderboardScreen() {
+  const { colors } = useTheme()
   const styles = useStyles()
 
   const [period, setPeriod] = useState<PeriodType>('week')
   const board = useLeaderboard(period)
   const xp = useTokens()
+  const badges = useBadges()
 
   const streak = xp.data?.streak
+  const next = badges.data?.next
   const entries = dedupeById(
     (board.data?.pages.flatMap((page) => page.entries) ?? []).map((e) => ({ ...e, _id: e.userId })),
   )
@@ -35,22 +42,62 @@ export default function LeaderboardScreen() {
 
   return (
     <Screen fluid>
-      <Text style={styles.title}>Leaderboard</Text>
+      <ScreenHeader
+        title="Badges"
+        onBack={() => goBackTo('/(app)/me')}
+        trailing={
+          badges.data ? (
+            <Text style={styles.count}>
+              {badges.data.earnedCount} / {badges.data.badges.length}
+            </Text>
+          ) : null
+        }
+      />
 
-      {streak ? (
-        <View style={styles.streakCard}>
-          <View>
-            <Text style={styles.streakValue}>🔥 {days(streak.current)}</Text>
-            <Text style={styles.streakHint}>
-              {streak.qualifiedToday
-                ? 'Today is done. See you tomorrow.'
-                : 'Send one message today to keep it going.'}
+      {/*
+        The next badge rather than the current streak. The streak card said what
+        the number is; this says what it is *for*, which is the only reason a
+        streak is worth keeping — and it reads `reward` from the milestone that
+        actually pays, so the promise cannot drift from the economy.
+      */}
+      {next ? (
+        <View style={styles.next}>
+          <Text style={styles.nextLabel}>Next milestone</Text>
+          <View style={styles.nextRow}>
+            <Text style={styles.nextValue}>
+              {next.current} → {next.threshold}
+            </Text>
+            <Text style={styles.nextUnit}>
+              {next.kind === 'streak' ? 'day streak' : 'corrections'}
             </Text>
           </View>
-          <Pressable onPress={() => router.push('/(app)/me')}>
-            <Text style={styles.streakXp}>{xp.data?.tokens[period] ?? 0} tokens</Text>
-          </Pressable>
+          <ProgressBar
+            accessibilityLabel={`${next.current} of ${next.threshold} toward ${next.label}`}
+            color={colors.streak}
+            height={10}
+            value={next.current / next.threshold}
+          />
+          <View style={styles.nextRow}>
+            <Text style={styles.nextMeta}>
+              {next.kind === 'streak'
+                ? `${days(next.threshold - next.current)} to go`
+                : `${next.threshold - next.current} to go`}
+            </Text>
+            {next.reward > 0 ? (
+              <Text style={styles.nextMeta}>Pays {next.reward.toLocaleString('en-US')} tokens</Text>
+            ) : null}
+          </View>
         </View>
+      ) : null}
+
+      {badges.data ? <BadgeGrid badges={badges.data.badges} /> : null}
+
+      {streak ? (
+        <Text style={styles.streakHint}>
+          {streak.qualifiedToday
+            ? 'Today is done. See you tomorrow.'
+            : 'Send one message today to keep it going.'}
+        </Text>
       ) : null}
 
       <View style={styles.tabs}>
@@ -133,7 +180,35 @@ export default function LeaderboardScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  title: { ...font.title, color: colors.text, paddingTop: spacing.md },
+  count: {
+    ...font.caption,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    color: colors.textMuted,
+    fontWeight: '600',
+    overflow: 'hidden',
+    paddingHorizontal: spacing.md,
+    paddingVertical: 6,
+  },
+  next: {
+    backgroundColor: colors.warningBg,
+    borderRadius: radius.lg,
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+    padding: spacing.lg,
+  },
+  nextLabel: { ...font.label, color: colors.warning },
+  nextRow: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'space-between',
+  },
+  nextValue: { ...font.heading, color: colors.warning, fontSize: 30 },
+  nextUnit: { ...font.label, color: colors.warning, flex: 1, fontWeight: '400' },
+  nextMeta: { ...font.caption, color: colors.warning, fontWeight: '600' },
   streakCard: {
     alignItems: 'center',
     backgroundColor: colors.surface,

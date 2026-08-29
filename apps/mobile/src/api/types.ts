@@ -9,6 +9,8 @@
  * strings; restating them is the honest way to say "this is JSON now".
  */
 export type {
+  BadgeSummary,
+  EarnedBadge,
   Leaderboard,
   LeaderboardEntry,
   PeriodType,

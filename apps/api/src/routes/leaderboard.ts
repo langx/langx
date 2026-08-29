@@ -1,6 +1,7 @@
 import { leaderboardQuerySchema, purchaseSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { requireAuth } from '../middleware/requireAuth'
+import { getBadgeSummary } from '../modules/tokens/badges'
 import { getLeaderboard } from '../modules/tokens/leaderboard'
 import { getWallet, purchase } from '../modules/tokens/wallet'
 
@@ -16,6 +17,13 @@ export const leaderboardRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply.send(board)
     },
   )
+
+  // Beside the leaderboard rather than under /me/tokens: the badge screen and
+  // the ranking tabs are one screen, and this keeps it to one round trip's
+  // worth of routes.
+  app.get('/me/badges', { preHandler: requireAuth }, async (request, reply) => {
+    return reply.send(await getBadgeSummary(app.mongo.db, request.userId))
+  })
 
   app.get('/me/wallet', { preHandler: requireAuth }, async (request, reply) => {
     return reply.send(await getWallet(app.mongo.db, request.userId))
