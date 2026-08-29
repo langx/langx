@@ -489,8 +489,61 @@ is reported: a refused quota, a blocked user or a taken handle are the system
 The plan named NativeWind v4, but phase 1's screens were written with
 StyleSheet and its `Button`/`FormField` are in that idiom. Switching now would
 mean rewriting working screens plus a babel/metro change, to buy consistency
-with a decision the codebase had already departed from. `src/lib/theme.ts`
+with a decision the codebase had already departed from. `src/lib/theme/`
 provides the shared vocabulary that was the actual point.
+
+## Client — a stylesheet is a function of the theme, not a constant
+
+Adding dark mode did not reopen the question above: NativeWind would still cost
+a babel/metro change, and it was never what made dark mode hard. What made it
+hard was the _shape_ of the idiom. Every screen ended in
+
+```ts
+const styles = StyleSheet.create({ title: { color: colors.text } })
+```
+
+which reads the palette at **import time**. Whatever scheme was current when the
+module first evaluated is baked into that sheet for the life of the process, so
+`colors` could gain a dark twin and no screen would ever show it.
+
+`makeStyles()` takes the same object literal as a function of the theme and
+returns a hook. The only change at each call site is `const styles = useStyles()`
+inside the component. It caches per scheme rather than per component instance:
+there are exactly two schemes, so each sheet is built at most twice and
+switching costs no more than the constant lookup did. `chat/[id]` re-renders on
+every socket frame and could not have afforded a per-render `StyleSheet.create`.
+
+Two kinds of token stay direct imports, because they are scheme-independent and
+because a hook cannot run early enough for them: `layout.avatar` and `radius.sm`
+are used as **default parameter values** in `Avatar` and `Skeleton`.
+
+The conversion also surfaced a naming bug that had been invisible while the app
+was monochrome. `primaryText` meant "the text on `primary`" and `primary` was
+near-black, so it was white — and three places had borrowed it to mean "white on
+some other saturated fill". When `primary` became yellow, those three would have
+rendered black on blue. They now use the palette's `text-inverse`, which flips
+with the scheme because the accents do: light mode's are saturated and want
+white on them, dark mode's are pastel and want black.
+
+## Client — the palette is the website's, and yellow does not move
+
+The app's colours are `website/src/lib/scss/_themes.scss`, not a second set
+invented for mobile. A plan limit rendered in the app and the same limit
+rendered on langx.io are the same claim, and they should not be two different
+yellows.
+
+One token deliberately does not participate in the theme: `primary`, and the
+text on it, are identical in light and dark. Everything else moves to its dark
+counterpart. `primary` is the committing action — Continue, Send correction,
+your own chat bubble — and a user who has learned "the yellow one sends it"
+should not have to relearn that after dark. The read tick lost its lifted blue
+for the same reason it existed: it had been tuned to clear a near-black bubble,
+and the bubble is yellow now, so contrast comes from weight instead of hue.
+
+Scrims are the other deliberate constant. A scrim's job is to put distance
+between a sheet and what is behind it, and tinting one with the ground would
+make it do least of that in exactly the scheme where sheet and ground are
+already closest.
 
 ## Client — one socket, opened in the tab layout
 
