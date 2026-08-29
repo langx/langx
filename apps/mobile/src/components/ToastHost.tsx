@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { Animated, Pressable, StyleSheet, Text } from 'react-native'
+import { Animated, Pressable, Text } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { dismissToast, subscribeToToasts, type Toast } from '../lib/toast'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 /**
  * Draws whatever `src/lib/toast.ts` has queued.
@@ -19,6 +19,9 @@ import { colors, font, radius, spacing } from '../lib/theme'
  * — only the banner itself is tappable, and tapping it dismisses early.
  */
 export function ToastHost() {
+  const { spacing } = useTheme()
+  const styles = useStyles()
+
   const [toast, setToast] = useState<Toast | null>(null)
   const opacity = useRef(new Animated.Value(0)).current
   const insets = useSafeAreaInsets()
@@ -53,7 +56,7 @@ export function ToastHost() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   // Top, not bottom, which is where a toast usually goes. The bottom of this
   // app is where its buttons are — the tab bar on every signed-in screen, and
   // the intro's Next — and the banner is tappable, so four seconds of it
@@ -78,4 +81,4 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   text: { ...font.body, color: colors.primaryText, textAlign: 'center' },
-})
+}))

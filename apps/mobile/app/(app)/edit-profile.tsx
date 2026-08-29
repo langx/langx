@@ -13,15 +13,7 @@ import {
 } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
   useAddPhoto,
   useMe,
@@ -41,7 +33,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { goBackTo } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
-import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 
 const GENDER_LABELS: Record<Gender, string> = {
   female: 'Female',
@@ -69,6 +61,8 @@ function contentTypeFor(uri: string): string {
  * what a `key`-based remount would buy without the indirection.
  */
 export default function EditProfileScreen() {
+  const styles = useStyles()
+
   const me = useMe()
 
   if (me.isPending || !me.data) {
@@ -82,6 +76,9 @@ export default function EditProfileScreen() {
 }
 
 function EditProfileForm({ profile }: { profile: MeProfile }) {
+  const { layout } = useTheme()
+  const styles = useStyles()
+
   const update = useUpdateProfile()
   const uploadAvatar = useUploadAvatar()
   const addPhoto = useAddPhoto()
@@ -372,7 +369,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   loading: { marginTop: spacing.xxl },
   backRow: { paddingTop: spacing.md },
   back: { ...font.body, color: colors.textMuted },
@@ -408,4 +405,4 @@ const styles = StyleSheet.create({
   hint: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
   error: { ...font.caption, color: colors.danger, marginTop: spacing.md },
   save: { marginBottom: spacing.xxl, marginTop: spacing.lg },
-})
+}))

@@ -8,7 +8,7 @@ import {
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native'
+import { Pressable, ScrollView, Switch, Text, View } from 'react-native'
 import { useIsPro, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
@@ -23,7 +23,7 @@ import {
   toParams,
   type DiscoveryFilters,
 } from '../../src/lib/discoveryFilters'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
@@ -41,6 +41,8 @@ const GENDER_LABELS: Record<Gender, string> = {
  * it makes the paywall feel like a surprise rather than an offer.
  */
 function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
+  const styles = useStyles()
+
   return (
     <View style={styles.sectionHead}>
       <Text style={styles.sectionTitle}>{title}</Text>
@@ -50,6 +52,8 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
 }
 
 export default function FiltersScreen() {
+  const styles = useStyles()
+
   const params = useLocalSearchParams<Record<string, string>>()
   const me = useMe()
   const isPro = useIsPro()
@@ -242,7 +246,7 @@ export default function FiltersScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   content: { paddingBottom: spacing.xxl },
   back: { ...font.body, color: colors.textMuted, paddingVertical: spacing.sm },
   title: { ...font.title, color: colors.text, marginBottom: spacing.sm },
@@ -279,4 +283,4 @@ const styles = StyleSheet.create({
   actions: { gap: spacing.md, marginTop: spacing.xxl },
   reset: { alignSelf: 'center' },
   resetLabel: { ...font.body, color: colors.textMuted },
-})
+}))

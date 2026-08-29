@@ -1,9 +1,9 @@
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 function formatSeconds(total: number): string {
   const minutes = Math.floor(total / 60)
@@ -19,6 +19,9 @@ function formatSeconds(total: number): string {
  * common bug is a second tap resuming the wrong message from the wrong offset.
  */
 export function AudioBubble({ message, mine }: { message: MessageDto; mine: boolean }) {
+  const { colors } = useTheme()
+  const styles = useStyles()
+
   const player = useAudioPlayer(message.media?.url ?? null)
   const status = useAudioPlayerStatus(player)
 
@@ -73,6 +76,8 @@ export function AudioBubble({ message, mine }: { message: MessageDto; mine: bool
  * photos take.
  */
 export function ImageBubble({ message }: { message: MessageDto }) {
+  const styles = useStyles()
+
   const { width, height, url } = message.media ?? {}
   const [measured, setMeasured] = useState<number | null>(null)
   const ratio = width && height ? width / height : measured
@@ -92,7 +97,7 @@ export function ImageBubble({ message }: { message: MessageDto }) {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
   track: { backgroundColor: 'rgba(128,128,128,0.35)', borderRadius: 2, flex: 1, height: 3 },
@@ -101,4 +106,4 @@ const styles = StyleSheet.create({
   image: { backgroundColor: colors.surface, borderRadius: radius.md, width: 220 },
   /** Holds a plausible slot until `onLoad` reports the real shape. */
   imageUnmeasured: { height: 220 },
-})
+}))

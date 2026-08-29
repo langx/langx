@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { Pressable, Text, View } from 'react-native'
+import { makeStyles } from '../lib/theme'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
 
@@ -61,6 +61,8 @@ interface IntroCarouselProps {
  * three slides that reliably say what the app is are the point.
  */
 export function IntroCarousel({ onDone, doneLabel = 'Get started' }: IntroCarouselProps) {
+  const styles = useStyles()
+
   const [index, setIndex] = useState(0)
   const slide = SLIDES[index]!
   const isLast = index === SLIDES.length - 1
@@ -100,7 +102,7 @@ export function IntroCarousel({ onDone, doneLabel = 'Get started' }: IntroCarous
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   root: { flex: 1, justifyContent: 'space-between', paddingVertical: spacing.xl },
   slide: {
     alignItems: 'center',
@@ -123,4 +125,4 @@ const styles = StyleSheet.create({
   skip: { ...font.body, color: colors.textMuted },
   // Undoes Button's full-width default, which is wrong beside a Skip link.
   next: { flexShrink: 0, minWidth: 140, width: 'auto' },
-})
+}))

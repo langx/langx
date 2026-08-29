@@ -21,7 +21,7 @@ import { goBackTo } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
-import { colors, font, layout, radius, spacing } from '../../../src/lib/theme'
+import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 /** "🇹🇷 Türkiye", not "TR" — the code alone means nothing to a reader. */
 function countryLabel(code: string): string {
@@ -30,6 +30,9 @@ function countryLabel(code: string): string {
 }
 
 export default function ProfileScreen() {
+  const { colors, layout } = useTheme()
+  const styles = useStyles()
+
   // `from` is set by whoever pushed here — this screen is reachable from
   // Discover, Chats, the viewer list, the leaderboard and a chat header, so a
   // single named parent would be wrong for four of the five.
@@ -207,7 +210,7 @@ export default function ProfileScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   loading: { marginTop: spacing.xxl },
   missing: {
     ...font.body,
@@ -257,4 +260,4 @@ const styles = StyleSheet.create({
     paddingTop: spacing.lg,
   },
   dangerText: { ...font.caption, color: colors.danger },
-})
+}))

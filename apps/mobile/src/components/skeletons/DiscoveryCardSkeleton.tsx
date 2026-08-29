@@ -1,9 +1,12 @@
 import { StyleSheet, View } from 'react-native'
-import { colors, layout, spacing } from '../../lib/theme'
+import { makeStyles, useTheme } from '../../lib/theme'
 import { Skeleton } from '../ui/Skeleton'
 
 /** Geometry copied from `discover.tsx`'s card — name row, language line, bio. */
 export function DiscoveryCardSkeleton() {
+  const { layout } = useTheme()
+  const styles = useStyles()
+
   return (
     <View style={styles.card}>
       <Skeleton width={layout.avatar} height={layout.avatar} radius={layout.avatar / 2} />
@@ -19,7 +22,7 @@ export function DiscoveryCardSkeleton() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, spacing }) => ({
   body: { flex: 1 },
   card: {
     alignItems: 'center',
@@ -31,4 +34,4 @@ const styles = StyleSheet.create({
   },
   line: { marginTop: 4 },
   top: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-})
+}))

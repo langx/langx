@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
-import { colors } from '../../src/lib/theme'
+import { useTheme } from '../../src/lib/theme'
 
 /**
  * The signed-out entry point, and an exact sibling of `app/index.tsx`: read one
@@ -16,6 +16,7 @@ import { colors } from '../../src/lib/theme'
  * everyone, and guessing "seen" would mean nobody ever sees it.
  */
 export default function AuthIndex() {
+  const { colors } = useTheme()
   const [seen, setSeen] = useState<boolean | null>(null)
 
   useEffect(() => {

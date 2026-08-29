@@ -37,6 +37,13 @@ const lightColors = {
   textMuted: '#5d5f65',
   /** Placeholder, disabled, tertiary meta. `text-inverse-shade`. */
   textFaint: '#9eb4b5',
+  /**
+   * Text on a saturated fill that is *not* `primary` — a filled chip, the
+   * deletion banner. It flips with the scheme because the accents do: light
+   * mode's are saturated and want white on them, dark mode's are pastel and
+   * want black.
+   */
+  textInverse: '#ffffff',
 
   /**
    * The committing action — Continue, Send correction, Apply — plus your own
@@ -110,6 +117,7 @@ const darkColors: ThemeColors = {
   text: '#ffffff',
   textMuted: '#9eb4b5',
   textFaint: '#5d5f65',
+  textInverse: '#000000',
 
   primary: '#ffc409',
   primaryShade: '#e0ac08',
@@ -192,12 +200,3 @@ export const font = {
  * someone forgot to finish.
  */
 export const layout = { maxWidth: 720, avatar: 48, avatarLarge: 96 } as const
-
-/**
- * Temporary: the light palette under its pre-theme name, so screens can be
- * converted to `makeStyles` a directory at a time instead of in one commit.
- * Every remaining importer is a file that has not been converted yet.
- *
- * @deprecated Use `useTheme()` or `makeStyles()` from `lib/theme/`.
- */
-export const colors = lightColors

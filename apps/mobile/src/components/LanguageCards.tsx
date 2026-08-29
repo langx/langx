@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons'
 import { LEVEL_LABELS, getLanguage, type LanguageLevel } from '@langx/shared'
 import type { ReactNode } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { LEVEL_ICON } from '../lib/languageLevel'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 interface LanguageCardsProps {
   native: { code: string }[]
@@ -23,6 +23,9 @@ const ICON_SIZE = 20
  * read, and the icon says the same thing without a label to get wrong.
  */
 export function LanguageCards({ native, learning }: LanguageCardsProps) {
+  const { colors } = useTheme()
+  const styles = useStyles()
+
   // `priority` is the order the user picked them in. The API has always sent
   // it and no screen has ever used it.
   const study = [...learning].sort((a, b) => a.priority - b.priority)
@@ -74,6 +77,8 @@ function Card({
   subtitle: string
   children: ReactNode
 }) {
+  const styles = useStyles()
+
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{title}</Text>
@@ -88,6 +93,8 @@ function Card({
  * as a rendering bug rather than as extra information.
  */
 function LanguageRow({ code, icon }: { code: string; icon: ReactNode }) {
+  const styles = useStyles()
+
   const language = getLanguage(code)
   const nativeName = language && language.nativeName !== language.name ? language.nativeName : null
 
@@ -100,7 +107,7 @@ function LanguageRow({ code, icon }: { code: string; icon: ReactNode }) {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   card: {
     borderColor: colors.border,
     borderRadius: radius.lg,
@@ -117,4 +124,4 @@ const styles = StyleSheet.create({
   emoji: { fontSize: 16 },
   name: { ...font.body, color: colors.text, flex: 1 },
   nativeName: { ...font.caption, color: colors.textMuted },
-})
+}))

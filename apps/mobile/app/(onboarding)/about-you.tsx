@@ -1,11 +1,11 @@
 import { GENDERS, MINIMUM_AGE, type Gender } from '@langx/shared'
 import { router } from 'expo-router'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 const GENDER_LABELS: Record<Gender, string> = {
   female: 'Female',
@@ -15,6 +15,8 @@ const GENDER_LABELS: Record<Gender, string> = {
 }
 
 export default function AboutYouStep() {
+  const styles = useStyles()
+
   const draft = useOnboardingDraft()
 
   const year = Number(draft.birthYear)
@@ -100,7 +102,7 @@ export default function AboutYouStep() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
   title: { ...font.title, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.xs },
   label: { ...font.label, color: colors.text, marginBottom: spacing.sm, marginTop: spacing.md },
@@ -117,4 +119,4 @@ const styles = StyleSheet.create({
   genderTextActive: { color: colors.primaryText, fontWeight: '700' },
   genderNote: { ...font.caption, color: colors.textMuted, marginTop: spacing.sm },
   cta: { marginTop: spacing.xl },
-})
+}))

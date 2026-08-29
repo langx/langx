@@ -1,5 +1,7 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import { colors, layout, radius } from '../../lib/theme'
+import { Image, Text, View } from 'react-native'
+// `layout` stays a direct import: it is scheme-independent, and a default
+// parameter value is evaluated before any hook could have run.
+import { layout, makeStyles } from '../../lib/theme'
 
 interface AvatarProps {
   url?: string | undefined
@@ -14,6 +16,7 @@ interface AvatarProps {
  * squares makes a discovery list unreadable.
  */
 export function Avatar({ url, name, size = layout.avatar, online = false }: AvatarProps) {
+  const styles = useStyles()
   const dimension = { borderRadius: size / 2, height: size, width: size }
 
   return (
@@ -32,7 +35,7 @@ export function Avatar({ url, name, size = layout.avatar, online = false }: Avat
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, radius }) => ({
   image: { backgroundColor: colors.surface },
   fallback: { alignItems: 'center', backgroundColor: colors.surface, justifyContent: 'center' },
   initial: { color: colors.textMuted, fontWeight: '700' },
@@ -47,4 +50,4 @@ const styles = StyleSheet.create({
     right: 0,
     width: 12,
   },
-})
+}))

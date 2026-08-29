@@ -1,10 +1,10 @@
 import { router } from 'expo-router'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import { useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
-import { colors, font, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * The end of the wizard, and three things at once: the moment of arrival, the
@@ -19,6 +19,8 @@ import { colors, font, spacing } from '../../src/lib/theme'
  * gate and goes straight to discover, so nobody meets this twice.
  */
 export default function DoneStep() {
+  const styles = useStyles()
+
   const me = useMe()
   const handle = me.data?.handle
 
@@ -52,7 +54,7 @@ export default function DoneStep() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   hero: { alignItems: 'center', paddingVertical: spacing.xxl },
   emoji: { fontSize: 56, marginBottom: spacing.md },
   title: { ...font.title, color: colors.text },
@@ -61,4 +63,4 @@ const styles = StyleSheet.create({
   cardTitle: { ...font.label, color: colors.text },
   cardBody: { ...font.body, color: colors.textMuted, lineHeight: 22 },
   cta: { marginTop: spacing.xl },
-})
+}))

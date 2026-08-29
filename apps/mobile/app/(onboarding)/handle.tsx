@@ -2,7 +2,7 @@ import { handleSchema } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
@@ -15,7 +15,7 @@ import {
   useOnboardingDraft,
 } from '../../src/hooks/useOnboardingDraft'
 import { useQueryClient } from '@tanstack/react-query'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 function useDebounced<T>(value: T, delay = 400): T {
   const [debounced, setDebounced] = useState(value)
@@ -35,6 +35,8 @@ function useDebounced<T>(value: T, delay = 400): T {
  * user having to remember what it was.
  */
 export default function HandleStep() {
+  const styles = useStyles()
+
   const draft = useOnboardingDraft()
   const queryClient = useQueryClient()
   const [submitting, setSubmitting] = useState(false)
@@ -153,7 +155,7 @@ export default function HandleStep() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
   title: { ...font.title, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.xs },
   reserved: {
@@ -169,4 +171,4 @@ const styles = StyleSheet.create({
   taken: { ...font.caption, color: colors.danger },
   error: { ...font.caption, color: colors.danger, marginTop: spacing.sm },
   cta: { marginTop: spacing.xl },
-})
+}))

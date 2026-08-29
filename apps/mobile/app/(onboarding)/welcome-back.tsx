@@ -2,16 +2,18 @@ import { TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { days } from '../../src/lib/format'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 function Line({ icon, title, body }: { icon: string; title: string; body: string }) {
+  const styles = useStyles()
+
   return (
     <View style={styles.line}>
       <Text style={styles.lineIcon}>{icon}</Text>
@@ -35,6 +37,8 @@ function Line({ icon, title, body }: { icon: string; title: string; body: string
  * are the whole argument for having migrated anything at all.
  */
 export default function WelcomeBackScreen() {
+  const styles = useStyles()
+
   const me = useMe()
   const queryClient = useQueryClient()
   const [busy, setBusy] = useState(false)
@@ -154,7 +158,7 @@ export default function WelcomeBackScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   hero: { alignItems: 'center', paddingVertical: spacing.xl },
   emoji: { fontSize: 56, marginBottom: spacing.md },
   title: { ...font.title, color: colors.text },
@@ -171,4 +175,4 @@ const styles = StyleSheet.create({
   lineTitle: { ...font.body, color: colors.text, fontWeight: '600' },
   lineBody: { ...font.caption, color: colors.textMuted, marginTop: 2 },
   action: { marginTop: spacing.xl },
-})
+}))

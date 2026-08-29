@@ -17,7 +17,7 @@ import { Skeleton } from '../../src/components/ui/Skeleton'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
-import { colors, font, layout, radius, spacing } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -32,6 +32,9 @@ function relativeTime(iso: string): string {
 }
 
 export default function ChatsScreen() {
+  const { layout } = useTheme()
+  const styles = useStyles()
+
   const me = useMe()
   const conversations = useConversations()
   // Deduped on flatten: a keyset cursor over a moving sort key can emit the
@@ -151,7 +154,7 @@ export default function ChatsScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   title: { ...font.title, color: colors.text, paddingTop: spacing.md },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
   footer: { paddingVertical: spacing.lg },
@@ -179,8 +182,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
-  badgeText: { color: colors.primaryText, fontSize: 11, fontWeight: '700' },
-})
+  badgeText: { color: colors.textInverse, fontSize: 11, fontWeight: '700' },
+}))
 
 /** Enough to fill a phone; the list scrolls before it needs more. */
 const SKELETON_ROWS = ['a', 'b', 'c', 'd', 'e', 'f', 'g']

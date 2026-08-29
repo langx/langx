@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
-import { colors, font, spacing } from '../../lib/theme'
+import { Text, View } from 'react-native'
+import { makeStyles } from '../../lib/theme'
 import { Button } from './Button'
 
 interface EmptyStateProps {
@@ -11,6 +11,8 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ emoji, title, body, actionLabel, onAction }: EmptyStateProps) {
+  const styles = useStyles()
+
   return (
     <View style={styles.root}>
       <Text style={styles.emoji}>{emoji}</Text>
@@ -23,10 +25,10 @@ export function EmptyState({ emoji, title, body, actionLabel, onAction }: EmptyS
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   root: { alignItems: 'center', paddingHorizontal: spacing.xl, paddingVertical: spacing.xxl },
   emoji: { fontSize: 40, marginBottom: spacing.md },
   title: { ...font.heading, color: colors.text, marginBottom: spacing.xs, textAlign: 'center' },
   body: { ...font.body, color: colors.textMuted, textAlign: 'center' },
   action: { marginTop: spacing.lg, minWidth: 200 },
-})
+}))

@@ -1,7 +1,7 @@
 import { LANGUAGES } from '@langx/shared'
 import { useMemo, useState } from 'react'
 import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import { colors, font, radius, spacing } from '../lib/theme'
+import { makeStyles, useTheme } from '../lib/theme'
 
 interface LanguagePickerProps {
   selected: string[]
@@ -23,6 +23,9 @@ export function LanguagePicker({
   disabledCodes = [],
   max,
 }: LanguagePickerProps) {
+  const { colors } = useTheme()
+  const styles = useStyles()
+
   const [query, setQuery] = useState('')
 
   const results = useMemo(() => {
@@ -86,7 +89,7 @@ export function LanguagePicker({
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   root: { flex: 1 },
   search: {
     backgroundColor: colors.surface,
@@ -114,4 +117,4 @@ const styles = StyleSheet.create({
   nameSelected: { fontWeight: '700' },
   native: { ...font.caption, color: colors.textMuted },
   check: { color: colors.accent, fontSize: 18, fontWeight: '700' },
-})
+}))

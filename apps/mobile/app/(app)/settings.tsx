@@ -21,7 +21,7 @@ import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 function Row({
   title,
@@ -36,6 +36,8 @@ function Row({
   onValueChange: (next: boolean) => void
   disabled?: boolean
 }) {
+  const styles = useStyles()
+
   return (
     <View style={[styles.row, disabled && styles.rowDisabled]}>
       <View style={styles.rowText}>
@@ -48,6 +50,8 @@ function Row({
 }
 
 export default function SettingsScreen() {
+  const styles = useStyles()
+
   const me = useMe()
   const update = useUpdateProfile()
   const [busy, setBusy] = useState(false)
@@ -239,7 +243,7 @@ export default function SettingsScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   backRow: { paddingTop: spacing.md },
   subAction: { paddingBottom: spacing.sm },
   subActionLabel: { ...font.caption, color: colors.accent },
@@ -286,4 +290,4 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     textAlign: 'center',
   },
-})
+}))

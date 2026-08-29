@@ -1,10 +1,10 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useMe, usePurchase, useTokens, useWallet } from '../../src/api/queries'
 import { StoreRow } from '../../src/components/store/StoreRow'
 import { Screen } from '../../src/components/ui/Screen'
 import { goBackTo } from '../../src/lib/navigation'
 import { buildStoreOffers } from '../../src/lib/storeOffers'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * The token store, reached by tapping the balance on the profile.
@@ -15,6 +15,8 @@ import { colors, font, radius, spacing } from '../../src/lib/theme'
  * also has somewhere to put the sections this is going to grow.
  */
 export default function StoreScreen() {
+  const styles = useStyles()
+
   const me = useMe()
   const xp = useTokens()
   const wallet = useWallet()
@@ -69,7 +71,7 @@ export default function StoreScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   back: { ...font.body, color: colors.textMuted },
   backRow: { paddingTop: spacing.md },
   balance: {
@@ -92,4 +94,4 @@ const styles = StyleSheet.create({
   },
   loading: { marginTop: spacing.xxl },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
-})
+}))

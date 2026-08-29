@@ -1,12 +1,12 @@
 import { LEVEL_SHORT_LABELS, LANGUAGE_LEVELS, getLanguage, type LanguageLevel } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
 import { LanguagePicker } from '../../src/components/LanguagePicker'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
-import { colors, font, radius, spacing } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 
 /**
  * Step 1 of 3. Languages come first because they are the only answers the
@@ -14,6 +14,8 @@ import { colors, font, radius, spacing } from '../../src/lib/theme'
  * between what you speak and what you want to learn.
  */
 export default function LanguagesStep() {
+  const styles = useStyles()
+
   const draft = useOnboardingDraft()
   const [mode, setMode] = useState<'native' | 'learning'>('native')
 
@@ -126,7 +128,7 @@ export default function LanguagesStep() {
   )
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   screen: { paddingBottom: spacing.lg },
   step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
   title: { ...font.title, color: colors.text, marginTop: spacing.xs },
@@ -170,4 +172,4 @@ const styles = StyleSheet.create({
   levelChipTextActive: { color: colors.primaryText, fontWeight: '700' },
   levelHint: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
   cta: { marginTop: spacing.md },
-})
+}))
