@@ -58,17 +58,27 @@ export function BadgeGrid({ badges }: { badges: readonly EarnedBadge[] }) {
 const useStyles = makeStyles(({ colors, font, radius }) => ({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   /**
-   * Two per row on a phone. `48%` rather than a computed half: the gap is on
-   * the container, so an exact 50% overflows by the gap and wraps every tile
-   * onto its own line.
+   * Two per row at every width, which took three tries to get right.
+   *
+   * `flexGrow: 1` with `minWidth: '46%'` was ragged: a tile whose label is
+   * longer than its basis expands past it and pushes its neighbour down, so
+   * "First correction" took a whole row while "100 days" and "365 days"
+   * paired. `minWidth: 0` is what stops content having a vote.
+   *
+   * A fixed `width: '48%'` then broke the other way. The gap lives on the
+   * container, so two tiles cost `96% + 10px` — which exceeds the line on a
+   * 280px screen and drops every tile onto its own row with dead space beside
+   * it. The basis has to leave room for the gap, and `flexGrow` reclaims
+   * whatever is left over, so the pair still fills the line exactly.
    */
   tile: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: radius.lg,
     borderWidth: 1,
+    flexBasis: '47%',
     flexGrow: 1,
-    minWidth: '46%',
+    minWidth: 0,
     padding: 14,
   },
   locked: { opacity: 0.45 },

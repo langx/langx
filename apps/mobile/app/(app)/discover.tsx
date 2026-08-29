@@ -272,7 +272,9 @@ export default function DiscoverScreen() {
                   </Text>
                   <Text style={styles.age}>{item.age}</Text>
                   {item.streak.current > 0 ? (
-                    <Text style={styles.streak}>🔥 {item.streak.current}</Text>
+                    <Text style={styles.streak} numberOfLines={1}>
+                      🔥 {item.streak.current}
+                    </Text>
                   ) : null}
                 </View>
                 <LanguageLine item={item} />
@@ -331,6 +333,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     backgroundColor: colors.warningBg,
     borderRadius: radius.pill,
     color: colors.warning,
+    /**
+     * The row is `name (shrinkable) · age · streak`, and without this the
+     * streak is shrinkable too — so on a 320px screen it squeezed to a
+     * two-line blob with "🔥" above the digits and `overflow: hidden`
+     * clipping what was left. The name is the thing that should give way; the
+     * chip is four characters and either fits or does not.
+     */
+    flexShrink: 0,
     fontWeight: '600',
     marginLeft: 'auto',
     overflow: 'hidden',
