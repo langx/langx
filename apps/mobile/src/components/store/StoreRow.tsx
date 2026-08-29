@@ -1,57 +1,75 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import type { StoreOffer } from '../../lib/storeOffers'
 import { makeStyles } from '../../lib/theme'
-import { Button } from '../ui/Button'
 
 /**
  * One buyable thing. Owned items keep their row rather than disappearing, so
  * the catalogue stays the same shape whoever is looking at it.
+ *
+ * The price *is* the button. A separate "Buy" beside a number would be two
+ * controls for one decision, and the design's row has room for one.
  */
 export function StoreRow({
   offer,
   pending,
+  last = false,
   onBuy,
 }: {
   offer: StoreOffer
   pending: boolean
+  last?: boolean
   onBuy: (id: string) => void
 }) {
   const styles = useStyles()
+  const buyable = !offer.owned && offer.affordable && !pending
 
   return (
-    <View style={styles.row}>
-      <View style={styles.flex}>
+    <View style={[styles.row, !last && styles.divided]}>
+      <View style={styles.text}>
         <Text style={styles.name}>{offer.title}</Text>
         <Text style={styles.meta}>{offer.subtitle}</Text>
       </View>
-      <Button
-        label={offer.owned ? 'Owned' : `${offer.price} tokens`}
-        variant="secondary"
-        style={styles.action}
-        disabled={offer.owned || !offer.affordable || pending}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={
+          offer.owned ? `${offer.title}, owned` : `Buy ${offer.title} for ${offer.price} tokens`
+        }
+        accessibilityState={{ disabled: !buyable }}
+        disabled={!buyable}
         onPress={() => onBuy(offer.id)}
-      />
+        style={({ pressed }) => [
+          styles.price,
+          // Yellow only when the tap does something. An affordable, unowned
+          // offer is a committing action and takes `primary`; everything else
+          // is a label that happens to be shaped like a button.
+          buyable ? styles.buyable : styles.inert,
+          pressed && buyable && styles.pressed,
+        ]}
+      >
+        <Text style={[styles.priceLabel, buyable && styles.buyableLabel]}>
+          {offer.owned ? 'Owned' : String(offer.price)}
+        </Text>
+      </Pressable>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  /**
-   * Undoes `Button`'s full-width default, which is right in a form column and
-   * wrong here: claiming 100% of a row leaves nothing for the name beside it,
-   * and the name column — being `flex: 1`, so shrinkable — collapses to a
-   * single character per line rather than pushing back.
-   */
-  action: { flexShrink: 0, width: 'auto' },
-  flex: { flex: 1 },
-  meta: { ...font.caption, color: colors.textMuted },
+const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
+  row: { alignItems: 'center', flexDirection: 'row', gap: 14, padding: spacing.lg },
+  divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+  text: { flex: 1, gap: 2 },
   name: { ...font.body, color: colors.text, fontWeight: '600' },
-  row: {
+  meta: { ...font.caption, color: colors.textMuted },
+  price: {
     alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
+    borderRadius: radius.pill,
+    justifyContent: 'center',
+    minHeight: 40,
+    paddingHorizontal: 15,
   },
+  buyable: { backgroundColor: colors.primary },
+  inert: { backgroundColor: colors.bg, borderColor: colors.border, borderWidth: 1 },
+  pressed: { backgroundColor: colors.primaryShade },
+  priceLabel: { ...font.label, color: colors.textMuted },
+  buyableLabel: { color: colors.primaryText, fontWeight: '700' },
 }))
