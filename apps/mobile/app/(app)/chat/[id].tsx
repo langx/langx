@@ -38,7 +38,6 @@ import { MessageBubbleSkeleton } from '../../../src/components/skeletons/Message
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
-import * as ImagePicker from 'expo-image-picker'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
@@ -49,6 +48,7 @@ import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
+import { pickImageAsset } from '../../../src/lib/pickImageAsset'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
@@ -203,24 +203,13 @@ export default function ChatScreen() {
   }
 
   async function pickImage(): Promise<void> {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
-    if (!permission.granted) {
+    const picked = await pickImageAsset()
+    if (picked.status === 'denied') {
       void showAlert(t('chat.photosTitle'), t('chat.photosPermission'))
       return
     }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 0.8,
-    })
-    const asset = result.assets?.[0]
-    if (result.canceled || !asset) return
-    await sendMedia('image', {
-      uri: asset.uri,
-      contentType: asset.mimeType ?? 'image/jpeg',
-      // Sent so the bubble can reserve the right height before the bytes land.
-      ...(asset.width ? { width: asset.width } : {}),
-      ...(asset.height ? { height: asset.height } : {}),
-    })
+    if (picked.status === 'cancelled') return
+    await sendMedia('image', picked.image)
   }
 
   async function toggleRecording(): Promise<void> {

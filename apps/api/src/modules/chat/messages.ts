@@ -1,9 +1,5 @@
 import {
   ERROR_CODES,
-  isAudioContentType,
-  isImageContentType,
-  MAX_AUDIO_BYTES,
-  MAX_IMAGE_BYTES,
   REPLY_PREVIEW_MAX_LENGTH,
   type SendCorrectionInput,
   type SendMediaMessageInput,
@@ -13,6 +9,7 @@ import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { ApiError } from '../../lib/ApiError'
+import { assertMediaAllowed } from '../media/assertMedia'
 import { blockedUserIds } from '../moderation/blocks'
 import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess } from './access'
@@ -209,30 +206,9 @@ export async function sendMediaMessage(
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
 
-  const typeMatches =
-    input.kind === 'image'
-      ? isImageContentType(input.media.contentType)
-      : isAudioContentType(input.media.contentType)
-  if (!typeMatches) {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      `${input.media.contentType} is not a supported ${input.kind} type`,
-    )
-  }
-
-  const maxBytes = input.kind === 'image' ? MAX_IMAGE_BYTES : MAX_AUDIO_BYTES
-  if (input.media.sizeBytes > maxBytes) {
-    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `That ${input.kind} is too large`)
-  }
-
-  // A URL outside our own bucket would let a message embed an arbitrary host,
-  // and would survive the account purge because we could never delete it.
-  if (!storagePublicBaseUrl || !input.media.url.startsWith(storagePublicBaseUrl)) {
-    throw new ApiError(
-      ERROR_CODES.VALIDATION_FAILED,
-      'Attachment must point into our own storage bucket',
-    )
-  }
+  // Shared with the feed — see `assertMediaAllowed`. The ceilings are the real
+  // cost control, and there must be exactly one copy of them.
+  assertMediaAllowed(input.media, storagePublicBaseUrl, input.kind)
 
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
 

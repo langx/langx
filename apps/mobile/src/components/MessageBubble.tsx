@@ -206,11 +206,13 @@ export const MessageBubble = memo(function MessageBubble({
           style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
         >
           {quote}
-          {message.type === 'image' ? (
-            <ImageBubble message={message} />
-          ) : (
-            <AudioBubble message={message} mine={mine} />
-          )}
+          {message.media ? (
+            message.type === 'image' ? (
+              <ImageBubble media={message.media} />
+            ) : (
+              <AudioBubble media={message.media} mine={mine} />
+            )
+          ) : null}
           {message.body ? (
             <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>
               {message.body}

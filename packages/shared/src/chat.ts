@@ -1,4 +1,23 @@
 import { z } from 'zod'
+// The attachment shape lives in `media.ts` now, shared with the feed. Re-exported
+// here so `@langx/shared` keeps one import surface and nothing had to be renamed
+// to discover that a post and a message carry the same thing.
+export {
+  AUDIO_CONTENT_TYPES,
+  IMAGE_CONTENT_TYPES,
+  MAX_AUDIO_BYTES,
+  MAX_AUDIO_SECONDS,
+  MAX_IMAGE_BYTES,
+  audioContentTypeSchema,
+  imageContentTypeSchema,
+  isAudioContentType,
+  isImageContentType,
+  mediaSchema,
+  messageMediaSchema,
+  type Media,
+  type MessageMedia,
+} from './media'
+import { mediaSchema } from './media'
 
 export const MAX_MESSAGE_LENGTH = 2000
 
@@ -243,45 +262,6 @@ export const listConversationsQuerySchema = z.object({
 })
 export type ListConversationsQuery = z.infer<typeof listConversationsQuerySchema>
 
-/** What a message's attachment looks like once it is in the bucket. */
-export const IMAGE_CONTENT_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'] as const
-export const AUDIO_CONTENT_TYPES = [
-  'audio/m4a',
-  'audio/mp4',
-  'audio/aac',
-  'audio/mpeg',
-  'audio/webm',
-  'audio/ogg',
-] as const
-
-export const imageContentTypeSchema = z.enum(IMAGE_CONTENT_TYPES)
-export const audioContentTypeSchema = z.enum(AUDIO_CONTENT_TYPES)
-
-/**
- * Size ceilings, enforced when the upload URL is signed rather than after the
- * bytes have already been paid for.
- *
- * These are the real cost control, not a per-day count: storage is billed by
- * the byte, and a cap on how *many* messages someone can send says nothing
- * about how large they are.
- */
-export const MAX_IMAGE_BYTES = 8 * 1024 * 1024
-export const MAX_AUDIO_BYTES = 16 * 1024 * 1024
-/** Two minutes. Long enough for a real explanation, short enough not to be a podcast. */
-export const MAX_AUDIO_SECONDS = 120
-
-export const messageMediaSchema = z.object({
-  url: z.url(),
-  contentType: z.string().trim().min(1),
-  sizeBytes: z.number().int().positive().max(Math.max(MAX_IMAGE_BYTES, MAX_AUDIO_BYTES)),
-  /** Audio only. */
-  durationSeconds: z.number().positive().max(MAX_AUDIO_SECONDS).optional(),
-  /** Images only — lets the client reserve the right space before the bytes land. */
-  width: z.number().int().positive().optional(),
-  height: z.number().int().positive().optional(),
-})
-export type MessageMedia = z.infer<typeof messageMediaSchema>
-
 export const mediaUploadUrlSchema = z.object({
   conversationId: z.string().trim().min(1),
   kind: z.enum(['image', 'audio']),
@@ -296,19 +276,11 @@ export type MediaUploadUrlInput = z.infer<typeof mediaUploadUrlSchema>
 export const sendMediaMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   kind: z.enum(['image', 'audio']),
-  media: messageMediaSchema,
+  media: mediaSchema,
   body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
   replyToMessageId: z.string().trim().min(1).optional(),
 })
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>
-
-export function isImageContentType(value: string): boolean {
-  return (IMAGE_CONTENT_TYPES as readonly string[]).includes(value)
-}
-
-export function isAudioContentType(value: string): boolean {
-  return (AUDIO_CONTENT_TYPES as readonly string[]).includes(value)
-}
 
 /**
  * What the ticks under your own message mean, in the order they happen:

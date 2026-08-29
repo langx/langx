@@ -2,7 +2,7 @@ import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio'
 import { Image } from 'expo-image'
 import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
-import type { MessageDto } from '../api/queries'
+import type { Media } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 
 function formatSeconds(total: number): string {
@@ -18,14 +18,21 @@ function formatSeconds(total: number): string {
  * scrolling has to work out which message it currently belongs to, and the
  * common bug is a second tap resuming the wrong message from the wrong offset.
  */
-export function AudioBubble({ message, mine }: { message: MessageDto; mine: boolean }) {
+/**
+ * Takes the attachment, not the message it came on.
+ *
+ * A post and a correction carry the same `media` shape as a message, and a
+ * second player for the feed would have re-derived the "one `useAudioPlayer`
+ * per bubble, deliberately" decision this file exists to record.
+ */
+export function AudioBubble({ media, mine = false }: { media: Media; mine?: boolean }) {
   const { colors } = useTheme()
   const styles = useStyles()
 
-  const player = useAudioPlayer(message.media?.url ?? null)
+  const player = useAudioPlayer(media.url)
   const status = useAudioPlayerStatus(player)
 
-  const total = message.media?.durationSeconds ?? status.duration ?? 0
+  const total = media.durationSeconds ?? status.duration ?? 0
   const elapsed = status.currentTime ?? 0
   const progress = total > 0 ? Math.min(1, elapsed / total) : 0
   const tint = mine ? colors.primaryText : colors.text
@@ -75,10 +82,10 @@ export function AudioBubble({ message, mine }: { message: MessageDto; mine: bool
  * read out of the file header, so this is the path a good number of imported
  * photos take.
  */
-export function ImageBubble({ message }: { message: MessageDto }) {
+export function ImageBubble({ media }: { media: Media }) {
   const styles = useStyles()
 
-  const { width, height, url } = message.media ?? {}
+  const { width, height, url } = media
   const [measured, setMeasured] = useState<number | null>(null)
   const ratio = width && height ? width / height : measured
   if (!url) return null
