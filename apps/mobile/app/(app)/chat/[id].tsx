@@ -52,12 +52,15 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
+import { useLocale, useT, type MessageKey } from '../../../src/i18n'
 import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 export default function ChatScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
 
   // `at` is the single entry point for "open this thread at that message": a
   // tapped quote uses it, and so will the pinned banner and the starred list.
@@ -189,13 +192,10 @@ export default function ChatScreen() {
       // ApiRequestError, so the `instanceof` this used to do never matched
       // and the quota message had never once been shown.
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
-        await showAlert(
-          'Could not send',
-          "You've reached today's limit for photos and voice messages.",
-        )
+        await showAlert(t('chat.couldNotSend'), t('chat.mediaQuota'))
         openPaywall(undefined, `/(app)/chat/${conversationId}`)
       } else {
-        void showAlert('Could not send', 'That attachment could not be sent. Try again.')
+        void showAlert(t('chat.couldNotSend'), t('chat.attachmentFailed'))
       }
     } finally {
       setSendingMedia(false)
@@ -205,7 +205,7 @@ export default function ChatScreen() {
   async function pickImage(): Promise<void> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      void showAlert('Photos', 'LangX needs permission to open your photo library.')
+      void showAlert(t('chat.photosTitle'), t('chat.photosPermission'))
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -226,7 +226,7 @@ export default function ChatScreen() {
   async function toggleRecording(): Promise<void> {
     if (!recorder.isRecording) {
       const started = await recorder.start()
-      if (!started && recorder.error) void showAlert('Microphone', recorder.error)
+      if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
       return
     }
     const recording = await recorder.stop()
@@ -295,17 +295,14 @@ export default function ChatScreen() {
       setTranslations((current) => ({ ...current, [message._id]: result.translatedText }))
     } catch (error) {
       if (errorCodeOf(error) === 'QUOTA_EXCEEDED') {
-        await showAlert(
-          'Translation unavailable',
-          "You've used today's free translations. Pro removes the limit.",
-        )
+        await showAlert(t('chat.translationUnavailable'), t('chat.translationQuota'))
         // Bare, deliberately. `unlimitedTranslation` is a `ProBenefit` and
         // not a `PlanFeature` — it is a quota that stops applying rather than
         // a capability flag — so there is no key to pass. The paywall's Pro
         // column already lists it.
         openPaywall(undefined, `/(app)/chat/${conversationId}`)
       } else {
-        await showAlert('Translation unavailable', 'Could not translate that message right now.')
+        await showAlert(t('chat.translationUnavailable'), t('chat.translationFailed'))
       }
     } finally {
       setTranslating(null)
@@ -336,10 +333,11 @@ export default function ChatScreen() {
       corrected: message.corrected === true,
       starred: message.starred === true,
       pinned: pinned?.messageId === message._id,
+      t,
     })
 
     const picked = await openMessageMenu({
-      preview: message.body || messageTypeLabel(message.type),
+      preview: message.body || t(messageTypeKey(message.type)),
       mine: isMine(message),
       actions,
       ...(anchor ? { anchor } : {}),
@@ -357,7 +355,7 @@ export default function ChatScreen() {
       setReplyingTo(message)
     } else if (picked.id === 'copy') {
       await Clipboard.setStringAsync(message.body)
-      showToast('Copied')
+      showToast(t('chat.copied'))
     } else if (picked.id === 'translate') {
       await translate(message, alreadyTranslated)
     } else if (picked.id === 'correct') {
@@ -397,7 +395,7 @@ export default function ChatScreen() {
     try {
       await emitWithAck(socket, event, payload)
     } catch {
-      void showAlert('That did not go through', 'Try again in a moment.')
+      void showAlert(t('chat.actionFailed'), t('common.retry'))
     }
   }
 
@@ -421,12 +419,12 @@ export default function ChatScreen() {
   async function removeMessage(message: MessageDto): Promise<void> {
     const canWithdraw = canDeleteForEveryone(message, me.data?._id ?? '', new Date())
     const scope = canWithdraw
-      ? await chooseAlert('Delete message', 'This cannot be undone.', [
-          { label: 'Delete for everyone', value: 'everyone' },
-          { label: 'Delete for me', value: 'me' },
+      ? await chooseAlert(t('chat.deleteTitle'), t('chat.deleteBothSides'), [
+          { label: t('chat.deleteForEveryone'), value: 'everyone' },
+          { label: t('chat.deleteForMe'), value: 'me' },
         ])
-      : await chooseAlert('Delete message', 'It stays on their device.', [
-          { label: 'Delete for me', value: 'me' },
+      : await chooseAlert(t('chat.deleteTitle'), t('chat.deleteOwnSide'), [
+          { label: t('chat.deleteForMe'), value: 'me' },
         ])
     if (!scope) return
 
@@ -502,17 +500,17 @@ export default function ChatScreen() {
   )
 
   async function reportMessage(message: MessageDto): Promise<void> {
-    const reason = await chooseAlert('Report', 'Why are you reporting this message?', [
-      { label: 'Spam', value: 'spam' },
-      { label: 'Harassment', value: 'harassment' },
-      { label: 'Inappropriate content', value: 'inappropriate_content' },
+    const reason = await chooseAlert(t('common.report'), t('report.messageQuestion'), [
+      { label: t('report.spam'), value: 'spam' },
+      { label: t('report.harassment'), value: 'harassment' },
+      { label: t('report.inappropriate'), value: 'inappropriate_content' },
     ])
     if (!reason || !partnerId) return
     report.mutate(
       { userId: partnerId, reason, conversationId, messageId: message._id },
       {
-        onSuccess: () => showToast('Reported. Thank you — we look at every one.'),
-        onError: () => void showAlert('Could not report', 'Try again in a moment.'),
+        onSuccess: () => showToast(t('report.messageSent')),
+        onError: () => void showAlert(t('report.failed'), t('common.retry')),
       },
     )
   }
@@ -522,7 +520,7 @@ export default function ChatScreen() {
       <View style={styles.header}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Back"
+          accessibilityLabel={t('common.backPlain')}
           onPress={() => goBackTo('/(app)/chats')}
           hitSlop={12}
           style={styles.back}
@@ -546,7 +544,7 @@ export default function ChatScreen() {
           />
           <View style={styles.headerText}>
             <Text style={styles.headerName} numberOfLines={1}>
-              {partner?.displayName ?? 'Chat'}
+              {partner?.displayName ?? t('chat.title')}
             </Text>
             {/*
               One line that is either presence or typing, never both stacked —
@@ -554,9 +552,9 @@ export default function ChatScreen() {
               alignment with the name.
             */}
             {partnerTyping ? (
-              <Text style={styles.typing}>typing…</Text>
+              <Text style={styles.typing}>{t('chat.typing')}</Text>
             ) : partner?.isOnline ? (
-              <Text style={styles.presence}>Online</Text>
+              <Text style={styles.presence}>{t('chat.online')}</Text>
             ) : null}
           </View>
         </Pressable>
@@ -570,17 +568,17 @@ export default function ChatScreen() {
       {pinned ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Go to the pinned message"
+          accessibilityLabel={t('chat.goToPinned')}
           onPress={() => onJumpTo(pinned.messageId)}
           style={styles.pinBanner}
         >
           <Feather name="bookmark" size={14} color={colors.accent} />
           <Text style={styles.pinText} numberOfLines={1}>
-            {items.find((m) => m._id === pinned.messageId)?.body ?? 'Pinned message'}
+            {items.find((m) => m._id === pinned.messageId)?.body ?? t('chat.pinnedMessage')}
           </Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Unpin"
+            accessibilityLabel={t('messageActions.unpin')}
             hitSlop={8}
             onPress={() => void emit('conversation:pin', { conversationId, messageId: null })}
           >
@@ -672,14 +670,14 @@ export default function ChatScreen() {
             renderItem={({ item: row }) =>
               row.kind === 'day' ? (
                 <View style={styles.dayRow}>
-                  <Text style={styles.dayLabel}>{dayLabel(row.day)}</Text>
+                  <Text style={styles.dayLabel}>{dayLabel(row.day, { t, locale })}</Text>
                 </View>
               ) : (
                 <MessageBubble
                   message={row.message}
                   mine={isMine(row.message)}
                   endsGroup={row.endsGroup}
-                  partnerName={partner?.displayName ?? 'them'}
+                  partnerName={partner?.displayName ?? t('chat.them')}
                   translation={translations[row.message._id]}
                   translating={translating === row.message._id}
                   replyToMine={row.message.replyTo?.senderId === me.data?._id}
@@ -704,7 +702,7 @@ export default function ChatScreen() {
             style={styles.backToLatest}
           >
             <Feather name="arrow-down-circle" size={15} color={colors.primaryText} />
-            <Text style={styles.backToLatestText}>Back to latest</Text>
+            <Text style={styles.backToLatestText}>{t('chat.backToLatest')}</Text>
           </Pressable>
         ) : null}
 
@@ -712,7 +710,7 @@ export default function ChatScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={
-              missed > 0 ? `Jump to ${missed} new messages` : 'Jump to the newest message'
+              missed > 0 ? t('chat.jumpToNew', { count: missed }) : t('chat.jumpToNewest')
             }
             onPress={() => {
               listRef.current?.scrollToOffset({ offset: 0, animated: true })
@@ -744,15 +742,15 @@ export default function ChatScreen() {
           <View style={styles.replyingText}>
             <Text style={styles.replyingTitle} numberOfLines={1}>
               {isMine(replyingTo)
-                ? 'Replying to yourself'
-                : `Replying to ${partner?.displayName ?? 'them'}`}
+                ? t('chat.replyingToYourself')
+                : t('chat.replyingTo', { name: partner?.displayName ?? t('chat.them') })}
             </Text>
             <Text style={styles.replyingPreview} numberOfLines={1}>
-              {replyingTo.body || messageTypeLabel(replyingTo.type)}
+              {replyingTo.body || t(messageTypeKey(replyingTo.type))}
             </Text>
           </View>
           <Pressable onPress={() => setReplyingTo(null)} hitSlop={8}>
-            <Text style={styles.replyingCancel}>Cancel</Text>
+            <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -761,7 +759,7 @@ export default function ChatScreen() {
         <View style={styles.replyingBanner}>
           <View style={[styles.replyingBar, styles.editingBar]} />
           <View style={styles.replyingText}>
-            <Text style={[styles.replyingTitle, styles.editingTitle]}>Editing</Text>
+            <Text style={[styles.replyingTitle, styles.editingTitle]}>{t('chat.editing')}</Text>
             <Text style={styles.replyingPreview} numberOfLines={1}>
               {editing.body}
             </Text>
@@ -773,7 +771,7 @@ export default function ChatScreen() {
             }}
             hitSlop={8}
           >
-            <Text style={styles.replyingCancel}>Cancel</Text>
+            <Text style={styles.replyingCancel}>{t('common.cancel')}</Text>
           </Pressable>
         </View>
       ) : null}
@@ -782,7 +780,7 @@ export default function ChatScreen() {
         <View style={styles.correctingBanner}>
           <View style={styles.correctingHead}>
             <Feather name="edit-3" size={14} color={colors.success} />
-            <Text style={styles.correctingTitle}>Correcting</Text>
+            <Text style={styles.correctingTitle}>{t('chat.correcting')}</Text>
             <Pressable
               onPress={() => {
                 setCorrecting(null)
@@ -790,7 +788,7 @@ export default function ChatScreen() {
               }}
               hitSlop={8}
             >
-              <Text style={styles.correctingCancel}>Cancel</Text>
+              <Text style={styles.correctingCancel}>{t('common.cancel')}</Text>
             </Pressable>
           </View>
           <Text style={styles.correctingOriginal}>{correcting.body}</Text>
@@ -801,7 +799,7 @@ export default function ChatScreen() {
             from `PLAN_LIMITS` rather than left to be guessed.
           */}
           {PLAN_LIMITS.free.correctionsPer24h === null ? (
-            <Text style={styles.correctingFree}>Unlimited on every plan</Text>
+            <Text style={styles.correctingFree}>{t('chat.unlimitedEveryPlan')}</Text>
           ) : null}
         </View>
       ) : null}
@@ -817,7 +815,7 @@ export default function ChatScreen() {
                 {Math.floor(recorder.seconds / 60)}:{String(recorder.seconds % 60).padStart(2, '0')}
               </Text>
               <Pressable onPress={() => void recorder.cancel()} hitSlop={8}>
-                <Text style={styles.recordingCancel}>Cancel</Text>
+                <Text style={styles.recordingCancel}>{t('common.cancel')}</Text>
               </Pressable>
             </View>
           ) : (
@@ -833,7 +831,7 @@ export default function ChatScreen() {
           <TextInput
             value={draft}
             onChangeText={onChangeDraft}
-            placeholder={correcting ? 'Write the correction…' : 'Write a message…'}
+            placeholder={correcting ? t('chat.writeCorrection') : t('chat.writeMessage')}
             placeholderTextColor={colors.textMuted}
             style={styles.input}
             multiline
@@ -896,8 +894,10 @@ export default function ChatScreen() {
           rather than being written into the copy.
         */}
         <View style={styles.composerHint}>
-          <Text style={styles.hintLeft}>Hold a message to correct it</Text>
-          <Text style={styles.hintRight}>+{TOKEN_RULES.award.message} tokens / message</Text>
+          <Text style={styles.hintLeft}>{t('chat.holdToCorrect')}</Text>
+          <Text style={styles.hintRight}>
+            {t('chat.tokensPerMessage', { count: TOKEN_RULES.award.message })}
+          </Text>
         </View>
       </KeyboardAvoidingView>
     </Screen>
@@ -961,7 +961,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     minWidth: 40,
     paddingHorizontal: spacing.md,
     position: 'absolute',
-    right: spacing.lg,
+    end: spacing.lg,
   },
   jumpCount: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
   backToLatest: {
@@ -1100,10 +1100,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
 const SKELETON_BUBBLES = ['a', 'b', 'c', 'd', 'e', 'f']
 
 /** What the sheet shows above the actions when a message has no text. */
-function messageTypeLabel(type: MessageDto['type']): string {
-  if (type === 'image') return 'Photo'
-  if (type === 'audio') return 'Voice message'
-  return 'Message'
+function messageTypeKey(type: MessageDto['type']): MessageKey {
+  if (type === 'image') return 'messageMeta.photo'
+  if (type === 'audio') return 'chat.voiceMessage'
+  return 'messageMeta.message'
 }
 
 /**

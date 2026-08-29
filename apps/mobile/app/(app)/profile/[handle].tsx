@@ -1,4 +1,4 @@
-import { countryFlag, formatAccountAge, getCountry } from '@langx/shared'
+import { countryFlag, getCountry } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
@@ -22,16 +22,19 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
-
-/** "🇹🇷 Türkiye", not "TR" — the code alone means nothing to a reader. */
-function countryLabel(code: string): string {
-  const country = getCountry(code)
-  return country ? `${countryFlag(country.code)} ${country.name}` : code
-}
+import { accountAgeLabel, interestLabel, useDisplayNames, useT } from '../../../src/i18n'
 
 export default function ProfileScreen() {
   const { colors, layout } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
+
+  /** "🇹🇷 Türkiye", not "TR" — the code alone means nothing to a reader. */
+  const countryLabel = (code: string): string => {
+    const country = getCountry(code)
+    return country ? `${countryFlag(country.code)} ${names.country(country.code)}` : code
+  }
 
   // `from` is set by whoever pushed here — this screen is reachable from
   // Discover, Chats, the viewer list, the leaderboard and a chat header, so a
@@ -55,9 +58,9 @@ export default function ProfileScreen() {
   if (!profile.data) {
     return (
       <Screen>
-        <Text style={styles.missing}>Profile not found.</Text>
+        <Text style={styles.missing}>{t('profile.notFound')}</Text>
         <Button
-          label="Back"
+          label={t('common.backPlain')}
           variant="secondary"
           onPress={() => goBackTo('/(app)/discover', from)}
         />
@@ -93,37 +96,37 @@ export default function ProfileScreen() {
         }
         setError(caught.message)
       } else {
-        setError('Could not send the message.')
+        setError(t('profile.sendFailed'))
       }
     }
   }
 
   async function confirmBlock(): Promise<void> {
     const yes = await confirmAlert({
-      title: 'Block',
-      message: `Block ${user.displayName}? Neither of you will appear in the other's lists.`,
-      confirmLabel: 'Block',
+      title: t('common.block'),
+      message: t('profile.blockConfirm', { name: user.displayName }),
+      confirmLabel: t('common.block'),
       destructive: true,
     })
     if (yes)
       block.mutate(user._id, {
         onSuccess: () => {
           router.replace('/(app)/discover')
-          showToast(`${user.displayName} is blocked.`)
+          showToast(t('profile.blocked', { name: user.displayName }))
         },
       })
   }
 
   async function confirmReport(): Promise<void> {
-    const reason = await chooseAlert('Report', 'Why are you reporting this profile?', [
-      { label: 'Spam', value: 'spam' },
-      { label: 'Harassment', value: 'harassment' },
-      { label: 'Inappropriate content', value: 'inappropriate_content' },
+    const reason = await chooseAlert(t('common.report'), t('report.profileQuestion'), [
+      { label: t('report.spam'), value: 'spam' },
+      { label: t('report.harassment'), value: 'harassment' },
+      { label: t('report.inappropriate'), value: 'inappropriate_content' },
     ])
     if (reason)
       report.mutate(
         { userId: user._id, reason },
-        { onSuccess: () => showToast('Report sent. We will look into it.') },
+        { onSuccess: () => showToast(t('report.profileSent')) },
       )
   }
 
@@ -134,7 +137,7 @@ export default function ProfileScreen() {
         hitSlop={12}
         style={styles.backRow}
       >
-        <Text style={styles.back}>‹ Back</Text>
+        <Text style={styles.back}>{t('common.back')}</Text>
       </Pressable>
 
       <View style={styles.hero}>
@@ -151,14 +154,16 @@ export default function ProfileScreen() {
           questions someone asks about a stranger who just messaged them are
           the same question, and only one of them was answered here before.
         */}
-        <Text style={styles.joined}>Registered {formatAccountAge(new Date(user.createdAt))}</Text>
+        <Text style={styles.joined}>
+          {t('profile.registeredLabel')} {accountAgeLabel(t, new Date(user.createdAt))}
+        </Text>
         <View style={styles.badges}>
           <Chip label={`${user.age}`} />
           {user.country ? <Chip label={countryLabel(user.country)} /> : null}
           {user.streak.current > 0 ? (
-            <Chip label={`🔥 ${days(user.streak.current)}`} tone="streak" />
+            <Chip label={`🔥 ${days(t, user.streak.current)}`} tone="streak" />
           ) : null}
-          {user.emailVerified ? <Chip label="✓ Verified email" tone="accent" /> : null}
+          {user.emailVerified ? <Chip label={t('profile.verifiedEmail')} tone="accent" /> : null}
           <TierBadge tier={user.tier} />
         </View>
       </View>
@@ -171,27 +176,27 @@ export default function ProfileScreen() {
 
       {user.interests.length > 0 ? (
         <>
-          <Text style={styles.sectionTitle}>Interests</Text>
+          <Text style={styles.sectionTitle}>{t('profile.interests')}</Text>
           <View style={styles.chips}>
             {user.interests.map((interest) => (
-              <Chip key={interest} label={interest} />
+              <Chip key={interest} label={interestLabel(t, interest)} />
             ))}
           </View>
         </>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Send a message</Text>
+      <Text style={styles.sectionTitle}>{t('profile.sendMessage')}</Text>
       <TextInput
         value={message}
         onChangeText={setMessage}
-        placeholder={`Say hello to ${user.displayName}…`}
+        placeholder={t('chat.sayHello', { name: user.displayName })}
         placeholderTextColor={colors.textMuted}
         style={styles.input}
         multiline
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <Button
-        label="Send"
+        label={t('common.send')}
         disabled={message.trim().length === 0}
         loading={startConversation.isPending}
         onPress={send}
@@ -200,10 +205,10 @@ export default function ProfileScreen() {
 
       <View style={styles.danger}>
         <Pressable onPress={() => void confirmReport()} hitSlop={8}>
-          <Text style={styles.dangerText}>Report</Text>
+          <Text style={styles.dangerText}>{t('common.report')}</Text>
         </Pressable>
         <Pressable onPress={() => void confirmBlock()} hitSlop={8}>
-          <Text style={styles.dangerText}>Block</Text>
+          <Text style={styles.dangerText}>{t('common.block')}</Text>
         </Pressable>
       </View>
     </Screen>

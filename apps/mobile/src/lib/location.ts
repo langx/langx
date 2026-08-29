@@ -1,3 +1,4 @@
+import type { MessageKey } from '../i18n/runtime'
 import * as Location from 'expo-location'
 
 /**
@@ -50,12 +51,16 @@ export async function captureLocation(): Promise<LocationResult> {
   }
 }
 
-/** What to tell someone when it did not work. One place, so Settings and Discover say the same thing. */
-export const LOCATION_FAILURE_MESSAGE: Record<
+/**
+ * What to tell someone when it did not work. One place, so Settings and
+ * Discover say the same thing — and keys rather than sentences, so they also
+ * say it in the same language the rest of the screen is in.
+ */
+export const LOCATION_FAILURE_KEY: Record<
   Extract<LocationResult, { ok: false }>['reason'],
-  string
+  MessageKey
 > = {
-  denied: 'LangX needs location permission to do this. You can grant it in your device settings.',
-  disabled: 'Location services are turned off on this device.',
-  unavailable: 'Could not get a location right now. Try again in a moment.',
+  denied: 'location.denied',
+  disabled: 'location.disabled',
+  unavailable: 'location.unavailable',
 }

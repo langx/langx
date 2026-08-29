@@ -6,6 +6,7 @@ import { activityGrid, repairEffect, type ActivityCell } from '../lib/activityMa
 import { confirmAlert, showAlert } from '../lib/alert'
 import { dayLabel } from '../lib/messageGroups'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useLocale, useT } from '../i18n'
 import { showToast } from '../lib/toast'
 
 /** Half a year, which is as much as fits without the squares becoming dots. */
@@ -22,6 +23,8 @@ const WEEKS = 26
 export function ActivityMap() {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
 
   const to = new Date().toISOString().slice(0, 10)
   // Generous: the server clamps the range, and the grid only draws what it needs.
@@ -51,7 +54,10 @@ export function ActivityMap() {
   async function onPressDay(cell: ActivityCell): Promise<void> {
     if (cell.state !== 'repairable') return
     if (left === 0) {
-      await showAlert('No repairs left', `You can fill in ${rules.perMonth} days a month.`)
+      await showAlert(
+        t('activity.noRepairsTitle'),
+        t('activity.perMonth', { count: rules.perMonth }),
+      )
       return
     }
 
@@ -64,8 +70,11 @@ export function ActivityMap() {
     })
     if (!effect.affordable) {
       await showAlert(
-        'Not enough token',
-        `Filling a day costs ${rules.price}. You have ${wallet.data?.balance ?? 0}.`,
+        t('activity.notEnoughTokensTitle'),
+        t('activity.notEnoughTokensBody', {
+          price: rules.price,
+          balance: wallet.data?.balance ?? 0,
+        }),
       )
       return
     }
@@ -76,31 +85,39 @@ export function ActivityMap() {
      * square in the middle of a fortnight nobody was active in fills and joins
      * no streak, and saying so is worth more than the sale.
      */
-    const label = dayLabel(cell.day, new Date(`${today}T12:00:00`))
+    const label = dayLabel(cell.day, { t, locale, now: new Date(`${today}T12:00:00`) })
     const streakLine = effect.changesStreak
-      ? `Your streak goes from ${effect.streakBefore} to ${effect.streakAfter} days.`
-      : 'It fills the square, but does not change your streak.'
+      ? t('activity.streakChange', { before: effect.streakBefore, count: effect.streakAfter })
+      : t('activity.noStreakChange')
     const confirmed = await confirmAlert({
-      title: `Fill in ${label}?`,
-      message: `${streakLine}\nYour balance goes ${wallet.data?.balance ?? 0} → ${effect.balanceAfter}.`,
-      confirmLabel: 'Fill it in',
+      title: t('activity.fillInTitle', { day: label }),
+      message: t('activity.balanceChange', {
+        streakLine,
+        before: wallet.data?.balance ?? 0,
+        after: effect.balanceAfter,
+      }),
+      confirmLabel: t('activity.fillIt'),
     })
     if (!confirmed) return
 
     repair.mutate(cell.day, {
-      onSuccess: () => showToast('Day filled in'),
-      onError: () => void showAlert('Could not fill that day', 'Try again in a moment.'),
+      onSuccess: () => showToast(t('activity.filled')),
+      onError: () => void showAlert(t('activity.fillFailed'), t('common.retry')),
     })
   }
 
   return (
     <View style={styles.wrap}>
       <View style={styles.head}>
-        <Text style={styles.title}>Activity</Text>
+        <Text style={styles.title}>{t('chat.activity')}</Text>
         <Text style={styles.hint}>
           {left > 0
-            ? `${left} of ${rules.perMonth} repairs left · ${rules.price} tokens`
-            : 'No repairs left this month'}
+            ? t('activity.repairsLeft', {
+                count: left,
+                total: rules.perMonth,
+                price: rules.price,
+              })
+            : t('activity.noRepairsThisMonth')}
         </Text>
       </View>
 
@@ -123,7 +140,11 @@ export function ActivityMap() {
               <Pressable
                 key={cell.day}
                 accessibilityRole={cell.state === 'repairable' ? 'button' : undefined}
-                accessibilityLabel={cell.state === 'repairable' ? `Fill in ${cell.day}` : undefined}
+                accessibilityLabel={
+                  cell.state === 'repairable'
+                    ? t('activity.fillInDay', { day: cell.day })
+                    : undefined
+                }
                 disabled={cell.state !== 'repairable'}
                 onPress={() => void onPressDay(cell)}
                 style={[

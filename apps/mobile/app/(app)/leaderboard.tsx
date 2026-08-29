@@ -9,23 +9,20 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
-import { days } from '../../src/lib/format'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { badgeLabel, periodLabel, useLocale, useT } from '../../src/i18n'
 import { dedupeById } from '../../src/lib/dedupeById'
 
-const TABS: { key: PeriodType; label: string }[] = [
-  { key: 'week', label: 'Week' },
-  { key: 'month', label: 'Month' },
-  { key: 'year', label: 'Year' },
-  { key: 'all', label: 'All time' },
-]
+const TABS: readonly PeriodType[] = ['week', 'month', 'year', 'all']
 
 const MEDALS = ['🥇', '🥈', '🥉']
 
 export default function LeaderboardScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
 
   const [period, setPeriod] = useState<PeriodType>('week')
   const board = useLeaderboard(period)
@@ -43,7 +40,7 @@ export default function LeaderboardScreen() {
   return (
     <Screen fluid>
       <ScreenHeader
-        title="Badges"
+        title={t('leaderboard.badges')}
         onBack={() => goBackTo('/(app)/me')}
         trailing={
           badges.data ? (
@@ -62,17 +59,21 @@ export default function LeaderboardScreen() {
       */}
       {next ? (
         <View style={styles.next}>
-          <Text style={styles.nextLabel}>Next milestone</Text>
+          <Text style={styles.nextLabel}>{t('leaderboard.nextMilestone')}</Text>
           <View style={styles.nextRow}>
             <Text style={styles.nextValue}>
               {next.current} → {next.threshold}
             </Text>
             <Text style={styles.nextUnit}>
-              {next.kind === 'streak' ? 'day streak' : 'corrections'}
+              {t(next.kind === 'streak' ? 'leaderboard.dayStreak' : 'leaderboard.corrections')}
             </Text>
           </View>
           <ProgressBar
-            accessibilityLabel={`${next.current} of ${next.threshold} toward ${next.label}`}
+            accessibilityLabel={t('leaderboard.towards', {
+              current: next.current,
+              threshold: next.threshold,
+              label: badgeLabel({ t, locale }, next.kind, next.threshold),
+            })}
             color={colors.streak}
             height={10}
             value={next.current / next.threshold}
@@ -80,11 +81,15 @@ export default function LeaderboardScreen() {
           <View style={styles.nextRow}>
             <Text style={styles.nextMeta}>
               {next.kind === 'streak'
-                ? `${days(next.threshold - next.current)} to go`
-                : `${next.threshold - next.current} to go`}
+                ? t('leaderboard.toGo', {
+                    amount: t('format.days', { count: next.threshold - next.current }),
+                  })
+                : t('leaderboard.toGoPlain', { count: next.threshold - next.current })}
             </Text>
             {next.reward > 0 ? (
-              <Text style={styles.nextMeta}>Pays {next.reward.toLocaleString('en-US')} tokens</Text>
+              <Text style={styles.nextMeta}>
+                {t('leaderboard.pays', { amount: next.reward.toLocaleString(locale) })}
+              </Text>
             ) : null}
           </View>
         </View>
@@ -94,21 +99,19 @@ export default function LeaderboardScreen() {
 
       {streak ? (
         <Text style={styles.streakHint}>
-          {streak.qualifiedToday
-            ? 'Today is done. See you tomorrow.'
-            : 'Send one message today to keep it going.'}
+          {t(streak.qualifiedToday ? 'leaderboard.doneToday' : 'leaderboard.keepGoing')}
         </Text>
       ) : null}
 
       <View style={styles.tabs}>
         {TABS.map((tab) => (
           <Pressable
-            key={tab.key}
-            onPress={() => setPeriod(tab.key)}
-            style={[styles.tab, period === tab.key && styles.tabActive]}
+            key={tab}
+            onPress={() => setPeriod(tab)}
+            style={[styles.tab, period === tab && styles.tabActive]}
           >
-            <Text style={[styles.tabLabel, period === tab.key && styles.tabLabelActive]}>
-              {tab.label}
+            <Text style={[styles.tabLabel, period === tab && styles.tabLabelActive]}>
+              {periodLabel(t, tab)}
             </Text>
           </Pressable>
         ))}
@@ -134,8 +137,8 @@ export default function LeaderboardScreen() {
           ListEmptyComponent={
             <EmptyState
               icon="award"
-              title="Nothing here yet"
-              body="Send messages and write corrections — be the first to earn tokens this period."
+              title={t('leaderboard.emptyTitle')}
+              body={t('leaderboard.emptyBody')}
             />
           }
           ListFooterComponent={
@@ -146,7 +149,7 @@ export default function LeaderboardScreen() {
               {viewer && !viewer.inPage && viewer.rank ? (
                 <View style={styles.viewerRow}>
                   <Text style={styles.rank}>#{viewer.rank}</Text>
-                  <Text style={styles.viewerLabel}>You</Text>
+                  <Text style={styles.viewerLabel}>{t('leaderboard.you')}</Text>
                   <Text style={styles.tokens}>{viewer.tokens}</Text>
                 </View>
               ) : null}
@@ -166,7 +169,7 @@ export default function LeaderboardScreen() {
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
                   {item.displayName}
-                  {item.isViewer ? ' (you)' : ''}
+                  {item.isViewer ? ` ${t('common.you')}` : ''}
                 </Text>
                 {item.streak > 0 ? <Text style={styles.streakSmall}>🔥 {item.streak}</Text> : null}
               </View>

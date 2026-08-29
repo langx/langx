@@ -5,6 +5,7 @@ import { Platform, Text, View } from 'react-native'
 import { registerPushToken } from '../hooks/usePushRegistration'
 import { Button } from './ui/Button'
 import { makeStyles } from '../lib/theme'
+import { useT } from '../i18n'
 
 /**
  * Asks for notification permission **with a reason**, on a screen the user
@@ -21,6 +22,7 @@ import { makeStyles } from '../lib/theme'
  */
 export function NotificationPriming() {
   const styles = useStyles()
+  const t = useT()
 
   const [visible, setVisible] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -64,15 +66,19 @@ export function NotificationPriming() {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Turn on notifications?</Text>
+      <Text style={styles.title}>{t('notifications.primingTitle')}</Text>
       <Text style={styles.body}>
-        Two things only: when someone messages you, and a nudge at {STREAK_REMINDER_LOCAL_HOUR}:00
-        if your streak is about to break.
+        {t('notifications.primingBody', { hour: STREAK_REMINDER_LOCAL_HOUR })}
       </Text>
       <View style={styles.actions}>
-        <Button label="Enable" onPress={() => void enable()} loading={busy} style={styles.action} />
         <Button
-          label="Not now"
+          label={t('common.enable')}
+          onPress={() => void enable()}
+          loading={busy}
+          style={styles.action}
+        />
+        <Button
+          label={t('notifications.notNow')}
           variant="secondary"
           onPress={() => setVisible(false)}
           style={styles.action}

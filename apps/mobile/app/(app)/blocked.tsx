@@ -17,6 +17,7 @@ import { confirmAlert } from '../../src/lib/alert'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles } from '../../src/lib/theme'
+import { useLocale, useT } from '../../src/i18n'
 
 /**
  * Blocking is one tap from a profile; unblocking has to live somewhere, and it
@@ -28,6 +29,8 @@ export default function BlockedScreen() {
 
   const blocks = useBlocks()
   const unblock = useUnblockUser()
+  const t = useT()
+  const { locale } = useLocale()
 
   const items = dedupeById(blocks.data?.pages.flatMap((page) => page.items) ?? [])
   // The block row stores ids only; these are the names to show against them.
@@ -36,9 +39,9 @@ export default function BlockedScreen() {
   return (
     <Screen fluid>
       <Pressable onPress={() => goBackTo('/(app)/settings')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Back</Text>
+        <Text style={styles.back}>{t('common.back')}</Text>
       </Pressable>
-      <Text style={styles.title}>Blocked people</Text>
+      <Text style={styles.title}>{t('blocked.title')}</Text>
 
       {blocks.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -63,8 +66,8 @@ export default function BlockedScreen() {
           ListEmptyComponent={
             <EmptyState
               icon="slash"
-              title="Nobody blocked"
-              body="People you block stop appearing anywhere for either of you, and neither of you can message the other."
+              title={t('blocked.emptyTitle')}
+              body={t('blocked.emptyBody')}
             />
           }
           renderItem={({ item }) => {
@@ -78,7 +81,9 @@ export default function BlockedScreen() {
                 <View style={styles.body}>
                   <Text style={styles.name}>{name}</Text>
                   <Text style={styles.since}>
-                    Blocked {new Date(item.createdAt).toLocaleDateString()}
+                    {t('blocked.since', {
+                      date: new Date(item.createdAt).toLocaleDateString(locale),
+                    })}
                   </Text>
                 </View>
                 <Pressable
@@ -86,18 +91,18 @@ export default function BlockedScreen() {
                   disabled={unblock.isPending}
                   onPress={() =>
                     void confirmAlert({
-                      title: 'Unblock',
-                      message: `Unblock ${name}? You will both be visible again.`,
-                      confirmLabel: 'Unblock',
+                      title: t('blocked.unblock'),
+                      message: t('blocked.unblockConfirm', { name }),
+                      confirmLabel: t('blocked.unblock'),
                     }).then((yes) => {
                       if (yes)
                         unblock.mutate(item.blockedId, {
-                          onSuccess: () => showToast(`${name} is unblocked.`),
+                          onSuccess: () => showToast(t('blocked.unblocked', { name })),
                         })
                     })
                   }
                 >
-                  <Text style={styles.unblock}>Unblock</Text>
+                  <Text style={styles.unblock}>{t('blocked.unblock')}</Text>
                 </Pressable>
               </View>
             )

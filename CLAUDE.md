@@ -78,6 +78,13 @@ and reports success.
 **Limits and rules are config**, in `packages/shared`. Never hard-code a
 threshold.
 
+**No user-facing string is written in a component.** Everything a person reads
+comes from `src/i18n/messages/en.ts` through `t('some.key')`; the other seven
+locales are typed against English, so adding a key without translating it does
+not compile. A count takes a plural entry, not `count === 1 ? … : …` — Russian
+and Arabic do not split there. See `docs/decisions.md` → _The app speaks eight
+languages_.
+
 **Optional services degrade, they do not crash.** No email credentials means
 verification links are logged; no storage means the upload endpoint fails with
 a clear message; no RevenueCat means everyone is on the free tier. The app must

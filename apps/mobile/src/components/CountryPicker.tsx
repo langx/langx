@@ -1,8 +1,9 @@
-import { countryFlag, getCountry, searchCountries } from '@langx/shared'
+import { COUNTRIES, countryFlag, getCountry, searchCountries } from '@langx/shared'
 import { useMemo, useState } from 'react'
 import { Text, TextInput, View } from 'react-native'
 import { Chip } from './ui/Chip'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useDisplayNames, useT } from '../i18n'
 
 interface CountryPickerProps {
   /** ISO 3166-1 alpha-2, or empty for "not set". */
@@ -27,9 +28,30 @@ interface CountryPickerProps {
 export function CountryPicker({ value, onChange, label, onLocked }: CountryPickerProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
 
   const [term, setTerm] = useState('')
-  const matches = useMemo(() => searchCountries(term), [term])
+  /**
+   * English names *and* the reader's own, merged.
+   *
+   * `searchCountries` folds accents and ranks prefix matches, which is worth
+   * keeping — but it only knows the English list, so on its own it answers
+   * "Almanya" with nothing at all. The localized pass runs after it and only
+   * adds codes the first one missed, so the better ranking still wins.
+   */
+  const matches = useMemo(() => {
+    const ranked = searchCountries(term)
+    const needle = term.trim().toLowerCase()
+    if (!needle) return ranked
+
+    const seen = new Set(ranked.map((country) => country.code))
+    const localized = COUNTRIES.filter(
+      (country) =>
+        !seen.has(country.code) && names.country(country.code).toLowerCase().includes(needle),
+    )
+    return [...ranked, ...localized].slice(0, 24)
+  }, [term, names])
   const selected = value ? getCountry(value) : undefined
 
   function choose(code: string): void {
@@ -48,7 +70,7 @@ export function CountryPicker({ value, onChange, label, onLocked }: CountryPicke
       {selected ? (
         <View style={styles.row}>
           <Chip
-            label={`${countryFlag(selected.code)} ${selected.name} ✕`}
+            label={`${countryFlag(selected.code)} ${names.country(selected.code)} ✕`}
             selected
             onPress={() => choose('')}
           />
@@ -59,7 +81,7 @@ export function CountryPicker({ value, onChange, label, onLocked }: CountryPicke
             style={styles.search}
             value={term}
             onChangeText={setTerm}
-            placeholder="Search countries"
+            placeholder={t('pickers.searchCountries')}
             placeholderTextColor={colors.textMuted}
             autoCapitalize="none"
             autoCorrect={false}
@@ -68,13 +90,13 @@ export function CountryPicker({ value, onChange, label, onLocked }: CountryPicke
             {matches.map((country) => (
               <Chip
                 key={country.code}
-                label={`${countryFlag(country.code)} ${country.name}`}
+                label={`${countryFlag(country.code)} ${names.country(country.code)}`}
                 onPress={() => choose(country.code)}
               />
             ))}
           </View>
           {matches.length === 0 && term.trim() ? (
-            <Text style={styles.hint}>No country matches “{term.trim()}”.</Text>
+            <Text style={styles.hint}>{t('pickers.noCountryMatch', { query: term.trim() })}</Text>
           ) : null}
         </>
       )}

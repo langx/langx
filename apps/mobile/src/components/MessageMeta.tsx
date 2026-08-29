@@ -1,22 +1,27 @@
 import { deliveryStateOf, type DeliveryState } from '@langx/shared'
 import { Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
+import type { Locale } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useLocale, useT, type MessageKey } from '../i18n'
 
-function clockTime(iso: string): string {
+function clockTime(iso: string, locale: Locale): string {
   const at = new Date(iso)
   if (Number.isNaN(at.getTime())) return ''
-  return at.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+  // The app's locale rather than the device's, so a 24-hour clock does not
+  // appear under messages in a language whose readers were shown a 12-hour one
+  // everywhere else.
+  return at.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
 }
 
 /**
  * A tick means nothing to a screen reader, and the whole point of the glyph is
  * that it carries information the text does not.
  */
-const LABELS: Record<DeliveryState, string> = {
-  sent: 'Sent',
-  delivered: 'Delivered',
-  read: 'Read',
+const LABEL_KEYS: Record<DeliveryState, MessageKey> = {
+  sent: 'messageMeta.sent',
+  delivered: 'messageMeta.delivered',
+  read: 'messageMeta.read',
 }
 
 /**
@@ -32,6 +37,8 @@ const LABELS: Record<DeliveryState, string> = {
 export function MessageMeta({ message, mine }: { message: MessageDto; mine: boolean }) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
   /**
    * Your own bubble is `primary` yellow in both schemes, so its meta is black
    * at half strength rather than the palette's muted grey — the grey was tuned
@@ -42,10 +49,10 @@ export function MessageMeta({ message, mine }: { message: MessageDto; mine: bool
 
   return (
     <View style={styles.row}>
-      <Text style={[styles.time, { color: tint }]}>{clockTime(message.createdAt)}</Text>
+      <Text style={[styles.time, { color: tint }]}>{clockTime(message.createdAt, locale)}</Text>
       {mine ? (
         <Text
-          accessibilityLabel={LABELS[state]}
+          accessibilityLabel={t(LABEL_KEYS[state])}
           // Read is the one state that has to stand out, and on yellow it can
           // no longer do that with a hue — full-strength black against the
           // half-strength tint carries it instead.
@@ -74,6 +81,6 @@ const useStyles = makeStyles(({ font, spacing }) => ({
     letterSpacing: -3,
     opacity: 0.9,
     // The negative tracking above also eats the space after the last tick.
-    paddingRight: 3,
+    paddingEnd: 3,
   },
 }))

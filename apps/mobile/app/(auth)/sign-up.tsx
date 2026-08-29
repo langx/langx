@@ -7,10 +7,12 @@ import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
-import { authErrorMessage } from '../../src/lib/errors'
+import { authErrorKey } from '../../src/lib/errors'
+import { useT } from '../../src/i18n'
 
 export default function SignUp() {
   const styles = useStyles()
+  const t = useT()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +34,7 @@ export default function SignUp() {
     setLoading(false)
 
     if (signUpError) {
-      setError(authErrorMessage(signUpError) ?? 'Sign up failed')
+      setError(t(authErrorKey(signUpError) ?? 'errors.signUpFailed'))
       return
     }
     router.replace({ pathname: '/(auth)/check-email', params: { email } })
@@ -47,11 +49,11 @@ export default function SignUp() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={styles.title}>Create your account</Text>
-      <Text style={styles.subtitle}>You must be {MINIMUM_AGE}+ to use LangX.</Text>
+      <Text style={styles.title}>{t('auth.createAccount')}</Text>
+      <Text style={styles.subtitle}>{t('auth.minimumAge', { age: MINIMUM_AGE })}</Text>
 
       <FormField
-        label="Name"
+        label={t('auth.name')}
         value={name}
         onChangeText={setName}
         autoComplete="name"
@@ -61,7 +63,7 @@ export default function SignUp() {
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label="Email"
+        label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -71,7 +73,7 @@ export default function SignUp() {
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label="Password"
+        label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -81,16 +83,16 @@ export default function SignUp() {
       />
 
       <Button
-        label="Sign up"
+        label={t('auth.signUp')}
         onPress={onSubmit}
         loading={loading}
         disabled={!name || !email || !password}
       />
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Already have an account? </Text>
+        <Text style={styles.footerText}>{t('auth.haveAccount')}</Text>
         <Link href="/(auth)/sign-in" style={styles.link}>
-          Sign in
+          {t('auth.signIn')}
         </Link>
       </View>
     </KeyboardAvoidingView>

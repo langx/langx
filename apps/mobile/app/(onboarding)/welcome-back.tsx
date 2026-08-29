@@ -8,8 +8,8 @@ import { keys, useMe } from '../../src/api/queries'
 import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
-import { days } from '../../src/lib/format'
 import { makeStyles } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 
 function Line({ icon, title, body }: { icon: string; title: string; body: string }) {
   const styles = useStyles()
@@ -38,6 +38,7 @@ function Line({ icon, title, body }: { icon: string; title: string; body: string
  */
 export default function WelcomeBackScreen() {
   const styles = useStyles()
+  const t = useT()
 
   const me = useMe()
   const queryClient = useQueryClient()
@@ -76,26 +77,22 @@ export default function WelcomeBackScreen() {
     <Screen scroll>
       <View style={styles.hero}>
         <Text style={styles.emoji}>👋</Text>
-        <Text style={styles.title}>Welcome back</Text>
-        <Text style={styles.subtitle}>Here is what came with you.</Text>
+        <Text style={styles.title}>{t('welcomeBack.title')}</Text>
+        <Text style={styles.subtitle}>{t('welcomeBack.subtitle')}</Text>
       </View>
 
       <View style={styles.card}>
         <Line
           icon="@"
-          title={`@${handle}`}
-          body="Your username is yours again — nobody else could claim it."
+          title={t('welcomeBack.handleTitle', { handle })}
+          body={t('welcomeBack.handleBody')}
         />
 
         {conversationsImported > 0 ? (
           <Line
             icon="💬"
-            title={
-              conversationsImported === 1
-                ? '1 conversation restored'
-                : `${conversationsImported} conversations restored`
-            }
-            body="Threads where the other person came back too. The rest arrive if and when they do."
+            title={t('welcomeBack.conversations', { count: conversationsImported })}
+            body={t('welcomeBack.conversationsBody')}
           />
         ) : null}
 
@@ -108,22 +105,27 @@ export default function WelcomeBackScreen() {
         {tokensCredited > 0 ? (
           <Line
             icon="🪙"
-            title={`${tokensCredited + TOKEN_RULES.welcomeBackBonus} tokens`}
-            body={`${tokensCredited} carried over from your old balance, plus ${TOKEN_RULES.welcomeBackBonus} for coming back.`}
+            title={t('welcomeBack.tokensCarried', {
+              count: tokensCredited + TOKEN_RULES.welcomeBackBonus,
+            })}
+            body={t('welcomeBack.tokensCarriedBody', {
+              carried: tokensCredited,
+              bonus: TOKEN_RULES.welcomeBackBonus,
+            })}
           />
         ) : (
           <Line
             icon="🪙"
-            title={`${TOKEN_RULES.welcomeBackBonus} tokens`}
-            body="A welcome-back bonus to start with. Earn more by talking and by correcting."
+            title={t('welcomeBack.tokensBonus', { count: TOKEN_RULES.welcomeBackBonus })}
+            body={t('welcomeBack.tokensBonusBody')}
           />
         )}
 
         {frozenStreak > 0 ? (
           <Line
             icon="🔥"
-            title={`${days(frozenStreak)} best streak`}
-            body="Kept as your record. Your live streak starts fresh from today."
+            title={t('welcomeBack.streak', { days: t('format.days', { count: frozenStreak }) })}
+            body={t('welcomeBack.streakBody')}
           />
         ) : null}
 
@@ -136,8 +138,12 @@ export default function WelcomeBackScreen() {
         {lifetimeGranted ? (
           <Line
             icon="✨"
-            title={lifetimeGranted === 'pro_plus' ? 'LangX Pro+, for life' : 'LangX Pro, for life'}
-            body="For what you built in v1. It never expires and there is nothing to pay — thank you for being here first."
+            title={t(
+              lifetimeGranted === 'pro_plus'
+                ? 'welcomeBack.proPlusForLife'
+                : 'welcomeBack.proForLife',
+            )}
+            body={t('welcomeBack.proBody')}
           />
         ) : null}
       </View>
@@ -149,7 +155,7 @@ export default function WelcomeBackScreen() {
       <NotificationPriming />
 
       <Button
-        label={busy ? 'One moment…' : 'Start using LangX'}
+        label={busy ? t('common.oneMoment') : t('welcomeBack.start')}
         onPress={() => void acknowledge()}
         loading={busy}
         style={styles.action}

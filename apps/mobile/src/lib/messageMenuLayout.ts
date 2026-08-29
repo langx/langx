@@ -8,6 +8,18 @@ export interface MenuLayoutInput {
   strip: { width: number; height: number }
   /** Own messages hang off the right edge, the other person's off the left. */
   mine: boolean
+  /**
+   * Whether the layout around this menu is right to left.
+   *
+   * `mine` alone is not enough, and the reason is easy to miss: it names the
+   * *sender*, and the caller reads the edge to align to off it. In an RTL
+   * layout your own bubbles sit on the left, so "mine → right edge" silently
+   * becomes "mine → the far side of the bubble" — a menu hanging off the wrong
+   * corner, which reads on screen as a positioning bug rather than as an RTL
+   * one. The two facts are separated here so the flip is a rule with a test
+   * rather than an assumption baked into an arithmetic expression.
+   */
+  rtl?: boolean
 }
 
 export interface MenuLayout {
@@ -38,13 +50,18 @@ const GAP = 8
  * every one of these rules testable without a renderer.
  */
 export function messageMenuLayout(input: MenuLayoutInput): MenuLayout {
-  const { anchor, screen, insets, menu, strip, mine } = input
+  const { anchor, screen, insets, menu, strip, mine, rtl = false } = input
 
   const safeTop = insets.top + GUTTER
   const safeBottom = screen.height - insets.bottom - GUTTER
 
+  // Which side of the bubble the menu hangs from. `mine !== rtl` because
+  // both flips together are no flip: an own message in an RTL layout aligns
+  // to the same near edge as the other person's message in an LTR one.
+  const alignToTrailingEdge = mine !== rtl
+
   const align = (width: number): number => {
-    const preferred = mine ? anchor.x + anchor.width - width : anchor.x
+    const preferred = alignToTrailingEdge ? anchor.x + anchor.width - width : anchor.x
     const most = Math.max(GUTTER, screen.width - width - GUTTER)
     return Math.min(Math.max(preferred, GUTTER), most)
   }

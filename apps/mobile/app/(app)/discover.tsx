@@ -1,7 +1,5 @@
 import {
   formatDistance,
-  getLanguage,
-  LEVEL_SHORT_LABELS,
   NEARBY_MAX_KM,
   NEARBY_RADIUS_OPTIONS_KM,
   type DiscoverySort,
@@ -31,24 +29,27 @@ import {
   withoutProFilters,
 } from '../../src/lib/discoveryFilters'
 import { showAlert } from '../../src/lib/alert'
-import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
+import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
+import { levelShortLabel, useDisplayNames, useT, type MessageKey } from '../../src/i18n'
 
-const SORTS: { key: DiscoverySort; label: string }[] = [
-  { key: 'recommended', label: 'For you' },
-  { key: 'active', label: 'Active' },
-  { key: 'nearby', label: 'Nearby' },
+const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
+  { key: 'recommended', label: 'discover.forYou' },
+  { key: 'active', label: 'discover.active' },
+  { key: 'nearby', label: 'discover.nearby' },
 ]
 
 function LanguageLine({ item }: { item: DiscoveryItem }) {
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
 
-  const speaks = item.nativeLanguages.map((l) => getLanguage(l.code)?.name ?? l.code).join(', ')
+  const speaks = item.nativeLanguages.map((l) => names.language(l.code)).join(', ')
   const learns = item.learning
-    .map((l) => `${getLanguage(l.code)?.name ?? l.code} ${LEVEL_SHORT_LABELS[l.level]}`)
+    .map((l) => `${names.language(l.code)} ${levelShortLabel(t, l.level)}`)
     .join(', ')
   return (
     <Text style={styles.languages} numberOfLines={1}>
@@ -59,6 +60,7 @@ function LanguageLine({ item }: { item: DiscoveryItem }) {
 
 export default function DiscoverScreen() {
   const styles = useStyles()
+  const t = useT()
 
   const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<DiscoverySort>('recommended')
@@ -100,7 +102,7 @@ export default function DiscoverScreen() {
   async function enableSharing(): Promise<boolean> {
     const fix = await captureLocation()
     if (!fix.ok) {
-      void showAlert('Location needed', LOCATION_FAILURE_MESSAGE[fix.reason])
+      void showAlert(t('location.needed'), t(LOCATION_FAILURE_KEY[fix.reason]))
       return false
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
@@ -140,7 +142,7 @@ export default function DiscoverScreen() {
     <Screen fluid>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>Discover</Text>
+          <Text style={styles.title}>{t('discover.title')}</Text>
           {/* Which direction this list is matched in. Every card below is
               someone native in what you are learning and learning what you
               speak, and without this the list looks unsorted rather than
@@ -151,7 +153,9 @@ export default function DiscoverScreen() {
           {SORTS.map((option) => (
             <Chip
               key={option.key}
-              label={option.key === 'nearby' && !canUseNearby ? `${option.label} ✦` : option.label}
+              label={
+                option.key === 'nearby' && !canUseNearby ? `${t(option.label)} ✦` : t(option.label)
+              }
               selected={sort === option.key}
               onPress={() => (option.key === 'nearby' ? void chooseNearby() : setSort(option.key))}
             />
@@ -159,7 +163,7 @@ export default function DiscoverScreen() {
           <Chip
             // "Online first", not "Online": it is a sort modifier now, and a
             // label promising a filter would be describing the old behaviour.
-            label="Online first"
+            label={t('discover.onlineFirst')}
             tone="accent"
             selected={effective.online === true}
             onPress={() => router.setParams(effective.online ? { online: '' } : { online: '1' })}
@@ -170,7 +174,13 @@ export default function DiscoverScreen() {
               live behind it, which is why a free account opens the filters
               rather than the paywall. */}
           <Chip
-            label={count > 0 ? `Filters · ${count}` : isPro ? 'Filters' : 'Filters ✦'}
+            label={
+              count > 0
+                ? t('discover.filtersWithCount', { count })
+                : isPro
+                  ? t('filters.title')
+                  : t('discover.filters')
+            }
             tone="secondary"
             selected={count > 0}
             onPress={() => router.push({ pathname: '/(app)/filters', params })}
@@ -184,7 +194,7 @@ export default function DiscoverScreen() {
             {NEARBY_RADIUS_OPTIONS_KM.map((km) => (
               <Chip
                 key={km}
-                label={`${km} km`}
+                label={t('discover.distanceKm', { km })}
                 tone="accent"
                 selected={radiusKm === km}
                 onPress={() => setRadiusKm(km)}
@@ -209,9 +219,9 @@ export default function DiscoverScreen() {
          */
         <EmptyState
           icon="map-pin"
-          title="Location sharing is off"
-          body="Nearby needs to know roughly where you are. Nothing precise is stored, and nobody sees more than a rough distance."
-          actionLabel={shareLocation.isPending ? 'Turning on…' : 'Turn it on'}
+          title={t('discover.locationOffTitle')}
+          body={t('discover.locationOffBody')}
+          actionLabel={shareLocation.isPending ? t('discover.turningOn') : t('discover.turnOn')}
           onAction={() => void enableSharing()}
         />
       ) : (
@@ -236,14 +246,14 @@ export default function DiscoverScreen() {
               // broken rather than that the pool is small.
               <EmptyState
                 icon="map-pin"
-                title={`Nobody within ${radiusKm} km`}
-                body="Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs."
+                title={t('discover.nobodyNearbyTitle', { radius: radiusKm })}
+                body={t('discover.nobodyNearbyBody')}
               />
             ) : (
               <EmptyState
                 icon="search"
-                title="Nobody here yet"
-                body="People whose languages match yours in both directions show up here. Try loosening the filters."
+                title={t('discover.emptyTitle')}
+                body={t('discover.emptyBody')}
               />
             )
           }
@@ -342,7 +352,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
      */
     flexShrink: 0,
     fontWeight: '600',
-    marginLeft: 'auto',
+    marginStart: 'auto',
     overflow: 'hidden',
     paddingHorizontal: 9,
     paddingVertical: 3,

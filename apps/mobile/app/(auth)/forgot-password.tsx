@@ -6,9 +6,11 @@ import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
+import { useT } from '../../src/i18n'
 
 export default function ForgotPassword() {
   const styles = useStyles()
+  const t = useT()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
@@ -29,12 +31,10 @@ export default function ForgotPassword() {
   if (sent) {
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.title}>Check your email</Text>
-        <Text style={styles.body}>
-          If an account exists for {email}, a reset link is on its way.
-        </Text>
+        <Text style={styles.title}>{t('auth.checkEmailTitle')}</Text>
+        <Text style={styles.body}>{t('auth.resetSentBody', { email })}</Text>
         <Link href="/(auth)/sign-in" style={styles.link}>
-          Back to sign in
+          {t('auth.backToSignIn')}
         </Link>
       </KeyboardAvoidingView>
     )
@@ -49,20 +49,25 @@ export default function ForgotPassword() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={styles.title}>Reset your password</Text>
+      <Text style={styles.title}>{t('auth.resetTitle')}</Text>
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label="Email"
+        label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         textContentType="emailAddress"
         autoComplete="email"
       />
-      <Button label="Send reset link" onPress={onSubmit} loading={loading} disabled={!email} />
+      <Button
+        label={t('auth.sendResetLink')}
+        onPress={onSubmit}
+        loading={loading}
+        disabled={!email}
+      />
       <Link href="/(auth)/sign-in" style={styles.link}>
-        Back to sign in
+        {t('auth.backToSignIn')}
       </Link>
     </KeyboardAvoidingView>
   )

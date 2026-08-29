@@ -1,13 +1,21 @@
 import { Text, View } from 'react-native'
-import type { TokenSummary } from '@langx/shared'
+import type { Locale, TokenSummary } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useLocale, useT } from '../i18n'
 
 /**
  * Monday-first initials. The API returns seven days ending today, so the
  * labels are derived from each row's own date rather than assumed — a week that
  * ends on Wednesday starts on Thursday, and a fixed `M T W T F S S` would lie.
  */
-const DAY_INITIALS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+function dayInitial(day: string, locale: Locale): string {
+  const at = new Date(`${day}T00:00:00Z`)
+  if (Number.isNaN(at.getTime())) return ''
+  // `narrow` is CLDR's own one-or-two-character weekday — "M" in English, "P"
+  // in Turkish, "Д" in Russian. Hard-coding seven Latin initials put an English
+  // week under a Russian chart.
+  return new Intl.DateTimeFormat(locale, { weekday: 'narrow', timeZone: 'UTC' }).format(at)
+}
 
 interface WeeklyChartProps {
   week: TokenSummary['week']
@@ -25,6 +33,8 @@ interface WeeklyChartProps {
 export function WeeklyChart({ week }: WeeklyChartProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
 
   const messages = week.reduce((sum, day) => sum + day.messages, 0)
   const corrections = week.reduce((sum, day) => sum + day.corrections, 0)
@@ -35,16 +45,14 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Text style={styles.title}>This week</Text>
-        <Text style={styles.summary}>
-          {messages} messages · {corrections} corrections
-        </Text>
+        <Text style={styles.title}>{t('weekly.thisWeek')}</Text>
+        <Text style={styles.summary}>{t('store.todayCounts', { messages, corrections })}</Text>
       </View>
 
       <View
         style={styles.bars}
         accessibilityRole="image"
-        accessibilityLabel={`This week: ${messages} messages and ${corrections} corrections.`}
+        accessibilityLabel={t('weekly.summary', { messages, corrections })}
       >
         {week.map((day) => (
           <View key={day.day} style={styles.column}>
@@ -67,7 +75,7 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
       <View style={styles.labels}>
         {week.map((day) => (
           <Text key={day.day} style={styles.label}>
-            {DAY_INITIALS[new Date(`${day.day}T00:00:00Z`).getUTCDay()]}
+            {dayInitial(day.day, locale)}
           </Text>
         ))}
       </View>
@@ -75,11 +83,11 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
       <View style={styles.legend}>
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: colors.success }]} />
-          <Text style={styles.legendLabel}>Corrections given</Text>
+          <Text style={styles.legendLabel}>{t('weekly.correctionsGiven')}</Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.dot, { backgroundColor: colors.accent }]} />
-          <Text style={styles.legendLabel}>Messages</Text>
+          <Text style={styles.legendLabel}>{t('weekly.messages')}</Text>
         </View>
       </View>
     </View>

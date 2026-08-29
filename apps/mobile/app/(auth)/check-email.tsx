@@ -5,9 +5,11 @@ import { Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { authClient } from '../../src/lib/auth-client'
+import { useT } from '../../src/i18n'
 
 export default function CheckEmail() {
   const styles = useStyles()
+  const t = useT()
   const { email } = useLocalSearchParams<{ email: string }>()
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -25,22 +27,18 @@ export default function CheckEmail() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Check your email</Text>
-      <Text style={styles.body}>
-        We sent a verification link to{'\n'}
-        <Text style={styles.email}>{email}</Text>
-        {'\n\n'}Tap it, then come back and sign in.
-      </Text>
+      <Text style={styles.title}>{t('auth.checkEmailTitle')}</Text>
+      <Text style={styles.body}>{t('auth.checkEmailBody', { email: email ?? '' })}</Text>
 
       <Button
-        label={sent ? 'Sent — resend again' : 'Resend email'}
+        label={sent ? t('auth.resent') : t('auth.resendEmail')}
         onPress={onResend}
         loading={loading}
         variant="secondary"
       />
 
       <Link href="/(auth)/sign-in" style={styles.link}>
-        Back to sign in
+        {t('auth.backToSignIn')}
       </Link>
     </View>
   )

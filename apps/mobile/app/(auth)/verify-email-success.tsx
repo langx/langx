@@ -1,6 +1,7 @@
 import { Link, useLocalSearchParams } from 'expo-router'
 import { Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 
 /**
  * Landing screen after tapping the emailed verification link.
@@ -15,18 +16,19 @@ import { makeStyles } from '../../src/lib/theme'
  */
 export default function VerifyEmailSuccess() {
   const styles = useStyles()
+  const t = useT()
   const { error } = useLocalSearchParams<{ error?: string }>()
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{error ? 'Verification failed' : 'Email verified'}</Text>
+      <Text style={styles.title}>
+        {t(error ? 'auth.verificationFailedTitle' : 'auth.verifiedTitle')}
+      </Text>
       <Text style={styles.body}>
-        {error
-          ? 'That link is invalid or has expired. Sign in and request a new one.'
-          : 'You can sign in now.'}
+        {t(error ? 'auth.verificationFailedBody' : 'auth.verifiedBody')}
       </Text>
       <Link href="/(auth)/sign-in" style={styles.link}>
-        Go to sign in
+        {t('auth.goToSignIn')}
       </Link>
     </View>
   )

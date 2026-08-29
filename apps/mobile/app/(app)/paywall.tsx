@@ -26,6 +26,7 @@ import {
   type PurchaseOffer,
 } from '../../src/lib/purchases'
 import { makeStyles } from '../../src/lib/theme'
+import { useT, type MessageKey } from '../../src/i18n'
 
 /**
  * Both dated 7 June 2024 and, per `architecture.md:101`, **still missing the
@@ -37,15 +38,20 @@ import { makeStyles } from '../../src/lib/theme'
 const TERMS_URL = 'https://langx.io/terms-conditions'
 const PRIVACY_URL = 'https://langx.io/privacy-policy'
 
-const PERIOD_LABEL: Record<BillingPeriod, string> = {
-  monthly: 'Monthly',
-  yearly: 'Yearly',
-  lifetime: 'One-off',
+const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
+  monthly: 'paywall.monthly',
+  yearly: 'paywall.yearly',
+  lifetime: 'paywall.lifetime',
 }
 
-const TIER_COPY: Record<PaidPlanTier, { name: string; tagline: string }> = {
-  pro: { name: 'Pro', tagline: 'Everything that makes the free plan feel small.' },
-  pro_plus: { name: 'Pro+', tagline: 'Everything in Pro, and the two features only it has.' },
+/**
+ * `name` is a brand — "Pro" and "Pro+" are the same words in every locale, and
+ * they are what the store listing and the receipt say — so only the tagline is
+ * a key.
+ */
+const TIER_COPY: Record<PaidPlanTier, { name: string; tagline: MessageKey }> = {
+  pro: { name: 'Pro', tagline: 'paywall.proTagline' },
+  pro_plus: { name: 'Pro+', tagline: 'paywall.proPlusTagline' },
 }
 
 /**
@@ -61,36 +67,48 @@ const TIER_COPY: Record<PaidPlanTier, { name: string; tagline: string }> = {
  * because a paywall quoting a limit the server no longer enforces is the worst
  * kind of wrong.
  */
-const BENEFIT_COPY: Record<ProBenefit, { emoji: string; title: string; body: string }> = {
+interface BenefitCopy {
+  emoji: string
+  title: MessageKey
+  body: MessageKey
+  /** Interpolated into `body`. The free-tier numbers come from `PLAN_LIMITS`
+   *  rather than being typed out, because a paywall quoting a limit the server
+   *  no longer enforces is the worst kind of wrong. */
+  count?: number
+}
+
+const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
   unlimitedInitiations: {
     emoji: '💬',
-    title: 'Unlimited new chats',
-    body: `${PLAN_LIMITS.free.initiationsPer24h} a day on the free plan.`,
+    title: 'paywall.unlimitedChats',
+    body: 'paywall.unlimitedChatsBody',
+    count: PLAN_LIMITS.free.initiationsPer24h ?? 0,
   },
   advancedFilters: {
     emoji: '🎯',
-    title: 'Advanced filters',
-    body: 'Search by gender, country, age and level.',
+    title: 'paywall.advancedFilters',
+    body: 'paywall.advancedFiltersBody',
   },
   unlimitedTranslation: {
     emoji: '🌍',
-    title: 'Unlimited translation',
-    body: `${PLAN_LIMITS.free.translationsPer24h} a day on the free plan.`,
+    title: 'paywall.unlimitedTranslation',
+    body: 'paywall.unlimitedTranslationBody',
+    count: PLAN_LIMITS.free.translationsPer24h ?? 0,
   },
   profileViewerIdentities: {
     emoji: '👀',
-    title: 'Who viewed you',
-    body: 'Not just the count — see who they are.',
+    title: 'paywall.whoViewed',
+    body: 'paywall.whoViewedBody',
   },
   incognito: {
     emoji: '🕶️',
-    title: 'Incognito browsing',
-    body: 'Look at profiles without leaving a trace.',
+    title: 'paywall.incognito',
+    body: 'paywall.incognitoBody',
   },
   hideOnlineStatus: {
     emoji: '🌙',
-    title: 'Hide when you are online',
-    body: 'Nobody sees your green dot. You still see theirs.',
+    title: 'paywall.hideOnline',
+    body: 'paywall.hideOnlineBody',
   },
 }
 
@@ -104,22 +122,19 @@ const BENEFIT_COPY: Record<ProBenefit, { emoji: string; title: string; body: str
  * cannot ship quietly half-true: someone has to come back and flip it, which
  * is what happened to `nearby` and has not yet happened to `copilot`.
  */
-const PRO_PLUS_BENEFIT_COPY: Record<
-  ProPlusBenefit,
-  { emoji: string; title: string; body: string; shipped: boolean }
-> = {
+const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boolean }> = {
   nearby: {
     emoji: '📍',
-    title: 'Nearby',
-    // Says what it does *and* what it costs the reader, because the second
-    // half is the part they would otherwise find out after paying.
-    body: 'Sort discovery by distance. Needs your own approximate location — rounded before it is stored, and shown to others only as a rough distance.',
+    // The body says what it does *and* what it costs the reader, because the
+    // second half is the part they would otherwise find out after paying.
+    title: 'paywall.nearby',
+    body: 'paywall.nearbyBody',
     shipped: true,
   },
   copilot: {
     emoji: '🤖',
-    title: 'AI copilot',
-    body: 'Help composing and understanding messages as you write them.',
+    title: 'paywall.copilot',
+    body: 'paywall.copilotBody',
     shipped: false,
   },
 }
@@ -132,7 +147,7 @@ const PRO_PLUS_BENEFIT_COPY: Record<
  * `Record<PlanFeature, string>` is the enforcement: a capability added to
  * either feature list without a name here stops this file compiling.
  */
-const FEATURE_TITLE: Record<PlanFeature, string> = {
+const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
   profileViewerIdentities: BENEFIT_COPY.profileViewerIdentities.title,
   incognito: BENEFIT_COPY.incognito.title,
@@ -149,6 +164,7 @@ function parseFeature(raw: string | undefined): PlanFeature | null {
 
 export default function PaywallScreen() {
   const styles = useStyles()
+  const t = useT()
 
   // Reached from the profile, the viewer list, filters, Discover and a chat
   // thread, so the caller says where back leads.
@@ -199,8 +215,8 @@ export default function PaywallScreen() {
     }
     // A deliberate cancellation is not an error and gets no message — telling
     // someone their own choice failed is how a paywall teaches them it is broken.
-    if (outcome === 'failed') setNotice('That purchase did not go through. Nothing was charged.')
-    if (outcome === 'unavailable') setNotice('Purchasing is unavailable on this device.')
+    if (outcome === 'failed') setNotice(t('paywall.purchaseFailed'))
+    if (outcome === 'unavailable') setNotice(t('paywall.purchaseUnavailable'))
   }
 
   async function restore(): Promise<void> {
@@ -211,13 +227,13 @@ export default function PaywallScreen() {
     // Reconcile either way: the server is the authority on entitlement, and it
     // can find a subscription the local store call could not.
     refresh.mutate()
-    if (!ok) setNotice('Nothing to restore on this device.')
+    if (!ok) setNotice(t('paywall.nothingToRestore'))
   }
 
   return (
     <Screen scroll>
       <Text style={styles.eyebrow}>LANGX</Text>
-      <Text style={styles.title}>Talk more, learn faster</Text>
+      <Text style={styles.title}>{t('paywall.title')}</Text>
 
       {/*
         Says why this screen opened, when the caller knew. Someone who just
@@ -228,7 +244,7 @@ export default function PaywallScreen() {
       {feature && highlightTier ? (
         <View style={styles.contextBanner}>
           <Text style={styles.contextText}>
-            {FEATURE_TITLE[feature]} is part of {TIER_COPY[highlightTier].name}.
+            {t(FEATURE_TITLE[feature])} {t('paywall.partOf')} {TIER_COPY[highlightTier].name}.
           </Text>
         </View>
       ) : null}
@@ -236,8 +252,7 @@ export default function PaywallScreen() {
       {remaining === 0 ? (
         <View style={styles.quotaBanner}>
           <Text style={styles.quotaText}>
-            You've used today's {PLAN_LIMITS.free.initiationsPer24h} new chats. You can still reply
-            to everything you receive, with no limit.
+            {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
           </Text>
         </View>
       ) : null}
@@ -245,7 +260,7 @@ export default function PaywallScreen() {
       {tier !== 'free' ? (
         <View style={styles.currentBanner}>
           <Text style={styles.currentText}>
-            You're on {TIER_COPY[tier].name}. Manage or cancel it in your store account.
+            {t('paywall.manageNotice', { plan: TIER_COPY[tier].name })}
           </Text>
         </View>
       ) : null}
@@ -276,26 +291,23 @@ export default function PaywallScreen() {
         style={styles.restore}
       >
         <Text style={styles.restoreText}>
-          {restoring || refresh.isPending ? 'Checking…' : 'Already subscribed? Restore'}
+          {restoring || refresh.isPending ? t('common.checking') : t('paywall.restore')}
         </Text>
       </Pressable>
 
-      <Text style={styles.legal}>
-        Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google
-        account — cancelling stops the next renewal and keeps access until the current period ends.
-      </Text>
+      <Text style={styles.legal}>{t('paywall.legal')}</Text>
       <View style={styles.legalLinks}>
         <Pressable onPress={() => void Linking.openURL(TERMS_URL)} hitSlop={8}>
-          <Text style={styles.legalLink}>Terms</Text>
+          <Text style={styles.legalLink}>{t('paywall.terms')}</Text>
         </Pressable>
         <Text style={styles.legalDot}>·</Text>
         <Pressable onPress={() => void Linking.openURL(PRIVACY_URL)} hitSlop={8}>
-          <Text style={styles.legalLink}>Privacy</Text>
+          <Text style={styles.legalLink}>{t('paywall.privacy')}</Text>
         </Pressable>
       </View>
 
       <Button
-        label="Back"
+        label={t('common.backPlain')}
         variant="secondary"
         onPress={() => goBackTo('/(app)/me', from)}
         style={styles.back}
@@ -316,6 +328,7 @@ interface TierCardProps {
 
 function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }: TierCardProps) {
   const styles = useStyles()
+  const t = useT()
 
   const copy = TIER_COPY[tier]
   const tierOffers = offers?.filter((offer) => offer.tier === tier) ?? []
@@ -332,46 +345,32 @@ function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }
       <Text style={[styles.cardTitle, tier === 'pro_plus' && styles.cardTitlePlus]}>
         {copy.name}
       </Text>
-      <Text style={styles.cardTagline}>{copy.tagline}</Text>
+      <Text style={styles.cardTagline}>{t(copy.tagline)}</Text>
 
       {tier === 'pro'
         ? PRO_BENEFITS.map((benefit) => {
             const feature = BENEFIT_COPY[benefit]
-            return (
-              <BenefitRow
-                key={benefit}
-                emoji={feature.emoji}
-                title={feature.title}
-                body={feature.body}
-              />
-            )
+            return <BenefitRow key={benefit} copy={feature} />
           })
         : PRO_PLUS_BENEFITS.map((benefit) => {
             const feature = PRO_PLUS_BENEFIT_COPY[benefit]
-            return (
-              <BenefitRow
-                key={benefit}
-                emoji={feature.emoji}
-                title={feature.title}
-                body={feature.body}
-                pending={!feature.shipped}
-              />
-            )
+            return <BenefitRow key={benefit} copy={feature} pending={!feature.shipped} />
           })}
 
       {offers === null ? (
         <ActivityIndicator style={styles.offersLoading} />
       ) : tierOffers.length === 0 ? (
         <Text style={styles.unavailable}>
-          {isPurchasesAvailable()
-            ? 'No plans are available right now.'
-            : 'Purchasing is not set up on this platform yet.'}
+          {t(isPurchasesAvailable() ? 'paywall.noPlans' : 'paywall.notSetUp')}
         </Text>
       ) : (
         tierOffers.map((offer) => (
           <Button
             key={offer.id}
-            label={`${PERIOD_LABEL[offer.period]} — ${offer.priceString}`}
+            label={t('paywall.offer', {
+              period: t(PERIOD_LABEL[offer.period]),
+              price: offer.priceString,
+            })}
             variant={tier === 'pro_plus' ? 'primary' : 'secondary'}
             loading={busyOfferId === offer.id}
             disabled={isCurrent || (busyOfferId !== null && busyOfferId !== offer.id)}
@@ -384,28 +383,21 @@ function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }
   )
 }
 
-function BenefitRow({
-  emoji,
-  title,
-  body,
-  pending = false,
-}: {
-  emoji: string
-  title: string
-  body: string
-  pending?: boolean
-}) {
+function BenefitRow({ copy, pending = false }: { copy: BenefitCopy; pending?: boolean }) {
   const styles = useStyles()
+  const t = useT()
 
   return (
     <View style={styles.feature}>
-      <Text style={styles.emoji}>{emoji}</Text>
+      <Text style={styles.emoji}>{copy.emoji}</Text>
       <View style={styles.featureBody}>
         <View style={styles.featureTitleRow}>
-          <Text style={styles.featureTitle}>{title}</Text>
-          {pending ? <Text style={styles.pendingTag}>COMING SOON</Text> : null}
+          <Text style={styles.featureTitle}>{t(copy.title)}</Text>
+          {pending ? <Text style={styles.pendingTag}>{t('common.comingSoon')}</Text> : null}
         </View>
-        <Text style={styles.featureText}>{body}</Text>
+        <Text style={styles.featureText}>
+          {t(copy.body, copy.count === undefined ? undefined : { count: copy.count })}
+        </Text>
       </View>
     </View>
   )
@@ -425,8 +417,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   cardTagline: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
   contextBanner: {
     backgroundColor: colors.surface,
-    borderLeftColor: colors.accent,
-    borderLeftWidth: 3,
+    borderStartColor: colors.accent,
+    borderStartWidth: 3,
     borderRadius: radius.md,
     marginTop: spacing.lg,
     padding: spacing.md,
@@ -441,7 +433,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     padding: spacing.md,
   },
   currentText: { ...font.caption, color: colors.text },
-  emoji: { fontSize: 20, marginRight: spacing.md },
+  emoji: { fontSize: 20, marginEnd: spacing.md },
   eyebrow: { ...font.label, color: colors.pro, letterSpacing: 1, marginTop: spacing.lg },
   feature: { flexDirection: 'row', marginTop: spacing.lg },
   featureBody: { flex: 1 },

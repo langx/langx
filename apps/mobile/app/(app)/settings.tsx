@@ -1,8 +1,9 @@
+import Feather from '@expo/vector-icons/Feather'
 import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Linking, Platform, Text, View } from 'react-native'
-import { api, ApiRequestError } from '../../src/api/client'
+import { api } from '../../src/api/client'
 import {
   useIsPro,
   useMe,
@@ -25,7 +26,9 @@ import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
-import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
+import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
+import { useLocalePreference, useT, type LocalePreference, type MessageKey } from '../../src/i18n'
+import { LOCALE_NAMES, SUPPORTED_LOCALES } from '@langx/shared'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import {
   makeStyles,
@@ -35,14 +38,26 @@ import {
   type ThemePreference,
 } from '../../src/lib/theme'
 
-const THEME_OPTIONS = THEME_PREFERENCES.map((value) => ({
-  value,
-  label: value === 'auto' ? 'Auto' : value === 'light' ? 'Light' : 'Dark',
-}))
+/**
+ * `auto` first, then the eight in the order `SUPPORTED_LOCALES` declares them —
+ * English, then the rest. Not sorted alphabetically: alphabetical order is
+ * itself locale-dependent, so the list would reshuffle underneath someone
+ * switching between two languages.
+ */
+const LOCALE_OPTIONS: readonly LocalePreference[] = ['auto', ...SUPPORTED_LOCALES]
+
+/** Keys, not words: a module constant is fixed at import time. */
+const THEME_LABELS: Record<ThemePreference, MessageKey> = {
+  auto: 'theme.auto',
+  light: 'theme.light',
+  dark: 'theme.dark',
+}
 
 export default function SettingsScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { preference: locale, setPreference: setLocale, deviceLocale } = useLocalePreference()
   const { preference, setPreference } = useThemePreference()
 
   const me = useMe()
@@ -70,7 +85,7 @@ export default function SettingsScreen() {
     }
     const fix = await captureLocation()
     if (!fix.ok) {
-      void showAlert('Location unavailable', LOCATION_FAILURE_MESSAGE[fix.reason])
+      void showAlert(t('location.unavailableTitle'), t(LOCATION_FAILURE_KEY[fix.reason]))
       return
     }
     shareLocation.mutate({ lat: fix.lat, lng: fix.lng })
@@ -92,9 +107,9 @@ export default function SettingsScreen() {
 
   async function confirmDelete(): Promise<void> {
     const yes = await confirmAlert({
-      title: 'Delete your account',
-      message: `Your account disappears immediately. Your data is kept for ${ACCOUNT_DELETION_GRACE_DAYS} days — signing back in within that window cancels the deletion. After that it is permanently removed.`,
-      confirmLabel: 'Delete',
+      title: t('settings.deleteConfirmTitle'),
+      message: t('settings.deleteConfirmBody', { days: ACCOUNT_DELETION_GRACE_DAYS }),
+      confirmLabel: t('common.delete'),
       destructive: true,
     })
     if (!yes) return
@@ -107,14 +122,11 @@ export default function SettingsScreen() {
       // The grace period is the one thing worth repeating here: the dialog said
       // it before the account existed in this state, and this is the first
       // moment it is true.
-      showToast(
-        `Account deleted. Signing back in within ${ACCOUNT_DELETION_GRACE_DAYS} days cancels it.`,
-      )
+      showToast(t('settings.deleted', { days: ACCOUNT_DELETION_GRACE_DAYS }))
     } catch (error) {
-      await showAlert(
-        'Could not delete',
-        error instanceof ApiRequestError ? error.message : 'Try again.',
-      )
+      // The API's message is English and written for a developer.
+      void error
+      await showAlert(t('settings.deleteFailed'), t('common.retry'))
     } finally {
       setBusy(false)
     }
@@ -122,9 +134,9 @@ export default function SettingsScreen() {
 
   async function signOut(): Promise<void> {
     const yes = await confirmAlert({
-      title: 'Sign out',
-      message: 'You will need to sign in again on this device.',
-      confirmLabel: 'Sign out',
+      title: t('settings.signOut'),
+      message: t('settings.signOutConfirm'),
+      confirmLabel: t('settings.signOut'),
     })
     if (!yes) return
     // Before the session goes: unregistering needs one.
@@ -148,16 +160,16 @@ export default function SettingsScreen() {
 
   return (
     <Screen scroll>
-      <ScreenHeader title="Settings" onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('settings.title')} onBack={() => goBackTo('/(app)/me')} />
 
-      <Text style={styles.section}>Privacy</Text>
+      <Text style={styles.section}>{t('settings.privacySection')}</Text>
       <Card inset>
         <ListRow
-          title="Show me in Discover"
-          subtitle="Turn this off and nobody will find you in Discover."
+          title={t('settings.showInDiscover')}
+          subtitle={t('settings.showInDiscoverBody')}
           accessory={
             <Toggle
-              accessibilityLabel="Show me in Discover"
+              accessibilityLabel={t('settings.showInDiscover')}
               value={profile?.settings.discoverable ?? true}
               onValueChange={(discoverable) =>
                 update.mutate({ settings: { ...profile?.settings, discoverable } })
@@ -166,12 +178,12 @@ export default function SettingsScreen() {
           }
         />
         <ListRow
-          title="Browse incognito"
-          subtitle={isPro ? "You won't appear in their viewers." : '✦ Pro'}
+          title={t('settings.incognito')}
+          subtitle={isPro ? t('settings.incognitoBody') : t('common.pro')}
           subtitleColor={isPro ? undefined : colors.pro}
           accessory={
             <Toggle
-              accessibilityLabel="Browse incognito"
+              accessibilityLabel={t('settings.incognito')}
               disabled={!isPro}
               value={profile?.privacy.incognito ?? false}
               onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
@@ -182,11 +194,11 @@ export default function SettingsScreen() {
             from is already on the public profile, so hiding the squares is a
             preference rather than a feature. */}
         <ListRow
-          title="Show my activity map"
-          subtitle="The squares on your profile. Your streak stays visible either way."
+          title={t('settings.activityMap')}
+          subtitle={t('settings.activityMapBody')}
           accessory={
             <Toggle
-              accessibilityLabel="Show my activity map"
+              accessibilityLabel={t('settings.activityMap')}
               value={profile?.privacy.activityMapVisible ?? true}
               onValueChange={(activityMapVisible) =>
                 update.mutate({ privacy: { activityMapVisible } })
@@ -195,12 +207,12 @@ export default function SettingsScreen() {
           }
         />
         <ListRow
-          title="Hide when I'm online"
-          subtitle={isPro ? 'You can still see theirs.' : '✦ Pro'}
+          title={t('settings.hideOnline')}
+          subtitle={isPro ? t('settings.hideOnlineBody') : t('common.pro')}
           subtitleColor={isPro ? undefined : colors.pro}
           accessory={
             <Toggle
-              accessibilityLabel="Hide when I'm online"
+              accessibilityLabel={t('settings.hideOnline')}
               disabled={!isPro}
               value={profile?.privacy.hideOnlineStatus ?? false}
               onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
@@ -208,12 +220,12 @@ export default function SettingsScreen() {
           }
         />
         <ListRow
-          title="Share rough location"
-          subtitle="Others see a distance bucket, never a point."
+          title={t('settings.shareLocation')}
+          subtitle={t('settings.shareLocationBody')}
           last={!sharingLocation}
           accessory={
             <Toggle
-              accessibilityLabel="Share rough location"
+              accessibilityLabel={t('settings.shareLocation')}
               disabled={locationBusy}
               value={sharingLocation}
               onValueChange={(next) => void toggleLocation(next)}
@@ -222,23 +234,23 @@ export default function SettingsScreen() {
         />
         {sharingLocation ? (
           <ListRow
-            title="Update my location"
-            value={shareLocation.isPending ? 'Updating…' : undefined}
+            title={t('settings.updateLocation')}
+            value={shareLocation.isPending ? t('settings.updating') : undefined}
             onPress={() => void toggleLocation(true)}
             last
           />
         ) : null}
       </Card>
 
-      <Text style={styles.section}>Notifications</Text>
+      <Text style={styles.section}>{t('settings.notificationsSection')}</Text>
       <Card inset>
         <ListRow
-          title="Messages and reminders"
-          subtitle="New messages, and one streak reminder a day."
+          title={t('settings.pushTitle')}
+          subtitle={t('settings.pushBody')}
           last
           accessory={
             <Toggle
-              accessibilityLabel="Messages and reminders"
+              accessibilityLabel={t('settings.pushTitle')}
               value={profile?.settings.notifications ?? true}
               onValueChange={(notifications) =>
                 update.mutate({ settings: { ...profile?.settings, notifications } })
@@ -252,24 +264,55 @@ export default function SettingsScreen() {
         A device preference rather than an account one, so it is deliberately
         not in `profile.settings` — see `lib/theme/ThemeProvider`.
       */}
-      <Text style={styles.section}>Appearance</Text>
+      {/*
+        Device-level, like the theme, and for the same reason: the phone is
+        what has a language setting. `auto` leads because it is what almost
+        everyone wants and what nobody has to think about — the override exists
+        for the people this app is full of, who read a language their phone is
+        not set to.
+      */}
+      <Text style={styles.section}>{t('settings.languageSection')}</Text>
+      <Card inset>
+        {LOCALE_OPTIONS.map((option, index) => (
+          <ListRow
+            key={option}
+            title={
+              option === 'auto'
+                ? t('settings.languageAuto', { name: LOCALE_NAMES[deviceLocale] })
+                : LOCALE_NAMES[option]
+            }
+            last={index === LOCALE_OPTIONS.length - 1}
+            onPress={() => setLocale(option)}
+            accessory={
+              locale === option ? (
+                <Feather name="check" size={18} color={colors.primary} />
+              ) : undefined
+            }
+          />
+        ))}
+      </Card>
+
+      <Text style={styles.section}>{t('theme.section')}</Text>
       <View style={styles.theme}>
         <SegmentedControl<ThemePreference>
-          accessibilityLabel="Theme"
-          options={THEME_OPTIONS}
+          accessibilityLabel={t('theme.label')}
+          options={THEME_PREFERENCES.map((value) => ({ value, label: t(THEME_LABELS[value]) }))}
           selected={[preference]}
           onToggle={setPreference}
         />
       </View>
 
-      <Text style={styles.section}>Account</Text>
+      <Text style={styles.section}>{t('settings.accountSection')}</Text>
       <Card inset>
-        <ListRow title="Blocked people" onPress={() => router.push('/(app)/blocked')} />
-        <ListRow title="Show intro again" onPress={replayIntro} />
-        <ListRow title="Export my data" onPress={() => void exportData()} />
         <ListRow
-          title="Delete account"
-          subtitle={`Signing back in within ${ACCOUNT_DELETION_GRACE_DAYS} days cancels it.`}
+          title={t('settings.blockedPeople')}
+          onPress={() => router.push('/(app)/blocked')}
+        />
+        <ListRow title={t('settings.showIntro')} onPress={replayIntro} />
+        <ListRow title={t('settings.exportData')} onPress={() => void exportData()} />
+        <ListRow
+          title={t('settings.deleteAccount')}
+          subtitle={t('settings.deleteAccountBody', { days: ACCOUNT_DELETION_GRACE_DAYS })}
           destructive
           last
           onPress={busy ? undefined : () => void confirmDelete()}
@@ -277,7 +320,7 @@ export default function SettingsScreen() {
       </Card>
 
       <Button
-        label="Sign out"
+        label={t('settings.signOut')}
         variant="secondary"
         onPress={() => void signOut()}
         style={styles.signOut}
@@ -289,7 +332,7 @@ export default function SettingsScreen() {
         started with two extra round trips.
       */}
       <Text style={styles.build} selectable>
-        LangX {appVersion()} · BSD-3 · open source
+        LangX {appVersion()} {t('settings.licence')}
         {profile ? `\n${profile._id}` : ''}
       </Text>
     </Screen>
@@ -302,7 +345,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     color: colors.textMuted,
     marginBottom: spacing.sm,
     marginTop: spacing.xl,
-    paddingLeft: spacing.xs,
+    paddingStart: spacing.xs,
   },
   theme: { paddingVertical: spacing.xs },
   signOut: { marginTop: spacing.xl },

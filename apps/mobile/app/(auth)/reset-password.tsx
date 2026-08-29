@@ -5,7 +5,8 @@ import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
-import { authErrorMessage } from '../../src/lib/errors'
+import { authErrorKey } from '../../src/lib/errors'
+import { useT } from '../../src/i18n'
 
 /**
  * Reached via the email link's redirect: the server validates the token
@@ -14,6 +15,7 @@ import { authErrorMessage } from '../../src/lib/errors'
  */
 export default function ResetPassword() {
   const styles = useStyles()
+  const t = useT()
   const { token, error: linkError } = useLocalSearchParams<{ token?: string; error?: string }>()
   const [newPassword, setNewPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,7 +29,7 @@ export default function ResetPassword() {
     setLoading(false)
 
     if (resetError) {
-      setError(authErrorMessage(resetError) ?? 'Could not reset password')
+      setError(t(authErrorKey(resetError) ?? 'errors.resetFailed'))
       return
     }
     router.replace('/(auth)/sign-in')
@@ -36,12 +38,10 @@ export default function ResetPassword() {
   if (!token || linkError) {
     return (
       <KeyboardAvoidingView style={styles.container}>
-        <Text style={styles.title}>Link expired</Text>
-        <Text style={styles.body}>
-          This reset link is no longer valid. Request a new one from the sign-in screen.
-        </Text>
+        <Text style={styles.title}>{t('auth.linkExpiredTitle')}</Text>
+        <Text style={styles.body}>{t('auth.linkExpiredBody')}</Text>
         <Link href="/(auth)/forgot-password" style={styles.link}>
-          Request a new link
+          {t('auth.requestNewLink')}
         </Link>
       </KeyboardAvoidingView>
     )
@@ -56,11 +56,11 @@ export default function ResetPassword() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={styles.title}>Set a new password</Text>
+      <Text style={styles.title}>{t('auth.setNewPassword')}</Text>
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label="New password"
+        label={t('auth.newPassword')}
         value={newPassword}
         onChangeText={setNewPassword}
         secureTextEntry
@@ -69,7 +69,7 @@ export default function ResetPassword() {
         error={error}
       />
       <Button
-        label="Update password"
+        label={t('auth.updatePassword')}
         onPress={onSubmit}
         loading={loading}
         disabled={!newPassword}

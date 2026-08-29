@@ -1,3 +1,4 @@
+import { PLAN_LIMITS } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import {
@@ -19,22 +20,14 @@ import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-
-function relativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime()
-  const minutes = Math.floor(diff / 60_000)
-  if (minutes < 1) return 'now'
-  if (minutes < 60) return `${minutes}m`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h`
-  const days = Math.floor(hours / 24)
-  if (days < 7) return `${days}d`
-  return new Date(iso).toLocaleDateString()
-}
+import { relativeTimeCompact } from '../../src/lib/format'
+import { useLocale, useT } from '../../src/i18n'
 
 export default function ChatsScreen() {
   const { colors, layout } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
 
   const me = useMe()
   const conversations = useConversations()
@@ -61,10 +54,10 @@ export default function ChatsScreen() {
         without an entry point here it is a write with no read.
       */}
       <View style={styles.titleRow}>
-        <Text style={styles.title}>Chats</Text>
+        <Text style={styles.title}>{t('tabs.chats')}</Text>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Starred messages"
+          accessibilityLabel={t('chats.starredMessages')}
           hitSlop={10}
           onPress={() => router.push('/(app)/starred')}
         >
@@ -101,9 +94,9 @@ export default function ChatsScreen() {
           ListEmptyComponent={
             <EmptyState
               icon="message-square"
-              title="No chats yet"
-              body="Message someone from Discover. On the free plan you can start 5 new chats a day — replying to messages you receive is always unlimited."
-              actionLabel="Go to Discover"
+              title={t('chats.emptyTitle')}
+              body={t('chats.emptyBody', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
+              actionLabel={t('chats.goToDiscover')}
               onAction={() => router.push('/(app)/discover')}
             />
           }
@@ -143,14 +136,16 @@ export default function ChatsScreen() {
                       // read "Loading…", which looked like somebody's name.
                       <Skeleton width={132} height={15} />
                     )}
-                    <Text style={styles.time}>{relativeTime(item.lastMessage.createdAt)}</Text>
+                    <Text style={styles.time}>
+                      {relativeTimeCompact(item.lastMessage.createdAt, { t, locale })}
+                    </Text>
                   </View>
                   <View style={styles.bottom}>
                     <Text
                       style={[styles.preview, unread > 0 && styles.previewUnread]}
                       numberOfLines={1}
                     >
-                      {mine ? 'You: ' : ''}
+                      {mine ? `${t('chats.youPrefix')} ` : ''}
                       {item.lastMessage.body}
                     </Text>
                     {unread > 0 ? (

@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { FlatList, Pressable, Text, TextInput, View } from 'react-native'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useDisplayNames, useT } from '../i18n'
 
 interface LanguagePickerProps {
   selected: string[]
@@ -25,6 +26,8 @@ export function LanguagePicker({
   max,
 }: LanguagePickerProps) {
   const { colors } = useTheme()
+  const t = useT()
+  const names = useDisplayNames()
   const styles = useStyles()
 
   const [query, setQuery] = useState('')
@@ -34,6 +37,10 @@ export function LanguagePicker({
     const pool = q
       ? LANGUAGES.filter(
           (l) =>
+            // The localized name first: a Turkish reader looking for German
+            // types "Almanca", and matching only `l.name` would tell them the
+            // language they can see in the list does not exist.
+            names.language(l.code).toLowerCase().includes(q) ||
             l.name.toLowerCase().includes(q) ||
             l.nativeName.toLowerCase().includes(q) ||
             l.code === q,
@@ -44,7 +51,7 @@ export function LanguagePicker({
     const chosen = LANGUAGES.filter((l) => selected.includes(l.code))
     const rest = pool.filter((l) => !selected.includes(l.code))
     return [...chosen, ...rest].slice(0, 60)
-  }, [query, selected])
+  }, [query, selected, names])
 
   const atLimit = max !== undefined && selected.length >= max
 
@@ -55,7 +62,7 @@ export function LanguagePicker({
         <TextInput
           value={query}
           onChangeText={setQuery}
-          placeholder={`Search ${LANGUAGES.length} languages`}
+          placeholder={t('pickers.searchLanguages', { count: LANGUAGES.length })}
           placeholderTextColor={colors.textMuted}
           style={styles.search}
           autoCorrect={false}
@@ -90,7 +97,9 @@ export function LanguagePicker({
                 {isSelected ? <Feather name="check" size={13} color={colors.primaryText} /> : null}
               </View>
               <View style={styles.rowText}>
-                <Text style={[styles.name, isSelected && styles.nameSelected]}>{item.name}</Text>
+                <Text style={[styles.name, isSelected && styles.nameSelected]}>
+                  {names.language(item.code)}
+                </Text>
                 <Text style={styles.native}>{item.nativeName}</Text>
               </View>
             </Pressable>

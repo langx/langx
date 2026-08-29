@@ -82,7 +82,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     width: 96,
   },
   backdrop: { backgroundColor: colors.scrimStrong, flex: 1, justifyContent: 'center' },
-  close: { position: 'absolute', right: spacing.lg, top: spacing.xxl, zIndex: 1 },
+  close: { position: 'absolute', end: spacing.lg, top: spacing.xxl, zIndex: 1 },
   closeText: { color: colors.onScrim, fontSize: 24 },
   full: { flex: 1, width: '100%' },
   pager: {

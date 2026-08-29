@@ -5,6 +5,7 @@ import {
   useAudioRecorder,
   useAudioRecorderState,
 } from 'expo-audio'
+import { currentTranslate } from '../i18n/runtime'
 import { useCallback, useState } from 'react'
 import { MAX_AUDIO_SECONDS } from '@langx/shared'
 
@@ -30,7 +31,7 @@ export function useVoiceRecorder() {
     setError(null)
     const permission = await AudioModule.requestRecordingPermissionsAsync()
     if (!permission.granted) {
-      setError('LangX needs microphone access to record a voice message.')
+      setError(currentTranslate()('notifications.microphonePermission'))
       return false
     }
     // Without this, iOS records at a much lower quality and playback routes to

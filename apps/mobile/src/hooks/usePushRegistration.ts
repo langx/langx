@@ -3,6 +3,7 @@ import * as Device from 'expo-device'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
 import { api } from '../api/client'
+import { currentLocale } from '../i18n/runtime'
 
 /**
  * Expo needs to know which project a push token belongs to. It can usually
@@ -39,6 +40,9 @@ export async function registerPushToken(): Promise<void> {
 
     const token = await Notifications.getExpoPushTokenAsync(pushTokenOptions())
     await api.post('/me/devices', {
+      // The device's language, not the account's: a streak reminder arrives
+      // when the app is closed, so nothing else can decide what it says.
+      locale: currentLocale(),
       pushToken: token.data,
       platform: Platform.OS === 'ios' ? 'ios' : 'android',
     })

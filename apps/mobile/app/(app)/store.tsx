@@ -9,6 +9,7 @@ import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 
 /**
  * The token store, reached by tapping the balance on the profile.
@@ -21,6 +22,7 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 export default function StoreScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
 
   const me = useMe()
   const xp = useTokens()
@@ -37,6 +39,7 @@ export default function StoreScreen() {
 
   const restored = me.data.restoredFromV1
   const offers = buildStoreOffers({
+    t,
     balance: wallet.data?.balance ?? 0,
     owned: wallet.data?.owned ?? [],
     streakFreezes: wallet.data?.streakFreezes ?? 0,
@@ -52,15 +55,12 @@ export default function StoreScreen() {
 
   return (
     <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
-      <ScreenHeader title="Tokens" onBack={() => goBackTo('/(app)/me')} />
+      <ScreenHeader title={t('store.title')} onBack={() => goBackTo('/(app)/me')} />
 
       <View style={styles.balance}>
-        <Text style={styles.balanceLabel}>Balance</Text>
+        <Text style={styles.balanceLabel}>{t('store.balance')}</Text>
         <Text style={styles.balanceValue}>{wallet.data?.balance ?? 0}</Text>
-        <Text style={styles.balanceBody}>
-          Earned by messaging and by correcting other people. Teaching is weighted higher than
-          talking.
-        </Text>
+        <Text style={styles.balanceBody}>{t('store.intro')}</Text>
       </View>
 
       {/*
@@ -72,20 +72,25 @@ export default function StoreScreen() {
       {today ? (
         <Card style={styles.card}>
           <View style={styles.cardHead}>
-            <Text style={styles.cardTitle}>Today</Text>
+            <Text style={styles.cardTitle}>{t('store.today')}</Text>
             <Text style={styles.cardMeta}>
-              {today.messages} messages · {today.corrections} corrections
+              {t('store.todayCounts', {
+                messages: today.messages,
+                corrections: today.corrections,
+              })}
             </Text>
           </View>
           <ProgressBar
-            accessibilityLabel={`${today.messages} of ${messageCap} paying messages today`}
+            accessibilityLabel={t('store.messagesToday', { used: today.messages, cap: messageCap })}
             color={colors.success}
             height={8}
             value={today.messages / messageCap}
           />
           <Text style={styles.cardMeta}>
-            {messageCap} messages a day pay tokens, {TOKEN_RULES.caps.messagesPerPartnerPerDay} of
-            them per person. Corrections are not capped.
+            {t('store.capExplainer', {
+              cap: messageCap,
+              perPerson: TOKEN_RULES.caps.messagesPerPartnerPerDay,
+            })}
           </Text>
         </Card>
       ) : null}
@@ -102,10 +107,7 @@ export default function StoreScreen() {
         ))}
       </Card>
 
-      <Text style={styles.hint}>
-        Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak
-        freezes and cosmetics. There is no chain, no wallet and no market.
-      </Text>
+      <Text style={styles.hint}>{t('store.disclaimer')}</Text>
     </Screen>
   )
 }

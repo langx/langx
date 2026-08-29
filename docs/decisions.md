@@ -1136,6 +1136,64 @@ reach the same instance, and Fly has no sticky sessions. Everything else about
 the app is already safe to run multiply — the `jobRuns` unique index means only
 one instance can own a given day's pool.
 
+## The app speaks eight languages, and English is the one that defines them
+
+A language-exchange app whose own interface is only in English asks every user
+to be fluent in the language they came here to learn. So the app reads the
+device's language and words itself in it: English, Turkish, Spanish, Russian,
+Arabic, French, German and Brazilian Portuguese.
+
+Four decisions inside that are worth knowing, because each one closes a door
+that the obvious alternative leaves open.
+
+**A missing translation is a compile error, not a fallback.** Every catalogue
+in `apps/mobile/src/i18n/messages` is annotated `Localized<EnMessages>`, which
+derives its shape from English — so a key added to `en.ts` and to nowhere else
+does not build. The usual arrangement is a per-key runtime fallback to English,
+and it is the wrong one for this app in particular: a reader who is still
+learning cannot tell an untranslated string from a phrase they simply do not
+know yet. A partly translated locale is worse than an absent one.
+
+**Counts are plural objects, never a number glued to a noun.** Russian splits
+at 1, 2–4 and 5+ — and again at 21, 22–24, 25+; Arabic uses all six CLDR
+categories. `count === 1 ? x : y` is wrong in four of the six Arabic cases, and
+it is wrong silently. The engine in `packages/shared/src/i18n.ts` selects with
+`Intl.PluralRules`, and lives in `shared` rather than in the app because the
+API words push notifications and emails too — one implementation, or the two
+disagree the first time someone has eleven of something.
+
+**Languages, countries and dates come from the platform, not from us.** Those
+two lists are ~450 entries; translating them by hand into eight locales would
+be both enormous and worse than what every device already has in CLDR.
+`Intl.DisplayNames` answers instead, with the English name from `@langx/shared`
+as the fallback. Only the _display_ changes — the stored value is the ISO code
+either way, so two people running different locales still match on the same
+language. The country and language pickers search the localized names as well
+as the English ones, because a picker you cannot search in your own language is
+a broken feature rather than an untranslated one.
+
+**Arabic is why the layout uses `start`/`end`.** RTL is handled by
+`I18nManager.forceRTL` on native and `dir` on web — one switch, rather than a
+conditional on every `flexDirection: 'row'` in the app. That only works if the
+styles are written in logical properties, so `left`/`right` were replaced with
+`start`/`end` throughout, and `messageMenuLayout` takes an explicit `rtl` input
+rather than inferring the edge from `mine` (in RTL your own bubbles are on the
+left, so the two flips cancel — a rule with a test rather than an assumption
+baked into an expression).
+
+Two things are deliberately **not** localized. The API's error bodies stay
+English: they are a developer-facing log line, and every caller branches on
+`code` and words its own message — a screen that shows `error.message` to a
+user is a screen with a bug. And `DebugQuotaPanel` stays English because it is
+a developer tool that only renders behind a debug flag.
+
+The reader's language is a **device** preference, stored beside the theme in
+`localFlags`, defaulting to the device and overridable in Settings. Not an
+account setting: the phone is what has a language, and a shared tablet should
+not change language when someone else signs in. The client sends it as
+`Accept-Language` (so a signed-out password-reset email is written in the right
+language) and registers it with each push device (so a streak reminder is, too).
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

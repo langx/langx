@@ -1,14 +1,16 @@
 import Feather from '@expo/vector-icons/Feather'
 import { Text, View } from 'react-native'
 import type { EarnedBadge } from '../api/types'
+import type { Locale } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
+import { badgeLabel, useLocale, useT } from '../i18n'
 import { calloutColours } from './ui/Callout'
 
 /** "Apr 2026" — a badge is dated to the month, not the minute. */
-function earnedMonth(iso: string): string {
+function earnedMonth(iso: string, locale: Locale): string {
   const at = new Date(iso)
   if (Number.isNaN(at.getTime())) return ''
-  return at.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+  return at.toLocaleDateString(locale, { month: 'short', year: 'numeric' })
 }
 
 /**
@@ -21,6 +23,8 @@ function earnedMonth(iso: string): string {
 function BadgeTile({ badge }: { badge: EarnedBadge }) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
   const pair = calloutColours(colors, badge.kind === 'streak' ? 'warning' : 'success')
 
   return (
@@ -32,13 +36,13 @@ function BadgeTile({ badge }: { badge: EarnedBadge }) {
           <Feather name="edit-3" size={18} color={badge.earned ? pair.fg : colors.textFaint} />
         )}
       </View>
-      <Text style={styles.label}>{badge.label}</Text>
+      <Text style={styles.label}>{badgeLabel({ t, locale }, badge.kind, badge.threshold)}</Text>
       <Text style={[styles.state, badge.earned && { color: pair.fg }]}>
         {badge.earned
           ? badge.earnedAt
-            ? `Earned · ${earnedMonth(badge.earnedAt)}`
-            : 'Earned'
-          : 'Locked'}
+            ? t('badges.earned', { month: earnedMonth(badge.earnedAt, locale) })
+            : t('badges.earnedLabel')
+          : t('badges.locked')}
       </Text>
     </View>
   )

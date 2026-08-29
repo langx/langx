@@ -1,4 +1,5 @@
 import { apiFetch } from './apiFetch'
+import { currentLocale } from '../i18n/runtime'
 
 export class ApiRequestError extends Error {
   readonly code: string
@@ -12,6 +13,9 @@ export class ApiRequestError extends Error {
     status: number,
     body: { code?: string; message?: string; feature?: string; retryAt?: string },
   ) {
+    // English on purpose: this is what lands in a log or a crash report, and
+    // a screen that shows it to a user is a screen with a bug — every caller
+    // branches on `code` and words its own message.
     super(body.message ?? 'Request failed')
     this.name = 'ApiRequestError'
     this.status = status
@@ -32,6 +36,10 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
     ...init,
     headers: {
       ...(init.body ? { 'content-type': 'application/json' } : {}),
+      // What language to word anything the server sends back in. Only the
+      // emails use it today — the API's own errors are codes — but it costs
+      // one header and it is the only signal a signed-out request carries.
+      'accept-language': currentLocale(),
       ...init.headers,
     },
   })

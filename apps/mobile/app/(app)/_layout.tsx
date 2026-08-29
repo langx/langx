@@ -4,6 +4,7 @@ import type { ColorValue } from 'react-native'
 import { DeletionBanner } from '../../src/components/DeletionBanner'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useTheme } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
 import { useSocket } from '../../src/hooks/useSocket'
@@ -29,6 +30,7 @@ function TabIcon({ name, color }: { name: keyof typeof Feather.glyphMap; color: 
  */
 export default function AppLayout() {
   const { colors } = useTheme()
+  const t = useT()
   useSocket()
   usePushRegistration()
   // Here rather than in the root layout: every destination a notification has
@@ -56,28 +58,28 @@ export default function AppLayout() {
         <Tabs.Screen
           name="discover"
           options={{
-            title: 'Discover',
+            title: t('tabs.discover'),
             tabBarIcon: ({ color }) => <TabIcon name="search" color={color} />,
           }}
         />
         <Tabs.Screen
           name="chats"
           options={{
-            title: 'Chats',
+            title: t('tabs.chats'),
             tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
           }}
         />
         <Tabs.Screen
           name="feed"
           options={{
-            title: 'Feed',
+            title: t('tabs.feed'),
             tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} />,
           }}
         />
         <Tabs.Screen
           name="me"
           options={{
-            title: 'Me',
+            title: t('tabs.me'),
             tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
           }}
         />

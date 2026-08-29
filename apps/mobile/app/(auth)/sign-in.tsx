@@ -9,10 +9,12 @@ import { FormField } from '../../src/components/ui/FormField'
 import { useAppConfig } from '../../src/hooks/useAppConfig'
 import { isNativeAppleSignInAvailable, requestAppleIdentity } from '../../src/lib/appleSignIn'
 import { authClient } from '../../src/lib/auth-client'
-import { authErrorMessage } from '../../src/lib/errors'
+import { authErrorKey } from '../../src/lib/errors'
+import { useT } from '../../src/i18n'
 
 export default function SignIn() {
   const styles = useStyles()
+  const t = useT()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -65,13 +67,13 @@ export default function SignIn() {
 
       const bridged = await tryLegacyLogin()
       if (!bridged) {
-        setError(authErrorMessage(signInError) ?? 'Sign in failed')
+        setError(t(authErrorKey(signInError) ?? 'errors.signInFailed'))
         return
       }
 
       const { error: retryError } = await authClient.signIn.email({ email, password })
       if (retryError) {
-        setError(authErrorMessage(retryError) ?? 'Sign in failed')
+        setError(t(authErrorKey(retryError) ?? 'errors.signInFailed'))
         return
       }
       router.replace('/')
@@ -100,7 +102,7 @@ export default function SignIn() {
     // No `router.replace` after this one: the browser redirect comes back into
     // the app on its own and the root layout reacts to the new session.
     const { error: googleError } = await authClient.signIn.social({ provider: 'google' })
-    if (googleError) setSocialError(authErrorMessage(googleError) ?? 'Google sign-in failed')
+    if (googleError) setSocialError(t(authErrorKey(googleError) ?? 'errors.googleSignInFailed'))
   }
 
   async function onApple() {
@@ -108,7 +110,7 @@ export default function SignIn() {
     try {
       if (!(await isNativeAppleSignInAvailable())) {
         const { error: webError } = await authClient.signIn.social({ provider: 'apple' })
-        if (webError) setSocialError(authErrorMessage(webError) ?? 'Apple sign-in failed')
+        if (webError) setSocialError(t(authErrorKey(webError) ?? 'errors.appleSignInFailed'))
         return
       }
 
@@ -122,13 +124,13 @@ export default function SignIn() {
         idToken: identity,
       })
       if (appleError) {
-        setSocialError(authErrorMessage(appleError) ?? 'Apple sign-in failed')
+        setSocialError(t(authErrorKey(appleError) ?? 'errors.appleSignInFailed'))
         return
       }
       // The native path never leaves the app, so nothing else will navigate.
       router.replace('/')
     } catch {
-      setSocialError('Apple sign-in failed')
+      setSocialError(t('errors.appleSignInFailed'))
     }
   }
 
@@ -141,12 +143,12 @@ export default function SignIn() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={styles.title}>Welcome back</Text>
+      <Text style={styles.title}>{t('auth.welcomeBack')}</Text>
 
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label="Email"
+        label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -156,7 +158,7 @@ export default function SignIn() {
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
-        label="Password"
+        label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -166,34 +168,39 @@ export default function SignIn() {
       />
 
       <Link href="/(auth)/forgot-password" style={styles.link}>
-        Forgot password?
+        {t('auth.forgotPassword')}
       </Link>
 
-      <Button label="Sign in" onPress={onSubmit} loading={loading} disabled={!email || !password} />
+      <Button
+        label={t('auth.signIn')}
+        onPress={onSubmit}
+        loading={loading}
+        disabled={!email || !password}
+      />
 
       {providers?.google || providers?.apple ? (
         <>
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or</Text>
+            <Text style={styles.dividerText}>{t('auth.or')}</Text>
             <View style={styles.dividerLine} />
           </View>
 
           {socialError ? <Text style={styles.socialError}>{socialError}</Text> : null}
 
           {providers.google ? (
-            <Button label="Continue with Google" onPress={onGoogle} variant="secondary" />
+            <Button label={t('auth.continueWithGoogle')} onPress={onGoogle} variant="secondary" />
           ) : null}
           {providers.apple ? (
-            <Button label="Continue with Apple" onPress={onApple} variant="secondary" />
+            <Button label={t('auth.continueWithApple')} onPress={onApple} variant="secondary" />
           ) : null}
         </>
       ) : null}
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don&apos;t have an account? </Text>
+        <Text style={styles.footerText}>{t('auth.noAccount')}</Text>
         <Link href="/(auth)/sign-up" style={styles.link}>
-          Sign up
+          {t('auth.signUp')}
         </Link>
       </View>
     </KeyboardAvoidingView>

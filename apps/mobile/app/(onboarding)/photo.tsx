@@ -12,6 +12,7 @@ import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { showAlert } from '../../src/lib/alert'
 import { makeStyles } from '../../src/lib/theme'
+import { interestLabel, useT } from '../../src/i18n'
 
 /**
  * Step 3 of 4, and both halves of it are skippable.
@@ -29,6 +30,7 @@ import { makeStyles } from '../../src/lib/theme'
  */
 export default function PhotoStep() {
   const styles = useStyles()
+  const t = useT()
 
   const draft = useOnboardingDraft()
   const [uploading, setUploading] = useState(false)
@@ -36,7 +38,7 @@ export default function PhotoStep() {
   async function pickPhoto(): Promise<void> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      void showAlert('Photos unavailable', 'LangX needs access to your photos to set a picture.')
+      void showAlert(t('onboarding.photoUnavailable'), t('onboarding.photoPermission'))
       return
     }
 
@@ -54,7 +56,7 @@ export default function PhotoStep() {
       const url = await uploadAvatarBytes(asset.uri, asset.mimeType ?? 'image/jpeg')
       updateDraft({ avatarUrl: url })
     } catch {
-      void showAlert('Upload failed', 'That picture did not upload. You can try again or skip.')
+      void showAlert(t('errors.uploadFailed'), t('onboarding.photoUploadFailed'))
     } finally {
       setUploading(false)
     }
@@ -75,10 +77,8 @@ export default function PhotoStep() {
   return (
     <Screen scroll>
       <Text style={styles.step}>3 / 4</Text>
-      <Text style={styles.title}>Put a face to it</Text>
-      <Text style={styles.hint}>
-        Both of these are optional, and both make people far more likely to say hello.
-      </Text>
+      <Text style={styles.title}>{t('onboarding.photoTitle')}</Text>
+      <Text style={styles.hint}>{t('onboarding.photoBody')}</Text>
 
       <View style={styles.avatarRow}>
         {draft.avatarUrl ? (
@@ -89,7 +89,13 @@ export default function PhotoStep() {
           </View>
         )}
         <Button
-          label={uploading ? 'Uploading…' : draft.avatarUrl ? 'Change photo' : 'Add a photo'}
+          label={
+            uploading
+              ? t('onboarding.uploading')
+              : draft.avatarUrl
+                ? t('onboarding.changePhoto')
+                : t('onboarding.addPhoto')
+          }
           variant="secondary"
           loading={uploading}
           onPress={() => void pickPhoto()}
@@ -98,14 +104,15 @@ export default function PhotoStep() {
       </View>
 
       <Text style={styles.label}>
-        Interests {draft.interests.length > 0 ? `(${draft.interests.length}/${MAX_INTERESTS})` : ''}
+        {t('onboarding.interests')}{' '}
+        {draft.interests.length > 0 ? `(${draft.interests.length}/${MAX_INTERESTS})` : ''}
       </Text>
-      <Text style={styles.hint}>Something for a stranger to open with.</Text>
+      <Text style={styles.hint}>{t('onboarding.bioPrompt')}</Text>
       <View style={styles.chips}>
         {INTEREST_SUGGESTIONS.map((interest) => (
           <Chip
             key={interest}
-            label={interest}
+            label={interestLabel(t, interest)}
             selected={draft.interests.includes(interest)}
             onPress={() => toggleInterest(interest)}
           />
@@ -119,19 +126,19 @@ export default function PhotoStep() {
       */}
       <View style={styles.country}>
         <CountryPicker
-          label="Where are you?"
+          label={t('onboarding.whereAreYou')}
           value={draft.country}
           onChange={(country) => updateDraft({ country })}
         />
       </View>
 
       <Button
-        label="Continue"
+        label={t('common.continue')}
         onPress={() => router.push('/(onboarding)/handle')}
         style={styles.cta}
       />
       <Pressable onPress={() => router.push('/(onboarding)/handle')} hitSlop={8}>
-        <Text style={styles.skip}>Skip for now</Text>
+        <Text style={styles.skip}>{t('common.skip')}</Text>
       </Pressable>
     </Screen>
   )

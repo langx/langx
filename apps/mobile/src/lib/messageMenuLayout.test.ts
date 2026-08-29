@@ -77,3 +77,45 @@ describe('messageMenuLayout', () => {
     }
   })
 })
+
+describe('right-to-left layouts', () => {
+  const base = {
+    screen: { width: 400, height: 800 },
+    insets: { top: 50, bottom: 30 },
+    menu: { width: 220, height: 200 },
+    strip: { width: 300, height: 48 },
+  }
+  // Mid-screen, so neither branch is decided by an edge clamp.
+  const anchor = { x: 120, y: 300, width: 200, height: 60 }
+
+  it('hangs an own message off the left edge instead of the right', () => {
+    const ltr = messageMenuLayout({ ...base, anchor, mine: true })
+    const rtl = messageMenuLayout({ ...base, anchor, mine: true, rtl: true })
+
+    expect(ltr.menu.left).toBe(anchor.x + anchor.width - base.menu.width)
+    expect(rtl.menu.left).toBe(anchor.x)
+  })
+
+  it('hangs the other person’s off the right edge instead of the left', () => {
+    const ltr = messageMenuLayout({ ...base, anchor, mine: false })
+    const rtl = messageMenuLayout({ ...base, anchor, mine: false, rtl: true })
+
+    expect(ltr.menu.left).toBe(anchor.x)
+    expect(rtl.menu.left).toBe(anchor.x + anchor.width - base.menu.width)
+  })
+
+  it('leaves the vertical arrangement alone — only the edge flips', () => {
+    const ltr = messageMenuLayout({ ...base, anchor, mine: true })
+    const rtl = messageMenuLayout({ ...base, anchor, mine: true, rtl: true })
+
+    expect(rtl.placement).toBe(ltr.placement)
+    expect(rtl.menu.top).toBe(ltr.menu.top)
+    expect(rtl.strip.top).toBe(ltr.strip.top)
+  })
+
+  it('defaults to left-to-right when nothing says otherwise', () => {
+    expect(messageMenuLayout({ ...base, anchor, mine: true })).toEqual(
+      messageMenuLayout({ ...base, anchor, mine: true, rtl: false }),
+    )
+  })
+})

@@ -2,6 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import type { ReactNode } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { useT } from '../../i18n'
 
 interface ScreenHeaderProps {
   title: string
@@ -22,13 +23,14 @@ interface ScreenHeaderProps {
 export function ScreenHeader({ title, onBack, trailing }: ScreenHeaderProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
 
   return (
     <View style={styles.row}>
       {onBack ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Back"
+          accessibilityLabel={t('common.backPlain')}
           hitSlop={12}
           onPress={onBack}
           style={({ pressed }) => [styles.back, pressed && styles.pressed]}

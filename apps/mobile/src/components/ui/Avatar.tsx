@@ -67,7 +67,7 @@ const useStyles = makeStyles(({ colors, font, radius }) => ({
     bottom: 0,
     height: 12,
     position: 'absolute',
-    right: 0,
+    end: 0,
     width: 12,
   },
 }))

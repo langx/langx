@@ -1,4 +1,6 @@
+import type { Locale } from '@langx/shared'
 import type { MessageDto } from '../api/queries'
+import type { TranslateFn } from '../i18n/runtime'
 
 /**
  * One rendered row of a thread: a message, or the date heading that sits above
@@ -50,23 +52,33 @@ export function messageRows(items: MessageDto[]): MessageRow[] {
   return rows
 }
 
+export interface DayLabelOptions {
+  t: TranslateFn
+  locale: Locale
+  now?: Date
+}
+
 /**
  * "Today", "Yesterday", or the date.
  *
- * Locale is left to the device, as everywhere else that prints a date here —
- * the two named days are the ones worth spelling out, and they are also the
+ * Takes the app's locale rather than leaving `toLocaleDateString` to guess:
+ * the two are usually the same, but a reader who has picked a language in
+ * Settings that differs from their phone's would otherwise get a date heading
+ * in one language above messages in another.
+ *
+ * The two named days are the ones worth spelling out, and they are also the
  * only two a reader ever needs to resolve at a glance.
  */
-export function dayLabel(day: string, now: Date = new Date()): string {
-  if (day === dayKeyOfDate(now)) return 'Today'
+export function dayLabel(day: string, { t, locale, now = new Date() }: DayLabelOptions): string {
+  if (day === dayKeyOfDate(now)) return t('day.today')
   const yesterday = new Date(now)
   yesterday.setDate(yesterday.getDate() - 1)
-  if (day === dayKeyOfDate(yesterday)) return 'Yesterday'
+  if (day === dayKeyOfDate(yesterday)) return t('day.yesterday')
 
   const at = new Date(`${day}T00:00:00`)
   if (Number.isNaN(at.getTime())) return day
   const sameYear = at.getFullYear() === now.getFullYear()
-  return at.toLocaleDateString(undefined, {
+  return at.toLocaleDateString(locale, {
     day: 'numeric',
     month: 'long',
     ...(sameYear ? {} : { year: 'numeric' }),
