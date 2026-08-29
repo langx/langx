@@ -16,7 +16,7 @@ export interface Conversation {
   _id: ObjectId
   pairKey: string
   participants: [string, string]
-  lastMessage: { body: string; senderId: string; createdAt: Date }
+  lastMessage: { body: string; senderId: string; createdAt: Date; deleted?: boolean }
   unread: Record<string, number>
   firstMessageBy: string
   firstMessageAt: Date
@@ -52,6 +52,20 @@ export interface Message {
    * v2. Carried so `messages.legacy_id_unique` can refuse a second import of
    * the same message, which is what lets the importer be replayed safely.
    */
+  /**
+   * Emoji → the users who chose it. A dot path (`reactions.👍`) is safe here
+   * only because the keys come from `MESSAGE_REACTIONS`; an open set would let
+   * a `.` or `$` in a key rewrite the document.
+   */
+  reactions?: Record<string, string[]>
+  /**
+   * "Delete for me": the row stays, because it is half of someone else's
+   * thread, but it is projected away for these users.
+   */
+  hiddenFor?: string[]
+  /** "Delete for everyone": a tombstone, not a removal. */
+  deletedAt?: Date
+  deletedBy?: string
   legacyId?: string
   /**
    * When the message reached the recipient's device — the second tick. Set by

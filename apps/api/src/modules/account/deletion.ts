@@ -166,6 +166,20 @@ export async function purgeExpiredAccounts(
       { $set: { body: '', deletedWithAccount: true }, $unset: { correction: '', media: '' } },
     )
 
+    /**
+     * The chat list reads `lastMessage.body` verbatim, and nothing has ever
+     * recomputed it — so blanking the messages above left the purged user's
+     * last sentence sitting in the other person's list, which is precisely the
+     * text a purge is supposed to remove. Patched rather than recomputed, for
+     * the same reason a withdrawal is: the newest message is still that row.
+     */
+    await db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .updateMany(
+        { participants: userId, 'lastMessage.senderId': userId },
+        { $set: { 'lastMessage.body': '', 'lastMessage.deleted': true } },
+      )
+
     await Promise.all([
       db.collection(COLLECTIONS.profiles).deleteOne({ _id: userId as unknown as never }),
       db.collection(COLLECTIONS.devices).deleteMany({ userId }),

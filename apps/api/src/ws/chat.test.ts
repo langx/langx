@@ -570,4 +570,128 @@ describe('Faz 5 — realtime chat over Socket.io', () => {
       expect(codes).toContain('RATE_LIMITED')
     })
   })
+
+  describe('message mutations', () => {
+    /** Nothing arriving is the assertion, so it needs a window rather than a wait. */
+    function expectNothing(socket: ClientSocket, event: string, windowMs = 600): Promise<void> {
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(resolve, windowMs)
+        socket.once(event, (payload: unknown) => {
+          clearTimeout(timer)
+          reject(new Error(`unexpected "${event}": ${JSON.stringify(payload)}`))
+        })
+      })
+    }
+
+    async function sent(prefix: string) {
+      const alice = await newUser(`${prefix}-alice@example.com`)
+      const bob = await newUser(`${prefix}-bob@example.com`)
+      const conversation = await startConversation(alice, bob.userId, 'opening')
+      const aliceSocket = await connectSocket(alice.cookie)
+      const bobSocket = await connectSocket(bob.cookie)
+
+      const ack = await new Promise<{ ok: boolean; data?: { _id: string } }>((resolve) => {
+        aliceSocket.emit(
+          'message:send',
+          { conversationId: conversation._id, body: 'the message' },
+          (response: { ok: boolean; data?: { _id: string } }) => resolve(response),
+        )
+      })
+      return {
+        alice,
+        bob,
+        aliceSocket,
+        bobSocket,
+        conversationId: conversation._id,
+        messageId: ack.data?._id ?? '',
+      }
+    }
+
+    it('shows a reaction to both people', async () => {
+      const { aliceSocket, bobSocket, conversationId, messageId, bob } = await sent('ws-react')
+
+      const onSender = waitForEvent<{ _id: string; reactions?: Record<string, string[]> }>(
+        aliceSocket,
+        'message:updated',
+      )
+      bobSocket.emit('message:react', { conversationId, messageId, emoji: '🔥' })
+
+      const seen = await onSender
+      expect(seen._id).toBe(messageId)
+      expect(seen.reactions?.['🔥']).toEqual([bob.userId])
+    })
+
+    /**
+     * The projection is per viewer, so the same row reaches the two of them as
+     * two different objects — only the person who reacted is told it was them.
+     */
+    it('marks the reaction as the viewer own only for the viewer', async () => {
+      const { aliceSocket, bobSocket, conversationId, messageId } = await sent('ws-react-mine')
+
+      const onSender = waitForEvent<{ myReaction?: string }>(aliceSocket, 'message:updated')
+      const onReactor = waitForEvent<{ myReaction?: string }>(bobSocket, 'message:updated')
+      bobSocket.emit('message:react', { conversationId, messageId, emoji: '👍' })
+
+      expect((await onReactor).myReaction).toBe('👍')
+      expect((await onSender).myReaction).toBeUndefined()
+    })
+
+    /** Hiding a message is nobody else business, and the wire has to say so. */
+    it('tells the other person nothing when a message is hidden for one', async () => {
+      const { aliceSocket, bobSocket, conversationId, messageId } = await sent('ws-hide')
+
+      const onActor = waitForEvent<{ hidden?: boolean }>(bobSocket, 'message:updated')
+      const onPeer = expectNothing(aliceSocket, 'message:updated')
+      bobSocket.emit('message:delete', { conversationId, messageId, scope: 'me' })
+
+      expect((await onActor).hidden).toBe(true)
+      await onPeer
+    })
+
+    it('empties a withdrawn message on the other person device', async () => {
+      const { aliceSocket, bobSocket, conversationId, messageId } = await sent('ws-withdraw')
+
+      const onPeer = waitForEvent<{ _id: string; body: string; deleted?: boolean }>(
+        bobSocket,
+        'message:updated',
+      )
+      aliceSocket.emit('message:delete', { conversationId, messageId, scope: 'everyone' })
+
+      const seen = await onPeer
+      expect(seen._id).toBe(messageId)
+      expect(seen.deleted).toBe(true)
+      expect(seen.body).toBe('')
+    })
+
+    it('refuses to withdraw someone else message, over the socket too', async () => {
+      const { bobSocket, conversationId, messageId } = await sent('ws-withdraw-not-mine')
+
+      const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+        bobSocket.emit(
+          'message:delete',
+          { conversationId, messageId, scope: 'everyone' },
+          (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+        )
+      })
+      expect(ack.ok).toBe(false)
+      expect(ack.error?.code).toBe('VALIDATION_FAILED')
+    })
+
+    /** `loadMutableMessage` is the guard, and it is the only one. */
+    it('refuses a mutation from someone outside the conversation', async () => {
+      const { conversationId, messageId } = await sent('ws-outsider')
+      const outsider = await newUser('ws-outsider-third@example.com')
+      const outsiderSocket = await connectSocket(outsider.cookie)
+
+      const ack = await new Promise<{ ok: boolean; error?: { code: string } }>((resolve) => {
+        outsiderSocket.emit(
+          'message:react',
+          { conversationId, messageId, emoji: '👍' },
+          (response: { ok: boolean; error?: { code: string } }) => resolve(response),
+        )
+      })
+      expect(ack.ok).toBe(false)
+      expect(ack.error?.code).toBe('NOT_FOUND')
+    })
+  })
 })

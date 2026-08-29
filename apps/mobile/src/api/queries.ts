@@ -255,6 +255,14 @@ export interface MessageDto {
   correction?: { original: string; corrected: string; note?: string }
   /** A snapshot taken when the reply was sent, so it survives the target. */
   replyTo?: { messageId: string; senderId: string; preview: string }
+  /** Emoji → the users who chose it. Mutual: a reaction is meant to be seen. */
+  reactions?: Record<string, string[]>
+  /** Which of them is mine, so the strip can show it selected. */
+  myReaction?: string
+  /** Withdrawn by its sender: the row stays, emptied. */
+  deleted?: boolean
+  /** Hidden by me alone. `messagesNewestFirst` drops these. */
+  hidden?: boolean
   deliveredAt?: string
   readAt?: string
   createdAt: string

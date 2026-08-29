@@ -596,6 +596,36 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(message?.deletedWithAccount).toBe(true)
     })
 
+    /**
+     * The chat list reads `lastMessage.body` verbatim and nothing ever
+     * recomputed it, so blanking a purged user's messages used to leave their
+     * last sentence sitting in the other person's list — the exact text the
+     * purge exists to remove.
+     */
+    it('clears the purged user last sentence out of the other person chat list', async () => {
+      const leaving = await newUser()
+      const staying = await newUser()
+
+      const started = await app.inject({
+        method: 'POST',
+        url: '/conversations',
+        headers: { cookie: leaving.cookie },
+        payload: { toUserId: staying.userId, body: 'something they should not keep seeing' },
+      })
+      expect(started.statusCode, started.body).toBe(201)
+
+      await post(leaving, '/me/delete', { confirm: 'DELETE' })
+      await purgeExpiredAccounts(handle.db, {
+        now: new Date(Date.now() + (ACCOUNT_DELETION_GRACE_DAYS + 1) * 86_400_000),
+      })
+
+      const conversation = await handle.db
+        .collection<{ lastMessage: { body: string; deleted?: boolean } }>(COLLECTIONS.conversations)
+        .findOne({ participants: staying.userId })
+      expect(conversation?.lastMessage.body).toBe('')
+      expect(conversation?.lastMessage.deleted).toBe(true)
+    })
+
     it('removes the images from storage, and never touches an object it does not own', async () => {
       const user = await newUser()
       const deleted: string[] = []

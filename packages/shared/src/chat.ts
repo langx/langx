@@ -67,6 +67,60 @@ export const sendCorrectionSchema = z.object({
 })
 export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
 
+/**
+ * The reaction strip.
+ *
+ * Seven, because the row has to fit beside a `+` on the narrowest phone we
+ * support, and because a longer strip stops being a glance and starts being a
+ * decision. Plain 🔥 rather than WhatsApp's ❤️‍🔥: the flame is already the
+ * streak's symbol in this app and reusing it here keeps one meaning per glyph.
+ */
+export const MESSAGE_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥'] as const
+export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
+
+/**
+ * How long a sender can withdraw a message from the other person's device.
+ *
+ * Two days, the same window WhatsApp settled on. Past it, "delete for me"
+ * stays available forever — what expires is the ability to reach into someone
+ * else's copy, not the ability to tidy your own.
+ */
+export const MESSAGE_DELETE_WINDOW_MS = 2 * 24 * 60 * 60 * 1000
+
+export const reactToMessageSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  messageId: z.string().trim().min(1),
+  /** Null clears whatever this user had on the message. */
+  emoji: z.enum(MESSAGE_REACTIONS).nullable(),
+})
+export type ReactToMessageInput = z.infer<typeof reactToMessageSchema>
+
+export const deleteMessageSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  messageId: z.string().trim().min(1),
+  scope: z.enum(['me', 'everyone']),
+})
+export type DeleteMessageInput = z.infer<typeof deleteMessageSchema>
+
+/**
+ * Whether a message can still be withdrawn from the other person.
+ *
+ * Shared so the menu and the mutation cannot disagree: a client that offers
+ * the row when the server would refuse it produces an error the user cannot
+ * act on, and one that hides it early takes away something they still have.
+ */
+export function canDeleteForEveryone(
+  message: { senderId: string; createdAt: string | Date; deletedAt?: string | Date | null },
+  userId: string,
+  now: Date,
+): boolean {
+  if (message.senderId !== userId) return false
+  if (message.deletedAt) return false
+  const sent = new Date(message.createdAt).getTime()
+  if (Number.isNaN(sent)) return false
+  return now.getTime() - sent <= MESSAGE_DELETE_WINDOW_MS
+}
+
 export const MESSAGE_PAGE_SIZE_DEFAULT = 30
 export const MESSAGE_PAGE_SIZE_MAX = 100
 

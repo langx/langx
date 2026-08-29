@@ -71,7 +71,37 @@ export function applyDeliveredAt(
  */
 export function messagesNewestFirst(data: Pages): MessageDto[] {
   if (!data) return []
-  return data.pages.flatMap((page) => [...page.items].reverse())
+  // `hidden` is filtered here rather than on the server: dropping rows from a
+  // keyset page would make a page of 30 arrive as 12, and the paging would
+  // have to compensate for a number only the viewer knows.
+  return data.pages.flatMap((page) => [...page.items].reverse().filter((m) => !m.hidden))
+}
+
+/**
+ * A message that already exists has changed — a reaction, a withdrawal, and
+ * later an edit or a star.
+ *
+ * Replaced wholesale rather than merged. The server sends the message's entire
+ * new state as that viewer is allowed to see it, and merging would resurrect
+ * exactly the fields the projection took away: the `media` of a message that
+ * was just deleted, most obviously.
+ *
+ * Not found is a no-op, not an insert. An update for a message outside the
+ * loaded pages means the reader has not scrolled to it, and the page will
+ * carry the right state whenever they do.
+ */
+export function applyMessageUpdate(data: Pages, message: MessageDto): Pages {
+  if (!data) return data
+  let changed = false
+  const pages = data.pages.map((page) => ({
+    ...page,
+    items: page.items.map((existing) => {
+      if (!sameId(existing, message)) return existing
+      changed = true
+      return message
+    }),
+  }))
+  return changed ? { ...data, pages } : data
 }
 
 function sameId(a: MessageDto, b: MessageDto): boolean {

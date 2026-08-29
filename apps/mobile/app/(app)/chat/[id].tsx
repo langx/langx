@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { PLAN_LIMITS, TOKEN_RULES } from '@langx/shared'
+import { canDeleteForEveryone, MESSAGE_REACTIONS, PLAN_LIMITS, TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -40,7 +40,7 @@ import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { shouldSubmitOnEnter } from '../../../src/lib/submitOnEnter'
 import { messageActionsFor } from '../../../src/lib/messageActions'
-import { openMessageMenu } from '../../../src/lib/messageMenu'
+import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
 import { goBackTo } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
@@ -299,30 +299,100 @@ export default function ChatScreen() {
    * other person's text only; it is one row here, which is what let the other
    * three exist at all.
    */
-  async function openActions(message: MessageDto, alreadyTranslated: boolean): Promise<void> {
+  async function openActions(
+    message: MessageDto,
+    alreadyTranslated: boolean,
+    anchor?: AnchorRect,
+  ): Promise<void> {
+    // Nothing left to act on: a withdrawn message is a placeholder, and the
+    // one thing anyone might want — hiding it — is offered through the same
+    // row, so it is still worth opening.
     const actions = messageActionsFor({
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,
       alreadyTranslated,
     })
-    // Your own captionless voice note has nothing to offer; an empty sheet is
-    // worse than no sheet.
-    if (actions.length === 0) return
 
-    const picked = await openMessageMenu(message.body || messageTypeLabel(message.type), actions)
-    if (picked === 'reply') {
+    const picked = await openMessageMenu({
+      preview: message.body || messageTypeLabel(message.type),
+      mine: isMine(message),
+      actions,
+      ...(anchor ? { anchor } : {}),
+      // A withdrawn message cannot carry a reaction, so it gets no strip.
+      ...(message.deleted ? {} : { reactions: MESSAGE_REACTIONS, myReaction: message.myReaction }),
+    })
+    if (!picked) return
+
+    if (picked.kind === 'reaction') {
+      await react(message, picked.emoji)
+      return
+    }
+
+    if (picked.id === 'reply') {
       setReplyingTo(message)
-    } else if (picked === 'copy') {
+    } else if (picked.id === 'copy') {
       await Clipboard.setStringAsync(message.body)
       showToast('Copied')
-    } else if (picked === 'translate') {
+    } else if (picked.id === 'translate') {
       await translate(message, alreadyTranslated)
-    } else if (picked === 'correct') {
+    } else if (picked.id === 'correct') {
       setCorrecting(message)
       setDraft(message.body)
-    } else if (picked === 'report') {
+    } else if (picked.id === 'delete') {
+      await removeMessage(message)
+    } else if (picked.id === 'report') {
       await reportMessage(message)
+    }
+  }
+
+  /**
+   * Tapping the emoji already on the message clears it — the server treats a
+   * repeat as a toggle, so nothing here has to know the current state.
+   */
+  async function react(message: MessageDto, emoji: string): Promise<void> {
+    const socket = await getSocket()
+    try {
+      await emitWithAck(socket, 'message:react', {
+        conversationId,
+        messageId: message._id,
+        emoji,
+      })
+    } catch {
+      void showAlert('Could not react', 'That did not go through. Try again.')
+    }
+  }
+
+  /**
+   * Two different things behind one row.
+   *
+   * "Delete for me" is a filter on your own copy and never expires; withdrawing
+   * it from the other person is only your own message, only within
+   * `MESSAGE_DELETE_WINDOW_MS`, and is the one that needs asking about. When
+   * only one of them is possible there is nothing to choose between, so it is
+   * confirmed rather than offered as a menu of one.
+   */
+  async function removeMessage(message: MessageDto): Promise<void> {
+    const canWithdraw = canDeleteForEveryone(message, me.data?._id ?? '', new Date())
+    const scope = canWithdraw
+      ? await chooseAlert('Delete message', 'This cannot be undone.', [
+          { label: 'Delete for everyone', value: 'everyone' },
+          { label: 'Delete for me', value: 'me' },
+        ])
+      : await chooseAlert('Delete message', 'It stays on their device.', [
+          { label: 'Delete for me', value: 'me' },
+        ])
+    if (!scope) return
+
+    const socket = await getSocket()
+    try {
+      await emitWithAck(socket, 'message:delete', {
+        conversationId,
+        messageId: message._id,
+        scope,
+      })
+    } catch {
+      void showAlert('Could not delete', 'That did not go through. Try again.')
     }
   }
 
@@ -387,9 +457,12 @@ export default function ChatScreen() {
   useEffect(() => {
     openActionsRef.current = openActions
   })
-  const onLongPress = useCallback((message: MessageDto, alreadyTranslated: boolean) => {
-    void openActionsRef.current(message, alreadyTranslated)
-  }, [])
+  const onLongPress = useCallback(
+    (message: MessageDto, alreadyTranslated: boolean, anchor?: AnchorRect) => {
+      void openActionsRef.current(message, alreadyTranslated, anchor)
+    },
+    [],
+  )
 
   async function reportMessage(message: MessageDto): Promise<void> {
     const reason = await chooseAlert('Report', 'Why are you reporting this message?', [

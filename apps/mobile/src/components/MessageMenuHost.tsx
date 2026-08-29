@@ -1,25 +1,39 @@
 import { Ionicons } from '@expo/vector-icons'
 import { useEffect, useState } from 'react'
-import { Modal, Platform, Pressable, StyleSheet, Text } from 'react-native'
+import {
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   resolveMessageMenu,
   subscribeToMessageMenu,
   type MessageMenuRequest,
 } from '../lib/messageMenu'
+import { messageMenuLayout } from '../lib/messageMenuLayout'
 import { makeStyles, useTheme } from '../lib/theme'
 
 /**
  * Draws whatever `src/lib/messageMenu.ts` has open.
  *
- * `Modal`, mounted at the root above the navigator, for `AlertHost`'s reason:
- * react-native-web renders a Modal into its own layer, while an absolutely
- * positioned overlay inside the tab navigator sits *under* the tab bar — which
- * is exactly where a bottom sheet's actions would be.
+ * Two shapes from one host. With a measured bubble it draws against it — a copy
+ * of the bubble lifted out of the thread, the emoji strip over it and the
+ * actions under it. Without one it falls back to the sheet, which is what a
+ * caller with nothing to measure still gets, and what every caller got before.
  *
- * A sheet on a phone and a centred card in a browser, because a sheet pinned
- * to the bottom of a desktop window is a long way from the message it belongs
- * to.
+ * Still a `Modal`. The anchored layout is absolutely positioned *inside* it
+ * rather than at the app root: `measureInWindow` and a full-screen Modal are
+ * both in window coordinates, so they agree, and the Modal keeps two things
+ * that would otherwise have to be rebuilt — it paints above the tab bar on
+ * every platform without depending on mount order, and `onRequestClose` is
+ * Android's back button. A root layer would need `BackHandler` for the second
+ * and would sit under the tab bar if it were ever mounted before the navigator.
  */
 export function MessageMenuHost() {
   const { colors, spacing } = useTheme()
@@ -27,12 +41,117 @@ export function MessageMenuHost() {
 
   const [request, setRequest] = useState<MessageMenuRequest | null>(null)
   const insets = useSafeAreaInsets()
+  const screen = useWindowDimensions()
 
   useEffect(() => subscribeToMessageMenu(setRequest), [])
 
   if (!request) return null
   const dismiss = (): void => resolveMessageMenu(request.id, null)
   const wide = Platform.OS === 'web'
+
+  const rows = request.actions.map((action) => (
+    <Pressable
+      key={action.id}
+      accessibilityRole="button"
+      onPress={() => resolveMessageMenu(request.id, { kind: 'action', id: action.id })}
+      style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
+    >
+      <Ionicons
+        // The icon set types its own names; the action table is plain data and
+        // does not import them.
+        name={action.icon as never}
+        size={20}
+        color={action.destructive ? colors.danger : colors.text}
+      />
+      <Text style={[styles.label, action.destructive && styles.destructive]}>{action.label}</Text>
+    </Pressable>
+  ))
+
+  const strip = request.reactions ? (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.stripInner}
+      style={styles.strip}
+    >
+      {request.reactions.map((emoji) => (
+        <Pressable
+          key={emoji}
+          accessibilityRole="button"
+          accessibilityLabel={`React with ${emoji}`}
+          onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
+          style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
+        >
+          <Text style={styles.emojiGlyph}>{emoji}</Text>
+        </Pressable>
+      ))}
+    </ScrollView>
+  ) : null
+
+  if (request.anchor) {
+    /**
+     * Heights are derived, not measured. Measuring after mounting means one
+     * frame drawn in the wrong place and a visible jump on exactly the gesture
+     * that has to feel immediate, so the flip is decided before first paint.
+     */
+    const menuHeight = request.actions.length * ROW_HEIGHT + MENU_CHROME
+    const stripWidth = Math.min(STRIP_MAX_WIDTH, screen.width - 24)
+    const layout = messageMenuLayout({
+      anchor: request.anchor,
+      screen: { width: screen.width, height: screen.height },
+      insets: { top: insets.top, bottom: insets.bottom },
+      menu: { width: MENU_WIDTH, height: menuHeight },
+      strip: { width: stripWidth, height: STRIP_HEIGHT },
+      mine: request.mine,
+    })
+
+    return (
+      <Modal transparent animationType="fade" visible onRequestClose={dismiss}>
+        <Pressable style={styles.anchoredBackdrop} onPress={dismiss}>
+          {strip ? (
+            <View
+              style={[
+                styles.stripHolder,
+                { top: layout.strip.top, left: layout.strip.left, width: stripWidth },
+              ]}
+            >
+              {strip}
+            </View>
+          ) : null}
+
+          {/*
+            A copy of the bubble rather than the bubble itself: the real one is
+            still in the list under the scrim, and lifting it out would mean
+            re-mounting a row that owns a pan responder and a measurement.
+          */}
+          <View
+            style={[
+              styles.copy,
+              request.mine ? styles.copyMine : styles.copyTheirs,
+              {
+                top: layout.bubble.top,
+                left: layout.bubble.left,
+                maxWidth: Math.max(120, request.anchor.width),
+              },
+            ]}
+          >
+            <Text style={[styles.copyText, request.mine && styles.copyTextMine]} numberOfLines={6}>
+              {request.preview}
+            </Text>
+          </View>
+
+          <View
+            style={[
+              styles.menu,
+              { top: layout.menu.top, left: layout.menu.left, width: MENU_WIDTH },
+            ]}
+          >
+            {rows}
+          </View>
+        </Pressable>
+      </Modal>
+    )
+  }
 
   return (
     <Modal transparent animationType="fade" visible onRequestClose={dismiss}>
@@ -48,35 +167,26 @@ export function MessageMenuHost() {
           ]}
           onPress={() => {}}
         >
+          {strip}
           <Text style={styles.preview} numberOfLines={2}>
             {request.preview}
           </Text>
-          {request.actions.map((action) => (
-            <Pressable
-              key={action.id}
-              accessibilityRole="button"
-              onPress={() => resolveMessageMenu(request.id, action.id)}
-              style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
-            >
-              <Ionicons
-                // The icon set types its own names; the action table is plain
-                // data and does not import them.
-                name={action.icon as never}
-                size={20}
-                color={action.destructive ? colors.danger : colors.text}
-              />
-              <Text style={[styles.label, action.destructive && styles.destructive]}>
-                {action.label}
-              </Text>
-            </Pressable>
-          ))}
+          {rows}
         </Pressable>
       </Pressable>
     </Modal>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+/** Matches `action`'s padding and icon size below; the layout needs it up front. */
+const ROW_HEIGHT = 46
+/** The menu's own padding, top and bottom. */
+const MENU_CHROME = 16
+const MENU_WIDTH = 232
+const STRIP_HEIGHT = 54
+const STRIP_MAX_WIDTH = 336
+
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   action: {
     alignItems: 'center',
     borderRadius: radius.md,
@@ -89,6 +199,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   backdrop: { backgroundColor: colors.scrim, flex: 1 },
   backdropBottom: { justifyContent: 'flex-end' },
   backdropCentred: { alignItems: 'center', justifyContent: 'center' },
+  anchoredBackdrop: { backgroundColor: colors.scrim, flex: 1 },
   destructive: { color: colors.danger },
   label: { ...font.body, color: colors.text },
   preview: {
@@ -112,5 +223,39 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     maxWidth: 360,
     paddingBottom: spacing.md,
     width: '100%',
+  },
+  stripHolder: { position: 'absolute' },
+  strip: {
+    ...cardShadow,
+    backgroundColor: colors.bg,
+    borderRadius: radius.pill,
+    flexGrow: 0,
+  },
+  stripInner: { alignItems: 'center', gap: 2, paddingHorizontal: 6, paddingVertical: 6 },
+  emoji: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  emojiChosen: { backgroundColor: colors.surface },
+  emojiGlyph: { fontSize: 24, lineHeight: 30 },
+  copy: {
+    borderRadius: radius.lg,
+    paddingHorizontal: 14,
+    paddingVertical: spacing.md,
+    position: 'absolute',
+  },
+  copyMine: { backgroundColor: colors.primary },
+  copyTheirs: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
+  copyText: { ...font.body, color: colors.text, lineHeight: 22 },
+  copyTextMine: { color: colors.primaryText },
+  menu: {
+    ...cardShadow,
+    backgroundColor: colors.bg,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.sm,
+    position: 'absolute',
   },
 }))

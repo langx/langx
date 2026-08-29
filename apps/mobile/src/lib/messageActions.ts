@@ -1,4 +1,11 @@
-export const MESSAGE_ACTION_IDS = ['reply', 'copy', 'translate', 'correct', 'report'] as const
+export const MESSAGE_ACTION_IDS = [
+  'reply',
+  'copy',
+  'translate',
+  'correct',
+  'delete',
+  'report',
+] as const
 export type MessageActionId = (typeof MESSAGE_ACTION_IDS)[number]
 
 export interface MessageAction {
@@ -58,6 +65,15 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
   if (!context.mine && context.type === 'text') {
     actions.push({ id: 'correct', label: 'Correct', icon: 'pencil-outline' })
   }
+
+  /**
+   * Always offered, on anyone's message and at any age: "delete for me" is a
+   * filter on your own copy and never expires. Whether *withdrawing* it from
+   * the other person is also on the table is the caller's question — the rule
+   * is `canDeleteForEveryone` in shared, and the screen asks with it rather
+   * than the menu guessing.
+   */
+  actions.push({ id: 'delete', label: 'Delete', icon: 'trash-outline', destructive: true })
 
   if (!context.mine) {
     actions.push({ id: 'report', label: 'Report', icon: 'flag-outline', destructive: true })

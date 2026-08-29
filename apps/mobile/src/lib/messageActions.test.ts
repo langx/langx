@@ -12,12 +12,12 @@ const ids = (over: Partial<MessageActionContext> = {}) =>
 
 describe('messageActionsFor', () => {
   it('offers the full set on the other person`s text', () => {
-    expect(ids()).toEqual(['reply', 'copy', 'translate', 'correct', 'report'])
+    expect(ids()).toEqual(['reply', 'copy', 'translate', 'correct', 'delete', 'report'])
   })
 
   /** Correcting your own message, or reporting yourself, is not a thing. */
   it('leaves only copy on your own message', () => {
-    expect(ids({ mine: true })).toEqual(['reply', 'copy'])
+    expect(ids({ mine: true })).toEqual(['reply', 'copy', 'delete'])
   })
 
   it('does not offer to correct anything but text', () => {
@@ -37,7 +37,7 @@ describe('messageActionsFor', () => {
 
   /** A voice note without a caption has no text to copy or translate. */
   it('drops the text actions when there is no body', () => {
-    expect(ids({ type: 'audio', hasBody: false })).toEqual(['reply', 'report'])
+    expect(ids({ type: 'audio', hasBody: false })).toEqual(['reply', 'delete', 'report'])
   })
 
   it('always leaves a way to report the other person', () => {
@@ -52,6 +52,13 @@ describe('messageActionsFor', () => {
    * no text of its own, so there is always at least one row.
    */
   it('offers reply even on your own captionless media, where nothing else applies', () => {
-    expect(ids({ mine: true, type: 'audio', hasBody: false })).toEqual(['reply'])
+    expect(ids({ mine: true, type: 'audio', hasBody: false })).toEqual(['reply', 'delete'])
+  })
+
+  /** A filter on your own copy, so it never depends on age or authorship. */
+  it('offers delete on every message, whoever sent it', () => {
+    for (const mine of [true, false]) {
+      expect(ids({ mine })).toContain('delete')
+    }
   })
 })
