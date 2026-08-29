@@ -5,12 +5,12 @@ import { makeStyles, useTheme } from '../../lib/theme'
 
 interface ListRowProps {
   title: string
-  subtitle?: string
+  subtitle?: string | undefined
   /** Tints the subtitle — `pro` for a gated row, `danger` for a destructive one. */
-  subtitleColor?: string
+  subtitleColor?: string | undefined
   /** The right-hand value, e.g. "Language matches". Drawn before the chevron. */
-  value?: string
-  onPress?: () => void
+  value?: string | undefined
+  onPress?: (() => void) | undefined
   /** A control instead of a value: a `Toggle`, a `Chip`. */
   accessory?: ReactNode
   /** Rows inside a `Card` draw their own divider; the last one must not. */

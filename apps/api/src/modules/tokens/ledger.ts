@@ -156,3 +156,17 @@ export async function readAggregates(
     week: byId.get(aggregateId(userId, 'week', keys.week)) ?? 0,
   }
 }
+
+/**
+ * How many `correction` awards this user has ever been paid.
+ *
+ * Served by the `user_kind_ref_unique` index's `{userId, kind}` prefix. Counts
+ * awards rather than corrections sent, which is the honest number: a correction
+ * past the daily cap is still a correction but was never paid for, and the
+ * badge that reads this is about what the economy recognised.
+ */
+export async function countCorrections(db: Db, userId: string): Promise<number> {
+  return db
+    .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+    .countDocuments({ userId, kind: 'correction' })
+}

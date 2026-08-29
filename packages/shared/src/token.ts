@@ -276,6 +276,31 @@ export const tokenSummarySchema = z.object({
     /** Provisional; the real share is only known when the pool closes the day. */
     activityScore: z.number(),
   }),
+  /**
+   * All-time counts that are not token totals.
+   *
+   * Corrections are counted from the ledger rather than kept on the profile:
+   * the same reasoning as the note on `getTokenSummary` — a denormalized copy
+   * of a number written from several code paths is a drift generator, and the
+   * `{userId, kind}` index prefix already makes the count a single scan.
+   */
+  lifetime: z.object({ corrections: z.number().int() }),
+  /**
+   * The seven UTC days ending today, oldest first, for the profile chart.
+   *
+   * Always exactly seven entries: a day with no activity is a zero row rather
+   * than a gap, so the client can index by position instead of matching dates,
+   * and a quiet Tuesday draws as a short bar rather than shifting the week.
+   */
+  week: z
+    .array(
+      z.object({
+        day: z.string(),
+        messages: z.number().int(),
+        corrections: z.number().int(),
+      }),
+    )
+    .length(7),
 })
 export type TokenSummary = z.infer<typeof tokenSummarySchema>
 

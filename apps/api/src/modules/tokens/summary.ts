@@ -4,8 +4,8 @@ import { ERROR_CODES } from '@langx/shared'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
-import { countersOf, readActivity, scoreOf } from './dailyActivity'
-import { readAggregates } from './ledger'
+import { countersOf, readActivity, readActivityWeek, scoreOf } from './dailyActivity'
+import { countCorrections, readAggregates } from './ledger'
 import { walletOf } from './wallet'
 import { streakDay } from './streak'
 
@@ -22,9 +22,11 @@ export async function getTokenSummary(
   const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
 
-  const [tokens, activity] = await Promise.all([
+  const [tokens, activity, week, corrections] = await Promise.all([
     readAggregates(db, userId, at),
     readActivity(db, userId, at),
+    readActivityWeek(db, userId, at),
+    countCorrections(db, userId),
   ])
   const counters = countersOf(activity)
 
@@ -45,5 +47,7 @@ export async function getTokenSummary(
       distinctPartners: counters.distinctPartners,
       activityScore: scoreOf(activity),
     },
+    lifetime: { corrections },
+    week,
   }
 }
