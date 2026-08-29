@@ -1,5 +1,4 @@
 import type { PeriodType } from '@langx/shared'
-import { router } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useBadges, useLeaderboard, useTokens } from '../../src/api/queries'
@@ -9,7 +8,7 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
-import { goBackTo } from '../../src/lib/navigation'
+import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { badgeLabel, periodLabel, useLocale, useT } from '../../src/i18n'
 import { dedupeById } from '../../src/lib/dedupeById'
@@ -160,11 +159,7 @@ export default function LeaderboardScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
-              onPress={() =>
-                router.push(
-                  `/(app)/profile/${item.handle}?from=${encodeURIComponent('/(app)/leaderboard')}`,
-                )
-              }
+              onPress={() => openProfile(item.handle, '/(app)/leaderboard')}
               style={[styles.row, item.isViewer && styles.rowViewer]}
             >
               <Text style={styles.rank}>{MEDALS[item.rank - 1] ?? `#${item.rank}`}</Text>

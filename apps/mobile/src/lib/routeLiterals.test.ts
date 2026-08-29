@@ -84,6 +84,7 @@ const ROUTE_CALLEES = new Set([
   'router.prefetch',
   'goBackTo',
   'openPaywall',
+  'openProfile',
 ])
 const ROUTE_ATTRIBUTES = new Set(['href'])
 const ROUTE_PROPERTIES = new Set(['pathname'])

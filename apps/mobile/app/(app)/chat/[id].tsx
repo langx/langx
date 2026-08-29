@@ -7,7 +7,7 @@ import {
   TOKEN_RULES,
 } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
-import { router, useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
@@ -47,7 +47,7 @@ import { listState } from '../../../src/lib/listState'
 import { shouldSubmitOnEnter } from '../../../src/lib/submitOnEnter'
 import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu, type AnchorRect } from '../../../src/lib/messageMenu'
-import { goBackTo } from '../../../src/lib/navigation'
+import { goBackTo, openProfile } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
@@ -529,12 +529,7 @@ export default function ChatScreen() {
         </Pressable>
         <Pressable
           style={styles.headerUser}
-          onPress={() =>
-            partner &&
-            router.push(
-              `/(app)/profile/${partner.handle}?from=${encodeURIComponent(`/(app)/chat/${conversationId}`)}`,
-            )
-          }
+          onPress={() => partner && openProfile(partner.handle, `/(app)/chat/${conversationId}`)}
         >
           <Avatar
             url={partner?.avatarUrl}

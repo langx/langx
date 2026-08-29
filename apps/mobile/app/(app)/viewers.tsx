@@ -1,11 +1,10 @@
-import { router } from 'expo-router'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useViewers } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
-import { goBackTo } from '../../src/lib/navigation'
+import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles } from '../../src/lib/theme'
@@ -74,11 +73,7 @@ export default function ViewersScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
-              onPress={() =>
-                router.push(
-                  `/(app)/profile/${item.handle}?from=${encodeURIComponent('/(app)/viewers')}`,
-                )
-              }
+              onPress={() => openProfile(item.handle, '/(app)/viewers')}
               style={styles.row}
             >
               <Avatar url={item.avatarUrl} name={item.displayName} />

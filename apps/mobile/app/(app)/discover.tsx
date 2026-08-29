@@ -5,6 +5,7 @@ import {
   type DiscoverySort,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
+import { openProfile } from '../../src/lib/navigation'
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import {
@@ -262,11 +263,7 @@ export default function DiscoverScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
-              onPress={() =>
-                router.push(
-                  `/(app)/profile/${item.handle}?from=${encodeURIComponent('/(app)/discover')}`,
-                )
-              }
+              onPress={() => openProfile(item.handle, '/(app)/discover')}
               style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
             >
               <Avatar
