@@ -37,6 +37,11 @@ export const EVENT_LIMITS: Record<string, BucketConfig> = {
   'message:react': { capacity: 30, refillPerSecond: 2 },
   // Destructive, and never something anyone does in a burst.
   'message:delete': { capacity: 10, refillPerSecond: 0.5 },
+  // Private and cheap, but a bookmark is not something anyone taps in a loop.
+  'message:star': { capacity: 30, refillPerSecond: 2 },
+  'message:edit': { capacity: 10, refillPerSecond: 0.5 },
+  // Shared state, so both people see every change: worth a tighter bucket.
+  'conversation:pin': { capacity: 10, refillPerSecond: 0.5 },
   'conversation:read': { capacity: 30, refillPerSecond: 2 },
   typing: { capacity: 40, refillPerSecond: 10 },
   // One per 20s sustained, burst of 4. A 60s heartbeat passes with room; a

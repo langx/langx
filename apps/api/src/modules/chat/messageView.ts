@@ -38,6 +38,11 @@ export interface MessageView {
   deleted?: boolean
   /** The viewer deleted it for themselves; the client drops the row. */
   hidden?: boolean
+  /** The viewer starred it. Who else did is nobody's business. */
+  starred?: boolean
+  editedAt?: string
+  /** Someone has corrected this sentence, so it can no longer be edited. */
+  corrected?: boolean
   deliveredAt?: string
   readAt?: string
   createdAt: string
@@ -63,6 +68,9 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
 
   if (deleted) view.deleted = true
   if (hidden) view.hidden = true
+  if (message.starredBy?.includes(viewerId)) view.starred = true
+  if (!deleted && message.editedAt) view.editedAt = message.editedAt.toISOString()
+  if (!deleted && message.correctedAt) view.corrected = true
   if (!deleted && message.media) view.media = message.media
   if (!deleted && message.correction) {
     view.correction = {

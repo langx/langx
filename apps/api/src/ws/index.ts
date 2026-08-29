@@ -1,6 +1,9 @@
 import {
   deleteMessageSchema,
+  editMessageSchema,
+  pinMessageSchema,
   reactToMessageSchema,
+  starMessageSchema,
   sendCorrectionSchema,
   sendMediaMessageSchema,
   sendTextMessageSchema,
@@ -15,7 +18,13 @@ import { effectiveTier } from '../modules/profiles/entitlement'
 import { getProfile } from '../modules/profiles/profiles'
 import { assertConversationAccess } from '../modules/chat/access'
 import { toMessageView } from '../modules/chat/messageView'
-import { deleteMessage, reactToMessage } from '../modules/chat/mutations'
+import {
+  deleteMessage,
+  editMessage,
+  pinMessage,
+  reactToMessage,
+  starMessage,
+} from '../modules/chat/mutations'
 import {
   markConversationRead,
   markPendingDelivered,
@@ -23,7 +32,7 @@ import {
   sendMediaMessage,
   sendTextMessage,
 } from '../modules/chat/messages'
-import { fanOutMessage, fanOutMessageUpdate } from './fanOut'
+import { fanOutConversationPinned, fanOutMessage, fanOutMessageUpdate } from './fanOut'
 import { PresenceThrottle, touchPresence } from '../modules/presence/presence'
 import { SocketRateLimiter } from './rateLimit'
 import { userRoom, type AppServer, type AppSocket } from './types'
@@ -229,6 +238,42 @@ export function attachSocketServer(app: FastifyInstance): AppServer {
         .then(({ message, conversation, audience }) => {
           fanOutMessageUpdate(io, conversation, message, audience, userId)
           ack?.({ ok: true, data: toMessageView(message, userId) })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:edit', (payload: unknown, ack: Ack) => {
+      if (!limited('message:edit', ack)) return
+      editMessageSchema
+        .parseAsync(payload)
+        .then((input) => editMessage(app.mongo.db, userId, input))
+        .then(({ message, conversation, audience }) => {
+          fanOutMessageUpdate(io, conversation, message, audience, userId)
+          ack?.({ ok: true, data: toMessageView(message, userId) })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('message:star', (payload: unknown, ack: Ack) => {
+      if (!limited('message:star', ack)) return
+      starMessageSchema
+        .parseAsync(payload)
+        .then((input) => starMessage(app.mongo.db, userId, input))
+        .then(({ message, conversation, audience }) => {
+          fanOutMessageUpdate(io, conversation, message, audience, userId)
+          ack?.({ ok: true, data: toMessageView(message, userId) })
+        })
+        .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
+    })
+
+    socket.on('conversation:pin', (payload: unknown, ack: Ack) => {
+      if (!limited('conversation:pin', ack)) return
+      pinMessageSchema
+        .parseAsync(payload)
+        .then((input) => pinMessage(app.mongo.db, userId, input))
+        .then(({ conversation }) => {
+          fanOutConversationPinned(io, conversation)
+          ack?.({ ok: true, data: { pinned: conversation.pinned ?? null } })
         })
         .catch((error: unknown) => ack?.({ ok: false, error: errorPayload(error) }))
     })

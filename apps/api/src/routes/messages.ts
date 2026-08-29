@@ -1,4 +1,9 @@
-import { ERROR_CODES, listConversationsQuerySchema, listMessagesQuerySchema } from '@langx/shared'
+import {
+  ERROR_CODES,
+  listConversationsQuerySchema,
+  listMessagesQuerySchema,
+  listStarredQuerySchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
@@ -8,6 +13,8 @@ import {
   listMessagesAround,
   markConversationRead,
 } from '../modules/chat/messages'
+import { toMessageView } from '../modules/chat/messageView'
+import { listStarredMessages } from '../modules/chat/mutations'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -46,6 +53,22 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
       }
       const page = await listMessages(app.mongo.db, request.userId, id, rest)
       return reply.send(page)
+    },
+  )
+
+  /**
+   * Starred messages, across every conversation.
+   *
+   * REST rather than a socket event because it is a screen someone opens, not
+   * a stream — and it is the only read in the chat area that is not scoped to
+   * one thread, which is why it hangs off `/me` rather than `/conversations`.
+   */
+  app.get(
+    '/me/starred',
+    { preHandler: requireAuth, schema: { querystring: listStarredQuerySchema } },
+    async (request, reply) => {
+      const messages = await listStarredMessages(app.mongo.db, request.userId, request.query.limit)
+      return reply.send({ items: messages.map((m) => toMessageView(m, request.userId)) })
     },
   )
 

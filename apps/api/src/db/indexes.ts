@@ -143,6 +143,18 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_created_id' },
     { key: { senderId: 1, createdAt: -1 }, name: 'sender_created' },
     /**
+     * The starred screen, which is a `find` by one user across every
+     * conversation they are in — without this it is a scan of the whole
+     * messages collection, and it grows with the app rather than with the
+     * user. Sparse because `starredBy` is absent on almost every message, and
+     * the query only ever looks for its presence.
+     */
+    {
+      key: { starredBy: 1, createdAt: -1 },
+      name: 'starred_created',
+      sparse: true,
+    },
+    /**
      * Backs `markConversationRead`'s `updateMany`, which selects the unread
      * messages in one conversation. Without it that update scans every message
      * in the thread on every read — and a read happens each time the screen is

@@ -18,6 +18,8 @@ export interface Conversation {
   participants: [string, string]
   lastMessage: { body: string; senderId: string; createdAt: Date; deleted?: boolean }
   unread: Record<string, number>
+  /** One per conversation, replaced rather than appended — see `MAX_PINNED_PER_CONVERSATION`. */
+  pinned?: { messageId: ObjectId; byUserId: string; at: Date }
   firstMessageBy: string
   firstMessageAt: Date
   bothSpoke: boolean
@@ -66,6 +68,17 @@ export interface Message {
   /** "Delete for everyone": a tombstone, not a removal. */
   deletedAt?: Date
   deletedBy?: string
+  /** Private to each user — projected away, never shipped as a list. */
+  starredBy?: string[]
+  editedAt?: Date
+  /**
+   * Stamped when someone writes a correction of this message.
+   *
+   * Kept on the target rather than derived, so the edit rule is a field read
+   * instead of a query: `sendCorrection` already loads this document, so the
+   * stamp is free where a lookup would not be.
+   */
+  correctedAt?: Date
   legacyId?: string
   /**
    * When the message reached the recipient's device — the second tick. Set by

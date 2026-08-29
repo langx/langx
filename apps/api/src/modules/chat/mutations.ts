@@ -1,9 +1,13 @@
 import {
   canDeleteForEveryone,
+  canEditMessage,
   ERROR_CODES,
   MESSAGE_REACTIONS,
   type DeleteMessageInput,
+  type EditMessageInput,
+  type PinMessageInput,
   type ReactToMessageInput,
+  type StarMessageInput,
 } from '@langx/shared'
 import { ObjectId, type Db, type UpdateFilter } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
@@ -243,4 +247,163 @@ async function deleteAttachment(message: Message, storage?: StorageProvider): Pr
   } catch {
     // Swallowed on purpose: the row is already a tombstone.
   }
+}
+
+/**
+ * Editing your own text, inside the window and only if nobody has corrected it.
+ *
+ * No new tokens. The message was already paid for when it was sent, and paying
+ * again for changing a word would make editing a way to earn.
+ */
+export async function editMessage(
+  db: Db,
+  userId: string,
+  input: EditMessageInput,
+): Promise<MessageMutationResult> {
+  const { conversation, message } = await loadMutableMessage(
+    db,
+    userId,
+    input.conversationId,
+    input.messageId,
+  )
+
+  if (
+    !canEditMessage({ ...message, corrected: Boolean(message.correctedAt) }, userId, new Date())
+  ) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      message.correctedAt
+        ? 'That message has been corrected, so it can no longer be edited'
+        : 'Only your own text messages, and only within two days of sending them',
+    )
+  }
+
+  const now = new Date()
+  const updated = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOneAndUpdate(
+      { _id: message._id, senderId: userId },
+      { $set: { body: input.body, editedAt: now } },
+      { returnDocument: 'after' },
+    )
+  if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+
+  /**
+   * The chat list keeps a copy of the last message's text, so an edit to that
+   * one has to reach it. Conditional on the same pair a withdrawal uses: if
+   * something newer arrived, this is no longer the last message and the filter
+   * correctly matches nothing.
+   */
+  await db.collection<Conversation>(COLLECTIONS.conversations).updateOne(
+    {
+      _id: conversation._id,
+      'lastMessage.createdAt': message.createdAt,
+      'lastMessage.senderId': message.senderId,
+    },
+    { $set: { 'lastMessage.body': input.body } },
+  )
+
+  return { message: updated, conversation, audience: 'both' }
+}
+
+/**
+ * Starring is private and one-sided — a bookmark, not a signal. It is the
+ * clearest case for `audience: 'actor'`: the emit exists only so the same
+ * person's other devices agree, and the peer is told nothing.
+ */
+export async function starMessage(
+  db: Db,
+  userId: string,
+  input: StarMessageInput,
+): Promise<MessageMutationResult> {
+  const { conversation, message } = await loadMutableMessage(
+    db,
+    userId,
+    input.conversationId,
+    input.messageId,
+  )
+
+  const updated = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOneAndUpdate(
+      { _id: message._id },
+      input.starred ? { $addToSet: { starredBy: userId } } : { $pull: { starredBy: userId } },
+      { returnDocument: 'after' },
+    )
+  if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found')
+
+  return { message: updated, conversation, audience: 'actor' }
+}
+
+export interface PinResult {
+  conversation: Conversation
+}
+
+/**
+ * One pin per conversation, and either person can set or clear it.
+ *
+ * Shared rather than personal, unlike a star: a pin is how the two of them
+ * agree on what this thread is about. In a 1-1 conversation there is no
+ * asymmetry to protect — letting only the pinner unpin would leave the other
+ * person stuck with a banner they cannot dismiss.
+ */
+export async function pinMessage(
+  db: Db,
+  userId: string,
+  input: PinMessageInput,
+): Promise<PinResult> {
+  if (input.messageId === null) {
+    const cleared = await db
+      .collection<Conversation>(COLLECTIONS.conversations)
+      .findOneAndUpdate(
+        { _id: (await assertConversationAccess(db, input.conversationId, userId))._id },
+        { $unset: { pinned: '' } },
+        { returnDocument: 'after' },
+      )
+    if (!cleared) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+    return { conversation: cleared }
+  }
+
+  const { conversation, message } = await loadMutableMessage(
+    db,
+    userId,
+    input.conversationId,
+    input.messageId,
+  )
+  if (message.deletedAt) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'That message was deleted')
+  }
+
+  // Replaced, not appended: `MAX_PINNED_PER_CONVERSATION` is one, and a second
+  // pin would need an order and a way to see the list.
+  const updated = await db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .findOneAndUpdate(
+      { _id: conversation._id },
+      { $set: { pinned: { messageId: message._id, byUserId: userId, at: new Date() } } },
+      { returnDocument: 'after' },
+    )
+  if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+
+  return { conversation: updated }
+}
+
+/**
+ * Everything this reader has starred, newest first.
+ *
+ * Backed by `messages.starred_created`; without that index this is a scan of
+ * every message the user can see, which is the whole collection on a busy
+ * account.
+ */
+export async function listStarredMessages(
+  db: Db,
+  userId: string,
+  limit: number,
+): Promise<Message[]> {
+  return db
+    .collection<Message>(COLLECTIONS.messages)
+    .find({ starredBy: userId, deletedAt: { $exists: false } })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .toArray()
 }

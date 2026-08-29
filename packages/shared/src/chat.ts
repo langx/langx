@@ -87,6 +87,77 @@ export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
  */
 export const MESSAGE_DELETE_WINDOW_MS = 2 * 24 * 60 * 60 * 1000
 
+/**
+ * How long a text message stays editable.
+ *
+ * The same two days as withdrawing it, and deliberately so: both are the
+ * sender reaching back into something already read, and one window is easier
+ * to explain than two. It is also why the correction lock below matters — two
+ * days is long enough for the other person to have taught something about the
+ * sentence in the meantime.
+ */
+export const MESSAGE_EDIT_WINDOW_MS = 2 * 24 * 60 * 60 * 1000
+
+/**
+ * One pin per conversation for now. A second would need an order, a way to see
+ * the list and a way to say which one the banner shows; a single pin needs
+ * none of that and covers the case people actually have.
+ */
+export const MAX_PINNED_PER_CONVERSATION = 1
+
+export const editMessageSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  messageId: z.string().trim().min(1),
+  body: messageBodySchema,
+})
+export type EditMessageInput = z.infer<typeof editMessageSchema>
+
+export const starMessageSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  messageId: z.string().trim().min(1),
+  starred: z.boolean(),
+})
+export type StarMessageInput = z.infer<typeof starMessageSchema>
+
+export const pinMessageSchema = z.object({
+  conversationId: z.string().trim().min(1),
+  /** Null clears whatever is pinned. */
+  messageId: z.string().trim().min(1).nullable(),
+})
+export type PinMessageInput = z.infer<typeof pinMessageSchema>
+
+/**
+ * Whether a message can still be edited.
+ *
+ * The `corrected` clause is the interesting one. Once someone has written a
+ * correction of a sentence, that correction carries a snapshot of the original
+ * — so editing the original afterwards leaves the correction quoting a
+ * sentence that no longer exists anywhere, and the teaching record becomes a
+ * lie about what was said. The lock is not politeness; it is what keeps
+ * `correction.original` true.
+ */
+export function canEditMessage(
+  message: {
+    senderId: string
+    type: string
+    createdAt: string | Date
+    deletedAt?: string | Date | null
+    corrected?: boolean
+  },
+  userId: string,
+  now: Date,
+): boolean {
+  if (message.senderId !== userId) return false
+  // Only text: there is nothing to edit in an image, and a correction is
+  // itself a record of what someone else said.
+  if (message.type !== 'text') return false
+  if (message.deletedAt) return false
+  if (message.corrected) return false
+  const sent = new Date(message.createdAt).getTime()
+  if (Number.isNaN(sent)) return false
+  return now.getTime() - sent <= MESSAGE_EDIT_WINDOW_MS
+}
+
 export const reactToMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   messageId: z.string().trim().min(1),
@@ -120,6 +191,13 @@ export function canDeleteForEveryone(
   if (Number.isNaN(sent)) return false
   return now.getTime() - sent <= MESSAGE_DELETE_WINDOW_MS
 }
+
+export const STARRED_PAGE_SIZE_MAX = 100
+
+/** `GET /me/starred` — a flat list, newest first, across every conversation. */
+export const listStarredQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(STARRED_PAGE_SIZE_MAX).default(50),
+})
 
 export const MESSAGE_PAGE_SIZE_DEFAULT = 30
 export const MESSAGE_PAGE_SIZE_MAX = 100

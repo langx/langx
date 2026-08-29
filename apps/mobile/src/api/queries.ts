@@ -51,6 +51,7 @@ export const keys = {
    * window in one call, which is the only thing keeping the two in step.
    */
   messagesAround: (id: string, anchorId: string) => ['messages', id, 'around', anchorId] as const,
+  starred: ['starred'] as const,
   tokens: ['tokens'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
@@ -263,6 +264,11 @@ export interface MessageDto {
   deleted?: boolean
   /** Hidden by me alone. `messagesNewestFirst` drops these. */
   hidden?: boolean
+  /** Starred by me alone; who else did never leaves the server. */
+  starred?: boolean
+  editedAt?: string
+  /** Somebody corrected this sentence, so it can no longer be edited. */
+  corrected?: boolean
   deliveredAt?: string
   readAt?: string
   createdAt: string
@@ -283,6 +289,20 @@ export function useMessages(conversationId: string) {
     // only sanctioned way to read this — see the note there.
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: conversationId.length > 0,
+  })
+}
+
+/**
+ * Everything this reader has starred, across every conversation.
+ *
+ * A plain query rather than an infinite one: a bookmark list people actually
+ * keep is tens of items, and the server caps it — paging it would be machinery
+ * for a case that does not arrive.
+ */
+export function useStarred() {
+  return useQuery({
+    queryKey: keys.starred,
+    queryFn: () => api.get<{ items: MessageDto[] }>('/me/starred'),
   })
 }
 

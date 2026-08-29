@@ -177,6 +177,16 @@ export async function sendCorrection(
     createdAt: new Date(),
   }
 
+  /**
+   * The target is already loaded, so stamping it costs nothing — and it is
+   * what makes `canEditMessage` a field read rather than a second query. The
+   * sentence someone has just taught about must stop being editable, or the
+   * `original` snapshot above ends up quoting something that no longer exists.
+   */
+  await db
+    .collection<Message>(COLLECTIONS.messages)
+    .updateOne({ _id: target._id }, { $set: { correctedAt: message.createdAt } })
+
   const updatedConversation = await recordMessage(db, conversation, message)
   return { message, conversation: updatedConversation }
 }
@@ -256,6 +266,12 @@ export interface MessagePage {
    */
   prevCursor: string | null
   participants: string[]
+  /**
+   * The pinned message, on the page for the same reason `participants` is: the
+   * thread's banner needs it before anything else has loaded, and the client
+   * never fetches the conversation document on its own.
+   */
+  pinned: { messageId: string; byUserId: string; at: string } | null
   /** Set only by `listMessagesAround`, so a client knows what to scroll to. */
   anchorId?: string
 }
@@ -316,6 +332,13 @@ export async function listMessages(
     // The thread header needs the counterpart even before anyone has replied,
     // and a one-sided thread has no message to read a partner id off.
     participants: conversation.participants,
+    pinned: conversation.pinned
+      ? {
+          messageId: conversation.pinned.messageId.toHexString(),
+          byUserId: conversation.pinned.byUserId,
+          at: conversation.pinned.at.toISOString(),
+        }
+      : null,
   }
 }
 
@@ -391,6 +414,13 @@ export async function listMessagesAround(
     nextCursor: hasOlder && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
     prevCursor: hasNewer && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
     participants: conversation.participants,
+    pinned: conversation.pinned
+      ? {
+          messageId: conversation.pinned.messageId.toHexString(),
+          byUserId: conversation.pinned.byUserId,
+          at: conversation.pinned.at.toISOString(),
+        }
+      : null,
     anchorId: anchor._id.toHexString(),
   }
 }

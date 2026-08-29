@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DELIVERY_STATES, deliveryStateOf } from './chat'
+import { DELIVERY_STATES, canDeleteForEveryone, canEditMessage, deliveryStateOf } from './chat'
 
 describe('deliveryStateOf', () => {
   it('is sent when the server has it and nothing more is known', () => {
@@ -35,5 +35,58 @@ describe('deliveryStateOf', () => {
 
   it('lists the states in the order a message passes through them', () => {
     expect(DELIVERY_STATES).toEqual(['sent', 'delivered', 'read'])
+  })
+})
+
+describe('canDeleteForEveryone', () => {
+  const now = new Date('2026-08-29T12:00:00.000Z')
+  const mine = { senderId: 'me', createdAt: '2026-08-29T11:00:00.000Z' }
+
+  it('allows the sender inside the window', () => {
+    expect(canDeleteForEveryone(mine, 'me', now)).toBe(true)
+  })
+
+  it('refuses someone else message', () => {
+    expect(canDeleteForEveryone(mine, 'them', now)).toBe(false)
+  })
+
+  it('refuses one already withdrawn, which is what stops the row being offered twice', () => {
+    expect(canDeleteForEveryone({ ...mine, deletedAt: now }, 'me', now)).toBe(false)
+  })
+
+  it('refuses one past the window', () => {
+    const old = { senderId: 'me', createdAt: '2026-08-26T11:00:00.000Z' }
+    expect(canDeleteForEveryone(old, 'me', now)).toBe(false)
+  })
+})
+
+describe('canEditMessage', () => {
+  const now = new Date('2026-08-29T12:00:00.000Z')
+  const mine = { senderId: 'me', type: 'text', createdAt: '2026-08-29T11:00:00.000Z' }
+
+  it('allows your own recent text', () => {
+    expect(canEditMessage(mine, 'me', now)).toBe(true)
+  })
+
+  it('refuses someone else message, and anything that is not text', () => {
+    expect(canEditMessage(mine, 'them', now)).toBe(false)
+    for (const type of ['image', 'audio', 'correction']) {
+      expect(canEditMessage({ ...mine, type }, 'me', now)).toBe(false)
+    }
+  })
+
+  /**
+   * The clause that keeps `correction.original` honest: editing a sentence
+   * someone has already corrected would leave their correction quoting
+   * something that no longer exists.
+   */
+  it('refuses one somebody has corrected', () => {
+    expect(canEditMessage({ ...mine, corrected: true }, 'me', now)).toBe(false)
+  })
+
+  it('refuses one past the window, and one already withdrawn', () => {
+    const old = { ...mine, createdAt: '2026-08-26T11:00:00.000Z' }
+    expect(canEditMessage(old, 'me', now)).toBe(false)
+    expect(canEditMessage({ ...mine, deletedAt: now }, 'me', now)).toBe(false)
   })
 })

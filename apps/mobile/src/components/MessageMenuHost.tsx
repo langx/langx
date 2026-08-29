@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { paginateActions, type MessageActionPage } from '../lib/messageActions'
 import {
   resolveMessageMenu,
   subscribeToMessageMenu,
@@ -40,32 +41,78 @@ export function MessageMenuHost() {
   const styles = useStyles()
 
   const [request, setRequest] = useState<MessageMenuRequest | null>(null)
+  const [page, setPage] = useState<MessageActionPage>('primary')
   const insets = useSafeAreaInsets()
   const screen = useWindowDimensions()
 
-  useEffect(() => subscribeToMessageMenu(setRequest), [])
+  useEffect(
+    () =>
+      subscribeToMessageMenu((next) => {
+        // A new menu always opens on the first page; leaving it on `more`
+        // would show the second page of a message nobody asked about.
+        setPage('primary')
+        setRequest(next)
+      }),
+    [],
+  )
 
   if (!request) return null
   const dismiss = (): void => resolveMessageMenu(request.id, null)
   const wide = Platform.OS === 'web'
 
-  const rows = request.actions.map((action) => (
-    <Pressable
-      key={action.id}
-      accessibilityRole="button"
-      onPress={() => resolveMessageMenu(request.id, { kind: 'action', id: action.id })}
-      style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
-    >
-      <Ionicons
-        // The icon set types its own names; the action table is plain data and
-        // does not import them.
-        name={action.icon as never}
-        size={20}
-        color={action.destructive ? colors.danger : colors.text}
-      />
-      <Text style={[styles.label, action.destructive && styles.destructive]}>{action.label}</Text>
-    </Pressable>
-  ))
+  const { actions, hasMore } = paginateActions(request.actions, page)
+
+  const rows = (
+    <>
+      {page === 'more' ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Back to the first page"
+          onPress={() => setPage('primary')}
+          style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
+        >
+          <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
+          <Text style={[styles.label, styles.muted]}>Back</Text>
+        </Pressable>
+      ) : null}
+
+      {actions.map((action) => (
+        <Pressable
+          key={action.id}
+          accessibilityRole="button"
+          disabled={action.disabled === true}
+          onPress={() => resolveMessageMenu(request.id, { kind: 'action', id: action.id })}
+          style={({ pressed }) => [
+            styles.action,
+            pressed && !action.disabled && styles.actionPressed,
+            action.disabled === true && styles.actionDisabled,
+          ]}
+        >
+          <Ionicons
+            // The icon set types its own names; the action table is plain data
+            // and does not import them.
+            name={action.icon as never}
+            size={20}
+            color={action.destructive ? colors.danger : colors.text}
+          />
+          <Text style={[styles.label, action.destructive && styles.destructive]}>
+            {action.label}
+          </Text>
+        </Pressable>
+      ))}
+
+      {hasMore ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => setPage('more')}
+          style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
+        >
+          <Ionicons name="ellipsis-horizontal" size={20} color={colors.textMuted} />
+          <Text style={[styles.label, styles.muted]}>More…</Text>
+        </Pressable>
+      ) : null}
+    </>
+  )
 
   const strip = request.reactions ? (
     <ScrollView
@@ -94,7 +141,10 @@ export function MessageMenuHost() {
      * frame drawn in the wrong place and a visible jump on exactly the gesture
      * that has to feel immediate, so the flip is decided before first paint.
      */
-    const menuHeight = request.actions.length * ROW_HEIGHT + MENU_CHROME
+    // The rows on *this* page, plus whichever navigation row it carries — a
+    // height derived from the full action list would flip the wrong way.
+    const rowCount = actions.length + (hasMore ? 1 : 0) + (page === 'more' ? 1 : 0)
+    const menuHeight = rowCount * ROW_HEIGHT + MENU_CHROME
     const stripWidth = Math.min(STRIP_MAX_WIDTH, screen.width - 24)
     const layout = messageMenuLayout({
       anchor: request.anchor,
@@ -196,6 +246,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingVertical: spacing.md,
   },
   actionPressed: { backgroundColor: colors.surface },
+  actionDisabled: { opacity: 0.45 },
+  muted: { color: colors.textMuted },
   backdrop: { backgroundColor: colors.scrim, flex: 1 },
   backdropBottom: { justifyContent: 'flex-end' },
   backdropCentred: { alignItems: 'center', justifyContent: 'center' },

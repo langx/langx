@@ -9,6 +9,7 @@ import {
   appendIncomingMessage,
   applyDeliveredAt,
   applyMessageUpdate,
+  applyPinned,
   type MessagePageDto,
 } from '../lib/messageCache'
 import { closeSocket, getSocket } from '../lib/socket'
@@ -114,6 +115,22 @@ export function useSocket(): void {
           void queryClient.invalidateQueries({ queryKey: keys.conversations })
         }
       })
+
+      socket.on(
+        'conversation:pinned',
+        ({
+          conversationId,
+          pinned,
+        }: {
+          conversationId: string
+          pinned: MessagePageDto['pinned']
+        }) => {
+          queryClient.setQueriesData<InfiniteData<MessagePageDto>>(
+            { queryKey: keys.messages(conversationId) },
+            (old) => applyPinned(old, pinned) ?? old,
+          )
+        },
+      )
 
       socket.on(
         'conversation:delivered',

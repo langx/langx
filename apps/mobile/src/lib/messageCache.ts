@@ -8,6 +8,7 @@ export interface MessagePageDto {
   /** Newer than this page; null means the page already reaches the live tail. */
   prevCursor: string | null
   participants: string[]
+  pinned: { messageId: string; byUserId: string; at: string } | null
   /** Only a jump window has one — the message it was opened on. */
   anchorId?: string
 }
@@ -106,4 +107,19 @@ export function applyMessageUpdate(data: Pages, message: MessageDto): Pages {
 
 function sameId(a: MessageDto, b: MessageDto): boolean {
   return String(a._id) === String(b._id)
+}
+
+/**
+ * The pin is on the conversation, not on a message, but it rides in on every
+ * page — so a change has to be written to every page rather than to one row.
+ *
+ * Same `changed`-guard discipline as the rest: a re-emit of the pin already
+ * held returns the identical object and re-renders nothing.
+ */
+export function applyPinned(data: Pages, pinned: MessagePageDto['pinned']): Pages {
+  if (!data) return data
+  const same = (a: MessagePageDto['pinned'], b: MessagePageDto['pinned']): boolean =>
+    a?.messageId === b?.messageId && a?.byUserId === b?.byUserId
+  if (data.pages.every((page) => same(page.pinned, pinned))) return data
+  return { ...data, pages: data.pages.map((page) => ({ ...page, pinned })) }
 }
