@@ -178,6 +178,22 @@ export default function SettingsScreen() {
             />
           }
         />
+        {/* Free, unlike the two Pro rows around it: the streak this is drawn
+            from is already on the public profile, so hiding the squares is a
+            preference rather than a feature. */}
+        <ListRow
+          title="Show my activity map"
+          subtitle="The squares on your profile. Your streak stays visible either way."
+          accessory={
+            <Toggle
+              accessibilityLabel="Show my activity map"
+              value={profile?.privacy.activityMapVisible ?? true}
+              onValueChange={(activityMapVisible) =>
+                update.mutate({ privacy: { activityMapVisible } })
+              }
+            />
+          }
+        />
         <ListRow
           title="Hide when I'm online"
           subtitle={isPro ? 'You can still see theirs.' : '✦ Pro'}

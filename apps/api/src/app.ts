@@ -24,6 +24,7 @@ import { feedRoutes } from './routes/feed'
 import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
+import { activityRoutes } from './routes/activity'
 import { messageRoutes } from './routes/messages'
 import { moderationRoutes } from './routes/moderation'
 import { profileRoutes } from './routes/profiles'
@@ -215,6 +216,7 @@ export async function buildApp({
   await app.register(translationRoutes)
   await app.register(billingRoutes)
   await app.register(xpRoutes)
+  await app.register(activityRoutes)
   await app.register(leaderboardRoutes)
   await app.register(moderationRoutes)
   await app.register(accountRoutes)

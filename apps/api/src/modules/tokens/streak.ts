@@ -9,6 +9,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { awardTokens } from './ledger'
+import { recordStreakDay } from './streakDays'
 import { consumeStreakFreeze } from './wallet'
 
 export interface StreakResult {
@@ -63,6 +64,14 @@ export async function recordQualifyingAction(
     milestoneXp: 0,
     freezeUsed: false,
   }
+  /**
+   * Before the early return, deliberately. The square's *shading* is a count of
+   * qualifying actions, so stopping here on the day's second message would
+   * leave every day looking equally busy — and the set of filled days is what
+   * a repair later has to recompute a streak length from.
+   */
+  await recordStreakDay(db, profile._id, today)
+
   if (profile.streak.lastQualifiedDay === today) return held
 
   // A freeze bridges *exactly one* missed day. Wider gaps are not for sale —

@@ -52,6 +52,7 @@ export const keys = {
    */
   messagesAround: (id: string, anchorId: string) => ['messages', id, 'around', anchorId] as const,
   starred: ['starred'] as const,
+  activity: (from: string, to: string) => ['activity', from, to] as const,
   tokens: ['tokens'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
@@ -93,7 +94,7 @@ export interface MeProfile {
   learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
   settings: { discoverable: boolean; notifications: boolean }
-  privacy: { incognito: boolean; hideOnlineStatus: boolean }
+  privacy: { incognito: boolean; hideOnlineStatus: boolean; activityMapVisible?: boolean }
   /**
    * Present only while the user is sharing one, which is exactly what the
    * Settings toggle reads: there is no separate "sharing is on" flag on the
@@ -289,6 +290,47 @@ export function useMessages(conversationId: string) {
     // only sanctioned way to read this — see the note there.
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     enabled: conversationId.length > 0,
+  })
+}
+
+export interface ActivityDayDto {
+  day: string
+  actions: number
+  source: 'activity' | 'purchase'
+}
+
+export interface ActivityDto {
+  /** The server's idea of the user's local day — the client must not guess it. */
+  today: string
+  days: ActivityDayDto[]
+  repair: { price: number; maxAgeDays: number; perMonth: number; usedThisMonth: number }
+}
+
+/**
+ * The activity map's own data.
+ *
+ * `today` comes from the server rather than the device, because the streak's
+ * day is the profile's timezone and a device set to another one would draw the
+ * grid off by a square — and then offer to sell the wrong day.
+ */
+export function useActivity(from: string, to: string) {
+  return useQuery({
+    queryKey: keys.activity(from, to),
+    queryFn: () => api.get<ActivityDto>(`/me/activity?from=${from}&to=${to}`),
+  })
+}
+
+export function useRepairDay() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (day: string) =>
+      api.post<{ day: string; streak: { current: number } }>('/me/activity/repair', { day }),
+    onSuccess: () => {
+      // The map, the balance and the streak all move together.
+      void queryClient.invalidateQueries({ queryKey: ['activity'] })
+      void queryClient.invalidateQueries({ queryKey: keys.wallet })
+      void queryClient.invalidateQueries({ queryKey: keys.tokens })
+    },
   })
 }
 

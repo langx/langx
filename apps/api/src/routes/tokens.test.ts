@@ -19,6 +19,7 @@ import { loadEnv } from '../env'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
 import type { Profile } from '../modules/profiles/profiles'
 import { awardTokens, type TokenLedgerEntry } from '../modules/tokens/ledger'
+import type { StreakDay } from '../modules/tokens/streakDays'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
@@ -451,5 +452,217 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
     const profile = await profiles.findOne({ _id: a.userId })
     expect(profile?.stats.lastActiveAt.getTime()).toBeGreaterThan(Date.now() - 60_000)
     expect(profile?.stats.messagesSent).toBe(1)
+  })
+
+  describe('the activity map and buying back a day', () => {
+    /** Enough earned token to afford repairs, without going through sends. */
+    async function funded(email: string, tokens: number) {
+      const user = await newUser(email)
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: tokens,
+        refId: `fund-${user.userId}`,
+      })
+      return user
+    }
+
+    const dayKey = (offsetDays: number) =>
+      new Date(Date.now() - offsetDays * 86_400_000).toISOString().slice(0, 10)
+
+    it('records the day a message was sent, and counts the ones after it', async () => {
+      const a = await newUser('activity-sender@example.com')
+      const b = await newUser('activity-partner@example.com')
+      const conversationId = await startConversation(a, b.userId)
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      await sendTextMessage(handle.db, a.userId, { conversationId, body: 'second' })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/me/activity?from=${dayKey(7)}&to=${dayKey(0)}`,
+        headers: { cookie: a.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{ days: { day: string; actions: number }[] }>()
+      // Two qualifying actions, one square: the count is what shades it.
+      expect(body.days).toHaveLength(1)
+      expect(body.days[0]?.actions).toBe(2)
+    })
+
+    it('fills a missed day, charges for it, and rejoins the streak across it', async () => {
+      const user = await funded('repair-joins@example.com', 1000)
+      const days = handle.db.collection<StreakDay>(COLLECTIONS.streakDays)
+      // Two runs with one day missing between them.
+      for (const offset of [0, 1, 3, 4]) {
+        await days.insertOne({
+          _id: `${user.userId}:${dayKey(offset)}`,
+          userId: user.userId,
+          day: dayKey(offset),
+          source: 'activity',
+          actions: 1,
+        })
+      }
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(2) },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{
+        price: number
+        streak: { current: number }
+        repairsLeftThisMonth: number
+      }>()
+      expect(body.price).toBe(TOKEN_RULES.sinks.dayRepair)
+      expect(body.streak.current).toBe(5)
+      expect(body.repairsLeftThisMonth).toBe(TOKEN_RULES.sinks.dayRepairPerMonth - 1)
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.tokenSpent).toBe(TOKEN_RULES.sinks.dayRepair)
+      expect(profile?.streak.current).toBe(5)
+    })
+
+    /** The leaderboard ranks token earned. Spending must not move anyone. */
+    it('does not touch the leaderboard aggregates', async () => {
+      const user = await funded('repair-rank@example.com', 1000)
+      const before = await handle.db
+        .collection<{ _id: string; tokens: number }>(COLLECTIONS.tokenAggregates)
+        .findOne({ _id: `${user.userId}:all:all` })
+
+      await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+
+      const after = await handle.db
+        .collection<{ _id: string; tokens: number }>(COLLECTIONS.tokenAggregates)
+        .findOne({ _id: `${user.userId}:all:all` })
+      expect(after?.tokens).toBe(before?.tokens)
+    })
+
+    it('refuses today, a day outside the window, and one already filled', async () => {
+      const user = await funded('repair-window@example.com', 5000)
+
+      const today = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(0) },
+      })
+      expect(today.statusCode).toBe(400)
+
+      const tooOld = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(TOKEN_RULES.sinks.dayRepairMaxAgeDays + 1) },
+      })
+      expect(tooOld.statusCode).toBe(400)
+
+      await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      const again = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      expect(again.statusCode).toBe(400)
+    })
+
+    /** The cap, not the price, is what stops a balance buying a streak. */
+    it('allows only two repairs a month however much token is held', async () => {
+      const user = await funded('repair-cap@example.com', 100_000)
+      const codes: number[] = []
+      for (const offset of [1, 2, 3]) {
+        const response = await app.inject({
+          method: 'POST',
+          url: '/me/activity/repair',
+          headers: { cookie: user.cookie },
+          payload: { day: dayKey(offset) },
+        })
+        codes.push(response.statusCode)
+      }
+      expect(codes.slice(0, TOKEN_RULES.sinks.dayRepairPerMonth)).toEqual([200, 200])
+      expect(codes[2]).toBe(400)
+    })
+
+    /**
+     * Two writes in two collections, so the order matters: the day goes in
+     * first and has to come back out when the charge fails, or the map would
+     * show a square nobody paid for.
+     */
+    it('hands the day back when there is not enough token', async () => {
+      const user = await funded('repair-broke@example.com', 10)
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      expect(response.statusCode).toBe(400)
+
+      const day = await handle.db
+        .collection<StreakDay>(COLLECTIONS.streakDays)
+        .findOne({ _id: `${user.userId}:${dayKey(1)}` })
+      expect(day).toBeNull()
+    })
+
+    it('shows someone else the shape of the map but never the counts', async () => {
+      const owner = await newUser('map-owner@example.com', { handle: 'mapowner' })
+      const viewer = await newUser('map-viewer@example.com')
+      await handle.db.collection<StreakDay>(COLLECTIONS.streakDays).insertOne({
+        _id: `${owner.userId}:${dayKey(1)}`,
+        userId: owner.userId,
+        day: dayKey(1),
+        source: 'purchase',
+        actions: 42,
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/profiles/mapowner/activity?from=${dayKey(7)}&to=${dayKey(0)}`,
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.body).not.toContain('42')
+      // Nor whether a square was bought.
+      expect(response.body).not.toContain('purchase')
+      const body = response.json<{ visible: boolean; days: { intensity: number }[] }>()
+      expect(body.visible).toBe(true)
+      expect(body.days).toHaveLength(1)
+    })
+
+    it('hides the map when its owner has turned it off', async () => {
+      const owner = await newUser('map-private@example.com', { handle: 'mapprivate' })
+      const viewer = await newUser('map-private-viewer@example.com')
+      await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: owner.cookie },
+        payload: { privacy: { activityMapVisible: false } },
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/profiles/mapprivate/activity?from=${dayKey(7)}&to=${dayKey(0)}`,
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.json<{ visible: boolean; days: unknown[] }>()).toEqual({
+        visible: false,
+        days: [],
+      })
+    })
   })
 })

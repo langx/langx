@@ -1,0 +1,119 @@
+import { describe, expect, it } from 'vitest'
+import { activityGrid, repairEffect } from './activityMap'
+
+// A Saturday, so the "today is not the end of the column" case is the default.
+const TODAY = '2026-08-29'
+
+const grid = (overrides: Partial<Parameters<typeof activityGrid>[0]> = {}) =>
+  activityGrid({ today: TODAY, weeks: 4, days: new Map(), maxAgeDays: 14, ...overrides })
+
+const flat = (columns: ReturnType<typeof activityGrid>) => columns.flat()
+const cell = (columns: ReturnType<typeof activityGrid>, day: string) =>
+  flat(columns).find((c) => c.day === day)
+
+describe('activityGrid', () => {
+  it('is seven rows by as many weeks as asked for', () => {
+    const columns = grid({ weeks: 26 })
+    expect(columns).toHaveLength(26)
+    expect(columns.every((column) => column.length === 7)).toBe(true)
+  })
+
+  /** Monday at the top: every column has to start on the same weekday. */
+  it('starts every column on a Monday', () => {
+    for (const column of grid()) {
+      expect(new Date(`${column[0]!.day}T00:00:00`).getDay()).toBe(1)
+    }
+  })
+
+  it('includes today, in the last column', () => {
+    const columns = grid()
+    expect(columns.at(-1)?.some((c) => c.day === TODAY)).toBe(true)
+  })
+
+  it('marks the rest of this week as future rather than empty', () => {
+    const columns = grid()
+    expect(cell(columns, '2026-08-30')?.state).toBe('future')
+    expect(cell(columns, TODAY)?.state).not.toBe('future')
+  })
+
+  it('shades a filled day by how busy it was', () => {
+    const columns = grid({
+      days: new Map([
+        ['2026-08-28', 1],
+        ['2026-08-27', 5],
+        ['2026-08-26', 12],
+        ['2026-08-25', 40],
+      ]),
+    })
+    expect(cell(columns, '2026-08-28')?.intensity).toBe(1)
+    expect(cell(columns, '2026-08-27')?.intensity).toBe(2)
+    expect(cell(columns, '2026-08-26')?.intensity).toBe(3)
+    expect(cell(columns, '2026-08-25')?.intensity).toBe(4)
+  })
+
+  /** A bought day is present with no actions, and still reads as filled. */
+  it('treats a day with zero actions as filled, not empty', () => {
+    const columns = grid({ days: new Map([['2026-08-28', 0]]) })
+    expect(cell(columns, '2026-08-28')?.state).toBe('filled')
+    expect(cell(columns, '2026-08-28')?.intensity).toBe(1)
+  })
+
+  it('offers only the empty days inside the window', () => {
+    const columns = grid({ weeks: 6 })
+    expect(cell(columns, '2026-08-28')?.state).toBe('repairable')
+    expect(cell(columns, '2026-08-15')?.state).toBe('repairable')
+    expect(cell(columns, '2026-08-14')?.state).toBe('empty')
+  })
+
+  /** Today is earned, not bought — even though it is empty and in the window. */
+  it('never offers today', () => {
+    expect(cell(grid(), TODAY)?.state).toBe('empty')
+  })
+})
+
+describe('repairEffect', () => {
+  const filled = new Set(['2026-08-29', '2026-08-28', '2026-08-26', '2026-08-25'])
+
+  it('reports the streak the purchase would join', () => {
+    const effect = repairEffect({
+      day: '2026-08-27',
+      today: TODAY,
+      filled,
+      price: 300,
+      balance: 500,
+    })
+    expect(effect.streakBefore).toBe(2)
+    expect(effect.streakAfter).toBe(5)
+    expect(effect.changesStreak).toBe(true)
+    expect(effect.balanceAfter).toBe(200)
+  })
+
+  /**
+   * The honest case. A square in the middle of a fortnight nobody was active in
+   * fills and changes nothing, and the confirmation has to say so rather than
+   * letting the price imply otherwise.
+   */
+  it('says plainly when a square joins nothing', () => {
+    const effect = repairEffect({
+      day: '2026-08-10',
+      today: TODAY,
+      filled,
+      price: 300,
+      balance: 500,
+    })
+    expect(effect.changesStreak).toBe(false)
+    expect(effect.streakAfter).toBe(effect.streakBefore)
+  })
+
+  it('knows when it cannot be afforded', () => {
+    const effect = repairEffect({
+      day: '2026-08-27',
+      today: TODAY,
+      filled,
+      price: 300,
+      balance: 250,
+    })
+    expect(effect.affordable).toBe(false)
+    expect(effect.balanceAfter).toBe(-50)
+  })
+})

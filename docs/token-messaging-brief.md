@@ -63,8 +63,9 @@ that damages trust.
   what keeps it worth watching.
 - Keep a daily streak; hitting 7, 30, 100 and 365 days pays a bonus.
 - Weekly, monthly, yearly and all-time leaderboards.
-- Spend tokens on a **streak freeze** (rescues one missed day) and on
-  **cosmetic frames and titles**. That is the complete list of things to spend
+- Spend tokens on a **streak freeze** (rescues one missed day), on **filling in
+  a missed day** on your activity map (300 tokens, last 14 days, two a month),
+  and on **cosmetic frames and titles**. That is the complete list of things to spend
   on, and it is complete on purpose: if tokens could buy a Pro feature, farming
   tokens would become a substitute for subscribing.
 

@@ -59,7 +59,7 @@ export interface Profile {
     discoverable: boolean
     notifications: boolean
   }
-  privacy: { incognito: boolean; hideOnlineStatus?: boolean }
+  privacy: { incognito: boolean; hideOnlineStatus?: boolean; activityMapVisible?: boolean }
   entitlement: {
     tier: PlanTier
     expiresAt?: Date
@@ -161,7 +161,7 @@ export async function createProfile(
       discoverable: true,
       notifications: true,
     },
-    privacy: { incognito: false, hideOnlineStatus: false },
+    privacy: { incognito: false, hideOnlineStatus: false, activityMapVisible: true },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },

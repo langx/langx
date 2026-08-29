@@ -138,7 +138,18 @@ export const updateProfileSchema = z
      * the second key landed. See `updateProfile` — a partial `privacy` also
      * has to be written as dotted paths, or the `$set` drops the other flag.
      */
-    privacy: z.object({ incognito: z.boolean(), hideOnlineStatus: z.boolean() }).partial(),
+    privacy: z
+      .object({
+        incognito: z.boolean(),
+        hideOnlineStatus: z.boolean(),
+        /**
+         * The activity map on a public profile. Default on, because the streak
+         * it is drawn from is already public — and free, unlike the two above:
+         * this one is not a Pro feature, it is a preference.
+         */
+        activityMapVisible: z.boolean(),
+      })
+      .partial(),
   })
   .partial()
   .refine(
