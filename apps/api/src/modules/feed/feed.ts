@@ -1,0 +1,338 @@
+import {
+  ERROR_CODES,
+  TOKEN_RULES,
+  type CreatePostCorrectionInput,
+  type CreatePostInput,
+  type FeedPage,
+  type FeedPost,
+  type ListFeedQuery,
+  languageLevelSchema,
+  type PostCorrection,
+} from '@langx/shared'
+import { ObjectId, type Db, type Document } from 'mongodb'
+import { COLLECTIONS } from '../../db/collections'
+import { ApiError } from '../../lib/ApiError'
+import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
+import { blockedUserIds } from '../moderation/blocks'
+import type { Profile } from '../profiles/profiles'
+import { recordActivity } from '../tokens/dailyActivity'
+import { awardTokens } from '../tokens/ledger'
+import { recordQualifyingAction } from '../tokens/streak'
+
+export interface Post {
+  _id: ObjectId
+  authorId: string
+  body: string
+  language: string
+  /**
+   * Denormalized, and the one number here that is. It is the sort key for the
+   * `needsCorrection` tab, and an index cannot sort on a count it would have to
+   * join to find. Written only by `$inc` inside the same call that inserts the
+   * correction, so it cannot drift the way a periodically-rebuilt counter would.
+   */
+  correctionCount: number
+  createdAt: Date
+}
+
+export interface PostCorrectionDoc {
+  _id: ObjectId
+  postId: ObjectId
+  authorId: string
+  corrected: string
+  note?: string
+  createdAt: Date
+}
+
+type AuthorMap = Map<string, Profile>
+
+async function loadAuthors(db: Db, ids: string[]): Promise<AuthorMap> {
+  if (ids.length === 0) return new Map()
+  const profiles = await db
+    .collection<Profile>(COLLECTIONS.profiles)
+    .find({ _id: { $in: [...new Set(ids)] } })
+    .toArray()
+  return new Map(profiles.map((profile) => [profile._id, profile]))
+}
+
+function authorDto(profile: Profile | undefined, id: string): FeedPost['author'] {
+  return {
+    _id: id,
+    handle: profile?.handle ?? 'unknown',
+    // A post outlives the account that wrote it — `deletedWithAccount` on
+    // `messages` exists for the same reason — so the shape has to survive a
+    // missing profile rather than dropping the row.
+    displayName: profile?.displayName ?? 'Deleted account',
+    ...(profile?.avatarUrl ? { avatarUrl: profile.avatarUrl } : {}),
+  }
+}
+
+function correctionDto(doc: PostCorrectionDoc, authors: AuthorMap): PostCorrection {
+  return {
+    _id: doc._id.toHexString(),
+    author: authorDto(authors.get(doc.authorId), doc.authorId),
+    corrected: doc.corrected,
+    ...(doc.note ? { note: doc.note } : {}),
+    createdAt: doc.createdAt.toISOString(),
+  }
+}
+
+/**
+ * The author's level in the language they posted in.
+ *
+ * Resolved at read time from `learning` rather than copied onto the post: a
+ * level changes as somebody improves, and a stored copy would freeze every old
+ * post at the level they were when they wrote it.
+ */
+function levelOf(profile: Profile | undefined, language: string): FeedPost['level'] {
+  const level = profile?.learning.find((entry) => entry.code === language)?.level
+  // `Profile.learning[].level` is a bare `string` on the document; the DTO is
+  // the enum. Parsing rather than casting means a level written by an older
+  // build degrades to "no level" instead of into the response.
+  const parsed = languageLevelSchema.safeParse(level)
+  return parsed.success ? parsed.data : null
+}
+
+export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Promise<FeedPage> {
+  const posts = db.collection<Post>(COLLECTIONS.posts)
+
+  // Blocks are symmetric here as everywhere else: `blockedUserIds` returns
+  // both directions, so neither party appears in the other's feed.
+  const hidden = await blockedUserIds(db, userId)
+  const filter: Document = hidden.length > 0 ? { authorId: { $nin: hidden } } : {}
+
+  if (query.filter === 'following') {
+    // "Following" has no follow graph to read, so it means the people you have
+    // actually talked to — which is the relationship this app has instead of
+    // one. A feed of strangers is what the other tab already is.
+    const conversations = await db
+      .collection<{ participants: string[] }>(COLLECTIONS.conversations)
+      .find({ participants: userId })
+      .project<{ participants: string[] }>({ participants: 1 })
+      .toArray()
+    const known = [
+      ...new Set(conversations.flatMap((c) => c.participants).filter((id) => id !== userId)),
+    ]
+    if (known.length === 0) return { items: [], nextCursor: null }
+    const visible = known.filter((id) => !hidden.includes(id))
+    if (visible.length === 0) return { items: [], nextCursor: null }
+    filter.authorId = { $in: visible }
+  }
+
+  /**
+   * The cursor carries the sort's own keys. On `needsCorrection` that is
+   * `(correctionCount, createdAt, _id)`, and paging it with a `createdAt`-only
+   * cursor would silently skip every post whose count differs — which is most
+   * of them.
+   */
+  const needsFirst = query.filter === 'needsCorrection'
+  if (query.cursor) {
+    const { date, id, count } = decodeFeedCursor(query.cursor)
+    const after: Document[] = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
+    filter.$and = [
+      needsFirst && count !== null
+        ? { $or: [{ correctionCount: { $gt: count } }, { correctionCount: count, $or: after }] }
+        : { $or: after },
+    ]
+  }
+
+  const sort: Document = needsFirst
+    ? { correctionCount: 1, createdAt: -1, _id: -1 }
+    : { createdAt: -1, _id: -1 }
+
+  const page = await posts
+    .find(filter)
+    .sort(sort)
+    .limit(query.limit + 1)
+    .toArray()
+
+  const hasMore = page.length > query.limit
+  const items = hasMore ? page.slice(0, query.limit) : page
+  const last = items.at(-1)
+
+  const ids = items.map((post) => post._id)
+  const corrections = await db
+    .collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
+    .find({ postId: { $in: ids } })
+    .sort({ postId: 1, createdAt: 1 })
+    .toArray()
+
+  const topByPost = new Map<string, PostCorrectionDoc>()
+  const viewerCorrected = new Set<string>()
+  for (const correction of corrections) {
+    const key = correction.postId.toHexString()
+    if (!topByPost.has(key)) topByPost.set(key, correction)
+    if (correction.authorId === userId) viewerCorrected.add(key)
+  }
+
+  const authors = await loadAuthors(db, [
+    ...items.map((post) => post.authorId),
+    ...[...topByPost.values()].map((c) => c.authorId),
+  ])
+
+  return {
+    items: items.map((post) => {
+      const key = post._id.toHexString()
+      const top = topByPost.get(key)
+      const profile = authors.get(post.authorId)
+      return {
+        _id: key,
+        author: authorDto(profile, post.authorId),
+        body: post.body,
+        language: post.language,
+        level: levelOf(profile, post.language),
+        correctionCount: post.correctionCount,
+        topCorrection: top ? correctionDto(top, authors) : null,
+        correctedByViewer: viewerCorrected.has(key),
+        createdAt: post.createdAt.toISOString(),
+      }
+    }),
+    nextCursor:
+      hasMore && last
+        ? encodeFeedCursor(last.createdAt, last._id, needsFirst ? last.correctionCount : null)
+        : null,
+  }
+}
+
+/** `<dateIdCursor>` for the recency sort, `<count>.<dateIdCursor>` for the queue. */
+function encodeFeedCursor(date: Date, id: ObjectId, count: number | null): string {
+  const base = encodeDateIdCursor(date, id)
+  return count === null ? base : `${count}.${base}`
+}
+
+function decodeFeedCursor(cursor: string): { date: Date; id: ObjectId; count: number | null } {
+  const dot = cursor.indexOf('.')
+  if (dot === -1) return { ...decodeDateIdCursor(cursor), count: null }
+  const count = Number(cursor.slice(0, dot))
+  if (!Number.isInteger(count)) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Bad cursor')
+  return { ...decodeDateIdCursor(cursor.slice(dot + 1)), count }
+}
+
+export async function createPost(
+  db: Db,
+  userId: string,
+  input: CreatePostInput,
+): Promise<FeedPost> {
+  const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
+  if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Complete onboarding first')
+
+  // You post in a language you are learning. Posting in your native one is not
+  // a request for a correction, it is just talking — and the feed has one job.
+  if (!profile.learning.some((entry) => entry.code === input.language)) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Post in a language you are learning')
+  }
+
+  const doc: Post = {
+    _id: new ObjectId(),
+    authorId: userId,
+    body: input.body,
+    language: input.language,
+    correctionCount: 0,
+    createdAt: new Date(),
+  }
+  await db.collection<Post>(COLLECTIONS.posts).insertOne(doc)
+
+  return {
+    _id: doc._id.toHexString(),
+    author: authorDto(profile, userId),
+    body: doc.body,
+    language: doc.language,
+    level: levelOf(profile, doc.language),
+    correctionCount: 0,
+    topCorrection: null,
+    correctedByViewer: false,
+    createdAt: doc.createdAt.toISOString(),
+  }
+}
+
+export async function correctPost(
+  db: Db,
+  userId: string,
+  postId: string,
+  input: CreatePostCorrectionInput,
+): Promise<PostCorrection> {
+  if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  const _id = new ObjectId(postId)
+
+  const post = await db.collection<Post>(COLLECTIONS.posts).findOne({ _id })
+  if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  // Correcting your own sentence is not teaching, and it would pay for it.
+  if (post.authorId === userId) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You cannot correct your own post')
+  }
+
+  const doc: PostCorrectionDoc = {
+    _id: new ObjectId(),
+    postId: _id,
+    authorId: userId,
+    corrected: input.corrected,
+    ...(input.note ? { note: input.note } : {}),
+    createdAt: new Date(),
+  }
+
+  try {
+    await db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections).insertOne(doc)
+  } catch (error) {
+    // The unique index is the guard, not a prior read: two taps that race would
+    // both pass a check-then-insert and both pay.
+    if (isDuplicate(error)) {
+      throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You have already corrected this post')
+    }
+    throw error
+  }
+
+  await db.collection<Post>(COLLECTIONS.posts).updateOne({ _id }, { $inc: { correctionCount: 1 } })
+  await awardForPostCorrection(db, userId, doc)
+
+  const authors = await loadAuthors(db, [userId])
+  return correctionDto(doc, authors)
+}
+
+function isDuplicate(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && (error as { code?: number }).code === 11000
+}
+
+/**
+ * Paid through the same `correction` kind as a chat correction, at the same
+ * rate and with the same absence of a cap.
+ *
+ * That sameness is the point: the economy rewards teaching, and it must not
+ * matter whether the teaching happened in a thread or on a post. A separate
+ * kind would also have made the correction badges — which count `correction`
+ * rows — quietly wrong.
+ */
+async function awardForPostCorrection(
+  db: Db,
+  userId: string,
+  correction: PostCorrectionDoc,
+): Promise<void> {
+  const profile = await db.collection<Profile>(COLLECTIONS.profiles).findOne({ _id: userId })
+  const frozen = Boolean(profile?.tokenFrozenAt)
+  const at = correction.createdAt
+
+  await recordActivity(db, { userId, kind: 'correction', at })
+  await awardTokens(db, {
+    userId,
+    kind: 'correction',
+    amount: frozen ? 0 : TOKEN_RULES.award.correction,
+    refId: correction._id.toHexString(),
+    at,
+  })
+  if (profile) await recordQualifyingAction(db, profile, at)
+}
+
+export async function listPostCorrections(
+  db: Db,
+  postId: string,
+): Promise<{ items: PostCorrection[] }> {
+  if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  const docs = await db
+    .collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
+    .find({ postId: new ObjectId(postId) })
+    .sort({ createdAt: 1 })
+    .toArray()
+  const authors = await loadAuthors(
+    db,
+    docs.map((doc) => doc.authorId),
+  )
+  return { items: docs.map((doc) => correctionDto(doc, authors)) }
+}

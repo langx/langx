@@ -213,6 +213,23 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { userId: 1 }, name: 'user' },
   ],
 
+  [COLLECTIONS.posts]: [
+    // The `needsCorrection` tab, and the plain recency feed behind it. Both
+    // read newest-first within a `correctionCount` bucket, so one compound
+    // index serves both orders.
+    { key: { correctionCount: 1, createdAt: -1, _id: -1 }, name: 'needs_correction' },
+    { key: { createdAt: -1, _id: -1 }, name: 'recent' },
+    { key: { authorId: 1, createdAt: -1 }, name: 'author' },
+  ],
+
+  [COLLECTIONS.postCorrections]: [
+    // One correction per person per post. A unique index rather than a check:
+    // the same guarantee that stops a double-tap paying the `correction` award
+    // twice, for the same reason `user_kind_ref_unique` exists on the ledger.
+    { key: { postId: 1, authorId: 1 }, name: 'post_author_unique', unique: true },
+    { key: { postId: 1, createdAt: 1 }, name: 'post_created' },
+  ],
+
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
 
   [COLLECTIONS.streakReminders]: [

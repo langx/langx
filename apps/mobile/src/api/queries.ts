@@ -15,6 +15,12 @@ import type {
   PublicProfileDto,
   Wallet,
   BadgeSummary,
+  CreatePostCorrectionInput,
+  CreatePostInput,
+  FeedFilter,
+  FeedPage,
+  FeedPost,
+  PostCorrection,
   TokenSummary,
 } from './types'
 import {
@@ -42,6 +48,7 @@ export const keys = {
   tokens: ['tokens'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
+  feed: (filter: string) => ['feed', filter] as const,
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
@@ -269,6 +276,47 @@ export function useTokens() {
 
 export function useWallet() {
   return useQuery({ queryKey: keys.wallet, queryFn: () => api.get<Wallet>('/me/wallet') })
+}
+
+export function useFeed(filter: FeedFilter) {
+  return useInfiniteQuery({
+    queryKey: keys.feed(filter),
+    queryFn: ({ pageParam }) =>
+      api.get<FeedPage>(
+        `/feed?filter=${filter}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+    // Same reason as `useDiscovery`: switching tab must not blank the list.
+    placeholderData: keepPreviousData,
+  })
+}
+
+export function useCreatePost() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: CreatePostInput) => api.post<FeedPost>('/posts', input),
+    // Both tabs, and the badges: a post changes neither, but the correction
+    // below does, and invalidating one list and not the other is how a feed
+    // starts disagreeing with itself.
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['feed'] })
+    },
+  })
+}
+
+export function useCorrectPost() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ postId, ...input }: CreatePostCorrectionInput & { postId: string }) =>
+      api.post<PostCorrection>(`/posts/${postId}/corrections`, input),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['feed'] })
+      // A correction pays, and may cross a badge threshold.
+      void client.invalidateQueries({ queryKey: keys.tokens })
+      void client.invalidateQueries({ queryKey: keys.badges })
+    },
+  })
 }
 
 export function useBadges() {

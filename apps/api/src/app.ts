@@ -20,6 +20,7 @@ import { registerAuthRoutes } from './routes/auth'
 import { billingRoutes } from './routes/billing'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
+import { feedRoutes } from './routes/feed'
 import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
 import { mediaRoutes } from './routes/media'
@@ -208,6 +209,7 @@ export async function buildApp({
   await app.register(handleRoutes)
   await app.register(mediaRoutes)
   await app.register(discoveryRoutes)
+  await app.register(feedRoutes)
   await app.register(conversationRoutes)
   await app.register(messageRoutes)
   await app.register(translationRoutes)

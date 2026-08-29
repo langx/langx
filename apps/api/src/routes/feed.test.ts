@@ -1,0 +1,242 @@
+import { TOKEN_RULES } from '@langx/shared'
+import { MongoMemoryReplSet } from 'mongodb-memory-server'
+import type { FastifyInstance } from 'fastify'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { buildApp } from '../app'
+import { createAuth } from '../auth'
+import { connectToDatabase, type DbHandle } from '../db/client'
+import { COLLECTIONS } from '../db/collections'
+import { ensureIndexes } from '../db/indexes'
+import { loadEnv } from '../env'
+import { createStorageProvider } from '../storage/createStorageProvider'
+import { createTranslationProvider } from '../translation/createTranslationProvider'
+import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
+
+const PASSWORD = 'correct horse battery staple'
+
+function onboardingBody(overrides: Record<string, unknown> = {}) {
+  return {
+    handle: `user${Math.random().toString(36).slice(2, 10)}`,
+    displayName: 'Test User',
+    birthYear: 1995,
+    gender: 'undisclosed',
+    nativeLanguages: [{ code: 'tr' }],
+    learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
+    ...overrides,
+  }
+}
+
+describe('community feed', () => {
+  let replSet: MongoMemoryReplSet
+  let handle: DbHandle
+  let app: FastifyInstance
+  let emailSender: CapturingEmailSender
+
+  async function newUser(email: string, profileOverrides: Record<string, unknown> = {}) {
+    const user = await signUpAndSignIn(app, emailSender, { email, password: PASSWORD, name: 'T' })
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody(profileOverrides),
+    })
+    if (response.statusCode !== 201) {
+      throw new Error(`onboarding failed (${response.statusCode}): ${response.body}`)
+    }
+    return user
+  }
+
+  async function post(user: SignedUpUser, body: string, language = 'en') {
+    return app.inject({
+      method: 'POST',
+      url: '/posts',
+      headers: { cookie: user.cookie },
+      payload: { body, language },
+    })
+  }
+
+  async function correct(user: SignedUpUser, postId: string, corrected: string) {
+    return app.inject({
+      method: 'POST',
+      url: `/posts/${postId}/corrections`,
+      headers: { cookie: user.cookie },
+      payload: { corrected },
+    })
+  }
+
+  async function feed(user: SignedUpUser, qs = '') {
+    return app.inject({
+      method: 'GET',
+      url: `/feed${qs ? `?${qs}` : ''}`,
+      headers: { cookie: user.cookie },
+    })
+  }
+
+  beforeAll(async () => {
+    replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
+    handle = await connectToDatabase(replSet.getUri(), 'langx_feed_test')
+
+    const env = loadEnv({
+      NODE_ENV: 'test',
+      MONGODB_URI: replSet.getUri(),
+      MONGODB_DB: 'langx_feed_test',
+      LOG_LEVEL: 'silent',
+      BETTER_AUTH_SECRET: 'a'.repeat(32),
+      BETTER_AUTH_URL: 'http://localhost:4000',
+    })
+
+    await ensureIndexes(handle.db)
+
+    emailSender = new CapturingEmailSender()
+    const auth = await createAuth({ env, db: handle.db, client: handle.client, emailSender })
+    app = await buildApp({
+      env,
+      client: handle.client,
+      db: handle.db,
+      auth,
+      storage: createStorageProvider(env),
+      translation: createTranslationProvider(env),
+      revenueCat: createRevenueCatClientFromEnv(env),
+    })
+    await app.ready()
+
+    // Same first-transaction warm-up as the other route suites.
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      const warmUp = await app.inject({
+        method: 'POST',
+        url: '/api/auth/sign-up/email',
+        payload: { email: `warmup-${attempt}@example.com`, password: PASSWORD, name: 'Warm Up' },
+      })
+      if (warmUp.statusCode === 200) break
+      await new Promise((resolve) => setTimeout(resolve, 200))
+    }
+    emailSender.messages.length = 0
+  }, 120_000)
+
+  afterAll(async () => {
+    await app?.close()
+    await handle?.close()
+    await replSet?.stop()
+  })
+
+  it('rejects an unauthenticated request', async () => {
+    expect((await app.inject({ method: 'GET', url: '/feed' })).statusCode).toBe(401)
+  })
+
+  it('refuses a post in a language the author is not learning', async () => {
+    const author = await newUser('wronglang@example.com')
+    // Turkish is their native language, so a post in it is not a request for
+    // help — it is just talking.
+    const response = await post(author, 'Merhaba', 'tr')
+    expect(response.statusCode).toBe(400)
+  })
+
+  it('returns a new post with no corrections', async () => {
+    const author = await newUser('newpost@example.com')
+    const created = await post(author, 'I go to the beach yesterday.')
+    expect(created.statusCode).toBe(201)
+
+    const page = await feed(author)
+    expect(page.statusCode).toBe(200)
+    const body = page.json<{
+      items: { _id: string; correctionCount: number; level: string | null }[]
+    }>()
+    const mine = body.items.find((item) => item._id === created.json<{ _id: string }>()._id)
+    expect(mine?.correctionCount).toBe(0)
+    // Resolved from the author's `learning`, not stored on the post.
+    expect(mine?.level).toBe('intermediate')
+  })
+
+  it('pays a correction through the same award as a chat correction', async () => {
+    const author = await newUser('paid-author@example.com')
+    const helper = await newUser('paid-helper@example.com')
+    const postId = (await post(author, 'She go to school every day.')).json<{ _id: string }>()._id
+
+    const response = await correct(helper, postId, 'She goes to school every day.')
+    expect(response.statusCode).toBe(201)
+
+    const row = await handle.db
+      .collection(COLLECTIONS.tokenLedger)
+      .findOne({ userId: helper.userId, kind: 'correction' })
+    expect(row?.amount).toBe(TOKEN_RULES.award.correction)
+  })
+
+  it('refuses to let someone correct their own post', async () => {
+    const author = await newUser('selfcorrect@example.com')
+    const postId = (await post(author, 'I am go home.')).json<{ _id: string }>()._id
+    expect((await correct(author, postId, 'I am going home.')).statusCode).toBe(400)
+  })
+
+  it('refuses a second correction from the same person', async () => {
+    const author = await newUser('dupe-author@example.com')
+    const helper = await newUser('dupe-helper@example.com')
+    const postId = (await post(author, 'He have a car.')).json<{ _id: string }>()._id
+
+    expect((await correct(helper, postId, 'He has a car.')).statusCode).toBe(201)
+    // The unique index is what refuses it, not a prior read — two taps that
+    // raced would both pass a check-then-insert and both pay.
+    expect((await correct(helper, postId, 'He has a car!')).statusCode).toBe(400)
+  })
+
+  it('puts uncorrected posts before corrected ones', async () => {
+    const author = await newUser('order-author@example.com')
+    const helper = await newUser('order-helper@example.com')
+
+    const older = (await post(author, 'The first sentence is wrong.')).json<{ _id: string }>()._id
+    const newer = (await post(author, 'The second sentence is wrong.')).json<{ _id: string }>()._id
+    await correct(helper, newer, 'The second sentence is fine.')
+
+    const items = (await feed(helper, 'filter=needsCorrection')).json<{
+      items: { _id: string }[]
+    }>().items
+    // `newer` is more recent, so plain recency would put it first. The queue
+    // exists so an unanswered post does not sink under every newer one.
+    expect(items.findIndex((i) => i._id === older)).toBeLessThan(
+      items.findIndex((i) => i._id === newer),
+    )
+  })
+
+  it('shows the first correction as the top one, and marks the viewer as having corrected', async () => {
+    const author = await newUser('top-author@example.com')
+    const first = await newUser('top-first@example.com')
+    const second = await newUser('top-second@example.com')
+    const postId = (await post(author, 'They was late.')).json<{ _id: string }>()._id
+
+    await correct(first, postId, 'They were late.')
+    await correct(second, postId, 'They were running late.')
+
+    const page = await feed(first)
+    const item = page
+      .json<{
+        items: {
+          _id: string
+          correctionCount: number
+          correctedByViewer: boolean
+          topCorrection: { corrected: string } | null
+        }[]
+      }>()
+      .items.find((i) => i._id === postId)
+
+    expect(item?.correctionCount).toBe(2)
+    // Oldest, not newest: whoever answered first is the one who answered.
+    expect(item?.topCorrection?.corrected).toBe('They were late.')
+    expect(item?.correctedByViewer).toBe(true)
+  })
+
+  it('hides posts by someone the viewer has blocked, in both directions', async () => {
+    const viewer = await newUser('block-viewer@example.com')
+    const blocked = await newUser('block-author@example.com')
+    const postId = (await post(blocked, 'This should not be visible.')).json<{ _id: string }>()._id
+
+    await app.inject({
+      method: 'POST',
+      url: '/blocks',
+      headers: { cookie: viewer.cookie },
+      payload: { userId: blocked.userId },
+    })
+
+    const items = (await feed(viewer)).json<{ items: { _id: string }[] }>().items
+    expect(items.some((item) => item._id === postId)).toBe(false)
+  })
+})

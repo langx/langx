@@ -54,13 +54,6 @@ export default function AppLayout() {
         }}
       >
         <Tabs.Screen
-          name="chats"
-          options={{
-            title: 'Chats',
-            tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
-          }}
-        />
-        <Tabs.Screen
           name="discover"
           options={{
             title: 'Discover',
@@ -68,16 +61,23 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
-          name="leaderboard"
+          name="chats"
           options={{
-            title: 'Leaderboard',
-            tabBarIcon: ({ color }) => <TabIcon name="award" color={color} />,
+            title: 'Chats',
+            tabBarIcon: ({ color }) => <TabIcon name="message-square" color={color} />,
+          }}
+        />
+        <Tabs.Screen
+          name="feed"
+          options={{
+            title: 'Feed',
+            tabBarIcon: ({ color }) => <TabIcon name="align-left" color={color} />,
           }}
         />
         <Tabs.Screen
           name="me"
           options={{
-            title: 'Profile',
+            title: 'Me',
             tabBarIcon: ({ color }) => <TabIcon name="user" color={color} />,
           }}
         />
@@ -94,6 +94,14 @@ export default function AppLayout() {
         insets content above the bar, so these screens carried the bottom
         padding twice.
       */}
+        {/*
+          Badges left the tab bar to make room for the feed, which is the
+          design's call and the right one: the leaderboard is somewhere you go
+          occasionally, and the feed is somewhere there is always something to
+          do. It is reached from the profile, which is where the badge count
+          already lives.
+        */}
+        <Tabs.Screen name="leaderboard" options={FULL_SCREEN} />
         <Tabs.Screen name="chat/[id]" options={FULL_SCREEN} />
         <Tabs.Screen name="profile/[handle]" options={FULL_SCREEN} />
         <Tabs.Screen name="edit-profile" options={FULL_SCREEN} />
