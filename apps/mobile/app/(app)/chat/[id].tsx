@@ -2,14 +2,13 @@ import Feather from '@expo/vector-icons/Feather'
 import { PLAN_LIMITS, TOKEN_RULES } from '@langx/shared'
 import { useQueryClient } from '@tanstack/react-query'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  StyleSheet,
   Text,
   TextInput,
   View,
@@ -27,13 +26,12 @@ import {
 } from '../../../src/api/queries'
 import * as Clipboard from 'expo-clipboard'
 import { api } from '../../../src/api/client'
+import { MessageBubble } from '../../../src/components/MessageBubble'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Screen } from '../../../src/components/ui/Screen'
 import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import * as ImagePicker from 'expo-image-picker'
-import { AudioBubble, ImageBubble } from '../../../src/components/MediaBubble'
-import { MessageMeta } from '../../../src/components/MessageMeta'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
@@ -45,7 +43,8 @@ import { openMessageMenu } from '../../../src/lib/messageMenu'
 import { goBackTo } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
-import { flattenMessagePages } from '../../../src/lib/messageCache'
+import { messagesNewestFirst } from '../../../src/lib/messageCache'
+import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 export default function ChatScreen() {
@@ -66,16 +65,28 @@ export default function ChatScreen() {
   // original so the learner can compare the two.
   const [translations, setTranslations] = useState<Record<string, string>>({})
   const [translating, setTranslating] = useState<string | null>(null)
-  const listRef = useRef<FlatList<MessageDto>>(null)
-  // Starts true: a thread opens at its newest message.
-  const atBottom = useRef(true)
+  const listRef = useRef<FlatList<MessageRow>>(null)
+  /**
+   * The newest message at the moment the reader scrolled away from the bottom,
+   * or null while they are still there. It doubles as the jump button's
+   * visibility and, via its position in `items`, as the count on it.
+   */
+  const [awayFrom, setAwayFrom] = useState<string | null>(null)
   const translateApi = useTranslate()
   const report = useReportUser()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const items = flattenMessagePages(messages.data)
+  const items = useMemo(() => messagesNewestFirst(messages.data), [messages.data])
+  const rows = useMemo(() => messageRows(items), [items])
+  // Newest first, so the anchor's index *is* how many arrived while away.
+  const missed = awayFrom
+    ? Math.max(
+        0,
+        items.findIndex((m) => String(m._id) === awayFrom),
+      )
+    : 0
   const state = listState({
     isPending: messages.isPending,
     isError: messages.isError,
@@ -214,6 +225,9 @@ export default function ChatScreen() {
       }
       setDraft('')
       notifyTyping(false)
+      // Inverted, so the newest message is offset 0.
+      listRef.current?.scrollToOffset({ offset: 0, animated: true })
+      setAwayFrom(null)
     } finally {
       setSending(false)
     }
@@ -227,9 +241,9 @@ export default function ChatScreen() {
    * obvious answer, and translating into what they are *learning* would defeat
    * the purpose.
    */
-  async function translate(message: MessageDto): Promise<void> {
+  async function translate(message: MessageDto, alreadyTranslated: boolean): Promise<void> {
     const target = me.data?.nativeLanguages[0]?.code
-    if (!target || translations[message._id]) return
+    if (!target || alreadyTranslated) return
     setTranslating(message._id)
     try {
       const result = await translateApi.mutateAsync({ text: message.body, targetLang: target })
@@ -258,12 +272,12 @@ export default function ChatScreen() {
    * other person's text only; it is one row here, which is what let the other
    * three exist at all.
    */
-  async function openActions(message: MessageDto): Promise<void> {
+  async function openActions(message: MessageDto, alreadyTranslated: boolean): Promise<void> {
     const actions = messageActionsFor({
       mine: isMine(message),
       type: message.type,
       hasBody: message.body.trim().length > 0,
-      alreadyTranslated: Boolean(translations[message._id]),
+      alreadyTranslated,
     })
     // Your own captionless voice note has nothing to offer; an empty sheet is
     // worse than no sheet.
@@ -274,7 +288,7 @@ export default function ChatScreen() {
       await Clipboard.setStringAsync(message.body)
       showToast('Copied')
     } else if (picked === 'translate') {
-      await translate(message)
+      await translate(message, alreadyTranslated)
     } else if (picked === 'correct') {
       setCorrecting(message)
       setDraft(message.body)
@@ -282,6 +296,20 @@ export default function ChatScreen() {
       await reportMessage(message)
     }
   }
+
+  /**
+   * Referentially stable for the life of the screen, which is what keeps
+   * `MessageBubble`'s `memo` worth having: a handler rebuilt every render would
+   * make every bubble's props unequal and re-render the whole thread on each
+   * keystroke. The ref is what lets it go on closing over fresh state anyway.
+   */
+  const openActionsRef = useRef(openActions)
+  useEffect(() => {
+    openActionsRef.current = openActions
+  })
+  const onLongPress = useCallback((message: MessageDto, alreadyTranslated: boolean) => {
+    void openActionsRef.current(message, alreadyTranslated)
+  }, [])
 
   async function reportMessage(message: MessageDto): Promise<void> {
     const reason = await chooseAlert('Report', 'Why are you reporting this message?', [
@@ -344,139 +372,102 @@ export default function ChatScreen() {
         </Pressable>
       </View>
 
-      {state === 'skeleton' ? (
-        // `flex: 1` because the FlatList it stands in for takes the whole
-        // height; without it the composer rides up under the placeholders and
-        // then drops when the real thread arrives.
-        <View style={[styles.list, styles.skeletonFill]}>
-          {SKELETON_BUBBLES.map((key, index) => (
-            <MessageBubbleSkeleton key={key} index={index} />
-          ))}
-        </View>
-      ) : (
-        <FlatList
-          ref={listRef}
-          data={items}
-          keyExtractor={(item) => String(item._id)}
-          contentContainerStyle={styles.list}
-          /**
-           * Keeps the newest message in view while the reader is at the
-           * bottom, and stops the moment they scroll up.
-           *
-           * "Have we done it once" is the obvious gate and the wrong one: the
-           * first size change arrives before the rows have finished laying
-           * out, so a one-shot scroll lands in the middle of the thread and
-           * never corrects. Unconditional is also wrong — it yanks the reader
-           * back down every time a page of older messages arrives, which
-           * makes scrolling up impossible rather than merely jarring.
-           */
-          onContentSizeChange={() => {
-            if (!atBottom.current) return
-            // One frame later. `scrollToEnd` resolves against the content size
-            // as it is *now*, and rows are still settling when this fires —
-            // scrolling synchronously lands a hundred-odd pixels short and
-            // there is no second size change to correct it.
-            requestAnimationFrame(() => listRef.current?.scrollToEnd({ animated: false }))
-          }}
-          onScroll={({ nativeEvent }) => {
-            const { contentOffset, contentSize, layoutMeasurement } = nativeEvent
-            const distanceFromBottom =
-              contentSize.height - contentOffset.y - layoutMeasurement.height
-            atBottom.current = distanceFromBottom <= BOTTOM_ANCHOR_SLACK
-
-            // Older messages load from the top. `onStartReached` does not
-            // exist on react-native-web's FlatList, and this app ships the
-            // same code to the browser.
-            if (contentOffset.y > OLDER_MESSAGES_THRESHOLD) return
-            if (messages.hasNextPage && !messages.isFetchingNextPage) {
-              void messages.fetchNextPage()
+      {/* The jump button floats over the thread, so it lives in the thread's
+          own box rather than the screen's — that keeps it above the composer
+          whatever height the composer has grown to. */}
+      <View style={styles.listWrap}>
+        {state === 'skeleton' ? (
+          // `flex: 1` because the FlatList it stands in for takes the whole
+          // height; without it the composer rides up under the placeholders and
+          // then drops when the real thread arrives.
+          <View style={[styles.list, styles.skeletonFill]}>
+            {SKELETON_BUBBLES.map((key, index) => (
+              <MessageBubbleSkeleton key={key} index={index} />
+            ))}
+          </View>
+        ) : (
+          <FlatList
+            ref={listRef}
+            data={rows}
+            keyExtractor={(row) => row.key}
+            contentContainerStyle={styles.list}
+            /**
+             * The newest message sits at offset 0, and the list grows upward.
+             *
+             * This one prop replaces all the scroll anchoring this screen used
+             * to do by hand. Staying pinned to the newest message becomes the
+             * resting state rather than a `scrollToEnd` chased one frame behind
+             * layout, and a page of history is appended at the *far* end, off
+             * screen, so it can no longer shove what the reader is looking at.
+             * The `atBottom` ref, the `requestAnimationFrame` and the
+             * top-offset threshold all existed to approximate those two
+             * properties, and none of them could do it while the reader was
+             * scrolling.
+             */
+            inverted
+            /**
+             * "End" is the end of the data, and inverted that is the oldest
+             * message — so the same prop that means "load more" everywhere else
+             * in the app means "load older" here. It also sidesteps
+             * `onStartReached`, which react-native-web's FlatList does not have.
+             */
+            onEndReached={() => {
+              if (messages.hasNextPage && !messages.isFetchingNextPage) {
+                void messages.fetchNextPage()
+              }
+            }}
+            onEndReachedThreshold={0.4}
+            /** Footer, not header: inverted, the footer is what sits on top. */
+            ListFooterComponent={
+              messages.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
             }
-          }}
-          scrollEventThrottle={16}
-          ListHeaderComponent={
-            messages.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
-          }
-          renderItem={({ item }) => {
-            const mine = isMine(item)
-            if (item.type === 'correction') {
-              return (
-                <Pressable
-                  onLongPress={() => void openActions(item)}
-                  style={[styles.correction, mine ? styles.correctionMine : null]}
-                >
-                  {/*
-                    The success pair, and only ever the success pair. A
-                    correction is another person changing your sentence; the
-                    info pair belongs to Copilot, which proposes one you have
-                    not sent. The two must never be confusable — see `Callout`.
-                  */}
-                  <View style={styles.correctionHead}>
-                    <Feather name="edit-3" size={14} color={colors.success} />
-                    <Text style={styles.correctionLabel}>
-                      {mine
-                        ? 'Your correction'
-                        : `Correction from ${partner?.displayName ?? 'them'}`}
-                    </Text>
-                  </View>
-                  <View style={styles.correctionBody}>
-                    {item.correction ? (
-                      <Text style={styles.correctionOriginal}>{item.correction.original}</Text>
-                    ) : null}
-                    <Text style={styles.correctionText}>{item.body}</Text>
-                    {item.correction?.note ? (
-                      <Text style={styles.correctionNote}>{item.correction.note}</Text>
-                    ) : null}
-                    <MessageMeta message={item} mine={mine} />
-                  </View>
-                </Pressable>
+            onScroll={({ nativeEvent }) => {
+              // Nothing to measure against the content height any more: the
+              // bottom of an inverted list is offset 0.
+              if (nativeEvent.contentOffset.y <= BOTTOM_ANCHOR_SLACK) {
+                if (awayFrom !== null) setAwayFrom(null)
+              } else if (awayFrom === null) {
+                setAwayFrom(items[0] ? String(items[0]._id) : null)
+              }
+            }}
+            scrollEventThrottle={16}
+            renderItem={({ item: row }) =>
+              row.kind === 'day' ? (
+                <View style={styles.dayRow}>
+                  <Text style={styles.dayLabel}>{dayLabel(row.day)}</Text>
+                </View>
+              ) : (
+                <MessageBubble
+                  message={row.message}
+                  mine={isMine(row.message)}
+                  endsGroup={row.endsGroup}
+                  partnerName={partner?.displayName ?? 'them'}
+                  translation={translations[row.message._id]}
+                  translating={translating === row.message._id}
+                  onLongPress={onLongPress}
+                />
               )
             }
-            if (item.type === 'image' || item.type === 'audio') {
-              return (
-                <Pressable
-                  onLongPress={() => void openActions(item)}
-                  style={[styles.bubble, mine ? styles.mine : styles.theirs]}
-                >
-                  {item.type === 'image' ? (
-                    <ImageBubble message={item} />
-                  ) : (
-                    <AudioBubble message={item} mine={mine} />
-                  )}
-                  {item.body ? (
-                    <Text
-                      style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}
-                    >
-                      {item.body}
-                    </Text>
-                  ) : null}
-                  <MessageMeta message={item} mine={mine} />
-                </Pressable>
-              )
-            }
+          />
+        )}
 
-            const translated = translations[item._id]
-            return (
-              <Pressable
-                onLongPress={() => void openActions(item)}
-                style={[styles.bubble, mine ? styles.mine : styles.theirs]}
-              >
-                <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{item.body}</Text>
-                {translated ? (
-                  <Text style={[styles.translation, mine && styles.translationMine]}>
-                    {translated}
-                  </Text>
-                ) : null}
-                {/* The link is gone — translate is a menu row now. This only
-                    reports the request already in flight. */}
-                {translating === item._id ? (
-                  <Text style={styles.translateLink}>Translating…</Text>
-                ) : null}
-                <MessageMeta message={item} mine={mine} />
-              </Pressable>
-            )
-          }}
-        />
-      )}
+        {awayFrom !== null ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={
+              missed > 0 ? `Jump to ${missed} new messages` : 'Jump to the newest message'
+            }
+            onPress={() => {
+              listRef.current?.scrollToOffset({ offset: 0, animated: true })
+              setAwayFrom(null)
+            }}
+            style={styles.jump}
+          >
+            <Feather name="arrow-down" size={18} color={colors.primaryText} />
+            {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
+          </Pressable>
+        ) : null}
+      </View>
 
       {/*
         The correction composer, and the success pair again — the same colour
@@ -513,7 +504,9 @@ export default function ChatScreen() {
         </View>
       ) : null}
 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      {/* Android had no `behavior` at all, which is the same as not wrapping
+          it — the keyboard covered the composer and the hint row under it. */}
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.composer}>
           {recorder.isRecording ? (
             <View style={styles.recording}>
@@ -609,7 +602,7 @@ export default function ChatScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   screen: { paddingHorizontal: 0 },
   header: {
     alignItems: 'center',
@@ -636,89 +629,40 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   headerName: { ...font.heading, color: colors.text, fontSize: 16 },
   typing: { ...font.caption, color: colors.accent, fontWeight: '600' },
   presence: { ...font.caption, color: colors.success, fontWeight: '600' },
+  listWrap: { flex: 1 },
   list: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   skeletonFill: { flex: 1 },
-  older: { paddingVertical: spacing.md },
-  bubble: {
-    borderRadius: radius.lg,
-    maxWidth: '82%',
-    paddingHorizontal: 14,
-    paddingVertical: spacing.md,
-  },
-  /**
-   * One square corner on the side the bubble comes from. It is the whole of
-   * what makes a stack of bubbles read as a conversation rather than as a list
-   * of cards, and it costs one radius each.
-   */
-  mine: {
-    alignSelf: 'flex-end',
-    backgroundColor: colors.primary,
-    borderBottomRightRadius: radius.sm / 2,
-  },
-  theirs: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.surface,
-    borderBottomLeftRadius: radius.sm / 2,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
-  bubbleText: { ...font.body, color: colors.text, lineHeight: 22 },
-  bubbleTextMine: { color: colors.primaryText },
-  translation: {
+  dayRow: { alignItems: 'center', paddingVertical: spacing.xs },
+  dayLabel: {
     ...font.caption,
-    borderTopColor: colors.border,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
-    paddingTop: spacing.xs,
-  },
-  translationMine: { borderTopColor: colors.primaryTextMuted, color: colors.primaryTextMuted },
-  translateLink: { ...font.caption, color: colors.accent, marginTop: spacing.xs },
-  correction: {
-    backgroundColor: colors.successBg,
-    borderColor: colors.success,
-    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
     borderWidth: 1,
-    overflow: 'hidden',
-  },
-  // A correction is about a sentence, not about who is winning, so it spans the
-  // thread rather than taking a side. Only the alignment marks the author.
-  correctionMine: { alignSelf: 'stretch' },
-  correctionHead: {
-    alignItems: 'center',
-    borderBottomColor: colors.success,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    gap: 7,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  correctionLabel: { ...font.heading, color: colors.success, fontSize: 13 },
-  correctionBody: { paddingHorizontal: 14, paddingVertical: 13 },
-  correctionOriginal: {
-    ...font.label,
     color: colors.textMuted,
-    fontWeight: '400',
-    lineHeight: 21,
-    textDecorationLine: 'line-through',
-  },
-  correctionText: {
-    ...font.body,
-    color: colors.text,
     fontWeight: '600',
-    marginTop: 6,
-    lineHeight: 22,
+    // Required for the radius to clip the background on a Text.
+    overflow: 'hidden',
+    paddingHorizontal: spacing.md,
+    paddingVertical: 4,
   },
-  correctionNote: {
-    ...font.label,
-    borderTopColor: colors.success,
-    borderTopWidth: 1,
-    color: colors.textMuted,
-    fontWeight: '400',
-    lineHeight: 20,
-    marginTop: 11,
-    paddingTop: 10,
+  jump: {
+    ...cardShadow,
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.pill,
+    bottom: spacing.lg,
+    flexDirection: 'row',
+    gap: 5,
+    height: 40,
+    justifyContent: 'center',
+    minWidth: 40,
+    paddingHorizontal: spacing.md,
+    position: 'absolute',
+    right: spacing.lg,
   },
+  jumpCount: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
+  older: { paddingVertical: spacing.md },
   correctingBanner: {
     backgroundColor: colors.successBg,
     borderTopColor: colors.success,
@@ -792,7 +736,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     justifyContent: 'center',
     width: 46,
   },
-  caption: { marginTop: spacing.xs },
   recording: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -814,14 +757,12 @@ function messageTypeLabel(type: MessageDto['type']): string {
   return 'Message'
 }
 
-/** Pixels from the top at which the next page of history is requested. */
-const OLDER_MESSAGES_THRESHOLD = 80
-
 /**
- * How far off the bottom still counts as "following the conversation".
+ * How far off the bottom still counts as "following the conversation", and so
+ * how far the reader must scroll before the jump button appears.
  *
- * Wider than the list's own padding so a settled `scrollToEnd` still reads as
- * "at the bottom", and far narrower than a deliberate scroll back through the
- * history — which is the gesture this has to stop stealing.
+ * Wide enough that a rubber-band overscroll or a settling animation does not
+ * flash the button, narrow enough that a deliberate scroll into the history
+ * shows it at once.
  */
 const BOTTOM_ANCHOR_SLACK = 120
