@@ -1,4 +1,4 @@
-export const MESSAGE_ACTION_IDS = ['copy', 'translate', 'correct', 'report'] as const
+export const MESSAGE_ACTION_IDS = ['reply', 'copy', 'translate', 'correct', 'report'] as const
 export type MessageActionId = (typeof MESSAGE_ACTION_IDS)[number]
 
 export interface MessageAction {
@@ -29,9 +29,14 @@ export interface MessageActionContext {
 export function messageActionsFor(context: MessageActionContext): MessageAction[] {
   const actions: MessageAction[] = []
 
-  // Reply, edit, react, star, pin and delete are deliberately absent: each
-  // needs a field on `Message` and a way to mutate one that already exists,
-  // which is one piece of plumbing they should share rather than four.
+  // Every message can be answered, including a captionless voice note — the
+  // quote carries a label for those rather than a body. First in the list
+  // because on web it is the only way in: the swipe gesture is native-only.
+  actions.push({ id: 'reply', label: 'Reply', icon: 'arrow-undo-outline' })
+
+  // Edit, react, star, pin and delete are still absent: each needs a field on
+  // `Message` and a way to mutate one that already exists, which is one piece
+  // of plumbing they should share rather than four.
   if (context.hasBody) {
     actions.push({ id: 'copy', label: 'Copy', icon: 'copy-outline' })
   }

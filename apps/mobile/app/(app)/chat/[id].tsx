@@ -20,6 +20,7 @@ import {
   uploadMessageMedia,
   useMe,
   useMessages,
+  useMessageWindow,
   useReportUser,
   useTranslate,
   type MessageDto,
@@ -45,13 +46,16 @@ import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { messagesNewestFirst } from '../../../src/lib/messageCache'
 import { dayLabel, messageRows, type MessageRow } from '../../../src/lib/messageGroups'
+import { planJump } from '../../../src/lib/messageJump'
 import { makeStyles, useTheme } from '../../../src/lib/theme'
 
 export default function ChatScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
 
-  const { id } = useLocalSearchParams<{ id: string }>()
+  // `at` is the single entry point for "open this thread at that message": a
+  // tapped quote uses it, and so will the pinned banner and the starred list.
+  const { id, at } = useLocalSearchParams<{ id: string; at?: string }>()
   const conversationId = id ?? ''
   const me = useMe()
   const queryClient = useQueryClient()
@@ -72,13 +76,28 @@ export default function ChatScreen() {
    * visibility and, via its position in `items`, as the count on it.
    */
   const [awayFrom, setAwayFrom] = useState<string | null>(null)
+  const [replyingTo, setReplyingTo] = useState<MessageDto | null>(null)
+  /**
+   * The message a jump is centred on, or null while the live thread is showing.
+   *
+   * The window is a *separate* cache rather than the live query paged in both
+   * directions — see `useMessageWindow`. Which one is on screen is the only
+   * difference between the two modes.
+   */
+  const [jumpAnchor, setJumpAnchor] = useState<string | null>(at ?? null)
+  const [highlighted, setHighlighted] = useState<string | null>(null)
   const translateApi = useTranslate()
   const report = useReportUser()
   const recorder = useVoiceRecorder()
   const [sendingMedia, setSendingMedia] = useState(false)
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const items = useMemo(() => messagesNewestFirst(messages.data), [messages.data])
+  const windowed = useMessageWindow(conversationId, jumpAnchor)
+  // One of the two, never a merge of them: a window that has not paged to the
+  // tail describes a different slice of the thread than the live query does.
+  const thread = jumpAnchor ? windowed : messages
+
+  const items = useMemo(() => messagesNewestFirst(thread.data), [thread.data])
   const rows = useMemo(() => messageRows(items), [items])
   // Newest first, so the anchor's index *is* how many arrived while away.
   const missed = awayFrom
@@ -88,8 +107,8 @@ export default function ChatScreen() {
       )
     : 0
   const state = listState({
-    isPending: messages.isPending,
-    isError: messages.isError,
+    isPending: thread.isPending,
+    isError: thread.isError,
     itemCount: items.length,
   })
   // From the participant list, not from the messages: a thread nobody has
@@ -221,10 +240,18 @@ export default function ChatScreen() {
         })
         setCorrecting(null)
       } else {
-        await emitWithAck(socket, 'message:send', { conversationId, body })
+        await emitWithAck(socket, 'message:send', {
+          conversationId,
+          body,
+          ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+        })
+        setReplyingTo(null)
       }
       setDraft('')
       notifyTyping(false)
+      // Sending is a statement about the live conversation, so it ends a
+      // detour into the history rather than posting into the middle of it.
+      setJumpAnchor(null)
       // Inverted, so the newest message is offset 0.
       listRef.current?.scrollToOffset({ offset: 0, animated: true })
       setAwayFrom(null)
@@ -284,7 +311,9 @@ export default function ChatScreen() {
     if (actions.length === 0) return
 
     const picked = await openMessageMenu(message.body || messageTypeLabel(message.type), actions)
-    if (picked === 'copy') {
+    if (picked === 'reply') {
+      setReplyingTo(message)
+    } else if (picked === 'copy') {
       await Clipboard.setStringAsync(message.body)
       showToast('Copied')
     } else if (picked === 'translate') {
@@ -296,6 +325,57 @@ export default function ChatScreen() {
       await reportMessage(message)
     }
   }
+
+  /**
+   * Tapping a quote.
+   *
+   * `planJump` decides between scrolling and fetching, and the common case is
+   * scrolling — most replies answer something a few rows up. `rowsRef` keeps
+   * this handler stable so it does not defeat `MessageBubble`'s memo, the same
+   * trick `onLongPress` uses below.
+   */
+  const rowsRef = useRef(rows)
+  useEffect(() => {
+    rowsRef.current = rows
+  })
+
+  const flash = useCallback((messageId: string) => {
+    setHighlighted(messageId)
+    setTimeout(() => setHighlighted((current) => (current === messageId ? null : current)), 1400)
+  }, [])
+
+  const onJumpTo = useCallback(
+    (messageId: string) => {
+      const plan = planJump(rowsRef.current, messageId)
+      if (plan.kind === 'scroll') {
+        listRef.current?.scrollToIndex({ index: plan.index, viewPosition: 0.5, animated: true })
+      } else {
+        setJumpAnchor(plan.anchorId)
+      }
+      flash(messageId)
+    },
+    [flash],
+  )
+
+  const onReply = useCallback((message: MessageDto) => setReplyingTo(message), [])
+
+  /**
+   * Centre the window on what it was opened for, once — not on every page it
+   * loads afterwards, or paging further back would keep yanking the reader
+   * to the anchor.
+   */
+  const centred = useRef<string | null>(null)
+  useEffect(() => {
+    if (!jumpAnchor) {
+      centred.current = null
+      return
+    }
+    if (centred.current === jumpAnchor) return
+    const index = rows.findIndex((row) => row.kind === 'message' && row.key === jumpAnchor)
+    if (index < 0) return
+    centred.current = jumpAnchor
+    listRef.current?.scrollToIndex({ index, viewPosition: 0.5, animated: false })
+  }, [jumpAnchor, rows])
 
   /**
    * Referentially stable for the life of the screen, which is what keeps
@@ -412,15 +492,36 @@ export default function ChatScreen() {
              * `onStartReached`, which react-native-web's FlatList does not have.
              */
             onEndReached={() => {
-              if (messages.hasNextPage && !messages.isFetchingNextPage) {
-                void messages.fetchNextPage()
+              if (thread.hasNextPage && !thread.isFetchingNextPage) {
+                void thread.fetchNextPage()
               }
             }}
             onEndReachedThreshold={0.4}
             /** Footer, not header: inverted, the footer is what sits on top. */
             ListFooterComponent={
-              messages.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
+              thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
             }
+            /**
+             * Mandatory, not defensive: bubbles are variable height and there
+             * is no `getItemLayout`, so `scrollToIndex` throws outright on a
+             * row the list has not measured. Nudging to an estimate and asking
+             * again is the documented recovery.
+             */
+            onScrollToIndexFailed={(info) => {
+              listRef.current?.scrollToOffset({
+                offset: info.averageItemLength * info.index,
+                animated: false,
+              })
+              setTimeout(
+                () =>
+                  listRef.current?.scrollToIndex({
+                    index: info.index,
+                    viewPosition: 0.5,
+                    animated: false,
+                  }),
+                120,
+              )
+            }}
             onScroll={({ nativeEvent }) => {
               // Nothing to measure against the content height any more: the
               // bottom of an inverted list is offset 0.
@@ -444,14 +545,33 @@ export default function ChatScreen() {
                   partnerName={partner?.displayName ?? 'them'}
                   translation={translations[row.message._id]}
                   translating={translating === row.message._id}
+                  replyToMine={row.message.replyTo?.senderId === me.data?._id}
+                  highlighted={highlighted === row.message._id}
                   onLongPress={onLongPress}
+                  onReply={onReply}
+                  onJumpTo={onJumpTo}
                 />
               )
             }
           />
         )}
 
-        {awayFrom !== null ? (
+        {/*
+          A window is a detour, and the way back has to be obvious — otherwise
+          the only exit is sending a message or leaving the screen.
+        */}
+        {jumpAnchor !== null ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => setJumpAnchor(null)}
+            style={styles.backToLatest}
+          >
+            <Feather name="arrow-down-circle" size={15} color={colors.primaryText} />
+            <Text style={styles.backToLatestText}>Back to latest</Text>
+          </Pressable>
+        ) : null}
+
+        {awayFrom !== null && jumpAnchor === null ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={
@@ -476,6 +596,30 @@ export default function ChatScreen() {
         truncated to a line: a correction is an edit, and an edit made from a
         half-remembered original is how a wrong one gets sent.
       */}
+      {/*
+        Sibling of the correcting banner below, and deliberately quieter: a
+        reply is the ordinary case and a correction is the teaching one, so the
+        correction keeps the success colour and this gets the accent edge.
+      */}
+      {replyingTo && !correcting ? (
+        <View style={styles.replyingBanner}>
+          <View style={styles.replyingBar} />
+          <View style={styles.replyingText}>
+            <Text style={styles.replyingTitle} numberOfLines={1}>
+              {isMine(replyingTo)
+                ? 'Replying to yourself'
+                : `Replying to ${partner?.displayName ?? 'them'}`}
+            </Text>
+            <Text style={styles.replyingPreview} numberOfLines={1}>
+              {replyingTo.body || messageTypeLabel(replyingTo.type)}
+            </Text>
+          </View>
+          <Pressable onPress={() => setReplyingTo(null)} hitSlop={8}>
+            <Text style={styles.replyingCancel}>Cancel</Text>
+          </Pressable>
+        </View>
+      ) : null}
+
       {correcting ? (
         <View style={styles.correctingBanner}>
           <View style={styles.correctingHead}>
@@ -662,6 +806,40 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     right: spacing.lg,
   },
   jumpCount: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
+  backToLatest: {
+    ...cardShadow,
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 7,
+    position: 'absolute',
+    top: spacing.md,
+  },
+  backToLatestText: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
+  replyingBanner: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+  },
+  replyingBar: {
+    alignSelf: 'stretch',
+    backgroundColor: colors.accent,
+    borderRadius: radius.pill,
+    width: 3,
+  },
+  replyingText: { flex: 1, gap: 1, minWidth: 0 },
+  replyingTitle: { ...font.caption, color: colors.accent, fontWeight: '700' },
+  replyingPreview: { ...font.caption, color: colors.textMuted },
+  replyingCancel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
   older: { paddingVertical: spacing.md },
   correctingBanner: {
     backgroundColor: colors.successBg,

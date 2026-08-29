@@ -25,7 +25,12 @@ function message(id: string, senderId = THEM, deliveredAt?: string): MessageDto 
 
 function pages(...groups: MessageDto[][]): InfiniteData<MessagePageDto> {
   return {
-    pages: groups.map((items) => ({ items, nextCursor: null, participants: [ME, THEM] })),
+    pages: groups.map((items) => ({
+      items,
+      nextCursor: null,
+      prevCursor: null,
+      participants: [ME, THEM],
+    })),
     pageParams: groups.map((_, i) => (i === 0 ? '' : 'c')),
   }
 }
@@ -64,6 +69,20 @@ describe('appendIncomingMessage', () => {
     const data = pages([message('new1')], [message('old1')])
     const next = appendIncomingMessage(data, message('fresh'))
     expect(messagesNewestFirst(next).map((m) => m._id)).toEqual(['fresh', 'new1', 'old1'])
+  })
+
+  /**
+   * A window opened mid-history is a slice, not the tail. Splicing a message
+   * sent seconds ago in after one from last year is the failure this prevents,
+   * and `prevCursor` is the only thing that distinguishes the two caches.
+   */
+  it('refuses to append to a window that has not reached the tail', () => {
+    const data = pages([message('old1')])
+    const windowed = {
+      ...data,
+      pages: [{ ...data.pages[0]!, prevCursor: 'newer-than-this' }],
+    }
+    expect(appendIncomingMessage(windowed, message('fresh'))).toBe(windowed)
   })
 
   /** The sender appended optimistically and the socket echoes to both. */

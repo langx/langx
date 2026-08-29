@@ -35,9 +35,20 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
 export const MESSAGE_TYPES = ['text', 'correction', 'image', 'audio'] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 
+/**
+ * How much of the quoted message a reply carries.
+ *
+ * The quote is a snapshot taken at send time, not a live read of the target —
+ * the same shape `correction.original` uses, and for the same reason: the
+ * target can be deleted, and a quote that empties itself rewrites what the
+ * conversation looks like it said.
+ */
+export const REPLY_PREVIEW_MAX_LENGTH = 140
+
 export const sendTextMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   body: messageBodySchema,
+  replyToMessageId: z.string().trim().min(1).optional(),
 })
 export type SendTextMessageInput = z.infer<typeof sendTextMessageSchema>
 
@@ -59,9 +70,23 @@ export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
 export const MESSAGE_PAGE_SIZE_DEFAULT = 30
 export const MESSAGE_PAGE_SIZE_MAX = 100
 
-/** `GET /conversations/:id/messages` — cursor pages backwards into history, newest page first. */
+/**
+ * `GET /conversations/:id/messages`.
+ *
+ * Three ways in, and they are mutually exclusive — enforced in the module
+ * rather than with `.refine()`, because a `ZodEffects` wrapper is not a plain
+ * object schema and `fastify-type-provider-zod` will not take one for a
+ * querystring.
+ *
+ * - neither: the newest page
+ * - `cursor`: the page *before* it, walking backwards into history
+ * - `after`: the page after it, walking forwards toward the newest
+ * - `around`: a window centred on one message, with a cursor out of both ends
+ */
 export const listMessagesQuerySchema = z.object({
   cursor: z.string().optional(),
+  after: z.string().optional(),
+  around: z.string().trim().min(1).optional(),
   limit: z.coerce
     .number()
     .int()
@@ -141,6 +166,7 @@ export const sendMediaMessageSchema = z.object({
   kind: z.enum(['image', 'audio']),
   media: messageMediaSchema,
   body: z.string().trim().max(MAX_MESSAGE_LENGTH).optional(),
+  replyToMessageId: z.string().trim().min(1).optional(),
 })
 export type SendMediaMessageInput = z.infer<typeof sendMediaMessageSchema>
 

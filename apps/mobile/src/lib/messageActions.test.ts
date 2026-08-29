@@ -12,12 +12,12 @@ const ids = (over: Partial<MessageActionContext> = {}) =>
 
 describe('messageActionsFor', () => {
   it('offers the full set on the other person`s text', () => {
-    expect(ids()).toEqual(['copy', 'translate', 'correct', 'report'])
+    expect(ids()).toEqual(['reply', 'copy', 'translate', 'correct', 'report'])
   })
 
   /** Correcting your own message, or reporting yourself, is not a thing. */
   it('leaves only copy on your own message', () => {
-    expect(ids({ mine: true })).toEqual(['copy'])
+    expect(ids({ mine: true })).toEqual(['reply', 'copy'])
   })
 
   it('does not offer to correct anything but text', () => {
@@ -37,7 +37,7 @@ describe('messageActionsFor', () => {
 
   /** A voice note without a caption has no text to copy or translate. */
   it('drops the text actions when there is no body', () => {
-    expect(ids({ type: 'audio', hasBody: false })).toEqual(['report'])
+    expect(ids({ type: 'audio', hasBody: false })).toEqual(['reply', 'report'])
   })
 
   it('always leaves a way to report the other person', () => {
@@ -46,8 +46,12 @@ describe('messageActionsFor', () => {
     }
   })
 
-  it('never offers a menu with nothing in it for your own captionless media', () => {
-    // Nothing to do: the caller must not open an empty sheet.
-    expect(ids({ mine: true, type: 'audio', hasBody: false })).toEqual([])
+  /**
+   * This used to return nothing at all, and the screen had to guard against
+   * opening an empty sheet. Reply applies to every message, including one with
+   * no text of its own, so there is always at least one row.
+   */
+  it('offers reply even on your own captionless media, where nothing else applies', () => {
+    expect(ids({ mine: true, type: 'audio', hasBody: false })).toEqual(['reply'])
   })
 })

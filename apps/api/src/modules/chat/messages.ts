@@ -4,6 +4,7 @@ import {
   isImageContentType,
   MAX_AUDIO_BYTES,
   MAX_IMAGE_BYTES,
+  REPLY_PREVIEW_MAX_LENGTH,
   type SendCorrectionInput,
   type SendMediaMessageInput,
   type SendTextMessageInput,
@@ -34,6 +35,42 @@ function previewFor(type: Message['type']): string {
   if (type === 'image') return '📷 Photo'
   if (type === 'audio') return '🎤 Voice message'
   return ''
+}
+
+/**
+ * The quoted message, resolved once at send time.
+ *
+ * Scoped to the conversation exactly the way `sendCorrection` scopes its
+ * target: an id from another thread must read as "not found" rather than as a
+ * permission error, because the two are indistinguishable to someone guessing
+ * ids and only one of them confirms the message exists.
+ */
+async function resolveReplyTo(
+  db: Db,
+  conversation: Conversation,
+  replyToMessageId: string | undefined,
+): Promise<Message['replyTo'] | undefined> {
+  if (!replyToMessageId) return undefined
+
+  let targetId: ObjectId
+  try {
+    targetId = new ObjectId(replyToMessageId)
+  } catch {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed reply target id')
+  }
+
+  const target = await db
+    .collection<Message>(COLLECTIONS.messages)
+    .findOne({ _id: targetId, conversationId: conversation._id })
+  if (!target) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Reply target not found in this conversation')
+  }
+
+  return {
+    messageId: target._id,
+    senderId: target.senderId,
+    preview: (target.body || previewFor(target.type)).slice(0, REPLY_PREVIEW_MAX_LENGTH),
+  }
 }
 
 async function recordMessage(
@@ -83,6 +120,7 @@ export async function sendTextMessage(
   input: SendTextMessageInput,
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+  const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
 
   const message: Message = {
     _id: new ObjectId(),
@@ -90,6 +128,7 @@ export async function sendTextMessage(
     senderId,
     type: 'text',
     body: input.body,
+    ...(replyTo ? { replyTo } : {}),
     createdAt: new Date(),
   }
 
@@ -184,6 +223,8 @@ export async function sendMediaMessage(
     )
   }
 
+  const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
+
   const message: Message = {
     _id: new ObjectId(),
     conversationId: conversation._id,
@@ -191,6 +232,7 @@ export async function sendMediaMessage(
     type: input.kind,
     body: input.body ?? '',
     media: input.media,
+    ...(replyTo ? { replyTo } : {}),
     createdAt: new Date(),
   }
 
@@ -200,44 +242,152 @@ export async function sendMediaMessage(
 
 export interface MessagePage {
   items: Message[]
+  /** Feed to `cursor` for the page *before* this one. Null at the beginning of history. */
   nextCursor: string | null
+  /**
+   * Feed to `after` for the page *after* this one. Null means this page
+   * already reaches the live tail, which is what lets a client know whether a
+   * newly arrived message belongs in it.
+   */
+  prevCursor: string | null
   participants: string[]
+  /** Set only by `listMessagesAround`, so a client knows what to scroll to. */
+  anchorId?: string
 }
 
 /**
- * Newest page first, but each page's `items` come back oldest-first — a chat
- * UI appends `nextCursor`'s page above what's already rendered without
- * needing to reverse anything itself.
+ * Newest page first, but each page's `items` come back oldest-first.
+ *
+ * `cursor` walks backwards into history and `after` walks forwards toward the
+ * newest; only one of the two, and neither means "the newest page". Forwards
+ * exists for `listMessagesAround`'s window, which starts in the middle of a
+ * thread and has to be able to page in both directions to reach the tail.
  */
 export async function listMessages(
   db: Db,
   userId: string,
   conversationId: string,
-  query: { cursor?: string | undefined; limit: number },
+  query: { cursor?: string | undefined; after?: string | undefined; limit: number },
 ): Promise<MessagePage> {
+  if (query.cursor && query.after) {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Pass cursor or after, not both')
+  }
   const conversation = await assertConversationAccess(db, conversationId, userId)
   const messages = db.collection<Message>(COLLECTIONS.messages)
 
+  const forwards = Boolean(query.after)
   const filter: Document = { conversationId: conversation._id }
-  if (query.cursor) {
-    const { date, id } = decodeDateIdCursor(query.cursor)
-    filter.$or = [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
+  const boundary = query.after ?? query.cursor
+  if (boundary) {
+    const { date, id } = decodeDateIdCursor(boundary)
+    filter.$or = forwards
+      ? [{ createdAt: { $gt: date } }, { createdAt: date, _id: { $gt: id } }]
+      : [{ createdAt: { $lt: date } }, { createdAt: date, _id: { $lt: id } }]
   }
 
+  const direction = forwards ? 1 : -1
   const page = await messages
     .find(filter)
-    .sort({ createdAt: -1, _id: -1 })
+    .sort({ createdAt: direction, _id: direction })
     .limit(query.limit + 1)
     .toArray()
 
   const hasMore = page.length > query.limit
-  const items = hasMore ? page.slice(0, query.limit) : page
-  const oldest = items.at(-1)
-  const nextCursor = hasMore && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null
+  const window = hasMore ? page.slice(0, query.limit) : page
+  // Descending queries come back newest-first; the wire format is oldest-first.
+  const items = forwards ? window : window.reverse()
 
-  // The thread header needs the counterpart even before anyone has replied,
-  // and a one-sided thread has no message to read a partner id off.
-  return { items: items.reverse(), nextCursor, participants: conversation.participants }
+  const oldest = items[0]
+  const newest = items.at(-1)
+  return {
+    items,
+    // Only the direction actually being paged reports more: the caller already
+    // holds everything on the side it came from, and claiming otherwise would
+    // have an infinite query walk back over pages it has.
+    nextCursor:
+      !forwards && hasMore && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
+    prevCursor:
+      forwards && hasMore && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
+    // The thread header needs the counterpart even before anyone has replied,
+    // and a one-sided thread has no message to read a partner id off.
+    participants: conversation.participants,
+  }
+}
+
+/**
+ * A window centred on one message, for jumping to it.
+ *
+ * Two queries rather than one because a keyset cursor only walks one way: the
+ * anchor's neighbours on either side are two different scans off the same
+ * `(createdAt, _id)` key. Both cursors come back, so the window can then be
+ * paged in either direction until it meets the tail.
+ *
+ * Used by a reply's quote, and later by the pinned banner and the starred
+ * list — all three are "show me this message in its context".
+ */
+export async function listMessagesAround(
+  db: Db,
+  userId: string,
+  conversationId: string,
+  query: { around: string; limit: number },
+): Promise<MessagePage> {
+  const conversation = await assertConversationAccess(db, conversationId, userId)
+  const messages = db.collection<Message>(COLLECTIONS.messages)
+
+  let anchorId: ObjectId
+  try {
+    anchorId = new ObjectId(query.around)
+  } catch {
+    throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Malformed message id')
+  }
+
+  const anchor = await messages.findOne({ _id: anchorId, conversationId: conversation._id })
+  if (!anchor) {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Message not found in this conversation')
+  }
+
+  const half = Math.max(1, Math.floor(query.limit / 2))
+  const [olderPage, newerPage] = await Promise.all([
+    messages
+      .find({
+        conversationId: conversation._id,
+        $or: [
+          { createdAt: { $lt: anchor.createdAt } },
+          { createdAt: anchor.createdAt, _id: { $lt: anchor._id } },
+        ],
+      })
+      .sort({ createdAt: -1, _id: -1 })
+      .limit(half + 1)
+      .toArray(),
+    messages
+      .find({
+        conversationId: conversation._id,
+        $or: [
+          { createdAt: { $gt: anchor.createdAt } },
+          { createdAt: anchor.createdAt, _id: { $gt: anchor._id } },
+        ],
+      })
+      .sort({ createdAt: 1, _id: 1 })
+      .limit(half + 1)
+      .toArray(),
+  ])
+
+  const hasOlder = olderPage.length > half
+  const hasNewer = newerPage.length > half
+  const older = (hasOlder ? olderPage.slice(0, half) : olderPage).reverse()
+  const newer = hasNewer ? newerPage.slice(0, half) : newerPage
+
+  const items = [...older, anchor, ...newer]
+  const oldest = items[0]
+  const newest = items.at(-1)
+
+  return {
+    items,
+    nextCursor: hasOlder && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
+    prevCursor: hasNewer && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
+    participants: conversation.participants,
+    anchorId: anchor._id.toHexString(),
+  }
 }
 
 /**

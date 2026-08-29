@@ -32,6 +32,19 @@ export interface Message {
   type: MessageType
   /** Caption for an attachment, the whole message for text, the fix for a correction. */
   body: string
+  /**
+   * A snapshot of the message this one answers, not a live join.
+   *
+   * Same shape and same reason as `correction.original`: the target can be
+   * deleted, and a quote that empties itself would rewrite what the
+   * conversation looks like it said. `messageId` is kept so tapping the quote
+   * can still jump, and that jump is allowed to find nothing.
+   */
+  replyTo?: {
+    messageId: ObjectId
+    senderId: string
+    preview: string
+  }
   correction?: { targetMessageId: ObjectId; original: string; corrected: string; note?: string }
   media?: MessageMedia
   /**

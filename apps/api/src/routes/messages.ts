@@ -1,7 +1,13 @@
-import { listConversationsQuerySchema, listMessagesQuerySchema } from '@langx/shared'
+import { ERROR_CODES, listConversationsQuerySchema, listMessagesQuerySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
-import { listConversations, listMessages, markConversationRead } from '../modules/chat/messages'
+import {
+  listConversations,
+  listMessages,
+  listMessagesAround,
+  markConversationRead,
+} from '../modules/chat/messages'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -22,7 +28,23 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, reply) => {
       const { id } = request.params as { id: string }
-      const page = await listMessages(app.mongo.db, request.userId, id, request.query)
+      const { around, ...rest } = request.query
+      // Same path, same guard, same response shape — `around` only changes
+      // which way the cursor is anchored, so it does not earn a second route.
+      if (around !== undefined) {
+        if (rest.cursor !== undefined || rest.after !== undefined) {
+          throw new ApiError(
+            ERROR_CODES.VALIDATION_FAILED,
+            'Pass around on its own, without cursor or after',
+          )
+        }
+        const window = await listMessagesAround(app.mongo.db, request.userId, id, {
+          around,
+          limit: rest.limit,
+        })
+        return reply.send(window)
+      }
+      const page = await listMessages(app.mongo.db, request.userId, id, rest)
       return reply.send(page)
     },
   )

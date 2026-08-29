@@ -467,4 +467,165 @@ describe('Faz 5 — conversation/message history REST', () => {
       expect(profile?.quota.initiations).toHaveLength(1) // just the conversation they opened
     })
   })
+
+  describe('replies and the around window', () => {
+    async function thread(prefix: string, count: number) {
+      const a = await newUser(`${prefix}-a@example.com`)
+      const b = await newUser(`${prefix}-b@example.com`)
+      const { _id: conversationId } = await startConversation(a, b.userId, 'opening')
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const ids: string[] = []
+      for (let i = 1; i <= count; i++) {
+        const sender = i % 2 === 0 ? b : a
+        const { message } = await sendTextMessage(handle.db, sender.userId, {
+          conversationId,
+          body: `m${i}`,
+        })
+        ids.push(message._id.toHexString())
+      }
+      return { a, b, conversationId, ids }
+    }
+
+    it('snapshots the quoted message rather than joining to it', async () => {
+      const { a, b, conversationId, ids } = await thread('reply-snap', 2)
+      const { sendTextMessage } = await import('../modules/chat/messages')
+
+      const { message } = await sendTextMessage(handle.db, b.userId, {
+        conversationId,
+        body: 'answering that',
+        replyToMessageId: ids[0],
+      })
+
+      expect(message.replyTo?.messageId.toHexString()).toBe(ids[0])
+      expect(message.replyTo?.senderId).toBe(a.userId)
+      expect(message.replyTo?.preview).toBe('m1')
+    })
+
+    /** The reason it is a snapshot: the quote has to outlive its target. */
+    it('keeps the quote readable after the target is blanked', async () => {
+      const { b, conversationId, ids } = await thread('reply-outlive', 1)
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      const { message } = await sendTextMessage(handle.db, b.userId, {
+        conversationId,
+        body: 'answering',
+        replyToMessageId: ids[0],
+      })
+
+      const targetId = message.replyTo?.messageId
+      if (!targetId) throw new Error('the reply carried no snapshot to begin with')
+      await handle.db
+        .collection(COLLECTIONS.messages)
+        .updateOne({ _id: targetId }, { $set: { body: '' } })
+
+      const stored = await handle.db
+        .collection<{ replyTo?: { preview: string } }>(COLLECTIONS.messages)
+        .findOne({ _id: message._id })
+      expect(stored?.replyTo?.preview).toBe('m1')
+    })
+
+    it('refuses a reply target from another conversation', async () => {
+      const first = await thread('reply-cross-1', 1)
+      const second = await thread('reply-cross-2', 1)
+      const { sendTextMessage } = await import('../modules/chat/messages')
+
+      await expect(
+        sendTextMessage(handle.db, second.a.userId, {
+          conversationId: second.conversationId,
+          body: 'wrong thread',
+          replyToMessageId: first.ids[0],
+        }),
+      ).rejects.toMatchObject({ code: 'NOT_FOUND' })
+    })
+
+    it('centres the window on the anchor and offers a cursor both ways', async () => {
+      const { a, conversationId, ids } = await thread('around-centre', 40)
+      const anchor = ids[20]
+
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages?around=${anchor}&limit=10`,
+        headers: { cookie: a.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{
+        items: { _id: string; body: string }[]
+        nextCursor: string | null
+        prevCursor: string | null
+        anchorId: string
+      }>()
+
+      expect(body.anchorId).toBe(anchor)
+      expect(body.items.map((m) => m._id)).toContain(anchor)
+      // Older on one side, newer on the other, oldest-first on the wire.
+      const at = body.items.findIndex((m) => m._id === anchor)
+      expect(at).toBeGreaterThan(0)
+      expect(at).toBeLessThan(body.items.length - 1)
+      expect(body.nextCursor).not.toBeNull()
+      expect(body.prevCursor).not.toBeNull()
+    })
+
+    it('walks forwards to the tail with after, and says when it gets there', async () => {
+      const { a, conversationId, ids } = await thread('around-forward', 12)
+
+      const start = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages?around=${ids[0]}&limit=4`,
+        headers: { cookie: a.cookie },
+      })
+      let body = start.json<{
+        items: { body: string }[]
+        prevCursor: string | null
+      }>()
+
+      const seen = body.items.map((m) => m.body)
+      let guard = 0
+      while (body.prevCursor && guard++ < 10) {
+        const next = await app.inject({
+          method: 'GET',
+          url: `/conversations/${conversationId}/messages?after=${encodeURIComponent(body.prevCursor)}&limit=4`,
+          headers: { cookie: a.cookie },
+        })
+        expect(next.statusCode, next.body).toBe(200)
+        body = next.json<{ items: { body: string }[]; prevCursor: string | null }>()
+        seen.push(...body.items.map((m) => m.body))
+      }
+
+      // A null prevCursor is the claim that this page reaches the live tail,
+      // which is what a client trusts before splicing a new message into it.
+      expect(body.prevCursor).toBeNull()
+      expect(seen).toContain('m12')
+      expect(new Set(seen).size).toBe(seen.length)
+    })
+
+    it('reports no newer page on the default page, which is already the tail', async () => {
+      const { a, conversationId } = await thread('around-tail', 3)
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages`,
+        headers: { cookie: a.cookie },
+      })
+      expect(response.json<{ prevCursor: string | null }>().prevCursor).toBeNull()
+    })
+
+    it('refuses around together with cursor', async () => {
+      const { a, conversationId, ids } = await thread('around-both', 2)
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${conversationId}/messages?around=${ids[0]}&cursor=anything`,
+        headers: { cookie: a.cookie },
+      })
+      expect(response.statusCode).toBe(400)
+    })
+
+    it('404s an anchor that is not in this conversation', async () => {
+      const first = await thread('around-foreign-1', 1)
+      const second = await thread('around-foreign-2', 1)
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations/${second.conversationId}/messages?around=${first.ids[0]}`,
+        headers: { cookie: second.a.cookie },
+      })
+      expect(response.statusCode).toBe(404)
+    })
+  })
 })

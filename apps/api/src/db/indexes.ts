@@ -125,6 +125,22 @@ export const INDEXES: Partial<IndexSpec> = {
 
   [COLLECTIONS.messages]: [
     { key: { conversationId: 1, createdAt: -1 }, name: 'conversation_created' },
+    /**
+     * The same prefix with the tiebreak in the key, which the descending index
+     * above cannot supply.
+     *
+     * `listMessagesAround` scans forwards as well as backwards — its "newer
+     * than the anchor" half sorts `{ createdAt: 1, _id: 1 }` — and a compound
+     * index walks either way as long as every field reverses together. The
+     * two-field index does not contain `_id`, so the forwards half would fall
+     * back to an in-memory sort on a thread of any length.
+     *
+     * Added under a new name rather than by widening `conversation_created`:
+     * changing a live index's key in place is an `IndexOptionsConflict`, not a
+     * rebuild. The narrower one is now redundant and can be dropped once this
+     * has shipped.
+     */
+    { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_created_id' },
     { key: { senderId: 1, createdAt: -1 }, name: 'sender_created' },
     /**
      * Backs `markConversationRead`'s `updateMany`, which selects the unread
