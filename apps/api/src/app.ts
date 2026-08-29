@@ -140,8 +140,13 @@ export async function buildApp({
      *
      * Native was unaffected (no preflight), which is exactly why it went
      * unnoticed: the two platforms disagreed about whether the app worked.
+     *
+     * `PUT` joined the list for the same reason, one verb later: liking is an
+     * idempotent set, the browser refused the preflight, and the heart simply
+     * did not fill — no error, no server log, nothing to read. Anything added
+     * here has to be added *here* too.
      */
-    methods: ['GET', 'HEAD', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   })
 
   await app.register(rateLimit, {
