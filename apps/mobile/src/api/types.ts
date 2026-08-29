@@ -10,6 +10,12 @@
  */
 export type {
   BadgeSummary,
+  CreatePostCorrectionInput,
+  CreatePostInput,
+  FeedFilter,
+  FeedPage,
+  FeedPost,
+  PostCorrection,
   EarnedBadge,
   Leaderboard,
   LeaderboardEntry,

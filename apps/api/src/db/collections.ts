@@ -37,6 +37,13 @@ export const COLLECTIONS = {
   devices: 'devices',
   profileViews: 'profileViews',
   translationCache: 'translationCache',
+  /**
+   * The community feed. Separate from `messages` rather than a conversation
+   * with no second participant: a post has no pair, no read state and no
+   * delivery, and every index on `messages` is built around `conversationId`.
+   */
+  posts: 'posts',
+  postCorrections: 'postCorrections',
 
   // billing
   subscriptions: 'subscriptions',
