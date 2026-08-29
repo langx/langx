@@ -38,6 +38,10 @@ export default function ForgotPassword() {
     )
   }
 
+  // The same condition the button uses, so Enter can never submit a
+  // form the button refuses — nor fire twice while one is in flight.
+  const canSubmit = !loading && !!email
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -45,6 +49,8 @@ export default function ForgotPassword() {
     >
       <Text style={styles.title}>Reset your password</Text>
       <FormField
+        returnKeyType="go"
+        onSubmitEditing={() => canSubmit && void onSubmit()}
         label="Email"
         value={email}
         onChangeText={setEmail}

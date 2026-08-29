@@ -11,6 +11,8 @@ import {
   Text,
   TextInput,
   View,
+  type NativeSyntheticEvent,
+  type TextInputKeyPressEventData,
 } from 'react-native'
 import {
   keys,
@@ -35,6 +37,7 @@ import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
+import { shouldSubmitOnEnter } from '../../../src/lib/submitOnEnter'
 import { messageActionsFor } from '../../../src/lib/messageActions'
 import { openMessageMenu } from '../../../src/lib/messageMenu'
 import { goBackTo } from '../../../src/lib/navigation'
@@ -479,7 +482,26 @@ export default function ChatScreen() {
             placeholderTextColor={colors.textMuted}
             style={styles.input}
             multiline
-            onSubmitEditing={() => void send()}
+            /**
+             * Web only, and it has to be a key handler: `multiline` is a
+             * `<textarea>` in the browser, where `onSubmitEditing` never
+             * fires — the handler that used to be here had never run. On
+             * native the return key inserts a newline and the send button is
+             * the way to send, which is what people expect there.
+             */
+            {...(Platform.OS === 'web'
+              ? {
+                  onKeyPress: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
+                    const { key, shiftKey } = event.nativeEvent as TextInputKeyPressEventData & {
+                      shiftKey?: boolean
+                    }
+                    if (!shouldSubmitOnEnter(key, shiftKey === true)) return
+                    // Otherwise the newline lands in the box behind the send.
+                    event.preventDefault()
+                    void send()
+                  },
+                }
+              : {})}
           />
           {/* The button becomes a microphone when there is nothing to send,
               which is the gesture people already expect from a chat app. */}

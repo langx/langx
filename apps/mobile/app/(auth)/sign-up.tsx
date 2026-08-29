@@ -36,6 +36,10 @@ export default function SignUp() {
     router.replace({ pathname: '/(auth)/check-email', params: { email } })
   }
 
+  // The same condition the button uses, so Enter can never submit a
+  // form the button refuses — nor fire twice while one is in flight.
+  const canSubmit = !loading && !!name && !!email && !!password
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -44,8 +48,17 @@ export default function SignUp() {
       <Text style={styles.title}>Create your account</Text>
       <Text style={styles.subtitle}>You must be {MINIMUM_AGE}+ to use LangX.</Text>
 
-      <FormField label="Name" value={name} onChangeText={setName} autoComplete="name" />
       <FormField
+        label="Name"
+        value={name}
+        onChangeText={setName}
+        autoComplete="name"
+        returnKeyType="go"
+        onSubmitEditing={() => canSubmit && void onSubmit()}
+      />
+      <FormField
+        returnKeyType="go"
+        onSubmitEditing={() => canSubmit && void onSubmit()}
         label="Email"
         value={email}
         onChangeText={setEmail}
@@ -54,6 +67,8 @@ export default function SignUp() {
         autoComplete="email"
       />
       <FormField
+        returnKeyType="go"
+        onSubmitEditing={() => canSubmit && void onSubmit()}
         label="Password"
         value={password}
         onChangeText={setPassword}
