@@ -95,6 +95,41 @@ export async function recordActivity(
   return { ...result, partners: result.partners ?? [], perPartner: result.perPartner ?? {} }
 }
 
+/** Number of days the profile chart shows, and so the length of `summary.week`. */
+export const ACTIVITY_WEEK_DAYS = 7
+
+/**
+ * The last `ACTIVITY_WEEK_DAYS` UTC days ending at `at`, oldest first.
+ *
+ * By `_id` rather than a `{ userId, day: { $gte } }` range: `_id` is
+ * `<userId>:<day>` and already unique-indexed, so seven point lookups need no
+ * new compound index for a query that runs once per profile view. Missing days
+ * come back as zero rows — see the note on `tokenSummarySchema.week`.
+ */
+export async function readActivityWeek(
+  db: Db,
+  userId: string,
+  at: Date = new Date(),
+): Promise<{ day: string; messages: number; corrections: number }[]> {
+  const days = Array.from({ length: ACTIVITY_WEEK_DAYS }, (_, i) => {
+    const date = new Date(at)
+    date.setUTCDate(date.getUTCDate() - (ACTIVITY_WEEK_DAYS - 1 - i))
+    return utcDayKey(date)
+  })
+
+  const docs = await db
+    .collection<DailyActivity>(COLLECTIONS.dailyActivity)
+    .find({ _id: { $in: days.map((day) => dailyActivityId(userId, day)) } })
+    .toArray()
+  const byDay = new Map(docs.map((doc) => [doc.day, doc]))
+
+  return days.map((day) => ({
+    day,
+    messages: byDay.get(day)?.messages ?? 0,
+    corrections: byDay.get(day)?.corrections ?? 0,
+  }))
+}
+
 export async function readActivity(
   db: Db,
   userId: string,

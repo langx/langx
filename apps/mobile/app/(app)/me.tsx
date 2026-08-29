@@ -1,5 +1,5 @@
 import { countryFlag, formatAccountAge, getCountry, type Gender } from '@langx/shared'
-import { Ionicons } from '@expo/vector-icons'
+import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import {
@@ -14,19 +14,17 @@ import {
 import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
 import { LanguageCards } from '../../src/components/LanguageCards'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
-import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import { TierBadge } from '../../src/components/TierBadge'
+import { WeeklyChart } from '../../src/components/WeeklyChart'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
+import { Card } from '../../src/components/ui/Card'
 import { Chip } from '../../src/components/ui/Chip'
+import { ListRow } from '../../src/components/ui/ListRow'
 import { Screen } from '../../src/components/ui/Screen'
-import { confirmAlert } from '../../src/lib/alert'
-import { authClient } from '../../src/lib/auth-client'
-import { authLandingHref } from '../../src/lib/authLanding'
-import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
+import { StatTile } from '../../src/components/ui/StatTile'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { showToast } from '../../src/lib/toast'
 
 /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
 function countryLabel(code: string): string {
@@ -39,17 +37,6 @@ const GENDER_LABELS: Record<Gender, string> = {
   male: 'Male',
   other: 'Other',
   undisclosed: '',
-}
-
-function Stat({ label, value, tone }: { label: string; value: string; tone?: string }) {
-  const styles = useStyles()
-
-  return (
-    <View style={styles.stat}>
-      <Text style={[styles.statValue, tone ? { color: tone } : null]}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-    </View>
-  )
 }
 
 export default function MeScreen() {
@@ -76,32 +63,8 @@ export default function MeScreen() {
 
   const profile = me.data
   const balance = wallet.data?.balance ?? 0
-
-  async function signOut(): Promise<void> {
-    // Sign out sits under the profile, one mis-tap away from everything on it.
-    // Asking costs a tap; not asking costs a session and, on a device that
-    // never saved the password, whatever it takes to get back in.
-    const yes = await confirmAlert({
-      title: 'Sign out?',
-      message: 'You can sign back in with the same account whenever you like.',
-      confirmLabel: 'Sign out',
-    })
-    if (!yes) return
-
-    // Before the session ends, not after: once signed out the request has no
-    // credentials and the token would stay attached to the account, still
-    // receiving its messages on a device nobody is signed into.
-    await unregisterPushToken()
-    await authClient.signOut()
-    // Naming sign-in directly is what made "Show intro again" look broken:
-    // `(auth)/index` is the only screen that reads the flag, and this route
-    // never went through it.
-    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
-    // After the replace, and it still arrives: `ToastHost` lives above the
-    // navigator. Without this the whole thing reads as a screen that navigated
-    // by itself rather than as a session that ended.
-    showToast('Signed out — your session has ended.')
-  }
+  const summary = xp.data
+  const viewerPage = viewers.data?.pages[0]
 
   /** Everything on this screen comes from a different query. */
   function refresh(): void {
@@ -110,91 +73,101 @@ export default function MeScreen() {
 
   return (
     <Screen scroll onRefresh={refresh} refreshing={me.isRefetching}>
-      {/*
-        Settings used to be a button below the token store, at the bottom of a
-        screen that scrolls for a while — reachable, but only by someone who
-        already knew it was there. It is the only way into that screen, so it
-        gets the corner instead.
-      */}
-      <View style={styles.topBar}>
+      <View style={styles.hero}>
+        <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
+        <View style={styles.heroText}>
+          <Text style={styles.name} numberOfLines={1}>
+            {profile.displayName}
+          </Text>
+          <Text style={styles.handle} numberOfLines={1}>
+            @{profile.handle} · registered {formatAccountAge(new Date(profile.createdAt))}
+          </Text>
+          {/*
+            The same badges other people already see on your profile. Yours
+            showed name and handle only, so the one profile you cannot look at
+            from outside was also the one that told you least about itself.
+          */}
+          <View style={styles.badges}>
+            <Chip label={String(new Date().getFullYear() - profile.birthYear)} />
+            {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
+            {profile.gender !== 'undisclosed' ? (
+              <Chip label={GENDER_LABELS[profile.gender]} />
+            ) : null}
+            <TierBadge tier={tier} />
+          </View>
+        </View>
+        {/*
+          Settings used to be a button below the token store, at the bottom of a
+          screen that scrolls for a while — reachable, but only by someone who
+          already knew it was there. It is the only way into that screen, so it
+          gets the corner instead.
+        */}
         <Pressable
           onPress={() => router.push('/(app)/settings')}
           hitSlop={12}
           accessibilityRole="button"
           accessibilityLabel="Settings"
+          style={({ pressed }) => [styles.settings, pressed && styles.pressed]}
         >
-          <Ionicons name="settings-outline" size={24} color={colors.textMuted} />
+          <Feather name="settings" size={19} color={colors.textMuted} />
         </Pressable>
       </View>
 
-      <View style={styles.hero}>
-        <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
-        <Text style={styles.name}>{profile.displayName}</Text>
-        <Text style={styles.handle}>@{profile.handle}</Text>
-        <Text style={styles.joined}>
-          Registered {formatAccountAge(new Date(profile.createdAt))}
-        </Text>
-        {/*
-          The same badges other people already see on your profile. Yours
-          showed name and handle only, so the one profile you cannot look at
-          from outside was also the one that told you least about itself.
-        */}
-        <View style={styles.badges}>
-          <Chip label={String(new Date().getFullYear() - profile.birthYear)} />
-          {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
-          {profile.gender !== 'undisclosed' ? <Chip label={GENDER_LABELS[profile.gender]} /> : null}
-          <TierBadge tier={tier} />
-        </View>
-      </View>
-
-      <PhotoGallery photos={profile.photos ?? []} />
-
-      <View style={styles.stats}>
-        <Stat label="Streak" value={`🔥 ${xp.data?.streak.current ?? 0}`} tone={colors.streak} />
-        <Stat label="Total tokens" value={String(xp.data?.tokens.all ?? 0)} />
+      <View style={styles.tiles}>
+        <StatTile tone="warning" label="Day streak" value={`🔥 ${summary?.streak.current ?? 0}`} />
+        <StatTile
+          tone="success"
+          label="Corrections"
+          value={String(summary?.lifetime.corrections ?? 0)}
+        />
         {/* The balance is the way into the store — a number nobody can act on
             reads as decoration, and the store had nowhere else to be reached
             from once it left this screen. */}
-        <Pressable
+        <StatTile
+          label="Tokens"
+          value={String(balance)}
           onPress={() => router.push('/(app)/store')}
-          accessibilityRole="button"
-          accessibilityLabel="Token store"
-          style={styles.flex}
-        >
-          <Stat label="Balance ›" value={String(balance)} tone={colors.accent} />
-        </Pressable>
+        />
       </View>
 
-      {/* Free users get the count and a locked list; that contrast is the
-          entire argument for Pro, so it is shown rather than hidden. */}
-      <Pressable style={styles.card} onPress={() => router.push('/(app)/viewers')}>
-        <View>
-          <Text style={styles.cardTitle}>Who viewed your profile</Text>
-          <Text style={styles.cardBody}>
-            {/* `total` and `locked` describe the whole list, so page one is
-                the authority on both. */}
-            {viewers.data?.pages[0]?.locked
-              ? `${viewers.data.pages[0].total} people looked — see who with Pro`
-              : `${viewers.data?.pages[0]?.total ?? 0} people`}
-          </Text>
-        </View>
-        <Text style={styles.chevron}>›</Text>
-      </Pressable>
+      {summary ? <WeeklyChart week={summary.week} /> : null}
+
+      <Card inset style={styles.card}>
+        {/* Free users get the count and a locked list; that contrast is the
+            entire argument for Pro, so it is shown rather than hidden. */}
+        <ListRow
+          title="Who viewed your profile"
+          subtitle={
+            /* `total` and `locked` describe the whole list, so page one is
+               the authority on both. */
+            viewerPage?.locked
+              ? `${viewerPage.total} people looked — see who with Pro`
+              : `${viewerPage?.total ?? 0} people`
+          }
+          onPress={() => router.push('/(app)/viewers')}
+        />
+        <ListRow
+          title="Badges"
+          subtitle="Streaks and corrections"
+          last
+          onPress={() => router.push('/(app)/leaderboard')}
+        />
+      </Card>
 
       {!isPro ? (
-        <Pressable style={[styles.card, styles.proCard]} onPress={() => openPaywall()}>
-          <View style={styles.flex}>
-            <Text style={styles.proTitle}>LangX Pro</Text>
-            <Text style={styles.cardBody}>
-              Unlimited new chats, advanced filters, translation and incognito browsing.
-            </Text>
-            <Text style={styles.quota}>
-              New chats left today: {quota.data?.initiations.remaining ?? '—'} /{' '}
-              {quota.data?.initiations.limit ?? '∞'}
-            </Text>
-          </View>
+        <Pressable style={styles.proCard} onPress={() => openPaywall()}>
+          <Text style={styles.proTitle}>✦ LangX Pro</Text>
+          <Text style={styles.proBody}>
+            Unlimited new chats, advanced filters, translation and incognito browsing.
+          </Text>
+          <Text style={styles.quota}>
+            New chats left today: {quota.data?.initiations.remaining ?? '—'} /{' '}
+            {quota.data?.initiations.limit ?? '∞'}
+          </Text>
         </Pressable>
       ) : null}
+
+      <PhotoGallery photos={profile.photos ?? []} />
 
       <LanguageCards native={profile.nativeLanguages} learning={profile.learning} />
 
@@ -203,53 +176,43 @@ export default function MeScreen() {
       <Button
         label="Edit profile"
         onPress={() => router.push('/(app)/edit-profile')}
-        style={styles.firstAction}
+        style={styles.edit}
       />
-      <Button label="Sign out" variant="secondary" onPress={signOut} style={styles.signOut} />
     </Screen>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   loading: { marginTop: spacing.xxl },
-  flex: { flex: 1 },
-  topBar: { alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end' },
-  hero: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.lg },
-  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' },
-  name: { ...font.title, color: colors.text, marginTop: spacing.sm },
-  handle: { ...font.caption, color: colors.textMuted },
-  joined: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
-  stats: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    flexDirection: 'row',
-    padding: spacing.md,
-  },
-  stat: { alignItems: 'center', flex: 1 },
-  statValue: { ...font.heading, color: colors.text },
-  statLabel: { ...font.caption, color: colors.textMuted },
-  card: {
+  hero: { alignItems: 'center', flexDirection: 'row', gap: 14, paddingVertical: spacing.sm },
+  heroText: { flex: 1, minWidth: 0 },
+  name: { ...font.heading, color: colors.text, fontSize: 23 },
+  handle: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 9 },
+  settings: {
     alignItems: 'center',
+    backgroundColor: colors.surface,
     borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    height: 38,
+    justifyContent: 'center',
+    width: 38,
+  },
+  pressed: { opacity: 0.7 },
+  tiles: { flexDirection: 'row', gap: 10, marginBottom: spacing.md, marginTop: spacing.md },
+  card: { marginTop: spacing.md },
+  proCard: {
+    backgroundColor: colors.surface,
+    borderColor: colors.pro,
     borderRadius: radius.lg,
     borderWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 2,
     marginTop: spacing.md,
-    padding: spacing.md,
+    padding: spacing.lg,
   },
-  proCard: { borderColor: colors.pro },
   proTitle: { ...font.body, color: colors.pro, fontWeight: '700' },
-  cardTitle: { ...font.body, color: colors.text, fontWeight: '600' },
-  cardBody: { ...font.caption, color: colors.textMuted, marginTop: 2 },
+  proBody: { ...font.caption, color: colors.textMuted },
   quota: { ...font.caption, color: colors.text, marginTop: spacing.sm },
-  chevron: { color: colors.textMuted, fontSize: 22 },
-  sectionTitle: {
-    ...font.label,
-    color: colors.textMuted,
-    marginBottom: spacing.sm,
-    marginTop: spacing.xl,
-  },
-  firstAction: { marginTop: spacing.xl },
-  signOut: { marginBottom: spacing.xxl, marginTop: spacing.sm },
+  edit: { marginBottom: spacing.xxl, marginTop: spacing.xl },
 }))

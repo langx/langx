@@ -1,7 +1,7 @@
 import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Linking, Platform, Pressable, StyleSheet, Switch, Text, View } from 'react-native'
+import { Linking, Platform, Text, View } from 'react-native'
 import { api, ApiRequestError } from '../../src/api/client'
 import {
   useIsPro,
@@ -11,7 +11,12 @@ import {
   useUpdateProfile,
 } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
+import { Card } from '../../src/components/ui/Card'
+import { ListRow } from '../../src/components/ui/ListRow'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
+import { Toggle } from '../../src/components/ui/Toggle'
 import { goBackTo } from '../../src/lib/navigation'
 import { appVersion } from '../../src/hooks/useAppConfig'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
@@ -21,36 +26,24 @@ import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_MESSAGE } from '../../src/lib/location'
-import { makeStyles } from '../../src/lib/theme'
+import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
+import {
+  makeStyles,
+  useTheme,
+  useThemePreference,
+  THEME_PREFERENCES,
+  type ThemePreference,
+} from '../../src/lib/theme'
 
-function Row({
-  title,
-  subtitle,
+const THEME_OPTIONS = THEME_PREFERENCES.map((value) => ({
   value,
-  onValueChange,
-  disabled,
-}: {
-  title: string
-  subtitle?: string
-  value: boolean
-  onValueChange: (next: boolean) => void
-  disabled?: boolean
-}) {
-  const styles = useStyles()
-
-  return (
-    <View style={[styles.row, disabled && styles.rowDisabled]}>
-      <View style={styles.rowText}>
-        <Text style={styles.rowTitle}>{title}</Text>
-        {subtitle ? <Text style={styles.rowSubtitle}>{subtitle}</Text> : null}
-      </View>
-      <Switch value={value} onValueChange={onValueChange} disabled={disabled} />
-    </View>
-  )
-}
+  label: value === 'auto' ? 'Auto' : value === 'light' ? 'Light' : 'Dark',
+}))
 
 export default function SettingsScreen() {
+  const { colors } = useTheme()
   const styles = useStyles()
+  const { preference, setPreference } = useThemePreference()
 
   const me = useMe()
   const update = useUpdateProfile()
@@ -68,6 +61,7 @@ export default function SettingsScreen() {
    * came back.
    */
   const sharingLocation = profile?.location !== undefined
+  const locationBusy = shareLocation.isPending || stopSharingLocation.isPending
 
   async function toggleLocation(next: boolean): Promise<void> {
     if (!next) {
@@ -126,6 +120,19 @@ export default function SettingsScreen() {
     }
   }
 
+  async function signOut(): Promise<void> {
+    const yes = await confirmAlert({
+      title: 'Sign out',
+      message: 'You will need to sign in again on this device.',
+      confirmLabel: 'Sign out',
+    })
+    if (!yes) return
+    // Before the session goes: unregistering needs one.
+    await unregisterPushToken()
+    await authClient.signOut()
+    router.replace(authLandingHref(await readBoolFlag(FLAG_KEYS.introSeen)))
+  }
+
   /**
    * Opens the carousel now, which is what the button says.
    *
@@ -138,97 +145,127 @@ export default function SettingsScreen() {
   function replayIntro(): void {
     router.push('/(app)/intro')
   }
+
   return (
     <Screen scroll>
-      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Back</Text>
-      </Pressable>
-      <Text style={styles.title}>Settings</Text>
+      <ScreenHeader title="Settings" onBack={() => goBackTo('/(app)/me')} />
 
       <Text style={styles.section}>Privacy</Text>
-      <Row
-        title="Show me in Discover"
-        subtitle="Turn this off and nobody will find you in Discover."
-        value={profile?.settings.discoverable ?? true}
-        onValueChange={(discoverable) =>
-          update.mutate({ settings: { ...profile?.settings, discoverable } })
-        }
-      />
-      <Row
-        title="Incognito browsing"
-        subtitle={isPro ? 'Look at profiles without leaving a trace.' : 'Pro feature.'}
-        value={profile?.privacy.incognito ?? false}
-        disabled={!isPro}
-        onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
-      />
-      <Row
-        title="Hide when I'm online"
-        subtitle={
-          isPro
-            ? 'People will not see the green dot on your profile. You can still see theirs.'
-            : 'Pro feature.'
-        }
-        value={profile?.privacy.hideOnlineStatus ?? false}
-        disabled={!isPro}
-        onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
-      />
-      <Row
-        title="Share my approximate location"
-        subtitle="Lets people nearby find you. Rounded to about a kilometre before it is stored — nobody is ever shown where you are, only roughly how far away."
-        value={sharingLocation}
-        disabled={shareLocation.isPending || stopSharingLocation.isPending}
-        onValueChange={(next) => void toggleLocation(next)}
-      />
-      {sharingLocation ? (
-        <Pressable
-          onPress={() => void toggleLocation(true)}
-          disabled={shareLocation.isPending}
-          hitSlop={8}
-          style={styles.subAction}
-        >
-          <Text style={styles.subActionLabel}>
-            {shareLocation.isPending ? 'Updating…' : 'Update my location'}
-          </Text>
-        </Pressable>
-      ) : null}
-      <Row
-        title="Notifications"
-        subtitle="Messages and the streak reminder."
-        value={profile?.settings.notifications ?? true}
-        onValueChange={(notifications) =>
-          update.mutate({ settings: { ...profile?.settings, notifications } })
-        }
-      />
+      <Card inset>
+        <ListRow
+          title="Show me in Discover"
+          subtitle="Turn this off and nobody will find you in Discover."
+          accessory={
+            <Toggle
+              accessibilityLabel="Show me in Discover"
+              value={profile?.settings.discoverable ?? true}
+              onValueChange={(discoverable) =>
+                update.mutate({ settings: { ...profile?.settings, discoverable } })
+              }
+            />
+          }
+        />
+        <ListRow
+          title="Browse incognito"
+          subtitle={isPro ? "You won't appear in their viewers." : '✦ Pro'}
+          subtitleColor={isPro ? undefined : colors.pro}
+          accessory={
+            <Toggle
+              accessibilityLabel="Browse incognito"
+              disabled={!isPro}
+              value={profile?.privacy.incognito ?? false}
+              onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
+            />
+          }
+        />
+        <ListRow
+          title="Hide when I'm online"
+          subtitle={isPro ? 'You can still see theirs.' : '✦ Pro'}
+          subtitleColor={isPro ? undefined : colors.pro}
+          accessory={
+            <Toggle
+              accessibilityLabel="Hide when I'm online"
+              disabled={!isPro}
+              value={profile?.privacy.hideOnlineStatus ?? false}
+              onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
+            />
+          }
+        />
+        <ListRow
+          title="Share rough location"
+          subtitle="Others see a distance bucket, never a point."
+          last={!sharingLocation}
+          accessory={
+            <Toggle
+              accessibilityLabel="Share rough location"
+              disabled={locationBusy}
+              value={sharingLocation}
+              onValueChange={(next) => void toggleLocation(next)}
+            />
+          }
+        />
+        {sharingLocation ? (
+          <ListRow
+            title="Update my location"
+            value={shareLocation.isPending ? 'Updating…' : undefined}
+            onPress={() => void toggleLocation(true)}
+            last
+          />
+        ) : null}
+      </Card>
 
-      <Button
-        label="Blocked people"
-        variant="secondary"
-        onPress={() => router.push('/(app)/blocked')}
-        style={styles.button}
-      />
+      <Text style={styles.section}>Notifications</Text>
+      <Card inset>
+        <ListRow
+          title="Messages and reminders"
+          subtitle="New messages, and one streak reminder a day."
+          last
+          accessory={
+            <Toggle
+              accessibilityLabel="Messages and reminders"
+              value={profile?.settings.notifications ?? true}
+              onValueChange={(notifications) =>
+                update.mutate({ settings: { ...profile?.settings, notifications } })
+              }
+            />
+          }
+        />
+      </Card>
 
-      <Button
-        label="Show intro again"
-        variant="secondary"
-        onPress={replayIntro}
-        style={styles.button}
-      />
-
-      <Text style={styles.section}>Your data</Text>
-      <Button
-        label="Download my data"
-        variant="secondary"
-        onPress={exportData}
-        style={styles.button}
-      />
+      {/*
+        A device preference rather than an account one, so it is deliberately
+        not in `profile.settings` — see `lib/theme/ThemeProvider`.
+      */}
+      <Text style={styles.section}>Appearance</Text>
+      <View style={styles.theme}>
+        <SegmentedControl<ThemePreference>
+          accessibilityLabel="Theme"
+          options={THEME_OPTIONS}
+          selected={[preference]}
+          onToggle={setPreference}
+        />
+      </View>
 
       <Text style={styles.section}>Account</Text>
-      <Pressable onPress={() => void confirmDelete()} disabled={busy} style={styles.delete}>
-        <Text style={styles.deleteText}>Delete my account</Text>
-      </Pressable>
-      <Text style={styles.deleteHint}>
-        Signing back in within {ACCOUNT_DELETION_GRACE_DAYS} days cancels the deletion.
-      </Text>
+      <Card inset>
+        <ListRow title="Blocked people" onPress={() => router.push('/(app)/blocked')} />
+        <ListRow title="Show intro again" onPress={replayIntro} />
+        <ListRow title="Export my data" onPress={() => void exportData()} />
+        <ListRow
+          title="Delete account"
+          subtitle={`Signing back in within ${ACCOUNT_DELETION_GRACE_DAYS} days cancels it.`}
+          destructive
+          last
+          onPress={busy ? undefined : () => void confirmDelete()}
+        />
+      </Card>
+
+      <Button
+        label="Sign out"
+        variant="secondary"
+        onPress={() => void signOut()}
+        style={styles.signOut}
+      />
 
       {/*
         The two things a support reply always has to ask for. v1 showed both on
@@ -236,58 +273,28 @@ export default function SettingsScreen() {
         started with two extra round trips.
       */}
       <Text style={styles.build} selectable>
-        LangX {appVersion()}
-        {profile ? ` · ${profile._id}` : ''}
+        LangX {appVersion()} · BSD-3 · open source
+        {profile ? `\n${profile._id}` : ''}
       </Text>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  backRow: { paddingTop: spacing.md },
-  subAction: { paddingBottom: spacing.sm },
-  subActionLabel: { ...font.caption, color: colors.accent },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   section: {
     ...font.label,
     color: colors.textMuted,
     marginBottom: spacing.sm,
     marginTop: spacing.xl,
+    paddingLeft: spacing.xs,
   },
-  row: {
-    alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
-  },
-  rowDisabled: { opacity: 0.5 },
-  rowText: { flex: 1 },
-  rowTitle: { ...font.body, color: colors.text },
-  rowSubtitle: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-  button: { marginTop: spacing.sm },
-  delete: {
-    alignItems: 'center',
-    borderColor: colors.danger,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    marginTop: spacing.xxl,
-    paddingVertical: spacing.md,
-  },
-  deleteText: { ...font.body, color: colors.danger, fontWeight: '700' },
+  theme: { paddingVertical: spacing.xs },
+  signOut: { marginTop: spacing.xl },
   build: {
     ...font.caption,
-    color: colors.textMuted,
-    marginTop: spacing.xxl,
-    textAlign: 'center',
-  },
-  deleteHint: {
-    ...font.caption,
-    color: colors.textMuted,
+    color: colors.textFaint,
     marginBottom: spacing.xxl,
-    marginTop: spacing.sm,
+    marginTop: spacing.lg,
     textAlign: 'center',
   },
 }))
