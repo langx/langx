@@ -1,5 +1,5 @@
 import { ActivityMap } from '../../src/components/ActivityMap'
-import { countryFlag, formatAccountAge, getCountry, type Gender } from '@langx/shared'
+import { countryFlag, getCountry } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
@@ -26,23 +26,19 @@ import { Screen } from '../../src/components/ui/Screen'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-
-/** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
-function countryLabel(code: string): string {
-  const country = getCountry(code)
-  return country ? `${countryFlag(country.code)} ${country.name}` : code
-}
-
-const GENDER_LABELS: Record<Gender, string> = {
-  female: 'Female',
-  male: 'Male',
-  other: 'Other',
-  undisclosed: '',
-}
+import { accountAgeLabel, genderLabel, useDisplayNames, useT } from '../../src/i18n'
 
 export default function MeScreen() {
   const { colors, layout } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
+
+  /** "🇹🇷 Türkiye", not "🇹🇷 TR" — the flag and the code say the same thing twice. */
+  const countryLabel = (code: string): string => {
+    const country = getCountry(code)
+    return country ? `${countryFlag(country.code)} ${names.country(country.code)}` : code
+  }
 
   const me = useMe()
   const xp = useTokens()
@@ -81,7 +77,10 @@ export default function MeScreen() {
             {profile.displayName}
           </Text>
           <Text style={styles.handle} numberOfLines={1}>
-            @{profile.handle} · registered {formatAccountAge(new Date(profile.createdAt))}
+            @{profile.handle}{' '}
+            {t('profile.registered', {
+              age: accountAgeLabel(t, new Date(profile.createdAt)),
+            })}
           </Text>
           {/*
             The same badges other people already see on your profile. Yours
@@ -92,7 +91,7 @@ export default function MeScreen() {
             <Chip label={String(new Date().getFullYear() - profile.birthYear)} />
             {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
             {profile.gender !== 'undisclosed' ? (
-              <Chip label={GENDER_LABELS[profile.gender]} />
+              <Chip label={genderLabel(t, profile.gender)} />
             ) : null}
             <TierBadge tier={tier} />
           </View>
@@ -107,7 +106,7 @@ export default function MeScreen() {
           onPress={() => router.push('/(app)/settings')}
           hitSlop={12}
           accessibilityRole="button"
-          accessibilityLabel="Settings"
+          accessibilityLabel={t('me.settings')}
           style={({ pressed }) => [styles.settings, pressed && styles.pressed]}
         >
           <Feather name="settings" size={19} color={colors.textMuted} />
@@ -115,17 +114,21 @@ export default function MeScreen() {
       </View>
 
       <View style={styles.tiles}>
-        <StatTile tone="warning" label="Day streak" value={`🔥 ${summary?.streak.current ?? 0}`} />
+        <StatTile
+          tone="warning"
+          label={t('me.dayStreak')}
+          value={`🔥 ${summary?.streak.current ?? 0}`}
+        />
         <StatTile
           tone="success"
-          label="Corrections"
+          label={t('me.corrections')}
           value={String(summary?.lifetime.corrections ?? 0)}
         />
         {/* The balance is the way into the store — a number nobody can act on
             reads as decoration, and the store had nowhere else to be reached
             from once it left this screen. */}
         <StatTile
-          label="Tokens"
+          label={t('me.tokens')}
           value={String(balance)}
           onPress={() => router.push('/(app)/store')}
         />
@@ -146,19 +149,19 @@ export default function MeScreen() {
         {/* Free users get the count and a locked list; that contrast is the
             entire argument for Pro, so it is shown rather than hidden. */}
         <ListRow
-          title="Who viewed your profile"
+          title={t('me.viewersTitle')}
           subtitle={
             /* `total` and `locked` describe the whole list, so page one is
                the authority on both. */
             viewerPage?.locked
-              ? `${viewerPage.total} people looked — see who with Pro`
-              : `${viewerPage?.total ?? 0} people`
+              ? t('me.viewersLocked', { count: viewerPage.total })
+              : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
           }
           onPress={() => router.push('/(app)/viewers')}
         />
         <ListRow
-          title="Badges"
-          subtitle="Streaks and corrections"
+          title={t('me.badges')}
+          subtitle={t('me.leaderboardSubtitle')}
           last
           onPress={() => router.push('/(app)/leaderboard')}
         />
@@ -166,12 +169,10 @@ export default function MeScreen() {
 
       {!isPro ? (
         <Pressable style={styles.proCard} onPress={() => openPaywall()}>
-          <Text style={styles.proTitle}>✦ LangX Pro</Text>
-          <Text style={styles.proBody}>
-            Unlimited new chats, advanced filters, translation and incognito browsing.
-          </Text>
+          <Text style={styles.proTitle}>{t('me.proTitle')}</Text>
+          <Text style={styles.proBody}>{t('me.proBody')}</Text>
           <Text style={styles.quota}>
-            New chats left today: {quota.data?.initiations.remaining ?? '—'} /{' '}
+            {t('me.newChatsLeft')} {quota.data?.initiations.remaining ?? '—'} /{' '}
             {quota.data?.initiations.limit ?? '∞'}
           </Text>
         </Pressable>
@@ -184,7 +185,7 @@ export default function MeScreen() {
       <DebugQuotaPanel />
 
       <Button
-        label="Edit profile"
+        label={t('me.editProfile')}
         onPress={() => router.push('/(app)/edit-profile')}
         style={styles.edit}
       />

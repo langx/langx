@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from 'react-native'
 import type { StoreOffer } from '../../lib/storeOffers'
+import { useT } from '../../i18n'
 import { makeStyles } from '../../lib/theme'
 
 /**
@@ -20,6 +21,7 @@ export function StoreRow({
   last?: boolean
   onBuy: (id: string) => void
 }) {
+  const t = useT()
   const styles = useStyles()
   const buyable = !offer.owned && offer.affordable && !pending
 
@@ -32,7 +34,9 @@ export function StoreRow({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={
-          offer.owned ? `${offer.title}, owned` : `Buy ${offer.title} for ${offer.price} tokens`
+          offer.owned
+            ? t('store.ownedAccessibility', { title: offer.title })
+            : t('store.buy', { title: offer.title, price: offer.price })
         }
         accessibilityState={{ disabled: !buyable }}
         disabled={!buyable}
@@ -47,7 +51,7 @@ export function StoreRow({
         ]}
       >
         <Text style={[styles.priceLabel, buyable && styles.buyableLabel]}>
-          {offer.owned ? 'Owned' : String(offer.price)}
+          {offer.owned ? t('store.owned') : String(offer.price)}
         </Text>
       </Pressable>
     </View>

@@ -5,6 +5,7 @@ import { NotificationPriming } from '../../src/components/NotificationPriming'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { makeStyles } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 
 /**
  * The end of the wizard, and three things at once: the moment of arrival, the
@@ -20,6 +21,7 @@ import { makeStyles } from '../../src/lib/theme'
  */
 export default function DoneStep() {
   const styles = useStyles()
+  const t = useT()
 
   const me = useMe()
   const handle = me.data?.handle
@@ -28,25 +30,21 @@ export default function DoneStep() {
     <Screen scroll>
       <View style={styles.hero}>
         <Text style={styles.emoji}>🎉</Text>
-        <Text style={styles.title}>You&apos;re in</Text>
+        <Text style={styles.title}>{t('onboarding.doneTitle')}</Text>
         <Text style={styles.subtitle}>
-          {handle ? `@${handle} is yours.` : 'Your profile is ready.'}
+          {handle ? t('onboarding.doneHandle', { handle }) : t('onboarding.doneReady')}
         </Text>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>What happens next</Text>
-        <Text style={styles.cardBody}>
-          Discover shows people who speak what you are learning and are learning what you speak. Say
-          hello to one of them — a first message is worth tokens, and it is the only thing standing
-          between you and a conversation.
-        </Text>
+        <Text style={styles.cardTitle}>{t('onboarding.whatNext')}</Text>
+        <Text style={styles.cardBody}>{t('onboarding.whatNextBody')}</Text>
       </View>
 
       <NotificationPriming />
 
       <Button
-        label="Find someone to talk to"
+        label={t('onboarding.findSomeone')}
         onPress={() => router.replace('/(app)/discover')}
         style={styles.cta}
       />

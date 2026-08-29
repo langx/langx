@@ -1,4 +1,4 @@
-import { LEVEL_SHORT_LABELS, LANGUAGE_LEVELS, getLanguage, type LanguageLevel } from '@langx/shared'
+import { LANGUAGE_LEVELS, type LanguageLevel } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
@@ -7,6 +7,7 @@ import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { makeStyles } from '../../src/lib/theme'
+import { levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
 
 /**
  * Step 1 of 3. Languages come first because they are the only answers the
@@ -15,6 +16,8 @@ import { makeStyles } from '../../src/lib/theme'
  */
 export default function LanguagesStep() {
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
 
   const draft = useOnboardingDraft()
   const [mode, setMode] = useState<'native' | 'learning'>('native')
@@ -53,10 +56,8 @@ export default function LanguagesStep() {
         ))}
         <Text style={styles.step}>1/4</Text>
       </View>
-      <Text style={styles.title}>Which languages do you speak?</Text>
-      <Text style={styles.subtitle}>
-        Your native language is what you can teach; what you're learning is who you'll match with.
-      </Text>
+      <Text style={styles.title}>{t('onboarding.languagesTitle')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.languagesBody')}</Text>
 
       <View style={styles.tabs}>
         <Pressable
@@ -64,7 +65,7 @@ export default function LanguagesStep() {
           style={[styles.tab, mode === 'native' && styles.tabActive]}
         >
           <Text style={[styles.tabLabel, mode === 'native' && styles.tabLabelActive]}>
-            Native · {draft.nativeLanguages.length}
+            {t('onboarding.native')} · {draft.nativeLanguages.length}
           </Text>
         </Pressable>
         <Pressable
@@ -72,7 +73,7 @@ export default function LanguagesStep() {
           style={[styles.tab, mode === 'learning' && styles.tabActive]}
         >
           <Text style={[styles.tabLabel, mode === 'learning' && styles.tabLabelActive]}>
-            Learning · {draft.learning.length}
+            {t('onboarding.learning')} · {draft.learning.length}
           </Text>
         </Pressable>
       </View>
@@ -96,12 +97,10 @@ export default function LanguagesStep() {
           />
           {draft.learning.length > 0 ? (
             <ScrollView style={styles.levels} keyboardShouldPersistTaps="handled">
-              <Text style={styles.levelsTitle}>Your level</Text>
+              <Text style={styles.levelsTitle}>{t('onboarding.yourLevel')}</Text>
               {draft.learning.map((entry) => (
                 <View key={entry.code} style={styles.levelRow}>
-                  <Text style={styles.levelLang}>
-                    {getLanguage(entry.code)?.name ?? entry.code}
-                  </Text>
+                  <Text style={styles.levelLang}>{names.language(entry.code)}</Text>
                   <View style={styles.levelChips}>
                     {LANGUAGE_LEVELS.map((level) => (
                       <Pressable
@@ -120,7 +119,7 @@ export default function LanguagesStep() {
                       </Pressable>
                     ))}
                   </View>
-                  <Text style={styles.levelHint}>{LEVEL_SHORT_LABELS[entry.level]}</Text>
+                  <Text style={styles.levelHint}>{levelShortLabel(t, entry.level)}</Text>
                 </View>
               ))}
             </ScrollView>
@@ -129,12 +128,12 @@ export default function LanguagesStep() {
       )}
 
       <View style={styles.hints}>
-        <Text style={styles.hint}>Up to 5</Text>
-        <Text style={styles.hint}>A language can&apos;t be both</Text>
+        <Text style={styles.hint}>{t('onboarding.upToFive')}</Text>
+        <Text style={styles.hint}>{t('onboarding.cannotBeBoth')}</Text>
       </View>
 
       <Button
-        label="Continue"
+        label={t('common.continue')}
         disabled={!canContinue}
         onPress={() => router.push('/(onboarding)/about-you')}
         style={styles.cta}

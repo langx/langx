@@ -1,4 +1,4 @@
-import { GENDERS, MINIMUM_AGE, type Gender } from '@langx/shared'
+import { GENDERS, MINIMUM_AGE } from '@langx/shared'
 import { router } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
 import { Button } from '../../src/components/ui/Button'
@@ -6,16 +6,11 @@ import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
 import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDraft'
 import { makeStyles } from '../../src/lib/theme'
-
-const GENDER_LABELS: Record<Gender, string> = {
-  female: 'Female',
-  male: 'Male',
-  other: 'Other',
-  undisclosed: 'Prefer not to say',
-}
+import { genderLabel, useT } from '../../src/i18n'
 
 export default function AboutYouStep() {
   const styles = useStyles()
+  const t = useT()
 
   const draft = useOnboardingDraft()
 
@@ -31,34 +26,34 @@ export default function AboutYouStep() {
   // retrying. It is not the check that matters.
   const ageError =
     draft.birthYear.length === 4 && yearLooksValid && !oldEnough
-      ? `LangX is for people aged ${MINIMUM_AGE} and over.`
+      ? t('onboarding.tooYoung', { age: MINIMUM_AGE })
       : undefined
 
   return (
     <Screen scroll>
       <Text style={styles.step}>2 / 4</Text>
-      <Text style={styles.title}>About you</Text>
+      <Text style={styles.title}>{t('onboarding.aboutYouTitle')}</Text>
 
       <FormField
-        label="Display name"
+        label={t('onboarding.displayName')}
         value={draft.displayName}
         onChangeText={(displayName) => updateDraft({ displayName })}
-        placeholder="Alex"
+        placeholder={t('onboarding.namePlaceholder')}
         autoCapitalize="words"
       />
 
       <FormField
-        label="Year of birth"
+        label={t('onboarding.yearOfBirth')}
         value={draft.birthYear}
         onChangeText={(birthYear) =>
           updateDraft({ birthYear: birthYear.replace(/\D/g, '').slice(0, 4) })
         }
-        placeholder="1996"
+        placeholder={t('onboarding.yearPlaceholder')}
         keyboardType="number-pad"
         {...(ageError ? { error: ageError } : {})}
       />
 
-      <Text style={styles.label}>Gender</Text>
+      <Text style={styles.label}>{t('onboarding.gender')}</Text>
       <View style={styles.genders}>
         {GENDERS.map((gender) => (
           <Pressable
@@ -67,7 +62,7 @@ export default function AboutYouStep() {
             style={[styles.gender, draft.gender === gender && styles.genderActive]}
           >
             <Text style={[styles.genderText, draft.gender === gender && styles.genderTextActive]}>
-              {GENDER_LABELS[gender]}
+              {genderLabel(t, gender)}
             </Text>
           </Pressable>
         ))}
@@ -79,21 +74,19 @@ export default function AboutYouStep() {
         searches on the app is a bad way to learn it.
       */}
       {draft.gender === 'undisclosed' ? (
-        <Text style={styles.genderNote}>
-          Choosing this keeps you out of gender-filtered searches.
-        </Text>
+        <Text style={styles.genderNote}>{t('onboarding.undisclosedNote')}</Text>
       ) : null}
 
       <FormField
-        label="About you (optional)"
+        label={t('onboarding.aboutYouOptional')}
         value={draft.bio}
         onChangeText={(bio) => updateDraft({ bio })}
-        placeholder="What do you like talking about?"
+        placeholder={t('onboarding.aboutYouPlaceholder')}
         multiline
       />
 
       <Button
-        label="Continue"
+        label={t('common.continue')}
         disabled={!canContinue}
         onPress={() => router.push('/(onboarding)/photo')}
         style={styles.cta}

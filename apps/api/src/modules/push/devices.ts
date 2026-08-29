@@ -1,6 +1,8 @@
 import {
+  DEFAULT_LOCALE,
   STREAK_REMINDER_LOCAL_HOUR,
   localDayKey,
+  type Locale,
   type PushKind,
   type PushPlatform,
   type RegisterDeviceInput,
@@ -14,6 +16,8 @@ export interface Device {
   userId: string
   pushToken: string
   platform: PushPlatform
+  /** Absent on devices registered before the app started sending one. */
+  locale?: Locale
   createdAt: Date
   updatedAt: Date
 }
@@ -33,7 +37,12 @@ export async function registerDevice(
   await db.collection<Device>(COLLECTIONS.devices).updateOne(
     { pushToken: input.pushToken },
     {
-      $set: { userId, platform: input.platform, updatedAt: now },
+      $set: {
+        userId,
+        platform: input.platform,
+        updatedAt: now,
+        ...(input.locale ? { locale: input.locale } : {}),
+      },
       $setOnInsert: { pushToken: input.pushToken, createdAt: now },
     },
     { upsert: true },
@@ -173,6 +182,29 @@ export async function sendPush(
 export async function tokensFor(db: Db, userId: string): Promise<string[]> {
   const devices = await db.collection<Device>(COLLECTIONS.devices).find({ userId }).toArray()
   return devices.map((d) => d.pushToken)
+}
+
+/**
+ * The same tokens, grouped by the language to word the notification in.
+ *
+ * One Expo request per group rather than per device: a person with a phone and
+ * a tablet in the same language is one send, and the two-language case — rare,
+ * and the whole reason the locale is on the device — is two.
+ *
+ * A device that predates the field falls back to English rather than to the
+ * account's language, because there is no account language: the app has never
+ * stored one, deliberately.
+ */
+export async function tokensByLocale(db: Db, userId: string): Promise<Map<Locale, string[]>> {
+  const devices = await db.collection<Device>(COLLECTIONS.devices).find({ userId }).toArray()
+  const grouped = new Map<Locale, string[]>()
+  for (const device of devices) {
+    const locale = device.locale ?? DEFAULT_LOCALE
+    const tokens = grouped.get(locale)
+    if (tokens) tokens.push(device.pushToken)
+    else grouped.set(locale, [device.pushToken])
+  }
+  return grouped
 }
 
 /**

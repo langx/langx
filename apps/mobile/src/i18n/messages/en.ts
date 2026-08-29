@@ -1,0 +1,775 @@
+/**
+ * English — the catalogue every other locale is typed against.
+ *
+ * Adding a key here without adding it to the seven files beside it is a
+ * typecheck failure, which is the point: a screen that silently falls back to
+ * English is unreadable to exactly the person it was translated for.
+ *
+ * Two conventions worth knowing before editing:
+ *
+ * - A value with a `count` in it is an object of CLDR plural categories, not a
+ *   string with a number glued on. English needs `one` and `other`; Russian
+ *   and Arabic need more, and a translator can only supply them if the shape
+ *   allows it.
+ * - Placeholders are `{name}`, substituted by `translate`. Never build a
+ *   sentence by concatenating a translated fragment with a value — word order
+ *   is not a constant across languages, and the fragment that reads fine after
+ *   a number in English lands before it in Turkish.
+ *
+ * One shape to avoid: a group whose only key is `other`. `Plural` is detected
+ * structurally, so such a group would be mistaken for a plural.
+ */
+export const en = {
+  common: {
+    /** With the chevron, for the back rows that draw no icon of their own. */
+    back: '‹ Back',
+    /** Without it, for anywhere an icon is already beside the word. */
+    backPlain: 'Back',
+    cancel: 'Cancel',
+    ok: 'OK',
+    save: 'Save',
+    tryAgain: 'Try again',
+    retry: 'Try again in a moment.',
+    checking: 'Checking…',
+    oneMoment: 'One moment…',
+    skip: 'Skip for now',
+    you: '(you)',
+    pro: '✦ Pro',
+    comingSoon: 'COMING SOON',
+    continue: 'Continue',
+    next: 'Next',
+    done: 'Done',
+    reset: 'Reset',
+    any: 'Any',
+    post: 'Post',
+    send: 'Send',
+    remove: 'Remove',
+    delete: 'Delete',
+    block: 'Block',
+    report: 'Report',
+    edit: 'Edit',
+    enable: 'Enable',
+    update: 'Update',
+  },
+
+  tabs: {
+    discover: 'Discover',
+    chats: 'Chats',
+    feed: 'Feed',
+    me: 'Me',
+  },
+
+  theme: {
+    section: 'Appearance',
+    label: 'Theme',
+    auto: 'Auto',
+    light: 'Light',
+    dark: 'Dark',
+  },
+
+  messageActions: {
+    reply: 'Reply',
+    correct: 'Correct',
+    translate: 'Translate',
+    copy: 'Copy',
+    delete: 'Delete',
+    edit: 'Edit',
+    star: 'Star',
+    unstar: 'Unstar',
+    pin: 'Pin',
+    unpin: 'Unpin',
+    report: 'Report',
+    correctedCannotEdit: 'Corrected — can’t be edited',
+  },
+
+  messageMeta: {
+    sent: 'Sent',
+    delivered: 'Delivered',
+    read: 'Read',
+    edited: 'Edited',
+    you: 'You',
+    attachment: 'Attachment',
+    photo: 'Photo',
+    message: 'Message',
+  },
+
+  /**
+   * The suggestion chips. Stored as the slug, shown in the reader's language —
+   * so two people with the same interest still match on `music` whatever their
+   * screens say. An interest with no entry here falls back to its slug, which
+   * is what a profile carrying an older suggestion will show.
+   */
+  interests: {
+    music: 'Music',
+    films: 'Films',
+    books: 'Books',
+    cooking: 'Cooking',
+    travel: 'Travel',
+    football: 'Football',
+    fitness: 'Fitness',
+    gaming: 'Gaming',
+    art: 'Art',
+    photography: 'Photography',
+    history: 'History',
+    science: 'Science',
+    technology: 'Technology',
+    nature: 'Nature',
+    animals: 'Animals',
+    fashion: 'Fashion',
+    business: 'Business',
+    politics: 'Politics',
+    languages: 'Languages',
+    teaching: 'Teaching',
+  },
+
+  gender: {
+    female: 'Female',
+    male: 'Male',
+    other: 'Other',
+    undisclosed: 'Prefer not to say',
+  },
+
+  level: {
+    absoluteBeginner: 'Absolute beginner',
+    beginner: 'Beginner',
+    intermediate: 'Intermediate',
+    fluent: 'Fluent',
+    shortAbsoluteBeginner: 'New',
+    shortBeginner: 'Beginner',
+    shortIntermediate: 'Intermediate',
+    shortFluent: 'Fluent',
+  },
+
+  period: {
+    all: 'All time',
+    year: 'This year',
+    month: 'This month',
+    week: 'This week',
+  },
+
+  /**
+   * Ages and durations. Separate from `common` because these are the entries
+   * most likely to need a plural category English does not have.
+   */
+  format: {
+    now: 'now',
+    minutes: '{count} min',
+    hours: '{count} h',
+    daysShort: '{count} d',
+    minutesCompact: '{count}m',
+    hoursCompact: '{count}h',
+    daysCompact: '{count}d',
+    days: { one: '{count} day', other: '{count} days' },
+    accountAgeToday: 'today',
+    accountAgeDays: { one: '{count} day ago', other: '{count} days ago' },
+    accountAgeMonths: { one: '{count} month ago', other: '{count} months ago' },
+    accountAgeYears: { one: '{count} year ago', other: '{count} years ago' },
+  },
+
+  errors: {
+    signInFailed: 'Sign in failed',
+    signUpFailed: 'Sign up failed',
+    googleSignInFailed: 'Google sign-in failed',
+    appleSignInFailed: 'Apple sign-in failed',
+    resetFailed: 'Could not reset password',
+    invalidCredentials: 'That email and password do not match an account.',
+    userExists: 'An account already exists for that email.',
+    emailNotVerified: 'Verify your email address first — check your inbox.',
+    passwordTooShort: 'That password is too short.',
+    invalidEmail: 'That does not look like an email address.',
+    invalidToken: 'That link is no longer valid.',
+    uploadFailed: 'Upload failed',
+  },
+
+  location: {
+    denied: 'LangX needs location permission to do this. You can grant it in your device settings.',
+    disabled: 'Location services are turned off on this device.',
+    unavailable: 'Could not get a location right now. Try again in a moment.',
+    unavailableTitle: 'Location unavailable',
+    needed: 'Location needed',
+  },
+
+  gate: {
+    maintenanceTitle: 'Back shortly',
+    maintenanceBody: 'LangX is briefly unavailable while we finish some work.',
+    maintenanceUntil: '{message}\n\nExpected back: {until}',
+    updateTitle: 'Update to continue',
+    updateBody:
+      'This version of LangX is no longer supported. Update to the latest one to keep using it.',
+  },
+
+  intro: {
+    slide1Title: 'Speak yours, practise theirs',
+    slide1Body:
+      'Everyone here is native in a language you are learning, and learning one you already speak. That is the only way you get matched.',
+    slide2Title: 'Correct, and be corrected',
+    slide2Body:
+      'Fix someone’s sentence and they see exactly what changed. Corrections are unlimited on every plan — teaching is the point.',
+    slide3Title: 'Show up, and it adds up',
+    slide3Body:
+      'One message a day keeps your streak alive. Earn tokens for talking and teaching, and spend them on a streak freeze or a look for your profile.',
+    getStarted: 'Get started',
+    skip: 'Skip',
+    next: 'Next',
+    done: 'Done',
+  },
+
+  auth: {
+    welcomeBack: 'Welcome back',
+    email: 'Email',
+    password: 'Password',
+    name: 'Name',
+    forgotPassword: 'Forgot password?',
+    signIn: 'Sign in',
+    signUp: 'Sign up',
+    continueWithGoogle: 'Continue with Google',
+    continueWithApple: 'Continue with Apple',
+    or: 'or',
+    noAccount: 'Don’t have an account? ',
+    haveAccount: 'Already have an account? ',
+    createAccount: 'Create your account',
+    minimumAge: 'You must be {age}+ to use LangX.',
+    backToSignIn: 'Back to sign in',
+    goToSignIn: 'Go to sign in',
+    checkEmailTitle: 'Check your email',
+    checkEmailBody:
+      'We sent a verification link to\n{email}\n\nTap it, then come back and sign in.',
+    resendEmail: 'Resend email',
+    resent: 'Sent — resend again',
+    resetTitle: 'Reset your password',
+    sendResetLink: 'Send reset link',
+    resetSentBody: 'If an account exists for {email}, a reset link is on its way.',
+    linkExpiredTitle: 'Link expired',
+    linkExpiredBody:
+      'This reset link is no longer valid. Request a new one from the sign-in screen.',
+    requestNewLink: 'Request a new link',
+    setNewPassword: 'Set a new password',
+    newPassword: 'New password',
+    updatePassword: 'Update password',
+    verifiedTitle: 'Email verified',
+    verifiedBody: 'You can sign in now.',
+    verificationFailedTitle: 'Verification failed',
+    verificationFailedBody: 'That link is invalid or has expired. Sign in and request a new one.',
+  },
+
+  onboarding: {
+    languagesTitle: 'Which languages do you speak?',
+    languagesBody:
+      'Your native language is what you can teach; what you’re learning is who you’ll match with.',
+    native: 'Native',
+    learning: 'Learning',
+    yourLevel: 'Your level',
+    upToFive: 'Up to 5',
+    cannotBeBoth: 'A language can’t be both',
+    aboutYouTitle: 'About you',
+    displayName: 'Display name',
+    yearOfBirth: 'Year of birth',
+    undisclosedNote: 'Choosing this keeps you out of gender-filtered searches.',
+    aboutYouOptional: 'About you (optional)',
+    aboutYouPlaceholder: 'What do you like talking about?',
+    tooYoung: 'LangX is for people aged {age} and over.',
+    photoTitle: 'Put a face to it',
+    photoBody: 'Both of these are optional, and both make people far more likely to say hello.',
+    photoUnavailable: 'Photos unavailable',
+    photoPermission: 'LangX needs access to your photos to set a picture.',
+    photoUploadFailed: 'That picture did not upload. You can try again or skip.',
+    addPhoto: 'Add a photo',
+    changePhoto: 'Change photo',
+    uploading: 'Uploading…',
+    bioPrompt: 'Something for a stranger to open with.',
+    whereAreYou: 'Where are you?',
+    username: 'Username',
+    namePlaceholder: 'Alex',
+    yearPlaceholder: '1996',
+    gender: 'Gender',
+    interests: 'Interests',
+    handleTitle: 'Choose a username',
+    handlePlaceholder: 'alex',
+    handleReserved: '@{handle} is reserved for you',
+    handleReservedBody: 'Your username from the old LangX. You can claim it back, once.',
+    handleAvailable: '@{handle} is available ✓',
+    handleTaken: '@{handle} is taken',
+    startUsing: 'Start using LangX',
+    profileFailed: 'Could not create your profile. Try again.',
+    doneTitle: 'You’re in',
+    doneHandle: '@{handle} is yours.',
+    doneReady: 'Your profile is ready.',
+    whatNext: 'What happens next',
+    whatNextBody:
+      'Discover shows people who speak what you are learning and are learning what you speak. Say hello to one of them — a first message is worth tokens, and it is the only thing standing between you and a conversation.',
+    findSomeone: 'Find someone to talk to',
+  },
+
+  welcomeBack: {
+    title: 'Welcome back',
+    subtitle: 'Here is what came with you.',
+    handleTitle: '@{handle}',
+    handleBody: 'Your username is yours again — nobody else could claim it.',
+    conversations: {
+      one: '{count} conversation restored',
+      other: '{count} conversations restored',
+    },
+    conversationsBody:
+      'Threads where the other person came back too. The rest arrive if and when they do.',
+    tokensCarried: '{count} tokens',
+    tokensCarriedBody:
+      '{carried} carried over from your old balance, plus {bonus} for coming back.',
+    tokensBonus: '{count} tokens',
+    tokensBonusBody: 'A welcome-back bonus to start with. Earn more by talking and by correcting.',
+    streak: '{days} best streak',
+    streakBody: 'Kept as your record. Your live streak starts fresh from today.',
+    proForLife: 'LangX Pro, for life',
+    proPlusForLife: 'LangX Pro+, for life',
+    proBody:
+      'For what you built in v1. It never expires and there is nothing to pay — thank you for being here first.',
+    start: 'Start using LangX',
+  },
+
+  notifications: {
+    primingTitle: 'Turn on notifications?',
+    primingBody:
+      'Two things only: when someone messages you, and a nudge at {hour}:00 if your streak is about to break.',
+    notNow: 'Not now',
+    microphonePermission: 'LangX needs microphone access to record a voice message.',
+  },
+
+  discover: {
+    forYou: 'For you',
+    onlineFirst: 'Online first',
+    title: 'Discover',
+    active: 'Active',
+    nearby: 'Nearby',
+    filters: 'Filters ✦',
+    filtersWithCount: 'Filters · {count}',
+    distanceKm: '{km} km',
+    locationOffTitle: 'Location sharing is off',
+    locationOffBody:
+      'Nearby needs to know roughly where you are. Nothing precise is stored, and nobody sees more than a rough distance.',
+    turnOn: 'Turn it on',
+    turningOn: 'Turning on…',
+    nobodyNearbyTitle: 'Nobody within {radius} km',
+    nobodyNearbyBody:
+      'Only people who have turned on location sharing appear here. Try a wider radius, or one of the other tabs.',
+    emptyTitle: 'Nobody here yet',
+    emptyBody:
+      'People whose languages match yours in both directions show up here. Try loosening the filters.',
+  },
+
+  filters: {
+    title: 'Filters',
+    speaks: 'Speaks',
+    availability: 'Availability',
+    gender: 'Gender',
+    age: 'Age',
+    country: 'Country',
+    practiseBody:
+      'Which of your own languages you want to practise. Everyone here already speaks it natively.',
+    onlineFirst: 'Online first',
+    onlyMyGender: 'Only my gender',
+    onlyMyGenderBody: 'Show only people who are {gender}, like you.',
+    onlyMyGenderMissing: 'Add your own gender to your profile to use this.',
+    theirLevel: 'Their level in your language',
+    theirLevelBody:
+      'How well they already speak what you teach. Higher means an easier conversation, lower means someone who needs you more.',
+    theirMinimumLevel: 'Their minimum level',
+    showResults: 'Show results',
+    showResultsWithCount: 'Show results · {count}',
+  },
+
+  chats: {
+    emptyTitle: 'No chats yet',
+    emptyBody:
+      'Message someone from Discover. On the free plan you can start {count} new chats a day — replying to messages you receive is always unlimited.',
+    goToDiscover: 'Go to Discover',
+    youPrefix: 'You:',
+    starredMessages: 'Starred messages',
+  },
+
+  chat: {
+    title: 'Chat',
+    online: 'Online',
+    typing: 'typing…',
+    editing: 'Editing',
+    correcting: 'Correcting',
+    activity: 'Activity',
+    translating: 'Translating…',
+    writeMessage: 'Write a message…',
+    writeCorrection: 'Write the correction…',
+    yourCorrection: 'Your correction',
+    correctionFrom: 'Correction from {name}',
+    them: 'them',
+    holdToCorrect: 'Hold a message to correct it',
+    tokensPerMessage: '+{count} tokens / message',
+    unlimitedEveryPlan: 'Unlimited on every plan',
+    voiceMessage: 'Voice message',
+    copied: 'Copied',
+    couldNotSend: 'Could not send',
+    mediaQuota: 'You’ve reached today’s limit for photos and voice messages.',
+    attachmentFailed: 'That attachment could not be sent. Try again.',
+    photosTitle: 'Photos',
+    photosPermission: 'LangX needs permission to open your photo library.',
+    microphoneTitle: 'Microphone',
+    translationUnavailable: 'Translation unavailable',
+    translationQuota: 'You’ve used today’s free translations. Pro removes the limit.',
+    translationFailed: 'Could not translate that message right now.',
+    sayHello: 'Say hello to {name}…',
+    pinnedMessage: 'Pinned message',
+    goToPinned: 'Go to the pinned message',
+    backToLatest: 'Back to latest',
+    jumpToNew: {
+      one: 'Jump to {count} new message',
+      other: 'Jump to {count} new messages',
+    },
+    jumpToNewest: 'Jump to the newest message',
+    replyingToYourself: 'Replying to yourself',
+    replyingTo: 'Replying to {name}',
+    deleted: 'This message was deleted',
+    goToQuoted: 'Go to the quoted message',
+    deleteTitle: 'Delete message',
+    deleteBothSides: 'This cannot be undone.',
+    deleteOwnSide: 'It stays on their device.',
+    deleteForEveryone: 'Delete for everyone',
+    deleteForMe: 'Delete for me',
+    actionFailed: 'That did not go through',
+  },
+
+  messageMenu: {
+    more: 'More…',
+    backToFirstPage: 'Back to the first page',
+    reactWith: 'React with {emoji}',
+  },
+
+  day: {
+    today: 'Today',
+    yesterday: 'Yesterday',
+  },
+
+  starred: {
+    title: 'Starred',
+    emptyTitle: 'Nothing starred yet',
+    emptyBody: 'Hold a message and choose Star to keep it here.',
+  },
+
+  activity: {
+    fillInDay: 'Fill in {day}',
+    fillInTitle: 'Fill in {day}?',
+    fillIt: 'Fill it in',
+    filled: 'Day filled in',
+    fillFailed: 'Could not fill that day',
+    noRepairsTitle: 'No repairs left',
+    notEnoughTokensTitle: 'Not enough tokens',
+    notEnoughTokensBody: 'Filling a day costs {price}. You have {balance}.',
+    /**
+     * The *second* number decides the plural — "from 1 to 2 days", "from 6 to
+     * 1 day" — so `count` is `after` and `before` is only interpolated.
+     */
+    streakChange: {
+      one: 'Your streak goes from {before} to {count} day.',
+      other: 'Your streak goes from {before} to {count} days.',
+    },
+    noStreakChange: 'It fills the square, but does not change your streak.',
+    balanceChange: '{streakLine}\nYour balance goes {before} → {after}.',
+    repairsLeft: {
+      one: '{count} of {total} repairs left · {price} tokens',
+      other: '{count} of {total} repairs left · {price} tokens',
+    },
+    perMonth: {
+      one: 'You can fill in {count} day a month.',
+      other: 'You can fill in {count} days a month.',
+    },
+    noRepairsThisMonth: 'No repairs left this month',
+  },
+
+  report: {
+    messageQuestion: 'Why are you reporting this message?',
+    profileQuestion: 'Why are you reporting this profile?',
+    spam: 'Spam',
+    harassment: 'Harassment',
+    inappropriate: 'Inappropriate content',
+    messageSent: 'Reported. Thank you — we look at every one.',
+    profileSent: 'Report sent. We will look into it.',
+    failed: 'Could not report',
+  },
+
+  feed: {
+    needsCorrection: 'Needs a correction',
+    ask: '+ Ask',
+    askTitle: 'Your sentence in {language}',
+    askPlaceholder: 'The sentence you are unsure about…',
+    posting: 'Posting…',
+    posted: 'Posted. Somebody will correct it.',
+    correctionSent: 'Correction sent. Thank you.',
+    knownEmptyTitle: 'Nothing from people you know',
+    knownEmptyBody:
+      'This tab shows posts by people you have talked to. Start a conversation and they will appear here.',
+    correctedEmptyTitle: 'Everything is corrected',
+    correctedEmptyBody:
+      'Nobody is waiting for help right now. Post a sentence of your own, or come back later.',
+    noCorrections: 'No corrections yet',
+    corrections: { one: '{count} correction', other: '{count} corrections' },
+    topCorrection: 'Top correction ·',
+    yourCorrection: 'Your correction',
+    sending: 'Sending…',
+    sendCorrection: 'Send correction',
+    youCorrected: 'You corrected this',
+    addYours: 'Add yours',
+    correctThis: 'Correct this',
+    seeAll: 'See all {count}',
+    title: 'Feed',
+    following: 'Following',
+    post: 'Post',
+  },
+
+  profile: {
+    notFound: 'Profile not found.',
+    verifiedEmail: '✓ Verified email',
+    registeredLabel: 'Registered',
+    interests: 'Interests',
+    registered: '· registered {age}',
+    sendMessage: 'Send a message',
+    sendFailed: 'Could not send the message.',
+    blockConfirm: 'Block {name}? Neither of you will appear in the other’s lists.',
+    blocked: '{name} is blocked.',
+  },
+
+  me: {
+    dayStreak: 'Day streak',
+    viewersTitle: 'Who viewed your profile',
+    viewersLocked: '{count} people looked — see who with Pro',
+    viewersCount: { one: '{count} person', other: '{count} people' },
+    leaderboardSubtitle: 'Streaks and corrections',
+    proTitle: '✦ LangX Pro',
+    proBody: 'Unlimited new chats, advanced filters, translation and incognito browsing.',
+    newChatsLeft: 'New chats left today:',
+    editProfile: 'Edit profile',
+    settings: 'Settings',
+    corrections: 'Corrections',
+    tokens: 'Tokens',
+    badges: 'Badges',
+  },
+
+  editProfile: {
+    title: 'Edit profile',
+    displayName: 'Display name',
+    aboutYou: 'About you',
+    languageWithLevel: '{language} · {level}',
+    aboutYouPlaceholder: 'What do you like talking about?',
+    city: 'City (optional)',
+    cityPlaceholder: 'Istanbul',
+    country: 'Country',
+    interests: 'Interests',
+    gender: 'Gender',
+    languages: 'Languages',
+    editNative: 'Edit native',
+    editLearning: 'Edit learning',
+    photos: 'Photos',
+    longPressToRemove: 'Long-press a photo to remove it.',
+    removePhotoTitle: 'Remove photo',
+    removePhotoBody: 'Remove this photo from your profile?',
+    photoAdded: 'Photo added.',
+    photoUpdated: 'Photo updated.',
+    saved: 'Profile saved.',
+    saveFailed: 'Could not save your profile.',
+    storageUnconfigured: 'Photo storage is not configured on this server yet.',
+    uploadRetry: 'Could not upload that image. Try again.',
+    bothNativeAndLearning: 'A language cannot be both native and something you are learning.',
+    pickOneOfEach: 'Pick at least one native language and one you are learning.',
+  },
+
+  settings: {
+    showInDiscover: 'Show me in Discover',
+    showInDiscoverBody: 'Turn this off and nobody will find you in Discover.',
+    incognito: 'Browse incognito',
+    incognitoBody: 'You won’t appear in their viewers.',
+    hideOnline: 'Hide when I’m online',
+    hideOnlineBody: 'You can still see theirs.',
+    shareLocation: 'Share rough location',
+    shareLocationBody: 'Others see a distance bucket, never a point.',
+    activityMap: 'Show my activity map',
+    activityMapBody: 'The squares on your profile. Your streak stays visible either way.',
+    updateLocation: 'Update my location',
+    updating: 'Updating…',
+    pushTitle: 'Messages and reminders',
+    pushBody: 'New messages, and one streak reminder a day.',
+    languageSection: 'Language',
+    languageAuto: 'Device ({name})',
+    blockedPeople: 'Blocked people',
+    showIntro: 'Show intro again',
+    exportData: 'Export my data',
+    deleteAccount: 'Delete account',
+    deleteAccountBody: 'Signing back in within {days} days cancels it.',
+    deleteConfirmTitle: 'Delete your account',
+    deleteConfirmBody:
+      'Your account disappears immediately. Your data is kept for {days} days — signing back in during that window cancels the deletion.',
+    deleted: 'Account deleted. Signing back in within {days} days cancels it.',
+    deleteFailed: 'Could not delete',
+    signOut: 'Sign out',
+    signOutConfirm: 'You will need to sign in again on this device.',
+    signedOut: 'Signed out — your session has ended.',
+    licence: '· BSD-3 · open source',
+    title: 'Settings',
+    privacySection: 'Privacy',
+    notificationsSection: 'Notifications',
+    accountSection: 'Account',
+  },
+
+  deletion: {
+    today: 'Your account is being deleted today.',
+    tomorrow: 'Your account will be deleted tomorrow.',
+    inDays: {
+      one: 'Your account will be deleted in {count} day.',
+      other: 'Your account will be deleted in {count} days.',
+    },
+    untilThen: 'Until then nobody can find you or see your profile.',
+    keepIt: 'Keep it',
+    keeping: 'Wait…',
+  },
+
+  store: {
+    intro:
+      'Earned by messaging and by correcting other people. Teaching is weighted higher than talking.',
+    todayCounts: '{messages} messages · {corrections} corrections',
+    messagesToday: '{used} of {cap} paying messages today',
+    capExplainer:
+      '{cap} messages a day pay tokens, {perPerson} of them per person. Corrections are not capped.',
+    disclaimer:
+      'Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak freezes and cosmetics. There is no chain, no wallet and no market.',
+    restoreStreak: 'Restore your streak',
+    restoreStreakBody: 'Bring back the {days}-day streak you had in v1',
+    streakFreeze: 'Streak freeze',
+    streakFreezeBody: 'Saves one missed day · {banked}/{max} banked',
+    ownedAccessibility: '{title}, owned',
+    buy: 'Buy {title} for {price} tokens',
+    title: 'Tokens',
+    balance: 'Balance',
+    today: 'Today',
+    owned: 'Owned',
+    frameKind: 'Profile frame',
+    titleKind: 'Title',
+  },
+
+  cosmetics: {
+    frameBronze: 'Bronze frame',
+    frameSilver: 'Silver frame',
+    frameGold: 'Gold frame',
+    titleLearner: 'Learner',
+    titleTutor: 'Tutor',
+    titlePolyglot: 'Polyglot',
+  },
+
+  leaderboard: {
+    nextMilestone: 'Next milestone',
+    dayStreak: 'day streak',
+    towards: '{current} of {threshold} toward {label}',
+    toGo: '{amount} to go',
+    doneToday: 'Today is done. See you tomorrow.',
+    keepGoing: 'Send one message today to keep it going.',
+    emptyTitle: 'Nothing here yet',
+    emptyBody: 'Send messages and write corrections — be the first to earn tokens this period.',
+    week: 'Week',
+    month: 'Month',
+    year: 'Year',
+    badges: 'Badges',
+    pays: 'Pays {amount} tokens',
+    corrections: 'corrections',
+    toGoPlain: '{count} to go',
+    you: 'You',
+  },
+
+  badges: {
+    earned: 'Earned · {month}',
+    earnedLabel: 'Earned',
+    locked: 'Locked',
+    firstCorrection: 'First correction',
+    streakDays: { one: '{formatted} day', other: '{formatted} days' },
+    corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+  },
+
+  viewers: {
+    title: 'Who viewed your profile',
+    empty: 'Nobody has viewed your profile yet.',
+    /**
+     * The number is drawn separately, in its own large type, so this is the
+     * phrase beside it and not a sentence containing it. It still needs the
+     * count: the phrase itself inflects.
+     */
+    countLabel: { one: 'person viewed your profile', other: 'people viewed your profile' },
+    seeWho: 'See who they are',
+    emptyTitle: 'No visitors yet',
+    emptyBody: 'Filling in your profile helps.',
+  },
+
+  blocked: {
+    title: 'Blocked people',
+    emptyTitle: 'Nobody blocked',
+    emptyBody:
+      'People you block stop appearing anywhere for either of you, and neither of you can message the other.',
+    unblock: 'Unblock',
+    unblockConfirm: 'Unblock {name}? You will both be visible again.',
+    unblocked: '{name} is unblocked.',
+    since: 'Blocked {date}',
+  },
+
+  paywall: {
+    title: 'Talk more, learn faster',
+    proTagline: 'Everything that makes the free plan feel small.',
+    proPlusTagline: 'Everything in Pro, and the two features only it has.',
+    partOf: 'is part of',
+    unlimitedChats: 'Unlimited new chats',
+    unlimitedChatsBody: '{count} a day on the free plan.',
+    advancedFilters: 'Advanced filters',
+    advancedFiltersBody: 'Search by gender, country, age and level.',
+    unlimitedTranslation: 'Unlimited translation',
+    unlimitedTranslationBody: '{count} a day on the free plan.',
+    whoViewed: 'Who viewed you',
+    whoViewedBody: 'Not just the count — see who they are.',
+    incognito: 'Incognito browsing',
+    incognitoBody: 'Look at profiles without leaving a trace.',
+    hideOnline: 'Hide when you are online',
+    hideOnlineBody: 'Nobody sees your green dot. You still see theirs.',
+    nearby: 'Nearby',
+    nearbyBody:
+      'Sort discovery by distance. Needs your own approximate location — rounded before it is stored, and shown to others only as a rough distance.',
+    copilot: 'AI copilot',
+    copilotBody: 'Help composing and understanding messages as you write them.',
+    quotaNotice:
+      'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
+    manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
+    restore: 'Already subscribed? Restore',
+    purchaseFailed: 'That purchase did not go through. Nothing was charged.',
+    purchaseUnavailable: 'Purchasing is unavailable on this device.',
+    nothingToRestore: 'Nothing to restore on this device.',
+    noPlans: 'No plans are available right now.',
+    notSetUp: 'Purchasing is not set up on this platform yet.',
+    legal:
+      'Subscriptions renew automatically until cancelled. Cancel any time from your Apple or Google account — cancelling stops the next renewal and keeps access until the current period ends.',
+    offer: '{period} — {price}',
+    terms: 'Terms',
+    privacy: 'Privacy',
+    monthly: 'Monthly',
+    yearly: 'Yearly',
+    lifetime: 'One-off',
+  },
+
+  languageCards: {
+    studyTitle: 'Study Language(s)',
+    studySubtitle: 'The language(s) that you Practice & Learn',
+    nativeTitle: 'Mother Tongue(s)',
+    nativeSubtitle: 'The language(s) you speak at home',
+  },
+
+  pickers: {
+    searchCountries: 'Search countries',
+    noCountryMatch: 'No country matches “{query}”',
+    searchLanguages: 'Search {count} languages',
+  },
+
+  weekly: {
+    thisWeek: 'This week',
+    correctionsGiven: 'Corrections given',
+    messages: 'Messages',
+    summary: 'This week: {messages} messages and {corrections} corrections.',
+  },
+} as const
+
+export type EnMessages = typeof en

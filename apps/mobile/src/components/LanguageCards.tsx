@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons'
-import { LEVEL_LABELS, getLanguage, type LanguageLevel } from '@langx/shared'
+import { getLanguage, type LanguageLevel } from '@langx/shared'
 import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
 import { LEVEL_ICON } from '../lib/languageLevel'
 import { makeStyles, useTheme } from '../lib/theme'
+import { levelLabel, useDisplayNames, useT } from '../i18n'
 
 interface LanguageCardsProps {
   native: { code: string }[]
@@ -25,6 +26,7 @@ const ICON_SIZE = 20
 export function LanguageCards({ native, learning }: LanguageCardsProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
 
   // `priority` is the order the user picked them in. The API has always sent
   // it and no screen has ever used it.
@@ -33,7 +35,7 @@ export function LanguageCards({ native, learning }: LanguageCardsProps) {
   return (
     <>
       {study.length > 0 ? (
-        <Card title="Study Language(s)" subtitle="The language(s) that you Practice & Learn">
+        <Card title={t('languageCards.studyTitle')} subtitle={t('languageCards.studySubtitle')}>
           {study.map((language) => (
             <LanguageRow
               key={language.code}
@@ -45,7 +47,7 @@ export function LanguageCards({ native, learning }: LanguageCardsProps) {
                   color={colors.accent}
                   // The icon carries the level on its own now, so this is the
                   // only thing left that can say it out loud.
-                  accessibilityLabel={LEVEL_LABELS[language.level]}
+                  accessibilityLabel={levelLabel(t, language.level)}
                 />
               }
             />
@@ -54,7 +56,7 @@ export function LanguageCards({ native, learning }: LanguageCardsProps) {
       ) : null}
 
       {native.length > 0 ? (
-        <Card title="Mother Tongue(s)" subtitle="The language(s) you speak at home">
+        <Card title={t('languageCards.nativeTitle')} subtitle={t('languageCards.nativeSubtitle')}>
           {native.map((language) => (
             <LanguageRow
               key={language.code}
@@ -94,14 +96,19 @@ function Card({
  */
 function LanguageRow({ code, icon }: { code: string; icon: ReactNode }) {
   const styles = useStyles()
+  const names = useDisplayNames()
 
   const language = getLanguage(code)
-  const nativeName = language && language.nativeName !== language.name ? language.nativeName : null
+  // Compared against the *localized* name, not the English one: to a French
+  // reader "Français" beside "Français" is the duplication this guard exists
+  // to prevent, and it never was beside "French".
+  const shown = names.language(code)
+  const nativeName = language && language.nativeName !== shown ? language.nativeName : null
 
   return (
     <View style={styles.row}>
       <View style={styles.iconSlot}>{icon}</View>
-      <Text style={styles.name}>{language?.name ?? code}</Text>
+      <Text style={styles.name}>{shown}</Text>
       {nativeName ? <Text style={styles.nativeName}>{nativeName}</Text> : null}
     </View>
   )

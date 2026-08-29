@@ -5,6 +5,7 @@ import {
   TOKEN_RULES,
   streakRestorePrice,
 } from '@langx/shared'
+import type { MessageKey, TranslateFn } from '../i18n/runtime'
 
 export interface StoreOffer {
   /** The SKU sent to `POST /me/wallet/purchase`. */
@@ -29,6 +30,21 @@ export interface StoreInput {
    * profile; everything downstream of that decision lives here.
    */
   restorableStreak: number
+  /**
+   * Passed in rather than reached for, so this stays a pure function the tests
+   * can call without a React tree — and so the wording of an offer is decided
+   * by the reader's locale rather than by the module's import time.
+   */
+  t: TranslateFn
+}
+
+/**
+ * `frame.gold` → `cosmetics.frameGold`. The catalogue keys cannot be the SKUs
+ * themselves: a dot in a key is how `translate` walks into a group.
+ */
+function cosmeticKey(id: string): MessageKey {
+  const [kind, tier] = id.split('.')
+  return `cosmetics.${kind}${(tier ?? '').charAt(0).toUpperCase()}${(tier ?? '').slice(1)}` as MessageKey
 }
 
 /**
@@ -44,6 +60,7 @@ export interface StoreInput {
  * whether a button looks pressable.
  */
 export function buildStoreOffers(input: StoreInput): StoreOffer[] {
+  const { t } = input
   const offers: StoreOffer[] = []
   const priced = (id: string, title: string, subtitle: string, price: number, owned = false) => ({
     id,
@@ -61,8 +78,8 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     offers.push(
       priced(
         STREAK_RESTORE_SKU,
-        'Restore your streak',
-        `Bring back the ${input.restorableStreak}-day streak you had in v1`,
+        t('store.restoreStreak'),
+        t('store.restoreStreakBody', { days: input.restorableStreak }),
         price,
       ),
     )
@@ -71,10 +88,8 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
   const maxFreezes = TOKEN_RULES.sinks.maxBankedStreakFreezes
   const freezeOffer = priced(
     STREAK_FREEZE_SKU,
-    'Streak freeze',
-    // One template string, not two lines: JSX ate the newline between them
-    // and rendered "banked /2".
-    `Saves one missed day · ${input.streakFreezes}/${maxFreezes} banked`,
+    t('store.streakFreeze'),
+    t('store.streakFreezeBody', { banked: input.streakFreezes, max: maxFreezes }),
     TOKEN_RULES.sinks.streakFreeze,
   )
   // A full bank is not "owned" — it is temporarily unbuyable, and it becomes
@@ -89,8 +104,8 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     offers.push(
       priced(
         item.id,
-        item.label,
-        item.kind === 'frame' ? 'Profile frame' : 'Title',
+        t(cosmeticKey(item.id)),
+        item.kind === 'frame' ? t('store.frameKind') : t('store.titleKind'),
         item.price,
         input.owned.includes(item.id),
       ),

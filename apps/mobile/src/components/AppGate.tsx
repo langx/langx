@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Linking, Platform, Text, View } from 'react-native'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { makeStyles } from '../lib/theme'
+import { useLocale, useT } from '../i18n'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
 
@@ -59,6 +60,8 @@ function Blocked({
  */
 export function AppGate({ children }: { children: ReactNode }) {
   const config = useAppConfig()
+  const t = useT()
+  const { locale } = useLocale()
   const [checkingUpdate, setCheckingUpdate] = useState(false)
 
   // Pick up an OTA update in the background. `isEmbeddedLaunch` is false once
@@ -85,15 +88,19 @@ export function AppGate({ children }: { children: ReactNode }) {
   if (data?.maintenance.enabled) {
     // Rendered in the viewer's own locale — an expected return time is the one
     // thing that turns "something is broken" into "someone is working on it".
-    const until = data.maintenance.until ? new Date(data.maintenance.until).toLocaleString() : null
-    const message =
-      data.maintenance.message || 'LangX is briefly unavailable while we finish some work.'
+    const until = data.maintenance.until
+      ? new Date(data.maintenance.until).toLocaleString(locale)
+      : null
+    // The server's own message wins when there is one — it is written per
+    // incident and says more than any fixed sentence can — and ours is the
+    // fallback for the ordinary case where nobody typed anything.
+    const message = data.maintenance.message || t('gate.maintenanceBody')
     return (
       <Blocked
         emoji="🔧"
-        title="Back shortly"
-        body={until ? `${message}\n\nExpected back: ${until}` : message}
-        actionLabel="Try again"
+        title={t('gate.maintenanceTitle')}
+        body={until ? t('gate.maintenanceUntil', { message, until }) : message}
+        actionLabel={t('common.tryAgain')}
         onAction={() => void config.refetch()}
       />
     )
@@ -103,9 +110,9 @@ export function AppGate({ children }: { children: ReactNode }) {
     return (
       <Blocked
         emoji="⬆️"
-        title="Update to continue"
-        body="This version of LangX is no longer supported. Update to the latest one to keep using it."
-        actionLabel={checkingUpdate ? 'Checking…' : 'Update'}
+        title={t('gate.updateTitle')}
+        body={t('gate.updateBody')}
+        actionLabel={checkingUpdate ? t('common.checking') : t('common.update')}
         onAction={() => {
           void (async () => {
             setCheckingUpdate(true)

@@ -3,6 +3,7 @@ import { expoClient } from '@better-auth/expo/client'
 import { createAuthClient } from 'better-auth/react'
 import * as SecureStore from 'expo-secure-store'
 import { API_URL } from './apiUrl'
+import { currentLocale } from '../i18n/runtime'
 
 /**
  * One client for iOS, Android and web. `expoClient` branches on
@@ -12,6 +13,18 @@ import { API_URL } from './apiUrl'
  */
 export const authClient = createAuthClient({
   baseURL: API_URL,
+  /**
+   * Sign-up and the password-reset request both send an email, and both happen
+   * before there is an account to hold a language preference — so the header
+   * is the only thing that can tell the server which language to write in.
+   */
+  fetchOptions: {
+    headers: {
+      get 'accept-language'() {
+        return currentLocale()
+      },
+    },
+  },
   plugins: [
     expoClient({
       scheme: APP_SCHEME,

@@ -5,6 +5,7 @@ import { useStarred, type MessageDto } from '../../src/api/queries'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { dayLabel } from '../../src/lib/messageGroups'
+import { useLocale, useT } from '../../src/i18n'
 import { goBackTo } from '../../src/lib/navigation'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 
@@ -20,24 +21,21 @@ export default function StarredScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const starred = useStarred()
+  const t = useT()
 
   const items = starred.data?.items ?? []
 
   return (
     <Screen fluid>
       <Pressable onPress={() => goBackTo('/(app)/chats')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Back</Text>
+        <Text style={styles.back}>{t('common.back')}</Text>
       </Pressable>
-      <Text style={styles.title}>Starred</Text>
+      <Text style={styles.title}>{t('starred.title')}</Text>
 
       {starred.isPending ? (
         <ActivityIndicator style={styles.loading} />
       ) : items.length === 0 ? (
-        <EmptyState
-          icon="star"
-          title="Nothing starred yet"
-          body="Hold a message and choose Star to keep it here."
-        />
+        <EmptyState icon="star" title={t('starred.emptyTitle')} body={t('starred.emptyBody')} />
       ) : (
         <FlatList
           data={items}
@@ -59,6 +57,9 @@ function Row({
   colors: { textMuted: string }
   styles: ReturnType<typeof useStyles>
 }) {
+  const t = useT()
+  const { locale } = useLocale()
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -69,9 +70,9 @@ function Row({
     >
       <View style={styles.rowText}>
         <Text style={styles.body} numberOfLines={2}>
-          {message.body || 'Attachment'}
+          {message.body || t('messageMeta.attachment')}
         </Text>
-        <Text style={styles.when}>{dayLabel(message.createdAt.slice(0, 10))}</Text>
+        <Text style={styles.when}>{dayLabel(message.createdAt.slice(0, 10), { t, locale })}</Text>
       </View>
       <Feather name="chevron-right" size={18} color={colors.textMuted} />
     </Pressable>

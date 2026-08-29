@@ -29,6 +29,12 @@ export const FLAG_KEYS = {
   onboardingDraft: 'onboardingDraft',
   /** `auto` | `light` | `dark`. A device preference, not an account one. */
   themePreference: 'themePreference',
+  /**
+   * `auto` | one of `SUPPORTED_LOCALES`. Device-level for the same reason the
+   * theme is: the phone is what has a language setting, and a shared tablet
+   * should not change language when someone else signs in.
+   */
+  localePreference: 'localePreference',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

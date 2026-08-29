@@ -9,9 +9,11 @@ import { goBackTo } from '../../src/lib/navigation'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 
 export default function ViewersScreen() {
   const styles = useStyles()
+  const t = useT()
 
   const viewers = useViewers()
   // `total` and `locked` describe the whole list, so the first page is the
@@ -27,9 +29,9 @@ export default function ViewersScreen() {
   return (
     <Screen fluid>
       <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Back</Text>
+        <Text style={styles.back}>{t('common.back')}</Text>
       </Pressable>
-      <Text style={styles.title}>Who viewed your profile</Text>
+      <Text style={styles.title}>{t('viewers.title')}</Text>
 
       {viewers.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -38,12 +40,12 @@ export default function ViewersScreen() {
           <Text style={styles.lockedCount}>{summary.total}</Text>
           <Text style={styles.lockedLabel}>
             {summary.total === 0
-              ? 'Nobody has viewed your profile yet.'
-              : 'people viewed your profile'}
+              ? t('viewers.empty')
+              : t('viewers.countLabel', { count: summary.total })}
           </Text>
           {summary.total > 0 ? (
             <Button
-              label="See who they are"
+              label={t('viewers.seeWho')}
               onPress={() => openPaywall('profileViewerIdentities', '/(app)/viewers')}
               style={styles.cta}
             />
@@ -68,7 +70,7 @@ export default function ViewersScreen() {
             viewers.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
           ListEmptyComponent={
-            <EmptyState icon="eye" title="No visitors yet" body="Filling in your profile helps." />
+            <EmptyState icon="eye" title={t('viewers.emptyTitle')} body={t('viewers.emptyBody')} />
           }
           renderItem={({ item }) => (
             <Pressable

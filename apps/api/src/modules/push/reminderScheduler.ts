@@ -3,7 +3,8 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
-import { sendPush, streakReminderCandidates, tokensFor, type PushSender } from './devices'
+import { sendPush, streakReminderCandidates, tokensByLocale, type PushSender } from './devices'
+import { translator } from '../../i18n'
 
 /**
  * Every 30 minutes. The reminder fires on a whole local hour, and every IANA
@@ -56,14 +57,17 @@ export function startStreakReminderScheduler(
           continue // already nudged today
         }
 
-        const tokens = await tokensFor(db, candidate.userId)
-        if (tokens.length === 0) continue
-        await sendPush(db, sender, {
-          to: tokens,
-          title: `${candidate.streak} day streak! 🔥`,
-          body: 'Send one message today to keep it going.',
-          data: { kind: 'streakReminder' },
-        })
+        const byLocale = await tokensByLocale(db, candidate.userId)
+        if (byLocale.size === 0) continue
+        for (const [locale, tokens] of byLocale) {
+          const t = translator(locale)
+          await sendPush(db, sender, {
+            to: tokens,
+            title: t('push.streakTitle', { count: candidate.streak }),
+            body: t('push.streakBody'),
+            data: { kind: 'streakReminder' },
+          })
+        }
         sent++
       }
 

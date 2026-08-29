@@ -22,6 +22,7 @@ import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
+import { I18nProvider } from '../src/i18n'
 
 function createQueryClient(): QueryClient {
   return new QueryClient({
@@ -42,9 +43,11 @@ function createQueryClient(): QueryClient {
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <RootShell />
-      </ThemeProvider>
+      <I18nProvider>
+        <ThemeProvider>
+          <RootShell />
+        </ThemeProvider>
+      </I18nProvider>
     </SafeAreaProvider>
   )
 }

@@ -3,11 +3,12 @@ import { Pressable, Text, View } from 'react-native'
 import { makeStyles } from '../lib/theme'
 import { Button } from './ui/Button'
 import { Screen } from './ui/Screen'
+import { useT, type MessageKey } from '../i18n'
 
 interface Slide {
   emoji: string
-  title: string
-  body: string
+  title: MessageKey
+  body: MessageKey
 }
 
 /**
@@ -19,23 +20,17 @@ interface Slide {
  * established by `EmptyState` and `AppGate`'s blocked screen — and the only
  * style that stays legible in both themes without art direction.
  */
-const SLIDES: Slide[] = [
-  {
-    emoji: '🗣️',
-    title: 'Speak yours, practise theirs',
-    body: 'Everyone here is native in a language you are learning, and learning one you already speak. That is the only way you get matched.',
-  },
-  {
-    emoji: '✍️',
-    title: 'Correct, and be corrected',
-    body: 'Fix someone’s sentence and they see exactly what changed. Corrections are unlimited on every plan — teaching is the point.',
-  },
-  {
-    emoji: '🔥',
-    title: 'Show up, and it adds up',
-    body: 'One message a day keeps your streak alive. Earn tokens for talking and teaching, and spend them on a streak freeze or a look for your profile.',
-  },
-]
+/**
+ * Emoji and the pair of keys that word each slide. The text is not inlined
+ * because a module-scope constant is fixed at import time — it would still be
+ * English after a language change, on the one screen that is somebody's first
+ * impression of the app.
+ */
+const SLIDES = [
+  { emoji: '🗣️', title: 'intro.slide1Title', body: 'intro.slide1Body' },
+  { emoji: '✍️', title: 'intro.slide2Title', body: 'intro.slide2Body' },
+  { emoji: '🔥', title: 'intro.slide3Title', body: 'intro.slide3Body' },
+] as const satisfies readonly Slide[]
 
 interface IntroCarouselProps {
   /** Called when the last slide is passed, or Skip is pressed. */
@@ -60,8 +55,9 @@ interface IntroCarouselProps {
  * all, so the dots advanced while the words stayed put. Swiping is a nicety;
  * three slides that reliably say what the app is are the point.
  */
-export function IntroCarousel({ onDone, doneLabel = 'Get started' }: IntroCarouselProps) {
+export function IntroCarousel({ onDone, doneLabel }: IntroCarouselProps) {
   const styles = useStyles()
+  const t = useT()
 
   const [index, setIndex] = useState(0)
   const slide = SLIDES[index]!
@@ -72,8 +68,8 @@ export function IntroCarousel({ onDone, doneLabel = 'Get started' }: IntroCarous
       <View style={styles.root}>
         <View style={styles.slide}>
           <Text style={styles.emoji}>{slide.emoji}</Text>
-          <Text style={styles.title}>{slide.title}</Text>
-          <Text style={styles.body}>{slide.body}</Text>
+          <Text style={styles.title}>{t(slide.title)}</Text>
+          <Text style={styles.body}>{t(slide.body)}</Text>
         </View>
 
         <View style={styles.dots}>
@@ -86,10 +82,10 @@ export function IntroCarousel({ onDone, doneLabel = 'Get started' }: IntroCarous
 
         <View style={styles.actions}>
           <Pressable onPress={onDone} hitSlop={8} disabled={isLast}>
-            <Text style={styles.skip}>{isLast ? ' ' : 'Skip'}</Text>
+            <Text style={styles.skip}>{isLast ? ' ' : t('intro.skip')}</Text>
           </Pressable>
           <Button
-            label={isLast ? doneLabel : 'Next'}
+            label={isLast ? (doneLabel ?? t('intro.getStarted')) : t('intro.next')}
             onPress={() => {
               if (isLast) onDone()
               else setIndex(index + 1)

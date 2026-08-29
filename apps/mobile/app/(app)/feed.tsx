@@ -1,10 +1,4 @@
-import {
-  FEED_FILTERS,
-  getLanguage,
-  LEVEL_SHORT_LABELS,
-  MAX_POST_LENGTH,
-  type FeedFilter,
-} from '@langx/shared'
+import { FEED_FILTERS, MAX_POST_LENGTH, type FeedFilter } from '@langx/shared'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../src/components/ui/FormField'
@@ -18,23 +12,33 @@ import { Screen } from '../../src/components/ui/Screen'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
+import { levelShortLabel, useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
 import { showToast } from '../../src/lib/toast'
 import { relativeTime } from '../../src/lib/format'
 
-const FILTER_LABELS: Record<FeedFilter, string> = {
-  needsCorrection: 'Needs a correction',
-  following: 'Following',
+const FILTER_LABELS: Record<FeedFilter, MessageKey> = {
+  needsCorrection: 'feed.needsCorrection',
+  following: 'feed.following',
 }
 
 /** "Spanish A2 · 12 min" — who is asking, in what, and how stale the ask is. */
-function subtitleOf(post: FeedPost): string {
-  const language = getLanguage(post.language)?.name ?? post.language
-  const level = post.level ? ` ${LEVEL_SHORT_LABELS[post.level]}` : ''
-  return `${language}${level} · ${relativeTime(post.createdAt)}`
+function useSubtitle(): (post: FeedPost) => string {
+  const t = useT()
+  const { locale } = useLocale()
+  const names = useDisplayNames()
+
+  return (post) => {
+    const language = names.language(post.language)
+    const level = post.level ? ` ${levelShortLabel(t, post.level)}` : ''
+    return `${language}${level} · ${relativeTime(post.createdAt, { t, locale })}`
+  }
 }
 
 export default function FeedScreen() {
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
+  const subtitleOf = useSubtitle()
 
   const [filter, setFilter] = useState<FeedFilter>('needsCorrection')
   /**
@@ -76,7 +80,7 @@ export default function FeedScreen() {
         onSuccess: () => {
           setDraft('')
           setAsking(false)
-          showToast('Posted. Somebody will correct it.')
+          showToast(t('feed.posted'))
         },
       },
     )
@@ -98,7 +102,7 @@ export default function FeedScreen() {
         onSuccess: () => {
           setCorrectingId(null)
           setCorrection('')
-          showToast('Correction sent. Thank you.')
+          showToast(t('feed.correctionSent'))
         },
       },
     )
@@ -108,9 +112,9 @@ export default function FeedScreen() {
     <Screen fluid>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>Feed</Text>
+          <Text style={styles.title}>{t('feed.title')}</Text>
           <Chip
-            label={asking ? 'Cancel' : '+ Ask'}
+            label={asking ? t('common.cancel') : t('feed.ask')}
             tone="secondary"
             selected={!asking}
             onPress={() => setAsking((open) => !open)}
@@ -119,16 +123,16 @@ export default function FeedScreen() {
         {asking && askLanguage ? (
           <View style={styles.compose}>
             <FormField
-              label={`Your sentence in ${getLanguage(askLanguage)?.name ?? askLanguage}`}
+              label={t('feed.askTitle', { language: names.language(askLanguage) })}
               value={draft}
               onChangeText={setDraft}
-              placeholder="The sentence you are unsure about…"
+              placeholder={t('feed.askPlaceholder')}
               multiline
               autoCapitalize="sentences"
               maxLength={MAX_POST_LENGTH}
             />
             <Button
-              label={createPost.isPending ? 'Posting…' : 'Post'}
+              label={createPost.isPending ? t('feed.posting') : t('feed.post')}
               disabled={!draft.trim() || createPost.isPending}
               onPress={submitAsk}
             />
@@ -139,7 +143,7 @@ export default function FeedScreen() {
           {FEED_FILTERS.map((option) => (
             <Chip
               key={option}
-              label={FILTER_LABELS[option]}
+              label={t(FILTER_LABELS[option])}
               selected={filter === option}
               onPress={() => setFilter(option)}
             />
@@ -165,14 +169,14 @@ export default function FeedScreen() {
             filter === 'following' ? (
               <EmptyState
                 icon="users"
-                title="Nothing from people you know"
-                body="This tab shows posts by people you have talked to. Start a conversation and they will appear here."
+                title={t('feed.knownEmptyTitle')}
+                body={t('feed.knownEmptyBody')}
               />
             ) : (
               <EmptyState
                 icon="check-circle"
-                title="Everything is corrected"
-                body="Nobody is waiting for help right now. Post a sentence of your own, or come back later."
+                title={t('feed.correctedEmptyTitle')}
+                body={t('feed.correctedEmptyBody')}
               />
             )
           }
@@ -203,8 +207,8 @@ export default function FeedScreen() {
                     ]}
                   >
                     {item.correctionCount === 0
-                      ? 'No corrections yet'
-                      : `${item.correctionCount} correction${item.correctionCount === 1 ? '' : 's'}`}
+                      ? t('feed.noCorrections')
+                      : t('feed.corrections', { count: item.correctionCount })}
                   </Text>
                 </View>
 
@@ -213,7 +217,7 @@ export default function FeedScreen() {
                 {item.topCorrection ? (
                   <View style={styles.top}>
                     <Text style={styles.topLabel}>
-                      Top correction · {item.topCorrection.author.displayName}
+                      {t('feed.topCorrection')} {item.topCorrection.author.displayName}
                     </Text>
                     <Text style={styles.topText}>{item.topCorrection.corrected}</Text>
                     {item.topCorrection.note ? (
@@ -227,7 +231,7 @@ export default function FeedScreen() {
                 {!mine && correctingId === item._id ? (
                   <View style={styles.compose}>
                     <FormField
-                      label="Your correction"
+                      label={t('feed.yourCorrection')}
                       value={correction}
                       onChangeText={setCorrection}
                       multiline
@@ -236,13 +240,13 @@ export default function FeedScreen() {
                     />
                     <View style={styles.actions}>
                       <Button
-                        label={correctPost.isPending ? 'Sending…' : 'Send correction'}
+                        label={correctPost.isPending ? t('feed.sending') : t('feed.sendCorrection')}
                         disabled={!correction.trim() || correctPost.isPending}
                         onPress={() => submitCorrection(item._id)}
                         style={styles.grow}
                       />
                       <Button
-                        label="Cancel"
+                        label={t('common.cancel')}
                         variant="secondary"
                         onPress={() => setCorrectingId(null)}
                         style={styles.grow}
@@ -268,15 +272,17 @@ export default function FeedScreen() {
                         ]}
                       >
                         {item.correctedByViewer
-                          ? 'You corrected this'
+                          ? t('feed.youCorrected')
                           : item.correctionCount > 0
-                            ? 'Add yours'
-                            : 'Correct this'}
+                            ? t('feed.addYours')
+                            : t('feed.correctThis')}
                       </Text>
                     </Pressable>
                     {item.correctionCount > 0 ? (
                       <View style={[styles.action, styles.actionInert]}>
-                        <Text style={styles.actionLabel}>See all {item.correctionCount}</Text>
+                        <Text style={styles.actionLabel}>
+                          {t('feed.seeAll', { count: item.correctionCount })}
+                        </Text>
                       </View>
                     ) : null}
                   </View>

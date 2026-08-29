@@ -19,6 +19,7 @@ import {
 } from '../lib/messageMenu'
 import { messageMenuLayout } from '../lib/messageMenuLayout'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useLocale, useT } from '../i18n'
 
 /**
  * Draws whatever `src/lib/messageMenu.ts` has open.
@@ -39,6 +40,8 @@ import { makeStyles, useTheme } from '../lib/theme'
 export function MessageMenuHost() {
   const { colors, spacing } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const { isRtl } = useLocale()
 
   const [request, setRequest] = useState<MessageMenuRequest | null>(null)
   const [page, setPage] = useState<MessageActionPage>('primary')
@@ -67,12 +70,12 @@ export function MessageMenuHost() {
       {page === 'more' ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Back to the first page"
+          accessibilityLabel={t('messageMenu.backToFirstPage')}
           onPress={() => setPage('primary')}
           style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
         >
           <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
-          <Text style={[styles.label, styles.muted]}>Back</Text>
+          <Text style={[styles.label, styles.muted]}>{t('common.backPlain')}</Text>
         </Pressable>
       ) : null}
 
@@ -108,7 +111,7 @@ export function MessageMenuHost() {
           style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
         >
           <Ionicons name="ellipsis-horizontal" size={20} color={colors.textMuted} />
-          <Text style={[styles.label, styles.muted]}>More…</Text>
+          <Text style={[styles.label, styles.muted]}>{t('messageMenu.more')}</Text>
         </Pressable>
       ) : null}
     </>
@@ -125,7 +128,7 @@ export function MessageMenuHost() {
         <Pressable
           key={emoji}
           accessibilityRole="button"
-          accessibilityLabel={`React with ${emoji}`}
+          accessibilityLabel={t('messageMenu.reactWith', { emoji })}
           onPress={() => resolveMessageMenu(request.id, { kind: 'reaction', emoji })}
           style={[styles.emoji, request.myReaction === emoji && styles.emojiChosen]}
         >
@@ -153,6 +156,7 @@ export function MessageMenuHost() {
       menu: { width: MENU_WIDTH, height: menuHeight },
       strip: { width: stripWidth, height: STRIP_HEIGHT },
       mine: request.mine,
+      rtl: isRtl,
     })
 
     return (

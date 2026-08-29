@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { createTranslate } from '../i18n/runtime'
 import { messageActionsFor, paginateActions, type MessageActionContext } from './messageActions'
 
 const theirs: MessageActionContext = {
@@ -10,6 +11,7 @@ const theirs: MessageActionContext = {
   corrected: false,
   starred: false,
   pinned: false,
+  t: createTranslate('en'),
 }
 
 const ids = (overrides: Partial<MessageActionContext> = {}) =>

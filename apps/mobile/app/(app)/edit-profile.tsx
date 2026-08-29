@@ -7,6 +7,7 @@ import {
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
   PLAN_LIMITS,
+  GENDERS,
   getLanguage,
   type LanguageLevel,
   type Gender,
@@ -34,13 +35,7 @@ import { goBackTo } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-
-const GENDER_LABELS: Record<Gender, string> = {
-  female: 'Female',
-  male: 'Male',
-  other: 'Other',
-  undisclosed: 'Prefer not to say',
-}
+import { genderLabel, interestLabel, levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
 
 /** What the picker returns has no mime type on every platform; infer from the extension. */
 function contentTypeFor(uri: string): string {
@@ -78,6 +73,8 @@ export default function EditProfileScreen() {
 function EditProfileForm({ profile }: { profile: MeProfile }) {
   const { layout } = useTheme()
   const styles = useStyles()
+  const t = useT()
+  const names = useDisplayNames()
 
   const update = useUpdateProfile()
   const uploadAvatar = useUploadAvatar()
@@ -103,7 +100,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   async function pick(then: (uri: string, contentType: string) => void): Promise<void> {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (!permission.granted) {
-      void showAlert('Photos', 'LangX needs permission to open your photo library.')
+      void showAlert(t('chat.photosTitle'), t('chat.photosPermission'))
       return
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -120,21 +117,21 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
     // Storage may simply not be configured yet on this instance; say so rather
     // than showing a generic failure the user cannot act on.
     void showAlert(
-      'Upload failed',
+      t('errors.uploadFailed'),
       caught instanceof ApiRequestError && caught.code === 'INTERNAL'
-        ? 'Photo storage is not configured on this server yet.'
-        : 'Could not upload that image. Try again.',
+        ? t('editProfile.storageUnconfigured')
+        : t('editProfile.uploadRetry'),
     )
   }
 
   async function save(): Promise<void> {
     setError(undefined)
     if (native.some((code) => learningCodes.includes(code))) {
-      setError('A language cannot be both native and something you are learning.')
+      setError(t('editProfile.bothNativeAndLearning'))
       return
     }
     if (native.length === 0 || learning.length === 0) {
-      setError('Pick at least one native language and one you are learning.')
+      setError(t('editProfile.pickOneOfEach'))
       return
     }
     try {
@@ -149,31 +146,36 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         learning: learning.map((l, index) => ({ ...l, priority: index + 1 })),
       })
       goBackTo('/(app)/me')
-      showToast('Profile saved.')
+      showToast(t('editProfile.saved'))
     } catch (caught) {
-      setError(caught instanceof ApiRequestError ? caught.message : 'Could not save your profile.')
+      // The API's message is English and written for a developer.
+      void caught
+      setError(t('editProfile.saveFailed'))
     }
   }
 
   return (
     <Screen scroll>
       <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>‹ Back</Text>
+        <Text style={styles.back}>{t('common.back')}</Text>
       </Pressable>
-      <Text style={styles.title}>Edit profile</Text>
+      <Text style={styles.title}>{t('editProfile.title')}</Text>
 
       <View style={styles.avatarRow}>
         <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
         <View style={styles.avatarActions}>
           <Button
-            label={uploadAvatar.isPending ? 'Uploading…' : 'Change photo'}
+            label={uploadAvatar.isPending ? t('onboarding.uploading') : t('onboarding.changePhoto')}
             variant="secondary"
             disabled={uploadAvatar.isPending}
             onPress={() =>
               void pick((uri, contentType) =>
                 uploadAvatar.mutate(
                   { uri, contentType },
-                  { onError: onUploadError, onSuccess: () => showToast('Photo updated.') },
+                  {
+                    onError: onUploadError,
+                    onSuccess: () => showToast(t('editProfile.photoUpdated')),
+                  },
                 ),
               )
             }
@@ -182,20 +184,20 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       </View>
 
       <FormField
-        label="Display name"
+        label={t('editProfile.displayName')}
         value={displayName}
         onChangeText={setDisplayName}
         maxLength={DISPLAY_NAME_MAX_LENGTH}
       />
       <FormField
-        label="About you"
+        label={t('editProfile.aboutYou')}
         value={bio}
         onChangeText={setBio}
         maxLength={BIO_MAX_LENGTH}
-        placeholder="What do you like talking about?"
+        placeholder={t('editProfile.aboutYouPlaceholder')}
         multiline
       />
-      <CountryPicker label="Country" value={country} onChange={setCountry} />
+      <CountryPicker label={t('editProfile.country')} value={country} onChange={setCountry} />
 
       {/*
         `city` has been in the schema and declared in the store privacy form
@@ -203,10 +205,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         describing a field that was always empty.
       */}
       <FormField
-        label="City (optional)"
+        label={t('editProfile.city')}
         value={city}
         onChangeText={setCity}
-        placeholder="Istanbul"
+        placeholder={t('editProfile.cityPlaceholder')}
         autoCapitalize="words"
         maxLength={CITY_MAX_LENGTH}
       />
@@ -218,7 +220,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         permanent zero for those accounts.
       */}
       <Text style={styles.label}>
-        Interests {interests.length > 0 ? `(${interests.length}/${MAX_INTERESTS})` : ''}
+        {t('editProfile.interests')}{' '}
+        {interests.length > 0 ? `(${interests.length}/${MAX_INTERESTS})` : ''}
       </Text>
       <View style={styles.row}>
         {INTEREST_SUGGESTIONS.map((interest) => {
@@ -226,7 +229,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           return (
             <Chip
               key={interest}
-              label={interest}
+              label={interestLabel(t, interest)}
               selected={chosen}
               onPress={() => {
                 if (chosen) setInterests(interests.filter((each) => each !== interest))
@@ -237,39 +240,42 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         })}
       </View>
 
-      <Text style={styles.label}>Gender</Text>
+      <Text style={styles.label}>{t('editProfile.gender')}</Text>
       <View style={styles.row}>
-        {(Object.keys(GENDER_LABELS) as Gender[]).map((option) => (
+        {GENDERS.map((option) => (
           <Chip
             key={option}
-            label={GENDER_LABELS[option]}
+            label={genderLabel(t, option)}
             selected={gender === option}
             onPress={() => setGender(option)}
           />
         ))}
       </View>
 
-      <Text style={styles.label}>Languages</Text>
+      <Text style={styles.label}>{t('editProfile.languages')}</Text>
       <View style={styles.row}>
         {native.map((code) => (
-          <Chip key={code} label={getLanguage(code)?.name ?? code} tone="accent" selected />
+          <Chip key={code} label={names.language(code)} tone="accent" selected />
         ))}
         {learning.map((l) => (
           <Chip
             key={l.code}
-            label={`${getLanguage(l.code)?.name ?? l.code} · ${l.level}`}
+            label={t('editProfile.languageWithLevel', {
+              language: names.language(l.code),
+              level: levelShortLabel(t, l.level),
+            })}
             tone="accent"
           />
         ))}
       </View>
       <View style={styles.row}>
         <Chip
-          label="Edit native"
+          label={t('editProfile.editNative')}
           onPress={() => setEditing(editing === 'native' ? 'none' : 'native')}
           selected={editing === 'native'}
         />
         <Chip
-          label="Edit learning"
+          label={t('editProfile.editLearning')}
           onPress={() => setEditing(editing === 'learning' ? 'none' : 'learning')}
           selected={editing === 'learning'}
         />
@@ -324,7 +330,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       ) : null}
 
       <Text style={styles.label}>
-        Photos ({photos.length}/{PLAN_LIMITS.free.maxPhotos})
+        {t('editProfile.photos')} ({photos.length}/{PLAN_LIMITS.free.maxPhotos})
       </Text>
       <View style={styles.gallery}>
         {photos.map((photo) => (
@@ -332,9 +338,9 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
             key={photo.url}
             onLongPress={() =>
               void confirmAlert({
-                title: 'Remove photo',
-                message: 'Remove this photo from your profile?',
-                confirmLabel: 'Remove',
+                title: t('editProfile.removePhotoTitle'),
+                message: t('editProfile.removePhotoBody'),
+                confirmLabel: t('common.remove'),
                 destructive: true,
               }).then((yes) => {
                 if (yes) removePhoto.mutate(photo.url)
@@ -352,7 +358,10 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
               void pick((uri, contentType) =>
                 addPhoto.mutate(
                   { uri, contentType },
-                  { onError: onUploadError, onSuccess: () => showToast('Photo added.') },
+                  {
+                    onError: onUploadError,
+                    onSuccess: () => showToast(t('editProfile.photoAdded')),
+                  },
                 ),
               )
             }
@@ -361,10 +370,15 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           </Pressable>
         ) : null}
       </View>
-      <Text style={styles.hint}>Long-press a photo to remove it.</Text>
+      <Text style={styles.hint}>{t('editProfile.longPressToRemove')}</Text>
 
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button label="Save" loading={update.isPending} onPress={save} style={styles.save} />
+      <Button
+        label={t('common.save')}
+        loading={update.isPending}
+        onPress={save}
+        style={styles.save}
+      />
     </Screen>
   )
 }

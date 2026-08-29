@@ -7,6 +7,7 @@ import { generateAppleClientSecret } from './auth/appleClientSecret'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
 import type { EmailSender } from './email/sender'
 import { resetPasswordEmail, verificationEmail } from './email/templates'
+import { localeFromHeader } from './i18n'
 import type { Env } from './env'
 import type { RevenueCatClient } from './modules/billing/revenueCatClient'
 
@@ -84,8 +85,16 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       enabled: true,
       requireEmailVerification: true,
       autoSignIn: false,
-      sendResetPassword: async ({ user, url }) => {
-        const email = resetPasswordEmail(url)
+      sendResetPassword: async ({ user, url }, request) => {
+        // The language the *request* was made in. There is no stored
+        // preference to read: a password reset is asked for from a signed-out
+        // screen, and at sign-up the account is seconds old. The app sets this
+        // header from whatever the reader picked, so it is a better answer
+        // than anything on the account would be.
+        const email = resetPasswordEmail(
+          url,
+          localeFromHeader(request?.headers.get('accept-language') ?? undefined),
+        )
         await emailSender.send({ to: user.email, ...email })
       },
     },
@@ -93,8 +102,11 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: async ({ user, url }) => {
-        const email = verificationEmail(url)
+      sendVerificationEmail: async ({ user, url }, request) => {
+        const email = verificationEmail(
+          url,
+          localeFromHeader(request?.headers.get('accept-language') ?? undefined),
+        )
         await emailSender.send({ to: user.email, ...email })
       },
       // Clicking the link is proof of the address, so a matching v1 profile

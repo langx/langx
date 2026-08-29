@@ -1,8 +1,15 @@
 import { COSMETICS, STREAK_FREEZE_SKU, STREAK_RESTORE_SKU, TOKEN_RULES } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
+import { createTranslate } from '../i18n/runtime'
 import { buildStoreOffers, type StoreInput } from './storeOffers'
 
-const base: StoreInput = { balance: 0, owned: [], streakFreezes: 0, restorableStreak: 0 }
+const base: StoreInput = {
+  balance: 0,
+  owned: [],
+  streakFreezes: 0,
+  restorableStreak: 0,
+  t: createTranslate('en'),
+}
 const byId = (input: Partial<StoreInput>, id: string) =>
   buildStoreOffers({ ...base, ...input }).find((offer) => offer.id === id)
 
@@ -77,6 +84,14 @@ describe('buildStoreOffers', () => {
     it('keeps the catalogue price and the kind as its subtitle', () => {
       expect(byId({}, gold.id)).toMatchObject({ price: gold.price, subtitle: 'Profile frame' })
       expect(byId({}, 'title.tutor')?.subtitle).toBe('Title')
+    })
+
+    it("names the cosmetic in the reader's language", () => {
+      // The label used to come from `COSMETICS`, which is shared with the API
+      // and can only ever be English.
+      const tr = { t: createTranslate('tr') }
+      expect(byId(tr, gold.id)?.title).toBe('Altın çerçeve')
+      expect(byId(tr, 'title.tutor')?.title).toBe('Eğitmen')
     })
   })
 })

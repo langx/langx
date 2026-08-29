@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { MessageDto } from '../api/queries'
+import { createTranslate } from '../i18n/runtime'
 import { dayLabel, messageRows } from './messageGroups'
 
 const ME = 'me'
@@ -91,18 +92,32 @@ describe('messageRows', () => {
 
 describe('dayLabel', () => {
   const now = new Date('2026-08-29T12:00:00')
+  const en = { t: createTranslate('en'), locale: 'en', now } as const
+  const tr = { t: createTranslate('tr'), locale: 'tr', now } as const
 
   it('names today and yesterday', () => {
-    expect(dayLabel('2026-08-29', now)).toBe('Today')
-    expect(dayLabel('2026-08-28', now)).toBe('Yesterday')
+    expect(dayLabel('2026-08-29', en)).toBe('Today')
+    expect(dayLabel('2026-08-28', en)).toBe('Yesterday')
+  })
+
+  it("names them in the reader's language, not the device's", () => {
+    expect(dayLabel('2026-08-29', tr)).toBe('Bugün')
+    expect(dayLabel('2026-08-28', tr)).toBe('Dün')
+  })
+
+  it("formats the date in the reader's language too", () => {
+    // The month name is the visible half of this; asserting on it rather than
+    // on the numerals is what catches a date built with the wrong locale.
+    expect(dayLabel('2026-03-04', tr)).toContain('Mart')
+    expect(dayLabel('2026-03-04', en)).toContain('March')
   })
 
   it('drops the year within the current year and keeps it outside', () => {
-    expect(dayLabel('2026-03-04', now)).not.toMatch(/2026/)
-    expect(dayLabel('2025-03-04', now)).toMatch(/2025/)
+    expect(dayLabel('2026-03-04', en)).not.toMatch(/2026/)
+    expect(dayLabel('2025-03-04', en)).toMatch(/2025/)
   })
 
   it('falls back to the key it was given rather than printing an invalid date', () => {
-    expect(dayLabel('', now)).toBe('')
+    expect(dayLabel('', en)).toBe('')
   })
 })

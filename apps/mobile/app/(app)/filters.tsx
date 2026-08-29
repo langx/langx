@@ -1,11 +1,4 @@
-import {
-  LANGUAGE_LEVELS,
-  LEVEL_SHORT_LABELS,
-  GENDERS,
-  getLanguage,
-  type LanguageLevel,
-  type Gender,
-} from '@langx/shared'
+import { LANGUAGE_LEVELS, GENDERS, type LanguageLevel } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
@@ -28,16 +21,10 @@ import {
   type DiscoveryFilters,
 } from '../../src/lib/discoveryFilters'
 import { makeStyles } from '../../src/lib/theme'
+import { genderLabel, levelShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
-
-const GENDER_LABELS: Record<Gender, string> = {
-  female: 'Female',
-  male: 'Male',
-  other: 'Other',
-  undisclosed: 'Prefer not to say',
-}
 
 /**
  * A section header. `locked` marks the ones a free account cannot use — shown
@@ -57,6 +44,9 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
 
 export default function FiltersScreen() {
   const styles = useStyles()
+  const t = useT()
+  const { locale } = useLocale()
+  const names = useDisplayNames()
 
   const params = useLocalSearchParams<Record<string, string>>()
   const me = useMe()
@@ -103,57 +93,54 @@ export default function FiltersScreen() {
     <Screen fluid>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <ScreenHeader
-          title="Filters"
+          title={t('filters.title')}
           onBack={() => goBackTo('/(app)/discover')}
           trailing={
             <Pressable onPress={() => setFilters({})} hitSlop={8}>
-              <Text style={styles.reset}>Reset</Text>
+              <Text style={styles.reset}>{t('common.reset')}</Text>
             </Pressable>
           }
         />
 
-        <SectionTitle title="Speaks" />
-        <Text style={styles.hint}>
-          Which of your own languages you want to practise. Everyone here already speaks it
-          natively.
-        </Text>
+        <SectionTitle title={t('filters.speaks')} />
+        <Text style={styles.hint}>{t('filters.practiseBody')}</Text>
         <View style={styles.row}>
           <Chip
-            label="Any"
+            label={t('common.any')}
             selected={!filters.targetLanguage}
             onPress={() => set({ targetLanguage: undefined })}
           />
           {learning.map((language) => (
             <Chip
               key={language.code}
-              label={getLanguage(language.code)?.name ?? language.code}
+              label={names.language(language.code)}
               selected={filters.targetLanguage === language.code}
               onPress={() => set({ targetLanguage: language.code })}
             />
           ))}
         </View>
 
-        <SectionTitle title="Availability" />
+        <SectionTitle title={t('filters.availability')} />
         <View style={styles.row}>
           <Chip
-            label="Online first"
+            label={t('filters.onlineFirst')}
             tone="accent"
             selected={filters.online === true}
             onPress={() => set({ online: filters.online ? undefined : true })}
           />
         </View>
 
-        <SectionTitle title="Gender" locked={!isPro} />
+        <SectionTitle title={t('filters.gender')} locked={!isPro} />
         <View style={styles.row}>
           <Chip
-            label="Any"
+            label={t('common.any')}
             selected={!filters.gender && !filters.onlyMyGender}
             onPress={() => set({ gender: undefined, onlyMyGender: undefined }, true)}
           />
           {GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => (
             <Chip
               key={gender}
-              label={GENDER_LABELS[gender]}
+              label={genderLabel(t, gender)}
               selected={filters.gender === gender}
               onPress={() =>
                 set(
@@ -170,15 +157,17 @@ export default function FiltersScreen() {
 
         <Card style={styles.switchRow}>
           <View style={styles.switchText}>
-            <Text style={styles.switchLabel}>Only my gender</Text>
+            <Text style={styles.switchLabel}>{t('filters.onlyMyGender')}</Text>
             <Text style={styles.switchHint}>
               {myGender && myGender !== 'undisclosed'
-                ? `Show only people who are ${GENDER_LABELS[myGender].toLowerCase()}, like you.`
-                : 'Add your own gender to your profile to use this.'}
+                ? t('filters.onlyMyGenderBody', {
+                    gender: genderLabel(t, myGender).toLocaleLowerCase(locale),
+                  })
+                : t('filters.onlyMyGenderMissing')}
             </Text>
           </View>
           <Toggle
-            accessibilityLabel="Only my gender"
+            accessibilityLabel={t('filters.onlyMyGender')}
             value={filters.onlyMyGender === true}
             disabled={!myGender || myGender === 'undisclosed'}
             onValueChange={(value) =>
@@ -187,10 +176,10 @@ export default function FiltersScreen() {
           />
         </Card>
 
-        <SectionTitle title="Age" locked={!isPro} />
+        <SectionTitle title={t('filters.age')} locked={!isPro} />
         <View style={styles.row}>
           <Chip
-            label="Any"
+            label={t('common.any')}
             selected={filters.ageMin === undefined && filters.ageMax === undefined}
             onPress={() => set({ ageMin: undefined, ageMax: undefined }, true)}
           />
@@ -215,19 +204,16 @@ export default function FiltersScreen() {
           })}
         </View>
 
-        <SectionTitle title="Their level in your language" locked={!isPro} />
-        <Text style={styles.hint}>
-          How well they already speak what you teach. Higher means an easier conversation, lower
-          means someone who needs you more.
-        </Text>
+        <SectionTitle title={t('filters.theirLevel')} locked={!isPro} />
+        <Text style={styles.hint}>{t('filters.theirLevelBody')}</Text>
         {/* One row of equal segments rather than wrapping chips: these are four
             points on a single scale, and a scale whose steps are different
             widths reads as four unrelated options. */}
         <SegmentedControl<LanguageLevel>
-          accessibilityLabel="Their minimum level"
+          accessibilityLabel={t('filters.theirMinimumLevel')}
           options={LANGUAGE_LEVELS.map((level) => ({
             value: level,
-            label: LEVEL_SHORT_LABELS[level],
+            label: levelShortLabel(t, level),
           }))}
           selected={filters.minLevel ? [filters.minLevel] : []}
           onToggle={(level) =>
@@ -235,7 +221,7 @@ export default function FiltersScreen() {
           }
         />
 
-        <SectionTitle title="Country" locked={!isPro} />
+        <SectionTitle title={t('filters.country')} locked={!isPro} />
         <CountryPicker
           value={filters.country ?? ''}
           onChange={(country) => set({ country: country || undefined }, true)}
@@ -243,7 +229,12 @@ export default function FiltersScreen() {
         />
 
         <View style={styles.actions}>
-          <Button label={count > 0 ? `Show results · ${count}` : 'Show results'} onPress={apply} />
+          <Button
+            label={
+              count > 0 ? t('filters.showResultsWithCount', { count }) : t('filters.showResults')
+            }
+            onPress={apply}
+          />
         </View>
       </ScrollView>
     </Screen>

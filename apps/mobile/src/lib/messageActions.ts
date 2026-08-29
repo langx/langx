@@ -1,3 +1,5 @@
+import type { TranslateFn } from '../i18n/runtime'
+
 export const MESSAGE_ACTION_IDS = [
   'reply',
   'copy',
@@ -42,6 +44,12 @@ export interface MessageActionContext {
   corrected: boolean
   starred: boolean
   pinned: boolean
+  /**
+   * Passed in rather than reached for: this stays a pure function the tests
+   * call directly, and the labels are the reader's language rather than the
+   * module's import-time language.
+   */
+  t: TranslateFn
 }
 
 /**
@@ -53,18 +61,29 @@ export interface MessageActionContext {
  * sixth action meant finding all five.
  */
 export function messageActionsFor(context: MessageActionContext): MessageAction[] {
+  const { t } = context
   const actions: MessageAction[] = []
 
   // Every message can be answered, including a captionless voice note — the
   // quote carries a label for those rather than a body. First in the list
   // because on web it is the only way in: the swipe gesture is native-only.
-  actions.push({ id: 'reply', label: 'Reply', icon: 'arrow-undo-outline', page: 'primary' })
+  actions.push({
+    id: 'reply',
+    label: t('messageActions.reply'),
+    icon: 'arrow-undo-outline',
+    page: 'primary',
+  })
 
   // The teaching gesture, and the highest-earning action in the app. Only on
   // the other person's text: there is nothing to correct in an image, and
   // correcting a correction is a thread nobody wants.
   if (!context.mine && context.type === 'text') {
-    actions.push({ id: 'correct', label: 'Correct', icon: 'pencil-outline', page: 'primary' })
+    actions.push({
+      id: 'correct',
+      label: t('messageActions.correct'),
+      icon: 'pencil-outline',
+      page: 'primary',
+    })
   }
 
   // Translating your own message is a round trip to something you already
@@ -75,11 +94,21 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
     context.type !== 'correction' &&
     !context.alreadyTranslated
   ) {
-    actions.push({ id: 'translate', label: 'Translate', icon: 'language-outline', page: 'primary' })
+    actions.push({
+      id: 'translate',
+      label: t('messageActions.translate'),
+      icon: 'language-outline',
+      page: 'primary',
+    })
   }
 
   if (context.hasBody) {
-    actions.push({ id: 'copy', label: 'Copy', icon: 'copy-outline', page: 'primary' })
+    actions.push({
+      id: 'copy',
+      label: t('messageActions.copy'),
+      icon: 'copy-outline',
+      page: 'primary',
+    })
   }
 
   /**
@@ -91,18 +120,23 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
    */
   actions.push({
     id: 'delete',
-    label: 'Delete',
+    label: t('messageActions.delete'),
     icon: 'trash-outline',
     page: 'primary',
     destructive: true,
   })
 
   if (context.canEdit) {
-    actions.push({ id: 'edit', label: 'Edit', icon: 'create-outline', page: 'more' })
+    actions.push({
+      id: 'edit',
+      label: t('messageActions.edit'),
+      icon: 'create-outline',
+      page: 'more',
+    })
   } else if (context.mine && context.type === 'text' && context.corrected) {
     actions.push({
       id: 'edit',
-      label: "Corrected — can't be edited",
+      label: t('messageActions.correctedCannotEdit'),
       icon: 'lock-closed-outline',
       page: 'more',
       disabled: true,
@@ -111,14 +145,14 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
 
   actions.push({
     id: 'star',
-    label: context.starred ? 'Unstar' : 'Star',
+    label: t(context.starred ? 'messageActions.unstar' : 'messageActions.star'),
     icon: context.starred ? 'star' : 'star-outline',
     page: 'more',
   })
 
   actions.push({
     id: 'pin',
-    label: context.pinned ? 'Unpin' : 'Pin',
+    label: t(context.pinned ? 'messageActions.unpin' : 'messageActions.pin'),
     icon: 'pin-outline',
     page: 'more',
   })
@@ -126,7 +160,7 @@ export function messageActionsFor(context: MessageActionContext): MessageAction[
   if (!context.mine) {
     actions.push({
       id: 'report',
-      label: 'Report',
+      label: t('messageActions.report'),
       icon: 'flag-outline',
       page: 'more',
       destructive: true,

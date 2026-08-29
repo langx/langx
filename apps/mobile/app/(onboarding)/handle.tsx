@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
-import { api, ApiRequestError } from '../../src/api/client'
+import { api } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
@@ -16,6 +16,7 @@ import {
 } from '../../src/hooks/useOnboardingDraft'
 import { useQueryClient } from '@tanstack/react-query'
 import { makeStyles } from '../../src/lib/theme'
+import { useT } from '../../src/i18n'
 
 function useDebounced<T>(value: T, delay = 400): T {
   const [debounced, setDebounced] = useState(value)
@@ -36,6 +37,7 @@ function useDebounced<T>(value: T, delay = 400): T {
  */
 export default function HandleStep() {
   const styles = useStyles()
+  const t = useT()
 
   const draft = useOnboardingDraft()
   const queryClient = useQueryClient()
@@ -92,11 +94,10 @@ export default function HandleStep() {
       // finished four forms.
       router.replace('/(onboarding)/done')
     } catch (error) {
-      setSubmitError(
-        error instanceof ApiRequestError
-          ? error.message
-          : 'Could not create your profile. Try again.',
-      )
+      // The API's own message is English and written for a developer; the
+      // person filling in this form gets ours instead.
+      void error
+      setSubmitError(t('onboarding.profileFailed'))
     } finally {
       setSubmitting(false)
     }
@@ -107,24 +108,24 @@ export default function HandleStep() {
   return (
     <Screen scroll>
       <Text style={styles.step}>4 / 4</Text>
-      <Text style={styles.title}>Choose a username</Text>
+      <Text style={styles.title}>{t('onboarding.handleTitle')}</Text>
 
       {reserved ? (
         <View style={styles.reserved}>
-          <Text style={styles.reservedTitle}>@{reserved} is reserved for you</Text>
-          <Text style={styles.reservedBody}>
-            Your username from the old LangX. You can claim it back, once.
+          <Text style={styles.reservedTitle}>
+            {t('onboarding.handleReserved', { handle: reserved })}
           </Text>
+          <Text style={styles.reservedBody}>{t('onboarding.handleReservedBody')}</Text>
         </View>
       ) : null}
 
       <FormField
-        label="Username"
+        label={t('onboarding.username')}
         value={draft.handle}
         onChangeText={(handle) =>
           updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
         }
-        placeholder="alex"
+        placeholder={t('onboarding.handlePlaceholder')}
         autoCapitalize="none"
         autoCorrect={false}
         {...(!parsed.success && draft.handle.length > 0
@@ -135,17 +136,17 @@ export default function HandleStep() {
       <View style={styles.status}>
         {checking ? <ActivityIndicator size="small" /> : null}
         {!checking && available === true ? (
-          <Text style={styles.ok}>@{draft.handle} is available ✓</Text>
+          <Text style={styles.ok}>{t('onboarding.handleAvailable', { handle: draft.handle })}</Text>
         ) : null}
         {!checking && available === false ? (
-          <Text style={styles.taken}>@{draft.handle} is taken</Text>
+          <Text style={styles.taken}>{t('onboarding.handleTaken', { handle: draft.handle })}</Text>
         ) : null}
       </View>
 
       {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
 
       <Button
-        label="Start using LangX"
+        label={t('onboarding.startUsing')}
         disabled={!canSubmit}
         loading={submitting}
         onPress={submit}

@@ -18,6 +18,7 @@
  * only place the test setup can reach.
  */
 
+import { currentTranslate } from '../i18n/runtime'
 export interface AlertButton<T = void> {
   label: string
   /** Resolves the request with this when pressed. */
@@ -92,7 +93,9 @@ export function dismissValue<T>(buttons: AlertButton<T>[]): T | undefined {
 
 /** A message with nothing to decide. */
 export function showAlert(title: string, message?: string): Promise<void> {
-  return askAlert<void>(title, message, [{ label: 'OK', value: undefined }])
+  return askAlert<void>(title, message, [
+    { label: currentTranslate()('common.ok'), value: undefined },
+  ])
 }
 
 /** A yes/no question. Dismissing counts as no. */
@@ -103,7 +106,7 @@ export function confirmAlert(options: {
   destructive?: boolean
 }): Promise<boolean> {
   return askAlert<boolean>(options.title, options.message, [
-    { label: 'Cancel', value: false, style: 'cancel' },
+    { label: currentTranslate()('common.cancel'), value: false, style: 'cancel' },
     {
       label: options.confirmLabel,
       value: true,
@@ -120,7 +123,7 @@ export function chooseAlert<T extends string>(
 ): Promise<T | null> {
   return askAlert<T | null>(title, message, [
     ...choices.map((c) => ({ label: c.label, value: c.value })),
-    { label: 'Cancel', value: null, style: 'cancel' as const },
+    { label: currentTranslate()('common.cancel'), value: null, style: 'cancel' as const },
   ])
 }
 

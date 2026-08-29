@@ -5,6 +5,7 @@ import { Pressable, Text, View } from 'react-native'
 import { api } from '../api/client'
 import { keys, useMe } from '../api/queries'
 import { makeStyles } from '../lib/theme'
+import { useT } from '../i18n'
 
 function daysLeft(deletedAt: string): number {
   const purgeAt = new Date(deletedAt).getTime() + ACCOUNT_DELETION_GRACE_DAYS * 86_400_000
@@ -27,6 +28,7 @@ function daysLeft(deletedAt: string): number {
  */
 export function DeletionBanner() {
   const styles = useStyles()
+  const t = useT()
 
   const me = useMe()
   const queryClient = useQueryClient()
@@ -55,15 +57,15 @@ export function DeletionBanner() {
       <View style={styles.text}>
         <Text style={styles.title}>
           {left === 0
-            ? 'Your account is being deleted today.'
+            ? t('deletion.today')
             : left === 1
-              ? 'Your account will be deleted tomorrow.'
-              : `Your account will be deleted in ${left} days.`}
+              ? t('deletion.tomorrow')
+              : t('deletion.inDays', { count: left })}
         </Text>
-        <Text style={styles.body}>Until then nobody can find you or see your profile.</Text>
+        <Text style={styles.body}>{t('deletion.untilThen')}</Text>
       </View>
       <Pressable onPress={() => void keepAccount()} disabled={busy} hitSlop={8}>
-        <Text style={styles.action}>{busy ? 'Wait…' : 'Keep it'}</Text>
+        <Text style={styles.action}>{busy ? t('deletion.keeping') : t('deletion.keepIt')}</Text>
       </Pressable>
     </View>
   )

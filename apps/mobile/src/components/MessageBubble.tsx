@@ -7,6 +7,7 @@ import { shouldCaptureSwipe, swipeReleased, swipeTranslation } from '../lib/swip
 import { makeStyles, useTheme } from '../lib/theme'
 import { AudioBubble, ImageBubble } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
+import { useT } from '../i18n'
 
 export interface MessageBubbleProps {
   message: MessageDto
@@ -51,6 +52,7 @@ export const MessageBubble = memo(function MessageBubble({
 }: MessageBubbleProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
   /**
    * The bubble reports where it is, so the menu can be drawn against it rather
    * than at the bottom of the screen. `measureInWindow` exists on
@@ -124,15 +126,15 @@ export const MessageBubble = memo(function MessageBubble({
   const quote = replyTo ? (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Go to the quoted message"
+      accessibilityLabel={t('chat.goToQuoted')}
       onPress={() => onJumpTo(replyTo.messageId)}
       style={[styles.quote, mine ? styles.quoteMine : styles.quoteTheirs]}
     >
       <Text style={[styles.quoteAuthor, mine && styles.quoteAuthorMine]} numberOfLines={1}>
-        {replyToMine ? 'You' : partnerName}
+        {replyToMine ? t('messageMeta.you') : partnerName}
       </Text>
       <Text style={[styles.quoteText, mine && styles.quoteTextMine]} numberOfLines={2}>
-        {replyTo.preview || 'Attachment'}
+        {replyTo.preview || t('messageMeta.attachment')}
       </Text>
     </Pressable>
   ) : null
@@ -151,7 +153,7 @@ export const MessageBubble = memo(function MessageBubble({
         >
           <View style={styles.tombstoneRow}>
             <Feather name="slash" size={13} color={colors.textMuted} />
-            <Text style={styles.tombstoneText}>This message was deleted</Text>
+            <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
           </View>
           <MessageMeta message={message} mine={mine} />
         </Pressable>
@@ -175,7 +177,7 @@ export const MessageBubble = memo(function MessageBubble({
           <View style={styles.correctionHead}>
             <Feather name="edit-3" size={14} color={colors.success} />
             <Text style={styles.correctionLabel}>
-              {mine ? 'Your correction' : `Correction from ${partnerName}`}
+              {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
             </Text>
           </View>
           <View style={styles.correctionBody}>
@@ -234,11 +236,11 @@ export const MessageBubble = memo(function MessageBubble({
         ) : null}
         {/* The link is gone — translate is a menu row now. This only reports the
             request already in flight. */}
-        {translating ? <Text style={styles.translateLink}>Translating…</Text> : null}
+        {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
         {/* Beside the clock, not in place of it: "when" and "changed since" are
             two different facts and the reader wants both. */}
         {message.editedAt ? (
-          <Text style={[styles.edited, mine && styles.editedMine]}>Edited</Text>
+          <Text style={[styles.edited, mine && styles.editedMine]}>{t('messageMeta.edited')}</Text>
         ) : null}
         <MessageMeta message={message} mine={mine} />
         {badge}
@@ -267,22 +269,25 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
    * of cards, and it costs one radius each — but only on the last message of a
    * run, so five messages in a row read as one turn rather than five.
    */
-  tailMine: { borderBottomRightRadius: radius.sm / 2 },
-  tailTheirs: { borderBottomLeftRadius: radius.sm / 2 },
+  tailMine: { borderBottomEndRadius: radius.sm / 2 },
+  tailTheirs: { borderBottomStartRadius: radius.sm / 2 },
   /**
    * The quote reads as a layer under the reply rather than as a message of its
    * own: one accent edge, a tint of whatever bubble it sits in, two lines at
    * most. Any longer and a reply to a long message looks like a reply *from* it.
    */
   quote: {
-    borderLeftWidth: 3,
+    // `start`, not `left`: the accent edge marks where the quote begins, which
+    // is the right-hand side in Arabic. `left` would put it at the end of the
+    // line, where it reads as a stray rule rather than as a quote bar.
+    borderStartWidth: 3,
     borderRadius: radius.sm,
     marginBottom: spacing.sm,
     paddingHorizontal: spacing.sm,
     paddingVertical: 6,
   },
-  quoteTheirs: { backgroundColor: colors.bg, borderLeftColor: colors.accent },
-  quoteMine: { backgroundColor: colors.primaryShade, borderLeftColor: colors.primaryText },
+  quoteTheirs: { backgroundColor: colors.bg, borderStartColor: colors.accent },
+  quoteMine: { backgroundColor: colors.primaryShade, borderStartColor: colors.primaryText },
   quoteAuthor: { ...font.caption, color: colors.accent, fontWeight: '700' },
   quoteAuthorMine: { color: colors.primaryText },
   quoteText: { ...font.caption, color: colors.textMuted },
