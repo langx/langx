@@ -1,4 +1,3 @@
-import { router } from 'expo-router'
 import {
   ActivityIndicator,
   FlatList,
