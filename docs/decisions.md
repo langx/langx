@@ -1194,6 +1194,80 @@ not change language when someone else signs in. The client sends it as
 `Accept-Language` (so a signed-out password-reset email is written in the right
 language) and registers it with each push device (so a streak reminder is, too).
 
+## The feed's cursor split on the wrong dot
+
+The `needsCorrection` tab sorts `(correctionCount, createdAt, _id)`, so its
+cursor has to carry the count; the `following` tab sorts by recency and does
+not. One encoding, told apart by a `<count>.` prefix — and the decoder looked
+for the first `.` to find it.
+
+An ISO timestamp has a dot of its own, before the `Z`. `indexOf('.')` found the
+milliseconds every time, the countless branch was unreachable, and **every
+`following` page-two request was a 400** from the day the tab shipped.
+`needsCorrection` only ever worked because a leading `"3."` happens to put a dot
+at index 1, ahead of the timestamp's.
+
+Recognised by shape now (`^\d+\.`), which cannot match a timestamp whose fifth
+character is `-`, so cursors already in a client's hand still decode. The two
+functions moved to `lib/feedCursor.ts` on the way: they touch no `Db`, and a
+cursor bug is cheapest to prove fixed where there is no database to stand up.
+Nothing had tested a second page.
+
+## The corrected post used to vanish, and the sort was not the bug
+
+Answering a post made its card disappear. `needsCorrection` sorts
+`correctionCount` **ascending**, and the mutation invalidated the whole feed —
+so the refetch re-sorted the post behind every unanswered post in the
+collection, in the same frame as the tap. The one visible consequence of
+teaching was the evidence of it leaving the screen.
+
+The sort stays. Putting the uncorrected ones first is what makes the queue
+drain; inverting it to fix a UI glitch would trade away the product. The fix is
+a cache patch (`lib/feedCache.ts`), applied to the `['feed']` prefix so both
+cached tabs move together. The next natural refetch — pull-to-refresh, tab
+switch, remount — still sorts it away, which is right. It just should not
+happen while the user is looking at it.
+
+## Correction counts count corrections, not awards
+
+The lifetime figure behind the profile tile and the correction badges counted
+`correction` rows in the token ledger. `awardTokens` writes no row at all when
+the amount is zero, and a user under review is awarded zero — so a frozen
+user's corrections sat at 0 no matter how much teaching they did.
+
+The old comment defended counting awards: "a correction past the daily cap is
+still a correction but was never paid for". There is no such cap.
+`PLAN_LIMITS.correctionsPer24h` is `null` on every tier, deliberately, because
+teaching is the behaviour the economy exists to reward. With the cap gone, the
+freeze was the _only_ thing separating awards from acts.
+
+So it counts the acts — `postCorrections` plus `correction` messages, on two new
+indexes. For everyone whose tokens are not frozen the number is identical by
+construction. A frozen user now earns correction badges again, which is the
+documented intent rather than a side effect: freezing "stops the payout only",
+and a badge is not a payout. Writing zero-amount ledger rows would have been the
+smaller diff and the wrong one — "an award worth nothing leaves no trace" is an
+invariant, and breaking it would have started counting capped-out message awards
+too.
+
+## A day that began with teaching returned a 500
+
+`recordActivity` normalizes its post-image, so a caller always gets `partners`
+as an array. `readActivity` did a plain `findOne` and did not — and `partners`
+is the one counter not in the `$inc`. It only appears under `$addToSet`, which
+only runs when there is a partner, and a correction has none.
+
+A user whose first activity of the day was a correction therefore had a
+document with no `partners` field at all, `countersOf` read `.length` off
+`undefined`, and the entire token summary — streak, chart, tile, balance —
+failed with a 500. Not a wrong number: no screen. Found by the test written for
+the frozen-user count above, which is the argument for writing the test rather
+than the assertion.
+
+Both ends are fixed: `countersOf` guards the field, and `readActivity`
+normalizes the way `recordActivity` already did, so a reader cannot tell which
+of the two produced the document it holds.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

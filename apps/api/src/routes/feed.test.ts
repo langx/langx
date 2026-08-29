@@ -11,6 +11,7 @@ import { loadEnv } from '../env'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { createTranslationProvider } from '../translation/createTranslationProvider'
 import { createRevenueCatClientFromEnv } from '../modules/billing/createRevenueCatClient'
+import type { Profile } from '../modules/profiles/profiles'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
 
 const PASSWORD = 'correct horse battery staple'
@@ -71,6 +72,19 @@ describe('community feed', () => {
       url: `/feed${qs ? `?${qs}` : ''}`,
       headers: { cookie: user.cookie },
     })
+  }
+
+  /** The `following` tab's audience is who you have talked to, so tests need one. */
+  async function talkTo(user: SignedUpUser, toUserId: string) {
+    const response = await app.inject({
+      method: 'POST',
+      url: '/conversations',
+      headers: { cookie: user.cookie },
+      payload: { toUserId, body: 'Hello there.' },
+    })
+    if (response.statusCode !== 201) {
+      throw new Error(`conversation failed (${response.statusCode}): ${response.body}`)
+    }
   }
 
   beforeAll(async () => {
@@ -265,5 +279,64 @@ describe('community feed', () => {
 
     const items = (await feed(viewer)).json<{ items: { _id: string }[] }>().items
     expect(items.some((item) => item._id === postId)).toBe(false)
+  })
+  it('pages the following tab', async () => {
+    // The regression that made this tab a one-page feed. Its cursor carries no
+    // count, and the countless branch was unreachable — `indexOf('.')` found
+    // the milliseconds in the ISO timestamp, so page two was always a 400.
+    const viewer = await newUser('following-pager-viewer@example.com')
+    const author = await newUser('following-pager-author@example.com')
+    await talkTo(viewer, author.userId)
+
+    const ids: string[] = []
+    for (let i = 0; i < 3; i++) {
+      ids.push((await post(author, `Sentence number ${i}.`)).json<{ _id: string }>()._id)
+    }
+
+    const first = await feed(viewer, 'filter=following&limit=2')
+    expect(first.statusCode).toBe(200)
+    const page1 = first.json<{ items: { _id: string }[]; nextCursor: string | null }>()
+    expect(page1.items).toHaveLength(2)
+    expect(page1.nextCursor).not.toBeNull()
+
+    const second = await feed(
+      viewer,
+      `filter=following&limit=2&cursor=${encodeURIComponent(page1.nextCursor!)}`,
+    )
+    expect(second.statusCode).toBe(200)
+    const page2 = second.json<{ items: { _id: string }[] }>()
+
+    const seen = [...page1.items, ...page2.items].map((item) => item._id)
+    expect(new Set(seen).size).toBe(seen.length)
+    for (const id of ids) expect(seen).toContain(id)
+  })
+
+  it("counts a frozen user's correction even though it pays nothing", async () => {
+    // Freezing stops the payout only. The lifetime count used to read ledger
+    // rows, and a zero-amount award writes none — so a frozen user's
+    // corrections tile and their correction badges sat at 0 forever.
+    const author = await newUser('frozen-author@example.com')
+    const corrector = await newUser('frozen-corrector@example.com')
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: corrector.userId }, { $set: { tokenFrozenAt: new Date() } })
+
+    const postId = (await post(author, 'I has been there.')).json<{ _id: string }>()._id
+    expect((await correct(corrector, postId, 'I have been there.')).statusCode).toBe(201)
+
+    const summary = await app.inject({
+      method: 'GET',
+      url: '/me/tokens',
+      headers: { cookie: corrector.cookie },
+    })
+    expect(summary.statusCode).toBe(200)
+    expect(summary.json<{ lifetime: { corrections: number } }>().lifetime.corrections).toBe(1)
+
+    // And it is still counting the act, not an award: the freeze means no
+    // `correction` row was ever written. That gap is the whole bug.
+    const paid = await handle.db
+      .collection(COLLECTIONS.tokenLedger)
+      .countDocuments({ userId: corrector.userId, kind: 'correction' })
+    expect(paid).toBe(0)
   })
 })

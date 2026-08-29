@@ -9,7 +9,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { ApiError } from '../../lib/ApiError'
-import { countCorrections } from './ledger'
+import { countCorrectionsWritten } from './corrections'
 import type { TokenLedgerEntry } from './ledger'
 
 /**
@@ -53,7 +53,7 @@ export async function getBadgeSummary(db: Db, userId: string): Promise<BadgeSumm
   if (!profile) throw new ApiError('NOT_FOUND', 'Complete onboarding first')
 
   const [corrections, milestoneDates] = await Promise.all([
-    countCorrections(db, userId),
+    countCorrectionsWritten(db, userId),
     streakMilestoneDates(db, userId),
   ])
 

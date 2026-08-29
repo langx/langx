@@ -46,7 +46,17 @@ export function countersOf(doc: DailyActivity | null): ActivityCounters {
     messages: doc?.messages ?? 0,
     corrections: doc?.corrections ?? 0,
     mutualConversations: doc?.mutualConversations ?? 0,
-    distinctPartners: doc?.partners.length ?? 0,
+    /*
+     * `partners` is guarded separately, and not out of caution. The three
+     * counters above are always in the `$inc`, so an upserted document has
+     * them from the first write — `partners` is not: it only appears under
+     * `$addToSet`, which only runs when there is a partner. A day whose first
+     * activity is a correction therefore creates a document with no `partners`
+     * field at all, and `doc?.partners.length` threw on it. That was a 500 on
+     * the whole token summary — the streak, the chart and the tile — for
+     * exactly the person who had spent the day teaching.
+     */
+    distinctPartners: doc?.partners?.length ?? 0,
   }
 }
 
@@ -135,7 +145,12 @@ export async function readActivity(
   userId: string,
   at: Date = new Date(),
 ): Promise<DailyActivity | null> {
-  return db
+  const doc = await db
     .collection<DailyActivity>(COLLECTIONS.dailyActivity)
     .findOne({ _id: dailyActivityId(userId, utcDayKey(at)) })
+  // Normalized the same way `recordActivity` normalizes its post-image, so a
+  // reader cannot tell which of the two produced the document it holds. The
+  // optional fields are optional in the *document*, not in the shape callers
+  // were promised.
+  return doc ? { ...doc, partners: doc.partners ?? [], perPartner: doc.perPartner ?? {} } : null
 }

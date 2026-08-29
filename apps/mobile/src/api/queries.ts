@@ -30,8 +30,10 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
+import type { InfiniteData } from '@tanstack/react-query'
 import { api } from './client'
 import type { ConversationPageDto } from '../lib/conversationCache'
+import { applyCorrection } from '../lib/feedCache'
 import type { MessagePageDto } from '../lib/messageCache'
 
 /**
@@ -432,8 +434,19 @@ export function useCorrectPost() {
   return useMutation({
     mutationFn: ({ postId, ...input }: CreatePostCorrectionInput & { postId: string }) =>
       api.post<PostCorrection>(`/posts/${postId}/corrections`, input),
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ['feed'] })
+    onSuccess: (correction, { postId }) => {
+      /*
+       * A patch, not an invalidation — see `applyCorrection`. Refetching here
+       * re-sorts the post you just answered behind every unanswered one, so
+       * the card disappeared instead of flipping to "You corrected this".
+       *
+       * `setQueriesData` on the `['feed']` prefix rather than the one filter in
+       * view: both tabs are cached, and patching one while leaving the other
+       * stale is how a feed starts disagreeing with itself.
+       */
+      client.setQueriesData<InfiniteData<FeedPage>>({ queryKey: ['feed'] }, (data) =>
+        applyCorrection(data, postId, correction),
+      )
       // A correction pays, and may cross a badge threshold.
       void client.invalidateQueries({ queryKey: keys.tokens })
       void client.invalidateQueries({ queryKey: keys.badges })

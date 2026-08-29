@@ -12,7 +12,7 @@ import {
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
-import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
+import { decodeFeedCursor, encodeFeedCursor } from '../../lib/feedCursor'
 import { blockedUserIds } from '../moderation/blocks'
 import type { Profile } from '../profiles/profiles'
 import { recordActivity } from '../tokens/dailyActivity'
@@ -231,20 +231,6 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
         ? encodeFeedCursor(last.createdAt, last._id, needsFirst ? last.correctionCount : null)
         : null,
   }
-}
-
-/** `<dateIdCursor>` for the recency sort, `<count>.<dateIdCursor>` for the queue. */
-function encodeFeedCursor(date: Date, id: ObjectId, count: number | null): string {
-  const base = encodeDateIdCursor(date, id)
-  return count === null ? base : `${count}.${base}`
-}
-
-function decodeFeedCursor(cursor: string): { date: Date; id: ObjectId; count: number | null } {
-  const dot = cursor.indexOf('.')
-  if (dot === -1) return { ...decodeDateIdCursor(cursor), count: null }
-  const count = Number(cursor.slice(0, dot))
-  if (!Number.isInteger(count)) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Bad cursor')
-  return { ...decodeDateIdCursor(cursor.slice(dot + 1)), count }
 }
 
 export async function createPost(

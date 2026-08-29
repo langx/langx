@@ -5,7 +5,8 @@ import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
 import type { Profile } from '../profiles/profiles'
 import { countersOf, readActivity, readActivityWeek, scoreOf } from './dailyActivity'
-import { countCorrections, readAggregates } from './ledger'
+import { countCorrectionsWritten } from './corrections'
+import { readAggregates } from './ledger'
 import { walletOf } from './wallet'
 import { streakDay } from './streak'
 
@@ -26,7 +27,7 @@ export async function getTokenSummary(
     readAggregates(db, userId, at),
     readActivity(db, userId, at),
     readActivityWeek(db, userId, at),
-    countCorrections(db, userId),
+    countCorrectionsWritten(db, userId),
   ])
   const counters = countersOf(activity)
 

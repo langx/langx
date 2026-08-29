@@ -143,6 +143,12 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { conversationId: 1, createdAt: -1, _id: -1 }, name: 'conversation_created_id' },
     { key: { senderId: 1, createdAt: -1 }, name: 'sender_created' },
     /**
+     * Counting one sender's corrections. `sender_created` carries no `type`, so
+     * the same count through it is a scan of every message a heavy user ever
+     * sent — and this one runs on every load of the profile tab.
+     */
+    { key: { senderId: 1, type: 1 }, name: 'sender_type' },
+    /**
      * The starred screen, which is a `find` by one user across every
      * conversation they are in — without this it is a scan of the whole
      * messages collection, and it grows with the app rather than with the
@@ -256,6 +262,13 @@ export const INDEXES: Partial<IndexSpec> = {
     // twice, for the same reason `user_kind_ref_unique` exists on the ledger.
     { key: { postId: 1, authorId: 1 }, name: 'post_author_unique', unique: true },
     { key: { postId: 1, createdAt: 1 }, name: 'post_created' },
+    /**
+     * "Everything this person has corrected", which is what the lifetime
+     * correction count and the correction badges read. `post_author_unique`
+     * starts with `postId`, so it cannot answer a question that names only the
+     * author.
+     */
+    { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
   ],
 
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],
