@@ -126,6 +126,8 @@ export const ptBR: Localized<EnMessages> = {
     hoursCompact: '{count}h',
     daysCompact: '{count}d',
     days: { one: '{count} dia', other: '{count} dias' },
+    messages: { one: '{count} mensagem', other: '{count} mensagens' },
+    corrections: { one: '{count} correção', other: '{count} correções' },
     accountAgeToday: 'hoje',
     accountAgeDays: { one: 'há {count} dia', other: 'há {count} dias' },
     accountAgeMonths: { one: 'há {count} mês', other: 'há {count} meses' },
@@ -278,9 +280,9 @@ export const ptBR: Localized<EnMessages> = {
     },
     conversationsBody:
       'As conversas em que a outra pessoa também voltou. O resto chega se e quando voltarem.',
-    tokensCarried: '{count} fichas',
+    tokensCarried: { one: '{count} ficha', other: '{count} fichas' },
     tokensCarriedBody: '{carried} vieram do seu saldo antigo, mais {bonus} por ter voltado.',
-    tokensBonus: '{count} fichas',
+    tokensBonus: { one: '{count} ficha', other: '{count} fichas' },
     tokensBonusBody: 'Um bônus de boas-vindas para começar. Ganhe mais conversando e corrigindo.',
     streak: 'Melhor sequência: {days}',
     streakBody: 'Fica guardada como seu recorde. Sua sequência atual começa do zero hoje.',
@@ -494,7 +496,10 @@ export const ptBR: Localized<EnMessages> = {
   me: {
     dayStreak: 'Sequência de dias',
     viewersTitle: 'Quem viu seu perfil',
-    viewersLocked: '{count} pessoas olharam — veja quem com o Pro',
+    viewersLocked: {
+      one: '{count} pessoa olhou — veja quem com o Pro',
+      other: '{count} pessoas olharam — veja quem com o Pro',
+    },
     viewersCount: { one: '{count} pessoa', other: '{count} pessoas' },
     leaderboardSubtitle: 'Sequências e correções',
     proTitle: '✦ LangX Pro',
@@ -587,7 +592,7 @@ export const ptBR: Localized<EnMessages> = {
 
   store: {
     intro: 'Ganhas conversando e corrigindo outras pessoas. Ensinar pesa mais do que conversar.',
-    todayCounts: '{messages} mensagens · {corrections} correções',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: '{used} de {cap} mensagens que pagam hoje',
     capExplainer:
       '{cap} mensagens por dia pagam fichas, sendo {perPerson} por pessoa. Correções não têm limite.',
@@ -630,7 +635,7 @@ export const ptBR: Localized<EnMessages> = {
     month: 'Mês',
     year: 'Ano',
     badges: 'Insígnias',
-    pays: 'Paga {amount} fichas',
+    pays: { one: 'Paga {amount} ficha', other: 'Paga {amount} fichas' },
     corrections: 'correções',
     toGoPlain: 'faltam {count}',
     you: 'Você',
@@ -726,6 +731,6 @@ export const ptBR: Localized<EnMessages> = {
     thisWeek: 'Esta semana',
     correctionsGiven: 'Correções feitas',
     messages: 'Mensagens',
-    summary: 'Esta semana: {messages} mensagens e {corrections} correções.',
+    summary: 'Esta semana: {messages} e {corrections}.',
   },
 }

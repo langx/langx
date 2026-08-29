@@ -129,6 +129,8 @@ export const es: Localized<EnMessages> = {
     hoursCompact: '{count}h',
     daysCompact: '{count}d',
     days: { one: '{count} día', other: '{count} días' },
+    messages: { one: '{count} mensaje', other: '{count} mensajes' },
+    corrections: { one: '{count} corrección', other: '{count} correcciones' },
     accountAgeToday: 'hoy',
     accountAgeDays: { one: 'hace {count} día', other: 'hace {count} días' },
     accountAgeMonths: { one: 'hace {count} mes', other: 'hace {count} meses' },
@@ -282,9 +284,9 @@ export const es: Localized<EnMessages> = {
     },
     conversationsBody:
       'Los hilos en los que la otra persona también ha vuelto. El resto llegará si vuelven.',
-    tokensCarried: '{count} fichas',
+    tokensCarried: { one: '{count} ficha', other: '{count} fichas' },
     tokensCarriedBody: '{carried} vienen de tu saldo anterior, más {bonus} por volver.',
-    tokensBonus: '{count} fichas',
+    tokensBonus: { one: '{count} ficha', other: '{count} fichas' },
     tokensBonusBody: 'Un regalo de bienvenida para empezar. Gana más hablando y corrigiendo.',
     streak: 'Mejor racha: {days}',
     streakBody: 'Se guarda como tu récord. Tu racha en curso empieza hoy de cero.',
@@ -498,7 +500,10 @@ export const es: Localized<EnMessages> = {
   me: {
     dayStreak: 'Racha diaria',
     viewersTitle: 'Quién ha visto tu perfil',
-    viewersLocked: '{count} personas lo han visto: descubre quiénes con Pro',
+    viewersLocked: {
+      one: '{count} persona lo ha visto: descubre quién con Pro',
+      other: '{count} personas lo han visto: descubre quiénes con Pro',
+    },
     viewersCount: { one: '{count} persona', other: '{count} personas' },
     leaderboardSubtitle: 'Rachas y correcciones',
     proTitle: '✦ LangX Pro',
@@ -590,7 +595,7 @@ export const es: Localized<EnMessages> = {
 
   store: {
     intro: 'Se ganan escribiendo y corrigiendo a otras personas. Enseñar pesa más que hablar.',
-    todayCounts: '{messages} mensajes · {corrections} correcciones',
+    todayCounts: '{messages} · {corrections}',
     messagesToday: '{used} de {cap} mensajes que dan fichas hoy',
     capExplainer:
       '{cap} mensajes al día dan fichas, {perPerson} de ellos por persona. Las correcciones no tienen límite.',
@@ -632,7 +637,7 @@ export const es: Localized<EnMessages> = {
     month: 'Mes',
     year: 'Año',
     badges: 'Insignias',
-    pays: 'Da {amount} fichas',
+    pays: { one: 'Da {amount} ficha', other: 'Da {amount} fichas' },
     corrections: 'correcciones',
     toGoPlain: 'faltan {count}',
     you: 'Tú',
@@ -728,6 +733,6 @@ export const es: Localized<EnMessages> = {
     thisWeek: 'Esta semana',
     correctionsGiven: 'Correcciones hechas',
     messages: 'Mensajes',
-    summary: 'Esta semana: {messages} mensajes y {corrections} correcciones.',
+    summary: 'Esta semana: {messages} y {corrections}.',
   },
 }

@@ -75,8 +75,8 @@ export default function StoreScreen() {
             <Text style={styles.cardTitle}>{t('store.today')}</Text>
             <Text style={styles.cardMeta}>
               {t('store.todayCounts', {
-                messages: today.messages,
-                corrections: today.corrections,
+                messages: t('format.messages', { count: today.messages }),
+                corrections: t('format.corrections', { count: today.corrections }),
               })}
             </Text>
           </View>
