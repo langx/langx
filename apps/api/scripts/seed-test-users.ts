@@ -3,30 +3,18 @@
  * Discover, filters and chat have something to work against before there are
  * users.
  *
- *   pnpm --filter @langx/api exec tsx scripts/seed-test-users.ts --db langx
- *   pnpm --filter @langx/api exec tsx scripts/seed-test-users.ts --db langx --purge
+ *   pnpm --filter @langx/api exec tsx scripts/seed-test-users.ts --db langx_dev
+ *   pnpm --filter @langx/api exec tsx scripts/seed-test-users.ts --db langx_dev --purge
  *
- * Two things it deliberately does not do. It does not go through
- * `POST /api/auth/sign-up/email`, because that sends a verification email per
- * account and these addresses cannot receive mail — the bounces would land on
- * a real sending domain's reputation. And it does not hand-write profile
- * documents: it calls `createProfile`, the same function onboarding calls, so
- * a seeded profile cannot drift from a real one.
- *
- * Every account it creates is identifiable by its email domain, which is what
- * `--purge` matches on. `.invalid` is reserved by RFC 2606 and can never
- * resolve, so none of these addresses can receive mail even by accident.
+ * The accounts themselves — and `--purge`, which clears what every fixture
+ * script writes, this one and `seed-test-chat.ts` alike — live in
+ * `testAccounts.ts`. This file is only the cast.
  */
-import { hashPassword } from 'better-auth/crypto'
-import { ObjectId, type Db } from 'mongodb'
+import type { Db } from 'mongodb'
 import type { OnboardingProfileInput } from '@langx/shared'
 import { connectToDatabase } from '../src/db/client'
 import { loadEnv } from '../src/env'
-import { createProfile } from '../src/modules/profiles/profiles'
-
-/** Shared by every seeded account; useless anywhere else. */
-const PASSWORD = 'TestUser!2026'
-const EMAIL_DOMAIN = 'test.langx.invalid'
+import { PASSWORD, emailFor, ensureAccount, purgeTestAccounts, resolveDbName } from './testAccounts'
 
 /**
  * Weighted towards native Russian speakers learning English, which is the
@@ -139,83 +127,17 @@ const PEOPLE: OnboardingProfileInput[] = [
   },
 ]
 
-function emailFor(handle: string): string {
-  return `${handle}@${EMAIL_DOMAIN}`
-}
-
-async function purge(db: Db): Promise<void> {
-  const users = await db
-    .collection('user')
-    .find(
-      { email: { $regex: `@${EMAIL_DOMAIN.replace('.', '\\.')}$` } },
-      { projection: { _id: 1 } },
-    )
-    .toArray()
-
-  if (users.length === 0) {
-    console.log('nothing to purge')
-    return
-  }
-
-  const ids = users.map((user) => user._id)
-  const stringIds = ids.map((id) => String(id))
-
-  // `profiles._id` is the user id as a string, not an ObjectId.
-  const profiles = await db
-    .collection<{ _id: string }>('profiles')
-    .deleteMany({ _id: { $in: stringIds } })
-  await db.collection('handleReservations').deleteMany({ userId: { $in: stringIds } })
-  const sessions = await db.collection('session').deleteMany({ userId: { $in: ids } })
-  const accounts = await db.collection('account').deleteMany({ userId: { $in: ids } })
-  const removed = await db.collection('user').deleteMany({ _id: { $in: ids } })
-
-  console.log(
-    `purged ${removed.deletedCount} users, ${profiles.deletedCount} profiles, ` +
-      `${accounts.deletedCount} accounts, ${sessions.deletedCount} sessions`,
-  )
-}
-
 async function seed(db: Db): Promise<void> {
-  const now = new Date()
-  const password = await hashPassword(PASSWORD)
   let created = 0
 
   for (const person of PEOPLE) {
-    const email = emailFor(person.handle)
-    if (await db.collection('user').findOne({ email })) {
+    const account = await ensureAccount(db, person)
+    if (!account.created) {
       console.log(`skip ${person.handle} — already seeded`)
       continue
     }
-
-    const userId = new ObjectId()
-    await db.collection('user').insertOne({
-      _id: userId,
-      name: person.displayName,
-      email,
-      // No verification mail can reach these addresses, and an unverified
-      // account cannot sign in — so this is set here rather than left to a
-      // flow that cannot complete.
-      emailVerified: true,
-      createdAt: now,
-      updatedAt: now,
-    })
-
-    // Shape mirrors what the Better Auth mongo adapter writes for a
-    // credential account, including `userId` as an ObjectId while `accountId`
-    // is the same value as a string.
-    await db.collection('account').insertOne({
-      userId,
-      accountId: String(userId),
-      providerId: 'credential',
-      issuer: 'local:credential',
-      password,
-      createdAt: now,
-      updatedAt: now,
-    })
-
-    await createProfile(db, String(userId), null, person)
     created += 1
-    console.log(`seeded ${person.handle} (${email})`)
+    console.log(`seeded ${person.handle} (${emailFor(person.handle)})`)
   }
 
   if (created > 0) {
@@ -225,15 +147,14 @@ async function seed(db: Db): Promise<void> {
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
-  const dbFlag = args.indexOf('--db')
   const env = loadEnv()
-  const dbName = dbFlag === -1 ? env.MONGODB_DB : (args[dbFlag + 1] ?? env.MONGODB_DB)
+  const dbName = resolveDbName(args, env.MONGODB_DB)
 
   const { db, close } = await connectToDatabase(env.MONGODB_URI, dbName)
   console.log(`database: ${dbName}`)
 
   try {
-    if (args.includes('--purge')) await purge(db)
+    if (args.includes('--purge')) await purgeTestAccounts(db)
     else await seed(db)
   } finally {
     await close()
