@@ -4,7 +4,7 @@ import type { MessageDto } from '../api/queries'
 import {
   appendIncomingMessage,
   applyDeliveredAt,
-  flattenMessagePages,
+  messagesNewestFirst,
   type MessagePageDto,
 } from './messageCache'
 
@@ -30,19 +30,20 @@ function pages(...groups: MessageDto[][]): InfiniteData<MessagePageDto> {
   }
 }
 
-describe('flattenMessagePages', () => {
+describe('messagesNewestFirst', () => {
   /**
-   * `pages[0]` is the *newest* page: the cursor walks backwards into history.
-   * Getting this wrong shows a thread with its history in blocks of the wrong
-   * order, which reads as corruption rather than as a paging bug.
+   * `pages[0]` is the *newest* page (the cursor walks backwards into history)
+   * but the items inside a page run oldest → newest. Both levels have to flip,
+   * and only a fixture whose pages hold more than one message can tell the
+   * difference — reversing just the outer level passes a single-item fixture.
    */
-  it('puts the oldest page first and the newest last', () => {
+  it('draws newest first, and reverses within each page', () => {
     const data = pages([message('new1'), message('new2')], [message('old1'), message('old2')])
-    expect(flattenMessagePages(data).map((m) => m._id)).toEqual(['old1', 'old2', 'new1', 'new2'])
+    expect(messagesNewestFirst(data).map((m) => m._id)).toEqual(['new2', 'new1', 'old2', 'old1'])
   })
 
   it('is empty for an empty cache', () => {
-    expect(flattenMessagePages(undefined)).toEqual([])
+    expect(messagesNewestFirst(undefined)).toEqual([])
   })
 })
 
@@ -52,6 +53,17 @@ describe('appendIncomingMessage', () => {
     const next = appendIncomingMessage(data, message('fresh'))
     expect(next?.pages[0]?.items.map((m) => m._id)).toEqual(['new1', 'fresh'])
     expect(next?.pages[1]?.items.map((m) => m._id)).toEqual(['old1'])
+  })
+
+  /**
+   * The pairing that actually matters: `appendIncomingMessage` writes to the
+   * *end* of `pages[0]` while the list reads newest *first*, so the two only
+   * agree because of the within-page reversal above.
+   */
+  it('puts an incoming message at the head of the rendered thread', () => {
+    const data = pages([message('new1')], [message('old1')])
+    const next = appendIncomingMessage(data, message('fresh'))
+    expect(messagesNewestFirst(next).map((m) => m._id)).toEqual(['fresh', 'new1', 'old1'])
   })
 
   /** The sender appended optimistically and the socket echoes to both. */

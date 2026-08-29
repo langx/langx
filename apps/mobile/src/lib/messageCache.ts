@@ -50,15 +50,18 @@ export function applyDeliveredAt(
 }
 
 /**
- * Newest last, which is the order the thread is drawn in.
+ * Newest first, which is the order an `inverted` list draws bottom-up.
  *
- * The reverse is the whole reason this is a function: getting it wrong shows
- * the conversation with its history in blocks of the wrong order, which looks
- * like data corruption rather than a paging bug.
+ * Two reversals, not one. The pages already run newest → oldest, but the items
+ * *inside* each page run oldest → newest, so flattening while reversing only
+ * the outer level interleaves the thread in blocks of the wrong order — which
+ * reads as data corruption rather than as a paging bug. The name carries the
+ * direction because the cache's own shape does not, and because this function
+ * used to return the opposite.
  */
-export function flattenMessagePages(data: Pages): MessageDto[] {
+export function messagesNewestFirst(data: Pages): MessageDto[] {
   if (!data) return []
-  return [...data.pages].reverse().flatMap((page) => page.items)
+  return data.pages.flatMap((page) => [...page.items].reverse())
 }
 
 function sameId(a: MessageDto, b: MessageDto): boolean {
