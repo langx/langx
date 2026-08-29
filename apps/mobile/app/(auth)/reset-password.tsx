@@ -45,6 +45,10 @@ export default function ResetPassword() {
     )
   }
 
+  // The same condition the button uses, so Enter can never submit a
+  // form the button refuses — nor fire twice while one is in flight.
+  const canSubmit = !loading && !!newPassword
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -52,6 +56,8 @@ export default function ResetPassword() {
     >
       <Text style={styles.title}>Set a new password</Text>
       <FormField
+        returnKeyType="go"
+        onSubmitEditing={() => canSubmit && void onSubmit()}
         label="New password"
         value={newPassword}
         onChangeText={setNewPassword}
