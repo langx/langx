@@ -1,4 +1,13 @@
-import { Comfortaa_700Bold, useFonts } from '@expo-google-fonts/comfortaa'
+/**
+ * The single weight, by subpath.
+ *
+ * The package root is a barrel whose five `export const … = require(…)` lines
+ * all evaluate on import, so pulling one weight from it bundles the other four
+ * — 560K of TTF to use 112K of it, in the web bundle and in every store
+ * binary. `700Bold/index.js` requires exactly one file.
+ */
+import { Comfortaa_700Bold } from '@expo-google-fonts/comfortaa/700Bold'
+import { useFonts } from 'expo-font'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'

@@ -224,6 +224,33 @@ describe('community feed', () => {
     expect(item?.correctedByViewer).toBe(true)
   })
 
+  it('returns one correction per post however many it has', async () => {
+    const author = await newUser('many-author@example.com')
+    const helpers = []
+    for (let i = 0; i < 4; i++) helpers.push(await newUser(`many-helper-${i}@example.com`))
+    const postId = (await post(author, 'I has been there.')).json<{ _id: string }>()._id
+
+    for (const [i, helper] of helpers.entries()) {
+      await correct(helper, postId, `I have been there. (${i})`)
+    }
+
+    const item = (await feed(helpers[0]!))
+      .json<{
+        items: {
+          _id: string
+          correctionCount: number
+          topCorrection: { corrected: string } | null
+        }[]
+      }>()
+      .items.find((i) => i._id === postId)
+
+    // The count is the denormalized field; the payload carries exactly one
+    // correction regardless, which is what stops a popular post making every
+    // page that includes it transfer its whole answer list.
+    expect(item?.correctionCount).toBe(4)
+    expect(item?.topCorrection?.corrected).toBe('I have been there. (0)')
+  })
+
   it('hides posts by someone the viewer has blocked, in both directions', async () => {
     const viewer = await newUser('block-viewer@example.com')
     const blocked = await newUser('block-author@example.com')
