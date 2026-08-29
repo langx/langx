@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useColorScheme, type ViewStyle } from 'react-native'
+import * as SystemUI from 'expo-system-ui'
 import { FLAG_KEYS, readFlag, writeFlag } from '../localFlags'
 import {
   font,
@@ -81,13 +82,30 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     void writeFlag(FLAG_KEYS.themePreference, next)
   }, [])
 
-  const value = useMemo<ThemeContextValue>(() => {
-    // `useColorScheme` can also report 'unspecified'; anything that is not an
-    // explicit 'dark' is treated as light.
-    const scheme: ColorScheme =
-      preference === 'auto' ? (deviceScheme === 'dark' ? 'dark' : 'light') : preference
-    return { theme: buildTheme(scheme), preference, setPreference }
-  }, [preference, deviceScheme, setPreference])
+  // `useColorScheme` can also report 'unspecified'; anything that is not an
+  // explicit 'dark' is treated as light.
+  const scheme: ColorScheme =
+    preference === 'auto' ? (deviceScheme === 'dark' ? 'dark' : 'light') : preference
+
+  /**
+   * The one surface React does not paint: the Android window behind the root
+   * view, and the web `<body>` the overscroll rubber-band exposes. Both keep
+   * their default — white — so in dark mode a pull past the top of any list
+   * flashed white behind a `#1c1e26` app.
+   *
+   * `expo-system-ui` was already a dependency and had never been called. It
+   * needs no lazy import the way `expo-notifications` does: the package ships
+   * an `.web.js` that sets `document.body.style.backgroundColor`, so Metro
+   * resolves a real implementation on both platforms.
+   */
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(palettes[scheme].colors.bg)
+  }, [scheme])
+
+  const value = useMemo<ThemeContextValue>(
+    () => ({ theme: buildTheme(scheme), preference, setPreference }),
+    [scheme, preference, setPreference],
+  )
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }

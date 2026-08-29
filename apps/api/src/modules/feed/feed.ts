@@ -92,23 +92,75 @@ function levelOf(profile: Profile | undefined, language: string): FeedPost['leve
   return parsed.success ? parsed.data : null
 }
 
+/**
+ * The one correction each card shows, and whether the viewer has already
+ * answered — without reading the rest.
+ *
+ * The obvious version fetches every correction for the page and picks the first
+ * of each in JS. That is fine for a post with two answers and quadratic-feeling
+ * for one with three hundred: a single popular post makes every request that
+ * happens to include it transfer its whole correction list to compute two
+ * booleans' worth of output.
+ *
+ * `$group`/`$first` after an index-backed `$sort` returns one document per
+ * post, so what crosses the wire is O(posts) rather than O(corrections). The
+ * viewer lookup is a separate targeted query on `post_author_unique` rather
+ * than a second pass over the same documents — it reads at most one row per
+ * post by definition, since that index is unique.
+ */
+async function readCorrectionSummary(
+  db: Db,
+  userId: string,
+  ids: ObjectId[],
+): Promise<{ topByPost: Map<string, PostCorrectionDoc>; viewerCorrected: Set<string> }> {
+  if (ids.length === 0) return { topByPost: new Map(), viewerCorrected: new Set() }
+
+  const corrections = db.collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
+  const [tops, mine] = await Promise.all([
+    corrections
+      .aggregate<{ _id: ObjectId; top: PostCorrectionDoc }>([
+        { $match: { postId: { $in: ids } } },
+        // Matches `post_created` ({ postId: 1, createdAt: 1 }), so the sort is
+        // a scan of the index rather than an in-memory sort of the documents.
+        { $sort: { postId: 1, createdAt: 1 } },
+        { $group: { _id: '$postId', top: { $first: '$$ROOT' } } },
+      ])
+      .toArray(),
+    corrections
+      .find({ postId: { $in: ids }, authorId: userId })
+      .project<{ postId: ObjectId }>({ postId: 1 })
+      .toArray(),
+  ])
+
+  return {
+    topByPost: new Map(tops.map((row) => [row._id.toHexString(), row.top])),
+    viewerCorrected: new Set(mine.map((row) => row.postId.toHexString())),
+  }
+}
+
 export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Promise<FeedPage> {
   const posts = db.collection<Post>(COLLECTIONS.posts)
 
   // Blocks are symmetric here as everywhere else: `blockedUserIds` returns
   // both directions, so neither party appears in the other's feed.
-  const hidden = await blockedUserIds(db, userId)
+  // Independent of each other, so they go together: the block list does not
+  // narrow the conversation lookup, it filters its result.
+  const [hidden, conversations] = await Promise.all([
+    blockedUserIds(db, userId),
+    query.filter === 'following'
+      ? db
+          .collection<{ participants: string[] }>(COLLECTIONS.conversations)
+          .find({ participants: userId })
+          .project<{ participants: string[] }>({ participants: 1 })
+          .toArray()
+      : Promise.resolve([]),
+  ])
   const filter: Document = hidden.length > 0 ? { authorId: { $nin: hidden } } : {}
 
   if (query.filter === 'following') {
     // "Following" has no follow graph to read, so it means the people you have
     // actually talked to — which is the relationship this app has instead of
     // one. A feed of strangers is what the other tab already is.
-    const conversations = await db
-      .collection<{ participants: string[] }>(COLLECTIONS.conversations)
-      .find({ participants: userId })
-      .project<{ participants: string[] }>({ participants: 1 })
-      .toArray()
     const known = [
       ...new Set(conversations.flatMap((c) => c.participants).filter((id) => id !== userId)),
     ]
@@ -150,19 +202,7 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   const last = items.at(-1)
 
   const ids = items.map((post) => post._id)
-  const corrections = await db
-    .collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
-    .find({ postId: { $in: ids } })
-    .sort({ postId: 1, createdAt: 1 })
-    .toArray()
-
-  const topByPost = new Map<string, PostCorrectionDoc>()
-  const viewerCorrected = new Set<string>()
-  for (const correction of corrections) {
-    const key = correction.postId.toHexString()
-    if (!topByPost.has(key)) topByPost.set(key, correction)
-    if (correction.authorId === userId) viewerCorrected.add(key)
-  }
+  const { topByPost, viewerCorrected } = await readCorrectionSummary(db, userId, ids)
 
   const authors = await loadAuthors(db, [
     ...items.map((post) => post.authorId),
