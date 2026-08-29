@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",
+    "@expo-google-fonts/comfortaa": "^0.4.2",
     "@expo/metro-runtime": "~57.0.13",
     "@expo/vector-icons": "^15.1.1",
     "@langx/shared": "workspace:*",
