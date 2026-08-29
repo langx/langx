@@ -11,7 +11,7 @@ import {
   type ProBenefit,
   type ProPlusBenefit,
 } from '@langx/shared'
-import { router, useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useEffectiveTier, useQuota, useRefreshEntitlement } from '../../src/api/queries'

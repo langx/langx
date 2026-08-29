@@ -1,4 +1,3 @@
-import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useMe, usePurchase, useTokens, useWallet } from '../../src/api/queries'
 import { StoreRow } from '../../src/components/store/StoreRow'
