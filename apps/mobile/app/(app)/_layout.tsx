@@ -108,6 +108,7 @@ export default function AppLayout() {
         <Tabs.Screen name="profile/[handle]" options={FULL_SCREEN} />
         <Tabs.Screen name="post/[id]" options={FULL_SCREEN} />
         <Tabs.Screen name="likes" options={FULL_SCREEN} />
+        <Tabs.Screen name="follows" options={FULL_SCREEN} />
         <Tabs.Screen name="edit-profile" options={FULL_SCREEN} />
         <Tabs.Screen name="blocked" options={FULL_SCREEN} />
         <Tabs.Screen name="settings" options={FULL_SCREEN} />

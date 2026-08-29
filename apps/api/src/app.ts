@@ -21,6 +21,7 @@ import { billingRoutes } from './routes/billing'
 import { conversationRoutes } from './routes/conversations'
 import { discoveryRoutes } from './routes/discovery'
 import { feedRoutes } from './routes/feed'
+import { followRoutes } from './routes/follows'
 import { likeRoutes } from './routes/likes'
 import { handleRoutes } from './routes/handles'
 import { healthRoutes } from './routes/health'
@@ -213,6 +214,7 @@ export async function buildApp({
   await app.register(loginRoutes)
   await registerAuthRoutes(app, auth)
   await app.register(profileRoutes)
+  await app.register(followRoutes)
   await app.register(handleRoutes)
   await app.register(mediaRoutes)
   await app.register(discoveryRoutes)

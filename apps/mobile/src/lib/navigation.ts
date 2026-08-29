@@ -31,3 +31,8 @@ export function openLikers(targetType: string, targetId: string, from: string): 
     `/(app)/likes?targetType=${targetType}&targetId=${targetId}&from=${encodeURIComponent(from)}` as Href,
   )
 }
+
+/** Somebody's followers, or the people they follow. */
+export function openFollows(userId: string, tab: 'followers' | 'following', from: string): void {
+  router.push(`/(app)/follows?userId=${userId}&tab=${tab}&from=${encodeURIComponent(from)}` as Href)
+}

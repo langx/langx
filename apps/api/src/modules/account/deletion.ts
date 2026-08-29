@@ -194,6 +194,12 @@ export async function purgeExpiredAccounts(
       // on content that survives the author, the same way a post outlives the
       // account that wrote it.
       db.collection(COLLECTIONS.likes).deleteMany({ userId }),
+      // Both directions. Leaving the incoming edges would keep a deleted
+      // account sitting in other people's follower lists, drawn as a name
+      // whose profile no longer exists.
+      db.collection(COLLECTIONS.follows).deleteMany({
+        $or: [{ followerId: userId }, { followeeId: userId }],
+      }),
       // The ledger survives as an audit trail, with the identity removed: a
       // fresh random id per purge, stored nowhere else, so the rows stay
       // linkable to each other and to nobody. The aggregates *are* deleted,
@@ -237,6 +243,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     posts,
     postCorrections,
     likes,
+    follows,
   ] = await Promise.all([
     db.collection(COLLECTIONS.profiles).findOne({ _id: userId as unknown as never }),
     db.collection<Conversation>(COLLECTIONS.conversations).find({ participants: userId }).toArray(),
@@ -249,6 +256,7 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     db.collection(COLLECTIONS.posts).find({ authorId: userId }).toArray(),
     db.collection(COLLECTIONS.postCorrections).find({ authorId: userId }).toArray(),
     db.collection(COLLECTIONS.likes).find({ userId }).toArray(),
+    db.collection(COLLECTIONS.follows).find({ followerId: userId }).toArray(),
   ])
 
   if (!profile) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
@@ -266,5 +274,6 @@ export async function exportUserData(db: Db, userId: string): Promise<DataExport
     posts,
     postCorrections,
     likes,
+    follows,
   }
 }

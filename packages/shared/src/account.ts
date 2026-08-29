@@ -43,6 +43,8 @@ export const dataExportSchema = z.object({
   posts: z.array(z.unknown()),
   postCorrections: z.array(z.unknown()),
   likes: z.array(z.unknown()),
+  /** Who this user follows; not who follows them, which is other people's data. */
+  follows: z.array(z.unknown()),
 })
 export type DataExport = z.infer<typeof dataExportSchema>
 

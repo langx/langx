@@ -497,6 +497,17 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    follow: 'Folgen',
+    following: 'Folgt',
+    followers: { one: '{count} Follower', other: '{count} Follower' },
+    followingCount: { one: '{count} gefolgt', other: '{count} gefolgt' },
+    followersTitle: 'Follower',
+    followingTitle: 'Folgt',
+    followersEmptyTitle: 'Noch keine Follower',
+    followersEmptyBody: 'Hier finden sich Menschen über Korrekturen.',
+    followingEmptyTitle: 'Du folgst noch niemandem',
+    followingEmptyBody: 'Folge jemandem, und die Beiträge erscheinen in deinem Feed.',
+    followFailed: 'Das hat nicht geklappt. Versuch es noch einmal.',
     notFound: 'Profil nicht gefunden.',
     verifiedEmail: '✓ E-Mail bestätigt',
     registeredLabel: 'Registriert',

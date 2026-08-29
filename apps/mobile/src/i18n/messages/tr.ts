@@ -503,6 +503,17 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    follow: 'Takip et',
+    following: 'Takip ediliyor',
+    followers: { one: '{count} takipçi', other: '{count} takipçi' },
+    followingCount: { one: '{count} takip', other: '{count} takip' },
+    followersTitle: 'Takipçiler',
+    followingTitle: 'Takip edilenler',
+    followersEmptyTitle: 'Henüz takipçi yok',
+    followersEmptyBody: 'Burada insanlar birbirini düzeltmeler üzerinden buluyor.',
+    followingEmptyTitle: 'Henüz kimseyi takip etmiyorsun',
+    followingEmptyBody: 'Birini takip et, gönderileri akışında görünsün.',
+    followFailed: 'Olmadı. Tekrar dene.',
     notFound: 'Profil bulunamadı.',
     verifiedEmail: '✓ E-posta doğrulanmış',
     registeredLabel: 'Kayıt',

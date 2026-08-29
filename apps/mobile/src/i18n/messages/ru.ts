@@ -565,6 +565,27 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    follow: 'Подписаться',
+    following: 'Вы подписаны',
+    followers: {
+      one: '{count} подписчик',
+      few: '{count} подписчика',
+      many: '{count} подписчиков',
+      other: '{count} подписчиков',
+    },
+    followingCount: {
+      one: '{count} подписка',
+      few: '{count} подписки',
+      many: '{count} подписок',
+      other: '{count} подписок',
+    },
+    followersTitle: 'Подписчики',
+    followingTitle: 'Подписки',
+    followersEmptyTitle: 'Пока нет подписчиков',
+    followersEmptyBody: 'Здесь люди находят друг друга через исправления.',
+    followingEmptyTitle: 'Вы пока ни на кого не подписаны',
+    followingEmptyBody: 'Подпишитесь, и посты появятся в вашей ленте.',
+    followFailed: 'Не получилось. Попробуйте ещё раз.',
     notFound: 'Профиль не найден.',
     verifiedEmail: '✓ Почта подтверждена',
     registeredLabel: 'Зарегистрирован',

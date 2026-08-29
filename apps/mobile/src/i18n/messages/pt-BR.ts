@@ -491,6 +491,17 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    follow: 'Seguir',
+    following: 'Seguindo',
+    followers: { one: '{count} seguidor', other: '{count} seguidores' },
+    followingCount: { one: '{count} seguindo', other: '{count} seguindo' },
+    followersTitle: 'Seguidores',
+    followingTitle: 'Seguindo',
+    followersEmptyTitle: 'Ainda sem seguidores',
+    followersEmptyBody: 'Aqui as pessoas se encontram pelas correções.',
+    followingEmptyTitle: 'Você ainda não segue ninguém',
+    followingEmptyBody: 'Siga alguém e as publicações aparecerão no seu feed.',
+    followFailed: 'Não deu certo. Tente de novo.',
     notFound: 'Perfil não encontrado.',
     verifiedEmail: '✓ E-mail confirmado',
     registeredLabel: 'Cadastro',

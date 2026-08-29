@@ -15,10 +15,12 @@ export type {
   FeedFilter,
   FeedPage,
   FeedPost,
+  FollowState,
   LikersPage,
   LikeState,
   LikeTarget,
   LikeTargetType,
+  PeoplePage,
   PostCorrection,
   PostCorrectionsPage,
   EarnedBadge,
@@ -32,7 +34,7 @@ export type {
 
 // Re-exported above for consumers; imported here because a `export ... from`
 // does not bind the name locally and the DTOs below need to use it.
-import type { LanguageLevel, PlanTier } from '@langx/shared'
+import type { FollowState, LanguageLevel, PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
   _id: string
@@ -57,6 +59,7 @@ export interface PublicProfileDto {
   /** ISO; rendered as an age with `formatAccountAge`, never as a date. */
   createdAt: string
   emailVerified: boolean
+  follow: FollowState
 }
 
 export interface DiscoveryItem {

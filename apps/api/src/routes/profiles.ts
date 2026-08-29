@@ -21,6 +21,7 @@ import {
   toPublicProfile,
   updateProfile,
 } from '../modules/profiles/profiles'
+import { readFollowState } from '../modules/social/follows'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
@@ -73,8 +74,11 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       // Read after the block check, not with it: an unverified-email lookup
       // for a profile this viewer is not allowed to see is a query we should
       // never run.
-      const emailVerified = await isEmailVerified(app.mongo.db, target._id)
-      return reply.send(toPublicProfile(target, emailVerified))
+      const [emailVerified, follow] = await Promise.all([
+        isEmailVerified(app.mongo.db, target._id),
+        readFollowState(app.mongo.db, request.userId, target._id),
+      ])
+      return reply.send(toPublicProfile(target, emailVerified, follow))
     },
   )
 

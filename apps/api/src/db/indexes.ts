@@ -285,6 +285,19 @@ export const INDEXES: Partial<IndexSpec> = {
     { key: { postId: 1, createdAt: 1, _id: 1 }, name: 'post_created_id' },
   ],
 
+  [COLLECTIONS.follows]: [
+    // The invariant, not an optimisation: a double-tapped Follow cannot make
+    // two rows, which is what lets `followUser` be an insert with no prior read
+    // — the same reasoning as `post_author_unique`.
+    { key: { followerId: 1, followeeId: 1 }, name: 'follower_followee_unique', unique: true },
+    // "Who I follow" and "who follows me", newest first. The tiebreak is in the
+    // key from the start: `post_created` and `conversation_created` both had to
+    // be widened later under new names, because changing a live index's key is
+    // an `IndexOptionsConflict` rather than a rebuild.
+    { key: { followerId: 1, createdAt: -1, _id: -1 }, name: 'follower_recent' },
+    { key: { followeeId: 1, createdAt: -1, _id: -1 }, name: 'followee_recent' },
+  ],
+
   [COLLECTIONS.likes]: [
     // One like per person per thing. A unique index rather than a check, for
     // the same reason `post_author_unique` is one: two taps that race would

@@ -532,6 +532,17 @@ export const en = {
   },
 
   profile: {
+    follow: 'Follow',
+    following: 'Following',
+    followers: { one: '{count} follower', other: '{count} followers' },
+    followingCount: { one: '{count} following', other: '{count} following' },
+    followersTitle: 'Followers',
+    followingTitle: 'Following',
+    followersEmptyTitle: 'No followers yet',
+    followersEmptyBody: 'Corrections are how people find each other here.',
+    followingEmptyTitle: 'Not following anyone yet',
+    followingEmptyBody: 'Follow someone and their posts appear in your feed.',
+    followFailed: 'That did not work. Try again.',
     notFound: 'Profile not found.',
     verifiedEmail: '✓ Verified email',
     registeredLabel: 'Registered',

@@ -6,6 +6,7 @@ import {
   isOnlineAt,
   meetsMinimumAge,
   toGeoPoint,
+  type FollowState,
   type GeoPoint,
   type LocationInput,
   type OnboardingProfileInput,
@@ -396,6 +397,11 @@ export interface PublicProfile {
    * here through {@link isEmailVerified} rather than off the profile document.
    */
   emailVerified: boolean
+  /**
+   * Nested rather than three flat fields, so "built by naming fields rather
+   * than deleting them" stays legible one line at a time.
+   */
+  follow: FollowState
 }
 
 /**
@@ -414,6 +420,15 @@ export interface PublicProfile {
 export function toPublicProfile(
   profile: Profile,
   emailVerified: boolean,
+  /**
+   * Computed by the route, like `emailVerified` and for the same reason: this
+   * function is pure and synchronous, and making it async to fetch two counts
+   * would put a database round trip inside a field allow-list.
+   *
+   * Required rather than defaulted, so no call site can quietly ship
+   * `{ followers: 0 }` for a profile with a thousand.
+   */
+  follow: FollowState,
   now: Date = new Date(),
 ): PublicProfile {
   const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
@@ -437,6 +452,7 @@ export function toPublicProfile(
     isOnline: hidden ? false : isOnlineAt(lastActiveAt, now),
     createdAt: profile.createdAt,
     emailVerified,
+    follow,
   }
   if (!hidden) result.lastActiveAt = new Date(lastActiveAt)
   if (profile.avatarUrl !== undefined) result.avatarUrl = profile.avatarUrl

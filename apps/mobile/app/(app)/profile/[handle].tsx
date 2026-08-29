@@ -5,8 +5,10 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 
 import { ApiRequestError } from '../../../src/api/client'
 import {
   useBlockUser,
+  useMe,
   useProfile,
   useReportUser,
+  useSetFollow,
   useStartConversation,
 } from '../../../src/api/queries'
 import { Avatar } from '../../../src/components/ui/Avatar'
@@ -17,7 +19,7 @@ import { TierBadge } from '../../../src/components/TierBadge'
 import { Chip } from '../../../src/components/ui/Chip'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
-import { goBackTo } from '../../../src/lib/navigation'
+import { goBackTo, openFollows } from '../../../src/lib/navigation'
 import { openPaywall } from '../../../src/lib/paywall'
 import { showToast } from '../../../src/lib/toast'
 import { days } from '../../../src/lib/format'
@@ -41,6 +43,9 @@ export default function ProfileScreen() {
   // single named parent would be wrong for four of the five.
   const { handle, from } = useLocalSearchParams<{ handle: string; from?: string }>()
   const profile = useProfile(handle ?? '')
+  const me = useMe()
+  const setFollow = useSetFollow(handle ?? '')
+  const here = `/(app)/profile/${handle}`
   const startConversation = useStartConversation()
   const block = useBlockUser()
   const report = useReportUser()
@@ -69,6 +74,7 @@ export default function ProfileScreen() {
   }
 
   const user = profile.data
+  const isSelf = user?._id === me.data?._id
 
   async function send(): Promise<void> {
     setError(undefined)
@@ -166,6 +172,49 @@ export default function ProfileScreen() {
           {user.emailVerified ? <Chip label={t('profile.verifiedEmail')} tone="accent" /> : null}
           <TierBadge tier={user.tier} />
         </View>
+
+        <View style={styles.followRow}>
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => openFollows(user._id, 'followers', here)}
+          >
+            <Text style={styles.followCount}>
+              {t('profile.followers', { count: user.follow.followers })}
+            </Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={() => openFollows(user._id, 'following', here)}
+          >
+            <Text style={styles.followCount}>
+              {t('profile.followingCount', { count: user.follow.following })}
+            </Text>
+          </Pressable>
+        </View>
+
+        {/*
+          Nothing at all on your own profile. This screen is reachable for
+          yourself through a handle deep link, and a Follow button pointing at
+          the person pressing it is the bug that ships.
+        */}
+        {isSelf ? null : (
+          <Button
+            label={user.follow.viewerFollows ? t('profile.following') : t('profile.follow')}
+            variant={user.follow.viewerFollows ? 'secondary' : 'primary'}
+            loading={setFollow.isPending}
+            // No confirmation on unfollow. It is trivially reversible, and
+            // `confirmAlert` is what blocking is for.
+            onPress={() =>
+              setFollow.mutate(
+                { userId: user._id, following: !user.follow.viewerFollows },
+                { onError: () => showToast(t('profile.followFailed')) },
+              )
+            }
+            style={styles.followButton}
+          />
+        )}
       </View>
 
       <PhotoGallery photos={user.photos} />
@@ -216,6 +265,9 @@ export default function ProfileScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  followRow: { flexDirection: 'row', gap: 18, marginTop: 12 },
+  followCount: { ...font.label, color: colors.text, fontWeight: '600' },
+  followButton: { marginTop: 14 },
   loading: { marginTop: spacing.xxl },
   missing: {
     ...font.body,

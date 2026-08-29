@@ -1359,6 +1359,55 @@ Followers get the other answer for the same reason inverted: a follower list is
 short, so an unfiltered count beside a filtered list visibly disagrees, and the
 disagreement itself tells the viewer that someone they blocked is in there.
 
+## Following is a real relationship now, and the old stand-in stays
+
+The feed's "Following" tab shipped without a follow graph, standing in the
+people you had talked to — which was honest, because that was the only
+relationship this app had. Its own empty-state copy said so.
+
+There is a `follows` collection now: one-directional, unconfirmed, granting no
+access and opening no channel. It is not a match gate. All a follow decides is
+what a feed tab contains.
+
+The stand-in stays, and the tab reads the union. Removing it would empty the
+tab for every existing user on the day the button shipped, and a conversation
+partner is somebody you are following in every sense except the button. The
+name is slightly generous as a result; an empty tab that used to have content
+would have been worse.
+
+Counts are computed, not stored, by the repo's own test: is it a sort key?
+`posts.correctionCount` is denormalized because it _is_ one and an index cannot
+sort on a count it would have to join to find; `tokenAggregates` is the
+counter-example, with no duplicate counter in `profiles` "which would only
+drift". Nothing sorts by follower count.
+
+## Follower counts are block-filtered, and like counts are not
+
+The same question, answered two ways on purpose.
+
+A follower list is short. An unfiltered count beside a filtered list would read
+"12 followers" over 11 rows, and that discrepancy is itself the leak: it tells
+the viewer that somebody they blocked follows this person. A blocked account is
+_absent_ — the same rule that makes their profile a 404 rather than a 403 — so
+both the count and the list filter, and they agree.
+
+Likers are many. Nobody can attribute a missing name among four hundred, and
+filtering there would make a page-wide aggregate viewer-dependent for no gain.
+So the list filters, the count does not, and the likers screen counts its own
+rows rather than echoing a card that may be one higher.
+
+## `toPublicProfile` stays pure, and the new parameter is required
+
+It is a synchronous allow-list: "built by naming fields rather than deleting
+them", so a field added to `Profile` later is private by default. Making it
+async to fetch two counts would have put a database round trip inside that
+allow-list.
+
+Follow counts arrive the way `emailVerified` already does — computed by the
+route, passed in. Required rather than defaulted, so no call site can quietly
+ship `{ followers: 0 }` for a profile with a thousand. Exactly one existing
+caller had to change, which is the point of finding out at compile time.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

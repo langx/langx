@@ -35,6 +35,12 @@ export const COLLECTIONS = {
   conversations: 'conversations',
   messages: 'messages',
   blocks: 'blocks',
+  /**
+   * The follow graph. One-directional and unconfirmed — following somebody
+   * grants no access and opens no channel, it only decides what the feed's
+   * "Following" tab contains.
+   */
+  follows: 'follows',
   reports: 'reports',
   devices: 'devices',
   profileViews: 'profileViews',

@@ -96,6 +96,14 @@ export const likersPageSchema = z.object({
 })
 export type LikersPage = z.infer<typeof likersPageSchema>
 
+/**
+ * A page of people, used by both the likers list and the follower/following
+ * lists. `feedAuthorSchema` is exactly what a row draws and exactly what
+ * `openProfile` needs, so there is no second shape for the same four fields.
+ */
+export const peoplePageSchema = likersPageSchema
+export type PeoplePage = LikersPage
+
 export const feedPostSchema = z.object({
   _id: z.string(),
   author: feedAuthorSchema,

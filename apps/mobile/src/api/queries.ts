@@ -20,10 +20,12 @@ import type {
   FeedFilter,
   FeedPage,
   FeedPost,
+  FollowState,
   LikersPage,
   LikeState,
   LikeTarget,
   LikeTargetType,
+  PeoplePage,
   PostCorrection,
   PostCorrectionsPage,
   TokenSummary,
@@ -66,6 +68,7 @@ export const keys = {
   feed: (filter: string) => ['feed', filter] as const,
   postCorrections: (id: string) => ['postCorrections', id] as const,
   likers: (targetType: string, targetId: string) => ['likers', targetType, targetId] as const,
+  follows: (userId: string, which: string) => ['follows', userId, which] as const,
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
@@ -477,6 +480,64 @@ export function useLikers(targetType: LikeTargetType, targetId: string) {
     queryFn: ({ pageParam }) =>
       api.get<LikersPage>(
         `/likes?targetType=${targetType}&targetId=${targetId}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
+}
+
+/**
+ * Follow or unfollow, with an optimistic patch on the profile in view.
+ *
+ * Optimistic here and nowhere else in this file, because this is the one
+ * control whose whole job is to change its own label the instant it is
+ * pressed — a Follow button that waits for a round trip reads as broken. The
+ * server returns the full state, so `onSuccess` overwrites the guess rather
+ * than adding to it, and `onError` puts back exactly what was there.
+ */
+export function useSetFollow(handleOrId: string) {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({ userId, following }: { userId: string; following: boolean }) =>
+      following
+        ? api.post<FollowState>(`/profiles/${userId}/follow`)
+        : api.delete<FollowState>(`/profiles/${userId}/follow`),
+    onMutate: ({ following }) => {
+      const key = keys.profile(handleOrId)
+      const previous = client.getQueryData<PublicProfileDto>(key)
+      if (previous) {
+        client.setQueryData<PublicProfileDto>(key, {
+          ...previous,
+          follow: {
+            ...previous.follow,
+            viewerFollows: following,
+            followers: Math.max(0, previous.follow.followers + (following ? 1 : -1)),
+          },
+        })
+      }
+      return { previous }
+    },
+    onError: (_error, _input, context) => {
+      if (context?.previous) client.setQueryData(keys.profile(handleOrId), context.previous)
+    },
+    onSuccess: (follow) => {
+      const previous = client.getQueryData<PublicProfileDto>(keys.profile(handleOrId))
+      if (previous)
+        client.setQueryData<PublicProfileDto>(keys.profile(handleOrId), { ...previous, follow })
+      // Following somebody changes what the Following tab contains, and the
+      // follower list has gained or lost exactly one row.
+      void client.invalidateQueries({ queryKey: ['feed'] })
+      void client.invalidateQueries({ queryKey: ['follows'] })
+    },
+  })
+}
+
+export function useFollows(userId: string, which: 'followers' | 'following') {
+  return useInfiniteQuery({
+    queryKey: keys.follows(userId, which),
+    queryFn: ({ pageParam }) =>
+      api.get<PeoplePage>(
+        `/profiles/${userId}/${which}${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
