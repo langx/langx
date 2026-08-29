@@ -42,7 +42,17 @@ export default function LanguagesStep() {
 
   return (
     <Screen fluid style={styles.screen}>
-      <Text style={styles.step}>1 / 4</Text>
+      {/*
+        Four bars rather than "1 / 4" alone. The count says where you are; the
+        bars say how much is left, which is the question someone halfway
+        through an onboarding is actually asking.
+      */}
+      <View style={styles.progress}>
+        {[0, 1, 2, 3].map((index) => (
+          <View key={index} style={[styles.progressBar, index === 0 && styles.progressBarOn]} />
+        ))}
+        <Text style={styles.step}>1/4</Text>
+      </View>
       <Text style={styles.title}>Which languages do you speak?</Text>
       <Text style={styles.subtitle}>
         Your native language is what you can teach; what you're learning is who you'll match with.
@@ -54,7 +64,7 @@ export default function LanguagesStep() {
           style={[styles.tab, mode === 'native' && styles.tabActive]}
         >
           <Text style={[styles.tabLabel, mode === 'native' && styles.tabLabelActive]}>
-            Native ({draft.nativeLanguages.length})
+            Native · {draft.nativeLanguages.length}
           </Text>
         </Pressable>
         <Pressable
@@ -62,7 +72,7 @@ export default function LanguagesStep() {
           style={[styles.tab, mode === 'learning' && styles.tabActive]}
         >
           <Text style={[styles.tabLabel, mode === 'learning' && styles.tabLabelActive]}>
-            Learning ({draft.learning.length})
+            Learning · {draft.learning.length}
           </Text>
         </Pressable>
       </View>
@@ -118,6 +128,11 @@ export default function LanguagesStep() {
         </View>
       )}
 
+      <View style={styles.hints}>
+        <Text style={styles.hint}>Up to 5</Text>
+        <Text style={styles.hint}>A language can&apos;t be both</Text>
+      </View>
+
       <Button
         label="Continue"
         disabled={!canContinue}
@@ -130,8 +145,16 @@ export default function LanguagesStep() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   screen: { paddingBottom: spacing.lg },
-  step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
+  progress: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: spacing.lg },
+  progressBar: {
+    backgroundColor: colors.border,
+    borderRadius: radius.pill,
+    flex: 1,
+    height: 6,
+  },
+  progressBarOn: { backgroundColor: colors.primary },
+  step: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
+  title: { ...font.title, color: colors.text, fontSize: 27, marginTop: spacing.xl },
   subtitle: {
     ...font.body,
     color: colors.textMuted,
@@ -140,11 +163,12 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   tabs: { flexDirection: 'row', gap: spacing.sm, marginBottom: spacing.md },
   tab: {
+    backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: radius.pill,
     borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 10,
   },
   tabActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   tabLabel: { ...font.label, color: colors.textMuted },
@@ -169,7 +193,16 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   levelChipActive: { backgroundColor: colors.accent, borderColor: colors.accent },
   levelChipText: { ...font.caption, color: colors.textMuted },
-  levelChipTextActive: { color: colors.primaryText, fontWeight: '700' },
+  // `textInverse`, not `primaryText`: the active chip is filled with `accent`,
+  // which is not `primary` and does not take black on it in light mode.
+  levelChipTextActive: { color: colors.textInverse, fontWeight: '700' },
   levelHint: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
-  cta: { marginTop: spacing.md },
+  hints: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: spacing.md,
+    paddingTop: spacing.lg,
+  },
+  hint: { ...font.caption, color: colors.textMuted },
+  cta: { marginTop: 0 },
 }))

@@ -1,6 +1,7 @@
 import { LANGUAGES } from '@langx/shared'
 import { useMemo, useState } from 'react'
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import Feather from '@expo/vector-icons/Feather'
+import { FlatList, Pressable, Text, TextInput, View } from 'react-native'
 import { makeStyles, useTheme } from '../lib/theme'
 
 interface LanguagePickerProps {
@@ -49,14 +50,17 @@ export function LanguagePicker({
 
   return (
     <View style={styles.root}>
-      <TextInput
-        value={query}
-        onChangeText={setQuery}
-        placeholder="Search languages…"
-        placeholderTextColor={colors.textMuted}
-        style={styles.search}
-        autoCorrect={false}
-      />
+      <View style={styles.searchRow}>
+        <Feather name="search" size={17} color={colors.textMuted} />
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder={`Search ${LANGUAGES.length} languages`}
+          placeholderTextColor={colors.textMuted}
+          style={styles.search}
+          autoCorrect={false}
+        />
+      </View>
       <FlatList
         data={results}
         keyExtractor={(item) => item.code}
@@ -76,11 +80,19 @@ export function LanguagePicker({
                 pressed && styles.rowPressed,
               ]}
             >
+              {/*
+                The tick is a filled circle rather than a bare glyph: at a
+                glance the column of circles is what says how many are chosen,
+                and an empty ring in the same place is what says the row is
+                choosable at all.
+              */}
+              <View style={[styles.tick, isSelected ? styles.tickOn : styles.tickOff]}>
+                {isSelected ? <Feather name="check" size={13} color={colors.primaryText} /> : null}
+              </View>
               <View style={styles.rowText}>
                 <Text style={[styles.name, isSelected && styles.nameSelected]}>{item.name}</Text>
                 <Text style={styles.native}>{item.nativeName}</Text>
               </View>
-              {isSelected ? <Text style={styles.check}>✓</Text> : null}
             </Pressable>
           )
         }}
@@ -91,30 +103,49 @@ export function LanguagePicker({
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   root: { flex: 1 },
-  search: {
+  searchRow: {
+    alignItems: 'center',
     backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    color: colors.text,
-    marginBottom: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    ...font.body,
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.lg,
   },
-  list: { flex: 1 },
+  search: { ...font.body, color: colors.text, flex: 1, paddingVertical: 13 },
+  list: {
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    flex: 1,
+    overflow: 'hidden',
+  },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: spacing.md,
+    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 14,
   },
-  rowSelected: { backgroundColor: colors.surface },
+  rowSelected: {},
   rowDisabled: { opacity: 0.35 },
   rowPressed: { opacity: 0.6 },
   rowText: { flex: 1 },
+  tick: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    height: 22,
+    justifyContent: 'center',
+    width: 22,
+  },
+  tickOn: { backgroundColor: colors.primary },
+  tickOff: { borderColor: colors.border, borderWidth: 1.5 },
   name: { ...font.body, color: colors.text },
-  nameSelected: { fontWeight: '700' },
+  nameSelected: { fontWeight: '600' },
   native: { ...font.caption, color: colors.textMuted },
-  check: { color: colors.accent, fontSize: 18, fontWeight: '700' },
 }))
