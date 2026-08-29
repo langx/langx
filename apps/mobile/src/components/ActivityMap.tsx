@@ -1,5 +1,5 @@
 import { shiftDayKey } from '@langx/shared'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
 import { useActivity, useRepairDay, useWallet } from '../api/queries'
 import { activityGrid, repairEffect, type ActivityCell } from '../lib/activityMap'
@@ -29,6 +29,7 @@ export function ActivityMap() {
   const activity = useActivity(from, to)
   const wallet = useWallet()
   const repair = useRepairDay()
+  const scroller = useRef<ScrollView>(null)
 
   const columns = useMemo(() => {
     if (!activity.data) return []
@@ -103,11 +104,18 @@ export function ActivityMap() {
         </Text>
       </View>
 
-      {/* Ends on today, so the newest week is what you see first. */}
+      {/*
+        Opened at the far end, because the grid runs oldest-first and the newest
+        week is the one worth seeing. Left alone it opens on six months ago,
+        which is a calendar of nothing. `onContentSizeChange` rather than an
+        effect: the offset only means anything once the columns have a width.
+      */}
       <ScrollView
+        ref={scroller}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.grid}
+        onContentSizeChange={() => scroller.current?.scrollToEnd({ animated: false })}
       >
         {columns.map((column) => (
           <View key={column[0]?.day} style={styles.column}>
@@ -144,7 +152,13 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   hint: { ...font.caption, color: colors.textMuted },
   grid: { flexDirection: 'row', gap: 3, paddingVertical: spacing.xs },
   column: { gap: 3 },
-  cell: { backgroundColor: colors.surface, borderRadius: 3, height: 13, width: 13 },
+  /**
+   * `border`, not `surface`. The map sits on a card whose own background is
+   * `surface`, so an empty square drawn in it disappears — and a calendar
+   * whose empty days are invisible is not a calendar, it is a scatter of dots.
+   * The gaps are half of what the grid is for.
+   */
+  cell: { backgroundColor: colors.border, borderRadius: 3, height: 13, width: 13 },
   // Drawn as a gap rather than a square: a day that has not happened is not an
   // empty day.
   future: { backgroundColor: 'transparent' },
