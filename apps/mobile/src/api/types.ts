@@ -16,6 +16,7 @@ export type {
   FeedPage,
   FeedPost,
   PostCorrection,
+  PostCorrectionsPage,
   EarnedBadge,
   Leaderboard,
   LeaderboardEntry,

@@ -87,6 +87,14 @@ describe('community feed', () => {
     }
   }
 
+  async function corrections(user: SignedUpUser, postId: string, qs = '') {
+    return app.inject({
+      method: 'GET',
+      url: `/posts/${postId}/corrections${qs ? `?${qs}` : ''}`,
+      headers: { cookie: user.cookie },
+    })
+  }
+
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_feed_test')
@@ -338,5 +346,69 @@ describe('community feed', () => {
       .collection(COLLECTIONS.tokenLedger)
       .countDocuments({ userId: corrector.userId, kind: 'correction' })
     expect(paid).toBe(0)
+  })
+
+  it("pages a post's corrections oldest first, and carries the post", async () => {
+    const author = await newUser('detail-author@example.com')
+    const viewer = await newUser('detail-viewer@example.com')
+    const postId = (await post(author, 'I has three friend.')).json<{ _id: string }>()._id
+
+    for (let i = 0; i < 3; i++) {
+      const helper = await newUser(`detail-helper-${i}@example.com`)
+      expect((await correct(helper, postId, `I have three friends. (${i})`)).statusCode).toBe(201)
+    }
+
+    const first = await corrections(viewer, postId, 'limit=2')
+    expect(first.statusCode).toBe(200)
+    const page1 = first.json<{
+      post: { _id: string; correctionCount: number }
+      items: { corrected: string }[]
+      nextCursor: string | null
+    }>()
+
+    // One round trip: the sentence being corrected comes back with the
+    // corrections of it.
+    expect(page1.post._id).toBe(postId)
+    expect(page1.post.correctionCount).toBe(3)
+    expect(page1.items.map((item) => item.corrected)).toEqual([
+      'I have three friends. (0)',
+      'I have three friends. (1)',
+    ])
+    expect(page1.nextCursor).not.toBeNull()
+
+    const page2 = (
+      await corrections(viewer, postId, `limit=2&cursor=${encodeURIComponent(page1.nextCursor!)}`)
+    ).json<{ items: { corrected: string }[]; nextCursor: string | null }>()
+    expect(page2.items.map((item) => item.corrected)).toEqual(['I have three friends. (2)'])
+    expect(page2.nextCursor).toBeNull()
+  })
+
+  it("hides a blocked author's corrections, and the whole post if they wrote it", async () => {
+    // This route took no viewer at all before anything called it, so it applied
+    // no block filter — the one place in the app where a block was one-way.
+    const author = await newUser('detail-block-author@example.com')
+    const viewer = await newUser('detail-block-viewer@example.com')
+    const rude = await newUser('detail-block-rude@example.com')
+    const fine = await newUser('detail-block-fine@example.com')
+
+    const postId = (await post(author, 'I goed home.')).json<{ _id: string }>()._id
+    await correct(rude, postId, 'I went home. (rude)')
+    await correct(fine, postId, 'I went home. (fine)')
+
+    const block = (blocker: SignedUpUser, userId: string) =>
+      app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: blocker.cookie },
+        payload: { userId },
+      })
+
+    await block(viewer, rude.userId)
+    const visible = (await corrections(viewer, postId)).json<{ items: { corrected: string }[] }>()
+    expect(visible.items.map((item) => item.corrected)).toEqual(['I went home. (fine)'])
+
+    // Blocking the post's author makes the thread absent, not forbidden.
+    await block(viewer, author.userId)
+    expect((await corrections(viewer, postId)).statusCode).toBe(404)
   })
 })

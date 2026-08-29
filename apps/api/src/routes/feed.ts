@@ -1,4 +1,9 @@
-import { createPostCorrectionSchema, createPostSchema, listFeedQuerySchema } from '@langx/shared'
+import {
+  createPostCorrectionSchema,
+  createPostSchema,
+  listFeedQuerySchema,
+  listPostCorrectionsQuerySchema,
+} from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireAuth } from '../middleware/requireAuth'
@@ -30,9 +35,14 @@ export const feedRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.get(
     '/posts/:id/corrections',
-    { preHandler: requireAuth, schema: { params: postParamsSchema } },
+    {
+      preHandler: requireAuth,
+      schema: { params: postParamsSchema, querystring: listPostCorrectionsQuerySchema },
+    },
     async (request, reply) => {
-      return reply.send(await listPostCorrections(app.mongo.db, request.params.id))
+      return reply.send(
+        await listPostCorrections(app.mongo.db, request.userId, request.params.id, request.query),
+      )
     },
   )
 

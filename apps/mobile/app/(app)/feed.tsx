@@ -10,6 +10,7 @@ import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { dedupeById } from '../../src/lib/dedupeById'
+import { openPost, openProfile } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
 import { levelShortLabel, useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
@@ -188,37 +189,59 @@ export default function FeedScreen() {
             return (
               <View style={styles.card}>
                 <View style={styles.cardTop}>
-                  <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={38} />
-                  <View style={styles.who}>
-                    <Text style={styles.name} numberOfLines={1}>
-                      {item.author.displayName}
-                    </Text>
-                    <Text style={styles.subtitle}>{subtitleOf(item)}</Text>
-                  </View>
+                  <Pressable
+                    style={styles.whoRow}
+                    accessibilityRole="button"
+                    onPress={() => openProfile(item.author.handle, '/(app)/feed')}
+                  >
+                    <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={38} />
+                    <View style={styles.who}>
+                      <Text style={styles.name} numberOfLines={1}>
+                        {item.author.displayName}
+                      </Text>
+                      <Text style={styles.subtitle}>{subtitleOf(item)}</Text>
+                    </View>
+                  </Pressable>
                   {/*
                     The error pair for "nobody has answered", the success pair
                     once somebody has. It is the same distinction the feed is
                     sorted by, so it should be the same colour the sort implies.
+
+                    Pressable whether or not there are corrections: the thread
+                    behind it is worth opening either way, and this is the one
+                    affordance every card has.
                   */}
-                  <Text
-                    style={[
-                      styles.count,
-                      item.correctionCount === 0 ? styles.countNone : styles.countSome,
-                    ]}
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={() => openPost(item._id, '/(app)/feed')}
+                    hitSlop={8}
                   >
-                    {item.correctionCount === 0
-                      ? t('feed.noCorrections')
-                      : t('feed.corrections', { count: item.correctionCount })}
-                  </Text>
+                    <Text
+                      style={[
+                        styles.count,
+                        item.correctionCount === 0 ? styles.countNone : styles.countSome,
+                      ]}
+                    >
+                      {item.correctionCount === 0
+                        ? t('feed.noCorrections')
+                        : t('feed.corrections', { count: item.correctionCount })}
+                    </Text>
+                  </Pressable>
                 </View>
 
                 <Text style={styles.body}>{item.body}</Text>
 
                 {item.topCorrection ? (
                   <View style={styles.top}>
-                    <Text style={styles.topLabel}>
-                      {t('feed.topCorrection')} {item.topCorrection.author.displayName}
-                    </Text>
+                    <Pressable
+                      accessibilityRole="button"
+                      onPress={() => openProfile(item.topCorrection!.author.handle, '/(app)/feed')}
+                      hitSlop={6}
+                    >
+                      <Text style={styles.topLabel}>
+                        {t('feed.topCorrection')} {item.topCorrection.author.displayName}
+                      </Text>
+                    </Pressable>
                     <Text style={styles.topText}>{item.topCorrection.corrected}</Text>
                     {item.topCorrection.note ? (
                       <Text style={styles.topNote}>{item.topCorrection.note}</Text>
@@ -279,11 +302,19 @@ export default function FeedScreen() {
                       </Text>
                     </Pressable>
                     {item.correctionCount > 0 ? (
-                      <View style={[styles.action, styles.actionInert]}>
+                      <Pressable
+                        accessibilityRole="button"
+                        onPress={() => openPost(item._id, '/(app)/feed')}
+                        style={({ pressed }) => [
+                          styles.action,
+                          styles.actionInert,
+                          pressed && styles.pressed,
+                        ]}
+                      >
                         <Text style={styles.actionLabel}>
                           {t('feed.seeAll', { count: item.correctionCount })}
                         </Text>
-                      </View>
+                      </Pressable>
                     ) : null}
                   </View>
                 ) : null}
@@ -314,6 +345,7 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     padding: spacing.lg,
   },
   cardTop: { alignItems: 'center', flexDirection: 'row', gap: 11 },
+  whoRow: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: 11, minWidth: 0 },
   who: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 15 },
   subtitle: { ...font.caption, color: colors.textMuted },

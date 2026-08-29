@@ -11,3 +11,16 @@ export function goBackTo(fallback: Href, from?: string): void {
 export function openProfile(handle: string, from: string): void {
   router.push(profileHref(handle, from) as Href)
 }
+
+/**
+ * Open the thread on a post — the sentence and every correction of it.
+ *
+ * The cast is the same one `openProfile` needs and for the same reason
+ * `backHref` documents: `Href` is a union of generated route literals once
+ * `expo start` has written them and a loose string when it has not, so the
+ * assertion is required locally and redundant in CI. Doing it in one place per
+ * destination is what keeps that from being a per-call-site decision.
+ */
+export function openPost(postId: string, from: string): void {
+  router.push(`/(app)/post/${postId}?from=${encodeURIComponent(from)}` as Href)
+}

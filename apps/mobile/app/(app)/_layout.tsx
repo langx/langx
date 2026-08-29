@@ -106,6 +106,7 @@ export default function AppLayout() {
         <Tabs.Screen name="leaderboard" options={FULL_SCREEN} />
         <Tabs.Screen name="chat/[id]" options={FULL_SCREEN} />
         <Tabs.Screen name="profile/[handle]" options={FULL_SCREEN} />
+        <Tabs.Screen name="post/[id]" options={FULL_SCREEN} />
         <Tabs.Screen name="edit-profile" options={FULL_SCREEN} />
         <Tabs.Screen name="blocked" options={FULL_SCREEN} />
         <Tabs.Screen name="settings" options={FULL_SCREEN} />

@@ -21,6 +21,7 @@ import type {
   FeedPage,
   FeedPost,
   PostCorrection,
+  PostCorrectionsPage,
   TokenSummary,
 } from './types'
 import {
@@ -59,6 +60,7 @@ export const keys = {
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
   feed: (filter: string) => ['feed', filter] as const,
+  postCorrections: (id: string) => ['postCorrections', id] as const,
   quota: ['quota'] as const,
   viewers: ['viewers'] as const,
   leaderboard: (period: PeriodType) => ['leaderboard', period] as const,
@@ -413,6 +415,18 @@ export function useFeed(filter: FeedFilter) {
     getNextPageParam: (last) => last.nextCursor ?? undefined,
     // Same reason as `useDiscovery`: switching tab must not blank the list.
     placeholderData: keepPreviousData,
+  })
+}
+
+export function usePostCorrections(postId: string) {
+  return useInfiniteQuery({
+    queryKey: keys.postCorrections(postId),
+    queryFn: ({ pageParam }) =>
+      api.get<PostCorrectionsPage>(
+        `/posts/${postId}/corrections${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 

@@ -87,3 +87,33 @@ export const feedPageSchema = z.object({
   nextCursor: z.string().nullable(),
 })
 export type FeedPage = z.infer<typeof feedPageSchema>
+
+export const POST_CORRECTIONS_PAGE_SIZE_DEFAULT = 20
+export const POST_CORRECTIONS_PAGE_SIZE_MAX = 50
+
+export const listPostCorrectionsQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(POST_CORRECTIONS_PAGE_SIZE_MAX)
+    .default(POST_CORRECTIONS_PAGE_SIZE_DEFAULT),
+})
+export type ListPostCorrectionsQuery = z.infer<typeof listPostCorrectionsQuerySchema>
+
+export const postCorrectionsPageSchema = z.object({
+  /**
+   * The post the corrections are of, so the screen showing them is one round
+   * trip rather than two. Page one is the authority; later pages carry it too
+   * rather than making the shape conditional on which page you are holding.
+   */
+  post: feedPostSchema,
+  /**
+   * Oldest first — the same order that makes the card's `topCorrection` the
+   * oldest one. A correction is a reply, and replies read forwards.
+   */
+  items: z.array(postCorrectionSchema),
+  nextCursor: z.string().nullable(),
+})
+export type PostCorrectionsPage = z.infer<typeof postCorrectionsPageSchema>

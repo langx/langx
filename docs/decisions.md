@@ -1268,6 +1268,27 @@ Both ends are fixed: `countersOf` guards the field, and `readActivity`
 normalizes the way `recordActivity` already did, so a reader cannot tell which
 of the two produced the document it holds.
 
+## The feed's one visible correction needed somewhere to lead
+
+A feed card carries exactly one correction — the oldest — because a page of
+cards cannot afford to transfer a popular post's whole answer list to render
+two booleans. That is right, and it left "See all 4" as a label on nothing: the
+control was a `View`, and no screen had ever called
+`GET /posts/:id/corrections`.
+
+Building the screen turned up what an uncalled route had been hiding. The
+handler took no viewer, so it applied **no block filter at all** — the one
+place in the app where a block was one-way. It read every correction with
+`.toArray()`. And it returned corrections without the post, so the screen would
+have needed a second request for the sentence they are corrections _of_.
+
+All three are fixed together, because shipping the screen is what would have
+made each of them a bug in production rather than a bug on disk. The keyset
+runs **ascending** — corrections are replies and replies read forwards, which is
+also what makes "the top correction is the oldest" true — on a new
+`post_created_id`, since `post_created` has no `_id` to make the page boundary
+exact.
+
 ## Known risks
 
 - **Play signing key.** Narrowed but not closed: if Play App Signing is

@@ -269,6 +269,20 @@ export const INDEXES: Partial<IndexSpec> = {
      * author.
      */
     { key: { authorId: 1, createdAt: -1 }, name: 'author_recent' },
+    /**
+     * The same prefix as `post_created` with the tiebreak in the key. The post
+     * detail screen pages a post's corrections ascending, and a keyset needs
+     * `_id` to make the page boundary exact — without it a popular post falls
+     * back to an in-memory sort, exactly as `conversation_created_id` was added
+     * to avoid.
+     *
+     * Added under a new name rather than by widening `post_created`: changing a
+     * live index's key in place is an `IndexOptionsConflict`, not a rebuild.
+     * The narrower one is now a redundant prefix — `readCorrectionSummary`'s
+     * sort is served by this one too — and can be dropped once this has
+     * shipped.
+     */
+    { key: { postId: 1, createdAt: 1, _id: 1 }, name: 'post_created_id' },
   ],
 
   [COLLECTIONS.dailyActivity]: [{ key: { day: 1 }, name: 'day' }],

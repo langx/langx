@@ -85,6 +85,7 @@ const ROUTE_CALLEES = new Set([
   'goBackTo',
   'openPaywall',
   'openProfile',
+  'openPost',
 ])
 const ROUTE_ATTRIBUTES = new Set(['href'])
 const ROUTE_PROPERTIES = new Set(['pathname'])

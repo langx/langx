@@ -6,12 +6,15 @@ import {
   type FeedPage,
   type FeedPost,
   type ListFeedQuery,
+  type ListPostCorrectionsQuery,
+  type PostCorrectionsPage,
   languageLevelSchema,
   type PostCorrection,
 } from '@langx/shared'
 import { ObjectId, type Db, type Document } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import { ApiError } from '../../lib/ApiError'
+import { decodeDateIdCursor, encodeDateIdCursor } from '../../lib/dateIdCursor'
 import { decodeFeedCursor, encodeFeedCursor } from '../../lib/feedCursor'
 import { blockedUserIds } from '../moderation/blocks'
 import type { Profile } from '../profiles/profiles'
@@ -73,6 +76,24 @@ function correctionDto(doc: PostCorrectionDoc, authors: AuthorMap): PostCorrecti
     corrected: doc.corrected,
     ...(doc.note ? { note: doc.note } : {}),
     createdAt: doc.createdAt.toISOString(),
+  }
+}
+
+function postDto(
+  post: Post,
+  context: { authors: AuthorMap; top: PostCorrectionDoc | null; correctedByViewer: boolean },
+): FeedPost {
+  const profile = context.authors.get(post.authorId)
+  return {
+    _id: post._id.toHexString(),
+    author: authorDto(profile, post.authorId),
+    body: post.body,
+    language: post.language,
+    level: levelOf(profile, post.language),
+    correctionCount: post.correctionCount,
+    topCorrection: context.top ? correctionDto(context.top, context.authors) : null,
+    correctedByViewer: context.correctedByViewer,
+    createdAt: post.createdAt.toISOString(),
   }
 }
 
@@ -210,22 +231,13 @@ export async function listFeed(db: Db, userId: string, query: ListFeedQuery): Pr
   ])
 
   return {
-    items: items.map((post) => {
-      const key = post._id.toHexString()
-      const top = topByPost.get(key)
-      const profile = authors.get(post.authorId)
-      return {
-        _id: key,
-        author: authorDto(profile, post.authorId),
-        body: post.body,
-        language: post.language,
-        level: levelOf(profile, post.language),
-        correctionCount: post.correctionCount,
-        topCorrection: top ? correctionDto(top, authors) : null,
-        correctedByViewer: viewerCorrected.has(key),
-        createdAt: post.createdAt.toISOString(),
-      }
-    }),
+    items: items.map((post) =>
+      postDto(post, {
+        authors,
+        top: topByPost.get(post._id.toHexString()) ?? null,
+        correctedByViewer: viewerCorrected.has(post._id.toHexString()),
+      }),
+    ),
     nextCursor:
       hasMore && last
         ? encodeFeedCursor(last.createdAt, last._id, needsFirst ? last.correctionCount : null)
@@ -346,19 +358,65 @@ async function awardForPostCorrection(
   if (profile) await recordQualifyingAction(db, profile, at)
 }
 
+/**
+ * A post and the corrections on it, oldest first.
+ *
+ * Three things this did not do before anything called it. It never took a
+ * viewer, so it applied no block filter at all — a symmetry hole everywhere
+ * else in the app closes, invisible only because no screen had been built yet.
+ * It read the whole list with `.toArray()`, which is fine for two answers and
+ * not for three hundred. And it returned corrections without the post, so the
+ * screen showing them would have needed a second request for the sentence they
+ * are corrections *of*.
+ */
 export async function listPostCorrections(
   db: Db,
+  userId: string,
   postId: string,
-): Promise<{ items: PostCorrection[] }> {
+  query: ListPostCorrectionsQuery,
+): Promise<PostCorrectionsPage> {
   if (!ObjectId.isValid(postId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
-  const docs = await db
+  const _id = new ObjectId(postId)
+
+  const [post, hidden] = await Promise.all([
+    db.collection<Post>(COLLECTIONS.posts).findOne({ _id }),
+    blockedUserIds(db, userId),
+  ])
+  if (!post) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+  // 404 rather than 403, for the reason the profile route gives: a blocked
+  // account is absent, and a 403 would confirm it exists.
+  if (hidden.includes(post.authorId)) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Post not found')
+
+  const filter: Document = { postId: _id }
+  if (hidden.length > 0) filter.authorId = { $nin: hidden }
+  if (query.cursor) {
+    // Ascending, so the page boundary is "after this one" — the mirror of the
+    // feed's descending keyset, on `post_created_id`.
+    const { date, id } = decodeDateIdCursor(query.cursor)
+    filter.$or = [{ createdAt: { $gt: date } }, { createdAt: date, _id: { $gt: id } }]
+  }
+
+  const page = await db
     .collection<PostCorrectionDoc>(COLLECTIONS.postCorrections)
-    .find({ postId: new ObjectId(postId) })
-    .sort({ createdAt: 1 })
+    .find(filter)
+    .sort({ createdAt: 1, _id: 1 })
+    .limit(query.limit + 1)
     .toArray()
-  const authors = await loadAuthors(
-    db,
-    docs.map((doc) => doc.authorId),
-  )
-  return { items: docs.map((doc) => correctionDto(doc, authors)) }
+
+  const hasMore = page.length > query.limit
+  const items = hasMore ? page.slice(0, query.limit) : page
+  const last = items.at(-1)
+
+  const authors = await loadAuthors(db, [post.authorId, ...items.map((doc) => doc.authorId)])
+  const { topByPost, viewerCorrected } = await readCorrectionSummary(db, userId, [_id])
+
+  return {
+    post: postDto(post, {
+      authors,
+      top: topByPost.get(postId) ?? null,
+      correctedByViewer: viewerCorrected.has(postId),
+    }),
+    items: items.map((doc) => correctionDto(doc, authors)),
+    nextCursor: hasMore && last ? encodeDateIdCursor(last.createdAt, last._id) : null,
+  }
 }
