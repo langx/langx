@@ -10,8 +10,15 @@
  * Separate file from `navigation.ts`, for the reason stated on `backHref`:
  * importing `expo-router` for a value pulls in react-native, which the mobile
  * test setup cannot parse, and this is worth testing.
+ *
+ * The return type is deliberately not annotated `string`. Inferred, it is the
+ * template literal type `/(app)/profile/${string}?from=${string}`, which is
+ * what lets the caller assert it to `Href` in both worlds — see `openProfile`.
+ * Widening it to `string` here made that assertion redundant wherever
+ * expo-router's generated route types are absent, and CI is exactly that
+ * place.
  */
-export function profileHref(handle: string, from: string): string {
+export function profileHref(handle: string, from: string) {
   // Handles arrive both ways — `feedAuthorSchema.handle` is bare, anything
   // copied out of a mention is not — and the route segment must be bare.
   const bare = handle.startsWith('@') ? handle.slice(1) : handle
