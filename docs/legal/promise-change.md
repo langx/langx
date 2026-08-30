@@ -108,6 +108,32 @@ stale:
   feature claim the app does not meet — remove them.
 - The listing must declare in-app purchases; v1 had none.
 
+### 3. What v2 collects that v1 did not say it collected
+
+Three of these landed on 30 August 2026 and none of them is covered by v1's
+published texts. All three are already live in `website/` (langx/website#119);
+the store forms and the GitBook copy still need them.
+
+- **A date of birth, not a year.** v1 stored a full birthdate and only ever
+  used the year; v2 now keeps and uses the whole day, so that birthdays can
+  exist. The age gate is unchanged — whole years, so somebody who turns 18 in
+  December is admitted in January. Only the age is ever shown to another user;
+  the date is visible to nobody but its owner.
+- **The country is derived from the connection's IP** at profile creation,
+  rather than typed. A country filter anybody can set by hand is not a filter.
+  The address is not stored — only the two-letter code it resolved to — and the
+  only thing that can change it afterwards is a location fix from the device.
+  This has to be said out loud: "we do not build a profile from your IP" stays
+  true, and would be misleading next to a stored country if it stood alone.
+- **Notification preferences are four kinds by two channels**, and promotions
+  are **off** until somebody turns them on. Consent to be marketed at has to be
+  given rather than withdrawn; the email column exists and nothing sends to it
+  yet.
+
+One more that is a promise rather than a disclosure: **passwords are 6 to 64
+characters, with no composition rule**. Anything published that describes the
+old requirement should say this instead.
+
 ## Privacy policy
 
 Derive it from `docs/store/privacy-data-safety.md`, which is written from what
