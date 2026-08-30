@@ -18,7 +18,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   return {
     handle: `user${Math.random().toString(36).slice(2, 10)}`,
     displayName: 'Test User',
-    birthYear: 1995,
+    birthDate: '1995-06-15',
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],

@@ -1,4 +1,5 @@
 import {
+  countryFromLocationSchema,
   hasFeature,
   locationInputSchema,
   onboardingProfileSchema,
@@ -6,6 +7,7 @@ import {
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
+import { countryFromHeaders } from '../lib/requestCountry'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
 import { blockedUserIds } from '../modules/moderation/blocks'
@@ -14,6 +16,7 @@ import { effectiveTier } from '../modules/profiles/entitlement'
 import {
   clearLocation,
   createProfile,
+  setCountryFromLocation,
   findProfileByHandleOrId,
   getProfile,
   isEmailVerified,
@@ -40,8 +43,38 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
         request.body,
         app.env.STORAGE_PUBLIC_BASE_URL,
         app.revenueCat,
+        // Where the connection says they are. Beats whatever the form sent,
+        // and is the reason the form no longer asks.
+        countryFromHeaders(request.headers, app.env.EDGE_SECRET),
       )
       return reply.code(201).send(profile)
+    },
+  )
+
+  /**
+   * The one way a country can change after onboarding.
+   *
+   * It is not in `PATCH /profiles/me` on purpose: the country is read off the
+   * connection and is not a field to type into, or the age filter and the
+   * country filter become self-declared. What this accepts is the answer a
+   * *device* gave — the user granted location permission and the OS reverse-
+   * geocoded a fix — which is the case the IP gets wrong: a VPN, a border
+   * town, a trip.
+   *
+   * The server cannot verify it, and does not pretend to. It is a better
+   * answer than the free-text picker it replaces, and worse than the header;
+   * that is the trade, made once, here.
+   */
+  app.patch(
+    '/profiles/me/country',
+    { preHandler: requireAuth, schema: { body: countryFromLocationSchema } },
+    async (request, reply) => {
+      const profile = await setCountryFromLocation(
+        app.mongo.db,
+        request.userId,
+        request.body.country,
+      )
+      return reply.send(profile)
     },
   )
 

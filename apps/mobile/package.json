@@ -21,6 +21,7 @@
     "@expo/metro-runtime": "~57.0.13",
     "@expo/vector-icons": "^15.1.1",
     "@langx/shared": "workspace:*",
+    "@react-native-community/datetimepicker": "9.1.0",
     "@tanstack/react-query": "catalog:",
     "better-auth": "catalog:",
     "expo": "~57.0.16",

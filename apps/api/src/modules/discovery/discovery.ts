@@ -1,4 +1,5 @@
 import {
+  ageFromBirthDate,
   LANGUAGE_LEVELS,
   levelRank,
   bucketDistanceKm,
@@ -183,11 +184,19 @@ export async function discoverProfiles(
   }
   if (query.ageMin !== undefined || query.ageMax !== undefined) {
     const currentYear = new Date().getUTCFullYear()
-    const birthYear: Document = {}
-    // Older age → smaller birth year, so ageMin caps birthYear from above.
-    if (query.ageMin !== undefined) birthYear.$lte = currentYear - query.ageMin
-    if (query.ageMax !== undefined) birthYear.$gte = currentYear - query.ageMax
-    match.birthYear = birthYear
+    /**
+     * Still a *year* range, now expressed over `YYYY-MM-DD` strings: the age
+     * on a profile is the year difference (see `ageFromBirthDate`), and a
+     * filter that used the exact age would hide people whose own profile says
+     * they match. Lexicographic order on the string is calendar order, so a
+     * plain range works — the January the 1st of the boundary year is the
+     * cut.
+     */
+    const birthDate: Document = {}
+    // Older age → earlier birth date, so ageMin caps the date from above.
+    if (query.ageMin !== undefined) birthDate.$lt = `${currentYear - query.ageMin + 1}-01-01`
+    if (query.ageMax !== undefined) birthDate.$gte = `${currentYear - query.ageMax}-01-01`
+    match.birthDate = birthDate
   }
 
   /**
@@ -336,7 +345,7 @@ export async function discoverProfiles(
       handle: doc.handle,
       displayName: doc.displayName,
       gender: doc.gender,
-      age: now.getUTCFullYear() - doc.birthYear,
+      age: ageFromBirthDate(doc.birthDate, now),
       // Stored values were already validated against languageCodeSchema/cefrLevelSchema
       // at write time (createProfile/updateProfile) — Profile's own DB-facing
       // interface just doesn't carry those branded types.

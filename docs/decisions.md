@@ -30,7 +30,7 @@ is shaped that way. Several of them record a plan that turned out to be wrong.
 
 The original criterion was "a 17-year-old's sign-up is refused server-side" in
 phase 1. That turned out to be architecturally the wrong place: sign-up via
-Google or Apple has **no `birthYear` field at all**, so a check inside Better
+Google or Apple has **no `birthDate` field at all**, so a check inside Better
 Auth's own `signUp` step would only ever cover the email/password path. The
 right place is where the plan's own "Auth and age gate" section already said —
 before `profiles` is written, in phase 2's onboarding, which is the single
@@ -408,8 +408,9 @@ is the natural place, the `profileViews` record is written there too.
 `toPublicProfile` builds its result by **naming** fields rather than deleting
 them: a field added to `Profile` later — a new quota bucket, an internal flag —
 is then private by default instead of leaking the first time someone forgets to
-add it to a blocklist. `birthYear` becomes an age, because that is what the UI
-shows and the exact year is more identifying than the product needs.
+add it to a blocklist. `birthDate` becomes an age, because that is what the UI
+shows and the exact day is both more identifying than the product needs and
+the thing a birthday feature would leak first.
 
 ## Phase 11 — the mapping was derived from live data, not from v1's source
 

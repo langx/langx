@@ -153,6 +153,14 @@ export const es: Localized<EnMessages> = {
   },
 
   location: {
+    useMyLocation: 'Usar mi ubicación',
+    deniedTitle: 'La ubicación está desactivada para LangX',
+    deniedBodyIos: 'Abre Ajustes → LangX → Ubicación y elige «Al usar la app».',
+    deniedBodyAndroid: 'Abre Ajustes → Apps → LangX → Permisos → Ubicación y permítelo.',
+    openSettings: 'Abrir ajustes',
+    failedTitle: 'No pudimos leer tu ubicación',
+    noCountry: 'No pudimos saber de qué país se trata.',
+    countryUpdated: 'País actualizado.',
     denied:
       'LangX necesita permiso de ubicación para esto. Puedes concederlo en los ajustes de tu dispositivo.',
     disabled: 'Los servicios de ubicación están desactivados en este dispositivo.',
@@ -225,6 +233,18 @@ export const es: Localized<EnMessages> = {
   },
 
   onboarding: {
+    nativeTitle: '¿Qué idiomas hablas?',
+    nativeBody: 'Los que has hablado desde siempre o dominas como nativo.',
+    learningTitle: '¿Cuáles estás aprendiendo?',
+    learningBody: 'Elige los que quieres practicar con alguien.',
+    levelsTitle: '¿Hasta dónde has llegado?',
+    levelsBody: '1 es principiante total, 4 es fluido.',
+    pickALevel: 'Elige un nivel',
+    birthDate: 'Fecha de nacimiento',
+    birthDatePlaceholder: 'Elige una fecha',
+    day: 'Día',
+    month: 'Mes',
+    year: 'Año',
     languagesTitle: '¿Qué idiomas hablas?',
     languagesBody:
       'Tu lengua materna es lo que puedes enseñar; lo que aprendes decide con quién harás match.',
@@ -545,6 +565,8 @@ export const es: Localized<EnMessages> = {
   },
 
   editProfile: {
+    countryUnknown: 'Sin definir',
+    countryHint: 'Se toma de tu conexión. Comparte tu ubicación para corregirlo.',
     title: 'Editar perfil',
     displayName: 'Nombre visible',
     aboutYou: 'Sobre ti',

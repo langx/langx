@@ -1,7 +1,14 @@
 import type { OnboardingDraft } from '../hooks/useOnboardingDraft'
 
 /** The wizard's screens, in order. */
-export const ONBOARDING_STEPS = ['languages', 'about-you', 'photo', 'handle'] as const
+export const ONBOARDING_STEPS = [
+  'languages',
+  'learning',
+  'levels',
+  'about-you',
+  'photo',
+  'handle',
+] as const
 export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
 
 /**
@@ -18,8 +25,12 @@ export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
  * fields before it without them ever seeing that they existed.
  */
 export function furthestOnboardingStep(draft: OnboardingDraft): OnboardingStep {
-  if (draft.nativeLanguages.length === 0 || draft.learning.length === 0) return 'languages'
-  if (!draft.displayName.trim() || !draft.birthYear.trim()) return 'about-you'
+  if (draft.nativeLanguages.length === 0) return 'languages'
+  if (draft.learning.length === 0) return 'learning'
+  // A level is not optional and has no default: the whole of discovery is the
+  // fit between what you speak and how well you speak it.
+  if (draft.learning.some((entry) => entry.level === null)) return 'levels'
+  if (!draft.displayName.trim() || !draft.birthDate.trim()) return 'about-you'
   return 'photo'
 }
 

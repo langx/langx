@@ -239,13 +239,13 @@ async function tryImportConversations(db: Db, userId: string, legacyId: string):
   }
 }
 
-/** Fields a profile cannot be built without. `birthYear` is the age gate. */
+/** Fields a profile cannot be built without. `birthDate` is the age gate. */
 function missingForProfile(legacy: LegacyProfile): string[] {
   const missing: string[] = []
   if (!legacy.handle) missing.push('handle')
   if (!legacy.displayName) missing.push('displayName')
-  if (legacy.birthYear === undefined) missing.push('birthYear')
-  else if (!meetsMinimumAge(legacy.birthYear)) missing.push('birthYear')
+  if (legacy.birthDate === undefined) missing.push('birthDate')
+  else if (!meetsMinimumAge(legacy.birthDate)) missing.push('birthDate')
   if (legacy.nativeLanguages.length === 0) missing.push('nativeLanguages')
   if (legacy.learning.length === 0) missing.push('learning')
   return missing
@@ -256,7 +256,7 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
     _id: userId,
     handle: legacy.handle,
     displayName: legacy.displayName ?? legacy.handle,
-    birthYear: legacy.birthYear!,
+    birthDate: legacy.birthDate!,
     gender: legacy.gender ?? 'undisclosed',
     nativeLanguages: legacy.nativeLanguages,
     learning: legacy.learning,

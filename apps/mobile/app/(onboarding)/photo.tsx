@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { Image } from 'expo-image'
 import { uploadAvatarBytes } from '../../src/api/queries'
-import { CountryPicker } from '../../src/components/CountryPicker'
+import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { Screen } from '../../src/components/ui/Screen'
@@ -76,7 +76,7 @@ export default function PhotoStep() {
 
   return (
     <Screen scroll>
-      <Text style={styles.step}>3 / 4</Text>
+      <StepProgress step="photo" />
       <Text style={styles.title}>{t('onboarding.photoTitle')}</Text>
       <Text style={styles.hint}>{t('onboarding.photoBody')}</Text>
 
@@ -120,17 +120,11 @@ export default function PhotoStep() {
       </View>
 
       {/*
-        `country` has been in the onboarding schema and in the draft from the
-        start with no screen writing it, so every account created through the
-        wizard had none — and discovery's country filter had nothing to match.
+        No country question any more. It used to be a picker here; it is read
+        off the connection at `POST /profiles` now, because a self-declared
+        country makes discovery's country filter mean nothing. Somebody who
+        wants to correct it grants location permission in Settings.
       */}
-      <View style={styles.country}>
-        <CountryPicker
-          label={t('onboarding.whereAreYou')}
-          value={draft.country}
-          onChange={(country) => updateDraft({ country })}
-        />
-      </View>
 
       <Button
         label={t('common.continue')}
@@ -163,7 +157,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   avatarAction: { flexShrink: 1, width: 'auto' },
   label: { ...font.label, color: colors.text, marginTop: spacing.xl },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
-  country: { marginTop: spacing.xl },
   cta: { marginTop: spacing.xl },
   skip: {
     ...font.body,

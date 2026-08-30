@@ -101,7 +101,7 @@ export interface MeProfile {
   displayName: string
   avatarUrl?: string
   bio?: string
-  birthYear: number
+  birthDate: string
   gender: Gender
   country?: string
   city?: string
@@ -933,6 +933,26 @@ export function useShareLocation() {
       // The prefix every `keys.discovery(filters)` starts with: nearby results
       // are ordered by a distance that just changed, and which filter string
       // produced the cached page is not something this mutation can know.
+      void queryClient.invalidateQueries({ queryKey: ['discovery'] })
+    },
+  })
+}
+
+/**
+ * The country, corrected from where the device says it is.
+ *
+ * Separate from `useShareLocation`: that one stores a coarse point so people
+ * can be sorted by distance, and is an explicit, revocable setting. This sends
+ * no coordinates at all — the OS reverse-geocodes the fix, and only the
+ * resulting two-letter code leaves the phone.
+ */
+export function useSetCountryFromLocation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (country: string) =>
+      api.patch<MeProfile>('/profiles/me/country', { country, source: 'location' }),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
       void queryClient.invalidateQueries({ queryKey: ['discovery'] })
     },
   })

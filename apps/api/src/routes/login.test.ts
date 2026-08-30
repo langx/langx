@@ -47,7 +47,7 @@ describe('sign-in, and the bridge to v1 behind it', () => {
       handle: 'oldtimer',
       legacyEmailHash: hashLegacyEmail(email, SALT),
       displayName: 'Old Timer',
-      birthYear: 1990,
+      birthDate: '1990-06-15',
       gender: 'other',
       nativeLanguages: [{ code: 'tr' }],
       learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
@@ -292,11 +292,11 @@ describe('sign-in, and the bridge to v1 behind it', () => {
   })
 
   it('leaves an incomplete v1 record for onboarding rather than building a broken profile', async () => {
-    // No birthYear means the age gate cannot be satisfied, and a profile
+    // No birthDate means the age gate cannot be satisfied, and a profile
     // without it would be one the 18+ rule never actually checked.
     await stageLegacy(
       { email: 'incomplete@example.com', _id: 'appwrite-incomplete', handle: 'incomplete' },
-      ['birthYear'],
+      ['birthDate'],
     )
 
     const response = await login('incomplete@example.com', 'their-old-v1-password')

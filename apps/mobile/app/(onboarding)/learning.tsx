@@ -8,52 +8,45 @@ import { updateDraft, useOnboardingDraft } from '../../src/hooks/useOnboardingDr
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 
-/**
- * Step 1 of 6: the languages you already speak.
- *
- * This screen used to ask both language questions at once, behind two tabs,
- * with the level chips underneath — three decisions on one screen, of which
- * the second only makes sense after the first (a language cannot be both) and
- * the third only exists because of the second. They are three screens now, in
- * that order, and each asks for one thing.
- */
-export default function LanguagesStep() {
+/** Step 2 of 6: the languages you want to practise. */
+export default function LearningStep() {
   const styles = useStyles()
   const t = useT()
 
   const draft = useOnboardingDraft()
-  const learningCodes = draft.learning.map((entry) => entry.code)
+  const codes = draft.learning.map((entry) => entry.code)
 
   function toggle(code: string): void {
-    const next = draft.nativeLanguages.includes(code)
-      ? draft.nativeLanguages.filter((existing) => existing !== code)
-      : [...draft.nativeLanguages, code]
-    updateDraft({ nativeLanguages: next })
+    // The level is asked for on the next screen, so a language arrives here
+    // without one. `null` rather than a default: see `OnboardingDraft`.
+    const next = codes.includes(code)
+      ? draft.learning.filter((entry) => entry.code !== code)
+      : [...draft.learning, { code, level: null }]
+    updateDraft({ learning: next })
   }
 
   return (
     <Screen fluid style={styles.screen}>
-      <StepProgress step="languages" />
-      <Text style={styles.title}>{t('onboarding.nativeTitle')}</Text>
-      <Text style={styles.subtitle}>{t('onboarding.nativeBody')}</Text>
+      <StepProgress step="learning" />
+      <Text style={styles.title}>{t('onboarding.learningTitle')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.learningBody')}</Text>
 
       <LanguagePicker
-        selected={draft.nativeLanguages}
+        selected={codes}
         onToggle={toggle}
-        // A language cannot be both native and learning — the server rejects
-        // it, so the picker should never let it be picked in the first place.
-        disabledCodes={learningCodes}
+        disabledCodes={draft.nativeLanguages}
         max={5}
       />
 
       <View style={styles.hints}>
         <Text style={styles.hint}>{t('onboarding.upToFive')}</Text>
+        <Text style={styles.hint}>{t('onboarding.cannotBeBoth')}</Text>
       </View>
 
       <Button
         label={t('common.continue')}
-        disabled={draft.nativeLanguages.length === 0}
-        onPress={() => router.push('/(onboarding)/learning')}
+        disabled={draft.learning.length === 0}
+        onPress={() => router.push('/(onboarding)/levels')}
         style={styles.cta}
       />
     </Screen>

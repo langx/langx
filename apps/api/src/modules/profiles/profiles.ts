@@ -1,5 +1,6 @@
 import {
   ERROR_CODES,
+  ageFromBirthDate,
   PLAN_LIMITS,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
@@ -31,7 +32,7 @@ export interface Profile {
   displayName: string
   avatarUrl?: string
   bio?: string
-  birthYear: number
+  birthDate: string
   gender: 'female' | 'male' | 'other' | 'undisclosed'
   country?: string
   city?: string
@@ -119,7 +120,11 @@ function isDuplicateKeyError(error: unknown, indexName: string): boolean {
  * Onboarding. The one hard gate: `meetsMinimumAge` runs here, server-side,
  * before anything is written — not at Better Auth sign-up, because Google/
  * Apple accounts never pass through a form that could have collected
- * `birthYear` there. See age.ts.
+ * `birthDate` there. See age.ts.
+ *
+ * `country` arrives from the caller rather than from `input`: the route reads
+ * it off the connection, and the body is only consulted when the edge could
+ * not say. See `countryFromRequest`.
  */
 export async function createProfile(
   db: Db,
@@ -129,6 +134,8 @@ export async function createProfile(
   storagePublicBaseUrl?: string,
   /** Carries the v1 loyalty gift when this form finishes a deferred restore. */
   billing?: RevenueCatClient,
+  /** Two-letter code the edge read off the connection, when it could. */
+  connectionCountry?: string,
 ): Promise<Profile> {
   const profiles = db.collection<Profile>(COLLECTIONS.profiles)
 
@@ -137,7 +144,7 @@ export async function createProfile(
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Profile already exists')
   }
 
-  if (!meetsMinimumAge(input.birthYear)) {
+  if (!meetsMinimumAge(input.birthDate)) {
     throw new ApiError(ERROR_CODES.UNDERAGE, 'You must be 18 or older to use LangX')
   }
 
@@ -153,7 +160,7 @@ export async function createProfile(
     _id: userId,
     handle: input.handle,
     displayName: input.displayName,
-    birthYear: input.birthYear,
+    birthDate: input.birthDate,
     gender: input.gender,
     nativeLanguages: input.nativeLanguages,
     learning: input.learning,
@@ -171,7 +178,11 @@ export async function createProfile(
     updatedAt: now,
   }
   if (input.bio !== undefined) profile.bio = input.bio
-  if (input.country !== undefined) profile.country = input.country
+  // The connection wins. Somebody's own answer is the fallback, for the cases
+  // the edge cannot resolve — Tor, an unrouted range, a request that did not
+  // come through Cloudflare at all.
+  const country = connectionCountry ?? input.country
+  if (country !== undefined) profile.country = country
   if (input.city !== undefined) profile.city = input.city
   if (input.timezone !== undefined) {
     profile.timezone = input.timezone
@@ -226,6 +237,29 @@ export async function getProfile(db: Db, userId: string): Promise<Profile | null
  * the same request (see profile.ts), so when just one changes this checks it
  * against whichever the request didn't touch, read from the stored profile.
  */
+/**
+ * The device's answer to "which country are you in", from a location fix it
+ * reverse-geocoded. Overwrites whatever the connection said at sign-up.
+ *
+ * A separate function from `updateProfile` because it is a separate decision:
+ * `country` is deliberately not in `UpdateProfileInput`, and the only way to
+ * change it is to prove a position to the operating system.
+ */
+export async function setCountryFromLocation(
+  db: Db,
+  userId: string,
+  country: string,
+): Promise<Profile> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const updated = await profiles.findOneAndUpdate(
+    { _id: userId },
+    { $set: { country, updatedAt: new Date() } },
+    { returnDocument: 'after' },
+  )
+  if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  return updated
+}
+
 export async function updateProfile(
   db: Db,
   userId: string,
@@ -410,8 +444,9 @@ export interface PublicProfile {
  * later — a new quota bucket, an internal flag — is then private by default
  * instead of leaking the first time someone forgets to add it to a blocklist.
  *
- * `birthYear` becomes an age, deliberately: it is what the UI shows, and the
- * exact year is more identifying than the product needs.
+ * `birthDate` becomes an age, deliberately, and this is now the field that
+ * matters most: the day and month are collected (for birthdays) and must never
+ * leave the account that owns them. Only `GET /profiles/me` sees the date.
  *
  * `location` is absent for the same reason and more strongly: coordinates
  * never reach another user in any form. What nearby discovery returns is a
@@ -438,7 +473,7 @@ export function toPublicProfile(
     handle: profile.handle,
     displayName: profile.displayName ?? profile.handle,
     photos: (profile.photos ?? []).map((p) => ({ url: p.url })),
-    age: new Date().getUTCFullYear() - profile.birthYear,
+    age: ageFromBirthDate(profile.birthDate, now),
     gender: profile.gender,
     nativeLanguages: profile.nativeLanguages ?? [],
     learning: profile.learning ?? [],

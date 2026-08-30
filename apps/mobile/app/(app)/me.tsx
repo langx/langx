@@ -1,5 +1,5 @@
 import { ActivityMap } from '../../src/components/ActivityMap'
-import { countryFlag, getCountry } from '@langx/shared'
+import { ageFromBirthDate, countryFlag, getCountry } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
@@ -88,7 +88,7 @@ export default function MeScreen() {
             from outside was also the one that told you least about itself.
           */}
           <View style={styles.badges}>
-            <Chip label={String(new Date().getFullYear() - profile.birthYear)} />
+            <Chip label={String(ageFromBirthDate(profile.birthDate))} />
             {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
             {profile.gender !== 'undisclosed' ? (
               <Chip label={genderLabel(t, profile.gender)} />

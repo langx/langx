@@ -87,6 +87,24 @@ export default function SettingsScreen() {
     }
     const fix = await captureLocation()
     if (!fix.ok) {
+      /**
+       * A refusal is not an error to report, it is a switch somewhere else.
+       * iOS never asks twice, and Android stops asking after the second no, so
+       * an alert that says "denied" leaves someone holding a toggle that will
+       * not move and no idea why. Say where the switch is, and offer to open
+       * the page it is on.
+       */
+      if (fix.reason === 'denied') {
+        const open = await confirmAlert({
+          title: t('location.deniedTitle'),
+          message: t(
+            Platform.OS === 'ios' ? 'location.deniedBodyIos' : 'location.deniedBodyAndroid',
+          ),
+          confirmLabel: t('location.openSettings'),
+        })
+        if (open) await Linking.openSettings()
+        return
+      }
       void showAlert(t('location.unavailableTitle'), t(LOCATION_FAILURE_KEY[fix.reason]))
       return
     }

@@ -190,6 +190,15 @@ export const ru: Localized<EnMessages> = {
   },
 
   location: {
+    useMyLocation: 'Использовать геопозицию',
+    deniedTitle: 'Геопозиция для LangX выключена',
+    deniedBodyIos: 'Откройте Настройки → LangX → Геопозиция и выберите «При использовании».',
+    deniedBodyAndroid:
+      'Откройте Настройки → Приложения → LangX → Разрешения → Геопозиция и разрешите.',
+    openSettings: 'Открыть настройки',
+    failedTitle: 'Не удалось определить геопозицию',
+    noCountry: 'Не удалось понять, что это за страна.',
+    countryUpdated: 'Страна обновлена.',
     denied: 'Для этого LangX нужен доступ к геолокации. Его можно выдать в настройках устройства.',
     disabled: 'Службы геолокации на этом устройстве выключены.',
     unavailable: 'Сейчас не удалось определить местоположение. Попробуй через минуту.',
@@ -260,6 +269,18 @@ export const ru: Localized<EnMessages> = {
   },
 
   onboarding: {
+    nativeTitle: 'На каких языках вы говорите?',
+    nativeBody: 'Те, с которыми выросли или владеете как родными.',
+    learningTitle: 'Какие изучаете?',
+    learningBody: 'Выберите те, на которых хотите практиковаться с кем-то.',
+    levelsTitle: 'Насколько вы продвинулись?',
+    levelsBody: '1 — совсем новичок, 4 — свободно.',
+    pickALevel: 'Выберите уровень',
+    birthDate: 'Дата рождения',
+    birthDatePlaceholder: 'Выберите дату',
+    day: 'День',
+    month: 'Месяц',
+    year: 'Год',
     languagesTitle: 'На каких языках ты говоришь?',
     languagesBody:
       'Родной язык — это то, чему ты можешь научить; то, что ты учишь, определяет, с кем тебя сведут.',
@@ -632,6 +653,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   editProfile: {
+    countryUnknown: 'Не указана',
+    countryHint: 'Определена по подключению. Поделитесь геопозицией, чтобы исправить.',
     title: 'Изменить профиль',
     displayName: 'Отображаемое имя',
     aboutYou: 'О тебе',

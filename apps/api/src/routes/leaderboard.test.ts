@@ -54,7 +54,7 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       payload: {
         handle: `faz9user${seq}`,
         displayName: `User ${seq}`,
-        birthYear: 1995,
+        birthDate: '1995-06-15',
         gender: 'undisclosed',
         nativeLanguages: [{ code: 'tr' }],
         learning: [{ code: 'en', level: 'intermediate', priority: 1 }],

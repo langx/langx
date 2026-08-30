@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isMatchable, mapLanguages, toBirthYear, toGender } from './legacyMapping'
+import { isMatchable, mapLanguages, toBirthDate, toGender } from './legacyMapping'
 
 describe('Faz 11 — v1 → v2 field mapping', () => {
   describe('languages', () => {
@@ -102,17 +102,17 @@ describe('Faz 11 — v1 → v2 field mapping', () => {
     })
   })
 
-  describe('birth year', () => {
-    it('extracts the year from v1 ISO birthdates', () => {
-      expect(toBirthYear('1991-04-02T05:00:00.000+00:00')).toBe(1991)
+  describe('birth date', () => {
+    it('keeps the whole day out of a v1 ISO birthdate', () => {
+      expect(toBirthDate('1991-04-02T05:00:00.000+00:00')).toBe('1991-04-02')
     })
 
     it('rejects unusable values instead of writing a nonsense age', () => {
       const now = new Date('2026-01-01T00:00:00Z')
-      expect(toBirthYear('not a date', now)).toBeUndefined()
-      expect(toBirthYear('1850-01-01T00:00:00Z', now)).toBeUndefined()
-      expect(toBirthYear('2026-01-01T00:00:00Z', now)).toBeUndefined()
-      expect(toBirthYear(null, now)).toBeUndefined()
+      expect(toBirthDate('not a date', now)).toBeUndefined()
+      expect(toBirthDate('1850-01-01T00:00:00Z', now)).toBeUndefined()
+      expect(toBirthDate('2026-01-01T00:00:00Z', now)).toBeUndefined()
+      expect(toBirthDate(null, now)).toBeUndefined()
     })
   })
 

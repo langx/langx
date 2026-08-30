@@ -4,10 +4,15 @@ import { FLAG_KEYS, clearFlag, readJsonFlag, writeJsonFlag } from '../lib/localF
 
 export interface OnboardingDraft {
   nativeLanguages: string[]
-  learning: { code: string; level: LanguageLevel }[]
+  /**
+   * `level: null` until the third step asks for it. A default here would be a
+   * lie the picker never showed anybody — and `absoluteBeginner`, the obvious
+   * default, is the one answer that changes who finds you.
+   */
+  learning: { code: string; level: LanguageLevel | null }[]
   handle: string
   displayName: string
-  birthYear: string
+  birthDate: string
   gender: Gender
   bio: string
   interests: string[]
@@ -21,7 +26,7 @@ const EMPTY: OnboardingDraft = {
   learning: [],
   handle: '',
   displayName: '',
-  birthYear: '',
+  birthDate: '',
   gender: 'undisclosed',
   bio: '',
   interests: [],

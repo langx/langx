@@ -21,7 +21,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   return {
     handle: `user${Math.random().toString(36).slice(2, 10)}`,
     displayName: 'Test User',
-    birthYear: 1995,
+    birthDate: '1995-06-15',
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
@@ -458,21 +458,21 @@ describe('Faz 3 — discovery aggregation', () => {
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
         gender: 'female',
         country: 'US',
-        birthYear: 1990,
+        birthDate: '1990-06-15',
       })
       const wrongGender = await newUser('pro-wrong-gender@example.com', {
         nativeLanguages: [{ code: 'et' }],
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
         gender: 'male',
         country: 'US',
-        birthYear: 1990,
+        birthDate: '1990-06-15',
       })
       const wrongAge = await newUser('pro-wrong-age@example.com', {
         nativeLanguages: [{ code: 'et' }],
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
         gender: 'female',
         country: 'US',
-        birthYear: 2005,
+        birthDate: '2005-06-15',
       })
 
       const response = await discover(viewer, 'gender=female&country=US&ageMin=30&ageMax=40')

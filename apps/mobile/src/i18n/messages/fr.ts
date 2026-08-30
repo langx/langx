@@ -150,6 +150,15 @@ export const fr: Localized<EnMessages> = {
   },
 
   location: {
+    useMyLocation: 'Utiliser ma position',
+    deniedTitle: 'La localisation est désactivée pour LangX',
+    deniedBodyIos: 'Ouvrez Réglages → LangX → Position et choisissez « Lorsque l’app est active ».',
+    deniedBodyAndroid:
+      'Ouvrez Paramètres → Applications → LangX → Autorisations → Position et autorisez-la.',
+    openSettings: 'Ouvrir les réglages',
+    failedTitle: 'Impossible de lire votre position',
+    noCountry: 'Nous n’avons pas pu déterminer le pays.',
+    countryUpdated: 'Pays mis à jour.',
     denied:
       'LangX a besoin de l’autorisation de localisation pour cela. Tu peux l’accorder dans les réglages de ton appareil.',
     disabled: 'Les services de localisation sont désactivés sur cet appareil.',
@@ -223,6 +232,18 @@ export const fr: Localized<EnMessages> = {
   },
 
   onboarding: {
+    nativeTitle: 'Quelles langues parlez-vous ?',
+    nativeBody: 'Celles avec lesquelles vous avez grandi, ou que vous parlez comme un natif.',
+    learningTitle: 'Lesquelles apprenez-vous ?',
+    learningBody: 'Choisissez celles que vous voulez pratiquer avec quelqu’un.',
+    levelsTitle: 'Où en êtes-vous ?',
+    levelsBody: '1, c’est grand débutant ; 4, c’est courant.',
+    pickALevel: 'Choisissez un niveau',
+    birthDate: 'Date de naissance',
+    birthDatePlaceholder: 'Choisir une date',
+    day: 'Jour',
+    month: 'Mois',
+    year: 'Année',
     languagesTitle: 'Quelles langues parles-tu ?',
     languagesBody:
       'Ta langue maternelle est ce que tu peux enseigner ; ce que tu apprends décide avec qui tu seras mis en relation.',
@@ -545,6 +566,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   editProfile: {
+    countryUnknown: 'Non défini',
+    countryHint: 'Déterminé par votre connexion. Partagez votre position pour le corriger.',
     title: 'Modifier le profil',
     displayName: 'Nom affiché',
     aboutYou: 'À propos de toi',

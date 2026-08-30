@@ -1,4 +1,6 @@
 import {
+  birthYearOf,
+  isCalendarDate,
   V1_LEVEL_TO_LANGUAGE_LEVEL,
   isLanguageCode,
   type Gender,
@@ -48,10 +50,19 @@ export function toGender(value: unknown): Gender | undefined {
   return GENDERS.has(normalised as Gender) ? (normalised as Gender) : undefined
 }
 
-export function toBirthYear(value: unknown, now: Date = new Date()): number | undefined {
+/**
+ * v1 stored a full ISO birthdate and the first version of this took the year
+ * off it, because v2 only had a year to put it in. v2 keeps the whole day now,
+ * so the ETL stops throwing two thirds of it away — the date was always there.
+ */
+export function toBirthDate(value: unknown, now: Date = new Date()): string | undefined {
   if (typeof value !== 'string') return undefined
-  const year = new Date(value).getUTCFullYear()
-  return Number.isFinite(year) && year > 1900 && year < now.getUTCFullYear() ? year : undefined
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return undefined
+  const day = parsed.toISOString().slice(0, 10)
+  return isCalendarDate(day) && birthYearOf(day) > 1900 && birthYearOf(day) < now.getUTCFullYear()
+    ? day
+    : undefined
 }
 
 export function mapLanguages(value: unknown): MappedLanguages {

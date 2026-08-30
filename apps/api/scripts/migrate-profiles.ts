@@ -34,7 +34,7 @@ import { loadEnv } from '../src/env'
 import {
   isMatchable,
   mapLanguages,
-  toBirthYear,
+  toBirthDate,
   toGender,
 } from '../src/modules/handles/legacyMapping'
 import type { LegacyProfile } from '../src/modules/handles/legacyProfiles'
@@ -256,8 +256,8 @@ async function main(): Promise<void> {
     }
     if (typeof doc.name === 'string' && doc.name.trim()) record.displayName = doc.name.trim()
     if (typeof doc.aboutMe === 'string' && doc.aboutMe.trim()) record.bio = doc.aboutMe.trim()
-    const birthYear = toBirthYear(doc.birthdate)
-    if (birthYear !== undefined) record.birthYear = birthYear
+    const birthDate = toBirthDate(doc.birthdate)
+    if (birthDate !== undefined) record.birthDate = birthDate
     const gender = toGender(doc.gender)
     if (gender !== undefined) record.gender = gender
     if (typeof doc.country === 'string' && doc.country) record.country = doc.country

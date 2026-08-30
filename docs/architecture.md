@@ -141,7 +141,7 @@ This is communication work, and it is part of the delivery:
 | Username            | Old usernames are reserved; **claimed once, proven by a verified email match**                                                                                                                                                                                                                                                                                                                          |
 | Storage             | S3-compatible abstraction; **moving to R2**, B2 reachable by config                                                                                                                                                                                                                                                                                                                                     |
 | Migration           | Profile data + avatars + username reservations out of Appwrite, idempotent ETL                                                                                                                                                                                                                                                                                                                          |
-| **Minimum age**     | **18+** (already in the Terms); age gate at sign-up, verified via `birthYear`                                                                                                                                                                                                                                                                                                                           |
+| **Minimum age**     | **18+** (already in the Terms); age gate at sign-up, verified via `birthDate`                                                                                                                                                                                                                                                                                                                           |
 | **Licence**         | **BSD 3-Clause, public repo** — same as v1                                                                                                                                                                                                                                                                                                                                                              |
 | **Codebase**        | Written from scratch in langx2; the abandoned Expo rewrite used only as a screen/route reference                                                                                                                                                                                                                                                                                                        |
 | Release model       | Brownfield update — same bundle ID and package name, staged rollout                                                                                                                                                                                                                                                                                                                                     |
@@ -222,9 +222,18 @@ files.
   `authClient.getCookie()` and attached by hand with `credentials: "omit"`, all
   of it hidden behind one `apiFetch` wrapper.
 - The Socket.io handshake validates the same session → `socket.data.userId`.
-- **Age gate:** `birthYear` is required at onboarding and under-18s cannot
-  complete it. The check is server-side, before `profiles` is written — the
-  client's date picker is not trusted.
+- **Age gate:** `birthDate` (`YYYY-MM-DD`) is required at onboarding and
+  under-18s cannot complete it. The check is server-side, before `profiles` is
+  written — the client's date picker is not trusted. The rule still counts
+  whole years from the birth _year_, so somebody who turns 18 in December is
+  admitted in January; collecting the day made the strict version possible and
+  did not adopt it. Only the age is ever public — the date itself never leaves
+  `GET /profiles/me`.
+- **Country:** read from `CF-IPCountry` at `POST /profiles`, not asked for.
+  Cloudflare's header is only believed on a request carrying `EDGE_SECRET`,
+  since the Fly origin is reachable directly by IP. A device that grants
+  location permission can overwrite it through `PATCH /profiles/me/country`;
+  nothing else can.
 
 **Username claim**
 
@@ -466,7 +475,7 @@ write to them directly and never change their shape.
 {
   _id: userId, handle (unique), displayName, avatarUrl,
   photos: [{ url, createdAt }],
-  bio, birthYear,
+  bio, birthDate,
   gender: 'female' | 'male' | 'other' | 'undisclosed',
   country, city, timezone, timezoneUpdatedAt,
   location: { type: 'Point', coordinates: [lng, lat] },

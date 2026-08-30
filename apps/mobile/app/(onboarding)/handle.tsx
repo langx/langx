@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import { keys } from '../../src/api/queries'
+import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
@@ -74,14 +75,15 @@ export default function HandleStep() {
       await api.post('/profiles', {
         handle: current.handle,
         displayName: current.displayName.trim(),
-        birthYear: Number(current.birthYear),
+        birthDate: current.birthDate,
         gender: current.gender,
         nativeLanguages: current.nativeLanguages.map((code) => ({ code })),
+        // Every level is set by the time this screen is reachable — the
+        // wizard's third step will not continue without them.
         learning: current.learning.map((l, index) => ({ ...l, priority: index + 1 })),
         ...(current.bio.trim() ? { bio: current.bio.trim() } : {}),
         ...(current.interests.length > 0 ? { interests: current.interests } : {}),
         ...(current.avatarUrl ? { avatarUrl: current.avatarUrl } : {}),
-        ...(current.country ? { country: current.country } : {}),
         // The device already knows the user's timezone; asking would be a
         // question with one correct answer the app can read itself. It drives
         // the streak's notion of "today".
@@ -107,7 +109,7 @@ export default function HandleStep() {
 
   return (
     <Screen scroll>
-      <Text style={styles.step}>4 / 4</Text>
+      <StepProgress step="handle" />
       <Text style={styles.title}>{t('onboarding.handleTitle')}</Text>
 
       {reserved ? (
