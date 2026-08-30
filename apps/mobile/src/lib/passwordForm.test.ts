@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { passwordIssueKey, passwordPairReady, PASSWORD_MAX_LENGTH } from './passwordForm'
+import { passwordIssueKey, passwordPairReady } from './passwordForm'
 
 describe('passwordIssueKey', () => {
   it('says nothing about a form nobody has filled in', () => {
@@ -8,7 +8,8 @@ describe('passwordIssueKey', () => {
 
   it('names the length rule while it is still being broken', () => {
     expect(passwordIssueKey('abc', '')).toBe('auth.passwordTooShort')
-    expect(passwordIssueKey('a'.repeat(PASSWORD_MAX_LENGTH + 1), '')).toBe('auth.passwordTooLong')
+    // And says nothing about a long one: there is no ceiling to hit.
+    expect(passwordIssueKey('correct horse battery staple', '')).toBeUndefined()
   })
 
   /**
