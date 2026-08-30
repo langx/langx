@@ -542,6 +542,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote:
+      'Voici ton profil tel que les autres le voient — tes réglages de confidentialité sont déjà appliqués.',
     teaches: 'Enseigne',
     learns: 'Apprend',
     openChat: 'Ouvrir la conversation',
@@ -585,6 +587,8 @@ export const fr: Localized<EnMessages> = {
     settings: 'Réglages',
     corrections: 'Corrections',
     tokens: 'Jetons',
+    previewProfile: 'Aperçu de mon profil',
+    previewProfileBody: 'Vois ton profil comme les autres le voient',
     badges: 'Badges',
   },
 

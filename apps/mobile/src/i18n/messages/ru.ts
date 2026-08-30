@@ -612,6 +612,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote: 'Так ваш профиль видят другие — настройки приватности уже применены.',
     teaches: 'Преподаёт',
     learns: 'Учит',
     openChat: 'Открыть чат',
@@ -671,6 +672,8 @@ export const ru: Localized<EnMessages> = {
     settings: 'Настройки',
     corrections: 'Исправления',
     tokens: 'Жетоны',
+    previewProfile: 'Посмотреть мой профиль',
+    previewProfileBody: 'Взгляните на профиль глазами других',
     badges: 'Значки',
   },
 

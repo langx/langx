@@ -545,6 +545,8 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote:
+      'So sehen andere dein Profil — deine Privatsphäre-Einstellungen sind bereits angewendet.',
     teaches: 'Lehrt',
     learns: 'Lernt',
     openChat: 'Chat öffnen',
@@ -587,6 +589,8 @@ export const de: Localized<EnMessages> = {
     settings: 'Einstellungen',
     corrections: 'Korrekturen',
     tokens: 'Token',
+    previewProfile: 'Mein Profil ansehen',
+    previewProfileBody: 'Sieh dein Profil so, wie andere es sehen',
     badges: 'Abzeichen',
   },
 

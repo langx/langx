@@ -578,6 +578,8 @@ export const en = {
   },
 
   profile: {
+    previewNote:
+      'This is your profile as other people see it — your privacy settings are already applied.',
     teaches: 'Teaches',
     learns: 'Learns',
     openChat: 'Open your chat',
@@ -620,6 +622,8 @@ export const en = {
     settings: 'Settings',
     corrections: 'Corrections',
     tokens: 'Tokens',
+    previewProfile: 'Preview my profile',
+    previewProfileBody: 'See your profile the way other people do',
     badges: 'Badges',
   },
 

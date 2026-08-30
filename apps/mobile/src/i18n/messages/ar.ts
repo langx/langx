@@ -631,6 +631,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote: 'هذا هو ملفك الشخصي كما يراه الآخرون — إعدادات الخصوصية مطبَّقة بالفعل.',
     teaches: 'يُعلّم',
     learns: 'يتعلّم',
     openChat: 'افتح المحادثة',
@@ -698,6 +699,8 @@ export const ar: Localized<EnMessages> = {
     settings: 'الإعدادات',
     corrections: 'التصحيحات',
     tokens: 'الرموز',
+    previewProfile: 'معاينة ملفي الشخصي',
+    previewProfileBody: 'شاهد ملفك كما يراه الآخرون',
     badges: 'الشارات',
   },
 

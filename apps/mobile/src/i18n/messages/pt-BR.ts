@@ -537,6 +537,8 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote:
+      'Este é o seu perfil como as outras pessoas o veem — suas configurações de privacidade já estão aplicadas.',
     teaches: 'Ensina',
     learns: 'Aprende',
     openChat: 'Abrir a conversa',
@@ -579,6 +581,8 @@ export const ptBR: Localized<EnMessages> = {
     settings: 'Configurações',
     corrections: 'Correções',
     tokens: 'Fichas',
+    previewProfile: 'Ver meu perfil',
+    previewProfileBody: 'Veja seu perfil como as outras pessoas veem',
     badges: 'Insígnias',
   },
 
