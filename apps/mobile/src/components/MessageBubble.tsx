@@ -1,6 +1,15 @@
 import Feather from '@expo/vector-icons/Feather'
 import { memo, useMemo, useRef, type ReactNode } from 'react'
-import { Animated, PanResponder, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import {
+  Animated,
+  PanResponder,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native'
 import type { MessageDto } from '../api/queries'
 import { diffCorrection } from '../lib/correctionDiff'
 import type { AnchorRect } from '../lib/messageMenu'
@@ -318,16 +327,24 @@ export const MessageBubble = memo(function MessageBubble({
   )
 })
 
+/**
+ * `touch-action` is a web-only style: react-native-web reads it, the native
+ * platforms ignore it, and without it the browser claims a horizontal drag for
+ * its own scrolling — on iOS Safari, for the back gesture — before the
+ * responder system ever sees the move.
+ *
+ * The double assertion is doing real work. `ViewStyle` as react-native declares
+ * it has no `touchAction`, so a plain object is not assignable; but the
+ * type-aware lint rules run against a program where it resolves to
+ * react-native-web's `ViewStyle`, which *does*, and there a single `as
+ * ViewStyle` is reported as unnecessary. Going through `unknown` is the one
+ * spelling both agree on.
+ */
+const WEB_PAN_Y = { touchAction: 'pan-y' } as unknown as ViewStyle
+
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   row: { justifyContent: 'center' },
-  /**
-   * `touch-action` is a web-only style — react-native-web reads it, the native
-   * platforms ignore it, and `makeStyles` infers the shape rather than pinning
-   * it to `ViewStyle`, so no cast is needed. Without it the browser claims a
-   * horizontal drag for its own scrolling (and, on iOS Safari, for the back
-   * gesture) before the responder system ever sees the move.
-   */
-  slider: Platform.OS === 'web' ? { touchAction: 'pan-y' } : {},
+  slider: Platform.OS === 'web' ? WEB_PAN_Y : {},
   /** Under the bubble, on the side it is dragged away from. */
   arrow: {
     alignItems: 'center',
