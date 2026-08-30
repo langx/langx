@@ -25,8 +25,20 @@ export function activityGrid(input: {
   /** Day → qualifying actions. A bought day is present with zero. */
   days: Map<string, number>
   maxAgeDays: number
+  /**
+   * The streak the profile claims, used to fill days the collection cannot
+   * account for.
+   *
+   * `streakDays` only started existing when this map shipped, so an older
+   * account has a streak counter and no squares behind it — six months of
+   * empty boxes under a "🔥 40", which reads as a bug because it is one. The
+   * run ending at `lastQualifiedDay` is filled at the lowest shade: the days
+   * are known to have happened, only how busy they were is not.
+   */
+  streak?: { current: number; lastQualifiedDay: string | null } | undefined
 }): ActivityCell[][] {
   const { today, weeks, days, maxAgeDays } = input
+  const streakDays = impliedStreakDays(input.streak)
   const oldestRepairable = shiftDayKey(today, -maxAgeDays)
 
   // Wind forward to the Sunday that closes today's week, so the last column is
@@ -40,10 +52,10 @@ export function activityGrid(input: {
     const cells: ActivityCell[] = []
     for (let row = 0; row < 7; row++) {
       const actions = days.get(day)
-      const filled = actions !== undefined
+      const filled = actions !== undefined || streakDays.has(day)
       cells.push({
         day,
-        intensity: filled ? intensityOf(actions) : 0,
+        intensity: filled ? intensityOf(actions ?? 0) : 0,
         state:
           day > today
             ? 'future'
@@ -98,9 +110,33 @@ export function repairEffect(input: {
   }
 }
 
-/** Monday-first weekday index for a `YYYY-MM-DD` key. */
+/**
+ * Monday-first weekday index for a `YYYY-MM-DD` key.
+ *
+ * Parsed as UTC, not as local time. `new Date('2026-08-30T00:00:00')` is
+ * midnight *where the phone is*, and west of UTC that is the previous day —
+ * which slid the whole grid by one weekday for anybody in the Americas, and
+ * put "today" on the wrong row. A day key is a calendar day and carries no
+ * zone; reading it in one is the bug.
+ */
 function mondayIndex(day: string): number {
-  return (new Date(`${day}T00:00:00`).getDay() + 6) % 7
+  return (new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7
+}
+
+/**
+ * The days the current streak must have covered, walking back from the last
+ * one that qualified. Empty when there is no streak, which is the common case
+ * and the one where `days` is the whole truth.
+ */
+function impliedStreakDays(
+  streak: { current: number; lastQualifiedDay: string | null } | undefined,
+): Set<string> {
+  const filled = new Set<string>()
+  if (!streak?.lastQualifiedDay || streak.current <= 0) return filled
+  for (let back = 0; back < streak.current; back++) {
+    filled.add(shiftDayKey(streak.lastQualifiedDay, -back))
+  }
+  return filled
 }
 
 /**

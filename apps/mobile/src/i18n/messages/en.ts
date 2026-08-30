@@ -567,6 +567,7 @@ export const en = {
   },
 
   profile: {
+    openChat: 'Open your chat',
     follow: 'Follow',
     following: 'Following',
     followers: { one: '{count} follower', other: '{count} followers' },
@@ -674,6 +675,8 @@ export const en = {
     codeOfConduct: 'Code of conduct',
   },
   settings: {
+    showStats: 'Show my numbers',
+    showStatsBody: 'Streak, corrections, tokens and this week’s chart on your profile.',
     legalSection: 'Legal',
     communitySection: 'Community',
     showInDiscover: 'Show me in Discover',

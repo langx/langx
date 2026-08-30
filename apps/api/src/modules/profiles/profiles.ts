@@ -61,7 +61,12 @@ export interface Profile {
     discoverable: boolean
     notifications: boolean
   }
-  privacy: { incognito: boolean; hideOnlineStatus?: boolean; activityMapVisible?: boolean }
+  privacy: {
+    incognito: boolean
+    hideOnlineStatus?: boolean
+    activityMapVisible?: boolean
+    statsVisible?: boolean
+  }
   entitlement: {
     tier: PlanTier
     expiresAt?: Date
@@ -169,7 +174,12 @@ export async function createProfile(
       discoverable: true,
       notifications: true,
     },
-    privacy: { incognito: false, hideOnlineStatus: false, activityMapVisible: true },
+    privacy: {
+      incognito: false,
+      hideOnlineStatus: false,
+      activityMapVisible: true,
+      statsVisible: true,
+    },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
     streak: { current: 0, longest: 0, lastQualifiedDay: null },
@@ -427,6 +437,14 @@ export interface PublicProfile {
   /** Account creation, shown as an age — `formatAccountAge` does the wording. */
   createdAt: Date
   /**
+   * The conversation the viewer already has with this person, when there is
+   * one. Per-viewer, like `follow`, and computed by the route for the same
+   * reason: the profile screen otherwise offers a "send a message" box that
+   * cannot work — `startConversation` refuses a second conversation — and the
+   * way through is a link to the one that exists.
+   */
+  conversationId?: string
+  /**
    * Better Auth's flag, not one of ours: it lives on `user`, so it reaches
    * here through {@link isEmailVerified} rather than off the profile document.
    */
@@ -465,6 +483,8 @@ export function toPublicProfile(
    */
   follow: FollowState,
   now: Date = new Date(),
+  /** Set when the viewer and this person already have a thread. */
+  conversationId?: string,
 ): PublicProfile {
   const lastActiveAt = profile.stats?.lastActiveAt ?? profile.createdAt
   const hidden = hidesOnlineStatus(profile)
@@ -494,6 +514,7 @@ export function toPublicProfile(
   if (profile.bio !== undefined) result.bio = profile.bio
   if (profile.country !== undefined) result.country = profile.country
   if (profile.city !== undefined) result.city = profile.city
+  if (conversationId !== undefined) result.conversationId = conversationId
   return result
 }
 

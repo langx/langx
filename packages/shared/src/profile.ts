@@ -164,6 +164,13 @@ export const updateProfileSchema = z
          * this one is not a Pro feature, it is a preference.
          */
         activityMapVisible: z.boolean(),
+        /**
+         * The numbers above the map — streak, corrections, tokens — and the
+         * week's chart. Default on for the same reason: they are a record of
+         * teaching people, which is the thing this app is for. Off is for
+         * anyone who would rather not be measured in public.
+         */
+        statsVisible: z.boolean(),
       })
       .partial(),
   })

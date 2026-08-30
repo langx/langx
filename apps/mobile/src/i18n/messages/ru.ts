@@ -601,6 +601,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    openChat: 'Открыть чат',
     follow: 'Подписаться',
     following: 'Вы подписаны',
     followers: {
@@ -725,6 +726,8 @@ export const ru: Localized<EnMessages> = {
     codeOfConduct: 'Кодекс поведения',
   },
   settings: {
+    showStats: 'Показывать мои цифры',
+    showStatsBody: 'Стрик, исправления, токены и график недели в профиле.',
     legalSection: 'Правовые документы',
     communitySection: 'Сообщество',
     showInDiscover: 'Показывать меня в Поиске',

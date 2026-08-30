@@ -226,6 +226,20 @@ export default function SettingsScreen() {
             />
           }
         />
+        {/* The numbers above the map — streak, corrections, tokens, the week's
+            chart — travel together, because hiding the chart and leaving the
+            counts would be a setting that does not do what it says. */}
+        <ListRow
+          title={t('settings.showStats')}
+          subtitle={t('settings.showStatsBody')}
+          accessory={
+            <Toggle
+              accessibilityLabel={t('settings.showStats')}
+              value={profile?.privacy.statsVisible ?? true}
+              onValueChange={(statsVisible) => update.mutate({ privacy: { statsVisible } })}
+            />
+          }
+        />
         <ListRow
           title={t('settings.hideOnline')}
           subtitle={isPro ? t('settings.hideOnlineBody') : t('common.pro')}

@@ -111,7 +111,12 @@ export interface MeProfile {
   learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
   settings: { discoverable: boolean; notifications: boolean }
-  privacy: { incognito: boolean; hideOnlineStatus: boolean; activityMapVisible?: boolean }
+  privacy: {
+    incognito: boolean
+    hideOnlineStatus: boolean
+    activityMapVisible?: boolean
+    statsVisible?: boolean
+  }
   /**
    * Present only while the user is sharing one, which is exactly what the
    * Settings toggle reads: there is no separate "sharing is on" flag on the
@@ -319,8 +324,46 @@ export interface ActivityDayDto {
 export interface ActivityDto {
   /** The server's idea of the user's local day — the client must not guess it. */
   today: string
+  /** Fills the days an account older than `streakDays` has no rows for. */
+  streak: { current: number; lastQualifiedDay: string | null }
   days: ActivityDayDto[]
   repair: { price: number; maxAgeDays: number; perMonth: number; usedThisMonth: number }
+}
+
+/**
+ * Somebody else's map: whether each square is filled and how busy, never the
+ * counts and never which were bought. `visible: false` is a profile that turned
+ * the map off.
+ */
+export interface PublicActivityDto {
+  visible: boolean
+  today?: string
+  streak?: { current: number; lastQualifiedDay: string | null }
+  days: { day: string; intensity: number }[]
+}
+
+export interface PublicSummaryDto {
+  visible: boolean
+  streak?: { current: number; longest: number }
+  corrections?: number
+  tokens?: number
+  week?: { day: string; messages: number; corrections: number }[]
+}
+
+export function usePublicActivity(handle: string, from: string, to: string) {
+  return useQuery({
+    queryKey: ['profileActivity', handle, from, to] as const,
+    queryFn: () => api.get<PublicActivityDto>(`/profiles/${handle}/activity?from=${from}&to=${to}`),
+    enabled: handle.length > 0,
+  })
+}
+
+export function usePublicSummary(handle: string) {
+  return useQuery({
+    queryKey: ['profileSummary', handle] as const,
+    queryFn: () => api.get<PublicSummaryDto>(`/profiles/${handle}/summary`),
+    enabled: handle.length > 0,
+  })
 }
 
 /**
@@ -330,10 +373,13 @@ export interface ActivityDto {
  * day is the profile's timezone and a device set to another one would draw the
  * grid off by a square — and then offer to sell the wrong day.
  */
-export function useActivity(from: string, to: string) {
+export function useActivity(from: string, to: string, enabled = true) {
   return useQuery({
     queryKey: keys.activity(from, to),
     queryFn: () => api.get<ActivityDto>(`/me/activity?from=${from}&to=${to}`),
+    // Off while the same component is drawing somebody else's map: the repair
+    // rules it would fetch are not used there.
+    enabled,
   })
 }
 

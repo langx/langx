@@ -530,6 +530,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    openChat: 'Ouvrir la conversation',
     follow: 'Suivre',
     following: 'Suivi',
     followers: { one: '{count} abonné', other: '{count} abonnés' },
@@ -638,6 +639,8 @@ export const fr: Localized<EnMessages> = {
     codeOfConduct: 'Code de conduite',
   },
   settings: {
+    showStats: 'Afficher mes chiffres',
+    showStatsBody: 'Série, corrections, jetons et le graphique de la semaine sur votre profil.',
     legalSection: 'Mentions légales',
     communitySection: 'Communauté',
     showInDiscover: 'M’afficher dans Découvrir',

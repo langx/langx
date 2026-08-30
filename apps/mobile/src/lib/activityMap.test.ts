@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { activityGrid, repairEffect } from './activityMap'
+import { activityGrid, repairEffect, type ActivityCell } from './activityMap'
 
 // A Saturday, so the "today is not the end of the column" case is the default.
 const TODAY = '2026-08-29'
@@ -115,5 +115,46 @@ describe('repairEffect', () => {
     })
     expect(effect.affordable).toBe(false)
     expect(effect.balanceAfter).toBe(-50)
+  })
+})
+
+describe('activityGrid and a streak the collection cannot account for', () => {
+  const BASE = { today: '2026-08-30', weeks: 2, maxAgeDays: 7 }
+  const cellsFor = (grid: ActivityCell[][]): Map<string, ActivityCell> =>
+    new Map(grid.flat().map((cell) => [cell.day, cell]))
+
+  it('fills the run behind a streak that has no rows of its own', () => {
+    const grid = activityGrid({
+      ...BASE,
+      days: new Map(),
+      streak: { current: 3, lastQualifiedDay: '2026-08-30' },
+    })
+    const cells = cellsFor(grid)
+    for (const day of ['2026-08-30', '2026-08-29', '2026-08-28']) {
+      expect(cells.get(day)?.state, day).toBe('filled')
+      expect(cells.get(day)?.intensity, day).toBeGreaterThan(0)
+    }
+    // One day further back is still empty: the streak says three, not four.
+    expect(cells.get('2026-08-27')?.state).toBe('repairable')
+  })
+
+  it('lets a real row outrank the implied one, so shading survives', () => {
+    const grid = activityGrid({
+      ...BASE,
+      days: new Map([['2026-08-30', 40]]),
+      streak: { current: 2, lastQualifiedDay: '2026-08-30' },
+    })
+    const cells = cellsFor(grid)
+    expect(cells.get('2026-08-30')?.intensity).toBe(4)
+    expect(cells.get('2026-08-29')?.intensity).toBe(1)
+  })
+
+  it('does nothing when there is no streak to imply', () => {
+    const grid = activityGrid({
+      ...BASE,
+      days: new Map(),
+      streak: { current: 0, lastQualifiedDay: null },
+    })
+    expect(grid.flat().every((cell) => cell.intensity === 0)).toBe(true)
   })
 })

@@ -118,6 +118,24 @@ function isDuplicateKeyError(error: unknown, indexName: string): boolean {
  * ever sent this recipient — replying to an existing conversation is a
  * different, quota-free endpoint (Faz 5).
  */
+/**
+ * The conversation these two already have, if any.
+ *
+ * Read by the profile screen, which otherwise offers a "send a message" box to
+ * somebody you are already talking to — and sending from it fails, because
+ * `startConversation` refuses a second one. The answer belongs to the viewer,
+ * so it is computed per request rather than stored on either profile.
+ */
+export async function findConversationBetween(
+  db: Db,
+  viewerId: string,
+  otherId: string,
+): Promise<Conversation | null> {
+  return db
+    .collection<Conversation>(COLLECTIONS.conversations)
+    .findOne({ pairKey: pairKeyFor(viewerId, otherId) })
+}
+
 export async function startConversation(
   db: Db,
   viewerId: string,

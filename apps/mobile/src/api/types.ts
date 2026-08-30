@@ -38,6 +38,8 @@ export type {
 import type { FollowState, LanguageLevel, PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
+  /** Set when the viewer already has a thread with this person. */
+  conversationId?: string
   _id: string
   handle: string
   displayName: string

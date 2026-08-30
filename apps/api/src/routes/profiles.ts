@@ -7,6 +7,7 @@ import {
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
+import { findConversationBetween } from '../modules/chat/conversations'
 import { countryFromHeaders } from '../lib/requestCountry'
 import { requireAuth, requireVerifiedEmail } from '../middleware/requireAuth'
 import { hashLegacyEmail } from '../modules/handles/legacyEmailHash'
@@ -107,11 +108,19 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
       // Read after the block check, not with it: an unverified-email lookup
       // for a profile this viewer is not allowed to see is a query we should
       // never run.
-      const [emailVerified, follow] = await Promise.all([
+      const [emailVerified, follow, conversation] = await Promise.all([
         isEmailVerified(app.mongo.db, target._id),
         readFollowState(app.mongo.db, request.userId, target._id),
+        // Only for somebody else's profile: a conversation with yourself is
+        // not a thing, and `findConversationBetween` would answer for the
+        // pair (you, you).
+        target._id === request.userId
+          ? Promise.resolve(null)
+          : findConversationBetween(app.mongo.db, request.userId, target._id),
       ])
-      return reply.send(toPublicProfile(target, emailVerified, follow))
+      return reply.send(
+        toPublicProfile(target, emailVerified, follow, new Date(), conversation?._id.toHexString()),
+      )
     },
   )
 

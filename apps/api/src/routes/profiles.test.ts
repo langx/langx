@@ -202,6 +202,63 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(viaLocation.json<Profile>().country).toBe('TR')
   })
 
+  /**
+   * The profile screen used to offer a "send a message" box to somebody you
+   * were already talking to, and sending from it failed — `startConversation`
+   * refuses a second thread. The screen needs to know, and only the viewer's
+   * own request can answer it.
+   */
+  it('tells the viewer about the conversation they already have', async () => {
+    const one = await newUser('pair-one@example.com')
+    const two = await newUser('pair-two@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: one.cookie },
+      payload: onboardingBody({ handle: 'pairone' }),
+    })
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: two.cookie },
+      payload: onboardingBody({ handle: 'pairtwo' }),
+    })
+
+    const before = await app.inject({
+      method: 'GET',
+      url: '/profiles/pairtwo',
+      headers: { cookie: one.cookie },
+    })
+    expect(before.json<{ conversationId?: string }>().conversationId).toBeUndefined()
+
+    const started = await app.inject({
+      method: 'POST',
+      url: '/conversations',
+      headers: { cookie: one.cookie },
+      payload: { toUserId: two.userId, body: 'Merhaba' },
+    })
+    expect(started.statusCode, started.body).toBe(201)
+
+    const after = await app.inject({
+      method: 'GET',
+      url: '/profiles/pairtwo',
+      headers: { cookie: one.cookie },
+    })
+    expect(after.json<{ conversationId?: string }>().conversationId).toBe(
+      started.json<{ _id: string }>()._id,
+    )
+
+    // And the other way round: the same thread, from the other side.
+    const mirrored = await app.inject({
+      method: 'GET',
+      url: '/profiles/pairone',
+      headers: { cookie: two.cookie },
+    })
+    expect(mirrored.json<{ conversationId?: string }>().conversationId).toBe(
+      started.json<{ _id: string }>()._id,
+    )
+  })
+
   it('rejects an underage birthDate even though the client already validated it', async () => {
     const user = await newUser('underage-attempt@example.com')
 

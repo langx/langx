@@ -262,7 +262,12 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
     learning: legacy.learning,
     interests: [],
     settings: { discoverable: true, notifications: true },
-    privacy: { incognito: false, hideOnlineStatus: false, activityMapVisible: true },
+    privacy: {
+      incognito: false,
+      hideOnlineStatus: false,
+      activityMapVisible: true,
+      statsVisible: true,
+    },
     entitlement: { tier: 'free', updatedAt: now },
     quota: { initiations: [], translations: [], media: [] },
     /**

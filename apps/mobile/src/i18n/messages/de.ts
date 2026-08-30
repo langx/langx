@@ -533,6 +533,7 @@ export const de: Localized<EnMessages> = {
   },
 
   profile: {
+    openChat: 'Chat öffnen',
     follow: 'Folgen',
     following: 'Folgt',
     followers: { one: '{count} Follower', other: '{count} Follower' },
@@ -641,6 +642,8 @@ export const de: Localized<EnMessages> = {
     codeOfConduct: 'Verhaltenskodex',
   },
   settings: {
+    showStats: 'Meine Zahlen zeigen',
+    showStatsBody: 'Streak, Korrekturen, Tokens und das Wochendiagramm auf deinem Profil.',
     legalSection: 'Rechtliches',
     communitySection: 'Community',
     showInDiscover: 'In Entdecken zeigen',

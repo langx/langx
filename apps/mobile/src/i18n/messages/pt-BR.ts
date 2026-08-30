@@ -526,6 +526,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   profile: {
+    openChat: 'Abrir a conversa',
     follow: 'Seguir',
     following: 'Seguindo',
     followers: { one: '{count} seguidor', other: '{count} seguidores' },
@@ -633,6 +634,8 @@ export const ptBR: Localized<EnMessages> = {
     codeOfConduct: 'Código de conduta',
   },
   settings: {
+    showStats: 'Mostrar meus números',
+    showStatsBody: 'Sequência, correções, tokens e o gráfico da semana no seu perfil.',
     legalSection: 'Jurídico',
     communitySection: 'Comunidade',
     showInDiscover: 'Mostrar em Descobrir',
