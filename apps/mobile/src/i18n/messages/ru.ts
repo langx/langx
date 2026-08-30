@@ -734,6 +734,13 @@ export const ru: Localized<EnMessages> = {
     codeOfConduct: 'Кодекс поведения',
   },
   settings: {
+    appIconSection: 'Иконка приложения',
+    appIcon: 'Иконка на экране',
+    appIconBody: 'Выберите, какая будет на домашнем экране.',
+    appIcon_default: 'Классическая',
+    appIcon_dark: 'Тёмная',
+    appIconChanged: 'Иконка изменена.',
+    appIconFailed: 'Не удалось сменить иконку',
     showStats: 'Показывать мои цифры',
     showStatsBody: 'Стрик, исправления, токены и график недели в профиле.',
     push: 'Пуш',

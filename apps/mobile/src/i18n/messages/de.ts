@@ -650,6 +650,13 @@ export const de: Localized<EnMessages> = {
     codeOfConduct: 'Verhaltenskodex',
   },
   settings: {
+    appIconSection: 'App-Symbol',
+    appIcon: 'Symbol auf dem Homescreen',
+    appIconBody: 'Wähle, welches auf deinem Homescreen steht.',
+    appIcon_default: 'Klassisch',
+    appIcon_dark: 'Dunkel',
+    appIconChanged: 'Symbol geändert.',
+    appIconFailed: 'Symbol konnte nicht geändert werden',
     showStats: 'Meine Zahlen zeigen',
     showStatsBody: 'Streak, Korrekturen, Tokens und das Wochendiagramm auf deinem Profil.',
     push: 'Push',

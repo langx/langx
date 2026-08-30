@@ -761,6 +761,13 @@ export const ar: Localized<EnMessages> = {
     codeOfConduct: 'مدونة السلوك',
   },
   settings: {
+    appIconSection: 'أيقونة التطبيق',
+    appIcon: 'الأيقونة على الشاشة الرئيسية',
+    appIconBody: 'اختر أيها يظهر على شاشتك الرئيسية.',
+    appIcon_default: 'الكلاسيكية',
+    appIcon_dark: 'الداكنة',
+    appIconChanged: 'تم تغيير الأيقونة.',
+    appIconFailed: 'تعذّر تغيير الأيقونة',
     showStats: 'إظهار أرقامي',
     showStatsBody: 'السلسلة والتصحيحات والتوكنات ورسم هذا الأسبوع على ملفك.',
     push: 'إشعار',
