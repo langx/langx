@@ -257,6 +257,9 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(mirrored.json<{ conversationId?: string }>().conversationId).toBe(
       started.json<{ _id: string }>()._id,
     )
+  })
+
+  /**
    * The matrix is eight booleans and the settings screen flips one at a time.
    * Writing `settings` whole — which is what the old single-boolean shape
    * allowed — would clear the other seven on every toggle.
