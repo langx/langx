@@ -774,11 +774,30 @@ export const en = {
     todaysPool: "Today's pool",
     activeToday: { one: '{count} active today', other: '{count} active today' },
     shareAmount: '+{count}',
-    shareSoFar: 'your share so far',
+    shareFor: 'your share for {day}',
+    noShareYet: 'No share yet — the pool pays out after your first full day.',
     poolCap: "Cap {cap} a day. Your share moves with everyone else's.",
+    poolPaidAt: 'Paid every night at {hour}:00 UTC.',
+    history: 'History',
+    historyEmpty: 'Nothing yet. Send a message, or correct someone.',
+    historySpent: '−{count} spent',
+    historyMore: 'Show more',
     owned: 'Owned',
     frameKind: 'Profile frame',
     titleKind: 'Title',
+  },
+
+  /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */
+  tokenKind: {
+    message: 'Messages',
+    correction: 'Corrections',
+    streak: 'Streak bonus',
+    dailyPool: 'Pool share',
+    adjustment: 'Adjustment',
+    legacyTokenConversion: 'v1 balance',
+    welcomeBack: 'Welcome back bonus',
+    signupBonus: 'Signup bonus',
+    spend: 'Spent',
   },
 
   cosmetics: {

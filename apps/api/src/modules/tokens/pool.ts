@@ -3,7 +3,7 @@ import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import { countersOf, type DailyActivity } from './dailyActivity'
-import { awardTokens } from './ledger'
+import { awardTokens, type TokenLedgerEntry } from './ledger'
 
 export interface JobRun {
   job: string
@@ -147,4 +147,29 @@ export async function runDailyPool(
   )
 
   return { ran: true, result }
+}
+
+/**
+ * The most recent pool share credited to one user, or null if they have never
+ * been paid one.
+ *
+ * Sorted by `refId`, not `day` or `createdAt`, for two reasons. `refId` is the
+ * day the share was *earned for*, which is the day the app shows it against —
+ * a pool row's own `day` is already the morning after, because `awardTokens`
+ * files it at `dayCloseAt`. And `{userId, kind, refId}` is the unique index
+ * that guards double payment, so sorting on its third key makes this a walk of
+ * one index rather than a scan and a sort. Day keys are `YYYY-MM-DD`, so
+ * lexicographic descending is chronological descending.
+ */
+export async function readLastPoolPayout(
+  db: Db,
+  userId: string,
+): Promise<{ day: string; amount: number } | null> {
+  const row = await db
+    .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+    .findOne({ userId, kind: 'dailyPool' }, { sort: { refId: -1 } })
+
+  // `refId` is always written for a pool award, but the type allows its
+  // absence and a row without one has no day to be shown against.
+  return row?.refId ? { day: row.refId, amount: row.amount } : null
 }

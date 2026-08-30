@@ -30,6 +30,8 @@ export type {
   PeriodType,
   PlanTier,
   Wallet,
+  TokenHistory,
+  TokenHistoryDay,
   TokenSummary,
 } from '@langx/shared'
 

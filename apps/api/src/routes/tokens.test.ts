@@ -2,11 +2,14 @@ import {
   TOKEN_GRANT_KINDS,
   TOKEN_RULES,
   localDayKey,
+  periodKeys,
   shiftDayKey,
   utcDayKey,
+  type TokenHistory,
   type TokenSummary,
 } from '@langx/shared'
 import type { FastifyInstance } from 'fastify'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
@@ -742,6 +745,113 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
         headers: { cookie: viewer.cookie },
       })
       expect(response.json()).toEqual({ visible: false })
+    })
+  })
+  describe('the token history', () => {
+    it('groups a day by kind, files a pool share under the day it rewards, and pages', async () => {
+      const user = await newUser('history@example.com')
+      const day = '2026-05-10'
+      const older = '2026-05-09'
+      const at = (d: string) => new Date(`${d}T09:00:00.000Z`)
+
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'message',
+        amount: 2,
+        refId: 'm1',
+        at: at(day),
+      })
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'message',
+        amount: 2,
+        refId: 'm2',
+        at: at(day),
+      })
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'correction',
+        amount: 10,
+        refId: 'c1',
+        at: at(day),
+      })
+      /*
+       * Inserted directly, the way `recordSpend` does it: `awardTokens`
+       * returns early on a non-positive amount, so a spend can never be
+       * written through it.
+       */
+      await handle.db.collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger).insertOne({
+        _id: new ObjectId(),
+        userId: user.userId,
+        kind: 'spend',
+        amount: -200,
+        refId: `streakFreeze:${at(day).toISOString()}`,
+        day,
+        ...periodKeys(at(day)),
+        createdAt: at(day),
+      })
+      /*
+       * The pool award as `runDailyPool` writes it: `refId` is the day it
+       * rewards and `at` is that day's close, which is already the *next*
+       * morning. The history has to undo that, or every share is dated a day
+       * late.
+       */
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'dailyPool',
+        amount: 137,
+        refId: older,
+        at: new Date(`${day}T00:00:00.000Z`),
+      })
+
+      const read = (query = '') =>
+        app
+          .inject({
+            method: 'GET',
+            url: `/me/tokens/history${query}`,
+            headers: { cookie: user.cookie },
+          })
+          .then((r) => {
+            expect(r.statusCode, r.body).toBe(200)
+            return r.json<TokenHistory>()
+          })
+
+      const history = await read()
+      const dayRow = history.days.find((d) => d.day === day)
+      expect(dayRow).toBeDefined()
+      expect(dayRow?.earned).toBe(14)
+      // Positive, though the ledger stores the row as -200.
+      expect(dayRow?.spent).toBe(200)
+      expect(dayRow?.breakdown).toEqual(
+        expect.arrayContaining([
+          { kind: 'message', amount: 4 },
+          { kind: 'correction', amount: 10 },
+          { kind: 'spend', amount: -200 },
+        ]),
+      )
+      // The share landed on `day` but belongs to `older`.
+      expect(dayRow?.breakdown.find((b) => b.kind === 'dailyPool')).toBeUndefined()
+      const olderRow = history.days.find((d) => d.day === older)
+      expect(olderRow?.breakdown).toEqual([{ kind: 'dailyPool', amount: 137 }])
+      expect(olderRow?.earned).toBe(137)
+
+      // Newest first, and the cursor excludes the day it names.
+      expect(history.days[0]?.day).toBe(
+        [...history.days].sort((a, b) => (a.day < b.day ? 1 : -1))[0]?.day,
+      )
+      const page = await read(`?before=${day}`)
+      expect(page.days.some((d) => d.day === day)).toBe(false)
+      expect(page.days.some((d) => d.day === older)).toBe(true)
+    })
+
+    it('refuses a cursor that is not a day key', async () => {
+      const user = await newUser('history-bad-cursor@example.com')
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/tokens/history?before=last-tuesday',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode).toBe(400)
     })
   })
 })

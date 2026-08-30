@@ -1,4 +1,4 @@
-import { shiftDayKey, utcDayKey } from '@langx/shared'
+import { newestPayableDay, shiftDayKey, utcDayKey } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { runDailyPool } from './pool'
 
@@ -21,13 +21,19 @@ export const POOL_CATCH_UP_DAYS = 7
  *
  * A cron fires at one instant; if the process happens to be down, restarting,
  * or mid-deploy at that instant, the day is simply never paid and nothing
- * notices. This instead asks a question every 15 minutes — "is there a closed
+ * notices. This instead asks a question every 15 minutes — "is there a payable
  * day with no `jobRuns` row?" — and answers it by running the pool. A missed
  * window self-heals on the next tick, a redeploy costs nothing, and running
  * several API instances is safe because `jobRuns`'s unique `{job, periodKey}`
  * means only one of them can own a given day (see `runDailyPool`).
  *
- * The cost of asking is one indexed lookup per closed day per quarter hour.
+ * The cost of asking is one indexed lookup per payable day per quarter hour.
+ *
+ * **Payable is not the same as closed.** A day closes at 00:00 UTC but is not
+ * paid until `TOKEN_RULES.pool.payoutHourUtc`, so the first tick after midnight
+ * deliberately leaves yesterday alone. Ticking is still every 15 minutes rather
+ * than once at the hour, because the self-healing property is the whole design:
+ * a process that was down at 04:00 pays the day at 04:15 instead of never.
  */
 export function startDailyPoolScheduler(
   db: Db,
@@ -43,10 +49,14 @@ export function startDailyPoolScheduler(
     if (running) return // a slow run must not overlap itself
     running = true
     try {
-      const today = utcDayKey(new Date())
+      const now = new Date()
+      const today = utcDayKey(now)
+      const newestPayable = newestPayableDay(now)
       // Oldest first, so a catch-up pays days out in the order they happened.
       for (let back = catchUpDays; back >= 1; back--) {
         const day = shiftDayKey(today, -back)
+        // Day keys are `YYYY-MM-DD`, so this compares chronologically.
+        if (day > newestPayable) continue // closed, but its payout hour has not come
         const outcome = await runDailyPool(db, { day })
         if (outcome.ran) {
           logger.info({ ...outcome.result }, 'daily token pool distributed')
