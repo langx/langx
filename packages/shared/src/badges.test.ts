@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { BADGES, findBadge } from './badges'
+import { BADGES, BADGE_KINDS, findBadge } from './badges'
 import { TOKEN_RULES } from './token'
 
 describe('badge catalogue', () => {
@@ -17,15 +17,61 @@ describe('badge catalogue', () => {
     expect(new Set(BADGES.map((b) => b.id)).size).toBe(BADGES.length)
   })
 
-  it('orders each kind by ascending threshold, so "next" is the first unearned', () => {
-    for (const kind of ['streak', 'correction'] as const) {
+  it('orders each kind by ascending threshold', () => {
+    // Over `BADGE_KINDS`, not a literal pair: the list this used to hardcode
+    // left every kind added after it untested.
+    for (const kind of BADGE_KINDS) {
       const thresholds = BADGES.filter((b) => b.kind === kind).map((b) => b.threshold)
-      expect(thresholds).toEqual([...thresholds].sort((a, b) => a - b))
+      expect(thresholds, kind).toEqual([...thresholds].sort((a, b) => a - b))
     }
+  })
+
+  it('has at least one badge for every kind', () => {
+    for (const kind of BADGE_KINDS) {
+      expect(
+        BADGES.some((badge) => badge.kind === kind),
+        kind,
+      ).toBe(true)
+    }
+  })
+
+  /**
+   * `streakMilestoneDates` dates a streak badge by mapping a ledger row's
+   * amount back to the milestone that paid it — the row records the day and
+   * the amount, never which milestone it was for. Two milestones sharing an
+   * amount would silently attribute both to the earlier row, and a user would
+   * see the wrong date on a badge with nothing failing anywhere.
+   */
+  it('pays a distinct amount at every streak milestone', () => {
+    const payouts = Object.values(TOKEN_RULES.streakMilestones)
+    expect(new Set(payouts).size).toBe(payouts.length)
+  })
+
+  it('pays more for a longer streak', () => {
+    const byDays = Object.entries(TOKEN_RULES.streakMilestones)
+      .map(([days, payout]) => ({ days: Number(days), payout }))
+      .sort((a, b) => a.days - b.days)
+    const payouts = byDays.map((entry) => entry.payout)
+    expect(payouts).toEqual([...payouts].sort((a, b) => a - b))
   })
 
   it('finds by id and returns undefined for anything else', () => {
     expect(findBadge('streak.7')?.threshold).toBe(7)
     expect(findBadge('streak.8')).toBeUndefined()
+  })
+
+  /**
+   * The grid draws `icon` directly. `null` is the streak's emoji; anything
+   * else has to be a Feather name, and an empty string would render nothing at
+   * all in a slot sized for a glyph.
+   */
+  it('gives every badge an icon or the emoji slot', () => {
+    for (const badge of BADGES) {
+      if (badge.icon === null) {
+        expect(badge.kind, badge.id).toBe('streak')
+        continue
+      }
+      expect(badge.icon.length, badge.id).toBeGreaterThan(0)
+    }
   })
 })

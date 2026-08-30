@@ -571,7 +571,7 @@ export const ptBR: Localized<EnMessages> = {
       other: '{count} pessoas olharam — veja quem com o Pro',
     },
     viewersCount: { one: '{count} pessoa', other: '{count} pessoas' },
-    leaderboardSubtitle: 'Sequências e correções',
+    leaderboardSubtitle: 'Sequências, correções e tudo o que você conquistou',
     proTitle: '✦ LangX Pro',
     proBody: 'Conversas novas ilimitadas, filtros avançados, tradução e navegação anônima.',
     newChatsLeft: 'Conversas novas restantes hoje:',
@@ -770,6 +770,9 @@ export const ptBR: Localized<EnMessages> = {
     locked: 'Bloqueada',
     firstCorrection: 'Primeira correção',
     streakDays: { one: '{formatted} dia', other: '{formatted} dias' },
+    messagesSent: { one: '{formatted} mensagem', other: '{formatted} mensagens' },
+    tokensEarned: { one: '{formatted} ficha ganha', other: '{formatted} fichas ganhas' },
+    memberDays: { one: '{formatted} dia como membro', other: '{formatted} dias como membro' },
     corrections: { one: '{formatted} correção', other: '{formatted} correções' },
   },
 

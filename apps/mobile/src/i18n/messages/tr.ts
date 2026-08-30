@@ -583,7 +583,7 @@ export const tr: Localized<EnMessages> = {
       other: '{count} kişi baktı — kim olduklarını Pro ile gör',
     },
     viewersCount: { one: '{count} kişi', other: '{count} kişi' },
-    leaderboardSubtitle: 'Seriler ve düzeltmeler',
+    leaderboardSubtitle: 'Seriler, düzeltmeler ve kazandığın her şey',
     proTitle: '✦ LangX Pro',
     proBody: 'Sınırsız yeni sohbet, gelişmiş filtreler, çeviri ve gizli gezinme.',
     newChatsLeft: 'Bugün kalan yeni sohbet:',
@@ -781,6 +781,9 @@ export const tr: Localized<EnMessages> = {
     locked: 'Kilitli',
     firstCorrection: 'İlk düzeltme',
     streakDays: { one: '{formatted} gün', other: '{formatted} gün' },
+    messagesSent: { one: '{formatted} mesaj', other: '{formatted} mesaj' },
+    tokensEarned: { one: '{formatted} token kazanıldı', other: '{formatted} token kazanıldı' },
+    memberDays: { one: '{formatted} gün üye', other: '{formatted} gün üye' },
     corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
   },
 

@@ -27,15 +27,20 @@ function BadgeRow({ badge }: { badge: EarnedBadge }) {
 
   return (
     <View style={[styles.row, !badge.earned && styles.locked]}>
+      {/*
+        The glyph comes off the badge, not off a `kind === 'streak'` ternary.
+        That ternary handed every kind added after it the correction tick, and
+        did so without a type error. `icon: null` is the streak's emoji.
+      */}
       <View style={styles.slot}>
-        {badge.kind === 'streak' ? (
-          <Text style={styles.emoji}>🔥</Text>
-        ) : (
+        {badge.icon ? (
           <Feather
-            name="check"
+            name={badge.icon as keyof typeof Feather.glyphMap}
             size={22}
             color={badge.earned ? colors.success : colors.textFaint}
           />
+        ) : (
+          <Text style={styles.emoji}>🔥</Text>
         )}
       </View>
       <Text style={styles.name} numberOfLines={1}>

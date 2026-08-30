@@ -50,10 +50,24 @@ export function badgeLabel(
   kind: BadgeKind,
   threshold: number,
 ): string {
-  const count = threshold.toLocaleString(locale)
-  if (kind === 'streak') return t('badges.streakDays', { count: threshold, formatted: count })
-  if (threshold === 1) return t('badges.firstCorrection')
-  return t('badges.corrections', { count: threshold, formatted: count })
+  const formatted = threshold.toLocaleString(locale)
+  /*
+   * A `Record` rather than a chain of `if`s. The chain ended in "otherwise it
+   * is corrections", so a kind added to `BADGE_KINDS` was labelled "5,000
+   * corrections" whatever it actually counted, and nothing failed. Written
+   * this way, a new kind does not compile until it has wording.
+   */
+  const wording: Record<BadgeKind, () => string> = {
+    streak: () => t('badges.streakDays', { count: threshold, formatted }),
+    correction: () =>
+      threshold === 1
+        ? t('badges.firstCorrection')
+        : t('badges.corrections', { count: threshold, formatted }),
+    messages: () => t('badges.messagesSent', { count: threshold, formatted }),
+    tokens: () => t('badges.tokensEarned', { count: threshold, formatted }),
+    veteran: () => t('badges.memberDays', { count: threshold, formatted }),
+  }
+  return wording[kind]()
 }
 
 /**

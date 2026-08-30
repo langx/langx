@@ -193,11 +193,21 @@ export const TOKEN_RULES: TokenRules = {
     messagesPerDay: 100,
     messagesPerPartnerPerDay: 30,
   },
+  /*
+   * Every payout here must be **distinct**. `streakMilestoneDates` dates a
+   * badge by mapping a ledger row's amount back to the milestone that paid it,
+   * because the row records the day and the amount but not which milestone it
+   * was for. Two milestones sharing an amount would silently attribute both to
+   * the earlier row. `badges.test.ts` holds the rule.
+   */
   streakMilestones: {
     7: 50,
     30: 250,
     100: 1000,
+    180: 1500,
     365: 5000,
+    730: 12_000,
+    1095: 25_000,
   },
   pool: {
     total: 10_000,
