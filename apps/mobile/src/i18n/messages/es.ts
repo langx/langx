@@ -325,6 +325,14 @@ export const es: Localized<EnMessages> = {
   },
 
   notifications: {
+    messages: 'Mensajes',
+    messagesBody: 'Cuando alguien te escribe.',
+    streak: 'Recordatorio de racha',
+    streakBody: 'Por la tarde, si tu racha está a punto de romperse.',
+    profileVisits: 'Visitas a tu perfil',
+    profileVisitsBody: 'Cuando alguien mira tu perfil.',
+    promotions: 'Novedades y ofertas',
+    promotionsBody: 'De vez en cuando, lo nuevo. Apagado salvo que lo pidas.',
     primingTitle: '¿Activar las notificaciones?',
     primingBody:
       'Solo dos cosas: cuando alguien te escribe y un aviso a las {hour}:00 si tu racha está a punto de romperse.',
@@ -640,6 +648,8 @@ export const es: Localized<EnMessages> = {
   settings: {
     showStats: 'Mostrar mis números',
     showStatsBody: 'Racha, correcciones, tokens y el gráfico de la semana en tu perfil.',
+    push: 'Push',
+    email: 'Correo',
     legalSection: 'Legal',
     communitySection: 'Comunidad',
     showInDiscover: 'Mostrarme en Descubrir',

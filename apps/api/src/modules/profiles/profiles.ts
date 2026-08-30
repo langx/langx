@@ -1,4 +1,5 @@
 import {
+  DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
   ageFromBirthDate,
   PLAN_LIMITS,
@@ -10,6 +11,7 @@ import {
   type FollowState,
   type GeoPoint,
   type LocationInput,
+  type NotificationPrefs,
   type OnboardingProfileInput,
   type PaidPlanTier,
   type PlanTier,
@@ -59,7 +61,11 @@ export interface Profile {
   interests: string[]
   settings: {
     discoverable: boolean
-    notifications: boolean
+    /**
+     * The matrix, or the boolean it replaced on a profile written before it.
+     * `notificationsAllowed` reads both; nothing else should read it directly.
+     */
+    notifications: NotificationPrefs | boolean
   }
   privacy: {
     incognito: boolean
@@ -172,7 +178,7 @@ export async function createProfile(
     interests: input.interests ?? [],
     settings: {
       discoverable: true,
-      notifications: true,
+      notifications: DEFAULT_NOTIFICATION_PREFS,
     },
     privacy: {
       incognito: false,
@@ -307,10 +313,30 @@ export async function updateProfile(
    * `settings` above is safe only because both its keys are always sent
    * together; this one is not.
    */
-  const { privacy, ...rest } = definedUpdates as { privacy?: Record<string, boolean> }
+  const { privacy, settings, ...rest } = definedUpdates as {
+    privacy?: Record<string, boolean>
+    settings?: { discoverable?: boolean; notifications?: Record<string, Record<string, boolean>> }
+  }
   const privacyPaths = Object.fromEntries(
     Object.entries(privacy ?? {}).map(([key, value]) => [`privacy.${key}`, value]),
   )
+
+  /**
+   * `settings` is now written the same way, and for a sharper version of the
+   * same reason: its `notifications` used to be one boolean that a screen
+   * always sent whole, and is now a matrix of eight. `$set: { settings }` from
+   * a screen toggling one of them would wipe the other seven — and on a
+   * profile still holding the old boolean it would also silently replace one
+   * shape with another.
+   */
+  const settingsPaths: Record<string, unknown> = {}
+  if (settings?.discoverable !== undefined)
+    settingsPaths['settings.discoverable'] = settings.discoverable
+  for (const [type, channels] of Object.entries(settings?.notifications ?? {})) {
+    for (const [channel, value] of Object.entries(channels)) {
+      settingsPaths[`settings.notifications.${type}.${channel}`] = value
+    }
+  }
 
   const now = new Date()
   let timezoneUpdatedAt: Date | null = null
@@ -339,6 +365,7 @@ export async function updateProfile(
       $set: {
         ...rest,
         ...privacyPaths,
+        ...settingsPaths,
         ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
         updatedAt: now,
       },

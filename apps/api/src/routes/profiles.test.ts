@@ -257,6 +257,34 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(mirrored.json<{ conversationId?: string }>().conversationId).toBe(
       started.json<{ _id: string }>()._id,
     )
+   * The matrix is eight booleans and the settings screen flips one at a time.
+   * Writing `settings` whole — which is what the old single-boolean shape
+   * allowed — would clear the other seven on every toggle.
+   */
+  it('changes one notification switch without touching the others', async () => {
+    const user = await newUser('prefs@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'prefsuser' }),
+    })
+
+    const updated = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { notifications: { streak: { push: false } } } },
+    })
+
+    expect(updated.statusCode, updated.body).toBe(200)
+    const settings = updated.json<{
+      settings: { discoverable: boolean; notifications: Record<string, Record<string, boolean>> }
+    }>().settings
+    expect(settings.notifications.streak).toEqual({ push: false, email: false })
+    expect(settings.notifications.messages).toEqual({ push: true, email: false })
+    expect(settings.notifications.promotions).toEqual({ push: false, email: false })
+    expect(settings.discoverable).toBe(true)
   })
 
   it('rejects an underage birthDate even though the client already validated it', async () => {

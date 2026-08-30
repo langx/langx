@@ -1,5 +1,6 @@
 /**
- * One-off: `birthYear: 1995` → `birthDate: '1995-01-01'`.
+ * One-off, two shapes: `birthYear: 1995` → `birthDate: '1995-01-01'`, and
+ * `settings.notifications: true` → the four-kind, two-channel matrix.
  *
  * v2 stores the whole calendar day now — for the age gate, which is unchanged,
  * and for birthdays, which are the point. Documents written before the switch
@@ -20,7 +21,7 @@
  *   pnpm --filter @langx/api exec tsx scripts/migrate-birthdate.ts --apply
  *   pnpm --filter @langx/api exec tsx scripts/migrate-birthdate.ts --set ada=1994-03-07 --apply
  */
-import { isCalendarDate } from '@langx/shared'
+import { DEFAULT_NOTIFICATION_PREFS, isCalendarDate } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { connectToDatabase } from '../src/db/client'
 import { COLLECTIONS } from '../src/db/collections'
@@ -31,6 +32,7 @@ interface WithBirth {
   handle?: string
   birthYear?: number
   birthDate?: string
+  settings?: { notifications?: unknown }
 }
 
 /** `--set handle=YYYY-MM-DD`, repeatable. */
@@ -52,7 +54,7 @@ async function migrate(
   collection: string,
   apply: boolean,
   overrides: Map<string, string>,
-): Promise<{ seen: number; converted: string[] }> {
+): Promise<{ seen: number; converted: string[]; notifications: number }> {
   const docs = await db.collection<WithBirth>(collection).find({}).toArray()
   const converted: string[] = []
 
@@ -72,7 +74,33 @@ async function migrate(
     }
   }
 
-  return { seen: docs.length, converted }
+  /**
+   * The other half, in the same pass over the same documents: one boolean
+   * becomes the matrix. `false` is preserved as silence on every channel —
+   * reading it as "unset" would start pushing to everyone who had opted out —
+   * and `true` becomes the defaults, which is what it always meant.
+   */
+  let notifications = 0
+  for (const doc of docs) {
+    const current = doc.settings?.notifications
+    if (typeof current !== 'boolean') continue
+    notifications++
+    if (apply) {
+      const prefs = current
+        ? DEFAULT_NOTIFICATION_PREFS
+        : {
+            messages: { push: false, email: false },
+            streak: { push: false, email: false },
+            profileVisits: { push: false, email: false },
+            promotions: { push: false, email: false },
+          }
+      await db
+        .collection<WithBirth>(collection)
+        .updateOne({ _id: doc._id }, { $set: { 'settings.notifications': prefs } })
+    }
+  }
+
+  return { seen: docs.length, converted, notifications }
 }
 
 async function main(): Promise<void> {
@@ -83,8 +111,10 @@ async function main(): Promise<void> {
 
   console.log(`${apply ? 'Applying' : 'Dry run'} on ${env.MONGODB_DB}…`)
   for (const collection of [COLLECTIONS.profiles, COLLECTIONS.legacyProfiles]) {
-    const { seen, converted } = await migrate(db, collection, apply, overrides)
-    console.log(`\n${collection}: ${seen} seen, ${converted.length} to convert`)
+    const { seen, converted, notifications } = await migrate(db, collection, apply, overrides)
+    console.log(
+      `\n${collection}: ${seen} seen, ${converted.length} birth dates, ${notifications} notification settings`,
+    )
     for (const line of converted) console.log(`  ${line}`)
   }
   if (!apply) console.log('\n(dry run — re-run with --apply to write)')

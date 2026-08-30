@@ -1,4 +1,5 @@
 import { countryCodeSchema } from './countries'
+import { notificationPrefsSchema } from './notifications'
 import { birthDateSchema } from './age'
 import { languageLevelSchema } from './level'
 import { handleSchema } from './handle'
@@ -143,10 +144,17 @@ export const updateProfileSchema = z
     interests: interestsSchema,
     city: z.string().trim().min(1).max(CITY_MAX_LENGTH),
     timezone: z.string().trim().min(1),
-    settings: z.object({
-      discoverable: z.boolean(),
-      notifications: z.boolean(),
-    }),
+    settings: z
+      .object({
+        discoverable: z.boolean(),
+        /**
+         * Four kinds, two channels. `.partial()` here as well, so a screen
+         * flipping one switch does not have to restate the other seven — the
+         * repository writes dotted paths for the same reason `privacy` does.
+         */
+        notifications: notificationPrefsSchema,
+      })
+      .partial(),
     /**
      * `.partial()` on the inner object as well as the outer one. With two
      * keys and both required, every existing client sending

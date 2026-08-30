@@ -1,4 +1,5 @@
 import {
+  type NotificationPrefs,
   effectivePlanTier,
   hasFeature,
   isPaidTier,
@@ -110,7 +111,7 @@ export interface MeProfile {
   nativeLanguages: { code: string }[]
   learning: { code: string; level: LanguageLevel; priority: number }[]
   interests: string[]
-  settings: { discoverable: boolean; notifications: boolean }
+  settings: { discoverable: boolean; notifications: NotificationPrefs | boolean }
   privacy: {
     incognito: boolean
     hideOnlineStatus: boolean

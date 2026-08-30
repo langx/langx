@@ -30,7 +30,13 @@ import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { openExternal } from '../../src/lib/openExternal'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { useLocalePreference, useT, type LocalePreference, type MessageKey } from '../../src/i18n'
-import { LOCALE_NAMES, SUPPORTED_LOCALES } from '@langx/shared'
+import {
+  LOCALE_NAMES,
+  NOTIFICATION_CHANNELS,
+  NOTIFICATION_TYPES,
+  notificationsAllowed,
+  SUPPORTED_LOCALES,
+} from '@langx/shared'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import {
   makeStyles,
@@ -276,22 +282,49 @@ export default function SettingsScreen() {
         ) : null}
       </Card>
 
+      {/*
+        Four kinds, two channels. It was one switch, which meant that somebody
+        who did not want a nudge about their streak had to turn off the message
+        they were waiting for as well.
+
+        The email column is stored and not yet sent: nothing in the app sends
+        an email except verification and password reset, so these are a
+        preference the sender will find already recorded rather than a promise
+        being made now. Promotions default to off on both — consent is given,
+        not withdrawn.
+      */}
       <Text style={styles.section}>{t('settings.notificationsSection')}</Text>
       <Card inset>
-        <ListRow
-          title={t('settings.pushTitle')}
-          subtitle={t('settings.pushBody')}
-          last
-          accessory={
-            <Toggle
-              accessibilityLabel={t('settings.pushTitle')}
-              value={profile?.settings.notifications ?? true}
-              onValueChange={(notifications) =>
-                update.mutate({ settings: { ...profile?.settings, notifications } })
-              }
-            />
-          }
-        />
+        <View style={styles.channelHead}>
+          <Text style={styles.channelLabel}>{t('settings.push')}</Text>
+          <Text style={styles.channelLabel}>{t('settings.email')}</Text>
+        </View>
+        {NOTIFICATION_TYPES.map((type, index) => (
+          <ListRow
+            key={type}
+            title={t(`notifications.${type}` as MessageKey)}
+            subtitle={t(`notifications.${type}Body` as MessageKey)}
+            last={index === NOTIFICATION_TYPES.length - 1}
+            accessory={
+              <View style={styles.channels}>
+                {NOTIFICATION_CHANNELS.map((channel) => (
+                  <Toggle
+                    key={channel}
+                    accessibilityLabel={`${t(`notifications.${type}` as MessageKey)} — ${t(
+                      channel === 'push' ? 'settings.push' : 'settings.email',
+                    )}`}
+                    value={notificationsAllowed(profile?.settings.notifications, type, channel)}
+                    onValueChange={(next) =>
+                      update.mutate({
+                        settings: { notifications: { [type]: { [channel]: next } } },
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            }
+          />
+        ))}
       </Card>
 
       {/*
@@ -402,6 +435,16 @@ export default function SettingsScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  /** The two column headings the toggles below line up under. */
+  channelHead: {
+    alignSelf: 'flex-end',
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingEnd: spacing.lg,
+    paddingTop: spacing.sm,
+  },
+  channelLabel: { ...font.caption, color: colors.textFaint, textAlign: 'center', width: 44 },
+  channels: { flexDirection: 'row', gap: spacing.md },
   section: {
     ...font.label,
     color: colors.textMuted,

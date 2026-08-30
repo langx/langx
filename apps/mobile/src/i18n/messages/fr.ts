@@ -325,6 +325,14 @@ export const fr: Localized<EnMessages> = {
   },
 
   notifications: {
+    messages: 'Messages',
+    messagesBody: 'Quand quelqu’un vous écrit.',
+    streak: 'Rappel de série',
+    streakBody: 'Le soir, si votre série est sur le point de s’interrompre.',
+    profileVisits: 'Visites de profil',
+    profileVisitsBody: 'Quand quelqu’un consulte votre profil.',
+    promotions: 'Actualités et offres',
+    promotionsBody: 'De temps en temps, les nouveautés. Désactivé sauf demande.',
     primingTitle: 'Activer les notifications ?',
     primingBody:
       'Deux choses seulement : quand quelqu’un t’écrit, et un rappel à {hour}h00 si ta série est sur le point de se rompre.',
@@ -641,6 +649,8 @@ export const fr: Localized<EnMessages> = {
   settings: {
     showStats: 'Afficher mes chiffres',
     showStatsBody: 'Série, corrections, jetons et le graphique de la semaine sur votre profil.',
+    push: 'Push',
+    email: 'E-mail',
     legalSection: 'Mentions légales',
     communitySection: 'Communauté',
     showInDiscover: 'M’afficher dans Découvrir',

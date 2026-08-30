@@ -3,6 +3,7 @@ import type { ObjectId } from 'mongodb'
 import type { Message } from '../modules/chat/conversations'
 import { toMessageView } from '../modules/chat/messageView'
 import { markDelivered } from '../modules/chat/messages'
+import { notificationsAllowed } from '@langx/shared'
 import { sendPush, tokensFor } from '../modules/push/devices'
 import { userRoom, type AppServer } from './types'
 
@@ -71,13 +72,20 @@ export async function fanOutMessage(
     }
     if (!pushWhenAway) return
 
-    const [sender, tokens] = await Promise.all([
+    const [sender, recipient, tokens] = await Promise.all([
       app.mongo.db
         .collection<{ displayName?: string; handle: string }>('profiles')
         .findOne({ _id: message.senderId as unknown as never }),
+      app.mongo.db
+        .collection<{ settings?: { notifications?: unknown } }>('profiles')
+        .findOne({ _id: recipientId as unknown as never }, { projection: { settings: 1 } }),
       tokensFor(app.mongo.db, recipientId),
     ])
     if (tokens.length === 0) return
+    // The recipient's choice, per kind now rather than one switch for
+    // everything: somebody who wants no streak nudge still wants this.
+    const prefs = recipient?.settings?.notifications as Parameters<typeof notificationsAllowed>[0]
+    if (!notificationsAllowed(prefs, 'messages', 'push')) return
 
     await sendPush(app.mongo.db, app.push, {
       to: tokens,

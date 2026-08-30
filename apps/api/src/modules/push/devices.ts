@@ -1,4 +1,5 @@
 import {
+  notificationsAllowed,
   DEFAULT_LOCALE,
   STREAK_REMINDER_LOCAL_HOUR,
   localDayKey,
@@ -223,13 +224,17 @@ export async function streakReminderCandidates(
     .collection<Profile>(COLLECTIONS.profiles)
     .find({
       'streak.current': { $gte: 1 },
-      'settings.notifications': true,
+      // The streak nudge is its own switch now. `$ne: false` keeps the two
+      // shapes that mean "yes" — the matrix, and the old single boolean — and
+      // `notificationsAllowed` below settles the ones this cannot express.
+      'settings.notifications': { $ne: false },
       deletedAt: { $exists: false },
     })
     .toArray()
 
   const candidates: { userId: string; streak: number }[] = []
   for (const profile of profiles) {
+    if (!notificationsAllowed(profile.settings?.notifications, 'streak', 'push')) continue
     const zone = profile.timezone ?? 'UTC'
     const localHour = Number(
       new Intl.DateTimeFormat('en-GB', {

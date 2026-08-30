@@ -321,6 +321,14 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   notifications: {
+    messages: 'Mensagens',
+    messagesBody: 'Quando alguém te escreve.',
+    streak: 'Lembrete de sequência',
+    streakBody: 'À noite, se sua sequência estiver prestes a quebrar.',
+    profileVisits: 'Visitas ao perfil',
+    profileVisitsBody: 'Quando alguém olha seu perfil.',
+    promotions: 'Novidades e ofertas',
+    promotionsBody: 'De vez em quando, o que há de novo. Desligado a não ser que você peça.',
     primingTitle: 'Ativar as notificações?',
     primingBody:
       'Só duas coisas: quando alguém te manda mensagem, e um lembrete às {hour}:00 se sua sequência estiver prestes a quebrar.',
@@ -636,6 +644,8 @@ export const ptBR: Localized<EnMessages> = {
   settings: {
     showStats: 'Mostrar meus números',
     showStatsBody: 'Sequência, correções, tokens e o gráfico da semana no seu perfil.',
+    push: 'Push',
+    email: 'E-mail',
     legalSection: 'Jurídico',
     communitySection: 'Comunidade',
     showInDiscover: 'Mostrar em Descobrir',
