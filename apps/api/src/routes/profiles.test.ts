@@ -260,9 +260,9 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
   })
 
   /**
-   * The matrix is eight booleans and the settings screen flips one at a time.
-   * Writing `settings` whole — which is what the old single-boolean shape
-   * allowed — would clear the other seven on every toggle.
+   * Four booleans and the settings screen flips one at a time. Writing
+   * `settings` whole — which is what the old single-boolean shape allowed —
+   * would clear the other three on every toggle.
    */
   it('changes one notification switch without touching the others', async () => {
     const user = await newUser('prefs@example.com')
@@ -277,17 +277,62 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       method: 'PATCH',
       url: '/profiles/me',
       headers: { cookie: user.cookie },
-      payload: { settings: { notifications: { streak: { push: false } } } },
+      payload: { settings: { notifications: { streak: false } } },
     })
 
     expect(updated.statusCode, updated.body).toBe(200)
     const settings = updated.json<{
-      settings: { discoverable: boolean; notifications: Record<string, Record<string, boolean>> }
+      settings: { discoverable: boolean; notifications: Record<string, boolean> }
     }>().settings
-    expect(settings.notifications.streak).toEqual({ push: false, email: false })
-    expect(settings.notifications.messages).toEqual({ push: true, email: false })
-    expect(settings.notifications.promotions).toEqual({ push: false, email: false })
+    expect(settings.notifications.streak).toBe(false)
+    expect(settings.notifications.messages).toBe(true)
+    expect(settings.notifications.promotions).toBe(false)
     expect(settings.discoverable).toBe(true)
+  })
+
+  /**
+   * The dotted path is also the migration. A profile still holding the retired
+   * `{push, email}` matrix converts that kind to a boolean the first time its
+   * owner touches the switch — Mongo allows a `$set` to change a field's type
+   * — and the kinds nobody touches stay as they are, for `notificationsAllowed`
+   * to read.
+   */
+  it('replaces a stored push/email matrix with the switch that replaced it', async () => {
+    const user = await newUser('matrix-prefs@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie },
+      payload: onboardingBody({ handle: 'matrixprefs' }),
+    })
+    await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: user.userId },
+      {
+        $set: {
+          'settings.notifications': {
+            messages: { push: true, email: false },
+            streak: { push: true, email: false },
+            profileVisits: { push: true, email: false },
+            promotions: { push: false, email: false },
+          },
+        },
+      },
+    )
+
+    const updated = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { settings: { notifications: { streak: false } } },
+    })
+
+    expect(updated.statusCode, updated.body).toBe(200)
+    const notifications = updated.json<{
+      settings: { notifications: Record<string, unknown> }
+    }>().settings.notifications
+    expect(notifications.streak).toBe(false)
+    // Untouched, so still the old shape — and still readable.
+    expect(notifications.messages).toEqual({ push: true, email: false })
   })
 
   it('rejects an underage birthDate even though the client already validated it', async () => {

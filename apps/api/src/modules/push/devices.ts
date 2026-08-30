@@ -224,9 +224,11 @@ export async function streakReminderCandidates(
     .collection<Profile>(COLLECTIONS.profiles)
     .find({
       'streak.current': { $gte: 1 },
-      // The streak nudge is its own switch now. `$ne: false` keeps the two
-      // shapes that mean "yes" — the matrix, and the old single boolean — and
-      // `notificationsAllowed` below settles the ones this cannot express.
+      // The streak nudge is its own switch. `$ne: false` only rules out the
+      // oldest shape, a bare `false` meaning silence for everything; the other
+      // two — the retired push/email matrix and today's boolean per kind — are
+      // objects this cannot read into, so `notificationsAllowed` settles them
+      // below. Its job is to bound the scan, not to decide.
       'settings.notifications': { $ne: false },
       deletedAt: { $exists: false },
     })
@@ -234,7 +236,7 @@ export async function streakReminderCandidates(
 
   const candidates: { userId: string; streak: number }[] = []
   for (const profile of profiles) {
-    if (!notificationsAllowed(profile.settings?.notifications, 'streak', 'push')) continue
+    if (!notificationsAllowed(profile.settings?.notifications, 'streak')) continue
     const zone = profile.timezone ?? 'UTC'
     const localHour = Number(
       new Intl.DateTimeFormat('en-GB', {

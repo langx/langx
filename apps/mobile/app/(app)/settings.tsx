@@ -41,7 +41,6 @@ import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { useLocalePreference, useT, type LocalePreference, type MessageKey } from '../../src/i18n'
 import {
   LOCALE_NAMES,
-  NOTIFICATION_CHANNELS,
   NOTIFICATION_TYPES,
   notificationsAllowed,
   SUPPORTED_LOCALES,
@@ -323,22 +322,19 @@ export default function SettingsScreen() {
       </View>
 
       {/*
-        Four kinds, two channels. It was one switch, which meant that somebody
-        who did not want a nudge about their streak had to turn off the message
-        they were waiting for as well.
+        Four kinds, one switch each. It was one switch for everything, which
+        meant that somebody who did not want a nudge about their streak had to
+        turn off the message they were waiting for as well.
 
-        The email column is stored and not yet sent: nothing in the app sends
-        an email except verification and password reset, so these are a
-        preference the sender will find already recorded rather than a promise
-        being made now. Promotions default to off on both — consent is given,
-        not withdrawn.
+        It was briefly two switches per kind, push and email. The email column
+        never sent anything — nothing in the app sends mail except verification
+        and password reset — so six of those eight switches did nothing, and a
+        choice that changes nothing is worse than no choice at all.
+
+        Promotions default to off; consent is given, not withdrawn.
       */}
       <Text style={styles.section}>{t('settings.notificationsSection')}</Text>
       <View>
-        <View style={styles.channelHead}>
-          <Text style={styles.channelLabel}>{t('settings.push')}</Text>
-          <Text style={styles.channelLabel}>{t('settings.email')}</Text>
-        </View>
         {NOTIFICATION_TYPES.map((type, index) => (
           <ListRow
             key={type}
@@ -346,22 +342,13 @@ export default function SettingsScreen() {
             subtitle={t(`notifications.${type}Body` as MessageKey)}
             last={index === NOTIFICATION_TYPES.length - 1}
             accessory={
-              <View style={styles.channels}>
-                {NOTIFICATION_CHANNELS.map((channel) => (
-                  <Toggle
-                    key={channel}
-                    accessibilityLabel={`${t(`notifications.${type}` as MessageKey)} — ${t(
-                      channel === 'push' ? 'settings.push' : 'settings.email',
-                    )}`}
-                    value={notificationsAllowed(profile?.settings.notifications, type, channel)}
-                    onValueChange={(next) =>
-                      update.mutate({
-                        settings: { notifications: { [type]: { [channel]: next } } },
-                      })
-                    }
-                  />
-                ))}
-              </View>
+              <Toggle
+                accessibilityLabel={t(`notifications.${type}` as MessageKey)}
+                value={notificationsAllowed(profile?.settings.notifications, type)}
+                onValueChange={(next) =>
+                  update.mutate({ settings: { notifications: { [type]: next } } })
+                }
+              />
             }
           />
         ))}
@@ -538,15 +525,6 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   iconTileChosen: { borderColor: colors.accent },
   iconImage: { height: 44, width: 44 },
-  /** The two column headings the notification toggles line up under. */
-  channelHead: {
-    alignSelf: 'flex-end',
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingTop: spacing.sm,
-  },
-  channelLabel: { ...font.caption, color: colors.textFaint, textAlign: 'center', width: 44 },
-  channels: { flexDirection: 'row', gap: spacing.md },
   /** v3's section kicker: 13/600, faint, flush with the rows it introduces. */
   section: {
     ...font.label,

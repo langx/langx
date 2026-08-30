@@ -3,6 +3,7 @@ import {
   GENDERS,
   INTEREST_SUGGESTIONS,
   LANGUAGE_LEVELS,
+  NOTIFICATION_TYPES,
   PERIOD_TYPES,
   SUPPORTED_LOCALES,
   type Catalog,
@@ -154,6 +155,19 @@ describe('dynamically built keys', () => {
         `cosmetics.${id.split('.')[0]}${id.split('.')[1]![0]!.toUpperCase()}${id.split('.')[1]!.slice(1)}` as never,
       )
       expect(label).not.toContain('cosmetics.')
+    }
+  })
+
+  /*
+   * `settings.tsx` builds these with an `as MessageKey` cast, which is what
+   * makes them worth a test: adding a notification kind compiles either way,
+   * and without this the missing label ships as a dotted path on a row nobody
+   * looks at twice.
+   */
+  it('resolves a title and a body for every notification kind', () => {
+    for (const type of NOTIFICATION_TYPES) {
+      expect(t(`notifications.${type}` as never), type).not.toContain('notifications.')
+      expect(t(`notifications.${type}Body` as never), type).not.toContain('notifications.')
     }
   })
 
