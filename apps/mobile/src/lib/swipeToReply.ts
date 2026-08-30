@@ -34,3 +34,18 @@ export function swipeTranslation(dx: number): number {
 export function swipeReleased(dx: number): boolean {
   return dx >= SWIPE_ACTIVATE_PX
 }
+
+/**
+ * Whether the gesture is offered at all.
+ *
+ * Native always. On the web only with a touch pointer, and that distinction is
+ * the whole of it: a finger drag reaches the responder system cleanly, while a
+ * mouse drag on a bubble is also the browser's own text selection — the two
+ * fight, and the one that wins depends on where in the bubble the drag
+ * started. A gesture that works from the padding and not from the words is
+ * worse than one that is plainly absent, so on a desktop the menu's Reply row
+ * stays the way in.
+ */
+export function swipeToReplyEnabled(platform: string, hasTouch: boolean): boolean {
+  return platform === 'web' ? hasTouch : true
+}
