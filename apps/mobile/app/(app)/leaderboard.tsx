@@ -73,7 +73,9 @@ export default function LeaderboardScreen() {
             />
           </View>
           <Text style={styles.nextMeta}>
-            {next.kind === 'streak'
+            {/* `veteran` counts days too, so it takes the same wording as the
+                streak; the rest are plain counts of things done. */}
+            {next.kind === 'streak' || next.kind === 'veteran'
               ? t('leaderboard.toGo', {
                   amount: t('format.days', { count: next.threshold - next.current }),
                 })

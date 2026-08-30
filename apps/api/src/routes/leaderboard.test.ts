@@ -8,6 +8,7 @@ import {
   shiftDayKey,
   streakRestorePrice,
   utcDayKey,
+  type BadgeSummary,
   type Leaderboard,
   type Wallet,
   type TokenSummary,
@@ -511,6 +512,128 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
       // Rank 1 is now vacant rather than reassigned — nobody gets promoted by
       // someone else deleting their account.
       expect(withoutGhost.entries[0]?.rank).toBe(2)
+    })
+  })
+
+  describe('badges', () => {
+    async function badgesOf(user: SignedUpUser) {
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/badges',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<BadgeSummary>()
+    }
+
+    /**
+     * The trap this file exists to catch. `progressOf` used to take a `string`
+     * and fall through to the corrections count for anything that was not a
+     * streak, so a kind added to `BADGE_KINDS` measured the wrong number with
+     * no type error and no failing test.
+     */
+    it('measures each kind against its own number', async () => {
+      const user = await newUser()
+      await ageAccount(user.userId, 400)
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: user.userId },
+        // A long streak and plenty of messages, but nothing else.
+        { $set: { 'streak.longest': 200, 'stats.messagesSent': 1200 } },
+      )
+
+      const summary = await badgesOf(user)
+      const earned = new Set(summary.badges.filter((b) => b.earned).map((b) => b.id))
+
+      expect(earned.has('streak.180')).toBe(true)
+      expect(earned.has('streak.365')).toBe(false)
+      expect(earned.has('messages.1000')).toBe(true)
+      expect(earned.has('messages.10000')).toBe(false)
+      expect(earned.has('veteran.365')).toBe(true)
+      expect(earned.has('veteran.730')).toBe(false)
+      // Never wrote a correction, never earned a token.
+      expect(earned.has('correction.1')).toBe(false)
+      expect(earned.has('tokens.10000')).toBe(false)
+    })
+
+    it('counts token earned, not the balance left after spending', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 12_000,
+        refId: 'badge-test',
+      })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { tokenSpent: 11_000 } })
+
+      const summary = await badgesOf(user)
+      // Balance is 1,000; earned is 12,000, and the badge is for earning.
+      expect(summary.badges.find((b) => b.id === 'tokens.10000')?.earned).toBe(true)
+    })
+
+    /**
+     * `next` used to be the first unearned entry in `BADGES`, which put every
+     * streak badge ahead of every other kind. With five kinds that offers a
+     * three-year streak to somebody one correction short of a badge they could
+     * earn this afternoon.
+     */
+    it('offers the badge you are closest to, not the first in the list', async () => {
+      const user = await newUser()
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'stats.messagesSent': 99 } })
+
+      const summary = await badgesOf(user)
+      expect(summary.next?.id).toBe('messages.100')
+      expect(summary.next?.current).toBe(99)
+      // Only the streak milestones pay.
+      expect(summary.next?.reward).toBe(0)
+    })
+
+    it('dates a veteran badge exactly, and leaves the counting kinds undated', async () => {
+      const user = await newUser()
+      await ageAccount(user.userId, 400)
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'stats.messagesSent': 500 } })
+
+      const summary = await badgesOf(user)
+      const veteran = summary.badges.find((b) => b.id === 'veteran.365')
+      expect(veteran?.earned).toBe(true)
+      expect(veteran?.earnedAt).not.toBeNull()
+
+      const messages = summary.badges.find((b) => b.id === 'messages.100')
+      expect(messages?.earned).toBe(true)
+      // Nothing records which message was the hundredth.
+      expect(messages?.earnedAt).toBeNull()
+    })
+
+    /**
+     * `streakMilestoneDates` maps a ledger row's amount back to the milestone
+     * that paid it, because the row records the day and the amount but never
+     * which milestone it was for. `badges.test.ts` in shared holds the payouts
+     * distinct; this checks the mapping actually reads them.
+     */
+    it('dates a streak badge from the ledger row that paid it', async () => {
+      const user = await newUser()
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'streak.longest': 400 } })
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'streak',
+        amount: TOKEN_RULES.streakMilestones[365]!,
+        refId: YESTERDAY,
+      })
+
+      const summary = await badgesOf(user)
+      const at365 = summary.badges.find((b) => b.id === 'streak.365')
+      const at180 = summary.badges.find((b) => b.id === 'streak.180')
+      expect(at365?.earnedAt).not.toBeNull()
+      // Earned by `longest`, but never paid, so there is no row to date it by.
+      expect(at180?.earned).toBe(true)
+      expect(at180?.earnedAt).toBeNull()
     })
   })
 

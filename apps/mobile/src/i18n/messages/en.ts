@@ -614,7 +614,7 @@ export const en = {
       other: '{count} people looked — see who with Pro',
     },
     viewersCount: { one: '{count} person', other: '{count} people' },
-    leaderboardSubtitle: 'Streaks and corrections',
+    leaderboardSubtitle: 'Streaks, corrections and everything else you have earned',
     proTitle: '✦ LangX Pro',
     proBody: 'Unlimited new chats, advanced filters, translation and incognito browsing.',
     newChatsLeft: 'New chats left today:',
@@ -810,6 +810,9 @@ export const en = {
     locked: 'Locked',
     firstCorrection: 'First correction',
     streakDays: { one: '{formatted} day', other: '{formatted} days' },
+    messagesSent: { one: '{formatted} message', other: '{formatted} messages' },
+    tokensEarned: { one: '{formatted} token earned', other: '{formatted} tokens earned' },
+    memberDays: { one: '{formatted} day a member', other: '{formatted} days a member' },
     corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
   },
 

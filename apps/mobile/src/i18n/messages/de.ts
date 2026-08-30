@@ -581,7 +581,7 @@ export const de: Localized<EnMessages> = {
       other: '{count} Leute haben geschaut — mit Pro siehst du, wer',
     },
     viewersCount: { one: '{count} Person', other: '{count} Leute' },
-    leaderboardSubtitle: 'Serien und Korrekturen',
+    leaderboardSubtitle: 'Serien, Korrekturen und alles andere, was du verdient hast',
     proTitle: '✦ LangX Pro',
     proBody: 'Unbegrenzt neue Chats, erweiterte Filter, Übersetzung und Inkognito-Modus.',
     newChatsLeft: 'Heute noch neue Chats:',
@@ -780,6 +780,9 @@ export const de: Localized<EnMessages> = {
     locked: 'Gesperrt',
     firstCorrection: 'Erste Korrektur',
     streakDays: { one: '{formatted} Tag', other: '{formatted} Tage' },
+    messagesSent: { one: '{formatted} Nachricht', other: '{formatted} Nachrichten' },
+    tokensEarned: { one: '{formatted} Token verdient', other: '{formatted} Token verdient' },
+    memberDays: { one: '{formatted} Tag dabei', other: '{formatted} Tage dabei' },
     corrections: { one: '{formatted} Korrektur', other: '{formatted} Korrekturen' },
   },
 

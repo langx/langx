@@ -664,7 +664,7 @@ export const ru: Localized<EnMessages> = {
       many: '{count} человек',
       other: '{count} человека',
     },
-    leaderboardSubtitle: 'Серии и исправления',
+    leaderboardSubtitle: 'Серии, исправления и всё остальное, что вы заработали',
     proTitle: '✦ LangX Pro',
     proBody: 'Безлимитные новые чаты, расширенные фильтры, перевод и невидимый просмотр.',
     newChatsLeft: 'Новых чатов осталось сегодня:',
@@ -876,6 +876,24 @@ export const ru: Localized<EnMessages> = {
       few: '{formatted} дня',
       many: '{formatted} дней',
       other: '{formatted} дня',
+    },
+    messagesSent: {
+      one: '{formatted} сообщение',
+      few: '{formatted} сообщения',
+      many: '{formatted} сообщений',
+      other: '{formatted} сообщения',
+    },
+    tokensEarned: {
+      one: 'заработан {formatted} жетон',
+      few: 'заработано {formatted} жетона',
+      many: 'заработано {formatted} жетонов',
+      other: 'заработано {formatted} жетона',
+    },
+    memberDays: {
+      one: '{formatted} день в LangX',
+      few: '{formatted} дня в LangX',
+      many: '{formatted} дней в LangX',
+      other: '{formatted} дня в LangX',
     },
     corrections: {
       one: '{formatted} исправление',
