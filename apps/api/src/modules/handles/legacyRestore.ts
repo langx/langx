@@ -1,4 +1,5 @@
 import {
+  DEFAULT_NOTIFICATION_PREFS,
   TOKEN_RULES,
   convertLegacyTokens,
   lifetimeGrantFor,
@@ -261,7 +262,7 @@ function buildProfile(userId: string, legacy: LegacyProfile, now: Date): Profile
     nativeLanguages: legacy.nativeLanguages,
     learning: legacy.learning,
     interests: [],
-    settings: { discoverable: true, notifications: true },
+    settings: { discoverable: true, notifications: DEFAULT_NOTIFICATION_PREFS },
     privacy: {
       incognito: false,
       hideOnlineStatus: false,

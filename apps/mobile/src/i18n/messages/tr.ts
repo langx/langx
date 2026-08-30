@@ -330,6 +330,14 @@ export const tr: Localized<EnMessages> = {
   },
 
   notifications: {
+    messages: 'Mesajlar',
+    messagesBody: 'Biri sana yazdığında.',
+    streak: 'Streak hatırlatması',
+    streakBody: 'Akşam, streak’in kırılmak üzereyse.',
+    profileVisits: 'Profil ziyaretleri',
+    profileVisitsBody: 'Biri profiline baktığında.',
+    promotions: 'Haberler ve kampanyalar',
+    promotionsBody: 'Arada yeniliklerden haber. İstemedikçe kapalı.',
     primingTitle: 'Bildirimler açılsın mı?',
     primingBody:
       'Sadece iki şey: biri sana mesaj attığında ve serin kopmak üzereyse saat {hour}:00’da bir dürtme.',
@@ -648,6 +656,8 @@ export const tr: Localized<EnMessages> = {
   settings: {
     showStats: 'Sayılarımı göster',
     showStatsBody: 'Profilinde streak, düzeltme, token ve bu haftanın grafiği.',
+    push: 'Push',
+    email: 'E-posta',
     legalSection: 'Hukuki',
     communitySection: 'Topluluk',
     showInDiscover: 'Keşfet’te görün',

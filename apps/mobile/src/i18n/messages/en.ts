@@ -355,6 +355,14 @@ export const en = {
   },
 
   notifications: {
+    messages: 'Messages',
+    messagesBody: 'When somebody writes to you.',
+    streak: 'Streak reminder',
+    streakBody: 'In the evening, if your streak is about to break.',
+    profileVisits: 'Profile visits',
+    profileVisitsBody: 'When somebody looks at your profile.',
+    promotions: 'News and offers',
+    promotionsBody: 'Occasional word about what is new. Off unless you ask.',
     primingTitle: 'Turn on notifications?',
     primingBody:
       'Two things only: when someone messages you, and a nudge at {hour}:00 if your streak is about to break.',
@@ -677,6 +685,8 @@ export const en = {
   settings: {
     showStats: 'Show my numbers',
     showStatsBody: 'Streak, corrections, tokens and this week’s chart on your profile.',
+    push: 'Push',
+    email: 'Email',
     legalSection: 'Legal',
     communitySection: 'Community',
     showInDiscover: 'Show me in Discover',

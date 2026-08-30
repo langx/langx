@@ -389,6 +389,14 @@ export const ar: Localized<EnMessages> = {
   },
 
   notifications: {
+    messages: 'الرسائل',
+    messagesBody: 'عندما يكتب إليك أحد.',
+    streak: 'تذكير السلسلة',
+    streakBody: 'مساءً، إذا كانت سلسلتك على وشك الانقطاع.',
+    profileVisits: 'زيارات الملف',
+    profileVisitsBody: 'عندما يطّلع أحد على ملفك.',
+    promotions: 'الأخبار والعروض',
+    promotionsBody: 'بين حين وآخر عن الجديد. مغلق ما لم تطلبه.',
     primingTitle: 'تفعيل الإشعارات؟',
     primingBody:
       'أمران فقط: حين يراسلك أحد، وتذكير عند الساعة {hour}:00 إن كانت سلسلتك على وشك الانقطاع.',
@@ -755,6 +763,8 @@ export const ar: Localized<EnMessages> = {
   settings: {
     showStats: 'إظهار أرقامي',
     showStatsBody: 'السلسلة والتصحيحات والتوكنات ورسم هذا الأسبوع على ملفك.',
+    push: 'إشعار',
+    email: 'بريد',
     legalSection: 'القانونية',
     communitySection: 'المجتمع',
     showInDiscover: 'أظهرني في الاستكشاف',

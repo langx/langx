@@ -373,6 +373,14 @@ export const ru: Localized<EnMessages> = {
   },
 
   notifications: {
+    messages: 'Сообщения',
+    messagesBody: 'Когда вам пишут.',
+    streak: 'Напоминание о стрике',
+    streakBody: 'Вечером, если стрик вот-вот прервётся.',
+    profileVisits: 'Визиты в профиль',
+    profileVisitsBody: 'Когда кто-то смотрит ваш профиль.',
+    promotions: 'Новости и предложения',
+    promotionsBody: 'Изредка о новом. Выключено, пока не включите.',
     primingTitle: 'Включить уведомления?',
     primingBody:
       'Только две вещи: когда тебе пишут и напоминание в {hour}:00, если серия вот-вот прервётся.',
@@ -728,6 +736,8 @@ export const ru: Localized<EnMessages> = {
   settings: {
     showStats: 'Показывать мои цифры',
     showStatsBody: 'Стрик, исправления, токены и график недели в профиле.',
+    push: 'Пуш',
+    email: 'Почта',
     legalSection: 'Правовые документы',
     communitySection: 'Сообщество',
     showInDiscover: 'Показывать меня в Поиске',
