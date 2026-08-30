@@ -15,6 +15,7 @@ export interface OnboardingDraft {
   birthDate: string
   gender: Gender
   bio: string
+  city: string
   interests: string[]
   country: string
   /** Uploaded during the wizard; written by `POST /profiles`, not by `confirm`. */
@@ -29,6 +30,7 @@ const EMPTY: OnboardingDraft = {
   birthDate: '',
   gender: 'undisclosed',
   bio: '',
+  city: '',
   interests: [],
   country: '',
   avatarUrl: '',
