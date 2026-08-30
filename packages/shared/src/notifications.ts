@@ -16,6 +16,11 @@ export type NotificationChannel = (typeof NOTIFICATION_CHANNELS)[number]
 
 export type NotificationPrefs = Record<NotificationType, Record<NotificationChannel, boolean>>
 
+/** What is actually on a profile: anything from nothing to the whole matrix. */
+export type StoredNotificationPrefs = Partial<
+  Record<NotificationType, Partial<Record<NotificationChannel, boolean>>>
+>
+
 /**
  * Push on for everything the app already does; email off; **promotions off on
  * both**.
@@ -59,7 +64,12 @@ export type NotificationPrefsInput = z.infer<typeof notificationPrefsSchema>
  * off, because consent is the thing that has to be recorded.
  */
 export function notificationsAllowed(
-  prefs: Partial<NotificationPrefs> | boolean | undefined,
+  /**
+   * Partial at both levels: a stored document may name one kind and one
+   * channel of it, and a caller reading a profile written before this existed
+   * has a boolean or nothing at all.
+   */
+  prefs: StoredNotificationPrefs | boolean | undefined,
   type: NotificationType,
   channel: NotificationChannel,
 ): boolean {
