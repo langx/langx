@@ -8,6 +8,12 @@ import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
+import {
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+  passwordIssueKey,
+  passwordPairReady,
+} from '../../src/lib/passwordForm'
 import { useT } from '../../src/i18n'
 
 export default function SignUp() {
@@ -16,6 +22,7 @@ export default function SignUp() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmation, setConfirmation] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
 
@@ -40,9 +47,17 @@ export default function SignUp() {
     router.replace({ pathname: '/(auth)/check-email', params: { email } })
   }
 
+  /**
+   * Typed twice and checked here, not on the server. A mistyped password on a
+   * sign-up form is only discovered at the next sign-in, by which time the
+   * account exists, the verification mail has been sent, and the only way back
+   * in is the reset flow.
+   */
+  const issue = passwordIssueKey(password, confirmation)
+
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
-  const canSubmit = !loading && !!name && !!email && !!password
+  const canSubmit = !loading && !!name && !!email && passwordPairReady(password, confirmation)
 
   return (
     <KeyboardAvoidingView
@@ -71,23 +86,31 @@ export default function SignUp() {
         autoComplete="email"
       />
       <FormField
-        returnKeyType="go"
-        onSubmitEditing={() => canSubmit && void onSubmit()}
+        returnKeyType="next"
         label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
         textContentType="newPassword"
         autoComplete="password-new"
-        error={error}
+        placeholder={t('auth.passwordRule', {
+          min: PASSWORD_MIN_LENGTH,
+          max: PASSWORD_MAX_LENGTH,
+        })}
+      />
+      <FormField
+        returnKeyType="go"
+        onSubmitEditing={() => canSubmit && void onSubmit()}
+        label={t('auth.confirmPassword')}
+        value={confirmation}
+        onChangeText={setConfirmation}
+        secureTextEntry
+        textContentType="newPassword"
+        autoComplete="password-new"
+        error={issue ? t(issue, { min: PASSWORD_MIN_LENGTH, max: PASSWORD_MAX_LENGTH }) : error}
       />
 
-      <Button
-        label={t('auth.signUp')}
-        onPress={onSubmit}
-        loading={loading}
-        disabled={!name || !email || !password}
-      />
+      <Button label={t('auth.signUp')} onPress={onSubmit} loading={loading} disabled={!canSubmit} />
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>{t('auth.haveAccount')}</Text>

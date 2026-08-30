@@ -4,6 +4,8 @@ import type { EnMessages } from './en'
 /** Brazilian Portuguese, addressing the reader as "você". */
 export const ptBR: Localized<EnMessages> = {
   common: {
+    showPassword: 'Mostrar senha',
+    hidePassword: 'Ocultar senha',
     back: '‹ Voltar',
     backPlain: 'Voltar',
     cancel: 'Cancelar',
@@ -184,6 +186,11 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   auth: {
+    confirmPassword: 'Confirme a senha',
+    passwordsDoNotMatch: 'As duas senhas são diferentes.',
+    passwordTooShort: 'Pelo menos {min} caracteres.',
+    passwordTooLong: 'No máximo {max} caracteres.',
+    passwordRule: '{min}–{max} caracteres',
     welcomeBack: 'Que bom te ver de novo',
     email: 'E-mail',
     password: 'Senha',
