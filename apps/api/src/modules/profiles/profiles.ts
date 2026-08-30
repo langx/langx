@@ -12,6 +12,7 @@ import {
   type GeoPoint,
   type LocationInput,
   type NotificationPrefs,
+  type StoredNotificationPrefs,
   type OnboardingProfileInput,
   type PaidPlanTier,
   type PlanTier,
@@ -62,10 +63,11 @@ export interface Profile {
   settings: {
     discoverable: boolean
     /**
-     * The matrix, or the boolean it replaced on a profile written before it.
-     * `notificationsAllowed` reads both; nothing else should read it directly.
+     * Three shapes at once: today's boolean per kind, the push/email matrix it
+     * replaced, and the single boolean v1 wrote. `notificationsAllowed` reads
+     * all three; nothing else should read this field directly.
      */
-    notifications: NotificationPrefs | boolean
+    notifications: StoredNotificationPrefs | NotificationPrefs | boolean
   }
   privacy: {
     incognito: boolean
@@ -315,27 +317,30 @@ export async function updateProfile(
    */
   const { privacy, settings, ...rest } = definedUpdates as {
     privacy?: Record<string, boolean>
-    settings?: { discoverable?: boolean; notifications?: Record<string, Record<string, boolean>> }
+    settings?: { discoverable?: boolean; notifications?: Record<string, boolean> }
   }
   const privacyPaths = Object.fromEntries(
     Object.entries(privacy ?? {}).map(([key, value]) => [`privacy.${key}`, value]),
   )
 
   /**
-   * `settings` is now written the same way, and for a sharper version of the
-   * same reason: its `notifications` used to be one boolean that a screen
-   * always sent whole, and is now a matrix of eight. `$set: { settings }` from
-   * a screen toggling one of them would wipe the other seven — and on a
-   * profile still holding the old boolean it would also silently replace one
-   * shape with another.
+   * `settings` is written the same way, and for a sharper version of the same
+   * reason: its `notifications` used to be one boolean that a screen always
+   * sent whole, and is now one switch per kind. `$set: { settings }` from a
+   * screen toggling one of them would wipe the other three.
+   *
+   * The dotted path also does the migration, one switch at a time. Setting
+   * `settings.notifications.messages` to a boolean over a profile still
+   * holding `{push, email}` there replaces that sub-document with the boolean
+   * — Mongo permits the type change — so a profile converts itself the first
+   * time its owner touches a switch, and `notificationsAllowed` covers the
+   * ones nobody ever touches.
    */
   const settingsPaths: Record<string, unknown> = {}
   if (settings?.discoverable !== undefined)
     settingsPaths['settings.discoverable'] = settings.discoverable
-  for (const [type, channels] of Object.entries(settings?.notifications ?? {})) {
-    for (const [channel, value] of Object.entries(channels)) {
-      settingsPaths[`settings.notifications.${type}.${channel}`] = value
-    }
+  for (const [type, value] of Object.entries(settings?.notifications ?? {})) {
+    settingsPaths[`settings.notifications.${type}`] = value
   }
 
   const now = new Date()

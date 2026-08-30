@@ -85,7 +85,7 @@ export async function fanOutMessage(
     // The recipient's choice, per kind now rather than one switch for
     // everything: somebody who wants no streak nudge still wants this.
     const prefs = recipient?.settings?.notifications as Parameters<typeof notificationsAllowed>[0]
-    if (!notificationsAllowed(prefs, 'messages', 'push')) return
+    if (!notificationsAllowed(prefs, 'messages')) return
 
     await sendPush(app.mongo.db, app.push, {
       to: tokens,
