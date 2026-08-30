@@ -21,6 +21,7 @@ import { LevelBars } from '../../src/components/ui/LevelBars'
 import { ListRow } from '../../src/components/ui/ListRow'
 import { Screen } from '../../src/components/ui/Screen'
 import { StatTile } from '../../src/components/ui/StatTile'
+import { openProfile } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useDisplayNames, useT } from '../../src/i18n'
@@ -169,6 +170,17 @@ export default function MeScreen() {
             {profile.learning[0] ? <LevelBars level={profile.learning[0].level} /> : null}
           </View>
         }
+      />
+
+      {/*
+        Last of the rows, because it is the result of everything above it: this
+        is the profile a stranger — or anyone following your link — actually
+        sees, with your privacy settings already applied.
+      */}
+      <ListRow
+        title={t('me.previewProfile')}
+        subtitle={t('me.previewProfileBody')}
+        onPress={() => openProfile(profile.handle, '/(app)/me')}
       />
 
       {!isPro ? (

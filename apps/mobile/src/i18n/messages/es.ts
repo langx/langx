@@ -542,6 +542,7 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote: 'Así ven los demás tu perfil: tus ajustes de privacidad ya están aplicados.',
     teaches: 'Enseña',
     learns: 'Aprende',
     openChat: 'Abrir el chat',
@@ -584,6 +585,8 @@ export const es: Localized<EnMessages> = {
     settings: 'Ajustes',
     corrections: 'Correcciones',
     tokens: 'Fichas',
+    previewProfile: 'Ver mi perfil',
+    previewProfileBody: 'Mira tu perfil como lo ven los demás',
     badges: 'Insignias',
   },
 

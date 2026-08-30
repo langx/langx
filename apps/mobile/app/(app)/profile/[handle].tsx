@@ -334,66 +334,79 @@ export default function ProfileScreen() {
       </View>
 
       {/*
-        A conversation that already exists is a link, not a form. The composer
-        below cannot start a second one — `startConversation` refuses, which
-        used to surface as "a conversation with this user already exists" after
-        typing a message out.
+        Everything below is addressed to somebody else, so none of it belongs
+        on your own profile. `isSelf` used to gate only the kebab menu and the
+        Follow button, which left a composer that messaged you and a Block
+        button that blocked you — reachable already through a handle deep
+        link, and now the whole point of "Preview my profile".
       */}
-      {user.conversationId ? (
-        <Button
-          label={t('profile.openChat')}
-          variant="secondary"
-          onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
-          style={styles.send}
-        />
+      {isSelf ? (
+        <Text style={styles.previewNote}>{t('profile.previewNote')}</Text>
       ) : (
         <>
-          <Text style={styles.sendLabel}>{t('profile.sendMessage')}</Text>
-          <View style={styles.composerRow}>
-            <TextInput
-              value={message}
-              onChangeText={setMessage}
-              placeholder={t('chat.sayHello', { name: user.displayName })}
-              placeholderTextColor={colors.textFaint}
-              style={styles.input}
+          {/*
+            A conversation that already exists is a link, not a form. The
+            composer below cannot start a second one — `startConversation`
+            refuses, which used to surface as "a conversation with this user
+            already exists" after typing a message out.
+          */}
+          {user.conversationId ? (
+            <Button
+              label={t('profile.openChat')}
+              variant="secondary"
+              onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
+              style={styles.send}
             />
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t('common.send')}
-              accessibilityState={{ disabled: !canSend }}
-              disabled={!canSend}
-              onPress={() => void send()}
-              style={({ pressed }) => [
-                styles.sendCircle,
-                !canSend && styles.sendCircleDisabled,
-                pressed && canSend && styles.iconPressed,
-              ]}
-            >
-              {startConversation.isPending ? (
-                <ActivityIndicator color={colors.bg} />
-              ) : (
-                <Feather name="send" size={17} color={colors.bg} />
-              )}
+          ) : (
+            <>
+              <Text style={styles.sendLabel}>{t('profile.sendMessage')}</Text>
+              <View style={styles.composerRow}>
+                <TextInput
+                  value={message}
+                  onChangeText={setMessage}
+                  placeholder={t('chat.sayHello', { name: user.displayName })}
+                  placeholderTextColor={colors.textFaint}
+                  style={styles.input}
+                />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t('common.send')}
+                  accessibilityState={{ disabled: !canSend }}
+                  disabled={!canSend}
+                  onPress={() => void send()}
+                  style={({ pressed }) => [
+                    styles.sendCircle,
+                    !canSend && styles.sendCircleDisabled,
+                    pressed && canSend && styles.iconPressed,
+                  ]}
+                >
+                  {startConversation.isPending ? (
+                    <ActivityIndicator color={colors.bg} />
+                  ) : (
+                    <Feather name="send" size={17} color={colors.bg} />
+                  )}
+                </Pressable>
+              </View>
+              {quota.data ? (
+                <Text style={styles.quotaHint}>
+                  {t('me.newChatsLeft')} {quota.data.initiations.remaining ?? '—'} /{' '}
+                  {quota.data.initiations.limit ?? '∞'}
+                </Text>
+              ) : null}
+              {error ? <Text style={styles.error}>{error}</Text> : null}
+            </>
+          )}
+
+          <View style={styles.danger}>
+            <Pressable onPress={() => void confirmReport()} hitSlop={8}>
+              <Text style={styles.dangerText}>{t('common.report')}</Text>
+            </Pressable>
+            <Pressable onPress={() => void confirmBlock()} hitSlop={8}>
+              <Text style={styles.dangerText}>{t('common.block')}</Text>
             </Pressable>
           </View>
-          {quota.data ? (
-            <Text style={styles.quotaHint}>
-              {t('me.newChatsLeft')} {quota.data.initiations.remaining ?? '—'} /{' '}
-              {quota.data.initiations.limit ?? '∞'}
-            </Text>
-          ) : null}
-          {error ? <Text style={styles.error}>{error}</Text> : null}
         </>
       )}
-
-      <View style={styles.danger}>
-        <Pressable onPress={() => void confirmReport()} hitSlop={8}>
-          <Text style={styles.dangerText}>{t('common.report')}</Text>
-        </Pressable>
-        <Pressable onPress={() => void confirmBlock()} hitSlop={8}>
-          <Text style={styles.dangerText}>{t('common.block')}</Text>
-        </Pressable>
-      </View>
     </Screen>
   )
 }
@@ -475,6 +488,12 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   quotaHint: { color: colors.textFaint, fontSize: 13, marginTop: 10 },
   error: { ...font.caption, color: colors.danger, marginTop: spacing.sm },
   send: { marginTop: spacing.lg },
+  previewNote: {
+    ...font.caption,
+    color: colors.textFaint,
+    lineHeight: 19,
+    marginTop: spacing.xl,
+  },
   danger: {
     borderTopColor: colors.border,
     borderTopWidth: 1,

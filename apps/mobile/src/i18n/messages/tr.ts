@@ -549,6 +549,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    previewNote:
+      'Bu, başkalarının gördüğü haliyle profilin — gizlilik ayarların zaten uygulanmış durumda.',
     teaches: 'Öğretiyor',
     learns: 'Öğreniyor',
     openChat: 'Sohbeti aç',
@@ -591,6 +593,8 @@ export const tr: Localized<EnMessages> = {
     settings: 'Ayarlar',
     corrections: 'Düzeltme',
     tokens: 'Jeton',
+    previewProfile: 'Profilimi önizle',
+    previewProfileBody: 'Profilini başkalarının gördüğü gibi gör',
     badges: 'Rozetler',
   },
 
