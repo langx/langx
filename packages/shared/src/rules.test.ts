@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { MINIMUM_AGE, birthYearSchema, meetsMinimumAge } from './age'
+import { MINIMUM_AGE, birthDateSchema, meetsMinimumAge } from './age'
 import { LANGUAGE_LEVELS, levelRank } from './level'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
 import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
@@ -28,17 +28,32 @@ describe('age gate', () => {
     expect(MINIMUM_AGE).toBe(18)
   })
 
+  /**
+   * Still counted by year, now that the whole date is known: somebody who
+   * turns 18 in December is let in in January. Making that strict is a product
+   * decision — the point of this test is that collecting the day did not
+   * quietly change who gets in.
+   */
   it('accepts someone turning 18 this year and rejects 17', () => {
-    expect(meetsMinimumAge(2008, NOW)).toBe(true) // turns 18 in 2026
-    expect(meetsMinimumAge(2009, NOW)).toBe(false)
+    expect(meetsMinimumAge('2008-12-31', NOW)).toBe(true) // turns 18 in 2026
+    expect(meetsMinimumAge('2009-01-01', NOW)).toBe(false)
   })
 
-  it('rejects an underage birth year through the schema', () => {
-    const schema = birthYearSchema(NOW)
-    expect(schema.safeParse(1995).success).toBe(true)
-    expect(schema.safeParse(2015).success).toBe(false)
-    expect(schema.safeParse(2030).success).toBe(false) // future
-    expect(schema.safeParse(1850).success).toBe(false)
+  it('rejects an underage birth date through the schema', () => {
+    const schema = birthDateSchema(NOW)
+    expect(schema.safeParse('1995-06-15').success).toBe(true)
+    expect(schema.safeParse('2015-06-15').success).toBe(false)
+    expect(schema.safeParse('2030-06-15').success).toBe(false) // future
+    expect(schema.safeParse('1850-06-15').success).toBe(false)
+  })
+
+  it('rejects a date that never happened', () => {
+    const schema = birthDateSchema(NOW)
+    expect(schema.safeParse('2001-02-30').success).toBe(false)
+    expect(schema.safeParse('1999-02-29').success).toBe(false) // not a leap year
+    expect(schema.safeParse('2000-02-29').success).toBe(true) // this one is
+    expect(schema.safeParse('15/06/1995').success).toBe(false)
+    expect(schema.safeParse('1995-6-15').success).toBe(false)
   })
 })
 

@@ -11,7 +11,7 @@ function minimalProfile(id: string): Profile {
     _id: id,
     handle: id,
     displayName: id,
-    birthYear: 1995,
+    birthDate: '1995-06-15',
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],

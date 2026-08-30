@@ -23,7 +23,7 @@ function onboardingBody(overrides: Record<string, unknown> = {}) {
   return {
     handle: 'newuser',
     displayName: 'New User',
-    birthYear: 1995,
+    birthDate: '1995-06-15',
     gender: 'undisclosed',
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
@@ -138,7 +138,71 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(second.statusCode).toBe(400)
   })
 
-  it('rejects an underage birthYear even though the client already validated it', async () => {
+  /**
+   * The country is a fact about the connection, not an answer on a form: the
+   * whole reason it moved server-side is that a self-declared country makes
+   * the discovery filter meaningless.
+   */
+  it('takes the country from the edge and ignores what the form claimed', async () => {
+    const user = await newUser('edge-country@example.com')
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie, 'cf-ipcountry': 'de' },
+      payload: onboardingBody({ handle: 'edgecountry', country: 'FR' }),
+    })
+
+    expect(response.statusCode, response.body).toBe(201)
+    expect(response.json<Profile>().country).toBe('DE')
+  })
+
+  it('falls back to the form when the edge cannot say where the request came from', async () => {
+    const user = await newUser('tor-country@example.com')
+
+    const response = await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie, 'cf-ipcountry': 'T1' },
+      payload: onboardingBody({ handle: 'torcountry', country: 'FR' }),
+    })
+
+    expect(response.statusCode, response.body).toBe(201)
+    expect(response.json<Profile>().country).toBe('FR')
+  })
+
+  it('lets a location fix overwrite it, and only through its own route', async () => {
+    const user = await newUser('located@example.com')
+    await app.inject({
+      method: 'POST',
+      url: '/profiles',
+      headers: { cookie: user.cookie, 'cf-ipcountry': 'DE' },
+      payload: onboardingBody({ handle: 'located' }),
+    })
+
+    const viaUpdate = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me',
+      headers: { cookie: user.cookie },
+      payload: { country: 'TR' },
+    })
+    // `country` is not part of the update schema, so zod drops it: the request
+    // succeeds and changes nothing, which is what "cannot be edited" means
+    // from the client's side.
+    expect(viaUpdate.statusCode, viaUpdate.body).toBe(200)
+    expect(viaUpdate.json<Profile>().country).toBe('DE')
+
+    const viaLocation = await app.inject({
+      method: 'PATCH',
+      url: '/profiles/me/country',
+      headers: { cookie: user.cookie },
+      payload: { country: 'TR', source: 'location' },
+    })
+    expect(viaLocation.statusCode, viaLocation.body).toBe(200)
+    expect(viaLocation.json<Profile>().country).toBe('TR')
+  })
+
+  it('rejects an underage birthDate even though the client already validated it', async () => {
     const user = await newUser('underage-attempt@example.com')
 
     const response = await app.inject({
@@ -147,7 +211,7 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       headers: { cookie: user.cookie },
       payload: onboardingBody({
         handle: 'underageuser',
-        birthYear: new Date().getUTCFullYear() - 10,
+        birthDate: `${new Date().getUTCFullYear() - 10}-06-15`,
       }),
     })
 

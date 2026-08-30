@@ -7,7 +7,7 @@ const EMPTY: OnboardingDraft = {
   learning: [],
   handle: '',
   displayName: '',
-  birthYear: '',
+  birthDate: '',
   gender: 'undisclosed',
   bio: '',
   interests: [],
@@ -26,11 +26,32 @@ describe('furthestOnboardingStep', () => {
     expect(furthestOnboardingStep(EMPTY)).toBe('languages')
   })
 
-  it('stays on languages until both directions are set', () => {
-    expect(furthestOnboardingStep(draft({ nativeLanguages: ['tr'] }))).toBe('languages')
+  it('asks for the languages you speak before the ones you want', () => {
+    expect(furthestOnboardingStep(draft({ nativeLanguages: [] }))).toBe('languages')
+    expect(furthestOnboardingStep(draft({ nativeLanguages: ['tr'] }))).toBe('learning')
+  })
+
+  /**
+   * The step that only exists because the previous one does: a learning
+   * language with no level yet sends you here, not past it.
+   */
+  it('holds on levels until every learning language has one', () => {
     expect(
-      furthestOnboardingStep(draft({ learning: [{ code: 'en', level: 'intermediate' }] })),
-    ).toBe('languages')
+      furthestOnboardingStep(
+        draft({ nativeLanguages: ['tr'], learning: [{ code: 'en', level: null }] }),
+      ),
+    ).toBe('levels')
+    expect(
+      furthestOnboardingStep(
+        draft({
+          nativeLanguages: ['tr'],
+          learning: [
+            { code: 'en', level: 'intermediate' },
+            { code: 'de', level: null },
+          ],
+        }),
+      ),
+    ).toBe('levels')
   })
 
   it('moves on once a language pair exists', () => {
@@ -42,12 +63,16 @@ describe('furthestOnboardingStep', () => {
     expect(furthestOnboardingStep(draft({ ...withLanguages, displayName: 'Ada' }))).toBe(
       'about-you',
     )
-    expect(furthestOnboardingStep(draft({ ...withLanguages, birthYear: '1994' }))).toBe('about-you')
+    expect(furthestOnboardingStep(draft({ ...withLanguages, birthDate: '1994-03-07' }))).toBe(
+      'about-you',
+    )
   })
 
   it('reaches the photo step with the required fields in place', () => {
     expect(
-      furthestOnboardingStep(draft({ ...withLanguages, displayName: 'Ada', birthYear: '1994' })),
+      furthestOnboardingStep(
+        draft({ ...withLanguages, displayName: 'Ada', birthDate: '1994-03-07' }),
+      ),
     ).toBe('photo')
   })
 
@@ -58,14 +83,16 @@ describe('furthestOnboardingStep', () => {
   it('never resumes on the handle step, even with a handle already typed', () => {
     expect(
       furthestOnboardingStep(
-        draft({ ...withLanguages, displayName: 'Ada', birthYear: '1994', handle: 'ada' }),
+        draft({ ...withLanguages, displayName: 'Ada', birthDate: '1994-03-07', handle: 'ada' }),
       ),
     ).toBe('photo')
   })
 
   it('treats whitespace as unfilled', () => {
     expect(
-      furthestOnboardingStep(draft({ ...withLanguages, displayName: '   ', birthYear: '1994' })),
+      furthestOnboardingStep(
+        draft({ ...withLanguages, displayName: '   ', birthDate: '1994-03-07' }),
+      ),
     ).toBe('about-you')
   })
 })

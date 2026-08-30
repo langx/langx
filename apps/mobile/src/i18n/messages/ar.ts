@@ -207,6 +207,14 @@ export const ar: Localized<EnMessages> = {
   },
 
   location: {
+    useMyLocation: 'استخدم موقعي',
+    deniedTitle: 'الموقع مغلق لتطبيق LangX',
+    deniedBodyIos: 'افتح الإعدادات ← LangX ← الموقع واختر «أثناء استخدام التطبيق».',
+    deniedBodyAndroid: 'افتح الإعدادات ← التطبيقات ← LangX ← الأذونات ← الموقع واسمح به.',
+    openSettings: 'فتح الإعدادات',
+    failedTitle: 'تعذّرت قراءة موقعك',
+    noCountry: 'لم نتمكن من تحديد الدولة.',
+    countryUpdated: 'تم تحديث الدولة.',
     denied: 'يحتاج LangX إلى إذن الموقع لهذا. يمكنك منحه من إعدادات جهازك.',
     disabled: 'خدمات الموقع مغلقة على هذا الجهاز.',
     unavailable: 'تعذّر تحديد الموقع الآن. حاول بعد قليل.',
@@ -281,6 +289,18 @@ export const ar: Localized<EnMessages> = {
   },
 
   onboarding: {
+    nativeTitle: 'ما اللغات التي تتحدثها؟',
+    nativeBody: 'التي نشأت عليها أو تتحدثها كأهلها.',
+    learningTitle: 'وأيها تتعلم؟',
+    learningBody: 'اختر ما تريد التدرب عليه مع شخص ما.',
+    levelsTitle: 'إلى أين وصلت؟',
+    levelsBody: '١ مبتدئ تماماً، ٤ بطلاقة.',
+    pickALevel: 'اختر مستوى',
+    birthDate: 'تاريخ الميلاد',
+    birthDatePlaceholder: 'اختر تاريخاً',
+    day: 'اليوم',
+    month: 'الشهر',
+    year: 'السنة',
     languagesTitle: 'ما اللغات التي تتكلمها؟',
     languagesBody: 'لغتك الأم هي ما يمكنك تعليمه؛ وما تتعلّمه يحدّد مع من ستتوافق.',
     native: 'الأم',
@@ -667,6 +687,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   editProfile: {
+    countryUnknown: 'غير محدد',
+    countryHint: 'مأخوذ من اتصالك. شارك موقعك لتصحيحه.',
     title: 'تعديل الملف',
     displayName: 'الاسم المعروض',
     aboutYou: 'عنك',

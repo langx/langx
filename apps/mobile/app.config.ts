@@ -108,6 +108,10 @@ const config: ExpoConfig = {
 
   plugins: [
     'expo-router',
+    // The birth-date picker's native module. Config-plugin only — there is
+    // nothing to configure, but without the entry the module is not linked
+    // into a build.
+    '@react-native-community/datetimepicker',
     // Microphone access is only ever requested when the user taps record, but
     // the string has to be declared here or iOS terminates the app the first
     // time it is asked for.

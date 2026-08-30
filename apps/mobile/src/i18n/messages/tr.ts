@@ -166,6 +166,14 @@ export const tr: Localized<EnMessages> = {
   },
 
   location: {
+    useMyLocation: 'Konumumu kullan',
+    deniedTitle: 'LangX için konum kapalı',
+    deniedBodyIos: 'Ayarlar → LangX → Konum yolunu açıp “Uygulamayı Kullanırken”i seç.',
+    deniedBodyAndroid: 'Ayarlar → Uygulamalar → LangX → İzinler → Konum yolundan izin ver.',
+    openSettings: 'Ayarları aç',
+    failedTitle: 'Konum okunamadı',
+    noCountry: 'Bunun hangi ülke olduğunu anlayamadık.',
+    countryUpdated: 'Ülke güncellendi.',
     denied: 'Bunun için LangX’in konum iznine ihtiyacı var. İzni cihaz ayarlarından verebilirsin.',
     disabled: 'Bu cihazda konum servisleri kapalı.',
     unavailable: 'Şu anda konum alınamadı. Birazdan tekrar dene.',
@@ -241,6 +249,18 @@ export const tr: Localized<EnMessages> = {
   },
 
   onboarding: {
+    nativeTitle: 'Hangi dilleri konuşuyorsun?',
+    nativeBody: 'Büyürken öğrendiklerin ya da ana dilin gibi konuştukların.',
+    learningTitle: 'Hangilerini öğreniyorsun?',
+    learningBody: 'Birileriyle pratik yapmak istediklerini seç.',
+    levelsTitle: 'Seviyen ne?',
+    levelsBody: '1 hiç bilmiyor, 4 akıcı demek.',
+    pickALevel: 'Bir seviye seç',
+    birthDate: 'Doğum tarihi',
+    birthDatePlaceholder: 'Tarih seç',
+    day: 'Gün',
+    month: 'Ay',
+    year: 'Yıl',
     languagesTitle: 'Hangi dilleri konuşuyorsun?',
     languagesBody:
       'Ana dilin öğretebildiğin şey; öğrendiğin dil de kiminle eşleşeceğini belirliyor.',
@@ -560,6 +580,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   editProfile: {
+    countryUnknown: 'Belirsiz',
+    countryHint: 'Bağlantından alındı. Düzeltmek için konumunu paylaş.',
     title: 'Profili düzenle',
     displayName: 'Görünen ad',
     aboutYou: 'Senin hakkında',

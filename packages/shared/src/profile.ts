@@ -1,5 +1,5 @@
 import { countryCodeSchema } from './countries'
-import { birthYearSchema } from './age'
+import { birthDateSchema } from './age'
 import { languageLevelSchema } from './level'
 import { handleSchema } from './handle'
 import { languageCodeSchema } from './languages'
@@ -77,16 +77,20 @@ const nativeLanguagesSchema = z.array(nativeLanguageSchema).min(1).max(MAX_LANGU
 const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_LANGUAGES)
 
 /**
- * Body of `POST /profiles` — onboarding. `birthYear` is validated here
+ * Body of `POST /profiles` — onboarding. `birthDate` is validated here
  * server-side (see age.ts's doc comment on why this, not the client, is the
  * real gate) rather than at Better Auth sign-up, because OAuth accounts
  * (Google/Apple) never pass through a form that could collect it there.
+ *
+ * `country` is still accepted, but it is a **fallback**: the server takes the
+ * country from the connection instead, and only falls back to this when the
+ * edge cannot say (Tor, an unknown range). See `countryFromRequest`.
  */
 export const onboardingProfileSchema = z
   .object({
     handle: handleSchema,
     displayName: displayNameSchema,
-    birthYear: birthYearSchema(),
+    birthDate: birthDateSchema(),
     gender: genderSchema,
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
@@ -116,6 +120,19 @@ export type OnboardingProfileInput = z.infer<typeof onboardingProfileSchema>
  * server-owned field (`entitlement`, `quota`, `streak`, `stats`, `avatarUrl`
  * — the last is set only via the upload-url confirm step, not free-form).
  */
+/**
+ * Body of `PATCH /profiles/me/country`. Its own route and its own schema
+ * because a country is not a field somebody types: it comes from the
+ * connection at sign-up, and afterwards only from a location fix the device
+ * reverse-geocoded. Nothing else may set it.
+ */
+export const countryFromLocationSchema = z.object({
+  country: countryCodeSchema,
+  /** Only one source is accepted; naming it keeps the route honest. */
+  source: z.literal('location'),
+})
+export type CountryFromLocationInput = z.infer<typeof countryFromLocationSchema>
+
 export const updateProfileSchema = z
   .object({
     displayName: displayNameSchema,
@@ -124,7 +141,6 @@ export const updateProfileSchema = z
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
     interests: interestsSchema,
-    country: countryCodeSchema,
     city: z.string().trim().min(1).max(CITY_MAX_LENGTH),
     timezone: z.string().trim().min(1),
     settings: z.object({

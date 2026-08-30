@@ -1,6 +1,8 @@
-import { GENDERS, MINIMUM_AGE } from '@langx/shared'
+import { GENDERS, MINIMUM_AGE, birthDateSchema } from '@langx/shared'
 import { router } from 'expo-router'
 import { Pressable, Text, View } from 'react-native'
+import { BirthDateField } from '../../src/components/BirthDateField'
+import { StepProgress } from '../../src/components/StepProgress'
 import { Button } from '../../src/components/ui/Button'
 import { FormField } from '../../src/components/ui/FormField'
 import { Screen } from '../../src/components/ui/Screen'
@@ -14,24 +16,24 @@ export default function AboutYouStep() {
 
   const draft = useOnboardingDraft()
 
-  const year = Number(draft.birthYear)
-  const thisYear = new Date().getFullYear()
-  const yearLooksValid = /^\d{4}$/.test(draft.birthYear) && year > 1900 && year <= thisYear
-  const oldEnough = yearLooksValid && thisYear - year >= MINIMUM_AGE
+  /**
+   * The same schema the server will run, so the two cannot drift: a date that
+   * passes here is one `POST /profiles` accepts. This only saves the user a
+   * round trip and an error they cannot act on — the gate is still the server.
+   */
+  const valid = birthDateSchema().safeParse(draft.birthDate).success
+  const canContinue = draft.displayName.trim().length > 0 && valid
 
-  const canContinue = draft.displayName.trim().length > 0 && oldEnough
-
-  // The age gate is enforced server-side at profile creation (see age.ts) —
-  // this only saves the user a round-trip and an error they cannot fix by
-  // retrying. It is not the check that matters.
+  // Quiet until the date is complete: an age warning under a half-typed year
+  // is an accusation nobody has earned yet.
   const ageError =
-    draft.birthYear.length === 4 && yearLooksValid && !oldEnough
+    draft.birthDate.length === 10 && !valid
       ? t('onboarding.tooYoung', { age: MINIMUM_AGE })
       : undefined
 
   return (
     <Screen scroll>
-      <Text style={styles.step}>2 / 4</Text>
+      <StepProgress step="about-you" />
       <Text style={styles.title}>{t('onboarding.aboutYouTitle')}</Text>
 
       <FormField
@@ -42,15 +44,11 @@ export default function AboutYouStep() {
         autoCapitalize="words"
       />
 
-      <FormField
-        label={t('onboarding.yearOfBirth')}
-        value={draft.birthYear}
-        onChangeText={(birthYear) =>
-          updateDraft({ birthYear: birthYear.replace(/\D/g, '').slice(0, 4) })
-        }
-        placeholder={t('onboarding.yearPlaceholder')}
-        keyboardType="number-pad"
-        {...(ageError ? { error: ageError } : {})}
+      <BirthDateField
+        label={t('onboarding.birthDate')}
+        value={draft.birthDate}
+        onChange={(birthDate) => updateDraft({ birthDate })}
+        error={ageError}
       />
 
       <Text style={styles.label}>{t('onboarding.gender')}</Text>

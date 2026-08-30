@@ -31,7 +31,7 @@ export const handleRoutes: FastifyPluginAsyncZod = async (app) => {
         ? {
             displayName: legacy.displayName ?? null,
             bio: legacy.bio ?? null,
-            birthYear: legacy.birthYear ?? null,
+            birthDate: legacy.birthDate ?? null,
             gender: legacy.gender ?? null,
             country: legacy.countryCode ?? null,
             nativeLanguages: legacy.nativeLanguages,

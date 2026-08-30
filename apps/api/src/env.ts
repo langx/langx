@@ -26,6 +26,13 @@ const envSchema = z.object({
     .min(32, 'BETTER_AUTH_SECRET is required — openssl rand -base64 32'),
   // Falls back to http://<HOST>:<PORT> in auth.ts when unset (local dev).
   BETTER_AUTH_URL: emptyToUndefined(z.url().optional()),
+  /**
+   * Shared with a Cloudflare transform rule, which stamps it on every request
+   * that really passed through the edge. Without it `CF-IPCountry` is just a
+   * header anyone can send to the origin's IP — see `requestCountry.ts`.
+   * Optional: a self-hosted deployment has no edge to prove anything about.
+   */
+  EDGE_SECRET: emptyToUndefined(z.string().min(8).optional()),
   TRUSTED_ORIGINS: z
     .string()
     .default('')

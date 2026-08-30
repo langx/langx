@@ -38,7 +38,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_anna',
     displayName: 'Anna',
-    birthYear: 1997,
+    birthDate: '1997-06-15',
     gender: 'female',
     nativeLanguages: [{ code: 'ru' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
@@ -50,7 +50,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_dmitri',
     displayName: 'Dmitri',
-    birthYear: 1992,
+    birthDate: '1992-06-15',
     gender: 'male',
     nativeLanguages: [{ code: 'ru' }],
     learning: [
@@ -65,7 +65,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_katya',
     displayName: 'Katya',
-    birthYear: 2001,
+    birthDate: '2001-06-15',
     gender: 'female',
     nativeLanguages: [{ code: 'ru' }, { code: 'uk' }],
     learning: [{ code: 'en', level: 'fluent', priority: 1 }],
@@ -77,7 +77,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_pavel',
     displayName: 'Pavel',
-    birthYear: 1988,
+    birthDate: '1988-06-15',
     gender: 'male',
     nativeLanguages: [{ code: 'ru' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
@@ -89,7 +89,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_olga',
     displayName: 'Olga',
-    birthYear: 1995,
+    birthDate: '1995-06-15',
     gender: 'female',
     nativeLanguages: [{ code: 'ru' }],
     learning: [
@@ -104,7 +104,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_mateo',
     displayName: 'Mateo',
-    birthYear: 1999,
+    birthDate: '1999-06-15',
     gender: 'male',
     nativeLanguages: [{ code: 'es' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
@@ -116,7 +116,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_elif',
     displayName: 'Elif',
-    birthYear: 1994,
+    birthDate: '1994-06-15',
     gender: 'female',
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'ru', level: 'beginner', priority: 1 }],
@@ -128,7 +128,7 @@ const PEOPLE: OnboardingProfileInput[] = [
   {
     handle: 'test_yuki',
     displayName: 'Yuki',
-    birthYear: 1990,
+    birthDate: '1990-06-15',
     gender: 'other',
     nativeLanguages: [{ code: 'ja' }],
     learning: [{ code: 'en', level: 'fluent', priority: 1 }],

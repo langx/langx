@@ -18,7 +18,7 @@ export interface LegacyProfile {
   legacyEmailHash: string
   displayName?: string
   bio?: string
-  birthYear?: number
+  birthDate?: string
   gender?: Gender
   country?: string
   countryCode?: string

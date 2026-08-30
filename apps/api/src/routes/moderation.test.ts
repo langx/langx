@@ -48,7 +48,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       payload: {
         handle: `faz10user${seq}`,
         displayName: `User ${seq}`,
-        birthYear: 1995,
+        birthDate: '1995-06-15',
         gender: 'undisclosed',
         nativeLanguages: [{ code: 'tr' }],
         learning: [{ code: 'en', level: 'intermediate', priority: 1 }],

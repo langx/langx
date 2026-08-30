@@ -52,7 +52,7 @@ describe('v1 loyalty lifetime grant', () => {
       handle: `veteran${seq}`,
       legacyEmailHash: hash,
       displayName: 'Veteran',
-      birthYear: 1990,
+      birthDate: '1990-06-15',
       nativeLanguages: [{ code: 'tr' }],
       learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       photos: [],

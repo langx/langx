@@ -25,7 +25,7 @@ function baseOnboarding() {
   return {
     handle: 'newuser',
     displayName: 'New User',
-    birthYear: 1995,
+    birthDate: '1995-06-15',
     gender: 'undisclosed' as const,
     nativeLanguages: [{ code: 'tr' }],
     learning: [{ code: 'en', level: 'intermediate' as const, priority: 1 }],
@@ -38,10 +38,10 @@ describe('onboardingProfileSchema', () => {
     expect(result.success).toBe(true)
   })
 
-  it('rejects an underage birthYear — the real gate lives here, not just in age.ts', () => {
+  it('rejects an underage birthDate — the real gate lives here, not just in age.ts', () => {
     const result = onboardingProfileSchema.safeParse({
       ...baseOnboarding(),
-      birthYear: NOW.getUTCFullYear() - 10,
+      birthDate: `${NOW.getUTCFullYear() - 10}-06-15`,
     })
     expect(result.success).toBe(false)
   })

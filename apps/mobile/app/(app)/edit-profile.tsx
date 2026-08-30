@@ -29,7 +29,7 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { FormField } from '../../src/components/ui/FormField'
-import { CountryPicker } from '../../src/components/CountryPicker'
+import { CountryFromLocation } from '../../src/components/CountryFromLocation'
 import { Screen } from '../../src/components/ui/Screen'
 import { goBackTo } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
@@ -83,7 +83,6 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 
   const [displayName, setDisplayName] = useState(profile.displayName ?? '')
   const [bio, setBio] = useState(profile?.bio ?? '')
-  const [country, setCountry] = useState(profile?.country ?? '')
   const [city, setCity] = useState(profile?.city ?? '')
   const [interests, setInterests] = useState<string[]>(profile?.interests ?? [])
   const [gender, setGender] = useState<Gender>(profile?.gender ?? 'undisclosed')
@@ -139,7 +138,6 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         displayName: displayName.trim(),
         bio: bio.trim(),
         gender,
-        ...(country ? { country } : {}),
         ...(city.trim() ? { city: city.trim() } : {}),
         interests,
         nativeLanguages: native.map((code) => ({ code })),
@@ -197,7 +195,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         placeholder={t('editProfile.aboutYouPlaceholder')}
         multiline
       />
-      <CountryPicker label={t('editProfile.country')} value={country} onChange={setCountry} />
+      <CountryFromLocation country={profile?.country} />
 
       {/*
         `city` has been in the schema and declared in the store privacy form

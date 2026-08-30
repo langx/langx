@@ -186,6 +186,14 @@ export const en = {
   },
 
   location: {
+    useMyLocation: 'Use my location',
+    deniedTitle: 'Location is off for LangX',
+    deniedBodyIos: 'Open Settings → LangX → Location and choose “While Using the App”.',
+    deniedBodyAndroid: 'Open Settings → Apps → LangX → Permissions → Location and allow it.',
+    openSettings: 'Open settings',
+    failedTitle: 'Could not read your location',
+    noCountry: 'We could not tell which country that is.',
+    countryUpdated: 'Country updated.',
     denied: 'LangX needs location permission to do this. You can grant it in your device settings.',
     disabled: 'Location services are turned off on this device.',
     unavailable: 'Could not get a location right now. Try again in a moment.',
@@ -262,6 +270,18 @@ export const en = {
   },
 
   onboarding: {
+    nativeTitle: 'Which languages do you speak?',
+    nativeBody: 'The ones you grew up with, or speak like a native.',
+    learningTitle: 'Which are you learning?',
+    learningBody: 'Pick the ones you want to practise with somebody.',
+    levelsTitle: 'How far along are you?',
+    levelsBody: '1 is an absolute beginner, 4 is fluent.',
+    pickALevel: 'Choose a level',
+    birthDate: 'Date of birth',
+    birthDatePlaceholder: 'Choose a date',
+    day: 'Day',
+    month: 'Month',
+    year: 'Year',
     languagesTitle: 'Which languages do you speak?',
     languagesBody:
       'Your native language is what you can teach; what you’re learning is who you’ll match with.',
@@ -589,6 +609,8 @@ export const en = {
   },
 
   editProfile: {
+    countryUnknown: 'Not set',
+    countryHint: 'Taken from your connection. Share your location to correct it.',
     title: 'Edit profile',
     displayName: 'Display name',
     aboutYou: 'About you',
