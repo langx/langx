@@ -395,9 +395,9 @@ makes a one-off migration credit safe to apply exactly once.
 | Reciprocity bonus    | Only conversations **both** sides have spoken in          |
 | Streak milestone     | Fixed bonus                                               |
 
-**2) The daily pool**, distributed by cron at day close: a fixed daily pool `P`
-is split among that day's active users **in proportion to an activity score**,
-with a per-user ceiling (5% of the pool by default).
+**2) The daily pool**, paid out the morning after the day closes: a fixed daily
+pool `P` is split among that day's active users **in proportion to an activity
+score**, with a per-user ceiling (5% of the pool by default).
 
 ```
 activityScore = w1·mutual conversations
@@ -411,6 +411,27 @@ Weights are config in `TOKEN_RULES`. The pool is deliberately **relative** —
 making your share depend on everyone else's activity is what keeps the table
 worth watching.
 
+The day closes at 00:00 UTC; the payout runs at `TOKEN_RULES.pool.payoutHourUtc`
+(04:00 UTC). The gap is deliberate — a share is a number about everyone, so it
+cannot be computed until every writer has finished with the day — and it makes
+the deposit land at one predictable time rather than whenever the process
+happened to tick past midnight. The scheduler still asks every 15 minutes, so a
+process that was down at 04:00 pays at 04:15 rather than never; `newestPayableDay`
+is the shared boundary it and its test agree on.
+
+**The app never shows a projected share.** `GET /me/tokens` carries
+`pool.activeToday` and `pool.lastPayout` — how busy today is, and what the pool
+actually credited last time — and deliberately no live "your share so far". Such
+a projection moves all day as other people act and ignores the eligibility the
+payout applies at day close, so an account inside `accountAgeRampUpHours` would
+watch a share climb until midnight and be paid nothing. `GET /me/tokens/history`
+pages the ledger a day at a time for the same reason: it reports what happened.
+
+A pool row is written at `dayCloseAt(D)`, so its `day` field is already `D+1`
+while its `refId` is `D`. Anything showing a share to a user must date it by
+`refId` — `earnedDayOf` in `packages/shared` is that rule, used by the history
+aggregation and by `readLastPoolPayout`.
+
 ### Data model
 
 - **`tokenLedger`** (append-only): `{ userId, kind, amount, refId?, day, week,
@@ -422,6 +443,10 @@ month, year, createdAt }`. **Unique `{ userId, kind, refId }`** → the same
   which would only drift.
 - **`dailyActivity`**: `_id = '<userId>:<day>'`, live counters the pool reads.
 - **`jobRuns`**: unique `{ job, periodKey }`, the cron idempotency lock.
+
+`tokenLedger` also carries `{ userId: 1, day: -1 }` (`user_day`) for the history:
+`user_created` almost serves it and does not, because a pool award is written at
+its day's close and so interleaves with the next day's messages.
 
 ### Leaderboards
 

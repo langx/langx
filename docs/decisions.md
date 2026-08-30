@@ -326,6 +326,46 @@ the first days after launch will look like. The alternative — redistributing
 the remainder when the cap binds — would hand a single active user the entire
 pool, which is exactly what the cap exists to prevent.
 
+## The pool pays at 04:00 UTC, and the app stops predicting it
+
+Two changes to the same thing, made together because either one alone is worse
+than both.
+
+**The payout moved off midnight.** A day closed at 00:00 UTC and the next
+scheduler tick paid it, which meant the deposit landed at whatever minute the
+process happened to be at — and computed a number about everyone at exactly the
+moment the day's last messages, the cap counters and any redeploy were still
+settling. `TOKEN_RULES.pool.payoutHourUtc` is 4, and `newestPayableDay` holds a
+closed day back until then. The 15-minute tick stays: a cron that fires once at
+04:00 and finds the process restarting never pays that day at all, which is the
+failure the self-healing loop was built against in the first place.
+
+**The projected share is gone.** The token screen drew `+84 your share so far`
+from the viewer's activity score over everyone's, live, recomputed on every
+read. It was the single most compelling thing on the screen and it was a
+promise the payout does not make. The denominator moves all day, so the number
+falls while you do nothing; worse, it ignores the eligibility `runDailyPool`
+applies at day close, so an account inside `accountAgeRampUpHours` — the first
+24 hours, which is exactly when someone is most likely to be watching — would
+see a share climb all evening and be credited zero. `tokenSummarySchema.pool`
+now carries `activeToday` (a fact about today) and `lastPayout` (a number that
+already happened), and `pool.totalScore` was removed rather than left unread,
+since a field nothing consumes is the drift the shared package exists to
+prevent.
+
+What replaced it is `GET /me/tokens/history`: the ledger, a day at a time, with
+a per-kind breakdown, so "how much of Saturday was the pool" is answerable
+after the fact instead of guessed at beforehand. That question is the one the
+projection was really trying to answer.
+
+**The trap it exposed.** `awardTokens` stamps a row's `day` from the award
+instant, and the pool's instant is `dayCloseAt(D)` — midnight _after_ D. So a
+pool row for Saturday has always carried `day: Sunday`, with `refId: Saturday`.
+Nothing read it per-day before, so nothing noticed. Both new readers date a
+share by `refId` through the shared `earnedDayOf`; grouping on the raw `day`
+would have filed every share one day late, against a date the user may have
+been asleep for.
+
 ## Phase 10 — blocking goes through one helper
 
 `blockedUserIds(db, viewerId)` returns everyone the viewer must not see (both

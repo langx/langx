@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { walletSchema } from './cosmetics'
-import { shiftDayKey } from './periods'
+import { shiftDayKey, utcDayKey } from './periods'
 
 /**
  * The token is a point, not a currency. It cannot be traded, withdrawn or
@@ -89,13 +89,25 @@ export interface TokenRules {
   }
   /** Bonus token at streak milestones, keyed by day count. */
   streakMilestones: Record<number, number>
-  /** Daily pool, distributed at day close by cron in proportion to activity. */
+  /** Daily pool, paid out after the day closes in proportion to activity. */
   pool: {
     total: number
     /** Ceiling on one user's share, as a fraction of the pool. */
     maxShareOfPool: number
     /** Accounts younger than this earn no pool share. */
     accountAgeRampUpHours: number
+    /**
+     * Hour of the **UTC** day at which the previous day is paid out.
+     *
+     * The day itself still closes at 00:00 UTC — this only says when the
+     * payout runs, and the gap is deliberate. A share is a number about
+     * everyone, so it cannot be computed until every writer has finished with
+     * the day, and midnight UTC is exactly when the day's last messages, a
+     * redeploy and the cap counters are all still settling. Four hours later
+     * nothing is still moving, and the deposit lands at one predictable time
+     * rather than whenever the process happened to tick past midnight.
+     */
+    payoutHourUtc: number
     weights: {
       mutualConversations: number
       corrections: number
@@ -203,6 +215,7 @@ export const TOKEN_RULES: TokenRules = {
     total: 10_000,
     maxShareOfPool: 0.05,
     accountAgeRampUpHours: 24,
+    payoutHourUtc: 4,
     weights: {
       mutualConversations: 5,
       corrections: 3,
@@ -259,6 +272,32 @@ export function poolShare(
 }
 
 /**
+ * The most recent day whose payout window has opened, as a day key.
+ *
+ * A day closes at 00:00 UTC but is not paid until `pool.payoutHourUtc` that
+ * morning, so between midnight and the payout hour the newest payable day is
+ * the one before yesterday. Pure, so the scheduler and its test agree on the
+ * boundary rather than each computing it.
+ */
+export function newestPayableDay(now: Date, rules: TokenRules = TOKEN_RULES): string {
+  const today = utcDayKey(now)
+  return shiftDayKey(today, now.getUTCHours() >= rules.pool.payoutHourUtc ? -1 : -2)
+}
+
+/**
+ * The UTC day a ledger row belongs to *for the reader*.
+ *
+ * Every other kind is filed on the day it was written, but a pool share is
+ * written at the instant its day closes — `dayCloseAt(D)` is `D+1T00:00Z`, so
+ * `entry.day` for a pool award is already the day *after* the one it rewards.
+ * The history has to show it against the day that earned it, which `refId`
+ * holds. Shared because the aggregation and its test must agree.
+ */
+export function earnedDayOf(entry: { kind: TokenKind; day: string; refId?: string }): string {
+  return entry.kind === 'dailyPool' && entry.refId ? entry.refId : entry.day
+}
+
+/**
  * How long a user must wait before changing their timezone again.
  *
  * The streak runs on the user's local day, so an unrestricted timezone field
@@ -300,16 +339,25 @@ export const tokenSummarySchema = z.object({
     activityScore: z.number(),
   }),
   /**
-   * Where today's pool stands *right now*, so the client can draw a live
-   * provisional share with `poolShare()`. Both numbers move all day —
-   * "your share moves with everyone else's" is the product promise, and it
-   * needs the denominator to be true.
+   * The pool as the app is allowed to state it: how busy today is, and what the
+   * last closed day actually paid this user.
+   *
+   * There is deliberately **no** projected share for today. The obvious card
+   * draws one — score over everyone's score, live — but that number is a
+   * promise the cron will not keep: it moves all day as other people act, it
+   * ignores the eligibility the payout applies at day close, and an account
+   * inside `accountAgeRampUpHours` would watch a share climb all day and be
+   * paid nothing. `lastPayout` is a number that already happened.
    */
   pool: z.object({
     /** Users with a positive activity score so far today. */
     activeToday: z.number().int(),
-    /** Sum of everyone's provisional activity scores, the viewer's included. */
-    totalScore: z.number(),
+    /**
+     * The most recent pool share credited to this user, and the day it was
+     * earned for — not the day it was paid. Null until the first payout lands,
+     * which for a new account is the morning after their first active day.
+     */
+    lastPayout: z.object({ day: z.string(), amount: z.number().int() }).nullable(),
   }),
   /**
    * All-time counts that are not token totals.
@@ -362,6 +410,50 @@ export function streakRestorePrice(frozenStreak: number, rules = TOKEN_RULES): n
 }
 
 /** `GET /me/activity` — an inclusive local-day range. */
+/** How many days of history one page of `GET /me/tokens/history` returns. */
+export const TOKEN_HISTORY_PAGE_DAYS = 30
+
+export const tokenHistoryDaySchema = z.object({
+  /**
+   * The UTC day this row is filed under — the day the token was *earned for*,
+   * which for a pool share is the day it rewards rather than the morning it
+   * was credited. See `earnedDayOf`.
+   */
+  day: z.string(),
+  /** Sum of everything credited that day. */
+  earned: z.number().int(),
+  /** Sum of everything spent that day, as a positive number. */
+  spent: z.number().int(),
+  /**
+   * Per-kind totals, signed the way the ledger stores them, so `spend` is
+   * negative. Only kinds that moved appear — a day with no corrections has no
+   * `correction` entry rather than a zero one, so the client can render the
+   * list without filtering.
+   */
+  breakdown: z.array(z.object({ kind: tokenKindSchema, amount: z.number().int() })),
+})
+export type TokenHistoryDay = z.infer<typeof tokenHistoryDaySchema>
+
+export const tokenHistorySchema = z.object({
+  /** Newest day first. */
+  days: z.array(tokenHistoryDaySchema),
+  /**
+   * Pass as `before` to get the next page, or null at the end. A day key
+   * rather than an offset: the ledger is append-only and pages are read
+   * newest-first, so a cursor cannot be shifted by a write landing mid-scroll.
+   */
+  nextCursor: z.string().nullable(),
+})
+export type TokenHistory = z.infer<typeof tokenHistorySchema>
+
+export const tokenHistoryQuerySchema = z.object({
+  /** Exclusive upper bound, as a day key. */
+  before: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+})
+
 export const activityRangeSchema = z.object({
   from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

@@ -238,6 +238,12 @@ export const INDEXES: Partial<IndexSpec> = {
       partialFilterExpression: { refId: { $exists: true } },
     },
     { key: { userId: 1, createdAt: -1 }, name: 'user_created' },
+    // One user's history, newest day first. `user_created` almost serves this
+    // and does not: a pool award is written at its day's close, so ordering by
+    // `createdAt` interleaves it with the next day's messages. The history
+    // pages by day key, and this is the index that bounds a page to the days
+    // it asks for instead of the user's whole ledger.
+    { key: { userId: 1, day: -1 }, name: 'user_day' },
     { key: { day: 1 }, name: 'day' },
   ],
 

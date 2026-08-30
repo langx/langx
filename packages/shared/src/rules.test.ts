@@ -17,6 +17,8 @@ import {
   TOKEN_RULES,
   activityScore,
   convertLegacyTokens,
+  earnedDayOf,
+  newestPayableDay,
   poolShare,
   streakMilestoneBonus,
 } from './token'
@@ -276,6 +278,25 @@ describe('xp rules', () => {
     const totalScore = scores.reduce((a, b) => a + b, 0)
     const paid = scores.reduce((sum, s) => sum + poolShare(s, totalScore), 0)
     expect(paid).toBeLessThanOrEqual(TOKEN_RULES.pool.total)
+  })
+
+  it('holds a closed day back until its payout hour', () => {
+    // The day closes at 00:00 UTC but is not paid until 04:00, so for those
+    // four hours the newest payable day is the one before yesterday.
+    expect(newestPayableDay(new Date('2026-05-10T00:05:00.000Z'))).toBe('2026-05-08')
+    expect(newestPayableDay(new Date('2026-05-10T03:59:59.000Z'))).toBe('2026-05-08')
+    expect(newestPayableDay(new Date('2026-05-10T04:00:00.000Z'))).toBe('2026-05-09')
+    expect(newestPayableDay(new Date('2026-05-10T23:59:00.000Z'))).toBe('2026-05-09')
+  })
+
+  it('files a pool share under the day it rewards, not the day it was written', () => {
+    // `awardTokens` stamps a pool row at `dayCloseAt(D)`, which is D+1.
+    expect(earnedDayOf({ kind: 'dailyPool', day: '2026-05-10', refId: '2026-05-09' })).toBe(
+      '2026-05-09',
+    )
+    expect(earnedDayOf({ kind: 'message', day: '2026-05-10', refId: 'abc' })).toBe('2026-05-10')
+    // A pool row without a refId cannot be re-dated, so it keeps its own day.
+    expect(earnedDayOf({ kind: 'dailyPool', day: '2026-05-10' })).toBe('2026-05-10')
   })
 
   it('pays streak milestones only on exact days', () => {

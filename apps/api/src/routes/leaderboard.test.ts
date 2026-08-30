@@ -175,7 +175,7 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
   })
 
   describe('daily pool', () => {
-    it('reports a live pool snapshot in the token summary', async () => {
+    it('counts how many people are active today, and promises nothing about tonight', async () => {
       const user = await newUser()
       const today = utcDayKey(new Date())
 
@@ -186,24 +186,44 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
           .then((s) => s.pool)
 
       // Deltas rather than absolutes: earlier tests in this file legitimately
-      // leave today's activity behind, and the snapshot reports all of it.
+      // leave today's activity behind, and the count reports all of it.
       const before = await readPool()
       await seedActivity('pool-live-a', { messages: 10 }, today)
       await seedActivity('pool-live-b', { messages: 5, corrections: 2 }, today)
       const after = await readPool()
 
-      const strangers =
-        activityScore({
-          messages: 10,
-          corrections: 0,
-          mutualConversations: 0,
-          distinctPartners: 0,
-        }) +
-        activityScore({ messages: 5, corrections: 2, mutualConversations: 0, distinctPartners: 0 })
       expect(after.activeToday - before.activeToday).toBe(2)
-      expect(after.totalScore - before.totalScore).toBe(strangers)
-      // The share the client would draw from this is the shared arithmetic.
-      expect(poolShare(0, after.totalScore)).toBe(0)
+      // No projected share is exposed at all. A brand-new account is inside
+      // the ramp-up and would be paid nothing tonight, so any forward-looking
+      // number here would be one the payout refuses to honour.
+      expect(after.lastPayout).toBeNull()
+      expect(after).not.toHaveProperty('totalScore')
+    })
+
+    it('reports the share the pool actually paid, against the day it was earned for', async () => {
+      const user = await newUser()
+      await ageAccount(user.userId)
+      const day = shiftDayKey(YESTERDAY, -7)
+      await seedActivity(user.userId, { messages: 12, corrections: 3 }, day)
+
+      const outcome = await runDailyPool(handle.db, { day })
+      expect(outcome.ran).toBe(true)
+
+      const summary = await app
+        .inject({ method: 'GET', url: '/me/tokens', headers: { cookie: user.cookie } })
+        .then((r) => r.json<TokenSummary>())
+
+      expect(summary.pool.lastPayout).not.toBeNull()
+      // The day it rewards, not the midnight it was written at. `awardTokens`
+      // stamps a pool row's `day` from `dayCloseAt(day)`, which is already the
+      // morning after — showing that date would date every share one day late.
+      expect(summary.pool.lastPayout?.day).toBe(day)
+      expect(summary.pool.lastPayout?.amount).toBeGreaterThan(0)
+
+      const row = await handle.db
+        .collection<TokenLedgerEntry>(COLLECTIONS.tokenLedger)
+        .findOne({ userId: user.userId, kind: 'dailyPool', refId: day })
+      expect(summary.pool.lastPayout?.amount).toBe(row?.amount)
     })
 
     it('splits the pool in proportion to activity, and pays nothing twice on a re-run', async () => {

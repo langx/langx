@@ -30,6 +30,7 @@ import type {
   PeoplePage,
   PostCorrection,
   PostCorrectionsPage,
+  TokenHistory,
   TokenSummary,
 } from './types'
 import {
@@ -65,6 +66,7 @@ export const keys = {
   starred: ['starred'] as const,
   activity: (from: string, to: string) => ['activity', from, to] as const,
   tokens: ['tokens'] as const,
+  tokenHistory: ['tokens', 'history'] as const,
   wallet: ['wallet'] as const,
   badges: ['badges'] as const,
   feed: (filter: string) => ['feed', filter] as const,
@@ -458,6 +460,25 @@ export function useMessageWindow(conversationId: string, anchorId: string | null
 
 export function useTokens() {
   return useQuery({ queryKey: keys.tokens, queryFn: () => api.get<TokenSummary>('/me/tokens') })
+}
+
+/**
+ * The day-by-day token history, newest first.
+ *
+ * A child key of `tokens` so `usePurchase` invalidating `keys.tokens` also
+ * drops this — a spend is a history row, and the two must not disagree about
+ * a day the user is looking at.
+ */
+export function useTokenHistory() {
+  return useInfiniteQuery({
+    queryKey: keys.tokenHistory,
+    queryFn: ({ pageParam }) =>
+      api.get<TokenHistory>(
+        `/me/tokens/history${pageParam ? `?before=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
+  })
 }
 
 export function useWallet() {
