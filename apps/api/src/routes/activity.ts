@@ -10,6 +10,7 @@ import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
 import { getProfile } from '../modules/profiles/profiles'
 import { blockedUserIds } from '../modules/moderation/blocks'
+import { getPublicSummary } from '../modules/tokens/publicSummary'
 import { listStreakDays, repairsInMonth } from '../modules/tokens/streakDays'
 import { repairDay } from '../modules/tokens/wallet'
 
@@ -35,6 +36,19 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
 
       return reply.send({
         today,
+        /**
+         * The streak, alongside the days.
+         *
+         * `streakDays` only started existing when the map shipped, so an
+         * account older than that has a streak counter with no squares behind
+         * it — and the map drew six months of empty boxes under a "🔥 40".
+         * The client fills the current run from these two numbers when a day
+         * has no row of its own; see `activityGrid`.
+         */
+        streak: {
+          current: profile.streak.current,
+          lastQualifiedDay: profile.streak.lastQualifiedDay,
+        },
         days: days.map((d) => ({ day: d.day, actions: d.actions, source: d.source })),
         repair: {
           price: TOKEN_RULES.sinks.dayRepair,
@@ -68,7 +82,12 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const { handle } = request.params as { handle: string }
       const target = await app.mongo.db
-        .collection<{ _id: string; privacy?: { activityMapVisible?: boolean } }>('profiles')
+        .collection<{
+          _id: string
+          timezone?: string
+          streak?: { current: number; lastQualifiedDay: string | null }
+          privacy?: { activityMapVisible?: boolean }
+        }>('profiles')
         .findOne({ handle })
 
       // Blocked either way reads as "no such person", the same as the profile
@@ -86,12 +105,38 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
       const days = await listStreakDays(app.mongo.db, target._id, from, to)
       return reply.send({
         visible: true,
+        today: localDayKey(new Date(), target.timezone ?? 'UTC'),
+        streak: {
+          current: target.streak?.current ?? 0,
+          lastQualifiedDay: target.streak?.lastQualifiedDay ?? null,
+        },
         // No counts and no source: how hard someone worked on a Tuesday, and
         // whether they paid for it, are theirs.
         days: days.map((d) => ({ day: d.day, intensity: intensityOf(d.actions) })),
       })
     },
   )
+
+  /**
+   * The numbers a profile shows about how somebody uses the app.
+   *
+   * Beside the map rather than inside `toPublicProfile` for the same two
+   * reasons: it costs three queries the profile route should not pay for, and
+   * its privacy flag is then checked in exactly one place.
+   */
+  app.get('/profiles/:handle/summary', { preHandler: requireAuth }, async (request, reply) => {
+    const { handle } = request.params as { handle: string }
+    const target = await app.mongo.db
+      .collection<{ _id: string }>('profiles')
+      .findOne({ handle }, { projection: { _id: 1 } })
+
+    const hidden = await blockedUserIds(app.mongo.db, request.userId)
+    if (!target || hidden.includes(target._id)) {
+      throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+    }
+
+    return reply.send(await getPublicSummary(app.mongo.db, target._id))
+  })
 }
 
 /**

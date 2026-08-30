@@ -620,6 +620,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    openChat: 'افتح المحادثة',
     follow: 'متابعة',
     following: 'تتابعه',
     followers: {
@@ -752,6 +753,8 @@ export const ar: Localized<EnMessages> = {
     codeOfConduct: 'مدونة السلوك',
   },
   settings: {
+    showStats: 'إظهار أرقامي',
+    showStatsBody: 'السلسلة والتصحيحات والتوكنات ورسم هذا الأسبوع على ملفك.',
     legalSection: 'القانونية',
     communitySection: 'المجتمع',
     showInDiscover: 'أظهرني في الاستكشاف',

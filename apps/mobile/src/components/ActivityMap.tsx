@@ -1,7 +1,7 @@
 import { shiftDayKey } from '@langx/shared'
 import { useMemo, useRef } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
-import { useActivity, useRepairDay, useWallet } from '../api/queries'
+import { usePublicActivity, useActivity, useRepairDay, useWallet } from '../api/queries'
 import { activityGrid, repairEffect, type ActivityCell } from '../lib/activityMap'
 import { confirmAlert, showAlert } from '../lib/alert'
 import { dayLabel } from '../lib/messageGroups'
@@ -20,7 +20,16 @@ const WEEKS = 26
  * shading the squares from the latter would slide the whole map by one for
  * anyone far enough east or west. One source, one meaning.
  */
-export function ActivityMap() {
+export interface ActivityMapProps {
+  /**
+   * Somebody else's map. Read-only: no counts behind the shading, no repair —
+   * buying back a day of a stranger's history is not a thing, and the endpoint
+   * would refuse anyway.
+   */
+  handle?: string
+}
+
+export function ActivityMap({ handle }: ActivityMapProps = {}) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
@@ -29,30 +38,46 @@ export function ActivityMap() {
   const to = new Date().toISOString().slice(0, 10)
   // Generous: the server clamps the range, and the grid only draws what it needs.
   const from = shiftDayKey(to, -(WEEKS + 1) * 7)
-  const activity = useActivity(from, to)
+  const own = useActivity(from, to, !handle)
+  const theirs = usePublicActivity(handle ?? '', from, to)
   const wallet = useWallet()
   const repair = useRepairDay()
   const scroller = useRef<ScrollView>(null)
 
+  // One shape from two endpoints. The public one carries an intensity rather
+  // than a count — the exact number is the private part — so it is turned back
+  // into the count the shading came from.
+  const source = handle ? theirs : own
   const columns = useMemo(() => {
-    if (!activity.data) return []
+    const data = handle ? theirs.data : own.data
+    if (!data || (handle && theirs.data?.visible === false)) return []
+    const days = handle
+      ? new Map((theirs.data?.days ?? []).map((d) => [d.day, INTENSITY_ACTIONS[d.intensity] ?? 1]))
+      : new Map((own.data?.days ?? []).map((d) => [d.day, d.actions]))
     return activityGrid({
-      today: activity.data.today,
+      today:
+        (handle ? theirs.data?.today : own.data?.today) ?? new Date().toISOString().slice(0, 10),
       weeks: WEEKS,
-      days: new Map(activity.data.days.map((d) => [d.day, d.actions])),
-      maxAgeDays: activity.data.repair.maxAgeDays,
+      days,
+      maxAgeDays: own.data?.repair.maxAgeDays ?? 0,
+      streak: (handle ? theirs.data?.streak : own.data?.streak) ?? undefined,
     })
-  }, [activity.data])
+  }, [handle, own.data, theirs.data])
 
-  if (activity.isPending) return <ActivityIndicator style={styles.loading} />
-  if (!activity.data) return null
+  if (source.isPending) return <ActivityIndicator style={styles.loading} />
+  if (!source.data) return null
+  // A profile that turned the map off says nothing at all, rather than showing
+  // six months of empty squares that look like an inactive person.
+  if (handle && theirs.data?.visible === false) return null
 
-  const { repair: rules, today, days } = activity.data
+  const rules = own.data?.repair ?? { price: 0, maxAgeDays: 0, perMonth: 0, usedThisMonth: 0 }
+  const today = (handle ? theirs.data?.today : own.data?.today) ?? ''
+  const days = handle ? [] : (own.data?.days ?? [])
   const filled = new Set(days.map((d) => d.day))
   const left = Math.max(0, rules.perMonth - rules.usedThisMonth)
 
   async function onPressDay(cell: ActivityCell): Promise<void> {
-    if (cell.state !== 'repairable') return
+    if (handle || cell.state !== 'repairable') return
     if (left === 0) {
       await showAlert(
         t('activity.noRepairsTitle'),
@@ -110,15 +135,20 @@ export function ActivityMap() {
     <View style={styles.wrap}>
       <View style={styles.head}>
         <Text style={styles.title}>{t('chat.activity')}</Text>
-        <Text style={styles.hint}>
-          {left > 0
-            ? t('activity.repairsLeft', {
-                count: left,
-                total: rules.perMonth,
-                price: rules.price,
-              })
-            : t('activity.noRepairsThisMonth')}
-        </Text>
+        {/* Only the owner can buy a day back, so only the owner is told how
+            many are left — and the line wraps rather than running off the
+            card, which is where it went before. */}
+        {handle ? null : (
+          <Text style={styles.hint}>
+            {left > 0
+              ? t('activity.repairsLeft', {
+                  count: left,
+                  total: rules.perMonth,
+                  price: rules.price,
+                })
+              : t('activity.noRepairsThisMonth')}
+          </Text>
+        )}
       </View>
 
       {/*
@@ -145,7 +175,7 @@ export function ActivityMap() {
                     ? t('activity.fillInDay', { day: cell.day })
                     : undefined
                 }
-                disabled={cell.state !== 'repairable'}
+                disabled={Boolean(handle) || cell.state !== 'repairable'}
                 onPress={() => void onPressDay(cell)}
                 style={[
                   styles.cell,
@@ -165,10 +195,28 @@ export function ActivityMap() {
   )
 }
 
+/**
+ * The public map sends a bucket, not a count. Turning it back into the lowest
+ * count in each bucket is enough to reproduce the same shade, and is the only
+ * thing the grid needs from it.
+ */
+const INTENSITY_ACTIONS: Record<number, number> = { 1: 1, 2: 3, 3: 10, 4: 30 }
+
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
-  wrap: { gap: spacing.sm },
-  head: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  /**
+   * The card this sits in has no padding of its own — its children bring
+   * theirs. Without this the title sat against the border and the grid ran out
+   * from under the corner radius.
+   */
+  wrap: { gap: spacing.sm, paddingHorizontal: 14, paddingVertical: spacing.md },
+  head: {
+    alignItems: 'baseline',
+    columnGap: spacing.sm,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
   title: { ...font.heading, color: colors.text, fontSize: 15 },
   hint: { ...font.caption, color: colors.textMuted },
   grid: { flexDirection: 'row', gap: 3, paddingVertical: spacing.xs },

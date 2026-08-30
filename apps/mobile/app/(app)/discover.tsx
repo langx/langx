@@ -1,4 +1,5 @@
 import {
+  countryFlag,
   formatDistance,
   NEARBY_MAX_KM,
   NEARBY_RADIUS_OPTIONS_KM,
@@ -278,6 +279,12 @@ export default function DiscoverScreen() {
                     {item.displayName}
                   </Text>
                   <Text style={styles.age}>{item.age}</Text>
+                  {/* The flag, not the country's name: it is one glyph in a row
+                      that has none to spare, and it is the one thing on this
+                      card that is the same word in every language. */}
+                  {item.country ? (
+                    <Text style={styles.flag}>{countryFlag(item.country)}</Text>
+                  ) : null}
                   {item.streak.current > 0 ? (
                     <Text style={styles.streak} numberOfLines={1}>
                       🔥 {item.streak.current}
@@ -305,6 +312,7 @@ export default function DiscoverScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  flag: { fontSize: 15 },
   header: { paddingTop: spacing.md },
   titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
   title: { ...font.title, color: colors.text, fontSize: 30 },

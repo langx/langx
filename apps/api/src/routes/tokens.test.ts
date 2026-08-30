@@ -692,4 +692,56 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       })
     })
   })
+
+  describe('somebody else’s numbers', () => {
+    it('answers with the streak, the corrections and the tokens', async () => {
+      const owner = await newUser('stats-owner@example.com', { handle: 'statsowner' })
+      const viewer = await newUser('stats-viewer@example.com')
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/statsowner/summary',
+        headers: { cookie: viewer.cookie },
+      })
+
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{
+        visible: boolean
+        streak: { current: number }
+        corrections: number
+        tokens: number
+        week: unknown[]
+      }>()
+      expect(body.visible).toBe(true)
+      expect(body.streak.current).toBe(0)
+      expect(body.corrections).toBe(0)
+      // The sign-up bonus is already on the ledger, so this is a real number
+      // rather than a zero that would pass whatever the query did.
+      expect(body.tokens).toBeGreaterThan(0)
+      expect(body.week).toHaveLength(7)
+      void owner
+    })
+
+    /**
+     * Off means the fields are absent, not blanked: a client that decided to
+     * draw them anyway would have nothing to draw.
+     */
+    it('sends nothing at all when its owner has turned the numbers off', async () => {
+      const owner = await newUser('stats-private@example.com', { handle: 'statsprivate' })
+      const viewer = await newUser('stats-private-viewer@example.com')
+      await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: owner.cookie },
+        payload: { privacy: { statsVisible: false } },
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/statsprivate/summary',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.json()).toEqual({ visible: false })
+    })
+  })
 })

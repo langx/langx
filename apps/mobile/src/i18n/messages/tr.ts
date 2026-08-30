@@ -538,6 +538,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    openChat: 'Sohbeti aç',
     follow: 'Takip et',
     following: 'Takip ediliyor',
     followers: { one: '{count} takipçi', other: '{count} takipçi' },
@@ -645,6 +646,8 @@ export const tr: Localized<EnMessages> = {
     codeOfConduct: 'Davranış kuralları',
   },
   settings: {
+    showStats: 'Sayılarımı göster',
+    showStatsBody: 'Profilinde streak, düzeltme, token ve bu haftanın grafiği.',
     legalSection: 'Hukuki',
     communitySection: 'Topluluk',
     showInDiscover: 'Keşfet’te görün',

@@ -7,16 +7,21 @@ import {
   useBlockUser,
   useMe,
   useProfile,
+  usePublicSummary,
   useReportUser,
   useSetFollow,
   useStartConversation,
 } from '../../../src/api/queries'
+import { ActivityMap } from '../../../src/components/ActivityMap'
 import { Avatar } from '../../../src/components/ui/Avatar'
 import { Button } from '../../../src/components/ui/Button'
 import { LanguageCards } from '../../../src/components/LanguageCards'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
+import { WeeklyChart } from '../../../src/components/WeeklyChart'
 import { TierBadge } from '../../../src/components/TierBadge'
+import { Card } from '../../../src/components/ui/Card'
 import { Chip } from '../../../src/components/ui/Chip'
+import { StatTile } from '../../../src/components/ui/StatTile'
 import { Screen } from '../../../src/components/ui/Screen'
 import { chooseAlert, confirmAlert } from '../../../src/lib/alert'
 import { goBackTo, openFollows } from '../../../src/lib/navigation'
@@ -47,6 +52,7 @@ export default function ProfileScreen() {
   const setFollow = useSetFollow(handle ?? '')
   const here = `/(app)/profile/${handle}`
   const startConversation = useStartConversation()
+  const summary = usePublicSummary(handle ?? '')
   const block = useBlockUser()
   const report = useReportUser()
 
@@ -234,23 +240,68 @@ export default function ProfileScreen() {
         </>
       ) : null}
 
-      <Text style={styles.sectionTitle}>{t('profile.sendMessage')}</Text>
-      <TextInput
-        value={message}
-        onChangeText={setMessage}
-        placeholder={t('chat.sayHello', { name: user.displayName })}
-        placeholderTextColor={colors.textMuted}
-        style={styles.input}
-        multiline
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button
-        label={t('common.send')}
-        disabled={message.trim().length === 0}
-        loading={startConversation.isPending}
-        onPress={send}
-        style={styles.send}
-      />
+      {/*
+        The numbers, and only if they are offered: `statsVisible` is checked on
+        the server, so a profile that turned them off sends nothing to hide.
+      */}
+      {summary.data?.visible ? (
+        <>
+          <View style={styles.tiles}>
+            <StatTile
+              tone="warning"
+              label={t('me.dayStreak')}
+              value={`🔥 ${summary.data.streak?.current ?? 0}`}
+            />
+            <StatTile
+              tone="success"
+              label={t('me.corrections')}
+              value={String(summary.data.corrections ?? 0)}
+            />
+            <StatTile label={t('me.tokens')} value={String(summary.data.tokens ?? 0)} />
+          </View>
+          {summary.data.week ? <WeeklyChart week={summary.data.week} /> : null}
+        </>
+      ) : null}
+
+      {/* Read-only, and drawn from the same component as your own — a second
+          implementation of a grid is a second grid to keep in step. */}
+      <Card inset style={styles.activityCard}>
+        <ActivityMap handle={user.handle} />
+      </Card>
+
+      {/*
+        A conversation that already exists is a link, not a form. The composer
+        below cannot start a second one — `startConversation` refuses, which
+        used to surface as "a conversation with this user already exists" after
+        typing a message out.
+      */}
+      {user.conversationId ? (
+        <Button
+          label={t('profile.openChat')}
+          onPress={() => router.push(`/(app)/chat/${user.conversationId}`)}
+          style={styles.send}
+        />
+      ) : (
+        <>
+          <Text style={styles.sectionTitle}>{t('profile.sendMessage')}</Text>
+          <TextInput
+            value={message}
+            onChangeText={setMessage}
+            placeholder={t('chat.sayHello', { name: user.displayName })}
+            placeholderTextColor={colors.textMuted}
+            style={styles.input}
+            multiline
+          />
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          <Button
+            label={t('common.send')}
+            disabled={message.trim().length === 0}
+            loading={startConversation.isPending}
+            onPress={send}
+            style={styles.send}
+          />
+        </>
+      )}
 
       <View style={styles.danger}>
         <Pressable onPress={() => void confirmReport()} hitSlop={8}>
@@ -265,6 +316,8 @@ export default function ProfileScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  tiles: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.lg },
+  activityCard: { marginTop: spacing.md },
   followRow: { flexDirection: 'row', gap: 18, marginTop: 12 },
   followCount: { ...font.label, color: colors.text, fontWeight: '600' },
   followButton: { marginTop: 14 },
