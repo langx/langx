@@ -1,13 +1,37 @@
 import Feather from '@expo/vector-icons/Feather'
-import { memo, useMemo, useRef } from 'react'
-import { Animated, PanResponder, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { memo, useMemo, useRef, type ReactNode } from 'react'
+import {
+  Animated,
+  PanResponder,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type ViewStyle,
+} from 'react-native'
 import type { MessageDto } from '../api/queries'
+import { diffCorrection } from '../lib/correctionDiff'
 import type { AnchorRect } from '../lib/messageMenu'
-import { shouldCaptureSwipe, swipeReleased, swipeTranslation } from '../lib/swipeToReply'
+import {
+  SWIPE_ACTIVATE_PX,
+  shouldCaptureSwipe,
+  swipeReleased,
+  swipeToReplyEnabled,
+  swipeTranslation,
+} from '../lib/swipeToReply'
 import { makeStyles, useTheme } from '../lib/theme'
 import { AudioBubble, ImageBubble } from './MediaBubble'
 import { MessageMeta } from './MessageMeta'
 import { useT } from '../i18n'
+
+/**
+ * Whether this device has a finger. Read once, at module scope: it cannot
+ * change for the life of the page, and `navigator` is absent while the web
+ * bundle is being exported — hence the `typeof` guard rather than a bare read.
+ */
+const HAS_TOUCH =
+  Platform.OS !== 'web' || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0)
 
 export interface MessageBubbleProps {
   message: MessageDto
@@ -73,14 +97,17 @@ export const MessageBubble = memo(function MessageBubble({
   }
 
   /**
-   * Swipe right to reply — native only.
+   * Swipe right to reply — wherever there is a finger, which now includes a
+   * phone browser.
    *
-   * Off on web deliberately. react-native-web does map mouse events onto the
-   * responder system, so a drag reaches this, but it fights the browser's own
-   * text selection and a trackpad's horizontal gesture is a `wheel` event that
-   * never arrives here at all. A gesture that works for some inputs and not
-   * others is worse than one that is plainly absent; in a browser the menu's
-   * Reply row is the way in.
+   * Still off for a mouse. react-native-web maps mouse events onto the
+   * responder system, so a drag does reach this, but on a desktop that same
+   * drag is the browser selecting text: which one wins depends on whether the
+   * press landed on a word or on the padding, and a gesture that works from
+   * half of a bubble is worse than one that is plainly absent. There the
+   * menu's Reply row is the way in. `touchAction: 'pan-y'` below is the other
+   * half of making it work on a touchscreen: without it the browser claims the
+   * horizontal pan for its own scrolling before the responder ever sees it.
    */
   const translateX = useRef(new Animated.Value(0)).current
   const responder = useMemo(() => {
@@ -101,8 +128,46 @@ export const MessageBubble = memo(function MessageBubble({
     })
   }, [message, onReply, translateX])
 
-  const pan = Platform.OS === 'web' ? {} : responder.panHandlers
+  const pan = swipeToReplyEnabled(Platform.OS, HAS_TOUCH) ? responder.panHandlers : {}
   const flash = highlighted ? styles.highlighted : null
+
+  /**
+   * What the correction actually changed, worked out once per message rather
+   * than per render — the memo is the reason this bubble can stay `memo`'d at
+   * all while the screen re-renders on every keystroke in the composer.
+   */
+  const correction = message.correction
+  const diff = useMemo(
+    () => (correction ? diffCorrection(correction.original, message.body) : null),
+    [correction, message.body],
+  )
+
+  /**
+   * The arrow WhatsApp shows under the bubble as it slides. Driven by the same
+   * `Animated.Value` as the bubble, so it fades in exactly as far as the
+   * gesture has travelled and reaches full strength at the point where letting
+   * go actually replies.
+   */
+  const arrowOpacity = translateX.interpolate({
+    inputRange: [0, SWIPE_ACTIVATE_PX],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  })
+
+  /**
+   * Every branch below is the same shell: the arrow underneath, the bubble on
+   * top of it, and the pan handlers on the part that moves.
+   */
+  const shell = (children: ReactNode): ReactNode => (
+    <View style={styles.row}>
+      <Animated.View style={[styles.arrow, { opacity: arrowOpacity }]} pointerEvents="none">
+        <Feather name="corner-up-left" size={15} color={colors.textMuted} />
+      </Animated.View>
+      <Animated.View ref={box} style={styles.slider} {...pan}>
+        <Animated.View style={{ transform: [{ translateX }] }}>{children}</Animated.View>
+      </Animated.View>
+    </View>
+  )
 
   /**
    * Counts, not avatars: a 1-1 thread has at most two people on an emoji, so
@@ -145,113 +210,142 @@ export const MessageBubble = memo(function MessageBubble({
    * the other person remembers having, which is worse than an obvious hole.
    */
   if (message.deleted) {
-    return (
-      <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
-        <Pressable
-          onLongPress={press}
-          style={[styles.bubble, mine ? styles.mine : styles.theirs, styles.tombstone, flash]}
-        >
-          <View style={styles.tombstoneRow}>
-            <Feather name="slash" size={13} color={colors.textMuted} />
-            <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
-          </View>
-          <MessageMeta message={message} mine={mine} />
-        </Pressable>
-      </Animated.View>
+    return shell(
+      <Pressable
+        onLongPress={press}
+        style={[styles.bubble, mine ? styles.mine : styles.theirs, styles.tombstone, flash]}
+      >
+        <View style={styles.tombstoneRow}>
+          <Feather name="slash" size={13} color={colors.textMuted} />
+          <Text style={styles.tombstoneText}>{t('chat.deleted')}</Text>
+        </View>
+        <MessageMeta message={message} mine={mine} />
+      </Pressable>,
     )
   }
 
   if (message.type === 'correction') {
-    return (
-      <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
-        <Pressable
-          onLongPress={press}
-          style={[styles.correction, mine ? styles.correctionMine : null, flash]}
-        >
-          {/*
+    return shell(
+      <Pressable
+        onLongPress={press}
+        style={[styles.correction, mine ? styles.correctionMine : null, flash]}
+      >
+        {/*
           The success pair, and only ever the success pair. A correction is
           another person changing your sentence; the info pair belongs to
           Copilot, which proposes one you have not sent. The two must never be
           confusable — see `Callout`.
         */}
-          <View style={styles.correctionHead}>
-            <Feather name="edit-3" size={14} color={colors.success} />
-            <Text style={styles.correctionLabel}>
-              {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
+        <View style={styles.correctionHead}>
+          <Feather name="edit-3" size={14} color={colors.success} />
+          <Text style={styles.correctionLabel}>
+            {mine ? t('chat.yourCorrection') : t('chat.correctionFrom', { name: partnerName })}
+          </Text>
+        </View>
+        <View style={styles.correctionBody}>
+          {/*
+              Only the part that changed carries a colour. Striking the whole
+              sentence says "this was wrong" about one that was mostly right,
+              and buries the one thing the reader opened it for.
+            */}
+          {diff ? (
+            <Text style={styles.correctionOriginal}>
+              {diff.original.map((segment, index) => (
+                <Text key={index} style={segment.changed ? styles.removed : null}>
+                  {segment.text}
+                </Text>
+              ))}
             </Text>
-          </View>
-          <View style={styles.correctionBody}>
-            {message.correction ? (
-              <Text style={styles.correctionOriginal}>{message.correction.original}</Text>
-            ) : null}
-            <Text style={styles.correctionText}>{message.body}</Text>
-            {message.correction?.note ? (
-              <Text style={styles.correctionNote}>{message.correction.note}</Text>
-            ) : null}
-            <MessageMeta message={message} mine={mine} />
-          </View>
-          {badge}
-        </Pressable>
-      </Animated.View>
+          ) : null}
+          <Text style={styles.correctionText}>
+            {diff
+              ? diff.corrected.map((segment, index) => (
+                  <Text key={index} style={segment.changed ? styles.added : null}>
+                    {segment.text}
+                  </Text>
+                ))
+              : message.body}
+          </Text>
+          {message.correction?.note ? (
+            <Text style={styles.correctionNote}>{message.correction.note}</Text>
+          ) : null}
+          <MessageMeta message={message} mine={mine} />
+        </View>
+        {badge}
+      </Pressable>,
     )
   }
 
   const tail = endsGroup ? (mine ? styles.tailMine : styles.tailTheirs) : null
 
   if (message.type === 'image' || message.type === 'audio') {
-    return (
-      <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
-        <Pressable
-          onLongPress={press}
-          style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
-        >
-          {quote}
-          {message.media ? (
-            message.type === 'image' ? (
-              <ImageBubble media={message.media} />
-            ) : (
-              <AudioBubble media={message.media} mine={mine} />
-            )
-          ) : null}
-          {message.body ? (
-            <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>
-              {message.body}
-            </Text>
-          ) : null}
-          <MessageMeta message={message} mine={mine} />
-          {badge}
-        </Pressable>
-      </Animated.View>
-    )
-  }
-
-  return (
-    <Animated.View ref={box} style={{ transform: [{ translateX }] }} {...pan}>
+    return shell(
       <Pressable
         onLongPress={press}
         style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
       >
         {quote}
-        <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{message.body}</Text>
-        {translation ? (
-          <Text style={[styles.translation, mine && styles.translationMine]}>{translation}</Text>
+        {message.media ? (
+          message.type === 'image' ? (
+            <ImageBubble media={message.media} />
+          ) : (
+            <AudioBubble media={message.media} mine={mine} />
+          )
         ) : null}
-        {/* The link is gone — translate is a menu row now. This only reports the
-            request already in flight. */}
-        {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
-        {/* Beside the clock, not in place of it: "when" and "changed since" are
-            two different facts and the reader wants both. */}
-        {message.editedAt ? (
-          <Text style={[styles.edited, mine && styles.editedMine]}>{t('messageMeta.edited')}</Text>
+        {message.body ? (
+          <Text style={[styles.bubbleText, mine && styles.bubbleTextMine, styles.caption]}>
+            {message.body}
+          </Text>
         ) : null}
         <MessageMeta message={message} mine={mine} />
         {badge}
-      </Pressable>
-    </Animated.View>
+      </Pressable>,
+    )
+  }
+
+  return shell(
+    <Pressable
+      onLongPress={press}
+      style={[styles.bubble, mine ? styles.mine : styles.theirs, tail, flash]}
+    >
+      {quote}
+      <Text style={[styles.bubbleText, mine && styles.bubbleTextMine]}>{message.body}</Text>
+      {translation ? (
+        <Text style={[styles.translation, mine && styles.translationMine]}>{translation}</Text>
+      ) : null}
+      {/* The link is gone — translate is a menu row now. This only reports the
+            request already in flight. */}
+      {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
+      {/* Beside the clock, not in place of it: "when" and "changed since" are
+            two different facts and the reader wants both. */}
+      {message.editedAt ? (
+        <Text style={[styles.edited, mine && styles.editedMine]}>{t('messageMeta.edited')}</Text>
+      ) : null}
+      <MessageMeta message={message} mine={mine} />
+      {badge}
+    </Pressable>,
   )
 })
 
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
+  row: { justifyContent: 'center' },
+  /**
+   * `touch-action` is a web-only style and react-native's types do not know
+   * it, hence the cast. Without it a horizontal drag is claimed by the browser
+   * for its own scrolling — and on iOS Safari by the back gesture — before the
+   * responder system ever sees the move.
+   */
+  slider: (Platform.OS === 'web' ? { touchAction: 'pan-y' } : {}) as ViewStyle,
+  /** Under the bubble, on the side it is dragged away from. */
+  arrow: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    start: 6,
+    top: 0,
+    width: 24,
+  },
   bubble: {
     borderRadius: radius.lg,
     maxWidth: '82%',
@@ -368,8 +462,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     color: colors.textMuted,
     fontWeight: '400',
     lineHeight: 21,
-    textDecorationLine: 'line-through',
   },
+  /**
+   * The pair that carries the whole meaning of the card: what went, and what
+   * came. Both are marked twice — colour *and* a second cue, strike or weight
+   * — because a correction that only differs by hue says nothing to a reader
+   * who cannot separate red from green.
+   */
+  removed: { color: colors.danger, textDecorationLine: 'line-through' },
+  added: { color: colors.success, fontWeight: '700' },
   correctionText: {
     ...font.body,
     color: colors.text,
