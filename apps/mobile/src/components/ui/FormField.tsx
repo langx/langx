@@ -1,5 +1,8 @@
-import { Text, TextInput, type TextInputProps, View } from 'react-native'
+import Feather from '@expo/vector-icons/Feather'
+import { useState } from 'react'
+import { Pressable, Text, TextInput, type TextInputProps, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
+import { useT } from '../../i18n'
 
 interface FormFieldProps extends TextInputProps {
   label: string
@@ -15,10 +18,21 @@ interface FormFieldProps extends TextInputProps {
 export function FormField({ label, error, maxLength, style, ...inputProps }: FormFieldProps) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
   const used = typeof inputProps.value === 'string' ? inputProps.value.length : 0
   // Quiet until it matters. A counter on an empty field is noise; one at 90%
   // is a warning.
   const showCount = maxLength !== undefined && used > maxLength * 0.6
+
+  /**
+   * The eye lives here rather than at the three call sites: every password
+   * field in the app is this component with `secureTextEntry`, so putting the
+   * toggle in the field means none of them can be the one that forgot it.
+   * Local state because it is not a preference — a revealed password hides
+   * itself again the next time the screen is opened.
+   */
+  const [revealed, setRevealed] = useState(false)
+  const secure = inputProps.secureTextEntry === true
 
   return (
     <View style={styles.container}>
@@ -30,22 +44,38 @@ export function FormField({ label, error, maxLength, style, ...inputProps }: For
           </Text>
         ) : null}
       </View>
-      <TextInput
-        style={[
-          styles.input,
-          // Controls are pills, but a pill with three lines in it is a lozenge
-          // with the text jammed against its curve. Multiline gets the card
-          // radius instead.
-          inputProps.multiline ? styles.inputMultiline : styles.inputSingle,
-          error ? styles.inputError : null,
-          style,
-        ]}
-        placeholderTextColor={colors.textFaint}
-        autoCapitalize="none"
-        autoCorrect={false}
-        {...(maxLength !== undefined ? { maxLength } : {})}
-        {...inputProps}
-      />
+      <View>
+        <TextInput
+          style={[
+            styles.input,
+            // Controls are pills, but a pill with three lines in it is a lozenge
+            // with the text jammed against its curve. Multiline gets the card
+            // radius instead.
+            inputProps.multiline ? styles.inputMultiline : styles.inputSingle,
+            error ? styles.inputError : null,
+            secure ? styles.inputSecure : null,
+            style,
+          ]}
+          placeholderTextColor={colors.textFaint}
+          autoCapitalize="none"
+          autoCorrect={false}
+          {...(maxLength !== undefined ? { maxLength } : {})}
+          {...inputProps}
+          secureTextEntry={secure && !revealed}
+        />
+        {secure ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t(revealed ? 'common.hidePassword' : 'common.showPassword')}
+            accessibilityState={{ selected: revealed }}
+            hitSlop={10}
+            onPress={() => setRevealed((shown) => !shown)}
+            style={styles.reveal}
+          >
+            <Feather name={revealed ? 'eye-off' : 'eye'} size={18} color={colors.textMuted} />
+          </Pressable>
+        ) : null}
+      </View>
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   )
@@ -66,8 +96,23 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
   },
+  /** Room for the eye, so a long password does not run underneath it. */
+  inputSecure: { paddingEnd: spacing.xxl },
   inputSingle: { borderRadius: radius.pill },
   inputMultiline: { borderRadius: radius.lg },
   inputError: { borderColor: colors.danger },
+  /**
+   * `end`, not `right`: in Arabic the field is right-to-left and the eye
+   * belongs after the text, which is the left edge there.
+   */
+  reveal: {
+    alignItems: 'center',
+    bottom: 0,
+    end: spacing.md,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 32,
+  },
   error: { ...font.caption, color: colors.danger },
 }))

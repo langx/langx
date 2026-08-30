@@ -13,6 +13,8 @@ import type { EnMessages } from './en'
  */
 export const tr: Localized<EnMessages> = {
   common: {
+    showPassword: 'Parolayı göster',
+    hidePassword: 'Parolayı gizle',
     back: '‹ Geri',
     backPlain: 'Geri',
     cancel: 'Vazgeç',
@@ -197,6 +199,11 @@ export const tr: Localized<EnMessages> = {
   },
 
   auth: {
+    confirmPassword: 'Parolayı tekrar gir',
+    passwordsDoNotMatch: 'İki parola aynı değil.',
+    passwordTooShort: 'En az {min} karakter.',
+    passwordTooLong: 'En fazla {max} karakter.',
+    passwordRule: '{min}–{max} karakter',
     welcomeBack: 'Tekrar hoş geldin',
     email: 'E-posta',
     password: 'Parola',

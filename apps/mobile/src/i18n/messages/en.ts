@@ -21,6 +21,8 @@
  */
 export const en = {
   common: {
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
     /** With the chevron, for the back rows that draw no icon of their own. */
     back: '‹ Back',
     /** Without it, for anywhere an icon is already beside the word. */
@@ -217,6 +219,11 @@ export const en = {
   },
 
   auth: {
+    confirmPassword: 'Confirm password',
+    passwordsDoNotMatch: 'The two passwords are different.',
+    passwordTooShort: 'At least {min} characters.',
+    passwordTooLong: 'At most {max} characters.',
+    passwordRule: '{min}–{max} characters',
     welcomeBack: 'Welcome back',
     email: 'Email',
     password: 'Password',

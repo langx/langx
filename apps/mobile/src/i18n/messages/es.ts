@@ -7,6 +7,8 @@ import type { EnMessages } from './en'
  */
 export const es: Localized<EnMessages> = {
   common: {
+    showPassword: 'Mostrar contraseña',
+    hidePassword: 'Ocultar contraseña',
     back: '‹ Atrás',
     backPlain: 'Atrás',
     cancel: 'Cancelar',
@@ -187,6 +189,11 @@ export const es: Localized<EnMessages> = {
   },
 
   auth: {
+    confirmPassword: 'Confirma la contraseña',
+    passwordsDoNotMatch: 'Las dos contraseñas no coinciden.',
+    passwordTooShort: 'Al menos {min} caracteres.',
+    passwordTooLong: 'Como máximo {max} caracteres.',
+    passwordRule: '{min}–{max} caracteres',
     welcomeBack: 'Bienvenido de nuevo',
     email: 'Correo',
     password: 'Contraseña',

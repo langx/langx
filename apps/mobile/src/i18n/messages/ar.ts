@@ -17,6 +17,8 @@ import type { EnMessages } from './en'
  */
 export const ar: Localized<EnMessages> = {
   common: {
+    showPassword: 'إظهار كلمة المرور',
+    hidePassword: 'إخفاء كلمة المرور',
     back: '‹ رجوع',
     backPlain: 'رجوع',
     cancel: 'إلغاء',
@@ -237,6 +239,11 @@ export const ar: Localized<EnMessages> = {
   },
 
   auth: {
+    confirmPassword: 'أكّد كلمة المرور',
+    passwordsDoNotMatch: 'كلمتا المرور غير متطابقتين.',
+    passwordTooShort: '{min} أحرف على الأقل.',
+    passwordTooLong: '{max} حرفاً كحد أقصى.',
+    passwordRule: '{min}–{max} حرفاً',
     welcomeBack: 'أهلًا بعودتك',
     email: 'البريد الإلكتروني',
     password: 'كلمة المرور',

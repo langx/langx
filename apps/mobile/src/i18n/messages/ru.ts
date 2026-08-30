@@ -14,6 +14,8 @@ import type { EnMessages } from './en'
  */
 export const ru: Localized<EnMessages> = {
   common: {
+    showPassword: 'Показать пароль',
+    hidePassword: 'Скрыть пароль',
     back: '‹ Назад',
     backPlain: 'Назад',
     cancel: 'Отмена',
@@ -223,6 +225,11 @@ export const ru: Localized<EnMessages> = {
   },
 
   auth: {
+    confirmPassword: 'Повторите пароль',
+    passwordsDoNotMatch: 'Пароли не совпадают.',
+    passwordTooShort: 'Не менее {min} символов.',
+    passwordTooLong: 'Не более {max} символов.',
+    passwordRule: '{min}–{max} символов',
     welcomeBack: 'С возвращением',
     email: 'Почта',
     password: 'Пароль',

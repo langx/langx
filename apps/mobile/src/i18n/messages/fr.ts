@@ -4,6 +4,8 @@ import type { EnMessages } from './en'
 /** French, addressing the reader as "tu" — peers teaching each other, not a bank. */
 export const fr: Localized<EnMessages> = {
   common: {
+    showPassword: 'Afficher le mot de passe',
+    hidePassword: 'Masquer le mot de passe',
     back: '‹ Retour',
     backPlain: 'Retour',
     cancel: 'Annuler',
@@ -184,6 +186,11 @@ export const fr: Localized<EnMessages> = {
   },
 
   auth: {
+    confirmPassword: 'Confirmez le mot de passe',
+    passwordsDoNotMatch: 'Les deux mots de passe sont différents.',
+    passwordTooShort: 'Au moins {min} caractères.',
+    passwordTooLong: 'Au plus {max} caractères.',
+    passwordRule: '{min}–{max} caractères',
     welcomeBack: 'Content de te revoir',
     email: 'E-mail',
     password: 'Mot de passe',
