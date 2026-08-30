@@ -17,8 +17,8 @@ type Tone = NonNullable<ChipProps['tone']>
  */
 function toneColour(colors: ThemeColors, tone: Tone): string {
   const byTone: Record<Tone, string> = {
-    // The committing/primary choice in a row of chips — the selected sort.
-    default: colors.primary,
+    // v3's selected chip is the ink fill — `text` used as a background.
+    default: colors.ink,
     accent: colors.accent,
     secondary: colors.secondary,
     streak: colors.streak,
@@ -42,22 +42,21 @@ export function Chip({ label, selected = false, onPress, tone = 'default' }: Chi
   const colour = toneColour(colors, tone)
   const container: ViewStyle[] = selected
     ? [styles.base, { backgroundColor: colour, borderColor: colour }]
-    : // Unselected chips share one outline — `surface` on `border` — so a row of
-      // them reads as one control rather than as five differently-ringed
-      // buttons. The tone survives in the *label*, which is where "Nearby" says
-      // Pro and "Filters" says it is the second action.
-      [styles.base, { backgroundColor: colors.surface, borderColor: colors.border }]
+    : // Unselected chips share one outline — transparent on `border` — so a row
+      // of them reads as one control rather than as five differently-ringed
+      // buttons. The tone survives in the *label*.
+      [styles.base, { backgroundColor: 'transparent', borderColor: colors.border }]
   const text = [
     styles.label,
     {
-      // `default` fills with `primary`, whose contrast partner is black in both
-      // schemes; every other tone is a saturated accent and takes `textInverse`.
+      // The ink fill's contrast partner is the ground itself; every other tone
+      // is a saturated accent and takes `textInverse`.
       color: selected
         ? tone === 'default'
-          ? colors.primaryText
+          ? colors.bg
           : colors.textInverse
         : tone === 'default'
-          ? colors.text
+          ? colors.textMuted
           : colour,
     },
   ]
@@ -78,14 +77,14 @@ export function Chip({ label, selected = false, onPress, tone = 'default' }: Chi
   )
 }
 
-const useStyles = makeStyles(({ font, spacing, radius }) => ({
+const useStyles = makeStyles(({ spacing, radius }) => ({
   base: {
     borderRadius: radius.pill,
     borderWidth: 1,
     overflow: 'hidden',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: 10,
   },
-  label: { ...font.caption, fontWeight: '600' },
+  label: { fontSize: 14, fontWeight: '600' },
   pressed: { opacity: 0.7 },
 }))

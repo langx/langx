@@ -17,7 +17,9 @@ import { useT } from '../../src/i18n'
  * never comes back.
  *
  * Only ever reached from inside the flow. A cold start sees a profile at the
- * gate and goes straight to discover, so nobody meets this twice.
+ * gate and goes straight to discover, so nobody meets this twice. No
+ * `StepProgress` here on purpose: the wizard is over, and a bar one pixel
+ * short of full would say otherwise.
  */
 export default function DoneStep() {
   const styles = useStyles()
@@ -36,9 +38,9 @@ export default function DoneStep() {
         </Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>{t('onboarding.whatNext')}</Text>
-        <Text style={styles.cardBody}>{t('onboarding.whatNextBody')}</Text>
+      <View style={styles.section}>
+        <Text style={styles.kicker}>{t('onboarding.whatNext')}</Text>
+        <Text style={styles.sectionBody}>{t('onboarding.whatNextBody')}</Text>
       </View>
 
       <NotificationPriming />
@@ -53,12 +55,24 @@ export default function DoneStep() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  hero: { alignItems: 'center', paddingVertical: spacing.xxl },
-  emoji: { fontSize: 56, marginBottom: spacing.md },
-  title: { ...font.title, color: colors.text },
-  subtitle: { ...font.body, color: colors.textMuted, marginTop: spacing.xs },
-  card: { gap: spacing.xs },
-  cardTitle: { ...font.label, color: colors.text },
-  cardBody: { ...font.body, color: colors.textMuted, lineHeight: 22 },
+  hero: { alignItems: 'center', paddingBottom: spacing.lg, paddingTop: spacing.xxl + 8 },
+  emoji: { fontSize: 48, lineHeight: 54 },
+  title: { ...font.title, color: colors.text, fontSize: 28, marginTop: spacing.md + 2 },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    lineHeight: 23,
+    marginTop: 6,
+    maxWidth: 260,
+    textAlign: 'center',
+  },
+  section: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    gap: spacing.sm,
+    paddingTop: spacing.lg + 2,
+  },
+  kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
+  sectionBody: { ...font.body, color: colors.textMuted, lineHeight: 23 },
   cta: { marginTop: spacing.xl },
 }))

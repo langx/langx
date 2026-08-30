@@ -1,5 +1,5 @@
 import { FEED_FILTERS, MAX_POST_LENGTH, type FeedFilter } from '@langx/shared'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { FormField } from '../../src/components/ui/FormField'
 import { Button } from '../../src/components/ui/Button'
@@ -9,15 +9,17 @@ import type { CreatePostInput, FeedPost } from '../../src/api/types'
 import { AttachmentBar, type PendingAttachment } from '../../src/components/AttachmentBar'
 import { AudioBubble, ImageBubble } from '../../src/components/MediaBubble'
 import { Avatar } from '../../src/components/ui/Avatar'
+import { LevelBars } from '../../src/components/ui/LevelBars'
 import { LikeButton } from '../../src/components/LikeButton'
-import { Chip } from '../../src/components/ui/Chip'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
 import { dedupeById } from '../../src/lib/dedupeById'
+import { foldCorrection } from '../../src/lib/feedCache'
 import { openPost, openProfile } from '../../src/lib/navigation'
 import { listState } from '../../src/lib/listState'
 import { makeStyles } from '../../src/lib/theme'
-import { levelShortLabel, useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
+import { useDisplayNames, useLocale, useT, type MessageKey } from '../../src/i18n'
 import { isImageContentType } from '@langx/shared'
 import { ApiRequestError } from '../../src/api/client'
 import { showToast } from '../../src/lib/toast'
@@ -28,24 +30,35 @@ const FILTER_LABELS: Record<FeedFilter, MessageKey> = {
   following: 'feed.following',
 }
 
-/** "Spanish A2 · 12 min" — who is asking, in what, and how stale the ask is. */
-function useSubtitle(): (post: FeedPost) => string {
-  const t = useT()
-  const { locale } = useLocale()
-  const names = useDisplayNames()
-
-  return (post) => {
-    const language = names.language(post.language)
-    const level = post.level ? ` ${levelShortLabel(t, post.level)}` : ''
-    return `${language}${level} · ${relativeTime(post.createdAt, { t, locale })}`
-  }
+/**
+ * The corrected sentence as one line, only the changed parts carrying colour —
+ * see `foldCorrection`. The level of styling detail lives in this screen's
+ * stylesheet so the fold itself stays pure.
+ */
+function CorrectedLine({ original, corrected }: { original: string; corrected: string }) {
+  const styles = useStyles()
+  const runs = useMemo(() => foldCorrection(original, corrected), [original, corrected])
+  return (
+    <Text style={styles.corrected}>
+      {runs.map((run, index) => (
+        <Text
+          key={index}
+          style={
+            run.kind === 'removed' ? styles.removed : run.kind === 'added' ? styles.added : null
+          }
+        >
+          {run.text}
+        </Text>
+      ))}
+    </Text>
+  )
 }
 
 export default function FeedScreen() {
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
-  const subtitleOf = useSubtitle()
+  const { locale } = useLocale()
 
   const [filter, setFilter] = useState<FeedFilter>('needsCorrection')
   /**
@@ -172,12 +185,14 @@ export default function FeedScreen() {
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{t('feed.title')}</Text>
-          <Chip
-            label={asking ? t('common.cancel') : t('feed.ask')}
-            tone="secondary"
-            selected={!asking}
+          <Pressable
+            accessibilityRole="button"
+            hitSlop={8}
             onPress={() => setAsking((open) => !open)}
-          />
+            style={({ pressed }) => (pressed ? styles.pressed : null)}
+          >
+            <Text style={styles.ask}>{asking ? t('common.cancel') : t('feed.ask')}</Text>
+          </Pressable>
         </View>
         {asking && askLanguage ? (
           <View style={styles.compose}>
@@ -208,14 +223,15 @@ export default function FeedScreen() {
         ) : null}
 
         <View style={styles.filters}>
-          {FEED_FILTERS.map((option) => (
-            <Chip
-              key={option}
-              label={t(FILTER_LABELS[option])}
-              selected={filter === option}
-              onPress={() => setFilter(option)}
-            />
-          ))}
+          <SegmentedControl<FeedFilter>
+            options={FEED_FILTERS.map((option) => ({
+              value: option,
+              label: t(FILTER_LABELS[option]),
+            }))}
+            selected={[filter]}
+            onToggle={setFilter}
+            accessibilityLabel={t('feed.title')}
+          />
         </View>
       </View>
 
@@ -251,32 +267,40 @@ export default function FeedScreen() {
           ListFooterComponent={
             feed.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             const mine = item.author._id === me.data?._id
             return (
-              <View style={styles.card}>
-                <View style={styles.cardTop}>
+              <View style={[styles.row, index === items.length - 1 && styles.rowLast]}>
+                <View style={styles.rowTop}>
                   <Pressable
                     style={styles.whoRow}
                     accessibilityRole="button"
                     onPress={() => openProfile(item.author.handle, '/(app)/feed')}
                   >
-                    <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={38} />
+                    <Avatar url={item.author.avatarUrl} name={item.author.displayName} size={40} />
                     <View style={styles.who}>
                       <Text style={styles.name} numberOfLines={1}>
                         {item.author.displayName}
                       </Text>
-                      <Text style={styles.subtitle}>{subtitleOf(item)}</Text>
+                      <View style={styles.metaRow}>
+                        <Text style={styles.meta} numberOfLines={1}>
+                          {names.language(item.language)}
+                        </Text>
+                        {item.level ? <LevelBars level={item.level} /> : null}
+                        <Text style={styles.meta} numberOfLines={1}>
+                          · {relativeTime(item.createdAt, { t, locale })}
+                        </Text>
+                      </View>
                     </View>
                   </Pressable>
                   {/*
-                    The error pair for "nobody has answered", the success pair
-                    once somebody has. It is the same distinction the feed is
+                    The danger colour for "nobody has answered", success once
+                    somebody has. It is the same distinction the feed is
                     sorted by, so it should be the same colour the sort implies.
 
                     Pressable whether or not there are corrections: the thread
                     behind it is worth opening either way, and this is the one
-                    affordance every card has.
+                    affordance every row has.
                   */}
                   <Pressable
                     accessibilityRole="button"
@@ -330,7 +354,7 @@ export default function FeedScreen() {
                         {t('feed.topCorrection')} {item.topCorrection.author.displayName}
                       </Text>
                     </Pressable>
-                    <Text style={styles.topText}>{item.topCorrection.corrected}</Text>
+                    <CorrectedLine original={item.body} corrected={item.topCorrection.corrected} />
                     {item.topCorrection.note ? (
                       <Text style={styles.topNote}>{item.topCorrection.note}</Text>
                     ) : null}
@@ -398,40 +422,40 @@ export default function FeedScreen() {
                   </View>
                 ) : !mine ? (
                   <View style={styles.actions}>
-                    <Pressable
-                      accessibilityRole="button"
-                      disabled={item.correctedByViewer || correctPost.isPending}
-                      onPress={() => startCorrecting(item)}
-                      style={({ pressed }) => [
-                        styles.action,
-                        item.correctedByViewer ? styles.actionInert : styles.actionPrimary,
-                        pressed && styles.pressed,
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.actionLabel,
-                          !item.correctedByViewer && styles.actionLabelPrimary,
-                        ]}
+                    {/*
+                      A yellow pill on every uncorrected post, deliberately:
+                      each one is a separate ask, and v3 repeats the commit per
+                      ask. Once a post has answers the invitation relaxes to a
+                      blue text action.
+                    */}
+                    {item.correctedByViewer ? (
+                      <Text style={styles.actionDone}>{t('feed.youCorrected')}</Text>
+                    ) : item.correctionCount === 0 ? (
+                      <Pressable
+                        accessibilityRole="button"
+                        disabled={correctPost.isPending}
+                        onPress={() => startCorrecting(item)}
+                        style={({ pressed }) => [styles.correctPill, pressed && styles.pressed]}
                       >
-                        {item.correctedByViewer
-                          ? t('feed.youCorrected')
-                          : item.correctionCount > 0
-                            ? t('feed.addYours')
-                            : t('feed.correctThis')}
-                      </Text>
-                    </Pressable>
+                        <Text style={styles.correctPillLabel}>{t('feed.correctThis')}</Text>
+                      </Pressable>
+                    ) : (
+                      <Pressable
+                        accessibilityRole="button"
+                        disabled={correctPost.isPending}
+                        onPress={() => startCorrecting(item)}
+                        style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
+                      >
+                        <Text style={styles.addYours}>{t('feed.addYours')}</Text>
+                      </Pressable>
+                    )}
                     {item.correctionCount > 0 ? (
                       <Pressable
                         accessibilityRole="button"
                         onPress={() => openPost(item._id, '/(app)/feed')}
-                        style={({ pressed }) => [
-                          styles.action,
-                          styles.actionInert,
-                          pressed && styles.pressed,
-                        ]}
+                        style={({ pressed }) => [styles.textAction, pressed && styles.pressed]}
                       >
-                        <Text style={styles.actionLabel}>
+                        <Text style={styles.seeAll}>
                           {t('feed.seeAll', { count: item.correctionCount })}
                         </Text>
                       </Pressable>
@@ -449,61 +473,64 @@ export default function FeedScreen() {
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   header: { paddingTop: spacing.md },
-  titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  title: { ...font.title, color: colors.text, fontSize: 30 },
-  filters: { flexDirection: 'row', gap: 7, marginTop: 14 },
+  titleRow: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  title: { ...font.title, color: colors.text, fontSize: 34 },
+  ask: { color: colors.accent, fontSize: 16, fontWeight: '700' },
+  filters: { marginTop: 18 },
   compose: { gap: spacing.md, marginTop: spacing.md },
   grow: { flex: 1, width: 'auto' },
   loading: { marginTop: spacing.xxl },
-  list: { gap: spacing.md, paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
-  card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    padding: spacing.lg,
+  row: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingVertical: 20,
   },
-  cardTop: { alignItems: 'center', flexDirection: 'row', gap: 11 },
+  rowLast: { borderBottomWidth: 0 },
+  rowTop: { alignItems: 'center', flexDirection: 'row', gap: 11 },
   whoRow: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: 11, minWidth: 0 },
   who: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 15 },
-  subtitle: { ...font.caption, color: colors.textMuted },
-  count: {
-    ...font.caption,
-    borderRadius: radius.pill,
-    fontSize: 11,
-    fontWeight: '600',
-    overflow: 'hidden',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  countNone: { backgroundColor: colors.dangerBg, color: colors.danger },
-  countSome: { backgroundColor: colors.successBg, color: colors.success },
-  body: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24, marginTop: spacing.md },
+  name: { ...font.heading, color: colors.text, fontSize: 16 },
+  metaRow: { alignItems: 'center', flexDirection: 'row', gap: 6, marginTop: 1 },
+  meta: { color: colors.textMuted, flexShrink: 1, fontSize: 13, fontWeight: '400' },
+  count: { fontSize: 13, fontWeight: '600' },
+  countNone: { color: colors.danger },
+  countSome: { color: colors.success },
+  body: { ...font.body, color: colors.text, fontSize: 17, lineHeight: 26, marginTop: spacing.md },
   top: {
     backgroundColor: colors.successBg,
     borderRadius: radius.md,
     marginTop: spacing.md,
-    padding: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
-  topLabel: { ...font.caption, color: colors.success, fontWeight: '600' },
-  topText: { ...font.label, color: colors.text, fontWeight: '600', lineHeight: 20, marginTop: 5 },
-  topNote: { ...font.caption, color: colors.textMuted, lineHeight: 18, marginTop: 4 },
-  actions: { flexDirection: 'row', gap: spacing.sm, marginTop: 14 },
+  topLabel: { color: colors.success, fontSize: 12, fontWeight: '700' },
+  corrected: { color: colors.text, fontSize: 15, fontWeight: '600', lineHeight: 23, marginTop: 5 },
+  removed: { color: colors.textMuted, fontWeight: '400', textDecorationLine: 'line-through' },
+  added: { color: colors.success, fontWeight: '800' },
+  topNote: { ...font.caption, color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 4 },
+  actions: { alignItems: 'center', flexDirection: 'row', gap: 20, marginTop: 14 },
   likeRow: { flexDirection: 'row', marginTop: 10 },
   media: { marginTop: 10 },
   composeActions: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  action: {
+  correctPill: {
     alignItems: 'center',
+    backgroundColor: colors.primary,
     borderRadius: radius.pill,
     justifyContent: 'center',
     minHeight: 44,
-    paddingHorizontal: 18,
+    paddingHorizontal: 20,
   },
-  actionPrimary: { backgroundColor: colors.primary },
-  actionInert: { backgroundColor: colors.bg, borderColor: colors.border, borderWidth: 1 },
+  correctPillLabel: {
+    color: colors.primaryText,
+    fontFamily: font.heading.fontFamily,
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  textAction: { justifyContent: 'center', minHeight: 44 },
+  addYours: { color: colors.accent, fontSize: 14, fontWeight: '700' },
+  seeAll: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  actionDone: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   pressed: { opacity: 0.7 },
-  actionLabel: { ...font.label, color: colors.textMuted },
-  actionLabelPrimary: { color: colors.primaryText },
 }))

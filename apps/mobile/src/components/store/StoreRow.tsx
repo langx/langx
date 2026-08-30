@@ -58,12 +58,14 @@ export function StoreRow({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  row: { alignItems: 'center', flexDirection: 'row', gap: 14, padding: spacing.lg },
+const useStyles = makeStyles(({ colors, font, radius }) => ({
+  // v3 rows run edge to edge of the screen's own padding, divided by
+  // hairlines; the price is a bold Nunito numeral, filled only when tappable.
+  row: { alignItems: 'center', flexDirection: 'row', gap: 14, paddingVertical: 16 },
   divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
   text: { flex: 1, gap: 2 },
-  name: { ...font.body, color: colors.text, fontWeight: '600' },
-  meta: { ...font.caption, color: colors.textMuted },
+  name: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  meta: { ...font.label, color: colors.textMuted, fontWeight: '400' },
   price: {
     alignItems: 'center',
     borderRadius: radius.pill,
@@ -72,8 +74,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     paddingHorizontal: 15,
   },
   buyable: { backgroundColor: colors.primary },
-  inert: { backgroundColor: colors.bg, borderColor: colors.border, borderWidth: 1 },
+  inert: {},
   pressed: { backgroundColor: colors.primaryShade },
-  priceLabel: { ...font.label, color: colors.textMuted },
-  buyableLabel: { color: colors.primaryText, fontWeight: '700' },
+  priceLabel: { ...font.heading, color: colors.textMuted, fontSize: 16 },
+  buyableLabel: { color: colors.primaryText },
 }))

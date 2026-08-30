@@ -15,7 +15,7 @@ import { makeStyles } from '../../src/lib/theme'
 import { interestLabel, useT } from '../../src/i18n'
 
 /**
- * Step 3 of 4, and both halves of it are skippable.
+ * Step 4 of 5, and both halves of it are skippable.
  *
  * `docs/architecture.md` has described the wizard as "languages + levels →
  * gender/bio/avatar/interests → username claim" from the beginning; the avatar
@@ -78,7 +78,7 @@ export default function PhotoStep() {
     <Screen scroll>
       <StepProgress step="photo" />
       <Text style={styles.title}>{t('onboarding.photoTitle')}</Text>
-      <Text style={styles.hint}>{t('onboarding.photoBody')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.photoBody')}</Text>
 
       <View style={styles.avatarRow}>
         {draft.avatarUrl ? (
@@ -88,19 +88,22 @@ export default function PhotoStep() {
             <Text style={styles.avatarEmptyText}>+</Text>
           </View>
         )}
-        <Button
-          label={
-            uploading
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ disabled: uploading, busy: uploading }}
+          disabled={uploading}
+          hitSlop={8}
+          onPress={() => void pickPhoto()}
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          <Text style={styles.avatarAction}>
+            {uploading
               ? t('onboarding.uploading')
               : draft.avatarUrl
                 ? t('onboarding.changePhoto')
-                : t('onboarding.addPhoto')
-          }
-          variant="secondary"
-          loading={uploading}
-          onPress={() => void pickPhoto()}
-          style={styles.avatarAction}
-        />
+                : t('onboarding.addPhoto')}
+          </Text>
+        </Pressable>
       </View>
 
       <Text style={styles.label}>
@@ -131,7 +134,11 @@ export default function PhotoStep() {
         onPress={() => router.push('/(onboarding)/handle')}
         style={styles.cta}
       />
-      <Pressable onPress={() => router.push('/(onboarding)/handle')} hitSlop={8}>
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => router.push('/(onboarding)/handle')}
+        hitSlop={8}
+      >
         <Text style={styles.skip}>{t('common.skip')}</Text>
       </Pressable>
     </Screen>
@@ -139,29 +146,35 @@ export default function PhotoStep() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
-  hint: { ...font.caption, color: colors.textMuted, marginBottom: spacing.md },
-  avatarRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.lg },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: spacing.sm + 2,
+  },
+  avatarRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.lg, marginTop: spacing.xl },
   avatar: { borderRadius: radius.pill, height: 88, width: 88 },
+  // The `fill` grey, not a dashed outline: v3 draws placeholders as soft
+  // fills, and structure never comes from boxes.
   avatarEmpty: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderStyle: 'dashed',
-    borderWidth: 1,
+    backgroundColor: colors.fill,
     justifyContent: 'center',
   },
-  avatarEmptyText: { color: colors.textMuted, fontSize: 28 },
-  // Undoes Button's full-width default, which is wrong beside the avatar.
-  avatarAction: { flexShrink: 1, width: 'auto' },
-  label: { ...font.label, color: colors.text, marginTop: spacing.xl },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  avatarEmptyText: { color: colors.textFaint, fontSize: 30 },
+  avatarAction: { color: colors.accent, fontSize: 15, fontWeight: '700' },
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600', marginTop: spacing.xl },
+  hint: { ...font.caption, color: colors.textFaint, fontSize: 13, marginTop: 2 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
+  pressed: { opacity: 0.7 },
   cta: { marginTop: spacing.xl },
   skip: {
-    ...font.body,
     alignSelf: 'center',
-    color: colors.textMuted,
+    color: colors.accent,
+    fontSize: 15,
+    fontWeight: '600',
     marginTop: spacing.md,
     paddingVertical: spacing.sm,
   },

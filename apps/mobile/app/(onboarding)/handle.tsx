@@ -29,7 +29,7 @@ function useDebounced<T>(value: T, delay = 400): T {
 }
 
 /**
- * Step 3 of 3: pick a handle, then create the profile.
+ * The last step: pick a handle, then create the profile.
  *
  * v1 ran on Appwrite and its users had handles; a returning user's handle is
  * reserved for them and this is where they claim it. The reservation lookup is
@@ -111,41 +111,48 @@ export default function HandleStep() {
     <Screen scroll>
       <StepProgress step="handle" />
       <Text style={styles.title}>{t('onboarding.handleTitle')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.handleBody')}</Text>
 
-      {reserved ? (
-        <View style={styles.reserved}>
-          <Text style={styles.reservedTitle}>
-            {t('onboarding.handleReserved', { handle: reserved })}
-          </Text>
-          <Text style={styles.reservedBody}>{t('onboarding.handleReservedBody')}</Text>
+      <View style={styles.form}>
+        {reserved ? (
+          <View style={styles.reserved}>
+            <Text style={styles.reservedTitle}>
+              {t('onboarding.handleReserved', { handle: reserved })}
+            </Text>
+            <Text style={styles.reservedBody}>{t('onboarding.handleReservedBody')}</Text>
+          </View>
+        ) : null}
+
+        <FormField
+          label={t('onboarding.username')}
+          value={draft.handle}
+          onChangeText={(handle) =>
+            updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
+          }
+          placeholder={t('onboarding.handlePlaceholder')}
+          autoCapitalize="none"
+          autoCorrect={false}
+          {...(!parsed.success && draft.handle.length > 0
+            ? { error: parsed.error.issues[0]?.message }
+            : {})}
+        />
+
+        <View style={styles.status}>
+          {checking ? <ActivityIndicator size="small" /> : null}
+          {!checking && available === true ? (
+            <Text style={styles.ok}>
+              {t('onboarding.handleAvailable', { handle: draft.handle })}
+            </Text>
+          ) : null}
+          {!checking && available === false ? (
+            <Text style={styles.taken}>
+              {t('onboarding.handleTaken', { handle: draft.handle })}
+            </Text>
+          ) : null}
         </View>
-      ) : null}
 
-      <FormField
-        label={t('onboarding.username')}
-        value={draft.handle}
-        onChangeText={(handle) =>
-          updateDraft({ handle: handle.toLowerCase().replace(/[^a-z0-9_]/g, '') })
-        }
-        placeholder={t('onboarding.handlePlaceholder')}
-        autoCapitalize="none"
-        autoCorrect={false}
-        {...(!parsed.success && draft.handle.length > 0
-          ? { error: parsed.error.issues[0]?.message }
-          : {})}
-      />
-
-      <View style={styles.status}>
-        {checking ? <ActivityIndicator size="small" /> : null}
-        {!checking && available === true ? (
-          <Text style={styles.ok}>{t('onboarding.handleAvailable', { handle: draft.handle })}</Text>
-        ) : null}
-        {!checking && available === false ? (
-          <Text style={styles.taken}>{t('onboarding.handleTaken', { handle: draft.handle })}</Text>
-        ) : null}
+        {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
       </View>
-
-      {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
 
       <Button
         label={t('onboarding.startUsing')}
@@ -159,19 +166,28 @@ export default function HandleStep() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
-  title: { ...font.title, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.xs },
-  reserved: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    marginBottom: spacing.lg,
-    padding: spacing.md,
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: spacing.sm + 2,
   },
-  reservedTitle: { ...font.body, color: colors.text, fontWeight: '700' },
-  reservedBody: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
+  form: { gap: spacing.md, marginTop: spacing.xl },
+  // The blue tint carries information from the app's side — same voice as
+  // Copilot and the info callouts, never a grey box.
+  reserved: {
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.lg,
+    marginBottom: spacing.sm,
+    padding: spacing.lg,
+  },
+  reservedTitle: { color: colors.accent, fontSize: 15, fontWeight: '700' },
+  reservedBody: { color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 2 },
   status: { flexDirection: 'row', minHeight: 22 },
-  ok: { ...font.caption, color: colors.success },
-  taken: { ...font.caption, color: colors.danger },
-  error: { ...font.caption, color: colors.danger, marginTop: spacing.sm },
+  ok: { ...font.caption, color: colors.success, fontSize: 13 },
+  taken: { ...font.caption, color: colors.danger, fontSize: 13 },
+  error: { ...font.caption, color: colors.danger },
   cta: { marginTop: spacing.xl },
 }))

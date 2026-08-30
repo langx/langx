@@ -129,13 +129,12 @@ export function AttachmentBar({ pending, onPick, onClear, disabled }: Attachment
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius }) => ({
+const useStyles = makeStyles(({ colors, font }) => ({
   row: { alignItems: 'center', flexDirection: 'row', gap: 10 },
+  // v3 draws attachment controls as bare muted glyphs; the 36 box keeps the
+  // touch target the outlined circle used to give them.
   button: {
     alignItems: 'center',
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
     height: 36,
     justifyContent: 'center',
     width: 36,

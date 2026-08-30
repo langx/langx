@@ -84,17 +84,21 @@ export function FormField({ label, error, maxLength, style, ...inputProps }: For
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   container: { gap: 6, width: '100%' },
   labelRow: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
-  label: { ...font.label, color: colors.textMuted },
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
   count: { ...font.caption, color: colors.textFaint },
   countOver: { color: colors.danger },
+  /**
+   * v3 fields are filled, not outlined: the `fill` grey is the box, and the
+   * border only appears to say something — 1.5px `danger` on error.
+   */
   input: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderWidth: 1,
+    backgroundColor: colors.fill,
+    borderColor: colors.fill,
+    borderWidth: 1.5,
     color: colors.text,
-    fontSize: 16,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    fontSize: 15,
+    paddingHorizontal: spacing.lg + 2,
+    paddingVertical: spacing.md + 1,
   },
   /** Room for the eye, so a long password does not run underneath it. */
   inputSecure: { paddingEnd: spacing.xxl },

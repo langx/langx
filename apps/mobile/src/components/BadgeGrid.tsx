@@ -4,7 +4,6 @@ import type { EarnedBadge } from '../api/types'
 import type { Locale } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
 import { badgeLabel, useLocale, useT } from '../i18n'
-import { calloutColours } from './ui/Callout'
 
 /** "Apr 2026" — a badge is dated to the month, not the minute. */
 function earnedMonth(iso: string, locale: Locale): string {
@@ -14,30 +13,35 @@ function earnedMonth(iso: string, locale: Locale): string {
 }
 
 /**
- * Each kind keeps the colour it has everywhere else: streaks are `warning` and
- * corrections are `success`, the same pairs the profile tiles and the chat
- * correction card use. A badge is a summary of those two facts, so inventing a
- * third palette for it would break the only thing making them legible at a
- * glance.
+ * One divided row per badge: the mark in a fixed slot, the name, and the
+ * earned/locked state hard right. Green is the only colour — it already means
+ * "earned" everywhere else (corrections, online dots), and a locked row fades
+ * as a whole rather than recolouring, so the two states differ in exactly one
+ * way each.
  */
-function BadgeTile({ badge }: { badge: EarnedBadge }) {
+function BadgeRow({ badge }: { badge: EarnedBadge }) {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
-  const pair = calloutColours(colors, badge.kind === 'streak' ? 'warning' : 'success')
 
   return (
-    <View style={[styles.tile, !badge.earned && styles.locked]}>
-      <View style={[styles.icon, { backgroundColor: badge.earned ? pair.bg : colors.bg }]}>
+    <View style={[styles.row, !badge.earned && styles.locked]}>
+      <View style={styles.slot}>
         {badge.kind === 'streak' ? (
           <Text style={styles.emoji}>🔥</Text>
         ) : (
-          <Feather name="edit-3" size={18} color={badge.earned ? pair.fg : colors.textFaint} />
+          <Feather
+            name="check"
+            size={22}
+            color={badge.earned ? colors.success : colors.textFaint}
+          />
         )}
       </View>
-      <Text style={styles.label}>{badgeLabel({ t, locale }, badge.kind, badge.threshold)}</Text>
-      <Text style={[styles.state, badge.earned && { color: pair.fg }]}>
+      <Text style={styles.name} numberOfLines={1}>
+        {badgeLabel({ t, locale }, badge.kind, badge.threshold)}
+      </Text>
+      <Text style={[styles.state, badge.earned && styles.stateEarned]}>
         {badge.earned
           ? badge.earnedAt
             ? t('badges.earned', { month: earnedMonth(badge.earnedAt, locale) })
@@ -49,57 +53,30 @@ function BadgeTile({ badge }: { badge: EarnedBadge }) {
 }
 
 export function BadgeGrid({ badges }: { badges: readonly EarnedBadge[] }) {
-  const styles = useStyles()
   return (
-    <View style={styles.grid}>
+    <View>
       {badges.map((badge) => (
-        <BadgeTile key={badge.id} badge={badge} />
+        <BadgeRow key={badge.id} badge={badge} />
       ))}
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius }) => ({
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  /**
-   * Two per row at every width, which took three tries to get right.
-   *
-   * `flexGrow: 1` with `minWidth: '46%'` was ragged: a tile whose label is
-   * longer than its basis expands past it and pushes its neighbour down, so
-   * "First correction" took a whole row while "100 days" and "365 days"
-   * paired. `minWidth: 0` is what stops content having a vote.
-   *
-   * A fixed `width: '48%'` then broke the other way. The gap lives on the
-   * container, so two tiles cost `96% + 10px` — which exceeds the line on a
-   * 280px screen and drops every tile onto its own row with dead space beside
-   * it. The basis has to leave room for the gap, and `flexGrow` reclaims
-   * whatever is left over, so the pair still fills the line exactly.
-   */
-  tile: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    flexBasis: '47%',
-    flexGrow: 1,
-    minWidth: 0,
-    padding: 14,
+const useStyles = makeStyles(({ colors, font }) => ({
+  // Every row keeps its divider — the leaderboard section follows the list,
+  // so even the last badge sits above a hairline in the design.
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: 14,
+    paddingVertical: 17,
   },
   locked: { opacity: 0.45 },
-  icon: {
-    alignItems: 'center',
-    borderRadius: radius.pill,
-    height: 40,
-    justifyContent: 'center',
-    width: 40,
-  },
-  emoji: { fontSize: 20 },
-  label: { ...font.heading, color: colors.text, fontSize: 15, marginTop: 9 },
-  state: {
-    ...font.caption,
-    color: colors.textMuted,
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 2,
-  },
+  slot: { alignItems: 'flex-start', width: 32 },
+  emoji: { fontSize: 22 },
+  name: { ...font.body, color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
+  state: { ...font.label, color: colors.textMuted },
+  stateEarned: { color: colors.success },
 }))

@@ -4,6 +4,7 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { openPaywall } from '../../src/lib/paywall'
@@ -27,10 +28,7 @@ export default function ViewersScreen() {
 
   return (
     <Screen fluid>
-      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>{t('common.back')}</Text>
-      </Pressable>
-      <Text style={styles.title}>{t('viewers.title')}</Text>
+      <ScreenHeader title={t('viewers.title')} onBack={() => goBackTo('/(app)/me')} />
 
       {viewers.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -73,8 +71,9 @@ export default function ViewersScreen() {
           }
           renderItem={({ item }) => (
             <Pressable
+              accessibilityRole="button"
               onPress={() => openProfile(item.handle, '/(app)/viewers')}
-              style={styles.row}
+              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
             >
               <Avatar url={item.avatarUrl} name={item.displayName} />
               <View style={styles.body}>
@@ -90,18 +89,24 @@ export default function ViewersScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  backRow: { paddingTop: spacing.md },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
   loading: { marginTop: spacing.xxl },
   locked: { alignItems: 'center', paddingVertical: spacing.xxl },
-  lockedCount: { color: colors.text, fontSize: 56, fontWeight: '700' },
+  /** The big numeral is display-face, like every v3 numeral. */
+  lockedCount: { ...font.heading, color: colors.text, fontSize: 56 },
   lockedLabel: { ...font.body, color: colors.textMuted },
   cta: { marginTop: spacing.xl, minWidth: 220 },
   footer: { paddingVertical: spacing.lg },
-  list: { paddingTop: spacing.md },
-  row: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingVertical: spacing.md },
+  list: { paddingTop: spacing.xs },
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingVertical: spacing.lg,
+  },
+  pressed: { opacity: 0.6 },
   body: { flex: 1 },
-  name: { ...font.body, color: colors.text, fontWeight: '600' },
-  time: { ...font.caption, color: colors.textMuted },
+  name: { ...font.heading, color: colors.text, fontSize: 16 },
+  time: { ...font.label, color: colors.textMuted, fontWeight: '400' },
 }))

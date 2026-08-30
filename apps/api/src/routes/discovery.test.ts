@@ -585,6 +585,32 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(handles).toContain(fluent.handle)
       expect(handles).not.toContain(beginner.handle)
     })
+
+    it('minLevel and maxLevel together select an inclusive band', async () => {
+      const viewer = await newUser('levelband-viewer@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+      })
+      await makePro(viewer.userId)
+
+      const make = (email: string, level: string) =>
+        newUser(email, {
+          nativeLanguages: [{ code: 'fi' }],
+          learning: [{ code: 'et', level, priority: 1 }],
+        })
+      const newcomer = await make('band-newcomer@example.com', 'absoluteBeginner')
+      const middle = await make('band-middle@example.com', 'intermediate')
+      const fluent = await make('band-fluent@example.com', 'fluent')
+
+      const response = await discover(viewer, 'minLevel=beginner&maxLevel=intermediate')
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles).toContain(middle.handle)
+      expect(handles).not.toContain(newcomer.handle)
+      expect(handles).not.toContain(fluent.handle)
+
+      // An inverted band is a client bug, not an empty result.
+      expect((await discover(viewer, 'minLevel=fluent&maxLevel=beginner')).statusCode).toBe(400)
+    })
   })
 
   describe('sort presets and pagination', () => {

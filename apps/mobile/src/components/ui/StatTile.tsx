@@ -1,46 +1,58 @@
 import { Pressable, Text, View } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
-import { calloutColours, type CalloutTone } from './Callout'
+import type { CalloutTone } from './Callout'
 
 interface StatTileProps {
   value: string
   label: string
-  /** Omit for the plain `surface` tile; a tone fills it with that callout pair. */
+  /** Omit for plain ink; a tone colours the *numeral* — v3 has no filled tiles. */
   tone?: CalloutTone
   onPress?: () => void
 }
 
-/** A number and what it counts. Three of these sit in a row on the profile. */
+/**
+ * A number and what it counts. Three of these sit in a row on the profile.
+ * v3 strips the boxes: the big Nunito numeral carries the weight, the tone
+ * survives as the numeral's colour (the corrections count is green), and the
+ * row underneath them draws the divider.
+ */
 export function StatTile({ value, label, tone, onPress }: StatTileProps) {
   const { colors } = useTheme()
   const styles = useStyles()
-  const pair = tone ? calloutColours(colors, tone) : null
+  const toneColour =
+    tone === 'success'
+      ? colors.success
+      : tone === 'info'
+        ? colors.info
+        : tone === 'warning'
+          ? colors.warning
+          : tone === 'error'
+            ? colors.danger
+            : null
 
   const body = (
     <>
-      <Text style={[styles.value, pair ? { color: pair.fg } : null]}>{value}</Text>
-      <Text style={[styles.label, pair ? { color: pair.fg } : null]}>{label}</Text>
+      <Text style={[styles.value, toneColour ? { color: toneColour } : null]}>{value}</Text>
+      <Text style={styles.label}>{label}</Text>
     </>
   )
-  const style = [styles.tile, pair ? { backgroundColor: pair.bg } : styles.plain]
 
-  if (!onPress) return <View style={style}>{body}</View>
+  if (!onPress) return <View style={styles.tile}>{body}</View>
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${label}: ${value}`}
       onPress={onPress}
-      style={({ pressed }) => [...style, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.tile, pressed && styles.pressed]}
     >
       {body}
     </Pressable>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius }) => ({
-  tile: { borderRadius: radius.lg, flex: 1, gap: 2, padding: 14 },
-  plain: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
-  pressed: { opacity: 0.7 },
-  value: { ...font.heading, color: colors.text, fontSize: 22 },
+const useStyles = makeStyles(({ colors, font }) => ({
+  tile: { flex: 1, gap: 2 },
+  pressed: { opacity: 0.6 },
+  value: { ...font.heading, color: colors.text, fontSize: 24 },
   label: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
 }))

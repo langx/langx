@@ -8,8 +8,9 @@ import { EmptyState } from '../../src/components/ui/EmptyState'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 import { badgeLabel, periodLabel, useLocale, useT } from '../../src/i18n'
 import { dedupeById } from '../../src/lib/dedupeById'
 
@@ -18,7 +19,6 @@ const TABS: readonly PeriodType[] = ['week', 'month', 'year', 'all']
 const MEDALS = ['🥇', '🥈', '🥉']
 
 export default function LeaderboardScreen() {
-  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -58,42 +58,33 @@ export default function LeaderboardScreen() {
       */}
       {next ? (
         <View style={styles.next}>
-          <Text style={styles.nextLabel}>{t('leaderboard.nextMilestone')}</Text>
-          <View style={styles.nextRow}>
-            <Text style={styles.nextValue}>
-              {next.current} → {next.threshold}
-            </Text>
-            <Text style={styles.nextUnit}>
-              {t(next.kind === 'streak' ? 'leaderboard.dayStreak' : 'leaderboard.corrections')}
-            </Text>
+          <Text style={styles.kicker}>{t('leaderboard.nextMilestone')}</Text>
+          <Text style={styles.nextName}>
+            {badgeLabel({ t, locale }, next.kind, next.threshold)}
+          </Text>
+          <View style={styles.nextBar}>
+            <ProgressBar
+              accessibilityLabel={t('leaderboard.towards', {
+                current: next.current,
+                threshold: next.threshold,
+                label: badgeLabel({ t, locale }, next.kind, next.threshold),
+              })}
+              value={next.current / next.threshold}
+            />
           </View>
-          <ProgressBar
-            accessibilityLabel={t('leaderboard.towards', {
-              current: next.current,
-              threshold: next.threshold,
-              label: badgeLabel({ t, locale }, next.kind, next.threshold),
-            })}
-            color={colors.streak}
-            height={10}
-            value={next.current / next.threshold}
-          />
-          <View style={styles.nextRow}>
-            <Text style={styles.nextMeta}>
-              {next.kind === 'streak'
-                ? t('leaderboard.toGo', {
-                    amount: t('format.days', { count: next.threshold - next.current }),
-                  })
-                : t('leaderboard.toGoPlain', { count: next.threshold - next.current })}
-            </Text>
-            {next.reward > 0 ? (
-              <Text style={styles.nextMeta}>
-                {t('leaderboard.pays', {
+          <Text style={styles.nextMeta}>
+            {next.kind === 'streak'
+              ? t('leaderboard.toGo', {
+                  amount: t('format.days', { count: next.threshold - next.current }),
+                })
+              : t('leaderboard.toGoPlain', { count: next.threshold - next.current })}
+            {next.reward > 0
+              ? ` · ${t('leaderboard.pays', {
                   count: next.reward,
                   amount: next.reward.toLocaleString(locale),
-                })}
-              </Text>
-            ) : null}
-          </View>
+                })}`
+              : ''}
+          </Text>
         </View>
       ) : null}
 
@@ -105,18 +96,14 @@ export default function LeaderboardScreen() {
         </Text>
       ) : null}
 
+      <Text style={styles.kicker}>{t('leaderboard.title')}</Text>
       <View style={styles.tabs}>
-        {TABS.map((tab) => (
-          <Pressable
-            key={tab}
-            onPress={() => setPeriod(tab)}
-            style={[styles.tab, period === tab && styles.tabActive]}
-          >
-            <Text style={[styles.tabLabel, period === tab && styles.tabLabelActive]}>
-              {periodLabel(t, tab)}
-            </Text>
-          </Pressable>
-        ))}
+        <SegmentedControl
+          options={TABS.map((tab) => ({ value: tab, label: periodLabel(t, tab) }))}
+          selected={[period]}
+          onToggle={setPeriod}
+          accessibilityLabel={t('leaderboard.periodPicker')}
+        />
       </View>
 
       {board.isPending ? (
@@ -157,10 +144,15 @@ export default function LeaderboardScreen() {
               ) : null}
             </>
           }
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <Pressable
               onPress={() => openProfile(item.handle, '/(app)/leaderboard')}
-              style={[styles.row, item.isViewer && styles.rowViewer]}
+              style={({ pressed }) => [
+                styles.row,
+                index === entries.length - 1 && styles.rowLast,
+                item.isViewer && styles.rowViewer,
+                pressed && styles.rowPressed,
+              ]}
             >
               <Text style={styles.rank}>{MEDALS[item.rank - 1] ?? `#${item.rank}`}</Text>
               <Avatar url={item.avatarUrl} name={item.displayName} size={36} />
@@ -181,77 +173,44 @@ export default function LeaderboardScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  count: {
-    ...font.caption,
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    color: colors.textMuted,
-    fontWeight: '600',
-    overflow: 'hidden',
-    paddingHorizontal: spacing.md,
-    paddingVertical: 6,
-  },
+  count: { color: colors.textMuted, fontSize: 15, fontWeight: '600' },
+  kicker: { ...font.label, color: colors.textFaint },
   next: {
-    backgroundColor: colors.warningBg,
-    borderRadius: radius.lg,
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-    padding: spacing.lg,
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingBottom: spacing.lg - 4,
+    paddingTop: spacing.sm + 2,
   },
-  nextLabel: { ...font.label, color: colors.warning },
-  nextRow: {
-    alignItems: 'baseline',
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between',
-  },
-  nextValue: { ...font.heading, color: colors.warning, fontSize: 30 },
-  nextUnit: { ...font.label, color: colors.warning, flex: 1, fontWeight: '400' },
-  nextMeta: { ...font.caption, color: colors.warning, fontWeight: '600' },
-  streakCard: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: spacing.md,
-    padding: spacing.md,
-  },
-  streakValue: { ...font.heading, color: colors.streak },
-  streakHint: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-  streakXp: { ...font.heading, color: colors.text },
-  tabs: { flexDirection: 'row', gap: spacing.xs, marginTop: spacing.md },
-  tab: {
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
-  },
-  tabActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  tabLabel: { ...font.caption, color: colors.textMuted, fontWeight: '600' },
-  tabLabelActive: { color: colors.primaryText },
+  nextName: { ...font.heading, color: colors.text, fontSize: 24, marginTop: 4 },
+  nextBar: { marginTop: 14 },
+  nextMeta: { color: colors.textMuted, fontSize: 13, marginTop: 10 },
+  streakHint: { ...font.caption, color: colors.textMuted, marginTop: spacing.sm },
+  tabs: { marginTop: spacing.lg },
   loading: { marginTop: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
-  list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   row: {
     alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
     flexDirection: 'row',
     gap: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: 15,
   },
+  rowLast: { borderBottomWidth: 0 },
+  rowPressed: { opacity: 0.7 },
+  // The blue tint marks "you" the way it marks your own bubble; the row keeps
+  // the shared edges, so only a small inset separates it from the hairlines.
   rowViewer: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.accentBg,
     borderRadius: radius.md,
     paddingHorizontal: spacing.sm,
   },
-  rank: { ...font.body, color: colors.textMuted, minWidth: 36 },
+  rank: { ...font.heading, color: colors.text, fontSize: 16, minWidth: 36 },
   body: { flex: 1 },
-  name: { ...font.body, color: colors.text, fontWeight: '600' },
+  name: { ...font.body, color: colors.text, fontSize: 16, fontWeight: '600' },
   streakSmall: { ...font.caption, color: colors.streak },
-  tokens: { ...font.body, color: colors.text, fontWeight: '700' },
+  tokens: { ...font.heading, color: colors.text, fontSize: 16 },
   viewerRow: {
     alignItems: 'center',
     borderTopColor: colors.border,
@@ -261,5 +220,5 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     marginTop: spacing.md,
     paddingTop: spacing.md,
   },
-  viewerLabel: { ...font.body, color: colors.text, flex: 1, fontWeight: '600' },
+  viewerLabel: { ...font.body, color: colors.text, flex: 1, fontSize: 16, fontWeight: '600' },
 }))

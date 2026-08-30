@@ -1,14 +1,11 @@
 import type { OnboardingDraft } from '../hooks/useOnboardingDraft'
 
-/** The wizard's screens, in order. */
-export const ONBOARDING_STEPS = [
-  'languages',
-  'learning',
-  'levels',
-  'about-you',
-  'photo',
-  'handle',
-] as const
+/**
+ * The wizard's screens, in order. Both language questions live on the
+ * `languages` screen, behind two tabs — v3 merged them back, with Continue
+ * driving the tab change so the sequence survives the merge.
+ */
+export const ONBOARDING_STEPS = ['languages', 'levels', 'about-you', 'photo', 'handle'] as const
 export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
 
 /**
@@ -25,8 +22,9 @@ export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
  * fields before it without them ever seeing that they existed.
  */
 export function furthestOnboardingStep(draft: OnboardingDraft): OnboardingStep {
-  if (draft.nativeLanguages.length === 0) return 'languages'
-  if (draft.learning.length === 0) return 'learning'
+  // Either language list empty means the languages screen — it opens on the
+  // tab that still has work in it.
+  if (draft.nativeLanguages.length === 0 || draft.learning.length === 0) return 'languages'
   // A level is not optional and has no default: the whole of discovery is the
   // fit between what you speak and how well you speak it.
   if (draft.learning.some((entry) => entry.level === null)) return 'levels'

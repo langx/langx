@@ -21,14 +21,19 @@ interface WeeklyChartProps {
   week: TokenSummary['week']
 }
 
+/** v3's bar height; the ratio of a day against the week's peak scales into it. */
+const BAR_AREA = 64
+/** Days with nothing keep a visible stub, so the week still reads as seven days. */
+const EMPTY_BAR = 8
+
 /**
- * Two series over seven days, drawn with Views.
+ * Seven days, drawn with Views.
  *
- * No chart library: this is fourteen rectangles whose heights are a ratio, and
+ * No chart library: this is seven rectangles whose heights are a ratio, and
  * every library that draws it would either pull in `react-native-svg` or ship a
- * canvas shim to the web build. The one thing worth being careful about is the
- * scale — both series share a single maximum, because a chart that scaled each
- * series to its own height would show a quiet week and a busy one as identical.
+ * canvas shim to the web build. v3 merges the two v2 series into one bar per
+ * day — messages and corrections summed — and lets the header line report the
+ * two counts separately, so the legend went with the second series.
  */
 export function WeeklyChart({ week }: WeeklyChartProps) {
   const { colors } = useTheme()
@@ -38,12 +43,13 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
 
   const messages = week.reduce((sum, day) => sum + day.messages, 0)
   const corrections = week.reduce((sum, day) => sum + day.corrections, 0)
+  const totals = week.map((day) => day.messages + day.corrections)
   // `|| 1` rather than a guard: an empty week divides by one and draws seven
-  // zero-height bars, which is the correct picture of a week with nothing in it.
-  const peak = Math.max(...week.flatMap((day) => [day.messages, day.corrections]), 0) || 1
+  // empty stubs, which is the correct picture of a week with nothing in it.
+  const peak = Math.max(...totals, 0) || 1
 
   return (
-    <View style={styles.card}>
+    <View style={styles.section}>
       <View style={styles.header}>
         <Text style={styles.title}>{t('weekly.thisWeek')}</Text>
         <Text style={styles.summary}>
@@ -62,22 +68,23 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
           corrections: t('format.corrections', { count: corrections }),
         })}
       >
-        {week.map((day) => (
-          <View key={day.day} style={styles.column}>
+        {week.map((day, i) => {
+          const total = totals[i] ?? 0
+          return (
             <View
+              key={day.day}
               style={[
                 styles.bar,
-                { backgroundColor: colors.success, height: `${(day.corrections / peak) * 50}%` },
+                total > 0
+                  ? {
+                      backgroundColor: colors.accent,
+                      height: Math.max(EMPTY_BAR, (total / peak) * BAR_AREA),
+                    }
+                  : { backgroundColor: colors.fill, height: EMPTY_BAR },
               ]}
             />
-            <View
-              style={[
-                styles.bar,
-                { backgroundColor: colors.accent, height: `${(day.messages / peak) * 50}%` },
-              ]}
-            />
-          </View>
-        ))}
+          )
+        })}
       </View>
 
       <View style={styles.labels}>
@@ -87,39 +94,21 @@ export function WeeklyChart({ week }: WeeklyChartProps) {
           </Text>
         ))}
       </View>
-
-      <View style={styles.legend}>
-        <View style={styles.legendItem}>
-          <View style={[styles.dot, { backgroundColor: colors.success }]} />
-          <Text style={styles.legendLabel}>{t('weekly.correctionsGiven')}</Text>
-        </View>
-        <View style={styles.legendItem}>
-          <View style={[styles.dot, { backgroundColor: colors.accent }]} />
-          <Text style={styles.legendLabel}>{t('weekly.messages')}</Text>
-        </View>
-      </View>
     </View>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    padding: spacing.lg,
+const useStyles = makeStyles(({ colors, font }) => ({
+  section: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingVertical: 18,
   },
-  header: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  title: { ...font.heading, color: colors.text, fontSize: 15 },
-  summary: { ...font.caption, color: colors.textMuted },
-  bars: { alignItems: 'flex-end', flexDirection: 'row', gap: 7, height: 78, marginTop: 14 },
-  column: { flex: 1, gap: 3, height: '100%', justifyContent: 'flex-end' },
-  bar: { borderRadius: radius.pill },
-  labels: { flexDirection: 'row', marginTop: 7 },
-  label: { ...font.caption, color: colors.textFaint, flex: 1, fontSize: 11, textAlign: 'center' },
-  legend: { flexDirection: 'row', gap: spacing.lg, marginTop: 11 },
-  legendItem: { alignItems: 'center', flexDirection: 'row', gap: 6 },
-  dot: { borderRadius: radius.pill, height: 9, width: 9 },
-  legendLabel: { ...font.caption, color: colors.textMuted, fontSize: 11, fontWeight: '600' },
+  header: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
+  title: { ...font.heading, color: colors.text, fontSize: 16 },
+  summary: { color: colors.textMuted, fontSize: 13 },
+  bars: { alignItems: 'flex-end', flexDirection: 'row', gap: 8, height: BAR_AREA, marginTop: 14 },
+  bar: { borderRadius: 6, flex: 1 },
+  labels: { flexDirection: 'row', gap: 8, marginTop: 8 },
+  label: { color: colors.textFaint, flex: 1, fontSize: 11, fontWeight: '600', textAlign: 'center' },
 }))

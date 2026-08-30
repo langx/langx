@@ -40,23 +40,21 @@ export function MessageMeta({ message, mine }: { message: MessageDto; mine: bool
   const t = useT()
   const { locale } = useLocale()
   /**
-   * Your own bubble is `primary` yellow in both schemes, so its meta is black
-   * at half strength rather than the palette's muted grey — the grey was tuned
-   * against `surface` and disappears on yellow.
+   * Both bubbles are light tints in v3, so one faint grey serves both sides —
+   * the meta is a whisper under the message, not a second line of it.
    */
-  const tint = mine ? colors.primaryTextMuted : colors.textMuted
+  const tint = colors.textFaint
   const state = deliveryStateOf(message)
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, mine ? styles.rowMine : null]}>
       <Text style={[styles.time, { color: tint }]}>{clockTime(message.createdAt, locale)}</Text>
       {mine ? (
         <Text
           accessibilityLabel={t(LABEL_KEYS[state])}
-          // Read is the one state that has to stand out, and on yellow it can
-          // no longer do that with a hue — full-strength black against the
-          // half-strength tint carries it instead.
-          style={[styles.status, { color: state === 'read' && mine ? colors.primaryText : tint }]}
+          // Read is the one state that has to stand out; on the light bubble
+          // the accent carries it — the tinted double tick everyone knows.
+          style={[styles.status, { color: state === 'read' ? colors.accent : tint }]}
         >
           {state === 'sent' ? '✓' : '✓✓'}
         </Text>
@@ -66,20 +64,22 @@ export function MessageMeta({ message, mine }: { message: MessageDto; mine: bool
 }
 
 const useStyles = makeStyles(({ font, spacing }) => ({
+  // The clock sits where the bubble came from: start on theirs, end on yours.
   row: {
     alignItems: 'center',
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start',
     flexDirection: 'row',
     gap: spacing.xs,
-    marginTop: 2,
+    marginTop: 6,
   },
-  time: { ...font.caption, fontSize: 11, opacity: 0.7 },
+  rowMine: { alignSelf: 'flex-end' },
+  // Already faint by colour; a second dampening via opacity would bury it.
+  time: { ...font.caption, fontSize: 11 },
   status: {
     fontSize: 11,
     // Pulls the second tick under the first, the way the single glyph these
     // imitate is drawn. Without it the pair reads as two separate marks.
     letterSpacing: -3,
-    opacity: 0.9,
     // The negative tracking above also eats the space after the last tick.
     paddingEnd: 3,
   },

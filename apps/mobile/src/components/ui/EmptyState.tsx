@@ -34,10 +34,8 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   root: { alignItems: 'center', paddingHorizontal: spacing.xl, paddingVertical: spacing.xxl },
   badge: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    backgroundColor: colors.fill,
     borderRadius: radius.pill,
-    borderWidth: 1,
     height: 64,
     justifyContent: 'center',
     marginBottom: spacing.md,

@@ -1,3 +1,4 @@
+import Feather from '@expo/vector-icons/Feather'
 import {
   PAID_PLAN_TIERS,
   PLAN_FEATURES,
@@ -17,6 +18,7 @@ import { ActivityIndicator, Linking, Pressable, Text, View } from 'react-native'
 import { useEffectiveTier, useQuota, useRefreshEntitlement } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import {
   getOffers,
@@ -25,7 +27,7 @@ import {
   restorePurchases,
   type PurchaseOffer,
 } from '../../src/lib/purchases'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT, type MessageKey } from '../../src/i18n'
 
 /**
@@ -46,12 +48,11 @@ const PERIOD_LABEL: Record<BillingPeriod, MessageKey> = {
 
 /**
  * `name` is a brand — "Pro" and "Pro+" are the same words in every locale, and
- * they are what the store listing and the receipt say — so only the tagline is
- * a key.
+ * they are what the store listing and the receipt say.
  */
-const TIER_COPY: Record<PaidPlanTier, { name: string; tagline: MessageKey }> = {
-  pro: { name: 'Pro', tagline: 'paywall.proTagline' },
-  pro_plus: { name: 'Pro+', tagline: 'paywall.proPlusTagline' },
+const TIER_NAME: Record<PaidPlanTier, string> = {
+  pro: 'Pro',
+  pro_plus: 'Pro+',
 }
 
 /**
@@ -62,13 +63,8 @@ const TIER_COPY: Record<PaidPlanTier, { name: string; tagline: MessageKey }> = {
  * way to advertise something the list does not contain. The three definitions
  * of "what Pro is" — the shared list, the rules test and this screen — used to
  * be independent, so the first one to change made the other two lie.
- *
- * The free-tier numbers come from `PLAN_LIMITS` rather than being typed out,
- * because a paywall quoting a limit the server no longer enforces is the worst
- * kind of wrong.
  */
 interface BenefitCopy {
-  emoji: string
   title: MessageKey
   body: MessageKey
   /** Interpolated into `body`. The free-tier numbers come from `PLAN_LIMITS`
@@ -79,34 +75,28 @@ interface BenefitCopy {
 
 const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
   unlimitedInitiations: {
-    emoji: '💬',
     title: 'paywall.unlimitedChats',
     body: 'paywall.unlimitedChatsBody',
     count: PLAN_LIMITS.free.initiationsPer24h ?? 0,
   },
   advancedFilters: {
-    emoji: '🎯',
     title: 'paywall.advancedFilters',
     body: 'paywall.advancedFiltersBody',
   },
   unlimitedTranslation: {
-    emoji: '🌍',
     title: 'paywall.unlimitedTranslation',
     body: 'paywall.unlimitedTranslationBody',
     count: PLAN_LIMITS.free.translationsPer24h ?? 0,
   },
   profileViewerIdentities: {
-    emoji: '👀',
     title: 'paywall.whoViewed',
     body: 'paywall.whoViewedBody',
   },
   incognito: {
-    emoji: '🕶️',
     title: 'paywall.incognito',
     body: 'paywall.incognitoBody',
   },
   hideOnlineStatus: {
-    emoji: '🌙',
     title: 'paywall.hideOnline',
     body: 'paywall.hideOnlineBody',
   },
@@ -124,7 +114,6 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
  */
 const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boolean }> = {
   nearby: {
-    emoji: '📍',
     // The body says what it does *and* what it costs the reader, because the
     // second half is the part they would otherwise find out after paying.
     title: 'paywall.nearby',
@@ -132,7 +121,6 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
     shipped: true,
   },
   copilot: {
-    emoji: '🤖',
     title: 'paywall.copilot',
     body: 'paywall.copilotBody',
     shipped: false,
@@ -173,8 +161,8 @@ export default function PaywallScreen() {
     from?: string
   }>()
   const feature = parseFeature(featureParam)
-  // Which column to point at, read off `PLAN_LIMITS` rather than assumed:
-  // move a capability between tiers and the sentence follows it.
+  // Which tier the context line points at, read off `PLAN_LIMITS` rather than
+  // assumed: move a capability between tiers and the sentence follows it.
   const highlightTier = feature ? tierUnlocking(feature) : null
   const quota = useQuota()
   const refresh = useRefreshEntitlement()
@@ -230,10 +218,13 @@ export default function PaywallScreen() {
     if (!ok) setNotice(t('paywall.nothingToRestore'))
   }
 
+  const hasTopLines =
+    (feature !== null && highlightTier !== null) || remaining === 0 || tier !== 'free'
+
   return (
     <Screen scroll>
-      <Text style={styles.eyebrow}>LANGX</Text>
-      <Text style={styles.title}>{t('paywall.title')}</Text>
+      {/* "LangX Pro" is a brand, like the tier names — the same words in every locale. */}
+      <ScreenHeader title="LangX Pro" onBack={() => goBackTo('/(app)/me', from)} />
 
       {/*
         Says why this screen opened, when the caller knew. Someone who just
@@ -241,39 +232,35 @@ export default function PaywallScreen() {
         who opened the paywall from their profile, and a generic pitch answers
         neither of them well.
       */}
-      {feature && highlightTier ? (
-        <View style={styles.contextBanner}>
-          <Text style={styles.contextText}>
-            {t(FEATURE_TITLE[feature])} {t('paywall.partOf')} {TIER_COPY[highlightTier].name}.
-          </Text>
-        </View>
-      ) : null}
-
-      {remaining === 0 ? (
-        <View style={styles.quotaBanner}>
-          <Text style={styles.quotaText}>
-            {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
-          </Text>
-        </View>
-      ) : null}
-
-      {tier !== 'free' ? (
-        <View style={styles.currentBanner}>
-          <Text style={styles.currentText}>
-            {t('paywall.manageNotice', { plan: TIER_COPY[tier].name })}
-          </Text>
+      {hasTopLines ? (
+        <View style={styles.topBlock}>
+          {feature && highlightTier ? (
+            <Text style={styles.contextText}>
+              <Text style={styles.contextFeature}>{t(FEATURE_TITLE[feature])}</Text>{' '}
+              {t('paywall.partOf')} {TIER_NAME[highlightTier]}.
+            </Text>
+          ) : null}
+          {remaining === 0 ? (
+            <Text style={styles.contextText}>
+              {t('paywall.quotaNotice', { count: PLAN_LIMITS.free.initiationsPer24h ?? 0 })}
+            </Text>
+          ) : null}
+          {tier !== 'free' ? (
+            <Text style={styles.contextText}>
+              {t('paywall.manageNotice', { plan: TIER_NAME[tier] })}
+            </Text>
+          ) : null}
         </View>
       ) : null}
 
       {notice ? <Text style={styles.notice}>{notice}</Text> : null}
 
       {PAID_PLAN_TIERS.map((paidTier) => (
-        <TierCard
+        <TierSection
           key={paidTier}
           tier={paidTier}
           offers={offers}
           currentTier={tier}
-          highlighted={highlightTier === paidTier}
           busyOfferId={busyOfferId}
           onBuy={buy}
         />
@@ -285,13 +272,14 @@ export default function PaywallScreen() {
         restore, not only the server-side reconcile.
       */}
       <Pressable
+        accessibilityRole="button"
         onPress={() => void restore()}
         disabled={restoring}
         hitSlop={8}
         style={styles.restore}
       >
         <Text style={styles.restoreText}>
-          {restoring || refresh.isPending ? t('common.checking') : t('paywall.restore')}
+          {restoring || refresh.isPending ? t('common.checking') : t('paywall.restorePurchases')}
         </Text>
       </Pressable>
 
@@ -305,57 +293,60 @@ export default function PaywallScreen() {
           <Text style={styles.legalLink}>{t('paywall.privacy')}</Text>
         </Pressable>
       </View>
-
-      <Button
-        label={t('common.backPlain')}
-        variant="secondary"
-        onPress={() => goBackTo('/(app)/me', from)}
-        style={styles.back}
-      />
     </Screen>
   )
 }
 
-interface TierCardProps {
+interface TierSectionProps {
   tier: PaidPlanTier
   offers: PurchaseOffer[] | null
   currentTier: string
-  /** The tier that unlocks whatever sent the user here, if anything did. */
-  highlighted: boolean
   busyOfferId: string | null
   onBuy: (offerId: string) => Promise<void>
 }
 
-function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }: TierCardProps) {
+function TierSection({ tier, offers, currentTier, busyOfferId, onBuy }: TierSectionProps) {
   const styles = useStyles()
   const t = useT()
 
-  const copy = TIER_COPY[tier]
   const tierOffers = offers?.filter((offer) => offer.tier === tier) ?? []
   const isCurrent = currentTier === tier
 
-  return (
-    <View
-      style={[
-        styles.card,
-        tier === 'pro_plus' && styles.cardPlus,
-        highlighted && styles.cardHighlighted,
-      ]}
-    >
-      <Text style={[styles.cardTitle, tier === 'pro_plus' && styles.cardTitlePlus]}>
-        {copy.name}
-      </Text>
-      <Text style={styles.cardTagline}>{t(copy.tagline)}</Text>
+  // The yearly plan is the screen's one committing (yellow) action; every
+  // other offer is an outline. When the store returns no yearly, the first
+  // offer inherits the slot so the screen never sells without a commit.
+  const featured =
+    tier === 'pro'
+      ? (tierOffers.find((offer) => offer.period === 'yearly') ?? tierOffers[0])
+      : undefined
+  const orderedOffers = featured
+    ? [featured, ...tierOffers.filter((offer) => offer !== featured)]
+    : tierOffers
 
-      {tier === 'pro'
-        ? PRO_BENEFITS.map((benefit) => {
-            const feature = BENEFIT_COPY[benefit]
-            return <BenefitRow key={benefit} copy={feature} />
-          })
-        : PRO_PLUS_BENEFITS.map((benefit) => {
-            const feature = PRO_PLUS_BENEFIT_COPY[benefit]
-            return <BenefitRow key={benefit} copy={feature} pending={!feature.shipped} />
-          })}
+  const offerLabel = (offer: PurchaseOffer) =>
+    t('paywall.offer', { period: t(PERIOD_LABEL[offer.period]), price: offer.priceString })
+  const offerDisabled = (offer: PurchaseOffer) =>
+    isCurrent || (busyOfferId !== null && busyOfferId !== offer.id)
+
+  return (
+    <View style={[styles.section, tier === 'pro_plus' && styles.sectionLast]}>
+      {tier === 'pro' ? (
+        <Text style={styles.tierName}>{TIER_NAME.pro}</Text>
+      ) : (
+        <View style={styles.plusHead}>
+          <Text style={styles.tierName}>{TIER_NAME.pro_plus}</Text>
+          <Text style={styles.plusTagline}>{t('paywall.everythingInPro')}</Text>
+        </View>
+      )}
+
+      <View style={styles.benefits}>
+        {tier === 'pro'
+          ? PRO_BENEFITS.map((benefit) => <BenefitRow key={benefit} copy={BENEFIT_COPY[benefit]} />)
+          : PRO_PLUS_BENEFITS.map((benefit) => {
+              const copy = PRO_PLUS_BENEFIT_COPY[benefit]
+              return <BenefitRow key={benefit} copy={copy} pending={!copy.shipped} />
+            })}
+      </View>
 
       {offers === null ? (
         <ActivityIndicator style={styles.offersLoading} />
@@ -363,19 +354,27 @@ function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }
         <Text style={styles.unavailable}>
           {t(isPurchasesAvailable() ? 'paywall.noPlans' : 'paywall.notSetUp')}
         </Text>
-      ) : (
-        tierOffers.map((offer) => (
+      ) : tier === 'pro' ? (
+        orderedOffers.map((offer, index) => (
           <Button
             key={offer.id}
-            label={t('paywall.offer', {
-              period: t(PERIOD_LABEL[offer.period]),
-              price: offer.priceString,
-            })}
-            variant={tier === 'pro_plus' ? 'primary' : 'secondary'}
+            label={offerLabel(offer)}
+            variant={offer === featured ? 'primary' : 'secondary'}
             loading={busyOfferId === offer.id}
-            disabled={isCurrent || (busyOfferId !== null && busyOfferId !== offer.id)}
+            disabled={offerDisabled(offer)}
             onPress={() => onBuy(offer.id)}
-            style={styles.offerButton}
+            style={index === 0 ? styles.offerFirst : styles.offerNext}
+          />
+        ))
+      ) : (
+        orderedOffers.map((offer, index) => (
+          <PlusOfferButton
+            key={offer.id}
+            label={offerLabel(offer)}
+            loading={busyOfferId === offer.id}
+            disabled={offerDisabled(offer)}
+            onPress={() => void onBuy(offer.id)}
+            first={index === 0}
           />
         ))
       )}
@@ -383,86 +382,154 @@ function TierCard({ tier, offers, currentTier, highlighted, busyOfferId, onBuy }
   )
 }
 
+/**
+ * The Pro+ offer is an outline like the secondary `Button`, but ringed in
+ * `text` rather than `border` — the design's way of saying "also real, not the
+ * default" without spending a second yellow. `Button` cannot draw that ring
+ * (its `style` lands on the animation wrapper, outside the bordered box), so
+ * the pressable is local.
+ */
+function PlusOfferButton({
+  label,
+  loading,
+  disabled,
+  first,
+  onPress,
+}: {
+  label: string
+  loading: boolean
+  disabled: boolean
+  first: boolean
+  onPress: () => void
+}) {
+  const { colors } = useTheme()
+  const styles = useStyles()
+  const isDisabled = disabled || loading
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled }}
+      onPress={onPress}
+      disabled={isDisabled}
+      style={({ pressed }) => [
+        styles.plusOffer,
+        first ? styles.offerFirst : styles.offerNext,
+        isDisabled && styles.plusOfferDisabled,
+        pressed && !isDisabled && styles.plusOfferPressed,
+      ]}
+    >
+      {loading ? (
+        <ActivityIndicator color={colors.text} />
+      ) : (
+        <Text style={styles.plusOfferLabel}>{label}</Text>
+      )}
+    </Pressable>
+  )
+}
+
 function BenefitRow({ copy, pending = false }: { copy: BenefitCopy; pending?: boolean }) {
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
 
   return (
-    <View style={styles.feature}>
-      <Text style={styles.emoji}>{copy.emoji}</Text>
-      <View style={styles.featureBody}>
-        <View style={styles.featureTitleRow}>
-          <Text style={styles.featureTitle}>{t(copy.title)}</Text>
-          {pending ? <Text style={styles.pendingTag}>{t('common.comingSoon')}</Text> : null}
-        </View>
-        <Text style={styles.featureText}>
+    <View style={styles.benefit}>
+      <Feather
+        name="check"
+        size={15}
+        color={pending ? colors.textFaint : colors.accent}
+        style={styles.check}
+      />
+      <Text style={[styles.benefitText, pending && styles.benefitTextPending]}>
+        <Text style={[styles.benefitLead, pending && styles.benefitLeadPending]}>
+          {t(copy.title)}
+        </Text>
+        <Text style={styles.benefitBody}>
+          {' — '}
           {t(copy.body, copy.count === undefined ? undefined : { count: copy.count })}
         </Text>
-      </View>
+        {pending ? <Text style={styles.pendingTag}> · {t('common.comingSoon')}</Text> : null}
+      </Text>
     </View>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  back: { marginBottom: spacing.xl, marginTop: spacing.lg },
-  card: {
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    marginTop: spacing.lg,
-    padding: spacing.lg,
+  topBlock: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: spacing.sm,
+    paddingBottom: spacing.lg,
+    paddingTop: spacing.sm,
   },
-  cardHighlighted: { backgroundColor: colors.surface, borderColor: colors.accent, borderWidth: 2 },
-  cardPlus: { borderColor: colors.proPlus, borderWidth: 2 },
-  cardTagline: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
-  contextBanner: {
-    backgroundColor: colors.surface,
-    borderStartColor: colors.accent,
-    borderStartWidth: 3,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    padding: spacing.md,
+  contextText: { color: colors.textMuted, fontSize: 14, lineHeight: 22 },
+  contextFeature: { color: colors.accent, fontWeight: '700' },
+  notice: { color: colors.danger, fontSize: 14, lineHeight: 22, marginTop: spacing.lg },
+
+  section: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingBottom: spacing.lg + 4,
+    paddingTop: spacing.lg + 2,
   },
-  contextText: { ...font.caption, color: colors.text },
-  cardTitle: { ...font.heading, color: colors.pro },
-  cardTitlePlus: { color: colors.proPlus },
-  currentBanner: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    padding: spacing.md,
-  },
-  currentText: { ...font.caption, color: colors.text },
-  emoji: { fontSize: 20, marginEnd: spacing.md },
-  eyebrow: { ...font.label, color: colors.pro, letterSpacing: 1, marginTop: spacing.lg },
-  feature: { flexDirection: 'row', marginTop: spacing.lg },
-  featureBody: { flex: 1 },
-  featureText: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-  featureTitle: { ...font.body, fontWeight: '600' },
-  featureTitleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
-  legal: { ...font.caption, color: colors.textMuted, marginTop: spacing.xl },
-  legalDot: { ...font.caption, color: colors.textMuted },
-  legalLink: { ...font.caption, color: colors.accent, fontWeight: '600' },
-  legalLinks: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
-  notice: { ...font.caption, color: colors.danger, marginTop: spacing.lg },
-  offerButton: { marginTop: spacing.md },
+  sectionLast: { borderBottomWidth: 0, paddingBottom: 0 },
+  tierName: { ...font.heading, color: colors.text, fontSize: 22 },
+  plusHead: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm + 2 },
+  plusTagline: { color: colors.textMuted, flex: 1, fontSize: 13, fontWeight: '600' },
+
+  benefits: { gap: 9, marginTop: spacing.md },
+  benefit: { flexDirection: 'row', gap: spacing.sm + 2 },
+  check: { flexShrink: 0, marginTop: 3 },
+  benefitText: { color: colors.text, flex: 1, fontSize: 15, lineHeight: 22 },
+  benefitTextPending: { color: colors.textMuted },
+  benefitLead: { fontWeight: '700' },
+  // A not-yet-shipped feature keeps its name legible while the row around it
+  // steps back — the name is the promise, the mute is the schedule.
+  benefitLeadPending: { color: colors.text },
+  benefitBody: { color: colors.textMuted, fontWeight: '400' },
+  pendingTag: { color: colors.textMuted, fontSize: 11, fontWeight: '700', letterSpacing: 0.4 },
+
+  offerFirst: { marginTop: spacing.lg },
+  offerNext: { marginTop: spacing.sm },
   offersLoading: { marginTop: spacing.lg },
-  pendingTag: {
-    ...font.caption,
-    color: colors.textMuted,
-    fontSize: 10,
-    fontWeight: '700',
-    letterSpacing: 0.5,
+  unavailable: { color: colors.textMuted, fontSize: 14, lineHeight: 22, marginTop: spacing.lg },
+
+  plusOffer: {
+    alignItems: 'center',
+    borderColor: colors.text,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    justifyContent: 'center',
+    minHeight: 50,
+    paddingHorizontal: spacing.xl,
+    width: '100%',
   },
-  quotaBanner: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    marginTop: spacing.lg,
-    padding: spacing.md,
+  plusOfferDisabled: { opacity: 0.5 },
+  plusOfferPressed: { backgroundColor: colors.fill },
+  plusOfferLabel: {
+    color: colors.text,
+    fontFamily: font.heading.fontFamily,
+    fontSize: 15,
+    fontWeight: '800',
   },
-  quotaText: { ...font.caption, color: colors.text },
+
   restore: { marginTop: spacing.xl },
-  restoreText: { ...font.label, color: colors.accent },
-  title: { ...font.title, marginTop: spacing.xs },
-  unavailable: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
+  restoreText: { color: colors.accent, fontSize: 14, fontWeight: '700', textAlign: 'center' },
+  legal: {
+    color: colors.textFaint,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: spacing.md,
+    textAlign: 'center',
+  },
+  legalDot: { ...font.caption, color: colors.textFaint },
+  legalLink: { ...font.caption, color: colors.accent, fontWeight: '600' },
+  legalLinks: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'center',
+    marginBottom: spacing.xl,
+    marginTop: spacing.sm,
+  },
 }))

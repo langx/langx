@@ -3,16 +3,16 @@ import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useFollows } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
-import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 
 type Tab = 'followers' | 'following'
-const TABS: Tab[] = ['followers', 'following']
 
 /**
  * One screen with two tabs rather than two routes.
@@ -31,27 +31,25 @@ export default function FollowsScreen() {
   const follows = useFollows(userId, which)
   const items = dedupeById(follows.data?.pages.flatMap((page) => page.items) ?? [])
 
+  const followersLabel = t('profile.followersTitle')
+  const followingLabel = t('profile.followingTitle')
+
   return (
     <Screen fluid>
-      <Pressable onPress={() => goBackTo('/(app)/me', from)} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>{t('common.back')}</Text>
-      </Pressable>
-      <Text style={styles.title}>
-        {which === 'followers' ? t('profile.followersTitle') : t('profile.followingTitle')}
-      </Text>
+      <ScreenHeader
+        title={which === 'followers' ? followersLabel : followingLabel}
+        onBack={() => goBackTo('/(app)/me', from)}
+      />
 
-      <View style={styles.tabs}>
-        {TABS.map((option) => (
-          <Chip
-            key={option}
-            label={
-              option === 'followers' ? t('profile.followersTitle') : t('profile.followingTitle')
-            }
-            selected={which === option}
-            onPress={() => setWhich(option)}
-          />
-        ))}
-      </View>
+      <SegmentedControl
+        options={[
+          { value: 'followers', label: followersLabel },
+          { value: 'following', label: followingLabel },
+        ]}
+        selected={[which]}
+        onToggle={(value) => setWhich(value)}
+        accessibilityLabel={`${followersLabel} / ${followingLabel}`}
+      />
 
       {follows.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -88,8 +86,16 @@ export default function FollowsScreen() {
               }
             />
           }
-          renderItem={({ item }) => (
-            <Pressable style={styles.row} onPress={() => openProfile(item.handle, here)}>
+          renderItem={({ item, index }) => (
+            <Pressable
+              style={({ pressed }) => [
+                styles.row,
+                // The last row leaves the list edge undrawn, v3-style.
+                index < items.length - 1 && styles.divided,
+                pressed && styles.pressed,
+              ]}
+              onPress={() => openProfile(item.handle, here)}
+            >
               <Avatar url={item.avatarUrl} name={item.displayName} />
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
@@ -106,15 +112,13 @@ export default function FollowsScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  backRow: { paddingTop: spacing.md },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
-  tabs: { flexDirection: 'row', gap: 7, marginTop: 14 },
   loading: { marginTop: spacing.xxl },
-  list: { gap: spacing.sm, paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
-  row: { alignItems: 'center', flexDirection: 'row', gap: 12, paddingVertical: 8 },
+  row: { alignItems: 'center', flexDirection: 'row', gap: 12, paddingVertical: 15 },
+  divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+  pressed: { opacity: 0.7 },
   body: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 15 },
+  name: { ...font.heading, color: colors.text, fontSize: 16 },
   handle: { ...font.caption, color: colors.textMuted },
 }))

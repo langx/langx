@@ -10,94 +10,111 @@ import type { ViewStyle } from 'react-native'
  * departed from. Consistency with what exists wins; these tokens give the
  * shared vocabulary that was the real point.
  *
- * The palette is the **website's**, not a second one invented for the app:
- * `website/src/lib/scss/_themes.scss` is upstream of both. A claim rendered in
- * the app and the same claim rendered on langx.io should not be two different
- * yellows. Consume these through `useTheme()` / `makeStyles()` in
- * `lib/theme/`, never by importing a palette directly — a palette read at
- * module scope freezes one scheme into the StyleSheet at import time, which is
- * exactly what stopped dark mode existing before.
+ * The palette is **v3's** (`LangX Mobile v3.dc.html` and its dark twin): plain
+ * lists on a white ground, hairline dividers instead of cards, one blue for
+ * everything interactive, and yellow exactly once per screen — the committing
+ * action. Consume these through `useTheme()` / `makeStyles()` in `lib/theme/`,
+ * never by importing a palette directly — a palette read at module scope
+ * freezes one scheme into the StyleSheet at import time, which is exactly what
+ * stopped dark mode existing before.
  */
 export type ColorScheme = 'light' | 'dark'
 
 const lightColors = {
-  /** The screen behind everything. `page-background`. */
-  bg: '#f4f8fb',
   /**
-   * The feed's own ground, a half-step cooler than `bg` (`post-page-background`).
-   * The feed is a wall of cards and nothing else; giving it a distinct ground
-   * is what stops it reading as one undifferentiated sheet.
+   * The screen behind everything. v3 has no card layer: the ground *is* the
+   * surface, and structure comes from dividers and whitespace, not boxes.
    */
-  feedBg: '#f3fbfc',
-  /** Cards, sheets, the tab bar, the compose bar. */
+  bg: '#ffffff',
+  /** v3 gives the feed the same white ground as every other screen. */
+  feedBg: '#ffffff',
+  /** Sheets, the tab bar, the compose bar — same plane as `bg` in v3. */
   surface: '#ffffff',
-  border: '#e3e3e6',
-  text: '#000000',
-  /** Secondary text, captions, meta. `text-shade`. */
-  textMuted: '#5d5f65',
-  /** Placeholder, disabled, tertiary meta. `text-inverse-shade`. */
-  textFaint: '#9eb4b5',
   /**
-   * Text on a saturated fill that is *not* `primary` — a filled chip, the
-   * deletion banner. It flips with the scheme because the accents do: light
-   * mode's are saturated and want white on them, dark mode's are pastel and
-   * want black.
+   * The one grey that is allowed to be a box: search fields, segmented-control
+   * tracks, the other person's chat bubble, photo placeholders. Everything the
+   * old palette drew as `surface`-on-`border` is either a plain row now or one
+   * of these.
    */
-  textInverse: '#ffffff',
+  fill: '#f4f5f7',
+  border: '#e8eaec',
+  text: '#17191c',
+  /** Secondary text, captions, meta. */
+  textMuted: '#62676d',
+  /** Placeholder, disabled, tertiary meta. */
+  textFaint: '#9aa1a7',
+  /**
+   * Text on a saturated or ink fill — an avatar initial, a selected chip.
+   * Near-white in both schemes because v3's fills stay dark enough to want it;
+   * the exception is the ink chip, which uses `bg` for its label.
+   */
+  textInverse: '#fefefe',
+  /**
+   * The ink fill: v3's selected chip, the level pills, the dark send button on
+   * a public profile. `text` used as a background, named so call sites say
+   * what they mean. Its label colour is `bg`.
+   */
+  ink: '#17191c',
+  /**
+   * The unfilled half of a glyph drawn *on* `ink` — the empty level bars in a
+   * selected pill. Neutral grey at 45% rather than a palette colour, and the
+   * same value in both schemes: it has to read as "off" against a fill that is
+   * near-black in light and near-white in dark, and only a mid grey does that
+   * from both sides.
+   */
+  onInkMuted: 'rgba(128, 128, 128, 0.45)',
 
   /**
-   * The committing action — Continue, Send correction, Apply — plus your own
-   * chat bubble, on-state toggles and the balance card.
+   * The committing action — Continue, Send correction, Apply.
    *
    * Deliberately identical in both schemes, and so is `primaryText`. The one
    * control that commits should not change colour when the theme does; a user
    * who has learned "the yellow one sends it" should not have to relearn that
-   * after dark. Everything else moves to its dark counterpart.
+   * after dark. v3 tightens the rule: yellow appears exactly once per screen.
    */
   primary: '#ffc409',
   primaryShade: '#e0ac08',
-  primaryText: '#000000',
-  /**
-   * Meta on top of `primary` — timestamps and read ticks, which only ever
-   * appear on your own bubble. Black at half strength rather than a lifted
-   * blue: v1's `read` had to clear a near-black bubble, and the bubble is
-   * yellow now, so the contrast problem it solved no longer exists.
-   */
-  primaryTextMuted: 'rgba(0, 0, 0, 0.5)',
+  primaryText: '#201900',
+  /** Meta on top of `primary` — the balance card's caption. */
+  primaryTextMuted: 'rgba(32, 25, 0, 0.55)',
 
-  /** The second action — Reset, Ask — and the text caret. */
-  secondary: '#ff571a',
-  /** Language pairs, the active tab, voice notes, the messages series. */
+  /**
+   * v3 retires the orange: the second action — Reset, + Ask, "Change photo" —
+   * is plain `accent` text. The token stays so call sites keep reading
+   * "second action", but it now points at the same blue.
+   */
+  secondary: '#3b6cf6',
+  /** Language pairs, level bars, active tab, toggles-on, links, progress. */
   accent: '#3b6cf6',
+  /** The soft blue tint: your own bubble, the Copilot panel, info callouts. */
+  accentBg: '#e9f0fe',
   streak: '#f79009',
   pro: '#7a5af8',
   /**
    * Deliberately the same hue family as `pro`, only deeper. Pro+ is a superset
-   * of Pro, not a different product, and giving it an unrelated colour would
-   * read as two separate things to choose between rather than one being more
-   * than the other. Deep enough to stay legible as text on `bg`, which the
-   * lighter `pro` only just manages.
+   * of Pro, not a different product. v3 draws PRO chips as neutral outlines,
+   * but the paywall and tier badge still need the brand colour.
    */
   proPlus: '#5b21b6',
 
   /**
-   * The four callout pairs, used semantically and not decoratively.
+   * The callout pairs, used semantically and not decoratively.
    *
    * Corrections and Copilot are the two voices in the core loop and must never
-   * be mistaken for each other, so each owns one pair outright: a correction is
-   * always `success`, a Copilot suggestion is always `info`, and neither colour
-   * appears in the other's role anywhere in the app.
+   * be mistaken for each other: a correction is always the green pair, a
+   * Copilot suggestion always the blue one (`info` === `accent` in v3 — blue
+   * carries everything interactive, including the machine's voice).
    */
-  successBg: '#dcf7ec',
+  successBg: '#e2f6ee',
   success: '#009f70',
-  infoBg: '#dfeffd',
-  info: '#2883f4',
+  infoBg: '#e9f0fe',
+  info: '#3b6cf6',
   /** Streak milestones and level chips. */
   warningBg: '#fff6b6',
   warning: '#c87820',
   /** Empty states, unread counts, delete, negative ledger rows. */
-  dangerBg: '#ffe8e8',
-  danger: '#f95256',
+  dangerBg: '#fdecec',
+  danger: '#e5484d',
 
   /**
    * The toggle knob, which stays white in **both** schemes. A knob painted
@@ -122,39 +139,44 @@ const lightColors = {
 export type ThemeColors = { readonly [K in keyof typeof lightColors]: string }
 
 const darkColors: ThemeColors = {
-  bg: '#1c1e26',
-  feedBg: '#141519',
-  surface: '#32343e',
-  border: '#43454f',
-  text: '#ffffff',
-  textMuted: '#9eb4b5',
-  textFaint: '#5d5f65',
-  textInverse: '#000000',
+  bg: '#1c1f24',
+  feedBg: '#1c1f24',
+  surface: '#1c1f24',
+  fill: '#23272d',
+  border: '#2c3036',
+  text: '#f2f3f5',
+  textMuted: '#9aa1a9',
+  textFaint: '#70767e',
+  textInverse: '#fefefe',
+  /** Ink inverts with the ground: a near-white fill with `bg`-coloured label. */
+  ink: '#f2f3f5',
+  onInkMuted: 'rgba(128, 128, 128, 0.45)',
 
   primary: '#ffc409',
   primaryShade: '#e0ac08',
-  primaryText: '#000000',
-  primaryTextMuted: 'rgba(0, 0, 0, 0.5)',
+  primaryText: '#201900',
+  primaryTextMuted: 'rgba(32, 25, 0, 0.55)',
 
-  secondary: '#ff723f',
-  accent: '#7ba0ff',
+  secondary: '#7c9cf9',
+  accent: '#7c9cf9',
+  accentBg: '#202b45',
   streak: '#ffa93d',
   pro: '#9b83ff',
   /**
    * Lighter than `pro` here, where light mode's is darker. The rule is not
    * "deeper" literally, it is "further from the ground than Pro" — which
-   * inverts with the ground. `#5b21b6` on `#1c1e26` is barely a colour.
+   * inverts with the ground.
    */
   proPlus: '#c9b8ff',
 
-  successBg: '#004737',
-  success: '#00c48f',
-  infoBg: '#1d3874',
-  info: '#6ca9f7',
+  successBg: '#16332a',
+  success: '#34c796',
+  infoBg: '#202b45',
+  info: '#7c9cf9',
   warningBg: '#724413',
   warning: '#ffca39',
-  dangerBg: '#7c1d20',
-  danger: '#ff8082',
+  dangerBg: '#3a2023',
+  danger: '#ef6b6f',
 
   knob: '#ffffff',
 
@@ -164,19 +186,20 @@ const darkColors: ThemeColors = {
 }
 
 /**
- * Same geometry in both schemes; only the opacity moves. A 10% black shadow is
- * invisible on a `#1c1e26` ground, so dark carries the same shape at half
- * strength instead of dropping elevation altogether.
+ * v3's shadow is much quieter than v2's — 6% black — because almost nothing
+ * floats any more; only sheets, the segmented thumb and the committing button
+ * carry one. Same geometry in dark at higher opacity, since a 6% black shadow
+ * is invisible on a `#1c1f24` ground.
  */
 const lightShadow: ViewStyle = {
   shadowColor: '#000000',
   shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.1,
+  shadowOpacity: 0.06,
   shadowRadius: 10,
-  elevation: 3,
+  elevation: 2,
 }
 
-const darkShadow: ViewStyle = { ...lightShadow, shadowOpacity: 0.5, elevation: 6 }
+const darkShadow: ViewStyle = { ...lightShadow, shadowOpacity: 0.4, elevation: 4 }
 
 export const palettes: Record<ColorScheme, { colors: ThemeColors; cardShadow: ViewStyle }> = {
   light: { colors: lightColors, cardShadow: lightShadow },
@@ -193,17 +216,19 @@ export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, xxxl: 48
 export const radius = { sm: 8, md: 12, lg: 16, xl: 24, pill: 999 } as const
 
 /**
- * Comfortaa is **display only** — titles, buttons, and the big numerals in stat
- * tiles. That is the palette's own instruction and it is a legibility call, not
- * a stylistic one: Comfortaa's round, wide letterforms are lovely at 27px and
- * tiring at 13px, and body text here is often someone's second language.
- * Everything below `heading` deliberately keeps the platform stack.
+ * Nunito replaced Comfortaa in v3. Same rule, friendlier face: the display
+ * weight carries titles, buttons, names and the big numerals; body text keeps
+ * the platform stack, because body text here is often someone's second
+ * language and a display face at 13px is a legibility tax.
  */
-export const DISPLAY_FONT = 'Comfortaa_700Bold'
+export const DISPLAY_FONT = 'Nunito_800ExtraBold'
+/** The in-between weight — row titles that lead, chart annotations. */
+export const DISPLAY_FONT_BOLD = 'Nunito_700Bold'
 
 export const font = {
-  title: { fontSize: 28, fontWeight: '700', fontFamily: DISPLAY_FONT },
-  heading: { fontSize: 20, fontWeight: '700', fontFamily: DISPLAY_FONT },
+  /** Screen titles. v3 runs these big — 30 on onboarding, 34 on tab roots. */
+  title: { fontSize: 30, fontWeight: '800', fontFamily: DISPLAY_FONT },
+  heading: { fontSize: 20, fontWeight: '800', fontFamily: DISPLAY_FONT },
   body: { fontSize: 15, fontWeight: '400' },
   label: { fontSize: 13, fontWeight: '600' },
   caption: { fontSize: 12, fontWeight: '400' },

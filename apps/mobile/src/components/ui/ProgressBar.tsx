@@ -10,7 +10,7 @@ interface ProgressBarProps {
   accessibilityLabel: string
 }
 
-export function ProgressBar({ value, height = 6, color, accessibilityLabel }: ProgressBarProps) {
+export function ProgressBar({ value, height = 4, color, accessibilityLabel }: ProgressBarProps) {
   const styles = useStyles()
   const fraction = Math.max(0, Math.min(1, value))
 
@@ -33,6 +33,8 @@ export function ProgressBar({ value, height = 6, color, accessibilityLabel }: Pr
 }
 
 const useStyles = makeStyles(({ colors, radius }) => ({
-  track: { backgroundColor: colors.border, borderRadius: radius.pill, overflow: 'hidden' },
-  fill: { backgroundColor: colors.primary, borderRadius: radius.pill, height: '100%' },
+  track: { backgroundColor: colors.fill, borderRadius: radius.pill, overflow: 'hidden' },
+  // `accent` by default: v3's progress is blue — yellow belongs to the one
+  // committing control on a screen, and a bar commits nothing.
+  fill: { backgroundColor: colors.accent, borderRadius: radius.pill, height: '100%' },
 }))

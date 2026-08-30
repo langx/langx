@@ -197,6 +197,9 @@ export const es: Localized<EnMessages> = {
   },
 
   auth: {
+    welcomeBackSubtitle: 'Inicia sesión para seguir donde lo dejaste.',
+    resetBody:
+      'Escribe el correo con el que te registraste y te enviaremos un enlace para restablecerla.',
     confirmPassword: 'Confirma la contraseña',
     passwordsDoNotMatch: 'Las dos contraseñas no coinciden.',
     passwordTooShort: 'Al menos {min} caracteres.',
@@ -239,10 +242,9 @@ export const es: Localized<EnMessages> = {
   },
 
   onboarding: {
-    nativeTitle: '¿Qué idiomas hablas?',
-    nativeBody: 'Los que has hablado desde siempre o dominas como nativo.',
-    learningTitle: '¿Cuáles estás aprendiendo?',
-    learningBody: 'Elige los que quieres practicar con alguien.',
+    aboutYouBody: 'Solo lo básico: puedes cambiarlo todo más tarde.',
+    handleBody: 'Letras, números y guiones bajos. Así te encuentra la gente.',
+    stepOf: 'Paso {step} de {total}',
     levelsTitle: '¿Hasta dónde has llegado?',
     levelsBody: '1 es principiante total, 4 es fluido.',
     pickALevel: 'Elige un nivel',
@@ -300,6 +302,7 @@ export const es: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    startExploring: 'Empieza a explorar',
     title: 'Bienvenido de nuevo',
     subtitle: 'Esto es lo que ha venido contigo.',
     handleTitle: '@{handle}',
@@ -320,7 +323,6 @@ export const es: Localized<EnMessages> = {
     proPlusForLife: 'LangX Pro+, de por vida',
     proBody:
       'Por lo que construiste en la v1. No caduca y no hay nada que pagar: gracias por estar aquí desde el principio.',
-    start: 'Empezar a usar LangX',
   },
 
   notifications: {
@@ -340,6 +342,7 @@ export const es: Localized<EnMessages> = {
   },
 
   discover: {
+    sortLabel: 'Ordenar',
     forYou: 'Para ti',
     onlineFirst: 'En línea primero',
     title: 'Descubrir',
@@ -377,7 +380,8 @@ export const es: Localized<EnMessages> = {
     theirLevel: 'Su nivel en tu idioma',
     theirLevelBody:
       'Lo bien que ya hablan lo que tú enseñas. Más alto significa una conversación más fácil; más bajo, alguien que te necesita más.',
-    theirMinimumLevel: 'Su nivel mínimo',
+    ageRange: '{min} — {max}',
+    ageRangeOpen: '{min} — {max}+',
     showResults: 'Ver resultados',
     showResultsWithCount: 'Ver resultados · {count}',
   },
@@ -491,6 +495,7 @@ export const es: Localized<EnMessages> = {
   },
 
   feed: {
+    topTag: 'Mejor',
     needsCorrection: 'Necesita corrección',
     ask: '+ Preguntar',
     askTitle: 'Tu frase en {language}',
@@ -537,6 +542,8 @@ export const es: Localized<EnMessages> = {
   },
 
   profile: {
+    teaches: 'Enseña',
+    learns: 'Aprende',
     openChat: 'Abrir el chat',
     follow: 'Seguir',
     following: 'Siguiendo',
@@ -709,11 +716,13 @@ export const es: Localized<EnMessages> = {
   store: {
     intro: 'Se ganan escribiendo y corrigiendo a otras personas. Enseñar pesa más que hablar.',
     todayCounts: '{messages} · {corrections}',
-    messagesToday: '{used} de {cap} mensajes que dan fichas hoy',
-    capExplainer:
-      '{cap} mensajes al día dan fichas, {perPerson} de ellos por persona. Las correcciones no tienen límite.',
     disclaimer:
       'Las fichas no se compran, no se intercambian, no se retiran y no desbloquean ninguna función Pro: solo congelaciones de racha y detalles. No hay cadena, ni monedero, ni mercado.',
+    todaysPool: 'El fondo de hoy',
+    activeToday: { one: '{count} persona activa hoy', other: '{count} personas activas hoy' },
+    shareAmount: '+{count}',
+    shareSoFar: 'tu parte hasta ahora',
+    poolCap: 'Tope de {cap} al día. Tu parte se mueve con la de los demás.',
     restoreStreak: 'Recupera tu racha',
     restoreStreakBody: 'Recupera la racha de {days} días que tenías en la v1',
     streakFreeze: 'Congelar racha',
@@ -722,7 +731,6 @@ export const es: Localized<EnMessages> = {
     buy: 'Comprar {title} por {price} fichas',
     title: 'Fichas',
     balance: 'Saldo',
-    today: 'Hoy',
     owned: 'Tuyo',
     frameKind: 'Marco de perfil',
     titleKind: 'Título',
@@ -738,6 +746,8 @@ export const es: Localized<EnMessages> = {
   },
 
   leaderboard: {
+    title: 'Clasificación',
+    periodPicker: 'Período de la clasificación',
     nextMilestone: 'Siguiente hito',
     dayStreak: 'días de racha',
     towards: '{current} de {threshold} hacia {label}',
@@ -789,9 +799,10 @@ export const es: Localized<EnMessages> = {
   },
 
   paywall: {
+    everythingInPro: 'Todo lo de Pro',
+    restorePurchases: 'Restaurar compras',
     title: 'Habla más, aprende más rápido',
     proTagline: 'Todo lo que hace que el plan gratuito se quede pequeño.',
-    proPlusTagline: 'Todo lo de Pro, y las dos funciones que solo él tiene.',
     partOf: 'forma parte de',
     unlimitedChats: 'Chats nuevos ilimitados',
     unlimitedChatsBody: '{count} al día en el plan gratuito.',
@@ -813,7 +824,6 @@ export const es: Localized<EnMessages> = {
     quotaNotice:
       'Has usado los {count} chats nuevos de hoy. Puedes seguir respondiendo a todo lo que recibas, sin límite.',
     manageNotice: 'Tienes {plan}. Gestiónalo o cancélalo desde tu cuenta de la tienda.',
-    restore: '¿Ya eres suscriptor? Restaurar',
     purchaseFailed: 'Esa compra no se completó. No se ha cobrado nada.',
     purchaseUnavailable: 'Las compras no están disponibles en este dispositivo.',
     nothingToRestore: 'No hay nada que restaurar en este dispositivo.',

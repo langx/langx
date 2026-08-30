@@ -3,16 +3,16 @@ import { makeStyles } from '../../lib/theme'
 
 interface SegmentedControlProps<T extends string> {
   options: readonly { value: T; label: string }[]
-  /** Multi-select by design — a level filter is a set, not a choice. */
+  /** Kept as a set for callers whose choice genuinely is one — see filters. */
   selected: readonly T[]
   onToggle: (value: T) => void
   accessibilityLabel: string
 }
 
 /**
- * A row of equal-width pills. Selected uses the **info** pair rather than
- * `primary`: these choose rather than commit, and yellow is reserved for the
- * one control on a screen that commits.
+ * v3's segmented control: a `fill` track with the chosen segment lifted onto a
+ * `surface` pill under a small shadow — the iOS shape, drawn with the app's
+ * own palette. It chooses rather than commits, so no yellow anywhere near it.
  */
 export function SegmentedControl<T extends string>({
   options,
@@ -22,7 +22,11 @@ export function SegmentedControl<T extends string>({
 }: SegmentedControlProps<T>) {
   const styles = useStyles()
   return (
-    <View style={styles.row} accessibilityRole="radiogroup" accessibilityLabel={accessibilityLabel}>
+    <View
+      style={styles.track}
+      accessibilityRole="radiogroup"
+      accessibilityLabel={accessibilityLabel}
+    >
       {options.map((option) => {
         const on = selected.includes(option.value)
         return (
@@ -31,9 +35,13 @@ export function SegmentedControl<T extends string>({
             accessibilityRole="radio"
             accessibilityState={{ selected: on }}
             onPress={() => onToggle(option.value)}
-            style={[styles.segment, on ? styles.on : styles.off]}
+            style={({ pressed }) => [
+              styles.segment,
+              on && styles.on,
+              pressed && !on && styles.pressed,
+            ]}
           >
-            <Text style={[styles.label, on ? styles.labelOn : styles.labelOff]}>
+            <Text style={[styles.label, on ? styles.labelOn : styles.labelOff]} numberOfLines={1}>
               {option.label}
             </Text>
           </Pressable>
@@ -43,21 +51,28 @@ export function SegmentedControl<T extends string>({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius }) => ({
-  row: { flexDirection: 'row', gap: 6 },
+const useStyles = makeStyles(({ colors, radius, cardShadow }) => ({
+  track: {
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    padding: 3,
+  },
   segment: {
     alignItems: 'center',
     borderRadius: radius.pill,
-    borderWidth: 1,
     flex: 1,
-    paddingVertical: 9,
+    justifyContent: 'center',
+    paddingVertical: 10,
   },
-  on: { backgroundColor: colors.infoBg, borderColor: colors.infoBg },
-  // `surface` rather than the design's page-grey: the design draws this control
-  // inside a white card, and on the page ground a grey segment on a grey page
-  // disappears. Same outline as an unselected `Chip`, which is what it is.
-  off: { backgroundColor: colors.surface, borderColor: colors.border },
-  label: { ...font.label },
-  labelOn: { color: colors.info },
-  labelOff: { color: colors.textFaint },
+  on: {
+    backgroundColor: colors.surface,
+    ...cardShadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+  },
+  pressed: { opacity: 0.6 },
+  label: { fontSize: 14 },
+  labelOn: { color: colors.text, fontWeight: '700' },
+  labelOff: { color: colors.textMuted, fontWeight: '600' },
 }))

@@ -205,11 +205,15 @@ const INTENSITY_ACTIONS: Record<number, number> = { 1: 1, 2: 3, 3: 10, 4: 30 }
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { paddingVertical: spacing.lg },
   /**
-   * The card this sits in has no padding of its own — its children bring
-   * theirs. Without this the title sat against the border and the grid ran out
-   * from under the corner radius.
+   * A v3 section, not a card: the screen's own padding is the edge, and the
+   * hairline below is what separates the map from the rows after it.
    */
-  wrap: { gap: spacing.sm, paddingHorizontal: 14, paddingVertical: spacing.md },
+  wrap: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: spacing.sm,
+    paddingVertical: 18,
+  },
   head: {
     alignItems: 'baseline',
     columnGap: spacing.sm,
@@ -217,17 +221,16 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-  title: { ...font.heading, color: colors.text, fontSize: 15 },
+  title: { ...font.heading, color: colors.text, fontSize: 16 },
   hint: { ...font.caption, color: colors.textMuted },
   grid: { flexDirection: 'row', gap: 3, paddingVertical: spacing.xs },
   column: { gap: 3 },
   /**
-   * `border`, not `surface`. The map sits on a card whose own background is
-   * `surface`, so an empty square drawn in it disappears — and a calendar
-   * whose empty days are invisible is not a calendar, it is a scatter of dots.
-   * The gaps are half of what the grid is for.
+   * `fill`, the one grey v3 lets be a box: an empty day must still be a
+   * visible square on the white ground — a calendar whose empty days are
+   * invisible is not a calendar, it is a scatter of dots.
    */
-  cell: { backgroundColor: colors.border, borderRadius: 3, height: 13, width: 13 },
+  cell: { backgroundColor: colors.fill, borderRadius: 3, height: 13, width: 13 },
   // Drawn as a gap rather than a square: a day that has not happened is not an
   // empty day.
   future: { backgroundColor: 'transparent' },

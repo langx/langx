@@ -1,4 +1,4 @@
-import { activityScore, utcDayKey, type ActivityCounters } from '@langx/shared'
+import { TOKEN_RULES, activityScore, utcDayKey, type ActivityCounters } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 
@@ -153,4 +153,47 @@ export async function readActivity(
   // optional fields are optional in the *document*, not in the shape callers
   // were promised.
   return doc ? { ...doc, partners: doc.partners ?? [], perPartner: doc.perPartner ?? {} } : null
+}
+
+/**
+ * Where today's pool stands right now: how many users have a positive
+ * provisional score, and what those scores sum to. The client divides its own
+ * score by the total with `poolShare()` to draw a live "+N your share so far".
+ *
+ * The score is computed inside the aggregation with the same weights
+ * `activityScore` uses, so the two can only disagree if `TOKEN_RULES` changes
+ * mid-request. One pipeline over the day's partition of `dailyActivity` —
+ * bounded by the day's active users, the same set the pool cron walks.
+ *
+ * Deliberately *not* filtered by eligibility (account age, frozen): the
+ * denominator the cron will use at day close differs at the margin, but
+ * filtering here would mean a profile lookup per active user on every summary
+ * read. The share is labelled provisional for exactly this reason.
+ */
+export async function readPoolSnapshot(
+  db: Db,
+  at: Date = new Date(),
+): Promise<{ activeToday: number; totalScore: number }> {
+  const { weights, messageCountCap } = TOKEN_RULES.pool
+  const score = {
+    $add: [
+      { $multiply: [weights.mutualConversations, { $ifNull: ['$mutualConversations', 0] }] },
+      { $multiply: [weights.corrections, { $ifNull: ['$corrections', 0] }] },
+      { $multiply: [weights.messages, { $min: [{ $ifNull: ['$messages', 0] }, messageCountCap] }] },
+      { $multiply: [weights.distinctPartners, { $size: { $ifNull: ['$partners', []] } }] },
+    ],
+  }
+
+  const rows = await db
+    .collection<DailyActivity>(COLLECTIONS.dailyActivity)
+    .aggregate<{ activeToday: number; totalScore: number }>([
+      { $match: { day: utcDayKey(at) } },
+      { $project: { score } },
+      { $match: { score: { $gt: 0 } } },
+      { $group: { _id: null, activeToday: { $sum: 1 }, totalScore: { $sum: '$score' } } },
+      { $project: { _id: 0, activeToday: 1, totalScore: 1 } },
+    ])
+    .toArray()
+
+  return rows[0] ?? { activeToday: 0, totalScore: 0 }
 }

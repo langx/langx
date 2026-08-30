@@ -195,6 +195,9 @@ export const fr: Localized<EnMessages> = {
   },
 
   auth: {
+    welcomeBackSubtitle: 'Connectez-vous pour reprendre là où vous en étiez.',
+    resetBody:
+      'Saisissez l’e-mail de votre inscription et nous vous enverrons un lien de réinitialisation.',
     confirmPassword: 'Confirmez le mot de passe',
     passwordsDoNotMatch: 'Les deux mots de passe sont différents.',
     passwordTooShort: 'Au moins {min} caractères.',
@@ -238,10 +241,9 @@ export const fr: Localized<EnMessages> = {
   },
 
   onboarding: {
-    nativeTitle: 'Quelles langues parlez-vous ?',
-    nativeBody: 'Celles avec lesquelles vous avez grandi, ou que vous parlez comme un natif.',
-    learningTitle: 'Lesquelles apprenez-vous ?',
-    learningBody: 'Choisissez celles que vous voulez pratiquer avec quelqu’un.',
+    aboutYouBody: "Juste l'essentiel — vous pourrez tout modifier plus tard.",
+    handleBody: 'Lettres, chiffres et tirets bas. C’est ainsi qu’on vous trouve.',
+    stepOf: 'Étape {step} sur {total}',
     levelsTitle: 'Où en êtes-vous ?',
     levelsBody: '1, c’est grand débutant ; 4, c’est courant.',
     pickALevel: 'Choisissez un niveau',
@@ -299,6 +301,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    startExploring: 'Commencer à explorer',
     title: 'Content de te revoir',
     subtitle: 'Voici ce qui t’a suivi.',
     handleTitle: '@{handle}',
@@ -320,7 +323,6 @@ export const fr: Localized<EnMessages> = {
     proPlusForLife: 'LangX Pro+, à vie',
     proBody:
       'Pour ce que tu as construit sur la v1. Cela n’expire jamais et il n’y a rien à payer — merci d’avoir été là en premier.',
-    start: 'Commencer à utiliser LangX',
   },
 
   notifications: {
@@ -340,6 +342,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   discover: {
+    sortLabel: 'Tri',
     forYou: 'Pour toi',
     onlineFirst: 'En ligne d’abord',
     title: 'Découvrir',
@@ -377,7 +380,8 @@ export const fr: Localized<EnMessages> = {
     theirLevel: 'Leur niveau dans ta langue',
     theirLevelBody:
       'À quel point ils parlent déjà ce que tu enseignes. Plus haut, la conversation est plus facile ; plus bas, la personne a davantage besoin de toi.',
-    theirMinimumLevel: 'Leur niveau minimum',
+    ageRange: '{min} — {max}',
+    ageRangeOpen: '{min} — {max}+',
     showResults: 'Voir les résultats',
     showResultsWithCount: 'Voir les résultats · {count}',
   },
@@ -491,6 +495,7 @@ export const fr: Localized<EnMessages> = {
   },
 
   feed: {
+    topTag: 'Meilleure',
     needsCorrection: 'À corriger',
     ask: '+ Demander',
     askTitle: 'Ta phrase en {language}',
@@ -537,6 +542,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   profile: {
+    teaches: 'Enseigne',
+    learns: 'Apprend',
     openChat: 'Ouvrir la conversation',
     follow: 'Suivre',
     following: 'Suivi',
@@ -710,11 +717,16 @@ export const fr: Localized<EnMessages> = {
   store: {
     intro: 'Gagnés en écrivant et en corrigeant les autres. Enseigner compte plus que parler.',
     todayCounts: '{messages} · {corrections}',
-    messagesToday: '{used} messages sur {cap} qui rapportent aujourd’hui',
-    capExplainer:
-      '{cap} messages par jour rapportent des jetons, dont {perPerson} par personne. Les corrections ne sont pas plafonnées.',
     disclaimer:
       'Les jetons ne s’achètent pas, ne s’échangent pas, ne se retirent pas et ne débloquent aucune fonction Pro — seulement des gels de série et des éléments cosmétiques. Il n’y a ni chaîne, ni portefeuille, ni marché.',
+    todaysPool: 'La cagnotte du jour',
+    activeToday: {
+      one: '{count} personne active aujourd’hui',
+      other: '{count} personnes actives aujourd’hui',
+    },
+    shareAmount: '+{count}',
+    shareSoFar: 'votre part jusqu’ici',
+    poolCap: 'Plafond de {cap} par jour. Votre part évolue avec celle des autres.',
     restoreStreak: 'Restaure ta série',
     restoreStreakBody: 'Récupère la série de {days} jours que tu avais sur la v1',
     streakFreeze: 'Gel de série',
@@ -723,7 +735,6 @@ export const fr: Localized<EnMessages> = {
     buy: 'Acheter {title} pour {price} jetons',
     title: 'Jetons',
     balance: 'Solde',
-    today: 'Aujourd’hui',
     owned: 'Acquis',
     frameKind: 'Cadre de profil',
     titleKind: 'Titre',
@@ -739,6 +750,8 @@ export const fr: Localized<EnMessages> = {
   },
 
   leaderboard: {
+    title: 'Classement',
+    periodPicker: 'Période du classement',
     nextMilestone: 'Prochain palier',
     dayStreak: 'jours de série',
     towards: '{current} sur {threshold} vers {label}',
@@ -791,9 +804,10 @@ export const fr: Localized<EnMessages> = {
   },
 
   paywall: {
+    everythingInPro: 'Tout ce que Pro inclut',
+    restorePurchases: 'Restaurer les achats',
     title: 'Parle plus, apprends plus vite',
     proTagline: 'Tout ce qui fait paraître le forfait gratuit étroit.',
-    proPlusTagline: 'Tout Pro, plus les deux fonctions qu’il est seul à avoir.',
     partOf: 'fait partie de',
     unlimitedChats: 'Discussions nouvelles illimitées',
     unlimitedChatsBody: '{count} par jour sur le forfait gratuit.',
@@ -815,7 +829,6 @@ export const fr: Localized<EnMessages> = {
     quotaNotice:
       'Tu as utilisé tes {count} nouvelles discussions du jour. Tu peux toujours répondre à tout ce que tu reçois, sans limite.',
     manageNotice: 'Tu es sur {plan}. Gère-le ou annule-le depuis ton compte du store.',
-    restore: 'Déjà abonné ? Restaurer',
     purchaseFailed: 'Cet achat n’a pas abouti. Rien n’a été débité.',
     purchaseUnavailable: 'Les achats ne sont pas disponibles sur cet appareil.',
     nothingToRestore: 'Rien à restaurer sur cet appareil.',

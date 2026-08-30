@@ -685,7 +685,7 @@ export default function ChatScreen() {
             onPress={() => setJumpAnchor(null)}
             style={styles.backToLatest}
           >
-            <Feather name="arrow-down-circle" size={15} color={colors.primaryText} />
+            <Feather name="arrow-down-circle" size={15} color={colors.textInverse} />
             <Text style={styles.backToLatestText}>{t('chat.backToLatest')}</Text>
           </Pressable>
         ) : null}
@@ -702,7 +702,7 @@ export default function ChatScreen() {
             }}
             style={styles.jump}
           >
-            <Feather name="arrow-down" size={18} color={colors.primaryText} />
+            <Feather name="arrow-down" size={18} color={colors.textInverse} />
             {missed > 0 ? <Text style={styles.jumpCount}>{missed}</Text> : null}
           </Pressable>
         ) : null}
@@ -816,7 +816,7 @@ export default function ChatScreen() {
             value={draft}
             onChangeText={onChangeDraft}
             placeholder={correcting ? t('chat.writeCorrection') : t('chat.writeMessage')}
-            placeholderTextColor={colors.textMuted}
+            placeholderTextColor={colors.textFaint}
             style={styles.input}
             multiline
             /**
@@ -901,41 +901,33 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
   },
+  // v3 draws the back control as a bare arrow — the hairline under the header
+  // is all the chrome this row carries.
   back: {
     alignItems: 'center',
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
     height: 38,
     justifyContent: 'center',
-    width: 38,
+    width: 32,
   },
   headerUser: { alignItems: 'center', flex: 1, flexDirection: 'row', gap: spacing.md },
   headerText: { flex: 1, minWidth: 0 },
   headerName: { ...font.heading, color: colors.text, fontSize: 16 },
-  typing: { ...font.caption, color: colors.accent, fontWeight: '600' },
-  presence: { ...font.caption, color: colors.success, fontWeight: '600' },
+  typing: { ...font.caption, color: colors.accent, fontSize: 13, fontWeight: '600' },
+  presence: { ...font.caption, color: colors.success, fontSize: 13, fontWeight: '600' },
   listWrap: { flex: 1 },
   list: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   skeletonFill: { flex: 1 },
   dayRow: { alignItems: 'center', paddingVertical: spacing.xs },
-  dayLabel: {
-    ...font.caption,
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    color: colors.textMuted,
-    fontWeight: '600',
-    // Required for the radius to clip the background on a Text.
-    overflow: 'hidden',
-    paddingHorizontal: spacing.md,
-    paddingVertical: 4,
-  },
+  // Bare faint text, no pill: on a white ground the whitespace is the divider.
+  dayLabel: { ...font.caption, color: colors.textFaint, fontWeight: '600' },
+  /**
+   * Accent, not primary: v3 spends yellow exactly once per screen, on the
+   * send button, so every other floating control here is ordinary blue.
+   */
   jump: {
     ...cardShadow,
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.accent,
     borderRadius: radius.pill,
     bottom: spacing.lg,
     flexDirection: 'row',
@@ -947,12 +939,12 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     position: 'absolute',
     end: spacing.lg,
   },
-  jumpCount: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
+  jumpCount: { ...font.caption, color: colors.textInverse, fontWeight: '700' },
   backToLatest: {
     ...cardShadow,
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.accent,
     borderRadius: radius.pill,
     flexDirection: 'row',
     gap: 6,
@@ -961,7 +953,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     position: 'absolute',
     top: spacing.md,
   },
-  backToLatestText: { ...font.caption, color: colors.primaryText, fontWeight: '700' },
+  backToLatestText: { ...font.caption, color: colors.textInverse, fontWeight: '700' },
   replyingBanner: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -1035,17 +1027,17 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingTop: 10,
   },
   hintLeft: { ...font.caption, color: colors.textFaint },
-  hintRight: { ...font.caption, color: colors.warning, fontWeight: '600' },
+  // The green pair marks earning, same as "Earned" rows elsewhere.
+  hintRight: { ...font.caption, color: colors.success, fontWeight: '600' },
+  // A fill pill, not an outlined box — v3's one grey allowed to be a shape.
   input: {
-    backgroundColor: colors.bg,
-    borderColor: colors.border,
+    backgroundColor: colors.fill,
     borderRadius: radius.pill,
-    borderWidth: 1,
     color: colors.text,
     flex: 1,
     maxHeight: 120,
     minHeight: 46,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: 18,
     paddingVertical: 13,
     ...font.body,
   },
@@ -1059,15 +1051,12 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   },
   sendDisabled: { opacity: 0.35 },
   recordButtonActive: { backgroundColor: colors.danger },
+  // A bare muted glyph, sized to line up with the pill beside it.
   attach: {
     alignItems: 'center',
-    backgroundColor: colors.bg,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
     height: 46,
     justifyContent: 'center',
-    width: 46,
+    width: 32,
   },
   recording: {
     alignItems: 'center',

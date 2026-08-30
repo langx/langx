@@ -118,17 +118,28 @@ export default function SignUp() {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   container: {
     backgroundColor: colors.bg,
     flex: 1,
-    gap: 16,
+    gap: spacing.lg,
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xl,
   },
-  title: { color: colors.text, fontSize: 28, fontWeight: '700' },
-  subtitle: { color: colors.textMuted, marginBottom: 8, opacity: 0.6 },
-  link: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
-  footerText: { color: colors.textMuted },
-  footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
+  title: { ...font.title, color: colors.text, fontSize: 28, lineHeight: 36 },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    lineHeight: 23,
+    marginBottom: spacing.sm,
+    marginTop: -spacing.sm,
+  },
+  link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  footerText: { color: colors.textMuted, fontSize: 15 },
+  footer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: spacing.md,
+  },
 }))

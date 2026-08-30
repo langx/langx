@@ -23,8 +23,11 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { relativeTimeCompact } from '../../src/lib/format'
 import { useLocale, useT } from '../../src/i18n'
 
+/** v3 draws chat avatars at 52, one step up from the 48 default. */
+const AVATAR_SIZE = 52
+
 export default function ChatsScreen() {
-  const { colors, layout } = useTheme()
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -61,7 +64,7 @@ export default function ChatsScreen() {
           hitSlop={10}
           onPress={() => router.push('/(app)/starred')}
         >
-          <Feather name="star" size={20} color={colors.textMuted} />
+          <Feather name="star" size={21} color={colors.textMuted} />
         </Pressable>
       </View>
 
@@ -100,7 +103,7 @@ export default function ChatsScreen() {
               onAction={() => router.push('/(app)/discover')}
             />
           }
-          renderItem={({ item }) => {
+          renderItem={({ item, index }) => {
             const partnerId = item.participants.find((p) => p !== me.data?._id) ?? ''
             const partner = partners[partnerId]
             const unread = me.data ? (item.unread[me.data._id] ?? 0) : 0
@@ -109,20 +112,21 @@ export default function ChatsScreen() {
             return (
               <Pressable
                 onPress={() => router.push(`/(app)/chat/${item._id}`)}
-                style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+                style={({ pressed }) => [
+                  styles.row,
+                  index === items.length - 1 && styles.rowLast,
+                  pressed && styles.rowPressed,
+                ]}
               >
                 {partner ? (
                   <Avatar
                     url={partner.avatarUrl}
                     name={partner.displayName}
                     online={partner.isOnline}
+                    size={AVATAR_SIZE}
                   />
                 ) : (
-                  <Skeleton
-                    width={layout.avatar}
-                    height={layout.avatar}
-                    radius={layout.avatar / 2}
-                  />
+                  <Skeleton width={AVATAR_SIZE} height={AVATAR_SIZE} radius={AVATAR_SIZE / 2} />
                 )}
                 <View style={styles.body}>
                   <View style={styles.top}>
@@ -134,7 +138,7 @@ export default function ChatsScreen() {
                       // The row is real, its partner is not resolved yet: the
                       // names come from a separate batched query. This used to
                       // read "Loading…", which looked like somebody's name.
-                      <Skeleton width={132} height={15} />
+                      <Skeleton width={132} height={16} />
                     )}
                     <Text style={styles.time}>
                       {relativeTimeCompact(item.lastMessage.createdAt, { t, locale })}
@@ -166,30 +170,33 @@ export default function ChatsScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  title: { ...font.title, color: colors.text, paddingTop: spacing.md },
-  list: { paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  title: { ...font.title, color: colors.text, fontSize: 34, paddingTop: spacing.md },
+  list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
+    gap: 14,
+    paddingVertical: spacing.lg,
   },
-  rowPressed: { backgroundColor: colors.surface, borderRadius: radius.md },
+  rowLast: { borderBottomWidth: 0 },
+  // Surface === bg in v3, so a background highlight would be invisible; the
+  // opacity dip is the app's press idiom for plain rows.
+  rowPressed: { opacity: 0.65 },
   body: { flex: 1 },
   top: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  bottom: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 2 },
-  name: { ...font.body, color: colors.text, flexShrink: 1, fontWeight: '700' },
-  time: { ...font.caption, color: colors.textMuted },
-  preview: { ...font.caption, color: colors.textMuted, flex: 1 },
+  bottom: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 3 },
+  name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 16 },
+  time: { ...font.caption, color: colors.textFaint },
+  preview: { color: colors.textMuted, flex: 1, fontSize: 14 },
   previewUnread: { color: colors.text, fontWeight: '600' },
   badge: {
     alignItems: 'center',
     backgroundColor: colors.danger,
     borderRadius: radius.pill,
-    minWidth: 20,
+    minWidth: 19,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },

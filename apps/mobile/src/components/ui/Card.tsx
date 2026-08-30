@@ -5,16 +5,25 @@ import { makeStyles } from '../../lib/theme'
 interface CardProps {
   children: ReactNode
   /**
-   * Clips children to the radius. Needed by any card whose children draw their
-   * own dividers to its edges — a settings group, a language list — and wrong
-   * for one that casts a shadow, which `overflow: hidden` would clip away.
+   * Clips children to the radius. Needed by any group whose children draw
+   * their own dividers to its edges — a settings group, a language list.
    */
   inset?: boolean
+  /**
+   * The rare true surface — a sheet, a floating panel. v3's default "card" is
+   * no card at all: rows sit directly on the ground and dividers do the work,
+   * so the plain variant draws nothing.
+   */
   elevated?: boolean
   style?: ViewStyle
 }
 
-/** `surface` on a 1px `border` at `radius.lg`. The app's one container shape. */
+/**
+ * v3 dissolved the card: what used to be `surface` on a 1px border is now an
+ * invisible group on the white ground. The component stays because screens
+ * still need the grouping seam — and because `elevated` still exists for the
+ * few things that genuinely float.
+ */
 export function Card({ children, inset = false, elevated = false, style }: CardProps) {
   const styles = useStyles()
   return (
@@ -25,12 +34,7 @@ export function Card({ children, inset = false, elevated = false, style }: CardP
 }
 
 const useStyles = makeStyles(({ colors, radius, cardShadow }) => ({
-  card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-  },
+  card: { borderRadius: radius.lg },
   inset: { overflow: 'hidden' },
-  elevated: cardShadow,
+  elevated: { backgroundColor: colors.surface, ...cardShadow },
 }))

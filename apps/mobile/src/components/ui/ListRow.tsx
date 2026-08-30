@@ -13,16 +13,18 @@ interface ListRowProps {
   onPress?: (() => void) | undefined
   /** A control instead of a value: a `Toggle`, a `Chip`. */
   accessory?: ReactNode
-  /** Rows inside a `Card` draw their own divider; the last one must not. */
+  /** Rows in a group draw their own divider; the last one must not. */
   last?: boolean
   destructive?: boolean
 }
 
 /**
  * The settings/filters workhorse: a title, an optional explanation under it,
- * and one thing on the right. Rows draw their own bottom border rather than the
- * card drawing separators, because the last row's border has to disappear and
- * only the row knows whether it is last.
+ * and one thing on the right. v3 rows run edge to edge of the screen's own
+ * padding — no horizontal inset of their own — with a hairline divider below.
+ * Rows draw their own bottom border rather than the group drawing separators,
+ * because the last row's border has to disappear and only the row knows
+ * whether it is last.
  */
 export function ListRow({
   title,
@@ -70,14 +72,13 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: 14,
+    paddingVertical: 16,
   },
   divided: { borderBottomColor: colors.border, borderBottomWidth: 1 },
-  pressed: { opacity: 0.7 },
+  pressed: { opacity: 0.6 },
   text: { flex: 1, gap: 2 },
-  title: { ...font.body, color: colors.text, fontWeight: '600' },
+  title: { color: colors.text, fontSize: 16, fontWeight: '600' },
   destructive: { color: colors.danger },
-  subtitle: { ...font.caption, color: colors.textMuted },
-  value: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  subtitle: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  value: { color: colors.textFaint, fontSize: 15 },
 }))

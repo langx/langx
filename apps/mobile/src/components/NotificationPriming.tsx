@@ -1,9 +1,8 @@
 import { STREAK_REMINDER_LOCAL_HOUR } from '@langx/shared'
 import * as Device from 'expo-device'
 import { useEffect, useState } from 'react'
-import { Platform, Text, View } from 'react-native'
+import { Platform, Pressable, Text, View } from 'react-native'
 import { registerPushToken } from '../hooks/usePushRegistration'
-import { Button } from './ui/Button'
 import { makeStyles } from '../lib/theme'
 import { useT } from '../i18n'
 
@@ -65,39 +64,58 @@ export function NotificationPriming() {
   }
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{t('notifications.primingTitle')}</Text>
-      <Text style={styles.body}>
-        {t('notifications.primingBody', { hour: STREAK_REMINDER_LOCAL_HOUR })}
-      </Text>
+    <View style={styles.panel}>
+      <View style={styles.text}>
+        <Text style={styles.title}>{t('notifications.primingTitle')}</Text>
+        <Text style={styles.body}>
+          {t('notifications.primingBody', { hour: STREAK_REMINDER_LOCAL_HOUR })}
+        </Text>
+      </View>
+      {/*
+        Text actions, not Buttons: the screens that mount this panel have a
+        committing yellow of their own, and a second pair of pills under it
+        would compete. Enable is the panel's own accent voice; Not now is the
+        quiet exit.
+      */}
       <View style={styles.actions}>
-        <Button
-          label={t('common.enable')}
+        <Pressable
+          accessibilityRole="button"
+          disabled={busy}
+          hitSlop={8}
           onPress={() => void enable()}
-          loading={busy}
-          style={styles.action}
-        />
-        <Button
-          label={t('notifications.notNow')}
-          variant="secondary"
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          <Text style={styles.enable}>{t('common.enable')}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          hitSlop={8}
           onPress={() => setVisible(false)}
-          style={styles.action}
-        />
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          <Text style={styles.dismiss}>{t('notifications.notNow')}</Text>
+        </Pressable>
       </View>
     </View>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  card: {
-    backgroundColor: colors.surface,
+  panel: {
+    alignItems: 'center',
+    backgroundColor: colors.accentBg,
     borderRadius: radius.lg,
-    gap: spacing.sm,
+    flexDirection: 'row',
+    gap: spacing.md + 2,
     marginTop: spacing.xl,
-    padding: spacing.lg,
+    paddingHorizontal: spacing.lg + 2,
+    paddingVertical: 15,
   },
-  title: { ...font.body, color: colors.text, fontWeight: '600' },
-  body: { ...font.caption, color: colors.textMuted, lineHeight: 18 },
-  actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
-  action: { flex: 1, width: 'auto' },
+  text: { flex: 1, gap: 2 },
+  title: { color: colors.accent, fontSize: 15, fontWeight: '700' },
+  body: { ...font.caption, color: colors.textMuted, fontSize: 13, lineHeight: 19 },
+  actions: { alignItems: 'flex-end', gap: spacing.sm },
+  enable: { color: colors.accent, fontSize: 14, fontWeight: '700' },
+  dismiss: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+  pressed: { opacity: 0.6 },
 }))

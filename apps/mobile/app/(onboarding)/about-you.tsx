@@ -35,53 +35,67 @@ export default function AboutYouStep() {
     <Screen scroll>
       <StepProgress step="about-you" />
       <Text style={styles.title}>{t('onboarding.aboutYouTitle')}</Text>
+      <Text style={styles.subtitle}>{t('onboarding.aboutYouBody')}</Text>
 
-      <FormField
-        label={t('onboarding.displayName')}
-        value={draft.displayName}
-        onChangeText={(displayName) => updateDraft({ displayName })}
-        placeholder={t('onboarding.namePlaceholder')}
-        autoCapitalize="words"
-      />
+      <View style={styles.form}>
+        <FormField
+          label={t('onboarding.displayName')}
+          value={draft.displayName}
+          onChangeText={(displayName) => updateDraft({ displayName })}
+          placeholder={t('onboarding.namePlaceholder')}
+          autoCapitalize="words"
+        />
 
-      <BirthDateField
-        label={t('onboarding.birthDate')}
-        value={draft.birthDate}
-        onChange={(birthDate) => updateDraft({ birthDate })}
-        error={ageError}
-      />
+        <BirthDateField
+          label={t('onboarding.birthDate')}
+          value={draft.birthDate}
+          onChange={(birthDate) => updateDraft({ birthDate })}
+          error={ageError}
+        />
 
-      <Text style={styles.label}>{t('onboarding.gender')}</Text>
-      <View style={styles.genders}>
-        {GENDERS.map((gender) => (
-          <Pressable
-            key={gender}
-            onPress={() => updateDraft({ gender })}
-            style={[styles.gender, draft.gender === gender && styles.genderActive]}
-          >
-            <Text style={[styles.genderText, draft.gender === gender && styles.genderTextActive]}>
-              {genderLabel(t, gender)}
-            </Text>
-          </Pressable>
-        ))}
+        <View>
+          <Text style={styles.label}>{t('onboarding.gender')}</Text>
+          <View style={styles.genders}>
+            {GENDERS.map((gender) => {
+              const on = draft.gender === gender
+              return (
+                <Pressable
+                  key={gender}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  onPress={() => updateDraft({ gender })}
+                  style={({ pressed }) => [
+                    styles.gender,
+                    on && styles.genderActive,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <Text style={[styles.genderText, on && styles.genderTextActive]}>
+                    {genderLabel(t, gender)}
+                  </Text>
+                </Pressable>
+              )
+            })}
+          </View>
+
+          {/*
+            Required by `architecture.md`: choosing this has a consequence people
+            cannot see, and finding out later that you were invisible to half the
+            searches on the app is a bad way to learn it.
+          */}
+          {draft.gender === 'undisclosed' ? (
+            <Text style={styles.genderNote}>{t('onboarding.undisclosedNote')}</Text>
+          ) : null}
+        </View>
+
+        <FormField
+          label={t('onboarding.aboutYouOptional')}
+          value={draft.bio}
+          onChangeText={(bio) => updateDraft({ bio })}
+          placeholder={t('onboarding.aboutYouPlaceholder')}
+          multiline
+        />
       </View>
-
-      {/*
-        Required by `architecture.md`: choosing this has a consequence people
-        cannot see, and finding out later that you were invisible to half the
-        searches on the app is a bad way to learn it.
-      */}
-      {draft.gender === 'undisclosed' ? (
-        <Text style={styles.genderNote}>{t('onboarding.undisclosedNote')}</Text>
-      ) : null}
-
-      <FormField
-        label={t('onboarding.aboutYouOptional')}
-        value={draft.bio}
-        onChangeText={(bio) => updateDraft({ bio })}
-        placeholder={t('onboarding.aboutYouPlaceholder')}
-        multiline
-      />
 
       <Button
         label={t('common.continue')}
@@ -94,20 +108,30 @@ export default function AboutYouStep() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  step: { ...font.caption, color: colors.textMuted, marginTop: spacing.lg },
-  title: { ...font.title, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.xs },
-  label: { ...font.label, color: colors.text, marginBottom: spacing.sm, marginTop: spacing.md },
+  title: { ...font.title, color: colors.text, lineHeight: 38, marginTop: spacing.xl + 2 },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    fontSize: 16,
+    lineHeight: 24,
+    marginTop: spacing.sm + 2,
+  },
+  form: { gap: spacing.lg + 2, marginTop: spacing.xl },
+  // Matches FormField's label so the gender group reads as one more field.
+  label: { color: colors.textMuted, fontSize: 14, fontWeight: '600', marginBottom: spacing.sm },
   genders: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   gender: {
     borderColor: colors.border,
     borderRadius: radius.pill,
     borderWidth: 1,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm + 2,
   },
-  genderActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  genderText: { ...font.caption, color: colors.textMuted },
-  genderTextActive: { color: colors.primaryText, fontWeight: '700' },
+  // Ink, not yellow: yellow is reserved for the one committing action below.
+  genderActive: { backgroundColor: colors.ink, borderColor: colors.ink },
+  genderText: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  genderTextActive: { color: colors.bg, fontWeight: '700' },
   genderNote: { ...font.caption, color: colors.textMuted, marginTop: spacing.sm },
+  pressed: { opacity: 0.7 },
   cta: { marginTop: spacing.xl },
 }))

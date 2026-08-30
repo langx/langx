@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, Text, type ViewStyle } from 'react-native'
+import { useRef } from 'react'
+import { ActivityIndicator, Animated, Pressable, Text, type ViewStyle } from 'react-native'
 import { makeStyles, useTheme } from '../../lib/theme'
 
 interface ButtonProps {
@@ -13,8 +14,11 @@ interface ButtonProps {
 /**
  * The primary is the app's committing action, and it is `primary` yellow with
  * black on it in **both** schemes — see the palette note in `theme/tokens.ts`.
- * A user who has learned "the yellow one sends it" should not have to relearn
- * that after dark.
+ * v3 tightens the rule: yellow appears exactly once per screen, on this.
+ *
+ * The press animates scale as well as colour. RN's `Animated` rather than
+ * Reanimated, following `Skeleton`: a transform on the native driver is all
+ * this needs, and Reanimated is imported by nothing else in the app.
  */
 export function Button({
   label,
@@ -28,46 +32,61 @@ export function Button({
   const styles = useStyles()
   const isDisabled = disabled || loading
 
+  const scale = useRef(new Animated.Value(1)).current
+  const press = (to: number) =>
+    Animated.spring(scale, {
+      toValue: to,
+      useNativeDriver: true,
+      speed: 40,
+      bounciness: 5,
+    }).start()
+
   return (
-    <Pressable
-      onPress={() => void onPress()}
-      disabled={isDisabled}
-      style={({ pressed }) => [
-        styles.base,
-        variant === 'primary' ? styles.primary : styles.secondary,
-        isDisabled && styles.disabled,
-        pressed && !isDisabled && (variant === 'primary' ? styles.pressedPrimary : styles.pressed),
-        style,
-      ]}
-    >
-      {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.primaryText : colors.text} />
-      ) : (
-        <Text style={variant === 'primary' ? styles.primaryLabel : styles.secondaryLabel}>
-          {label}
-        </Text>
-      )}
-    </Pressable>
+    <Animated.View style={[{ transform: [{ scale }] }, styles.wrap, style]}>
+      <Pressable
+        onPress={() => void onPress()}
+        onPressIn={() => !isDisabled && press(0.97)}
+        onPressOut={() => press(1)}
+        disabled={isDisabled}
+        style={({ pressed }) => [
+          styles.base,
+          variant === 'primary' ? styles.primary : styles.secondary,
+          isDisabled && styles.disabled,
+          pressed &&
+            !isDisabled &&
+            (variant === 'primary' ? styles.pressedPrimary : styles.pressed),
+        ]}
+      >
+        {loading ? (
+          <ActivityIndicator color={variant === 'primary' ? colors.primaryText : colors.text} />
+        ) : (
+          <Text style={variant === 'primary' ? styles.primaryLabel : styles.secondaryLabel}>
+            {label}
+          </Text>
+        )}
+      </Pressable>
+    </Animated.View>
   )
 }
 
-const useStyles = makeStyles(({ colors, radius, spacing, cardShadow, font }) => ({
+const useStyles = makeStyles(({ colors, radius, spacing, font }) => ({
+  /**
+   * The scale transform lives on a wrapper so `style` overrides (width,
+   * margins) apply to the box the layout sees, not the animated copy.
+   * A default for the common case — a button at the bottom of a form column,
+   * which should span it. It is **wrong inside a row**: pass
+   * `style={{ width: 'auto' }}` there; `style` is merged last, so it wins.
+   */
+  wrap: { width: '100%' },
   base: {
     alignItems: 'center',
     borderRadius: radius.pill,
     justifyContent: 'center',
     minHeight: 54,
     paddingHorizontal: spacing.xl,
-    /**
-     * A default for the common case — a button at the bottom of a form column,
-     * which should span it. It is **wrong inside a row**: 100% of the row
-     * leaves nothing for the siblings, and a `flex: 1` sibling collapses to a
-     * single character per line instead of pushing back. Pass
-     * `style={{ width: 'auto' }}` there; `style` is merged last, so it wins.
-     */
     width: '100%',
   },
-  primary: { backgroundColor: colors.primary, ...cardShadow },
+  primary: { backgroundColor: colors.primary },
   secondary: {
     backgroundColor: colors.surface,
     borderColor: colors.border,
@@ -78,17 +97,17 @@ const useStyles = makeStyles(({ colors, radius, spacing, cardShadow, font }) => 
   // variant uses: fading yellow toward the page reads as "disabled", which is
   // the one thing a press must not look like.
   pressedPrimary: { backgroundColor: colors.primaryShade },
-  pressed: { opacity: 0.8 },
+  pressed: { backgroundColor: colors.fill },
   primaryLabel: {
     color: colors.primaryText,
     fontFamily: font.heading.fontFamily,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   secondaryLabel: {
     color: colors.text,
     fontFamily: font.heading.fontFamily,
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '800',
   },
 }))

@@ -1,16 +1,9 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useBlocks, useUnblockUser } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { useProfileCache } from '../../src/hooks/useProfileCache'
 import { confirmAlert } from '../../src/lib/alert'
@@ -38,10 +31,7 @@ export default function BlockedScreen() {
 
   return (
     <Screen fluid>
-      <Pressable onPress={() => goBackTo('/(app)/settings')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>{t('common.back')}</Text>
-      </Pressable>
-      <Text style={styles.title}>{t('blocked.title')}</Text>
+      <ScreenHeader title={t('blocked.title')} onBack={() => goBackTo('/(app)/settings')} />
 
       {blocks.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -87,6 +77,7 @@ export default function BlockedScreen() {
                   </Text>
                 </View>
                 <Pressable
+                  accessibilityRole="button"
                   hitSlop={8}
                   disabled={unblock.isPending}
                   onPress={() =>
@@ -114,22 +105,20 @@ export default function BlockedScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  backRow: { paddingTop: spacing.md },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
   loading: { marginTop: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
-  list: { paddingTop: spacing.md },
+  list: { paddingTop: spacing.xs },
   row: {
     alignItems: 'center',
     borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: 1,
     flexDirection: 'row',
     gap: spacing.md,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.lg,
   },
   body: { flex: 1 },
-  name: { ...font.body, color: colors.text, fontWeight: '600' },
-  since: { ...font.caption, color: colors.textMuted },
-  unblock: { ...font.label, color: colors.accent },
+  /** Names take the display face, like every v3 row lead. */
+  name: { ...font.heading, color: colors.text, fontSize: 16 },
+  since: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  unblock: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 }))
