@@ -13,8 +13,9 @@ interface ScreenHeaderProps {
 }
 
 /**
- * The title row on every full-screen route: a round back button, the title in
- * the display face, and whatever the screen needs on the right.
+ * The title row on every full-screen route: a bare back arrow, the title in
+ * the display face, and whatever the screen needs on the right. v3 drops the
+ * circled button — the arrow sits directly on the ground.
  *
  * `onBack` is a callback rather than a `router.back()` default on purpose —
  * `back()` resets to the first tab from a nested stack, so these screens pass
@@ -35,7 +36,7 @@ export function ScreenHeader({ title, onBack, trailing }: ScreenHeaderProps) {
           onPress={onBack}
           style={({ pressed }) => [styles.back, pressed && styles.pressed]}
         >
-          <Feather name="arrow-left" size={19} color={colors.text} />
+          <Feather name="arrow-left" size={22} color={colors.text} />
         </Pressable>
       ) : null}
       <Text style={styles.title} numberOfLines={1}>
@@ -46,19 +47,15 @@ export function ScreenHeader({ title, onBack, trailing }: ScreenHeaderProps) {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  row: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingVertical: spacing.sm },
-  back: {
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  row: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    height: 38,
-    justifyContent: 'center',
-    width: 38,
+    flexDirection: 'row',
+    gap: spacing.md + 2,
+    paddingVertical: spacing.md,
   },
-  pressed: { opacity: 0.7 },
-  title: { ...font.heading, color: colors.text, flex: 1, fontSize: 22 },
+  back: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
+  pressed: { opacity: 0.5 },
+  title: { ...font.heading, color: colors.text, flex: 1, fontSize: 24 },
   trailing: { alignItems: 'flex-end' },
 }))

@@ -57,7 +57,7 @@ export function AlertHost() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   backdrop: {
     alignItems: 'center',
     backgroundColor: colors.scrim,
@@ -65,14 +65,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     justifyContent: 'center',
     padding: spacing.lg,
   },
+  // A true floating surface, so it keeps elevation where the cards lost
+  // theirs: shadow instead of an outline, at the sheet radius.
   card: {
-    backgroundColor: colors.bg,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
     maxWidth: 420,
-    padding: spacing.lg,
+    padding: spacing.xl,
     width: '100%',
+    ...cardShadow,
   },
   title: { ...font.title, color: colors.text, fontSize: 20 },
   message: { ...font.body, color: colors.textMuted, lineHeight: 22, marginTop: spacing.sm },

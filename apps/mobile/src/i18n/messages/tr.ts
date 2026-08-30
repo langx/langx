@@ -207,6 +207,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   auth: {
+    welcomeBackSubtitle: 'Kaldığın yerden devam etmek için giriş yap.',
+    resetBody: 'Kayıt olduğun e-postayı gir, sana bir sıfırlama bağlantısı gönderelim.',
     confirmPassword: 'Parolayı tekrar gir',
     passwordsDoNotMatch: 'İki parola aynı değil.',
     passwordTooShort: 'En az {min} karakter.',
@@ -248,10 +250,9 @@ export const tr: Localized<EnMessages> = {
   },
 
   onboarding: {
-    nativeTitle: 'Hangi dilleri konuşuyorsun?',
-    nativeBody: 'Büyürken öğrendiklerin ya da ana dilin gibi konuştukların.',
-    learningTitle: 'Hangilerini öğreniyorsun?',
-    learningBody: 'Birileriyle pratik yapmak istediklerini seç.',
+    aboutYouBody: 'Sadece temel bilgiler — hepsini sonra değiştirebilirsin.',
+    handleBody: 'Harf, rakam ve alt çizgi. İnsanlar seni böyle bulur.',
+    stepOf: 'Adım {step} / {total}',
     levelsTitle: 'Seviyen ne?',
     levelsBody: '1 hiç bilmiyor, 4 akıcı demek.',
     pickALevel: 'Bir seviye seç',
@@ -308,6 +309,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    startExploring: 'Keşfetmeye başla',
     title: 'Tekrar hoş geldin',
     subtitle: 'Seninle birlikte gelenler.',
     handleTitle: '@{handle}',
@@ -325,7 +327,6 @@ export const tr: Localized<EnMessages> = {
     proPlusForLife: 'Ömür boyu LangX Pro+',
     proBody:
       'v1’de kurduğun şey için. Süresi hiç dolmaz, ödenecek bir şey de yok — ilk günden burada olduğun için teşekkürler.',
-    start: 'LangX’i kullanmaya başla',
   },
 
   notifications: {
@@ -345,6 +346,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   discover: {
+    sortLabel: 'Sıralama',
     forYou: 'Sana özel',
     onlineFirst: 'Önce çevrimiçi',
     title: 'Keşfet',
@@ -382,7 +384,8 @@ export const tr: Localized<EnMessages> = {
     theirLevel: 'Senin dilindeki seviyeleri',
     theirLevelBody:
       'Öğrettiğin dili ne kadar iyi konuşuyorlar. Yüksek seviye daha rahat bir sohbet, düşük seviye sana daha çok ihtiyacı olan biri demek.',
-    theirMinimumLevel: 'En düşük seviyeleri',
+    ageRange: '{min} — {max}',
+    ageRangeOpen: '{min} — {max}+',
     showResults: 'Sonuçları göster',
     showResultsWithCount: 'Sonuçları göster · {count}',
   },
@@ -499,6 +502,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   feed: {
+    topTag: 'En iyi',
     needsCorrection: 'Düzeltme bekliyor',
     ask: '+ Sor',
     askTitle: '{language} dilindeki cümlen',
@@ -545,6 +549,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   profile: {
+    teaches: 'Öğretiyor',
+    learns: 'Öğreniyor',
     openChat: 'Sohbeti aç',
     follow: 'Takip et',
     following: 'Takip ediliyor',
@@ -718,11 +724,13 @@ export const tr: Localized<EnMessages> = {
     intro:
       'Mesajlaşarak ve başkalarını düzelterek kazanılır. Öğretmek, konuşmaktan daha ağır basar.',
     todayCounts: '{messages} · {corrections}',
-    messagesToday: 'Bugün jeton kazandıran {cap} mesajdan {used} tanesi',
-    capExplainer:
-      'Günde {cap} mesaj jeton kazandırır, kişi başına {perPerson} tanesi. Düzeltmelerde sınır yok.',
     disclaimer:
       'Jetonlar satın alınamaz, takas edilemez, çekilemez ve hiçbir Pro özelliğini açmaz — yalnızca seri dondurma ve görünüm içindir. Zincir, cüzdan ya da piyasa yoktur.',
+    todaysPool: 'Bugünün havuzu',
+    activeToday: { one: 'bugün {count} kişi aktif', other: 'bugün {count} kişi aktif' },
+    shareAmount: '+{count}',
+    shareSoFar: 'şu ana kadarki payın',
+    poolCap: 'Günlük tavan {cap}. Payın herkesin gününe göre değişir.',
     restoreStreak: 'Serini geri getir',
     restoreStreakBody: 'v1’deki {days} günlük serini geri al',
     streakFreeze: 'Seri dondurma',
@@ -731,7 +739,6 @@ export const tr: Localized<EnMessages> = {
     buy: '{title} için {price} jeton öde',
     title: 'Jetonlar',
     balance: 'Bakiye',
-    today: 'Bugün',
     owned: 'Sende',
     frameKind: 'Profil çerçevesi',
     titleKind: 'Unvan',
@@ -747,6 +754,8 @@ export const tr: Localized<EnMessages> = {
   },
 
   leaderboard: {
+    title: 'Liderlik tablosu',
+    periodPicker: 'Liderlik tablosu dönemi',
     nextMilestone: 'Sıradaki eşik',
     dayStreak: 'günlük seri',
     towards: '{threshold} hedefinde {current} — {label}',
@@ -795,9 +804,10 @@ export const tr: Localized<EnMessages> = {
   },
 
   paywall: {
+    everythingInPro: "Pro'daki her şey",
+    restorePurchases: 'Satın alımları geri yükle',
     title: 'Daha çok konuş, daha hızlı öğren',
     proTagline: 'Ücretsiz planı küçük gösteren her şey.',
-    proPlusTagline: 'Pro’daki her şey, artı yalnızca onda olan iki özellik.',
     partOf: 'şunun parçası:',
     unlimitedChats: 'Sınırsız yeni sohbet',
     unlimitedChatsBody: 'Ücretsiz planda günde {count} tane.',
@@ -819,7 +829,6 @@ export const tr: Localized<EnMessages> = {
     quotaNotice:
       'Bugünkü {count} yeni sohbet hakkını kullandın. Sana gelen her mesaja sınırsız cevap vermeye devam edebilirsin.',
     manageNotice: '{plan} kullanıyorsun. Mağaza hesabından yönetebilir ya da iptal edebilirsin.',
-    restore: 'Zaten abone misin? Geri yükle',
     purchaseFailed: 'Bu satın alma tamamlanmadı. Hiçbir ücret alınmadı.',
     purchaseUnavailable: 'Bu cihazda satın alma kullanılamıyor.',
     nothingToRestore: 'Bu cihazda geri yüklenecek bir şey yok.',

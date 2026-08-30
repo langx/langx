@@ -247,6 +247,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   auth: {
+    welcomeBackSubtitle: 'سجّل الدخول لتكمل من حيث توقفت.',
+    resetBody: 'أدخل البريد الإلكتروني الذي سجّلت به وسنرسل لك رابط إعادة التعيين.',
     confirmPassword: 'أكّد كلمة المرور',
     passwordsDoNotMatch: 'كلمتا المرور غير متطابقتين.',
     passwordTooShort: '{min} أحرف على الأقل.',
@@ -288,10 +290,9 @@ export const ar: Localized<EnMessages> = {
   },
 
   onboarding: {
-    nativeTitle: 'ما اللغات التي تتحدثها؟',
-    nativeBody: 'التي نشأت عليها أو تتحدثها كأهلها.',
-    learningTitle: 'وأيها تتعلم؟',
-    learningBody: 'اختر ما تريد التدرب عليه مع شخص ما.',
+    aboutYouBody: 'الأساسيات فقط — يمكنك تغيير كل هذا لاحقًا.',
+    handleBody: 'أحرف وأرقام وشرطات سفلية. هكذا يجدك الآخرون.',
+    stepOf: 'الخطوة {step} من {total}',
     levelsTitle: 'إلى أين وصلت؟',
     levelsBody: '١ مبتدئ تماماً، ٤ بطلاقة.',
     pickALevel: 'اختر مستوى',
@@ -347,6 +348,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    startExploring: 'ابدأ الاستكشاف',
     title: 'أهلًا بعودتك',
     subtitle: 'هذا ما عاد معك.',
     handleTitle: '@{handle}',
@@ -384,7 +386,6 @@ export const ar: Localized<EnMessages> = {
     proPlusForLife: 'LangX Pro+ مدى الحياة',
     proBody:
       'مقابل ما بنيته في النسخة الأولى. لا تنتهي صلاحيته ولا شيء عليك دفعه — شكرًا لوجودك هنا أولًا.',
-    start: 'ابدأ استخدام LangX',
   },
 
   notifications: {
@@ -404,6 +405,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   discover: {
+    sortLabel: 'الترتيب',
     forYou: 'لك',
     onlineFirst: 'المتصلون أولًا',
     title: 'استكشاف',
@@ -438,7 +440,8 @@ export const ar: Localized<EnMessages> = {
     theirLevel: 'مستواهم في لغتك',
     theirLevelBody:
       'إلى أي مدى يتكلمون ما تعلّمه أنت. الأعلى يعني محادثة أسهل، والأدنى يعني شخصًا يحتاجك أكثر.',
-    theirMinimumLevel: 'أدنى مستوى لهم',
+    ageRange: '{min} — {max}',
+    ageRangeOpen: '{min} — {max}+',
     showResults: 'عرض النتائج',
     showResultsWithCount: 'عرض النتائج · {count}',
   },
@@ -568,6 +571,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   feed: {
+    topTag: 'الأفضل',
     needsCorrection: 'بحاجة إلى تصحيح',
     ask: '+ اسأل',
     askTitle: 'جملتك بلغة {language}',
@@ -627,6 +631,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   profile: {
+    teaches: 'يُعلّم',
+    learns: 'يتعلّم',
     openChat: 'افتح المحادثة',
     follow: 'متابعة',
     following: 'تتابعه',
@@ -828,10 +834,20 @@ export const ar: Localized<EnMessages> = {
   store: {
     intro: 'تُكتسب بالمراسلة وبتصحيح الآخرين. التعليم يزن أكثر من الحديث.',
     todayCounts: '{messages} · {corrections}',
-    messagesToday: '{used} من {cap} رسالة تكسب رموزًا اليوم',
-    capExplainer: '{cap} رسالة يوميًا تكسب رموزًا، منها {perPerson} لكل شخص. التصحيحات بلا سقف.',
     disclaimer:
       'لا يمكن شراء الرموز أو تداولها أو سحبها أو استخدامها لفتح أي ميزة Pro — فقط لتجميد السلسلة والمظاهر. لا سلسلة كتل ولا محفظة ولا سوق.',
+    todaysPool: 'حصيلة اليوم',
+    activeToday: {
+      zero: 'لا أحد نشط اليوم',
+      one: 'شخص واحد نشط اليوم',
+      two: 'شخصان نشطان اليوم',
+      few: '{count} أشخاص نشطون اليوم',
+      many: '{count} شخصًا نشطون اليوم',
+      other: '{count} شخص نشطون اليوم',
+    },
+    shareAmount: '+{count}',
+    shareSoFar: 'نصيبك حتى الآن',
+    poolCap: 'الحد الأقصى {cap} في اليوم. يتغير نصيبك مع نشاط الآخرين.',
     restoreStreak: 'استرجع سلسلتك',
     restoreStreakBody: 'استعد سلسلة الـ {days} يومًا التي كانت لديك في النسخة الأولى',
     streakFreeze: 'تجميد السلسلة',
@@ -840,7 +856,6 @@ export const ar: Localized<EnMessages> = {
     buy: 'شراء {title} مقابل {price} رمزًا',
     title: 'الرموز',
     balance: 'الرصيد',
-    today: 'اليوم',
     owned: 'مملوك',
     frameKind: 'إطار الملف',
     titleKind: 'لقب',
@@ -856,6 +871,8 @@ export const ar: Localized<EnMessages> = {
   },
 
   leaderboard: {
+    title: 'لوحة الصدارة',
+    periodPicker: 'فترة لوحة الصدارة',
     nextMilestone: 'المحطة التالية',
     dayStreak: 'يومًا في السلسلة',
     towards: '{current} من {threshold} نحو {label}',
@@ -931,9 +948,10 @@ export const ar: Localized<EnMessages> = {
   },
 
   paywall: {
+    everythingInPro: 'كل ما في Pro',
+    restorePurchases: 'استعادة المشتريات',
     title: 'تحدّث أكثر، تعلّم أسرع',
     proTagline: 'كل ما يجعل الخطة المجانية تبدو ضيقة.',
-    proPlusTagline: 'كل ما في Pro، وميزتان لا توجدان إلا فيه.',
     partOf: 'جزء من',
     unlimitedChats: 'محادثات جديدة بلا حدود',
     unlimitedChatsBody: '{count} يوميًا في الخطة المجانية.',
@@ -955,7 +973,6 @@ export const ar: Localized<EnMessages> = {
     quotaNotice:
       'استخدمت محادثاتك الجديدة الـ {count} لهذا اليوم. ما زال بإمكانك الرد على كل ما يصلك بلا حدود.',
     manageNotice: 'أنت على {plan}. أدرها أو ألغِها من حساب المتجر.',
-    restore: 'مشترك بالفعل؟ استعادة',
     purchaseFailed: 'لم تتم عملية الشراء. لم يُخصم أي مبلغ.',
     purchaseUnavailable: 'الشراء غير متاح على هذا الجهاز.',
     nothingToRestore: 'لا شيء لاستعادته على هذا الجهاز.',

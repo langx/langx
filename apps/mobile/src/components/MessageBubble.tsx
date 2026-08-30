@@ -356,26 +356,27 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     width: 24,
   },
   bubble: {
-    borderRadius: radius.lg,
+    borderRadius: 20,
     maxWidth: '82%',
-    paddingHorizontal: 14,
-    paddingVertical: spacing.md,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
   },
-  mine: { alignSelf: 'flex-end', backgroundColor: colors.primary },
-  theirs: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderWidth: 1,
-  },
+  /**
+   * v3 retires the yellow bubble: yellow is the committing action, once per
+   * screen, and that is the send button. Your side is the soft blue tint,
+   * theirs the fill grey — both carry ordinary `text`, which is also what
+   * lets the meta and ticks share one palette across the two sides.
+   */
+  mine: { alignSelf: 'flex-end', backgroundColor: colors.accentBg },
+  theirs: { alignSelf: 'flex-start', backgroundColor: colors.fill },
   /**
    * One square corner on the side the bubble comes from. It is the whole of
    * what makes a stack of bubbles read as a conversation rather than as a list
    * of cards, and it costs one radius each — but only on the last message of a
    * run, so five messages in a row read as one turn rather than five.
    */
-  tailMine: { borderBottomEndRadius: radius.sm / 2 },
-  tailTheirs: { borderBottomStartRadius: radius.sm / 2 },
+  tailMine: { borderBottomEndRadius: 6 },
+  tailTheirs: { borderBottomStartRadius: 6 },
   /**
    * The quote reads as a layer under the reply rather than as a message of its
    * own: one accent edge, a tint of whatever bubble it sits in, two lines at
@@ -392,27 +393,26 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingVertical: 6,
   },
   quoteTheirs: { backgroundColor: colors.bg, borderStartColor: colors.accent },
-  quoteMine: { backgroundColor: colors.primaryShade, borderStartColor: colors.primaryText },
+  // Both bubbles are light tints now, so the same white layer works in each.
+  quoteMine: { backgroundColor: colors.bg, borderStartColor: colors.accent },
   quoteAuthor: { ...font.caption, color: colors.accent, fontWeight: '700' },
-  quoteAuthorMine: { color: colors.primaryText },
+  quoteAuthorMine: { color: colors.accent },
   quoteText: { ...font.caption, color: colors.textMuted },
-  quoteTextMine: { color: colors.primaryTextMuted },
+  quoteTextMine: { color: colors.textMuted },
   /**
    * A ring rather than a fill: the bubble already carries meaning in its
    * colour — whose it is, and whether it is a correction — and a wash over
    * that would say the wrong thing for a second and a half.
    */
   highlighted: { borderColor: colors.accent, borderWidth: 2 },
-  tombstone: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
+  tombstone: { backgroundColor: colors.fill },
   edited: { ...font.caption, color: colors.textMuted, fontStyle: 'italic' },
-  editedMine: { color: colors.primaryTextMuted },
+  editedMine: { color: colors.textMuted },
   tombstoneRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   tombstoneText: { ...font.body, color: colors.textMuted, fontStyle: 'italic' },
   /**
-   * Inside the bubble, not overhanging it. An overhang reads better, but the
-   * correction card clips to its rounded header (`overflow: 'hidden'`, which
-   * the header border needs) and would cut the badge in half — one shape for
-   * all four beats a special case that only looks right in three of them.
+   * Inside the bubble, not overhanging it — one shape for all four message
+   * kinds beats a special case that only looks right in three of them.
    */
   reactions: {
     ...cardShadow,
@@ -432,8 +432,8 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   reaction: { alignItems: 'center', flexDirection: 'row', gap: 2 },
   reactionGlyph: { fontSize: 13, lineHeight: 18 },
   reactionCount: { ...font.caption, color: colors.textMuted, fontWeight: '700' },
-  bubbleText: { ...font.body, color: colors.text, lineHeight: 22 },
-  bubbleTextMine: { color: colors.primaryText },
+  bubbleText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
+  bubbleTextMine: { color: colors.text },
   caption: { marginTop: spacing.xs },
   translation: {
     ...font.caption,
@@ -443,29 +443,28 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     marginTop: spacing.xs,
     paddingTop: spacing.xs,
   },
-  translationMine: { borderTopColor: colors.primaryTextMuted, color: colors.primaryTextMuted },
+  translationMine: { borderTopColor: colors.border, color: colors.textMuted },
   translateLink: { ...font.caption, color: colors.accent, marginTop: spacing.xs },
+  /**
+   * v3 draws the card as a quiet green panel — no outline, no header rule.
+   * The kicker and the diff carry the structure themselves.
+   */
   correction: {
     backgroundColor: colors.successBg,
-    borderColor: colors.success,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    overflow: 'hidden',
   },
   // A correction is about a sentence, not about who is winning, so it spans the
   // thread rather than taking a side. Only the alignment marks the author.
   correctionMine: { alignSelf: 'stretch' },
   correctionHead: {
     alignItems: 'center',
-    borderBottomColor: colors.success,
-    borderBottomWidth: 1,
     flexDirection: 'row',
     gap: 7,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingTop: 15,
   },
   correctionLabel: { ...font.heading, color: colors.success, fontSize: 13 },
-  correctionBody: { paddingHorizontal: 14, paddingVertical: 13 },
+  correctionBody: { paddingBottom: 13, paddingHorizontal: 16, paddingTop: 9 },
   correctionOriginal: {
     ...font.label,
     color: colors.textMuted,
@@ -473,28 +472,28 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     lineHeight: 21,
   },
   /**
-   * The pair that carries the whole meaning of the card: what went, and what
-   * came. Both are marked twice — colour *and* a second cue, strike or weight
-   * — because a correction that only differs by hue says nothing to a reader
-   * who cannot separate red from green.
+   * The pair that carries the whole meaning of the card. Both are marked by a
+   * cue that survives colour-blindness — the strike and the weight — because
+   * a correction that only differs by hue says nothing to a reader who cannot
+   * separate the shades. v3 keeps the removal neutral: what went is history,
+   * what came is the point, so only the addition takes the green.
    */
-  removed: { color: colors.danger, textDecorationLine: 'line-through' },
+  removed: { color: colors.textMuted, textDecorationLine: 'line-through' },
   added: { color: colors.success, fontWeight: '700' },
   correctionText: {
     ...font.body,
     color: colors.text,
+    fontSize: 16,
     fontWeight: '600',
-    lineHeight: 22,
+    lineHeight: 25,
     marginTop: 6,
   },
   correctionNote: {
     ...font.label,
-    borderTopColor: colors.success,
-    borderTopWidth: 1,
     color: colors.textMuted,
+    fontSize: 14,
     fontWeight: '400',
-    lineHeight: 20,
-    marginTop: 11,
-    paddingTop: 10,
+    lineHeight: 21,
+    marginTop: 9,
   },
 }))

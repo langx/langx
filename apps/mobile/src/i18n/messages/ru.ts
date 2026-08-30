@@ -234,6 +234,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   auth: {
+    welcomeBackSubtitle: 'Войдите, чтобы продолжить с того места, где остановились.',
+    resetBody: 'Укажите почту, с которой регистрировались, и мы пришлём ссылку для сброса.',
     confirmPassword: 'Повторите пароль',
     passwordsDoNotMatch: 'Пароли не совпадают.',
     passwordTooShort: 'Не менее {min} символов.',
@@ -275,10 +277,9 @@ export const ru: Localized<EnMessages> = {
   },
 
   onboarding: {
-    nativeTitle: 'На каких языках вы говорите?',
-    nativeBody: 'Те, с которыми выросли или владеете как родными.',
-    learningTitle: 'Какие изучаете?',
-    learningBody: 'Выберите те, на которых хотите практиковаться с кем-то.',
+    aboutYouBody: 'Только самое основное — всё это можно изменить позже.',
+    handleBody: 'Буквы, цифры и подчёркивания. Так вас будут находить.',
+    stepOf: 'Шаг {step} из {total}',
     levelsTitle: 'Насколько вы продвинулись?',
     levelsBody: '1 — совсем новичок, 4 — свободно.',
     pickALevel: 'Выберите уровень',
@@ -335,6 +336,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   welcomeBack: {
+    startExploring: 'Начать знакомство',
     title: 'С возвращением',
     subtitle: 'Вот что вернулось вместе с тобой.',
     handleTitle: '@{handle}',
@@ -368,7 +370,6 @@ export const ru: Localized<EnMessages> = {
     proPlusForLife: 'LangX Pro+ навсегда',
     proBody:
       'За то, что ты построил в v1. Срок не истекает и платить ничего не нужно — спасибо, что был здесь первым.',
-    start: 'Начать пользоваться LangX',
   },
 
   notifications: {
@@ -388,6 +389,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   discover: {
+    sortLabel: 'Сортировка',
     forYou: 'Для тебя',
     onlineFirst: 'Сначала онлайн',
     title: 'Поиск',
@@ -425,7 +427,8 @@ export const ru: Localized<EnMessages> = {
     theirLevel: 'Их уровень твоего языка',
     theirLevelBody:
       'Насколько хорошо они уже говорят на том, чему ты учишь. Выше — разговор проще, ниже — человеку нужнее твоя помощь.',
-    theirMinimumLevel: 'Их минимальный уровень',
+    ageRange: '{min} — {max}',
+    ageRangeOpen: '{min} — {max}+',
     showResults: 'Показать результаты',
     showResultsWithCount: 'Показать результаты · {count}',
   },
@@ -547,6 +550,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   feed: {
+    topTag: 'Лучшая',
     needsCorrection: 'Нужно исправление',
     ask: '+ Спросить',
     askTitle: 'Твоё предложение на языке {language}',
@@ -608,6 +612,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   profile: {
+    teaches: 'Преподаёт',
+    learns: 'Учит',
     openChat: 'Открыть чат',
     follow: 'Подписаться',
     following: 'Вы подписаны',
@@ -800,11 +806,18 @@ export const ru: Localized<EnMessages> = {
     intro:
       'Зарабатываются перепиской и исправлениями чужих ошибок. Обучение весит больше, чем разговор.',
     todayCounts: '{messages} · {corrections}',
-    messagesToday: 'Сегодня {used} из {cap} оплачиваемых сообщений',
-    capExplainer:
-      '{cap} сообщений в день приносят жетоны, из них {perPerson} на одного человека. Исправления не ограничены.',
     disclaimer:
       'Жетоны нельзя купить, обменять, вывести или потратить на функции Pro — только на заморозку серии и оформление. Ни блокчейна, ни кошелька, ни рынка.',
+    todaysPool: 'Сегодняшний пул',
+    activeToday: {
+      one: 'сегодня активен {count} человек',
+      few: 'сегодня активны {count} человека',
+      many: 'сегодня активны {count} человек',
+      other: 'сегодня активны {count} человека',
+    },
+    shareAmount: '+{count}',
+    shareSoFar: 'ваша доля на данный момент',
+    poolCap: 'Не более {cap} в день. Ваша доля зависит от активности остальных.',
     restoreStreak: 'Восстанови серию',
     restoreStreakBody: 'Верни серию из {days} дней, которая была у тебя в v1',
     streakFreeze: 'Заморозка серии',
@@ -813,7 +826,6 @@ export const ru: Localized<EnMessages> = {
     buy: 'Купить {title} за {price} жетонов',
     title: 'Жетоны',
     balance: 'Баланс',
-    today: 'Сегодня',
     owned: 'Есть',
     frameKind: 'Рамка профиля',
     titleKind: 'Титул',
@@ -829,6 +841,8 @@ export const ru: Localized<EnMessages> = {
   },
 
   leaderboard: {
+    title: 'Таблица лидеров',
+    periodPicker: 'Период таблицы лидеров',
     nextMilestone: 'Следующая веха',
     dayStreak: 'дней серии',
     towards: '{current} из {threshold} к «{label}»',
@@ -897,9 +911,10 @@ export const ru: Localized<EnMessages> = {
   },
 
   paywall: {
+    everythingInPro: 'Всё из Pro',
+    restorePurchases: 'Восстановить покупки',
     title: 'Больше общения — быстрее прогресс',
     proTagline: 'Всё, из-за чего бесплатный тариф кажется тесным.',
-    proPlusTagline: 'Всё из Pro плюс две функции, которые есть только здесь.',
     partOf: '— часть',
     unlimitedChats: 'Безлимитные новые чаты',
     unlimitedChatsBody: '{count} в день на бесплатном тарифе.',
@@ -921,7 +936,6 @@ export const ru: Localized<EnMessages> = {
     quotaNotice:
       'Ты израсходовал {count} новых чатов на сегодня. Отвечать на всё входящее по-прежнему можно без ограничений.',
     manageNotice: 'У тебя {plan}. Управлять или отменить можно в аккаунте магазина.',
-    restore: 'Уже подписан? Восстановить',
     purchaseFailed: 'Покупка не прошла. Деньги не списаны.',
     purchaseUnavailable: 'Покупки на этом устройстве недоступны.',
     nothingToRestore: 'На этом устройстве нечего восстанавливать.',

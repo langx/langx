@@ -96,13 +96,14 @@ function formatShown(value: string): string {
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   container: { gap: 6, width: '100%' },
   label: { ...font.label, color: colors.textMuted },
+  // Filled like FormField's inputs; the border only exists to say "error".
   input: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    backgroundColor: colors.fill,
+    borderColor: colors.fill,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    borderWidth: 1.5,
+    paddingHorizontal: spacing.lg + 2,
+    paddingVertical: spacing.md + 1,
   },
   inputError: { borderColor: colors.danger },
   value: { color: colors.text, fontSize: 16 },

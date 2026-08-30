@@ -29,12 +29,14 @@ import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
 import { FormField } from '../../src/components/ui/FormField'
+import { LevelBars } from '../../src/components/ui/LevelBars'
 import { CountryFromLocation } from '../../src/components/CountryFromLocation'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { goBackTo } from '../../src/lib/navigation'
 import { confirmAlert, showAlert } from '../../src/lib/alert'
 import { showToast } from '../../src/lib/toast'
-import { makeStyles, useTheme } from '../../src/lib/theme'
+import { makeStyles } from '../../src/lib/theme'
 import { genderLabel, interestLabel, levelShortLabel, useDisplayNames, useT } from '../../src/i18n'
 
 /** What the picker returns has no mime type on every platform; infer from the extension. */
@@ -71,7 +73,6 @@ export default function EditProfileScreen() {
 }
 
 function EditProfileForm({ profile }: { profile: MeProfile }) {
-  const { layout } = useTheme()
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -154,31 +155,33 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 
   return (
     <Screen scroll>
-      <Pressable onPress={() => goBackTo('/(app)/me')} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>{t('common.back')}</Text>
-      </Pressable>
-      <Text style={styles.title}>{t('editProfile.title')}</Text>
+      <ScreenHeader title={t('editProfile.title')} onBack={() => goBackTo('/(app)/me')} />
 
       <View style={styles.avatarRow}>
-        <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
-        <View style={styles.avatarActions}>
-          <Button
-            label={uploadAvatar.isPending ? t('onboarding.uploading') : t('onboarding.changePhoto')}
-            variant="secondary"
-            disabled={uploadAvatar.isPending}
-            onPress={() =>
-              void pick((uri, contentType) =>
-                uploadAvatar.mutate(
-                  { uri, contentType },
-                  {
-                    onError: onUploadError,
-                    onSuccess: () => showToast(t('editProfile.photoUpdated')),
-                  },
-                ),
-              )
-            }
-          />
-        </View>
+        <Avatar url={profile.avatarUrl} name={profile.displayName} size={60} />
+        {/* v3's second action is plain accent text, not a boxed button. */}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ disabled: uploadAvatar.isPending }}
+          disabled={uploadAvatar.isPending}
+          hitSlop={8}
+          onPress={() =>
+            void pick((uri, contentType) =>
+              uploadAvatar.mutate(
+                { uri, contentType },
+                {
+                  onError: onUploadError,
+                  onSuccess: () => showToast(t('editProfile.photoUpdated')),
+                },
+              ),
+            )
+          }
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          <Text style={styles.changePhoto}>
+            {uploadAvatar.isPending ? t('onboarding.uploading') : t('onboarding.changePhoto')}
+          </Text>
+        </Pressable>
       </View>
 
       <FormField
@@ -218,8 +221,8 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         permanent zero for those accounts.
       */}
       <Text style={styles.label}>
-        {t('editProfile.interests')}{' '}
-        {interests.length > 0 ? `(${interests.length}/${MAX_INTERESTS})` : ''}
+        {t('editProfile.interests')}
+        {interests.length > 0 ? ` · ${interests.length}/${MAX_INTERESTS}` : ''}
       </Text>
       <View style={styles.row}>
         {INTEREST_SUGGESTIONS.map((interest) => {
@@ -251,32 +254,58 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       </View>
 
       <Text style={styles.label}>{t('editProfile.languages')}</Text>
+      {/* v3 draws the level as bars inside a tinted pill; the words survive as
+          the accessibility label. */}
       <View style={styles.row}>
         {native.map((code) => (
-          <Chip key={code} label={names.language(code)} tone="accent" selected />
+          <View key={code} style={styles.languageChip} accessibilityLabel={names.language(code)}>
+            <Text style={styles.languageChipLabel}>{names.language(code)}</Text>
+            <LevelBars level="fluent" native size={17} />
+          </View>
         ))}
         {learning.map((l) => (
-          <Chip
+          <View
             key={l.code}
-            label={t('editProfile.languageWithLevel', {
+            style={styles.languageChip}
+            accessibilityLabel={t('editProfile.languageWithLevel', {
               language: names.language(l.code),
               level: levelShortLabel(t, l.level),
             })}
-            tone="accent"
-          />
+          >
+            <Text style={styles.languageChipLabel}>{names.language(l.code)}</Text>
+            <LevelBars level={l.level} />
+          </View>
         ))}
-      </View>
-      <View style={styles.row}>
-        <Chip
-          label={t('editProfile.editNative')}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ selected: editing === 'native' }}
           onPress={() => setEditing(editing === 'native' ? 'none' : 'native')}
-          selected={editing === 'native'}
-        />
-        <Chip
-          label={t('editProfile.editLearning')}
+          style={({ pressed }) => [
+            styles.editChip,
+            editing === 'native' && styles.editChipActive,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Text style={[styles.editChipLabel, editing === 'native' && styles.editChipLabelActive]}>
+            {t('editProfile.editNative')}
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityState={{ selected: editing === 'learning' }}
           onPress={() => setEditing(editing === 'learning' ? 'none' : 'learning')}
-          selected={editing === 'learning'}
-        />
+          style={({ pressed }) => [
+            styles.editChip,
+            editing === 'learning' && styles.editChipActive,
+            pressed && styles.pressed,
+          ]}
+        >
+          <Text
+            style={[styles.editChipLabel, editing === 'learning' && styles.editChipLabelActive]}
+          >
+            {t('editProfile.editLearning')}
+          </Text>
+        </Pressable>
       </View>
 
       {editing !== 'none' ? (
@@ -328,7 +357,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       ) : null}
 
       <Text style={styles.label}>
-        {t('editProfile.photos')} ({photos.length}/{PLAN_LIMITS.free.maxPhotos})
+        {t('editProfile.photos')} · {photos.length}/{PLAN_LIMITS.free.maxPhotos}
       </Text>
       <View style={styles.gallery}>
         {photos.map((photo) => (
@@ -383,18 +412,45 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   loading: { marginTop: spacing.xxl },
-  backRow: { paddingTop: spacing.md },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, marginBottom: spacing.lg, marginTop: spacing.xs },
   avatarRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.lg,
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
+    marginTop: spacing.xs,
   },
-  avatarActions: { flex: 1 },
-  label: { ...font.label, color: colors.text, marginBottom: spacing.sm, marginTop: spacing.lg },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  changePhoto: { color: colors.accent, fontSize: 15, fontWeight: '700' },
+  pressed: { opacity: 0.6 },
+  label: {
+    color: colors.textMuted,
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: spacing.sm + 1,
+    marginTop: spacing.lg,
+  },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 7 },
+  /** The tinted language pill: soft accent ground, accent label, bars inside. */
+  languageChip: {
+    alignItems: 'center',
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  languageChipLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  editChip: {
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  editChipActive: { borderColor: colors.accent },
+  editChipLabel: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
+  editChipLabelActive: { color: colors.accent },
   pickerPane: { height: 320, marginTop: spacing.md },
   levels: {
     borderTopColor: colors.border,
@@ -404,17 +460,18 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   levelRow: { marginBottom: spacing.sm },
   levelLang: { ...font.caption, color: colors.textMuted, marginBottom: spacing.xs },
-  gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  photo: { backgroundColor: colors.surface, borderRadius: radius.md, height: 96, width: 96 },
+  gallery: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm + 1 },
+  photo: { backgroundColor: colors.fill, borderRadius: 14, height: 58, width: 58 },
   photoAdd: {
     alignItems: 'center',
+    backgroundColor: 'transparent',
     borderColor: colors.border,
     borderStyle: 'dashed',
     borderWidth: 1,
     justifyContent: 'center',
   },
-  photoAddLabel: { color: colors.textMuted, fontSize: 28 },
-  hint: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
+  photoAddLabel: { color: colors.textFaint, fontSize: 22 },
+  hint: { color: colors.textFaint, fontSize: 12, marginTop: spacing.sm },
   error: { ...font.caption, color: colors.danger, marginTop: spacing.md },
   save: { marginBottom: spacing.xxl, marginTop: spacing.lg },
 }))

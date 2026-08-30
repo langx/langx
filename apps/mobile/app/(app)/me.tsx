@@ -1,5 +1,5 @@
 import { ActivityMap } from '../../src/components/ActivityMap'
-import { ageFromBirthDate, countryFlag, getCountry } from '@langx/shared'
+import { countryFlag, getCountry } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
@@ -15,21 +15,18 @@ import {
 import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
 import { LanguageCards } from '../../src/components/LanguageCards'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
-import { TierBadge } from '../../src/components/TierBadge'
 import { WeeklyChart } from '../../src/components/WeeklyChart'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
-import { Card } from '../../src/components/ui/Card'
-import { Chip } from '../../src/components/ui/Chip'
 import { ListRow } from '../../src/components/ui/ListRow'
 import { Screen } from '../../src/components/ui/Screen'
 import { StatTile } from '../../src/components/ui/StatTile'
 import { openPaywall } from '../../src/lib/paywall'
 import { makeStyles, useTheme } from '../../src/lib/theme'
-import { accountAgeLabel, genderLabel, useDisplayNames, useT } from '../../src/i18n'
+import { useDisplayNames, useT } from '../../src/i18n'
 
 export default function MeScreen() {
-  const { colors, layout } = useTheme()
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const names = useDisplayNames()
@@ -63,6 +60,16 @@ export default function MeScreen() {
   const summary = xp.data
   const viewerPage = viewers.data?.pages[0]
 
+  // "PRO" / "PRO+" are brand marks, not copy — the same literals TierBadge
+  // draws in its chip, folded into the meta line the way v3 writes it.
+  const meta = [
+    `@${profile.handle}`,
+    tier === 'free' ? null : tier === 'pro_plus' ? 'PRO+' : 'PRO',
+    profile.country ? countryLabel(profile.country) : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
   /** Everything on this screen comes from a different query. */
   function refresh(): void {
     void Promise.all([me.refetch(), xp.refetch(), wallet.refetch(), quota.refetch()])
@@ -71,30 +78,14 @@ export default function MeScreen() {
   return (
     <Screen scroll onRefresh={refresh} refreshing={me.isRefetching}>
       <View style={styles.hero}>
-        <Avatar url={profile.avatarUrl} name={profile.displayName} size={layout.avatarLarge} />
+        <Avatar url={profile.avatarUrl} name={profile.displayName} size={72} />
         <View style={styles.heroText}>
           <Text style={styles.name} numberOfLines={1}>
             {profile.displayName}
           </Text>
           <Text style={styles.handle} numberOfLines={1}>
-            @{profile.handle}{' '}
-            {t('profile.registered', {
-              age: accountAgeLabel(t, new Date(profile.createdAt)),
-            })}
+            {meta}
           </Text>
-          {/*
-            The same badges other people already see on your profile. Yours
-            showed name and handle only, so the one profile you cannot look at
-            from outside was also the one that told you least about itself.
-          */}
-          <View style={styles.badges}>
-            <Chip label={String(ageFromBirthDate(profile.birthDate))} />
-            {profile.country ? <Chip label={countryLabel(profile.country)} /> : null}
-            {profile.gender !== 'undisclosed' ? (
-              <Chip label={genderLabel(t, profile.gender)} />
-            ) : null}
-            <TierBadge tier={tier} />
-          </View>
         </View>
         {/*
           Settings used to be a button below the token store, at the bottom of a
@@ -107,18 +98,14 @@ export default function MeScreen() {
           hitSlop={12}
           accessibilityRole="button"
           accessibilityLabel={t('me.settings')}
-          style={({ pressed }) => [styles.settings, pressed && styles.pressed]}
+          style={({ pressed }) => pressed && styles.pressed}
         >
-          <Feather name="settings" size={19} color={colors.textMuted} />
+          <Feather name="settings" size={22} color={colors.textMuted} />
         </Pressable>
       </View>
 
       <View style={styles.tiles}>
-        <StatTile
-          tone="warning"
-          label={t('me.dayStreak')}
-          value={`🔥 ${summary?.streak.current ?? 0}`}
-        />
+        <StatTile label={t('me.dayStreak')} value={`🔥 ${summary?.streak.current ?? 0}`} />
         <StatTile
           tone="success"
           label={t('me.corrections')}
@@ -126,9 +113,9 @@ export default function MeScreen() {
         />
         {/* The balance is the way into the store — a number nobody can act on
             reads as decoration, and the store had nowhere else to be reached
-            from once it left this screen. */}
+            from once it left this screen. The "›" is the hint that it opens. */}
         <StatTile
-          label={t('me.tokens')}
+          label={`${t('me.tokens')} ›`}
           value={String(balance)}
           onPress={() => router.push('/(app)/store')}
         />
@@ -141,31 +128,26 @@ export default function MeScreen() {
         week went, the map says how the last six months did, and a square you
         can still buy back is only interesting while the day is recent.
       */}
-      <Card inset style={styles.card}>
-        <ActivityMap />
-      </Card>
+      <ActivityMap />
 
-      <Card inset style={styles.card}>
-        {/* Free users get the count and a locked list; that contrast is the
-            entire argument for Pro, so it is shown rather than hidden. */}
-        <ListRow
-          title={t('me.viewersTitle')}
-          subtitle={
-            /* `total` and `locked` describe the whole list, so page one is
-               the authority on both. */
-            viewerPage?.locked
-              ? t('me.viewersLocked', { count: viewerPage.total })
-              : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
-          }
-          onPress={() => router.push('/(app)/viewers')}
-        />
-        <ListRow
-          title={t('me.badges')}
-          subtitle={t('me.leaderboardSubtitle')}
-          last
-          onPress={() => router.push('/(app)/leaderboard')}
-        />
-      </Card>
+      {/* Free users get the count and a locked list; that contrast is the
+          entire argument for Pro, so it is shown rather than hidden. */}
+      <ListRow
+        title={t('me.viewersTitle')}
+        subtitle={
+          /* `total` and `locked` describe the whole list, so page one is
+             the authority on both. */
+          viewerPage?.locked
+            ? t('me.viewersLocked', { count: viewerPage.total })
+            : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
+        }
+        onPress={() => router.push('/(app)/viewers')}
+      />
+      <ListRow
+        title={t('me.badges')}
+        subtitle={t('me.leaderboardSubtitle')}
+        onPress={() => router.push('/(app)/leaderboard')}
+      />
 
       {!isPro ? (
         <Pressable style={styles.proCard} onPress={() => openPaywall()}>
@@ -195,31 +177,29 @@ export default function MeScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   loading: { marginTop: spacing.xxl },
-  hero: { alignItems: 'center', flexDirection: 'row', gap: 14, paddingVertical: spacing.sm },
-  heroText: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 23 },
-  handle: { ...font.label, color: colors.textMuted, fontWeight: '400' },
-  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 9 },
-  settings: {
+  hero: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    height: 38,
-    justifyContent: 'center',
-    width: 38,
+    flexDirection: 'row',
+    gap: spacing.lg,
+    paddingVertical: spacing.sm,
   },
+  heroText: { flex: 1, minWidth: 0 },
+  name: { ...font.heading, color: colors.text, fontSize: 24 },
+  handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
   pressed: { opacity: 0.7 },
-  tiles: { flexDirection: 'row', gap: 10, marginBottom: spacing.md, marginTop: spacing.md },
-  card: { marginTop: spacing.md },
+  tiles: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: spacing.xl,
+    paddingBottom: 20,
+  },
   proCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.pro,
+    backgroundColor: colors.accentBg,
     borderRadius: radius.lg,
-    borderWidth: 1,
     gap: 2,
-    marginTop: spacing.md,
+    marginTop: spacing.lg,
     padding: spacing.lg,
   },
   proTitle: { ...font.body, color: colors.pro, fontWeight: '700' },

@@ -1,12 +1,13 @@
 /**
- * The single weight, by subpath.
+ * The two weights, by subpath.
  *
- * The package root is a barrel whose five `export const … = require(…)` lines
- * all evaluate on import, so pulling one weight from it bundles the other four
- * — 560K of TTF to use 112K of it, in the web bundle and in every store
- * binary. `700Bold/index.js` requires exactly one file.
+ * The package root is a barrel whose `export const … = require(…)` lines all
+ * evaluate on import, so pulling one weight from it bundles every other one —
+ * hundreds of KB of TTF to use a fraction of it, in the web bundle and in
+ * every store binary. Each subpath requires exactly one file.
  */
-import { Comfortaa_700Bold } from '@expo-google-fonts/comfortaa/700Bold'
+import { Nunito_700Bold } from '@expo-google-fonts/nunito/700Bold'
+import { Nunito_800ExtraBold } from '@expo-google-fonts/nunito/800ExtraBold'
 import { useFonts } from 'expo-font'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Stack } from 'expo-router'
@@ -89,12 +90,12 @@ function RootShell() {
   if (!isPending) hasResolvedOnce.current = true
 
   /**
-   * Comfortaa is display-only, so a missed load costs headings their voice and
+   * Nunito is display-only, so a missed load costs headings their voice and
    * nothing else. `fontError` is therefore treated as "carry on" rather than a
    * failure: shipping the platform stack is far better than holding the splash
    * open on a font that is never going to arrive.
    */
-  const [fontsLoaded, fontError] = useFonts({ Comfortaa_700Bold })
+  const [fontsLoaded, fontError] = useFonts({ Nunito_700Bold, Nunito_800ExtraBold })
   const showSpinner = (isPending && !hasResolvedOnce.current) || (!fontsLoaded && !fontError)
 
   return (

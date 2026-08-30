@@ -8,6 +8,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../src/lib/navigation'
 import { useMemo, useState } from 'react'
+import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import {
   useDiscovery,
@@ -22,7 +23,9 @@ import { DiscoveryCardSkeleton } from '../../src/components/skeletons/DiscoveryC
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Chip } from '../../src/components/ui/Chip'
 import { EmptyState } from '../../src/components/ui/EmptyState'
+import { LevelBars } from '../../src/components/ui/LevelBars'
 import { Screen } from '../../src/components/ui/Screen'
+import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import {
   activeCount,
   hasProFilters,
@@ -35,8 +38,8 @@ import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { listState } from '../../src/lib/listState'
-import { makeStyles } from '../../src/lib/theme'
-import { levelShortLabel, useDisplayNames, useT, type MessageKey } from '../../src/i18n'
+import { makeStyles, useTheme } from '../../src/lib/theme'
+import { useDisplayNames, useT, type MessageKey } from '../../src/i18n'
 
 const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
   { key: 'recommended', label: 'discover.forYou' },
@@ -46,22 +49,27 @@ const SORTS: { key: DiscoverySort; label: MessageKey }[] = [
 
 function LanguageLine({ item }: { item: DiscoveryItem }) {
   const styles = useStyles()
-  const t = useT()
   const names = useDisplayNames()
 
   const speaks = item.nativeLanguages.map((l) => names.language(l.code)).join(', ')
-  const learns = item.learning
-    .map((l) => `${names.language(l.code)} ${levelShortLabel(t, l.level)}`)
-    .join(', ')
+  const learns = item.learning.map((l) => names.language(l.code)).join(', ')
+  // The bars carry the level now, so the names lose their level words. One
+  // glyph for the pair: the first learning language's level, which is also the
+  // one the match was made on.
+  const level = item.learning[0]?.level
   return (
-    <Text style={styles.languages} numberOfLines={1}>
-      {speaks} → {learns}
-    </Text>
+    <View style={styles.pairLine}>
+      <Text style={styles.languages} numberOfLines={1}>
+        {speaks} → {learns}
+      </Text>
+      {level ? <LevelBars level={level} /> : null}
+    </View>
   )
 }
 
 export default function DiscoverScreen() {
   const styles = useStyles()
+  const { colors } = useTheme()
   const t = useT()
 
   const params = useLocalSearchParams<Record<string, string>>()
@@ -145,23 +153,46 @@ export default function DiscoverScreen() {
       <View style={styles.header}>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{t('discover.title')}</Text>
-          {/* Which direction this list is matched in. Every card below is
+          {/* Which direction this list is matched in. Every row below is
               someone native in what you are learning and learning what you
               speak, and without this the list looks unsorted rather than
               matched. */}
           {pair ? <Text style={styles.pair}>{pair}</Text> : null}
+          {/* Advanced filters are the Pro hook, so the control is shown to
+              everyone and the *screen* handles the upsell — hiding it makes
+              the paywall a surprise instead of an offer. Free filters still
+              live behind it, which is why a free account opens the filters
+              rather than the paywall. */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={
+              count > 0
+                ? t('discover.filtersWithCount', { count })
+                : isPro
+                  ? t('filters.title')
+                  : t('discover.filters')
+            }
+            onPress={() => router.push({ pathname: '/(app)/filters', params })}
+            style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+            hitSlop={8}
+          >
+            <Feather name="sliders" size={22} color={colors.text} />
+            {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
+          </Pressable>
         </View>
-        <View style={styles.filters}>
-          {SORTS.map((option) => (
-            <Chip
-              key={option.key}
-              label={
-                option.key === 'nearby' && !canUseNearby ? `${t(option.label)} ✦` : t(option.label)
-              }
-              selected={sort === option.key}
-              onPress={() => (option.key === 'nearby' ? void chooseNearby() : setSort(option.key))}
-            />
-          ))}
+        <View style={styles.segmented}>
+          <SegmentedControl
+            options={SORTS.map((option) => ({
+              value: option.key,
+              label:
+                option.key === 'nearby' && !canUseNearby ? `${t(option.label)} ✦` : t(option.label),
+            }))}
+            selected={[sort]}
+            onToggle={(key) => (key === 'nearby' ? void chooseNearby() : setSort(key))}
+            accessibilityLabel={t('discover.sortLabel')}
+          />
+        </View>
+        <View style={styles.chips}>
           <Chip
             // "Online first", not "Online": it is a sort modifier now, and a
             // label promising a filter would be describing the old behaviour.
@@ -170,40 +201,20 @@ export default function DiscoverScreen() {
             selected={effective.online === true}
             onPress={() => router.setParams(effective.online ? { online: '' } : { online: '1' })}
           />
-          {/* Advanced filters are the Pro hook, so the control is shown to
-              everyone and the *screen* handles the upsell — hiding it makes
-              the paywall a surprise instead of an offer. Free filters still
-              live behind it, which is why a free account opens the filters
-              rather than the paywall. */}
-          <Chip
-            label={
-              count > 0
-                ? t('discover.filtersWithCount', { count })
-                : isPro
-                  ? t('filters.title')
-                  : t('discover.filters')
-            }
-            tone="secondary"
-            selected={count > 0}
-            onPress={() => router.push({ pathname: '/(app)/filters', params })}
-          />
+          {/* Only while it applies. A radius control above a list that is not
+              sorted by distance would be a control with nothing to control. */}
+          {sort === 'nearby'
+            ? NEARBY_RADIUS_OPTIONS_KM.map((km) => (
+                <Chip
+                  key={km}
+                  label={t('discover.distanceKm', { km })}
+                  tone="accent"
+                  selected={radiusKm === km}
+                  onPress={() => setRadiusKm(km)}
+                />
+              ))
+            : null}
         </View>
-
-        {/* Only while it applies. A radius row above a list that is not sorted
-            by distance would be a control with nothing to control. */}
-        {sort === 'nearby' ? (
-          <View style={styles.filters}>
-            {NEARBY_RADIUS_OPTIONS_KM.map((km) => (
-              <Chip
-                key={km}
-                label={t('discover.distanceKm', { km })}
-                tone="accent"
-                selected={radiusKm === km}
-                onPress={() => setRadiusKm(km)}
-              />
-            ))}
-          </View>
-        ) : null}
       </View>
 
       {state === 'skeleton' ? (
@@ -262,26 +273,30 @@ export default function DiscoverScreen() {
           ListFooterComponent={
             query.isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null
           }
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <Pressable
               onPress={() => openProfile(item.handle, '/(app)/discover')}
-              style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+              style={({ pressed }) => [
+                styles.row,
+                index === items.length - 1 && styles.rowLast,
+                pressed && styles.pressed,
+              ]}
             >
               <Avatar
                 url={item.avatarUrl}
                 name={item.displayName}
-                size={54}
+                size={56}
                 online={item.isOnline}
               />
-              <View style={styles.cardBody}>
-                <View style={styles.cardTop}>
+              <View style={styles.rowBody}>
+                <View style={styles.rowTop}>
                   <Text style={styles.name} numberOfLines={1}>
                     {item.displayName}
                   </Text>
                   <Text style={styles.age}>{item.age}</Text>
                   {/* The flag, not the country's name: it is one glyph in a row
                       that has none to spare, and it is the one thing on this
-                      card that is the same word in every language. */}
+                      row that is the same word in every language. */}
                   {item.country ? (
                     <Text style={styles.flag}>{countryFlag(item.country)}</Text>
                   ) : null}
@@ -314,57 +329,69 @@ export default function DiscoverScreen() {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
   header: { paddingTop: spacing.md },
-  titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  title: { ...font.title, color: colors.text, fontSize: 30 },
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
   pair: {
-    ...font.caption,
-    backgroundColor: colors.infoBg,
-    borderRadius: radius.pill,
-    color: colors.info,
-    fontWeight: '600',
-    overflow: 'hidden',
-    paddingHorizontal: spacing.md,
-    paddingVertical: 7,
+    ...font.label,
+    color: colors.accent,
+    fontSize: 14,
+    fontWeight: '700',
+    marginStart: 'auto',
   },
-  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 14 },
-  list: { gap: spacing.md, paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  filterButton: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
+  filterCount: {
+    backgroundColor: colors.accent,
+    borderRadius: radius.pill,
+    color: colors.textInverse,
+    fontSize: 11,
+    fontWeight: '700',
+    minWidth: 18,
+    overflow: 'hidden',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    textAlign: 'center',
+  },
+  segmented: { marginTop: 18 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 14 },
+  list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
-  card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
+  row: {
+    alignItems: 'flex-start',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
     flexDirection: 'row',
     gap: 14,
-    padding: 14,
+    paddingVertical: 20,
   },
-  cardPressed: { opacity: 0.7 },
-  cardBody: { flex: 1, minWidth: 0 },
-  cardTop: { alignItems: 'center', flexDirection: 'row', gap: 7 },
+  rowLast: { borderBottomWidth: 0 },
+  pressed: { opacity: 0.7 },
+  rowBody: { flex: 1, minWidth: 0 },
+  rowTop: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
   name: { ...font.heading, color: colors.text, flexShrink: 1, fontSize: 17 },
-  age: { ...font.label, color: colors.textMuted, fontWeight: '400' },
+  age: { ...font.label, color: colors.textMuted, fontSize: 14, fontWeight: '400' },
   streak: {
-    ...font.caption,
-    backgroundColor: colors.warningBg,
-    borderRadius: radius.pill,
-    color: colors.warning,
+    ...font.label,
+    color: colors.textMuted,
     /**
      * The row is `name (shrinkable) · age · streak`, and without this the
      * streak is shrinkable too — so on a 320px screen it squeezed to a
-     * two-line blob with "🔥" above the digits and `overflow: hidden`
-     * clipping what was left. The name is the thing that should give way; the
-     * chip is four characters and either fits or does not.
+     * two-line blob with "🔥" above the digits. The name is the thing that
+     * should give way; the count is four characters and either fits or does
+     * not.
      */
     flexShrink: 0,
-    fontWeight: '600',
+    fontWeight: '400',
     marginStart: 'auto',
-    overflow: 'hidden',
-    paddingHorizontal: 9,
-    paddingVertical: 3,
   },
-  languages: { ...font.label, color: colors.accent, marginTop: 4 },
+  pairLine: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: 3 },
+  languages: { ...font.label, color: colors.accent, flexShrink: 1, fontSize: 14 },
   distance: { ...font.caption, color: colors.textMuted, marginTop: 3 },
-  bio: { ...font.label, color: colors.textMuted, fontWeight: '400', lineHeight: 20, marginTop: 5 },
+  bio: {
+    ...font.body,
+    color: colors.textMuted,
+    lineHeight: 22,
+    marginTop: 5,
+  },
 }))
 
 /** Enough to fill a phone; the list scrolls before it needs more. */

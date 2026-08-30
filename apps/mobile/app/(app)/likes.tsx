@@ -1,10 +1,11 @@
 import { useLocalSearchParams } from 'expo-router'
 import type { LikeTargetType } from '@langx/shared'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, Text, RefreshControl, View } from 'react-native'
 import { useLikers } from '../../src/api/queries'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
+import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
 import { dedupeById } from '../../src/lib/dedupeById'
 import { goBackTo, openProfile } from '../../src/lib/navigation'
 import { makeStyles } from '../../src/lib/theme'
@@ -35,13 +36,15 @@ export default function LikesScreen() {
 
   return (
     <Screen fluid>
-      <Pressable onPress={() => goBackTo('/(app)/feed', from)} hitSlop={12} style={styles.backRow}>
-        <Text style={styles.back}>{t('common.back')}</Text>
-      </Pressable>
-      <Text style={styles.title}>{t('feed.likedBy')}</Text>
-      {items.length > 0 ? (
-        <Text style={styles.subtitle}>{t('feed.likes', { count: items.length })}</Text>
-      ) : null}
+      <ScreenHeader
+        title={t('feed.likedBy')}
+        onBack={() => goBackTo('/(app)/feed', from)}
+        trailing={
+          items.length > 0 ? (
+            <Text style={styles.countText}>{t('feed.likes', { count: items.length })}</Text>
+          ) : null
+        }
+      />
 
       {likers.isPending ? (
         <ActivityIndicator style={styles.loading} />
@@ -70,9 +73,17 @@ export default function LikesScreen() {
               body={t('feed.likersEmptyBody')}
             />
           }
-          renderItem={({ item }) => (
-            <Pressable style={styles.row} onPress={() => openProfile(item.handle, here)}>
-              <Avatar url={item.avatarUrl} name={item.displayName} />
+          renderItem={({ item, index }) => (
+            <Pressable
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.row,
+                index === items.length - 1 && styles.rowLast,
+                pressed && styles.pressed,
+              ]}
+              onPress={() => openProfile(item.handle, here)}
+            >
+              <Avatar url={item.avatarUrl} name={item.displayName} size={40} />
               <View style={styles.body}>
                 <Text style={styles.name} numberOfLines={1}>
                   {item.displayName}
@@ -88,15 +99,21 @@ export default function LikesScreen() {
 }
 
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  backRow: { paddingTop: spacing.md },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, marginTop: spacing.xs },
-  subtitle: { ...font.caption, color: colors.textMuted, marginTop: 2 },
+  countText: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   loading: { marginTop: spacing.xxl },
-  list: { gap: spacing.sm, paddingBottom: spacing.xxl, paddingTop: spacing.md },
+  list: { paddingBottom: spacing.xxl },
   footer: { paddingVertical: spacing.lg },
-  row: { alignItems: 'center', flexDirection: 'row', gap: 12, paddingVertical: 8 },
+  row: {
+    alignItems: 'center',
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    gap: 12,
+    paddingVertical: 15,
+  },
+  rowLast: { borderBottomWidth: 0 },
+  pressed: { opacity: 0.7 },
   body: { flex: 1, minWidth: 0 },
-  name: { ...font.heading, color: colors.text, fontSize: 15 },
-  handle: { ...font.caption, color: colors.textMuted },
+  name: { ...font.heading, color: colors.text, fontSize: 16 },
+  handle: { color: colors.textMuted, fontSize: 13, fontWeight: '400', marginTop: 1 },
 }))

@@ -20,21 +20,29 @@ export interface DiscoveryFilters {
   gender?: Gender
   onlyMyGender?: boolean
   country?: string
+  /** Their level in my language, as an inclusive band. */
   minLevel?: LanguageLevel
+  maxLevel?: LanguageLevel
   ageMin?: number
   ageMax?: number
 }
 
-/** The named brackets the age filter offers instead of a two-handled slider. */
-export const AGE_BRACKETS = [
-  { label: '18–24', ageMin: 18, ageMax: 24 },
-  { label: '25–34', ageMin: 25, ageMax: 34 },
-  { label: '35–44', ageMin: 35, ageMax: 44 },
-  { label: '45–54', ageMin: 45, ageMax: 54 },
-  { label: '55+', ageMin: 55 },
-] as const
+/**
+ * The two-handled age slider's bounds (v3). The right handle at `sliderMax`
+ * means "no upper bound" — it renders as `55+` and sends no `ageMax` — so the
+ * slider can express the same open end the old `55+` bracket did.
+ */
+export const AGE_SLIDER = { min: 18, max: 55 } as const
 
-const PRO_KEYS = ['gender', 'onlyMyGender', 'country', 'minLevel', 'ageMin', 'ageMax'] as const
+const PRO_KEYS = [
+  'gender',
+  'onlyMyGender',
+  'country',
+  'minLevel',
+  'maxLevel',
+  'ageMin',
+  'ageMax',
+] as const
 
 function one(value: string | string[] | undefined): string | undefined {
   const first = Array.isArray(value) ? value[0] : value
@@ -56,6 +64,8 @@ export function parseFilters(
   if (country) filters.country = country
   const minLevel = one(params.minLevel)
   if (minLevel) filters.minLevel = minLevel as LanguageLevel
+  const maxLevel = one(params.maxLevel)
+  if (maxLevel) filters.maxLevel = maxLevel as LanguageLevel
 
   const ageMin = Number(one(params.ageMin))
   if (Number.isInteger(ageMin) && ageMin > 0) filters.ageMin = ageMin
@@ -74,6 +84,7 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
   if (filters.onlyMyGender) params.onlyMyGender = '1'
   if (filters.country) params.country = filters.country
   if (filters.minLevel) params.minLevel = filters.minLevel
+  if (filters.maxLevel) params.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) params.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) params.ageMax = String(filters.ageMax)
   return params
@@ -92,6 +103,7 @@ export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   if (filters.onlyMyGender) query.onlyMyGender = 'true'
   if (filters.country) query.country = filters.country
   if (filters.minLevel) query.minLevel = filters.minLevel
+  if (filters.maxLevel) query.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) query.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) query.ageMax = String(filters.ageMax)
   return query
@@ -104,7 +116,8 @@ export function activeCount(filters: DiscoveryFilters): number {
   if (filters.online) count++
   if (filters.gender || filters.onlyMyGender) count++
   if (filters.country) count++
-  if (filters.minLevel) count++
+  // One level *band*, however many bounds express it.
+  if (filters.minLevel || filters.maxLevel) count++
   // One age *range*, however many bounds express it.
   if (filters.ageMin !== undefined || filters.ageMax !== undefined) count++
   return count

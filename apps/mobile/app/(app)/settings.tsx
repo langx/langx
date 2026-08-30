@@ -12,7 +12,6 @@ import {
   useUpdateProfile,
 } from '../../src/api/queries'
 import { Button } from '../../src/components/ui/Button'
-import { Card } from '../../src/components/ui/Card'
 import { ListRow } from '../../src/components/ui/ListRow'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -224,7 +223,7 @@ export default function SettingsScreen() {
       <ScreenHeader title={t('settings.title')} onBack={() => goBackTo('/(app)/me')} />
 
       <Text style={styles.section}>{t('settings.privacySection')}</Text>
-      <Card inset>
+      <View>
         <ListRow
           title={t('settings.showInDiscover')}
           subtitle={t('settings.showInDiscoverBody')}
@@ -240,15 +239,17 @@ export default function SettingsScreen() {
         />
         <ListRow
           title={t('settings.incognito')}
-          subtitle={isPro ? t('settings.incognitoBody') : t('common.pro')}
-          subtitleColor={isPro ? undefined : colors.pro}
+          subtitle={t('settings.incognitoBody')}
           accessory={
-            <Toggle
-              accessibilityLabel={t('settings.incognito')}
-              disabled={!isPro}
-              value={profile?.privacy.incognito ?? false}
-              onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
-            />
+            <View style={styles.gated}>
+              {isPro ? null : <Text style={styles.proTag}>PRO</Text>}
+              <Toggle
+                accessibilityLabel={t('settings.incognito')}
+                disabled={!isPro}
+                value={profile?.privacy.incognito ?? false}
+                onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
+              />
+            </View>
           }
         />
         {/* Free, unlike the two Pro rows around it: the streak this is drawn
@@ -283,15 +284,19 @@ export default function SettingsScreen() {
         />
         <ListRow
           title={t('settings.hideOnline')}
-          subtitle={isPro ? t('settings.hideOnlineBody') : t('common.pro')}
-          subtitleColor={isPro ? undefined : colors.pro}
+          subtitle={t('settings.hideOnlineBody')}
           accessory={
-            <Toggle
-              accessibilityLabel={t('settings.hideOnline')}
-              disabled={!isPro}
-              value={profile?.privacy.hideOnlineStatus ?? false}
-              onValueChange={(hideOnlineStatus) => update.mutate({ privacy: { hideOnlineStatus } })}
-            />
+            <View style={styles.gated}>
+              {isPro ? null : <Text style={styles.proTag}>PRO</Text>}
+              <Toggle
+                accessibilityLabel={t('settings.hideOnline')}
+                disabled={!isPro}
+                value={profile?.privacy.hideOnlineStatus ?? false}
+                onValueChange={(hideOnlineStatus) =>
+                  update.mutate({ privacy: { hideOnlineStatus } })
+                }
+              />
+            </View>
           }
         />
         <ListRow
@@ -315,7 +320,7 @@ export default function SettingsScreen() {
             last
           />
         ) : null}
-      </Card>
+      </View>
 
       {/*
         Four kinds, two channels. It was one switch, which meant that somebody
@@ -329,7 +334,7 @@ export default function SettingsScreen() {
         not withdrawn.
       */}
       <Text style={styles.section}>{t('settings.notificationsSection')}</Text>
-      <Card inset>
+      <View>
         <View style={styles.channelHead}>
           <Text style={styles.channelLabel}>{t('settings.push')}</Text>
           <Text style={styles.channelLabel}>{t('settings.email')}</Text>
@@ -360,7 +365,7 @@ export default function SettingsScreen() {
             }
           />
         ))}
-      </Card>
+      </View>
 
       {/*
         A device preference rather than an account one, so it is deliberately
@@ -374,7 +379,7 @@ export default function SettingsScreen() {
         not set to.
       */}
       <Text style={styles.section}>{t('settings.languageSection')}</Text>
-      <Card inset>
+      <View>
         {LOCALE_OPTIONS.map((option, index) => (
           <ListRow
             key={option}
@@ -387,12 +392,12 @@ export default function SettingsScreen() {
             onPress={() => setLocale(option)}
             accessory={
               locale === option ? (
-                <Feather name="check" size={18} color={colors.primary} />
+                <Feather name="check" size={18} color={colors.accent} />
               ) : undefined
             }
           />
         ))}
-      </Card>
+      </View>
 
       <Text style={styles.section}>{t('theme.section')}</Text>
       <View style={styles.theme}>
@@ -418,14 +423,14 @@ export default function SettingsScreen() {
       {iconSupported ? (
         <>
           <Text style={styles.section}>{t('settings.appIconSection')}</Text>
-          <Card inset>
+          <View>
             <ListRow
               title={t('settings.appIcon')}
-              subtitle={isPro ? t('settings.appIconBody') : t('common.pro')}
-              subtitleColor={isPro ? undefined : colors.pro}
+              subtitle={t('settings.appIconBody')}
               last
               accessory={
-                <View style={styles.icons}>
+                <View style={styles.gated}>
+                  {isPro ? null : <Text style={styles.proTag}>PRO</Text>}
                   {APP_ICONS.map((name) => (
                     <Pressable
                       key={name}
@@ -441,12 +446,12 @@ export default function SettingsScreen() {
                 </View>
               }
             />
-          </Card>
+          </View>
         </>
       ) : null}
 
       <Text style={styles.section}>{t('settings.legalSection')}</Text>
-      <Card inset>
+      <View>
         {LEGAL_LINKS.map((link, index) => (
           <ListRow
             key={link.url}
@@ -455,20 +460,20 @@ export default function SettingsScreen() {
             last={index === LEGAL_LINKS.length - 1}
           />
         ))}
-      </Card>
+      </View>
 
       <Text style={styles.section}>{t('settings.communitySection')}</Text>
-      <Card inset>
+      <View>
         <ListRow
           title={t('kitchen.title')}
           subtitle={t('kitchen.intro')}
           last
           onPress={() => router.push('/(app)/kitchen')}
         />
-      </Card>
+      </View>
 
       <Text style={styles.section}>{t('settings.accountSection')}</Text>
-      <Card inset>
+      <View>
         <ListRow
           title={t('settings.blockedPeople')}
           onPress={() => router.push('/(app)/blocked')}
@@ -482,7 +487,7 @@ export default function SettingsScreen() {
           last
           onPress={busy ? undefined : () => void confirmDelete()}
         />
-      </Card>
+      </View>
 
       <Button
         label={t('settings.signOut')}
@@ -511,7 +516,20 @@ export default function SettingsScreen() {
 const ICON_PREVIEWS = { default: defaultIcon, dark: darkIcon }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  icons: { flexDirection: 'row', gap: spacing.sm },
+  /** A gated row's right side: the neutral PRO tag, then the control it gates. */
+  gated: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  /** filters.tsx's neutral PRO pill — v3 stopped colouring the tag purple. */
+  proTag: {
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+    overflow: 'hidden',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+  },
   iconTile: {
     borderColor: colors.border,
     borderRadius: radius.md,
@@ -525,17 +543,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     alignSelf: 'flex-end',
     flexDirection: 'row',
     gap: spacing.md,
-    paddingEnd: spacing.lg,
     paddingTop: spacing.sm,
   },
   channelLabel: { ...font.caption, color: colors.textFaint, textAlign: 'center', width: 44 },
   channels: { flexDirection: 'row', gap: spacing.md },
+  /** v3's section kicker: 13/600, faint, flush with the rows it introduces. */
   section: {
     ...font.label,
-    color: colors.textMuted,
-    marginBottom: spacing.sm,
+    color: colors.textFaint,
     marginTop: spacing.xl,
-    paddingStart: spacing.xs,
   },
   theme: { paddingVertical: spacing.xs },
   signOut: { marginTop: spacing.xl },

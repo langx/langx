@@ -75,9 +75,11 @@ export function PhotoGallery({ photos }: { photos: { url: string }[] }) {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   strip: { gap: spacing.sm, paddingVertical: spacing.sm },
+  // `fill` is v3's photo-placeholder grey; `surface` is the ground now and
+  // would leave a loading thumb invisible.
   thumb: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    backgroundColor: colors.fill,
+    borderRadius: radius.lg,
     height: 96,
     width: 96,
   },

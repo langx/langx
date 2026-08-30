@@ -39,7 +39,7 @@ export default function AuthIndex() {
           justifyContent: 'center',
         }}
       >
-        <ActivityIndicator />
+        <ActivityIndicator color={colors.accent} />
       </View>
     )
   }

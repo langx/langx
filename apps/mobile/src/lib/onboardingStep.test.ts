@@ -26,9 +26,14 @@ describe('furthestOnboardingStep', () => {
     expect(furthestOnboardingStep(EMPTY)).toBe('languages')
   })
 
-  it('asks for the languages you speak before the ones you want', () => {
+  /**
+   * Both language questions live on the languages screen now (v3's tabs), so
+   * a draft with native languages but nothing to learn still belongs there —
+   * the screen itself opens on the learning tab in that state.
+   */
+  it('stays on languages until both language questions are answered', () => {
     expect(furthestOnboardingStep(draft({ nativeLanguages: [] }))).toBe('languages')
-    expect(furthestOnboardingStep(draft({ nativeLanguages: ['tr'] }))).toBe('learning')
+    expect(furthestOnboardingStep(draft({ nativeLanguages: ['tr'] }))).toBe('languages')
   })
 
   /**

@@ -1,8 +1,7 @@
-import { TOKEN_RULES } from '@langx/shared'
+import { TOKEN_RULES, poolShare } from '@langx/shared'
 import { ActivityIndicator, Text, View } from 'react-native'
 import { useMe, usePurchase, useTokens, useWallet } from '../../src/api/queries'
 import { StoreRow } from '../../src/components/store/StoreRow'
-import { Card } from '../../src/components/ui/Card'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -12,12 +11,11 @@ import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 
 /**
- * The token store, reached by tapping the balance on the profile.
+ * The token screen, reached by tapping the balance on the profile.
  *
  * A route rather than a sheet: the app has no modal routes and adding one
  * would mean a gesture-handler dependency that does not resolve from this
- * package, for a surface that cannot be linked to or backed out of. A route
- * also has somewhere to put the sections this is going to grow.
+ * package, for a surface that cannot be linked to or backed out of.
  */
 export default function StoreScreen() {
   const { colors } = useTheme()
@@ -47,7 +45,16 @@ export default function StoreScreen() {
   })
 
   const today = xp.data?.today
-  const messageCap = TOKEN_RULES.caps.messagesPerDay
+  const pool = xp.data?.pool
+
+  /**
+   * Provisional, by the same arithmetic the day-close cron will run —
+   * `poolShare` is shared for exactly this reason. The cap (5% of the pool)
+   * is what the little bar fills toward, because it is the only fixed point
+   * in a number that moves with everyone else's day.
+   */
+  const shareCap = TOKEN_RULES.pool.total * TOKEN_RULES.pool.maxShareOfPool
+  const share = today && pool ? poolShare(today.activityScore, pool.totalScore) : 0
 
   function refresh(): void {
     void Promise.all([me.refetch(), xp.refetch(), wallet.refetch()])
@@ -57,45 +64,32 @@ export default function StoreScreen() {
     <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
       <ScreenHeader title={t('store.title')} onBack={() => goBackTo('/(app)/me')} />
 
-      <View style={styles.balance}>
-        <Text style={styles.balanceLabel}>{t('store.balance')}</Text>
+      <View style={styles.section}>
+        <Text style={styles.kicker}>{t('store.balance')}</Text>
         <Text style={styles.balanceValue}>{wallet.data?.balance ?? 0}</Text>
-        <Text style={styles.balanceBody}>{t('store.intro')}</Text>
+        <Text style={styles.body}>{t('store.intro')}</Text>
       </View>
 
-      {/*
-        Today's counters, not a projected pool share. The design draws "+84 your
-        share so far", and the server is explicit that a share is only known
-        when the pool closes the day — so this shows the two numbers that are
-        already true and the cap they run into.
-      */}
-      {today ? (
-        <Card style={styles.card}>
-          <View style={styles.cardHead}>
-            <Text style={styles.cardTitle}>{t('store.today')}</Text>
-            <Text style={styles.cardMeta}>
-              {t('store.todayCounts', {
-                messages: t('format.messages', { count: today.messages }),
-                corrections: t('format.corrections', { count: today.corrections }),
-              })}
-            </Text>
+      {today && pool ? (
+        <View style={styles.section}>
+          <View style={styles.poolHead}>
+            <Text style={styles.poolTitle}>{t('store.todaysPool')}</Text>
+            <Text style={styles.meta}>{t('store.activeToday', { count: pool.activeToday })}</Text>
+          </View>
+          <View style={styles.shareRow}>
+            <Text style={styles.shareValue}>{t('store.shareAmount', { count: share })}</Text>
+            <Text style={styles.meta}>{t('store.shareSoFar')}</Text>
           </View>
           <ProgressBar
-            accessibilityLabel={t('store.messagesToday', { used: today.messages, cap: messageCap })}
+            accessibilityLabel={t('store.todaysPool')}
             color={colors.success}
-            height={8}
-            value={today.messages / messageCap}
+            value={shareCap > 0 ? share / shareCap : 0}
           />
-          <Text style={styles.cardMeta}>
-            {t('store.capExplainer', {
-              cap: messageCap,
-              perPerson: TOKEN_RULES.caps.messagesPerPartnerPerDay,
-            })}
-          </Text>
-        </Card>
+          <Text style={styles.meta}>{t('store.poolCap', { cap: shareCap })}</Text>
+        </View>
       ) : null}
 
-      <Card inset style={styles.offers}>
+      <View style={styles.offers}>
         {offers.map((offer, index) => (
           <StoreRow
             key={offer.id}
@@ -105,41 +99,40 @@ export default function StoreScreen() {
             onBuy={(id) => purchase.mutate(id)}
           />
         ))}
-      </Card>
+      </View>
 
       <Text style={styles.hint}>{t('store.disclaimer')}</Text>
     </Screen>
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
-  balance: {
-    backgroundColor: colors.primary,
-    borderRadius: radius.xl,
-    marginTop: spacing.sm,
-    padding: spacing.xl,
+  section: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    gap: spacing.sm + 2,
+    paddingBottom: spacing.lg + 6,
+    paddingTop: spacing.lg,
   },
-  balanceLabel: { ...font.label, color: colors.primaryTextMuted },
-  balanceValue: { ...font.title, color: colors.primaryText, fontSize: 48, marginTop: 2 },
-  balanceBody: {
-    ...font.label,
-    color: colors.primaryTextMuted,
-    fontWeight: '400',
-    lineHeight: 20,
-    marginTop: spacing.sm,
+  kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
+  balanceValue: { ...font.title, color: colors.text, fontSize: 56, lineHeight: 60 },
+  body: { ...font.body, color: colors.textMuted, lineHeight: 23 },
+  poolHead: {
+    alignItems: 'baseline',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  card: { gap: spacing.sm, marginTop: spacing.md, padding: spacing.lg },
-  // No padding: the rows bring their own, and the card only has to clip them
-  // to its radius so the dividers stop at the corner.
-  offers: { marginTop: spacing.md },
-  cardHead: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-  cardTitle: { ...font.heading, color: colors.text, fontSize: 15 },
-  cardMeta: { ...font.caption, color: colors.textMuted, lineHeight: 18 },
+  poolTitle: { ...font.heading, color: colors.text, fontSize: 16 },
+  shareRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm + 1 },
+  shareValue: { ...font.heading, color: colors.success, fontSize: 24 },
+  meta: { ...font.label, color: colors.textMuted, fontWeight: '400', lineHeight: 19 },
+  offers: {},
   hint: {
     ...font.caption,
-    color: colors.textMuted,
-    lineHeight: 19,
+    color: colors.textFaint,
+    fontSize: 13,
+    lineHeight: 21,
     marginBottom: spacing.xxl,
     marginTop: spacing.lg,
   },

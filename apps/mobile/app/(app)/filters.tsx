@@ -1,35 +1,36 @@
-import { LANGUAGE_LEVELS, GENDERS, type LanguageLevel } from '@langx/shared'
+import { GENDERS, LANGUAGE_LEVELS, levelRank, type LanguageLevel } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, View } from 'react-native'
 import { useIsPro, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
-import { Card } from '../../src/components/ui/Card'
 import { Chip } from '../../src/components/ui/Chip'
+import { LevelBars } from '../../src/components/ui/LevelBars'
+import { RangeSlider } from '../../src/components/ui/RangeSlider'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
-import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { Toggle } from '../../src/components/ui/Toggle'
 import { goBackTo } from '../../src/lib/navigation'
 import { openPaywall } from '../../src/lib/paywall'
 import {
-  AGE_BRACKETS,
+  AGE_SLIDER,
   activeCount,
   parseFilters,
   toParams,
   type DiscoveryFilters,
 } from '../../src/lib/discoveryFilters'
-import { makeStyles } from '../../src/lib/theme'
+import { makeStyles, useTheme } from '../../src/lib/theme'
 import { genderLabel, levelShortLabel, useDisplayNames, useLocale, useT } from '../../src/i18n'
 
 /** Explicit `undefined` means "clear this filter" — see `set` below. */
 type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undefined }
 
 /**
- * A section header. `locked` marks the ones a free account cannot use — shown
- * rather than hidden, because someone has to see what Pro is for, and hiding
- * it makes the paywall feel like a surprise rather than an offer.
+ * A section header in v3's quiet voice, with the neutral PRO tag on the gated
+ * ones — shown rather than hidden, because someone has to see what Pro is
+ * for, and hiding it makes the paywall feel like a surprise rather than an
+ * offer.
  */
 function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
   const styles = useStyles()
@@ -37,12 +38,13 @@ function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
   return (
     <View style={styles.sectionHead}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      {locked ? <Chip label="PRO" tone="pro" /> : null}
+      {locked ? <Text style={styles.proTag}>PRO</Text> : null}
     </View>
   )
 }
 
 export default function FiltersScreen() {
+  const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
   const { locale } = useLocale()
@@ -87,6 +89,65 @@ export default function FiltersScreen() {
     router.replace({ pathname: '/(app)/discover', params: toParams(filters) })
   }
 
+  /**
+   * The level band, as pill indices. Tapping outside the band extends it to
+   * the tap; tapping an edge shrinks past it; tapping inside collapses to that
+   * one level — so any band is reachable in at most two taps and a selected
+   * band can always be dismantled the way it was built.
+   */
+  const bandMin = filters.minLevel ? levelRank(filters.minLevel) - 1 : null
+  const bandMax = filters.maxLevel
+    ? levelRank(filters.maxLevel) - 1
+    : bandMin !== null
+      ? LANGUAGE_LEVELS.length - 1
+      : null
+
+  function tapLevel(index: number): void {
+    const level = LANGUAGE_LEVELS[index] as LanguageLevel
+    if (bandMin === null || bandMax === null) {
+      set({ minLevel: level, maxLevel: level }, true)
+      return
+    }
+    if (index < bandMin) {
+      set({ minLevel: level }, true)
+    } else if (index > bandMax) {
+      set({ maxLevel: level }, true)
+    } else if (bandMin === bandMax && index === bandMin) {
+      set({ minLevel: undefined, maxLevel: undefined }, true)
+    } else if (index === bandMin) {
+      set({ minLevel: LANGUAGE_LEVELS[index + 1] }, true)
+    } else if (index === bandMax) {
+      set({ maxLevel: LANGUAGE_LEVELS[index - 1] }, true)
+    } else {
+      set({ minLevel: level, maxLevel: level }, true)
+    }
+  }
+
+  /**
+   * The slider always holds a concrete pair; "no filter" is the full span.
+   * The right handle at the top is an open end — it reads `55+` and sends no
+   * `ageMax`, matching what the old top bracket meant.
+   */
+  const ageLow = filters.ageMin ?? AGE_SLIDER.min
+  const ageHigh = filters.ageMax ?? AGE_SLIDER.max
+  const ageIsAny = filters.ageMin === undefined && filters.ageMax === undefined
+
+  function setAges([low, high]: [number, number]): void {
+    set(
+      {
+        ageMin: low === AGE_SLIDER.min ? undefined : low,
+        ageMax: high === AGE_SLIDER.max ? undefined : high,
+      },
+      true,
+    )
+  }
+
+  const ageText = ageIsAny
+    ? t('common.any')
+    : ageHigh === AGE_SLIDER.max
+      ? t('filters.ageRangeOpen', { min: ageLow, max: AGE_SLIDER.max })
+      : t('filters.ageRange', { min: ageLow, max: ageHigh })
+
   const count = activeCount(filters)
 
   return (
@@ -102,131 +163,137 @@ export default function FiltersScreen() {
           }
         />
 
-        <SectionTitle title={t('filters.speaks')} />
-        <Text style={styles.hint}>{t('filters.practiseBody')}</Text>
-        <View style={styles.row}>
-          <Chip
-            label={t('common.any')}
-            selected={!filters.targetLanguage}
-            onPress={() => set({ targetLanguage: undefined })}
-          />
-          {learning.map((language) => (
+        <View style={styles.section}>
+          <SectionTitle title={t('filters.speaks')} />
+          <Text style={styles.hint}>{t('filters.practiseBody')}</Text>
+          <View style={styles.row}>
             <Chip
-              key={language.code}
-              label={names.language(language.code)}
-              selected={filters.targetLanguage === language.code}
-              onPress={() => set({ targetLanguage: language.code })}
+              label={t('common.any')}
+              selected={!filters.targetLanguage}
+              onPress={() => set({ targetLanguage: undefined })}
             />
-          ))}
-        </View>
-
-        <SectionTitle title={t('filters.availability')} />
-        <View style={styles.row}>
-          <Chip
-            label={t('filters.onlineFirst')}
-            tone="accent"
-            selected={filters.online === true}
-            onPress={() => set({ online: filters.online ? undefined : true })}
-          />
-        </View>
-
-        <SectionTitle title={t('filters.gender')} locked={!isPro} />
-        <View style={styles.row}>
-          <Chip
-            label={t('common.any')}
-            selected={!filters.gender && !filters.onlyMyGender}
-            onPress={() => set({ gender: undefined, onlyMyGender: undefined }, true)}
-          />
-          {GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => (
-            <Chip
-              key={gender}
-              label={genderLabel(t, gender)}
-              selected={filters.gender === gender}
-              onPress={() =>
-                set(
-                  {
-                    gender: filters.gender === gender ? undefined : gender,
-                    onlyMyGender: undefined,
-                  },
-                  true,
-                )
-              }
-            />
-          ))}
-        </View>
-
-        <Card style={styles.switchRow}>
-          <View style={styles.switchText}>
-            <Text style={styles.switchLabel}>{t('filters.onlyMyGender')}</Text>
-            <Text style={styles.switchHint}>
-              {myGender && myGender !== 'undisclosed'
-                ? t('filters.onlyMyGenderBody', {
-                    gender: genderLabel(t, myGender).toLocaleLowerCase(locale),
-                  })
-                : t('filters.onlyMyGenderMissing')}
-            </Text>
-          </View>
-          <Toggle
-            accessibilityLabel={t('filters.onlyMyGender')}
-            value={filters.onlyMyGender === true}
-            disabled={!myGender || myGender === 'undisclosed'}
-            onValueChange={(value) =>
-              set({ onlyMyGender: value ? true : undefined, gender: undefined }, true)
-            }
-          />
-        </Card>
-
-        <SectionTitle title={t('filters.age')} locked={!isPro} />
-        <View style={styles.row}>
-          <Chip
-            label={t('common.any')}
-            selected={filters.ageMin === undefined && filters.ageMax === undefined}
-            onPress={() => set({ ageMin: undefined, ageMax: undefined }, true)}
-          />
-          {AGE_BRACKETS.map((bracket) => {
-            const max = 'ageMax' in bracket ? bracket.ageMax : undefined
-            const selected = filters.ageMin === bracket.ageMin && filters.ageMax === max
-            return (
+            {learning.map((language) => (
               <Chip
-                key={bracket.label}
-                label={bracket.label}
-                selected={selected}
+                key={language.code}
+                label={names.language(language.code)}
+                selected={filters.targetLanguage === language.code}
+                onPress={() => set({ targetLanguage: language.code })}
+              />
+            ))}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <SectionTitle title={t('filters.availability')} />
+          <View style={styles.row}>
+            <Chip
+              label={t('filters.onlineFirst')}
+              selected={filters.online === true}
+              onPress={() => set({ online: filters.online ? undefined : true })}
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <SectionTitle title={t('filters.theirLevel')} locked={!isPro} />
+          <Text style={styles.hint}>{t('filters.theirLevelBody')}</Text>
+          <View style={styles.levelRow}>
+            {LANGUAGE_LEVELS.map((level, index) => {
+              const on =
+                bandMin !== null && bandMax !== null && index >= bandMin && index <= bandMax
+              return (
+                <Pressable
+                  key={level}
+                  accessibilityRole="checkbox"
+                  accessibilityState={{ checked: on }}
+                  accessibilityLabel={levelShortLabel(t, level)}
+                  onPress={() => tapLevel(index)}
+                  style={({ pressed }) => [
+                    styles.levelPill,
+                    on ? styles.levelOn : styles.levelOff,
+                    pressed && styles.pressed,
+                  ]}
+                >
+                  <LevelBars
+                    level={level}
+                    color={on ? colors.bg : colors.textFaint}
+                    restColor={on ? colors.onInkMuted : colors.border}
+                  />
+                </Pressable>
+              )
+            })}
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.ageHead}>
+            <SectionTitle title={t('filters.age')} locked={!isPro} />
+            <Text style={styles.ageValue}>{ageText}</Text>
+          </View>
+          <RangeSlider
+            min={AGE_SLIDER.min}
+            max={AGE_SLIDER.max}
+            values={[ageLow, ageHigh]}
+            onChange={(next) => setAges(next)}
+            accessibilityLabel={t('filters.age')}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <SectionTitle title={t('filters.gender')} locked={!isPro} />
+          <View style={styles.row}>
+            <Chip
+              label={t('common.any')}
+              selected={!filters.gender && !filters.onlyMyGender}
+              onPress={() => set({ gender: undefined, onlyMyGender: undefined }, true)}
+            />
+            {GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => (
+              <Chip
+                key={gender}
+                label={genderLabel(t, gender)}
+                selected={filters.gender === gender}
                 onPress={() =>
                   set(
-                    selected
-                      ? { ageMin: undefined, ageMax: undefined }
-                      : { ageMin: bracket.ageMin, ageMax: max },
+                    {
+                      gender: filters.gender === gender ? undefined : gender,
+                      onlyMyGender: undefined,
+                    },
                     true,
                   )
                 }
               />
-            )
-          })}
+            ))}
+          </View>
+          <View style={styles.switchRow}>
+            <View style={styles.switchText}>
+              <Text style={styles.switchLabel}>{t('filters.onlyMyGender')}</Text>
+              <Text style={styles.switchHint}>
+                {myGender && myGender !== 'undisclosed'
+                  ? t('filters.onlyMyGenderBody', {
+                      gender: genderLabel(t, myGender).toLocaleLowerCase(locale),
+                    })
+                  : t('filters.onlyMyGenderMissing')}
+              </Text>
+            </View>
+            <Toggle
+              accessibilityLabel={t('filters.onlyMyGender')}
+              value={filters.onlyMyGender === true}
+              disabled={!myGender || myGender === 'undisclosed'}
+              onValueChange={(value) =>
+                set({ onlyMyGender: value ? true : undefined, gender: undefined }, true)
+              }
+            />
+          </View>
         </View>
 
-        <SectionTitle title={t('filters.theirLevel')} locked={!isPro} />
-        <Text style={styles.hint}>{t('filters.theirLevelBody')}</Text>
-        {/* One row of equal segments rather than wrapping chips: these are four
-            points on a single scale, and a scale whose steps are different
-            widths reads as four unrelated options. */}
-        <SegmentedControl<LanguageLevel>
-          accessibilityLabel={t('filters.theirMinimumLevel')}
-          options={LANGUAGE_LEVELS.map((level) => ({
-            value: level,
-            label: levelShortLabel(t, level),
-          }))}
-          selected={filters.minLevel ? [filters.minLevel] : []}
-          onToggle={(level) =>
-            set({ minLevel: filters.minLevel === level ? undefined : level }, true)
-          }
-        />
-
-        <SectionTitle title={t('filters.country')} locked={!isPro} />
-        <CountryPicker
-          value={filters.country ?? ''}
-          onChange={(country) => set({ country: country || undefined }, true)}
-          {...(isPro ? {} : { onLocked: () => openPaywall('advancedFilters', '/(app)/filters') })}
-        />
+        <View style={[styles.section, styles.last]}>
+          <SectionTitle title={t('filters.country')} locked={!isPro} />
+          <CountryPicker
+            value={filters.country ?? ''}
+            onChange={(country) => set({ country: country || undefined }, true)}
+            {...(isPro ? {} : { onLocked: () => openPaywall('advancedFilters', '/(app)/filters') })}
+          />
+        </View>
 
         <View style={styles.actions}>
           <Button
@@ -243,36 +310,54 @@ export default function FiltersScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   content: { paddingBottom: spacing.xxl },
-  reset: { ...font.label, color: colors.secondary },
-  sectionHead: {
+  reset: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  section: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingVertical: spacing.lg + 2,
+  },
+  last: { borderBottomWidth: 0 },
+  sectionHead: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm },
+  sectionTitle: { color: colors.textMuted, fontSize: 14, fontWeight: '600' },
+  proTag: {
+    borderColor: colors.border,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    color: colors.textMuted,
+    fontSize: 11,
+    fontWeight: '700',
+    overflow: 'hidden',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+  },
+  hint: { ...font.caption, color: colors.textFaint, marginTop: 2 },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
+  levelRow: { flexDirection: 'row', gap: 7, marginTop: spacing.md },
+  levelPill: {
+    alignItems: 'center',
+    borderRadius: radius.pill,
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingBottom: 10,
+    paddingTop: 11,
+  },
+  levelOn: { backgroundColor: colors.ink },
+  levelOff: { borderColor: colors.border, borderWidth: 1 },
+  pressed: { opacity: 0.7 },
+  ageHead: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.sm,
-    marginTop: spacing.xl,
+    justifyContent: 'space-between',
   },
-  sectionTitle: { ...font.label, color: colors.textMuted },
-  hint: { ...font.caption, color: colors.textMuted, marginBottom: spacing.sm },
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  ageValue: { ...font.heading, fontSize: 17, color: colors.text },
   switchRow: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.md,
-    marginTop: spacing.md,
-    padding: spacing.lg,
+    marginTop: spacing.lg,
   },
   switchText: { flex: 1 },
-  switchLabel: { ...font.body, color: colors.text, fontWeight: '600' },
-  switchHint: { ...font.caption, color: colors.textMuted },
-  search: {
-    ...font.body,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    color: colors.text,
-    marginBottom: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-  actions: { gap: spacing.md, marginTop: spacing.xxl },
+  switchLabel: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  switchHint: { ...font.caption, color: colors.textMuted, marginTop: 2 },
+  actions: { marginTop: spacing.xl },
 }))

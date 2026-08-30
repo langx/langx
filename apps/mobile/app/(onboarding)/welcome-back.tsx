@@ -11,12 +11,26 @@ import { Screen } from '../../src/components/ui/Screen'
 import { makeStyles } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 
-function Line({ icon, title, body }: { icon: string; title: string; body: string }) {
+function Line({
+  icon,
+  title,
+  body,
+  accent = false,
+  first = false,
+}: {
+  icon: string
+  title: string
+  body: string
+  /** Draws the glyph in the display face and blue — the "@" of the handle row. */
+  accent?: boolean
+  /** The divider sits *above* each row, so the first row suppresses it. */
+  first?: boolean
+}) {
   const styles = useStyles()
 
   return (
-    <View style={styles.line}>
-      <Text style={styles.lineIcon}>{icon}</Text>
+    <View style={[styles.line, first && styles.lineFirst]}>
+      <Text style={[styles.lineIcon, accent && styles.lineIconAccent]}>{icon}</Text>
       <View style={styles.lineText}>
         <Text style={styles.lineTitle}>{title}</Text>
         <Text style={styles.lineBody}>{body}</Text>
@@ -81,9 +95,11 @@ export default function WelcomeBackScreen() {
         <Text style={styles.subtitle}>{t('welcomeBack.subtitle')}</Text>
       </View>
 
-      <View style={styles.card}>
+      <View>
         <Line
           icon="@"
+          accent
+          first
           title={t('welcomeBack.handleTitle', { handle })}
           body={t('welcomeBack.handleBody')}
         />
@@ -155,7 +171,7 @@ export default function WelcomeBackScreen() {
       <NotificationPriming />
 
       <Button
-        label={busy ? t('common.oneMoment') : t('welcomeBack.start')}
+        label={busy ? t('common.oneMoment') : t('welcomeBack.startExploring')}
         onPress={() => void acknowledge()}
         loading={busy}
         style={styles.action}
@@ -164,21 +180,30 @@ export default function WelcomeBackScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  hero: { alignItems: 'center', paddingVertical: spacing.xl },
-  emoji: { fontSize: 56, marginBottom: spacing.md },
-  title: { ...font.title, color: colors.text },
-  subtitle: { ...font.body, color: colors.textMuted, marginTop: spacing.xs },
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    gap: spacing.lg,
-    padding: spacing.lg,
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
+  hero: { alignItems: 'center', paddingBottom: spacing.md, paddingTop: spacing.xxl },
+  emoji: { fontSize: 48, lineHeight: 54 },
+  title: { ...font.title, color: colors.text, fontSize: 28, marginTop: spacing.md + 2 },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    lineHeight: 23,
+    marginTop: 6,
+    maxWidth: 260,
+    textAlign: 'center',
   },
-  line: { flexDirection: 'row', gap: spacing.md },
-  lineIcon: { fontSize: 20, width: 28 },
+  line: {
+    borderTopColor: colors.border,
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md + 2,
+    paddingVertical: spacing.lg + 2,
+  },
+  lineFirst: { borderTopWidth: 0 },
+  lineIcon: { fontSize: 18, width: 28 },
+  lineIconAccent: { ...font.heading, color: colors.accent, fontSize: 18 },
   lineText: { flex: 1 },
-  lineTitle: { ...font.body, color: colors.text, fontWeight: '600' },
-  lineBody: { ...font.caption, color: colors.textMuted, marginTop: 2 },
+  lineTitle: { color: colors.text, fontSize: 16, fontWeight: '600' },
+  lineBody: { color: colors.textMuted, fontSize: 13, lineHeight: 19, marginTop: 2 },
   action: { marginTop: spacing.xl },
 }))

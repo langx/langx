@@ -45,7 +45,12 @@ const useStyles = makeStyles(({ colors, radius }) => ({
     padding: 3,
     width: 46,
   },
-  on: { backgroundColor: colors.primary, justifyContent: 'flex-end' },
+  /**
+   * `accent`, not `primary`: v3 reserves yellow for the one committing action
+   * on a screen, and a settings toggle chooses rather than commits. Blue is
+   * what carries interactive state everywhere else.
+   */
+  on: { backgroundColor: colors.accent, justifyContent: 'flex-end' },
   off: { backgroundColor: colors.border, justifyContent: 'flex-start' },
   disabled: { opacity: 0.5 },
   knob: {

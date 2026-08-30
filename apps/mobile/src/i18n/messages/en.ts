@@ -231,6 +231,8 @@ export const en = {
     passwordsDoNotMatch: 'The two passwords are different.',
     passwordTooShort: 'At least {min} characters.',
     passwordRule: 'At least {min} characters',
+    welcomeBackSubtitle: 'Sign in to pick up where you left off.',
+    resetBody: "Enter the email you signed up with and we'll send you a reset link.",
     welcomeBack: 'Welcome back',
     email: 'Email',
     password: 'Password',
@@ -269,10 +271,7 @@ export const en = {
   },
 
   onboarding: {
-    nativeTitle: 'Which languages do you speak?',
-    nativeBody: 'The ones you grew up with, or speak like a native.',
-    learningTitle: 'Which are you learning?',
-    learningBody: 'Pick the ones you want to practise with somebody.',
+    stepOf: 'Step {step} of {total}',
     levelsTitle: 'How far along are you?',
     levelsBody: '1 is an absolute beginner, 4 is fluent.',
     pickALevel: 'Choose a level',
@@ -289,6 +288,7 @@ export const en = {
     yourLevel: 'Your level',
     upToFive: 'Up to 5',
     cannotBeBoth: 'A language can’t be both',
+    aboutYouBody: 'Just the basics — you can change all of this later.',
     aboutYouTitle: 'About you',
     displayName: 'Display name',
     yearOfBirth: 'Year of birth',
@@ -311,6 +311,7 @@ export const en = {
     yearPlaceholder: '1996',
     gender: 'Gender',
     interests: 'Interests',
+    handleBody: 'Letters, numbers and underscores. This is how people find you.',
     handleTitle: 'Choose a username',
     handlePlaceholder: 'alex',
     handleReserved: '@{handle} is reserved for you',
@@ -329,6 +330,7 @@ export const en = {
   },
 
   welcomeBack: {
+    startExploring: 'Start exploring',
     title: 'Welcome back',
     subtitle: 'Here is what came with you.',
     handleTitle: '@{handle}',
@@ -350,7 +352,6 @@ export const en = {
     proPlusForLife: 'LangX Pro+, for life',
     proBody:
       'For what you built in v1. It never expires and there is nothing to pay — thank you for being here first.',
-    start: 'Start using LangX',
   },
 
   notifications: {
@@ -370,6 +371,7 @@ export const en = {
   },
 
   discover: {
+    sortLabel: 'Sort',
     forYou: 'For you',
     onlineFirst: 'Online first',
     title: 'Discover',
@@ -407,7 +409,8 @@ export const en = {
     theirLevel: 'Their level in your language',
     theirLevelBody:
       'How well they already speak what you teach. Higher means an easier conversation, lower means someone who needs you more.',
-    theirMinimumLevel: 'Their minimum level',
+    ageRange: '{min} — {max}',
+    ageRangeOpen: '{min} — {max}+',
     showResults: 'Show results',
     showResultsWithCount: 'Show results · {count}',
   },
@@ -528,6 +531,7 @@ export const en = {
   },
 
   feed: {
+    topTag: 'Top',
     needsCorrection: 'Needs a correction',
     ask: '+ Ask',
     askTitle: 'Your sentence in {language}',
@@ -574,6 +578,8 @@ export const en = {
   },
 
   profile: {
+    teaches: 'Teaches',
+    learns: 'Learns',
     openChat: 'Open your chat',
     follow: 'Follow',
     following: 'Following',
@@ -747,9 +753,6 @@ export const en = {
     intro:
       'Earned by messaging and by correcting other people. Teaching is weighted higher than talking.',
     todayCounts: '{messages} · {corrections}',
-    messagesToday: '{used} of {cap} paying messages today',
-    capExplainer:
-      '{cap} messages a day pay tokens, {perPerson} of them per person. Corrections are not capped.',
     disclaimer:
       'Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak freezes and cosmetics. There is no chain, no wallet and no market.',
     restoreStreak: 'Restore your streak',
@@ -760,7 +763,11 @@ export const en = {
     buy: 'Buy {title} for {price} tokens',
     title: 'Tokens',
     balance: 'Balance',
-    today: 'Today',
+    todaysPool: "Today's pool",
+    activeToday: { one: '{count} active today', other: '{count} active today' },
+    shareAmount: '+{count}',
+    shareSoFar: 'your share so far',
+    poolCap: "Cap {cap} a day. Your share moves with everyone else's.",
     owned: 'Owned',
     frameKind: 'Profile frame',
     titleKind: 'Title',
@@ -776,6 +783,8 @@ export const en = {
   },
 
   leaderboard: {
+    title: 'Leaderboard',
+    periodPicker: 'Leaderboard period',
     nextMilestone: 'Next milestone',
     dayStreak: 'day streak',
     towards: '{current} of {threshold} toward {label}',
@@ -831,7 +840,8 @@ export const en = {
   paywall: {
     title: 'Talk more, learn faster',
     proTagline: 'Everything that makes the free plan feel small.',
-    proPlusTagline: 'Everything in Pro, and the two features only it has.',
+    everythingInPro: 'Everything in Pro',
+    restorePurchases: 'Restore purchases',
     partOf: 'is part of',
     unlimitedChats: 'Unlimited new chats',
     unlimitedChatsBody: '{count} a day on the free plan.',
@@ -853,7 +863,6 @@ export const en = {
     quotaNotice:
       'You’ve used today’s {count} new chats. You can still reply to everything you receive, with no limit.',
     manageNotice: 'You’re on {plan}. Manage or cancel it in your store account.',
-    restore: 'Already subscribed? Restore',
     purchaseFailed: 'That purchase did not go through. Nothing was charged.',
     purchaseUnavailable: 'Purchasing is unavailable on this device.',
     nothingToRestore: 'Nothing to restore on this device.',

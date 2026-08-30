@@ -81,7 +81,12 @@ export function IntroCarousel({ onDone, doneLabel }: IntroCarouselProps) {
         </View>
 
         <View style={styles.actions}>
-          <Pressable onPress={onDone} hitSlop={8} disabled={isLast}>
+          <Pressable
+            onPress={onDone}
+            hitSlop={8}
+            disabled={isLast}
+            style={({ pressed }) => pressed && styles.pressed}
+          >
             <Text style={styles.skip}>{isLast ? ' ' : t('intro.skip')}</Text>
           </Pressable>
           <Button
@@ -107,18 +112,31 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingHorizontal: spacing.lg,
   },
   emoji: { fontSize: 64, marginBottom: spacing.xl },
-  title: { ...font.title, color: colors.text, marginBottom: spacing.md, textAlign: 'center' },
-  body: { ...font.body, color: colors.textMuted, lineHeight: 22, textAlign: 'center' },
-  dots: { flexDirection: 'row', gap: spacing.xs, justifyContent: 'center', marginTop: spacing.xl },
+  title: {
+    ...font.title,
+    color: colors.text,
+    lineHeight: 38,
+    marginBottom: spacing.md,
+    textAlign: 'center',
+  },
+  body: {
+    ...font.body,
+    color: colors.textMuted,
+    fontSize: 16,
+    lineHeight: 25,
+    textAlign: 'center',
+  },
+  dots: { flexDirection: 'row', gap: spacing.sm, justifyContent: 'center', marginTop: spacing.xl },
   dot: { backgroundColor: colors.border, borderRadius: radius.pill, height: 8, width: 8 },
-  dotActive: { backgroundColor: colors.text, width: 20 },
+  dotActive: { backgroundColor: colors.accent, width: 20 },
   actions: {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: spacing.xl,
   },
-  skip: { ...font.body, color: colors.textMuted },
+  pressed: { opacity: 0.7 },
+  skip: { color: colors.accent, fontSize: 15, fontWeight: '600' },
   // Undoes Button's full-width default, which is wrong beside a Skip link.
   next: { flexShrink: 0, minWidth: 140, width: 'auto' },
 }))

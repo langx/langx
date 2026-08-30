@@ -50,6 +50,7 @@ export default function ForgotPassword() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <Text style={styles.title}>{t('auth.resetTitle')}</Text>
+      <Text style={styles.body}>{t('auth.resetBody')}</Text>
       <FormField
         returnKeyType="go"
         onSubmitEditing={() => canSubmit && void onSubmit()}
@@ -73,15 +74,15 @@ export default function ForgotPassword() {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   container: {
     backgroundColor: colors.bg,
     flex: 1,
-    gap: 16,
+    gap: spacing.lg,
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xl,
   },
-  title: { color: colors.text, fontSize: 28, fontWeight: '700' },
-  body: { color: colors.textMuted, fontSize: 15, lineHeight: 22, opacity: 0.8 },
-  link: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
+  title: { ...font.title, color: colors.text, fontSize: 28, lineHeight: 36 },
+  body: { ...font.body, color: colors.textMuted, lineHeight: 23 },
+  link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
 }))

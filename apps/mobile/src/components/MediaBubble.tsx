@@ -35,7 +35,9 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
   const total = media.durationSeconds ?? status.duration ?? 0
   const elapsed = status.currentTime ?? 0
   const progress = total > 0 ? Math.min(1, elapsed / total) : 0
-  const tint = mine ? colors.primaryText : colors.text
+  // Both v3 bubbles are light tints, so the glyphs read in plain `text`; the
+  // accent on your own progress is the only mark of whose note it is.
+  const tint = mine ? colors.accent : colors.text
 
   return (
     <View style={styles.audioRow}>
@@ -54,14 +56,14 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
           player.play()
         }}
       >
-        <Text style={[styles.playIcon, { color: tint }]}>{status.playing ? '❚❚' : '▶'}</Text>
+        <Text style={[styles.playIcon, { color: colors.text }]}>{status.playing ? '❚❚' : '▶'}</Text>
       </Pressable>
 
       <View style={styles.track}>
         <View style={[styles.trackFill, { backgroundColor: tint, width: `${progress * 100}%` }]} />
       </View>
 
-      <Text style={[styles.duration, { color: tint }]}>
+      <Text style={[styles.duration, { color: colors.textFaint }]}>
         {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
       </Text>
     </View>
@@ -107,10 +109,10 @@ export function ImageBubble({ media }: { media: Media }) {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   audioRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, minWidth: 180 },
   playIcon: { fontSize: 16 },
-  track: { backgroundColor: colors.primaryTextMuted, borderRadius: 2, flex: 1, height: 3 },
+  track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
-  duration: { ...font.caption, fontVariant: ['tabular-nums'] },
-  image: { backgroundColor: colors.surface, borderRadius: radius.md, width: 220 },
+  duration: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'] },
+  image: { backgroundColor: colors.fill, borderRadius: radius.md, width: 220 },
   /** Holds a plausible slot until `onLoad` reports the real shape. */
   imageUnmeasured: { height: 220 },
 }))

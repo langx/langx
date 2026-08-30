@@ -1,9 +1,8 @@
-import { Ionicons } from '@expo/vector-icons'
 import { getLanguage, type LanguageLevel } from '@langx/shared'
 import type { ReactNode } from 'react'
 import { Text, View } from 'react-native'
-import { LEVEL_ICON } from '../lib/languageLevel'
-import { makeStyles, useTheme } from '../lib/theme'
+import { LevelBars } from './ui/LevelBars'
+import { makeStyles } from '../lib/theme'
 import { levelLabel, useDisplayNames, useT } from '../i18n'
 
 interface LanguageCardsProps {
@@ -11,21 +10,18 @@ interface LanguageCardsProps {
   learning: { code: string; level: LanguageLevel; priority: number }[]
 }
 
-const ICON_SIZE = 20
-
 /**
- * The two language cards from a profile: what someone is learning, and what
+ * The two language groups from a profile: what someone is learning, and what
  * they grew up with. Both profile screens render this, so they stop wording
  * the same two lists differently — `me` called them "My languages" in one
  * block, `profile/[handle]` split them into "Speaks" and "Learning".
  *
- * The level is an icon and nothing else. Spelling it out is what produced
- * "Spanish · absoluteBeginner" on both screens; the enum was never meant to be
- * read, and the icon says the same thing without a label to get wrong.
+ * The level is the little ascending bars and nothing else. Spelling it out is
+ * what produced "Spanish · absoluteBeginner" on both screens; the enum was
+ * never meant to be read, and the bars say the same thing without a label to
+ * get wrong. Native languages draw the fifth bar — home turf.
  */
 export function LanguageCards({ native, learning }: LanguageCardsProps) {
-  const { colors } = useTheme()
-  const styles = useStyles()
   const t = useT()
 
   // `priority` is the order the user picked them in. The API has always sent
@@ -35,57 +31,50 @@ export function LanguageCards({ native, learning }: LanguageCardsProps) {
   return (
     <>
       {study.length > 0 ? (
-        <Card title={t('languageCards.studyTitle')} subtitle={t('languageCards.studySubtitle')}>
+        <Section
+          title={t('languageCards.studyTitle')}
+          subtitle={t('languageCards.studySubtitle')}
+          divided={native.length > 0}
+        >
           {study.map((language) => (
-            <LanguageRow
-              key={language.code}
-              code={language.code}
-              icon={
-                <Ionicons
-                  name={LEVEL_ICON[language.level]}
-                  size={ICON_SIZE}
-                  color={colors.accent}
-                  // The icon carries the level on its own now, so this is the
-                  // only thing left that can say it out loud.
-                  accessibilityLabel={levelLabel(t, language.level)}
-                />
-              }
-            />
+            <LanguageChip key={language.code} code={language.code} level={language.level} />
           ))}
-        </Card>
+        </Section>
       ) : null}
 
       {native.length > 0 ? (
-        <Card title={t('languageCards.nativeTitle')} subtitle={t('languageCards.nativeSubtitle')}>
+        <Section
+          title={t('languageCards.nativeTitle')}
+          subtitle={t('languageCards.nativeSubtitle')}
+        >
           {native.map((language) => (
-            <LanguageRow
-              key={language.code}
-              code={language.code}
-              icon={<Text style={styles.emoji}>🗣️</Text>}
-            />
+            <LanguageChip key={language.code} code={language.code} native />
           ))}
-        </Card>
+        </Section>
       ) : null}
     </>
   )
 }
 
-function Card({
+function Section({
   title,
   subtitle,
+  divided = false,
   children,
 }: {
   title: string
   subtitle: string
+  /** Sections draw their own hairline, and the last one must not. */
+  divided?: boolean
   children: ReactNode
 }) {
   const styles = useStyles()
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.section, divided && styles.dividedSection]}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.subtitle}>{subtitle}</Text>
-      <View style={styles.rows}>{children}</View>
+      <View style={styles.chips}>{children}</View>
     </View>
   )
 }
@@ -94,9 +83,18 @@ function Card({
  * `nativeName` is dropped when it repeats the name — "English English" reads
  * as a rendering bug rather than as extra information.
  */
-function LanguageRow({ code, icon }: { code: string; icon: ReactNode }) {
+function LanguageChip({
+  code,
+  level,
+  native = false,
+}: {
+  code: string
+  level?: LanguageLevel
+  native?: boolean
+}) {
   const styles = useStyles()
   const names = useDisplayNames()
+  const t = useT()
 
   const language = getLanguage(code)
   // Compared against the *localized* name, not the English one: to a French
@@ -106,29 +104,38 @@ function LanguageRow({ code, icon }: { code: string; icon: ReactNode }) {
   const nativeName = language && language.nativeName !== shown ? language.nativeName : null
 
   return (
-    <View style={styles.row}>
-      <View style={styles.iconSlot}>{icon}</View>
-      <Text style={styles.name}>{shown}</Text>
-      {nativeName ? <Text style={styles.nativeName}>{nativeName}</Text> : null}
+    // The bars hide themselves from the tree, so the chip says the level out
+    // loud — the one place it is still words.
+    <View
+      style={styles.chip}
+      accessibilityLabel={level ? `${shown}, ${levelLabel(t, level)}` : shown}
+    >
+      <Text style={styles.chipLabel}>{shown}</Text>
+      {nativeName ? <Text style={styles.chipNative}>{nativeName}</Text> : null}
+      {native ? (
+        <LevelBars level="fluent" native size={17} />
+      ) : level ? (
+        <LevelBars level={level} />
+      ) : null}
     </View>
   )
 }
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
-  card: {
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    marginTop: spacing.md,
-    padding: spacing.md,
+  section: { paddingVertical: 18 },
+  dividedSection: { borderBottomColor: colors.border, borderBottomWidth: 1 },
+  title: { ...font.heading, color: colors.text, fontSize: 16 },
+  subtitle: { color: colors.textMuted, fontSize: 13, marginTop: 2 },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: spacing.md },
+  chip: {
+    alignItems: 'center',
+    backgroundColor: colors.accentBg,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
   },
-  title: { ...font.heading, color: colors.text },
-  subtitle: { ...font.caption, color: colors.textMuted, marginTop: 2 },
-  rows: { marginTop: spacing.md },
-  row: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, paddingVertical: spacing.sm },
-  /** Fixed, so the names line up whether the row shows an icon or an emoji. */
-  iconSlot: { alignItems: 'center', width: ICON_SIZE },
-  emoji: { fontSize: 16 },
-  name: { ...font.body, color: colors.text, flex: 1 },
-  nativeName: { ...font.caption, color: colors.textMuted },
+  chipLabel: { color: colors.accent, fontSize: 13, fontWeight: '600' },
+  chipNative: { color: colors.textMuted, fontSize: 12 },
 }))

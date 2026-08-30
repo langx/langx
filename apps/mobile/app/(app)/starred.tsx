@@ -1,6 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useStarred, type MessageDto } from '../../src/api/queries'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { Screen } from '../../src/components/ui/Screen'
@@ -66,7 +66,7 @@ function Row({
       onPress={() =>
         router.push(`/(app)/chat/${message.conversationId}?at=${encodeURIComponent(message._id)}`)
       }
-      style={styles.row}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
     >
       <View style={styles.rowText}>
         <Text style={styles.body} numberOfLines={2}>
@@ -79,24 +79,23 @@ function Row({
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   backRow: { paddingBottom: spacing.sm, paddingTop: spacing.sm },
-  back: { ...font.body, color: colors.textMuted },
-  title: { ...font.title, color: colors.text, paddingBottom: spacing.md },
+  back: { ...font.body, color: colors.accent, fontWeight: '600' },
+  title: { ...font.title, color: colors.text, paddingBottom: spacing.sm },
   loading: { paddingVertical: spacing.xl },
-  list: { gap: spacing.sm, paddingBottom: spacing.xl },
+  list: { paddingBottom: spacing.xl },
+  // v3 list language: flat rows on the ground, hairline dividers, no boxes.
   row: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
+    borderBottomColor: colors.border,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.lg,
   },
+  rowPressed: { opacity: 0.65 },
   rowText: { flex: 1, gap: 3, minWidth: 0 },
   body: { ...font.body, color: colors.text },
-  when: { ...font.caption, color: colors.textMuted },
+  when: { ...font.caption, color: colors.textFaint },
 }))

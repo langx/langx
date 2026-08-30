@@ -144,6 +144,7 @@ export default function SignIn() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <Text style={styles.title}>{t('auth.welcomeBack')}</Text>
+      <Text style={styles.subtitle}>{t('auth.welcomeBackSubtitle')}</Text>
 
       <FormField
         returnKeyType="go"
@@ -207,20 +208,43 @@ export default function SignIn() {
   )
 }
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors, font, spacing }) => ({
   container: {
     backgroundColor: colors.bg,
     flex: 1,
-    gap: 16,
+    gap: spacing.lg,
     justifyContent: 'center',
-    padding: 24,
+    padding: spacing.xl,
   },
-  title: { color: colors.text, fontSize: 28, fontWeight: '700', marginBottom: 8 },
-  link: { color: colors.accent, fontWeight: '600', textDecorationLine: 'underline' },
-  divider: { alignItems: 'center', flexDirection: 'row', gap: 12, marginVertical: 4 },
+  title: {
+    ...font.title,
+    color: colors.text,
+    fontSize: 28,
+    lineHeight: 36,
+  },
+  subtitle: {
+    ...font.body,
+    color: colors.textMuted,
+    fontSize: 15,
+    lineHeight: 23,
+    marginBottom: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  divider: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.md,
+    marginVertical: spacing.xs,
+  },
   dividerLine: { backgroundColor: colors.border, flex: 1, height: StyleSheet.hairlineWidth },
-  dividerText: { color: colors.textMuted, opacity: 0.5 },
-  socialError: { color: colors.danger },
-  footerText: { color: colors.textMuted },
-  footer: { alignItems: 'center', flexDirection: 'row', justifyContent: 'center', marginTop: 8 },
+  dividerText: { ...font.label, color: colors.textFaint, fontWeight: '400' },
+  socialError: { ...font.body, color: colors.danger },
+  footerText: { color: colors.textMuted, fontSize: 15 },
+  footer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: spacing.md,
+  },
 }))

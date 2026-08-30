@@ -10,11 +10,15 @@ import { Chip } from './ui/Chip'
  * Pro+ subscribers while the other kept it. Which label and which colour a
  * tier gets is one decision, so it is made once.
  *
+ * Unselected on purpose: v3 draws tags as quiet outlines on the shared chip
+ * geometry, and the brand colour survives in the label — a filled purple pill
+ * next to a row of outlined chips read as a button, not a status.
+ *
  * Renders nothing on `free`: an absent badge is the free state, and a chip
  * reading "FREE" is an insult, not information.
  */
 export function TierBadge({ tier }: { tier: PlanTier }) {
   if (tier === 'free') return null
   const isPlus = tier === 'pro_plus'
-  return <Chip label={isPlus ? 'PRO+' : 'PRO'} tone={isPlus ? 'proPlus' : 'pro'} selected />
+  return <Chip label={isPlus ? 'PRO+' : 'PRO'} tone={isPlus ? 'proPlus' : 'pro'} />
 }

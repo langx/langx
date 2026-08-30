@@ -108,14 +108,14 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   label: { ...font.label, color: colors.text, marginBottom: spacing.sm },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
   hint: { ...font.caption, color: colors.textMuted, marginTop: spacing.xs },
+  // v3 fields are filled pills, not outlined boxes — same as FormField.
   search: {
     ...font.body,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    borderWidth: 1,
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
     color: colors.text,
     marginBottom: spacing.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
 }))

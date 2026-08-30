@@ -65,6 +65,12 @@ export function MessageMenuHost() {
 
   const { actions, hasMore } = paginateActions(request.actions, page)
 
+  // The rows on *this* page, plus whichever navigation row it carries. The
+  // anchored layout derives its height from this, and the hairline dividers
+  // need to know which row is last — the last one goes undivided, v3's rule.
+  const rowCount = actions.length + (hasMore ? 1 : 0) + (page === 'more' ? 1 : 0)
+  const rowOffset = page === 'more' ? 1 : 0
+
   const rows = (
     <>
       {page === 'more' ? (
@@ -72,14 +78,18 @@ export function MessageMenuHost() {
           accessibilityRole="button"
           accessibilityLabel={t('messageMenu.backToFirstPage')}
           onPress={() => setPage('primary')}
-          style={({ pressed }) => [styles.action, pressed && styles.actionPressed]}
+          style={({ pressed }) => [
+            styles.action,
+            rowCount > 1 && styles.rowDivider,
+            pressed && styles.actionPressed,
+          ]}
         >
           <Ionicons name="chevron-back" size={20} color={colors.textMuted} />
           <Text style={[styles.label, styles.muted]}>{t('common.backPlain')}</Text>
         </Pressable>
       ) : null}
 
-      {actions.map((action) => (
+      {actions.map((action, index) => (
         <Pressable
           key={action.id}
           accessibilityRole="button"
@@ -87,6 +97,7 @@ export function MessageMenuHost() {
           onPress={() => resolveMessageMenu(request.id, { kind: 'action', id: action.id })}
           style={({ pressed }) => [
             styles.action,
+            rowOffset + index < rowCount - 1 && styles.rowDivider,
             pressed && !action.disabled && styles.actionPressed,
             action.disabled === true && styles.actionDisabled,
           ]}
@@ -144,9 +155,6 @@ export function MessageMenuHost() {
      * frame drawn in the wrong place and a visible jump on exactly the gesture
      * that has to feel immediate, so the flip is decided before first paint.
      */
-    // The rows on *this* page, plus whichever navigation row it carries — a
-    // height derived from the full action list would flip the wrong way.
-    const rowCount = actions.length + (hasMore ? 1 : 0) + (page === 'more' ? 1 : 0)
     const menuHeight = rowCount * ROW_HEIGHT + MENU_CHROME
     const stripWidth = Math.min(STRIP_MAX_WIDTH, screen.width - 24)
     const layout = messageMenuLayout({
@@ -249,8 +257,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
   },
-  actionPressed: { backgroundColor: colors.surface },
+  actionPressed: { backgroundColor: colors.fill },
   actionDisabled: { opacity: 0.45 },
+  /** Between rows only — the last row of a page goes undivided. */
+  rowDivider: { borderBottomColor: colors.border, borderBottomWidth: StyleSheet.hairlineWidth },
   muted: { color: colors.textMuted },
   backdrop: { backgroundColor: colors.scrim, flex: 1 },
   backdropBottom: { justifyContent: 'flex-end' },
@@ -268,6 +278,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     paddingHorizontal: spacing.md,
   },
   sheet: {
+    ...cardShadow,
     backgroundColor: colors.bg,
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,
@@ -295,18 +306,19 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
     justifyContent: 'center',
     width: 42,
   },
-  emojiChosen: { backgroundColor: colors.surface },
+  emojiChosen: { backgroundColor: colors.fill },
   emojiGlyph: { fontSize: 24, lineHeight: 30 },
   copy: {
-    borderRadius: radius.lg,
-    paddingHorizontal: 14,
-    paddingVertical: spacing.md,
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
     position: 'absolute',
   },
-  copyMine: { backgroundColor: colors.primary },
-  copyTheirs: { backgroundColor: colors.surface, borderColor: colors.border, borderWidth: 1 },
+  // The lifted copy matches the v3 bubbles it stands in for.
+  copyMine: { backgroundColor: colors.accentBg },
+  copyTheirs: { backgroundColor: colors.fill },
   copyText: { ...font.body, color: colors.text, lineHeight: 22 },
-  copyTextMine: { color: colors.primaryText },
+  copyTextMine: { color: colors.text },
   menu: {
     ...cardShadow,
     backgroundColor: colors.bg,

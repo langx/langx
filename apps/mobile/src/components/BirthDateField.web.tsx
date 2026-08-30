@@ -79,13 +79,14 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   container: { gap: 6, width: '100%' },
   label: { ...font.label, color: colors.textMuted },
   row: { flexDirection: 'row', gap: spacing.sm },
+  // Filled like FormField's inputs; the border only exists to say "error".
   input: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    backgroundColor: colors.fill,
+    borderColor: colors.fill,
     borderRadius: radius.pill,
-    borderWidth: 1,
+    borderWidth: 1.5,
     color: colors.text,
-    fontSize: 16,
+    fontSize: 15,
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     textAlign: 'center',
