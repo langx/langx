@@ -671,6 +671,7 @@ export const ar: Localized<EnMessages> = {
   },
 
   me: {
+    languages: 'اللغات',
     dayStreak: 'سلسلة الأيام',
     viewersTitle: 'من زار ملفك',
     viewersLocked: {
@@ -986,13 +987,6 @@ export const ar: Localized<EnMessages> = {
     monthly: 'شهري',
     yearly: 'سنوي',
     lifetime: 'دفعة واحدة',
-  },
-
-  languageCards: {
-    studyTitle: 'لغة (لغات) الدراسة',
-    studySubtitle: 'اللغة أو اللغات التي تمارسها وتتعلّمها',
-    nativeTitle: 'اللغة (اللغات) الأم',
-    nativeSubtitle: 'اللغة أو اللغات التي تتكلمها في البيت',
   },
 
   pickers: {

@@ -571,6 +571,7 @@ export const de: Localized<EnMessages> = {
   },
 
   me: {
+    languages: 'Sprachen',
     dayStreak: 'Tagesserie',
     viewersTitle: 'Wer dein Profil angesehen hat',
     viewersLocked: {
@@ -844,13 +845,6 @@ export const de: Localized<EnMessages> = {
     monthly: 'Monatlich',
     yearly: 'Jährlich',
     lifetime: 'Einmalig',
-  },
-
-  languageCards: {
-    studyTitle: 'Lernsprache(n)',
-    studySubtitle: 'Die Sprache(n), die du übst und lernst',
-    nativeTitle: 'Muttersprache(n)',
-    nativeSubtitle: 'Die Sprache(n), die du zu Hause sprichst',
   },
 
   pickers: {

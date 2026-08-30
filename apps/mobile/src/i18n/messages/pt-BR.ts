@@ -563,6 +563,7 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   me: {
+    languages: 'Idiomas',
     dayStreak: 'Sequência de dias',
     viewersTitle: 'Quem viu seu perfil',
     viewersLocked: {
@@ -834,13 +835,6 @@ export const ptBR: Localized<EnMessages> = {
     monthly: 'Mensal',
     yearly: 'Anual',
     lifetime: 'Pagamento único',
-  },
-
-  languageCards: {
-    studyTitle: 'Idioma(s) que você estuda',
-    studySubtitle: 'O(s) idioma(s) que você pratica e aprende',
-    nativeTitle: 'Língua(s) materna(s)',
-    nativeSubtitle: 'O(s) idioma(s) que você fala em casa',
   },
 
   pickers: {

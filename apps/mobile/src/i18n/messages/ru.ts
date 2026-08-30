@@ -648,6 +648,7 @@ export const ru: Localized<EnMessages> = {
   },
 
   me: {
+    languages: 'Языки',
     dayStreak: 'Серия дней',
     viewersTitle: 'Кто смотрел твой профиль',
     viewersLocked: {
@@ -949,13 +950,6 @@ export const ru: Localized<EnMessages> = {
     monthly: 'Ежемесячно',
     yearly: 'Ежегодно',
     lifetime: 'Разовый платёж',
-  },
-
-  languageCards: {
-    studyTitle: 'Изучаемый язык (языки)',
-    studySubtitle: 'Язык или языки, которые ты практикуешь и учишь',
-    nativeTitle: 'Родной язык (языки)',
-    nativeSubtitle: 'Язык или языки, на которых ты говоришь дома',
   },
 
   pickers: {

@@ -13,11 +13,11 @@ import {
   useTokens,
 } from '../../src/api/queries'
 import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
-import { LanguageCards } from '../../src/components/LanguageCards'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
 import { WeeklyChart } from '../../src/components/WeeklyChart'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { Button } from '../../src/components/ui/Button'
+import { LevelBars } from '../../src/components/ui/LevelBars'
 import { ListRow } from '../../src/components/ui/ListRow'
 import { Screen } from '../../src/components/ui/Screen'
 import { StatTile } from '../../src/components/ui/StatTile'
@@ -148,6 +148,28 @@ export default function MeScreen() {
         subtitle={t('me.leaderboardSubtitle')}
         onPress={() => router.push('/(app)/leaderboard')}
       />
+      {/*
+        One row, not the two titled sections this used to be: v3 states the
+        pair the way Discover states everyone else's — "what you teach → what
+        you practise", with the bars carrying the level. It sits with the other
+        rows rather than under the photos, because a language pair is a fact
+        about the profile, not a section of it. Editing happens where every
+        other profile field is edited.
+      */}
+      <ListRow
+        title={t('me.languages')}
+        onPress={() => router.push('/(app)/edit-profile')}
+        accessory={
+          <View style={styles.pair}>
+            <Text style={styles.pairText} numberOfLines={1}>
+              {profile.nativeLanguages.map((l) => names.language(l.code)).join(', ')} →{' '}
+              {profile.learning.map((l) => names.language(l.code)).join(', ')}
+            </Text>
+            {/* The first learning language's level — the one a match is made on. */}
+            {profile.learning[0] ? <LevelBars level={profile.learning[0].level} /> : null}
+          </View>
+        }
+      />
 
       {!isPro ? (
         <Pressable style={styles.proCard} onPress={() => openPaywall()}>
@@ -161,8 +183,6 @@ export default function MeScreen() {
       ) : null}
 
       <PhotoGallery photos={profile.photos ?? []} />
-
-      <LanguageCards native={profile.nativeLanguages} learning={profile.learning} />
 
       <DebugQuotaPanel />
 
@@ -187,6 +207,10 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   name: { ...font.heading, color: colors.text, fontSize: 24 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
   pressed: { opacity: 0.7 },
+  // `shrink` on the row's own text so a five-language pair truncates instead
+  // of pushing the bars and the chevron off the end of the row.
+  pair: { alignItems: 'center', flexDirection: 'row', flexShrink: 1, gap: 6 },
+  pairText: { color: colors.textFaint, flexShrink: 1, fontSize: 14 },
   tiles: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,

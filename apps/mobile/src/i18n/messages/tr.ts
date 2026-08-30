@@ -575,6 +575,7 @@ export const tr: Localized<EnMessages> = {
   },
 
   me: {
+    languages: 'Diller',
     dayStreak: 'Günlük seri',
     viewersTitle: 'Profiline kim baktı',
     viewersLocked: {
@@ -842,13 +843,6 @@ export const tr: Localized<EnMessages> = {
     monthly: 'Aylık',
     yearly: 'Yıllık',
     lifetime: 'Tek seferlik',
-  },
-
-  languageCards: {
-    studyTitle: 'Çalıştığın dil(ler)',
-    studySubtitle: 'Pratik yaptığın ve öğrendiğin dil(ler)',
-    nativeTitle: 'Ana dil(ler)in',
-    nativeSubtitle: 'Evde konuştuğun dil(ler)',
   },
 
   pickers: {

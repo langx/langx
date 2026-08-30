@@ -568,6 +568,7 @@ export const es: Localized<EnMessages> = {
   },
 
   me: {
+    languages: 'Idiomas',
     dayStreak: 'Racha diaria',
     viewersTitle: 'Quién ha visto tu perfil',
     viewersLocked: {
@@ -837,13 +838,6 @@ export const es: Localized<EnMessages> = {
     monthly: 'Mensual',
     yearly: 'Anual',
     lifetime: 'Pago único',
-  },
-
-  languageCards: {
-    studyTitle: 'Idioma(s) que estudias',
-    studySubtitle: 'El idioma o idiomas que practicas y aprendes',
-    nativeTitle: 'Lengua(s) materna(s)',
-    nativeSubtitle: 'El idioma o idiomas que hablas en casa',
   },
 
   pickers: {

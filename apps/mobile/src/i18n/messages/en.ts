@@ -604,6 +604,7 @@ export const en = {
   },
 
   me: {
+    languages: 'Languages',
     dayStreak: 'Day streak',
     viewersTitle: 'Who viewed your profile',
     viewersLocked: {
@@ -876,13 +877,6 @@ export const en = {
     monthly: 'Monthly',
     yearly: 'Yearly',
     lifetime: 'One-off',
-  },
-
-  languageCards: {
-    studyTitle: 'Study Language(s)',
-    studySubtitle: 'The language(s) that you Practice & Learn',
-    nativeTitle: 'Mother Tongue(s)',
-    nativeSubtitle: 'The language(s) you speak at home',
   },
 
   pickers: {
