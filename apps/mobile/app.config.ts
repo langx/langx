@@ -106,8 +106,33 @@ const config: ExpoConfig = {
    */
   runtimeVersion: { policy: 'sdkVersion' },
 
+  /**
+   * The brand mark, from `branding/app-resources`. There was no `icon` at all
+   * before this, which is to say every build shipped Expo's default.
+   */
+  icon: './assets/icons/default.png',
+
   plugins: [
     'expo-router',
+    /**
+     * A second home-screen icon, for Pro. Native only and **native only in the
+     * strong sense**: switching icons is an OS call, it cannot travel in an
+     * over-the-air update, and neither the web build nor Expo Go has anywhere
+     * to put it. The settings row hides itself where `isSupported` is false.
+     */
+    [
+      'expo-alternate-app-icons',
+      [
+        {
+          name: 'dark',
+          ios: './assets/icons/dark.png',
+          android: {
+            foregroundImage: './assets/icons/dark.png',
+            backgroundColor: '#141519',
+          },
+        },
+      ],
+    ],
     // The birth-date picker's native module. Config-plugin only — there is
     // nothing to configure, but without the entry the module is not linked
     // into a build.

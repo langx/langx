@@ -642,6 +642,13 @@ export const ptBR: Localized<EnMessages> = {
     codeOfConduct: 'Código de conduta',
   },
   settings: {
+    appIconSection: 'Ícone do app',
+    appIcon: 'Ícone na tela inicial',
+    appIconBody: 'Escolha qual fica na sua tela inicial.',
+    appIcon_default: 'Clássico',
+    appIcon_dark: 'Escuro',
+    appIconChanged: 'Ícone alterado.',
+    appIconFailed: 'Não foi possível alterar o ícone',
     showStats: 'Mostrar meus números',
     showStatsBody: 'Sequência, correções, tokens e o gráfico da semana no seu perfil.',
     push: 'Push',

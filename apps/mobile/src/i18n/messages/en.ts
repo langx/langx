@@ -683,6 +683,13 @@ export const en = {
     codeOfConduct: 'Code of conduct',
   },
   settings: {
+    appIconSection: 'App icon',
+    appIcon: 'Home screen icon',
+    appIconBody: 'Pick which one sits on your home screen.',
+    appIcon_default: 'Classic',
+    appIcon_dark: 'Dark',
+    appIconChanged: 'Icon changed.',
+    appIconFailed: 'Could not change the icon',
     showStats: 'Show my numbers',
     showStatsBody: 'Streak, corrections, tokens and this week’s chart on your profile.',
     push: 'Push',

@@ -654,6 +654,13 @@ export const tr: Localized<EnMessages> = {
     codeOfConduct: 'Davranış kuralları',
   },
   settings: {
+    appIconSection: 'Uygulama ikonu',
+    appIcon: 'Ana ekran ikonu',
+    appIconBody: 'Ana ekranında hangisi dursun.',
+    appIcon_default: 'Klasik',
+    appIcon_dark: 'Koyu',
+    appIconChanged: 'İkon değişti.',
+    appIconFailed: 'İkon değiştirilemedi',
     showStats: 'Sayılarımı göster',
     showStatsBody: 'Profilinde streak, düzeltme, token ve bu haftanın grafiği.',
     push: 'Push',

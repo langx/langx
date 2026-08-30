@@ -646,6 +646,13 @@ export const es: Localized<EnMessages> = {
     codeOfConduct: 'Código de conducta',
   },
   settings: {
+    appIconSection: 'Icono de la app',
+    appIcon: 'Icono en la pantalla de inicio',
+    appIconBody: 'Elige cuál aparece en tu pantalla de inicio.',
+    appIcon_default: 'Clásico',
+    appIcon_dark: 'Oscuro',
+    appIconChanged: 'Icono cambiado.',
+    appIconFailed: 'No se pudo cambiar el icono',
     showStats: 'Mostrar mis números',
     showStatsBody: 'Racha, correcciones, tokens y el gráfico de la semana en tu perfil.',
     push: 'Push',

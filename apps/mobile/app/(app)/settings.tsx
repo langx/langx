@@ -2,7 +2,7 @@ import Feather from '@expo/vector-icons/Feather'
 import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { Linking, Platform, Text, View } from 'react-native'
+import { Image, Linking, Platform, Pressable, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import {
   useIsPro,
@@ -25,6 +25,16 @@ import { showToast } from '../../src/lib/toast'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
+import darkIcon from '../../assets/icons/dark.png'
+import defaultIcon from '../../assets/icons/default.png'
+import { openPaywall } from '../../src/lib/paywall'
+import {
+  APP_ICONS,
+  currentAppIcon,
+  isSupported,
+  setAppIcon,
+  type AppIcon,
+} from '../../src/lib/appIcon'
 import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { openExternal } from '../../src/lib/openExternal'
@@ -71,6 +81,10 @@ export default function SettingsScreen() {
   const me = useMe()
   const update = useUpdateProfile()
   const [busy, setBusy] = useState(false)
+  const iconSupported = isSupported()
+  const [appIcon, setAppIcon_] = useState<AppIcon>(() =>
+    iconSupported ? currentAppIcon() : 'default',
+  )
 
   const profile = me.data
   const isPro = useIsPro()
@@ -85,6 +99,27 @@ export default function SettingsScreen() {
    */
   const sharingLocation = profile?.location !== undefined
   const locationBusy = shareLocation.isPending || stopSharingLocation.isPending
+
+  /**
+   * Pro only, and gated here rather than on the server: the icon never leaves
+   * the device, so there is no request for the server to refuse. That makes
+   * this a lock somebody could pick by editing the app — which is the same
+   * bargain as every other purely local cosmetic, and not worth a round trip.
+   */
+  async function chooseIcon(next: AppIcon): Promise<void> {
+    if (!isPro) {
+      openPaywall()
+      return
+    }
+    if (next === appIcon) return
+    const changed = await setAppIcon(next)
+    if (!changed) {
+      void showAlert(t('settings.appIconFailed'), t('common.retry'))
+      return
+    }
+    setAppIcon_(next)
+    showToast(t('settings.appIconChanged'))
+  }
 
   async function toggleLocation(next: boolean): Promise<void> {
     if (!next) {
@@ -375,6 +410,41 @@ export default function SettingsScreen() {
         who makes it, and how to reach them. Every row here leaves the app, so
         every row goes through the in-app browser.
       */}
+      {/*
+        Only where there is a home screen to put it on: the web build and Expo
+        Go have neither the module nor anywhere for the icon to go, and a row
+        that cannot work is worse than one that is not there.
+      */}
+      {iconSupported ? (
+        <>
+          <Text style={styles.section}>{t('settings.appIconSection')}</Text>
+          <Card inset>
+            <ListRow
+              title={t('settings.appIcon')}
+              subtitle={isPro ? t('settings.appIconBody') : t('common.pro')}
+              subtitleColor={isPro ? undefined : colors.pro}
+              last
+              accessory={
+                <View style={styles.icons}>
+                  {APP_ICONS.map((name) => (
+                    <Pressable
+                      key={name}
+                      accessibilityRole="button"
+                      accessibilityLabel={t(`settings.appIcon_${name}` as MessageKey)}
+                      accessibilityState={{ selected: appIcon === name }}
+                      onPress={() => void chooseIcon(name)}
+                      style={[styles.iconTile, appIcon === name && styles.iconTileChosen]}
+                    >
+                      <Image source={ICON_PREVIEWS[name]} style={styles.iconImage} />
+                    </Pressable>
+                  ))}
+                </View>
+              }
+            />
+          </Card>
+        </>
+      ) : null}
+
       <Text style={styles.section}>{t('settings.legalSection')}</Text>
       <Card inset>
         {LEGAL_LINKS.map((link, index) => (
@@ -434,8 +504,23 @@ export default function SettingsScreen() {
   )
 }
 
-const useStyles = makeStyles(({ colors, font, spacing }) => ({
-  /** The two column headings the toggles below line up under. */
+/**
+ * Imported statically, because Metro resolves an image at build time: a path
+ * assembled at runtime resolves to nothing.
+ */
+const ICON_PREVIEWS = { default: defaultIcon, dark: darkIcon }
+
+const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
+  icons: { flexDirection: 'row', gap: spacing.sm },
+  iconTile: {
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 2,
+    overflow: 'hidden',
+  },
+  iconTileChosen: { borderColor: colors.accent },
+  iconImage: { height: 44, width: 44 },
+  /** The two column headings the notification toggles line up under. */
   channelHead: {
     alignSelf: 'flex-end',
     flexDirection: 'row',
