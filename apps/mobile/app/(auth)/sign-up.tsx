@@ -9,7 +9,6 @@ import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
 import {
-  PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   passwordIssueKey,
   passwordPairReady,
@@ -93,10 +92,7 @@ export default function SignUp() {
         secureTextEntry
         textContentType="newPassword"
         autoComplete="password-new"
-        placeholder={t('auth.passwordRule', {
-          min: PASSWORD_MIN_LENGTH,
-          max: PASSWORD_MAX_LENGTH,
-        })}
+        placeholder={t('auth.passwordRule', { min: PASSWORD_MIN_LENGTH })}
       />
       <FormField
         returnKeyType="go"
@@ -107,7 +103,7 @@ export default function SignUp() {
         secureTextEntry
         textContentType="newPassword"
         autoComplete="password-new"
-        error={issue ? t(issue, { min: PASSWORD_MIN_LENGTH, max: PASSWORD_MAX_LENGTH }) : error}
+        error={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
       />
 
       <Button label={t('auth.signUp')} onPress={onSubmit} loading={loading} disabled={!canSubmit} />

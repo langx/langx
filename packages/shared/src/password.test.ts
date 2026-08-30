@@ -1,20 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import {
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
-  passwordProblem,
-  passwordSchema,
-} from './password'
+import { PASSWORD_MIN_LENGTH, passwordSchema, passwordTooShort } from './password'
 
 describe('passwordSchema', () => {
-  it('accepts the shortest and longest allowed', () => {
+  it('accepts the shortest allowed and refuses one character less', () => {
     expect(passwordSchema.safeParse('a'.repeat(PASSWORD_MIN_LENGTH)).success).toBe(true)
-    expect(passwordSchema.safeParse('a'.repeat(PASSWORD_MAX_LENGTH)).success).toBe(true)
+    expect(passwordSchema.safeParse('a'.repeat(PASSWORD_MIN_LENGTH - 1)).success).toBe(false)
   })
 
-  it('refuses one character either side of them', () => {
-    expect(passwordSchema.safeParse('a'.repeat(PASSWORD_MIN_LENGTH - 1)).success).toBe(false)
-    expect(passwordSchema.safeParse('a'.repeat(PASSWORD_MAX_LENGTH + 1)).success).toBe(false)
+  /**
+   * The rule is a floor, not a range. A ceiling is the one number that can
+   * reject what a password manager just generated.
+   */
+  it('has no upper bound of its own', () => {
+    expect(passwordSchema.safeParse('correct horse battery staple').success).toBe(true)
+    expect(passwordSchema.safeParse('a'.repeat(200)).success).toBe(true)
   })
 
   /**
@@ -32,23 +31,11 @@ describe('passwordSchema', () => {
   })
 })
 
-describe('passwordProblem', () => {
-  it('names the rule a form should point at', () => {
-    expect(passwordProblem('short')).toBe('tooShort')
-    expect(passwordProblem('a'.repeat(PASSWORD_MAX_LENGTH + 1))).toBe('tooLong')
-    expect(passwordProblem('hunter2')).toBeNull()
-  })
-
-  it('agrees with the schema at every boundary', () => {
-    for (const length of [
-      0,
-      PASSWORD_MIN_LENGTH - 1,
-      PASSWORD_MIN_LENGTH,
-      PASSWORD_MAX_LENGTH,
-      PASSWORD_MAX_LENGTH + 1,
-    ]) {
+describe('passwordTooShort', () => {
+  it('agrees with the schema at the boundary', () => {
+    for (const length of [0, PASSWORD_MIN_LENGTH - 1, PASSWORD_MIN_LENGTH, 64]) {
       const password = 'a'.repeat(length)
-      expect(passwordProblem(password) === null).toBe(passwordSchema.safeParse(password).success)
+      expect(!passwordTooShort(password)).toBe(passwordSchema.safeParse(password).success)
     }
   })
 })

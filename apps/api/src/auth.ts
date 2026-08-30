@@ -1,4 +1,4 @@
-import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '@langx/shared'
+import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH } from '@langx/shared'
 import { betterAuth } from 'better-auth'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
@@ -85,12 +85,13 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
       enabled: true,
       requireEmailVerification: true,
       autoSignIn: false,
-      // The same two numbers the sign-up form checks against, from the same
-      // constant. Better Auth's own defaults are 8 and 128; leaving them would
-      // mean a form that accepts a six-character password and a server that
-      // answers with an error the field cannot explain.
+      // The same number the sign-up form checks against, from the same
+      // constant. Better Auth's own default is 8; leaving it would mean a form
+      // that accepts a six-character password and a server that answers with
+      // an error the field cannot explain. Its 128-character ceiling is left
+      // alone: that is a guard against a megabyte reaching the hash, not a
+      // rule anybody is meant to read.
       minPasswordLength: PASSWORD_MIN_LENGTH,
-      maxPasswordLength: PASSWORD_MAX_LENGTH,
       sendResetPassword: async ({ user, url }, request) => {
         // The language the *request* was made in. There is no stored
         // preference to read: a password reset is asked for from a signed-out
