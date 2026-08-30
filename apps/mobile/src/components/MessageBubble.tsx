@@ -1,15 +1,6 @@
 import Feather from '@expo/vector-icons/Feather'
 import { memo, useMemo, useRef, type ReactNode } from 'react'
-import {
-  Animated,
-  PanResponder,
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  type ViewStyle,
-} from 'react-native'
+import { Animated, PanResponder, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import type { MessageDto } from '../api/queries'
 import { diffCorrection } from '../lib/correctionDiff'
 import type { AnchorRect } from '../lib/messageMenu'
@@ -330,12 +321,13 @@ export const MessageBubble = memo(function MessageBubble({
 const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => ({
   row: { justifyContent: 'center' },
   /**
-   * `touch-action` is a web-only style and react-native's types do not know
-   * it, hence the cast. Without it a horizontal drag is claimed by the browser
-   * for its own scrolling — and on iOS Safari by the back gesture — before the
-   * responder system ever sees the move.
+   * `touch-action` is a web-only style — react-native-web reads it, the native
+   * platforms ignore it, and `makeStyles` infers the shape rather than pinning
+   * it to `ViewStyle`, so no cast is needed. Without it the browser claims a
+   * horizontal drag for its own scrolling (and, on iOS Safari, for the back
+   * gesture) before the responder system ever sees the move.
    */
-  slider: (Platform.OS === 'web' ? { touchAction: 'pan-y' } : {}) as ViewStyle,
+  slider: Platform.OS === 'web' ? { touchAction: 'pan-y' } : {},
   /** Under the bubble, on the side it is dragged away from. */
   arrow: {
     alignItems: 'center',

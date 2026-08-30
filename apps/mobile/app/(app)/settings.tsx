@@ -25,7 +25,9 @@ import { showToast } from '../../src/lib/toast'
 import { API_URL } from '../../src/lib/apiUrl'
 import { authClient } from '../../src/lib/auth-client'
 import { authLandingHref } from '../../src/lib/authLanding'
+import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
+import { openExternal } from '../../src/lib/openExternal'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { useLocalePreference, useT, type LocalePreference, type MessageKey } from '../../src/i18n'
 import { LOCALE_NAMES, SUPPORTED_LOCALES } from '@langx/shared'
@@ -301,6 +303,34 @@ export default function SettingsScreen() {
           onToggle={setPreference}
         />
       </View>
+
+      {/*
+        Two sections the stores and the law both expect to be reachable from
+        inside the app, and one the project has always had: where it is made,
+        who makes it, and how to reach them. Every row here leaves the app, so
+        every row goes through the in-app browser.
+      */}
+      <Text style={styles.section}>{t('settings.legalSection')}</Text>
+      <Card inset>
+        {LEGAL_LINKS.map((link, index) => (
+          <ListRow
+            key={link.url}
+            title={t(link.labelKey as never)}
+            onPress={() => void openExternal(link.url)}
+            last={index === LEGAL_LINKS.length - 1}
+          />
+        ))}
+      </Card>
+
+      <Text style={styles.section}>{t('settings.communitySection')}</Text>
+      <Card inset>
+        <ListRow
+          title={t('kitchen.title')}
+          subtitle={t('kitchen.intro')}
+          last
+          onPress={() => router.push('/(app)/kitchen')}
+        />
+      </Card>
 
       <Text style={styles.section}>{t('settings.accountSection')}</Text>
       <Card inset>

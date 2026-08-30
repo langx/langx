@@ -19,7 +19,7 @@ const FULL_SCREEN = { href: null, tabBarStyle: { display: 'none' } } as const
  * native module for a set of icons we already have is not a trade worth making.
  */
 function TabIcon({ name, color }: { name: keyof typeof Feather.glyphMap; color: ColorValue }) {
-  return <Feather name={name} size={22} color={color} />
+  return <Feather name={name} size={24} color={color} />
 }
 
 /**
@@ -51,7 +51,15 @@ export default function AppLayout() {
           headerShown: false,
           tabBarActiveTintColor: colors.accent,
           tabBarInactiveTintColor: colors.textMuted,
-          tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+          /*
+            Icons only. Four glyphs everyone already knows carry the bar on
+            their own, and dropping the words gives the icon the whole height
+            of it — which is why they grew from 22 to 24 in the same change.
+            `title` stays: it is what a screen reader announces and what the
+            web build puts in the tab, neither of which is the label under the
+            icon.
+          */
+          tabBarShowLabel: false,
           tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
         }}
       >
@@ -118,6 +126,7 @@ export default function AppLayout() {
         <Tabs.Screen name="filters" options={FULL_SCREEN} />
         <Tabs.Screen name="intro" options={FULL_SCREEN} />
         <Tabs.Screen name="store" options={FULL_SCREEN} />
+        <Tabs.Screen name="kitchen" options={FULL_SCREEN} />
       </Tabs>
     </SafeAreaView>
   )
