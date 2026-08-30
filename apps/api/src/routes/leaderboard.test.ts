@@ -175,6 +175,37 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
   })
 
   describe('daily pool', () => {
+    it('reports a live pool snapshot in the token summary', async () => {
+      const user = await newUser()
+      const today = utcDayKey(new Date())
+
+      const readPool = () =>
+        app
+          .inject({ method: 'GET', url: '/me/tokens', headers: { cookie: user.cookie } })
+          .then((r) => r.json<TokenSummary>())
+          .then((s) => s.pool)
+
+      // Deltas rather than absolutes: earlier tests in this file legitimately
+      // leave today's activity behind, and the snapshot reports all of it.
+      const before = await readPool()
+      await seedActivity('pool-live-a', { messages: 10 }, today)
+      await seedActivity('pool-live-b', { messages: 5, corrections: 2 }, today)
+      const after = await readPool()
+
+      const strangers =
+        activityScore({
+          messages: 10,
+          corrections: 0,
+          mutualConversations: 0,
+          distinctPartners: 0,
+        }) +
+        activityScore({ messages: 5, corrections: 2, mutualConversations: 0, distinctPartners: 0 })
+      expect(after.activeToday - before.activeToday).toBe(2)
+      expect(after.totalScore - before.totalScore).toBe(strangers)
+      // The share the client would draw from this is the shared arithmetic.
+      expect(poolShare(0, after.totalScore)).toBe(0)
+    })
+
     it('splits the pool in proportion to activity, and pays nothing twice on a re-run', async () => {
       const day = shiftDayKey(YESTERDAY, -1)
       // 40 participants keeps every share under `maxShareOfPool`, so this

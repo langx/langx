@@ -300,6 +300,18 @@ export const tokenSummarySchema = z.object({
     activityScore: z.number(),
   }),
   /**
+   * Where today's pool stands *right now*, so the client can draw a live
+   * provisional share with `poolShare()`. Both numbers move all day —
+   * "your share moves with everyone else's" is the product promise, and it
+   * needs the denominator to be true.
+   */
+  pool: z.object({
+    /** Users with a positive activity score so far today. */
+    activeToday: z.number().int(),
+    /** Sum of everyone's provisional activity scores, the viewer's included. */
+    totalScore: z.number(),
+  }),
+  /**
    * All-time counts that are not token totals.
    *
    * Corrections are counted from the ledger rather than kept on the profile:

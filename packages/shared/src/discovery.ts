@@ -1,4 +1,4 @@
-import { languageLevelSchema } from './level'
+import { languageLevelSchema, levelRank } from './level'
 import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
@@ -70,6 +70,7 @@ export const DISCOVERY_PRO_FILTER_KEYS = [
   'onlyMyGender',
   'country',
   'minLevel',
+  'maxLevel',
   'ageMin',
   'ageMax',
 ] as const
@@ -113,7 +114,13 @@ export const discoveryQuerySchema = z
      */
     onlyMyGender: z.coerce.boolean().optional(),
     country: countryCodeSchema.optional(),
+    /**
+     * Their level in the viewer's language, as an inclusive band. One bound on
+     * its own is still valid — `minLevel` alone means "at least", which is
+     * what the pre-v3 filter offered and what old clients still send.
+     */
     minLevel: languageLevelSchema.optional(),
+    maxLevel: languageLevelSchema.optional(),
     ageMin: z.coerce.number().int().min(18).optional(),
     ageMax: z.coerce.number().int().min(18).optional(),
   })
@@ -121,6 +128,13 @@ export const discoveryQuerySchema = z
     message: 'ageMin cannot exceed ageMax',
     path: ['ageMin'],
   })
+  .refine(
+    (q) =>
+      q.minLevel === undefined ||
+      q.maxLevel === undefined ||
+      levelRank(q.minLevel) <= levelRank(q.maxLevel),
+    { message: 'minLevel cannot exceed maxLevel', path: ['minLevel'] },
+  )
   .refine((q) => !(q.onlyMyGender && q.gender), {
     message: 'Pick a gender or match your own, not both',
     path: ['onlyMyGender'],

@@ -100,9 +100,17 @@ function decodeOnlineOffsetCursor(cursor: string, now: Date): OnlineOffsetCursor
   return { cutoff, offset: decodeOffsetCursor(rawOffset) }
 }
 
-/** Levels at or above `minLevel`, e.g. intermediate → ['intermediate','fluent']. */
-function levelsAtOrAbove(minLevel: LanguageLevel): LanguageLevel[] {
-  return LANGUAGE_LEVELS.slice(levelRank(minLevel) - 1)
+/**
+ * Levels inside the inclusive band, either bound optional — `minLevel` alone
+ * is "at or above", which is what pre-v3 clients still send.
+ */
+function levelsInBand(
+  minLevel: LanguageLevel | undefined,
+  maxLevel: LanguageLevel | undefined,
+): LanguageLevel[] {
+  const from = minLevel ? levelRank(minLevel) - 1 : 0
+  const to = maxLevel ? levelRank(maxLevel) : LANGUAGE_LEVELS.length
+  return LANGUAGE_LEVELS.slice(from, to)
 }
 
 export async function discoverProfiles(
@@ -174,12 +182,15 @@ export async function discoverProfiles(
   // not narrowing at all.
   if (query.onlyMyGender && viewer.gender !== 'undisclosed') match.gender = viewer.gender
   if (query.country) match.country = query.country
-  if (query.minLevel) {
+  if (query.minLevel || query.maxLevel) {
     // How well *they* speak *my* native language — the language they're
     // learning from me, not the one I'm learning from them (native speakers
     // have no level to filter on).
     match.learning = {
-      $elemMatch: { code: { $in: myNativeCodes }, level: { $in: levelsAtOrAbove(query.minLevel) } },
+      $elemMatch: {
+        code: { $in: myNativeCodes },
+        level: { $in: levelsInBand(query.minLevel, query.maxLevel) },
+      },
     }
   }
   if (query.ageMin !== undefined || query.ageMax !== undefined) {
