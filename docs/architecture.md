@@ -127,7 +127,7 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                             |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                 |
-| Pro bundle          | Unlimited conversations · advanced filters (gender, country, age, CEFR) · unlimited translation · who viewed me + incognito                                                                                                                                                                                                                                                                             |
+| Pro bundle          | Unlimited conversations · advanced filters (gender, only-my-gender, city) · unlimited translation · who viewed me + incognito                                                                                                                                                                                                                                                                           |
 | Pro+ bundle         | Everything in Pro · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                                                                                                                      |
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                         |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                 |
@@ -269,17 +269,17 @@ back door around authorisation, quota or token.
 
 ### Free vs Pro vs Pro+
 
-|                            | Free                  | Pro                          | Pro+          |
-| -------------------------- | --------------------- | ---------------------------- | ------------- |
-| Starting new conversations | **5** per rolling 24h | Unlimited                    | Unlimited     |
-| Replying                   | **Unlimited**         | Unlimited                    | Unlimited     |
-| Filters                    | Language, online      | + gender, country, age, CEFR | same as Pro   |
-| Sort by distance (Nearby)  | —                     | —                            | **Yes**       |
-| Translation                | N per day (config)    | Unlimited                    | Unlimited     |
-| **Message correction**     | **Unlimited**         | **Unlimited**                | **Unlimited** |
-| Who viewed me              | Count only            | Identities                   | Identities    |
-| Incognito                  | —                     | Yes                          | Yes           |
-| AI copilot                 | —                     | —                            | **Not built** |
+|                            | Free                                 | Pro                            | Pro+          |
+| -------------------------- | ------------------------------------ | ------------------------------ | ------------- |
+| Starting new conversations | **5** per rolling 24h                | Unlimited                      | Unlimited     |
+| Replying                   | **Unlimited**                        | Unlimited                      | Unlimited     |
+| Filters                    | Language, online, country, age, CEFR | + gender, only-my-gender, city | same as Pro   |
+| Sort by distance (Nearby)  | —                                    | —                              | **Yes**       |
+| Translation                | N per day (config)                   | Unlimited                      | Unlimited     |
+| **Message correction**     | **Unlimited**                        | **Unlimited**                  | **Unlimited** |
+| Who viewed me              | Count only                           | Identities                     | Identities    |
+| Incognito                  | —                                    | Yes                            | Yes           |
+| AI copilot                 | —                                    | —                              | **Not built** |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.

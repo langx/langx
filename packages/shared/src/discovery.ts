@@ -2,7 +2,7 @@ import { languageLevelSchema, levelRank } from './level'
 import { NEARBY_MAX_KM } from './location'
 import { countryCodeSchema } from './countries'
 import { languageCodeSchema } from './languages'
-import { genderSchema } from './profile'
+import { CITY_MAX_LENGTH, genderSchema } from './profile'
 import { z } from 'zod'
 
 /**
@@ -64,16 +64,19 @@ export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()):
  * Keys that require Pro (`PLAN_LIMITS.advancedFilters`). A free account
  * sending any of these gets `403 UPGRADE_REQUIRED`, not a silently-ignored
  * parameter — see "Paywall rules" in the plan.
+ *
+ * Level, age and country used to be here and are free now. They are how
+ * somebody finds a partner they can actually talk to — a beginner matched with
+ * a beginner has no conversation — and charging for that made the free tier
+ * worse at the one thing the product is for. `promise-change.md` names filters
+ * as one of three things v2 took away from "free forever"; this gives most of
+ * it back before that document is published.
+ *
+ * What stays paid is the pair that narrows *who*, not *how well they fit*.
+ * `city` joins them: it is the finest-grained "near me" the app offers without
+ * asking for coordinates.
  */
-export const DISCOVERY_PRO_FILTER_KEYS = [
-  'gender',
-  'onlyMyGender',
-  'country',
-  'minLevel',
-  'maxLevel',
-  'ageMin',
-  'ageMax',
-] as const
+export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'onlyMyGender', 'city'] as const
 
 export const discoveryQuerySchema = z
   .object({
@@ -90,6 +93,15 @@ export const discoveryQuerySchema = z
     targetLanguage: languageCodeSchema.optional(),
     /** Free filter: only profiles active within {@link ONLINE_WINDOW_MS}. */
     online: z.coerce.boolean().optional(),
+    /** Free filter: their level in the viewer's language, as an inclusive band.
+     *  One bound on its own is still valid — `minLevel` alone means "at least",
+     *  which is what the pre-v3 filter offered and what old clients still send. */
+    minLevel: languageLevelSchema.optional(),
+    maxLevel: languageLevelSchema.optional(),
+    /** Free filters. */
+    ageMin: z.coerce.number().int().min(18).optional(),
+    ageMax: z.coerce.number().int().min(18).optional(),
+    country: countryCodeSchema.optional(),
     /**
      * How far `sort=nearby` looks. Ignored by every other sort.
      *
@@ -113,16 +125,13 @@ export const discoveryQuerySchema = z
      * cannot mean "people who also declined to say".
      */
     onlyMyGender: z.coerce.boolean().optional(),
-    country: countryCodeSchema.optional(),
     /**
-     * Their level in the viewer's language, as an inclusive band. One bound on
-     * its own is still valid — `minLevel` alone means "at least", which is
-     * what the pre-v3 filter offered and what old clients still send.
+     * Free text, matched on `cityKey` rather than on itself — see `city.ts`.
+     * Length-bounded for the same reason every other free-text query is: it
+     * reaches a database index, and an unbounded string is a way to make it
+     * scan.
      */
-    minLevel: languageLevelSchema.optional(),
-    maxLevel: languageLevelSchema.optional(),
-    ageMin: z.coerce.number().int().min(18).optional(),
-    ageMax: z.coerce.number().int().min(18).optional(),
+    city: z.string().trim().min(1).max(CITY_MAX_LENGTH).optional(),
   })
   .refine((q) => q.ageMin === undefined || q.ageMax === undefined || q.ageMin <= q.ageMax, {
     message: 'ageMin cannot exceed ageMax',

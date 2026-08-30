@@ -50,8 +50,13 @@ export interface PlanLimits {
    */
   mediaPer24h: Limit
   /**
-   * gender / country / age / CEFR filters in discovery — the exact set is
+   * Gender, "only my gender" and city in discovery — the exact set is
    * `DISCOVERY_PRO_FILTER_KEYS`.
+   *
+   * Country, age and CEFR level used to be here and are free. They are how
+   * somebody finds a partner they can actually talk to, and charging for that
+   * made the free tier worse at the one thing the product is for. What stayed
+   * paid narrows *who* rather than *how well they fit*.
    *
    * This used to say "distance" as well, and still must not. Distance is a
    * Pro+ *sort* (`nearby` below), not a Pro filter, and the two are bought

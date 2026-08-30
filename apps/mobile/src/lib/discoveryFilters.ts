@@ -1,4 +1,4 @@
-import type { LanguageLevel, Gender } from '@langx/shared'
+import { DISCOVERY_PRO_FILTER_KEYS, type LanguageLevel, type Gender } from '@langx/shared'
 
 /**
  * Discovery filters, and the translation between the filter screen, the URL
@@ -15,16 +15,21 @@ export interface DiscoveryFilters {
   targetLanguage?: string
   /** Free. */
   online?: boolean
-  // Pro from here down — `DISCOVERY_PRO_FILTER_KEYS` is the server's copy of
-  // this list, and it answers with 403 rather than ignoring the parameter.
-  gender?: Gender
-  onlyMyGender?: boolean
-  country?: string
-  /** Their level in my language, as an inclusive band. */
+  /** Free. Their level in my language, as an inclusive band. */
   minLevel?: LanguageLevel
   maxLevel?: LanguageLevel
+  /** Free. */
   ageMin?: number
   ageMax?: number
+  /** Free. */
+  country?: string
+  // Pro from here down — see `DISCOVERY_PRO_FILTER_KEYS`, which is the one
+  // list, and which the server answers 403 against rather than ignoring the
+  // parameter.
+  gender?: Gender
+  onlyMyGender?: boolean
+  /** Pro. Free text, matched on a folded key server-side. */
+  city?: string
 }
 
 /**
@@ -34,15 +39,14 @@ export interface DiscoveryFilters {
  */
 export const AGE_SLIDER = { min: 18, max: 55 } as const
 
-const PRO_KEYS = [
-  'gender',
-  'onlyMyGender',
-  'country',
-  'minLevel',
-  'maxLevel',
-  'ageMin',
-  'ageMax',
-] as const
+/*
+ * The shared list, not a copy of it. This file used to keep its own, with a
+ * comment noting the server had "its copy" — two lists that had to be edited
+ * together, where forgetting the client's means a paywall that never opens and
+ * forgetting the server's means a filter that 403s from a screen that offered
+ * it.
+ */
+const PRO_KEYS = DISCOVERY_PRO_FILTER_KEYS
 
 function one(value: string | string[] | undefined): string | undefined {
   const first = Array.isArray(value) ? value[0] : value
@@ -71,6 +75,8 @@ export function parseFilters(
   if (Number.isInteger(ageMin) && ageMin > 0) filters.ageMin = ageMin
   const ageMax = Number(one(params.ageMax))
   if (Number.isInteger(ageMax) && ageMax > 0) filters.ageMax = ageMax
+  const city = one(params.city)?.trim()
+  if (city) filters.city = city
 
   return filters
 }
@@ -87,6 +93,7 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
   if (filters.maxLevel) params.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) params.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) params.ageMax = String(filters.ageMax)
+  if (filters.city) params.city = filters.city
   return params
 }
 
@@ -106,6 +113,7 @@ export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   if (filters.maxLevel) query.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) query.ageMin = String(filters.ageMin)
   if (filters.ageMax !== undefined) query.ageMax = String(filters.ageMax)
+  if (filters.city) query.city = filters.city
   return query
 }
 
@@ -120,6 +128,7 @@ export function activeCount(filters: DiscoveryFilters): number {
   if (filters.minLevel || filters.maxLevel) count++
   // One age *range*, however many bounds express it.
   if (filters.ageMin !== undefined || filters.ageMax !== undefined) count++
+  if (filters.city) count++
   return count
 }
 
@@ -137,5 +146,10 @@ export function withoutProFilters(filters: DiscoveryFilters): DiscoveryFilters {
   const free: DiscoveryFilters = {}
   if (filters.targetLanguage) free.targetLanguage = filters.targetLanguage
   if (filters.online) free.online = true
+  if (filters.minLevel) free.minLevel = filters.minLevel
+  if (filters.maxLevel) free.maxLevel = filters.maxLevel
+  if (filters.ageMin !== undefined) free.ageMin = filters.ageMin
+  if (filters.ageMax !== undefined) free.ageMax = filters.ageMax
+  if (filters.country) free.country = filters.country
   return free
 }

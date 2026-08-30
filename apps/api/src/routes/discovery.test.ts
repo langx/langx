@@ -1,4 +1,4 @@
-import { DISCOVERY_CURSOR_MAX_AGE_MS, DISTANCE_BUCKETS_KM } from '@langx/shared'
+import { DISCOVERY_CURSOR_MAX_AGE_MS, DISTANCE_BUCKETS_KM, type DiscoveryPage } from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -446,7 +446,7 @@ describe('Faz 3 — discovery aggregation', () => {
       })
     })
 
-    it('lets a Pro user filter by gender, country and age range', async () => {
+    it('lets a Pro user filter by gender, alongside the free country and age filters', async () => {
       const viewer = await newUser('pro-filter-viewer@example.com', {
         nativeLanguages: [{ code: 'fi' }],
         learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
@@ -558,10 +558,76 @@ describe('Faz 3 — discovery aggregation', () => {
 
     it('rejects a country code that is not a real one', async () => {
       const viewer = await newUser('bad-country@example.com')
-      await makePro(viewer.userId)
       expect((await discover(viewer, 'country=ZZ')).statusCode).toBe(400)
       // Case is normalised, so a lowercase code is a match rather than a miss.
       expect((await discover(viewer, 'country=us')).statusCode).toBe(200)
+    })
+
+    /**
+     * Level, age and country used to be Pro. They are how somebody finds a
+     * partner they can actually talk to, and charging for that made the free
+     * tier worse at the one thing the product is for — so the test that
+     * matters is the one asserting a *free* account gets a list back.
+     */
+    it('lets a free account filter by level, age and country', async () => {
+      const viewer = await newUser('free-now-viewer@example.com')
+      for (const query of [
+        'minLevel=beginner',
+        'maxLevel=fluent',
+        'minLevel=beginner&maxLevel=fluent',
+        'ageMin=25',
+        'ageMax=40',
+        'ageMin=25&ageMax=40',
+        'country=US',
+      ]) {
+        const response = await discover(viewer, query)
+        expect(response.statusCode, `${query}: ${response.body}`).toBe(200)
+      }
+    })
+
+    it('still refuses a free account the two filters that stayed paid', async () => {
+      const viewer = await newUser('free-still-paid@example.com')
+      for (const query of ['gender=female', 'onlyMyGender=true', 'city=Istanbul']) {
+        const response = await discover(viewer, query)
+        expect(response.statusCode, query).toBe(403)
+        expect(response.json(), query).toMatchObject({
+          code: 'UPGRADE_REQUIRED',
+          feature: 'advancedFilters',
+        })
+      }
+    })
+
+    /**
+     * `city` is free text with no picker behind it, so the same place arrives
+     * spelled several ways. Matching the raw field would answer only for
+     * people who typed it exactly as the searcher did — and return a short
+     * list rather than an empty one, which reads as a working filter.
+     */
+    it('matches a city however either side spelled it', async () => {
+      const viewer = await newUser('city-viewer@example.com', {
+        nativeLanguages: [{ code: 'fi' }],
+        learning: [{ code: 'et', level: 'intermediate', priority: 1 }],
+      })
+      await makePro(viewer.userId)
+
+      const here = await newUser('city-here@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+        city: 'İstanbul',
+      })
+      const elsewhere = await newUser('city-elsewhere@example.com', {
+        nativeLanguages: [{ code: 'et' }],
+        learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
+        city: 'Ankara',
+      })
+
+      for (const spelling of ['Istanbul', 'istanbul', 'İSTANBUL', ' istanbul ']) {
+        const response = await discover(viewer, `city=${encodeURIComponent(spelling)}`)
+        expect(response.statusCode, spelling).toBe(200)
+        const ids = response.json<DiscoveryPage>().items.map((item) => item._id)
+        expect(ids, spelling).toContain(here.userId)
+        expect(ids, spelling).not.toContain(elsewhere.userId)
+      }
     })
 
     it('minLevel filters on how well the candidate speaks the viewer own native language', async () => {
@@ -569,7 +635,6 @@ describe('Faz 3 — discovery aggregation', () => {
         nativeLanguages: [{ code: 'lv' }],
         learning: [{ code: 'lt', level: 'intermediate', priority: 1 }],
       })
-      await makePro(viewer.userId)
 
       const fluent = await newUser('fluent-in-my-language@example.com', {
         nativeLanguages: [{ code: 'lt' }],
@@ -591,7 +656,6 @@ describe('Faz 3 — discovery aggregation', () => {
         nativeLanguages: [{ code: 'et' }],
         learning: [{ code: 'fi', level: 'intermediate', priority: 1 }],
       })
-      await makePro(viewer.userId)
 
       const make = (email: string, level: string) =>
         newUser(email, {

@@ -70,6 +70,17 @@ export const INDEXES: Partial<IndexSpec> = {
     },
     { key: { displayName: 'text', bio: 'text' }, name: 'profile_text' },
     /**
+     * The Pro city filter, on the folded key rather than on `city` itself.
+     *
+     * Sparse because the field is optional and most profiles have never filled
+     * it in — an index entry per absent city is the bulk of the collection for
+     * no gain. Not compounded with `stats.lastActiveAt` the way the two
+     * discovery indexes above are: a city is far more selective than a
+     * language, so the planner is better off narrowing on it and sorting the
+     * handful that remain.
+     */
+    { key: { cityKey: 1 }, name: 'city_key', sparse: true },
+    /**
      * Backs `sort=nearby`'s `$geoNear`, which is the *only* stage that can
      * read it — MongoDB refuses `$geoNear` outright without this index, so its
      * absence is a failed query rather than a slow one.

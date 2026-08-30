@@ -3,6 +3,7 @@ import {
   LANGUAGE_LEVELS,
   levelRank,
   bucketDistanceKm,
+  cityKey,
   DISCOVERY_PRO_FILTER_KEYS,
   ERROR_CODES,
   hasFeature,
@@ -182,6 +183,14 @@ export async function discoverProfiles(
   // not narrowing at all.
   if (query.onlyMyGender && viewer.gender !== 'undisclosed') match.gender = viewer.gender
   if (query.country) match.country = query.country
+  /*
+   * On the folded key, never on `city` itself. The field is free text with no
+   * picker behind it, so the same place arrives as "İstanbul", "Istanbul" and
+   * "istanbul"; matching raw would answer only for people who typed it the
+   * way the searcher did, and return a short list rather than an empty one —
+   * which reads as a working filter.
+   */
+  if (query.city) match.cityKey = cityKey(query.city)
   if (query.minLevel || query.maxLevel) {
     // How well *they* speak *my* native language — the language they're
     // learning from me, not the one I'm learning from them (native speakers

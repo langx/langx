@@ -2,6 +2,7 @@ import {
   DEFAULT_NOTIFICATION_PREFS,
   ERROR_CODES,
   ageFromBirthDate,
+  cityKey,
   PLAN_LIMITS,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
@@ -38,6 +39,12 @@ export interface Profile {
   gender: 'female' | 'male' | 'other' | 'undisclosed'
   country?: string
   city?: string
+  /**
+   * `city` folded for matching — see `cityKey`. Written alongside the display
+   * value, never instead of it: how somebody spells their own city is theirs,
+   * and only the discovery filter reads this.
+   */
+  cityKey?: string
   timezone?: string
   timezoneUpdatedAt?: Date
   /**
@@ -199,7 +206,10 @@ export async function createProfile(
   // come through Cloudflare at all.
   const country = connectionCountry ?? input.country
   if (country !== undefined) profile.country = country
-  if (input.city !== undefined) profile.city = input.city
+  if (input.city !== undefined) {
+    profile.city = input.city
+    profile.cityKey = cityKey(input.city)
+  }
   if (input.timezone !== undefined) {
     profile.timezone = input.timezone
     profile.timezoneUpdatedAt = now
@@ -302,6 +312,16 @@ export async function updateProfile(
   const definedUpdates = Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== undefined),
   )
+
+  /*
+   * `cityKey` is derived, never sent. Deriving it here rather than trusting a
+   * client keeps the stored key and the query's key the product of one
+   * function — if they ever disagreed the filter would quietly answer for
+   * nobody, which is the failure mode that looks like an empty city.
+   */
+  if (typeof definedUpdates.city === 'string') {
+    definedUpdates.cityKey = cityKey(definedUpdates.city)
+  }
 
   /**
    * `privacy` is written key by key, not as a sub-document.

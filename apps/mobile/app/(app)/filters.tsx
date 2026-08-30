@@ -1,7 +1,13 @@
-import { GENDERS, LANGUAGE_LEVELS, levelRank, type LanguageLevel } from '@langx/shared'
+import {
+  CITY_MAX_LENGTH,
+  GENDERS,
+  LANGUAGE_LEVELS,
+  levelRank,
+  type LanguageLevel,
+} from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
-import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
 import { useIsPro, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
@@ -69,6 +75,13 @@ export default function FiltersScreen() {
    * and the API both read as unfiltered, and under `exactOptionalPropertyTypes`
    * it is also the only well-typed way to say it.
    */
+  /*
+   * The city field is drafted locally and committed on blur, unlike every
+   * other control here, which commits on press. Committing per keystroke would
+   * rewrite the route params — and therefore refetch Discover — once a letter.
+   */
+  const [cityDraft, setCityDraft] = useState(filters.city ?? '')
+
   function set(patch: FilterPatch, pro = false): void {
     if (pro && !isPro) {
       openPaywall('advancedFilters', '/(app)/filters')
@@ -105,21 +118,21 @@ export default function FiltersScreen() {
   function tapLevel(index: number): void {
     const level = LANGUAGE_LEVELS[index] as LanguageLevel
     if (bandMin === null || bandMax === null) {
-      set({ minLevel: level, maxLevel: level }, true)
+      set({ minLevel: level, maxLevel: level })
       return
     }
     if (index < bandMin) {
-      set({ minLevel: level }, true)
+      set({ minLevel: level })
     } else if (index > bandMax) {
-      set({ maxLevel: level }, true)
+      set({ maxLevel: level })
     } else if (bandMin === bandMax && index === bandMin) {
-      set({ minLevel: undefined, maxLevel: undefined }, true)
+      set({ minLevel: undefined, maxLevel: undefined })
     } else if (index === bandMin) {
-      set({ minLevel: LANGUAGE_LEVELS[index + 1] }, true)
+      set({ minLevel: LANGUAGE_LEVELS[index + 1] })
     } else if (index === bandMax) {
-      set({ maxLevel: LANGUAGE_LEVELS[index - 1] }, true)
+      set({ maxLevel: LANGUAGE_LEVELS[index - 1] })
     } else {
-      set({ minLevel: level, maxLevel: level }, true)
+      set({ minLevel: level, maxLevel: level })
     }
   }
 
@@ -133,13 +146,10 @@ export default function FiltersScreen() {
   const ageIsAny = filters.ageMin === undefined && filters.ageMax === undefined
 
   function setAges([low, high]: [number, number]): void {
-    set(
-      {
-        ageMin: low === AGE_SLIDER.min ? undefined : low,
-        ageMax: high === AGE_SLIDER.max ? undefined : high,
-      },
-      true,
-    )
+    set({
+      ageMin: low === AGE_SLIDER.min ? undefined : low,
+      ageMax: high === AGE_SLIDER.max ? undefined : high,
+    })
   }
 
   const ageText = ageIsAny
@@ -195,7 +205,7 @@ export default function FiltersScreen() {
         </View>
 
         <View style={styles.section}>
-          <SectionTitle title={t('filters.theirLevel')} locked={!isPro} />
+          <SectionTitle title={t('filters.theirLevel')} />
           <Text style={styles.hint}>{t('filters.theirLevelBody')}</Text>
           <View style={styles.levelRow}>
             {LANGUAGE_LEVELS.map((level, index) => {
@@ -227,7 +237,7 @@ export default function FiltersScreen() {
 
         <View style={styles.section}>
           <View style={styles.ageHead}>
-            <SectionTitle title={t('filters.age')} locked={!isPro} />
+            <SectionTitle title={t('filters.age')} />
             <Text style={styles.ageValue}>{ageText}</Text>
           </View>
           <RangeSlider
@@ -286,13 +296,43 @@ export default function FiltersScreen() {
           </View>
         </View>
 
-        <View style={[styles.section, styles.last]}>
-          <SectionTitle title={t('filters.country')} locked={!isPro} />
+        <View style={styles.section}>
+          <SectionTitle title={t('filters.country')} />
           <CountryPicker
             value={filters.country ?? ''}
-            onChange={(country) => set({ country: country || undefined }, true)}
-            {...(isPro ? {} : { onLocked: () => openPaywall('advancedFilters', '/(app)/filters') })}
+            onChange={(country) => set({ country: country || undefined })}
           />
+        </View>
+
+        {/*
+          Free text, not a picker: there is no city list to pick from, and the
+          server matches on a folded key so case, accents and punctuation do
+          not have to agree. Locked as a whole rather than per keystroke — a
+          paywall that fires on the first letter typed is a worse way to learn
+          the rule than one tap on a field that says PRO.
+        */}
+        <View style={[styles.section, styles.last]}>
+          <SectionTitle title={t('filters.city')} locked={!isPro} />
+          <Text style={styles.hint}>{t('filters.cityBody')}</Text>
+          <Pressable
+            disabled={isPro}
+            onPress={() => openPaywall('advancedFilters', '/(app)/filters')}
+          >
+            <TextInput
+              value={cityDraft}
+              editable={isPro}
+              onChangeText={setCityDraft}
+              onEndEditing={() => set({ city: cityDraft.trim() || undefined }, true)}
+              placeholder={t('filters.cityPlaceholder')}
+              placeholderTextColor={colors.textFaint}
+              autoCapitalize="words"
+              autoCorrect={false}
+              maxLength={CITY_MAX_LENGTH}
+              style={styles.cityInput}
+              // A disabled input still has to announce why it is disabled.
+              pointerEvents={isPro ? 'auto' : 'none'}
+            />
+          </Pressable>
         </View>
 
         <View style={styles.actions}>
@@ -331,6 +371,15 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     paddingVertical: 2,
   },
   hint: { ...font.caption, color: colors.textFaint, marginTop: 2 },
+  cityInput: {
+    ...font.body,
+    backgroundColor: colors.fill,
+    borderRadius: radius.md,
+    color: colors.text,
+    marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + 2,
+  },
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
   levelRow: { flexDirection: 'row', gap: 7, marginTop: spacing.md },
   levelPill: {
