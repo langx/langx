@@ -8,6 +8,11 @@ export const COLLECTIONS = {
   session: 'session',
   account: 'account',
   verification: 'verification',
+  /**
+   * The device flow's codes, written by Better Auth's `device-authorization`
+   * plugin. Ours only to index — see `indexes.ts` for why that matters here.
+   */
+  deviceCode: 'deviceCode',
 
   // domain
   profiles: 'profiles',

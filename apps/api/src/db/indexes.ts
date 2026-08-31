@@ -47,6 +47,26 @@ export const INDEXES: Partial<IndexSpec> = {
   [COLLECTIONS.account]: [{ key: { userId: 1 }, name: 'account_userId_idx' }],
   // Email verification and password reset both look a token up by identifier.
   [COLLECTIONS.verification]: [{ key: { identifier: 1 }, name: 'verification_identifier_idx' }],
+  /**
+   * QR sign-in's codes. Better Auth's Mongo adapter creates almost no indexes,
+   * and this collection is looked up on every poll — once every five seconds
+   * per waiting browser — so the absence of one is not a slow query, it is a
+   * collection scan on a loop.
+   *
+   * `userCode` is unique because the whole flow rests on it: two live codes
+   * colliding would let one person approve another's sign-in. The plugin
+   * generates them randomly and does not enforce that itself.
+   *
+   * The TTL sweeps expired rows an hour after they die rather than at the
+   * instant — the plugin checks `expiresAt` on every read, so nothing depends
+   * on the deletion being prompt, and a short grace period keeps a
+   * just-expired code answering "expired" instead of "never existed".
+   */
+  [COLLECTIONS.deviceCode]: [
+    { key: { deviceCode: 1 }, name: 'device_code_unique', unique: true },
+    { key: { userCode: 1 }, name: 'user_code_unique', unique: true },
+    { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 3600 },
+  ],
 
   [COLLECTIONS.profiles]: [
     { key: { handle: 1 }, name: 'handle_unique', unique: true },

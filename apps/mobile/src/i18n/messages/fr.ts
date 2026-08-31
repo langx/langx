@@ -690,6 +690,7 @@ export const fr: Localized<EnMessages> = {
     showStatsBody: 'Série, corrections, jetons et le graphique de la semaine sur votre profil.',
     legalSection: 'Mentions légales',
     communitySection: 'Communauté',
+    linkDeviceBody: 'Approuver une connexion sur un ordinateur.',
     showInDiscover: 'M’afficher dans Découvrir',
     showInDiscoverBody: 'Désactive ceci et personne ne te trouvera dans Découvrir.',
     incognito: 'Navigation incognito',
@@ -874,6 +875,31 @@ export const fr: Localized<EnMessages> = {
     share: 'Partager',
     copy: 'Copier le lien',
     copied: 'Lien copié',
+  },
+
+  linkDevice: {
+    title: 'Se connecter sur un autre appareil',
+    body: 'Saisis le code affiché sur l’autre écran, ou scanne-le là-bas.',
+    placeholder: 'ABCDEF',
+    warning:
+      'N’approuve qu’un code que tu vois toi-même. Quiconque le saisit obtient un accès complet à ton compte.',
+    approve: 'Approuver',
+    deny: 'Refuser',
+    approved: 'Connecté',
+    denied: 'Refusé',
+    failed: 'Ce code n’est plus valide.',
+    hint: 'Pas maintenant',
+  },
+
+  qrSignIn: {
+    title: 'Se connecter avec le téléphone',
+    body: 'Ouvre LangX sur ton téléphone et saisis ce code, ou scanne-le.',
+    hint: 'Réglages → Se connecter sur un autre appareil',
+    qrAccessibility: 'QR code de connexion',
+    expired: 'Le code a expiré.',
+    failed: 'Échec du démarrage. Réessaie.',
+    again: 'Réessayer',
+    webOnly: 'C’est pour se connecter sur un ordinateur. Tu es déjà sur ton téléphone.',
   },
 
   viewers: {

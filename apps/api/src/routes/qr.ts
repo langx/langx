@@ -1,4 +1,4 @@
-import { handleSchema, profileUrl } from '@langx/shared'
+import { handleSchema, profileUrl, WEB_HOST } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import QRCode from 'qrcode'
 import { z } from 'zod'
@@ -52,6 +52,38 @@ export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
         .header('content-type', 'image/svg+xml')
         .header('cache-control', `public, max-age=${CACHE_SECONDS}`)
         .send(svg)
+    },
+  )
+
+  /*
+   * The device-flow verification link, as a code.
+   *
+   * Takes the **user code**, not a URL. A `?to=<anything>` endpoint would be a
+   * QR generator on our own domain that encodes whatever an attacker asks for
+   * — a phishing primitive wearing our hostname. Building the URL here means
+   * the only thing this can ever point at is our own `/link-device` page.
+   */
+  app.get(
+    '/public/qr/link/:code',
+    {
+      schema: { params: z.object({ code: z.string().trim().min(4).max(32) }) },
+      config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      const target = `https://${WEB_HOST}/link-device?code=${encodeURIComponent(request.params.code)}`
+      const svg = await QRCode.toString(target, {
+        type: 'svg',
+        errorCorrectionLevel: 'M',
+        margin: 2,
+      })
+      return (
+        reply
+          .header('content-type', 'image/svg+xml')
+          // A device code lives two minutes; caching its picture past that would
+          // only ever serve something already dead.
+          .header('cache-control', 'no-store')
+          .send(svg)
+      )
     },
   )
 
