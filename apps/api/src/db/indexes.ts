@@ -445,8 +445,21 @@ export async function ensureIndexes(db: Db): Promise<EnsureIndexesResult[]> {
 
   for (const [collection, indexes] of Object.entries(INDEXES)) {
     if (!indexes || indexes.length === 0) continue
-    const created = await db.collection(collection).createIndexes(indexes)
-    results.push({ collection, created })
+    try {
+      const created = await db.collection(collection).createIndexes(indexes)
+      results.push({ collection, created })
+    } catch (caught) {
+      /*
+       * Name the collection. `IndexOptionsConflict` says only "Index already
+       * exists with a different name: <theirs>" — not which collection, and
+       * not which of ours asked. This runs at boot, so the process dies with
+       * that one line and no stack frame inside this file that says where.
+       * It has cost real time twice; the second was a boot against an empty
+       * database, where "which collection" is the entire question.
+       */
+      if (caught instanceof Error) caught.message = `${collection}: ${caught.message}`
+      throw caught
+    }
   }
 
   return results
