@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import { useConversationFlags, useConversations, useMe } from '../../src/api/queries'
 import { PeopleSearch } from '../../src/components/PeopleSearch'
+import { SwipeableRow } from '../../src/components/SwipeableRow'
 import { ConversationRowSkeleton } from '../../src/components/skeletons/ConversationRowSkeleton'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -174,9 +175,24 @@ export default function ChatsScreen() {
             const mine = item.lastMessage.senderId === me.data?._id
 
             return (
-              <Pressable
-                onPress={() => router.push(`/(app)/chat/${item._id}`)}
-                /*
+              <SwipeableRow
+                right={{
+                  icon: item.pinned ? 'chevrons-down' : 'chevrons-up',
+                  label: item.pinned ? t('chats.unpin') : t('chats.pin'),
+                  colour: colors.accent,
+                  onAction: () => flags.mutate({ conversationId: item._id, pinned: !item.pinned }),
+                }}
+                left={{
+                  icon: item.archived ? 'inbox' : 'archive',
+                  label: item.archived ? t('chats.unarchive') : t('chats.archive'),
+                  colour: colors.textMuted,
+                  onAction: () =>
+                    flags.mutate({ conversationId: item._id, archived: !item.archived }),
+                }}
+              >
+                <Pressable
+                  onPress={() => router.push(`/(app)/chat/${item._id}`)}
+                  /*
                   Long press rather than a swipe. `react-native-gesture-handler`
                   is deliberately absent from this package, and the app already
                   teaches long-press-for-actions on every message bubble — a
@@ -187,70 +203,71 @@ export default function ChatsScreen() {
                   list of choices on every platform, including web, where
                   react-native's own `Alert` is an empty function.
                 */
-                onLongPress={() => {
-                  void chooseAlert(partner?.displayName ?? '', undefined, [
-                    { label: item.pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
-                    {
-                      label: item.archived ? t('chats.unarchive') : t('chats.archive'),
-                      value: 'archive',
-                    },
-                  ]).then((choice) => {
-                    if (choice === 'pin') {
-                      flags.mutate({ conversationId: item._id, pinned: !item.pinned })
-                    }
-                    if (choice === 'archive') {
-                      flags.mutate({ conversationId: item._id, archived: !item.archived })
-                    }
-                  })
-                }}
-                style={({ pressed }) => [
-                  styles.row,
-                  index === items.length - 1 && styles.rowLast,
-                  pressed && styles.rowPressed,
-                ]}
-              >
-                {partner ? (
-                  <Avatar
-                    url={partner.avatarUrl}
-                    name={partner.displayName}
-                    online={partner.isOnline}
-                    size={AVATAR_SIZE}
-                  />
-                ) : (
-                  <Skeleton width={AVATAR_SIZE} height={AVATAR_SIZE} radius={AVATAR_SIZE / 2} />
-                )}
-                <View style={styles.body}>
-                  <View style={styles.top}>
-                    {partner ? (
-                      <Text style={styles.name} numberOfLines={1}>
-                        {partner.displayName}
+                  onLongPress={() => {
+                    void chooseAlert(partner?.displayName ?? '', undefined, [
+                      { label: item.pinned ? t('chats.unpin') : t('chats.pin'), value: 'pin' },
+                      {
+                        label: item.archived ? t('chats.unarchive') : t('chats.archive'),
+                        value: 'archive',
+                      },
+                    ]).then((choice) => {
+                      if (choice === 'pin') {
+                        flags.mutate({ conversationId: item._id, pinned: !item.pinned })
+                      }
+                      if (choice === 'archive') {
+                        flags.mutate({ conversationId: item._id, archived: !item.archived })
+                      }
+                    })
+                  }}
+                  style={({ pressed }) => [
+                    styles.row,
+                    index === items.length - 1 && styles.rowLast,
+                    pressed && styles.rowPressed,
+                  ]}
+                >
+                  {partner ? (
+                    <Avatar
+                      url={partner.avatarUrl}
+                      name={partner.displayName}
+                      online={partner.isOnline}
+                      size={AVATAR_SIZE}
+                    />
+                  ) : (
+                    <Skeleton width={AVATAR_SIZE} height={AVATAR_SIZE} radius={AVATAR_SIZE / 2} />
+                  )}
+                  <View style={styles.body}>
+                    <View style={styles.top}>
+                      {partner ? (
+                        <Text style={styles.name} numberOfLines={1}>
+                          {partner.displayName}
+                        </Text>
+                      ) : (
+                        // The row is real, its partner is not resolved yet: the
+                        // names come from a separate batched query. This used to
+                        // read "Loading…", which looked like somebody's name.
+                        <Skeleton width={132} height={16} />
+                      )}
+                      <Text style={styles.time}>
+                        {relativeTimeCompact(item.lastMessage.createdAt, { t, locale })}
                       </Text>
-                    ) : (
-                      // The row is real, its partner is not resolved yet: the
-                      // names come from a separate batched query. This used to
-                      // read "Loading…", which looked like somebody's name.
-                      <Skeleton width={132} height={16} />
-                    )}
-                    <Text style={styles.time}>
-                      {relativeTimeCompact(item.lastMessage.createdAt, { t, locale })}
-                    </Text>
+                    </View>
+                    <View style={styles.bottom}>
+                      <Text
+                        style={[styles.preview, unread > 0 && styles.previewUnread]}
+                        numberOfLines={1}
+                      >
+                        {mine ? `${t('chats.youPrefix')} ` : ''}
+                        {item.lastMessage.body}
+                      </Text>
+                      {unread > 0 ? (
+                        <View style={styles.badge}>
+                          <Text style={styles.badgeText}>{unread}</Text>
+                        </View>
+                      ) : null}
+                    </View>
                   </View>
-                  <View style={styles.bottom}>
-                    <Text
-                      style={[styles.preview, unread > 0 && styles.previewUnread]}
-                      numberOfLines={1}
-                    >
-                      {mine ? `${t('chats.youPrefix')} ` : ''}
-                      {item.lastMessage.body}
-                    </Text>
-                    {unread > 0 ? (
-                      <View style={styles.badge}>
-                        <Text style={styles.badgeText}>{unread}</Text>
-                      </View>
-                    ) : null}
-                  </View>
-                </View>
-              </Pressable>
+                </Pressable>
+              </SwipeableRow>
             )
           }}
         />
