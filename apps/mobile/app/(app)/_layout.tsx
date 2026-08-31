@@ -7,6 +7,7 @@ import { useTheme } from '../../src/lib/theme'
 import { useT } from '../../src/i18n'
 import { useNotificationRouting } from '../../src/hooks/useNotificationRouting'
 import { usePushRegistration } from '../../src/hooks/usePushRegistration'
+import { useLocationRefresh } from '../../src/hooks/useLocationRefresh'
 import { useSocket } from '../../src/hooks/useSocket'
 
 /** Not a tab, and no tab bar under it either. */
@@ -32,6 +33,7 @@ export default function AppLayout() {
   const { colors } = useTheme()
   const t = useT()
   useSocket()
+  useLocationRefresh()
   usePushRegistration()
   // Here rather than in the root layout: every destination a notification has
   // is behind the sign-in gate, so routing from one before there is a session

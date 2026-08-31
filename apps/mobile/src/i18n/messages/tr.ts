@@ -753,6 +753,7 @@ export const tr: Localized<EnMessages> = {
     activityMap: 'Etkinlik haritamı göster',
     activityMapBody: 'Profilindeki kareler. Serin her hâlükârda görünür kalır.',
     updateLocation: 'Konumumu güncelle',
+    locationUpdated: '{time} önce güncellendi',
     updating: 'Güncelleniyor…',
     languageSection: 'Dil',
     appLanguage: 'Uygulama dili',

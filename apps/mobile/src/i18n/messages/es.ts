@@ -744,6 +744,7 @@ export const es: Localized<EnMessages> = {
     activityMap: 'Mostrar mi mapa de actividad',
     activityMapBody: 'Los cuadrados de tu perfil. Tu racha se ve igualmente.',
     updateLocation: 'Actualizar mi ubicación',
+    locationUpdated: 'Actualizado hace {time}',
     updating: 'Actualizando…',
     languageSection: 'Idioma',
     appLanguage: 'Idioma de la app',

@@ -24,11 +24,25 @@ export type LocationResult =
   | { ok: true; lat: number; lng: number }
   | { ok: false; reason: 'denied' | 'disabled' | 'unavailable' }
 
-export async function captureLocation(): Promise<LocationResult> {
+export interface CaptureOptions {
+  /**
+   * Whether an unprompted user may be asked.
+   *
+   * `false` for anything the app decides to do on its own. A background
+   * refresh that can raise the OS permission dialog is a dialog appearing on a
+   * timer, at a moment the person did not choose and cannot connect to
+   * anything they tapped — which is how a feature teaches people to say no.
+   */
+  promptIfNeeded?: boolean
+}
+
+export async function captureLocation({
+  promptIfNeeded = true,
+}: CaptureOptions = {}): Promise<LocationResult> {
   // `getForegroundPermissionsAsync` first, so a user who has already granted
   // it is never re-prompted; `request` only runs the first time.
   let permission = await Location.getForegroundPermissionsAsync()
-  if (!permission.granted && permission.canAskAgain) {
+  if (!permission.granted && permission.canAskAgain && promptIfNeeded) {
     permission = await Location.requestForegroundPermissionsAsync()
   }
   if (!permission.granted) return { ok: false, reason: 'denied' }

@@ -27,6 +27,7 @@ import { authLandingHref } from '../../src/lib/authLanding'
 import darkIcon from '../../assets/icons/dark.png'
 import defaultIcon from '../../assets/icons/default.png'
 import { openPaywall } from '../../src/lib/paywall'
+import { relativeTime } from '../../src/lib/format'
 import { manageSubscriptionUrl } from '../../src/lib/manageSubscription'
 import { openExternal } from '../../src/lib/openExternal'
 import { useTips } from '../../src/hooks/useTips'
@@ -360,6 +361,17 @@ export default function SettingsScreen() {
         {sharingLocation ? (
           <ListRow
             title={t('settings.updateLocation')}
+            /* `locationUpdatedAt` has been stored and returned to its owner
+               since sharing shipped, and rendered nowhere — which is what the
+               field's own doc comment asks for: sharing a location should not
+               be a thing you turned on once and can never see the state of. */
+            subtitle={
+              profile?.locationUpdatedAt
+                ? t('settings.locationUpdated', {
+                    time: relativeTime(profile.locationUpdatedAt, { t, locale: activeLocale }),
+                  })
+                : undefined
+            }
             value={shareLocation.isPending ? t('settings.updating') : undefined}
             onPress={() => void toggleLocation(true)}
             last
