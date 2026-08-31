@@ -10,13 +10,7 @@ import { openProfile } from '../../src/lib/navigation'
 import { useMemo, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
-import {
-  useDiscovery,
-  useHasFeature,
-  useIsPro,
-  useMe,
-  useShareLocation,
-} from '../../src/api/queries'
+import { useDiscovery, useHasFeature, useMe, useShareLocation } from '../../src/api/queries'
 import { ApiRequestError } from '../../src/api/client'
 import type { DiscoveryItem } from '../../src/api/types'
 import { DiscoveryCardSkeleton } from '../../src/components/skeletons/DiscoveryCardSkeleton'
@@ -78,7 +72,13 @@ export default function DiscoverScreen() {
   const [radiusKm, setRadiusKm] = useState<number>(NEARBY_MAX_KM)
   const [searching, setSearching] = useState(false)
 
-  const isPro = useIsPro()
+  /*
+   * `advancedFilters`, not "any paid plan". Correct by accident while every
+   * gated filter was Fluent's; correct by construction now. On discover it is
+   * load-bearing: this decides whether to strip Pro filters before asking, and
+   * if it disagrees with the server the reader gets a 403 instead of a list.
+   */
+  const isPro = useHasFeature('advancedFilters')
   const canUseNearby = useHasFeature('nearby')
   const me = useMe()
   const shareLocation = useShareLocation()

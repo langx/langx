@@ -360,7 +360,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         { _id: viewer.userId },
         {
           $set: {
-            entitlement: { tier: 'pro', updatedAt: new Date() },
+            entitlement: { tier: 'pro_plus', updatedAt: new Date() },
             'privacy.hideOnlineStatus': true,
           },
         },
@@ -384,6 +384,40 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
       expect(viewers.total).toBe(1)
     })
 
+    /**
+     * The new tier boundary, pinned. Seeing who looked moved from Fluent to
+     * Polyglot, and a Fluent subscriber getting identities would be the guard
+     * silently not applying rather than the boundary working.
+     */
+    it('gives a Fluent subscriber the count but not the identities', async () => {
+      const viewer = await newUser()
+      const viewed = await newUser()
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: viewed.userId },
+          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+        )
+
+      await app.inject({
+        method: 'GET',
+        url: `/profiles/${viewed.userId}`,
+        headers: { cookie: viewer.cookie },
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/viewers',
+        headers: { cookie: viewed.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      const body = response.json<{ total: number; locked: boolean; viewers: unknown[] }>()
+      // The count is the paywall's argument, so it is still real.
+      expect(body.total).toBe(1)
+      expect(body.locked).toBe(true)
+      expect(body.viewers).toHaveLength(0)
+    })
+
     it('gives free users the count and Pro users the identities', async () => {
       const viewer = await newUser()
       const viewed = await newUser()
@@ -403,7 +437,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         {
           $set: {
             entitlement: {
-              tier: 'pro',
+              tier: 'pro_plus',
               expiresAt: new Date(Date.now() + 86_400_000),
               updatedAt: new Date(),
             },
@@ -426,7 +460,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         {
           $set: {
             entitlement: {
-              tier: 'pro',
+              tier: 'pro_plus',
               expiresAt: new Date(Date.now() + 86_400_000),
               updatedAt: new Date(),
             },
@@ -450,7 +484,7 @@ describe('Faz 10 — blocking, reports, profile views, deletion and export', () 
         .collection<Profile>(COLLECTIONS.profiles)
         .updateOne(
           { _id: viewed.userId },
-          { $set: { entitlement: { tier: 'pro', updatedAt: new Date() } } },
+          { $set: { entitlement: { tier: 'pro_plus', updatedAt: new Date() } } },
         )
 
       const lookers = []

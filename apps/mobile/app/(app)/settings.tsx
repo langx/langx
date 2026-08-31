@@ -5,6 +5,7 @@ import { Image, Linking, Platform, Pressable, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import {
   useEffectiveTier,
+  useHasFeature,
   useIsPro,
   useMe,
   useShareLocation,
@@ -76,6 +77,13 @@ export default function SettingsScreen() {
 
   const profile = me.data
   const isPro = useIsPro()
+  /*
+   * The incognito row asks about *incognito*, not "any paid plan". They agreed
+   * while every privacy flag was Fluent's; now that this one is Polyglot's,
+   * `useIsPro()` here would offer a Fluent subscriber a toggle the server
+   * refuses — a switch that flips and does nothing.
+   */
+  const canIncognito = useHasFeature('incognito')
   const tier = useEffectiveTier()
   const entitlement = profile?.entitlement
   /**
@@ -294,10 +302,10 @@ export default function SettingsScreen() {
           subtitle={t('settings.incognitoBody')}
           accessory={
             <View style={styles.gated}>
-              {isPro ? null : <Text style={styles.proTag}>{incognitoBadge}</Text>}
+              {canIncognito ? null : <Text style={styles.proTag}>{incognitoBadge}</Text>}
               <Toggle
                 accessibilityLabel={t('settings.incognito')}
-                disabled={!isPro}
+                disabled={!canIncognito}
                 value={profile?.privacy.incognito ?? false}
                 onValueChange={(incognito) => update.mutate({ privacy: { incognito } })}
               />

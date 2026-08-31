@@ -81,18 +81,21 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     title: 'paywall.advancedFilters',
     body: 'paywall.advancedFiltersBody',
   },
-  unlimitedTranslation: {
-    title: 'paywall.unlimitedTranslation',
-    body: 'paywall.unlimitedTranslationBody',
-    vars: { count: PLAN_LIMITS.free.translationsPer24h ?? 0 },
+  /*
+   * Both of these are the *paid tier's* number, not the free one — unlike the
+   * chat allowance above, which sells by naming the limit you are hitting.
+   * Translation is no longer unlimited anywhere, so the honest pitch is how
+   * much more you get, and that differs per column.
+   */
+  translationQuota: {
+    title: 'paywall.translationQuota',
+    body: 'paywall.translationQuotaBody',
+    vars: { count: PLAN_LIMITS.pro.translationsPer24h },
   },
-  profileViewerIdentities: {
-    title: 'paywall.whoViewed',
-    body: 'paywall.whoViewedBody',
-  },
-  incognito: {
-    title: 'paywall.incognito',
-    body: 'paywall.incognitoBody',
+  learningLanguages: {
+    title: 'paywall.learningLanguages',
+    body: 'paywall.learningLanguagesBody',
+    vars: { count: PLAN_LIMITS.pro.maxLearningLanguages },
   },
   welcomePack: {
     title: 'paywall.welcomePack',
@@ -112,6 +115,30 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
  * is what happened to `nearby` and has not yet happened to `copilot`.
  */
 const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boolean }> = {
+  profileViewerIdentities: {
+    title: 'paywall.whoViewed',
+    body: 'paywall.whoViewedBody',
+    shipped: true,
+  },
+  incognito: {
+    title: 'paywall.incognito',
+    body: 'paywall.incognitoBody',
+    shipped: true,
+  },
+  // The same two benefits as the Fluent column, at the higher number. See the
+  // note on `PRO_PLUS_BENEFITS` for why they are repeated rather than implied.
+  translationQuota: {
+    title: 'paywall.translationQuota',
+    body: 'paywall.translationQuotaBody',
+    vars: { count: PLAN_LIMITS.pro_plus.translationsPer24h },
+    shipped: true,
+  },
+  learningLanguages: {
+    title: 'paywall.learningLanguages',
+    body: 'paywall.learningLanguagesBody',
+    vars: { count: PLAN_LIMITS.pro_plus.maxLearningLanguages },
+    shipped: true,
+  },
   nearby: {
     // The body says what it does *and* what it costs the reader, because the
     // second half is the part they would otherwise find out after paying.
@@ -136,8 +163,8 @@ const PRO_PLUS_BENEFIT_COPY: Record<ProPlusBenefit, BenefitCopy & { shipped: boo
  */
 const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
-  profileViewerIdentities: BENEFIT_COPY.profileViewerIdentities.title,
-  incognito: BENEFIT_COPY.incognito.title,
+  profileViewerIdentities: PRO_PLUS_BENEFIT_COPY.profileViewerIdentities.title,
+  incognito: PRO_PLUS_BENEFIT_COPY.incognito.title,
   nearby: PRO_PLUS_BENEFIT_COPY.nearby.title,
   copilot: PRO_PLUS_BENEFIT_COPY.copilot.title,
 }

@@ -29,8 +29,15 @@ export interface PlanLimits {
    * conversation the user has not spoken in before.
    */
   initiationsPer24h: Limit
-  /** Machine translations per rolling 24 hours. */
-  translationsPer24h: Limit
+  /**
+   * Machine translations per rolling 24 hours.
+   *
+   * Finite on **every** tier, unlike the other quotas here. Translation is the
+   * one feature with a real per-request cost — Google bills per character — so
+   * "unlimited" was a promise made against somebody else's meter. A number
+   * high enough that ordinary use never meets it is honest; the word was not.
+   */
+  translationsPer24h: number
   /**
    * Corrections written per rolling 24 hours.
    *
@@ -65,9 +72,21 @@ export interface PlanLimits {
    * include.
    */
   advancedFilters: boolean
-  /** See *who* viewed the profile, not just how many. */
+  /**
+   * See *who* viewed the profile, not just how many.
+   *
+   * Polyglot, not Fluent. Fluent sells what makes the app work better for you
+   * — unlimited conversations, the filters, more languages. This one is about
+   * other people, which is what the higher tier is for.
+   */
   profileViewerIdentities: boolean
-  /** Browse without leaving a profileViews record. */
+  /**
+   * Browse without leaving a profileViews record.
+   *
+   * Polyglot, for the same reason as `profileViewerIdentities`: the two are a
+   * pair — one is seeing who looked, the other is not being seen looking — and
+   * splitting them across tiers would sell half a promise.
+   */
   incognito: boolean
   /**
    * `hideOnlineStatus` used to live here as a paid capability and is now free
@@ -157,12 +176,12 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
   },
   pro: {
     initiationsPer24h: null,
-    translationsPer24h: null,
+    translationsPer24h: 300,
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
-    profileViewerIdentities: true,
-    incognito: true,
+    profileViewerIdentities: false,
+    incognito: false,
     nearby: false,
     copilot: false,
     maxPhotos: 6,
@@ -177,7 +196,7 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
    */
   pro_plus: {
     initiationsPer24h: null,
-    translationsPer24h: null,
+    translationsPer24h: 1000,
     correctionsPer24h: null,
     mediaPer24h: null,
     advancedFilters: true,
@@ -242,7 +261,7 @@ export function quotaLimit(tier: PlanTier, kind: QuotaKind): Limit {
  * `403 UPGRADE_REQUIRED` payload. `hasFeature` reads these directly off
  * `PLAN_LIMITS`, so this list cannot drift from what the server enforces.
  */
-export const PRO_FEATURES = ['advancedFilters', 'profileViewerIdentities', 'incognito'] as const
+export const PRO_FEATURES = ['advancedFilters'] as const
 export type ProFeature = (typeof PRO_FEATURES)[number]
 
 /**
@@ -252,7 +271,12 @@ export type ProFeature = (typeof PRO_FEATURES)[number]
  * and, worse, made a Pro subscriber's refused nearby request look like a bug
  * in the guard rather than the tier boundary working.
  */
-export const PRO_PLUS_FEATURES = ['nearby', 'copilot'] as const
+export const PRO_PLUS_FEATURES = [
+  'profileViewerIdentities',
+  'incognito',
+  'nearby',
+  'copilot',
+] as const
 export type ProPlusFeature = (typeof PRO_PLUS_FEATURES)[number]
 
 /** Every gated capability, whichever tier unlocks it. */
@@ -275,9 +299,8 @@ export type PlanFeature = ProFeature | ProPlusFeature
 export const PRO_BENEFITS = [
   'unlimitedInitiations',
   'advancedFilters',
-  'unlimitedTranslation',
-  'profileViewerIdentities',
-  'incognito',
+  'translationQuota',
+  'learningLanguages',
   /**
    * A one-off welcome pack — cosmetics and streak freezes, never token. See
    * `PRO_WELCOME_PACKS`, and the note there on why granting token for money is
@@ -296,7 +319,24 @@ export type ProBenefit = (typeof PRO_BENEFITS)[number]
  * Pro+ one, so the superset relationship is visible in the copy instead of
  * being re-typed and left to drift.
  */
-export const PRO_PLUS_BENEFITS = ['nearby', 'copilot'] as const
+/**
+ * What Polyglot adds **on top of** Fluent — not a replacement list.
+ *
+ * `translationQuota` and `learningLanguages` appear in *both* lists on purpose:
+ * the paywall renders Fluent's benefits, then these plus "everything in
+ * Fluent", and Polyglot genuinely raises both of those *numbers* again.
+ * Omitting them would let "everything in Fluent" imply the same allowance,
+ * which is the quiet kind of mis-sell the `shipped` flag on the copy table
+ * exists to prevent.
+ */
+export const PRO_PLUS_BENEFITS = [
+  'profileViewerIdentities',
+  'incognito',
+  'nearby',
+  'copilot',
+  'translationQuota',
+  'learningLanguages',
+] as const
 export type ProPlusBenefit = (typeof PRO_PLUS_BENEFITS)[number]
 
 export function hasFeature(tier: PlanTier, feature: PlanFeature): boolean {

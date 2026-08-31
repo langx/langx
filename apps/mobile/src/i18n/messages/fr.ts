@@ -992,8 +992,11 @@ export const fr: Localized<EnMessages> = {
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
     advancedFiltersBody: 'Cherche par genre et par ville.',
-    unlimitedTranslation: 'Traduction illimitée',
-    unlimitedTranslationBody: '{count} par jour sur le forfait gratuit.',
+    translationQuota: 'Traduis autant que nécessaire',
+    translationQuotaBody:
+      '{count} traductions par jour — bien plus qu’une conversation n’en utilise.',
+    learningLanguages: 'Plus de langues à la fois',
+    learningLanguagesBody: 'Apprends {count} langues en parallèle, pas une.',
     whoViewed: 'Qui t’a vu',
     whoViewedBody: 'Pas seulement le nombre — vois qui c’est.',
     incognito: 'Navigation incognito',
