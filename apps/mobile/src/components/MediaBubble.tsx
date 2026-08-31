@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import type { Media } from '@langx/shared'
 import { makeStyles, useTheme } from '../lib/theme'
+import { useT } from '../i18n'
+import { SLOW_PLAYBACK_RATE, NORMAL_PLAYBACK_RATE } from '../lib/playbackRate'
 
 function formatSeconds(total: number): string {
   const minutes = Math.floor(total / 60)
@@ -28,9 +30,27 @@ function formatSeconds(total: number): string {
 export function AudioBubble({ media, mine = false }: { media: Media; mine?: boolean }) {
   const { colors } = useTheme()
   const styles = useStyles()
+  const t = useT()
 
   const player = useAudioPlayer(media.url)
   const status = useAudioPlayerStatus(player)
+
+  /*
+   * Half speed, for the sentence you cannot quite catch.
+   *
+   * A second, slower recording was the other way to do this, and it costs a
+   * schema field, a second upload, a second `assertMediaAllowed` and a ruling
+   * on whether it spends a second unit of the media quota — to make somebody
+   * say the same thing twice before their voice note is any use. Pitch
+   * correction is what makes the cheap version the right one: at 0.5x without
+   * it, a slowed voice is a growl and nobody learns pronunciation from a
+   * growl.
+   *
+   * Local state rather than a preference: this is per sentence, not per
+   * person. The one you need slowed is the one you did not follow, and the
+   * next one is usually fine.
+   */
+  const [slow, setSlow] = useState(false)
 
   const total = media.durationSeconds ?? status.duration ?? 0
   const elapsed = status.currentTime ?? 0
@@ -66,6 +86,39 @@ export function AudioBubble({ media, mine = false }: { media: Media; mine?: bool
       <Text style={[styles.duration, { color: colors.textFaint }]}>
         {formatSeconds(status.playing || elapsed > 0 ? elapsed : total)}
       </Text>
+
+      {/*
+        Marked only when it is on. An always-visible "1x" beside every voice
+        note in a thread is a control nobody asked for; the off state is the
+        absence of one.
+      */}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ selected: slow }}
+        accessibilityLabel={t(slow ? 'chat.playAtNormalSpeed' : 'chat.playSlowly')}
+        hitSlop={8}
+        onPress={() => {
+          const next = !slow
+          setSlow(next)
+          /*
+           * `'high'` is not decoration, and it does something different on
+           * each platform. iOS reads it as the pitch algorithm and already
+           * corrects pitch by default; Android ignores the argument entirely
+           * and preserves pitch anyway; **web only turns pitch correction on
+           * when this exact value is passed** — `AudioPlayer.web.ts` sets
+           * `preservesPitch = (quality === 'high')`, starting from `false`.
+           * Drop it and the web build, which is the one at app2, plays a growl.
+           *
+           * Applied to the live player rather than saved for the next play, so
+           * a tap part-way through a word slows that word.
+           */
+          player.setPlaybackRate(next ? SLOW_PLAYBACK_RATE : NORMAL_PLAYBACK_RATE, 'high')
+        }}
+      >
+        <Text style={[styles.rate, { color: slow ? tint : colors.textFaint }]}>
+          {slow ? t('chat.speedSlow') : t('chat.speedNormal')}
+        </Text>
+      </Pressable>
     </View>
   )
 }
@@ -112,6 +165,9 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   track: { backgroundColor: colors.border, borderRadius: 2, flex: 1, height: 3 },
   trackFill: { borderRadius: 2, height: 3 },
   duration: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'] },
+  // Same size and tabular figures as the duration beside it, so "0:07" and
+  // "0.5x" sit on one line without the row shifting when either changes.
+  rate: { ...font.caption, fontSize: 11, fontVariant: ['tabular-nums'], fontWeight: '600' },
   image: { backgroundColor: colors.fill, borderRadius: radius.md, width: 220 },
   /** Holds a plausible slot until `onLoad` reports the real shape. */
   imageUnmeasured: { height: 220 },

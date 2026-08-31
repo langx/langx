@@ -1024,6 +1024,40 @@ is the one that counts. Both cosmetic conditions live under a single
 would have replaced the first rather than added to it, and the one that lost
 would have been the guard against paying twice for the same item.
 
+## A voice note plays at half speed, rather than being recorded twice
+
+The feature people ask for is "say it again, slowly", and the obvious build is
+a second recording: the speaker records the same sentence twice and the
+listener picks. That costs a field on `Media` — which is a single flat object
+on messages, posts and corrections alike — a second presigned upload, a second
+`assertMediaAllowed` call for the bucket check, and a ruling on whether two
+files spend one unit of the media quota or two. All so somebody has to say the
+same thing twice before their voice note is any use to a learner.
+
+`expo-audio` already does it: `setPlaybackRate` is in the version we ship, and
+the whole feature is a toggle in `AudioBubble`. Nothing on the server, nothing
+in the schema, no new upload, and it ships over the air.
+
+The two are not the same thing, and the cheap one is better for the common
+case. A second take is a person re-articulating; half speed is the same
+recording stretched. But the sentence somebody needs slowed is almost always
+one they nearly caught, and for that, stretching is the right tool — and it
+works on every voice note ever sent, including the 1,270 imported from v1,
+rather than only on the ones somebody thought to record twice.
+
+**Pitch correction is what makes it work at all**, and the argument that turns
+it on behaves differently on each platform. iOS corrects pitch by default and
+reads `'high'` as the algorithm; Android ignores the argument and preserves
+pitch anyway; **web starts with it off and only enables it when `'high'` is
+passed** — `AudioPlayer.web.ts` sets `preservesPitch = (quality === 'high')`.
+Dropping that argument would leave two platforms fine and turn the web build,
+which is the one on app2, into a growl. Nobody learns pronunciation from a
+growl.
+
+The toggle is local state, not a preference. This is per sentence, not per
+person: the note you need slowed is the one you did not follow, and the next
+one is usually fine.
+
 ## Countries are a compile-time table, like languages
 
 `profiles.country` was a free-text two-letter field, which meant the edit form
