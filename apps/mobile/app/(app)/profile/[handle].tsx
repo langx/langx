@@ -276,12 +276,18 @@ export default function ProfileScreen() {
             loading={setFollow.isPending}
             // No confirmation on unfollow. It is trivially reversible, and
             // `confirmAlert` is what blocking is for.
-            onPress={() =>
+            // Gated like `send()` above, and for the same reason: this is the
+            // primary button on the screen, so it is the write a guest reaches
+            // first. Without the guard the transport still catches it, but a
+            // round trip later and only after `onError` has already shown a
+            // toast that says nothing about needing an account.
+            onPress={() => {
+              if (!requireAccount(session?.user)) return
               setFollow.mutate(
                 { userId: user._id, following: !user.follow.viewerFollows },
                 { onError: () => showToast(t('profile.followFailed')) },
               )
-            }
+            }}
             style={styles.followButton}
           />
         )}

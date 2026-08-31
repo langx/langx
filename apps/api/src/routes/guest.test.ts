@@ -148,6 +148,20 @@ describe('guests', () => {
       },
       { method: 'POST', url: '/blocks', payload: { userId: 'someone' } },
       { method: 'POST', url: '/reports', payload: { userId: 'someone', reason: 'spam' } },
+
+      /*
+       * Behind `requireVerifiedEmail` rather than `requireMember`, and in the
+       * table for that reason. They were already closed to a guest — an
+       * anonymous user is never `emailVerified` — but they answered with
+       * `EMAIL_NOT_VERIFIED`, and a guest has no email to verify, so the
+       * client had nowhere to send them and fell through to a generic toast.
+       * Found on `Follow`, which is the primary button on a profile.
+       */
+      { method: 'POST', url: '/profiles/someone/follow' },
+      { method: 'POST', url: '/posts', payload: { body: 'hello', language: 'tr' } },
+      { method: 'PUT', url: '/likes', payload: { targetType: 'post', targetId: 'x' } },
+      { method: 'POST', url: '/conversations', payload: { toUserId: 'someone', body: 'hi' } },
+      { method: 'POST', url: '/translate', payload: { text: 'merhaba', targetLang: 'en' } },
     ]
 
     for (const write of writes) {
