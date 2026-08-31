@@ -714,6 +714,7 @@ export const es: Localized<EnMessages> = {
     updateLocation: 'Actualizar mi ubicación',
     updating: 'Actualizando…',
     languageSection: 'Idioma',
+    appLanguage: 'Idioma de la app',
     languageAuto: 'Dispositivo ({name})',
     blockedPeople: 'Personas bloqueadas',
     showIntro: 'Ver la introducción otra vez',

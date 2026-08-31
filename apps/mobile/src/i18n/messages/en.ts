@@ -748,6 +748,7 @@ export const en = {
     updateLocation: 'Update my location',
     updating: 'Updating…',
     languageSection: 'Language',
+    appLanguage: 'App language',
     languageAuto: 'Device ({name})',
     blockedPeople: 'Blocked people',
     showIntro: 'Show intro again',
