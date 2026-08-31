@@ -943,8 +943,6 @@ export const tr: Localized<EnMessages> = {
     whoViewedBody: 'Sadece sayı değil — kim olduklarını gör.',
     incognito: 'Gizli gezinme',
     incognitoBody: 'Profillere iz bırakmadan bak.',
-    hideOnline: 'Çevrimiçiyken gizlen',
-    hideOnlineBody: 'Kimse yeşil noktanı görmez. Sen onlarınkini görürsün.',
     nearby: 'Yakında',
     nearbyBody:
       'Keşfet’i mesafeye göre sırala. Kendi yaklaşık konumunu ister — saklanmadan önce yuvarlanır ve başkalarına yalnızca kabaca bir mesafe olarak gösterilir.',

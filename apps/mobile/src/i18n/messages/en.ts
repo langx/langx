@@ -978,8 +978,6 @@ export const en = {
     whoViewedBody: 'Not just the count — see who they are.',
     incognito: 'Incognito browsing',
     incognitoBody: 'Look at profiles without leaving a trace.',
-    hideOnline: 'Hide when you are online',
-    hideOnlineBody: 'Nobody sees your green dot. You still see theirs.',
     nearby: 'Nearby',
     nearbyBody:
       'Sort discovery by distance. Needs your own approximate location — rounded before it is stored, and shown to others only as a rough distance.',

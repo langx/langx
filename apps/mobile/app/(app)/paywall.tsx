@@ -96,10 +96,6 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     title: 'paywall.incognito',
     body: 'paywall.incognitoBody',
   },
-  hideOnlineStatus: {
-    title: 'paywall.hideOnline',
-    body: 'paywall.hideOnlineBody',
-  },
   welcomePack: {
     title: 'paywall.welcomePack',
     body: 'paywall.welcomePackBody',
@@ -143,7 +139,6 @@ const FEATURE_TITLE: Record<PlanFeature, MessageKey> = {
   advancedFilters: BENEFIT_COPY.advancedFilters.title,
   profileViewerIdentities: BENEFIT_COPY.profileViewerIdentities.title,
   incognito: BENEFIT_COPY.incognito.title,
-  hideOnlineStatus: BENEFIT_COPY.hideOnlineStatus.title,
   nearby: PRO_PLUS_BENEFIT_COPY.nearby.title,
   copilot: PRO_PLUS_BENEFIT_COPY.copilot.title,
 }

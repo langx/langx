@@ -937,8 +937,6 @@ export const ptBR: Localized<EnMessages> = {
     whoViewedBody: 'Não só o número — veja quem são.',
     incognito: 'Navegação anônima',
     incognitoBody: 'Olhe perfis sem deixar rastro.',
-    hideOnline: 'Esconda-se quando estiver on-line',
-    hideOnlineBody: 'Ninguém vê seu pontinho verde. Você continua vendo o deles.',
     nearby: 'Por perto',
     nearbyBody:
       'Ordene Descobrir por distância. Precisa da sua localização aproximada — arredondada antes de ser guardada e mostrada aos outros só como uma distância aproximada.',

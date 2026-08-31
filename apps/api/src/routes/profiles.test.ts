@@ -1101,21 +1101,29 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
         payload: { privacy },
       })
 
-    it('refuses to turn it on without a paid tier, naming the feature', async () => {
+    /**
+     * Free, and it has to be: the app renders `lastActiveAt` as "last seen",
+     * which publishes something about a dormant user that nothing had ever
+     * drawn before. Charging for the switch that turns off a disclosure we
+     * have just started making is not defensible, so this refused with a 403
+     * until presence shipped.
+     */
+    it('lets a free account turn it on', async () => {
       const free = await onboarded('hide-free@example.com', 'hidefree')
       const response = await patchPrivacy(free, { hideOnlineStatus: true })
+      expect(response.statusCode, response.body).toBe(200)
 
-      expect(response.statusCode).toBe(403)
-      expect(response.json<{ code: string; feature: string }>()).toMatchObject({
-        code: 'UPGRADE_REQUIRED',
-        feature: 'hideOnlineStatus',
-      })
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: free.userId })
+      expect(profile?.privacy.hideOnlineStatus).toBe(true)
     })
 
     /**
-     * Gated on write, not on read — unlike incognito. Re-checking at read time
-     * would make a lapsed subscription silently expose someone as online, so
-     * turning it *off* has to work on any tier or people get stuck hidden.
+     * Never re-checked at read time — unlike incognito. That mattered while the
+     * flag was paid (a lapsed subscription would have silently exposed someone
+     * as online) and it still holds now that it is free: a privacy setting must
+     * not change under someone because of anything except their own tap.
      */
     it('always allows turning it off, on any tier', async () => {
       const user = await onboarded('hide-off@example.com', 'hideoff')
@@ -1123,9 +1131,11 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.statusCode, response.body).toBe(200)
     })
 
-    it('reports a hidden Pro user as offline, and sends no lastActiveAt at all', async () => {
+    it('reports a hidden user as offline, and sends no lastActiveAt at all', async () => {
       const hider = await onboarded('hide-pro@example.com', 'hidepro')
       const viewer = await onboarded('hide-viewer@example.com', 'hideviewer')
+      // Still exercised on a paid tier: the flag is free now, and the point is
+      // that the tier does not enter into it either way.
       await makePro(hider.userId)
       expect((await patchPrivacy(hider, { hideOnlineStatus: true })).statusCode).toBe(200)
 
