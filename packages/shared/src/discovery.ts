@@ -72,11 +72,23 @@ export function isOnlineAt(lastActiveAt: Date | string, now: Date = new Date()):
  * as one of three things v2 took away from "free forever"; this gives most of
  * it back before that document is published.
  *
- * What stays paid is the pair that narrows *who*, not *how well they fit*.
- * `city` joins them: it is the finest-grained "near me" the app offers without
- * asking for coordinates.
+ * The rule that decides the rest: **a paid filter names somebody else's
+ * attribute; a free one names only your own.** `gender` and `city` take a
+ * value and point it at other people — they are ways of searching. The one
+ * that left, `onlyMyGender`, takes no value at all: it is resolved from the
+ * caller's own profile and is inert for anybody who did not disclose one, so
+ * there is no third party it can be aimed at.
+ *
+ * That rule replaces an earlier one. `onlyMyGender` was paid on the grounds
+ * that it is "used for safety rather than preference", and the two were gated
+ * together because splitting them looked harder to explain than it was worth.
+ * Both halves turned out to be wrong. Charging for it did not make anyone
+ * safer, and it is the one filter that can only ever make an already-small
+ * pool smaller — so the account most likely to hit the paywall is the one
+ * already being shown too few people, and what it learns is that the app is
+ * empty. It is a comfort setting, and comfort is not a thing to sell.
  */
-export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'onlyMyGender', 'city'] as const
+export const DISCOVERY_PRO_FILTER_KEYS = ['gender', 'city'] as const
 
 export const discoveryQuerySchema = z
   .object({
@@ -109,11 +121,9 @@ export const discoveryQuerySchema = z
      * query it is actually allowed to run.
      */
     radiusKm: z.coerce.number().min(1).max(NEARBY_MAX_KM).default(NEARBY_MAX_KM),
-    // Pro-only from here down.
-    gender: genderSchema.optional(),
     /**
-     * v1's "Match My Gender", kept because it is the one filter people use for
-     * a reason other than preference.
+     * v1's "Match My Gender". Free, and the only gender filter that is — see
+     * `DISCOVERY_PRO_FILTER_KEYS` for the line between them.
      *
      * Resolved on the server rather than translated into `gender` by the
      * client: only the server is certain what the viewer's own gender is, and
@@ -121,8 +131,15 @@ export const discoveryQuerySchema = z
      * send an unfiltered query that silently looked like it had applied.
      * Ignored when the viewer's own gender is `undisclosed` — "people like me"
      * cannot mean "people who also declined to say".
+     *
+     * That last clause is why `POST /profiles/me/gender` exists: `gender` is
+     * set once and never edited, so without a way to disclose one afterwards
+     * this toggle would be permanently dead for anybody who skipped the
+     * question at onboarding.
      */
     onlyMyGender: z.coerce.boolean().optional(),
+    // Pro-only from here down.
+    gender: genderSchema.optional(),
     /**
      * Free text, matched on `cityKey` rather than on itself — see `city.ts`.
      * Length-bounded for the same reason every other free-text query is: it

@@ -158,12 +158,6 @@ export const onboardingProfileSchema = z
 export type OnboardingProfileInput = z.infer<typeof onboardingProfileSchema>
 
 /**
- * Body of `PATCH /profiles/me`. Deliberately excludes `handle` (no rename —
- * changing it would break shared `/user/[handle]` links) and every
- * server-owned field (`entitlement`, `quota`, `streak`, `stats`, `avatarUrl`
- * — the last is set only via the upload-url confirm step, not free-form).
- */
-/**
  * Body of `PATCH /profiles/me/country`. Its own route and its own schema
  * because a country is not a field somebody types: it comes from the
  * connection at sign-up, and afterwards only from a location fix the device
@@ -176,11 +170,48 @@ export const countryFromLocationSchema = z.object({
 })
 export type CountryFromLocationInput = z.infer<typeof countryFromLocationSchema>
 
+/**
+ * Body of `POST /profiles/me/gender` — disclosing a gender that onboarding
+ * left as `undisclosed`.
+ *
+ * `undisclosed` is not in the enum, because this route is a one-way door and
+ * there is nothing to go back to: the repository's filter only matches a
+ * profile that is still `undisclosed`, so the value it writes is the last one
+ * that field will ever hold. Offering `undisclosed` here would be offering a
+ * no-op that reads like an undo.
+ *
+ * Its own route rather than a key on `updateProfileSchema` for the same reason
+ * `countryFromLocationSchema` has one: "written once, under a condition" is
+ * not a thing a general-purpose PATCH body can say, and a caller reading that
+ * schema should not have to know that one of its fields is secretly special.
+ */
+export const discloseGenderSchema = z.object({
+  gender: z.enum(['female', 'male', 'other']),
+})
+export type DiscloseGenderInput = z.infer<typeof discloseGenderSchema>
+
+/**
+ * Body of `PATCH /profiles/me`. Deliberately excludes `handle` (no rename —
+ * changing it would break shared `/user/[handle]` links) and every
+ * server-owned field (`entitlement`, `quota`, `streak`, `stats`, `avatarUrl`
+ * — the last is set only via the upload-url confirm step, not free-form).
+ *
+ * `gender` and `birthDate` are excluded too, and for a reason the list above
+ * does not cover: both are inputs to somebody *else's* discovery filter
+ * (`discoverProfiles` matches on `gender` and on a `birthDate` band). A field
+ * that decides whose results you appear in cannot also be a field you can
+ * retype — that is not editing a profile, it is stepping in and out of other
+ * people's searches at will. `birthDate` has always been absent from here;
+ * `gender` joining it closes the half that was left open.
+ *
+ * The one move that is still allowed is `undisclosed` → a real value, once,
+ * through `discloseGenderSchema` above. It cannot be used to cycle, because
+ * there is no way back.
+ */
 export const updateProfileSchema = z
   .object({
     displayName: displayNameSchema,
     bio: bioSchema,
-    gender: genderSchema,
     nativeLanguages: nativeLanguagesSchema,
     learning: learningLanguagesSchema,
     interests: interestsSchema,

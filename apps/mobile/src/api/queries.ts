@@ -1143,3 +1143,23 @@ export function useUpdateProfile() {
     },
   })
 }
+
+/**
+ * Discloses a gender onboarding left blank. Separate from `useUpdateProfile`
+ * because the server route is separate, and for the same reason: it writes a
+ * field that cannot be written twice, so it must not ride along in a body that
+ * a screen resends every time somebody edits their bio.
+ */
+export function useDiscloseGender() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (gender: 'female' | 'male' | 'other') =>
+      api.post<MeProfile>('/profiles/me/gender', { gender }),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(keys.me, profile)
+      // The filter row reads `me.gender` to decide whether `onlyMyGender` does
+      // anything, and discovery results change the moment it does.
+      void queryClient.invalidateQueries({ queryKey: ['discovery'] })
+    },
+  })
+}

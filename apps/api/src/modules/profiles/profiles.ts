@@ -4,6 +4,7 @@ import {
   ageFromBirthDate,
   cityKey,
   PLAN_LIMITS,
+  type DiscloseGenderInput,
   type GuestProfileInput,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
@@ -356,6 +357,48 @@ export async function setCountryFromLocation(
   )
   if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
   return updated
+}
+
+/**
+ * Discloses a gender that onboarding left as `undisclosed`. Once.
+ *
+ * `gender` is not editable — see `updateProfileSchema`, which excludes it
+ * alongside `birthDate` because both decide whose discovery results you turn
+ * up in. This is the single exception, and it is one-way: `undisclosed` is the
+ * only value it will write over, so nobody can cycle through genders and step
+ * in and out of other people's searches. Going the other way is not offered
+ * either — `discloseGenderSchema` has no `undisclosed` member.
+ *
+ * It exists because the alternative is a trap. `onlyMyGender` is inert for an
+ * undisclosed viewer by design, and that filter is free now, so locking the
+ * field outright would leave everybody who skipped the question at onboarding
+ * permanently unable to use it — while the app kept telling them, in eight
+ * languages, to add their gender to their profile.
+ *
+ * The condition lives in the filter rather than in a preceding read, for the
+ * reason every other guard in this codebase does: two taps that race would
+ * both pass a check-then-write, and the second would overwrite the first.
+ */
+export async function discloseGender(
+  db: Db,
+  userId: string,
+  gender: DiscloseGenderInput['gender'],
+): Promise<Profile> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const updated = await profiles.findOneAndUpdate(
+    { _id: userId, gender: 'undisclosed' },
+    { $set: { gender, updatedAt: new Date() } },
+    { returnDocument: 'after' },
+  )
+  if (updated) return updated
+
+  // The filter matched nothing, which is two different situations. Separating
+  // them costs one read on a path that only runs when the write already
+  // failed, and the difference matters: one is a client bug, the other is a
+  // second tap on a button that should no longer be on screen.
+  const existing = await profiles.findOne({ _id: userId })
+  if (!existing) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Profile not found')
+  throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Gender has already been set')
 }
 
 /**

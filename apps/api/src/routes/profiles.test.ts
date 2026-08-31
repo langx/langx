@@ -204,6 +204,108 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
   })
 
   /**
+   * `gender` decides whose discovery results you appear in, so it is not a
+   * field to retype — the same reasoning that has always kept `birthDate` out
+   * of `PATCH /profiles/me`. The one move still allowed is answering the
+   * question if onboarding left it blank, and that is a one-way door.
+   */
+  describe('gender is set once', () => {
+    async function onboard(email: string, handleName: string, gender: string) {
+      const user = await newUser(email)
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: handleName, gender }),
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return user
+    }
+
+    it('drops gender from the update body instead of writing it', async () => {
+      const user = await onboard('gender-patch@example.com', 'genderpatch', 'female')
+
+      const response = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { bio: 'Still me', gender: 'male' },
+      })
+
+      // Not a 400: zod strips what the schema does not name, exactly as it
+      // does for `country` above. The bio lands, the gender does not.
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<Profile>().gender).toBe('female')
+      expect(response.json<Profile>().bio).toBe('Still me')
+    })
+
+    it('lets somebody who skipped the question answer it, once', async () => {
+      const user = await onboard('gender-disclose@example.com', 'genderdisclose', 'undisclosed')
+
+      const first = await app.inject({
+        method: 'POST',
+        url: '/profiles/me/gender',
+        headers: { cookie: user.cookie },
+        payload: { gender: 'male' },
+      })
+      expect(first.statusCode, first.body).toBe(200)
+      expect(first.json<Profile>().gender).toBe('male')
+
+      const second = await app.inject({
+        method: 'POST',
+        url: '/profiles/me/gender',
+        headers: { cookie: user.cookie },
+        payload: { gender: 'female' },
+      })
+      expect(second.statusCode).toBe(400)
+      expect(second.json()).toMatchObject({ code: 'VALIDATION_FAILED' })
+
+      const after = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(after?.gender).toBe('male')
+    })
+
+    it('refuses to reopen the question — there is no way back to undisclosed', async () => {
+      const user = await onboard('gender-reopen@example.com', 'genderreopen', 'female')
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles/me/gender',
+        headers: { cookie: user.cookie },
+        payload: { gender: 'undisclosed' },
+      })
+      // Refused by the schema, not by the repository: `undisclosed` is not a
+      // member of `discloseGenderSchema`, so it never reaches the filter.
+      expect(response.statusCode).toBe(400)
+    })
+
+    /**
+     * The condition is in the update's filter rather than in a read before it,
+     * so two taps that race cannot both win. Without that, the second would
+     * overwrite the first and the field would be editable after all — by
+     * anyone willing to tap twice quickly.
+     */
+    it('settles concurrent disclosures on one answer', async () => {
+      const user = await onboard('gender-race@example.com', 'genderrace', 'undisclosed')
+
+      const responses = await Promise.all(
+        (['female', 'male', 'other'] as const).map((gender) =>
+          app.inject({
+            method: 'POST',
+            url: '/profiles/me/gender',
+            headers: { cookie: user.cookie },
+            payload: { gender },
+          }),
+        ),
+      )
+
+      expect(responses.filter((r) => r.statusCode === 200)).toHaveLength(1)
+      expect(responses.filter((r) => r.statusCode === 400)).toHaveLength(2)
+    })
+  })
+
+  /**
    * The profile screen used to offer a "send a message" box to somebody you
    * were already talking to, and sending from it failed — `startConversation`
    * refuses a second thread. The screen needs to know, and only the viewer's

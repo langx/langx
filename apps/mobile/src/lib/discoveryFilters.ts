@@ -21,11 +21,16 @@ export interface DiscoveryFilters {
   ageMax?: number
   /** Free. */
   country?: string
+  /**
+   * Free, and the only gender filter that is: it names the caller's own
+   * gender rather than anybody else's, and the server resolves it from their
+   * profile. See `DISCOVERY_PRO_FILTER_KEYS`.
+   */
+  onlyMyGender?: boolean
   // Pro from here down — see `DISCOVERY_PRO_FILTER_KEYS`, which is the one
   // list, and which the server answers 403 against rather than ignoring the
   // parameter.
   gender?: Gender
-  onlyMyGender?: boolean
   /** Pro. Free text, matched on a folded key server-side. */
   city?: string
 }
@@ -144,5 +149,11 @@ export function withoutProFilters(filters: DiscoveryFilters): DiscoveryFilters {
   if (filters.ageMin !== undefined) free.ageMin = filters.ageMin
   if (filters.ageMax !== undefined) free.ageMax = filters.ageMax
   if (filters.country) free.country = filters.country
+  // Free since the paywall stopped running through the middle of the gender
+  // pair. An allow-list is the safe shape for this function — a key nobody
+  // remembers to add is dropped, not leaked — but it does mean a filter that
+  // *becomes* free has to be added here as well as removed from `PRO_KEYS`,
+  // and forgetting shows up only as a filter that silently stops applying.
+  if (filters.onlyMyGender) free.onlyMyGender = filters.onlyMyGender
   return free
 }

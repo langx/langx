@@ -128,7 +128,7 @@ This is communication work, and it is part of the delivery:
 | **Match model**     | **None.** No like/match/swipe — a direct "message" CTA on every profile and list row. Access is governed purely by quota: Pro unlimited, free 5 new conversations per rolling 24h. No `matches` collection, and no like/match/swipe **gate**. A `likes` collection does exist, but it is a signal on feed _content_ (`targetType: 'post' \| 'correction'`) — never on a person, and it opens no channel |
 | Billing             | RevenueCat as the single entitlement system: StoreKit/Play Billing natively, RevenueCat Web + **our own Stripe Billing account** on the web                                                                                                                                                                                                                                                             |
 | Free quota          | **5 new conversations per rolling 24 hours**; replying is **unlimited**                                                                                                                                                                                                                                                                                                                                 |
-| Fluent bundle       | Unlimited conversations · advanced filters (gender, only-my-gender, city) · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                      |
+| Fluent bundle       | Unlimited conversations · advanced filters (gender, city) · 300 translations a day · 2 languages learned, 2 spoken                                                                                                                                                                                                                                                                                      |
 | Polyglot bundle     | Everything in Fluent · who viewed me + incognito · 1000 translations a day · 5 languages learned, 5 spoken · **Nearby** (distance-sorted discovery; sharing a location stays free) · AI copilot (not built)                                                                                                                                                                                             |
 | Pricing             | Monthly + yearly, 7-day trial, regional pricing                                                                                                                                                                                                                                                                                                                                                         |
 | **Product promise** | **Changes** — langx.io + Terms + privacy + store listings get rewritten (section above)                                                                                                                                                                                                                                                                                                                 |
@@ -275,20 +275,20 @@ The tiers are `free | pro | pro_plus` in code and **Free**, **Fluent** and
 entitlement identifier cannot be renamed after creation, so the display names
 live in `TIER_NAMES` and the identifiers never move.
 
-|                            | Free                         | Fluent                         | Polyglot       |
-| -------------------------- | ---------------------------- | ------------------------------ | -------------- |
-| Starting new conversations | **5** per rolling 24h        | Unlimited                      | Unlimited      |
-| Replying                   | **Unlimited**                | Unlimited                      | Unlimited      |
-| Filters                    | Language, country, age, CEFR | + gender, only-my-gender, city | same as Fluent |
-| Sort by distance (Nearby)  | —                            | —                              | **Yes**        |
-| Translation                | **20** per rolling 24h       | **300**                        | **1000**       |
-| Languages you are learning | **1**                        | **2**                          | **5**          |
-| Languages you speak        | **1**                        | **2**                          | **5**          |
-| **Message correction**     | **Unlimited**                | **Unlimited**                  | **Unlimited**  |
-| Who viewed me              | Count only                   | Count only                     | **Identities** |
-| Incognito                  | —                            | —                              | **Yes**        |
-| Hiding that you are online | **Yes**                      | **Yes**                        | **Yes**        |
-| AI copilot                 | —                            | —                              | **Not built**  |
+|                            | Free                                         | Fluent         | Polyglot       |
+| -------------------------- | -------------------------------------------- | -------------- | -------------- |
+| Starting new conversations | **5** per rolling 24h                        | Unlimited      | Unlimited      |
+| Replying                   | **Unlimited**                                | Unlimited      | Unlimited      |
+| Filters                    | Language, country, age, CEFR, only-my-gender | + gender, city | same as Fluent |
+| Sort by distance (Nearby)  | —                                            | —              | **Yes**        |
+| Translation                | **20** per rolling 24h                       | **300**        | **1000**       |
+| Languages you are learning | **1**                                        | **2**          | **5**          |
+| Languages you speak        | **1**                                        | **2**          | **5**          |
+| **Message correction**     | **Unlimited**                                | **Unlimited**  | **Unlimited**  |
+| Who viewed me              | Count only                                   | Count only     | **Identities** |
+| Incognito                  | —                                            | —              | **Yes**        |
+| Hiding that you are online | **Yes**                                      | **Yes**        | **Yes**        |
+| AI copilot                 | —                                            | —              | **Not built**  |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
@@ -329,7 +329,9 @@ _provides_ a paying one. `PLAN_LIMITS.correctionsPer24h = null` on both tiers.
 "who viewed me" were free in v1. Moving gender, city and "who viewed me"
 behind a paid plan is a deliberate change of
 promise — the communication items above are part of that decision, not
-optional.
+optional. Level, age, country and only-my-gender have since been given back;
+the paid line is now "a filter that names somebody else's attribute", which
+leaves `gender` and `city`.
 
 ### Entitlement flow
 
@@ -532,7 +534,7 @@ write to them directly and never change their shape.
   _id: userId, handle (unique), displayName, avatarUrl,
   photos: [{ url, createdAt }],
   bio, birthDate,
-  gender: 'female' | 'male' | 'other' | 'undisclosed',
+  gender: 'female' | 'male' | 'other' | 'undisclosed',   ← set once, like birthDate
   country, city, timezone, timezoneUpdatedAt,
   location: { type: 'Point', coordinates: [lng, lat] },
   nativeLanguages: [{ code: 'tr' }],
@@ -567,7 +569,11 @@ no location out of Nearby without a filter of its own), unique `handle`, and a
 text index on `displayName + bio`.
 
 A user who picks `gender: 'undisclosed'` does not appear in gender-filtered
-results, and onboarding says so.
+results, and onboarding says so. Neither `gender` nor `birthDate` is editable
+afterwards — both decide whose results you appear in, so neither belongs in a
+free-form PATCH. `POST /profiles/me/gender` is the one exception: it answers
+the question if onboarding left it blank, once, and cannot write over an
+answer that is already there.
 
 **`conversations`** — no match gate, a conversation starts directly. Unique
 `pairKey: '<minId>_<maxId>'` is the one thing `matches` used to provide: two
@@ -621,7 +627,7 @@ The language list and CEFR levels are constants in `packages/shared`.
 $match:    discoverable, !deleted, !blocked (either direction),
            nativeLanguages.code ∈ my learning,      ← mutual fit
            learning.code ∈ my nativeLanguages
-           country / age / CEFR (free), [if Fluent] gender / city
+           country / age / CEFR / only-my-gender (free), [if Fluent] gender / city
 $addFields onlineBucket = active in the last 5 min AND not hiding it → 1/0
 $addFields score = language fit + shared interests + activity recency
 $sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination

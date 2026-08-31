@@ -538,7 +538,6 @@ describe('Faz 3 — discovery aggregation', () => {
         learning: [{ code: 'sk', level: 'intermediate', priority: 1 }],
         gender: 'female',
       })
-      await makePro(viewer.userId)
 
       const sameGender = await newUser('same-gender-match@example.com', {
         nativeLanguages: [{ code: 'sk' }],
@@ -568,7 +567,6 @@ describe('Faz 3 — discovery aggregation', () => {
         learning: [{ code: 'mk', level: 'intermediate', priority: 1 }],
         gender: 'undisclosed',
       })
-      await makePro(viewer.userId)
 
       const female = await newUser('undisclosed-peer-f@example.com', {
         nativeLanguages: [{ code: 'mk' }],
@@ -587,11 +585,17 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(handles).toContain(male.handle)
     })
 
-    it('is a Pro filter like the rest — a free account gets 403, not a wider list', async () => {
+    /**
+     * It used to be paid, on the grounds that it is the one filter used for
+     * safety rather than preference. It is free now on the opposite reading:
+     * it can only ever make an already-small pool smaller, so the account most
+     * likely to hit the paywall was the one already being shown too few
+     * people. See `DISCOVERY_PRO_FILTER_KEYS`.
+     */
+    it('is free — it names the caller own gender, not somebody else', async () => {
       const viewer = await newUser('free-same-gender@example.com', { gender: 'female' })
       const response = await discover(viewer, 'onlyMyGender=true')
-      expect(response.statusCode).toBe(403)
-      expect(response.json()).toMatchObject({ code: 'UPGRADE_REQUIRED' })
+      expect(response.statusCode).toBe(200)
     })
 
     it('refuses a gender and "my gender" at once rather than silently picking one', async () => {
@@ -609,13 +613,14 @@ describe('Faz 3 — discovery aggregation', () => {
     })
 
     /**
-     * Level, age and country used to be Pro. They are how somebody finds a
-     * partner they can actually talk to, and charging for that made the free
-     * tier worse at the one thing the product is for — so the test that
-     * matters is the one asserting a *free* account gets a list back.
+     * Level, age and country used to be Pro, and `onlyMyGender` joined them.
+     * They are how somebody finds a partner they can actually talk to, and
+     * charging for that made the free tier worse at the one thing the product
+     * is for — so the test that matters is the one asserting a *free* account
+     * gets a list back.
      */
-    it('lets a free account filter by level, age and country', async () => {
-      const viewer = await newUser('free-now-viewer@example.com')
+    it('lets a free account filter by level, age, country and its own gender', async () => {
+      const viewer = await newUser('free-now-viewer@example.com', { gender: 'female' })
       for (const query of [
         'minLevel=beginner',
         'maxLevel=fluent',
@@ -624,6 +629,7 @@ describe('Faz 3 — discovery aggregation', () => {
         'ageMax=40',
         'ageMin=25&ageMax=40',
         'country=US',
+        'onlyMyGender=true',
       ]) {
         const response = await discover(viewer, query)
         expect(response.statusCode, `${query}: ${response.body}`).toBe(200)
@@ -632,7 +638,7 @@ describe('Faz 3 — discovery aggregation', () => {
 
     it('still refuses a free account the two filters that stayed paid', async () => {
       const viewer = await newUser('free-still-paid@example.com')
-      for (const query of ['gender=female', 'onlyMyGender=true', 'city=Istanbul']) {
+      for (const query of ['gender=female', 'city=Istanbul']) {
         const response = await discover(viewer, query)
         expect(response.statusCode, query).toBe(403)
         expect(response.json(), query).toMatchObject({
