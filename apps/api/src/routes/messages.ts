@@ -9,7 +9,7 @@ import {
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
-import { requireAuth } from '../middleware/requireAuth'
+import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
   listConversations,
   listMessages,
@@ -145,7 +145,7 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
   // notification before a socket connection exists) — still fans the
   // realtime `conversation:read` event out over `app.io`, so the sender's
   // UI updates the same way regardless of which transport the reader used.
-  app.post('/conversations/:id/read', { preHandler: requireAuth }, async (request, reply) => {
+  app.post('/conversations/:id/read', { preHandler: requireMember }, async (request, reply) => {
     const { id } = request.params as { id: string }
     const conversation = await markConversationRead(app.mongo.db, request.userId, id)
     const otherId = conversation.participants.find((p) => p !== request.userId)

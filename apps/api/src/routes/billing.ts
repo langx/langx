@@ -2,7 +2,7 @@ import { ERROR_CODES, revenueCatWebhookBodySchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
-import { requireAuth } from '../middleware/requireAuth'
+import { requireMember } from '../middleware/requireAuth'
 import { asFakeRevenueCat } from '../modules/billing/fakeRevenueCat'
 import { refreshEntitlement } from '../modules/billing/refresh'
 import { processRevenueCatWebhook } from '../modules/billing/webhook'
@@ -52,7 +52,7 @@ export const billingRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
-  app.post('/billing/refresh', { preHandler: requireAuth }, async (request, reply) => {
+  app.post('/billing/refresh', { preHandler: requireMember }, async (request, reply) => {
     const entitlement = await refreshEntitlement(app.mongo.db, app.revenueCat, request.userId)
     return reply.send(entitlement)
   })
@@ -87,7 +87,7 @@ function registerTestStoreRoute(app: Parameters<FastifyPluginAsyncZod>[0]): void
 
   app.post(
     '/billing/test-event',
-    { schema: { body: testEventBodySchema }, preHandler: requireAuth },
+    { schema: { body: testEventBodySchema }, preHandler: requireMember },
     async (request, reply) => {
       const { action, packageId } = request.body
       const userId = request.userId

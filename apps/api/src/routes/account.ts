@@ -1,6 +1,6 @@
 import { deleteAccountSchema, registerDeviceSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { requireAuth } from '../middleware/requireAuth'
+import { requireAuth, requireMember } from '../middleware/requireAuth'
 import {
   cancelDeletion,
   deletionStatus,
@@ -15,18 +15,18 @@ import { COLLECTIONS } from '../db/collections'
 export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/me/delete',
-    { preHandler: requireAuth, schema: { body: deleteAccountSchema } },
+    { preHandler: requireMember, schema: { body: deleteAccountSchema } },
     async (request, reply) => {
       const status = await requestDeletion(app.mongo.db, request.userId, request.body.reason)
       return reply.send(status)
     },
   )
 
-  app.post('/me/delete/cancel', { preHandler: requireAuth }, async (request, reply) => {
+  app.post('/me/delete/cancel', { preHandler: requireMember }, async (request, reply) => {
     return reply.send(await cancelDeletion(app.mongo.db, request.userId))
   })
 
-  app.get('/me/delete', { preHandler: requireAuth }, async (request, reply) => {
+  app.get('/me/delete', { preHandler: requireMember }, async (request, reply) => {
     return reply.send(await deletionStatus(app.mongo.db, request.userId))
   })
 
@@ -40,7 +40,7 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
    * the timestamp around. 204 either way — the client's next question is only
    * ever "should I still show this?", and the answer is no in both cases.
    */
-  app.post('/me/welcome-back/ack', { preHandler: requireAuth }, async (request, reply) => {
+  app.post('/me/welcome-back/ack', { preHandler: requireMember }, async (request, reply) => {
     await app.mongo.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
       {
         _id: request.userId,
@@ -62,14 +62,14 @@ export const accountRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.post(
     '/me/devices',
-    { preHandler: requireAuth, schema: { body: registerDeviceSchema } },
+    { preHandler: requireMember, schema: { body: registerDeviceSchema } },
     async (request, reply) => {
       await registerDevice(app.mongo.db, request.userId, request.body)
       return reply.code(204).send()
     },
   )
 
-  app.delete('/me/devices/:token', { preHandler: requireAuth }, async (request, reply) => {
+  app.delete('/me/devices/:token', { preHandler: requireMember }, async (request, reply) => {
     const { token } = request.params as { token: string }
     await unregisterDevice(app.mongo.db, request.userId, decodeURIComponent(token))
     return reply.code(204).send()

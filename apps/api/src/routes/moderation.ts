@@ -1,6 +1,6 @@
 import { blockSchema, moderationListQuerySchema, reportSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
-import { requireAuth } from '../middleware/requireAuth'
+import { requireAuth, requireMember } from '../middleware/requireAuth'
 import { blockUser, listBlocked, reportUser, unblockUser } from '../modules/moderation/blocks'
 import { getViewers } from '../modules/moderation/profileViews'
 
@@ -8,7 +8,7 @@ import { getViewers } from '../modules/moderation/profileViews'
 export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/blocks',
-    { preHandler: requireAuth, schema: { body: blockSchema } },
+    { preHandler: requireMember, schema: { body: blockSchema } },
     async (request, reply) => {
       const block = await blockUser(app.mongo.db, request.userId, request.body.userId)
       return reply.code(201).send(block)
@@ -23,7 +23,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
     },
   )
 
-  app.delete('/blocks/:userId', { preHandler: requireAuth }, async (request, reply) => {
+  app.delete('/blocks/:userId', { preHandler: requireMember }, async (request, reply) => {
     const { userId } = request.params as { userId: string }
     await unblockUser(app.mongo.db, request.userId, userId)
     return reply.code(204).send()
@@ -31,7 +31,7 @@ export const moderationRoutes: FastifyPluginAsyncZod = async (app) => {
 
   app.post(
     '/reports',
-    { preHandler: requireAuth, schema: { body: reportSchema } },
+    { preHandler: requireMember, schema: { body: reportSchema } },
     async (request, reply) => {
       const result = await reportUser(app.mongo.db, request.userId, request.body)
       // `xpFrozen` is deliberately not echoed to the reporter: whether someone

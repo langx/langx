@@ -7,6 +7,8 @@ declare module 'fastify' {
     userId: string
     userEmail: string
     emailVerified: boolean
+    /** Set by requireAuth. A guest browsing without an account of their own. */
+    isGuest: boolean
   }
 }
 
@@ -36,6 +38,35 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
   request.userId = session.user.id
   request.userEmail = session.user.email
   request.emailVerified = session.user.emailVerified
+  // `isAnonymous` is declared by the plugin with `input: false`, so a client
+  // cannot assert it — it is only ever true because Better Auth made the user.
+  request.isGuest = (session.user as { isAnonymous?: boolean }).isAnonymous === true
+}
+
+/**
+ * Layer on top of `requireAuth` for anything a guest must not do.
+ *
+ * Guests are `emailVerified: false`, so every route already behind
+ * `requireVerifiedEmail` is closed to them for free — a happy accident, and the
+ * strongest single argument for using Better Auth's anonymous plugin rather
+ * than inventing a session. This covers the rest: the writes that only ever
+ * needed `requireAuth`, which is most of them.
+ *
+ * A distinct code rather than `UNAUTHENTICATED`, because the client's answer is
+ * different. Unauthenticated means "sign in"; this means "you are browsing as a
+ * guest, and this needs an account" — which is an offer, not an error.
+ */
+export async function requireMember(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+  await requireAuth(request, reply)
+  if (reply.sent) return
+
+  if (request.isGuest) {
+    const body: ApiErrorBody = {
+      code: ERROR_CODES.GUEST_ACCOUNT,
+      message: 'Create an account to do that',
+    }
+    return reply.code(ERROR_STATUS.GUEST_ACCOUNT).send(body)
+  }
 }
 
 /**

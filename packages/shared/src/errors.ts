@@ -8,6 +8,15 @@ export const ERROR_CODES = {
   UNAUTHENTICATED: 'UNAUTHENTICATED',
   FORBIDDEN: 'FORBIDDEN',
   EMAIL_NOT_VERIFIED: 'EMAIL_NOT_VERIFIED',
+  /**
+   * A guest tried to do something that needs an account of their own.
+   *
+   * Distinct from `UNAUTHENTICATED` because the answer is different: that one
+   * means "sign in", this one means "you are browsing as a guest, and this
+   * needs an account" — an offer rather than an error. The client turns it into
+   * the sign-up screen instead of a toast.
+   */
+  GUEST_ACCOUNT: 'GUEST_ACCOUNT',
   UNDERAGE: 'UNDERAGE',
 
   // entitlement + quota
@@ -72,6 +81,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UNAUTHENTICATED: 401,
   FORBIDDEN: 403,
   EMAIL_NOT_VERIFIED: 403,
+  GUEST_ACCOUNT: 403,
   UNDERAGE: 403,
   UPGRADE_REQUIRED: 403,
   QUOTA_EXCEEDED: 402,

@@ -4,6 +4,7 @@ import {
   ageFromBirthDate,
   cityKey,
   PLAN_LIMITS,
+  type GuestProfileInput,
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
   isOnlineAt,
@@ -36,6 +37,18 @@ import { grantSignupBonus } from '../tokens/signupBonus'
 
 export interface Profile {
   _id: string
+  /**
+   * A browsing session with no account behind it.
+   *
+   * The row exists because `discoverProfiles` needs a viewer document — it
+   * reads the viewer's languages, tier, location and blocks to build the whole
+   * mutual-fit match — and for no other reason. It is **not** an analytics
+   * record: it can say a guest existed and which languages they picked, and
+   * cannot say where in welcome → languages → discover → sign-up they stopped,
+   * which is the only question worth asking about a funnel. That is PostHog's
+   * job when it lands.
+   */
+  guest?: true
   handle: string
   displayName: string
   avatarUrl?: string
@@ -367,6 +380,62 @@ function assertLanguageCap(
 ): void {
   if (next <= max || next <= was) return
   throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, `Your plan allows ${max}`, { limit, max })
+}
+
+/**
+ * The profile a guest browses with: two languages and nothing else.
+ *
+ * Written by its own function rather than through `createProfile`, and the
+ * differences are all deliberate. No signup bonus — a guest has not signed up,
+ * and paying one here would pay it twice when they do. `discoverable: false`,
+ * so a guest can never appear in somebody else's discovery. And a synthetic
+ * handle: `handle_unique` is not sparse, so the row needs one, and
+ * `guest:<userId>` can never collide with a real username because
+ * `HANDLE_PATTERN` allows no colon and caps length at twenty. Which also means
+ * no route and no `/<handle>` link can ever resolve to it.
+ */
+export async function createGuestProfile(
+  db: Db,
+  userId: string,
+  input: GuestProfileInput,
+  connectionCountry?: string,
+): Promise<Profile> {
+  const profiles = db.collection<Profile>(COLLECTIONS.profiles)
+  const existing = await profiles.findOne({ _id: userId })
+  if (existing) return existing
+
+  const now = new Date()
+  const profile: Profile = {
+    _id: userId,
+    guest: true,
+    handle: `guest:${userId}`,
+    displayName: '',
+    // Never rendered and never compared: a guest has no profile of their own
+    // and cannot be looked at. It is here because the type requires it, and a
+    // date rather than an empty string so nothing downstream has to guard.
+    birthDate: '1900-01-01',
+    gender: 'undisclosed',
+    nativeLanguages: input.nativeLanguages,
+    learning: input.learning,
+    interests: [],
+    settings: { discoverable: false, notifications: DEFAULT_NOTIFICATION_PREFS },
+    privacy: {
+      incognito: false,
+      hideOnlineStatus: false,
+      activityMapVisible: false,
+      statsVisible: false,
+    },
+    entitlement: { tier: 'free', updatedAt: now },
+    quota: { initiations: [], translations: [], media: [] },
+    streak: { current: 0, longest: 0, lastQualifiedDay: null },
+    stats: { lastActiveAt: now, messagesSent: 0 },
+    createdAt: now,
+    updatedAt: now,
+  }
+  if (connectionCountry) profile.country = connectionCountry
+
+  await profiles.insertOne(profile)
+  return profile
 }
 
 export async function updateProfile(

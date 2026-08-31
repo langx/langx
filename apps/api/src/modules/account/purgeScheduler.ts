@@ -2,6 +2,7 @@ import type { Db } from 'mongodb'
 import type { StorageProvider } from '../../storage/StorageProvider'
 import type { SchedulerLogger } from '../tokens/poolScheduler'
 import { purgeExpiredAccounts } from './deletion'
+import { purgeStaleGuests } from '../profiles/purgeGuests'
 
 /** Hourly is plenty — the grace period is 30 days, nothing here is urgent. */
 export const PURGE_INTERVAL_MS = 60 * 60 * 1000
@@ -34,6 +35,14 @@ export function startPurgeScheduler(
           { purged: result.purged, objectsDeleted: result.objectsDeleted },
           'expired accounts purged',
         )
+      }
+
+      // Guest sessions ride the same tick rather than a second scheduler: the
+      // question is the same shape ("is anything past its cutoff?") and neither
+      // is urgent.
+      const guests = await purgeStaleGuests(db)
+      if (guests.purged > 0) {
+        logger.info({ purged: guests.purged }, 'stale guest sessions purged')
       }
     } catch (error) {
       logger.error({ err: error }, 'account purge failed')
