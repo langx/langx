@@ -413,6 +413,13 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
       expect(response.headers['content-type']).toContain('image/svg+xml')
       expect(response.headers['cache-control']).toContain('max-age=')
       expect(response.body).toContain('<svg')
+      /*
+       * The header that made this endpoint useless in production. Helmet sets
+       * `same-origin` for everything, which is right for an API and wrong for
+       * a picture: the web build is on another host, so the browser blocked
+       * the image outright with nothing logged server-side.
+       */
+      expect(response.headers['cross-origin-resource-policy']).toBe('cross-origin')
     })
 
     /**
@@ -429,6 +436,14 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
 
     it('refuses something that could not be a handle at all', async () => {
       expect((await app.inject({ method: 'GET', url: '/public/qr/a' })).statusCode).toBe(400)
+    })
+
+    it('lets the device link code be embedded too', async () => {
+      const response = await app.inject({ method: 'GET', url: '/public/qr/link/ABCD1234' })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.headers['cross-origin-resource-policy']).toBe('cross-origin')
+      // Two minutes of life; caching the picture past that serves the dead.
+      expect(response.headers['cache-control']).toBe('no-store')
     })
   })
 
