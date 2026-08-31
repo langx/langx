@@ -464,6 +464,15 @@ export const tokenHistoryQuerySchema = z.object({
     .optional(),
 })
 
+/**
+ * The furthest back `GET /me/activity` will look.
+ *
+ * The range is caller-supplied and was never bounded, while the client carried
+ * a comment saying the server clamped it. A little over the half-year the map
+ * draws, so the map keeps working and a request for a decade does not.
+ */
+export const ACTIVITY_MAX_RANGE_DAYS = 400
+
 export const activityRangeSchema = z.object({
   from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

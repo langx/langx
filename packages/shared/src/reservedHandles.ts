@@ -44,6 +44,7 @@ const ROUTE_RESERVED = [
   'profile',
   'settings',
   'starred',
+  'streak',
   'store',
   'tokens',
   'viewers',

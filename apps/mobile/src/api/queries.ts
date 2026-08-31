@@ -342,6 +342,12 @@ export interface ActivityDayDto {
   day: string
   actions: number
   source: 'activity' | 'purchase'
+  /**
+   * When the first qualifying action of that day happened. Absent on days
+   * recorded before the field existed, and on a bought day — which has no
+   * check-in, and must not be shown one.
+   */
+  firstAt?: string
 }
 
 export interface ActivityDto {

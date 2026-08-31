@@ -691,6 +691,19 @@ export const es: Localized<EnMessages> = {
     licenses: 'Licencias',
     codeOfConduct: 'Código de conducta',
   },
+  streak: {
+    title: 'Tu racha',
+    longest: 'La más larga',
+    missed: 'Perdido',
+    bought: 'Rellenado con tokens',
+    checkedInUnknownTime: 'Activo',
+    checkedInAt: {
+      one: 'A las {time} · {count} acción',
+      other: 'A las {time} · {count} acciones',
+    },
+    emptyTitle: 'Aquí todavía no hay nada',
+    emptyBody: 'Envía un mensaje o escribe una corrección y hoy será tu primer día.',
+  },
   settings: {
     appIconSection: 'Icono de la app',
     appIcon: 'Icono en la pantalla de inicio',

@@ -4,6 +4,8 @@ import {
   localDayKey,
   repairDaySchema,
   TOKEN_RULES,
+  ACTIVITY_MAX_RANGE_DAYS,
+  shiftDayKey,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { ApiError } from '../lib/ApiError'
@@ -32,7 +34,15 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
 
       const { from, to } = request.query
       const today = localDayKey(new Date(), profile.timezone ?? 'UTC')
-      const days = await listStreakDays(app.mongo.db, request.userId, from, to)
+      /**
+       * Clamped, at last. `activityRangeSchema` validates the *shape* of the
+       * two keys and nothing else — no span, no ordering — while the client has
+       * carried a comment claiming "the server clamps the range" since the map
+       * shipped. Anyone could ask for a decade.
+       */
+      const oldest = shiftDayKey(today, -ACTIVITY_MAX_RANGE_DAYS)
+      const start = from < oldest ? oldest : from
+      const days = await listStreakDays(app.mongo.db, request.userId, start, to)
 
       return reply.send({
         today,
@@ -49,7 +59,17 @@ export const activityRoutes: FastifyPluginAsyncZod = async (app) => {
           current: profile.streak.current,
           lastQualifiedDay: profile.streak.lastQualifiedDay,
         },
-        days: days.map((d) => ({ day: d.day, actions: d.actions, source: d.source })),
+        days: days.map((d) => ({
+          day: d.day,
+          actions: d.actions,
+          source: d.source,
+          /**
+           * Absent on days recorded before the field existed, and on a bought
+           * day, which has no check-in. The client says so rather than
+           * inventing a time.
+           */
+          ...(d.firstAt ? { firstAt: d.firstAt.toISOString() } : {}),
+        })),
         repair: {
           price: TOKEN_RULES.sinks.dayRepair,
           maxAgeDays: TOKEN_RULES.sinks.dayRepairMaxAgeDays,
