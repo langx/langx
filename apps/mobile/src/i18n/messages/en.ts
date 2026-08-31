@@ -853,6 +853,7 @@ export const en = {
     locked: 'Locked',
     lockedAccessibility: '{title}, locked',
     lockedStreak: '{current} of {threshold} days',
+    lockedNeeds: 'Buy {title} first',
     lockedCorrections: '{current} of {threshold} corrections',
     owned: 'Owned',
     frameKind: 'Profile frame',

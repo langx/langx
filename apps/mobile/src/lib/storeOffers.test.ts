@@ -96,4 +96,70 @@ describe('buildStoreOffers', () => {
       expect(byId(tr, 'title.tutor')?.title).toBe('Eğitmen')
     })
   })
+
+  /**
+   * The row has to say *which* lock it is under. "Locked" alone reads as "come
+   * back when you are better", when the answer is usually "buy the one below,
+   * it is right there".
+   */
+  describe('the ladder', () => {
+    const ladderBelow = (id: string) => {
+      const target = COSMETICS.find((c) => c.id === id)!
+      const ladder = COSMETICS.filter((c) => c.kind === target.kind)
+      return ladder
+        .slice(
+          0,
+          ladder.findIndex((c) => c.id === id),
+        )
+        .map((c) => c.id)
+    }
+    const rich = { balance: 1_000_000 }
+
+    it('leaves the first rung of each ladder unlocked', () => {
+      expect(byId(rich, 'frame.slate')).toMatchObject({ affordable: true })
+      expect(byId(rich, 'frame.slate')?.locked).toBeUndefined()
+      expect(byId(rich, 'title.beginner')).toMatchObject({ affordable: true })
+    })
+
+    it('locks a rung whose predecessor is missing, however large the balance', () => {
+      expect(byId(rich, 'frame.gold')).toMatchObject({
+        locked: true,
+        affordable: false,
+        needs: 'Ember frame',
+      })
+    })
+
+    it('unlocks it once the one below is owned', () => {
+      const offer = byId({ ...rich, owned: ladderBelow('frame.gold') }, 'frame.gold')
+      expect(offer?.affordable).toBe(true)
+      expect(offer?.locked).toBeUndefined()
+      expect(offer?.needs).toBeUndefined()
+    })
+
+    it('does not let a frame gate a title', () => {
+      expect(byId({ ...rich, owned: [] }, 'title.beginner')?.locked).toBeUndefined()
+    })
+
+    /**
+     * `frame.aurora` is behind both gates. The nearer answer wins: a year of
+     * streak means nothing while the rung below is missing, and telling
+     * somebody to write five thousand corrections when the real obstacle is a
+     * 35,000-token frame is the wrong instruction.
+     */
+    it('shows the missing rung rather than the earned gate when both are unmet', () => {
+      expect(byId(rich, 'frame.aurora')).toMatchObject({
+        locked: true,
+        needs: 'Midnight frame',
+      })
+      expect(byId(rich, 'frame.aurora')?.requirement).toBeUndefined()
+    })
+
+    it('falls back to the earned gate once the ladder is satisfied', () => {
+      const owned = { ...rich, owned: ladderBelow('frame.aurora') }
+      const offer = byId(owned, 'frame.aurora')
+      expect(offer?.needs).toBeUndefined()
+      expect(offer).toMatchObject({ locked: true })
+      expect(offer?.requirement).toBeDefined()
+    })
+  })
 })

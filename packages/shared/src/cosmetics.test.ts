@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { COSMETIC_KINDS } from './cosmetics'
 import { PAID_PLAN_TIERS } from './limits'
 import { TOKEN_RULES } from './token'
 import {
@@ -7,6 +8,7 @@ import {
   PRO_WELCOME_PACKS,
   findCosmetic,
   meetsRequirement,
+  previousCosmetic,
   welcomePackDelta,
   wornCosmetic,
 } from './cosmetics'
@@ -56,6 +58,63 @@ describe('the catalogue', () => {
     const cheapest = Math.min(...COSMETICS.map((c) => c.price))
     expect(cheapest).toBeGreaterThan(TOKEN_RULES.signupBonus)
     expect(cheapest).toBeLessThanOrEqual(2000)
+  })
+
+  /**
+   * The array's order is the ladder, and the prices are how it is explained.
+   * If they disagree — a cheaper item sitting above a dearer one — then the
+   * shop asks somebody to buy the expensive thing first and shows them a
+   * bargain they are not allowed to have. Nothing else would catch it: every
+   * other test here passes on a shuffled catalogue.
+   */
+  it('prices each ladder strictly upwards, so order and price tell one story', () => {
+    for (const kind of COSMETIC_KINDS) {
+      const ladder = COSMETICS.filter((c) => c.kind === kind)
+      expect(ladder.length, kind).toBeGreaterThan(1)
+      for (let i = 1; i < ladder.length; i++) {
+        expect(ladder[i]!.price, `${ladder[i]!.id} after ${ladder[i - 1]!.id}`).toBeGreaterThan(
+          ladder[i - 1]!.price,
+        )
+      }
+    }
+  })
+})
+
+describe('previousCosmetic', () => {
+  it('has nothing below the first rung of either ladder', () => {
+    for (const kind of COSMETIC_KINDS) {
+      const first = COSMETICS.find((c) => c.kind === kind)!
+      expect(previousCosmetic(first), first.id).toBeUndefined()
+    }
+  })
+
+  it('walks one step down, never across to the other kind', () => {
+    for (const kind of COSMETIC_KINDS) {
+      const ladder = COSMETICS.filter((c) => c.kind === kind)
+      for (let i = 1; i < ladder.length; i++) {
+        const previous = previousCosmetic(ladder[i]!)
+        expect(previous?.id, ladder[i]!.id).toBe(ladder[i - 1]!.id)
+        expect(previous?.kind, ladder[i]!.id).toBe(kind)
+      }
+    }
+  })
+
+  /**
+   * Walking down from the top has to reach the bottom in exactly as many steps
+   * as there are rungs. A cycle or a gap would hang the shop rather than
+   * mis-price it.
+   */
+  it('reaches the bottom of each ladder without looping', () => {
+    for (const kind of COSMETIC_KINDS) {
+      const ladder = COSMETICS.filter((c) => c.kind === kind)
+      let current = ladder.at(-1)
+      let steps = 0
+      while (current && steps <= ladder.length) {
+        current = previousCosmetic(current)
+        steps++
+      }
+      expect(steps, kind).toBe(ladder.length)
+    }
   })
 })
 
@@ -136,6 +195,36 @@ describe('PRO_WELCOME_PACKS', () => {
     )
   })
 
+  /**
+   * A gift bypasses the ladder — `grantWelcomePack` writes with `$addToSet`
+   * and never goes through `purchase` — so the packs are the one place that
+   * can hand somebody a rung above one they do not own. Starting at the bottom
+   * is what keeps "own the one below" and "own everything below" the same
+   * rule, which is what makes the shop explainable in one sentence.
+   */
+  it('grants the bottom of each ladder, contiguously, never a rung from up it', () => {
+    for (const tier of PAID_PLAN_TIERS) {
+      const granted = new Set(PRO_WELCOME_PACKS[tier].cosmetics)
+      for (const kind of COSMETIC_KINDS) {
+        const ladder = COSMETICS.filter((c) => c.kind === kind)
+        const count = ladder.filter((c) => granted.has(c.id)).length
+        // Whatever many it gives of a kind, they are the first that many.
+        expect(
+          ladder.slice(0, count).map((c) => c.id),
+          `${tier}/${kind}`,
+        ).toEqual(ladder.filter((c) => granted.has(c.id)).map((c) => c.id))
+      }
+    }
+  })
+
+  it('never gifts an item that also has to be earned', () => {
+    for (const tier of PAID_PLAN_TIERS) {
+      for (const id of PRO_WELCOME_PACKS[tier].cosmetics) {
+        expect(findCosmetic(id)?.requires, `${tier}: ${id}`).toBeUndefined()
+      }
+    }
+  })
+
   it('stays inside the banked-freeze cap, so the grant is never partly discarded', () => {
     for (const tier of PAID_PLAN_TIERS) {
       expect(PRO_WELCOME_PACKS[tier].streakFreezes, tier).toBeLessThanOrEqual(
@@ -154,8 +243,14 @@ describe('welcomePackDelta', () => {
     expect(welcomePackDelta('pro_plus', [...PRO_WELCOME_PACKS.pro_plus.cosmetics])).toEqual([])
   })
 
-  /** Somebody who bought the frame with token does not get a second one. */
+  /**
+   * Somebody who bought a frame with token does not get a second one. Derived
+   * from the pack rather than naming an id, so it keeps testing the behaviour
+   * when the pack's contents move.
+   */
   it('skips what was already earned rather than paid for', () => {
-    expect(welcomePackDelta('pro', ['frame.bronze'])).toEqual([])
+    const [first, ...rest] = PRO_WELCOME_PACKS.pro.cosmetics
+    expect(first).toBeDefined()
+    expect(welcomePackDelta('pro', [first!])).toEqual(rest)
   })
 })

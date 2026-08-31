@@ -4,6 +4,7 @@ import {
   STREAK_RESTORE_SKU,
   TOKEN_RULES,
   findCosmetic,
+  previousCosmetic,
   meetsRequirement,
   localDayKey,
   periodKeys,
@@ -113,6 +114,25 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
       )
     }
   }
+  /*
+   * The rung below has to be owned first. Unlike the requirement above, this
+   * one *is* a field on this document, so it is re-checked in the atomic
+   * filter properly rather than as a best-effort pre-read — and ownership is
+   * monotonic in the same way `streak.longest` is, so a gate that has opened
+   * can never close again.
+   *
+   * A gift skips it, which is deliberate: `grantWelcomePack` writes with
+   * `$addToSet` and never comes through here. The packs start at the bottom of
+   * each ladder so that nothing is handed out above a rung nobody owns.
+   */
+  const previous = cosmetic ? previousCosmetic(cosmetic) : undefined
+  if (previous && !(profile.cosmetics ?? []).includes(previous.id)) {
+    throw new ApiError(
+      ERROR_CODES.VALIDATION_FAILED,
+      `${previous.id} has to be bought before ${sku}`,
+    )
+  }
+
   if (isFreeze && (profile.streakFreezes ?? 0) >= TOKEN_RULES.sinks.maxBankedStreakFreezes) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
@@ -133,7 +153,25 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
       // check and charge twice for one item.
       ...(isFreeze
         ? { streakFreezes: { $not: { $gte: TOKEN_RULES.sinks.maxBankedStreakFreezes } } }
-        : { cosmetics: { $ne: sku } }),
+        : {
+            /*
+             * Both cosmetic conditions under one key, because they are about
+             * one field and a second `cosmetics:` in this object literal would
+             * silently replace the first rather than add to it — and the one
+             * that lost would be the guard against paying twice for the same
+             * item.
+             *
+             * `$nin`: two concurrent buys of the same cosmetic would otherwise
+             * both pass the read-time check and charge twice for one item.
+             *
+             * `$all`: the ladder, re-checked where it counts. Two buys of
+             * adjacent rungs fired together would otherwise both pass the read
+             * above — the second one reading a profile that does not own the
+             * first yet — and land out of order, which is the whole thing this
+             * gate exists to prevent.
+             */
+            cosmetics: { $nin: [sku], ...(previous ? { $all: [previous.id] } : {}) },
+          }),
       // The half of the gate that is a field on this document, re-checked
       // where it counts. The correction count is not one, so it stays a
       // pre-check — see above for why that is safe.

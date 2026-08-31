@@ -69,6 +69,14 @@ export interface Cosmetic {
  * It fixes a v1 problem on the way. The largest v1 balance converts to 22,800
  * token; at the old prices a returning user cleared almost the whole
  * catalogue on their first day.
+ *
+ * **The order of this array is a rule, not a layout.** Each item can only be
+ * bought once the one before it in the same `kind` is owned — see
+ * `previousCosmetic` — so inserting a row in the middle inserts a rung, and
+ * reordering two rows swaps what has to be earned first. It used to be free to
+ * shuffle these; it is not any more. `rules.test.ts` asserts each kind is
+ * strictly ascending in price, which is what keeps the ladder and the prices
+ * from telling different stories.
  */
 export const COSMETICS: readonly Cosmetic[] = [
   { id: 'frame.slate', kind: 'frame', label: 'Slate frame', price: 1000, tone: 'slate' },
@@ -138,6 +146,25 @@ export function findCosmetic(id: string): Cosmetic | undefined {
 }
 
 /**
+ * The rung below this one, or nothing if it is the first.
+ *
+ * Frames and titles are two ladders, not one list, so "the one before" is
+ * scoped to the kind — buying a frame has never had anything to do with
+ * owning a title and still does not.
+ *
+ * Derived from the array rather than from the price, even though the two
+ * agree and a test says so. A price comparison would quietly turn two items
+ * priced the same into an unbuyable pair, and it would make a repricing
+ * silently reorder what has to be earned first. The order is the rule; the
+ * prices are how it is explained.
+ */
+export function previousCosmetic(cosmetic: Cosmetic): Cosmetic | undefined {
+  const ladder = COSMETICS.filter((c) => c.kind === cosmetic.kind)
+  const index = ladder.findIndex((c) => c.id === cosmetic.id)
+  return index > 0 ? ladder[index - 1] : undefined
+}
+
+/**
  * What subscribing includes, once, per tier.
  *
  * **Items, not token.** Granting token for money is the one thing every public
@@ -160,10 +187,36 @@ export interface WelcomePack {
   streakFreezes: number
 }
 
+/**
+ * The **first** rungs of each ladder, not a handful picked from up it.
+ *
+ * These used to be `frame.bronze` and `frame.bronze/silver/gold` — the 2nd,
+ * 4th and 7th frames, plus the 2nd title. That was fine while the catalogue
+ * was a shelf. Now that it is a ladder it would have handed somebody the
+ * rungs above ones they did not own, which is either incoherent or a debt,
+ * depending on how strictly the gate is read.
+ *
+ * Starting at the bottom makes the two possible readings of the gate — "own
+ * the one below" and "own everything below" — the same rule, by induction.
+ * There is only one sentence to explain: you buy them in order.
+ *
+ * Existing subscribers keep what they were given; `welcomePackAt` latches per
+ * tier and is never re-run. They are the reason the gate is written as *own
+ * the one below* rather than *own everything below*: somebody holding gold
+ * without silver must still be able to move, and asking them to go back and
+ * buy the rungs under a gift would turn a gift into a bill.
+ */
 export const PRO_WELCOME_PACKS: Readonly<Record<PaidPlanTier, WelcomePack>> = {
-  pro: { cosmetics: ['frame.bronze'], streakFreezes: 2 },
+  pro: { cosmetics: ['frame.slate', 'frame.bronze'], streakFreezes: 2 },
   pro_plus: {
-    cosmetics: ['frame.bronze', 'frame.silver', 'frame.gold', 'title.learner'],
+    cosmetics: [
+      'frame.slate',
+      'frame.bronze',
+      'frame.sky',
+      'frame.silver',
+      'title.beginner',
+      'title.learner',
+    ],
     streakFreezes: 2,
   },
 }

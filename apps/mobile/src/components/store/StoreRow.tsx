@@ -44,7 +44,9 @@ export function StoreRow({
       ) : null}
       <View style={styles.text}>
         <Text style={styles.name}>{offer.title}</Text>
-        {offer.requirement ? (
+        {offer.needs ? (
+          <Text style={styles.meta}>{t('store.lockedNeeds', { title: offer.needs })}</Text>
+        ) : offer.requirement ? (
           <Text style={styles.meta}>
             {t(
               offer.requirement.kind === 'streak'

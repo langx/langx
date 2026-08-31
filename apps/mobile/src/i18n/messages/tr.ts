@@ -825,6 +825,7 @@ export const tr: Localized<EnMessages> = {
     locked: 'Kilitli',
     lockedAccessibility: '{title}, kilitli',
     lockedStreak: '{threshold} günün {current} günü',
+    lockedNeeds: 'Önce {title} al',
     lockedCorrections: '{threshold} düzeltmenin {current} tanesi',
     owned: 'Sende',
     frameKind: 'Profil çerçevesi',

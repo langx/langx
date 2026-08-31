@@ -926,6 +926,7 @@ export const ru: Localized<EnMessages> = {
     locked: 'Закрыто',
     lockedAccessibility: '{title}, закрыто',
     lockedStreak: '{current} из {threshold} дней',
+    lockedNeeds: 'Сначала купи {title}',
     lockedCorrections: '{current} из {threshold} исправлений',
     owned: 'Есть',
     frameKind: 'Рамка профиля',

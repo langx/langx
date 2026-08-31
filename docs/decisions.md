@@ -980,6 +980,50 @@ lives in the update's filter rather than in a read before it, for the reason
 every other guard here does — two taps that race would both pass a
 check-then-write, and the second would win.
 
+## The shop is two ladders, and its order is the rule
+
+The catalogue was priced as a progression from the day it grew — 1,000 to
+50,000 for frames, 1,500 to 100,000 for titles — and then sold as a shelf.
+Anyone with 100,000 token could buy `title.legend` and ignore the nine rungs
+under it, which made the price a number rather than a distance.
+
+Each item now needs the one below it in the same kind. Frames and titles are
+two ladders, not one queue: buying a frame has never had anything to do with
+owning a title.
+
+**The total sink does not change.** All twenty items still cost about 395,000
+either way. What changes is that the prestige rows cannot be reached first —
+Legend is 231,500 cumulative rather than 100,000 — so the top of the shop is
+evidence of a long time spent here, which is the only thing a cosmetic in this
+app is for.
+
+The gate is _own the one below_, not _own everything below_. Read against a
+catalogue nobody has skipped rungs in, the two are the same rule by induction.
+They differ only for the accounts that were **given** rungs, and those are the
+ones the weaker rule protects: `grantWelcomePack` writes with `$addToSet` and
+never comes through `purchase`, so a subscriber holding gold without silver has
+to keep moving. Asking them to go back and buy the rungs under a gift would
+turn a gift into a bill.
+
+New packs start at the bottom for the same reason. They used to hand out the
+2nd, 4th and 7th frames and the 2nd title, which was fine for a shelf and
+incoherent for a ladder. Starting at the bottom is what collapses the two
+readings of the gate into one sentence: **you buy them in order.**
+
+Two things this made load-bearing that were not before. `COSMETICS`'s array
+order is now the rule, so `cosmetics.test.ts` asserts each kind is strictly
+ascending in price — otherwise the shop could ask somebody to buy the expensive
+thing first while showing them a bargain they are not allowed to have. And
+`previousCosmetic` is derived from the order rather than from the price, so a
+repricing cannot silently reorder what has to be earned first.
+
+The condition is checked twice, like every other guard in `purchase`: once as a
+read that produces a useful message, and once inside the atomic filter, which
+is the one that counts. Both cosmetic conditions live under a single
+`cosmetics` key there — a second key of the same name in that object literal
+would have replaced the first rather than added to it, and the one that lost
+would have been the guard against paying twice for the same item.
+
 ## Countries are a compile-time table, like languages
 
 `profiles.country` was a free-text two-letter field, which meant the edit form
