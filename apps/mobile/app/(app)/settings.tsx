@@ -1,9 +1,10 @@
-import { ACCOUNT_DELETION_GRACE_DAYS, TIER_BADGES, tierUnlocking } from '@langx/shared'
+import { ACCOUNT_DELETION_GRACE_DAYS, TIER_BADGES, TIER_NAMES, tierUnlocking } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Image, Linking, Platform, Pressable, Text, View } from 'react-native'
 import { api } from '../../src/api/client'
 import {
+  useEffectiveTier,
   useIsPro,
   useMe,
   useShareLocation,
@@ -26,6 +27,8 @@ import { authLandingHref } from '../../src/lib/authLanding'
 import darkIcon from '../../assets/icons/dark.png'
 import defaultIcon from '../../assets/icons/default.png'
 import { openPaywall } from '../../src/lib/paywall'
+import { manageSubscriptionUrl } from '../../src/lib/manageSubscription'
+import { openExternal } from '../../src/lib/openExternal'
 import {
   APP_ICONS,
   currentAppIcon,
@@ -35,7 +38,7 @@ import {
 } from '../../src/lib/appIcon'
 import { FLAG_KEYS, readBoolFlag } from '../../src/lib/localFlags'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
-import { useLocalePreference, useT, type MessageKey } from '../../src/i18n'
+import { useLocale, useLocalePreference, useT, type MessageKey } from '../../src/i18n'
 import { LOCALE_NAMES, NOTIFICATION_TYPES, notificationsAllowed } from '@langx/shared'
 import { unregisterPushToken } from '../../src/hooks/usePushRegistration'
 import {
@@ -56,6 +59,9 @@ export default function SettingsScreen() {
   const styles = useStyles()
   const t = useT()
   const { preference: locale, deviceLocale } = useLocalePreference()
+  // The *resolved* locale, not the preference: `auto` is not something
+  // `toLocaleDateString` can read.
+  const { locale: activeLocale } = useLocale()
   const { preference, setPreference } = useThemePreference()
 
   const me = useMe()
@@ -68,6 +74,24 @@ export default function SettingsScreen() {
 
   const profile = me.data
   const isPro = useIsPro()
+  const tier = useEffectiveTier()
+  const entitlement = profile?.entitlement
+  /**
+   * "Renews on" and "Ends on" are the same date meaning opposite things, which
+   * is why `willRenew` had to become truthful before this could be drawn. A
+   * paid plan with no expiry is a lifetime — there is no date to show and
+   * nothing to renew.
+   */
+  const renewal =
+    !entitlement || tier === 'free'
+      ? null
+      : !entitlement.expiresAt
+        ? { label: t('settings.plan'), value: t('settings.lifetime') }
+        : {
+            label: entitlement.willRenew ? t('settings.renewsOn') : t('settings.endsOn'),
+            value: new Date(entitlement.expiresAt).toLocaleDateString(activeLocale),
+          }
+  const manageUrl = tier === 'free' ? null : manageSubscriptionUrl(null, Platform.OS)
   // Each tag names the plan that unlocks *that* row. Incognito reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
   // The app icon is not in `PLAN_LIMITS` at all — it is a local cosmetic gated
@@ -208,6 +232,34 @@ export default function SettingsScreen() {
   return (
     <Screen scroll>
       <ScreenHeader title={t('settings.title')} onBack={() => goBackTo('/(app)/me')} />
+
+      {/*
+        First, above Privacy: on a paid product this is what people open
+        Settings for, and it was the one thing Settings could not tell them.
+        Cancelling meant finding a sentence on the paywall.
+      */}
+      <Text style={styles.section}>{t('settings.subscriptionSection')}</Text>
+      <View>
+        <ListRow title={t('settings.currentPlan')} value={TIER_NAMES[tier]} />
+        {renewal ? <ListRow title={renewal.label} value={renewal.value} /> : null}
+        {tier === 'pro_plus' ? null : (
+          <ListRow
+            title={t('settings.upgrade')}
+            onPress={() => openPaywall(undefined, '/(app)/settings')}
+          />
+        )}
+        {/*
+          No row at all where there is nowhere to send them, rather than a
+          disabled one — the same rule the app-icon section states below.
+        */}
+        {manageUrl ? (
+          <ListRow
+            title={t('settings.manageSubscription')}
+            last
+            onPress={() => void openExternal(manageUrl)}
+          />
+        ) : null}
+      </View>
 
       <Text style={styles.section}>{t('settings.privacySection')}</Text>
       <View>

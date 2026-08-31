@@ -140,7 +140,18 @@ export interface MeProfile {
    */
   location?: { type: 'Point'; coordinates: [number, number] }
   locationUpdatedAt?: string
-  entitlement: { tier: PlanTier; expiresAt?: string }
+  entitlement: {
+    tier: PlanTier
+    expiresAt?: string
+    /**
+     * Both have been on the wire since billing shipped and neither was
+     * modelled here — `GET /profiles/me` returns the stored document, so this
+     * type was simply narrower than reality. Settings needs both to tell
+     * "renews on" from "ends on".
+     */
+    willRenew?: boolean
+    store?: string
+  }
   streak: { current: number; longest: number }
   cosmetics?: string[]
   /** ISO. The one date on this screen the user did not enter themselves. */
