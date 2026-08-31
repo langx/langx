@@ -30,6 +30,24 @@ const CACHE_SECONDS = 86_400
  * for pictures, and a code that resolves to a 404 page is a harmless thing to
  * have drawn.
  */
+/**
+ * These are the only responses meant to be embedded by another origin.
+ *
+ * Helmet sets `Cross-Origin-Resource-Policy: same-origin` for everything,
+ * which is right for an API and wrong for a picture: the web build lives on
+ * `app2.langx.io` and the image on `api2.langx.io`, so the browser blocked it
+ * outright — `ERR_BLOCKED_BY_RESPONSE.NotSameOrigin`, with no request logged
+ * server-side and nothing on screen.
+ *
+ * Relaxed per route rather than globally. CORP is what stops another site
+ * reading responses it should not, and every other endpoint here answers with
+ * somebody's data; these two answer with a QR of a public link.
+ *
+ * `image/svg+xml` is safe in an `<img>` — scripts inside an SVG do not execute
+ * in that context — and `nosniff` stays on.
+ */
+const EMBEDDABLE = { 'cross-origin-resource-policy': 'cross-origin' } as const
+
 export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/public/qr/:handle',
@@ -51,6 +69,7 @@ export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
       return reply
         .header('content-type', 'image/svg+xml')
         .header('cache-control', `public, max-age=${CACHE_SECONDS}`)
+        .headers(EMBEDDABLE)
         .send(svg)
     },
   )
@@ -87,6 +106,7 @@ export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
           // A device code lives two minutes; caching its picture past that would
           // only ever serve something already dead.
           .header('cache-control', 'no-store')
+          .headers(EMBEDDABLE)
           .send(svg)
       )
     },
