@@ -335,6 +335,124 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     expect(notifications.messages).toEqual({ push: true, email: false })
   })
 
+  describe('handles as public addresses', () => {
+    it('refuses a reserved word at onboarding', async () => {
+      const user = await newUser('reserved-handle@example.com')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: 'settings' }),
+      })
+      expect(response.statusCode, response.body).toBe(400)
+    })
+
+    it('refuses a handle shorter than the new floor', async () => {
+      const user = await newUser('short-handle@example.com')
+      const response = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: 'ada' }),
+      })
+      expect(response.statusCode, response.body).toBe(400)
+    })
+
+    it('reports both as unavailable rather than as a malformed request', async () => {
+      const user = await newUser('availability-rules@example.com')
+      for (const handle of ['settings', 'ada']) {
+        const response = await app.inject({
+          method: 'GET',
+          url: `/handles/${handle}/availability`,
+          headers: { cookie: user.cookie },
+        })
+        expect(response.statusCode, handle).toBe(200)
+        expect(response.json<{ available: boolean }>().available, handle).toBe(false)
+      }
+    })
+
+    /**
+     * The grandfather case, and the reason `handleSchema` was not simply
+     * tightened: a v1 account can hold three characters, and its own profile
+     * — and the link it has already shared — has to keep resolving.
+     */
+    it('still resolves a three-character handle written before the floor', async () => {
+      const owner = await newUser('legacy-short@example.com')
+      await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: owner.cookie },
+        payload: onboardingBody({ handle: 'adalove' }),
+      })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: owner.userId }, { $set: { handle: 'ada' } })
+
+      const viewer = await newUser('legacy-short-viewer@example.com')
+      await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: viewer.cookie },
+        payload: onboardingBody({ handle: 'shortviewer' }),
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/profiles/ada',
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+    })
+  })
+
+  describe('GET /public/profiles/:handle', () => {
+    async function seed(email: string, handle: string) {
+      const user = await newUser(email)
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle, bio: 'Here to practise.' }),
+      })
+      expect(created.statusCode, created.body).toBe(201)
+      return user
+    }
+
+    it('answers with no session at all, which is the point of a shared link', async () => {
+      await seed('public-read@example.com', 'publicone')
+      const response = await app.inject({ method: 'GET', url: '/profiles/publicone' })
+      expect(response.statusCode).toBe(401)
+
+      const shared = await app.inject({ method: 'GET', url: '/public/profiles/publicone' })
+      expect(shared.statusCode, shared.body).toBe(200)
+      expect(shared.json<{ handle: string }>().handle).toBe('publicone')
+    })
+
+    /**
+     * A second allow-list rather than a flag on `toPublicProfile`. Age, city
+     * and photos are individually mild and together are the set that makes a
+     * link somebody shared feel like one they did not mean to.
+     */
+    it('leaves out everything a member sees that the open internet should not', async () => {
+      await seed('public-fields@example.com', 'publictwo')
+      const body = (await app.inject({ method: 'GET', url: '/public/profiles/publictwo' })).json<
+        Record<string, unknown>
+      >()
+
+      expect(Object.keys(body).sort()).toEqual(
+        ['bio', 'displayName', 'handle', 'learning', 'nativeLanguages'].sort(),
+      )
+      for (const absent of ['age', 'photos', 'streak', 'isOnline', 'tier', 'city', '_id']) {
+        expect(body[absent], absent).toBeUndefined()
+      }
+    })
+
+    it('is a 404 for a handle nobody holds', async () => {
+      const response = await app.inject({ method: 'GET', url: '/public/profiles/nobodyhere' })
+      expect(response.statusCode).toBe(404)
+    })
+  })
+
   it('rejects an underage birthDate even though the client already validated it', async () => {
     const user = await newUser('underage-attempt@example.com')
 

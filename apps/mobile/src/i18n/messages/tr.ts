@@ -600,6 +600,8 @@ export const tr: Localized<EnMessages> = {
     tokens: 'Jeton',
     previewProfile: 'Profilimi önizle',
     previewProfileBody: 'Profilini başkalarının gördüğü gibi gör',
+    shareProfile: 'Profilimi paylaş',
+    shareMessage: "LangX'te benimle dil pratiği yap: {url}",
     badges: 'Rozetler',
   },
 
@@ -790,6 +792,15 @@ export const tr: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} token kazanıldı', other: '{formatted} token kazanıldı' },
     memberDays: { one: '{formatted} gün üye', other: '{formatted} gün üye' },
     corrections: { one: '{formatted} düzeltme', other: '{formatted} düzeltme' },
+  },
+
+  shared: {
+    missingTitle: 'Burada bir şey yok',
+    missingBody: '@{handle} adında bir LangX profili yok.',
+    speaks: 'Konuşuyor',
+    learning: 'Öğreniyor',
+    ctaBody: "{name} LangX'te dil pratiği yapıyor. Merhaba demek için katıl.",
+    ctaLabel: "LangX'i aç",
   },
 
   viewers: {

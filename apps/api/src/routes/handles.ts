@@ -1,4 +1,4 @@
-import { handleSchema } from '@langx/shared'
+import { handleSchema, newHandleSchema } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { requireVerifiedEmail } from '../middleware/requireAuth'
@@ -54,11 +54,17 @@ export const handleRoutes: FastifyPluginAsyncZod = async (app) => {
         ? hashLegacyEmail(request.userEmail, app.env.LEGACY_EMAIL_HASH_SALT)
         : null
 
-      const available = await isHandleAvailable(
-        app.mongo.db,
-        request.params.handle,
-        legacyEmailHash,
-      )
+      /*
+       * "Available" means claimable, not merely unclaimed. Reserved words and
+       * anything under `HANDLE_MIN_LENGTH` are answered here rather than left
+       * to fail at `POST /profiles` — the param schema stays permissive so a
+       * legacy three-letter handle can still be *looked up*, but this endpoint
+       * exists to answer the onboarding question, and the honest answer to
+       * "can I have `api`?" is no rather than 400.
+       */
+      const claimable = newHandleSchema.safeParse(request.params.handle).success
+      const available =
+        claimable && (await isHandleAvailable(app.mongo.db, request.params.handle, legacyEmailHash))
       return reply.send({ available })
     },
   )

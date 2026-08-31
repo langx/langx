@@ -589,6 +589,8 @@ export const ptBR: Localized<EnMessages> = {
     tokens: 'Fichas',
     previewProfile: 'Ver meu perfil',
     previewProfileBody: 'Veja seu perfil como as outras pessoas veem',
+    shareProfile: 'Compartilhar meu perfil',
+    shareMessage: 'Pratique idiomas comigo no LangX: {url}',
     badges: 'Insígnias',
   },
 
@@ -780,6 +782,15 @@ export const ptBR: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} ficha ganha', other: '{formatted} fichas ganhas' },
     memberDays: { one: '{formatted} dia como membro', other: '{formatted} dias como membro' },
     corrections: { one: '{formatted} correção', other: '{formatted} correções' },
+  },
+
+  shared: {
+    missingTitle: 'Nada por aqui',
+    missingBody: 'Nenhum perfil do LangX atende por @{handle}.',
+    speaks: 'Fala',
+    learning: 'Aprendendo',
+    ctaBody: '{name} pratica idiomas no LangX. Entre para dizer oi.',
+    ctaLabel: 'Abrir o LangX',
   },
 
   viewers: {

@@ -89,6 +89,13 @@ const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_L
  */
 export const onboardingProfileSchema = z
   .object({
+    /**
+     * The *reading* schema, deliberately. The floor and the reserved list are
+     * enforced in `createProfile`, which is the only place that can see
+     * whether this handle is reserved *for this person* — a returning v1 user
+     * claiming `ada` or `admin` back is the case a schema cannot tell apart
+     * from a stranger taking it.
+     */
     handle: handleSchema,
     displayName: displayNameSchema,
     birthDate: birthDateSchema(),
@@ -212,3 +219,19 @@ export type PhotoAddInput = z.infer<typeof photoAddSchema>
 /** `DELETE /me/photos` — remove one by its URL, which is what the client already holds. */
 export const photoRemoveSchema = z.object({ url: z.url() })
 export type PhotoRemoveInput = z.infer<typeof photoRemoveSchema>
+
+/**
+ * The profile behind a shared link, read without a session. A strict subset of
+ * what a signed-in member sees — see `getSharedProfile` for what is left out
+ * and why.
+ */
+export const sharedProfileSchema = z.object({
+  handle: z.string(),
+  displayName: z.string(),
+  avatarUrl: z.string().optional(),
+  bio: z.string().optional(),
+  country: z.string().optional(),
+  nativeLanguages: z.array(z.object({ code: z.string() })),
+  learning: z.array(z.object({ code: z.string(), level: languageLevelSchema })),
+})
+export type SharedProfile = z.infer<typeof sharedProfileSchema>

@@ -8,6 +8,7 @@ import {
   effectivePlanTier,
   isOnlineAt,
   meetsMinimumAge,
+  newHandleSchema,
   toGeoPoint,
   type FollowState,
   type GeoPoint,
@@ -168,10 +169,32 @@ export async function createProfile(
     throw new ApiError(ERROR_CODES.UNDERAGE, 'You must be 18 or older to use LangX')
   }
 
+  let claimingOwnLegacyHandle = false
   if (legacyEmailHash) {
     const resolution = await resolveHandleClaim(db, input.handle, userId, legacyEmailHash)
     if (resolution.kind === 'reserved_for_other') {
       throw new ApiError(ERROR_CODES.HANDLE_RESERVED, `@${input.handle} is reserved`)
+    }
+    claimingOwnLegacyHandle = resolution.kind === 'claimed'
+  }
+
+  /*
+   * The floor and the reserved list, checked here rather than in the schema.
+   *
+   * A handle is a public address now — `/<handle>` — so a new one must be at
+   * least `HANDLE_MIN_LENGTH` and must not be a route name. But v1 handles
+   * were written under neither rule, and somebody taking back a handle *that
+   * is reserved for them* is not making a new claim. Only this function can
+   * tell those two apart, which is why `onboardingProfileSchema` stays
+   * permissive and the rule lives here.
+   */
+  if (!claimingOwnLegacyHandle) {
+    const claim = newHandleSchema.safeParse(input.handle)
+    if (!claim.success) {
+      throw new ApiError(
+        ERROR_CODES.VALIDATION_FAILED,
+        claim.error.issues[0]?.message ?? 'That username cannot be used',
+      )
     }
   }
 

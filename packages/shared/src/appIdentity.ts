@@ -41,6 +41,35 @@ export const IOS_APP_ID = `${APPLE_TEAM_ID}.${IOS_BUNDLE_ID}`
 export const APP_LINK_HOST = 'app.langx.io'
 
 /**
+ * Where the web build is actually served, and therefore what a shared link
+ * points at.
+ *
+ * **Not the same constant as `APP_LINK_HOST`, on purpose.** That one is the
+ * host the *app* claims: it is written into `associatedDomains`, into
+ * `assetlinks.json` and `apple-app-site-association`, and it is carried over
+ * from v1's AndroidManifest. Collapsing the two would mean that pointing links
+ * at a different host silently re-declares the universal-link association as
+ * well, which is a store-submission change wearing the clothes of a URL edit.
+ *
+ * Today the deployment lives at `app2.langx.io` while `app.langx.io` is still
+ * being pointed at it — see `release-runbook.md`, where serving
+ * `/.well-known/*` from that domain is an open item. When it closes, this is
+ * the one line that changes.
+ */
+export const WEB_HOST = 'app2.langx.io'
+
+/**
+ * The link somebody shares for their own profile.
+ *
+ * Root-level, so it is short enough to say out loud, which is the whole point
+ * of a handle being a public address. Every top-level route is therefore a
+ * name nobody may claim — see `RESERVED_HANDLES`.
+ */
+export function profileUrl(handle: string): string {
+  return `https://${WEB_HOST}/${handle.startsWith('@') ? handle.slice(1) : handle}`
+}
+
+/**
  * SHA-256 fingerprints of the certificates Android accepts as "this app", for
  * `assetlinks.json`.
  *

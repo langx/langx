@@ -597,6 +597,8 @@ export const de: Localized<EnMessages> = {
     tokens: 'Token',
     previewProfile: 'Mein Profil ansehen',
     previewProfileBody: 'Sieh dein Profil so, wie andere es sehen',
+    shareProfile: 'Mein Profil teilen',
+    shareMessage: 'Übe Sprachen mit mir auf LangX: {url}',
     badges: 'Abzeichen',
   },
 
@@ -790,6 +792,15 @@ export const de: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} Token verdient', other: '{formatted} Token verdient' },
     memberDays: { one: '{formatted} Tag dabei', other: '{formatted} Tage dabei' },
     corrections: { one: '{formatted} Korrektur', other: '{formatted} Korrekturen' },
+  },
+
+  shared: {
+    missingTitle: 'Hier ist nichts',
+    missingBody: 'Kein LangX-Profil hört auf @{handle}.',
+    speaks: 'Spricht',
+    learning: 'Lernt',
+    ctaBody: '{name} übt Sprachen auf LangX. Komm dazu und sag Hallo.',
+    ctaLabel: 'LangX öffnen',
   },
 
   viewers: {

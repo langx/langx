@@ -593,6 +593,8 @@ export const es: Localized<EnMessages> = {
     tokens: 'Fichas',
     previewProfile: 'Ver mi perfil',
     previewProfileBody: 'Mira tu perfil como lo ven los demás',
+    shareProfile: 'Compartir mi perfil',
+    shareMessage: 'Practica idiomas conmigo en LangX: {url}',
     badges: 'Insignias',
   },
 
@@ -782,6 +784,15 @@ export const es: Localized<EnMessages> = {
     tokensEarned: { one: '{formatted} ficha ganada', other: '{formatted} fichas ganadas' },
     memberDays: { one: '{formatted} día como miembro', other: '{formatted} días como miembro' },
     corrections: { one: '{formatted} corrección', other: '{formatted} correcciones' },
+  },
+
+  shared: {
+    missingTitle: 'Aquí no hay nada',
+    missingBody: 'Ningún perfil de LangX responde a @{handle}.',
+    speaks: 'Habla',
+    learning: 'Aprende',
+    ctaBody: '{name} practica idiomas en LangX. Únete para saludar.',
+    ctaLabel: 'Abrir LangX',
   },
 
   viewers: {
