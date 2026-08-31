@@ -46,11 +46,12 @@ export async function requireAuth(request: FastifyRequest, reply: FastifyReply):
 /**
  * Layer on top of `requireAuth` for anything a guest must not do.
  *
- * Guests are `emailVerified: false`, so every route already behind
+ * Guests are `emailVerified: false`, so every route behind
  * `requireVerifiedEmail` is closed to them for free — a happy accident, and the
  * strongest single argument for using Better Auth's anonymous plugin rather
- * than inventing a session. This covers the rest: the writes that only ever
- * needed `requireAuth`, which is most of them.
+ * than inventing a session. That guard now answers them with this same code
+ * rather than an email error they can do nothing about. This covers the rest:
+ * the writes that only ever needed `requireAuth`, which is most of them.
  *
  * A distinct code rather than `UNAUTHENTICATED`, because the client's answer is
  * different. Unauthenticated means "sign in"; this means "you are browsing as a
@@ -82,6 +83,28 @@ export async function requireVerifiedEmail(
 ): Promise<void> {
   await requireAuth(request, reply)
   if (reply.sent) return
+
+  /*
+   * A guest is answered as a guest, before the email check that would also
+   * have stopped them.
+   *
+   * Both refusals close the route, so this changes nothing about who gets in.
+   * What it changes is what the client can do next: `EMAIL_NOT_VERIFIED` says
+   * "verify your email", and a guest has no email to verify — the screen has
+   * nowhere to send them, so it falls through to a generic failure toast. It
+   * was found that way, on `Follow`, which is behind this guard rather than
+   * `requireMember` and so never produced the code the transport watches for.
+   *
+   * Ordering it before the email check is what makes `requireMember`
+   * unnecessary on a route that already requires verification.
+   */
+  if (request.isGuest) {
+    const body: ApiErrorBody = {
+      code: ERROR_CODES.GUEST_ACCOUNT,
+      message: 'Create an account to do that',
+    }
+    return reply.code(ERROR_STATUS.GUEST_ACCOUNT).send(body)
+  }
 
   if (!request.emailVerified) {
     const body: ApiErrorBody = {
