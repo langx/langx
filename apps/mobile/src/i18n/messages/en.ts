@@ -711,6 +711,7 @@ export const en = {
     showStatsBody: 'Streak, corrections, tokens and this week’s chart on your profile.',
     legalSection: 'Legal',
     communitySection: 'Community',
+    linkDeviceBody: 'Approve a sign-in on a computer.',
     showInDiscover: 'Show me in Discover',
     showInDiscoverBody: 'Turn this off and nobody will find you in Discover.',
     incognito: 'Browse incognito',
@@ -893,6 +894,31 @@ export const en = {
     share: 'Share',
     copy: 'Copy link',
     copied: 'Link copied',
+  },
+
+  linkDevice: {
+    title: 'Sign in on another device',
+    body: 'Enter the code shown on the other screen, or scan it there.',
+    placeholder: 'ABCDEF',
+    warning:
+      'Only approve a code you are looking at yourself. Anyone who gets it in gains full access to your account.',
+    approve: 'Approve',
+    deny: 'Deny',
+    approved: 'Signed in',
+    denied: 'Denied',
+    failed: 'That code is no longer valid.',
+    hint: 'Not now',
+  },
+
+  qrSignIn: {
+    title: 'Sign in with your phone',
+    body: 'Open LangX on your phone and enter this code, or scan it.',
+    hint: 'Settings → Sign in on another device',
+    qrAccessibility: 'QR code for signing in',
+    expired: 'The code expired.',
+    failed: 'Could not start. Try again.',
+    again: 'Try again',
+    webOnly: 'This is for signing in on a computer. You are already on your phone.',
   },
 
   viewers: {

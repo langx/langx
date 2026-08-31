@@ -680,6 +680,7 @@ export const de: Localized<EnMessages> = {
     showStatsBody: 'Streak, Korrekturen, Tokens und das Wochendiagramm auf deinem Profil.',
     legalSection: 'Rechtliches',
     communitySection: 'Community',
+    linkDeviceBody: 'Eine Anmeldung am Computer bestätigen.',
     showInDiscover: 'In Entdecken zeigen',
     showInDiscoverBody: 'Schalte das aus, und niemand findet dich in Entdecken.',
     incognito: 'Inkognito surfen',
@@ -863,6 +864,31 @@ export const de: Localized<EnMessages> = {
     share: 'Teilen',
     copy: 'Link kopieren',
     copied: 'Link kopiert',
+  },
+
+  linkDevice: {
+    title: 'Auf einem anderen Gerät anmelden',
+    body: 'Gib den Code vom anderen Bildschirm ein, oder scanne ihn dort.',
+    placeholder: 'ABCDEF',
+    warning:
+      'Bestätige nur einen Code, den du selbst siehst. Wer ihn eingibt, bekommt vollen Zugriff auf dein Konto.',
+    approve: 'Bestätigen',
+    deny: 'Ablehnen',
+    approved: 'Angemeldet',
+    denied: 'Abgelehnt',
+    failed: 'Dieser Code gilt nicht mehr.',
+    hint: 'Jetzt nicht',
+  },
+
+  qrSignIn: {
+    title: 'Mit dem Handy anmelden',
+    body: 'Öffne LangX auf dem Handy und gib diesen Code ein, oder scanne ihn.',
+    hint: 'Einstellungen → Auf einem anderen Gerät anmelden',
+    qrAccessibility: 'QR-Code zum Anmelden',
+    expired: 'Der Code ist abgelaufen.',
+    failed: 'Start fehlgeschlagen. Versuch es nochmal.',
+    again: 'Nochmal',
+    webOnly: 'Das ist für die Anmeldung am Computer. Du bist schon am Handy.',
   },
 
   viewers: {

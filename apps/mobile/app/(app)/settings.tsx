@@ -223,6 +223,16 @@ export default function SettingsScreen() {
 
       <Text style={styles.section}>{t('settings.privacySection')}</Text>
       <View>
+        {/*
+          Here rather than on Me: approving a sign-in is account plumbing, not
+          something anybody does often, and it sits with the other things that
+          decide who can reach the account.
+        */}
+        <ListRow
+          title={t('linkDevice.title')}
+          subtitle={t('settings.linkDeviceBody')}
+          onPress={() => router.push('/(app)/link-device')}
+        />
         <ListRow
           title={t('settings.showInDiscover')}
           subtitle={t('settings.showInDiscoverBody')}

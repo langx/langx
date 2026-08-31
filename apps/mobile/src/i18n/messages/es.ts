@@ -675,6 +675,7 @@ export const es: Localized<EnMessages> = {
     showStatsBody: 'Racha, correcciones, tokens y el gráfico de la semana en tu perfil.',
     legalSection: 'Legal',
     communitySection: 'Comunidad',
+    linkDeviceBody: 'Aprueba un inicio de sesión en un ordenador.',
     showInDiscover: 'Mostrarme en Descubrir',
     showInDiscoverBody: 'Desactívalo y nadie te encontrará en Descubrir.',
     incognito: 'Navegar de incógnito',
@@ -856,6 +857,31 @@ export const es: Localized<EnMessages> = {
     share: 'Compartir',
     copy: 'Copiar enlace',
     copied: 'Enlace copiado',
+  },
+
+  linkDevice: {
+    title: 'Iniciar sesión en otro dispositivo',
+    body: 'Escribe el código de la otra pantalla, o escanéalo allí.',
+    placeholder: 'ABCDEF',
+    warning:
+      'Aprueba solo un código que estés viendo tú. Quien lo introduzca obtiene acceso total a tu cuenta.',
+    approve: 'Aprobar',
+    deny: 'Rechazar',
+    approved: 'Sesión iniciada',
+    denied: 'Rechazado',
+    failed: 'Ese código ya no es válido.',
+    hint: 'Ahora no',
+  },
+
+  qrSignIn: {
+    title: 'Inicia sesión con el móvil',
+    body: 'Abre LangX en tu móvil e introduce este código, o escanéalo.',
+    hint: 'Ajustes → Iniciar sesión en otro dispositivo',
+    qrAccessibility: 'Código QR para iniciar sesión',
+    expired: 'El código ha caducado.',
+    failed: 'No se pudo iniciar. Inténtalo otra vez.',
+    again: 'Reintentar',
+    webOnly: 'Esto es para iniciar sesión en un ordenador. Ya estás en el móvil.',
   },
 
   viewers: {

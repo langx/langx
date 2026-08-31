@@ -788,6 +788,7 @@ export const ar: Localized<EnMessages> = {
     showStatsBody: 'السلسلة والتصحيحات والتوكنات ورسم هذا الأسبوع على ملفك.',
     legalSection: 'القانونية',
     communitySection: 'المجتمع',
+    linkDeviceBody: 'وافق على تسجيل دخول على حاسوب.',
     showInDiscover: 'أظهرني في الاستكشاف',
     showInDiscoverBody: 'أغلق هذا ولن يجدك أحد في الاستكشاف.',
     incognito: 'تصفّح خفي',
@@ -1021,6 +1022,30 @@ export const ar: Localized<EnMessages> = {
     share: 'مشاركة',
     copy: 'نسخ الرابط',
     copied: 'تم نسخ الرابط',
+  },
+
+  linkDevice: {
+    title: 'تسجيل الدخول على جهاز آخر',
+    body: 'أدخل الرمز الظاهر على الشاشة الأخرى، أو امسحه هناك.',
+    placeholder: 'ABCDEF',
+    warning: 'وافق فقط على رمز تراه بنفسك. من يُدخله يحصل على وصول كامل إلى حسابك.',
+    approve: 'موافقة',
+    deny: 'رفض',
+    approved: 'تم تسجيل الدخول',
+    denied: 'تم الرفض',
+    failed: 'لم يعد هذا الرمز صالحًا.',
+    hint: 'ليس الآن',
+  },
+
+  qrSignIn: {
+    title: 'سجّل الدخول بهاتفك',
+    body: 'افتح LangX على هاتفك وأدخل هذا الرمز، أو امسحه.',
+    hint: 'الإعدادات ← تسجيل الدخول على جهاز آخر',
+    qrAccessibility: 'رمز QR لتسجيل الدخول',
+    expired: 'انتهت صلاحية الرمز.',
+    failed: 'تعذّر البدء. حاول مرة أخرى.',
+    again: 'حاول مجددًا',
+    webOnly: 'هذا لتسجيل الدخول على حاسوب. أنت بالفعل على هاتفك.',
   },
 
   viewers: {

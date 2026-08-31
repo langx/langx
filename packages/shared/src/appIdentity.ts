@@ -125,3 +125,14 @@ export function profileQrUrl(apiBaseUrl: string, handle: string): string {
   const bare = handle.startsWith('@') ? handle.slice(1) : handle
   return `${apiBaseUrl.replace(/\/$/, '')}/public/qr/${encodeURIComponent(bare)}`
 }
+
+/**
+ * The QR for a device-flow verification link.
+ *
+ * Takes the user code rather than a URL, and so does the endpoint — a
+ * `?to=<anything>` generator on our own domain would encode whatever an
+ * attacker asked it to, which is a phishing primitive wearing our hostname.
+ */
+export function deviceLinkQrUrl(apiBaseUrl: string, userCode: string): string {
+  return `${apiBaseUrl.replace(/\/$/, '')}/public/qr/link/${encodeURIComponent(userCode)}`
+}
