@@ -1,8 +1,14 @@
 import { shiftDayKey } from '@langx/shared'
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native'
 import { usePublicActivity, useActivity, useRepairDay, useWallet } from '../api/queries'
-import { activityGrid, repairEffect, type ActivityCell } from '../lib/activityMap'
+import {
+  ACTIVITY_CELL_GAP,
+  activityCellSize,
+  activityGrid,
+  repairEffect,
+  type ActivityCell,
+} from '../lib/activityMap'
 import { confirmAlert, showAlert } from '../lib/alert'
 import { dayLabel } from '../lib/messageGroups'
 import { makeStyles, useTheme } from '../lib/theme'
@@ -43,6 +49,10 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
   const wallet = useWallet()
   const repair = useRepairDay()
   const scroller = useRef<ScrollView>(null)
+  // Measured rather than assumed: the squares are sized to fill whatever width
+  // the card actually has. See `activityCellSize` for why that is the knob.
+  const [width, setWidth] = useState(0)
+  const cell = activityCellSize(width, WEEKS)
 
   // One shape from two endpoints. The public one carries an intensity rather
   // than a count — the exact number is the private part — so it is turned back
@@ -162,28 +172,30 @@ export function ActivityMap({ handle }: ActivityMapProps = {}) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.grid}
+        onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
         onContentSizeChange={() => scroller.current?.scrollToEnd({ animated: false })}
       >
         {columns.map((column) => (
           <View key={column[0]?.day} style={styles.column}>
-            {column.map((cell) => (
+            {column.map((square) => (
               <Pressable
-                key={cell.day}
-                accessibilityRole={cell.state === 'repairable' ? 'button' : undefined}
+                key={square.day}
+                accessibilityRole={square.state === 'repairable' ? 'button' : undefined}
                 accessibilityLabel={
-                  cell.state === 'repairable'
-                    ? t('activity.fillInDay', { day: cell.day })
+                  square.state === 'repairable'
+                    ? t('activity.fillInDay', { day: square.day })
                     : undefined
                 }
-                disabled={Boolean(handle) || cell.state !== 'repairable'}
-                onPress={() => void onPressDay(cell)}
+                disabled={Boolean(handle) || square.state !== 'repairable'}
+                onPress={() => void onPressDay(square)}
                 style={[
                   styles.cell,
-                  cell.state === 'future' && styles.future,
-                  cell.state === 'repairable' && styles.repairable,
-                  cell.intensity > 0 && {
+                  { height: cell, width: cell },
+                  square.state === 'future' && styles.future,
+                  square.state === 'repairable' && styles.repairable,
+                  square.intensity > 0 && {
                     backgroundColor: colors.streak,
-                    opacity: 0.25 + cell.intensity * 0.1875,
+                    opacity: 0.25 + square.intensity * 0.1875,
                   },
                 ]}
               />
@@ -223,14 +235,25 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
   },
   title: { ...font.heading, color: colors.text, fontSize: 16 },
   hint: { ...font.caption, color: colors.textMuted },
-  grid: { flexDirection: 'row', gap: 3, paddingVertical: spacing.xs },
-  column: { gap: 3 },
+  /**
+   * `flexGrow` so the container fills the viewport when the grid is narrower
+   * than it, which is what lets `justifyContent` centre the leftover. A grid
+   * wider than the viewport is not shrunk by either, so a phone still scrolls.
+   */
+  grid: {
+    flexDirection: 'row',
+    flexGrow: 1,
+    gap: ACTIVITY_CELL_GAP,
+    justifyContent: 'center',
+    paddingVertical: spacing.xs,
+  },
+  column: { gap: ACTIVITY_CELL_GAP },
   /**
    * `fill`, the one grey v3 lets be a box: an empty day must still be a
    * visible square on the white ground — a calendar whose empty days are
    * invisible is not a calendar, it is a scatter of dots.
    */
-  cell: { backgroundColor: colors.fill, borderRadius: 3, height: 13, width: 13 },
+  cell: { backgroundColor: colors.fill, borderRadius: 3 },
   // Drawn as a gap rather than a square: a day that has not happened is not an
   // empty day.
   future: { backgroundColor: 'transparent' },
