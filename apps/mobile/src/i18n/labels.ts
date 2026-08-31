@@ -91,3 +91,18 @@ const KNOWN_INTERESTS = new Set<string>(INTEREST_SUGGESTIONS)
 export function interestLabel(t: TranslateFn, interest: string): string {
   return KNOWN_INTERESTS.has(interest) ? t(`interests.${interest}` as MessageKey) : interest
 }
+
+/**
+ * `frame.gold` → `cosmetics.frameGold`.
+ *
+ * The catalogue's own `label` is deliberately ignored, the same way a badge's
+ * is: it is built in `@langx/shared`, which the server imports and which
+ * therefore cannot know who is reading. A dot cannot be in a key either —
+ * `translate` walks into a group on one.
+ */
+export function cosmeticLabel(t: TranslateFn, id: string): string {
+  const [kind, variant] = id.split('.')
+  if (!kind || !variant) return id
+  const key = `cosmetics.${kind}${variant.charAt(0).toUpperCase()}${variant.slice(1)}` as MessageKey
+  return t(key)
+}

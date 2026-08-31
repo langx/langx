@@ -7,6 +7,8 @@ const base: StoreInput = {
   balance: 0,
   owned: [],
   streakFreezes: 0,
+  longestStreak: 0,
+  lifetimeCorrections: 0,
   restorableStreak: 0,
   t: createTranslate('en'),
 }

@@ -1,5 +1,5 @@
 import { ActivityMap } from '../../src/components/ActivityMap'
-import { countryFlag, getCountry, profileUrl } from '@langx/shared'
+import { countryFlag, getCountry, profileUrl, wornCosmetic } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, Share, Text, View } from 'react-native'
@@ -16,6 +16,7 @@ import { DebugQuotaPanel } from '../../src/components/DebugQuotaPanel'
 import { PhotoGallery } from '../../src/components/PhotoGallery'
 import { WeeklyChart } from '../../src/components/WeeklyChart'
 import { Avatar } from '../../src/components/ui/Avatar'
+import { CosmeticTitle } from '../../src/components/CosmeticTitle'
 import { Button } from '../../src/components/ui/Button'
 import { LevelBars } from '../../src/components/ui/LevelBars'
 import { ListRow } from '../../src/components/ui/ListRow'
@@ -58,6 +59,9 @@ export default function MeScreen() {
 
   const profile = me.data
   const balance = wallet.data?.balance ?? 0
+  const owned = wallet.data?.owned ?? []
+  const wornFrame = wornCosmetic(wallet.data?.equipped, owned, 'frame')
+  const wornTitle = wornCosmetic(wallet.data?.equipped, owned, 'title')
   const summary = xp.data
   const viewerPage = viewers.data?.pages[0]
 
@@ -79,11 +83,19 @@ export default function MeScreen() {
   return (
     <Screen scroll onRefresh={refresh} refreshing={me.isRefetching}>
       <View style={styles.hero}>
-        <Avatar url={profile.avatarUrl} name={profile.displayName} size={72} />
+        <Avatar
+          url={profile.avatarUrl}
+          name={profile.displayName}
+          size={72}
+          frame={wornFrame?.tone}
+        />
         <View style={styles.heroText}>
-          <Text style={styles.name} numberOfLines={1}>
-            {profile.displayName}
-          </Text>
+          <View style={styles.nameRow}>
+            <Text style={styles.name} numberOfLines={1}>
+              {profile.displayName}
+            </Text>
+            <CosmeticTitle cosmetic={wornTitle} />
+          </View>
           <Text style={styles.handle} numberOfLines={1}>
             {meta}
           </Text>
@@ -232,6 +244,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     gap: spacing.lg,
     paddingVertical: spacing.sm,
   },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   heroText: { flex: 1, minWidth: 0 },
   name: { ...font.heading, color: colors.text, fontSize: 24 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },

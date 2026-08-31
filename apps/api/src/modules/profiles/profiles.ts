@@ -7,12 +7,14 @@ import {
   TIMEZONE_UPDATE_COOLDOWN_MS,
   effectivePlanTier,
   isOnlineAt,
+  findCosmetic,
   meetsMinimumAge,
   newHandleSchema,
   toGeoPoint,
   type FollowState,
   type GeoPoint,
   type LocationInput,
+  type Equipped,
   type NotificationPrefs,
   type StoredNotificationPrefs,
   type OnboardingProfileInput,
@@ -99,6 +101,11 @@ export interface Profile {
   tokenSpent?: number
   /** Cosmetic ids owned (see `COSMETICS`). */
   cosmetics?: string[]
+  /**
+   * Which of them is worn. Ownership is a set; this is the choice, and without
+   * it a second frame is a purchase that changes nothing.
+   */
+  equipped?: Equipped
   /**
    * When each paid tier's welcome pack was handed over.
    *
@@ -347,6 +354,25 @@ export async function updateProfile(
   )
 
   /*
+   * You may only wear what you own, and only in the slot it belongs to.
+   *
+   * Checked here rather than in the schema because the schema cannot see the
+   * profile: `equipped.frame` is a valid string either way, and the thing that
+   * makes it valid or not is a field on the document being updated. An
+   * explicit `null` clears a slot, which is how "wear nothing" is expressed.
+   */
+  if (input.equipped) {
+    const owned = current.cosmetics ?? []
+    for (const [kind, id] of Object.entries(input.equipped)) {
+      if (id === null || id === undefined) continue
+      const cosmetic = findCosmetic(id)
+      if (!cosmetic || cosmetic.kind !== kind || !owned.includes(id)) {
+        throw new ApiError(ERROR_CODES.VALIDATION_FAILED, `You do not own ${id}`)
+      }
+    }
+  }
+
+  /*
    * `cityKey` is derived, never sent. Deriving it here rather than trusting a
    * client keeps the stored key and the query's key the product of one
    * function — if they ever disagreed the filter would quietly answer for
@@ -366,9 +392,10 @@ export async function updateProfile(
    * `settings` above is safe only because both its keys are always sent
    * together; this one is not.
    */
-  const { privacy, settings, ...rest } = definedUpdates as {
+  const { privacy, settings, equipped, ...rest } = definedUpdates as {
     privacy?: Record<string, boolean>
     settings?: { discoverable?: boolean; notifications?: Record<string, boolean> }
+    equipped?: Record<string, string | null>
   }
   const privacyPaths = Object.fromEntries(
     Object.entries(privacy ?? {}).map(([key, value]) => [`privacy.${key}`, value]),
@@ -392,6 +419,20 @@ export async function updateProfile(
     settingsPaths['settings.discoverable'] = settings.discoverable
   for (const [type, value] of Object.entries(settings?.notifications ?? {})) {
     settingsPaths[`settings.notifications.${type}`] = value
+  }
+
+  /*
+   * `equipped` too, and it needs an `$unset` as well: the two slots are set
+   * independently, so writing the object whole would clear a title when
+   * somebody changes their frame. `null` is how the client says "wear
+   * nothing", and it has to remove the key rather than store a null — every
+   * reader checks for a *missing* slot.
+   */
+  const equippedPaths: Record<string, string> = {}
+  const equippedUnset: Record<string, ''> = {}
+  for (const [kind, id] of Object.entries(equipped ?? {})) {
+    if (id === null) equippedUnset[`equipped.${kind}`] = ''
+    else equippedPaths[`equipped.${kind}`] = id
   }
 
   const now = new Date()
@@ -422,9 +463,11 @@ export async function updateProfile(
         ...rest,
         ...privacyPaths,
         ...settingsPaths,
+        ...equippedPaths,
         ...(timezoneUpdatedAt ? { timezoneUpdatedAt } : {}),
         updatedAt: now,
       },
+      ...(Object.keys(equippedUnset).length > 0 ? { $unset: equippedUnset } : {}),
     },
     { returnDocument: 'after' },
   )
@@ -510,6 +553,7 @@ export interface PublicProfile {
   streak: { current: number; longest: number }
   tier: PlanTier
   cosmetics: string[]
+  equipped?: Equipped
   isOnline: boolean
   /**
    * Absent when the profile hides its online status. Sending a fresh
@@ -587,6 +631,7 @@ export function toPublicProfile(
     // everyone else a PRO badge the server already refuses to honour.
     tier: effectivePlanTier(profile.entitlement?.tier ?? 'free', profile.entitlement?.expiresAt),
     cosmetics: profile.cosmetics ?? [],
+    ...(profile.equipped ? { equipped: profile.equipped } : {}),
     isOnline: hidden ? false : isOnlineAt(lastActiveAt, now),
     createdAt: profile.createdAt,
     emailVerified,

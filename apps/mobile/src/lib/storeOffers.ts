@@ -1,5 +1,7 @@
 import {
   COSMETICS,
+  meetsRequirement,
+  type CosmeticTone,
   STREAK_FREEZE_SKU,
   STREAK_RESTORE_SKU,
   TOKEN_RULES,
@@ -14,6 +16,18 @@ export interface StoreOffer {
   subtitle: string
   price: number
   owned: boolean
+  /** A frame's colour role, for the row's preview. Titles have none. */
+  tone?: CosmeticTone
+  /**
+   * Barred by something other than the balance. Deliberately **not** folded
+   * into `affordable`: that word means "the balance covers the price", and an
+   * item you cannot have yet renders identically to one you cannot afford if
+   * the two share a flag — which is the difference between "come back richer"
+   * and "come back better".
+   */
+  locked?: boolean
+  /** What the lock is waiting for, so the row can draw progress. */
+  requirement?: { current: number; threshold: number; kind: 'streak' | 'corrections' }
   /** Whether the balance covers the price. Separate from `owned`: an owned
    *  item is never buyable however much the balance is. */
   affordable: boolean
@@ -21,6 +35,9 @@ export interface StoreOffer {
 
 export interface StoreInput {
   balance: number
+  /** Both monotonic, and both already on the wallet screen's `useTokens`. */
+  longestStreak: number
+  lifetimeCorrections: number
   /** Cosmetic ids already bought, from `GET /me/wallet`. */
   owned: readonly string[]
   streakFreezes: number
@@ -62,7 +79,13 @@ function cosmeticKey(id: string): MessageKey {
 export function buildStoreOffers(input: StoreInput): StoreOffer[] {
   const { t } = input
   const offers: StoreOffer[] = []
-  const priced = (id: string, title: string, subtitle: string, price: number, owned = false) => ({
+  const priced = (
+    id: string,
+    title: string,
+    subtitle: string,
+    price: number,
+    owned = false,
+  ): StoreOffer => ({
     id,
     title,
     subtitle,
@@ -100,16 +123,48 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     affordable: freezeOffer.affordable && input.streakFreezes < maxFreezes,
   })
 
+  const progress = {
+    longestStreak: input.longestStreak,
+    corrections: input.lifetimeCorrections,
+  }
+
   for (const item of COSMETICS) {
-    offers.push(
-      priced(
-        item.id,
-        t(cosmeticKey(item.id)),
-        item.kind === 'frame' ? t('store.frameKind') : t('store.titleKind'),
-        item.price,
-        input.owned.includes(item.id),
-      ),
+    const offer = priced(
+      item.id,
+      t(cosmeticKey(item.id)),
+      item.kind === 'frame' ? t('store.frameKind') : t('store.titleKind'),
+      item.price,
+      input.owned.includes(item.id),
     )
+    if (item.tone) offer.tone = item.tone
+
+    if (item.requires && !offer.owned && !meetsRequirement(item.requires, progress)) {
+      offer.locked = true
+      offer.affordable = false
+      // The requirement furthest from being met is the one worth showing: it
+      // is the honest answer to "what is actually stopping me".
+      const candidates: StoreOffer['requirement'][] = []
+      if (item.requires.longestStreak !== undefined) {
+        candidates.push({
+          kind: 'streak',
+          current: progress.longestStreak,
+          threshold: item.requires.longestStreak,
+        })
+      }
+      if (item.requires.corrections !== undefined) {
+        candidates.push({
+          kind: 'corrections',
+          current: progress.corrections,
+          threshold: item.requires.corrections,
+        })
+      }
+      const furthest = candidates
+        .filter((c): c is NonNullable<typeof c> => c !== undefined)
+        .sort((a, b) => a.current / a.threshold - b.current / b.threshold)[0]
+      if (furthest) offer.requirement = furthest
+    }
+
+    offers.push(offer)
   }
 
   return offers

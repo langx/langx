@@ -37,7 +37,7 @@ export type {
 
 // Re-exported above for consumers; imported here because a `export ... from`
 // does not bind the name locally and the DTOs below need to use it.
-import type { FollowState, LanguageLevel, PlanTier } from '@langx/shared'
+import type { Equipped, FollowState, LanguageLevel, PlanTier } from '@langx/shared'
 
 export interface PublicProfileDto {
   /** Set when the viewer already has a thread with this person. */
@@ -58,6 +58,8 @@ export interface PublicProfileDto {
   streak: { current: number; longest: number }
   tier: PlanTier
   cosmetics: string[]
+  /** Which of them is worn; absent means the fallback in `wornCosmetic`. */
+  equipped?: Equipped
   isOnline: boolean
   /** Absent when the profile hides its online status. */
   lastActiveAt?: string

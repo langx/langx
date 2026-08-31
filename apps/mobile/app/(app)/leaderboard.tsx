@@ -1,8 +1,9 @@
-import type { PeriodType } from '@langx/shared'
+import { findCosmetic, type CosmeticTone, type PeriodType } from '@langx/shared'
 import { useState } from 'react'
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
 import { useBadges, useLeaderboard, useTokens } from '../../src/api/queries'
 import { BadgeGrid } from '../../src/components/BadgeGrid'
+import { CosmeticTitle } from '../../src/components/CosmeticTitle'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { EmptyState } from '../../src/components/ui/EmptyState'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
@@ -157,12 +158,20 @@ export default function LeaderboardScreen() {
               ]}
             >
               <Text style={styles.rank}>{MEDALS[item.rank - 1] ?? `#${item.rank}`}</Text>
-              <Avatar url={item.avatarUrl} name={item.displayName} size={36} />
+              <Avatar
+                url={item.avatarUrl}
+                name={item.displayName}
+                size={36}
+                frame={item.frame as CosmeticTone | undefined}
+              />
               <View style={styles.body}>
-                <Text style={styles.name} numberOfLines={1}>
-                  {item.displayName}
-                  {item.isViewer ? ` ${t('common.you')}` : ''}
-                </Text>
+                <View style={styles.nameRow}>
+                  <Text style={styles.name} numberOfLines={1}>
+                    {item.displayName}
+                    {item.isViewer ? ` ${t('common.you')}` : ''}
+                  </Text>
+                  <CosmeticTitle cosmetic={item.title ? findCosmetic(item.title) : undefined} />
+                </View>
                 {item.streak > 0 ? <Text style={styles.streakSmall}>🔥 {item.streak}</Text> : null}
               </View>
               <Text style={styles.tokens}>{item.tokens}</Text>
@@ -210,6 +219,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   },
   rank: { ...font.heading, color: colors.text, fontSize: 16, minWidth: 36 },
   body: { flex: 1 },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6 },
   name: { ...font.body, color: colors.text, fontSize: 16, fontWeight: '600' },
   streakSmall: { ...font.caption, color: colors.streak },
   tokens: { ...font.heading, color: colors.text, fontSize: 16 },

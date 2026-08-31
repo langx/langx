@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from 'react-native'
 import type { StoreOffer } from '../../lib/storeOffers'
-import { useT } from '../../i18n'
+import { useLocale, useT } from '../../i18n'
+import { Avatar } from '../ui/Avatar'
 import { makeStyles } from '../../lib/theme'
 
 /**
@@ -15,28 +16,59 @@ export function StoreRow({
   pending,
   last = false,
   onBuy,
+  /** For the preview: whose face wears the frame, and whose name the title. */
+  viewer,
 }: {
   offer: StoreOffer
   pending: boolean
   last?: boolean
   onBuy: (id: string) => void
+  viewer?: { name: string; avatarUrl?: string | undefined }
 }) {
   const t = useT()
+  const { locale } = useLocale()
   const styles = useStyles()
-  const buyable = !offer.owned && offer.affordable && !pending
+  const buyable = !offer.owned && !offer.locked && offer.affordable && !pending
 
   return (
     <View style={[styles.row, !last && styles.divided]}>
+      {/*
+        Worn, not described. "Gold frame" tells somebody the name of a thing
+        they are being asked to spend eighteen thousand token on; their own
+        avatar wearing it tells them what they are buying. Inline rather than
+        behind a tap, because a catalogue of twenty rows where each has to be
+        opened to be understood is a catalogue nobody reads.
+      */}
+      {offer.tone && viewer ? (
+        <Avatar url={viewer.avatarUrl} name={viewer.name} size={30} frame={offer.tone} />
+      ) : null}
       <View style={styles.text}>
         <Text style={styles.name}>{offer.title}</Text>
-        <Text style={styles.meta}>{offer.subtitle}</Text>
+        {offer.requirement ? (
+          <Text style={styles.meta}>
+            {t(
+              offer.requirement.kind === 'streak'
+                ? 'store.lockedStreak'
+                : 'store.lockedCorrections',
+              {
+                count: offer.requirement.threshold,
+                current: offer.requirement.current.toLocaleString(locale),
+                threshold: offer.requirement.threshold.toLocaleString(locale),
+              },
+            )}
+          </Text>
+        ) : (
+          <Text style={styles.meta}>{offer.subtitle}</Text>
+        )}
       </View>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={
           offer.owned
             ? t('store.ownedAccessibility', { title: offer.title })
-            : t('store.buy', { title: offer.title, price: offer.price })
+            : offer.locked
+              ? t('store.lockedAccessibility', { title: offer.title })
+              : t('store.buy', { title: offer.title, price: offer.price })
         }
         accessibilityState={{ disabled: !buyable }}
         disabled={!buyable}
@@ -51,7 +83,7 @@ export function StoreRow({
         ]}
       >
         <Text style={[styles.priceLabel, buyable && styles.buyableLabel]}>
-          {offer.owned ? t('store.owned') : String(offer.price)}
+          {offer.owned ? t('store.owned') : offer.locked ? t('store.locked') : String(offer.price)}
         </Text>
       </Pressable>
     </View>

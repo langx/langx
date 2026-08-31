@@ -2,7 +2,8 @@ import { COSMETICS } from '@langx/shared'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { router } from 'expo-router'
 import Feather from '@expo/vector-icons/Feather'
-import { useMe, usePurchase, useWallet } from '../../src/api/queries'
+import { useMe, usePurchase, useTokens, useUpdateProfile, useWallet } from '../../src/api/queries'
+import { EquipPicker } from '../../src/components/store/EquipPicker'
 import { StoreRow } from '../../src/components/store/StoreRow'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
@@ -33,6 +34,9 @@ export default function WalletScreen() {
   const me = useMe()
   const wallet = useWallet()
   const purchase = usePurchase()
+  const update = useUpdateProfile()
+  // The shop needs both to draw a gate's progress; the wallet itself does not.
+  const xp = useTokens()
 
   if (me.isPending || !me.data) {
     return (
@@ -45,16 +49,19 @@ export default function WalletScreen() {
   const restored = me.data.restoredFromV1
   const balance = wallet.data?.balance ?? 0
   const owned = wallet.data?.owned ?? []
+  const viewer = { name: me.data.displayName, avatarUrl: me.data.avatarUrl }
   const offers = buildStoreOffers({
     t,
     balance,
+    longestStreak: xp.data?.streak.longest ?? 0,
+    lifetimeCorrections: xp.data?.lifetime.corrections ?? 0,
     owned,
     streakFreezes: wallet.data?.streakFreezes ?? 0,
     restorableStreak: restored && !restored.streakRestoredAt ? restored.frozenStreak : 0,
   })
 
   function refresh(): void {
-    void Promise.all([me.refetch(), wallet.refetch()])
+    void Promise.all([me.refetch(), wallet.refetch(), xp.refetch()])
   }
 
   return (
@@ -93,6 +100,23 @@ export default function WalletScreen() {
         <StatTile label={t('wallet.itemsOwned')} value={`${owned.length}/${COSMETICS.length}`} />
       </View>
 
+      {/* Above the shop: what you already have is the answer to "why buy
+          another", and it has to be visible before the prices are. */}
+      <EquipPicker
+        kind="frame"
+        owned={owned}
+        equipped={wallet.data?.equipped}
+        viewer={viewer}
+        onEquip={(id) => update.mutate({ equipped: { frame: id } })}
+      />
+      <EquipPicker
+        kind="title"
+        owned={owned}
+        equipped={wallet.data?.equipped}
+        viewer={viewer}
+        onEquip={(id) => update.mutate({ equipped: { title: id } })}
+      />
+
       <Text style={styles.sectionTitle}>{t('wallet.storeTitle')}</Text>
       <View style={styles.offers}>
         {offers.map((offer, index) => (
@@ -102,6 +126,7 @@ export default function WalletScreen() {
             pending={purchase.isPending}
             last={index === offers.length - 1}
             onBuy={(id) => purchase.mutate(id)}
+            viewer={viewer}
           />
         ))}
       </View>

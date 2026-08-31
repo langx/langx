@@ -35,6 +35,16 @@ export const leaderboardEntrySchema = z.object({
   avatarUrl: z.string().optional(),
   tokens: z.number().int(),
   streak: z.number().int(),
+  /**
+   * The frame's tone and the title, already resolved.
+   *
+   * Resolved server-side rather than shipping `cosmetics` and `equipped` for
+   * the client to work out: the board is a list of strangers, and sending the
+   * whole set each of them owns to draw one ring is a lot of wire for a
+   * decision the server has already made everywhere else.
+   */
+  frame: z.string().optional(),
+  title: z.string().optional(),
   isViewer: z.boolean(),
 })
 export type LeaderboardEntry = z.infer<typeof leaderboardEntrySchema>
