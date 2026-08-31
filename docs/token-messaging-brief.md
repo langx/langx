@@ -69,6 +69,24 @@ that damages trust.
   on, and it is complete on purpose: if tokens could buy a Pro feature, farming
   tokens would become a substitute for subscribing.
 
+## Subscribing: what Pro includes, and what it cannot
+
+Pro and Pro+ include a one-off **welcome pack** — a profile frame or two, and
+two streak freezes. Items, never token.
+
+That is not a stylistic preference. "There is no way to buy tokens, with money
+or anything else" is the claim above, and a token grant for a subscription
+would make it false. It is also not only wording: a balance is
+`tokenAggregates.all` minus spending, and that aggregate is exactly what the
+all-time leaderboard ranks — so granting token for money would sell rank on a
+table other people climb by writing corrections.
+
+Nothing in the pack is Pro-only. Every item in it is buyable with token by
+anybody; subscribing skips the saving, it does not unlock a shelf. Say it that
+way: **"a head start, not a shortcut"**, never "earn tokens faster".
+
+Cosmetics are not taken back when a subscription lapses.
+
 ## Returning v1 users: what to tell them
 
 **Balances carry over.** Nothing in v1 was ever bought or sold — what looked

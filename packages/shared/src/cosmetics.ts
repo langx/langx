@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { PaidPlanTier } from './limits'
 
 /**
  * The only things token can buy, besides a streak freeze.
@@ -30,6 +31,51 @@ export const COSMETICS: readonly Cosmetic[] = [
 
 export function findCosmetic(id: string): Cosmetic | undefined {
   return COSMETICS.find((c) => c.id === id)
+}
+
+/**
+ * What subscribing includes, once, per tier.
+ *
+ * **Items, not token.** Granting token for money is the one thing every public
+ * claim about this economy rules out — `token-messaging-brief.md` says "there
+ * is no way to buy tokens, with money or anything else", the in-app disclaimer
+ * says it, and `legal/promise-change.md` says it in a document not yet
+ * published. Handing out the things token buys keeps all three true.
+ *
+ * It also keeps the leaderboard honest, which a token grant could not: a
+ * balance is `tokenAggregates.all` minus spending, and that aggregate is
+ * exactly what the all-time table ranks. There is no way to credit a balance
+ * without moving somebody up a table other people are climbing by writing
+ * corrections.
+ *
+ * Nothing here is Pro-only in itself — every item is buyable with token by
+ * anyone. Subscribing skips the saving, it does not unlock a shelf.
+ */
+export interface WelcomePack {
+  cosmetics: readonly string[]
+  streakFreezes: number
+}
+
+export const PRO_WELCOME_PACKS: Readonly<Record<PaidPlanTier, WelcomePack>> = {
+  pro: { cosmetics: ['frame.bronze'], streakFreezes: 2 },
+  pro_plus: {
+    cosmetics: ['frame.bronze', 'frame.silver', 'frame.gold', 'title.learner'],
+    streakFreezes: 2,
+  },
+}
+
+/**
+ * What a tier's pack adds on top of one already granted.
+ *
+ * Upgrading pro → pro_plus should hand over the difference, not the whole
+ * thing again; downgrading and re-subscribing should hand over nothing. Both
+ * fall out of "grant what this tier includes and you do not already own",
+ * which is also why the caller can be idempotent without a second latch per
+ * item.
+ */
+export function welcomePackDelta(tier: PaidPlanTier, owned: readonly string[]): readonly string[] {
+  const ownedSet = new Set(owned)
+  return PRO_WELCOME_PACKS[tier].cosmetics.filter((id) => !ownedSet.has(id))
 }
 
 /** Everything token can be spent on: the freeze plus the cosmetics catalogue. */

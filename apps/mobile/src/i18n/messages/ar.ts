@@ -1013,6 +1013,8 @@ export const ar: Localized<EnMessages> = {
     partOf: 'جزء من',
     unlimitedChats: 'محادثات جديدة بلا حدود',
     unlimitedChatsBody: '{count} يوميًا في الخطة المجانية.',
+    welcomePack: 'حزمة ترحيب',
+    welcomePackBody: 'إطار للملف الشخصي وتجميدتان للسلسلة للبداية. و‏Pro+ يمنح المجموعة كاملة.',
     advancedFilters: 'عوامل تصفية متقدمة',
     advancedFiltersBody: 'ابحث حسب الجنس والمدينة.',
     unlimitedTranslation: 'ترجمة بلا حدود',

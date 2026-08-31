@@ -844,6 +844,9 @@ export const es: Localized<EnMessages> = {
     partOf: 'forma parte de',
     unlimitedChats: 'Chats nuevos ilimitados',
     unlimitedChatsBody: '{count} al día en el plan gratuito.',
+    welcomePack: 'Un pack de bienvenida',
+    welcomePackBody:
+      'Un marco de perfil y dos congelaciones de racha para empezar. Pro+ trae el set completo.',
     advancedFilters: 'Filtros avanzados',
     advancedFiltersBody: 'Busca por género y ciudad.',
     unlimitedTranslation: 'Traducción ilimitada',

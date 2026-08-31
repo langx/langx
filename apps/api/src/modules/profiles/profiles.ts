@@ -99,6 +99,14 @@ export interface Profile {
   tokenSpent?: number
   /** Cosmetic ids owned (see `COSMETICS`). */
   cosmetics?: string[]
+  /**
+   * When each paid tier's welcome pack was handed over.
+   *
+   * Per tier, not a single flag: upgrading pro → pro_plus grants the
+   * difference, and a single boolean could not tell "already had pro's" from
+   * "already had pro_plus's".
+   */
+  welcomePackAt?: Partial<Record<'pro' | 'pro_plus', Date>>
   /** Set when token earning is suspended pending review (report/block). Clears by unsetting. */
   tokenFrozenAt?: Date
   stats: { lastActiveAt: Date; messagesSent: number }

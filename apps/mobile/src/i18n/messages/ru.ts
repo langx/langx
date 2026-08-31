@@ -970,6 +970,8 @@ export const ru: Localized<EnMessages> = {
     partOf: '— часть',
     unlimitedChats: 'Безлимитные новые чаты',
     unlimitedChatsBody: '{count} в день на бесплатном тарифе.',
+    welcomePack: 'Приветственный набор',
+    welcomePackBody: 'Рамка профиля и две заморозки серии для начала. Pro+ даёт полный набор.',
     advancedFilters: 'Расширенные фильтры',
     advancedFiltersBody: 'Поиск по полу и городу.',
     unlimitedTranslation: 'Безлимитный перевод',
