@@ -1,6 +1,7 @@
 import { APP_SCHEME } from '@langx/shared'
 import { expoClient } from '@better-auth/expo/client'
 import { createAuthClient } from 'better-auth/react'
+import { deviceAuthorizationClient } from 'better-auth/client/plugins'
 import * as SecureStore from 'expo-secure-store'
 import { API_URL } from './apiUrl'
 import { currentLocale } from '../i18n/runtime'
@@ -26,6 +27,12 @@ export const authClient = createAuthClient({
     },
   },
   plugins: [
+    /*
+     * QR sign-in, from both ends: the web build calls `device.code` and polls
+     * `device.token`, and a signed-in phone calls `device.approve`. One client
+     * covers both because it is one codebase.
+     */
+    deviceAuthorizationClient(),
     expoClient({
       scheme: APP_SCHEME,
       storage: SecureStore,

@@ -1,7 +1,8 @@
-import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH } from '@langx/shared'
+import { APP_SCHEMES, IOS_BUNDLE_ID, PASSWORD_MIN_LENGTH, WEB_HOST } from '@langx/shared'
 import { betterAuth } from 'better-auth'
 import { mongodbAdapter } from 'better-auth/adapters/mongodb'
 import { expo } from '@better-auth/expo'
+import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
@@ -147,7 +148,37 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
 
     socialProviders,
 
-    plugins: [expo()],
+    plugins: [
+      expo(),
+      /*
+       * QR sign-in on the web, which is RFC 8628's device flow with a picture
+       * in front of it: the browser asks for a code, shows it as a QR *and* as
+       * six characters, and polls `/device/token` until a signed-in phone
+       * approves it.
+       *
+       * The plugin rather than something hand-rolled — this is a protocol with
+       * known failure modes (`slow_down`, `authorization_pending`, single-use
+       * codes, expiry) and it already implements them.
+       *
+       * Scanning is **not** what makes it work. The six-character user code is
+       * the primary path and the QR is a shortcut, which is deliberate:
+       * `expo-camera` is not in this app, and adding it means a new native
+       * build with a new camera permission — so a scanner cannot ship over the
+       * air. Typing the code works today on every platform.
+       */
+      deviceAuthorization({
+        /*
+         * Two minutes. Long enough to pick up a phone and read six characters,
+         * short enough that a code photographed off somebody's screen is
+         * worthless by the time they have walked away.
+         */
+        expiresIn: '2m',
+        /** What the poller is told to wait between attempts. */
+        interval: '5s',
+        /** Where the phone is sent; shown under the code for hand entry. */
+        verificationUri: `https://${WEB_HOST}/link-device`,
+      }),
+    ],
   })
 }
 

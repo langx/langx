@@ -684,6 +684,7 @@ export const ptBR: Localized<EnMessages> = {
     showStatsBody: 'Sequência, correções, tokens e o gráfico da semana no seu perfil.',
     legalSection: 'Jurídico',
     communitySection: 'Comunidade',
+    linkDeviceBody: 'Aprove um login em um computador.',
     showInDiscover: 'Mostrar em Descobrir',
     showInDiscoverBody: 'Desligue e ninguém vai te encontrar em Descobrir.',
     incognito: 'Navegar anonimamente',
@@ -867,6 +868,31 @@ export const ptBR: Localized<EnMessages> = {
     share: 'Compartilhar',
     copy: 'Copiar link',
     copied: 'Link copiado',
+  },
+
+  linkDevice: {
+    title: 'Entrar em outro dispositivo',
+    body: 'Digite o código da outra tela, ou escaneie por lá.',
+    placeholder: 'ABCDEF',
+    warning:
+      'Aprove apenas um código que você mesmo esteja vendo. Quem o inserir ganha acesso total à sua conta.',
+    approve: 'Aprovar',
+    deny: 'Recusar',
+    approved: 'Sessão iniciada',
+    denied: 'Recusado',
+    failed: 'Esse código não é mais válido.',
+    hint: 'Agora não',
+  },
+
+  qrSignIn: {
+    title: 'Entrar com o celular',
+    body: 'Abra o LangX no celular e digite este código, ou escaneie.',
+    hint: 'Configurações → Entrar em outro dispositivo',
+    qrAccessibility: 'QR code para entrar',
+    expired: 'O código expirou.',
+    failed: 'Não foi possível iniciar. Tente de novo.',
+    again: 'Tentar de novo',
+    webOnly: 'Isto é para entrar em um computador. Você já está no celular.',
   },
 
   viewers: {

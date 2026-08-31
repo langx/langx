@@ -198,6 +198,19 @@ export default function SignIn() {
         </>
       ) : null}
 
+      {/*
+        Web only. On a phone you already have the app, so "sign in with your
+        phone" is an instruction to use the thing you are holding — and the
+        flow needs a *second* signed-in device to approve it.
+      */}
+      {Platform.OS === 'web' ? (
+        <Button
+          label={t('qrSignIn.title')}
+          variant="secondary"
+          onPress={() => router.push('/(auth)/qr')}
+        />
+      ) : null}
+
       <View style={styles.footer}>
         <Text style={styles.footerText}>{t('auth.noAccount')}</Text>
         <Link href="/(auth)/sign-up" style={styles.link}>

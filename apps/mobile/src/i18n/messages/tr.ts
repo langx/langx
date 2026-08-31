@@ -695,6 +695,7 @@ export const tr: Localized<EnMessages> = {
     showStatsBody: 'Profilinde streak, düzeltme, token ve bu haftanın grafiği.',
     legalSection: 'Hukuki',
     communitySection: 'Topluluk',
+    linkDeviceBody: 'Bilgisayardaki bir girişi onayla.',
     showInDiscover: 'Keşfet’te görün',
     showInDiscoverBody: 'Bunu kapatırsan kimse seni Keşfet’te bulamaz.',
     incognito: 'Gizli gezin',
@@ -876,6 +877,31 @@ export const tr: Localized<EnMessages> = {
     share: 'Paylaş',
     copy: 'Linki kopyala',
     copied: 'Link kopyalandı',
+  },
+
+  linkDevice: {
+    title: 'Başka cihazda oturum aç',
+    body: 'Diğer ekranda görünen kodu gir, ya da oradan okut.',
+    placeholder: 'ABCDEF',
+    warning:
+      'Sadece kendi gördüğün bir kodu onayla. Bu kodu geçiren herkes hesabına tam erişim kazanır.',
+    approve: 'Onayla',
+    deny: 'Reddet',
+    approved: 'Oturum açıldı',
+    denied: 'Reddedildi',
+    failed: 'Bu kod artık geçerli değil.',
+    hint: 'Şimdi değil',
+  },
+
+  qrSignIn: {
+    title: 'Telefonunla giriş yap',
+    body: 'Telefonunda LangX’i aç ve bu kodu gir, ya da okut.',
+    hint: 'Ayarlar → Başka cihazda oturum aç',
+    qrAccessibility: 'Giriş için QR kodu',
+    expired: 'Kodun süresi doldu.',
+    failed: 'Başlatılamadı. Tekrar dene.',
+    again: 'Tekrar dene',
+    webOnly: 'Bu, bilgisayarda giriş yapmak içindir. Zaten telefonundasın.',
   },
 
   viewers: {
