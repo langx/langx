@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons'
+import { isBigEmoji } from '../lib/singleEmoji'
 import { useEffect, useState } from 'react'
 import {
   Modal,
@@ -197,7 +198,20 @@ export function MessageMenuHost() {
               },
             ]}
           >
-            <Text style={[styles.copyText, request.mine && styles.copyTextMine]} numberOfLines={6}>
+            {/*
+              The menu draws its own copy of the bubble, so a message the thread
+              shows as a hero has to look like one here too — otherwise holding
+              an emoji shrinks it, which reads as the menu having replaced the
+              message rather than lifted it.
+            */}
+            <Text
+              style={[
+                styles.copyText,
+                request.mine && styles.copyTextMine,
+                isBigEmoji(request.preview) && styles.copyHero,
+              ]}
+              numberOfLines={6}
+            >
               {request.preview}
             </Text>
           </View>
@@ -268,6 +282,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   anchoredBackdrop: { backgroundColor: colors.scrim, flex: 1 },
   destructive: { color: colors.danger },
   label: { ...font.body, color: colors.text },
+  copyHero: { fontSize: 48, lineHeight: 58 },
   preview: {
     ...font.caption,
     borderBottomColor: colors.border,
