@@ -27,6 +27,7 @@ export const en = {
     back: '‹ Back',
     /** Without it, for anywhere an icon is already beside the word. */
     backPlain: 'Back',
+    clear: 'Clear',
     cancel: 'Cancel',
     ok: 'OK',
     save: 'Save',

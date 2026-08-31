@@ -8,6 +8,7 @@ export const ptBR: Localized<EnMessages> = {
     hidePassword: 'Ocultar senha',
     back: '‹ Voltar',
     backPlain: 'Voltar',
+    clear: 'Limpar',
     cancel: 'Cancelar',
     ok: 'OK',
     save: 'Salvar',
