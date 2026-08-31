@@ -2,7 +2,10 @@ import { localDayKey, shiftDayKey, TOKEN_RULES } from '@langx/shared'
 
 // Re-exported so callers here keep one import; the walk itself lives in shared,
 // because the client has to predict the same number before a repair is bought.
-export { streakFromDays } from '@langx/shared'
+// `streakHeadDay` travels with it: they share the rule about where an
+// unfinished today starts from, and splitting them across two imports is how
+// one of them ends up being reimplemented.
+export { streakFromDays, streakHeadDay } from '@langx/shared'
 import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 

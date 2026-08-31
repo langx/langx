@@ -556,6 +556,110 @@ describe('Faz 8 — streak, token ledger and direct awards', () => {
       expect(profile?.streak.current).toBe(200)
     })
 
+    /**
+     * The bug that made a repair worthless, and the reason it was invisible:
+     * every test here asserted the streak right after the purchase, and none
+     * of them sent a message afterwards.
+     *
+     * `repairDay` recomputed `streak.current` but never moved
+     * `streak.lastQualifiedDay`, so the next qualifying action still read the
+     * day *before* the gap. `nextStreak` found no adjacency to today and reset
+     * the run to 1 — three hundred token for a square and nothing else.
+     */
+    it('keeps the repaired streak when the next message lands', async () => {
+      const user = await funded('repair-then-send@example.com', 1000)
+      const partner = await newUser('repair-then-send-partner@example.com')
+      const days = handle.db.collection<StreakDay>(COLLECTIONS.streakDays)
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+
+      // A run of two ending the day before yesterday, then a gap at yesterday.
+      for (const offset of [3, 2]) {
+        await days.insertOne({
+          _id: `${user.userId}:${dayKey(offset)}`,
+          userId: user.userId,
+          day: dayKey(offset),
+          source: 'activity',
+          actions: 1,
+        })
+      }
+      await profiles.updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            'streak.current': 2,
+            'streak.longest': 2,
+            'streak.lastQualifiedDay': dayKey(2),
+          },
+        },
+      )
+
+      const repair = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      expect(repair.statusCode, repair.body).toBe(200)
+      expect(repair.json<{ streak: { current: number } }>().streak.current).toBe(3)
+
+      // The whole point: the bought day is now the last one that qualified,
+      // so today is adjacent to it.
+      const repaired = await profiles.findOne({ _id: user.userId })
+      expect(repaired?.streak.lastQualifiedDay).toBe(dayKey(1))
+
+      await startConversation(user, partner.userId)
+
+      const after = await profiles.findOne({ _id: user.userId })
+      expect(after?.streak.current).toBe(4)
+      expect(after?.streak.lastQualifiedDay).toBe(dayKey(0))
+    })
+
+    /**
+     * The same stale read cost a second thing. `missedExactlyOne` is
+     * `lastQualifiedDay + 2 === today`, which a day-before-the-gap value
+     * satisfies exactly — so a user holding a freeze spent it bridging the day
+     * they had just paid to repair. Two charges for one gap.
+     */
+    it('does not spend a banked freeze on a day that was just bought', async () => {
+      const user = await funded('repair-then-freeze@example.com', 1000)
+      const partner = await newUser('repair-then-freeze-partner@example.com')
+      const days = handle.db.collection<StreakDay>(COLLECTIONS.streakDays)
+      const profiles = handle.db.collection<Profile>(COLLECTIONS.profiles)
+
+      await days.insertOne({
+        _id: `${user.userId}:${dayKey(2)}`,
+        userId: user.userId,
+        day: dayKey(2),
+        source: 'activity',
+        actions: 1,
+      })
+      await profiles.updateOne(
+        { _id: user.userId },
+        {
+          $set: {
+            'streak.current': 1,
+            'streak.longest': 1,
+            'streak.lastQualifiedDay': dayKey(2),
+            streakFreezes: 1,
+          },
+        },
+      )
+
+      const repair = await app.inject({
+        method: 'POST',
+        url: '/me/activity/repair',
+        headers: { cookie: user.cookie },
+        payload: { day: dayKey(1) },
+      })
+      expect(repair.statusCode, repair.body).toBe(200)
+
+      await startConversation(user, partner.userId)
+
+      const after = await profiles.findOne({ _id: user.userId })
+      expect(after?.streakFreezes).toBe(1)
+      expect(after?.streak.current).toBe(3)
+    })
+
     /** The leaderboard ranks token earned. Spending must not move anyone. */
     it('does not touch the leaderboard aggregates', async () => {
       const user = await funded('repair-rank@example.com', 1000)

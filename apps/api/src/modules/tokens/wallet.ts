@@ -23,6 +23,7 @@ import {
   repairsInMonth,
   streakDayId,
   streakFromDays,
+  streakHeadDay,
   type StreakDay,
 } from './streakDays'
 import { countCorrectionsWritten } from './corrections'
@@ -343,30 +344,63 @@ export async function repairDay(db: Db, userId: string, day: string): Promise<Re
    * to know the new length is to walk them.
    */
   const window = await listStreakDays(db, userId, shiftDayKey(today, -400), today)
-  const walked = streakFromDays(new Set(window.map((d) => d.day)), today)
+  const filled = new Set(window.map((d) => d.day))
+  const walked = streakFromDays(filled, today)
 
   /**
-   * Never below what they already had.
+   * `lastQualifiedDay` has to move with the streak, and forgetting it made the
+   * purchase worthless.
    *
-   * `streakDays` only starts existing when this ships, so every account that
-   * predates it has a history of nothing — and the walk above would price a
-   * two-hundred-day streak at zero. Buying a repair must not be able to take a
-   * streak away, which is what the max guarantees whatever the history looks
-   * like. As the collection fills in, the walk becomes the larger of the two on
-   * its own and this stops doing anything.
+   * `recordQualifyingAction` reads this field twice: `nextStreak` uses it to
+   * decide whether today continues the run, and `missedExactlyOne` uses it to
+   * decide whether a banked freeze is owed. Leaving it on the day *before* the
+   * gap meant the next message after a repair saw a day it had already been
+   * paid to fill still missing — so `nextStreak` found no adjacency and reset
+   * the streak to 1, and a user holding a freeze spent that too, bridging a day
+   * they had just bought. Three hundred tokens for nothing, twice over.
    */
-  const current = Math.max(profile.streak.current, walked)
-  const longest = Math.max(profile.streak.longest, current)
+  const head = streakHeadDay(filled, today)
+
+  /**
+   * `$max`, not `$set`, and it is doing two jobs.
+   *
+   * The race: `walked` was computed from a read three awaits ago, so a message
+   * that landed in between would be rolled back by a plain `$set`. `$max` can
+   * only move a value forward, so the later write wins whichever order they
+   * arrive in.
+   *
+   * The floor: `streakDays` only started existing when the map shipped, so an
+   * older account has a streak counter and no history behind it, and the walk
+   * would price a two-hundred-day run at zero. Buying a repair must never be
+   * able to take a streak away. `$max` says exactly that, in the database,
+   * instead of a `Math.max` over a value that may already be stale.
+   *
+   * `longest` takes the same floor: it is `>= current` by invariant, and maxing
+   * both by the same number keeps it that way.
+   */
   const after = await profiles.findOneAndUpdate(
     { _id: userId },
-    { $set: { 'streak.current': current, 'streak.longest': longest, updatedAt: now } },
+    {
+      $max: {
+        'streak.current': walked,
+        'streak.longest': walked,
+        // Day keys are `YYYY-MM-DD`, so BSON's string comparison is
+        // chronological — and `null` sorts below any string, so a profile that
+        // has never qualified still moves forward.
+        ...(head === null ? {} : { 'streak.lastQualifiedDay': head }),
+      },
+      $set: { updatedAt: now },
+    },
     { returnDocument: 'after' },
   )
 
+  const streak = after?.streak ?? profile.streak
   return {
     day,
     price,
-    streak: { current, longest },
+    // Read back rather than reported from the local walk, since `$max` is what
+    // decided the answer and a concurrent message may have raised it further.
+    streak: { current: streak.current, longest: streak.longest },
     wallet: walletOf(after ?? charged, earned),
     repairsLeftThisMonth: TOKEN_RULES.sinks.dayRepairPerMonth - used - 1,
   }
