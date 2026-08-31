@@ -110,6 +110,36 @@ export function repairEffect(input: {
   }
 }
 
+/** The gutter between squares, in both directions. */
+export const ACTIVITY_CELL_GAP = 3
+/** What the squares were before they could grow; nothing gets smaller than this. */
+export const ACTIVITY_CELL_MIN = 13
+/** A ceiling, so a desktop window gets a heatmap rather than a chessboard. */
+export const ACTIVITY_CELL_MAX = 20
+
+/**
+ * The square size that makes `weeks` columns fill `width`.
+ *
+ * The grid was a fixed 13px square: 26 of them plus their gutters is 413px of
+ * content inside a container that is 688px wide on the web build, so a third of
+ * the card was dead space on every desktop screen — while a narrow phone
+ * overflowed and scrolled correctly, which is why it never showed up on a
+ * handset.
+ *
+ * Growing the *square* rather than the number of weeks is deliberate: the
+ * window stays half a year on every device, so two people's maps still mean the
+ * same thing. Widening it instead would show a desktop reader more history than
+ * a phone reader and quietly make the two incomparable.
+ *
+ * Returns the floor for a width that has not been measured yet, so the first
+ * frame draws the old size rather than collapsing to nothing.
+ */
+export function activityCellSize(width: number, weeks: number): number {
+  if (!Number.isFinite(width) || width <= 0 || weeks <= 0) return ACTIVITY_CELL_MIN
+  const fitted = Math.floor((width - (weeks - 1) * ACTIVITY_CELL_GAP) / weeks)
+  return Math.min(ACTIVITY_CELL_MAX, Math.max(ACTIVITY_CELL_MIN, fitted))
+}
+
 /**
  * Monday-first weekday index for a `YYYY-MM-DD` key.
  *

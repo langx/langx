@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { activityGrid, repairEffect, type ActivityCell } from './activityMap'
+import {
+  ACTIVITY_CELL_GAP,
+  ACTIVITY_CELL_MAX,
+  ACTIVITY_CELL_MIN,
+  activityCellSize,
+  activityGrid,
+  repairEffect,
+  type ActivityCell,
+} from './activityMap'
 
 // A Saturday, so the "today is not the end of the column" case is the default.
 const TODAY = '2026-08-29'
@@ -156,5 +164,41 @@ describe('activityGrid and a streak the collection cannot account for', () => {
       streak: { current: 0, lastQualifiedDay: null },
     })
     expect(grid.flat().every((cell) => cell.intensity === 0)).toBe(true)
+  })
+})
+
+describe('activityCellSize', () => {
+  const total = (cell: number, weeks: number) => weeks * cell + (weeks - 1) * ACTIVITY_CELL_GAP
+
+  it('grows the square to fill a container the old fixed size left empty', () => {
+    // 688px is the web build's content box: layout.maxWidth 720 less two 16px
+    // gutters. The old fixed 13px square drew 413px into it.
+    expect(total(ACTIVITY_CELL_MIN, 26)).toBe(413)
+    const cell = activityCellSize(688, 26)
+    expect(cell).toBeGreaterThan(ACTIVITY_CELL_MIN)
+    expect(total(cell, 26)).toBeGreaterThan(500)
+  })
+
+  it('never draws wider than the container it was given', () => {
+    for (const width of [320, 358, 500, 688, 720, 1200]) {
+      expect(total(activityCellSize(width, 26), 26)).toBeLessThanOrEqual(
+        Math.max(width, total(ACTIVITY_CELL_MIN, 26)),
+      )
+    }
+  })
+
+  it('keeps the old size on a narrow phone, where the grid scrolls instead', () => {
+    // 390px handset less the screen's two 16px gutters.
+    expect(activityCellSize(358, 26)).toBe(ACTIVITY_CELL_MIN)
+  })
+
+  it('caps the square so a wide window is a heatmap, not a chessboard', () => {
+    expect(activityCellSize(4000, 26)).toBe(ACTIVITY_CELL_MAX)
+  })
+
+  it('falls back to the old size before the container has been measured', () => {
+    expect(activityCellSize(0, 26)).toBe(ACTIVITY_CELL_MIN)
+    expect(activityCellSize(Number.NaN, 26)).toBe(ACTIVITY_CELL_MIN)
+    expect(activityCellSize(688, 0)).toBe(ACTIVITY_CELL_MIN)
   })
 })
