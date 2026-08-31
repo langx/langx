@@ -127,7 +127,13 @@ export default function MeScreen() {
       </View>
 
       <View style={styles.tiles}>
-        <StatTile label={t('me.dayStreak')} value={`🔥 ${summary?.streak.current ?? 0}`} />
+        {/* Same affordance as the wallet tile beside it: a number nobody can
+            act on reads as decoration. */}
+        <StatTile
+          label={`${t('me.dayStreak')} ›`}
+          value={`🔥 ${summary?.streak.current ?? 0}`}
+          onPress={() => router.push('/(app)/streak')}
+        />
         <StatTile
           tone="success"
           label={t('me.corrections')}

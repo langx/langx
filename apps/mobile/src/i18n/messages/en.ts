@@ -726,6 +726,19 @@ export const en = {
     licenses: 'Licenses',
     codeOfConduct: 'Code of conduct',
   },
+  streak: {
+    title: 'Your streak',
+    longest: 'Longest',
+    missed: 'Missed',
+    bought: 'Filled in with tokens',
+    checkedInUnknownTime: 'Checked in',
+    checkedInAt: {
+      one: 'Checked in at {time} · {count} action',
+      other: 'Checked in at {time} · {count} actions',
+    },
+    emptyTitle: 'Nothing here yet',
+    emptyBody: 'Send a message or write a correction, and today becomes your first day.',
+  },
   settings: {
     appIconSection: 'App icon',
     appIcon: 'Home screen icon',

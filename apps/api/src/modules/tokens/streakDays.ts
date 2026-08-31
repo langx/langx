@@ -30,6 +30,12 @@ export interface StreakDay {
   day: string
   /** How the square came to be filled. `purchase` is the only one that cost anything. */
   source: 'activity' | 'purchase'
+  /**
+   * When the first qualifying action of the day happened. Absent on days
+   * recorded before this field existed, and on a bought day — which has no
+   * check-in by definition, and must not be given a fabricated one.
+   */
+  firstAt?: Date
   /** Qualifying actions that day — the map's shading, not its fill. */
   actions: number
 }
@@ -51,13 +57,23 @@ export async function recordStreakDay(
   db: Db,
   userId: string,
   day: string,
+  at: Date,
   source: StreakDay['source'] = 'activity',
 ): Promise<void> {
   await db.collection<StreakDay>(COLLECTIONS.streakDays).updateOne(
     { _id: streakDayId(userId, day) },
     {
       $inc: { actions: 1 },
-      $setOnInsert: { userId, day, source },
+      /**
+       * `firstAt` under `$setOnInsert` is what makes it the *check-in* time:
+       * only the first qualifying action of the day writes it, and every later
+       * one leaves it alone. `$set` would turn it into "most recent action",
+       * which is a different fact and not the one worth showing.
+       *
+       * Days recorded before this field existed simply have none, and the
+       * history screen says the time is unknown rather than inventing one.
+       */
+      $setOnInsert: { userId, day, source, firstAt: at },
     },
     { upsert: true },
   )

@@ -798,6 +798,21 @@ export const ru: Localized<EnMessages> = {
     licenses: 'Лицензии',
     codeOfConduct: 'Кодекс поведения',
   },
+  streak: {
+    title: 'Твоя серия',
+    longest: 'Рекорд',
+    missed: 'Пропущено',
+    bought: 'Заполнено жетонами',
+    checkedInUnknownTime: 'Был(а) активен',
+    checkedInAt: {
+      one: 'В {time} · {count} действие',
+      few: 'В {time} · {count} действия',
+      many: 'В {time} · {count} действий',
+      other: 'В {time} · {count} действия',
+    },
+    emptyTitle: 'Здесь пока пусто',
+    emptyBody: 'Отправь сообщение или напиши исправление — и сегодня станет первым днём.',
+  },
   settings: {
     appIconSection: 'Иконка приложения',
     appIcon: 'Иконка на экране',

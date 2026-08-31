@@ -707,6 +707,19 @@ export const de: Localized<EnMessages> = {
     licenses: 'Lizenzen',
     codeOfConduct: 'Verhaltenskodex',
   },
+  streak: {
+    title: 'Deine Serie',
+    longest: 'Am längsten',
+    missed: 'Verpasst',
+    bought: 'Mit Token aufgefüllt',
+    checkedInUnknownTime: 'Aktiv gewesen',
+    checkedInAt: {
+      one: 'Um {time} · {count} Aktion',
+      other: 'Um {time} · {count} Aktionen',
+    },
+    emptyTitle: 'Hier ist noch nichts',
+    emptyBody: 'Schreib eine Nachricht oder eine Korrektur — heute wird dein erster Tag.',
+  },
   settings: {
     appIconSection: 'App-Symbol',
     appIcon: 'Symbol auf dem Homescreen',

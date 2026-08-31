@@ -835,6 +835,23 @@ export const ar: Localized<EnMessages> = {
     licenses: 'التراخيص',
     codeOfConduct: 'مدونة السلوك',
   },
+  streak: {
+    title: 'سلسلتك',
+    longest: 'الأطول',
+    missed: 'فائت',
+    bought: 'مُلئ بالنقاط',
+    checkedInUnknownTime: 'كنت نشطًا',
+    checkedInAt: {
+      zero: 'في {time} · {count} إجراء',
+      one: 'في {time} · إجراء واحد',
+      two: 'في {time} · إجراءان',
+      few: 'في {time} · {count} إجراءات',
+      many: 'في {time} · {count} إجراءً',
+      other: 'في {time} · {count} إجراء',
+    },
+    emptyTitle: 'لا شيء هنا بعد',
+    emptyBody: 'أرسل رسالة أو اكتب تصحيحًا، ويصبح اليوم أول أيامك.',
+  },
   settings: {
     appIconSection: 'أيقونة التطبيق',
     appIcon: 'الأيقونة على الشاشة الرئيسية',

@@ -683,6 +683,19 @@ export const ptBR: Localized<EnMessages> = {
     licenses: 'Licenças',
     codeOfConduct: 'Código de conduta',
   },
+  streak: {
+    title: 'Sua sequência',
+    longest: 'A maior',
+    missed: 'Perdido',
+    bought: 'Preenchido com fichas',
+    checkedInUnknownTime: 'Ativo',
+    checkedInAt: {
+      one: 'Às {time} · {count} ação',
+      other: 'Às {time} · {count} ações',
+    },
+    emptyTitle: 'Ainda não há nada aqui',
+    emptyBody: 'Mande uma mensagem ou escreva uma correção, e hoje vira seu primeiro dia.',
+  },
   settings: {
     appIconSection: 'Ícone do app',
     appIcon: 'Ícone na tela inicial',

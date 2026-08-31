@@ -698,6 +698,19 @@ export const tr: Localized<EnMessages> = {
     licenses: 'Lisanslar',
     codeOfConduct: 'Davranış kuralları',
   },
+  streak: {
+    title: 'Serin',
+    longest: 'En uzun',
+    missed: 'Kaçırıldı',
+    bought: 'Jetonla dolduruldu',
+    checkedInUnknownTime: 'Giriş yapıldı',
+    checkedInAt: {
+      one: '{time} · {count} işlem',
+      other: '{time} · {count} işlem',
+    },
+    emptyTitle: 'Burada henüz bir şey yok',
+    emptyBody: 'Bir mesaj gönder ya da bir düzeltme yaz; bugün ilk günün olsun.',
+  },
   settings: {
     appIconSection: 'Uygulama ikonu',
     appIcon: 'Ana ekran ikonu',

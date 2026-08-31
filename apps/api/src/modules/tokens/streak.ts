@@ -70,7 +70,7 @@ export async function recordQualifyingAction(
    * leave every day looking equally busy — and the set of filled days is what
    * a repair later has to recompute a streak length from.
    */
-  await recordStreakDay(db, profile._id, today)
+  await recordStreakDay(db, profile._id, today, at)
 
   if (profile.streak.lastQualifiedDay === today) return held
 
