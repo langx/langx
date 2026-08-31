@@ -21,6 +21,7 @@ import { MessageMenuHost } from '../src/components/MessageMenuHost'
 import { AppGate } from '../src/components/AppGate'
 import { ToastHost } from '../src/components/ToastHost'
 import { authClient } from '../src/lib/auth-client'
+import { shouldGateGuest } from '../src/lib/guestGate'
 import { forgetPurchasesIdentity, identifyForPurchases } from '../src/lib/purchases'
 import { ThemeProvider, useTheme } from '../src/lib/theme'
 import { I18nProvider } from '../src/i18n'
@@ -74,8 +75,16 @@ function RootShell() {
    * nothing on web or in a build without the native module.
    */
   const userId = session?.user?.id
+  const isGuest = shouldGateGuest(session?.user)
   useEffect(() => {
-    if (userId) void identifyForPurchases(userId)
+    /*
+     * Never for a guest. RevenueCat's `app_user_id` must equal the Better Auth
+     * user id, and a guest's is thrown away at registration — identifying here
+     * would mint a customer per guest under an id that stops existing, and no
+     * later `logIn` can move a purchase made under it. Guests cannot buy
+     * anything anyway; the paywall's buy button is behind `requireAccount`.
+     */
+    if (userId && !isGuest) void identifyForPurchases(userId)
     else void forgetPurchasesIdentity()
   }, [userId])
 
@@ -128,7 +137,14 @@ function RootShell() {
                 <Stack.Screen name="(onboarding)" />
                 <Stack.Screen name="(app)" />
               </Stack.Protected>
-              <Stack.Protected guard={!session}>
+              {/*
+                `!session` alone was right while every session meant an account.
+                A guest holds one, so `(auth)` would unmount and "send them to
+                sign up" would have nowhere to go. Both branches mount for a
+                guest, which is exactly the state they are in: browsing inside
+                `(app)`, one tap away from `(auth)`.
+              */}
+              <Stack.Protected guard={!session || isGuest}>
                 <Stack.Screen name="(auth)" />
               </Stack.Protected>
             </Stack>

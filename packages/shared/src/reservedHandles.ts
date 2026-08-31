@@ -50,6 +50,7 @@ const ROUTE_RESERVED = [
   'store',
   'tokens',
   'viewers',
+  'welcome',
   'wallet',
 ] as const
 

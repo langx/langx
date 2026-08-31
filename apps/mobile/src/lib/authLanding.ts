@@ -13,8 +13,14 @@
  * a running Expo process, so `tsc` accepts any string here and a group path
  * that failed to resolve would be silent.
  */
-export type AuthLandingHref = '/(auth)/intro' | '/(auth)/sign-in'
+export type AuthLandingHref = '/(auth)/intro' | '/(auth)/welcome'
 
+/**
+ * The intro still plays exactly once. What changed is where it lands: the
+ * welcome screen rather than the sign-in form, because "give us your email" is
+ * the wrong first question to ask a stranger who has not seen anyone here yet.
+ * Signing in is still one tap from there.
+ */
 export function authLandingHref(seenIntro: boolean): AuthLandingHref {
-  return seenIntro ? '/(auth)/sign-in' : '/(auth)/intro'
+  return seenIntro ? '/(auth)/welcome' : '/(auth)/intro'
 }

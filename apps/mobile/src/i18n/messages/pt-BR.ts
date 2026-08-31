@@ -203,6 +203,15 @@ export const ptBR: Localized<EnMessages> = {
     done: 'Pronto',
   },
 
+  welcome: {
+    title: 'Pratique com quem está aprendendo o seu',
+    subtitle:
+      'Dá uma olhada antes: você pode escolher seus idiomas e ver quem está aqui sem se cadastrar.',
+    browse: 'Dar uma olhada',
+    createAccount: 'Criar uma conta',
+    haveAccount: 'Já tenho uma conta',
+    guestFailed: 'Não foi possível começar',
+  },
   auth: {
     welcomeBackSubtitle: 'Entre para continuar de onde parou.',
     resetBody: 'Digite o e-mail do seu cadastro e enviaremos um link de redefinição.',

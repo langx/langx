@@ -95,8 +95,9 @@ export async function unregisterPushToken(): Promise<void> {
  * registers the token for someone who has *already* granted permission, so
  * everyone who said yes before is entirely unaffected.
  */
-export function usePushRegistration(): void {
+export function usePushRegistration({ enabled = true }: { enabled?: boolean } = {}): void {
   useEffect(() => {
+    if (!enabled) return
     void (async () => {
       try {
         if (Platform.OS === 'web' || !Device.isDevice) return
@@ -113,5 +114,5 @@ export function usePushRegistration(): void {
         // Never let notification setup break the app it is decorating.
       }
     })()
-  }, [])
+  }, [enabled])
 }

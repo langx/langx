@@ -3,6 +3,8 @@ import { countryFlag, getCountry, wornCosmetic } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native'
+import { authClient } from '../../../src/lib/auth-client'
+import { requireAccount } from '../../../src/lib/requireAccount'
 import { ApiRequestError } from '../../../src/api/client'
 import {
   useBlockUser,
@@ -61,6 +63,7 @@ export default function ProfileScreen() {
   const setFollow = useSetFollow(handle ?? '')
   const here = `/(app)/profile/${handle}`
   const startConversation = useStartConversation()
+  const { data: session } = authClient.useSession()
   const summary = usePublicSummary(handle ?? '')
   const quota = useQuota()
   const block = useBlockUser()
@@ -107,6 +110,10 @@ export default function ProfileScreen() {
   const study = [...user.learning].sort((a, b) => a.priority - b.priority)
 
   async function send(): Promise<void> {
+    // The gate at the call site, where the screen knows what was being tried.
+    // The transport catches a forgotten one, but only as a duller version of
+    // this — see `requireAccount`.
+    if (!requireAccount(session?.user)) return
     setError(undefined)
     try {
       const conversation = await startConversation.mutateAsync({

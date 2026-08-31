@@ -206,6 +206,15 @@ export const de: Localized<EnMessages> = {
     done: 'Fertig',
   },
 
+  welcome: {
+    title: 'Übe mit jemandem, der deine Sprache lernt',
+    subtitle:
+      'Sieh dich erst um — du kannst deine Sprachen wählen und sehen, wer hier ist, bevor du dich anmeldest.',
+    browse: 'Erst umsehen',
+    createAccount: 'Konto erstellen',
+    haveAccount: 'Ich habe schon ein Konto',
+    guestFailed: 'Konnte nicht starten',
+  },
   auth: {
     welcomeBackSubtitle: 'Melde dich an, um dort weiterzumachen, wo du warst.',
     resetBody:

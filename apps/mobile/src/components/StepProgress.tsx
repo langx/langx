@@ -10,11 +10,24 @@ import { useT } from '../i18n'
  * questions just were — cannot leave a screen claiming a total the wizard no
  * longer has.
  */
-export function StepProgress({ step }: { step: (typeof ONBOARDING_STEPS)[number] }) {
+export function StepProgress({
+  step,
+  steps = ONBOARDING_STEPS,
+}: {
+  step: (typeof ONBOARDING_STEPS)[number]
+  /**
+   * The sequence this screen belongs to. A guest walks a shorter one — two
+   * questions, not five — and passing it here rather than hard-coding a total
+   * keeps the same guarantee the comment above describes: the count and the
+   * fill come from one list, so neither can claim a total the wizard does not
+   * have.
+   */
+  steps?: readonly (typeof ONBOARDING_STEPS)[number][] | undefined
+}) {
   const styles = useStyles()
   const t = useT()
-  const index = ONBOARDING_STEPS.indexOf(step)
-  const total = ONBOARDING_STEPS.length
+  const index = steps.indexOf(step)
+  const total = steps.length
 
   return (
     <View style={styles.root}>

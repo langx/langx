@@ -1,4 +1,6 @@
 import { apiFetch } from './apiFetch'
+import { ERROR_CODES } from '@langx/shared'
+import { router } from 'expo-router'
 import { currentLocale } from '../i18n/runtime'
 
 export class ApiRequestError extends Error {
@@ -50,7 +52,18 @@ export async function request<T>(path: string, init: RequestInit = {}): Promise<
   const body: unknown = text ? JSON.parse(text) : {}
 
   if (!response.ok) {
-    throw new ApiRequestError(response.status, body as { code?: string; message?: string })
+    const error = new ApiRequestError(response.status, body as { code?: string; message?: string })
+    /*
+     * The third net under `requireAccount`.
+     *
+     * The gate is meant to be applied at the call site, where the screen knows
+     * what the person was trying to do. This catches the one that forgot: a
+     * guest gets the sign-up screen rather than an error toast, which is the
+     * same outcome by a duller route. The same pattern the socket rate limiter
+     * uses — one place decides, the transport catches the leak.
+     */
+    if (error.code === ERROR_CODES.GUEST_ACCOUNT) router.push('/(auth)/sign-up')
+    throw error
   }
   return body as T
 }

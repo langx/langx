@@ -22,10 +22,11 @@ import { closeSocket, getSocket } from '../lib/socket'
  * read that data through TanStack Query. Pushing it into the cache updates
  * every one of them, including the ones not currently mounted.
  */
-export function useSocket(): void {
+export function useSocket({ enabled = true }: { enabled?: boolean } = {}): void {
   const queryClient = useQueryClient()
 
   useEffect(() => {
+    if (!enabled) return
     let cancelled = false
     let heartbeat: ReturnType<typeof setInterval> | null = null
 
@@ -177,5 +178,5 @@ export function useSocket(): void {
       if (heartbeat) clearInterval(heartbeat)
       closeSocket()
     }
-  }, [queryClient])
+  }, [enabled, queryClient])
 }

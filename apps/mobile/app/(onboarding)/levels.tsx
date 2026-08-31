@@ -1,7 +1,15 @@
 import { LANGUAGE_LEVELS, type LanguageLevel } from '@langx/shared'
 import { router } from 'expo-router'
 import { Pressable, ScrollView, Text, View } from 'react-native'
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { api } from '../../src/api/client'
+import { keys } from '../../src/api/queries'
 import { StepProgress } from '../../src/components/StepProgress'
+import { showAlert } from '../../src/lib/alert'
+import { authClient } from '../../src/lib/auth-client'
+import { shouldGateGuest } from '../../src/lib/guestGate'
+import { GUEST_ONBOARDING_STEPS } from '../../src/lib/onboardingStep'
 import { Button } from '../../src/components/ui/Button'
 import { LevelBars } from '../../src/components/ui/LevelBars'
 import { Screen } from '../../src/components/ui/Screen'
@@ -26,6 +34,43 @@ export default function LevelsStep() {
 
   const draft = useOnboardingDraft()
   const complete = draft.learning.every((entry) => entry.level !== null)
+  const { data: session } = authClient.useSession()
+  const isGuest = shouldGateGuest(session?.user)
+  const queryClient = useQueryClient()
+  const [submitting, setSubmitting] = useState(false)
+
+  /**
+   * For a guest this is the last step, so it submits; for everybody else it is
+   * the middle of the wizard and it just advances.
+   *
+   * It deliberately does **not** call `resetDraft()`. The draft surviving this
+   * submit is the entire mechanism behind "you are not asked for your languages
+   * again" — after they register, `furthestOnboardingStep` reads it and returns
+   * `about-you`. `resetDraft` is called from exactly one place, `handle.tsx` on
+   * a real submit, and that has to stay true.
+   */
+  async function onContinue(): Promise<void> {
+    if (!isGuest) {
+      router.push('/(onboarding)/about-you')
+      return
+    }
+    setSubmitting(true)
+    try {
+      await api.post('/profiles/guest', {
+        nativeLanguages: draft.nativeLanguages.map((code) => ({ code })),
+        learning: draft.learning.map((entry, index) => ({
+          code: entry.code,
+          level: entry.level,
+          priority: index + 1,
+        })),
+      })
+      await queryClient.invalidateQueries({ queryKey: keys.me })
+      router.replace('/(app)/discover')
+    } catch {
+      setSubmitting(false)
+      await showAlert(t('welcome.guestFailed'), t('common.retry'))
+    }
+  }
 
   function setLevel(code: string, level: LanguageLevel): void {
     updateDraft({
@@ -35,7 +80,7 @@ export default function LevelsStep() {
 
   return (
     <Screen fluid style={styles.screen}>
-      <StepProgress step="levels" />
+      <StepProgress step="levels" steps={isGuest ? GUEST_ONBOARDING_STEPS : undefined} />
       <Text style={styles.title}>{t('onboarding.levelsTitle')}</Text>
       <Text style={styles.subtitle}>{t('onboarding.levelsBody')}</Text>
 
@@ -79,9 +124,10 @@ export default function LevelsStep() {
       </ScrollView>
 
       <Button
-        label={t('common.continue')}
-        disabled={!complete}
-        onPress={() => router.push('/(onboarding)/about-you')}
+        label={isGuest ? t('welcome.browse') : t('common.continue')}
+        disabled={!complete || submitting}
+        loading={submitting}
+        onPress={() => void onContinue()}
         style={styles.cta}
       />
     </Screen>

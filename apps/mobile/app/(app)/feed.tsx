@@ -10,6 +10,8 @@ import { AttachmentBar, type PendingAttachment } from '../../src/components/Atta
 import { AudioBubble, ImageBubble } from '../../src/components/MediaBubble'
 import { Avatar } from '../../src/components/ui/Avatar'
 import { LevelBars } from '../../src/components/ui/LevelBars'
+import { authClient } from '../../src/lib/auth-client'
+import { requireAccount } from '../../src/lib/requireAccount'
 import { LikeButton } from '../../src/components/LikeButton'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
 import { EmptyState } from '../../src/components/ui/EmptyState'
@@ -74,6 +76,7 @@ export default function FeedScreen() {
   const [askMedia, setAskMedia] = useState<PendingAttachment | null>(null)
   const [correctionMedia, setCorrectionMedia] = useState<PendingAttachment | null>(null)
   const [uploading, setUploading] = useState(false)
+  const { data: session } = authClient.useSession()
   const me = useMe()
   const feed = useFeed(filter)
   const createPost = useCreatePost()
@@ -113,6 +116,7 @@ export default function FeedScreen() {
   }
 
   async function submitAsk(): Promise<void> {
+    if (!requireAccount(session?.user)) return
     if (!askLanguage || !draft.trim() || uploading) return
     setUploading(true)
     let media
@@ -154,6 +158,7 @@ export default function FeedScreen() {
   }
 
   async function submitCorrection(postId: string): Promise<void> {
+    if (!requireAccount(session?.user)) return
     if (!correction.trim() || uploading) return
     setUploading(true)
     let media

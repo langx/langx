@@ -1,7 +1,7 @@
 import { APP_SCHEME } from '@langx/shared'
 import { expoClient } from '@better-auth/expo/client'
 import { createAuthClient } from 'better-auth/react'
-import { deviceAuthorizationClient } from 'better-auth/client/plugins'
+import { anonymousClient, deviceAuthorizationClient } from 'better-auth/client/plugins'
 import * as SecureStore from 'expo-secure-store'
 import { API_URL } from './apiUrl'
 import { currentLocale } from '../i18n/runtime'
@@ -33,6 +33,13 @@ export const authClient = createAuthClient({
      * covers both because it is one codebase.
      */
     deviceAuthorizationClient(),
+    /*
+     * `signIn.anonymous()`, for somebody who wants to look before signing up.
+     * Only the sign-in half is used — the guest is signed out and registers
+     * fresh rather than being linked, because a guest cannot write and so has
+     * nothing to carry across. See `auth.ts` on the server.
+     */
+    anonymousClient(),
     expoClient({
       scheme: APP_SCHEME,
       storage: SecureStore,

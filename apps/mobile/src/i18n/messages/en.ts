@@ -238,6 +238,15 @@ export const en = {
     done: 'Done',
   },
 
+  welcome: {
+    title: 'Practise with someone who is learning yours',
+    subtitle:
+      'Have a look first — you can pick your languages and see who is here before you sign up for anything.',
+    browse: 'Look around first',
+    createAccount: 'Create an account',
+    haveAccount: 'I already have an account',
+    guestFailed: 'Could not start',
+  },
   auth: {
     confirmPassword: 'Confirm password',
     passwordsDoNotMatch: 'The two passwords are different.',

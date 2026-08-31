@@ -22,7 +22,7 @@ import { shouldRefreshLocation } from '../lib/locationRefresh'
  * denied permission or a failed fix must not raise anything — they will find
  * out when they next use the feature deliberately.
  */
-export function useLocationRefresh(): void {
+export function useLocationRefresh({ enabled = true }: { enabled?: boolean } = {}): void {
   const me = useMe()
   const share = useShareLocation()
   // Guards against a second run while one is in flight — foregrounding twice
@@ -33,6 +33,7 @@ export function useLocationRefresh(): void {
   const updatedAt = me.data?.locationUpdatedAt
 
   useEffect(() => {
+    if (!enabled) return
     async function refresh(): Promise<void> {
       if (busy.current) return
       if (!shouldRefreshLocation({ hasLocation, locationUpdatedAt: updatedAt })) return
@@ -57,5 +58,5 @@ export function useLocationRefresh(): void {
     return () => subscription.remove()
     // Keyed on the two values the decision actually reads, plus the mutation
     // object react-query keeps stable across renders.
-  }, [hasLocation, updatedAt, share])
+  }, [enabled, hasLocation, updatedAt, share])
 }

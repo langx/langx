@@ -6,8 +6,13 @@ describe('authLandingHref', () => {
     expect(authLandingHref(false)).toBe('/(auth)/intro')
   })
 
-  it('sends someone who has to sign-in', () => {
-    expect(authLandingHref(true)).toBe('/(auth)/sign-in')
+  /**
+   * The welcome screen, not the sign-in form. "Give us your email" is the wrong
+   * first question for somebody who has not yet seen whether anyone here speaks
+   * their language — signing in is still one tap from there.
+   */
+  it('sends someone who has seen it to the welcome screen', () => {
+    expect(authLandingHref(true)).toBe('/(auth)/welcome')
   })
 
   /**

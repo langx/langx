@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { OnboardingDraft } from '../hooks/useOnboardingDraft'
-import { furthestOnboardingStep } from './onboardingStep'
+import { furthestOnboardingStep, GUEST_ONBOARDING_STEPS, ONBOARDING_STEPS } from './onboardingStep'
 
 const EMPTY: OnboardingDraft = {
   nativeLanguages: [],
@@ -100,5 +100,28 @@ describe('furthestOnboardingStep', () => {
         draft({ ...withLanguages, displayName: '   ', birthDate: '1994-03-07' }),
       ),
     ).toBe('about-you')
+  })
+})
+
+describe('the guest path', () => {
+  /**
+   * The whole of "we do not ask for your languages twice". A guest fills in
+   * languages and levels; after they register, the draft is still there and
+   * this is what reads it.
+   */
+  it('drops a registering guest on about-you, not back at languages', () => {
+    const draft = {
+      ...EMPTY,
+      nativeLanguages: ['tr'],
+      learning: [{ code: 'en', level: 'intermediate' as const }],
+    }
+    expect(furthestOnboardingStep(draft)).toBe('about-you')
+  })
+
+  it('covers exactly the steps a guest is shown', () => {
+    expect(GUEST_ONBOARDING_STEPS).toEqual(['languages', 'levels'])
+    for (const step of GUEST_ONBOARDING_STEPS) {
+      expect(ONBOARDING_STEPS).toContain(step)
+    }
   })
 })

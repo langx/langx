@@ -9,6 +9,7 @@ import { Checkbox } from '../../src/components/ui/Checkbox'
 import { LEGAL_LINKS } from '../../src/lib/externalLinks'
 import { openExternal } from '../../src/lib/openExternal'
 import { FormField } from '../../src/components/ui/FormField'
+import { shouldGateGuest } from '../../src/lib/guestGate'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
 import {
@@ -36,10 +37,22 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
   const [accepted, setAccepted] = useState(false)
+  const { data: session } = authClient.useSession()
 
   async function onSubmit() {
     setError(undefined)
     setLoading(true)
+    /*
+     * A guest signs out before registering rather than being linked.
+     *
+     * Better Auth's anonymous plugin can link, but not here: this project has
+     * `requireEmailVerification: true` and `autoSignIn: false`, so `signUp.email`
+     * returns no session at all and `onLinkAccount` would fire around a user
+     * that has none. There is nothing to carry over anyway — a guest cannot
+     * write — and the languages travel in the device draft, which is why the
+     * next screen is `about-you` rather than `languages`.
+     */
+    if (shouldGateGuest(session?.user)) await authClient.signOut()
     const { error: signUpError } = await authClient.signUp.email({
       name,
       email,
