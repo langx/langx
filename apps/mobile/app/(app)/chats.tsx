@@ -84,21 +84,25 @@ export default function ChatsScreen() {
         without an entry point here it is a write with no read.
       */}
       <View style={styles.titleRow}>
-        <Text style={styles.title}>{t('tabs.chats')}</Text>
+        {/* Hidden while search is open, for the reason Discover's copy of this
+            row records: the field needs the whole row, not what is left of it. */}
+        {searching ? null : <Text style={styles.title}>{t('tabs.chats')}</Text>}
         {/*
           Here as well as on Discover, because this is the other place people
           arrive already knowing who they want: Discover is for finding someone,
           Chats is for finding someone again.
         */}
         <PeopleSearch from="/(app)/chats" onSearchingChange={setSearching} />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('chats.starredMessages')}
-          hitSlop={10}
-          onPress={() => router.push('/(app)/starred')}
-        >
-          <Feather name="star" size={21} color={colors.textMuted} />
-        </Pressable>
+        {searching ? null : (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('chats.starredMessages')}
+            hitSlop={10}
+            onPress={() => router.push('/(app)/starred')}
+          >
+            <Feather name="star" size={21} color={colors.textMuted} />
+          </Pressable>
+        )}
       </View>
 
       {/*
@@ -108,17 +112,21 @@ export default function ChatsScreen() {
         happened to be fetched, which is exactly wrong for "who am I keeping
         waiting" — the answer is usually further down the list.
       */}
-      <View style={styles.filters}>
-        <SegmentedControl<ConversationFilter>
-          options={CONVERSATION_FILTERS.map((value) => ({
-            value,
-            label: t(`chats.tab_${value}` as MessageKey),
-          }))}
-          selected={[filter]}
-          onToggle={setFilter}
-          accessibilityLabel={t('chats.filterPicker')}
-        />
-      </View>
+      {/* Hidden while searching, as on Discover: the list underneath is blank,
+          so a filter over it has nothing to filter. */}
+      {searching ? null : (
+        <View style={styles.filters}>
+          <SegmentedControl<ConversationFilter>
+            options={CONVERSATION_FILTERS.map((value) => ({
+              value,
+              label: t(`chats.tab_${value}` as MessageKey),
+            }))}
+            selected={[filter]}
+            onToggle={setFilter}
+            accessibilityLabel={t('chats.filterPicker')}
+          />
+        </View>
+      )}
 
       {state === 'skeleton' ? (
         <View style={styles.list}>
@@ -278,7 +286,14 @@ export default function ChatsScreen() {
 
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   filters: { paddingBottom: spacing.sm, paddingTop: spacing.md },
-  titleRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
+  // `zIndex` for the same reason Discover's copy of this row carries one:
+  // the search results float, and a later sibling would paint over them.
+  titleRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    zIndex: 2,
+  },
   title: { ...font.title, color: colors.text, fontSize: 34, paddingTop: spacing.md },
   list: { paddingBottom: spacing.xxl, paddingTop: spacing.sm },
   footer: { paddingVertical: spacing.lg },
