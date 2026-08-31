@@ -13,6 +13,19 @@ export interface SubscriberEntitlement {
   expiresAt: Date | null
   productId: string
   store: string
+  /**
+   * Whether it renews at `expiresAt`, or simply ends there.
+   *
+   * Read from the purchase rather than assumed. `refreshEntitlement` used to
+   * hardcode `true`, and with no webhook endpoint configured the refresh path
+   * is the *only* path — so every subscriber who had cancelled was still
+   * recorded as renewing, and any UI showing a renewal date would have shown a
+   * cancelled subscriber a date it will not happen on.
+   *
+   * Always `false` for a lifetime grant: there is nothing to renew. Paired with
+   * `expiresAt: null`, that is what says "lifetime" rather than "ending".
+   */
+  willRenew: boolean
 }
 
 export interface RevenueCatClient {
@@ -54,7 +67,7 @@ export interface RevenueCatClient {
 interface RevenueCatSubscriberResponse {
   subscriber: {
     entitlements: Record<string, { expires_date: string | null; product_identifier: string }>
-    subscriptions?: Record<string, { store?: string }>
+    subscriptions?: Record<string, { store?: string; unsubscribe_detected_at?: string | null }>
     non_subscriptions?: Record<string, { store?: string }[]>
   }
 }
@@ -72,6 +85,28 @@ function storeForProduct(
     oneTime?.[oneTime.length - 1]?.store ??
     'unknown'
   )
+}
+
+/**
+ * Whether the purchase behind a product is still set to renew.
+ *
+ * `unsubscribe_detected_at` is RevenueCat's record that the subscriber turned
+ * auto-renew off in the store; access continues to `expires_date` either way,
+ * which is exactly the distinction between "Renews on" and "Ends on".
+ *
+ * A product with no `subscriptions` entry is a one-time purchase — a lifetime —
+ * and renews by definition never. `billing_issues_detected_at` is deliberately
+ * *not* consulted: a failed card is usually transient and retried by the store,
+ * and telling someone their plan ends because one charge bounced would be
+ * alarming and, most of the time, wrong.
+ */
+function willRenewProduct(
+  subscriber: RevenueCatSubscriberResponse['subscriber'],
+  productId: string,
+): boolean {
+  const subscription = subscriber.subscriptions?.[productId]
+  if (!subscription) return false
+  return !subscription.unsubscribe_detected_at
 }
 
 /** `null` expiry is a lifetime (or not-yet-elapsed non-renewing) grant, not a missing one. */
@@ -107,6 +142,7 @@ export function createRevenueCatClient(secretApiKey: string): RevenueCatClient {
           expiresAt,
           productId: entitlement.product_identifier,
           store: storeForProduct(body.subscriber, entitlement.product_identifier),
+          willRenew: willRenewProduct(body.subscriber, entitlement.product_identifier),
         }
       }
       return null

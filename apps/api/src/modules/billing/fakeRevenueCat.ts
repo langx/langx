@@ -178,6 +178,9 @@ export function createFakeRevenueCat(): FakeRevenueCat {
         expiresAt: subscription.expiresAt,
         productId: subscription.productId,
         store: FAKE_STORE,
+        // The harness has tracked this since it was written; it simply was not
+        // reported, because `refreshEntitlement` overwrote it with `true`.
+        willRenew: subscription.willRenew,
       })
     },
 

@@ -26,7 +26,15 @@ export async function refreshEntitlement(
   const now = new Date()
 
   const next: Profile['entitlement'] = entitlement
-    ? { tier: entitlement.tier, willRenew: true, store: entitlement.store, updatedAt: now }
+    ? {
+        tier: entitlement.tier,
+        // Was hardcoded `true`. With no webhook endpoint configured this is the
+        // only path that writes an entitlement, so every subscriber who had
+        // cancelled was still recorded as renewing.
+        willRenew: entitlement.willRenew,
+        store: entitlement.store,
+        updatedAt: now,
+      }
     : { tier: 'free', willRenew: false, updatedAt: now }
   if (entitlement?.expiresAt) next.expiresAt = entitlement.expiresAt
 

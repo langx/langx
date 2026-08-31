@@ -4,8 +4,10 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { buildApp } from '../app'
 import { createAuth } from '../auth'
 import { connectToDatabase, type DbHandle } from '../db/client'
+import { COLLECTIONS } from '../db/collections'
 import { ensureIndexes } from '../db/indexes'
 import { loadEnv } from '../env'
+import type { Profile } from '../modules/profiles/profiles'
 import type { RevenueCatClient, SubscriberEntitlement } from '../modules/billing/revenueCatClient'
 import { createStorageProvider } from '../storage/createStorageProvider'
 import { CapturingEmailSender, signUpAndSignIn, type SignedUpUser } from '../testSupport/authFlow'
@@ -245,6 +247,7 @@ describe('Faz 7 — billing', () => {
         expiresAt: new Date(Date.now() + 1_000_000),
         productId: 'monthly',
         store: 'app_store',
+        willRenew: true,
       }
 
       await app.inject({
@@ -283,6 +286,7 @@ describe('Faz 7 — billing', () => {
         expiresAt: new Date(Date.now() + 1_000_000),
         productId: 'pro_plus_monthly',
         store: 'app_store',
+        willRenew: true,
       }
 
       const response = await app.inject({
@@ -413,6 +417,7 @@ describe('Faz 7 — billing', () => {
         expiresAt: new Date(Date.now() + 1_000_000),
         productId: 'monthly',
         store: 'play_store',
+        willRenew: true,
       }
 
       const response = await app.inject({
@@ -432,6 +437,7 @@ describe('Faz 7 — billing', () => {
         expiresAt: new Date(Date.now() + 1_000_000),
         productId: 'pro_plus_yearly',
         store: 'play_store',
+        willRenew: true,
       }
 
       const response = await app.inject({
@@ -441,6 +447,40 @@ describe('Faz 7 — billing', () => {
       })
       expect(response.statusCode, response.body).toBe(200)
       expect(response.json()).toMatchObject({ tier: 'pro_plus' })
+    })
+
+    /**
+     * `refreshEntitlement` wrote `willRenew: true` unconditionally, and with no
+     * webhook endpoint configured this is the only path that writes an
+     * entitlement — so every subscriber who had cancelled in the store was
+     * still recorded as renewing. Any UI showing a renewal date would have
+     * shown them a date that will not happen.
+     */
+    it('records a cancelled subscription as ending, not renewing', async () => {
+      const user = await newUser('refresh-cancelled@example.com')
+      fakeRevenueCat.unavailable = false
+      fakeRevenueCat.next = {
+        tier: 'pro',
+        expiresAt: new Date(Date.now() + 1_000_000),
+        productId: 'monthly',
+        store: 'app_store',
+        willRenew: false,
+      }
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/billing/refresh',
+        headers: { cookie: user.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json()).toMatchObject({ tier: 'pro', willRenew: false })
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.entitlement.willRenew).toBe(false)
+      // Access survives a cancellation; only the renewal stops.
+      expect(profile?.entitlement.tier).toBe('pro')
     })
 
     it('reconciles to free when RevenueCat reports no active entitlement', async () => {
