@@ -5,6 +5,9 @@ import { useState } from 'react'
 import { KeyboardAvoidingView, Platform, Text, View } from 'react-native'
 import { makeStyles } from '../../src/lib/theme'
 import { Button } from '../../src/components/ui/Button'
+import { Checkbox } from '../../src/components/ui/Checkbox'
+import { LEGAL_LINKS } from '../../src/lib/externalLinks'
+import { openExternal } from '../../src/lib/openExternal'
 import { FormField } from '../../src/components/ui/FormField'
 import { authClient } from '../../src/lib/auth-client'
 import { authErrorKey } from '../../src/lib/errors'
@@ -15,6 +18,14 @@ import {
 } from '../../src/lib/passwordForm'
 import { useT } from '../../src/i18n'
 
+/**
+ * Pulled from the same table Settings renders, so a URL that moves moves here
+ * too. Named lookups rather than indexes: the list is ordered for a settings
+ * screen, and reordering it must not silently relabel a consent link.
+ */
+const TERMS_LINK = LEGAL_LINKS.find((link) => link.labelKey === 'legal.terms')!
+const PRIVACY_LINK = LEGAL_LINKS.find((link) => link.labelKey === 'legal.privacy')!
+
 export default function SignUp() {
   const styles = useStyles()
   const t = useT()
@@ -24,6 +35,7 @@ export default function SignUp() {
   const [confirmation, setConfirmation] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string>()
+  const [accepted, setAccepted] = useState(false)
 
   async function onSubmit() {
     setError(undefined)
@@ -56,7 +68,8 @@ export default function SignUp() {
 
   // The same condition the button uses, so Enter can never submit a
   // form the button refuses — nor fire twice while one is in flight.
-  const canSubmit = !loading && !!name && !!email && passwordPairReady(password, confirmation)
+  const canSubmit =
+    !loading && !!name && !!email && passwordPairReady(password, confirmation) && accepted
 
   return (
     <KeyboardAvoidingView
@@ -106,6 +119,31 @@ export default function SignUp() {
         error={issue ? t(issue, { min: PASSWORD_MIN_LENGTH }) : error}
       />
 
+      {/*
+        Unticked by default and required, which is the whole point: a pre-ticked
+        box is not consent, and several of the regimes this app ships under say
+        so. Nothing here is recorded client-side — the server stamps acceptance
+        when it creates the account, so the record cannot be forged by a client
+        that skipped the screen.
+      */}
+      <Checkbox
+        checked={accepted}
+        onChange={setAccepted}
+        accessibilityLabel={t('auth.acceptTermsLabel')}
+      >
+        <Text style={styles.terms}>
+          {t('auth.acceptTerms')}{' '}
+          <Text style={styles.link} onPress={() => void openExternal(TERMS_LINK.url)}>
+            {t('legal.terms')}
+          </Text>
+          {t('auth.acceptTermsAnd')}
+          <Text style={styles.link} onPress={() => void openExternal(PRIVACY_LINK.url)}>
+            {t('legal.privacy')}
+          </Text>
+          .
+        </Text>
+      </Checkbox>
+
       <Button label={t('auth.signUp')} onPress={onSubmit} loading={loading} disabled={!canSubmit} />
 
       <View style={styles.footer}>
@@ -135,6 +173,7 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     marginTop: -spacing.sm,
   },
   link: { color: colors.accent, fontSize: 15, fontWeight: '600' },
+  terms: { ...font.caption, color: colors.textMuted, fontSize: 14, lineHeight: 20 },
   footerText: { color: colors.textMuted, fontSize: 15 },
   footer: {
     alignItems: 'center',

@@ -6,6 +6,7 @@ import { deviceAuthorization } from 'better-auth/plugins/device-authorization'
 import type { Db, MongoClient } from 'mongodb'
 import { generateAppleClientSecret } from './auth/appleClientSecret'
 import { restoreLegacyProfile } from './modules/handles/legacyRestore'
+import { recordTermsAcceptance } from './modules/account/terms'
 import type { EmailSender } from './email/sender'
 import { resetPasswordEmail, verificationEmail } from './email/templates'
 import { localeFromHeader } from './i18n'
@@ -139,6 +140,19 @@ export async function createAuth({ env, db, client, emailSender, revenueCat }: C
            * profile by claiming their address.
            */
           after: async (user) => {
+            /**
+             * Stamped here rather than taken from the sign-up body, because a
+             * client that skipped the tickbox could otherwise assert it. Every
+             * route into an account passes through this hook — email/password,
+             * Google, Apple and the legacy bridge — so there is no way to hold
+             * an account without a record of the terms in force when it was
+             * made.
+             *
+             * The version, not just a date: a date only answers "when", and
+             * the question that gets asked is "which text did they agree to".
+             */
+            await recordTermsAcceptance(db, user.id)
+
             if (!user.emailVerified) return
             await tryRestore(user.id, user.email)
           },
