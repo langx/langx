@@ -24,7 +24,7 @@ export const discoverySortSchema = z.enum(DISCOVERY_SORTS)
 export const DISCOVERY_PAGE_SIZE_DEFAULT = 20
 export const DISCOVERY_PAGE_SIZE_MAX = 50
 
-/** A profile counts as "online now" for the free `online` filter within this window. */
+/** A profile counts as "online now" — for the ordering, and for `isOnline` — within this window. */
 export const ONLINE_WINDOW_MS = 5 * 60 * 1000
 
 /**
@@ -91,8 +91,6 @@ export const discoveryQuerySchema = z
       .default(DISCOVERY_PAGE_SIZE_DEFAULT),
     /** Free filter: narrow to one specific language out of the viewer's own learning list. */
     targetLanguage: languageCodeSchema.optional(),
-    /** Free filter: only profiles active within {@link ONLINE_WINDOW_MS}. */
-    online: z.coerce.boolean().optional(),
     /** Free filter: their level in the viewer's language, as an inclusive band.
      *  One bound on its own is still valid — `minLevel` alone means "at least",
      *  which is what the pre-v3 filter offered and what old clients still send. */
@@ -180,3 +178,28 @@ export const discoveryPageSchema = z.object({
   nextCursor: z.string().nullable(),
 })
 export type DiscoveryPage = z.infer<typeof discoveryPageSchema>
+
+/** How many results a handle search returns. Small on purpose: it is a
+ *  jump-to, not a browse — the list below is what browsing is for. */
+export const HANDLE_SEARCH_LIMIT = 10
+
+export const handleSearchQuerySchema = z.object({
+  /**
+   * A handle prefix. Lower-cased to match how handles are stored, and bounded
+   * at the same length one can be, because this reaches a database index and
+   * an unbounded string is a way to make it scan.
+   */
+  q: z.string().trim().toLowerCase().min(2).max(20),
+})
+export type HandleSearchQuery = z.infer<typeof handleSearchQuerySchema>
+
+export const handleSearchResultSchema = z.object({
+  _id: z.string(),
+  handle: z.string(),
+  displayName: z.string(),
+  avatarUrl: z.string().optional(),
+})
+export type HandleSearchResult = z.infer<typeof handleSearchResultSchema>
+
+export const handleSearchPageSchema = z.object({ items: z.array(handleSearchResultSchema) })
+export type HandleSearchPage = z.infer<typeof handleSearchPageSchema>

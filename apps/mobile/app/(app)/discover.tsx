@@ -9,9 +9,18 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { openProfile } from '../../src/lib/navigation'
 import { useMemo, useState } from 'react'
 import Feather from '@expo/vector-icons/Feather'
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  Text,
+  TextInput,
+  View,
+} from 'react-native'
 import {
   useDiscovery,
+  useHandleSearch,
   useHasFeature,
   useIsPro,
   useMe,
@@ -33,6 +42,7 @@ import {
   toQuery,
   withoutProFilters,
 } from '../../src/lib/discoveryFilters'
+import { useDebounced } from '../../src/hooks/useDebounced'
 import { showAlert } from '../../src/lib/alert'
 import { captureLocation, LOCATION_FAILURE_KEY } from '../../src/lib/location'
 import { openPaywall } from '../../src/lib/paywall'
@@ -75,6 +85,11 @@ export default function DiscoverScreen() {
   const params = useLocalSearchParams<Record<string, string>>()
   const [sort, setSort] = useState<DiscoverySort>('recommended')
   const [radiusKm, setRadiusKm] = useState<number>(NEARBY_MAX_KM)
+  const [searching, setSearching] = useState(false)
+  const [term, setTerm] = useState('')
+  // The input renders `term` and the query follows the settled value, so
+  // typing stays responsive and "behic" is one request rather than five.
+  const search = useHandleSearch(useDebounced(term))
 
   const isPro = useIsPro()
   const canUseNearby = useHasFeature('nearby')
@@ -163,6 +178,22 @@ export default function DiscoverScreen() {
               the paywall a surprise instead of an offer. Free filters still
               live behind it, which is why a free account opens the filters
               rather than the paywall. */}
+          {/* Beside the filters, not above the list: the two are the same
+              question asked two ways — "narrow this" and "I already know who
+              I am looking for". */}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityState={{ expanded: searching }}
+            accessibilityLabel={t('discover.searchHandles')}
+            onPress={() => {
+              setSearching((on) => !on)
+              if (searching) setTerm('')
+            }}
+            style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+            hitSlop={8}
+          >
+            <Feather name={searching ? 'x' : 'search'} size={22} color={colors.text} />
+          </Pressable>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={
@@ -180,6 +211,51 @@ export default function DiscoverScreen() {
             {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
           </Pressable>
         </View>
+        {searching ? (
+          <View style={styles.searchRow}>
+            <Feather name="search" size={17} color={colors.textFaint} />
+            <TextInput
+              value={term}
+              onChangeText={setTerm}
+              placeholder={t('discover.searchPlaceholder')}
+              placeholderTextColor={colors.textFaint}
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoFocus
+              style={styles.searchInput}
+            />
+          </View>
+        ) : null}
+
+        {searching ? (
+          <View style={styles.searchResults}>
+            {search.isFetching ? <ActivityIndicator style={styles.searchSpinner} /> : null}
+            {search.data?.items.map((result) => (
+              <Pressable
+                key={result._id}
+                accessibilityRole="button"
+                onPress={() => openProfile(result.handle, '/(app)/discover')}
+                style={({ pressed }) => [styles.searchRow, pressed && styles.pressed]}
+              >
+                <Avatar url={result.avatarUrl} name={result.displayName} size={36} />
+                <View style={styles.searchText}>
+                  <Text style={styles.searchName} numberOfLines={1}>
+                    {result.displayName}
+                  </Text>
+                  <Text style={styles.searchHandle} numberOfLines={1}>
+                    @{result.handle}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+            {/* Only once a real search has settled: "no matches" under two
+                letters would be answering a question nobody finished asking. */}
+            {search.data?.items.length === 0 && !search.isFetching ? (
+              <Text style={styles.searchNone}>{t('discover.searchNone')}</Text>
+            ) : null}
+          </View>
+        ) : null}
+
         <View style={styles.segmented}>
           <SegmentedControl
             options={SORTS.map((option) => ({
@@ -193,14 +269,6 @@ export default function DiscoverScreen() {
           />
         </View>
         <View style={styles.chips}>
-          <Chip
-            // "Online first", not "Online": it is a sort modifier now, and a
-            // label promising a filter would be describing the old behaviour.
-            label={t('discover.onlineFirst')}
-            tone="accent"
-            selected={effective.online === true}
-            onPress={() => router.setParams(effective.online ? { online: '' } : { online: '1' })}
-          />
           {/* Only while it applies. A radius control above a list that is not
               sorted by distance would be a control with nothing to control. */}
           {sort === 'nearby'
@@ -239,7 +307,7 @@ export default function DiscoverScreen() {
         />
       ) : (
         <FlatList
-          data={items}
+          data={searching ? [] : items}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
           refreshControl={
@@ -253,7 +321,7 @@ export default function DiscoverScreen() {
             if (query.hasNextPage && !query.isFetchingNextPage) void query.fetchNextPage()
           }}
           ListEmptyComponent={
-            sort === 'nearby' ? (
+            searching ? null : sort === 'nearby' ? (
               // Two things narrow this list that narrow no other, and a user
               // who is not told about the second one concludes the feature is
               // broken rather than that the pool is small.
@@ -339,6 +407,28 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     marginStart: 'auto',
   },
   filterButton: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
+  searchRow: {
+    alignItems: 'center',
+    backgroundColor: colors.fill,
+    borderRadius: radius.pill,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  searchInput: { ...font.body, color: colors.text, flex: 1, padding: 0 },
+  searchResults: { gap: spacing.xs, marginTop: spacing.xs },
+  searchSpinner: { marginTop: spacing.md },
+  searchText: { flex: 1, gap: 1 },
+  searchName: { ...font.label, color: colors.text, fontSize: 15 },
+  searchHandle: { ...font.caption, color: colors.textMuted },
+  searchNone: {
+    ...font.caption,
+    color: colors.textFaint,
+    marginTop: spacing.md,
+    textAlign: 'center',
+  },
   filterCount: {
     backgroundColor: colors.accent,
     borderRadius: radius.pill,

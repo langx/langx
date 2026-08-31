@@ -391,9 +391,11 @@ export const ru: Localized<EnMessages> = {
   },
 
   discover: {
+    searchHandles: 'Поиск по имени пользователя',
+    searchPlaceholder: 'Имя пользователя',
+    searchNone: 'Аккаунта с таким именем пользователя нет.',
     sortLabel: 'Сортировка',
     forYou: 'Для тебя',
-    onlineFirst: 'Сначала онлайн',
     title: 'Поиск',
     active: 'Активные',
     nearby: 'Рядом',
@@ -416,7 +418,6 @@ export const ru: Localized<EnMessages> = {
   filters: {
     title: 'Фильтры',
     speaks: 'Говорит',
-    availability: 'Доступность',
     city: 'Город',
     cityBody: 'Найдите людей в одном городе. Написание, диакритика и регистр совпадать не обязаны.',
     cityPlaceholder: 'Стамбул',
@@ -425,7 +426,6 @@ export const ru: Localized<EnMessages> = {
     country: 'Страна',
     practiseBody:
       'Какой из твоих языков ты хочешь практиковать. Здесь все и так говорят на нём как на родном.',
-    onlineFirst: 'Сначала онлайн',
     onlyMyGender: 'Только мой пол',
     onlyMyGenderBody: 'Показывать только тех, чей пол — {gender}, как у тебя.',
     onlyMyGenderMissing: 'Чтобы использовать это, укажи свой пол в профиле.',

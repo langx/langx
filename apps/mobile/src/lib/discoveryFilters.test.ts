@@ -18,7 +18,6 @@ import {
 describe('withoutProFilters', () => {
   const everything: DiscoveryFilters = {
     targetLanguage: 'en',
-    online: true,
     minLevel: 'beginner',
     maxLevel: 'fluent',
     ageMin: 25,
@@ -32,7 +31,6 @@ describe('withoutProFilters', () => {
   it('keeps every free filter', () => {
     expect(withoutProFilters(everything)).toEqual({
       targetLanguage: 'en',
-      online: true,
       minLevel: 'beginner',
       maxLevel: 'fluent',
       ageMin: 25,
@@ -56,9 +54,7 @@ describe('withoutProFilters', () => {
 
 describe('hasProFilters', () => {
   it('is false for a set that is entirely free', () => {
-    expect(
-      hasProFilters({ targetLanguage: 'en', online: true, minLevel: 'beginner', ageMin: 30 }),
-    ).toBe(false)
+    expect(hasProFilters({ targetLanguage: 'en', minLevel: 'beginner', ageMin: 30 })).toBe(false)
   })
 
   it('is true for each paid filter on its own', () => {
@@ -72,7 +68,6 @@ describe('the URL round trip', () => {
   it('survives every filter', () => {
     const filters: DiscoveryFilters = {
       targetLanguage: 'en',
-      online: true,
       minLevel: 'beginner',
       maxLevel: 'fluent',
       ageMin: 25,
@@ -91,8 +86,8 @@ describe('the URL round trip', () => {
 
   /** `'1'` is the URL's spelling of a boolean; `'true'` is the API's. */
   it('sends booleans the way the API coerces them', () => {
-    const query = toQuery({ online: true, onlyMyGender: true, city: 'Istanbul' })
-    expect(query).toMatchObject({ online: 'true', onlyMyGender: 'true', city: 'Istanbul' })
+    const query = toQuery({ onlyMyGender: true, city: 'Istanbul' })
+    expect(query).toMatchObject({ onlyMyGender: 'true', city: 'Istanbul' })
   })
 })
 
@@ -105,7 +100,7 @@ describe('activeCount', () => {
 
   it('counts city as its own filter', () => {
     expect(activeCount({ city: 'Istanbul' })).toBe(1)
-    expect(activeCount({ city: 'Istanbul', online: true })).toBe(2)
+    expect(activeCount({ city: 'Istanbul', country: 'US' })).toBe(2)
   })
 
   it('is zero for no filters', () => {

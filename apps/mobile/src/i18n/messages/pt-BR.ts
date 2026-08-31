@@ -339,9 +339,11 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   discover: {
+    searchHandles: 'Buscar por nome de usuário',
+    searchPlaceholder: 'Nome de usuário',
+    searchNone: 'Nenhuma conta com esse nome de usuário.',
     sortLabel: 'Ordenar',
     forYou: 'Para você',
-    onlineFirst: 'On-line primeiro',
     title: 'Descobrir',
     active: 'Ativos',
     nearby: 'Por perto',
@@ -364,7 +366,6 @@ export const ptBR: Localized<EnMessages> = {
   filters: {
     title: 'Filtros',
     speaks: 'Fala',
-    availability: 'Disponibilidade',
     city: 'Cidade',
     cityBody:
       'Encontre pessoas em um mesmo lugar. Grafia, acentos e maiúsculas não precisam coincidir.',
@@ -374,7 +375,6 @@ export const ptBR: Localized<EnMessages> = {
     country: 'País',
     practiseBody:
       'Qual dos seus idiomas você quer praticar. Todo mundo aqui já fala esse idioma como nativo.',
-    onlineFirst: 'On-line primeiro',
     onlyMyGender: 'Só do meu gênero',
     onlyMyGenderBody: 'Mostrar só pessoas que são {gender}, como você.',
     onlyMyGenderMissing: 'Adicione seu gênero ao perfil para usar isso.',

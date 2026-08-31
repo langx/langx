@@ -1,4 +1,9 @@
-import { DISCOVERY_CURSOR_MAX_AGE_MS, DISTANCE_BUCKETS_KM, type DiscoveryPage } from '@langx/shared'
+import {
+  DISCOVERY_CURSOR_MAX_AGE_MS,
+  DISTANCE_BUCKETS_KM,
+  type DiscoveryPage,
+  type HandleSearchPage,
+} from '@langx/shared'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -241,7 +246,7 @@ describe('Faz 3 — discovery aggregation', () => {
       })
       await setLastActiveAt(staleActive.userId, new Date(Date.now() - 60 * 60 * 1000))
 
-      const response = await discover(viewer, 'online=true')
+      const response = await discover(viewer, '')
       const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(handles).toContain(recentlyActive.handle)
       expect(handles).toContain(staleActive.handle)
@@ -261,7 +266,7 @@ describe('Faz 3 — discovery aggregation', () => {
       })
       await setLastActiveAt(offline.userId, new Date(Date.now() - 60 * 60 * 1000))
 
-      const response = await discover(viewer, 'online=true')
+      const response = await discover(viewer, '')
       const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
       expect(handles).toEqual([offline.handle])
     })
@@ -291,7 +296,7 @@ describe('Faz 3 — discovery aggregation', () => {
         .updateOne({ _id: hidden.userId }, { $set: { 'privacy.hideOnlineStatus': true } })
       await setLastActiveAt(visible.userId, new Date(Date.now() - 60 * 60 * 1000))
 
-      const response = await discover(viewer, 'online=true')
+      const response = await discover(viewer, '')
       const items = response.json<{ items: { handle: string; isOnline: boolean }[] }>().items
       const handles = items.map((i) => i.handle)
       // Both land in bucket 0 — the hidden one because it is hidden, the
@@ -302,7 +307,7 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(items.find((i) => i.handle === hidden.handle)?.isOnline).toBe(false)
     })
 
-    it('orders online-first ahead of the recommended score, not behind it', async () => {
+    it('orders online-first ahead of the recommended score, always', async () => {
       const viewer = await newUser('bucket-order-viewer@example.com', {
         nativeLanguages: [{ code: 'hu' }],
         learning: [{ code: 'ro', level: 'intermediate', priority: 1 }],
@@ -320,18 +325,11 @@ describe('Faz 3 — discovery aggregation', () => {
       })
       await setLastActiveAt(highScoreOffline.userId, new Date(Date.now() - 60 * 60 * 1000))
 
-      const withChip = await discover(viewer, 'online=true')
-      const chipHandles = withChip
-        .json<{ items: { handle: string }[] }>()
-        .items.map((i) => i.handle)
-      expect(chipHandles[0]).toBe(lowScoreOnline.handle)
-
-      // And without the chip the score still wins, so this is opt-in.
-      const without = await discover(viewer)
-      const plainHandles = without
-        .json<{ items: { handle: string }[] }>()
-        .items.map((i) => i.handle)
-      expect(plainHandles[0]).toBe(highScoreOffline.handle)
+      // No parameter to pass: this used to be a chip and is now the ordering.
+      const response = await discover(viewer)
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles[0]).toBe(lowScoreOnline.handle)
+      expect(handles).toContain(highScoreOffline.handle)
     })
 
     /**
@@ -340,6 +338,44 @@ describe('Faz 3 — discovery aggregation', () => {
      * under a `$skip` already handed out — one row repeats and another is
      * never shown. Without the pin this test fails, which is why it exists.
      */
+    /**
+     * The pre-existing bug this change had to fix to work at all.
+     *
+     * Every cursor used to go through `decodeOnlineOffsetCursor`, including
+     * `sort=active`'s keyset `<iso>|<userId>`. It contains a `|`, so it took
+     * the pinned-cutoff branch and hit the one-hour expiry check — paging past
+     * anyone last active over an hour ago returned 400. The existing paging
+     * test never caught it because its fixtures were all active seconds ago.
+     */
+    it('pages sort=active past somebody last active long ago', async () => {
+      const viewer = await newUser('active-cursor-viewer@example.com', {
+        nativeLanguages: [{ code: 'da' }],
+        learning: [{ code: 'sv', level: 'intermediate', priority: 1 }],
+      })
+      const olds = []
+      for (const days of [2, 3, 4]) {
+        const candidate = await newUser(`active-cursor-${days}@example.com`, {
+          nativeLanguages: [{ code: 'sv' }],
+          learning: [{ code: 'da', level: 'intermediate', priority: 1 }],
+        })
+        await setLastActiveAt(candidate.userId, new Date(Date.now() - days * 86_400_000))
+        olds.push(candidate)
+      }
+
+      const first = await discover(viewer, 'sort=active&limit=1')
+      expect(first.statusCode, first.body).toBe(200)
+      const cursor = first.json<DiscoveryPage>().nextCursor
+      expect(cursor).not.toBeNull()
+
+      const second = await discover(
+        viewer,
+        `sort=active&limit=1&cursor=${encodeURIComponent(cursor!)}`,
+      )
+      expect(second.statusCode, second.body).toBe(200)
+      expect(second.json<DiscoveryPage>().items).toHaveLength(1)
+      expect(olds).toHaveLength(3)
+    })
+
     it('pages consistently when someone crosses the online boundary mid-scroll', async () => {
       const viewer = await newUser('boundary-viewer@example.com', {
         nativeLanguages: [{ code: 'lt' }],
@@ -360,7 +396,7 @@ describe('Faz 3 — discovery aggregation', () => {
       let flipped = false
       do {
         const suffix: string = cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
-        const page = await discover(viewer, `online=true&limit=1${suffix}`)
+        const page = await discover(viewer, `limit=1${suffix}`)
         expect(page.statusCode, page.body).toBe(200)
         const body = page.json<{ items: { handle: string }[]; nextCursor: string | null }>()
         seen.push(...body.items.map((i) => i.handle))
@@ -382,10 +418,7 @@ describe('Faz 3 — discovery aggregation', () => {
         learning: [{ code: 'hr', level: 'intermediate', priority: 1 }],
       })
       const old = new Date(Date.now() - DISCOVERY_CURSOR_MAX_AGE_MS - 60_000).toISOString()
-      const response = await discover(
-        viewer,
-        `online=true&cursor=${encodeURIComponent(`${old}|1`)}`,
-      )
+      const response = await discover(viewer, `cursor=${encodeURIComponent(`${old}|1`)}`)
       expect(response.statusCode).toBe(400)
       expect(response.json<{ code: string }>().code).toBe('VALIDATION_FAILED')
     })
@@ -396,7 +429,7 @@ describe('Faz 3 — discovery aggregation', () => {
         nativeLanguages: [{ code: 'bg' }],
         learning: [{ code: 'mk', level: 'intermediate', priority: 1 }],
       })
-      const response = await discover(viewer, 'online=true&cursor=0')
+      const response = await discover(viewer, 'cursor=0')
       expect(response.statusCode, response.body).toBe(200)
     })
 
@@ -677,6 +710,115 @@ describe('Faz 3 — discovery aggregation', () => {
     })
   })
 
+  describe('handle search', () => {
+    async function search(viewer: SignedUpUser, q: string) {
+      return app.inject({
+        method: 'GET',
+        url: `/discovery/handles?q=${encodeURIComponent(q)}`,
+        headers: { cookie: viewer.cookie },
+      })
+    }
+
+    function handlesIn(response: { json: <T>() => T }) {
+      return response.json<HandleSearchPage>().items.map((item) => item.handle)
+    }
+
+    it('finds by the start of a handle, and only by the start', async () => {
+      const viewer = await newUser('search-viewer@example.com')
+      const target = await newUser('search-target@example.com', { handle: 'behicsakar' })
+      await newUser('search-other@example.com', { handle: 'zzunrelated' })
+
+      expect(handlesIn(await search(viewer, 'behic'))).toContain(target.handle)
+      // Unanchored would match, and would also be a collection scan per
+      // keystroke — the anchor is what keeps this on `handle_unique`.
+      expect(handlesIn(await search(viewer, 'sakar'))).not.toContain(target.handle)
+    })
+
+    it('does not care what case the searcher types', async () => {
+      const viewer = await newUser('search-case-viewer@example.com')
+      const target = await newUser('search-case-target@example.com', { handle: 'mixedcase' })
+      for (const term of ['MIXED', 'MiXeD', 'mixed']) {
+        expect(handlesIn(await search(viewer, term)), term).toContain(target.handle)
+      }
+    })
+
+    /**
+     * Discovery requires mutual language fit because it is *proposing*
+     * partners. Finding somebody whose name you already know cannot depend on
+     * whether the two of you happen to be learnable to each other.
+     */
+    it('ignores language fit, unlike the feed', async () => {
+      const viewer = await newUser('search-fit-viewer@example.com', {
+        nativeLanguages: [{ code: 'is' }],
+        learning: [{ code: 'no', level: 'intermediate', priority: 1 }],
+      })
+      const unmatched = await newUser('search-fit-target@example.com', {
+        handle: 'nofitatall',
+        nativeLanguages: [{ code: 'ja' }],
+        learning: [{ code: 'ko', level: 'intermediate', priority: 1 }],
+      })
+      expect(handlesIn(await search(viewer, 'nofit'))).toContain(unmatched.handle)
+    })
+
+    it('leaves out a block in either direction, and says nothing about it', async () => {
+      const viewer = await newUser('search-block-viewer@example.com')
+      const blocked = await newUser('search-blocked@example.com', { handle: 'blockedone' })
+      const blocker = await newUser('search-blocker@example.com', { handle: 'blockerone' })
+
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: viewer.cookie },
+        payload: { userId: blocked.userId },
+      })
+      await app.inject({
+        method: 'POST',
+        url: '/blocks',
+        headers: { cookie: blocker.cookie },
+        payload: { userId: viewer.userId },
+      })
+
+      // 200 with an empty list, never 403 — a refusal confirms the account
+      // exists, which is what blocking is meant to stop.
+      const blockedResponse = await search(viewer, 'blocked')
+      expect(blockedResponse.statusCode).toBe(200)
+      expect(handlesIn(blockedResponse)).not.toContain(blocked.handle)
+      expect(handlesIn(await search(viewer, 'blocker'))).not.toContain(blocker.handle)
+    })
+
+    it('leaves out someone who has opted out of being found', async () => {
+      const viewer = await newUser('search-hidden-viewer@example.com')
+      const hidden = await newUser('search-hidden@example.com', { handle: 'hiddenone' })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: hidden.userId }, { $set: { 'settings.discoverable': false } })
+
+      expect(handlesIn(await search(viewer, 'hidden'))).not.toContain(hidden.handle)
+    })
+
+    it('never returns the searcher themselves', async () => {
+      const viewer = await newUser('search-self@example.com', { handle: 'searchself' })
+      expect(handlesIn(await search(viewer, 'searchself'))).not.toContain(viewer.handle)
+    })
+
+    /**
+     * `handleSchema` bounds what a stored handle may contain; it says nothing
+     * about what somebody may type into a search box.
+     */
+    it('treats regex metacharacters as text, not as a pattern', async () => {
+      const viewer = await newUser('search-regex-viewer@example.com')
+      await newUser('search-regex-target@example.com', { handle: 'patterntest' })
+      const response = await search(viewer, '.*')
+      expect(response.statusCode).toBe(200)
+      expect(handlesIn(response)).toHaveLength(0)
+    })
+
+    it('refuses a term too short to be worth a query', async () => {
+      const viewer = await newUser('search-short-viewer@example.com')
+      expect((await search(viewer, 'a')).statusCode).toBe(400)
+    })
+  })
+
   describe('sort presets and pagination', () => {
     it('sort=active pages through by lastActiveAt with no duplicates or gaps', async () => {
       const viewer = await newUser('active-sort-viewer@example.com', {
@@ -826,6 +968,26 @@ describe('Faz 3 — discovery aggregation', () => {
       for (const km of distances) expect(DISTANCE_BUCKETS_KM).toContain(km)
       // The nearest is about 1.5 km away; the answer must not be finer than a bucket.
       expect(items[0]?.distanceKm).toBeLessThanOrEqual(5)
+    })
+
+    it('orders purely by distance, never promoting whoever happens to be online', async () => {
+      const viewer = await newUser('nearby-online-viewer@example.com')
+      await setTier(viewer.userId, 'pro_plus')
+      await share(viewer, VIEWER)
+
+      const close = await share(await candidate('nearby-close-offline@example.com'), NEXT_DOOR)
+      const far = await share(await candidate('nearby-far-online@example.com'), ANOTHER_CITY)
+      // Close is an hour stale; far is online. Distance still decides.
+      await setLastActiveAt(close.userId, new Date(Date.now() - 60 * 60 * 1000))
+
+      const response = await discover(viewer, 'sort=nearby')
+      expect(response.statusCode, response.body).toBe(200)
+      // Relative, not absolute: earlier tests in this describe have already
+      // seeded candidates around the viewer, and the claim is about these two.
+      const handles = response.json<{ items: { handle: string }[] }>().items.map((i) => i.handle)
+      expect(handles).toContain(close.handle)
+      expect(handles).toContain(far.handle)
+      expect(handles.indexOf(close.handle)).toBeLessThan(handles.indexOf(far.handle))
     })
 
     it('leaves out everyone who has not shared a location, and says so by omission only in this sort', async () => {
@@ -1013,5 +1175,12 @@ describe('Faz 3 — discovery aggregation', () => {
       expect(serialized).toContain('IXSCAN')
       expect(serialized).not.toContain('COLLSCAN')
     })
+    /**
+     * Online-first used to be a chip that applied here too, and it is gone
+     * rather than made unconditional. This sort is what Pro+ buys to answer
+     * "who is near me"; bucketing first puts someone online 90 km away ahead
+     * of someone offline in the next street, which is a recommended list with
+     * a radius rather than a nearby list.
+     */
   })
 })

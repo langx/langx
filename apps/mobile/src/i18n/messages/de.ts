@@ -346,9 +346,11 @@ export const de: Localized<EnMessages> = {
   },
 
   discover: {
+    searchHandles: 'Nach Benutzername suchen',
+    searchPlaceholder: 'Benutzername',
+    searchNone: 'Kein Konto mit diesem Benutzernamen.',
     sortLabel: 'Sortierung',
     forYou: 'Für dich',
-    onlineFirst: 'Online zuerst',
     title: 'Entdecken',
     active: 'Aktiv',
     nearby: 'In der Nähe',
@@ -371,7 +373,6 @@ export const de: Localized<EnMessages> = {
   filters: {
     title: 'Filter',
     speaks: 'Spricht',
-    availability: 'Verfügbarkeit',
     city: 'Stadt',
     cityBody:
       'Finde Leute an einem Ort. Schreibweise, Akzente und Groß-/Kleinschreibung müssen nicht passen.',
@@ -381,7 +382,6 @@ export const de: Localized<EnMessages> = {
     country: 'Land',
     practiseBody:
       'Welche deiner Sprachen du üben willst. Alle hier sprechen sie bereits muttersprachlich.',
-    onlineFirst: 'Online zuerst',
     onlyMyGender: 'Nur mein Geschlecht',
     onlyMyGenderBody: 'Nur Leute zeigen, die {gender} sind, wie du.',
     onlyMyGenderMissing: 'Trag dein eigenes Geschlecht ins Profil ein, um das zu nutzen.',

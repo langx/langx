@@ -92,6 +92,18 @@ export interface DiscoveryResult {
   nextCursor: string | null
 }
 
+/** `GET /discovery/handles` — a jump-to, so no cursor and no counts. */
+export interface HandleSearchResult {
+  _id: string
+  handle: string
+  displayName: string
+  avatarUrl?: string
+}
+
+export interface HandleSearchPage {
+  items: HandleSearchResult[]
+}
+
 /** Body of `POST /auth/login` — see `packages/shared/src/account.ts`. */
 export interface LoginResult {
   /** True when the v1 bridge was what accepted the password. */
