@@ -135,7 +135,21 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
     marginTop: spacing.xl,
     padding: spacing.xl,
   },
-  qr: { aspectRatio: 1, backgroundColor: '#ffffff', borderRadius: radius.sm, width: '100%' },
+  /*
+   * A fixed size, not `width: '100%'`.
+   *
+   * The card centres its children, so on the cross axis "100%" has nothing to
+   * be a percentage *of* — the image resolved to zero width, painted nothing,
+   * and never even fetched. A QR wants a known size anyway: too small and a
+   * camera cannot resolve the modules, and it does not benefit from being
+   * bigger than a phone screen held at arm's length.
+   */
+  qr: {
+    backgroundColor: '#ffffff',
+    borderRadius: radius.sm,
+    height: 220,
+    width: 220,
+  },
   code: { ...font.title, color: colors.text, fontSize: 32, letterSpacing: 6 },
   body: {
     ...font.body,
