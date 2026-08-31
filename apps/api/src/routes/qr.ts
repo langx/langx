@@ -70,7 +70,12 @@ export const qrRoutes: FastifyPluginAsyncZod = async (app) => {
       config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
     },
     async (request, reply) => {
-      const target = `https://${WEB_HOST}/link-device?code=${encodeURIComponent(request.params.code)}`
+      // `user_code`, because that is the name Better Auth puts in its own
+      // `verification_uri_complete` — a QR that used a different one would
+      // send people to the same page with the field left empty.
+      const target = `https://${WEB_HOST}/link-device?user_code=${encodeURIComponent(
+        request.params.code,
+      )}`
       const svg = await QRCode.toString(target, {
         type: 'svg',
         errorCorrectionLevel: 'M',
