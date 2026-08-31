@@ -1,5 +1,6 @@
 import {
   accountAge,
+  lastSeen,
   INTEREST_SUGGESTIONS,
   type BadgeKind,
   type Gender,
@@ -78,6 +79,22 @@ export function accountAgeLabel(t: TranslateFn, createdAt: Date, now?: Date): st
   const { unit, count } = accountAge(createdAt, now)
   if (unit === 'today') return t('format.accountAgeToday')
   const key = `format.accountAge${unit.charAt(0).toUpperCase()}${unit.slice(1)}s` as MessageKey
+  return t(key, { count })
+}
+
+/**
+ * "Last seen 3 hours ago" — a whole sentence per unit, not a phrase dropped
+ * into a wrapper.
+ *
+ * Composing `t('presence.lastSeen', { time: t('format.hours', …) })` would be
+ * shorter and wrong: word order and case marking differ per language, and
+ * Russian inflects the noun after a numeral in three ways. A complete sentence
+ * per rung is the only shape a translator can actually work with.
+ */
+export function lastSeenLabel(t: TranslateFn, at: Date, now?: Date): string {
+  const { unit, count } = lastSeen(at, now)
+  if (unit === 'now') return t('presence.lastSeenNow')
+  const key = `presence.lastSeen${unit.charAt(0).toUpperCase()}${unit.slice(1)}s` as MessageKey
   return t(key, { count })
 }
 

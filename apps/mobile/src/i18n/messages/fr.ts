@@ -414,9 +414,17 @@ export const fr: Localized<EnMessages> = {
     starredMessages: 'Messages favoris',
   },
 
+  presence: {
+    online: 'En ligne',
+    lastSeenNow: 'Vu à l’instant',
+    lastSeenMinutes: { one: 'Vu il y a {count} minute', other: 'Vu il y a {count} minutes' },
+    lastSeenHours: { one: 'Vu il y a {count} heure', other: 'Vu il y a {count} heures' },
+    lastSeenDays: { one: 'Vu il y a {count} jour', other: 'Vu il y a {count} jours' },
+    lastSeenMonths: { one: 'Vu il y a {count} mois', other: 'Vu il y a {count} mois' },
+    lastSeenYears: { one: 'Vu il y a {count} an', other: 'Vu il y a {count} ans' },
+  },
   chat: {
     title: 'Discussion',
-    online: 'En ligne',
     typing: 'écrit…',
     editing: 'Modification',
     correcting: 'Correction',
@@ -696,7 +704,7 @@ export const fr: Localized<EnMessages> = {
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',
-    hideOnlineBody: 'Tu continueras de voir le leur.',
+    hideOnlineBody: 'Masque ton point vert et ta dernière visite. Tu continueras de voir le leur.',
     shareLocation: 'Partager ma position approximative',
     shareLocationBody: 'Les autres voient une plage de distance, jamais un point.',
     activityMap: 'Afficher ma carte d’activité',

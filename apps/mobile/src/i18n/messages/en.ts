@@ -442,9 +442,20 @@ export const en = {
     starredMessages: 'Starred messages',
   },
 
+  presence: {
+    online: 'Online',
+    lastSeenNow: 'Last seen just now',
+    lastSeenMinutes: {
+      one: 'Last seen {count} minute ago',
+      other: 'Last seen {count} minutes ago',
+    },
+    lastSeenHours: { one: 'Last seen {count} hour ago', other: 'Last seen {count} hours ago' },
+    lastSeenDays: { one: 'Last seen {count} day ago', other: 'Last seen {count} days ago' },
+    lastSeenMonths: { one: 'Last seen {count} month ago', other: 'Last seen {count} months ago' },
+    lastSeenYears: { one: 'Last seen {count} year ago', other: 'Last seen {count} years ago' },
+  },
   chat: {
     title: 'Chat',
-    online: 'Online',
     typing: 'typing…',
     editing: 'Editing',
     correcting: 'Correcting',
@@ -730,7 +741,7 @@ export const en = {
     incognito: 'Browse incognito',
     incognitoBody: 'You won’t appear in their viewers.',
     hideOnline: 'Hide when I’m online',
-    hideOnlineBody: 'You can still see theirs.',
+    hideOnlineBody: 'Hides your green dot and when you were last here. You can still see theirs.',
     shareLocation: 'Share rough location',
     shareLocationBody: 'Others see a distance bucket, never a point.',
     activityMap: 'Show my activity map',
