@@ -2,6 +2,7 @@ import {
   ERROR_CODES,
   aggregateId,
   periodKeys,
+  wornCosmetic,
   type Leaderboard,
   type LeaderboardEntry,
   type PeriodType,
@@ -131,7 +132,16 @@ export async function getLeaderboard(
     .collection<Profile>(COLLECTIONS.profiles)
     .find(
       { _id: { $in: top.map((row) => row.userId) }, deletedAt: { $exists: false } },
-      { projection: { handle: 1, displayName: 1, avatarUrl: 1, streak: 1 } },
+      {
+        projection: {
+          handle: 1,
+          displayName: 1,
+          avatarUrl: 1,
+          streak: 1,
+          cosmetics: 1,
+          equipped: 1,
+        },
+      },
     )
     .toArray()
   const byId = new Map(profiles.map((p) => [p._id, p]))
@@ -163,6 +173,10 @@ export async function getLeaderboard(
       isViewer: row.userId === viewerId,
     }
     if (profile.avatarUrl !== undefined) entry.avatarUrl = profile.avatarUrl
+    const frame = wornCosmetic(profile.equipped, profile.cosmetics ?? [], 'frame')
+    const title = wornCosmetic(profile.equipped, profile.cosmetics ?? [], 'title')
+    if (frame?.tone) entry.frame = frame.tone
+    if (title) entry.title = title.id
     entries.push(entry)
   }
 

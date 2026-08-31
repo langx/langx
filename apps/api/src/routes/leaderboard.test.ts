@@ -535,6 +535,148 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
     })
   })
 
+  describe('cosmetics', () => {
+    async function buy(user: SignedUpUser, sku: string) {
+      return app.inject({
+        method: 'POST',
+        url: '/me/wallet/purchase',
+        headers: { cookie: user.cookie },
+        payload: { sku },
+      })
+    }
+
+    /**
+     * The gate, and the reason it is checked at all: `frame.aurora` is the one
+     * item money alone cannot reach. A balance far past its price must still
+     * be refused.
+     */
+    it('refuses a gated cosmetic to somebody who has only the token for it', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 200_000,
+        refId: 'gate-test-rich',
+      })
+
+      const response = await buy(user, 'frame.aurora')
+      expect(response.statusCode, response.body).toBe(400)
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.cosmetics ?? []).not.toContain('frame.aurora')
+      // Refused, not charged.
+      expect(profile?.tokenSpent ?? 0).toBe(0)
+    })
+
+    it('sells it once both halves of the gate are met', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 200_000,
+        refId: 'gate-test-earned',
+      })
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'streak.longest': 400 } })
+      // The correction half, counted from real rows rather than a field.
+      await handle.db.collection(COLLECTIONS.postCorrections).insertMany(
+        Array.from({ length: 5000 }, (_, i) => ({
+          postId: `post-${i}`,
+          authorId: user.userId,
+          corrected: 'x',
+          createdAt: new Date(),
+        })),
+      )
+
+      const response = await buy(user, 'frame.aurora')
+      expect(response.statusCode, response.body).toBe(200)
+    })
+
+    it('refuses a half-met gate — every condition, not any of them', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 200_000,
+        refId: 'gate-test-half',
+      })
+      // A year-long streak, but nothing taught.
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { 'streak.longest': 400 } })
+
+      expect((await buy(user, 'frame.aurora')).statusCode).toBe(400)
+    })
+
+    it('wears only what is owned', async () => {
+      const user = await newUser()
+      const refuse = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { equipped: { frame: 'frame.gold' } },
+      })
+      expect(refuse.statusCode, refuse.body).toBe(400)
+
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 5000,
+        refId: 'equip-test',
+      })
+      expect((await buy(user, 'frame.slate')).statusCode).toBe(200)
+
+      const accept = await app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: { equipped: { frame: 'frame.slate' } },
+      })
+      expect(accept.statusCode, accept.body).toBe(200)
+    })
+
+    /**
+     * The two slots are written independently, so a frame change must not
+     * clear a title — which a `$set` of the whole object would do.
+     */
+    it('changes one slot without clearing the other', async () => {
+      const user = await newUser()
+      await awardTokens(handle.db, {
+        userId: user.userId,
+        kind: 'adjustment',
+        amount: 30_000,
+        refId: 'equip-slots',
+      })
+      await buy(user, 'frame.slate')
+      await buy(user, 'title.beginner')
+
+      const patch = (equipped: Record<string, string | null>) =>
+        app.inject({
+          method: 'PATCH',
+          url: '/profiles/me',
+          headers: { cookie: user.cookie },
+          payload: { equipped },
+        })
+
+      await patch({ title: 'title.beginner' })
+      await patch({ frame: 'frame.slate' })
+
+      const profile = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(profile?.equipped).toEqual({ title: 'title.beginner', frame: 'frame.slate' })
+
+      // `null` clears a slot and leaves the other alone.
+      await patch({ frame: null })
+      const cleared = await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .findOne({ _id: user.userId })
+      expect(cleared?.equipped).toEqual({ title: 'title.beginner' })
+    })
+  })
+
   describe('badges', () => {
     async function badgesOf(user: SignedUpUser) {
       const response = await app.inject({

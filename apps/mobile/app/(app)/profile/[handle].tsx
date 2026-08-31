@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { countryFlag, getCountry } from '@langx/shared'
+import { countryFlag, getCountry, wornCosmetic } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native'
@@ -16,6 +16,7 @@ import {
 } from '../../../src/api/queries'
 import { ActivityMap } from '../../../src/components/ActivityMap'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
 import { LevelBars } from '../../../src/components/ui/LevelBars'
 import { PhotoGallery } from '../../../src/components/PhotoGallery'
@@ -200,8 +201,17 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.hero}>
-        <Avatar url={user.avatarUrl} name={user.displayName} size={84} online={user.isOnline} />
-        <Text style={styles.name}>{user.displayName}</Text>
+        <Avatar
+          url={user.avatarUrl}
+          name={user.displayName}
+          size={84}
+          frame={wornCosmetic(user.equipped, user.cosmetics ?? [], 'frame')?.tone}
+          online={user.isOnline}
+        />
+        <View style={styles.nameRow}>
+          <Text style={styles.name}>{user.displayName}</Text>
+          <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
+        </View>
         {/*
           How long the account has existed, next to who it says it is: the two
           questions someone asks about a stranger who just messaged them are
@@ -428,6 +438,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   iconButton: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
   iconPressed: { opacity: 0.6 },
   hero: { alignItems: 'center', paddingTop: spacing.sm },
+  nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6, justifyContent: 'center' },
   name: { ...font.heading, color: colors.text, fontSize: 24, marginTop: 12 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
   meta: { color: colors.textMuted, fontSize: 14, marginTop: 8, textAlign: 'center' },

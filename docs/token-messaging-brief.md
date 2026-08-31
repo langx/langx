@@ -82,9 +82,14 @@ that damages trust.
 - Weekly, monthly, yearly and all-time leaderboards.
 - Spend tokens on a **streak freeze** (rescues one missed day), on **filling in
   a missed day** on your activity map (300 tokens, last 14 days, two a month),
-  and on **cosmetic frames and titles**. That is the complete list of things to spend
-  on, and it is complete on purpose: if tokens could buy a Pro feature, farming
-  tokens would become a substitute for subscribing.
+  and on **cosmetic frames and titles** — ten of each, worn one at a time. That
+  is the complete list of things to spend on, and it is complete on purpose: if
+  tokens could buy a Pro feature, farming tokens would become a substitute for
+  subscribing.
+- One frame, **Aurora**, cannot be bought at any balance: it needs a 365-day
+  streak _and_ 5,000 corrections written. Say it as an achievement, never as a
+  premium tier — the difference is that everybody can see the requirement and
+  nobody can pay past it.
 
 ## Subscribing: what Pro includes, and what it cannot
 

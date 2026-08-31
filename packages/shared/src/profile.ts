@@ -151,6 +151,13 @@ export const updateProfileSchema = z
     interests: interestsSchema,
     city: z.string().trim().min(1).max(CITY_MAX_LENGTH),
     timezone: z.string().trim().min(1),
+    /**
+     * Which owned cosmetic to wear. A slot set to `null` clears it.
+     *
+     * Ownership is *not* checked here — a schema cannot see the profile — so
+     * `updateProfile` refuses an id the caller does not own.
+     */
+    equipped: z.object({ frame: z.string().nullable(), title: z.string().nullable() }).partial(),
     settings: z
       .object({
         discoverable: z.boolean(),

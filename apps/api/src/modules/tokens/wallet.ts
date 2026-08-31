@@ -4,6 +4,7 @@ import {
   STREAK_RESTORE_SKU,
   TOKEN_RULES,
   findCosmetic,
+  meetsRequirement,
   localDayKey,
   periodKeys,
   shiftDayKey,
@@ -24,6 +25,7 @@ import {
   streakFromDays,
   type StreakDay,
 } from './streakDays'
+import { countCorrectionsWritten } from './corrections'
 import { readAggregates, type TokenLedgerEntry } from './ledger'
 
 export function walletOf(profile: Profile, earned: number): Wallet {
@@ -34,6 +36,7 @@ export function walletOf(profile: Profile, earned: number): Wallet {
     balance: earned - spent,
     streakFreezes: profile.streakFreezes ?? 0,
     owned: profile.cosmetics ?? [],
+    ...(profile.equipped ? { equipped: profile.equipped } : {}),
   }
 }
 
@@ -85,6 +88,30 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
   if (!isFreeze && (profile.cosmetics ?? []).includes(sku)) {
     throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'You already own this item')
   }
+
+  /*
+   * A condition beyond the price, in the same shape as the two checks above
+   * it: a pre-check that throws, mirrored where it can be inside the atomic
+   * filter below.
+   *
+   * `streak.longest` lives on the profile and is re-checked atomically.
+   * Corrections are counted from the ledger and cannot be — but both numbers
+   * only ever grow, so a value read a moment ago can only be an *under*
+   * estimate. The check can refuse a purchase that would now succeed; it can
+   * never let one through that should not.
+   */
+  if (cosmetic?.requires) {
+    const corrections = cosmetic.requires.corrections
+      ? await countCorrectionsWritten(db, userId)
+      : 0
+    const progress = { longestStreak: profile.streak?.longest ?? 0, corrections }
+    if (!meetsRequirement(cosmetic.requires, progress)) {
+      throw new ApiError(
+        ERROR_CODES.VALIDATION_FAILED,
+        `${sku} has to be earned before it can be bought`,
+      )
+    }
+  }
   if (isFreeze && (profile.streakFreezes ?? 0) >= TOKEN_RULES.sinks.maxBankedStreakFreezes) {
     throw new ApiError(
       ERROR_CODES.VALIDATION_FAILED,
@@ -106,6 +133,12 @@ export async function purchase(db: Db, userId: string, sku: string): Promise<Pur
       ...(isFreeze
         ? { streakFreezes: { $not: { $gte: TOKEN_RULES.sinks.maxBankedStreakFreezes } } }
         : { cosmetics: { $ne: sku } }),
+      // The half of the gate that is a field on this document, re-checked
+      // where it counts. The correction count is not one, so it stays a
+      // pre-check — see above for why that is safe.
+      ...(cosmetic?.requires?.longestStreak !== undefined
+        ? { 'streak.longest': { $gte: cosmetic.requires.longestStreak } }
+        : {}),
     },
     grant,
     { returnDocument: 'after' },

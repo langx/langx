@@ -1,13 +1,16 @@
 import { Image, Text, View } from 'react-native'
 // `layout` stays a direct import: it is scheme-independent, and a default
 // parameter value is evaluated before any hook could have run.
-import { layout, makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
+import { frameColors, layout, makeStyles, useTheme, type ThemeColors } from '../../lib/theme'
+import type { CosmeticTone } from '@langx/shared'
 
 interface AvatarProps {
   url?: string | undefined
   name: string
   size?: number
   online?: boolean
+  /** A cosmetic tone from `COSMETICS`. Omitted means no frame. */
+  frame?: CosmeticTone | undefined
 }
 
 /**
@@ -40,13 +43,26 @@ function initialsOf(name: string): string {
  * accounts in a fresh install have no avatar, and a wall of identical grey
  * squares makes a discovery list unreadable.
  */
-export function Avatar({ url, name, size = layout.avatar, online = false }: AvatarProps) {
-  const { colors } = useTheme()
+export function Avatar({ url, name, size = layout.avatar, online = false, frame }: AvatarProps) {
+  const { colors, scheme } = useTheme()
   const styles = useStyles()
   const dimension = { borderRadius: size / 2, height: size, width: size }
   const fill = avatarFill(colors, name)
 
-  return (
+  /*
+   * The ring is a *wrapper*, not a border on the avatar itself.
+   *
+   * A `borderWidth` here would shrink the photo inside the same box and push
+   * the online dot — which is positioned against this view at `bottom/end: 0` —
+   * inwards by the ring's width. Wrapping keeps the inner view exactly `size`,
+   * so every one of the fourteen call sites keeps the avatar it asked for and
+   * the dot stays on the edge of the face rather than of the jewellery.
+   *
+   * Width scales with the avatar, floored at 2: leaderboard rows draw at 36px,
+   * where a proportional ring would be a hairline nobody could name.
+   */
+  const ringWidth = frame ? Math.max(2, Math.round(size * 0.055)) : 0
+  const inner = (
     // Sized rather than left to stretch: the online dot is positioned
     // absolutely against this view, and a parent with no dimensions of its own
     // fills the row instead, dropping the dot wherever that ends up.
@@ -68,6 +84,23 @@ export function Avatar({ url, name, size = layout.avatar, online = false }: Avat
         </View>
       )}
       {online ? <View style={styles.dot} /> : null}
+    </View>
+  )
+
+  if (!frame) return inner
+  return (
+    <View
+      style={{
+        alignItems: 'center',
+        borderColor: frameColors[scheme][frame],
+        borderRadius: (size + ringWidth * 4) / 2,
+        borderWidth: ringWidth,
+        height: size + ringWidth * 4,
+        justifyContent: 'center',
+        width: size + ringWidth * 4,
+      }}
+    >
+      {inner}
     </View>
   )
 }

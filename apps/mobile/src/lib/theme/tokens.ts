@@ -240,4 +240,40 @@ export const font = {
  * single biggest thing that makes an Expo web build look like a phone app
  * someone forgot to finish.
  */
+/**
+ * A frame's ring colour, per tone, per scheme.
+ *
+ * The only place a cosmetic hex lives. `packages/shared` names the tone and
+ * cannot know the scheme — the same frame has to read on white and on near
+ * black, and a metallic especially does not survive being used unchanged on
+ * both. Dark values are lifted rather than inverted: a frame is jewellery, and
+ * it should stay the colour it was sold as.
+ */
+export const frameColors = {
+  light: {
+    slate: '#8a9199',
+    bronze: '#a9713e',
+    silver: '#9aa3ab',
+    gold: '#d4a017',
+    sky: '#3b8ef6',
+    mint: '#12a37a',
+    ember: '#e2662c',
+    violet: '#7a5af8',
+    midnight: '#2b3350',
+    aurora: '#12b5a8',
+  },
+  dark: {
+    slate: '#9aa1a9',
+    bronze: '#c98c53',
+    silver: '#c2c9d0',
+    gold: '#f0bd3a',
+    sky: '#7cb0f9',
+    mint: '#34c796',
+    ember: '#ff8a52',
+    violet: '#9b83ff',
+    midnight: '#7d8ac4',
+    aurora: '#42d8c8',
+  },
+} as const
+
 export const layout = { maxWidth: 720, avatar: 48, avatarLarge: 96 } as const
