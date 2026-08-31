@@ -250,13 +250,21 @@ export default function FiltersScreen() {
           />
         </View>
 
+        {/*
+          Two sections where there used to be one, because the paywall no
+          longer runs through the middle of the pair. Naming a gender is a way
+          of searching for other people and stays paid; matching your own is a
+          comfort setting and is free — see `DISCOVERY_PRO_FILTER_KEYS`. They
+          are still mutually exclusive, so each one clears the other, and
+          clearing is never a paid action even when the thing being cleared is.
+        */}
         <View style={styles.section}>
           <SectionTitle title={t('filters.gender')} locked={!isPro} />
           <View style={styles.row}>
             <Chip
               label={t('common.any')}
-              selected={!filters.gender && !filters.onlyMyGender}
-              onPress={() => set({ gender: undefined, onlyMyGender: undefined }, true)}
+              selected={!filters.gender}
+              onPress={() => set({ gender: undefined }, true)}
             />
             {GENDERS.filter((gender) => gender !== 'undisclosed').map((gender) => (
               <Chip
@@ -275,6 +283,9 @@ export default function FiltersScreen() {
               />
             ))}
           </View>
+        </View>
+
+        <View style={styles.section}>
           <View style={styles.switchRow}>
             <View style={styles.switchText}>
               <Text style={styles.switchLabel}>{t('filters.onlyMyGender')}</Text>
@@ -291,7 +302,7 @@ export default function FiltersScreen() {
               value={filters.onlyMyGender === true}
               disabled={!myGender || myGender === 'undisclosed'}
               onValueChange={(value) =>
-                set({ onlyMyGender: value ? true : undefined, gender: undefined }, true)
+                set({ onlyMyGender: value ? true : undefined, gender: undefined })
               }
             />
           </View>

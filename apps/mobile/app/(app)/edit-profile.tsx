@@ -7,10 +7,8 @@ import {
   INTEREST_SUGGESTIONS,
   MAX_INTERESTS,
   PLAN_LIMITS,
-  GENDERS,
   getLanguage,
   type LanguageLevel,
-  type Gender,
 } from '@langx/shared'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
@@ -20,6 +18,7 @@ import {
   useEffectiveTier,
   useMe,
   useRemovePhoto,
+  useDiscloseGender,
   useUpdateProfile,
   useUploadAvatar,
   type MeProfile,
@@ -58,6 +57,12 @@ function contentTypeFor(uri: string): string {
  * once the profile exists means its initialisers see the real values, which is
  * what a `key`-based remount would buy without the indirection.
  */
+/**
+ * What can be disclosed after onboarding. `undisclosed` is missing on purpose:
+ * it is the state being left, and the server has no way back to it.
+ */
+const DISCLOSABLE_GENDERS = ['female', 'male', 'other'] as const
+
 export default function EditProfileScreen() {
   const styles = useStyles()
 
@@ -79,6 +84,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const names = useDisplayNames()
 
   const update = useUpdateProfile()
+  const disclose = useDiscloseGender()
   const uploadAvatar = useUploadAvatar()
   const addPhoto = useAddPhoto()
   const removePhoto = useRemovePhoto()
@@ -87,7 +93,6 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
   const [bio, setBio] = useState(profile?.bio ?? '')
   const [city, setCity] = useState(profile?.city ?? '')
   const [interests, setInterests] = useState<string[]>(profile?.interests ?? [])
-  const [gender, setGender] = useState<Gender>(profile?.gender ?? 'undisclosed')
   const [native, setNative] = useState<string[]>(profile?.nativeLanguages.map((l) => l.code) ?? [])
   const [learning, setLearning] = useState<{ code: string; level: LanguageLevel }[]>(
     profile?.learning.map((l) => ({ code: l.code, level: l.level })) ?? [],
@@ -126,6 +131,27 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
     )
   }
 
+  /**
+   * Confirmed rather than applied straight from the tap. It is the only
+   * irreversible control on this screen — every other field here can be typed
+   * over — and a chip is a very small thing to make a permanent choice with.
+   */
+  async function discloseAs(gender: (typeof DISCLOSABLE_GENDERS)[number]) {
+    const ok = await confirmAlert({
+      title: t('editProfile.genderConfirmTitle'),
+      message: t('editProfile.genderConfirmBody', { gender: genderLabel(t, gender) }),
+      confirmLabel: t('common.continue'),
+    })
+    if (!ok) return
+    try {
+      await disclose.mutateAsync(gender)
+      showToast(t('editProfile.saved'))
+    } catch (caught) {
+      void caught
+      await showAlert(t('editProfile.saveFailed'))
+    }
+  }
+
   async function save(): Promise<void> {
     setError(undefined)
     if (native.some((code) => learningCodes.includes(code))) {
@@ -140,7 +166,6 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
       await update.mutateAsync({
         displayName: displayName.trim(),
         bio: bio.trim(),
-        gender,
         ...(city.trim() ? { city: city.trim() } : {}),
         interests,
         nativeLanguages: native.map((code) => ({ code })),
@@ -243,17 +268,36 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
         })}
       </View>
 
+      {/*
+        Gender is set once — see `updateProfileSchema`, which excludes it for
+        the same reason it excludes `birthDate`. So this is two screens in one:
+        the question, for anybody who skipped it at onboarding, and a plain
+        statement of the answer for everybody else. It is never a picker with
+        the current value pre-selected, because that shape promises an edit
+        the server will refuse.
+      */}
       <Text style={styles.label}>{t('editProfile.gender')}</Text>
-      <View style={styles.row}>
-        {GENDERS.map((option) => (
-          <Chip
-            key={option}
-            label={genderLabel(t, option)}
-            selected={gender === option}
-            onPress={() => setGender(option)}
-          />
-        ))}
-      </View>
+      {profile.gender === 'undisclosed' ? (
+        <>
+          <View style={styles.row}>
+            {DISCLOSABLE_GENDERS.map((option) => (
+              <Chip
+                key={option}
+                label={genderLabel(t, option)}
+                onPress={() => void discloseAs(option)}
+              />
+            ))}
+          </View>
+          <Text style={styles.hint}>{t('editProfile.genderOnce')}</Text>
+        </>
+      ) : (
+        <>
+          <View style={styles.row}>
+            <Chip label={genderLabel(t, profile.gender)} selected />
+          </View>
+          <Text style={styles.hint}>{t('editProfile.genderLocked')}</Text>
+        </>
+      )}
 
       <Text style={styles.label}>{t('editProfile.languages')}</Text>
       {/* v3 draws the level as bars inside a tinted pill; the words survive as

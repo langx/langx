@@ -664,6 +664,10 @@ export const fr: Localized<EnMessages> = {
     country: 'Pays',
     interests: 'Centres d’intérêt',
     gender: 'Genre',
+    genderOnce: 'Tu peux le définir une fois. Ensuite, impossible de le changer.',
+    genderLocked: 'Défini à ton inscription. Celui-ci ne peut pas être changé.',
+    genderConfirmTitle: 'Définir ton genre ?',
+    genderConfirmBody: 'Ton profil indiquera {gender}. Impossible de le changer ensuite.',
     languages: 'Langues',
     editNative: 'Modifier les langues maternelles',
     editLearning: 'Modifier les langues apprises',
@@ -1000,7 +1004,7 @@ export const fr: Localized<EnMessages> = {
     welcomePackBody:
       'Un cadre de profil et deux gels de série pour commencer. {plan} apporte la panoplie complète.',
     advancedFilters: 'Filtres avancés',
-    advancedFiltersBody: 'Cherche par genre et par ville.',
+    advancedFiltersBody: 'Cherche un genre précis, et par ville.',
     translationQuota: 'Traduis autant que nécessaire',
     translationQuotaBody:
       '{count} traductions par jour — bien plus qu’une conversation n’en utilise.',

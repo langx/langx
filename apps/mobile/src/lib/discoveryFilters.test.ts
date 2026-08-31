@@ -36,14 +36,24 @@ describe('withoutProFilters', () => {
       ageMin: 25,
       ageMax: 40,
       country: 'US',
+      onlyMyGender: true,
     })
   })
 
   it('drops exactly the paid ones', () => {
     const free = withoutProFilters(everything)
     expect(free.gender).toBeUndefined()
-    expect(free.onlyMyGender).toBeUndefined()
     expect(free.city).toBeUndefined()
+  })
+
+  /**
+   * The regression this function is shaped to cause. It is an allow-list, so a
+   * filter that moves from paid to free is dropped until someone adds it here
+   * — and dropping it just shows a wider list, which looks like the filter
+   * matched everybody rather than like a bug.
+   */
+  it('keeps only-my-gender, which is free now', () => {
+    expect(withoutProFilters({ onlyMyGender: true }).onlyMyGender).toBe(true)
   })
 
   /** 18 is the slider floor, and `ageMin: 18` must survive a falsiness check. */
@@ -59,8 +69,11 @@ describe('hasProFilters', () => {
 
   it('is true for each paid filter on its own', () => {
     expect(hasProFilters({ gender: 'female' })).toBe(true)
-    expect(hasProFilters({ onlyMyGender: true })).toBe(true)
     expect(hasProFilters({ city: 'Istanbul' })).toBe(true)
+  })
+
+  it('is false for only-my-gender, which no longer costs anything', () => {
+    expect(hasProFilters({ onlyMyGender: true })).toBe(false)
   })
 })
 

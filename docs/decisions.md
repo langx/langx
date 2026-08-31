@@ -931,11 +931,54 @@ It is inert when the viewer's own gender is `undisclosed`: "people like me"
 cannot mean "people who also declined to say", and narrowing to that group
 would be a worse answer than not narrowing.
 
-**It is paid, deliberately.** It was raised as a question — it is the one filter
-people use for safety rather than preference, and safety behind a paywall reads
-differently from convenience behind one — and the answer was to keep it paid — it is on Fluent. It
-is a gender filter, the server gates those together, and splitting one of them
-out would make the paywall's rule harder to explain than it is worth.
+**It is free.** It was paid until now, and the reasoning that kept it paid was
+that it is the one filter people use for safety rather than preference — so
+gating it read differently from gating a convenience. That argument is
+retired rather than amended, because keeping the safety framing while making
+the filter free would leave the repo saying, in writing, that safety used to
+be behind the paywall.
+
+The real objection is smaller and harder to answer. This is the only filter
+that can _never_ widen a result set — it takes no value and points at nobody,
+it only narrows what you already see. So the account most likely to reach for
+it is one that is being shown people it did not want to be shown, and the
+account most likely to hit the paywall is the one already looking at too few
+people. What it learns there is that the app is empty. Selling a filter that
+makes a small pool smaller is selling scarcity back to the person suffering
+from it.
+
+That leaves the paywall with a rule that is easier to explain than the one it
+replaces, not harder: **a paid filter names somebody else's attribute; a free
+one names only your own.** `gender` and `city` take a value and aim it at
+other people. `onlyMyGender` is resolved from the caller's own profile and is
+inert for anybody who has not disclosed one — there is no third party in it.
+
+## Gender is set once, like a birth date
+
+`birthDate` has never been in `updateProfileSchema`. `gender` was, and that was
+the half of the rule that got left open.
+
+Both are inputs to somebody _else's_ discovery filter: `discoverProfiles`
+matches on `gender` directly and on a `birthDate` band. A field that decides
+whose results you appear in is not a field you can retype. Editing it is not
+editing your profile, it is stepping in and out of other people's searches at
+will — and a filter whose subjects can move between its buckets on a whim is
+not a filter, it is a suggestion.
+
+There is one move left, and it needs its own route. `undisclosed` → a real
+value, once, through `POST /profiles/me/gender`. Without it the lock would be
+a trap: `onlyMyGender` is deliberately inert for an undisclosed viewer, and it
+is free now, so everybody who skipped the question at onboarding would be
+permanently unable to use it — while the filter screen went on telling them, in
+eight languages, to add their gender to their profile.
+
+It is one-way in both directions that matter. `discloseGenderSchema` has no
+`undisclosed` member, so there is nothing to go back to; and the repository's
+filter matches only a profile that is _still_ `undisclosed`, so the value it
+writes is the last one that field will hold. Nobody can cycle. The condition
+lives in the update's filter rather than in a read before it, for the reason
+every other guard here does — two taps that race would both pass a
+check-then-write, and the second would win.
 
 ## Countries are a compile-time table, like languages
 

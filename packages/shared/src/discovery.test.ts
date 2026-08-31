@@ -38,8 +38,21 @@ describe('DISCOVERY_PRO_FILTER_KEYS', () => {
    * request from a screen that offered it, and every other test here would
    * still pass.
    */
-  it('is the two gender filters and city, and nothing else', () => {
-    expect([...DISCOVERY_PRO_FILTER_KEYS].sort()).toEqual(['city', 'gender', 'onlyMyGender'])
+  it('is naming a gender and naming a city, and nothing else', () => {
+    expect([...DISCOVERY_PRO_FILTER_KEYS].sort()).toEqual(['city', 'gender'])
+  })
+
+  /**
+   * The line the list is drawn on: a paid filter names somebody else's
+   * attribute, a free one names only your own. `onlyMyGender` takes no value
+   * and is resolved from the caller's own profile, so there is no third party
+   * in it — and it is the one filter that can only ever make an already-small
+   * pool smaller, which is not a thing to sell to somebody being shown too few
+   * people already.
+   */
+  it('leaves only-my-gender free, unlike naming a gender', () => {
+    expect(DISCOVERY_PRO_FILTER_KEYS as readonly string[]).not.toContain('onlyMyGender')
+    expect(DISCOVERY_PRO_FILTER_KEYS as readonly string[]).toContain('gender')
   })
 
   it('leaves fit filters free — level, age and country are how a match is found', () => {
