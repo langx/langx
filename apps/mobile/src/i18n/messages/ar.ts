@@ -968,6 +968,7 @@ export const ar: Localized<EnMessages> = {
     locked: 'مقفل',
     lockedAccessibility: '‏{title}، مقفل',
     lockedStreak: '‏{current} من {threshold} يوم',
+    lockedNeeds: 'اشترِ {title} أولًا',
     lockedCorrections: '‏{current} من {threshold} تصحيح',
     owned: 'مملوك',
     frameKind: 'إطار الملف',

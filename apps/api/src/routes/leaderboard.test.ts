@@ -130,6 +130,27 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
     })
   }
 
+  /**
+   * Grants every rung below `sku` directly, the way a welcome pack does.
+   * Tests about the price, the earned gate or the race are not about the
+   * ladder, and buying nine frames to reach the tenth would bury what each of
+   * them is actually asserting.
+   */
+  async function ownLadderBelow(userId: string, sku: string) {
+    const target = COSMETICS.find((c) => c.id === sku)!
+    const ladder = COSMETICS.filter((c) => c.kind === target.kind)
+    const below = ladder
+      .slice(
+        0,
+        ladder.findIndex((c) => c.id === sku),
+      )
+      .map((c) => c.id)
+    if (below.length === 0) return
+    await handle.db
+      .collection<Profile>(COLLECTIONS.profiles)
+      .updateOne({ _id: userId }, { $set: { cosmetics: below } })
+  }
+
   beforeAll(async () => {
     replSet = await MongoMemoryReplSet.create({ replSet: { count: 1 } })
     handle = await connectToDatabase(replSet.getUri(), 'langx_faz9_test')
@@ -589,6 +610,9 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
           createdAt: new Date(),
         })),
       )
+      // Aurora sits at the top of the frame ladder as well as behind the
+      // earned gate; this test is about the gate.
+      await ownLadderBelow(user.userId, 'frame.aurora')
 
       const response = await buy(user, 'frame.aurora')
       expect(response.statusCode, response.body).toBe(200)
@@ -926,6 +950,9 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
     it('refuses a purchase the balance cannot cover', async () => {
       const user = await newUser()
       const priciest = COSMETICS.reduce((a, b) => (a.price > b.price ? a : b))
+      // Everything below it granted, so the balance is the only thing left in
+      // the way — otherwise this would pass on the ladder's message instead.
+      await ownLadderBelow(user.userId, priciest.id)
       const response = await buy(user, priciest.id)
       expect(response.statusCode).toBe(400)
       expect(response.json<{ message: string }>().message).toContain('Not enough token')
@@ -941,9 +968,84 @@ describe('Faz 9 — daily pool, leaderboards and token sinks', () => {
         refId: 'sink-race',
       })
 
+      await ownLadderBelow(user.userId, frame.id)
+
       const responses = await Promise.all(Array.from({ length: 5 }, () => buy(user, frame.id)))
       expect(responses.filter((r) => r.statusCode === 200)).toHaveLength(1)
       expect((await wallet(user)).spent).toBe(frame.price)
+    })
+
+    /**
+     * The ladder. The catalogue's order is the rule now — each item needs the
+     * one below it in the same kind — so the prestige rows cannot be reached
+     * by saving up and skipping the middle. The total sink is unchanged; what
+     * changed is that you cannot buy the top of it first.
+     */
+    describe('the ladder', () => {
+      async function rich(sku: string) {
+        const user = await newUser()
+        await awardTokens(handle.db, {
+          userId: user.userId,
+          kind: 'adjustment',
+          amount: 500_000,
+          refId: `ladder-${sku}-${user.userId}`,
+        })
+        return user
+      }
+
+      it('sells the first rung of a ladder to anybody who can pay', async () => {
+        const user = await rich('frame.slate')
+        expect((await buy(user, 'frame.slate')).statusCode).toBe(200)
+      })
+
+      it('refuses a rung whose predecessor is missing, and charges nothing', async () => {
+        const user = await rich('frame.gold')
+
+        const response = await buy(user, 'frame.gold')
+        expect(response.statusCode, response.body).toBe(400)
+        expect(response.json<{ message: string }>().message).toContain('frame.ember')
+
+        const profile = await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .findOne({ _id: user.userId })
+        expect(profile?.cosmetics ?? []).not.toContain('frame.gold')
+        expect(profile?.tokenSpent ?? 0).toBe(0)
+      })
+
+      it('sells it the moment the rung below is owned', async () => {
+        const user = await rich('frame.gold')
+        await ownLadderBelow(user.userId, 'frame.gold')
+        expect((await buy(user, 'frame.gold')).statusCode).toBe(200)
+      })
+
+      it('keeps frames and titles as two ladders, not one queue', async () => {
+        const user = await rich('title.beginner')
+        // No frames owned at all, and the first title is still buyable.
+        expect((await buy(user, 'title.beginner')).statusCode).toBe(200)
+      })
+
+      /**
+       * The reason the condition is in the update's filter and not only in the
+       * read before it: fired together, the second buy reads a profile that
+       * does not own the first rung yet. Without the filter both would land
+       * and the ladder would be climbable two rungs at a time by tapping fast.
+       */
+      it('cannot be climbed two rungs at once by firing both together', async () => {
+        const user = await rich('frame.bronze')
+
+        const [slate, bronze] = await Promise.all([
+          buy(user, 'frame.slate'),
+          buy(user, 'frame.bronze'),
+        ])
+
+        expect(slate.statusCode, slate.body).toBe(200)
+        expect(bronze.statusCode, bronze.body).toBe(400)
+
+        const profile = await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .findOne({ _id: user.userId })
+        expect(profile?.cosmetics ?? []).toEqual(['frame.slate'])
+      })
     })
 
     it('rejects an unknown sku', async () => {

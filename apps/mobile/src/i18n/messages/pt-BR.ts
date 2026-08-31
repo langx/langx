@@ -806,6 +806,7 @@ export const ptBR: Localized<EnMessages> = {
     locked: 'Bloqueado',
     lockedAccessibility: '{title}, bloqueado',
     lockedStreak: '{current} de {threshold} dias',
+    lockedNeeds: 'Compre antes {title}',
     lockedCorrections: '{current} de {threshold} correções',
     owned: 'Você tem',
     frameKind: 'Moldura de perfil',

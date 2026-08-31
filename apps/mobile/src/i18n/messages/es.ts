@@ -811,6 +811,7 @@ export const es: Localized<EnMessages> = {
     locked: 'Bloqueado',
     lockedAccessibility: '{title}, bloqueado',
     lockedStreak: '{current} de {threshold} días',
+    lockedNeeds: 'Compra antes {title}',
     lockedCorrections: '{current} de {threshold} correcciones',
     owned: 'Tuyo',
     frameKind: 'Marco de perfil',

@@ -812,6 +812,7 @@ export const fr: Localized<EnMessages> = {
     locked: 'Verrouillé',
     lockedAccessibility: '{title}, verrouillé',
     lockedStreak: '{current} jours sur {threshold}',
+    lockedNeeds: 'Achète d’abord {title}',
     lockedCorrections: '{current} corrections sur {threshold}',
     owned: 'Acquis',
     frameKind: 'Cadre de profil',

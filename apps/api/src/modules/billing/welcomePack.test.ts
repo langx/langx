@@ -109,12 +109,16 @@ describe('grantWelcomePack', () => {
    * push: even with the latch lost, a second run cannot duplicate a cosmetic.
    */
   it('cannot duplicate a cosmetic somebody already bought with token', async () => {
-    const id = await seed({ cosmetics: ['frame.bronze'] })
+    // Derived from the pack rather than naming an id, so this keeps testing
+    // the behaviour when the pack's contents move.
+    const already = PRO_WELCOME_PACKS.pro.cosmetics[0]!
+    const id = await seed({ cosmetics: [already] })
     const result = await grantWelcomePack(handle.db, id, 'pro')
 
-    expect(result.cosmetics).not.toContain('frame.bronze')
+    expect(result.cosmetics).not.toContain(already)
     const profile = await read(id)
-    expect(profile?.cosmetics).toEqual(['frame.bronze'])
+    expect(profile?.cosmetics?.filter((c) => c === already)).toHaveLength(1)
+    expect(new Set(profile?.cosmetics)).toEqual(new Set(PRO_WELCOME_PACKS.pro.cosmetics))
   })
 
   /**

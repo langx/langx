@@ -1,6 +1,7 @@
 import {
   COSMETICS,
   meetsRequirement,
+  previousCosmetic,
   type CosmeticTone,
   STREAK_FREEZE_SKU,
   STREAK_RESTORE_SKU,
@@ -28,6 +29,15 @@ export interface StoreOffer {
   locked?: boolean
   /** What the lock is waiting for, so the row can draw progress. */
   requirement?: { current: number; threshold: number; kind: 'streak' | 'corrections' }
+  /**
+   * The rung below, when it is what is standing in the way. Its *title*, not
+   * its id: this is read by a person, and `frame.midnight` is not a sentence.
+   *
+   * Separate from `requirement` because there is no progress to draw — you own
+   * the thing below or you do not, and a bar that is either empty or gone is
+   * not a bar.
+   */
+  needs?: string
   /** Whether the balance covers the price. Separate from `owned`: an owned
    *  item is never buyable however much the balance is. */
   affordable: boolean
@@ -138,7 +148,19 @@ export function buildStoreOffers(input: StoreInput): StoreOffer[] {
     )
     if (item.tone) offer.tone = item.tone
 
-    if (item.requires && !offer.owned && !meetsRequirement(item.requires, progress)) {
+    /*
+     * The ladder is checked before the earned gate, and shown instead of it
+     * when both are unmet. `frame.aurora` is the only item with both, and
+     * "buy Midnight first" is the nearer and more actionable of the two
+     * answers — a year of streak means nothing while the rung below is
+     * missing.
+     */
+    const previous = previousCosmetic(item)
+    if (previous && !offer.owned && !input.owned.includes(previous.id)) {
+      offer.locked = true
+      offer.affordable = false
+      offer.needs = t(cosmeticKey(previous.id))
+    } else if (item.requires && !offer.owned && !meetsRequirement(item.requires, progress)) {
       offer.locked = true
       offer.affordable = false
       // The requirement furthest from being met is the one worth showing: it
