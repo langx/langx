@@ -51,6 +51,29 @@ export type QuotaStatus = z.infer<typeof quotaStatusSchema>
  * a conversation with holes in it is worse than not importing it. They come
  * first so the migration can bring the whole thread.
  */
+/**
+ * How many messages a conversation has to carry before a photo or a voice note
+ * can be sent into it. Counted across both people, not per sender.
+ *
+ * This is the one rule in the app with no exception anywhere: not for Pro, not
+ * for Polyglot, not for somebody you have talked to for a year and then
+ * started a new thread with. That is deliberate, and it is the point. A rule
+ * with a paid tier attached to it is a rule that says the behaviour is
+ * acceptable from customers, and the behaviour this exists to stop — an
+ * unsolicited photograph from a stranger — is not acceptable from anybody. It
+ * is also the only version that can be said in one sentence and be true.
+ *
+ * Five, because it is more than a greeting and fewer than a conversation. Two
+ * would be cleared by "hi" / "hi". Twenty would break the ordinary case of
+ * sending somebody a picture of the menu you are asking about.
+ *
+ * It does not replace blocking or reporting, and it stops nothing between
+ * people who have talked. What it removes is the *first* message being a
+ * photograph, which is the one nobody consented to and the one no amount of
+ * moderation can un-see.
+ */
+export const MEDIA_UNLOCKS_AFTER_MESSAGES = 5
+
 export const MESSAGE_TYPES = ['text', 'correction', 'image', 'audio'] as const
 export type MessageType = (typeof MESSAGE_TYPES)[number]
 

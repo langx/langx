@@ -15,7 +15,7 @@ import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { assertOwnBucket } from '../lib/assertOwnBucket'
 import { requireMember, requireVerifiedEmail } from '../middleware/requireAuth'
-import { assertConversationAccess } from '../modules/chat/access'
+import { assertConversationAccess, assertMediaUnlocked } from '../modules/chat/access'
 import { addPhoto, removePhoto, setAvatarUrl } from '../modules/profiles/profiles'
 
 const EXTENSION_BY_CONTENT_TYPE: Record<string, string> = {
@@ -95,6 +95,11 @@ export const mediaRoutes: FastifyPluginAsyncZod = async (app) => {
         request.body.conversationId,
         request.userId,
       )
+      // Before any URL is signed, and this is the only place that can stop the
+      // bytes: the client PUTs straight to the bucket and only then sends the
+      // message, so refusing at send time would refuse a message pointing at a
+      // photograph we had already stored.
+      await assertMediaUnlocked(app.mongo.db, conversation)
 
       const { kind, contentType } = request.body
       const allowed =

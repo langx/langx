@@ -472,6 +472,12 @@ export const fr: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Lire lentement',
     playAtNormalSpeed: 'Lire à vitesse normale',
+    mediaLockedTitle: 'Pas encore',
+    mediaLocked: {
+      one: 'Photos et messages vocaux après un message de plus.',
+      other: 'Photos et messages vocaux après {count} messages de plus.',
+    },
+    attachPhoto: 'Joindre une photo',
     copied: 'Copié',
     couldNotSend: 'Envoi impossible',
     mediaQuota: 'Tu as atteint la limite du jour pour les photos et les messages vocaux.',

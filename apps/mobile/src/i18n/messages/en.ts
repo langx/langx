@@ -504,6 +504,12 @@ export const en = {
     speedNormal: '1x',
     playSlowly: 'Play slowly',
     playAtNormalSpeed: 'Play at normal speed',
+    mediaLockedTitle: 'Not yet',
+    mediaLocked: {
+      one: 'Photos and voice notes unlock after one more message.',
+      other: 'Photos and voice notes unlock after {count} more messages.',
+    },
+    attachPhoto: 'Attach a photo',
     copied: 'Copied',
     couldNotSend: 'Could not send',
     mediaQuota: 'You’ve reached today’s limit for photos and voice messages.',

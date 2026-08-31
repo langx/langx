@@ -14,10 +14,10 @@ import { ApiError } from '../../lib/ApiError'
 import { assertMediaAllowed } from '../media/assertMedia'
 import { blockedUserIds } from '../moderation/blocks'
 import { awardForSend } from '../tokens/awards'
-import { assertConversationAccess } from './access'
+import { assertConversationAccess, assertMediaUnlocked } from './access'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
-import { toConversationView, type ConversationView } from './conversationView'
+import { mediaLockedFor, toConversationView, type ConversationView } from './conversationView'
 
 export interface SendResult {
   message: Message
@@ -98,7 +98,9 @@ async function recordMessage(
         updatedAt: message.createdAt,
         bothSpoke,
       },
-      ...(recipientId ? { $inc: { [`unread.${recipientId}`]: 1 } } : {}),
+      // Riding the write that was already happening. The media gate reads this
+      // and must not pay for a `countDocuments` on the send path.
+      $inc: { messageCount: 1, ...(recipientId ? { [`unread.${recipientId}`]: 1 } : {}) },
     },
     { returnDocument: 'after' },
   )
@@ -222,6 +224,10 @@ export async function sendMediaMessage(
   storagePublicBaseUrl: string | undefined,
 ): Promise<SendResult> {
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
+  // The belt to the upload URL's braces. A URL signed a moment before the
+  // fifth message was deleted would otherwise still land, and any future
+  // transport that forgets the first check lands here instead of nowhere.
+  await assertMediaUnlocked(db, conversation)
 
   // Shared with the feed — see `assertMediaAllowed`. The ceilings are the real
   // cost control, and there must be exactly one copy of them.
@@ -265,6 +271,13 @@ export interface MessagePage {
    * never fetches the conversation document on its own.
    */
   pinned: { messageId: string; byUserId: string; at: string } | null
+  /**
+   * How many more messages before an attachment is allowed here, or 0. On the
+   * page for the same reason `participants` and `pinned` are: the composer
+   * needs it before anything else has loaded, and the client never fetches the
+   * conversation document on its own.
+   */
+  mediaLockedFor: number
   /** Set only by `listMessagesAround`, so a client knows what to scroll to. */
   anchorId?: string
 }
@@ -325,6 +338,7 @@ export async function listMessages(
     // The thread header needs the counterpart even before anyone has replied,
     // and a one-sided thread has no message to read a partner id off.
     participants: conversation.participants,
+    mediaLockedFor: mediaLockedFor(conversation),
     pinned: conversation.pinned
       ? {
           messageId: conversation.pinned.messageId.toHexString(),
@@ -407,6 +421,7 @@ export async function listMessagesAround(
     nextCursor: hasOlder && oldest ? encodeDateIdCursor(oldest.createdAt, oldest._id) : null,
     prevCursor: hasNewer && newest ? encodeDateIdCursor(newest.createdAt, newest._id) : null,
     participants: conversation.participants,
+    mediaLockedFor: mediaLockedFor(conversation),
     pinned: conversation.pinned
       ? {
           messageId: conversation.pinned.messageId.toHexString(),

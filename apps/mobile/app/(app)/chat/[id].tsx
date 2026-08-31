@@ -151,6 +151,15 @@ export default function ChatScreen() {
   // Optional on `participants` too: the response is a bare cast, so an API
   // older than this field would throw here rather than fall back.
   const partnerId = messages.data?.pages[0]?.participants?.find((p) => p !== me.data?._id) ?? ''
+  /*
+   * How many more messages before an attachment is allowed here. Read off the
+   * live page, which `appendIncomingMessage` counts down, so the camera comes
+   * back on the message that unlocked it rather than on the next refetch.
+   *
+   * Disabled rather than hidden. A control that vanishes teaches nothing, and
+   * the whole value of this rule is that people know it is there.
+   */
+  const mediaLockedFor = messages.data?.pages[0]?.mediaLockedFor ?? 0
   const partners = useProfileCache(partnerId ? [partnerId] : [])
   const partner = partners[partnerId]
 
@@ -236,6 +245,13 @@ export default function ChatScreen() {
   }
 
   async function toggleRecording(): Promise<void> {
+    // Guarded at the microphone rather than at the send, because starting a
+    // recording somebody is not allowed to send is a worse answer than not
+    // starting one: they would speak, then be told.
+    if (mediaLockedFor > 0) {
+      await showAlert(t('chat.mediaLockedTitle'), t('chat.mediaLocked', { count: mediaLockedFor }))
+      return
+    }
     if (!recorder.isRecording) {
       const started = await recorder.start()
       if (!started && recorder.error) void showAlert(t('chat.microphoneTitle'), recorder.error)
@@ -897,12 +913,28 @@ export default function ChatScreen() {
             </View>
           ) : (
             <Pressable
-              onPress={() => void pickImage()}
+              accessibilityLabel={
+                mediaLockedFor > 0
+                  ? t('chat.mediaLocked', { count: mediaLockedFor })
+                  : t('chat.attachPhoto')
+              }
+              onPress={() =>
+                mediaLockedFor > 0
+                  ? void showAlert(
+                      t('chat.mediaLockedTitle'),
+                      t('chat.mediaLocked', { count: mediaLockedFor }),
+                    )
+                  : void pickImage()
+              }
               disabled={sendingMedia}
               hitSlop={8}
               style={styles.attach}
             >
-              <Feather name="camera" size={20} color={colors.textMuted} />
+              <Feather
+                name="camera"
+                size={20}
+                color={mediaLockedFor > 0 ? colors.textFaint : colors.textMuted}
+              />
             </Pressable>
           )}
           <TextInput

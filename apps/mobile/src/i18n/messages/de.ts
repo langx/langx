@@ -490,6 +490,12 @@ export const de: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Langsam abspielen',
     playAtNormalSpeed: 'Mit normaler Geschwindigkeit abspielen',
+    mediaLockedTitle: 'Noch nicht',
+    mediaLocked: {
+      one: 'Fotos und Sprachnachrichten gibt es nach einer weiteren Nachricht.',
+      other: 'Fotos und Sprachnachrichten gibt es nach {count} weiteren Nachrichten.',
+    },
+    attachPhoto: 'Foto anhängen',
     copied: 'Kopiert',
     couldNotSend: 'Konnte nicht gesendet werden',
     mediaQuota: 'Du hast das heutige Limit für Fotos und Sprachnachrichten erreicht.',

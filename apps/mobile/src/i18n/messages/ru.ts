@@ -541,6 +541,12 @@ export const ru: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Медленное воспроизведение',
     playAtNormalSpeed: 'Обычная скорость',
+    mediaLockedTitle: 'Пока нет',
+    mediaLocked: {
+      one: 'Фото и голосовые откроются ещё через одно сообщение.',
+      other: 'Фото и голосовые откроются ещё через {count} сообщения.',
+    },
+    attachPhoto: 'Прикрепить фото',
     copied: 'Скопировано',
     couldNotSend: 'Не удалось отправить',
     mediaQuota: 'Ты исчерпал дневной лимит на фото и голосовые.',

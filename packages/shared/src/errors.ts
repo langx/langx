@@ -32,6 +32,18 @@ export const ERROR_CODES = {
   BLOCKED: 'BLOCKED',
   /** A conversation between these two already exists — see `conversations.pairKey`. */
   CONVERSATION_EXISTS: 'CONVERSATION_EXISTS',
+  /**
+   * A photo or voice note into a conversation that has not exchanged
+   * `MEDIA_UNLOCKS_AFTER_MESSAGES` messages yet.
+   *
+   * Its own code rather than `VALIDATION_FAILED` because the request is
+   * well-formed and the fix is not in it — the client has to say *how many
+   * more*, and it can only know to do that if this is its own code. Not
+   * `UPGRADE_REQUIRED` either: there is nothing to buy. The rule applies to
+   * every account on every plan, which is the whole of what makes it worth
+   * saying out loud.
+   */
+  MEDIA_LOCKED: 'MEDIA_LOCKED',
 
   // discovery
   /**
@@ -85,6 +97,7 @@ export const ERROR_STATUS: Record<ErrorCode, number> = {
   UNDERAGE: 403,
   UPGRADE_REQUIRED: 403,
   QUOTA_EXCEEDED: 402,
+  MEDIA_LOCKED: 409,
   HANDLE_TAKEN: 409,
   HANDLE_RESERVED: 409,
   HANDLE_ALREADY_CLAIMED: 409,

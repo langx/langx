@@ -1,4 +1,4 @@
-import { MAX_IMAGE_BYTES, PLAN_LIMITS } from '@langx/shared'
+import { MAX_IMAGE_BYTES, MEDIA_UNLOCKS_AFTER_MESSAGES, PLAN_LIMITS } from '@langx/shared'
 import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
@@ -621,11 +621,29 @@ describe('Faz 5 — conversation/message history REST', () => {
       height: 600,
     }
 
-    async function pair(prefix: string) {
+    /**
+     * A conversation warmed past the media gate, because these tests are about
+     * content types, ceilings and quota rather than about the gate — and a
+     * fresh thread cannot carry an attachment at all. `warm: false` gives back
+     * the one-message thread the gate's own tests need.
+     */
+    async function pair(prefix: string, { warm = true }: { warm?: boolean } = {}) {
       const a = await newUser(`${prefix}-a@example.com`)
       const b = await newUser(`${prefix}-b@example.com`)
       const conversation = await startConversation(a, b.userId, 'hi')
+      if (warm) await warmPast(conversation._id, a.userId, b.userId)
       return { a, b, conversationId: conversation._id }
+    }
+
+    /** Talks until an attachment is allowed. `startConversation` wrote one. */
+    async function warmPast(conversationId: string, aId: string, bId: string) {
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
+        await sendTextMessage(handle.db, sent % 2 === 1 ? bId : aId, {
+          conversationId,
+          body: `filler ${sent}`,
+        })
+      }
     }
 
     it('sends an image and shows a label in the chat list instead of an empty line', async () => {
@@ -700,6 +718,132 @@ describe('Faz 5 — conversation/message history REST', () => {
           BUCKET,
         ),
       ).rejects.toThrow(/too large/)
+    })
+
+    /**
+     * The rule with no exceptions: no photo and no voice note until the thread
+     * has carried `MEDIA_UNLOCKS_AFTER_MESSAGES` messages. Not a Pro feature,
+     * not a setting, not something a report has to catch after the fact — the
+     * first message from a stranger cannot be a photograph, of anybody, ever.
+     */
+    describe('attachments are locked until the thread has been talked in', () => {
+      async function uploadUrl(user: SignedUpUser, conversationId: string) {
+        return app.inject({
+          method: 'POST',
+          url: '/messages/upload-url',
+          headers: { cookie: user.cookie },
+          payload: { conversationId, kind: 'image', contentType: 'image/jpeg' },
+        })
+      }
+
+      /**
+       * Whether the *gate* refused, which is the only thing these tests are
+       * about. Storage is not configured in this suite, so a request that gets
+       * past the gate fails later for an unrelated reason — asserting a 200
+       * would be asserting that R2 credentials exist.
+       */
+      async function locked(user: SignedUpUser, conversationId: string) {
+        const response = await uploadUrl(user, conversationId)
+        return response.json<{ code?: string }>().code === 'MEDIA_LOCKED'
+      }
+
+      /**
+       * The upload URL is the check that matters. The client PUTs straight to
+       * the bucket and only then sends the message, so refusing at send time
+       * would refuse a message pointing at a photograph already stored.
+       */
+      it('refuses to sign an upload URL into a brand new conversation', async () => {
+        const { a, conversationId } = await pair('media-gate-new', { warm: false })
+        const response = await uploadUrl(a, conversationId)
+        expect(response.statusCode, response.body).toBe(409)
+        expect(response.json()).toMatchObject({
+          code: 'MEDIA_LOCKED',
+          max: MEDIA_UNLOCKS_AFTER_MESSAGES,
+        })
+      })
+
+      it('refuses the send itself too, for a URL signed before the gate closed', async () => {
+        const { a, conversationId } = await pair('media-gate-send', { warm: false })
+        const { sendMediaMessage } = await import('../modules/chat/messages')
+        await expect(
+          sendMediaMessage(
+            handle.db,
+            a.userId,
+            { conversationId, kind: 'image', media: image },
+            BUCKET,
+          ),
+        ).rejects.toThrow(/unlock after/)
+      })
+
+      it('opens on the message that reaches the threshold, not the one after', async () => {
+        const { a, b, conversationId } = await pair('media-gate-open', { warm: false })
+        const { sendTextMessage } = await import('../modules/chat/messages')
+
+        for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
+          expect(await locked(a, conversationId), `after ${sent}`).toBe(true)
+          await sendTextMessage(handle.db, sent % 2 === 1 ? b.userId : a.userId, {
+            conversationId,
+            body: `filler ${sent}`,
+          })
+        }
+
+        expect(await locked(a, conversationId)).toBe(false)
+      })
+
+      /** Both sides count. It is a conversation, not a quota per person. */
+      it('counts what either of them said, not what one of them did', async () => {
+        const { a, b, conversationId } = await pair('media-gate-both', { warm: false })
+        const { sendTextMessage } = await import('../modules/chat/messages')
+        for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
+          await sendTextMessage(handle.db, b.userId, { conversationId, body: `b ${sent}` })
+        }
+        expect(await locked(a, conversationId)).toBe(false)
+      })
+
+      /**
+       * The slogan is "nobody", and a paid tier would make it false. This is
+       * the assertion that keeps it true.
+       */
+      it('applies to a paid account exactly as it does to a free one', async () => {
+        const { a, conversationId } = await pair('media-gate-pro', { warm: false })
+        await handle.db
+          .collection<Profile>(COLLECTIONS.profiles)
+          .updateOne(
+            { _id: a.userId },
+            { $set: { entitlement: { tier: 'pro_plus', updatedAt: new Date() } } },
+          )
+        expect(await locked(a, conversationId)).toBe(true)
+      })
+
+      /**
+       * A conversation written before the counter existed has no
+       * `messageCount`, and reading that as zero would lock a two-year-old
+       * thread out of sending a photo. It is counted instead.
+       */
+      it('counts the messages of a conversation that predates the counter', async () => {
+        const { a, b, conversationId } = await pair('media-gate-legacy', { warm: false })
+        const { sendTextMessage } = await import('../modules/chat/messages')
+        for (let sent = 1; sent < MEDIA_UNLOCKS_AFTER_MESSAGES; sent++) {
+          await sendTextMessage(handle.db, b.userId, { conversationId, body: `b ${sent}` })
+        }
+        await handle.db
+          .collection(COLLECTIONS.conversations)
+          .updateOne({ _id: new ObjectId(conversationId) }, { $unset: { messageCount: '' } })
+
+        expect(await locked(a, conversationId)).toBe(false)
+      })
+
+      it('tells the client how many more are needed, so it can say so', async () => {
+        const { a, conversationId } = await pair('media-gate-count', { warm: false })
+        const page = await app.inject({
+          method: 'GET',
+          url: `/conversations/${conversationId}/messages`,
+          headers: { cookie: a.cookie },
+        })
+        expect(page.json<{ mediaLockedFor: number }>().mediaLockedFor).toBe(
+          MEDIA_UNLOCKS_AFTER_MESSAGES - 1,
+        )
+      })
     })
 
     it('will not sign an upload URL for a conversation you are not in', async () => {
