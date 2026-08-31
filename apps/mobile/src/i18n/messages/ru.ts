@@ -460,9 +460,42 @@ export const ru: Localized<EnMessages> = {
     starredMessages: 'Избранные сообщения',
   },
 
+  presence: {
+    online: 'В сети',
+    lastSeenNow: 'Был(а) в сети только что',
+    lastSeenMinutes: {
+      one: 'Был(а) в сети {count} минуту назад',
+      few: 'Был(а) в сети {count} минуты назад',
+      many: 'Был(а) в сети {count} минут назад',
+      other: 'Был(а) в сети {count} минуты назад',
+    },
+    lastSeenHours: {
+      one: 'Был(а) в сети {count} час назад',
+      few: 'Был(а) в сети {count} часа назад',
+      many: 'Был(а) в сети {count} часов назад',
+      other: 'Был(а) в сети {count} часа назад',
+    },
+    lastSeenDays: {
+      one: 'Был(а) в сети {count} день назад',
+      few: 'Был(а) в сети {count} дня назад',
+      many: 'Был(а) в сети {count} дней назад',
+      other: 'Был(а) в сети {count} дня назад',
+    },
+    lastSeenMonths: {
+      one: 'Был(а) в сети {count} месяц назад',
+      few: 'Был(а) в сети {count} месяца назад',
+      many: 'Был(а) в сети {count} месяцев назад',
+      other: 'Был(а) в сети {count} месяца назад',
+    },
+    lastSeenYears: {
+      one: 'Был(а) в сети {count} год назад',
+      few: 'Был(а) в сети {count} года назад',
+      many: 'Был(а) в сети {count} лет назад',
+      other: 'Был(а) в сети {count} года назад',
+    },
+  },
   chat: {
     title: 'Чат',
-    online: 'В сети',
     typing: 'печатает…',
     editing: 'Редактирование',
     correcting: 'Исправление',
@@ -780,7 +813,8 @@ export const ru: Localized<EnMessages> = {
     incognito: 'Невидимый просмотр',
     incognitoBody: 'Ты не появишься в списке их посетителей.',
     hideOnline: 'Скрывать, когда я в сети',
-    hideOnlineBody: 'Их статус ты по-прежнему видишь.',
+    hideOnlineBody:
+      'Скрывает зелёную точку и время последнего визита. Их статус ты по-прежнему видишь.',
     shareLocation: 'Делиться примерным местоположением',
     shareLocationBody: 'Другие видят диапазон расстояния, а не точку.',
     activityMap: 'Показывать карту активности',

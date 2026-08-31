@@ -32,6 +32,7 @@ import {
 } from '../../../src/api/queries'
 import * as Clipboard from 'expo-clipboard'
 import { api } from '../../../src/api/client'
+import { PresenceLine } from '../../../src/components/PresenceLine'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
@@ -532,13 +533,14 @@ export default function ChatScreen() {
             {/*
               One line that is either presence or typing, never both stacked —
               the header is 40px tall and a third line pushes the avatar out of
-              alignment with the name.
+              alignment with the name. `PresenceLine` keeps that true: online
+              and last-seen are mutually exclusive states of one line, not two.
             */}
             {partnerTyping ? (
               <Text style={styles.typing}>{t('chat.typing')}</Text>
-            ) : partner?.isOnline ? (
-              <Text style={styles.presence}>{t('chat.online')}</Text>
-            ) : null}
+            ) : (
+              <PresenceLine lastActiveAt={partner?.lastActiveAt} />
+            )}
           </View>
         </Pressable>
       </View>

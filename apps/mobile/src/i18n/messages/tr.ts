@@ -417,9 +417,20 @@ export const tr: Localized<EnMessages> = {
     starredMessages: 'Yıldızlı mesajlar',
   },
 
+  presence: {
+    online: 'Çevrimiçi',
+    lastSeenNow: 'Az önce görüldü',
+    lastSeenMinutes: {
+      one: '{count} dakika önce görüldü',
+      other: '{count} dakika önce görüldü',
+    },
+    lastSeenHours: { one: '{count} saat önce görüldü', other: '{count} saat önce görüldü' },
+    lastSeenDays: { one: '{count} gün önce görüldü', other: '{count} gün önce görüldü' },
+    lastSeenMonths: { one: '{count} ay önce görüldü', other: '{count} ay önce görüldü' },
+    lastSeenYears: { one: '{count} yıl önce görüldü', other: '{count} yıl önce görüldü' },
+  },
   chat: {
     title: 'Sohbet',
-    online: 'Çevrimiçi',
     typing: 'yazıyor…',
     editing: 'Düzenleniyor',
     correcting: 'Düzeltiliyor',
@@ -701,7 +712,8 @@ export const tr: Localized<EnMessages> = {
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',
-    hideOnlineBody: 'Sen onlarınkini görmeye devam edersin.',
+    hideOnlineBody:
+      'Yeşil noktanı ve en son ne zaman burada olduğunu gizler. Sen onlarınkini görmeye devam edersin.',
     shareLocation: 'Yaklaşık konumu paylaş',
     shareLocationBody: 'Başkaları bir nokta değil, bir mesafe aralığı görür.',
     activityMap: 'Etkinlik haritamı göster',

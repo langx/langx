@@ -16,6 +16,7 @@ import {
 } from '../../../src/api/queries'
 import { ActivityMap } from '../../../src/components/ActivityMap'
 import { Avatar } from '../../../src/components/ui/Avatar'
+import { PresenceLine } from '../../../src/components/PresenceLine'
 import { CosmeticTitle } from '../../../src/components/CosmeticTitle'
 import { Button } from '../../../src/components/ui/Button'
 import { LevelBars } from '../../../src/components/ui/LevelBars'
@@ -211,6 +212,13 @@ export default function ProfileScreen() {
         <View style={styles.nameRow}>
           <Text style={styles.name}>{user.displayName}</Text>
           <CosmeticTitle cosmetic={wornCosmetic(user.equipped, user.cosmetics ?? [], 'title')} />
+        </View>
+        {/*
+          Directly under the name, which is where a reader is already looking
+          when they are deciding whether this person will answer.
+        */}
+        <View style={styles.presence}>
+          <PresenceLine lastActiveAt={user.lastActiveAt} />
         </View>
         {/*
           How long the account has existed, next to who it says it is: the two
@@ -438,6 +446,7 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   iconButton: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
   iconPressed: { opacity: 0.6 },
   hero: { alignItems: 'center', paddingTop: spacing.sm },
+  presence: { marginTop: 6 },
   nameRow: { alignItems: 'center', flexDirection: 'row', gap: 6, justifyContent: 'center' },
   name: { ...font.heading, color: colors.text, fontSize: 24, marginTop: 12 },
   handle: { color: colors.textMuted, fontSize: 14, marginTop: 2 },
