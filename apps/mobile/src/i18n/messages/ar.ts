@@ -703,7 +703,7 @@ export const ar: Localized<EnMessages> = {
     editProfile: 'تعديل الملف',
     settings: 'الإعدادات',
     corrections: 'التصحيحات',
-    tokens: 'الرموز',
+    wallet: 'المحفظة',
     previewProfile: 'معاينة ملفي الشخصي',
     previewProfileBody: 'شاهد ملفك كما يراه الآخرون',
     shareProfile: 'مشاركة ملفي الشخصي',
@@ -839,11 +839,36 @@ export const ar: Localized<EnMessages> = {
   },
 
   store: {
-    intro: 'تُكتسب بالمراسلة وبتصحيح الآخرين. التعليم يزن أكثر من الحديث.',
+    restoreStreak: 'استرجع سلسلتك',
+    restoreStreakBody: 'استعد سلسلة الـ {days} يومًا التي كانت لديك في النسخة الأولى',
+    streakFreeze: 'تجميد السلسلة',
+    streakFreezeBody: 'ينقذ يومًا فائتًا · {banked}/{max} مُدّخر',
+    ownedAccessibility: '{title}، مملوك',
+    buy: 'شراء {title} مقابل {price} رمزًا',
+    owned: 'مملوك',
+    frameKind: 'إطار الملف',
+    titleKind: 'لقب',
     todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'المحفظة',
+    balance: 'الرصيد',
+    earnedSpent: '‏{earned} مكتسب · {spent} منفق',
+    streakFreezes: 'تجميدات السلسلة',
+    itemsOwned: 'العناصر المملوكة',
+    storeTitle: 'المتجر',
     disclaimer:
-      'لا يمكن شراء الرموز أو تداولها أو سحبها أو استخدامها لفتح أي ميزة Pro — فقط لتجميد السلسلة والمظاهر. لا سلسلة كتل ولا محفظة ولا سوق.',
-    todaysPool: 'حصيلة اليوم',
+      'الرموز نقاط داخل التطبيق. لا يمكن شراؤها أو تداولها أو سحبها أو استخدامها لفتح Pro — فقط تجميدات السلسلة والعناصر التجميلية. لا سلسلة ولا عقد ولا سوق.',
+  },
+
+  tokens: {
+    title: 'الرموز',
+    intro: 'تُكتسب بالمراسلة وبتصحيح جمل الآخرين. التعليم يزن أكثر من الحديث.',
+    thisWeek: 'هذا الأسبوع',
+    thisMonth: 'هذا الشهر',
+    allTime: 'كل الأوقات',
+    poolTitle: 'التجمّع اليومي',
     activeToday: {
       zero: 'لا أحد نشط اليوم',
       one: 'شخص واحد نشط اليوم',
@@ -861,17 +886,6 @@ export const ar: Localized<EnMessages> = {
     historyEmpty: 'لا شيء بعد. أرسل رسالة أو صحّح لأحدهم.',
     historySpent: '−{count} أُنفقت',
     historyMore: 'عرض المزيد',
-    restoreStreak: 'استرجع سلسلتك',
-    restoreStreakBody: 'استعد سلسلة الـ {days} يومًا التي كانت لديك في النسخة الأولى',
-    streakFreeze: 'تجميد السلسلة',
-    streakFreezeBody: 'ينقذ يومًا فائتًا · {banked}/{max} مُدّخر',
-    ownedAccessibility: '{title}، مملوك',
-    buy: 'شراء {title} مقابل {price} رمزًا',
-    title: 'الرموز',
-    balance: 'الرصيد',
-    owned: 'مملوك',
-    frameKind: 'إطار الملف',
-    titleKind: 'لقب',
   },
 
   tokenKind: {

@@ -112,13 +112,13 @@ export default function MeScreen() {
           label={t('me.corrections')}
           value={String(summary?.lifetime.corrections ?? 0)}
         />
-        {/* The balance is the way into the store — a number nobody can act on
-            reads as decoration, and the store had nowhere else to be reached
-            from once it left this screen. The "›" is the hint that it opens. */}
+        {/* The balance is the way into the wallet — a number nobody can act
+            on reads as decoration, and the wallet has nowhere else to be
+            reached from. The "›" is the hint that it opens. */}
         <StatTile
-          label={`${t('me.tokens')} ›`}
+          label={`${t('me.wallet')} ›`}
           value={String(balance)}
-          onPress={() => router.push('/(app)/store')}
+          onPress={() => router.push('/(app)/wallet')}
         />
       </View>
 

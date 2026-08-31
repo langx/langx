@@ -1,54 +1,34 @@
 import { TOKEN_RULES } from '@langx/shared'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { useState } from 'react'
-import { useMe, usePurchase, useTokenHistory, useTokens, useWallet } from '../../src/api/queries'
-import { StoreRow } from '../../src/components/store/StoreRow'
+import { useTokenHistory, useTokens } from '../../src/api/queries'
 import { ProgressBar } from '../../src/components/ui/ProgressBar'
 import { Screen } from '../../src/components/ui/Screen'
 import { ScreenHeader } from '../../src/components/ui/ScreenHeader'
+import { StatTile } from '../../src/components/ui/StatTile'
 import { goBackTo } from '../../src/lib/navigation'
-import { buildStoreOffers } from '../../src/lib/storeOffers'
 import { buildTokenHistory } from '../../src/lib/tokenHistory'
 import { dayLabel } from '../../src/lib/messageGroups'
 import { makeStyles, useTheme } from '../../src/lib/theme'
 import { useLocale, useT } from '../../src/i18n'
 
 /**
- * The token screen, reached by tapping the balance on the profile.
+ * Where the tokens came from: the totals, the pool, and the ledger a day at a
+ * time.
  *
- * A route rather than a sheet: the app has no modal routes and adding one
- * would mean a gesture-handler dependency that does not resolve from this
- * package, for a surface that cannot be linked to or backed out of.
+ * One level below the wallet, reached by pressing the balance. The two used to
+ * be one screen, which meant the shop sat under a list that grows by a row a
+ * day — so the thing you can act on was below the thing you can only read.
  */
-export default function StoreScreen() {
+export default function TokensScreen() {
   const { colors } = useTheme()
   const styles = useStyles()
   const t = useT()
-
-  const me = useMe()
-  const xp = useTokens()
-  const wallet = useWallet()
-  const purchase = usePurchase()
-  const history = useTokenHistory()
   const { locale } = useLocale()
+
+  const xp = useTokens()
+  const history = useTokenHistory()
   const [openDay, setOpenDay] = useState<string | null>(null)
-
-  if (me.isPending || !me.data) {
-    return (
-      <Screen>
-        <ActivityIndicator style={styles.loading} />
-      </Screen>
-    )
-  }
-
-  const restored = me.data.restoredFromV1
-  const offers = buildStoreOffers({
-    t,
-    balance: wallet.data?.balance ?? 0,
-    owned: wallet.data?.owned ?? [],
-    streakFreezes: wallet.data?.streakFreezes ?? 0,
-    restorableStreak: restored && !restored.streakRestoredAt ? restored.frozenStreak : 0,
-  })
 
   const pool = xp.data?.pool
 
@@ -73,67 +53,65 @@ export default function StoreScreen() {
   })
 
   function refresh(): void {
-    void Promise.all([me.refetch(), xp.refetch(), wallet.refetch(), history.refetch()])
+    void Promise.all([xp.refetch(), history.refetch()])
+  }
+
+  if (xp.isPending) {
+    return (
+      <Screen>
+        <ActivityIndicator style={styles.loading} />
+      </Screen>
+    )
   }
 
   return (
-    <Screen scroll onRefresh={refresh} refreshing={wallet.isFetching}>
-      <ScreenHeader title={t('store.title')} onBack={() => goBackTo('/(app)/me')} />
+    <Screen scroll onRefresh={refresh} refreshing={xp.isFetching}>
+      <ScreenHeader title={t('tokens.title')} onBack={() => goBackTo('/(app)/wallet')} />
 
-      <View style={styles.section}>
-        <Text style={styles.kicker}>{t('store.balance')}</Text>
-        <Text style={styles.balanceValue}>{wallet.data?.balance ?? 0}</Text>
-        <Text style={styles.body}>{t('store.intro')}</Text>
+      <View style={styles.tiles}>
+        <StatTile label={t('tokens.thisWeek')} value={String(xp.data?.tokens.week ?? 0)} />
+        <StatTile label={t('tokens.thisMonth')} value={String(xp.data?.tokens.month ?? 0)} />
+        <StatTile label={t('tokens.allTime')} value={String(xp.data?.tokens.all ?? 0)} />
       </View>
+
+      <Text style={styles.body}>{t('tokens.intro')}</Text>
 
       {pool ? (
         <View style={styles.section}>
           <View style={styles.poolHead}>
-            <Text style={styles.poolTitle}>{t('store.todaysPool')}</Text>
-            <Text style={styles.meta}>{t('store.activeToday', { count: pool.activeToday })}</Text>
+            <Text style={styles.poolTitle}>{t('tokens.poolTitle')}</Text>
+            <Text style={styles.meta}>{t('tokens.activeToday', { count: pool.activeToday })}</Text>
           </View>
           {lastPayout ? (
             <>
               <View style={styles.shareRow}>
                 <Text style={styles.shareValue}>
-                  {t('store.shareAmount', { count: lastPayout.amount })}
+                  {t('tokens.shareAmount', { count: lastPayout.amount })}
                 </Text>
                 <Text style={styles.meta}>
-                  {t('store.shareFor', { day: dayLabel(lastPayout.day, { t, locale }) })}
+                  {t('tokens.shareFor', { day: dayLabel(lastPayout.day, { t, locale }) })}
                 </Text>
               </View>
               <ProgressBar
-                accessibilityLabel={t('store.todaysPool')}
+                accessibilityLabel={t('tokens.poolTitle')}
                 color={colors.success}
                 value={shareCap > 0 ? lastPayout.amount / shareCap : 0}
               />
             </>
           ) : (
-            <Text style={styles.meta}>{t('store.noShareYet')}</Text>
+            <Text style={styles.meta}>{t('tokens.noShareYet')}</Text>
           )}
-          <Text style={styles.meta}>{t('store.poolCap', { cap: shareCap })}</Text>
+          <Text style={styles.meta}>{t('tokens.poolCap', { cap: shareCap })}</Text>
           <Text style={styles.meta}>
-            {t('store.poolPaidAt', { hour: TOKEN_RULES.pool.payoutHourUtc })}
+            {t('tokens.poolPaidAt', { hour: TOKEN_RULES.pool.payoutHourUtc })}
           </Text>
         </View>
       ) : null}
 
-      <View style={styles.offers}>
-        {offers.map((offer, index) => (
-          <StoreRow
-            key={offer.id}
-            offer={offer}
-            pending={purchase.isPending}
-            last={index === offers.length - 1}
-            onBuy={(id) => purchase.mutate(id)}
-          />
-        ))}
-      </View>
-
       <View style={styles.section}>
-        <Text style={styles.poolTitle}>{t('store.history')}</Text>
+        <Text style={styles.poolTitle}>{t('tokens.history')}</Text>
         {historyRows.length === 0 ? (
-          <Text style={styles.meta}>{t('store.historyEmpty')}</Text>
+          <Text style={styles.meta}>{t('tokens.historyEmpty')}</Text>
         ) : (
           historyRows.map((row) => {
             const open = openDay === row.day
@@ -150,11 +128,11 @@ export default function StoreScreen() {
                 <View style={styles.historyHead}>
                   <Text style={styles.historyDay}>{row.label}</Text>
                   <Text style={styles.historyEarned}>
-                    {t('store.shareAmount', { count: row.earned })}
+                    {t('tokens.shareAmount', { count: row.earned })}
                   </Text>
                 </View>
                 {row.spent > 0 ? (
-                  <Text style={styles.meta}>{t('store.historySpent', { count: row.spent })}</Text>
+                  <Text style={styles.meta}>{t('tokens.historySpent', { count: row.spent })}</Text>
                 ) : null}
                 {open
                   ? row.entries.map((entry) => (
@@ -175,18 +153,23 @@ export default function StoreScreen() {
             onPress={() => void history.fetchNextPage()}
             style={styles.historyMore}
           >
-            <Text style={styles.historyMoreText}>{t('store.historyMore')}</Text>
+            <Text style={styles.historyMoreText}>{t('tokens.historyMore')}</Text>
           </Pressable>
         ) : null}
       </View>
-
-      <Text style={styles.hint}>{t('store.disclaimer')}</Text>
     </Screen>
   )
 }
-
 const useStyles = makeStyles(({ colors, font, spacing }) => ({
   loading: { marginTop: spacing.xxl },
+  tiles: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    flexDirection: 'row',
+    paddingBottom: spacing.lg,
+    paddingTop: spacing.lg,
+  },
+  body: { ...font.body, color: colors.textMuted, lineHeight: 23, marginTop: spacing.lg },
   section: {
     borderBottomColor: colors.border,
     borderBottomWidth: 1,
@@ -194,35 +177,19 @@ const useStyles = makeStyles(({ colors, font, spacing }) => ({
     paddingBottom: spacing.lg + 6,
     paddingTop: spacing.lg,
   },
-  kicker: { color: colors.textFaint, fontSize: 13, fontWeight: '600' },
-  balanceValue: { ...font.title, color: colors.text, fontSize: 56, lineHeight: 60 },
-  body: { ...font.body, color: colors.textMuted, lineHeight: 23 },
-  poolHead: {
-    alignItems: 'baseline',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+  poolHead: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
   poolTitle: { ...font.heading, color: colors.text, fontSize: 16 },
   shareRow: { alignItems: 'baseline', flexDirection: 'row', gap: spacing.sm + 1 },
   shareValue: { ...font.heading, color: colors.success, fontSize: 24 },
   meta: { ...font.label, color: colors.textMuted, fontWeight: '400', lineHeight: 19 },
-  historyRow: { gap: 2, paddingVertical: spacing.sm },
-  historyHead: {
-    alignItems: 'baseline',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  historyRow: {
+    borderBottomColor: colors.border,
+    borderBottomWidth: 1,
+    paddingVertical: spacing.sm + 2,
   },
+  historyHead: { alignItems: 'baseline', flexDirection: 'row', justifyContent: 'space-between' },
   historyDay: { ...font.label, color: colors.text },
   historyEarned: { ...font.label, color: colors.success },
-  historyMore: { paddingTop: spacing.sm },
-  historyMoreText: { ...font.label, color: colors.textMuted },
-  offers: {},
-  hint: {
-    ...font.caption,
-    color: colors.textFaint,
-    fontSize: 13,
-    lineHeight: 21,
-    marginBottom: spacing.xxl,
-    marginTop: spacing.lg,
-  },
+  historyMore: { alignItems: 'center', paddingVertical: spacing.md },
+  historyMoreText: { ...font.label, color: colors.accent },
 }))

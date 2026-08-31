@@ -594,7 +594,7 @@ export const de: Localized<EnMessages> = {
     editProfile: 'Profil bearbeiten',
     settings: 'Einstellungen',
     corrections: 'Korrekturen',
-    tokens: 'Token',
+    wallet: 'Geldbörse',
     previewProfile: 'Mein Profil ansehen',
     previewProfileBody: 'Sieh dein Profil so, wie andere es sehen',
     shareProfile: 'Mein Profil teilen',
@@ -728,12 +728,37 @@ export const de: Localized<EnMessages> = {
   },
 
   store: {
-    intro:
-      'Verdient durch Schreiben und durch Korrigieren anderer. Unterrichten zählt mehr als Reden.',
+    restoreStreak: 'Serie wiederherstellen',
+    restoreStreakBody: 'Hol dir die {days}-Tage-Serie aus v1 zurück',
+    streakFreeze: 'Serienschutz',
+    streakFreezeBody: 'Rettet einen verpassten Tag · {banked}/{max} auf Vorrat',
+    ownedAccessibility: '{title}, bereits vorhanden',
+    buy: '{title} für {price} Token kaufen',
+    owned: 'Vorhanden',
+    frameKind: 'Profilrahmen',
+    titleKind: 'Titel',
     todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'Geldbörse',
+    balance: 'Guthaben',
+    earnedSpent: '{earned} verdient · {spent} ausgegeben',
+    streakFreezes: 'Serien-Freezes',
+    itemsOwned: 'Besitz',
+    storeTitle: 'Shop',
     disclaimer:
-      'Token lassen sich nicht kaufen, tauschen, auszahlen oder gegen eine Pro-Funktion eintauschen — nur gegen Serienschutz und Kosmetik. Es gibt keine Chain, kein Wallet und keinen Markt.',
-    todaysPool: 'Der heutige Pool',
+      'Token sind In-App-Punkte. Sie lassen sich nicht kaufen, handeln, auszahlen oder gegen Pro eintauschen — nur Serien-Freezes und Kosmetik. Es gibt keine Chain, keinen Vertrag und keinen Markt.',
+  },
+
+  tokens: {
+    title: 'Token',
+    intro:
+      'Verdient durch Nachrichten und durch das Korrigieren anderer. Lehren zählt mehr als Reden.',
+    thisWeek: 'Diese Woche',
+    thisMonth: 'Diesen Monat',
+    allTime: 'Insgesamt',
+    poolTitle: 'Täglicher Pool',
     activeToday: { one: '{count} Person heute aktiv', other: '{count} Personen heute aktiv' },
     shareAmount: '+{count}',
     shareFor: 'dein Anteil für {day}',
@@ -744,17 +769,6 @@ export const de: Localized<EnMessages> = {
     historyEmpty: 'Noch nichts. Schreib eine Nachricht oder korrigiere jemanden.',
     historySpent: '−{count} ausgegeben',
     historyMore: 'Mehr anzeigen',
-    restoreStreak: 'Serie wiederherstellen',
-    restoreStreakBody: 'Hol dir die {days}-Tage-Serie aus v1 zurück',
-    streakFreeze: 'Serienschutz',
-    streakFreezeBody: 'Rettet einen verpassten Tag · {banked}/{max} auf Vorrat',
-    ownedAccessibility: '{title}, bereits vorhanden',
-    buy: '{title} für {price} Token kaufen',
-    title: 'Token',
-    balance: 'Guthaben',
-    owned: 'Vorhanden',
-    frameKind: 'Profilrahmen',
-    titleKind: 'Titel',
   },
 
   tokenKind: {

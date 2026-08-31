@@ -592,7 +592,7 @@ export const fr: Localized<EnMessages> = {
     editProfile: 'Modifier le profil',
     settings: 'Réglages',
     corrections: 'Corrections',
-    tokens: 'Jetons',
+    wallet: 'Portefeuille',
     previewProfile: 'Aperçu de mon profil',
     previewProfileBody: 'Vois ton profil comme les autres le voient',
     shareProfile: 'Partager mon profil',
@@ -724,11 +724,36 @@ export const fr: Localized<EnMessages> = {
   },
 
   store: {
-    intro: 'Gagnés en écrivant et en corrigeant les autres. Enseigner compte plus que parler.',
+    restoreStreak: 'Restaure ta série',
+    restoreStreakBody: 'Récupère la série de {days} jours que tu avais sur la v1',
+    streakFreeze: 'Gel de série',
+    streakFreezeBody: 'Sauve un jour manqué · {banked}/{max} en réserve',
+    ownedAccessibility: '{title}, déjà acquis',
+    buy: 'Acheter {title} pour {price} jetons',
+    owned: 'Acquis',
+    frameKind: 'Cadre de profil',
+    titleKind: 'Titre',
     todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'Portefeuille',
+    balance: 'Solde',
+    earnedSpent: '{earned} gagnés · {spent} dépensés',
+    streakFreezes: 'Gels de série',
+    itemsOwned: 'Objets possédés',
+    storeTitle: 'Boutique',
     disclaimer:
-      'Les jetons ne s’achètent pas, ne s’échangent pas, ne se retirent pas et ne débloquent aucune fonction Pro — seulement des gels de série et des éléments cosmétiques. Il n’y a ni chaîne, ni portefeuille, ni marché.',
-    todaysPool: 'La cagnotte du jour',
+      'Les jetons sont des points internes à l’app. Ils ne peuvent être achetés, échangés, retirés ni servir à débloquer Pro — seulement des gels de série et des cosmétiques. Pas de chaîne, pas de contrat, pas de marché.',
+  },
+
+  tokens: {
+    title: 'Jetons',
+    intro: 'Gagnés en écrivant et en corrigeant les autres. Enseigner compte plus que parler.',
+    thisWeek: 'Cette semaine',
+    thisMonth: 'Ce mois-ci',
+    allTime: 'Depuis toujours',
+    poolTitle: 'Cagnotte du jour',
     activeToday: {
       one: '{count} personne active aujourd’hui',
       other: '{count} personnes actives aujourd’hui',
@@ -742,17 +767,6 @@ export const fr: Localized<EnMessages> = {
     historyEmpty: 'Rien pour l’instant. Envoyez un message ou corrigez quelqu’un.',
     historySpent: '−{count} dépensé',
     historyMore: 'Afficher plus',
-    restoreStreak: 'Restaure ta série',
-    restoreStreakBody: 'Récupère la série de {days} jours que tu avais sur la v1',
-    streakFreeze: 'Gel de série',
-    streakFreezeBody: 'Sauve un jour manqué · {banked}/{max} en réserve',
-    ownedAccessibility: '{title}, déjà acquis',
-    buy: 'Acheter {title} pour {price} jetons',
-    title: 'Jetons',
-    balance: 'Solde',
-    owned: 'Acquis',
-    frameKind: 'Cadre de profil',
-    titleKind: 'Titre',
   },
 
   tokenKind: {

@@ -626,7 +626,7 @@ export const en = {
     editProfile: 'Edit profile',
     settings: 'Settings',
     corrections: 'Corrections',
-    tokens: 'Tokens',
+    wallet: 'Wallet',
     previewProfile: 'Preview my profile',
     previewProfileBody: 'See your profile the way other people do',
     shareProfile: 'Share my profile',
@@ -758,20 +758,37 @@ export const en = {
   },
 
   store: {
-    intro:
-      'Earned by messaging and by correcting other people. Teaching is weighted higher than talking.',
-    todayCounts: '{messages} · {corrections}',
-    disclaimer:
-      'Tokens cannot be bought, traded, withdrawn, or used to unlock any Pro feature — only streak freezes and cosmetics. There is no chain, no wallet and no market.',
     restoreStreak: 'Restore your streak',
     restoreStreakBody: 'Bring back the {days}-day streak you had in v1',
     streakFreeze: 'Streak freeze',
     streakFreezeBody: 'Saves one missed day · {banked}/{max} banked',
     ownedAccessibility: '{title}, owned',
     buy: 'Buy {title} for {price} tokens',
-    title: 'Tokens',
+    owned: 'Owned',
+    frameKind: 'Profile frame',
+    titleKind: 'Title',
+    todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'Wallet',
     balance: 'Balance',
-    todaysPool: "Today's pool",
+    earnedSpent: '{earned} earned · {spent} spent',
+    streakFreezes: 'Streak freezes',
+    itemsOwned: 'Items owned',
+    storeTitle: 'Store',
+    disclaimer:
+      'Tokens are in-app points. They cannot be bought, traded, withdrawn or used to unlock Pro — only streak freezes and cosmetics. There is no chain, no contract and no market.',
+  },
+
+  tokens: {
+    title: 'Tokens',
+    intro:
+      'Earned by messaging and by correcting other people. Teaching is weighted higher than talking.',
+    thisWeek: 'This week',
+    thisMonth: 'This month',
+    allTime: 'All time',
+    poolTitle: 'Daily pool',
     activeToday: { one: '{count} active today', other: '{count} active today' },
     shareAmount: '+{count}',
     shareFor: 'your share for {day}',
@@ -782,9 +799,6 @@ export const en = {
     historyEmpty: 'Nothing yet. Send a message, or correct someone.',
     historySpent: '−{count} spent',
     historyMore: 'Show more',
-    owned: 'Owned',
-    frameKind: 'Profile frame',
-    titleKind: 'Title',
   },
 
   /** One per `TOKEN_KINDS`; `kindKey()` builds the key from the kind itself. */

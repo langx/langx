@@ -586,7 +586,7 @@ export const ptBR: Localized<EnMessages> = {
     editProfile: 'Editar perfil',
     settings: 'Configurações',
     corrections: 'Correções',
-    tokens: 'Fichas',
+    wallet: 'Carteira',
     previewProfile: 'Ver meu perfil',
     previewProfileBody: 'Veja seu perfil como as outras pessoas veem',
     shareProfile: 'Compartilhar meu perfil',
@@ -719,11 +719,37 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   store: {
-    intro: 'Ganhas conversando e corrigindo outras pessoas. Ensinar pesa mais do que conversar.',
+    restoreStreak: 'Recupere sua sequência',
+    restoreStreakBody: 'Traga de volta a sequência de {days} dias que você tinha na v1',
+    streakFreeze: 'Congelar sequência',
+    streakFreezeBody: 'Salva um dia perdido · {banked}/{max} guardados',
+    ownedAccessibility: '{title}, você já tem',
+    buy: 'Comprar {title} por {price} fichas',
+    owned: 'Você tem',
+    frameKind: 'Moldura de perfil',
+    titleKind: 'Título',
     todayCounts: '{messages} · {corrections}',
+  },
+
+  wallet: {
+    title: 'Carteira',
+    balance: 'Saldo',
+    earnedSpent: '{earned} ganhas · {spent} gastas',
+    streakFreezes: 'Congelamentos de sequência',
+    itemsOwned: 'Itens',
+    storeTitle: 'Loja',
     disclaimer:
-      'Fichas não podem ser compradas, trocadas, sacadas nem usadas para liberar qualquer recurso Pro — só congelamentos de sequência e itens visuais. Não há blockchain, carteira nem mercado.',
-    todaysPool: 'O fundo de hoje',
+      'As fichas são pontos dentro do app. Não podem ser compradas, trocadas, sacadas nem usadas para desbloquear o Pro — apenas congelamentos de sequência e cosméticos. Não há cadeia, contrato nem mercado.',
+  },
+
+  tokens: {
+    title: 'Fichas',
+    intro:
+      'Ganhas ao enviar mensagens e ao corrigir outras pessoas. Ensinar pesa mais do que conversar.',
+    thisWeek: 'Esta semana',
+    thisMonth: 'Este mês',
+    allTime: 'Desde sempre',
+    poolTitle: 'Bolo diário',
     activeToday: { one: '{count} pessoa ativa hoje', other: '{count} pessoas ativas hoje' },
     shareAmount: '+{count}',
     shareFor: 'sua parte de {day}',
@@ -734,17 +760,6 @@ export const ptBR: Localized<EnMessages> = {
     historyEmpty: 'Nada ainda. Envie uma mensagem ou corrija alguém.',
     historySpent: '−{count} gasto',
     historyMore: 'Mostrar mais',
-    restoreStreak: 'Recupere sua sequência',
-    restoreStreakBody: 'Traga de volta a sequência de {days} dias que você tinha na v1',
-    streakFreeze: 'Congelar sequência',
-    streakFreezeBody: 'Salva um dia perdido · {banked}/{max} guardados',
-    ownedAccessibility: '{title}, você já tem',
-    buy: 'Comprar {title} por {price} fichas',
-    title: 'Fichas',
-    balance: 'Saldo',
-    owned: 'Você tem',
-    frameKind: 'Moldura de perfil',
-    titleKind: 'Título',
   },
 
   tokenKind: {

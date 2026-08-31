@@ -21,6 +21,23 @@ it inside the app. That is the entire definition.
 - **Not on a blockchain.** There is no chain, no contract, no wallet address.
 - **It cannot unlock Pro.** LangX Pro is a subscription; tokens buy none of it.
 
+## Words we do and do not use
+
+"Wallet" as the name of the in-app screen holding a point balance is **fine**,
+and it is what that screen is called. What is ruled out is a _crypto_ wallet:
+wallet **addresses**, "connect wallet", coin and chain iconography, and any
+wording that implies custody, transfer or an external holder of value. The
+distinction is not pedantry — `release-runbook.md` cites this document on the
+App Review question (3.1.5(b)), and a reviewer's concern is whether the app is
+crypto-adjacent, not whether a screen has a common English name.
+
+So the in-app disclaimer no longer says "no wallet", which would have
+contradicted the screen it sits on. It says what is actually true and actually
+load-bearing: no chain, no contract, no market, cannot be bought, cannot be
+traded, cannot unlock Pro.
+
+New screens use Feather `award`/`gift`, never a coin.
+
 Call it **"LangX Token"**. Drop "Test Token" — v1 used that because the token
 was framed as a preview of something real, and there is nothing to preview any
 more. Keeping "test" would now be misleading in the opposite direction.
