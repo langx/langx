@@ -731,7 +731,8 @@ export const tr: Localized<EnMessages> = {
     communitySection: 'Topluluk',
     linkDeviceBody: 'Bilgisayardaki bir girişi onayla.',
     showInDiscover: 'Keşfet’te görün',
-    showInDiscoverBody: 'Bunu kapatırsan kimse seni Keşfet’te bulamaz.',
+    showInDiscoverBody:
+      'Bunu kapatırsan kimse seni bulamaz — ne Keşfet’te, ne de kullanıcı adınla arayarak.',
     incognito: 'Gizli gezin',
     incognitoBody: 'Ziyaretçilerinde görünmezsin.',
     hideOnline: 'Çevrimiçiyken gizlen',

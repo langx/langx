@@ -722,7 +722,8 @@ export const fr: Localized<EnMessages> = {
     communitySection: 'Communauté',
     linkDeviceBody: 'Approuver une connexion sur un ordinateur.',
     showInDiscover: 'M’afficher dans Découvrir',
-    showInDiscoverBody: 'Désactive ceci et personne ne te trouvera dans Découvrir.',
+    showInDiscoverBody:
+      'Désactive-le et personne ne te trouvera — ni dans Découvrir, ni en cherchant ton nom d’utilisateur.',
     incognito: 'Navigation incognito',
     incognitoBody: 'Tu n’apparaîtras pas dans leurs visiteurs.',
     hideOnline: 'Me masquer quand je suis en ligne',

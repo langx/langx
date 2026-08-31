@@ -716,7 +716,8 @@ export const ptBR: Localized<EnMessages> = {
     communitySection: 'Comunidade',
     linkDeviceBody: 'Aprove um login em um computador.',
     showInDiscover: 'Mostrar em Descobrir',
-    showInDiscoverBody: 'Desligue e ninguém vai te encontrar em Descobrir.',
+    showInDiscoverBody:
+      'Desligue e ninguém te encontra — nem no Descobrir, nem buscando seu nome de usuário.',
     incognito: 'Navegar anonimamente',
     incognitoBody: 'Você não vai aparecer entre os visitantes.',
     hideOnline: 'Esconder quando eu estiver on-line',
