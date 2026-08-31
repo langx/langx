@@ -1,4 +1,5 @@
-import { PLAN_LIMITS } from '@langx/shared'
+import { CURRENT_TERMS_VERSION, PLAN_LIMITS } from '@langx/shared'
+import { ObjectId } from 'mongodb'
 import { MongoMemoryReplSet } from 'mongodb-memory-server'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -1069,6 +1070,27 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
 
       expect(response.statusCode).toBe(200)
       expect(response.json<{ emailVerified: boolean }>().emailVerified).toBe(false)
+    })
+  })
+
+  describe('terms acceptance', () => {
+    /**
+     * Recorded by the server at account creation, not asserted by the client.
+     * The tickbox is what makes somebody read the sentence; it cannot also be
+     * the evidence, because a client that never rendered the screen could send
+     * the same flag.
+     */
+    it('stamps the accepted version on every new account', async () => {
+      const user = await newUser('terms-stamp@example.com')
+
+      const record = await handle.db
+        .collection<{ _id: ObjectId; terms?: { acceptedAt: Date; version: string } }>(
+          COLLECTIONS.user,
+        )
+        .findOne({ _id: new ObjectId(user.userId) })
+
+      expect(record?.terms?.version).toBe(CURRENT_TERMS_VERSION)
+      expect(record?.terms?.acceptedAt.getTime()).toBeGreaterThan(Date.now() - 60_000)
     })
   })
 
