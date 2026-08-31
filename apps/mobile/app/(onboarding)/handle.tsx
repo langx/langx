@@ -1,4 +1,4 @@
-import { handleSchema } from '@langx/shared'
+import { newHandleSchema } from '@langx/shared'
 import { useQuery } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useEffect, useState } from 'react'
@@ -55,7 +55,9 @@ export default function HandleStep() {
     if (reserved && draft.handle.length === 0) updateDraft({ handle: reserved })
   }, [reserved, draft.handle.length])
 
-  const parsed = handleSchema.safeParse(draft.handle)
+  // The claiming schema, so the floor and the reserved list are shown inline
+  // rather than arriving as a 400 after Continue.
+  const parsed = newHandleSchema.safeParse(draft.handle)
   const debouncedHandle = useDebounced(parsed.success ? draft.handle : '')
 
   const availability = useQuery({

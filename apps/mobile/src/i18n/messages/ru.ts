@@ -679,6 +679,8 @@ export const ru: Localized<EnMessages> = {
     tokens: 'Жетоны',
     previewProfile: 'Посмотреть мой профиль',
     previewProfileBody: 'Взгляните на профиль глазами других',
+    shareProfile: 'Поделиться профилем',
+    shareMessage: 'Практикуйте языки со мной в LangX: {url}',
     badges: 'Значки',
   },
 
@@ -906,6 +908,15 @@ export const ru: Localized<EnMessages> = {
       many: '{formatted} исправлений',
       other: '{formatted} исправления',
     },
+  },
+
+  shared: {
+    missingTitle: 'Здесь ничего нет',
+    missingBody: 'Профиля @{handle} в LangX нет.',
+    speaks: 'Говорит',
+    learning: 'Учит',
+    ctaBody: '{name} практикует языки в LangX. Присоединяйтесь, чтобы поздороваться.',
+    ctaLabel: 'Открыть LangX',
   },
 
   viewers: {

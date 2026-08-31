@@ -591,6 +591,44 @@ instead, so both still apply; what changes is that the 2dsphere index drives
 the query and the language arrays are filtered over the candidates it returns.
 `maxDistance` is what keeps that candidate set small. See `decisions.md`.
 
+### Handles are public addresses
+
+A profile answers at `/<handle>` — root level, so a shared link is short enough
+to say out loud. `app/[username].tsx` sits at the top of the `app/` tree, which
+is what puts it outside both `Stack.Protected` branches: a link has to resolve
+for somebody who has never signed in, and every other profile route is behind
+the session guard. Signed in it redirects to the full screen; signed out it
+renders a card from `GET /public/profiles/:handle`.
+
+That endpoint is **the only unauthenticated read in the API**, and it answers a
+second, smaller allow-list than `toPublicProfile` — handle, display name,
+avatar, bio, country, languages. Age, city, photos, presence, streak and tier
+are absent: individually mild, together the set that makes a link somebody
+shared feel like one they did not mean to. It carries its own rate limit,
+because a handle is guessable and the global 300/minute is an enumeration
+budget.
+
+Three consequences for handles:
+
+- **Every top-level route name is reserved.** Static routes win over the
+  dynamic one, so a collision would not break the screen — it would break the
+  _user_, whose link quietly resolves to a page instead of to them.
+  `RESERVED_HANDLES` holds them, and `routeLiterals.test.ts` walks `app/` and
+  fails if a route name is missing from it.
+- **New handles are at least `HANDLE_MIN_LENGTH`.** Short names are where route
+  collisions live, and a floor is what stops squatting on a public address.
+- **Two schemas, not one.** `handleSchema` reads; `newHandleSchema` claims. v1
+  handles came across under the old rule, so tightening the reading schema
+  would 400 an existing account's own profile — including the link they have
+  already shared. The claim rules are applied in `createProfile` rather than in
+  the schema, because only there is it visible whether the handle is reserved
+  _for this person_: a returning v1 user taking `ada` back is not a new claim.
+
+`WEB_HOST` is where links point and `APP_LINK_HOST` is what the app claims in
+`associatedDomains` and `assetlinks.json`. They are separate constants on
+purpose — collapsing them would make re-pointing links a store-submission
+change wearing the clothes of a URL edit.
+
 ### Community feed
 
 Four collections, none of them a conversation with one participant: a post has

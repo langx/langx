@@ -1,11 +1,13 @@
 import {
   countryFromLocationSchema,
+  handleSchema,
   hasFeature,
   locationInputSchema,
   onboardingProfileSchema,
   updateProfileSchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { findConversationBetween } from '../modules/chat/conversations'
 import { countryFromHeaders } from '../lib/requestCountry'
@@ -25,6 +27,7 @@ import {
   toPublicProfile,
   updateProfile,
 } from '../modules/profiles/profiles'
+import { getSharedProfile } from '../modules/profiles/sharedProfile'
 import { readFollowState } from '../modules/social/follows'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -87,6 +90,27 @@ export const profileRoutes: FastifyPluginAsyncZod = async (app) => {
 
   // Deliberately after `/profiles/me` so the literal route wins over the
   // parameterised one — Fastify would otherwise treat "me" as a handle.
+  /*
+   * The one profile read with no `requireAuth`, because it is what a shared
+   * link resolves to: `https://<host>/<handle>` opened by somebody who has
+   * never signed in. It answers a deliberately smaller allow-list than the
+   * member view — see `getSharedProfile`.
+   *
+   * Its own rate limit, because it is the only unauthenticated read in the
+   * API and a handle is guessable: without one it is a way to enumerate the
+   * user base at the global 300/minute.
+   */
+  app.get(
+    '/public/profiles/:handle',
+    {
+      schema: { params: z.object({ handle: handleSchema }) },
+      config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
+    },
+    async (request, reply) => {
+      return reply.send(await getSharedProfile(app.mongo.db, request.params.handle))
+    },
+  )
+
   app.get(
     '/profiles/:handleOrId',
     { preHandler: requireAuth, config: { rateLimit: false } },

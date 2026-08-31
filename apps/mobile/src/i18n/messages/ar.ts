@@ -706,6 +706,8 @@ export const ar: Localized<EnMessages> = {
     tokens: 'الرموز',
     previewProfile: 'معاينة ملفي الشخصي',
     previewProfileBody: 'شاهد ملفك كما يراه الآخرون',
+    shareProfile: 'مشاركة ملفي الشخصي',
+    shareMessage: 'تدرّب على اللغات معي في LangX: ‏{url}',
     badges: 'الشارات',
   },
 
@@ -948,6 +950,15 @@ export const ar: Localized<EnMessages> = {
       many: '{formatted} تصحيحًا',
       other: '{formatted} تصحيح',
     },
+  },
+
+  shared: {
+    missingTitle: 'لا شيء هنا',
+    missingBody: 'لا يوجد ملف شخصي في LangX باسم ‏@{handle}.',
+    speaks: 'يتحدث',
+    learning: 'يتعلّم',
+    ctaBody: '‏{name} يتدرّب على اللغات في LangX. انضم لتقول مرحبًا.',
+    ctaLabel: 'افتح LangX',
   },
 
   viewers: {

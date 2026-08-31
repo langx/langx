@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import path from 'node:path'
 import ts from 'typescript'
+import { RESERVED_HANDLES, couldBeHandle } from '@langx/shared'
 import { describe, expect, it } from 'vitest'
 
 /**
@@ -317,5 +318,37 @@ describe('route literals', () => {
 
   it('resolves every one of them to a screen', () => {
     expect(all.filter((found) => !matches(found.literal, patterns)).map(show)).toEqual([])
+  })
+})
+
+/**
+ * Every route name that could also be somebody's handle is reserved.
+ *
+ * `app/[username].tsx` puts a profile at the root, so every top-level path is
+ * a name two things could answer to. Static routes win, so a collision does
+ * not break the screen — it breaks the *user*, whose link silently resolves to
+ * a page instead of to them. The person who loses did nothing wrong, which is
+ * why this is checked rather than remembered.
+ *
+ * Derived from the same walk of `app/` the rest of this file uses, so adding a
+ * screen without reserving its name fails here instead of shipping. Segments
+ * that could never be a handle — `edit-profile`, `[handle]`, `(app)` — are
+ * skipped rather than demanded, because reserving them would be noise.
+ */
+describe('reserved handles', () => {
+  const routeNames = new Set(
+    patterns
+      .map((segments) => segments[0])
+      .filter((segment): segment is string => segment !== undefined)
+      .filter(couldBeHandle),
+  )
+
+  it('covers every top-level route name a handle could collide with', () => {
+    const unreserved = [...routeNames].filter((name) => !RESERVED_HANDLES.has(name)).sort()
+    expect(unreserved).toEqual([])
+  })
+
+  it('found route names to check, so a broken walk cannot pass silently', () => {
+    expect(routeNames.size).toBeGreaterThan(10)
   })
 })

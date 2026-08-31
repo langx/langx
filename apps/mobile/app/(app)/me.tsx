@@ -1,8 +1,8 @@
 import { ActivityMap } from '../../src/components/ActivityMap'
-import { countryFlag, getCountry } from '@langx/shared'
+import { countryFlag, getCountry, profileUrl } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, Share, Text, View } from 'react-native'
 import {
   useEffectiveTier,
   useIsPro,
@@ -173,14 +173,31 @@ export default function MeScreen() {
       />
 
       {/*
-        Last of the rows, because it is the result of everything above it: this
-        is the profile a stranger — or anyone following your link — actually
-        sees, with your privacy settings already applied.
+        Two rows, because they are two different things you do with a profile:
+        one looks at it the way a stranger does, the other hands somebody the
+        address. Last of the list, since both are the *result* of everything
+        above them.
       */}
       <ListRow
         title={t('me.previewProfile')}
         subtitle={t('me.previewProfileBody')}
         onPress={() => openProfile(profile.handle, '/(app)/me')}
+      />
+      {/*
+        `Share.share` is React Native's own — the platform sheet already offers
+        copy, message and everything else, so there is nothing to reimplement.
+      */}
+      <ListRow
+        title={t('me.shareProfile')}
+        subtitle={profileUrl(profile.handle).replace('https://', '')}
+        onPress={() => {
+          void Share.share({
+            message: t('me.shareMessage', { url: profileUrl(profile.handle) }),
+            // iOS reads `url` and `message` as separate fields; Android has
+            // only the one, which is why the URL is in both.
+            url: profileUrl(profile.handle),
+          })
+        }}
       />
 
       {!isPro ? (

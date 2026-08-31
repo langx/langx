@@ -629,6 +629,8 @@ export const en = {
     tokens: 'Tokens',
     previewProfile: 'Preview my profile',
     previewProfileBody: 'See your profile the way other people do',
+    shareProfile: 'Share my profile',
+    shareMessage: 'Practise languages with me on LangX: {url}',
     badges: 'Badges',
   },
 
@@ -819,6 +821,15 @@ export const en = {
     tokensEarned: { one: '{formatted} token earned', other: '{formatted} tokens earned' },
     memberDays: { one: '{formatted} day a member', other: '{formatted} days a member' },
     corrections: { one: '{formatted} correction', other: '{formatted} corrections' },
+  },
+
+  shared: {
+    missingTitle: 'Nothing here',
+    missingBody: 'No LangX profile answers to @{handle}.',
+    speaks: 'Speaks',
+    learning: 'Learning',
+    ctaBody: '{name} practises languages on LangX. Join to say hello.',
+    ctaLabel: 'Open LangX',
   },
 
   viewers: {
