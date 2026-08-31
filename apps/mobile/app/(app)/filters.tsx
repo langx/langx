@@ -10,7 +10,7 @@ import {
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native'
-import { useIsPro, useMe } from '../../src/api/queries'
+import { useHasFeature, useMe } from '../../src/api/queries'
 import { CountryPicker } from '../../src/components/CountryPicker'
 import { Button } from '../../src/components/ui/Button'
 import { Chip } from '../../src/components/ui/Chip'
@@ -64,7 +64,13 @@ export default function FiltersScreen() {
 
   const params = useLocalSearchParams<Record<string, string>>()
   const me = useMe()
-  const isPro = useIsPro()
+  /*
+   * `advancedFilters`, not "any paid plan". Correct by accident while every
+   * gated filter was Fluent's; correct by construction now. On discover it is
+   * load-bearing: this decides whether to strip Pro filters before asking, and
+   * if it disagrees with the server the reader gets a 403 instead of a list.
+   */
+  const isPro = useHasFeature('advancedFilters')
   const myGender = me.data?.gender
 
   const [filters, setFilters] = useState<DiscoveryFilters>(() => parseFilters(params))

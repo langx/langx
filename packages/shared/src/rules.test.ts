@@ -4,6 +4,7 @@ import { LANGUAGE_LEVELS, levelRank } from './level'
 import { getLanguage, isLanguageCode, LANGUAGES, languageCodeSchema } from './languages'
 import { PACKAGES, packageDefinition, tierFromEntitlementIds } from './billing'
 import {
+  PLAN_FEATURES,
   PLAN_LIMITS,
   PLAN_TIERS,
   PRO_FEATURES,
@@ -59,6 +60,13 @@ describe('age gate', () => {
   })
 })
 
+/** `null` is unlimited and beats any number; otherwise more is better. */
+function atLeastAsGood(candidate: number | null, baseline: number | null): boolean {
+  if (candidate === null) return true
+  if (baseline === null) return false
+  return candidate >= baseline
+}
+
 describe('plan limits', () => {
   it('gives free users 5 initiations per rolling 24h and pro unlimited', () => {
     expect(quotaLimit('free', 'initiations')).toBe(5)
@@ -99,13 +107,32 @@ describe('plan limits', () => {
    * *worse* value than Pro anywhere — the easy mistake when hand-copying a
    * table — fails here instead of shipping.
    */
-  it('makes Pro+ a strict superset of Pro', () => {
+  /**
+   * Written as "at least as good", not "equal".
+   *
+   * The equality version passed only while every quota happened to be
+   * identical between the two paid tiers. It broke the moment Polyglot got a
+   * larger translation allowance than Fluent — which is an *improvement*, and a
+   * test that fails on an improvement is testing the wrong thing. This one is
+   * also strictly stronger: it still catches Polyglot being given *less*.
+   */
+  it('makes Pro+ at least as good as Pro, everywhere', () => {
     for (const feature of PRO_FEATURES) {
       expect(hasFeature('pro_plus', feature)).toBe(true)
     }
-    expect(PLAN_LIMITS.pro_plus.initiationsPer24h).toBe(PLAN_LIMITS.pro.initiationsPer24h)
-    expect(PLAN_LIMITS.pro_plus.translationsPer24h).toBe(PLAN_LIMITS.pro.translationsPer24h)
-    expect(PLAN_LIMITS.pro_plus.mediaPer24h).toBe(PLAN_LIMITS.pro.mediaPer24h)
+    const numeric = [
+      'initiationsPer24h',
+      'translationsPer24h',
+      'mediaPer24h',
+      'maxLearningLanguages',
+      'maxNativeLanguages',
+    ] as const
+    for (const key of numeric) {
+      expect(
+        atLeastAsGood(PLAN_LIMITS.pro_plus[key], PLAN_LIMITS.pro[key]),
+        `pro_plus.${key} is worse than pro's`,
+      ).toBe(true)
+    }
   })
 
   /**
@@ -374,5 +401,39 @@ describe('language allowances', () => {
       expect(PLAN_LIMITS.free[key]).not.toBe(PLAN_LIMITS.pro_plus[key])
     }
     expect(PLAN_LIMITS.free.maxPhotos).toBe(PLAN_LIMITS.pro_plus.maxPhotos)
+  })
+})
+
+describe('translation is never sold as unlimited', () => {
+  /**
+   * The one quota with a real per-request cost — Google bills per character —
+   * so `null` here would be a promise made against somebody else's meter. This
+   * pins the *shape*, not the numbers, so nobody can quietly put the word back.
+   */
+  it('is a finite number on every tier', () => {
+    for (const tier of PLAN_TIERS) {
+      expect(typeof PLAN_LIMITS[tier].translationsPer24h, tier).toBe('number')
+    }
+  })
+
+  it('rises with the tier', () => {
+    expect(PLAN_LIMITS.pro.translationsPer24h).toBeGreaterThan(PLAN_LIMITS.free.translationsPer24h)
+    expect(PLAN_LIMITS.pro_plus.translationsPer24h).toBeGreaterThan(
+      PLAN_LIMITS.pro.translationsPer24h,
+    )
+  })
+})
+
+describe('the two feature lists', () => {
+  /**
+   * True by construction today. Asserted so that a future "just append it to
+   * both" — which would make a Fluent subscriber's refused request look like a
+   * bug in the guard rather than the tier boundary working — cannot pass.
+   */
+  it('are disjoint, and together are every gated capability', () => {
+    for (const feature of PRO_FEATURES) {
+      expect(PRO_PLUS_FEATURES as readonly string[]).not.toContain(feature)
+    }
+    expect([...PLAN_FEATURES].sort()).toEqual([...PRO_FEATURES, ...PRO_PLUS_FEATURES].sort())
   })
 })
