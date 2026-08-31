@@ -37,6 +37,18 @@ export const fr: Localized<EnMessages> = {
 
   tabs: { discover: 'Découvrir', chats: 'Discussions', feed: 'Fil', me: 'Moi' },
 
+  tips: {
+    dismiss: 'Masquer ce conseil',
+    section: 'Conseils',
+    show: 'Afficher les conseils',
+    showBody:
+      'De courtes notes le temps de prendre tes repères. En les réactivant, les conseils masqués reviennent.',
+    chatCorrect:
+      'Appuie longuement sur un message pour le corriger — le plus utile que tu puisses envoyer.',
+    chatSwipeReply: 'Fais glisser un message vers la droite pour y répondre.',
+    discoverFilters: 'Utilise les filtres pour affiner par niveau, âge ou pays.',
+    feedAsk: 'Bloqué sur une phrase ? Publie-la ici, quelqu’un la corrigera.',
+  },
   theme: {
     section: 'Apparence',
     label: 'Thème',

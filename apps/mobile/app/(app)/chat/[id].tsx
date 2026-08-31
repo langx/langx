@@ -33,6 +33,7 @@ import {
 import * as Clipboard from 'expo-clipboard'
 import { api } from '../../../src/api/client'
 import { PresenceLine } from '../../../src/components/PresenceLine'
+import { Tip } from '../../../src/components/Tip'
 import { MessageBubble } from '../../../src/components/MessageBubble'
 import { MessageBubbleSkeleton } from '../../../src/components/skeletons/MessageBubbleSkeleton'
 import { Avatar } from '../../../src/components/ui/Avatar'
@@ -684,24 +685,29 @@ export default function ChatScreen() {
              * composer, which is where something that failed to send belongs.
              */
             ListHeaderComponent={
-              unsent.length > 0 ? (
-                <View style={styles.unsentBlock}>
-                  {unsent.map((message) => (
-                    <Pressable
-                      key={message.clientId}
-                      accessibilityRole="button"
-                      accessibilityLabel={t('chat.notSentRetry')}
-                      onPress={() => void retry(message)}
-                      style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
-                    >
-                      <Text style={styles.unsentBody}>{message.body}</Text>
-                      <Text style={styles.unsentNote}>
-                        <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
-              ) : null
+              <>
+                {/* Above the composer, where a hint is read rather than
+                    scrolled past. */}
+                <Tip id="chatCorrect" body="tips.chatCorrect" />
+                {unsent.length > 0 ? (
+                  <View style={styles.unsentBlock}>
+                    {unsent.map((message) => (
+                      <Pressable
+                        key={message.clientId}
+                        accessibilityRole="button"
+                        accessibilityLabel={t('chat.notSentRetry')}
+                        onPress={() => void retry(message)}
+                        style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
+                      >
+                        <Text style={styles.unsentBody}>{message.body}</Text>
+                        <Text style={styles.unsentNote}>
+                          <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                ) : null}
+              </>
             }
             /** Footer, not header: inverted, the footer is what sits on top. */
             ListFooterComponent={

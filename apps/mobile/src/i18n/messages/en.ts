@@ -61,6 +61,18 @@ export const en = {
     me: 'Me',
   },
 
+  tips: {
+    dismiss: 'Dismiss this tip',
+    section: 'Tips',
+    show: 'Show tips',
+    showBody:
+      'Short hints while you learn your way around. Turning them back on brings the dismissed ones back.',
+    chatCorrect:
+      'Hold any message to correct it — corrections are the most useful thing you can send.',
+    chatSwipeReply: 'Swipe a message to the right to reply to it.',
+    discoverFilters: 'Use the filters to narrow by level, age or country.',
+    feedAsk: 'Stuck on a sentence? Post it here and someone will fix it.',
+  },
   theme: {
     section: 'Appearance',
     label: 'Theme',
