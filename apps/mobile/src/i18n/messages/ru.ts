@@ -307,7 +307,7 @@ export const ru: Localized<EnMessages> = {
     native: 'Родной',
     learning: 'Учу',
     yourLevel: 'Твой уровень',
-    upToFive: 'До 5',
+    upToCount: { one: 'До {count}', few: 'До {count}', many: 'До {count}', other: 'До {count}' },
     cannotBeBoth: 'Язык не может быть и тем и другим',
     aboutYouTitle: 'О тебе',
     displayName: 'Отображаемое имя',

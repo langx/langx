@@ -281,7 +281,7 @@ export const tr: Localized<EnMessages> = {
     native: 'Ana dil',
     learning: 'Öğrendiğim',
     yourLevel: 'Seviyen',
-    upToFive: 'En fazla 5',
+    upToCount: { one: 'En fazla {count}', other: 'En fazla {count}' },
     cannotBeBoth: 'Bir dil ikisi birden olamaz',
     aboutYouTitle: 'Senin hakkında',
     displayName: 'Görünen ad',

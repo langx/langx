@@ -348,3 +348,31 @@ describe('legacy token conversion', () => {
     expect(convertLegacyTokens(Number.NaN)).toBe(0)
   })
 })
+
+describe('language allowances', () => {
+  const KEYS = ['maxLearningLanguages', 'maxNativeLanguages'] as const
+
+  /**
+   * Asserted over a list rather than named one by one, so a third tiered array
+   * cannot be added later without a row here.
+   */
+  it('rises with the tier and never starts below one', () => {
+    for (const key of KEYS) {
+      expect(PLAN_LIMITS.free[key]).toBeGreaterThanOrEqual(1)
+      expect(PLAN_LIMITS.pro[key]).toBeGreaterThan(PLAN_LIMITS.free[key])
+      expect(PLAN_LIMITS.pro_plus[key]).toBeGreaterThan(PLAN_LIMITS.pro[key])
+    }
+  })
+
+  /**
+   * The counter-example to `maxPhotos`, which is uniform on purpose and is read
+   * off the free row for every tier. These are not, so nothing may do that —
+   * the two sit next to each other in the table so the difference is visible.
+   */
+  it('is not uniform, unlike the photo allowance', () => {
+    for (const key of KEYS) {
+      expect(PLAN_LIMITS.free[key]).not.toBe(PLAN_LIMITS.pro_plus[key])
+    }
+    expect(PLAN_LIMITS.free.maxPhotos).toBe(PLAN_LIMITS.pro_plus.maxPhotos)
+  })
+})

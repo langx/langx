@@ -1073,6 +1073,115 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
   })
 
+  describe('the language allowance', () => {
+    async function onboardedWith(
+      email: string,
+      userHandle: string,
+      learning: { code: string; level: string; priority: number }[],
+    ) {
+      const user = await newUser(email)
+      const created = await app.inject({
+        method: 'POST',
+        url: '/profiles',
+        headers: { cookie: user.cookie },
+        payload: onboardingBody({ handle: userHandle, learning }),
+      })
+      return { user, created }
+    }
+
+    const patch = (user: SignedUpUser, body: Record<string, unknown>) =>
+      app.inject({
+        method: 'PATCH',
+        url: '/profiles/me',
+        headers: { cookie: user.cookie },
+        payload: body,
+      })
+
+    it('caps onboarding at the free allowance', async () => {
+      const { created } = await onboardedWith('lang-onboard@example.com', 'langonboard', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+        { code: 'de', level: 'intermediate', priority: 2 },
+      ])
+      expect(created.statusCode).toBe(403)
+      expect(created.json<{ code: string; limit: string; max: number }>()).toMatchObject({
+        code: 'UPGRADE_REQUIRED',
+        limit: 'learningLanguages',
+        max: PLAN_LIMITS.free.maxLearningLanguages,
+      })
+    })
+
+    it('refuses a free account a second learning language', async () => {
+      const { user, created } = await onboardedWith('lang-second@example.com', 'langsecond', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      expect(created.statusCode).toBe(201)
+
+      const response = await patch(user, {
+        learning: [
+          { code: 'en', level: 'intermediate', priority: 1 },
+          { code: 'de', level: 'beginner', priority: 2 },
+        ],
+      })
+      expect(response.statusCode).toBe(403)
+      expect(response.json<{ limit: string }>().limit).toBe('learningLanguages')
+    })
+
+    /**
+     * The clause that makes grandfathering real. A migrated v1 user is over the
+     * free limit by definition; without it every write they make carries an
+     * over-limit array and is refused, so the limit reads as "your profile is
+     * frozen" rather than "you cannot add another".
+     */
+    it('lets somebody already over the limit keep editing, but not add more', async () => {
+      const { user } = await onboardedWith('lang-legacy@example.com', 'langlegacy', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      const over = [
+        { code: 'en', level: 'intermediate', priority: 1 },
+        { code: 'de', level: 'beginner', priority: 2 },
+        { code: 'fr', level: 'beginner', priority: 3 },
+      ]
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne({ _id: user.userId }, { $set: { learning: over } })
+
+      // Changing a level, at the same length: allowed.
+      const edited = await patch(user, {
+        learning: [{ ...over[0]!, level: 'fluent' }, over[1]!, over[2]!],
+      })
+      expect(edited.statusCode, edited.body).toBe(200)
+
+      // Removing one, still over the limit: allowed.
+      const removed = await patch(user, { learning: [over[0]!, over[1]!] })
+      expect(removed.statusCode, removed.body).toBe(200)
+
+      // Going back up past where they were: refused.
+      const grown = await patch(user, { learning: over })
+      expect(grown.statusCode).toBe(403)
+    })
+
+    it('gives a paid tier its wider allowance', async () => {
+      const { user } = await onboardedWith('lang-paid@example.com', 'langpaid', [
+        { code: 'en', level: 'intermediate', priority: 1 },
+      ])
+      await handle.db
+        .collection<Profile>(COLLECTIONS.profiles)
+        .updateOne(
+          { _id: user.userId },
+          { $set: { entitlement: { tier: 'pro_plus', updatedAt: new Date() } } },
+        )
+
+      const response = await patch(user, {
+        learning: [
+          { code: 'en', level: 'intermediate', priority: 1 },
+          { code: 'de', level: 'beginner', priority: 2 },
+          { code: 'fr', level: 'beginner', priority: 3 },
+        ],
+      })
+      expect(response.statusCode, response.body).toBe(200)
+    })
+  })
+
   describe('terms acceptance', () => {
     /**
      * Recorded by the server at account creation, not asserted by the client.

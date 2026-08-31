@@ -17,6 +17,7 @@ import { useState } from 'react'
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native'
 import {
   useAddPhoto,
+  useEffectiveTier,
   useMe,
   useRemovePhoto,
   useUpdateProfile,
@@ -92,6 +93,7 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
     profile?.learning.map((l) => ({ code: l.code, level: l.level })) ?? [],
   )
   const [editing, setEditing] = useState<'none' | 'native' | 'learning'>('none')
+  const tier = useEffectiveTier()
   const [error, setError] = useState<string | undefined>()
 
   const photos = profile.photos ?? []
@@ -313,7 +315,14 @@ function EditProfileForm({ profile }: { profile: MeProfile }) {
           <LanguagePicker
             selected={editing === 'native' ? native : learningCodes}
             disabledCodes={editing === 'native' ? learningCodes : native}
-            max={5}
+            /* The viewer's own tier, not a fixed number: an over-limit profile
+               keeps what it has (the server grandfathers it) but must not be
+               offered another. */
+            max={
+              editing === 'native'
+                ? PLAN_LIMITS[tier].maxNativeLanguages
+                : PLAN_LIMITS[tier].maxLearningLanguages
+            }
             onToggle={(code) => {
               if (editing === 'native') {
                 setNative((current) =>

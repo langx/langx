@@ -267,7 +267,7 @@ export const ptBR: Localized<EnMessages> = {
     native: 'Nativo',
     learning: 'Aprendendo',
     yourLevel: 'Seu nível',
-    upToFive: 'Até 5',
+    upToCount: { one: 'Até {count}', other: 'Até {count}' },
     cannotBeBoth: 'Um idioma não pode ser os dois',
     aboutYouTitle: 'Sobre você',
     displayName: 'Nome de exibição',
