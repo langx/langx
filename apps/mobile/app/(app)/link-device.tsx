@@ -24,7 +24,14 @@ import { useT } from '../../src/i18n'
  * button rather than a silent redirect after a scan.
  */
 export default function LinkDeviceScreen() {
-  const { code } = useLocalSearchParams<{ code?: string }>()
+  /*
+   * Two names for one thing, and both are read. Better Auth's own
+   * `verification_uri_complete` uses `user_code`; `code` is what a hand-typed
+   * or older link may carry. Accepting either costs nothing and means a link
+   * that looks right cannot land on an empty field.
+   */
+  const params = useLocalSearchParams<{ user_code?: string; code?: string }>()
+  const code = params.user_code ?? params.code
   const styles = useStyles()
   const { colors } = useTheme()
   const t = useT()
