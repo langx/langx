@@ -732,6 +732,7 @@ export const fr: Localized<EnMessages> = {
     activityMap: 'Afficher ma carte d’activité',
     activityMapBody: 'Les carrés sur ton profil. Ta série reste visible dans tous les cas.',
     updateLocation: 'Mettre à jour ma position',
+    locationUpdated: 'Mis à jour il y a {time}',
     updating: 'Mise à jour…',
     languageSection: 'Langue',
     appLanguage: 'Langue de l’app',

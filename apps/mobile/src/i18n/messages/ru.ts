@@ -844,6 +844,7 @@ export const ru: Localized<EnMessages> = {
     activityMap: 'Показывать карту активности',
     activityMapBody: 'Квадратики в твоём профиле. Серия остаётся видна в любом случае.',
     updateLocation: 'Обновить местоположение',
+    locationUpdated: 'Обновлено {time} назад',
     updating: 'Обновляем…',
     languageSection: 'Язык',
     appLanguage: 'Язык приложения',

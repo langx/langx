@@ -751,6 +751,7 @@ export const de: Localized<EnMessages> = {
     activityMap: 'Meine Aktivitätskarte zeigen',
     activityMapBody: 'Die Kästchen auf deinem Profil. Deine Serie bleibt so oder so sichtbar.',
     updateLocation: 'Meinen Standort aktualisieren',
+    locationUpdated: 'Vor {time} aktualisiert',
     updating: 'Wird aktualisiert…',
     languageSection: 'Sprache',
     appLanguage: 'App-Sprache',

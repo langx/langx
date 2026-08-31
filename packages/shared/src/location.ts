@@ -36,6 +36,19 @@ export const LOCATION_PRECISION_DECIMALS = 2
  * is not "nearby", it is just the nearest, and showing it would make the sort
  * look broken rather than empty.
  */
+/**
+ * How stale a shared location may get before the app quietly refreshes it.
+ *
+ * Six hours, and the number follows from `LOCATION_PRECISION_DECIMALS`: the
+ * stored point is rounded to about a kilometre, so anything finer than a few
+ * hours mostly writes the same cell back and spends a GPS wake-up to do it.
+ *
+ * There is no background permission — `app.config.ts` disables it on both
+ * platforms and says why — so this is a floor on how often a *foreground*
+ * refresh may happen, not a schedule.
+ */
+export const LOCATION_REFRESH_MIN_GAP_MS = 6 * 60 * 60 * 1000
+
 export const NEARBY_MAX_KM = 500
 
 /** Radii the UI offers. Any value up to {@link NEARBY_MAX_KM} is accepted. */

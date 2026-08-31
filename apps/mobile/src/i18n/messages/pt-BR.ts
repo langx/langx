@@ -728,6 +728,7 @@ export const ptBR: Localized<EnMessages> = {
     activityMapBody:
       'Os quadradinhos do seu perfil. Sua sequência continua visível de qualquer jeito.',
     updateLocation: 'Atualizar minha localização',
+    locationUpdated: 'Atualizado há {time}',
     updating: 'Atualizando…',
     languageSection: 'Idioma',
     appLanguage: 'Idioma do app',

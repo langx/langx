@@ -881,6 +881,7 @@ export const ar: Localized<EnMessages> = {
     activityMap: 'إظهار خريطة نشاطي',
     activityMapBody: 'المربعات في ملفك. تبقى سلسلتك ظاهرة في الحالتين.',
     updateLocation: 'تحديث موقعي',
+    locationUpdated: 'حُدّث قبل {time}',
     updating: 'جارٍ التحديث…',
     languageSection: 'اللغة',
     appLanguage: 'لغة التطبيق',

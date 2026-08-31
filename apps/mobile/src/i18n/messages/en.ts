@@ -769,6 +769,7 @@ export const en = {
     activityMap: 'Show my activity map',
     activityMapBody: 'The squares on your profile. Your streak stays visible either way.',
     updateLocation: 'Update my location',
+    locationUpdated: 'Last updated {time} ago',
     updating: 'Updating…',
     languageSection: 'Language',
     appLanguage: 'App language',
