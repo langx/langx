@@ -64,10 +64,20 @@ export type MessageType = (typeof MESSAGE_TYPES)[number]
  */
 export const REPLY_PREVIEW_MAX_LENGTH = 140
 
+/**
+ * A client-minted id for one attempt to send, so a retry cannot double-post.
+ *
+ * Bounded and opaque: the server only ever compares it against this sender's
+ * other ids, never parses it. Optional because an older build sends none — such
+ * a message simply gets no protection, which is what it had before.
+ */
+export const clientMessageIdSchema = z.string().trim().min(1).max(64)
+
 export const sendTextMessageSchema = z.object({
   conversationId: z.string().trim().min(1),
   body: messageBodySchema,
   replyToMessageId: z.string().trim().min(1).optional(),
+  clientId: clientMessageIdSchema.optional(),
 })
 export type SendTextMessageInput = z.infer<typeof sendTextMessageSchema>
 
@@ -94,6 +104,21 @@ export type SendCorrectionInput = z.infer<typeof sendCorrectionSchema>
  * decision. Plain 🔥 rather than WhatsApp's ❤️‍🔥: the flame is already the
  * streak's symbol in this app and reusing it here keeps one meaning per glyph.
  */
+/**
+ * How long to wait for a socket ack before treating a send as failed.
+ *
+ * Without one, socket.io registers the ack with **no timer at all** and only
+ * invokes it on close if it was created with a timeout — so a connection that
+ * dies after the frame goes out but before the ack returns leaves the promise
+ * unsettled forever. In the app that meant `finally { setSending(false) }` never
+ * ran and the send button stayed disabled until the screen was left.
+ *
+ * Comfortably longer than a round trip on a bad connection and comfortably
+ * shorter than the ~45s it takes the server's default ping timeout to notice a
+ * dead socket, which is the window this is closing.
+ */
+export const SOCKET_ACK_TIMEOUT_MS = 12_000
+
 export const MESSAGE_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥'] as const
 export type MessageReaction = (typeof MESSAGE_REACTIONS)[number]
 

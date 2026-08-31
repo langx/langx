@@ -431,6 +431,7 @@ export const es: Localized<EnMessages> = {
   chat: {
     title: 'Chat',
     typing: 'escribiendo…',
+    notSentRetry: 'No enviado: toca para reintentar',
     editing: 'Editando',
     correcting: 'Corrigiendo',
     activity: 'Actividad',

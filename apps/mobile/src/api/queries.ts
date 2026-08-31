@@ -307,6 +307,12 @@ export interface MessageDto {
   /** Starred by me alone; who else did never leaves the server. */
   starred?: boolean
   editedAt?: string
+  /**
+   * Present only on your own messages, and only when the client that sent it
+   * supplied one. Used to retire a "not sent" row whose message turns out to
+   * have arrived.
+   */
+  clientId?: string
   /** Somebody corrected this sentence, so it can no longer be edited. */
   corrected?: boolean
   deliveredAt?: string

@@ -115,6 +115,59 @@ describe('Faz 5 — conversation/message history REST', () => {
     await replSet?.stop()
   })
 
+  /**
+   * A send whose ack is lost is indistinguishable from one that never arrived,
+   * so the client retries it. Without the index behind this, the message it
+   * already delivered would be posted a second time.
+   */
+  it('does not post a resent message twice', async () => {
+    const a = await newUser('idem-a@example.com')
+    const b = await newUser('idem-b@example.com')
+    const conversationId = (await startConversation(a, b.userId))._id
+    const { sendTextMessage } = await import('../modules/chat/messages')
+
+    const first = await sendTextMessage(handle.db, a.userId, {
+      conversationId,
+      body: 'only once',
+      clientId: 'attempt-1',
+    })
+    const retry = await sendTextMessage(handle.db, a.userId, {
+      conversationId,
+      body: 'only once',
+      clientId: 'attempt-1',
+    })
+
+    expect(String(retry.message._id)).toBe(String(first.message._id))
+    const count = await handle.db
+      .collection(COLLECTIONS.messages)
+      .countDocuments({ senderId: a.userId, body: 'only once' })
+    expect(count).toBe(1)
+  })
+
+  /** A different attempt at the same words is a different message. */
+  it('still allows the same text sent deliberately twice', async () => {
+    const a = await newUser('idem-twice-a@example.com')
+    const b = await newUser('idem-twice-b@example.com')
+    const conversationId = (await startConversation(a, b.userId))._id
+    const { sendTextMessage } = await import('../modules/chat/messages')
+
+    await sendTextMessage(handle.db, a.userId, {
+      conversationId,
+      body: 'ha',
+      clientId: 'attempt-1',
+    })
+    await sendTextMessage(handle.db, a.userId, {
+      conversationId,
+      body: 'ha',
+      clientId: 'attempt-2',
+    })
+
+    const count = await handle.db
+      .collection(COLLECTIONS.messages)
+      .countDocuments({ senderId: a.userId, body: 'ha' })
+    expect(count).toBe(2)
+  })
+
   it('lists a user own conversations, most recent first', async () => {
     const viewer = await newUser('list-convos-viewer@example.com')
     const older = await newUser('list-convos-older@example.com')

@@ -1,4 +1,4 @@
-import { APP_SCHEME } from '@langx/shared'
+import { APP_SCHEME, SOCKET_ACK_TIMEOUT_MS } from '@langx/shared'
 import { Platform } from 'react-native'
 import { io, type Socket } from 'socket.io-client'
 import { API_URL } from './apiUrl'
@@ -40,13 +40,29 @@ export function closeSocket(): void {
   socket = null
 }
 
-/** Promise wrapper over socket.io's ack callback, with the API's error shape. */
+/**
+ * Promise wrapper over socket.io's ack callback, with the API's error shape.
+ *
+ * `.timeout()` is not optional decoration. Without it socket.io registers the
+ * ack with no timer, and `_clearAcks` on close only invokes handlers that were
+ * created with one — so a connection dying after the frame is sent but before
+ * the ack returns left this promise unsettled *forever*. The caller's
+ * `finally` never ran, `sending` stayed true, and the send button was disabled
+ * until the reader left the screen.
+ */
 export function emitWithAck<T>(s: Socket, event: string, payload: unknown): Promise<T> {
   return new Promise((resolve, reject) => {
-    s.emit(
+    s.timeout(SOCKET_ACK_TIMEOUT_MS).emit(
       event,
       payload,
-      (response: { ok: boolean; data?: T; error?: { code: string; message: string } }) => {
+      (
+        timeout: Error | null,
+        response?: { ok: boolean; data?: T; error?: { code: string; message: string } },
+      ) => {
+        if (timeout || !response) {
+          reject(Object.assign(new Error('ack timed out'), { code: ACK_TIMEOUT }))
+          return
+        }
         if (response.ok) resolve(response.data as T)
         else
           reject(
@@ -58,5 +74,8 @@ export function emitWithAck<T>(s: Socket, event: string, payload: unknown): Prom
     )
   })
 }
+
+/** The code an ack timeout rejects with, so callers can word it as "not sent". */
+export const ACK_TIMEOUT = 'ACK_TIMEOUT'
 
 export { APP_SCHEME }

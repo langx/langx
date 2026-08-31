@@ -46,6 +46,12 @@ export interface MessageView {
   deliveredAt?: string
   readAt?: string
   createdAt: string
+  /**
+   * Echoed back only to the sender, so a client holding a "not sent" row can
+   * retire it when the message it gave up on turns out to have arrived. Nobody
+   * else's client has any use for it.
+   */
+  clientId?: string
 }
 
 export function toMessageView(message: Message, viewerId: string): MessageView {
@@ -69,6 +75,9 @@ export function toMessageView(message: Message, viewerId: string): MessageView {
   if (deleted) view.deleted = true
   if (hidden) view.hidden = true
   if (message.starredBy?.includes(viewerId)) view.starred = true
+  // Only to its author: it is their retry key, and it says nothing to anyone
+  // else. `toMessageView` builds by naming fields, so this is the only way in.
+  if (message.clientId && message.senderId === viewerId) view.clientId = message.clientId
   if (!deleted && message.editedAt) view.editedAt = message.editedAt.toISOString()
   if (!deleted && message.correctedAt) view.corrected = true
   if (!deleted && message.media) view.media = message.media

@@ -522,6 +522,7 @@ export const ar: Localized<EnMessages> = {
   chat: {
     title: 'محادثة',
     typing: 'يكتب…',
+    notSentRetry: 'لم يُرسل — اضغط للمحاولة مرة أخرى',
     editing: 'تعديل',
     correcting: 'تصحيح',
     activity: 'النشاط',

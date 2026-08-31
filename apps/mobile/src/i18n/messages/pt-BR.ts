@@ -423,6 +423,7 @@ export const ptBR: Localized<EnMessages> = {
   chat: {
     title: 'Conversa',
     typing: 'digitando…',
+    notSentRetry: 'Não enviado — toque para tentar de novo',
     editing: 'Editando',
     correcting: 'Corrigindo',
     activity: 'Atividade',

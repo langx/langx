@@ -445,6 +445,7 @@ export const de: Localized<EnMessages> = {
   chat: {
     title: 'Chat',
     typing: 'schreibt…',
+    notSentRetry: 'Nicht gesendet — zum Wiederholen tippen',
     editing: 'Bearbeiten',
     correcting: 'Korrigieren',
     activity: 'Aktivität',
