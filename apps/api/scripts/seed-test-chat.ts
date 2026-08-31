@@ -51,7 +51,7 @@ const CAST: Record<Side, OnboardingProfileInput> = {
   george: {
     handle: 'test_george',
     displayName: 'George',
-    birthYear: 1993,
+    birthDate: '1993-06-15',
     gender: 'male',
     nativeLanguages: [{ code: 'en' }],
     learning: [{ code: 'ru', level: 'beginner', priority: 1 }],
@@ -63,7 +63,7 @@ const CAST: Record<Side, OnboardingProfileInput> = {
   marina: {
     handle: 'test_marina',
     displayName: 'Marina',
-    birthYear: 1996,
+    birthDate: '1996-06-15',
     gender: 'female',
     nativeLanguages: [{ code: 'ru' }],
     learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
