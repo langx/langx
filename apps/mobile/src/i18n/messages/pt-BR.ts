@@ -37,6 +37,16 @@ export const ptBR: Localized<EnMessages> = {
 
   tabs: { discover: 'Descobrir', chats: 'Conversas', feed: 'Feed', me: 'Eu' },
 
+  tips: {
+    dismiss: 'Ocultar esta dica',
+    section: 'Dicas',
+    show: 'Mostrar dicas',
+    showBody: 'Notas curtas enquanto você se ambienta. Ao reativar, as ocultadas voltam.',
+    chatCorrect: 'Segure uma mensagem para corrigi-la — é a coisa mais útil que você pode enviar.',
+    chatSwipeReply: 'Arraste a mensagem para a direita para responder.',
+    discoverFilters: 'Use os filtros para refinar por nível, idade ou país.',
+    feedAsk: 'Travado numa frase? Publique aqui e alguém corrige.',
+  },
   theme: {
     section: 'Aparência',
     label: 'Tema',

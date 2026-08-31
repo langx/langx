@@ -51,6 +51,17 @@ export const tr: Localized<EnMessages> = {
     me: 'Ben',
   },
 
+  tips: {
+    dismiss: 'Bu ipucunu kapat',
+    section: 'İpuçları',
+    show: 'İpuçlarını göster',
+    showBody: 'Uygulamayı öğrenirken kısa notlar. Tekrar açtığında kapattıkların da geri gelir.',
+    chatCorrect:
+      'Düzeltmek için bir mesaja basılı tut — gönderebileceğin en faydalı şey bir düzeltme.',
+    chatSwipeReply: 'Yanıtlamak için mesajı sağa kaydır.',
+    discoverFilters: 'Seviyeye, yaşa veya ülkeye göre daraltmak için filtreleri kullan.',
+    feedAsk: 'Bir cümlede takıldın mı? Buraya at, biri düzeltsin.',
+  },
   theme: {
     section: 'Görünüm',
     label: 'Tema',

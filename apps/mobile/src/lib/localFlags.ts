@@ -35,6 +35,17 @@ export const FLAG_KEYS = {
    * should not change language when someone else signs in.
    */
   localePreference: 'localePreference',
+  /**
+   * Which tips have been dismissed, and whether tips are wanted at all.
+   *
+   * One JSON blob rather than a flag per tip, and deliberately not
+   * `readBoolFlag`: `setBoolFlag` writes `1` or *clears*, so a bool cannot
+   * tell "never set" from "explicitly off" — and this setting defaults to on.
+   *
+   * Device-level for the same reason as the theme and the locale: a tip you
+   * have read is a fact about you having read it on this phone.
+   */
+  tips: 'tips',
 } as const
 
 export type FlagKey = (typeof FLAG_KEYS)[keyof typeof FLAG_KEYS]

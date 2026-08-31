@@ -29,6 +29,7 @@ import defaultIcon from '../../assets/icons/default.png'
 import { openPaywall } from '../../src/lib/paywall'
 import { manageSubscriptionUrl } from '../../src/lib/manageSubscription'
 import { openExternal } from '../../src/lib/openExternal'
+import { useTips } from '../../src/hooks/useTips'
 import {
   APP_ICONS,
   currentAppIcon,
@@ -92,6 +93,7 @@ export default function SettingsScreen() {
             value: new Date(entitlement.expiresAt).toLocaleDateString(activeLocale),
           }
   const manageUrl = tier === 'free' ? null : manageSubscriptionUrl(null, Platform.OS)
+  const tips = useTips()
   // Each tag names the plan that unlocks *that* row. Incognito reads the real
   // table through `tierUnlocking`, so moving it between tiers moves the tag.
   // The app icon is not in `PLAN_LIMITS` at all — it is a local cosmetic gated
@@ -425,6 +427,27 @@ export default function SettingsScreen() {
           }
           last
           onPress={() => router.push('/(app)/app-language')}
+        />
+      </View>
+
+      {/*
+        Beside the theme and the app language, and device-level for the same
+        reason they are: a tip you have read is a fact about this phone, and a
+        shared tablet should not inherit somebody else's dismissals.
+      */}
+      <Text style={styles.section}>{t('tips.section')}</Text>
+      <View>
+        <ListRow
+          title={t('tips.show')}
+          subtitle={t('tips.showBody')}
+          last
+          accessory={
+            <Toggle
+              accessibilityLabel={t('tips.show')}
+              value={tips.enabled}
+              onValueChange={tips.setEnabled}
+            />
+          }
         />
       </View>
 
