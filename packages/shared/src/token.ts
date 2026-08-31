@@ -492,12 +492,28 @@ export const repairDaySchema = z.object({
  * anything yet today still has the run that ended yesterday.
  */
 export function streakFromDays(days: Set<string>, today: string): number {
-  let cursor = days.has(today) ? today : shiftDayKey(today, -1)
-  if (!days.has(cursor)) return 0
+  let cursor = streakHeadDay(days, today)
+  if (cursor === null) return 0
   let length = 0
   while (days.has(cursor)) {
     length++
     cursor = shiftDayKey(cursor, -1)
   }
   return length
+}
+
+/**
+ * The newest day of the run `streakFromDays` counts, or `null` when there is no
+ * run at all.
+ *
+ * This is what `streak.lastQualifiedDay` has to become after a repair, and it
+ * shares the "yesterday is where an unfinished today starts from" rule above by
+ * construction rather than by being written out twice. Getting the two out of
+ * step is not a cosmetic bug: `recordQualifyingAction` reads
+ * `lastQualifiedDay` to decide both whether the streak continues and whether a
+ * banked freeze is owed, so a stale value silently undoes a purchase.
+ */
+export function streakHeadDay(days: Set<string>, today: string): string | null {
+  const head = days.has(today) ? today : shiftDayKey(today, -1)
+  return days.has(head) ? head : null
 }
