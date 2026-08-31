@@ -4,6 +4,7 @@ import {
   listConversationsQuerySchema,
   listMessagesQuerySchema,
   listStarredQuerySchema,
+  listCorrectionsQuerySchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
@@ -16,6 +17,7 @@ import {
   markConversationRead,
 } from '../modules/chat/messages'
 import { toMessageView } from '../modules/chat/messageView'
+import { listCorrectionsWritten } from '../modules/chat/corrections'
 import { listStarredMessages, setConversationFlag } from '../modules/chat/mutations'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
@@ -111,6 +113,31 @@ export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
     async (request, reply) => {
       const messages = await listStarredMessages(app.mongo.db, request.userId, request.query.limit)
       return reply.send({ items: messages.map((m) => toMessageView(m, request.userId)) })
+    },
+  )
+
+  /**
+   * The list behind the corrections count on the profile.
+   *
+   * Hangs off `/me` for the same reason `/me/starred` does — it is a read
+   * across every conversation rather than within one — but paged, because a
+   * correction history is meant to grow and a capped list would hide the older
+   * half of the thing the screen exists to show.
+   */
+  app.get(
+    '/me/corrections',
+    { preHandler: requireAuth, schema: { querystring: listCorrectionsQuerySchema } },
+    async (request, reply) => {
+      const page = await listCorrectionsWritten(
+        app.mongo.db,
+        request.userId,
+        request.query.limit,
+        request.query.cursor,
+      )
+      return reply.send({
+        items: page.items.map((m) => toMessageView(m, request.userId)),
+        nextCursor: page.nextCursor,
+      })
     },
   )
 

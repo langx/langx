@@ -239,6 +239,19 @@ export function canDeleteForEveryone(
 export const STARRED_PAGE_SIZE_MAX = 100
 
 /** `GET /me/starred` — a flat list, newest first, across every conversation. */
+/**
+ * Paged, unlike the starred list beside it. A bookmark list is tens of items
+ * and capped; a correction history is the number on somebody's profile, and it
+ * is meant to grow.
+ */
+export const CORRECTIONS_PAGE_SIZE_MAX = 50
+
+export const listCorrectionsQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(CORRECTIONS_PAGE_SIZE_MAX).default(20),
+  cursor: z.string().trim().min(1).optional(),
+})
+export type ListCorrectionsQuery = z.infer<typeof listCorrectionsQuerySchema>
+
 export const listStarredQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(STARRED_PAGE_SIZE_MAX).default(50),
 })

@@ -408,6 +408,11 @@ export const ar: Localized<EnMessages> = {
     microphonePermission: 'يحتاج LangX إلى إذن الميكروفون لتسجيل رسالة صوتية.',
   },
 
+  corrections: {
+    title: 'تصحيحاتك',
+    emptyTitle: 'لا تصحيحات بعد',
+    emptyBody: 'اضغط مطولًا على رسالة واختر «صحّح» — أنفع ما يمكنك فعله هنا.',
+  },
   discover: {
     searchHandles: 'البحث باسم المستخدم',
     searchPlaceholder: 'اسم المستخدم',

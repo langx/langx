@@ -349,6 +349,12 @@ export const tr: Localized<EnMessages> = {
     microphonePermission: 'Sesli mesaj kaydetmek için LangX’in mikrofon iznine ihtiyacı var.',
   },
 
+  corrections: {
+    title: 'Yazdığın düzeltmeler',
+    emptyTitle: 'Henüz düzeltme yok',
+    emptyBody:
+      'Bir sohbette mesaja basılı tut ve Düzelt’i seç — burada yapabileceğin en faydalı şey bu.',
+  },
   discover: {
     searchHandles: 'Kullanıcı adıyla ara',
     searchPlaceholder: 'Kullanıcı adı',
