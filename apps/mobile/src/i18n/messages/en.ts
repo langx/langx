@@ -421,6 +421,19 @@ export const en = {
   },
 
   chats: {
+    tab_all: 'All',
+    tab_unreplied: 'Unreplied',
+    tab_archived: 'Archived',
+    filterPicker: 'Chat filter',
+    pin: 'Pin',
+    unpin: 'Unpin',
+    archive: 'Archive',
+    unarchive: 'Unarchive',
+    pinnedSection: 'Pinned',
+    unrepliedEmptyTitle: 'Nothing waiting on you',
+    unrepliedEmptyBody: 'Every chat has had your reply.',
+    archivedEmptyTitle: 'No archived chats',
+    archivedEmptyBody: 'Archived chats stay here until you bring them back.',
     emptyTitle: 'No chats yet',
     emptyBody:
       'Message someone from Discover. On the free plan you can start {count} new chats a day — replying to messages you receive is always unlimited.',

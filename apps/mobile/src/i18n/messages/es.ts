@@ -393,6 +393,19 @@ export const es: Localized<EnMessages> = {
   },
 
   chats: {
+    tab_all: 'Todos',
+    tab_unreplied: 'Sin responder',
+    tab_archived: 'Archivados',
+    filterPicker: 'Filtro de chats',
+    pin: 'Fijar',
+    unpin: 'Dejar de fijar',
+    archive: 'Archivar',
+    unarchive: 'Desarchivar',
+    pinnedSection: 'Fijados',
+    unrepliedEmptyTitle: 'Nada te espera',
+    unrepliedEmptyBody: 'Has respondido a todos los chats.',
+    archivedEmptyTitle: 'Sin chats archivados',
+    archivedEmptyBody: 'Los chats archivados se quedan aquí hasta que los recuperes.',
     emptyTitle: 'Aún no hay chats',
     emptyBody:
       'Escribe a alguien desde Descubrir. En el plan gratuito puedes iniciar {count} chats nuevos al día; responder a lo que recibes es siempre ilimitado.',

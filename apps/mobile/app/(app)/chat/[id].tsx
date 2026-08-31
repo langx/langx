@@ -22,7 +22,6 @@ import {
   type TextInputKeyPressEventData,
 } from 'react-native'
 import {
-  keys,
   uploadMessageMedia,
   useMe,
   useMessages,
@@ -136,7 +135,7 @@ export default function ChatScreen() {
   useEffect(() => {
     if (!conversationId) return
     void api.post(`/conversations/${conversationId}/read`).then(() => {
-      void queryClient.invalidateQueries({ queryKey: keys.conversations })
+      void queryClient.invalidateQueries({ queryKey: ['conversations'] })
     })
   }, [conversationId, queryClient])
 

@@ -251,7 +251,29 @@ export const CONVERSATION_PAGE_SIZE_DEFAULT = 20
 export const CONVERSATION_PAGE_SIZE_MAX = 50
 
 /** `GET /conversations` — the chat list, sorted by most recent activity. */
+/**
+ * Which slice of the list to return.
+ *
+ * `unreplied` is "they spoke last", read off `lastMessage.senderId` rather
+ * than off the unread count. The two disagree, and the disagreement matters:
+ * opening a thread clears the unread and does not answer it, so a list keyed
+ * on unread would quietly drop everything somebody had read and meant to come
+ * back to — which is exactly the list this tab is for.
+ */
+/**
+ * How many threads one person may pin.
+ *
+ * A cap, because pinned threads are fetched whole rather than paginated — the
+ * cursor cannot express a compound sort, and the simple answer is only simple
+ * while the set stays small.
+ */
+export const MAX_PINNED_CONVERSATIONS = 20
+
+export const CONVERSATION_FILTERS = ['all', 'unreplied', 'archived'] as const
+export type ConversationFilter = (typeof CONVERSATION_FILTERS)[number]
+
 export const listConversationsQuerySchema = z.object({
+  filter: z.enum(CONVERSATION_FILTERS).default('all'),
   cursor: z.string().optional(),
   limit: z.coerce
     .number()
@@ -261,6 +283,18 @@ export const listConversationsQuerySchema = z.object({
     .default(CONVERSATION_PAGE_SIZE_DEFAULT),
 })
 export type ListConversationsQuery = z.infer<typeof listConversationsQuerySchema>
+
+/**
+ * At least one flag has to be named — `{}` is a request that means nothing,
+ * and answering 200 to it would hide a client bug rather than surface one.
+ */
+export const conversationFlagsSchema = z
+  .object({ pinned: z.boolean(), archived: z.boolean() })
+  .partial()
+  .refine((body) => body.pinned !== undefined || body.archived !== undefined, {
+    message: 'Name pinned, archived, or both',
+  })
+export type ConversationFlagsInput = z.infer<typeof conversationFlagsSchema>
 
 export const mediaUploadUrlSchema = z.object({
   conversationId: z.string().trim().min(1),

@@ -439,6 +439,19 @@ export const ru: Localized<EnMessages> = {
   },
 
   chats: {
+    tab_all: 'Все',
+    tab_unreplied: 'Без ответа',
+    tab_archived: 'Архив',
+    filterPicker: 'Фильтр чатов',
+    pin: 'Закрепить',
+    unpin: 'Открепить',
+    archive: 'В архив',
+    unarchive: 'Из архива',
+    pinnedSection: 'Закреплённые',
+    unrepliedEmptyTitle: 'Никто не ждёт ответа',
+    unrepliedEmptyBody: 'Вы ответили в каждом чате.',
+    archivedEmptyTitle: 'В архиве пусто',
+    archivedEmptyBody: 'Архивные чаты остаются здесь, пока вы их не вернёте.',
     emptyTitle: 'Чатов пока нет',
     emptyBody:
       'Напиши кому-нибудь из Поиска. На бесплатном тарифе можно начинать {count} новых чатов в день — отвечать на входящие всегда без ограничений.',

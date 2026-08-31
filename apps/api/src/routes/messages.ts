@@ -1,10 +1,12 @@
 import {
+  conversationFlagsSchema,
   ERROR_CODES,
   listConversationsQuerySchema,
   listMessagesQuerySchema,
   listStarredQuerySchema,
 } from '@langx/shared'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
+import { z } from 'zod'
 import { ApiError } from '../lib/ApiError'
 import { requireAuth } from '../middleware/requireAuth'
 import {
@@ -14,10 +16,50 @@ import {
   markConversationRead,
 } from '../modules/chat/messages'
 import { toMessageView } from '../modules/chat/messageView'
-import { listStarredMessages } from '../modules/chat/mutations'
+import { listStarredMessages, setConversationFlag } from '../modules/chat/mutations'
 
 // eslint-disable-next-line @typescript-eslint/require-await -- Fastify plugin signature
 export const messageRoutes: FastifyPluginAsyncZod = async (app) => {
+  /*
+   * One route for both flags rather than four verbs. Pin and archive are the
+   * same operation — a per-user boolean on a thread — and splitting them into
+   * `POST`/`DELETE` pairs would be four handlers doing one thing.
+   */
+  app.patch(
+    '/conversations/:id/flags',
+    {
+      preHandler: requireAuth,
+      schema: {
+        params: z.object({ id: z.string().trim().min(1) }),
+        body: conversationFlagsSchema,
+      },
+    },
+    async (request, reply) => {
+      const { pinned, archived } = request.body
+      let view = null
+      if (pinned !== undefined) {
+        view = await setConversationFlag(
+          app.mongo.db,
+          request.params.id,
+          request.userId,
+          'pinnedBy',
+          pinned,
+        )
+      }
+      if (archived !== undefined) {
+        view = await setConversationFlag(
+          app.mongo.db,
+          request.params.id,
+          request.userId,
+          'archivedBy',
+          archived,
+        )
+      }
+      if (!view) throw new ApiError(ERROR_CODES.VALIDATION_FAILED, 'Nothing to change')
+      return reply.send(view)
+    },
+  )
+
   app.get(
     '/conversations',
     { preHandler: requireAuth, schema: { querystring: listConversationsQuerySchema } },

@@ -18,6 +18,19 @@ export interface Conversation {
   participants: [string, string]
   lastMessage: { body: string; senderId: string; createdAt: Date; deleted?: boolean }
   unread: Record<string, number>
+  /**
+   * Per-user, and a **map keyed by user id** rather than an array of ids.
+   *
+   * `participants` is already a multikey field, and MongoDB refuses to compound
+   * two array fields in one index — so `{ participants: 1, archivedBy: 1 }`
+   * cannot exist. A map's dotted path (`archivedBy.<uid>`) is a scalar and can,
+   * which is the same reason `unread` above is shaped this way.
+   *
+   * Not to be confused with `pinned` below, which is a pinned *message* and is
+   * shared by both sides.
+   */
+  pinnedBy?: Record<string, true>
+  archivedBy?: Record<string, true>
   /** One per conversation, replaced rather than appended — see `MAX_PINNED_PER_CONVERSATION`. */
   pinned?: { messageId: ObjectId; byUserId: string; at: Date }
   firstMessageBy: string
