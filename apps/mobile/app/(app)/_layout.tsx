@@ -121,6 +121,7 @@ export default function AppLayout() {
         <Tabs.Screen name="viewers" options={FULL_SCREEN} />
         <Tabs.Screen name="filters" options={FULL_SCREEN} />
         <Tabs.Screen name="intro" options={FULL_SCREEN} />
+        <Tabs.Screen name="share-profile" options={FULL_SCREEN} />
         <Tabs.Screen name="wallet" options={FULL_SCREEN} />
         <Tabs.Screen name="tokens" options={FULL_SCREEN} />
         <Tabs.Screen name="kitchen" options={FULL_SCREEN} />

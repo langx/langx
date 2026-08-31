@@ -856,6 +856,15 @@ export const tr: Localized<EnMessages> = {
     ctaLabel: "LangX'i aç",
   },
 
+  shareProfile: {
+    title: 'Profilimi paylaş',
+    body: 'Buna kamerayı tut, ya da linki gönder.',
+    qrAccessibility: '@{handle} için QR kodu',
+    share: 'Paylaş',
+    copy: 'Linki kopyala',
+    copied: 'Link kopyalandı',
+  },
+
   viewers: {
     title: 'Profiline kim baktı',
     empty: 'Profiline henüz kimse bakmadı.',

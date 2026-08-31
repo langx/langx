@@ -971,6 +971,15 @@ export const ru: Localized<EnMessages> = {
     ctaLabel: 'Открыть LangX',
   },
 
+  shareProfile: {
+    title: 'Поделиться профилем',
+    body: 'Наведите камеру или отправьте ссылку.',
+    qrAccessibility: 'QR-код для @{handle}',
+    share: 'Поделиться',
+    copy: 'Скопировать ссылку',
+    copied: 'Ссылка скопирована',
+  },
+
   viewers: {
     title: 'Кто смотрел твой профиль',
     empty: 'Твой профиль пока никто не смотрел.',

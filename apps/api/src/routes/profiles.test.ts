@@ -405,6 +405,33 @@ describe('Faz 2 — profiles, username claim, avatar upload', () => {
     })
   })
 
+  describe('GET /public/qr/:handle', () => {
+    it('draws an SVG with no session, and caches it', async () => {
+      const response = await app.inject({ method: 'GET', url: '/public/qr/behicsakar' })
+
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.headers['content-type']).toContain('image/svg+xml')
+      expect(response.headers['cache-control']).toContain('max-age=')
+      expect(response.body).toContain('<svg')
+    })
+
+    /**
+     * Deliberately not checked against the database. Answering 404 for an
+     * unknown handle would turn a picture endpoint into a way to enumerate
+     * accounts, and a code that resolves to a "no profile here" page is a
+     * harmless thing to have drawn.
+     */
+    it('draws one for a handle nobody holds', async () => {
+      expect((await app.inject({ method: 'GET', url: '/public/qr/nobodyhere' })).statusCode).toBe(
+        200,
+      )
+    })
+
+    it('refuses something that could not be a handle at all', async () => {
+      expect((await app.inject({ method: 'GET', url: '/public/qr/a' })).statusCode).toBe(400)
+    })
+  })
+
   describe('GET /public/profiles/:handle', () => {
     async function seed(email: string, handle: string) {
       const user = await newUser(email)
