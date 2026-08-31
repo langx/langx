@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { memo, useMemo, useRef, type ReactNode } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import {
   Animated,
   PanResponder,
@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import type { MessageDto } from '../api/queries'
 import { diffCorrection } from '../lib/correctionDiff'
+import { isBigEmoji } from '../lib/singleEmoji'
 import type { AnchorRect } from '../lib/messageMenu'
 import {
   SWIPE_ACTIVATE_PX,
@@ -136,6 +137,34 @@ export const MessageBubble = memo(function MessageBubble({
    * than per render — the memo is the reason this bubble can stay `memo`'d at
    * all while the screen re-renders on every keystroke in the composer.
    */
+  /**
+   * A bounce on arrival that a tap can replay.
+   *
+   * RN's `Animated`, not Reanimated: Reanimated 4 is a dependency that nothing
+   * imports, and pulling it in for one spring would put its worklets bundle
+   * into the shipped web build. `Button` already does exactly this shape.
+   *
+   * A tap is free to take: every `Pressable` in this file has only
+   * `onLongPress`, and the shell's `PanResponder` returns false from
+   * `onStartShouldSetPanResponder` precisely so a tap and a long press survive.
+   */
+  const heroScale = useRef(new Animated.Value(1)).current
+  const replay = useCallback(() => {
+    heroScale.setValue(0.6)
+    Animated.spring(heroScale, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 12,
+      bounciness: 14,
+    }).start()
+  }, [heroScale])
+
+  useEffect(() => {
+    if (isBigEmoji(message.body)) replay()
+    // Once, when the message appears. Re-running on every render would make the
+    // thread jump every time the composer takes a keystroke.
+  }, [message.body, replay])
+
   const correction = message.correction
   const diff = useMemo(
     () => (correction ? diffCorrection(correction.original, message.body) : null),
@@ -303,6 +332,33 @@ export const MessageBubble = memo(function MessageBubble({
     )
   }
 
+  /**
+   * A message that is nothing but a couple of emoji, drawn as itself.
+   *
+   * No bubble: chrome sized for a sentence around a single glyph is what made
+   * these read as small rather than emphatic. It still goes through `shell`, so
+   * swipe-to-reply and the long-press menu keep working, and it keeps its quote
+   * and meta — a reaction to a specific message is still a reply, and the read
+   * receipt is still the thing people check.
+   */
+  if (isBigEmoji(message.body) && !message.deleted) {
+    return shell(
+      <Pressable
+        onPress={replay}
+        onLongPress={press}
+        style={[styles.hero, mine ? styles.heroMine : styles.heroTheirs]}
+      >
+        {quote}
+        <Animated.Text style={[styles.heroText, { transform: [{ scale: heroScale }] }]}>
+          {message.body}
+        </Animated.Text>
+        {translating ? <Text style={styles.translateLink}>{t('chat.translating')}</Text> : null}
+        <MessageMeta message={message} mine={mine} />
+        {badge}
+      </Pressable>,
+    )
+  }
+
   return shell(
     <Pressable
       onLongPress={press}
@@ -432,6 +488,16 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   reaction: { alignItems: 'center', flexDirection: 'row', gap: 2 },
   reactionGlyph: { fontSize: 13, lineHeight: 18 },
   reactionCount: { ...font.caption, color: colors.textMuted, fontWeight: '700' },
+  /**
+   * No background and no padding: the glyph is the message. `alignSelf` still
+   * picks a side, because who sent it is the one thing the shape no longer says.
+   */
+  hero: { gap: spacing.xs, paddingVertical: 2 },
+  heroMine: { alignSelf: 'flex-end', alignItems: 'flex-end' },
+  heroTheirs: { alignSelf: 'flex-start', alignItems: 'flex-start' },
+  // 48 is the house size for a hero glyph — `AppGate` uses it, `IntroCarousel`
+  // 64. Bubble text is 16, so this reads as deliberate rather than as a font bug.
+  heroText: { fontSize: 48, lineHeight: 58 },
   bubbleText: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
   bubbleTextMine: { color: colors.text },
   caption: { marginTop: spacing.xs },
