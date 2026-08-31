@@ -134,10 +134,14 @@ export default function MeScreen() {
           value={`🔥 ${summary?.streak.current ?? 0}`}
           onPress={() => router.push('/(app)/streak')}
         />
+        {/* The number was already "corrections I wrote, chat and posts, for
+            life" — exactly the list behind it, so the tile and the screen
+            cannot disagree about what they are counting. */}
         <StatTile
           tone="success"
-          label={t('me.corrections')}
+          label={`${t('me.corrections')} ›`}
           value={String(summary?.lifetime.corrections ?? 0)}
+          onPress={() => router.push('/(app)/corrections')}
         />
         {/* The balance is the way into the wallet — a number nobody can act
             on reads as decoration, and the wallet has nowhere else to be

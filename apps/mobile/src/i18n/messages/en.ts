@@ -374,6 +374,12 @@ export const en = {
     microphonePermission: 'LangX needs microphone access to record a voice message.',
   },
 
+  corrections: {
+    title: 'Corrections you wrote',
+    emptyTitle: 'No corrections yet',
+    emptyBody:
+      'Hold a message in a chat and choose Correct — it is the most useful thing you can do here.',
+  },
   discover: {
     searchHandles: 'Search by username',
     searchPlaceholder: 'Username',

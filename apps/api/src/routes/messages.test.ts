@@ -120,6 +120,69 @@ describe('Faz 5 — conversation/message history REST', () => {
    * so the client retries it. Without the index behind this, the message it
    * already delivered would be posted a second time.
    */
+  describe('the corrections you have written', () => {
+    it('lists them newest first, and pages without repeating or skipping', async () => {
+      const a = await newUser('corr-list-a@example.com')
+      const b = await newUser('corr-list-b@example.com')
+      const conversationId = (await startConversation(a, b.userId))._id
+      const { sendTextMessage, sendCorrection } = await import('../modules/chat/messages')
+
+      const targets: string[] = []
+      for (let i = 0; i < 5; i++) {
+        const sent = await sendTextMessage(handle.db, b.userId, {
+          conversationId,
+          body: `i writed ${i}`,
+        })
+        targets.push(String(sent.message._id))
+      }
+      for (const [i, targetMessageId] of targets.entries()) {
+        await sendCorrection(handle.db, a.userId, {
+          conversationId,
+          targetMessageId,
+          corrected: `I wrote ${i}`,
+        })
+      }
+
+      const seen: string[] = []
+      let cursor: string | null | undefined
+      for (let guard = 0; guard < 5; guard++) {
+        const url = `/me/corrections?limit=2${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`
+        const response = await app.inject({ method: 'GET', url, headers: { cookie: a.cookie } })
+        expect(response.statusCode, response.body).toBe(200)
+        const body = response.json<{ items: { _id: string }[]; nextCursor: string | null }>()
+        seen.push(...body.items.map((m) => m._id))
+        cursor = body.nextCursor
+        if (!cursor) break
+      }
+
+      expect(seen).toHaveLength(5)
+      expect(new Set(seen).size).toBe(5)
+    })
+
+    /** The other side's corrections are theirs, not yours. */
+    it('lists only your own', async () => {
+      const a = await newUser('corr-mine-a@example.com')
+      const b = await newUser('corr-mine-b@example.com')
+      const conversationId = (await startConversation(a, b.userId))._id
+      const { sendTextMessage, sendCorrection } = await import('../modules/chat/messages')
+
+      const fromB = await sendTextMessage(handle.db, b.userId, { conversationId, body: 'i writed' })
+      await sendCorrection(handle.db, a.userId, {
+        conversationId,
+        targetMessageId: String(fromB.message._id),
+        corrected: 'I wrote',
+      })
+
+      const response = await app.inject({
+        method: 'GET',
+        url: '/me/corrections',
+        headers: { cookie: b.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      expect(response.json<{ items: unknown[] }>().items).toHaveLength(0)
+    })
+  })
+
   it('does not post a resent message twice', async () => {
     const a = await newUser('idem-a@example.com')
     const b = await newUser('idem-b@example.com')

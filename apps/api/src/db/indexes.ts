@@ -198,6 +198,24 @@ export const INDEXES: Partial<IndexSpec> = {
      */
     { key: { senderId: 1, type: 1 }, name: 'sender_type' },
     /**
+     * "Everything this person has corrected, newest first" — the corrections
+     * history screen, paged.
+     *
+     * `sender_type` above gives the exact filter and carries no `createdAt`, so
+     * ordering through it is an in-memory sort of every correction the user has
+     * ever written. Fine for the `countDocuments` it was built for; wrong for a
+     * list. `_id` is on the end for the same reason `conversation_created_id`
+     * has it: a keyset cursor tie-breaks on it, and without it the sort falls
+     * back to memory anyway.
+     *
+     * A new name rather than widening `sender_type`, because changing the keys
+     * of a live index is an `IndexOptionsConflict` at boot, not an upgrade.
+     */
+    {
+      key: { senderId: 1, type: 1, createdAt: -1, _id: -1 },
+      name: 'sender_type_created',
+    },
+    /**
      * The starred screen, which is a `find` by one user across every
      * conversation they are in — without this it is a scan of the whole
      * messages collection, and it grows with the app rather than with the

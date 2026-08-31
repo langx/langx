@@ -345,6 +345,11 @@ export const es: Localized<EnMessages> = {
     microphonePermission: 'LangX necesita acceso al micrófono para grabar un mensaje de voz.',
   },
 
+  corrections: {
+    title: 'Correcciones que escribiste',
+    emptyTitle: 'Aún no hay correcciones',
+    emptyBody: 'Mantén pulsado un mensaje y elige Corregir: es lo más útil que puedes hacer aquí.',
+  },
   discover: {
     searchHandles: 'Buscar por nombre de usuario',
     searchPlaceholder: 'Nombre de usuario',

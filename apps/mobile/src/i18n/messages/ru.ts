@@ -392,6 +392,12 @@ export const ru: Localized<EnMessages> = {
     microphonePermission: 'Чтобы записать голосовое, LangX нужен доступ к микрофону.',
   },
 
+  corrections: {
+    title: 'Твои исправления',
+    emptyTitle: 'Исправлений пока нет',
+    emptyBody:
+      'Задержи палец на сообщении и выбери «Исправить» — это самое полезное, что тут можно сделать.',
+  },
   discover: {
     searchHandles: 'Поиск по имени пользователя',
     searchPlaceholder: 'Имя пользователя',

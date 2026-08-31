@@ -340,6 +340,12 @@ export const ptBR: Localized<EnMessages> = {
     microphonePermission: 'O LangX precisa do microfone para gravar uma mensagem de voz.',
   },
 
+  corrections: {
+    title: 'Correções que você escreveu',
+    emptyTitle: 'Ainda sem correções',
+    emptyBody:
+      'Segure uma mensagem e escolha Corrigir — é a coisa mais útil que você pode fazer aqui.',
+  },
   discover: {
     searchHandles: 'Buscar por nome de usuário',
     searchPlaceholder: 'Nome de usuário',

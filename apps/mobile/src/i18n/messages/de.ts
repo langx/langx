@@ -347,6 +347,12 @@ export const de: Localized<EnMessages> = {
     microphonePermission: 'LangX braucht Mikrofonzugriff, um eine Sprachnachricht aufzunehmen.',
   },
 
+  corrections: {
+    title: 'Deine Korrekturen',
+    emptyTitle: 'Noch keine Korrekturen',
+    emptyBody:
+      'Halte eine Nachricht gedrückt und wähle Korrigieren — das Nützlichste, was du hier tun kannst.',
+  },
   discover: {
     searchHandles: 'Nach Benutzername suchen',
     searchPlaceholder: 'Benutzername',

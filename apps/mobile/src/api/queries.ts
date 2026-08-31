@@ -73,6 +73,7 @@ export const keys = {
    */
   messagesAround: (id: string, anchorId: string) => ['messages', id, 'around', anchorId] as const,
   starred: ['starred'] as const,
+  corrections: ['corrections'] as const,
   activity: (from: string, to: string) => ['activity', from, to] as const,
   tokens: ['tokens'] as const,
   tokenHistory: ['tokens', 'history'] as const,
@@ -437,6 +438,22 @@ export function useStarred() {
   return useQuery({
     queryKey: keys.starred,
     queryFn: () => api.get<{ items: MessageDto[] }>('/me/starred'),
+  })
+}
+
+/**
+ * Paged, unlike `useStarred`. A correction history is the number on the
+ * profile, so it grows; a bookmark list is tens of items and capped.
+ */
+export function useCorrectionsWritten() {
+  return useInfiniteQuery({
+    queryKey: keys.corrections,
+    queryFn: ({ pageParam }) =>
+      api.get<{ items: MessageDto[]; nextCursor: string | null }>(
+        `/me/corrections${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+      ),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.nextCursor ?? undefined,
   })
 }
 
