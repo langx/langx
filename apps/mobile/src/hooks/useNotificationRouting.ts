@@ -18,8 +18,9 @@ import { notificationRoute } from '../lib/notificationRoute'
  * the cold-start case, and it is the common one, because a notification is
  * usually read on a locked phone.
  */
-export function useNotificationRouting(): void {
+export function useNotificationRouting({ enabled = true }: { enabled?: boolean } = {}): void {
   useEffect(() => {
+    if (!enabled) return
     if (Platform.OS === 'web') return
     let cancelled = false
     let subscription: { remove: () => void } | undefined
@@ -51,5 +52,5 @@ export function useNotificationRouting(): void {
       cancelled = true
       subscription?.remove()
     }
-  }, [])
+  }, [enabled])
 }

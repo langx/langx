@@ -21,6 +21,19 @@ export type OnboardingStep = (typeof ONBOARDING_STEPS)[number]
  * dropping someone straight onto "claim your username" skips the two optional
  * fields before it without them ever seeing that they existed.
  */
+/**
+ * What a guest fills in: the two language questions and nothing else.
+ *
+ * A handle, a display name, a birth date and a gender are all required by
+ * `onboardingProfileSchema` — and a guest supplies none of them, because a
+ * guest cannot be looked at. They browse; they do not appear.
+ *
+ * The draft they leave behind is the whole of the "not asked again" promise:
+ * `furthestOnboardingStep` reads it after they register and returns
+ * `about-you`, because the languages and levels are already there.
+ */
+export const GUEST_ONBOARDING_STEPS = ['languages', 'levels'] as const
+
 export function furthestOnboardingStep(draft: OnboardingDraft): OnboardingStep {
   // Either language list empty means the languages screen — it opens on the
   // tab that still has work in it.

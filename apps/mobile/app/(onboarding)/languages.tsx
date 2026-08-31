@@ -4,6 +4,9 @@ import { useState } from 'react'
 import { Text, View } from 'react-native'
 import { LanguagePicker } from '../../src/components/LanguagePicker'
 import { StepProgress } from '../../src/components/StepProgress'
+import { authClient } from '../../src/lib/auth-client'
+import { shouldGateGuest } from '../../src/lib/guestGate'
+import { GUEST_ONBOARDING_STEPS } from '../../src/lib/onboardingStep'
 import { Button } from '../../src/components/ui/Button'
 import { Screen } from '../../src/components/ui/Screen'
 import { SegmentedControl } from '../../src/components/ui/SegmentedControl'
@@ -53,6 +56,10 @@ export default function LanguagesStep() {
 
   const onNative = tab === 'native'
 
+  const { data: session } = authClient.useSession()
+
+  const isGuest = shouldGateGuest(session?.user)
+
   // The hint reports the cap of the tab you are on, and both come from the
 
   // free row because onboarding is always the free tier.
@@ -66,7 +73,7 @@ export default function LanguagesStep() {
 
   return (
     <Screen fluid style={styles.screen}>
-      <StepProgress step="languages" />
+      <StepProgress step="languages" steps={isGuest ? GUEST_ONBOARDING_STEPS : undefined} />
       <Text style={styles.title}>{t('onboarding.languagesTitle')}</Text>
       <Text style={styles.subtitle}>{t('onboarding.languagesBody')}</Text>
 

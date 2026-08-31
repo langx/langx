@@ -217,6 +217,15 @@ export const tr: Localized<EnMessages> = {
     done: 'Bitti',
   },
 
+  welcome: {
+    title: 'Senin dilini öğrenen biriyle pratik yap',
+    subtitle:
+      'Önce bir bak — hiçbir şeye kaydolmadan dillerini seçip kimlerin burada olduğunu görebilirsin.',
+    browse: 'Önce bir bakayım',
+    createAccount: 'Hesap oluştur',
+    haveAccount: 'Zaten hesabım var',
+    guestFailed: 'Başlatılamadı',
+  },
   auth: {
     welcomeBackSubtitle: 'Kaldığın yerden devam etmek için giriş yap.',
     resetBody: 'Kayıt olduğun e-postayı gir, sana bir sıfırlama bağlantısı gönderelim.',

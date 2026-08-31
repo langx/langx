@@ -15,7 +15,7 @@ export default function IntroScreen() {
     // user on a screen they have asked to leave. If it fails they see the intro
     // once more, which is the mildest possible failure.
     void setBoolFlag(FLAG_KEYS.introSeen, true)
-    router.replace('/(auth)/sign-in')
+    router.replace('/(auth)/welcome')
   }
 
   return <IntroCarousel onDone={finish} />

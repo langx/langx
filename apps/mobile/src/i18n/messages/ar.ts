@@ -256,6 +256,14 @@ export const ar: Localized<EnMessages> = {
     done: 'تم',
   },
 
+  welcome: {
+    title: 'تدرّب مع من يتعلّم لغتك',
+    subtitle: 'ألقِ نظرة أولًا — يمكنك اختيار لغاتك ورؤية من هنا قبل التسجيل.',
+    browse: 'ألقِ نظرة أولًا',
+    createAccount: 'أنشئ حسابًا',
+    haveAccount: 'لديّ حساب بالفعل',
+    guestFailed: 'تعذّر البدء',
+  },
   auth: {
     welcomeBackSubtitle: 'سجّل الدخول لتكمل من حيث توقفت.',
     resetBody: 'أدخل البريد الإلكتروني الذي سجّلت به وسنرسل لك رابط إعادة التعيين.',
