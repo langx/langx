@@ -396,6 +396,19 @@ export const tr: Localized<EnMessages> = {
   },
 
   chats: {
+    tab_all: 'Tümü',
+    tab_unreplied: 'Cevapsız',
+    tab_archived: 'Arşiv',
+    filterPicker: 'Sohbet filtresi',
+    pin: 'Sabitle',
+    unpin: 'Sabitlemeyi kaldır',
+    archive: 'Arşivle',
+    unarchive: 'Arşivden çıkar',
+    pinnedSection: 'Sabitlenmiş',
+    unrepliedEmptyTitle: 'Sıra sende olan yok',
+    unrepliedEmptyBody: 'Her sohbete cevap vermişsin.',
+    archivedEmptyTitle: 'Arşivde sohbet yok',
+    archivedEmptyBody: 'Arşivlediğin sohbetler geri alana kadar burada durur.',
     emptyTitle: 'Henüz sohbet yok',
     emptyBody:
       'Keşfet’ten birine yaz. Ücretsiz planda günde {count} yeni sohbet başlatabilirsin — sana gelen mesaplara cevap vermek her zaman sınırsız.',

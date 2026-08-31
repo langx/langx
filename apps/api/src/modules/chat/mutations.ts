@@ -1,5 +1,6 @@
 import {
   canDeleteForEveryone,
+  MAX_PINNED_CONVERSATIONS,
   canEditMessage,
   ERROR_CODES,
   MESSAGE_REACTIONS,
@@ -15,6 +16,7 @@ import { ApiError } from '../../lib/ApiError'
 import { supportsPut, type StorageProvider } from '../../storage/StorageProvider'
 import { assertConversationAccess } from './access'
 import type { Conversation, Message } from './conversations'
+import { toConversationView, type ConversationView } from './conversationView'
 
 export interface MessageMutationResult {
   message: Message
@@ -406,4 +408,62 @@ export async function listStarredMessages(
     .sort({ createdAt: -1 })
     .limit(limit)
     .toArray()
+}
+
+/**
+ * Pin or archive a thread, for one participant only.
+ *
+ * Written as a dotted path into a map keyed by user id — the same shape
+ * `unread` uses, and for the same reason: `participants` is already a multikey
+ * field and MongoDB refuses to compound two arrays in one index, so an
+ * `archivedBy: string[]` could never be part of the index the list rides.
+ *
+ * Un-setting rather than storing `false`, so "never archived" and "archived
+ * then un-archived" are the same document and the list's `$ne: true` reads
+ * both the same way.
+ */
+export async function setConversationFlag(
+  db: Db,
+  conversationId: string,
+  userId: string,
+  flag: 'pinnedBy' | 'archivedBy',
+  on: boolean,
+): Promise<ConversationView> {
+  const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
+  // Mirrors how `messageId` is parsed above: a malformed id is a 404, not a
+  // 500 from the ObjectId constructor.
+  let _id: ObjectId
+  try {
+    _id = new ObjectId(conversationId)
+  } catch {
+    throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+  }
+  await assertConversationAccess(db, conversationId, userId)
+
+  if (on && flag === 'pinnedBy') {
+    /*
+     * The cap exists because pinned threads are fetched whole rather than
+     * paginated. Counted rather than trusted: the client hides the action at
+     * the limit, and the client is not what enforces it.
+     */
+    const pinned = await conversations.countDocuments({
+      participants: userId,
+      [`pinnedBy.${userId}`]: true,
+    })
+    if (pinned >= MAX_PINNED_CONVERSATIONS) {
+      throw new ApiError(
+        ERROR_CODES.VALIDATION_FAILED,
+        `You can pin at most ${MAX_PINNED_CONVERSATIONS} chats`,
+      )
+    }
+  }
+
+  const path = `${flag}.${userId}`
+  const updated = await conversations.findOneAndUpdate(
+    { _id },
+    on ? { $set: { [path]: true } } : { $unset: { [path]: '' } },
+    { returnDocument: 'after' },
+  )
+  if (!updated) throw new ApiError(ERROR_CODES.NOT_FOUND, 'Conversation not found')
+  return toConversationView(updated, userId)
 }

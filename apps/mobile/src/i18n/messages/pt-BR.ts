@@ -388,6 +388,19 @@ export const ptBR: Localized<EnMessages> = {
   },
 
   chats: {
+    tab_all: 'Todos',
+    tab_unreplied: 'Sem resposta',
+    tab_archived: 'Arquivados',
+    filterPicker: 'Filtro de conversas',
+    pin: 'Fixar',
+    unpin: 'Desafixar',
+    archive: 'Arquivar',
+    unarchive: 'Desarquivar',
+    pinnedSection: 'Fixados',
+    unrepliedEmptyTitle: 'Nada esperando por você',
+    unrepliedEmptyBody: 'Você respondeu a todas as conversas.',
+    archivedEmptyTitle: 'Nenhuma conversa arquivada',
+    archivedEmptyBody: 'As conversas arquivadas ficam aqui até você trazê-las de volta.',
     emptyTitle: 'Ainda não há conversas',
     emptyBody:
       'Mande mensagem para alguém em Descobrir. No plano gratuito você pode começar {count} conversas novas por dia — responder ao que você recebe é sempre ilimitado.',

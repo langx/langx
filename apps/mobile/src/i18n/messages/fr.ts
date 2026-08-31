@@ -393,6 +393,19 @@ export const fr: Localized<EnMessages> = {
   },
 
   chats: {
+    tab_all: 'Tous',
+    tab_unreplied: 'Sans réponse',
+    tab_archived: 'Archivés',
+    filterPicker: 'Filtre de discussions',
+    pin: 'Épingler',
+    unpin: 'Détacher',
+    archive: 'Archiver',
+    unarchive: 'Désarchiver',
+    pinnedSection: 'Épinglés',
+    unrepliedEmptyTitle: 'Rien ne t’attend',
+    unrepliedEmptyBody: 'Tu as répondu à chaque discussion.',
+    archivedEmptyTitle: 'Aucune discussion archivée',
+    archivedEmptyBody: 'Les discussions archivées restent ici jusqu’à ce que tu les récupères.',
     emptyTitle: 'Aucune discussion',
     emptyBody:
       'Écris à quelqu’un depuis Découvrir. Sur le forfait gratuit tu peux lancer {count} nouvelles discussions par jour — répondre à ce que tu reçois est toujours illimité.',

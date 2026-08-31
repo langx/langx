@@ -1,4 +1,5 @@
 import {
+  type ConversationFilter,
   type NotificationPrefs,
   effectivePlanTier,
   hasFeature,
@@ -57,7 +58,13 @@ export const keys = {
   profile: (id: string) => ['profile', id] as const,
   discovery: (filters: string) => ['discovery', filters] as const,
   handleSearch: (term: string) => ['handleSearch', term] as const,
-  conversations: ['conversations'] as const,
+  /**
+   * Parameterised now that the list has tabs. Every writer has to patch with
+   * `setQueriesData` on the `['conversations']` prefix rather than
+   * `setQueryData` on one key — the same reason `messagesAround` is a child of
+   * `messages`.
+   */
+  conversations: (filter: string) => ['conversations', filter] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
    * Deliberately a child of `messages(id)`: a socket patch written with
@@ -248,17 +255,22 @@ export interface ConversationDto {
   _id: string
   participants: string[]
   lastMessage: { body: string; senderId: string; createdAt: string }
-  unread: Record<string, number>
+  /** This viewer's count. Resolved server-side by `toConversationView`. */
+  unread: number
+  pinned: boolean
+  archived: boolean
+  /** They spoke last, so the next move is mine. */
+  unreplied: boolean
   bothSpoke: boolean
   updatedAt: string
 }
 
-export function useConversations() {
+export function useConversations(filter: ConversationFilter = 'all') {
   return useInfiniteQuery({
-    queryKey: keys.conversations,
+    queryKey: keys.conversations(filter),
     queryFn: ({ pageParam }) =>
       api.get<ConversationPageDto>(
-        `/conversations${pageParam ? `?cursor=${encodeURIComponent(pageParam)}` : ''}`,
+        `/conversations?filter=${filter}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ''}`,
       ),
     initialPageParam: '',
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -505,6 +517,31 @@ export function useHandleSearch(term: string) {
   })
 }
 
+/**
+ * Pin or archive a thread.
+ *
+ * Invalidates the whole `['conversations']` prefix rather than patching: the
+ * flags move a thread *between* tabs, so the caches that have to change are
+ * the ones not on screen. Patching one and leaving the others is how the
+ * archive tab ends up showing a thread the list already un-archived.
+ */
+export function useConversationFlags() {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      conversationId,
+      ...flags
+    }: {
+      conversationId: string
+      pinned?: boolean
+      archived?: boolean
+    }) => api.patch<ConversationDto>(`/conversations/${conversationId}/flags`, flags),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['conversations'] })
+    },
+  })
+}
+
 export function useFeed(filter: FeedFilter) {
   return useInfiniteQuery({
     queryKey: keys.feed(filter),
@@ -738,7 +775,7 @@ export function useStartConversation() {
     onSuccess: () => {
       // Starting a conversation spends quota and earns tokens — both visible
       // elsewhere in the UI, so both caches are now stale.
-      void queryClient.invalidateQueries({ queryKey: keys.conversations })
+      void queryClient.invalidateQueries({ queryKey: ['conversations'] })
       void queryClient.invalidateQueries({ queryKey: keys.quota })
       void queryClient.invalidateQueries({ queryKey: keys.tokens })
     },

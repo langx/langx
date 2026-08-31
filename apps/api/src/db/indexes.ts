@@ -130,6 +130,23 @@ export const INDEXES: Partial<IndexSpec> = {
     // have played in a match-gated model.
     { key: { pairKey: 1 }, name: 'pair_key_unique', unique: true },
     { key: { participants: 1, 'lastMessage.createdAt': -1 }, name: 'participants_recent' },
+    /*
+     * There is deliberately **no** index for `pinnedBy` / `archivedBy`, and it
+     * is worth saying why rather than leaving it looking forgotten.
+     *
+     * Both are maps keyed by user id, so the path a query filters on is
+     * `archivedBy.<viewerId>` — a *dynamic* path, which no fixed index key can
+     * name. A wildcard index could, but it cannot be compounded with
+     * `participants`, which is the selective half.
+     *
+     * They are maps rather than arrays because `participants` is already
+     * multikey and MongoDB refuses to compound two array fields ("cannot index
+     * parallel arrays") — the same reason `unread` is shaped this way.
+     *
+     * `participants_recent` above already bounds the scan to one person's
+     * threads, which is tens or hundreds of documents, and the flags are a
+     * cheap filter over that. An index here would buy nothing.
+     */
     // Backs the rolling-24h initiation quota without a separate collection.
     { key: { firstMessageBy: 1, firstMessageAt: -1 }, name: 'first_message_by' },
   ],

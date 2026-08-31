@@ -134,6 +134,161 @@ describe('Faz 5 — conversation/message history REST', () => {
     expect(body.items[0]?.participants).toContain(newer.userId) // most recent activity first
   })
 
+  describe('tabs, pins and the view layer', () => {
+    async function list(viewer: SignedUpUser, filter?: string) {
+      const response = await app.inject({
+        method: 'GET',
+        url: `/conversations${filter ? `?filter=${filter}` : ''}`,
+        headers: { cookie: viewer.cookie },
+      })
+      expect(response.statusCode, response.body).toBe(200)
+      return response.json<{
+        items: {
+          _id: string
+          unread: number
+          pinned: boolean
+          archived: boolean
+          unreplied: boolean
+        }[]
+        pinned: { _id: string }[]
+      }>()
+    }
+
+    function setFlags(viewer: SignedUpUser, id: string, body: Record<string, boolean>) {
+      return app.inject({
+        method: 'PATCH',
+        url: `/conversations/${id}/flags`,
+        headers: { cookie: viewer.cookie },
+        payload: body,
+      })
+    }
+
+    /**
+     * The list used to ship raw documents, so `unread` arrived as a map keyed
+     * by user id — meaning both sides received **the other person's** count.
+     * `toConversationView` exists to stop that, and this is what pins it.
+     */
+    it('tells a viewer nothing about the other side', async () => {
+      const viewer = await newUser('view-layer-viewer@example.com')
+      const partner = await newUser('view-layer-partner@example.com')
+      const convo = await startConversation(partner, viewer.userId, 'hello')
+      await setFlags(partner, convo._id, { archived: true })
+
+      const body = await list(viewer)
+      const row = body.items.find((c) => c._id === convo._id)
+
+      expect(typeof row?.unread).toBe('number')
+      expect(row?.unread).toBe(1)
+      // The partner archived it; the viewer must not be able to tell.
+      expect(row?.archived).toBe(false)
+      // `participants` legitimately carries both ids — the client resolves the
+      // counterpart from it. What must not leak is the other side's *state*.
+      expect(Object.keys(row ?? {})).not.toContain('archivedBy')
+      expect(Object.keys(row ?? {})).not.toContain('pinnedBy')
+    })
+
+    /**
+     * "They spoke last", not "I have not read it". Opening a thread clears the
+     * unread without answering it, so a list keyed on unread would silently
+     * drop everything somebody read and meant to come back to.
+     */
+    it('keeps a read-but-unanswered thread in the unreplied tab', async () => {
+      const viewer = await newUser('unreplied-viewer@example.com')
+      const partner = await newUser('unreplied-partner@example.com')
+      const convo = await startConversation(partner, viewer.userId, 'your turn')
+
+      await app.inject({
+        method: 'POST',
+        url: `/conversations/${convo._id}/read`,
+        headers: { cookie: viewer.cookie },
+      })
+
+      const body = await list(viewer, 'unreplied')
+      const row = body.items.find((c) => c._id === convo._id)
+      expect(row, 'read does not mean answered').toBeDefined()
+      expect(row?.unread).toBe(0)
+      expect(row?.unreplied).toBe(true)
+    })
+
+    it('drops a thread out of unreplied once it is answered', async () => {
+      const viewer = await newUser('answered-viewer@example.com')
+      const partner = await newUser('answered-partner@example.com')
+      const convo = await startConversation(partner, viewer.userId, 'your turn')
+
+      expect((await list(viewer, 'unreplied')).items).toHaveLength(1)
+
+      // Messages go over the socket, so the module is what the tests call.
+      const { sendTextMessage } = await import('../modules/chat/messages')
+      await sendTextMessage(handle.db, viewer.userId, {
+        conversationId: convo._id,
+        body: 'answered',
+      })
+
+      expect((await list(viewer, 'unreplied')).items).toHaveLength(0)
+    })
+
+    it('hides an archived thread from every tab but the archive', async () => {
+      const viewer = await newUser('archive-viewer@example.com')
+      const partner = await newUser('archive-partner@example.com')
+      const convo = await startConversation(viewer, partner.userId, 'filed away')
+
+      expect((await setFlags(viewer, convo._id, { archived: true })).statusCode).toBe(200)
+
+      expect((await list(viewer)).items.map((c) => c._id)).not.toContain(convo._id)
+      expect((await list(viewer, 'archived')).items.map((c) => c._id)).toContain(convo._id)
+
+      // Un-archiving unsets the key, so it reads the same as never archived.
+      await setFlags(viewer, convo._id, { archived: false })
+      expect((await list(viewer)).items.map((c) => c._id)).toContain(convo._id)
+      expect((await list(viewer, 'archived')).items).toHaveLength(0)
+    })
+
+    it('returns pins as their own list, out of the paginated one', async () => {
+      const viewer = await newUser('pin-viewer@example.com')
+      const partner = await newUser('pin-partner@example.com')
+      const other = await newUser('pin-other@example.com')
+      const pinned = await startConversation(viewer, partner.userId, 'keep this')
+      await startConversation(viewer, other.userId, 'ordinary')
+
+      await setFlags(viewer, pinned._id, { pinned: true })
+
+      const body = await list(viewer)
+      expect(body.pinned.map((c) => c._id)).toEqual([pinned._id])
+      // And not counted twice.
+      expect(body.items.map((c) => c._id)).not.toContain(pinned._id)
+    })
+
+    /** One side pinning must not pin it for the other. */
+    it('pins for one participant only', async () => {
+      const viewer = await newUser('pin-solo-viewer@example.com')
+      const partner = await newUser('pin-solo-partner@example.com')
+      const convo = await startConversation(viewer, partner.userId, 'mine only')
+
+      await setFlags(viewer, convo._id, { pinned: true })
+
+      expect((await list(viewer)).pinned).toHaveLength(1)
+      expect((await list(partner)).pinned).toHaveLength(0)
+    })
+
+    it('refuses a request that names no flag', async () => {
+      const viewer = await newUser('noflag-viewer@example.com')
+      const partner = await newUser('noflag-partner@example.com')
+      const convo = await startConversation(viewer, partner.userId, 'hi')
+
+      expect((await setFlags(viewer, convo._id, {})).statusCode).toBe(400)
+    })
+
+    it('refuses to flag somebody else conversation', async () => {
+      const a = await newUser('flag-outsider-a@example.com')
+      const b = await newUser('flag-outsider-b@example.com')
+      const outsider = await newUser('flag-outsider-c@example.com')
+      const convo = await startConversation(a, b.userId, 'private')
+
+      const response = await setFlags(outsider, convo._id, { pinned: true })
+      expect(response.statusCode).not.toBe(200)
+    })
+  })
+
   /**
    * The client only started reading `nextCursor` here once the chat list
    * became an infinite query. The server side was already right; this pins it

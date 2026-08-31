@@ -1,6 +1,8 @@
 import {
   ERROR_CODES,
+  MAX_PINNED_CONVERSATIONS,
   REPLY_PREVIEW_MAX_LENGTH,
+  type ConversationFilter,
   type SendCorrectionInput,
   type SendMediaMessageInput,
   type SendTextMessageInput,
@@ -15,6 +17,7 @@ import { awardForSend } from '../tokens/awards'
 import { assertConversationAccess } from './access'
 import { toMessageView, type MessageView } from './messageView'
 import type { Conversation, Message } from './conversations'
+import { toConversationView, type ConversationView } from './conversationView'
 
 export interface SendResult {
   message: Message
@@ -497,16 +500,19 @@ export async function markConversationRead(
 }
 
 export interface ConversationPage {
-  items: Conversation[]
+  items: ConversationView[]
+  /** Always the whole set, never paginated — see the note in `listConversations`. */
+  pinned: ConversationView[]
   nextCursor: string | null
 }
 
 export async function listConversations(
   db: Db,
   userId: string,
-  query: { cursor?: string | undefined; limit: number },
+  query: { filter?: ConversationFilter | undefined; cursor?: string | undefined; limit: number },
 ): Promise<ConversationPage> {
   const conversations = db.collection<Conversation>(COLLECTIONS.conversations)
+  const filter = query.filter ?? 'all'
 
   // A blocked counterpart's thread disappears from the list entirely.
   // `assertConversationAccess` already refuses to open it; without this the
@@ -514,28 +520,71 @@ export async function listConversations(
   const hidden = await blockedUserIds(db, userId)
   // On an array field `$nin` means "contains none of these", so this reads as
   //: my threads, minus any whose participant list includes someone hidden.
-  const filter: Document = {
+  const base: Document = {
     participants: hidden.length > 0 ? { $eq: userId, $nin: hidden } : userId,
   }
+
+  /*
+   * Archiving is a per-tab bound, not a flag on a row: the archive tab is the
+   * only place archived threads appear, and every other tab is defined by
+   * their absence. Written as `$ne: true` rather than `$exists: false` so a
+   * document that was archived and then un-archived — which leaves the key
+   * unset — reads the same as one that never was.
+   */
+  const archivedPath = `archivedBy.${userId}`
+  if (filter === 'archived') base[archivedPath] = true
+  else base[archivedPath] = { $ne: true }
+
+  // "They spoke last." See `toConversationView` for why this is not `unread`.
+  if (filter === 'unreplied') base['lastMessage.senderId'] = { $ne: userId }
+
+  const pinnedPath = `pinnedBy.${userId}`
+
+  /*
+   * Pinned threads are fetched whole and separately, and that is a deliberate
+   * limit rather than an oversight.
+   *
+   * Pinning makes the sort compound — pinned first, then recency — and the
+   * cursor is `<lastMessage.createdAt>|<_id>`, which cannot express "and also
+   * this side of the pin boundary". Rather than widen the cursor for a set
+   * that is small by construction, the pins come back in one un-paginated
+   * query and the page below excludes them. `MAX_PINNED_CONVERSATIONS` is what
+   * keeps "small by construction" true.
+   */
+  const pinned =
+    filter === 'archived'
+      ? []
+      : await conversations
+          .find({ ...base, [pinnedPath]: true })
+          .sort({ 'lastMessage.createdAt': -1, _id: -1 })
+          .limit(MAX_PINNED_CONVERSATIONS)
+          .toArray()
+
+  const pageFilter: Document = { ...base }
+  if (filter !== 'archived') pageFilter[pinnedPath] = { $ne: true }
   if (query.cursor) {
     const { date, id } = decodeDateIdCursor(query.cursor)
-    filter.$or = [
+    pageFilter.$or = [
       { 'lastMessage.createdAt': { $lt: date } },
       { 'lastMessage.createdAt': date, _id: { $lt: id } },
     ]
   }
 
   const page = await conversations
-    .find(filter)
+    .find(pageFilter)
     .sort({ 'lastMessage.createdAt': -1, _id: -1 })
     .limit(query.limit + 1)
     .toArray()
 
   const hasMore = page.length > query.limit
-  const items = hasMore ? page.slice(0, query.limit) : page
-  const last = items.at(-1)
+  const rows = hasMore ? page.slice(0, query.limit) : page
+  const last = rows.at(-1)
   const nextCursor =
     hasMore && last ? encodeDateIdCursor(last.lastMessage.createdAt, last._id) : null
 
-  return { items, nextCursor }
+  return {
+    items: rows.map((c) => toConversationView(c, userId)),
+    pinned: pinned.map((c) => toConversationView(c, userId)),
+    nextCursor,
+  }
 }

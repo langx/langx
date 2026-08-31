@@ -72,20 +72,29 @@ export function useSocket(): void {
          */
         const meId = queryClient.getQueryData<{ _id: string }>(keys.me)?._id
         let patched = false
-        queryClient.setQueryData<InfiniteData<ConversationPageDto>>(keys.conversations, (old) => {
-          if (!old || !meId) return old
-          const next = applyIncomingMessage(old, {
-            conversationId,
-            body: message.body,
-            senderId: message.senderId,
-            createdAt: message.createdAt,
-            forUserId: meId,
-          })
-          if (!next) return old
-          patched = true
-          return next
-        })
-        if (!patched) void queryClient.invalidateQueries({ queryKey: keys.conversations })
+        /*
+         * `setQueriesData` on the prefix, not `setQueryData` on one key. The
+         * list is tabbed now, so several caches hold the same thread — patching
+         * only the visible one is how the tabs start disagreeing about who
+         * spoke last.
+         */
+        queryClient.setQueriesData<InfiniteData<ConversationPageDto>>(
+          { queryKey: ['conversations'] },
+          (old) => {
+            if (!old || !meId) return old
+            const next = applyIncomingMessage(old, {
+              conversationId,
+              body: message.body,
+              senderId: message.senderId,
+              createdAt: message.createdAt,
+              forUserId: meId,
+            })
+            if (!next) return old
+            patched = true
+            return next
+          },
+        )
+        if (!patched) void queryClient.invalidateQueries({ queryKey: ['conversations'] })
         void queryClient.invalidateQueries({ queryKey: keys.tokens })
       })
 
@@ -112,7 +121,7 @@ export function useSocket(): void {
         // A withdrawal empties the chat list's preview too, and that is the
         // one thing this cannot patch from here.
         if (message.deleted) {
-          void queryClient.invalidateQueries({ queryKey: keys.conversations })
+          void queryClient.invalidateQueries({ queryKey: ['conversations'] })
         }
       })
 
@@ -159,7 +168,7 @@ export function useSocket(): void {
        */
       socket.on('conversation:read', ({ conversationId }: { conversationId: string }) => {
         void queryClient.invalidateQueries({ queryKey: keys.messages(conversationId) })
-        void queryClient.invalidateQueries({ queryKey: keys.conversations })
+        void queryClient.invalidateQueries({ queryKey: ['conversations'] })
       })
     })()
 

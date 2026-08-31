@@ -452,6 +452,19 @@ export const ar: Localized<EnMessages> = {
   },
 
   chats: {
+    tab_all: 'الكل',
+    tab_unreplied: 'بلا رد',
+    tab_archived: 'الأرشيف',
+    filterPicker: 'مرشّح المحادثات',
+    pin: 'تثبيت',
+    unpin: 'إلغاء التثبيت',
+    archive: 'أرشفة',
+    unarchive: 'إلغاء الأرشفة',
+    pinnedSection: 'مثبّتة',
+    unrepliedEmptyTitle: 'لا شيء بانتظارك',
+    unrepliedEmptyBody: 'لقد رددت على كل محادثة.',
+    archivedEmptyTitle: 'لا محادثات مؤرشفة',
+    archivedEmptyBody: 'تبقى المحادثات المؤرشفة هنا حتى تعيدها.',
     emptyTitle: 'لا محادثات بعد',
     emptyBody:
       'راسل أحدًا من الاستكشاف. في الخطة المجانية يمكنك بدء {count} محادثات جديدة يوميًا — أما الرد على ما يصلك فبلا حدود دائمًا.',
