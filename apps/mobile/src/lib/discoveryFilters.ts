@@ -13,8 +13,6 @@ import { DISCOVERY_PRO_FILTER_KEYS, type LanguageLevel, type Gender } from '@lan
 export interface DiscoveryFilters {
   /** Free. One of the viewer's own learning languages. */
   targetLanguage?: string
-  /** Free. */
-  online?: boolean
   /** Free. Their level in my language, as an inclusive band. */
   minLevel?: LanguageLevel
   maxLevel?: LanguageLevel
@@ -59,7 +57,6 @@ export function parseFilters(
   const filters: DiscoveryFilters = {}
   const target = one(params.targetLanguage)
   if (target) filters.targetLanguage = target
-  if (one(params.online) === '1') filters.online = true
 
   const gender = one(params.gender)
   if (gender) filters.gender = gender as Gender
@@ -85,7 +82,6 @@ export function parseFilters(
 export function toParams(filters: DiscoveryFilters): Record<string, string> {
   const params: Record<string, string> = {}
   if (filters.targetLanguage) params.targetLanguage = filters.targetLanguage
-  if (filters.online) params.online = '1'
   if (filters.gender) params.gender = filters.gender
   if (filters.onlyMyGender) params.onlyMyGender = '1'
   if (filters.country) params.country = filters.country
@@ -98,14 +94,13 @@ export function toParams(filters: DiscoveryFilters): Record<string, string> {
 }
 
 /**
- * The API query. `online` and `onlyMyGender` go over the wire as `true`, which
- * is what `z.coerce.boolean()` on the other side reads — `'1'` is the URL's
- * spelling, not the API's.
+ * The API query. `onlyMyGender` goes over the wire as `true`, which is what
+ * `z.coerce.boolean()` on the other side reads — `'1'` is the URL's spelling,
+ * not the API's.
  */
 export function toQuery(filters: DiscoveryFilters): Record<string, string> {
   const query: Record<string, string> = {}
   if (filters.targetLanguage) query.targetLanguage = filters.targetLanguage
-  if (filters.online) query.online = 'true'
   if (filters.gender) query.gender = filters.gender
   if (filters.onlyMyGender) query.onlyMyGender = 'true'
   if (filters.country) query.country = filters.country
@@ -121,7 +116,6 @@ export function toQuery(filters: DiscoveryFilters): Record<string, string> {
 export function activeCount(filters: DiscoveryFilters): number {
   let count = 0
   if (filters.targetLanguage) count++
-  if (filters.online) count++
   if (filters.gender || filters.onlyMyGender) count++
   if (filters.country) count++
   // One level *band*, however many bounds express it.
@@ -145,7 +139,6 @@ export function hasProFilters(filters: DiscoveryFilters): boolean {
 export function withoutProFilters(filters: DiscoveryFilters): DiscoveryFilters {
   const free: DiscoveryFilters = {}
   if (filters.targetLanguage) free.targetLanguage = filters.targetLanguage
-  if (filters.online) free.online = true
   if (filters.minLevel) free.minLevel = filters.minLevel
   if (filters.maxLevel) free.maxLevel = filters.maxLevel
   if (filters.ageMin !== undefined) free.ageMin = filters.ageMin

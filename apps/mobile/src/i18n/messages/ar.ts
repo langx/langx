@@ -407,9 +407,11 @@ export const ar: Localized<EnMessages> = {
   },
 
   discover: {
+    searchHandles: 'البحث باسم المستخدم',
+    searchPlaceholder: 'اسم المستخدم',
+    searchNone: 'لا يوجد حساب بهذا الاسم.',
     sortLabel: 'الترتيب',
     forYou: 'لك',
-    onlineFirst: 'المتصلون أولًا',
     title: 'استكشاف',
     active: 'نشطون',
     nearby: 'قريبون',
@@ -430,7 +432,6 @@ export const ar: Localized<EnMessages> = {
   filters: {
     title: 'عوامل التصفية',
     speaks: 'يتكلم',
-    availability: 'التوفر',
     city: 'المدينة',
     cityBody: 'اعثر على أشخاص في المكان نفسه. لا يلزم تطابق الإملاء أو التشكيل أو حالة الأحرف.',
     cityPlaceholder: 'إسطنبول',
@@ -438,7 +439,6 @@ export const ar: Localized<EnMessages> = {
     age: 'العمر',
     country: 'البلد',
     practiseBody: 'أي لغاتك تريد ممارستها. كل من هنا يتكلمها أصلًا كلغة أم.',
-    onlineFirst: 'المتصلون أولًا',
     onlyMyGender: 'جنسي فقط',
     onlyMyGenderBody: 'إظهار من هم {gender} فقط، مثلك.',
     onlyMyGenderMissing: 'أضف جنسك إلى ملفك لاستخدام هذا.',

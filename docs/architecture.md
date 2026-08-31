@@ -269,17 +269,17 @@ back door around authorisation, quota or token.
 
 ### Free vs Pro vs Pro+
 
-|                            | Free                                 | Pro                            | Pro+          |
-| -------------------------- | ------------------------------------ | ------------------------------ | ------------- |
-| Starting new conversations | **5** per rolling 24h                | Unlimited                      | Unlimited     |
-| Replying                   | **Unlimited**                        | Unlimited                      | Unlimited     |
-| Filters                    | Language, online, country, age, CEFR | + gender, only-my-gender, city | same as Pro   |
-| Sort by distance (Nearby)  | —                                    | —                              | **Yes**       |
-| Translation                | N per day (config)                   | Unlimited                      | Unlimited     |
-| **Message correction**     | **Unlimited**                        | **Unlimited**                  | **Unlimited** |
-| Who viewed me              | Count only                           | Identities                     | Identities    |
-| Incognito                  | —                                    | Yes                            | Yes           |
-| AI copilot                 | —                                    | —                              | **Not built** |
+|                            | Free                         | Pro                            | Pro+          |
+| -------------------------- | ---------------------------- | ------------------------------ | ------------- |
+| Starting new conversations | **5** per rolling 24h        | Unlimited                      | Unlimited     |
+| Replying                   | **Unlimited**                | Unlimited                      | Unlimited     |
+| Filters                    | Language, country, age, CEFR | + gender, only-my-gender, city | same as Pro   |
+| Sort by distance (Nearby)  | —                            | —                              | **Yes**       |
+| Translation                | N per day (config)           | Unlimited                      | Unlimited     |
+| **Message correction**     | **Unlimited**                | **Unlimited**                  | **Unlimited** |
+| Who viewed me              | Count only                   | Identities                     | Identities    |
+| Incognito                  | —                            | Yes                            | Yes           |
+| AI copilot                 | —                            | —                              | **Not built** |
 
 Every threshold lives in `packages/shared/src/limits.ts` → `PLAN_LIMITS`, never
 hard-coded.
@@ -566,9 +566,23 @@ $match:    discoverable, !deleted, !blocked (either direction),
            nativeLanguages.code ∈ my learning,      ← mutual fit
            learning.code ∈ my nativeLanguages
            [if Pro] gender / country / age / CEFR
+$addFields onlineBucket = active in the last 5 min AND not hiding it → 1/0
 $addFields score = language fit + shared interests + activity recency
-$sort:     score desc, lastActiveAt desc  → cursor pagination
+$sort:     onlineBucket desc, score desc, lastActiveAt desc  → cursor pagination
 ```
+
+`onlineBucket` is an **ordering, not a filter** — everyone still comes back,
+the online ones lead. It was a chip once and is now unconditional, but only on
+`recommended`: `sort=active` orders by `lastActiveAt` and so already puts that
+window on top, and bucketing ahead of `sort=nearby` would put someone online
+90 km away in front of someone offline in the next street. The cost is a
+blocking in-memory sort, because a computed field cannot be indexed.
+
+**`GET /discovery/handles?q=`** is the other way in: an anchored `^prefix`
+match on `handle`, riding `handle_unique`, capped at ten. It applies the same
+blocks and `discoverable` rule as the feed and deliberately **not** the mutual
+language fit — finding somebody whose name you already know cannot depend on
+whether you are learnable to each other.
 
 **`sort=nearby` (Pro+)** replaces that leading `$match` with a single
 `$geoNear`, because `$geoNear` must be the pipeline's first stage and cannot

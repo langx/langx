@@ -253,22 +253,55 @@ export async function discoverProfiles(
       : [{ $match: match }]
 
   /**
-   * "Online first" is an *ordering*, not a filter.
+   * "Online first" is an *ordering*, not a filter, and no longer a choice.
    *
-   * It used to be a `$match` on the five-minute window, which emptied the
-   * list whenever nobody was about — the opposite of what a discovery screen
-   * is for. Everyone still comes back; the online ones lead, and the rest
-   * follow by whatever the sort already used.
+   * It was a `$match` on the five-minute window once, which emptied the list
+   * whenever nobody was about — the opposite of what a discovery screen is
+   * for. Then it was a chip. Now it is simply how the recommended feed is
+   * ordered: everyone still comes back, the online ones lead, and the rest
+   * follow by score.
    *
-   * `sort=active` needs none of this: ordering by `lastActiveAt` descending
-   * already puts the window at the top by construction.
+   * It applies to `recommended` **only**, and the other two sorts are the
+   * reason it is not global:
+   *
+   *   - `sort=active` orders by `lastActiveAt` descending, which already puts
+   *     the five-minute window on top by construction. Adding the bucket in
+   *     front would change nothing about the order and break the keyset cursor
+   *     below, which compares `lastActiveAt` and `_id` and knows nothing about
+   *     a bucket.
+   *   - `sort=nearby` is bought to answer "who is near me". Bucketing first
+   *     puts someone online 90 km away ahead of someone offline in the next
+   *     street, which is not a nearby list with a preference — it is a
+   *     recommended list with a radius.
+   *
+   * The cost is real and worth naming: `onlineBucket` is computed, so it can
+   * never be indexed, and this is a blocking in-memory sort. It used to be
+   * paid only by whoever turned the chip on; every default request pays it now.
    */
   const now = new Date()
-  const cursor = query.cursor ? decodeOnlineOffsetCursor(query.cursor, now) : null
-  const onlineOffset = cursor?.offset ?? 0
+
+  /*
+   * Three sorts, three cursor shapes, and each is now decoded only by the sort
+   * that writes it.
+   *
+   * That was a live bug: every cursor went through `decodeOnlineOffsetCursor`,
+   * including `active`'s keyset `<iso>|<userId>`. It contains a `|`, so it took
+   * the pinned-cutoff branch and hit the one-hour expiry check — paging
+   * `sort=active` past anyone whose `lastActiveAt` was over an hour old
+   * returned `400 Cursor has expired`. The existing test missed it because its
+   * fixtures were all active seconds ago.
+   */
+  const recommendedCursor =
+    query.cursor && query.sort === 'recommended'
+      ? decodeOnlineOffsetCursor(query.cursor, now)
+      : null
+  const skipOffset =
+    query.sort === 'nearby' && query.cursor
+      ? decodeOffsetCursor(query.cursor)
+      : (recommendedCursor?.offset ?? 0)
   const onlineCutoff =
-    query.online && query.sort !== 'active'
-      ? (cursor?.cutoff ?? new Date(now.getTime() - ONLINE_WINDOW_MS))
+    query.sort === 'recommended'
+      ? (recommendedCursor?.cutoff ?? new Date(now.getTime() - ONLINE_WINDOW_MS))
       : null
 
   if (onlineCutoff) {
@@ -311,18 +344,16 @@ export async function discoverProfiles(
     }
     pipeline.push({ $sort: { 'stats.lastActiveAt': -1, _id: 1 } })
   } else if (query.sort === 'nearby') {
-    /**
-     * Normally no `$sort`: `$geoNear` already emits nearest-first, and
-     * re-sorting costs a blocking stage and discards that guarantee.
+    /*
+     * No `$sort` at all: `$geoNear` already emits nearest-first, and
+     * re-sorting costs a blocking stage and throws that guarantee away.
      *
-     * With the chip on, discarding it is exactly what was asked for, so one
-     * goes in — bounded by `maxDistance` and Pro+ only, so the blocking sort
-     * runs over a small candidate set.
+     * A chip used to be able to put online-first ahead of distance here. It is
+     * gone rather than made unconditional — this sort is what Pro+ buys to
+     * answer "who is near me", and bucketing first puts someone online 90 km
+     * away ahead of someone offline in the next street.
      */
-    if (onlineCutoff) {
-      pipeline.push({ $sort: { onlineBucket: -1, distanceMeters: 1, _id: 1 } })
-    }
-    if (query.cursor) pipeline.push({ $skip: onlineOffset })
+    if (query.cursor) pipeline.push({ $skip: skipOffset })
   } else {
     // Small, capped arrays (MAX_LANGUAGES=5, MAX_INTERESTS=10) — cheap to
     // score with $setIntersection per candidate rather than needing a
@@ -347,7 +378,7 @@ export async function discoverProfiles(
           : { score: -1, 'stats.lastActiveAt': -1, _id: 1 },
       },
     )
-    if (query.cursor) pipeline.push({ $skip: onlineOffset })
+    if (query.cursor) pipeline.push({ $skip: skipOffset })
   }
 
   // Fetch one extra to know whether a next page exists without a second round-trip.
@@ -390,7 +421,7 @@ export async function discoverProfiles(
   if (hasMore) {
     const last = page.at(-1)
     if (last) {
-      const nextOffset = page.length + onlineOffset
+      const nextOffset = page.length + skipOffset
       nextCursor =
         query.sort === 'active'
           ? encodeActiveCursor(new Date(last.stats.lastActiveAt), last._id)

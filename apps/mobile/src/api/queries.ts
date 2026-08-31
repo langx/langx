@@ -10,6 +10,7 @@ import {
   type PlanTier,
 } from '@langx/shared'
 import type {
+  HandleSearchPage,
   DiscoveryResult,
   Leaderboard,
   PeriodType,
@@ -54,6 +55,7 @@ export const keys = {
   me: ['me'] as const,
   profile: (id: string) => ['profile', id] as const,
   discovery: (filters: string) => ['discovery', filters] as const,
+  handleSearch: (term: string) => ['handleSearch', term] as const,
   conversations: ['conversations'] as const,
   messages: (id: string) => ['messages', id] as const,
   /**
@@ -462,6 +464,24 @@ export function useTokens() {
 
 export function useWallet() {
   return useQuery({ queryKey: keys.wallet, queryFn: () => api.get<Wallet>('/me/wallet') })
+}
+
+/**
+ * Handle search. Enabled only past the schema's own two-character minimum, so
+ * the first keystroke does not spend a request on a 400.
+ *
+ * `keepPreviousData` because the alternative is a list that blanks on every
+ * settled keystroke — the results are a jump-to, and a target that disappears
+ * while you reach for it is worse than a slightly stale one.
+ */
+export function useHandleSearch(term: string) {
+  const trimmed = term.trim().toLowerCase()
+  return useQuery({
+    queryKey: keys.handleSearch(trimmed),
+    queryFn: () => api.get<HandleSearchPage>(`/discovery/handles?q=${encodeURIComponent(trimmed)}`),
+    enabled: trimmed.length >= 2,
+    placeholderData: keepPreviousData,
+  })
 }
 
 export function useFeed(filter: FeedFilter) {

@@ -194,17 +194,6 @@ export default function FiltersScreen() {
         </View>
 
         <View style={styles.section}>
-          <SectionTitle title={t('filters.availability')} />
-          <View style={styles.row}>
-            <Chip
-              label={t('filters.onlineFirst')}
-              selected={filters.online === true}
-              onPress={() => set({ online: filters.online ? undefined : true })}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
           <SectionTitle title={t('filters.theirLevel')} />
           <Text style={styles.hint}>{t('filters.theirLevelBody')}</Text>
           <View style={styles.levelRow}>

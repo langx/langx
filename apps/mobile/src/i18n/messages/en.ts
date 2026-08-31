@@ -373,9 +373,11 @@ export const en = {
   },
 
   discover: {
+    searchHandles: 'Search by username',
+    searchPlaceholder: 'Username',
+    searchNone: 'No account with that username.',
     sortLabel: 'Sort',
     forYou: 'For you',
-    onlineFirst: 'Online first',
     title: 'Discover',
     active: 'Active',
     nearby: 'Nearby',
@@ -398,7 +400,6 @@ export const en = {
   filters: {
     title: 'Filters',
     speaks: 'Speaks',
-    availability: 'Availability',
     city: 'City',
     cityBody: 'Find people in one place. Spelling, accents and case do not have to match.',
     cityPlaceholder: 'Istanbul',
@@ -407,7 +408,6 @@ export const en = {
     country: 'Country',
     practiseBody:
       'Which of your own languages you want to practise. Everyone here already speaks it natively.',
-    onlineFirst: 'Online first',
     onlyMyGender: 'Only my gender',
     onlyMyGenderBody: 'Show only people who are {gender}, like you.',
     onlyMyGenderMissing: 'Add your own gender to your profile to use this.',

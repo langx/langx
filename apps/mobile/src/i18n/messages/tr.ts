@@ -348,9 +348,11 @@ export const tr: Localized<EnMessages> = {
   },
 
   discover: {
+    searchHandles: 'Kullanıcı adıyla ara',
+    searchPlaceholder: 'Kullanıcı adı',
+    searchNone: 'Bu kullanıcı adında bir hesap yok.',
     sortLabel: 'Sıralama',
     forYou: 'Sana özel',
-    onlineFirst: 'Önce çevrimiçi',
     title: 'Keşfet',
     active: 'Aktif',
     nearby: 'Yakında',
@@ -373,7 +375,6 @@ export const tr: Localized<EnMessages> = {
   filters: {
     title: 'Filtreler',
     speaks: 'Konuşuyor',
-    availability: 'Durum',
     city: 'Şehir',
     cityBody: 'Aynı şehirdekileri bul. Yazım, aksan ve büyük-küçük harf uyuşmak zorunda değil.',
     cityPlaceholder: 'İstanbul',
@@ -382,7 +383,6 @@ export const tr: Localized<EnMessages> = {
     country: 'Ülke',
     practiseBody:
       'Kendi dillerinden hangisini pratik etmek istiyorsun. Buradaki herkes onu zaten ana dili olarak konuşuyor.',
-    onlineFirst: 'Önce çevrimiçi',
     onlyMyGender: 'Sadece kendi cinsiyetim',
     onlyMyGenderBody: 'Sadece senin gibi {gender} olan kişileri göster.',
     onlyMyGenderMissing: 'Bunu kullanmak için profiline kendi cinsiyetini ekle.',
