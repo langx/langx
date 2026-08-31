@@ -899,6 +899,15 @@ export const en = {
     ctaLabel: 'Open LangX',
   },
 
+  shareProfile: {
+    title: 'Share my profile',
+    body: 'Point a camera at this, or send the link.',
+    qrAccessibility: 'QR code for @{handle}',
+    share: 'Share',
+    copy: 'Copy link',
+    copied: 'Link copied',
+  },
+
   viewers: {
     title: 'Who viewed your profile',
     empty: 'Nobody has viewed your profile yet.',

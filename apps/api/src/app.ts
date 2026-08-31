@@ -30,6 +30,7 @@ import { activityRoutes } from './routes/activity'
 import { messageRoutes } from './routes/messages'
 import { moderationRoutes } from './routes/moderation'
 import { profileRoutes } from './routes/profiles'
+import { qrRoutes } from './routes/qr'
 import { translationRoutes } from './routes/translate'
 import { leaderboardRoutes } from './routes/leaderboard'
 import { xpRoutes } from './routes/tokens'
@@ -214,6 +215,7 @@ export async function buildApp({
   await app.register(loginRoutes)
   await registerAuthRoutes(app, auth)
   await app.register(profileRoutes)
+  await app.register(qrRoutes)
   await app.register(followRoutes)
   await app.register(handleRoutes)
   await app.register(mediaRoutes)

@@ -1027,6 +1027,15 @@ export const ar: Localized<EnMessages> = {
     ctaLabel: 'افتح LangX',
   },
 
+  shareProfile: {
+    title: 'مشاركة ملفي',
+    body: 'وجّه الكاميرا إلى هذا، أو أرسل الرابط.',
+    qrAccessibility: 'رمز QR لـ ‏@{handle}',
+    share: 'مشاركة',
+    copy: 'نسخ الرابط',
+    copied: 'تم نسخ الرابط',
+  },
+
   viewers: {
     title: 'من زار ملفك',
     empty: 'لم يزر أحد ملفك بعد.',

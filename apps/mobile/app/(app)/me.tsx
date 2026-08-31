@@ -2,7 +2,7 @@ import { ActivityMap } from '../../src/components/ActivityMap'
 import { countryFlag, getCountry, profileUrl, wornCosmetic } from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
-import { ActivityIndicator, Pressable, Share, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import {
   useEffectiveTier,
   useIsPro,
@@ -196,20 +196,14 @@ export default function MeScreen() {
         onPress={() => openProfile(profile.handle, '/(app)/me')}
       />
       {/*
-        `Share.share` is React Native's own — the platform sheet already offers
-        copy, message and everything else, so there is nothing to reimplement.
+        A screen rather than the share sheet directly: sending a link and
+        showing one across a table want opposite things, and a sheet cannot be
+        photographed. The sheet is one tap further in, where it belongs.
       */}
       <ListRow
         title={t('me.shareProfile')}
         subtitle={profileUrl(profile.handle).replace('https://', '')}
-        onPress={() => {
-          void Share.share({
-            message: t('me.shareMessage', { url: profileUrl(profile.handle) }),
-            // iOS reads `url` and `message` as separate fields; Android has
-            // only the one, which is why the URL is in both.
-            url: profileUrl(profile.handle),
-          })
-        }}
+        onPress={() => router.push('/(app)/share-profile')}
       />
 
       {!isPro ? (

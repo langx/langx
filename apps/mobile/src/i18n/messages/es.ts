@@ -862,6 +862,15 @@ export const es: Localized<EnMessages> = {
     ctaLabel: 'Abrir LangX',
   },
 
+  shareProfile: {
+    title: 'Compartir mi perfil',
+    body: 'Apunta una cámara aquí, o envía el enlace.',
+    qrAccessibility: 'Código QR de @{handle}',
+    share: 'Compartir',
+    copy: 'Copiar enlace',
+    copied: 'Enlace copiado',
+  },
+
   viewers: {
     title: 'Quién ha visto tu perfil',
     empty: 'Todavía nadie ha visto tu perfil.',

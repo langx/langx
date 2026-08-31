@@ -113,3 +113,15 @@ export const ANDROID_CERT_SHA256: readonly string[] = [
   // know about — dropping it would break App Links for every store install.
   'A6:55:54:9F:DB:37:29:20:30:1B:8D:78:96:2B:B4:8C:95:AD:4C:0D:26:79:0F:D8:1B:BD:8E:74:DA:BF:CD:0E',
 ]
+
+/**
+ * The QR image for a profile link.
+ *
+ * Points at the API rather than the web host: it is generated, not a static
+ * asset, and generating it server-side is what keeps `react-native-svg` — a
+ * native module, so a new binary and no OTA — out of the app for a picture.
+ */
+export function profileQrUrl(apiBaseUrl: string, handle: string): string {
+  const bare = handle.startsWith('@') ? handle.slice(1) : handle
+  return `${apiBaseUrl.replace(/\/$/, '')}/public/qr/${encodeURIComponent(bare)}`
+}

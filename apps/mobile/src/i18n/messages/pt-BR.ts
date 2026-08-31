@@ -860,6 +860,15 @@ export const ptBR: Localized<EnMessages> = {
     ctaLabel: 'Abrir o LangX',
   },
 
+  shareProfile: {
+    title: 'Compartilhar meu perfil',
+    body: 'Aponte uma câmera para isto, ou envie o link.',
+    qrAccessibility: 'QR code de @{handle}',
+    share: 'Compartilhar',
+    copy: 'Copiar link',
+    copied: 'Link copiado',
+  },
+
   viewers: {
     title: 'Quem viu seu perfil',
     empty: 'Ninguém viu seu perfil ainda.',
