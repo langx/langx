@@ -1,5 +1,5 @@
 import Feather from '@expo/vector-icons/Feather'
-import { ACCOUNT_DELETION_GRACE_DAYS } from '@langx/shared'
+import { ACCOUNT_DELETION_GRACE_DAYS, TIER_BADGES, tierUnlocking } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Image, Linking, Platform, Pressable, Text, View } from 'react-native'
@@ -86,6 +86,12 @@ export default function SettingsScreen() {
 
   const profile = me.data
   const isPro = useIsPro()
+  // Each tag names the plan that unlocks *that* row. Incognito reads the real
+  // table through `tierUnlocking`, so moving it between tiers moves the tag.
+  // The app icon is not in `PLAN_LIMITS` at all — it is a local cosmetic gated
+  // on "any paid plan" — so it takes the cheapest paid badge instead.
+  const incognitoBadge = TIER_BADGES[tierUnlocking('incognito') ?? 'free']
+  const paidBadge = TIER_BADGES.pro
   const shareLocation = useShareLocation()
   const stopSharingLocation = useStopSharingLocation()
 
@@ -251,7 +257,7 @@ export default function SettingsScreen() {
           subtitle={t('settings.incognitoBody')}
           accessory={
             <View style={styles.gated}>
-              {isPro ? null : <Text style={styles.proTag}>PRO</Text>}
+              {isPro ? null : <Text style={styles.proTag}>{incognitoBadge}</Text>}
               <Toggle
                 accessibilityLabel={t('settings.incognito')}
                 disabled={!isPro}
@@ -421,7 +427,7 @@ export default function SettingsScreen() {
               last
               accessory={
                 <View style={styles.gated}>
-                  {isPro ? null : <Text style={styles.proTag}>PRO</Text>}
+                  {isPro ? null : <Text style={styles.proTag}>{paidBadge}</Text>}
                   {APP_ICONS.map((name) => (
                     <Pressable
                       key={name}

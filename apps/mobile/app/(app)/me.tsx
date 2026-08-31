@@ -1,5 +1,13 @@
 import { ActivityMap } from '../../src/components/ActivityMap'
-import { countryFlag, getCountry, profileUrl, wornCosmetic } from '@langx/shared'
+import {
+  countryFlag,
+  getCountry,
+  profileUrl,
+  wornCosmetic,
+  TIER_BADGES,
+  TIER_NAMES,
+  tierUnlocking,
+} from '@langx/shared'
 import Feather from '@expo/vector-icons/Feather'
 import { router } from 'expo-router'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
@@ -65,11 +73,12 @@ export default function MeScreen() {
   const summary = xp.data
   const viewerPage = viewers.data?.pages[0]
 
-  // "PRO" / "PRO+" are brand marks, not copy — the same literals TierBadge
-  // draws in its chip, folded into the meta line the way v3 writes it.
+  // The same mark TierBadge draws in its chip, folded into the meta line the
+  // way v3 writes it — read from the shared table rather than re-typed, which
+  // is how this line and the chip came to disagree about a renamed plan.
   const meta = [
     `@${profile.handle}`,
-    tier === 'free' ? null : tier === 'pro_plus' ? 'PRO+' : 'PRO',
+    TIER_BADGES[tier],
     profile.country ? countryLabel(profile.country) : null,
   ]
     .filter(Boolean)
@@ -151,7 +160,10 @@ export default function MeScreen() {
           /* `total` and `locked` describe the whole list, so page one is
              the authority on both. */
           viewerPage?.locked
-            ? t('me.viewersLocked', { count: viewerPage.total })
+            ? t('me.viewersLocked', {
+                count: viewerPage.total,
+                plan: TIER_NAMES[tierUnlocking('profileViewerIdentities') ?? 'pro'],
+              })
             : t('me.viewersCount', { count: viewerPage?.total ?? 0 })
         }
         onPress={() => router.push('/(app)/viewers')}

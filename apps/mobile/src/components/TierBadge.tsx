@@ -1,8 +1,8 @@
-import type { PlanTier } from '@langx/shared'
+import { TIER_BADGES, type PlanTier } from '@langx/shared'
 import { Chip } from './ui/Chip'
 
 /**
- * The PRO / PRO+ badge, in one place.
+ * The plan badge, in one place.
  *
  * Two screens rendered this inline and disagreed about how to decide it — the
  * profile screen compared `tier === 'pro'` while `me` used `useIsPro()` — so
@@ -18,7 +18,10 @@ import { Chip } from './ui/Chip'
  * reading "FREE" is an insult, not information.
  */
 export function TierBadge({ tier }: { tier: PlanTier }) {
-  if (tier === 'free') return null
-  const isPlus = tier === 'pro_plus'
-  return <Chip label={isPlus ? 'PRO+' : 'PRO'} tone={isPlus ? 'proPlus' : 'pro'} />
+  const label = TIER_BADGES[tier]
+  if (label === null) return null
+  // `tone` stays keyed on the tier, not the label: 'pro' and 'proPlus' are
+  // theme token names, and renaming them because the plan was renamed would be
+  // unrelated churn in the palette.
+  return <Chip label={label} tone={tier === 'pro_plus' ? 'proPlus' : 'pro'} />
 }

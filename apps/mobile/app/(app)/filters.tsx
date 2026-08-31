@@ -3,6 +3,8 @@ import {
   GENDERS,
   LANGUAGE_LEVELS,
   levelRank,
+  TIER_BADGES,
+  tierUnlocking,
   type LanguageLevel,
 } from '@langx/shared'
 import { router, useLocalSearchParams } from 'expo-router'
@@ -40,11 +42,15 @@ type FilterPatch = { [K in keyof DiscoveryFilters]?: DiscoveryFilters[K] | undef
  */
 function SectionTitle({ title, locked }: { title: string; locked?: boolean }) {
   const styles = useStyles()
+  // Names the plan that actually unlocks this row rather than a fixed word, so
+  // moving a filter between tiers moves the tag with it. `tierUnlocking` reads
+  // the real table, which is why it can be trusted to stay right.
+  const badge = TIER_BADGES[tierUnlocking('advancedFilters') ?? 'free']
 
   return (
     <View style={styles.sectionHead}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      {locked ? <Text style={styles.proTag}>PRO</Text> : null}
+      {locked && badge ? <Text style={styles.proTag}>{badge}</Text> : null}
     </View>
   )
 }
