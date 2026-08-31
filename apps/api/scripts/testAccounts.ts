@@ -21,7 +21,7 @@ import { hashPassword } from 'better-auth/crypto'
 import { ObjectId, type Db } from 'mongodb'
 import type { OnboardingProfileInput } from '@langx/shared'
 import { COLLECTIONS } from '../src/db/collections'
-import { createProfile } from '../src/modules/profiles/profiles'
+import { createProfile, type Profile } from '../src/modules/profiles/profiles'
 
 /**
  * Which database a fixture script writes to.
@@ -124,7 +124,36 @@ export async function ensureAccount(
     updatedAt: now,
   })
 
-  await createProfile(db, String(userId), null, person)
+  /*
+   * Onboarding caps both language lists at the free tier's one, so a fixture
+   * with two learning languages cannot be created through `createProfile` any
+   * more. The first entry of each goes in through the real path, and the rest
+   * are written straight onto the document afterwards.
+   *
+   * That is not a way round the cap — it is the shape a migrated v1 profile
+   * already has, and the one the grandfathering clause in `updateProfile`
+   * exists for. A fixture that can only ever hold one language would take that
+   * whole branch out of local testing, which is the half most likely to break.
+   */
+  await createProfile(db, String(userId), null, {
+    ...person,
+    nativeLanguages: [person.nativeLanguages[0]!],
+    learning: [person.learning[0]!],
+  })
+
+  if (person.nativeLanguages.length > 1 || person.learning.length > 1) {
+    await db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+      { _id: String(userId) },
+      {
+        $set: {
+          nativeLanguages: person.nativeLanguages,
+          learning: person.learning,
+          updatedAt: new Date(),
+        },
+      },
+    )
+  }
+
   return { userId: String(userId), created: true }
 }
 
