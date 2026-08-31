@@ -31,6 +31,16 @@ export function PeopleSearch({ from, onSearchingChange }: PeopleSearchProps) {
   const { colors } = useTheme()
   const [searching, setSearching] = useState(false)
   const [term, setTerm] = useState('')
+  /*
+   * Where the results start.
+   *
+   * Both hosts mount this inside their title row, which is a flex row — so a
+   * results list laid out in normal flow becomes a *third column* beside the
+   * title and the filter icon rather than a list under the field. Measuring
+   * the field and floating the results under it is what keeps the component
+   * droppable into a row without either host restructuring its header.
+   */
+  const [below, setBelow] = useState(0)
   // The input renders `term` and the query follows the settled value, so
   // typing stays responsive and "behic" is one request rather than five.
   const search = useHandleSearch(useDebounced(term))
@@ -57,7 +67,13 @@ export function PeopleSearch({ from, onSearchingChange }: PeopleSearchProps) {
 
   return (
     <View style={styles.wrap}>
-      <View style={styles.field}>
+      <View
+        style={styles.field}
+        onLayout={(event) => {
+          const { y, height } = event.nativeEvent.layout
+          setBelow(y + height)
+        }}
+      >
         {/*
           Leaving search is local state, never navigation. Both hosts are tab
           roots, so `router.back()` would drop the reader on the first tab —
@@ -101,7 +117,7 @@ export function PeopleSearch({ from, onSearchingChange }: PeopleSearchProps) {
         ) : null}
       </View>
 
-      <View style={styles.results}>
+      <View style={[styles.results, { top: below }]}>
         {search.isFetching ? <ActivityIndicator style={styles.spinner} /> : null}
         {search.data?.items.map((result) => (
           <Pressable
@@ -132,7 +148,13 @@ export function PeopleSearch({ from, onSearchingChange }: PeopleSearchProps) {
 }
 
 const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
-  wrap: { gap: spacing.xs },
+  /*
+   * `flex: 1` so the open field takes the row it was dropped into. Without it
+   * the field is content-width, the row overflows, and the host's own title
+   * slides off the leading edge — which is how this shipped and what it looked
+   * like on a 420px screen.
+   */
+  wrap: { flex: 1 },
   toggle: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
   pressed: { opacity: 0.7 },
   field: {
@@ -148,7 +170,21 @@ const useStyles = makeStyles(({ colors, font, radius, spacing }) => ({
   },
   leave: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
   input: { ...font.body, color: colors.text, flex: 1, padding: 0 },
-  results: { gap: spacing.xs, marginTop: spacing.xs },
+  /*
+   * Floated, for the reason `below` records. `end: 0` rather than `right: 0`
+   * so it follows the writing direction, and `zIndex` because the list it
+   * covers is drawn after this in the tree.
+   */
+  results: {
+    backgroundColor: colors.bg,
+    end: 0,
+    gap: spacing.xs,
+    paddingBottom: spacing.md,
+    paddingTop: spacing.xs,
+    position: 'absolute',
+    start: 0,
+    zIndex: 2,
+  },
   spinner: { marginTop: spacing.md },
   row: { alignItems: 'center', flexDirection: 'row', gap: spacing.sm, paddingVertical: spacing.sm },
   text: { flex: 1, gap: 1 },

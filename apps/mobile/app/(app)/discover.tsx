@@ -153,13 +153,19 @@ export default function DiscoverScreen() {
   return (
     <Screen fluid>
       <View style={styles.header}>
+        {/*
+          While search is open the row belongs to the field. Everything else
+          here competed with it for the same 420px and lost — the title slid
+          off the leading edge and the language pair broke onto three lines.
+          The arrow inside the field puts them all back.
+        */}
         <View style={styles.titleRow}>
-          <Text style={styles.title}>{t('discover.title')}</Text>
+          {searching ? null : <Text style={styles.title}>{t('discover.title')}</Text>}
           {/* Which direction this list is matched in. Every row below is
               someone native in what you are learning and learning what you
               speak, and without this the list looks unsorted rather than
               matched. */}
-          {pair ? <Text style={styles.pair}>{pair}</Text> : null}
+          {pair && !searching ? <Text style={styles.pair}>{pair}</Text> : null}
           {/* Advanced filters are the Pro hook, so the control is shown to
               everyone and the *screen* handles the upsell — hiding it makes
               the paywall a surprise instead of an offer. Free filters still
@@ -169,35 +175,43 @@ export default function DiscoverScreen() {
               question asked two ways — "narrow this" and "I already know who
               I am looking for". */}
           <PeopleSearch from="/(app)/discover" onSearchingChange={setSearching} />
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={
-              count > 0
-                ? t('discover.filtersWithCount', { count })
-                : isPro
-                  ? t('filters.title')
-                  : t('discover.filters')
-            }
-            onPress={() => router.push({ pathname: '/(app)/filters', params })}
-            style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
-            hitSlop={8}
-          >
-            <Feather name="sliders" size={22} color={colors.text} />
-            {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
-          </Pressable>
+          {searching ? null : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                count > 0
+                  ? t('discover.filtersWithCount', { count })
+                  : isPro
+                    ? t('filters.title')
+                    : t('discover.filters')
+              }
+              onPress={() => router.push({ pathname: '/(app)/filters', params })}
+              style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+              hitSlop={8}
+            >
+              <Feather name="sliders" size={22} color={colors.text} />
+              {count > 0 ? <Text style={styles.filterCount}>{count}</Text> : null}
+            </Pressable>
+          )}
         </View>
-        <View style={styles.segmented}>
-          <SegmentedControl
-            options={SORTS.map((option) => ({
-              value: option.key,
-              label:
-                option.key === 'nearby' && !canUseNearby ? `${t(option.label)} ✦` : t(option.label),
-            }))}
-            selected={[sort]}
-            onToggle={(key) => (key === 'nearby' ? void chooseNearby() : setSort(key))}
-            accessibilityLabel={t('discover.sortLabel')}
-          />
-        </View>
+        {/* Search takes the screen, not a strip of it: a sort control above a
+            list that has been blanked is answering a question nobody asked. */}
+        {searching ? null : (
+          <View style={styles.segmented}>
+            <SegmentedControl
+              options={SORTS.map((option) => ({
+                value: option.key,
+                label:
+                  option.key === 'nearby' && !canUseNearby
+                    ? `${t(option.label)} ✦`
+                    : t(option.label),
+              }))}
+              selected={[sort]}
+              onToggle={(key) => (key === 'nearby' ? void chooseNearby() : setSort(key))}
+              accessibilityLabel={t('discover.sortLabel')}
+            />
+          </View>
+        )}
         <View style={styles.chips}>
           {/* Only while it applies. A radius control above a list that is not
               sorted by distance would be a control with nothing to control. */}
@@ -327,7 +341,13 @@ export default function DiscoverScreen() {
 const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
   flag: { fontSize: 15 },
   header: { paddingTop: spacing.md },
-  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md },
+  /*
+   * `zIndex` so `PeopleSearch`'s floated results paint over the list below.
+   * The results carry their own, but `zIndex` only orders within a stacking
+   * context — without one here the segmented control, a later sibling, is
+   * painted after this whole row and covers them.
+   */
+  titleRow: { alignItems: 'center', flexDirection: 'row', gap: spacing.md, zIndex: 2 },
   title: { ...font.title, color: colors.text, flexShrink: 1, fontSize: 34 },
   pair: {
     ...font.label,
