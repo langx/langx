@@ -499,6 +499,7 @@ export const ru: Localized<EnMessages> = {
   chat: {
     title: 'Чат',
     typing: 'печатает…',
+    notSentRetry: 'Не отправлено — нажми, чтобы повторить',
     editing: 'Редактирование',
     correcting: 'Исправление',
     activity: 'Активность',

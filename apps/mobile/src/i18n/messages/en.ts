@@ -459,6 +459,7 @@ export const en = {
   chat: {
     title: 'Chat',
     typing: 'typing…',
+    notSentRetry: 'Not sent — tap to try again',
     editing: 'Editing',
     correcting: 'Correcting',
     activity: 'Activity',

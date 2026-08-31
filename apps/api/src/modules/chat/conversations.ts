@@ -82,6 +82,11 @@ export interface Message {
   deletedAt?: Date
   deletedBy?: string
   /** Private to each user — projected away, never shipped as a list. */
+  /**
+   * The client's id for the attempt that created this message, when it sent
+   * one. Only ever read to refuse a duplicate — see `sender_client_id_unique`.
+   */
+  clientId?: string
   starredBy?: string[]
   editedAt?: Date
   /**

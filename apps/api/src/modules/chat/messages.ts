@@ -123,12 +123,26 @@ export async function sendTextMessage(
   const conversation = await assertConversationAccess(db, input.conversationId, senderId)
   const replyTo = await resolveReplyTo(db, conversation, input.replyToMessageId)
 
+  /**
+   * A send whose ack was lost looks exactly like one that never arrived, so the
+   * client retries it. `sender_client_id_unique` is what makes that safe: the
+   * second write is refused by the index rather than by a prior read, which is
+   * the only version that holds under a race.
+   */
+  if (input.clientId) {
+    const already = await db
+      .collection<Message>(COLLECTIONS.messages)
+      .findOne({ senderId, clientId: input.clientId })
+    if (already) return { message: already, conversation }
+  }
+
   const message: Message = {
     _id: new ObjectId(),
     conversationId: conversation._id,
     senderId,
     type: 'text',
     body: input.body,
+    ...(input.clientId ? { clientId: input.clientId } : {}),
     ...(replyTo ? { replyTo } : {}),
     createdAt: new Date(),
   }

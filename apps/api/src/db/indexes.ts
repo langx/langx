@@ -242,6 +242,35 @@ export const INDEXES: Partial<IndexSpec> = {
      * index would let exactly one of them exist.
      */
     { key: { legacyId: 1 }, name: 'legacy_id_unique', unique: true, sparse: true },
+    /**
+     * Idempotency for a resent message, by index rather than by the handler
+     * remembering to check — the same shape as `legacy_id_unique` above, and
+     * the doctrine `decisions.md` already records for retried writes.
+     *
+     * A send whose ack is lost is indistinguishable from one that never
+     * arrived, so the client retries; without this, the message it already
+     * delivered is posted twice.
+     *
+     * Keyed on the sender as well as the id. The id is minted on a device from
+     * a clock and a random number, which is unique enough among one person's
+     * own attempts and nothing more — a global unique index would let one
+     * user's collision refuse another user's message. Sparse because a build
+     * that predates this sends no `clientId`.
+     */
+    {
+      key: { senderId: 1, clientId: 1 },
+      name: 'sender_client_id_unique',
+      unique: true,
+      /**
+       * `partialFilterExpression`, **not** `sparse`. A compound sparse index is
+       * only sparse when *every* indexed field is missing, and `senderId` is
+       * always there — so a sparse version indexes every message with a null
+       * `clientId` and the unique constraint then allows exactly one message
+       * per sender. Which is to say: it silently breaks sending, and it breaks
+       * it for everyone, on the second message.
+       */
+      partialFilterExpression: { clientId: { $exists: true } },
+    },
   ],
 
   [COLLECTIONS.blocks]: [

@@ -41,6 +41,13 @@ import { useProfileCache } from '../../../src/hooks/useProfileCache'
 import { useVoiceRecorder } from '../../../src/hooks/useVoiceRecorder'
 import { chooseAlert, showAlert } from '../../../src/lib/alert'
 import { emitWithAck, getSocket } from '../../../src/lib/socket'
+import {
+  addUnsent,
+  newClientId,
+  removeUnsent,
+  retireDelivered,
+  type UnsentMessage,
+} from '../../../src/lib/unsentMessages'
 import { errorCodeOf } from '../../../src/lib/errors'
 import { listState } from '../../../src/lib/listState'
 import { shouldSubmitOnEnter } from '../../../src/lib/submitOnEnter'
@@ -72,6 +79,7 @@ export default function ChatScreen() {
 
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
+  const [unsent, setUnsent] = useState<UnsentMessage[]>([])
   const [correcting, setCorrecting] = useState<MessageDto | null>(null)
   const [partnerTyping, setPartnerTyping] = useState(false)
   // Keyed by message id: a translation replaces nothing, it sits under the
@@ -109,6 +117,20 @@ export default function ChatScreen() {
 
   const items = useMemo(() => messagesNewestFirst(thread.data), [thread.data])
   const rows = useMemo(() => messageRows(items), [items])
+
+  /**
+   * A send whose ack was lost still left an unsent row, and the message may
+   * have arrived anyway — the thread would then show the same sentence twice.
+   * The server echoes `clientId` back to its author so the duplicate can go.
+   */
+  useEffect(() => {
+    setUnsent((list) =>
+      retireDelivered(
+        list,
+        items.map((message) => message.clientId),
+      ),
+    )
+  }, [items])
   // Newest first, so the anchor's index *is* how many arrived while away.
   const missed = awayFrom
     ? Math.max(
@@ -223,6 +245,47 @@ export default function ChatScreen() {
     await sendMedia('audio', recording)
   }
 
+  /**
+   * Sends `body`, and on failure keeps it as a visible row rather than losing
+   * it.
+   *
+   * `clientId` is passed in on a retry so the row updates itself instead of
+   * stacking a second copy of the same sentence.
+   */
+  async function deliver(body: string, clientId: string): Promise<void> {
+    try {
+      const socket = await getSocket()
+      await emitWithAck(socket, 'message:send', {
+        conversationId,
+        body,
+        clientId,
+        ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+      })
+      setUnsent((list) => removeUnsent(list, clientId))
+      setReplyingTo(null)
+    } catch {
+      /*
+       * Swallowed on purpose, and this is the whole change: it used to be
+       * swallowed by *nothing* — `send()` had a `try/finally` with no `catch`,
+       * both call sites were `void send()`, and there is no global rejection
+       * handler, so the reader was shown nothing whatsoever. The row below is
+       * the report.
+       */
+      setUnsent((list) =>
+        addUnsent(list, {
+          clientId,
+          body,
+          ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
+          failedAt: new Date().toISOString(),
+        }),
+      )
+    }
+  }
+
+  async function retry(message: UnsentMessage): Promise<void> {
+    await deliver(message.body, message.clientId)
+  }
+
   async function send(): Promise<void> {
     const body = draft.trim()
     if (!body || sending) return
@@ -247,12 +310,10 @@ export default function ChatScreen() {
         })
         setCorrecting(null)
       } else {
-        await emitWithAck(socket, 'message:send', {
-          conversationId,
-          body,
-          ...(replyingTo ? { replyToMessageId: replyingTo._id } : {}),
-        })
-        setReplyingTo(null)
+        // `deliver` never rejects — a failure becomes an unsent row — so the
+        // composer clears either way. The text is not lost, it has moved into
+        // the thread where the reader can see it did not go.
+        await deliver(body, newClientId(Date.now(), Math.random()))
       }
       setDraft('')
       notifyTyping(false)
@@ -617,6 +678,31 @@ export default function ChatScreen() {
               }
             }}
             onEndReachedThreshold={0.4}
+            /**
+             * Header, not footer: inverted, the header is what sits at the
+             * bottom — under the newest message and directly above the
+             * composer, which is where something that failed to send belongs.
+             */
+            ListHeaderComponent={
+              unsent.length > 0 ? (
+                <View style={styles.unsentBlock}>
+                  {unsent.map((message) => (
+                    <Pressable
+                      key={message.clientId}
+                      accessibilityRole="button"
+                      accessibilityLabel={t('chat.notSentRetry')}
+                      onPress={() => void retry(message)}
+                      style={({ pressed }) => [styles.unsent, pressed && styles.unsentPressed]}
+                    >
+                      <Text style={styles.unsentBody}>{message.body}</Text>
+                      <Text style={styles.unsentNote}>
+                        <Feather name="alert-circle" size={12} /> {t('chat.notSentRetry')}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              ) : null
+            }
             /** Footer, not header: inverted, the footer is what sits on top. */
             ListFooterComponent={
               thread.isFetchingNextPage ? <ActivityIndicator style={styles.older} /> : null
@@ -915,6 +1001,27 @@ const useStyles = makeStyles(({ colors, font, spacing, radius, cardShadow }) => 
   headerName: { ...font.heading, color: colors.text, fontSize: 16 },
   typing: { ...font.caption, color: colors.accent, fontSize: 13, fontWeight: '600' },
   presence: { ...font.caption, color: colors.success, fontSize: 13, fontWeight: '600' },
+  /** Under the newest message, above the composer. */
+  unsentBlock: { gap: spacing.xs, paddingTop: spacing.xs },
+  /**
+   * Shaped like one of your own bubbles but drained of it: same side, same
+   * radius, an `error` outline instead of the accent fill. It has to read as
+   * "this is your message and it did not go", which a toast cannot say because
+   * a toast does not sit next to the sentence.
+   */
+  unsent: {
+    alignSelf: 'flex-end',
+    borderColor: colors.danger,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 2,
+    maxWidth: '82%',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  unsentPressed: { opacity: 0.6 },
+  unsentBody: { ...font.body, color: colors.text, fontSize: 16, lineHeight: 24 },
+  unsentNote: { ...font.caption, color: colors.danger, fontSize: 12 },
   listWrap: { flex: 1 },
   list: { gap: spacing.md, paddingHorizontal: spacing.lg, paddingVertical: spacing.lg },
   skeletonFill: { flex: 1 },
