@@ -1,3 +1,4 @@
+import { MEDIA_UNLOCKS_AFTER_MESSAGES } from '@langx/shared'
 import type { Conversation } from './conversations'
 
 /**
@@ -25,7 +26,27 @@ export interface ConversationView {
   /** They spoke last, so the next move is the viewer's. */
   unreplied: boolean
   bothSpoke: boolean
+  /**
+   * How many more messages before a photo or a voice note can be sent, or 0
+   * once they can. A number rather than a boolean so the composer can say
+   * *how many*, which is the difference between a rule and a broken button.
+   */
+  mediaLockedFor: number
   updatedAt: Date
+}
+
+/**
+ * How many more messages before an attachment is allowed, or 0.
+ *
+ * One function, read by both projections. An absent `messageCount` means the
+ * conversation predates the counter, never that it is empty — see
+ * `messagesInThread`, which is the server's own reading of the same field.
+ * Those threads have history, so the composer is unlocked rather than showing
+ * a countdown that would be wrong; signing an upload URL still checks properly.
+ */
+export function mediaLockedFor(conversation: Conversation): number {
+  const sent = conversation.messageCount ?? MEDIA_UNLOCKS_AFTER_MESSAGES
+  return Math.max(0, MEDIA_UNLOCKS_AFTER_MESSAGES - sent)
 }
 
 export function toConversationView(conversation: Conversation, viewerId: string): ConversationView {
@@ -44,6 +65,7 @@ export function toConversationView(conversation: Conversation, viewerId: string)
      */
     unreplied: conversation.lastMessage.senderId !== viewerId,
     bothSpoke: conversation.bothSpoke,
+    mediaLockedFor: mediaLockedFor(conversation),
     updatedAt: conversation.updatedAt,
   }
 }

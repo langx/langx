@@ -1058,6 +1058,49 @@ The toggle is local state, not a preference. This is per sentence, not per
 person: the note you need slowed is the one you did not follow, and the next
 one is usually fine.
 
+## No photo in the first five messages. From anybody.
+
+The failure this exists to prevent has one shape: the first thing a stranger
+sends is a photograph, and the person receiving it did not agree to look at it.
+Moderation cannot fix that one. A report arrives after the picture has been
+seen, and being right afterwards is not the same as it not happening.
+
+So the rule is structural rather than punitive: a conversation carries no
+attachment until it has carried `MEDIA_UNLOCKS_AFTER_MESSAGES` messages,
+counted across both people. Nothing has to be detected, nobody has to be
+judged, and there is no model deciding what a photograph contains.
+
+**There is no exception, and that is the feature.** Not for Pro, not for
+Polyglot, not for somebody with a long history who has opened a new thread. A
+paid tier attached to this rule would say the behaviour is acceptable from
+customers, and it is not acceptable from anybody. It is also the only version
+that survives being said in one sentence: _photos unlock after five messages,
+for everyone._ Every carve-out costs a clause, and a rule people cannot repeat
+is a rule that does not deter.
+
+Five, because it is more than a greeting and fewer than a conversation. Two is
+cleared by "hi" / "hi". Twenty breaks the ordinary case of sending a picture of
+the menu you are asking about.
+
+**The gate is on `POST /messages/upload-url`, not on the send.** The client
+uploads straight to the bucket through a presigned URL and only then emits
+`message:media`, so a check at send time refuses a message pointing at a
+photograph we have already stored and can already serve. Refusing to _sign_ is
+what stops the bytes. `sendMediaMessage` checks too, for a URL signed a moment
+before the fifth message was deleted and for any future transport that forgets
+the first check — that one is the belt, not the braces.
+
+`messageCount` rides the `findOneAndUpdate` that `recordMessage` was already
+issuing for `lastMessage` and `unread`, so the counter is free. Its **absence**
+means something specific: the conversation predates it. Those are the threads
+with the most history, so `messagesInThread` counts them rather than reading a
+missing field as zero and locking a two-year-old conversation out of sending a
+photo — a cost that decays to nothing as old threads get their next message.
+
+The client is told how many more are needed rather than just that it cannot,
+and the camera is disabled rather than hidden. A control that vanishes teaches
+nothing, and a rule nobody knows about deters nobody.
+
 ## Countries are a compile-time table, like languages
 
 `profiles.country` was a free-text two-letter field, which meant the edit form

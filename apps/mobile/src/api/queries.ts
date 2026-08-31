@@ -274,6 +274,8 @@ export interface ConversationDto {
   /** They spoke last, so the next move is mine. */
   unreplied: boolean
   bothSpoke: boolean
+  /** How many more messages before an attachment is allowed, or 0. */
+  mediaLockedFor: number
   updatedAt: string
 }
 

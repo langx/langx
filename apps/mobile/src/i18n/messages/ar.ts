@@ -570,6 +570,12 @@ export const ar: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'تشغيل بطيء',
     playAtNormalSpeed: 'تشغيل بالسرعة العادية',
+    mediaLockedTitle: 'ليس بعد',
+    mediaLocked: {
+      one: 'تُفتح الصور والرسائل الصوتية بعد رسالة واحدة أخرى.',
+      other: 'تُفتح الصور والرسائل الصوتية بعد {count} رسائل أخرى.',
+    },
+    attachPhoto: 'إرفاق صورة',
     copied: 'تم النسخ',
     couldNotSend: 'تعذّر الإرسال',
     mediaQuota: 'بلغت حدّ اليوم للصور والرسائل الصوتية.',

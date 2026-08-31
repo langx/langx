@@ -18,6 +18,7 @@ function conversation(id: string, unreadForMe = 0): ConversationDto {
     archived: false,
     unreplied: true,
     bothSpoke: true,
+    mediaLockedFor: 0,
     updatedAt: '2026-08-01T00:00:00.000Z',
   }
 }

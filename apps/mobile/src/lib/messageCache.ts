@@ -9,6 +9,8 @@ export interface MessagePageDto {
   prevCursor: string | null
   participants: string[]
   pinned: { messageId: string; byUserId: string; at: string } | null
+  /** How many more messages before an attachment is allowed here, or 0. */
+  mediaLockedFor: number
   /** Only a jump window has one — the message it was opened on. */
   anchorId?: string
 }
@@ -33,7 +35,21 @@ export function appendIncomingMessage(data: Pages, message: MessageDto): Pages {
   // ago in after one from last year. Live pages never carry `prevCursor`, so
   // this is a no-op for them.
   if (first.prevCursor) return data
-  return { ...data, pages: [{ ...first, items: [...first.items, message] }, ...rest] }
+  return {
+    ...data,
+    pages: [
+      {
+        ...first,
+        items: [...first.items, message],
+        // Counted down here rather than waiting for a refetch, so the composer
+        // unlocks on the message that unlocked it. The server decides for
+        // real when it signs the upload URL; this only keeps the button from
+        // lying for a few seconds.
+        mediaLockedFor: Math.max(0, first.mediaLockedFor - 1),
+      },
+      ...rest,
+    ],
+  }
 }
 
 /**

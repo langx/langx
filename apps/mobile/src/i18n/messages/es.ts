@@ -472,6 +472,12 @@ export const es: Localized<EnMessages> = {
     speedNormal: '1x',
     playSlowly: 'Reproducir despacio',
     playAtNormalSpeed: 'Reproducir a velocidad normal',
+    mediaLockedTitle: 'Todavía no',
+    mediaLocked: {
+      one: 'Las fotos y las notas de voz se activan tras un mensaje más.',
+      other: 'Las fotos y las notas de voz se activan tras {count} mensajes más.',
+    },
+    attachPhoto: 'Adjuntar una foto',
     copied: 'Copiado',
     couldNotSend: 'No se pudo enviar',
     mediaQuota: 'Has llegado al límite de hoy para fotos y mensajes de voz.',

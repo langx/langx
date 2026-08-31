@@ -33,6 +33,7 @@ function pages(...groups: MessageDto[][]): InfiniteData<MessagePageDto> {
       prevCursor: null,
       pinned: null,
       participants: [ME, THEM],
+      mediaLockedFor: 0,
     })),
     pageParams: groups.map((_, i) => (i === 0 ? '' : 'c')),
   }
@@ -92,6 +93,34 @@ describe('appendIncomingMessage', () => {
   it('ignores a message already in any page', () => {
     const data = pages([message('new1')], [message('old1')])
     expect(appendIncomingMessage(data, message('old1'))).toBe(data)
+  })
+})
+
+/**
+ * The composer reads this to decide whether the camera does anything, so it
+ * has to move on the message that moved it. Waiting for a refetch would leave
+ * the button lying for as long as the cache is warm.
+ */
+describe('the media lock counts down as messages arrive', () => {
+  function locked(n: number): InfiniteData<MessagePageDto> {
+    const data = pages([message('a', THEM)])
+    return { ...data, pages: [{ ...data.pages[0]!, mediaLockedFor: n }] }
+  }
+
+  it('drops by one for each message appended', () => {
+    const after = appendIncomingMessage(locked(3), message('b', ME))
+    expect(after?.pages[0]?.mediaLockedFor).toBe(2)
+  })
+
+  it('stops at zero rather than going negative', () => {
+    const after = appendIncomingMessage(locked(0), message('b', ME))
+    expect(after?.pages[0]?.mediaLockedFor).toBe(0)
+  })
+
+  it('does not move when the message was a duplicate echo', () => {
+    const data = locked(3)
+    const after = appendIncomingMessage(data, message('a', THEM))
+    expect(after?.pages[0]?.mediaLockedFor).toBe(3)
   })
 })
 

@@ -498,6 +498,16 @@ deliberate: one is about fairness, the other about how it feels.
 Tokens can never buy a paid feature — if they could, a subscription's value
 erodes and farming tokens becomes a substitute for subscribing.
 
+### Attachments unlock after five messages
+
+A conversation carries no image or voice note until it has carried
+`MEDIA_UNLOCKS_AFTER_MESSAGES` messages, counted across both participants. No
+tier is exempt. Enforced when the upload URL is **signed** — the client PUTs
+straight to the bucket, so a check at send time would arrive after the bytes —
+and re-checked in `sendMediaMessage`. `conversations.messageCount` backs it and
+rides the write `recordMessage` was already making; an absent value means the
+thread predates the counter and is counted on demand.
+
 ### Anti-abuse
 
 The reciprocity requirement, per-partner caps, daily caps, a ramp-up for new

@@ -36,6 +36,19 @@ export interface Conversation {
   firstMessageBy: string
   firstMessageAt: Date
   bothSpoke: boolean
+  /**
+   * Messages in this thread, both sides together. Denormalized because the
+   * media gate reads it on a path that must not pay for a `countDocuments` —
+   * and it costs nothing to keep, since `recordMessage` already issues a
+   * `findOneAndUpdate` on this document for `lastMessage` and `unread`.
+   *
+   * Optional, and the absence means something specific: the conversation
+   * predates the counter. Those threads are the ones with history, so
+   * `messagesInThread` counts them rather than treating a missing field as
+   * zero and locking a two-year-old conversation out of sending a photo. The
+   * cost decays to nothing as old threads get their next message.
+   */
+  messageCount?: number
   createdAt: Date
   updatedAt: Date
 }
@@ -224,6 +237,11 @@ export async function startConversation(
     firstMessageBy: viewerId,
     firstMessageAt: now,
     bothSpoke: false,
+    // One, because this call writes the opening message itself rather than
+    // going through `recordMessage`. Set here so no conversation created from
+    // now on can have an absent count — which is what lets `messagesInThread`
+    // read an absent one as "predates the counter" instead of as zero.
+    messageCount: 1,
     createdAt: now,
     updatedAt: now,
   }

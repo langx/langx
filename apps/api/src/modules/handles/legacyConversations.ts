@@ -226,6 +226,9 @@ async function importRoom(
     firstMessageBy,
     firstMessageAt: first.createdAt,
     bothSpoke: senders.size > 1,
+    // Imported history counts. A restored thread with two years of messages in
+    // it is not a stranger's opening move, and the media gate reads this.
+    messageCount: staged.length,
     // The thread is as old as its first message. Dating it "now" would sort a
     // 2023 conversation above everything the user has actually been doing.
     createdAt: first.createdAt,
@@ -337,6 +340,13 @@ async function mergeIntoExisting(
   const increments: Record<string, number> = {}
   for (const [participantId, count] of Object.entries(unread)) {
     if (count > 0) increments[`unread.${participantId}`] = count
+  }
+  // The imported messages are additional to whatever the v2 thread already
+  // holds, so this is an increment like `unread` and not a `$set` like the
+  // rest. A conversation from before the counter existed stays absent here and
+  // is counted on demand — see `messagesInThread`.
+  if (seed.messageCount && typeof existing.messageCount === 'number') {
+    increments.messageCount = seed.messageCount
   }
 
   await conversations.updateOne(
