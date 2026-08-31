@@ -48,24 +48,25 @@ export const INDEXES: Partial<IndexSpec> = {
   // Email verification and password reset both look a token up by identifier.
   [COLLECTIONS.verification]: [{ key: { identifier: 1 }, name: 'verification_identifier_idx' }],
   /**
-   * QR sign-in's codes. Better Auth's Mongo adapter creates almost no indexes,
-   * and this collection is looked up on every poll — once every five seconds
-   * per waiting browser — so the absence of one is not a slow query, it is a
-   * collection scan on a loop.
+   * QR sign-in's codes — a Better Auth collection, like `user` and
+   * `verification`, and the lookup indexes are **its** to create.
    *
-   * `userCode` is unique because the whole flow rests on it: two live codes
-   * colliding would let one person approve another's sign-in. The plugin
-   * generates them randomly and does not enforce that itself.
+   * They were declared here first, and that broke the endpoint outright: the
+   * plugin creates its own unique index on `deviceCode` at first use, Mongo
+   * refused it with "Index already exists with a different name", and every
+   * `POST /device/code` answered 500. An index on somebody else's collection
+   * is not a free optimisation — it is a name collision waiting for the owner
+   * to reach for the same key.
    *
-   * The TTL sweeps expired rows an hour after they die rather than at the
-   * instant — the plugin checks `expiresAt` on every read, so nothing depends
-   * on the deletion being prompt, and a short grace period keeps a
-   * just-expired code answering "expired" instead of "never existed".
+   * The TTL stays because the plugin does not create one, and without it a
+   * collection that gains a row per sign-in attempt only ever grows. It sweeps
+   * an hour after expiry rather than at the instant: the plugin checks
+   * `expiresAt` on every read, so nothing depends on prompt deletion, and the
+   * grace period keeps a just-expired code answering "expired" instead of
+   * "never existed".
    */
   [COLLECTIONS.deviceCode]: [
-    { key: { deviceCode: 1 }, name: 'device_code_unique', unique: true },
-    { key: { userCode: 1 }, name: 'user_code_unique', unique: true },
-    { key: { expiresAt: 1 }, name: 'ttl', expireAfterSeconds: 3600 },
+    { key: { expiresAt: 1 }, name: 'device_code_ttl', expireAfterSeconds: 3600 },
   ],
 
   [COLLECTIONS.profiles]: [

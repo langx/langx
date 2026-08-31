@@ -10,7 +10,8 @@ export const COLLECTIONS = {
   verification: 'verification',
   /**
    * The device flow's codes, written by Better Auth's `device-authorization`
-   * plugin. Ours only to index — see `indexes.ts` for why that matters here.
+   * plugin — which also owns their lookup indexes. Named here only so the TTL
+   * in `indexes.ts` has something to hang on; see the note there.
    */
   deviceCode: 'deviceCode',
 
