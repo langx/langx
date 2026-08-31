@@ -21,6 +21,7 @@ export const ar: Localized<EnMessages> = {
     hidePassword: 'إخفاء كلمة المرور',
     back: '‹ رجوع',
     backPlain: 'رجوع',
+    clear: 'مسح',
     cancel: 'إلغاء',
     ok: 'حسنًا',
     save: 'حفظ',

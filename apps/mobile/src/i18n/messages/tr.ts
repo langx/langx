@@ -17,6 +17,7 @@ export const tr: Localized<EnMessages> = {
     hidePassword: 'Parolayı gizle',
     back: '‹ Geri',
     backPlain: 'Geri',
+    clear: 'Temizle',
     cancel: 'Vazgeç',
     ok: 'Tamam',
     save: 'Kaydet',

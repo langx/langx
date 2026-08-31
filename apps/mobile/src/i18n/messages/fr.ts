@@ -8,6 +8,7 @@ export const fr: Localized<EnMessages> = {
     hidePassword: 'Masquer le mot de passe',
     back: '‹ Retour',
     backPlain: 'Retour',
+    clear: 'Effacer',
     cancel: 'Annuler',
     ok: 'OK',
     save: 'Enregistrer',

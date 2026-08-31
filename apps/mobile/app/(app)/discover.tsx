@@ -91,6 +91,13 @@ export default function DiscoverScreen() {
   // typing stays responsive and "behic" is one request rather than five.
   const search = useHandleSearch(useDebounced(term))
 
+  // Both the arrow and any future caller mean the same two things by it, and
+  // forgetting the second one leaves a stale query behind the next open.
+  function closeSearch(): void {
+    setSearching(false)
+    setTerm('')
+  }
+
   const isPro = useIsPro()
   const canUseNearby = useHasFeature('nearby')
   const me = useMe()
@@ -181,19 +188,25 @@ export default function DiscoverScreen() {
           {/* Beside the filters, not above the list: the two are the same
               question asked two ways — "narrow this" and "I already know who
               I am looking for". */}
-          <Pressable
-            accessibilityRole="button"
-            accessibilityState={{ expanded: searching }}
-            accessibilityLabel={t('discover.searchHandles')}
-            onPress={() => {
-              setSearching((on) => !on)
-              if (searching) setTerm('')
-            }}
-            style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
-            hitSlop={8}
-          >
-            <Feather name={searching ? 'x' : 'search'} size={22} color={colors.text} />
-          </Pressable>
+          {/*
+            Opens search and nothing else. It used to toggle, which put the way
+            *out* of search up here in the header: a 22px glyph beside an
+            identical-looking filters icon, diagonally opposite the caret, and
+            announced to a screen reader as "Search by username" even while it
+            meant close. Leaving is now the arrow inside the field, at the
+            geometry every other back control in the app uses.
+          */}
+          {searching ? null : (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('discover.searchHandles')}
+              onPress={() => setSearching(true)}
+              style={({ pressed }) => [styles.filterButton, pressed && styles.pressed]}
+              hitSlop={8}
+            >
+              <Feather name="search" size={22} color={colors.text} />
+            </Pressable>
+          )}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={
@@ -212,8 +225,21 @@ export default function DiscoverScreen() {
           </Pressable>
         </View>
         {searching ? (
-          <View style={styles.searchRow}>
-            <Feather name="search" size={17} color={colors.textFaint} />
+          <View style={styles.searchField}>
+            {/*
+              Leaving search is local state, never navigation. Discover is a tab
+              root, so `router.back()` would drop the reader on the first tab —
+              see `backHref` for why `canGoBack()` does not save you there.
+            */}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('common.backPlain')}
+              onPress={closeSearch}
+              hitSlop={12}
+              style={({ pressed }) => [styles.searchLeave, pressed && styles.pressed]}
+            >
+              <Feather name="arrow-left" size={22} color={colors.text} />
+            </Pressable>
             <TextInput
               value={term}
               onChangeText={setTerm}
@@ -222,8 +248,25 @@ export default function DiscoverScreen() {
               autoCapitalize="none"
               autoCorrect={false}
               autoFocus
+              returnKeyType="search"
               style={styles.searchInput}
             />
+            {/*
+              Clears the text without leaving search — a different intent from
+              the arrow, which is why it is a different control rather than one
+              button meaning two things. Only while there is something to clear.
+            */}
+            {term.length > 0 ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.clear')}
+                onPress={() => setTerm('')}
+                hitSlop={10}
+                style={({ pressed }) => pressed && styles.pressed}
+              >
+                <Feather name="x" size={18} color={colors.textMuted} />
+              </Pressable>
+            ) : null}
           </View>
         ) : null}
 
@@ -235,7 +278,7 @@ export default function DiscoverScreen() {
                 key={result._id}
                 accessibilityRole="button"
                 onPress={() => openProfile(result.handle, '/(app)/discover')}
-                style={({ pressed }) => [styles.searchRow, pressed && styles.pressed]}
+                style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}
               >
                 <Avatar url={result.avatarUrl} name={result.displayName} size={36} />
                 <View style={styles.searchText}>
@@ -407,14 +450,30 @@ const useStyles = makeStyles(({ colors, font, spacing, radius }) => ({
     marginStart: 'auto',
   },
   filterButton: { alignItems: 'center', flexDirection: 'row', gap: spacing.xs },
-  searchRow: {
+  /**
+   * The input, and only the input. Both this and every result row used to be
+   * `searchRow`, so each result wore the field's fill, its pill radius and its
+   * top margin — the thing you type into and the things you tap looked like the
+   * same object stacked five deep. Splitting them is also what makes it safe to
+   * pad this one for the two controls inside it.
+   */
+  searchField: {
     alignItems: 'center',
     backgroundColor: colors.fill,
     borderRadius: radius.pill,
     flexDirection: 'row',
     gap: spacing.sm,
     marginTop: spacing.md,
-    paddingHorizontal: spacing.md,
+    paddingEnd: spacing.md,
+    paddingStart: spacing.sm,
+    paddingVertical: spacing.sm,
+  },
+  // Matches every other back control in the app: a 30x30 box, hitSlop 12.
+  searchLeave: { alignItems: 'center', height: 30, justifyContent: 'center', width: 30 },
+  resultRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
     paddingVertical: spacing.sm,
   },
   searchInput: { ...font.body, color: colors.text, flex: 1, padding: 0 },

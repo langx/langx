@@ -18,6 +18,7 @@ export const ru: Localized<EnMessages> = {
     hidePassword: 'Скрыть пароль',
     back: '‹ Назад',
     backPlain: 'Назад',
+    clear: 'Очистить',
     cancel: 'Отмена',
     ok: 'ОК',
     save: 'Сохранить',
