@@ -272,7 +272,7 @@ export const es: Localized<EnMessages> = {
     native: 'Nativo',
     learning: 'Aprendiendo',
     yourLevel: 'Tu nivel',
-    upToFive: 'Hasta 5',
+    upToCount: { one: 'Hasta {count}', other: 'Hasta {count}' },
     cannotBeBoth: 'Un idioma no puede ser las dos cosas',
     aboutYouTitle: 'Sobre ti',
     displayName: 'Nombre visible',

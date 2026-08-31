@@ -301,7 +301,7 @@ export const en = {
     native: 'Native',
     learning: 'Learning',
     yourLevel: 'Your level',
-    upToFive: 'Up to 5',
+    upToCount: { one: 'Up to {count}', other: 'Up to {count}' },
     cannotBeBoth: 'A language can’t be both',
     aboutYouBody: 'Just the basics — you can change all of this later.',
     aboutYouTitle: 'About you',

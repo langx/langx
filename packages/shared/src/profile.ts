@@ -1,4 +1,5 @@
 import { countryCodeSchema } from './countries'
+import { PLAN_LIMITS } from './limits'
 import { notificationPrefsSchema } from './notifications'
 import { birthDateSchema } from './age'
 import { languageLevelSchema } from './level'
@@ -33,7 +34,13 @@ function learningDoesNotOverlapNative(data: {
   return !data.learning.some((l) => native.has(l.code))
 }
 
-const MAX_LANGUAGES = 5
+/**
+ * The absolute ceilings, defined from the top tier so they cannot drift from
+ * `PLAN_LIMITS`. Zod only enforces these — the per-tier limit needs the stored
+ * profile and the viewer's tier, neither of which a boot-time schema has.
+ */
+export const MAX_LEARNING_LANGUAGES = PLAN_LIMITS.pro_plus.maxLearningLanguages
+export const MAX_NATIVE_LANGUAGES = PLAN_LIMITS.pro_plus.maxNativeLanguages
 export const CITY_MAX_LENGTH = 100
 export const MAX_INTERESTS = 10
 
@@ -74,8 +81,8 @@ export const DISPLAY_NAME_MAX_LENGTH = 50
 const displayNameSchema = z.string().trim().min(1).max(DISPLAY_NAME_MAX_LENGTH)
 const bioSchema = z.string().trim().max(BIO_MAX_LENGTH)
 const interestsSchema = z.array(z.string().trim().min(1).max(30)).max(MAX_INTERESTS)
-const nativeLanguagesSchema = z.array(nativeLanguageSchema).min(1).max(MAX_LANGUAGES)
-const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_LANGUAGES)
+const nativeLanguagesSchema = z.array(nativeLanguageSchema).min(1).max(MAX_NATIVE_LANGUAGES)
+const learningLanguagesSchema = z.array(learningLanguageSchema).min(1).max(MAX_LEARNING_LANGUAGES)
 
 /**
  * Body of `POST /profiles` — onboarding. `birthDate` is validated here

@@ -53,6 +53,15 @@ export interface ApiErrorBody {
   message: string
   /** Present on UPGRADE_REQUIRED so the client opens the right contextual paywall. */
   feature?: string
+  /**
+   * Present on an `UPGRADE_REQUIRED` that is a *number* rather than a
+   * capability — a language allowance, say. Kept apart from `feature` because
+   * that one must be a `PlanFeature`, and those are exactly the booleans
+   * `hasFeature` can read. A quota is not one of them.
+   */
+  limit?: string
+  /** The allowance that was exceeded, so the client can say it without guessing. */
+  max?: number
   /** Present on QUOTA_EXCEEDED: ISO timestamp when the next slot frees up. */
   retryAt?: string
   details?: unknown

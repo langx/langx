@@ -13,20 +13,30 @@ export class ApiError extends Error {
   readonly statusCode: number
   readonly feature?: string
   readonly retryAt?: string
+  readonly limit?: string
+  readonly max?: number
 
-  constructor(code: ErrorCode, message?: string, extra?: { feature?: string; retryAt?: string }) {
+  constructor(
+    code: ErrorCode,
+    message?: string,
+    extra?: { feature?: string; retryAt?: string; limit?: string; max?: number },
+  ) {
     super(message ?? code)
     this.name = 'ApiError'
     this.code = code
     this.statusCode = ERROR_STATUS[code]
     if (extra?.feature !== undefined) this.feature = extra.feature
     if (extra?.retryAt !== undefined) this.retryAt = extra.retryAt
+    if (extra?.limit !== undefined) this.limit = extra.limit
+    if (extra?.max !== undefined) this.max = extra.max
   }
 
   toBody(): ApiErrorBody {
     const body: ApiErrorBody = { code: this.code, message: this.message }
     if (this.feature !== undefined) body.feature = this.feature
     if (this.retryAt !== undefined) body.retryAt = this.retryAt
+    if (this.limit !== undefined) body.limit = this.limit
+    if (this.max !== undefined) body.max = this.max
     return body
   }
 }

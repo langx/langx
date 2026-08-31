@@ -434,13 +434,25 @@ describe('Faz 3 — discovery aggregation', () => {
     })
 
     it('targetLanguage narrows to one of the viewer own learning languages, and rejects anything else', async () => {
+      // Two learning languages is a paid allowance now, so the viewer is set up
+      // as one. The filter under test is free either way — this is about
+      // `targetLanguage`, not about billing.
       const viewer = await newUser('target-lang-viewer@example.com', {
         nativeLanguages: [{ code: 'tr' }],
-        learning: [
-          { code: 'en', level: 'intermediate', priority: 1 },
-          { code: 'de', level: 'beginner', priority: 2 },
-        ],
+        learning: [{ code: 'en', level: 'intermediate', priority: 1 }],
       })
+      await handle.db.collection<Profile>(COLLECTIONS.profiles).updateOne(
+        { _id: viewer.userId },
+        {
+          $set: {
+            'entitlement.tier': 'pro_plus',
+            learning: [
+              { code: 'en', level: 'intermediate', priority: 1 },
+              { code: 'de', level: 'beginner', priority: 2 },
+            ],
+          },
+        },
+      )
       const englishNative = await newUser('english-native@example.com', {
         nativeLanguages: [{ code: 'en' }],
         learning: [{ code: 'tr', level: 'intermediate', priority: 1 }],

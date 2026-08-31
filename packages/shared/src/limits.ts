@@ -116,6 +116,28 @@ export interface PlanLimits {
    * one tier a different allowance and those two places go quietly wrong.
    */
   maxPhotos: number
+  /**
+   * Languages a profile may list, learning and native.
+   *
+   * **Not uniform across tiers**, which is the opposite of `maxPhotos` above —
+   * so nothing may read `PLAN_LIMITS.free.max*Languages` for another tier the
+   * way the photo allowance is deliberately read. The two sit next to each
+   * other precisely so the difference is visible.
+   *
+   * Enforced at write time only. Zod cannot express a tier-dependent maximum:
+   * a route schema is registered at boot, before any request exists, so it has
+   * no tier to consult. See `updateProfile`.
+   */
+  maxLearningLanguages: number
+  /**
+   * The same ladder as learning languages, so it is one rule rather than two.
+   *
+   * Worth knowing what it costs, though: discovery's mutual-fit match reads the
+   * viewer's `nativeLanguages`, so a tier held to one native language is not
+   * only limited — they are findable by fewer people. For somebody raised
+   * bilingual a second native language is an identity fact, not a feature.
+   */
+  maxNativeLanguages: number
 }
 
 export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
@@ -130,6 +152,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     nearby: false,
     copilot: false,
     maxPhotos: 6,
+    maxLearningLanguages: 1,
+    maxNativeLanguages: 1,
   },
   pro: {
     initiationsPer24h: null,
@@ -142,6 +166,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     nearby: false,
     copilot: false,
     maxPhotos: 6,
+    maxLearningLanguages: 2,
+    maxNativeLanguages: 2,
   },
   /**
    * A strict superset of `pro` — every value here is pro's, with `nearby` and
@@ -160,6 +186,8 @@ export const PLAN_LIMITS: Record<PlanTier, PlanLimits> = {
     nearby: true,
     copilot: true,
     maxPhotos: 6,
+    maxLearningLanguages: 5,
+    maxNativeLanguages: 5,
   },
 }
 

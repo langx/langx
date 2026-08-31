@@ -1,3 +1,4 @@
+import { PLAN_LIMITS } from '@langx/shared'
 import { router } from 'expo-router'
 import { useState } from 'react'
 import { Text, View } from 'react-native'
@@ -52,6 +53,12 @@ export default function LanguagesStep() {
 
   const onNative = tab === 'native'
 
+  // The hint reports the cap of the tab you are on, and both come from the
+
+  // free row because onboarding is always the free tier.
+
+  const max = onNative ? PLAN_LIMITS.free.maxNativeLanguages : PLAN_LIMITS.free.maxLearningLanguages
+
   function onContinue(): void {
     if (onNative) setTab('learning')
     else router.push('/(onboarding)/levels')
@@ -90,7 +97,7 @@ export default function LanguagesStep() {
           // it, so the picker should never let it be picked in the first place.
           disabledCodes={learningCodes}
           disabledLabel={t('onboarding.learning')}
-          max={5}
+          max={PLAN_LIMITS.free.maxNativeLanguages}
         />
       ) : (
         <LanguagePicker
@@ -99,13 +106,13 @@ export default function LanguagesStep() {
           onToggle={toggleLearning}
           disabledCodes={draft.nativeLanguages}
           disabledLabel={t('onboarding.native')}
-          max={5}
+          max={PLAN_LIMITS.free.maxLearningLanguages}
         />
       )}
 
       <View style={styles.footer}>
         <Text style={styles.hint}>
-          {t('onboarding.upToFive')} · {t('onboarding.cannotBeBoth')}
+          {t('onboarding.upToCount', { count: max })} · {t('onboarding.cannotBeBoth')}
         </Text>
         <Button
           label={t('common.continue')}

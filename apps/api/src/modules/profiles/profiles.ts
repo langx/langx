@@ -24,6 +24,7 @@ import {
 } from '@langx/shared'
 import { MongoServerError, type Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
+import { effectiveTier } from './entitlement'
 import { ApiError } from '../../lib/ApiError'
 import { authId } from '../../lib/authId'
 import { hidesOnlineStatus } from './presenceVisibility'
@@ -184,6 +185,24 @@ export async function createProfile(
     throw new ApiError(ERROR_CODES.UNDERAGE, 'You must be 18 or older to use LangX')
   }
 
+  /**
+   * Onboarding is always the free tier — an entitlement arrives from
+   * RevenueCat afterwards, never before the profile exists. So the cap here is
+   * simply the free row, and there is no stored profile to grandfather against.
+   */
+  assertLanguageCap(
+    'learningLanguages',
+    input.learning.length,
+    0,
+    PLAN_LIMITS.free.maxLearningLanguages,
+  )
+  assertLanguageCap(
+    'nativeLanguages',
+    input.nativeLanguages.length,
+    0,
+    PLAN_LIMITS.free.maxNativeLanguages,
+  )
+
   let claimingOwnLegacyHandle = false
   if (legacyEmailHash) {
     const resolution = await resolveHandleClaim(db, input.handle, userId, legacyEmailHash)
@@ -326,6 +345,30 @@ export async function setCountryFromLocation(
   return updated
 }
 
+/**
+ * Refuses a write that would put somebody further over their tier's language
+ * limit than they already are.
+ *
+ * The `> was` clause is the whole of the grandfathering, and it is not a
+ * nicety. A migrated v1 user with five learning languages is over a free
+ * tier's limit of one by definition — without it, every write they make
+ * carries an over-limit array and is refused, so they could never change a
+ * level, reorder their priorities, or even *remove* a language. The limit
+ * would read as "your profile is frozen".
+ *
+ * Nothing is ever stripped, and discovery keeps matching on whatever is
+ * stored. This only stops the list growing.
+ */
+function assertLanguageCap(
+  limit: 'learningLanguages' | 'nativeLanguages',
+  next: number,
+  was: number,
+  max: number,
+): void {
+  if (next <= max || next <= was) return
+  throw new ApiError(ERROR_CODES.UPGRADE_REQUIRED, `Your plan allows ${max}`, { limit, max })
+}
+
 export async function updateProfile(
   db: Db,
   userId: string,
@@ -344,6 +387,25 @@ export async function updateProfile(
       'A learning language cannot also be listed as native',
     )
   }
+
+  /**
+   * The per-tier language cap, here rather than in the schema for the same
+   * reason the overlap check is: a route schema is registered at boot and has
+   * neither the stored profile nor the viewer's tier.
+   */
+  const tier = effectiveTier(current)
+  assertLanguageCap(
+    'learningLanguages',
+    nextLearning.length,
+    current.learning.length,
+    PLAN_LIMITS[tier].maxLearningLanguages,
+  )
+  assertLanguageCap(
+    'nativeLanguages',
+    nextNative.length,
+    current.nativeLanguages.length,
+    PLAN_LIMITS[tier].maxNativeLanguages,
+  )
 
   // zod's `.partial()` types every field as `T | undefined`, but an absent
   // key and a key explicitly set to `undefined` mean different things to

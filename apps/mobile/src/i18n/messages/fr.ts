@@ -273,7 +273,7 @@ export const fr: Localized<EnMessages> = {
     native: 'Maternelle',
     learning: 'En apprentissage',
     yourLevel: 'Ton niveau',
-    upToFive: 'Jusqu’à 5',
+    upToCount: { one: 'Jusqu’à {count}', other: 'Jusqu’à {count}' },
     cannotBeBoth: 'Une langue ne peut pas être les deux',
     aboutYouTitle: 'À propos de toi',
     displayName: 'Nom affiché',
