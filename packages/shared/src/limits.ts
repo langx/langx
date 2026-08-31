@@ -221,6 +221,15 @@ export const PRO_BENEFITS = [
   'profileViewerIdentities',
   'incognito',
   'hideOnlineStatus',
+  /**
+   * A one-off welcome pack — cosmetics and streak freezes, never token. See
+   * `PRO_WELCOME_PACKS`, and the note there on why granting token for money is
+   * the one thing this economy cannot do.
+   *
+   * Last in the list on purpose: it is a nice-to-have beside five capabilities,
+   * and leading with it would sell the subscription on a gift.
+   */
+  'welcomePack',
 ] as const
 export type ProBenefit = (typeof PRO_BENEFITS)[number]
 

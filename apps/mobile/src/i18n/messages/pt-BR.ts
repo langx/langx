@@ -857,6 +857,9 @@ export const ptBR: Localized<EnMessages> = {
     partOf: 'faz parte do',
     unlimitedChats: 'Conversas novas ilimitadas',
     unlimitedChatsBody: '{count} por dia no plano gratuito.',
+    welcomePack: 'Um pacote de boas-vindas',
+    welcomePackBody:
+      'Uma moldura de perfil e dois congelamentos de sequência para começar. O Pro+ traz o conjunto completo.',
     advancedFilters: 'Filtros avançados',
     advancedFiltersBody: 'Busque por gênero e cidade.',
     unlimitedTranslation: 'Tradução ilimitada',

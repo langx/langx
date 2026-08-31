@@ -2,6 +2,7 @@ import type { Db } from 'mongodb'
 import { COLLECTIONS } from '../../db/collections'
 import type { Profile } from '../profiles/profiles'
 import type { RevenueCatClient } from './revenueCatClient'
+import { grantWelcomePack } from './welcomePack'
 
 /**
  * The client-triggered fallback for a webhook that's late or never arrives
@@ -32,6 +33,25 @@ export async function refreshEntitlement(
   await db
     .collection<Profile>(COLLECTIONS.profiles)
     .updateOne({ _id: userId }, { $set: { entitlement: next, updatedAt: now } })
+
+  /*
+   * After the entitlement is written, not before: if the grant threw, a retry
+   * has to find the tier already recorded, and a pack handed out against a
+   * tier that failed to save would be a gift for a subscription nobody has.
+   *
+   * Failure is swallowed for the same reason the v1 loyalty grant's is — the
+   * subscription is the thing the user paid for and it is already active;
+   * losing a cosmetic to a transient write is not worth failing the refresh
+   * that RevenueCat is waiting on. The next refresh picks it up, because the
+   * latch is only written on success.
+   */
+  if (next.tier !== 'free') {
+    try {
+      await grantWelcomePack(db, userId, next.tier)
+    } catch {
+      // Intentionally ignored; see above.
+    }
+  }
 
   return next
 }

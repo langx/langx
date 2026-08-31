@@ -100,6 +100,10 @@ const BENEFIT_COPY: Record<ProBenefit, BenefitCopy> = {
     title: 'paywall.hideOnline',
     body: 'paywall.hideOnlineBody',
   },
+  welcomePack: {
+    title: 'paywall.welcomePack',
+    body: 'paywall.welcomePackBody',
+  },
 }
 
 /**

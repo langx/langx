@@ -863,6 +863,9 @@ export const tr: Localized<EnMessages> = {
     partOf: 'şunun parçası:',
     unlimitedChats: 'Sınırsız yeni sohbet',
     unlimitedChatsBody: 'Ücretsiz planda günde {count} tane.',
+    welcomePack: 'Hoş geldin paketi',
+    welcomePackBody:
+      'Başlangıç için bir profil çerçevesi ve iki seri dondurma. Pro+ setin tamamını getirir.',
     advancedFilters: 'Gelişmiş filtreler',
     advancedFiltersBody: 'Cinsiyete ve şehre göre ara.',
     unlimitedTranslation: 'Sınırsız çeviri',

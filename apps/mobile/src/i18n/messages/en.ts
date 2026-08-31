@@ -898,6 +898,9 @@ export const en = {
     partOf: 'is part of',
     unlimitedChats: 'Unlimited new chats',
     unlimitedChatsBody: '{count} a day on the free plan.',
+    welcomePack: 'A welcome pack',
+    welcomePackBody:
+      'A profile frame and two streak freezes to start with. Pro+ brings the full set.',
     advancedFilters: 'Advanced filters',
     advancedFiltersBody: 'Search by gender and city.',
     unlimitedTranslation: 'Unlimited translation',
